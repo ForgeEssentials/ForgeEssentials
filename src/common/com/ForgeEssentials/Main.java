@@ -1,11 +1,15 @@
 package com.ForgeEssentials;
 
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.Mod.ServerStarted;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.0.1")
 public class Main
@@ -16,22 +20,24 @@ public class Main
 	@Instance(value="ForgeEssentials")
 	public static Main instance;
 	
+	FEPermissionHandler pHandler;
+	
 	@PreInit
-	public void preInit()
+	public void preInit(FMLPreInitializationEvent e)
 	{
-		
 	}
 	
 	@Init
-	public void load()
+	public void load(FMLInitializationEvent e)
 	{
 		
 	}
 	
 	@ServerStarted
-	public void serverStart()
+	public void serverStart(FMLServerStartingEvent e)
 	{
-		
+		pHandler = new FEPermissionHandler();
+		MinecraftForge.EVENT_BUS.register(pHandler);
 	}
 
 }
