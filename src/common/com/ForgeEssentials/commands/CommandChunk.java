@@ -29,13 +29,17 @@ public class CommandChunk extends CommandBase {
 	}
 
 	@Override
-	public void processCommand(ICommandSender var1, String[] var2) {
-		try{
+	public void processCommand(ICommandSender var1, String[] var2)
+	{
+		try
+		{
 			EntityPlayer ep = this.getCommandSenderAsPlayer(var1);
-			FunctionHandler.instance.point1.put(ep.username, new Point(toChunk(ep.posX), 0, toChunk(ep.posZ)));
-			FunctionHandler.instance.point2.put(ep.username, new Point(toChunk(ep.posX)+16, 256, toChunk(ep.posZ)+16));
+			Point.setPlayerPoint1(ep.username, new Point(toChunk(ep.posX), 0, toChunk(ep.posZ)));
+			Point.setPlayerPoint2(ep.username, new Point(toChunk(ep.posX) + 16, 256, toChunk(ep.posZ) + 16));
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Selected Chunk");
-		}catch(Exception e) {
+		}
+		catch (Exception e)
+		{
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Chunk Command Failed!(Unknown Reason)");
 		}
 	}

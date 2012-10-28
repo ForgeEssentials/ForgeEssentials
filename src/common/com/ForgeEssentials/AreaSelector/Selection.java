@@ -36,6 +36,21 @@ public class Selection
 			selections.put(username, selection);
 	}
 	
+	public static void refreshSelection(EntityPlayer player)
+	{
+		refreshSelection(player.username);
+	}
+	
+	public static void refreshSelection(String username)
+	{
+		setSelection(username, new Selection(Point.getPlayerPoint1(username), Point.getPlayerPoint1(username)));
+	}
+	
+	public static void invalidSelection(EntityPlayer player)
+	{
+		player.addChatMessage("\u00a7e"+"Invalid Selection");
+	}
+	
 	// --------------------------------
 	//  -------  the actual class now -------
 	// --------------------------------
@@ -49,5 +64,55 @@ public class Selection
 		end1 = point1;
 		end2 = point2;
 		isValid = end1.isValid() && end2.isValid();
+	}
+
+	public Point getEnd1()
+	{
+		return end1;
+	}
+
+	public void setEnd1(Point end1)
+	{
+		this.end1 = end1;
+	}
+
+	public Point getEnd2()
+	{
+		return end2;
+	}
+
+	public void setEnd2(Point end2)
+	{
+		this.end2 = end2;
+	}
+
+	public boolean isValid()
+	{
+		return isValid;
+	}
+
+	public void setValid(boolean isValid)
+	{
+		this.isValid = isValid;
+	}
+	
+	public int[] getDimensions()
+	{
+		int[] array = new int[3];
+		array[0] = Math.abs(end1.getX() - end2.getX());
+		array[1] = Math.abs(end1.getY() - end2.getY());
+		array[2] = Math.abs(end1.getZ() - end2.getZ());
+		return array;
+	}
+	
+	/**
+	 * checks if the selection is valid. if it isn't it sends out a chat message to the player.
+	 * @return if the selection is valid
+	 */
+	public boolean validate(EntityPlayer player)
+	{
+		if (!isValid)
+			invalidSelection(player);
+		return isValid;
 	}
 }

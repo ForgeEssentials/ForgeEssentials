@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
 import net.minecraft.src.CommandBase;
@@ -19,19 +20,17 @@ public class CommandDimension extends CommandBase {
 	public List getCommandAliases()
     {
         return Arrays.asList(new String[] {"dim","dimen","measure"});
-    }
+	}
 
 	@Override
-	public void processCommand(ICommandSender var1, String[] var2) {
-		try{
-			EntityPlayer ep = this.getCommandSenderAsPlayer(var1);
-			int dimX = Math.abs(FunctionHandler.instance.point1X.get(ep.username) - FunctionHandler.instance.point2X.get(ep.username))+1;
-			int dimY = Math.abs(FunctionHandler.instance.point1Y.get(ep.username) - FunctionHandler.instance.point2Y.get(ep.username))+1;
-			int dimZ = Math.abs(FunctionHandler.instance.point1Z.get(ep.username) - FunctionHandler.instance.point2Z.get(ep.username))+1;
-			this.getCommandSenderAsPlayer(var1).addChatMessage("Selection Region's Dimensions Are: "+dimX+"X"+dimY+"X"+dimZ);
-		}catch(Exception e) {
-			this.getCommandSenderAsPlayer(var1).addChatMessage("Dimension Command Failed!(Unknown Reason)");
-		}
+	public void processCommand(ICommandSender var1, String[] var2)
+	{
+		EntityPlayer ep = this.getCommandSenderAsPlayer(var1);
+		Selection select = Selection.getPlayerSelection(ep);
+		if (!select.validate(ep))
+			return;
+		int[] dims = select.getDimensions();
+		this.getCommandSenderAsPlayer(var1).addChatMessage("Selection Region's Dimensions Are: " + dims[0] + "X" + dims[1] + "X" + dims[2]);
 	}
 
 }

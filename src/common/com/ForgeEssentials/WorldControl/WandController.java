@@ -1,5 +1,7 @@
 package com.ForgeEssentials.WorldControl;
 
+import com.ForgeEssentials.AreaSelector.Point;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Side;
 import net.minecraft.src.EntityPlayer;
@@ -26,21 +28,17 @@ public class WandController
 	
 	private void onLeftClick(EntityPlayer player, int x, int y, int z, int side)
 	{
-		FunctionHandler.instance.point1X.put(player.username, x);
-		FunctionHandler.instance.point1Y.put(player.username, y);
-		FunctionHandler.instance.point1Z.put(player.username, z);
+		Point.setPlayerPoint1(player, new Point(x, y, z));
 		
 		if (FMLCommonHandler.instance().getSide().equals(Side.CLIENT))
-			player.addChatMessage("Pos1 set to: "+FunctionHandler.instance.point1X.get(player.username)+", "+FunctionHandler.instance.point1Y.get(player.username)+", "+FunctionHandler.instance.point1Z.get(player.username));
+			player.addChatMessage("Pos1 set to: "+x+", "+y+", "+z);
 	}
 	
 	private void onRightClick(EntityPlayer player, int x, int y, int z, int side)
 	{
-		FunctionHandler.instance.point2X.put(player.username, x);
-		FunctionHandler.instance.point2Y.put(player.username, y);
-		FunctionHandler.instance.point2Z.put(player.username, z);
+		Point.setPlayerPoint2(player, new Point(x, y, z));
 		
 		if (FMLCommonHandler.instance().getEffectiveSide().equals(Side.CLIENT))
-			player.addChatMessage("Pos2 set to: "+FunctionHandler.instance.point2X.get(player.username)+", "+FunctionHandler.instance.point2Y.get(player.username)+", "+FunctionHandler.instance.point2Z.get(player.username));
+			player.addChatMessage("Pos2 set to: "+x+", "+y+", "+z);
 	}
 }

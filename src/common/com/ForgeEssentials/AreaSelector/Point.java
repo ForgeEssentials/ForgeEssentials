@@ -54,6 +54,7 @@ public class Point implements Serializable, Comparable<Point>
 			point.update(newPoint);
 		
 		point1.put(username, point);
+		Selection.refreshSelection(username);
 	}
 	
 	public static void setPlayerPoint1(EntityPlayer player, Point point)
@@ -70,7 +71,8 @@ public class Point implements Serializable, Comparable<Point>
 		else
 			point.update(newPoint);
 		
-		point1.put(username, point);
+		point2.put(username, point);
+		Selection.refreshSelection(username);
 	}
 	
 	public static void setPlayerPoint2(EntityPlayer player, Point point)
@@ -95,14 +97,14 @@ public class Point implements Serializable, Comparable<Point>
 	
 	public Point(int x, int y, int z)
 	{
-		if (y < 0)
-			throw new IllegalArgumentException("Y value cannot be negative!");
-		
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		
 		isValid = true;
+		
+		if (y < 0)
+			isValid = false;
 	}
 	
 	@Override
@@ -149,7 +151,22 @@ public class Point implements Serializable, Comparable<Point>
 		x = point.x;
 		y = point.y;
 		z = point.z;
-		isValid = true;
+		
+		validate();
+	}
+	
+	public void add(Point point)
+	{
+		x += point.x;
+		y += point.y;
+		z += point.z;
+	}
+	
+	public void subtract(Point point)
+	{
+		x -= point.x;
+		y -= point.y;
+		z -= point.z;
 	}
 	
 	@Override
@@ -205,6 +222,17 @@ public class Point implements Serializable, Comparable<Point>
 	public void setZ(int z)
 	{
 		this.z = z;
+	}
+	
+	/**
+	 * floors the Y to zero if it is negative. and marks the point valid.
+	 */
+	public void validate()
+	{
+		if (y < 0)
+			y = 0;
+		
+		isValid = true;
 	}
 
 }

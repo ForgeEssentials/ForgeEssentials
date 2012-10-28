@@ -15,25 +15,6 @@ public class APIHelper
 {
 	public static APIHelper instance = new APIHelper();
 	
-	public int getSel(String username, SelectionType sel)
-	{
-		if (sel==SelectionType.X1) {
-			return FunctionHandler.instance.point1.get(username).getX();
-		}else if (sel==SelectionType.X2) {
-			return FunctionHandler.instance.point2.get(username).getX();
-		}else if (sel==SelectionType.Y1) {
-			return FunctionHandler.instance.point1.get(username).getY();
-		}else if (sel==SelectionType.Y2) {
-			return FunctionHandler.instance.point2.get(username).getY();
-		}else if (sel==SelectionType.Z1) {
-			return FunctionHandler.instance.point1.get(username).getZ();
-		}else if (sel==SelectionType.Z2) {
-			return FunctionHandler.instance.point2.get(username).getZ();
-		}
-		
-		return 0;
-	}
-	
 	public CommandInfo parseCommand(String idmeta)
 	{
 		return CommandProcesser.processIDMetaCombo(idmeta);
