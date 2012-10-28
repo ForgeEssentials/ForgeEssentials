@@ -5,7 +5,7 @@ import com.ForgeEssentials.commands.CommandInfo;
 import com.ForgeEssentials.commands.CommandProcesser;
 
 /**
- * @author UnknownCoder : Max bruce
+ * @author UnknownCoder : Max Bruce
  * Provides an interface for getting region selections, parsing commands, block placement, and storing backups(?)
  */
 

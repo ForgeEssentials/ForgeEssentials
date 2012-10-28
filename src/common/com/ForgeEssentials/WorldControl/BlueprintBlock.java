@@ -3,8 +3,8 @@ package com.ForgeEssentials.WorldControl;
 import java.io.Serializable;
 
 /**
- * @author UnknownCoder : Max bruce
- * A class for Blocks that can be read/written from a binary file hence serializeable.
+ * @author UnknownCoder : Max Bruce
+ * A class for Blocks that can be read/written from a binary file hence serializable.
  */
 public class BlueprintBlock implements Serializable
 {

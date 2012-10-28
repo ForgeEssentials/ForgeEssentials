@@ -11,6 +11,11 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.MathHelper;
 import net.minecraft.src.World;
 
+/**
+ * @author UnknownCoder : Max Bruce
+ * Handles the saving and loading of blueprints (schematics?)
+ */
+
 public class BlueprintArea {
 	private List<BlueprintBlock> area = new ArrayList<BlueprintBlock>();
 	public String username;

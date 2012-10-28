@@ -6,8 +6,8 @@ import java.util.List;
 import net.minecraft.src.World;
 
 /**
- * @author UnknownCoder : Max bruce
- * A class for Blcosk that can be read/written from a binary file hence serializeable.
+ * @author UnknownCoder : Max Bruce
+ * Defines an area to be backed up including before/after snapshots
  */
 
 public class BackupArea {
@@ -27,7 +27,6 @@ public class BackupArea {
 		username=user;
 		this.worldEdit=worldEdit;
 	}
-	
 	
 	public void addBlockBefore(int x, int y, int z, int blockID, int metadata) {
 		before.add(new BackupObject(x, y, z, blockID, metadata));
