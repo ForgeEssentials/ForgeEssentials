@@ -18,17 +18,17 @@ public class APIHelper
 	public int getSel(String username, SelectionType sel)
 	{
 		if (sel==SelectionType.X1) {
-			return FunctionHandler.instance.point1X.get(username);
+			return FunctionHandler.instance.point1.get(username).getX();
 		}else if (sel==SelectionType.X2) {
-			return FunctionHandler.instance.point2X.get(username);
+			return FunctionHandler.instance.point2.get(username).getX();
 		}else if (sel==SelectionType.Y1) {
-			return FunctionHandler.instance.point1Y.get(username);
+			return FunctionHandler.instance.point1.get(username).getY();
 		}else if (sel==SelectionType.Y2) {
-			return FunctionHandler.instance.point2Y.get(username);
+			return FunctionHandler.instance.point2.get(username).getY();
 		}else if (sel==SelectionType.Z1) {
-			return FunctionHandler.instance.point1Z.get(username);
+			return FunctionHandler.instance.point1.get(username).getZ();
 		}else if (sel==SelectionType.Z2) {
-			return FunctionHandler.instance.point2Z.get(username);
+			return FunctionHandler.instance.point2.get(username).getZ();
 		}
 		
 		return 0;

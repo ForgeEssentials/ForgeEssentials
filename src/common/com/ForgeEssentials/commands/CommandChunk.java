@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
 import net.minecraft.src.CommandBase;
@@ -31,12 +32,8 @@ public class CommandChunk extends CommandBase {
 	public void processCommand(ICommandSender var1, String[] var2) {
 		try{
 			EntityPlayer ep = this.getCommandSenderAsPlayer(var1);
-			FunctionHandler.instance.point1X.put(ep.username, toChunk(ep.posX));
-			FunctionHandler.instance.point1Y.put(ep.username, 0);
-			FunctionHandler.instance.point1Z.put(ep.username, toChunk(ep.posZ));
-			FunctionHandler.instance.point2X.put(ep.username, toChunk(ep.posX)+16);
-			FunctionHandler.instance.point2Y.put(ep.username, 256);
-			FunctionHandler.instance.point2Z.put(ep.username, toChunk(ep.posZ)+16);
+			FunctionHandler.instance.point1.put(ep.username, new Point(toChunk(ep.posX), 0, toChunk(ep.posZ)));
+			FunctionHandler.instance.point2.put(ep.username, new Point(toChunk(ep.posX)+16, 256, toChunk(ep.posZ)+16));
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Selected Chunk");
 		}catch(Exception e) {
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Chunk Command Failed!(Unknown Reason)");
