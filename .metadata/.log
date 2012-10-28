@@ -1,9 +1,0 @@
-!SESSION 2012-10-28 12:44:44.739 -----------------------------------------------
-eclipse.buildId=I20120608-1400
-java.version=1.6.0_37
-java.vendor=Sun Microsystems Inc.
-BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
-Command-line arguments:  -os win32 -ws win32 -arch x86_64
-
-!ENTRY org.eclipse.ui 4 4 2012-10-28 12:45:07.281
-!MESSAGE Referenced part does not exist yet: org.eclipse.ui.views.TaskList.
