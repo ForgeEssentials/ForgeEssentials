@@ -1,10 +1,13 @@
 package com.ForgeEssentials;
 
+import java.io.File;
+
 import com.ForgeEssentials.WorldControl.WorldControlMain;
 import com.ForgeEssentials.network.HandlerClient;
 import com.ForgeEssentials.network.HandlerServer;
 import com.ForgeEssentials.permissions.FEPermissionHandler;
 
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -40,6 +43,10 @@ public class Main
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		worldControl = new WorldControlMain();
+		Configuration config = new Configuration(new File("/ForgeEssentials/"));
+		config.load();
+		WorldControlMain.wandID = config.get("Wand", "Wand ID", 271).getInt();
+		config.save();
 	}
 	
 	@Init

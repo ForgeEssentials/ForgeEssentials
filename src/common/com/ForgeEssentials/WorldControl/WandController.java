@@ -3,7 +3,6 @@ package com.ForgeEssentials.WorldControl;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Side;
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.WorldClient;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;

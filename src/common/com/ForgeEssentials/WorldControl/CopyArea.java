@@ -1,13 +1,10 @@
 package com.ForgeEssentials.WorldControl;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.MathHelper;
-import net.minecraft.src.World;
 
 /**
  * @author UnknownCoder : Max Bruce

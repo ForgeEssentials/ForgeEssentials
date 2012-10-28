@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
-import net.minecraft.src.ModLoader;
 import net.minecraft.src.MovingObjectPosition;
 
 public class CommandHPos1 extends CommandBase {

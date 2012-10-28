@@ -1,6 +1,5 @@
 package com.ForgeEssentials.WorldControl;
 
-import com.ForgeEssentials.WorldControl.FunctionHandler.PlayerInfo;
 import com.ForgeEssentials.commands.CommandInfo;
 import com.ForgeEssentials.commands.CommandProcesser;
 
@@ -9,7 +8,6 @@ import com.ForgeEssentials.commands.CommandProcesser;
  * Provides an interface for getting region selections, parsing commands, block placement, and storing backups(?)
  */
 
-import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.MathHelper;
 

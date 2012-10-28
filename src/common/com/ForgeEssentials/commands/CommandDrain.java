@@ -1,11 +1,7 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
-import net.minecraft.src.Block;
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.ICommandSender;
 

@@ -8,7 +8,6 @@ import com.ForgeEssentials.WorldControl.FunctionHandler;
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
-import net.minecraft.src.MovingObjectPosition;
 
 public class CommandExtend1 extends CommandBase {
 

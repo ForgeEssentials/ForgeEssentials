@@ -2,7 +2,6 @@ package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;

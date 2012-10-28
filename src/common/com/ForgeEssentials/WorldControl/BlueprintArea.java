@@ -9,7 +9,6 @@ import com.ForgeEssentials.commands.CommandInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.MathHelper;
-import net.minecraft.src.World;
 
 /**
  * @author UnknownCoder : Max Bruce

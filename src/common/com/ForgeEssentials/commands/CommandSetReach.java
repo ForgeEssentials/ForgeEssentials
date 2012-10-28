@@ -1,21 +1,16 @@
 package com.ForgeEssentials.commands;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.List;
 
 import com.ForgeEssentials.WorldControl.WorldControlMain;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ICommandSender;
-import net.minecraft.src.ModLoader;
-import net.minecraft.src.MovingObjectPosition;
 import net.minecraft.src.Packet250CustomPayload;
 
 public class CommandSetReach extends CommandBase {

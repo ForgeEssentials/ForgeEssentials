@@ -3,9 +3,7 @@ package com.ForgeEssentials.WorldControl;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Random;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -58,26 +56,15 @@ import com.ForgeEssentials.commands.CommandUngreen;
 import com.ForgeEssentials.commands.CommandUnice;
 import com.ForgeEssentials.commands.CommandUnsnow;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.EnumToolMaterial;
-import net.minecraft.src.ItemAxe;
-import net.minecraft.src.MLProp;
 import net.minecraft.src.MathHelper;
-import net.minecraft.src.ModLoader;
 import net.minecraft.src.MovingObjectPosition;
-import net.minecraft.src.ServerCommandManager;
 import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.Mod.*;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 
 /**
@@ -88,8 +75,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  */
 public class WorldControlMain
 {
-	// That of a wooden axe.
-	public static int wandID = 271;
+	public static int wandID;
 	public static final String CHANNEL = "WorldControl";
 	
 	public void load(cpw.mods.fml.common.event.FMLInitializationEvent nothingHere)
