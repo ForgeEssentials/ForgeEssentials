@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.WorldControl.WorldControlMain;
+
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
@@ -35,7 +37,7 @@ public class CommandSetReach extends CommandBase {
 				EntityPlayerMP epmp = (EntityPlayerMP)ep;
 				epmp.theItemInWorldManager.setBlockReachDistance(Float.parseFloat(var2[0]));
 				Packet250CustomPayload packet = new Packet250CustomPayload();
-				packet.channel = "WCR";
+				packet.channel = WorldControlMain.CHANNEL;
 				packet.data = ByteBuffer.allocate(4).putFloat(Float.parseFloat(var2[0])).array();
 				packet.length=packet.data.length;
 				PacketDispatcher.sendPacketToPlayer(packet, (Player)epmp);

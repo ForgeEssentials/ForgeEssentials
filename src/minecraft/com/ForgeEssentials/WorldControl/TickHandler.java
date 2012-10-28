@@ -10,8 +10,8 @@ import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.asm.SideOnly;
 
 @SideOnly(value=Side.CLIENT)
-public class TickHandler implements ITickHandler {
-
+public class TickHandler implements ITickHandler
+{
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
@@ -22,8 +22,9 @@ public class TickHandler implements ITickHandler {
 	}
 
 	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-		
+	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	{
+		// do nothing.
 	}
 
 	@Override
@@ -35,5 +36,4 @@ public class TickHandler implements ITickHandler {
 	public String getLabel() {
 		return null;
 	}
-
 }

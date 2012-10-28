@@ -1,11 +1,14 @@
 package com.ForgeEssentials.WorldControl;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-import net.minecraft.src.Gui;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.ForgeSubscribe;
 
-@SideOnly(value=Side.CLIENT)
-public class GuiSelectionBox extends Gui
+public class GuiSelectionBox
 {
+	@ForgeSubscribe
+	public void renderBox(RenderWorldLastEvent event)
+	{
+		
+	}
 
 }

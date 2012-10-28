@@ -88,7 +88,9 @@ import cpw.mods.fml.common.registry.TickRegistry;
  */
 public class WorldControlMain
 {
-	public static int wandID = 500;
+	// That of a wooden axe.
+	public static int wandID = 271;
+	public static final String CHANNEL = "WorldControl";
 	
 	public void load(cpw.mods.fml.common.event.FMLInitializationEvent nothingHere)
 	{
@@ -97,13 +99,13 @@ public class WorldControlMain
 		MinecraftForge.EVENT_BUS.register(new WandController());
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.CLIENT);
-		NetworkRegistry.instance().registerChannel(new ClientPacketHandler(), "WCR");
 		
 		loadPlugins();
 	}
 	
 	public void serverLoad(FMLServerStartingEvent event)
 	{
+		System.out.println("Commands loading");
 		event.registerServerCommand(new CommandSet());
         event.registerServerCommand(new CommandReplace());
         event.registerServerCommand(new CommandCount());
