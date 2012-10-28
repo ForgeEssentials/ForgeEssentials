@@ -1,5 +1,8 @@
 package com.ForgeEssentials;
 
+import com.ForgeEssentials.WorldControl.WorldControlMain;
+import com.ForgeEssentials.permissions.FEPermissionHandler;
+
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -20,22 +23,26 @@ public class Main
 	@Instance(value="ForgeEssentials")
 	public static Main instance;
 	
-	FEPermissionHandler pHandler;
+	public FEPermissionHandler pHandler;
+	public WorldControlMain worldControl;
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		worldControl = new WorldControlMain();
 	}
 	
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
-		
+		worldControl.load(e);
 	}
 	
 	@ServerStarted
 	public void serverStart(FMLServerStartingEvent e)
 	{
+		worldControl.serverLoad(e);
+		
 		pHandler = new FEPermissionHandler();
 		MinecraftForge.EVENT_BUS.register(pHandler);
 	}

@@ -1,10 +1,11 @@
-package com.ForgeEssentials;
+package com.ForgeEssentials.WorldControl;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
+import net.minecraft.src.Gui;
 
 @SideOnly(value=Side.CLIENT)
-public class ProxyClient extends ProxyCommon
+public class GuiSelectionBox extends Gui
 {
 
 }
