@@ -44,19 +44,38 @@ public class Point implements Serializable, Comparable<Point>
 	
 	// SET's 
 	
-	public static void setPlayerPoint1(String username, Point point)
+	public static void setPlayerPoint1(String username, Point newPoint)
 	{
-		Point point = point2.get(username);
+		Point point = point1.get(username);
 		
 		if (point == null)
-			point = new Point();
+			point = newPoint;
+		else
+			point.update(newPoint);
 		
-		return point;
+		point1.put(username, point);
 	}
 	
 	public static void setPlayerPoint1(EntityPlayer player, Point point)
 	{
-		return getPlayerPoint2(player.username);
+		setPlayerPoint1(player.username, point);
+	}
+	
+	public static void setPlayerPoint2(String username, Point newPoint)
+	{
+		Point point = point2.get(username);
+		
+		if (point == null)
+			point = newPoint;
+		else
+			point.update(newPoint);
+		
+		point1.put(username, point);
+	}
+	
+	public static void setPlayerPoint2(EntityPlayer player, Point point)
+	{
+		setPlayerPoint2(player.username, point);
 	}
 	
 	// --------------------------------
@@ -119,6 +138,17 @@ public class Point implements Serializable, Comparable<Point>
 			default: throw new IllegalArgumentException("There are too many values!");
 		}
 		
+		isValid = true;
+	}
+	
+	public void update(Point point)
+	{
+		if (!point.isValid || point.equals(this) || point == this)
+			return;
+		
+		x = point.x;
+		y = point.y;
+		z = point.z;
 		isValid = true;
 	}
 	
