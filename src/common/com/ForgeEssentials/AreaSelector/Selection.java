@@ -32,7 +32,7 @@ public class Selection
 		Selection select = selection.getPlayerSelection(username);
 		if (select == null)
 			selections.put(username, selection);
-		else if (select.end1 != selection.end1 || select.end2 != selection.end2)
+		else if (select.start != selection.start || select.end != selection.end)
 			selections.put(username, selection);
 	}
 	
@@ -46,7 +46,7 @@ public class Selection
 		setSelection(username, new Selection(Point.getPlayerPoint1(username), Point.getPlayerPoint1(username)));
 	}
 	
-	public static void invalidSelection(EntityPlayer player)
+	public static void printInvalidSelection(EntityPlayer player)
 	{
 		player.addChatMessage("\u00a7e"+"Invalid Selection");
 	}
@@ -55,64 +55,55 @@ public class Selection
 	//  -------  the actual class now -------
 	// --------------------------------
 	
-	private Point end1;
-	private Point end2;
-	boolean isValid;
+	private Point start;
+	private Point end;
 	
 	public Selection(Point point1, Point point2)
 	{
-		end1 = point1;
-		end2 = point2;
-		isValid = end1.isValid() && end2.isValid();
+		start = point1;
+		end = point2;
+		start.validate();
+		end.validate();
 	}
 
 	public Point getEnd1()
 	{
-		return end1;
+		return start;
 	}
 
 	public void setEnd1(Point end1)
 	{
-		this.end1 = end1;
+		this.start = end1;
+		end1.validate();
 	}
 
 	public Point getEnd2()
 	{
-		return end2;
+		return end;
 	}
 
 	public void setEnd2(Point end2)
 	{
-		this.end2 = end2;
+		this.end = end2;
+		start.validate();
 	}
-
-	public boolean isValid()
+	
+	public void shift(int x, int y, int z)
 	{
-		return isValid;
-	}
-
-	public void setValid(boolean isValid)
-	{
-		this.isValid = isValid;
+		Point point = new Point(x, y, z);
+		start.add(point);
+		end.add(point);
+		
+		start.validate();
+		end.validate();
 	}
 	
 	public int[] getDimensions()
 	{
 		int[] array = new int[3];
-		array[0] = Math.abs(end1.getX() - end2.getX());
-		array[1] = Math.abs(end1.getY() - end2.getY());
-		array[2] = Math.abs(end1.getZ() - end2.getZ());
+		array[0] = Math.abs(start.x - end.x);
+		array[1] = Math.abs(start.y - end.z);
+		array[2] = Math.abs(start.z - end.z);
 		return array;
-	}
-	
-	/**
-	 * checks if the selection is valid. if it isn't it sends out a chat message to the player.
-	 * @return if the selection is valid
-	 */
-	public boolean validate(EntityPlayer player)
-	{
-		if (!isValid)
-			invalidSelection(player);
-		return isValid;
 	}
 }

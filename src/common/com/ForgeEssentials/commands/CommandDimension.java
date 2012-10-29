@@ -27,8 +27,6 @@ public class CommandDimension extends CommandBase {
 	{
 		EntityPlayer ep = this.getCommandSenderAsPlayer(var1);
 		Selection select = Selection.getPlayerSelection(ep);
-		if (!select.validate(ep))
-			return;
 		int[] dims = select.getDimensions();
 		this.getCommandSenderAsPlayer(var1).addChatMessage("Selection Region's Dimensions Are: " + dims[0] + "X" + dims[1] + "X" + dims[2]);
 	}

@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
 import net.minecraft.src.CommandBase;
@@ -19,18 +20,21 @@ public class CommandPos1 extends CommandBase {
 	
 	public List getCommandAliases()
     {
-        return Arrays.asList(new String[] {"p1"});
+		return Arrays.asList(new String[] { "p1" });
     }
 
 	@Override
-	public void processCommand(ICommandSender var1, String[] var2) {
-		try{
+	public void processCommand(ICommandSender var1, String[] var2)
+	{
+		try
+		{
 			EntityPlayer ep = this.getCommandSenderAsPlayer(var1);
-			FunctionHandler.instance.point1X.put(ep.username, MathHelper.floor_double(ep.posX));
-			FunctionHandler.instance.point1Y.put(ep.username, MathHelper.floor_double(ep.posY));
-			FunctionHandler.instance.point1Z.put(ep.username, MathHelper.floor_double(ep.posZ));
-			this.getCommandSenderAsPlayer(var1).addChatMessage("Pos1 set to: "+FunctionHandler.instance.point1X.get(ep.username)+", "+FunctionHandler.instance.point1Y.get(ep.username)+", "+FunctionHandler.instance.point1Z.get(ep.username));
-		}catch(Exception e) {
+			Point point = new Point(MathHelper.floor_double(ep.posX), MathHelper.floor_double(ep.posZ), MathHelper.floor_double(ep.posZ));
+			Point.setPlayerPoint1(ep, point);
+			this.getCommandSenderAsPlayer(var1).addChatMessage("Pos1 set to: " + point.x + ", " + point.y + ", " + point.z);
+		}
+		catch (Exception e)
+		{
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Pos1 Command Failed!(Unknown Reason)");
 		}
 	}

@@ -34,9 +34,6 @@ public class CommandExtend2 extends CommandBase
 			{
 				EntityPlayer ep = this.getCommandSenderAsPlayer(var1);
 				Selection select = Selection.getPlayerSelection(ep);
-				if (!select.validate(ep))
-					return;
-
 				Point point = select.getEnd2();
 
 				int x = Integer.parseInt(var2[0]);
@@ -44,7 +41,7 @@ public class CommandExtend2 extends CommandBase
 				int z = Integer.parseInt(var2[2]);
 				point.add(new Point(x, y, z));
 				Point.setPlayerPoint1(ep, point);
-				ep.addChatMessage("Selection 1 extended by: " + x + ", " + y + ", " + z + " to: " + point.getX() + ", " + point.getY() + ", " + point.getZ());
+				ep.addChatMessage("Selection 1 extended by: " + x + ", " + y + ", " + z + " to: " + point.x + ", " + point.y + ", " + point.z);
 			}
 			else
 			{
