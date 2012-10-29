@@ -1,15 +1,20 @@
 package com.ForgeEssentials.WorldControl;
 
 import java.util.ArrayList;
-import java.util.List;
 
+<<<<<<< HEAD
 import com.ForgeEssentials.AreaSelector.Point;
 
+=======
+import com.ForgeEssentials.AreaSelector.AreaBase;
+import com.ForgeEssentials.AreaSelector.Point;
+>>>>>>> Abrar's other tweaks
 import net.minecraft.src.World;
 
 /**
  * @author UnknownCoder : Max Bruce Defines an area to be backed up including before/after snapshots
  */
+<<<<<<< HEAD
 
 public class BackupArea
 {
@@ -19,6 +24,12 @@ public class BackupArea
 	public int worldEdit;
 	public Point start;
 	public Point end;
+=======
+public class BackupArea extends AreaBase
+{
+	private ArrayList<BackupObject> before = new ArrayList<BackupObject>();
+	private ArrayList<BackupObject> after = new ArrayList<BackupObject>();
+>>>>>>> Abrar's other tweaks
 	public boolean hasUndone = false;
 
 	public BackupArea(String user, int worldEdit)

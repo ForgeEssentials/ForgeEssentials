@@ -36,14 +36,22 @@ public class Main
 	@Instance(value="ForgeEssentials")
 	public static Main instance;
 	
+	public static final File FEDIR = new File("./ForgeEssentials/");
+	
 	public FEPermissionHandler pHandler;
 	public WorldControlMain worldControl;
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		if (!FEDIR.exists())
+			FEDIR.mkdir();
+		
 		worldControl = new WorldControlMain();
-		Configuration config = new Configuration(new File("/ForgeEssentials/"));
+		worldControl.preLoad(e);
+		
+		// configs.
+		Configuration config = new Configuration(new File(FEDIR, "config.txt"));
 		config.load();
 		WorldControlMain.wandID = config.get("Wand", "Wand ID", 271).getInt();
 		config.save();
@@ -61,7 +69,6 @@ public class Main
 	@ServerStarting 
 	public void serverStart(FMLServerStartingEvent e)
 	{
-		System.out.println("SERVER STARTING!!!!!!!!!!!!!!!!!!!!");
 		worldControl.serverLoad(e);
 	}
 

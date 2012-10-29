@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import com.ForgeEssentials.Main;
 import com.ForgeEssentials.commands.CommandButcher;
 import com.ForgeEssentials.commands.CommandChunk;
 import com.ForgeEssentials.commands.CommandCopy;
@@ -64,6 +65,8 @@ import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 
@@ -77,8 +80,16 @@ public class WorldControlMain
 {
 	public static int wandID;
 	public static final String CHANNEL = "WorldControl";
+	public static File blueprintDir;
 	
-	public void load(cpw.mods.fml.common.event.FMLInitializationEvent nothingHere)
+	public void preLoad(FMLPreInitializationEvent e)
+	{
+		blueprintDir = new File(Main.FEDIR, "/blueprints/");
+		if (!blueprintDir.exists() || !blueprintDir.isDirectory())
+			blueprintDir.mkdir();
+	}
+	
+	public void load(FMLInitializationEvent e)
 	{
 		new FunctionHandler();
 		

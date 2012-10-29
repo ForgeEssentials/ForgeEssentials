@@ -244,7 +244,11 @@ public class FunctionHandler
 	public void delCommand(CommandInfo inf, EntityPlayer sender)
 	{
 		Point point1 = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		Point point2 = Point.getPlayerPoint1(sender.username);
+=======
+		Point point2 = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -284,7 +288,11 @@ public class FunctionHandler
 	public void cpyclearCommand(CommandInfo inf, EntityPlayer sender)
 	{
 		Point point1 = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		Point point2 = Point.getPlayerPoint1(sender.username);
+=======
+		Point point2 = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -323,7 +331,11 @@ public class FunctionHandler
 	public void saveCommand(String name, EntityPlayer sender)
 	{
 		Point point1 = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		Point point2 = Point.getPlayerPoint1(sender.username);
+=======
+		Point point2 = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -393,7 +405,11 @@ public class FunctionHandler
 	public void setHollowCommand(CommandInfo inf, EntityPlayer sender, boolean clearInsides)
 	{
 		Point point1 = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		Point point2 = Point.getPlayerPoint1(sender.username);
+=======
+		Point point2 = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -451,7 +467,11 @@ public class FunctionHandler
 	public void countCommand(CommandInfo inf, boolean all, EntityPlayer sender)
 	{
 		Point point1 = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		Point point2 = Point.getPlayerPoint1(sender.username);
+=======
+		Point point2 = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -540,7 +560,11 @@ public class FunctionHandler
 	public void distrCommand(EntityPlayer sender)
 	{
 		Point point1 = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		Point point2 = Point.getPlayerPoint1(sender.username);
+=======
+		Point point2 = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -603,8 +627,13 @@ public class FunctionHandler
 				}
 			}
 		}
+<<<<<<< HEAD
 		back.start = point1;
 		back.end = point2;
+=======
+		back.start = Point.getPlayerPoint1(sender.username);
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -633,8 +662,13 @@ public class FunctionHandler
 				}
 			}
 		}
+<<<<<<< HEAD
 		back.start = point1;
 		back.end = point2;
+=======
+		back.start = Point.getPlayerPoint1(sender.username);
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -666,8 +700,13 @@ public class FunctionHandler
 				}
 			}
 		}
+<<<<<<< HEAD
 		back.start = point1;
 		back.end = point2;
+=======
+		back.start = Point.getPlayerPoint1(sender.username);
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -699,8 +738,13 @@ public class FunctionHandler
 				}
 			}
 		}
+<<<<<<< HEAD
 		back.start = point1;
 		back.end = point2;
+=======
+		back.start = Point.getPlayerPoint1(sender.username);
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -708,7 +752,11 @@ public class FunctionHandler
 	public void copyCommand(int id, EntityPlayer sender)
 	{
 		Point point1 = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		Point point2 = Point.getPlayerPoint1(sender.username);
+=======
+		Point point2 = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -748,7 +796,11 @@ public class FunctionHandler
 	public void cutCommand(int id, EntityPlayer sender)
 	{
 		Point point1 = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		Point point2 = Point.getPlayerPoint1(sender.username);
+=======
+		Point point2 = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -795,7 +847,11 @@ public class FunctionHandler
 	public void cut2Move(int id, EntityPlayer sender, BackupArea back)
 	{
 		Point point1 = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		Point point2 = Point.getPlayerPoint1(sender.username);
+=======
+		Point point2 = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -837,7 +893,11 @@ public class FunctionHandler
 		copy.setOffset(oX, oY, oZ);
 		cpy.put(PlayerInfo.getFromPool(id, sender.username), copy);
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 	}
 
@@ -910,6 +970,11 @@ public class FunctionHandler
 				}
 			}
 		}
+<<<<<<< HEAD
+=======
+		back.start = Point.getPlayerPoint1(sender.username);
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Snowed Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -944,7 +1009,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("UnIced Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -979,7 +1048,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Iced Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1010,7 +1083,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Overlayed Near(" + radius + ") " + changed + " Blocks to " + getIdString(end));
 	}
@@ -1041,7 +1118,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Overlayed Near(" + radius + ") " + changed + " Blocks to " + getIdString(end));
 	}
@@ -1061,7 +1142,11 @@ public class FunctionHandler
 		CopyArea area = cpy.get(PlayerInfo.getFromPool(id, sender.username));
 		area.loadAreaMove(sender, back, clear, x, y, z);
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 	}
 
 	public void stackCommand(int id, EntityPlayer sender, int times)
@@ -1116,7 +1201,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Blocks Loaded(" + times + ")");
 	}
@@ -1132,7 +1221,11 @@ public class FunctionHandler
 		BackupArea back = new BackupArea(sender.username, worldEdits);
 		area.loadArea(sender, back, clear);
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Blocks Loaded");
 	}
@@ -1180,7 +1273,11 @@ public class FunctionHandler
 				x--;
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Replaced " + changed + " Blocks from " + getIdString(begin) + " to " + getIdString(end));
 	}
@@ -1241,7 +1338,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Extinguished Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1287,7 +1388,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1322,7 +1427,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1358,7 +1467,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Drained Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1393,7 +1506,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Ungreened Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1421,7 +1538,11 @@ public class FunctionHandler
 			}
 		}
 		back.start = Point.getPlayerPoint1(sender.username);
+<<<<<<< HEAD
 		back.end = Point.getPlayerPoint1(sender.username);
+=======
+		back.end = Point.getPlayerPoint2(sender.username);
+>>>>>>> Abrar's other tweaks
 		addBackup(back);
 		sender.addChatMessage("Set Near(" + radius + ") " + changed + " Blocks to " + getIdString(inf));
 	}
