@@ -2,6 +2,8 @@ package com.ForgeEssentials.AreaSelector;
 
 import java.util.HashMap;
 
+import com.ForgeEssentials.PlayerInfo;
+
 
 import net.minecraft.src.EntityPlayer;
 
@@ -18,7 +20,7 @@ public class Selection
 	{
 		Selection select = selections.get(username);
 		if (select == null)
-			select = new Selection(Point.getPlayerPoint1(username), Point.getPlayerPoint2(username));
+			select = new Selection(PlayerInfo.getPlayerPoint1(username), PlayerInfo.getPlayerPoint2(username));
 		return select;
 	}
 	
@@ -43,7 +45,7 @@ public class Selection
 	
 	public static void refreshSelection(String username)
 	{
-		setSelection(username, new Selection(Point.getPlayerPoint1(username), Point.getPlayerPoint1(username)));
+		setSelection(username, new Selection(PlayerInfo.getPlayerPoint1(username), PlayerInfo.getPlayerPoint1(username)));
 	}
 	
 	public static void printInvalidSelection(EntityPlayer player)

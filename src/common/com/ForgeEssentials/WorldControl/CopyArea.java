@@ -3,6 +3,7 @@ package com.ForgeEssentials.WorldControl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
 
 import net.minecraft.src.EntityPlayer;
@@ -12,13 +13,11 @@ import net.minecraft.src.MathHelper;
  * @author UnknownCoder : Max Bruce Defines an area to be
  */
 
-public class CopyArea
+public class CopyArea extends AreaBase
 {
 	private List<BlueprintBlock> area = new ArrayList<BlueprintBlock>();
 	public String username;
 	public int worldEdit;
-	public Point start;
-	public Point end;
 	public Point offset;
 	public int id = 0;
 	public int copyDir = 0;

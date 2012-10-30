@@ -44,14 +44,7 @@ public class BlueprintArea extends AreaBase
 	{
 		try
 		{
-<<<<<<< HEAD
-			File dir = new File(Minecraft.getMinecraftDir().toString() + "/blueprints/");
-			if (!dir.exists())
-				dir.mkdir();
-			File file = new File(Minecraft.getMinecraftDir().toString() + "/blueprints/" + path + ".blp");
-=======
 			File file = new File(WorldControlMain.blueprintDir, path + ".blp");
->>>>>>> Abrar's other tweaks
 			// if(file.canWrite()==false)return;
 			OutputStream output = new FileOutputStream(file);
 			ObjectOutputStream output2 = new ObjectOutputStream(output);
@@ -71,11 +64,7 @@ public class BlueprintArea extends AreaBase
 	{
 		try
 		{
-<<<<<<< HEAD
-			File dir = new File(Minecraft.getMinecraftDir().toString() + "/ForgeEssentials/blueprints/");
-=======
 			File dir = new File(Minecraft.getMinecraftDir().toString() + "/blueprints/");
->>>>>>> Abrar's other tweaks
 			if (!dir.exists())
 				dir.mkdir();
 			File file = new File(Minecraft.getMinecraftDir().toString() + "/ForgeEssentials/blueprints/" + path + ".blp");

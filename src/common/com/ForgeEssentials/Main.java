@@ -5,6 +5,7 @@ import java.io.File;
 import com.ForgeEssentials.WorldControl.WorldControlMain;
 import com.ForgeEssentials.network.HandlerClient;
 import com.ForgeEssentials.network.HandlerServer;
+import com.ForgeEssentials.network.ConnectionHandler;
 import com.ForgeEssentials.permissions.FEPermissionHandler;
 
 import net.minecraftforge.common.Configuration;
@@ -24,39 +25,40 @@ import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 @NetworkMod(
 		clientSideRequired = false,
 		serverSideRequired = false,
-		clientPacketHandlerSpec = @SidedPacketHandler(channels = {"ForgeEssentials", "WorldControl"}, packetHandler = HandlerClient.class),
-		serverPacketHandlerSpec = @SidedPacketHandler(channels = {"ForgeEssentials", "WorldControl"}, packetHandler = HandlerServer.class)
+		connectionHandler = ConnectionHandler.class,
+		clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerClient.class),
+		serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerServer.class)
 		)
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.0.1")
 public class Main
 {
 	@SidedProxy(clientSide = "com.ForgeEssentials.ProxyClient", serverSide = "com.ForgeEssentials.ProxyCommon")
 	public static ProxyCommon proxy;
-	
-	@Instance(value="ForgeEssentials")
+
+	@Instance(value = "ForgeEssentials")
 	public static Main instance;
-	
+
 	public static final File FEDIR = new File("./ForgeEssentials/");
-	
+
 	public FEPermissionHandler pHandler;
 	public WorldControlMain worldControl;
-	
+
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		if (!FEDIR.exists())
 			FEDIR.mkdir();
-		
+
 		worldControl = new WorldControlMain();
 		worldControl.preLoad(e);
-		
+
 		// configs.
 		Configuration config = new Configuration(new File(FEDIR, "config.txt"));
 		config.load();
 		WorldControlMain.wandID = config.get("Wand", "Wand ID", 271).getInt();
 		config.save();
 	}
-	
+
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
@@ -65,8 +67,8 @@ public class Main
 		pHandler = new FEPermissionHandler();
 		MinecraftForge.EVENT_BUS.register(pHandler);
 	}
-	
-	@ServerStarting 
+
+	@ServerStarting
 	public void serverStart(FMLServerStartingEvent e)
 	{
 		worldControl.serverLoad(e);

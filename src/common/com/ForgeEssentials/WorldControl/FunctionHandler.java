@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import com.ForgeEssentials.PlayerInfo;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
 import net.minecraft.src.Entity;
@@ -46,39 +48,6 @@ public class FunctionHandler
 	{
 		backup.add(back);
 		worldEdits++;
-	}
-
-	public static class PlayerInfo
-	{
-		int ID = 0;
-		String user = "";
-		private static ArrayList<PlayerInfo> pool = new ArrayList<PlayerInfo>();
-
-		public PlayerInfo(int id, String us)
-		{
-			ID = id;
-			user = us;
-		}
-
-		public static PlayerInfo getFromPool(int id, String user)
-		{
-			boolean needToMake = true;
-			for (int i = 0; i < pool.size(); i++)
-			{
-				if (pool.get(i).ID == id && pool.get(i).user.equals(user))
-				{
-					needToMake = false;
-					return pool.get(i);
-				}
-			}
-			if (needToMake)
-			{
-				PlayerInfo inf = new PlayerInfo(id, user);
-				pool.add(inf);
-				return inf;
-			}
-			return null;
-		}
 	}
 
 	public static List<BackupArea> backup = new ArrayList<BackupArea>();
@@ -203,8 +172,8 @@ public class FunctionHandler
 
 	public void setCommand(CommandInfo inf, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint2(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -243,14 +212,14 @@ public class FunctionHandler
 
 	public void delCommand(CommandInfo inf, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint2(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
 		BackupArea back = new BackupArea(sender.username, worldEdits);
 		int changed = 0;
-		for (int x = Point.getPlayerPoint1(sender.username).x; goodX ? x <= Point.getPlayerPoint2(sender.username).x : x >= Point.getPlayerPoint2(sender.username).x;)
+		for (int x = PlayerInfo.getPlayerPoint1(sender.username).x; goodX ? x <= PlayerInfo.getPlayerPoint2(sender.username).x : x >= PlayerInfo.getPlayerPoint2(sender.username).x;)
 		{
 			for (int y = point1.y; goodY ? y <= point2.y : y >= point2.y;)
 			{
@@ -283,7 +252,8 @@ public class FunctionHandler
 
 	public void cpyclearCommand(CommandInfo inf, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -321,8 +291,8 @@ public class FunctionHandler
 
 	public void saveCommand(String name, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint2(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -391,8 +361,8 @@ public class FunctionHandler
 
 	public void setHollowCommand(CommandInfo inf, EntityPlayer sender, boolean clearInsides)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint2(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -449,8 +419,8 @@ public class FunctionHandler
 
 	public void countCommand(CommandInfo inf, boolean all, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint2(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -538,8 +508,8 @@ public class FunctionHandler
 
 	public void distrCommand(EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint2(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -580,8 +550,8 @@ public class FunctionHandler
 
 	public void setBelowCommand(int radius, CommandInfo inf, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint1(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint1(sender.username);
 		int changed = 0;
 		BackupArea back = new BackupArea(sender.username, worldEdits);
 		int plrX = MathHelper.floor_double(sender.posX);
@@ -610,8 +580,8 @@ public class FunctionHandler
 
 	public void setAboveCommand(int radius, CommandInfo inf, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint1(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint1(sender.username);
 		int changed = 0;
 		BackupArea back = new BackupArea(sender.username, worldEdits);
 		int plrX = MathHelper.floor_double(sender.posX);
@@ -640,8 +610,8 @@ public class FunctionHandler
 
 	public void replaceBelowCommand(int radius, CommandInfo before, CommandInfo after, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint1(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint1(sender.username);
 		int changed = 0;
 		BackupArea back = new BackupArea(sender.username, worldEdits);
 		int plrX = MathHelper.floor_double(sender.posX);
@@ -673,8 +643,8 @@ public class FunctionHandler
 
 	public void replaceAboveCommand(int radius, CommandInfo before, CommandInfo after, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint1(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint1(sender.username);
 		int changed = 0;
 		BackupArea back = new BackupArea(sender.username, worldEdits);
 		int plrX = MathHelper.floor_double(sender.posX);
@@ -706,8 +676,8 @@ public class FunctionHandler
 
 	public void copyCommand(int id, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint2(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -746,8 +716,8 @@ public class FunctionHandler
 
 	public void cutCommand(int id, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint2(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -793,8 +763,8 @@ public class FunctionHandler
 
 	public void cut2Move(int id, EntityPlayer sender, BackupArea back)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint2(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -835,8 +805,8 @@ public class FunctionHandler
 		int oZ = MathHelper.floor_double(sender.posZ) - point1.z;
 		copy.setOffset(oX, oY, oZ);
 		cpy.put(PlayerInfo.getFromPool(id, sender.username), copy);
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 	}
 
@@ -876,8 +846,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Overlayed Near(" + radius + ") " + changed + " Blocks to " + getIdString(end));
 	}
@@ -909,8 +879,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Snowed Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -944,8 +914,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("UnIced Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -979,8 +949,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Iced Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1010,8 +980,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Overlayed Near(" + radius + ") " + changed + " Blocks to " + getIdString(end));
 	}
@@ -1041,8 +1011,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Overlayed Near(" + radius + ") " + changed + " Blocks to " + getIdString(end));
 	}
@@ -1051,8 +1021,8 @@ public class FunctionHandler
 	{
 		BackupArea back = new BackupArea(sender.username, worldEdits);
 		cut2Move(5000, sender, back);
-		Point point = Point.getPlayerPoint1(sender.username);
-		pasteAt(5000, sender, true, point.x + oX, point.y + oY, point.z + oZ, back);
+		Point point = PlayerInfo.getPlayerPoint1(sender.username);
+		pasteAt(5000, sender, true, PlayerInfo.x + oX, PlayerInfo.y + oY, PlayerInfo.z + oZ, back);
 		addBackup(back);
 		sender.addChatMessage("Blocks Moved");
 	}
@@ -1061,8 +1031,8 @@ public class FunctionHandler
 	{
 		CopyArea area = cpy.get(PlayerInfo.getFromPool(id, sender.username));
 		area.loadAreaMove(sender, back, clear, x, y, z);
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 	}
 
 	public void stackCommand(int id, EntityPlayer sender, int times)
@@ -1116,8 +1086,8 @@ public class FunctionHandler
 				y += length;
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Blocks Loaded(" + times + ")");
 	}
@@ -1132,16 +1102,16 @@ public class FunctionHandler
 		CopyArea area = cpy.get(PlayerInfo.getFromPool(id, sender.username));
 		BackupArea back = new BackupArea(sender.username, worldEdits);
 		area.loadArea(sender, back, clear);
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Blocks Loaded");
 	}
 
 	public void replaceCommand(CommandInfo begin, CommandInfo end, EntityPlayer sender)
 	{
-		Point point1 = Point.getPlayerPoint1(sender.username);
-		Point point2 = Point.getPlayerPoint2(sender.username);
+		Point point1 = PlayerInfo.getPlayerPoint1(sender.username);
+		Point point2 = PlayerInfo.getPlayerPoint2(sender.username);
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
@@ -1180,8 +1150,8 @@ public class FunctionHandler
 			else
 				x--;
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Replaced " + changed + " Blocks from " + getIdString(begin) + " to " + getIdString(end));
 	}
@@ -1211,8 +1181,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Replaced Near(" + radius + ") " + changed + " Blocks from " + getIdString(begin) + " to " + getIdString(end));
 	}
@@ -1241,8 +1211,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Extinguished Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1287,8 +1257,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1322,8 +1292,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1358,8 +1328,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Drained Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1393,8 +1363,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Ungreened Near(" + radius + ") " + changed + " Blocks");
 	}
@@ -1421,8 +1391,8 @@ public class FunctionHandler
 				}
 			}
 		}
-		back.start = Point.getPlayerPoint1(sender.username);
-		back.end = Point.getPlayerPoint2(sender.username);
+		back.start = PlayerInfo.getPlayerPoint1(sender.username);
+		back.end = PlayerInfo.getPlayerPoint2(sender.username);
 		addBackup(back);
 		sender.addChatMessage("Set Near(" + radius + ") " + changed + " Blocks to " + getIdString(inf));
 	}
