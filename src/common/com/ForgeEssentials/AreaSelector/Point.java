@@ -20,14 +20,41 @@ public class Point implements Serializable, Comparable<Point>
 
 	@Override
 	/**
-	 * decides whats bigger by the Y value only.
+	 * decides whats bigger on all values (x ,y z)  perhaps whichever has more negatives or something.
 	 */
 	public int compareTo(Point point)
 	{
-		if (y == point.y)
+		if (equals(point))
 			return 0;
+		
+		int posotives = 0;
+		int negatives = 0;
+		
+		if (x > point.x)
+			posotives++;
 		else
-			return y - point.y;
+			negatives++;
+		
+		if (y > point.y)
+			posotives++;
+		else
+			negatives++;
+		
+		if (z > point.z)
+			posotives++;
+		else
+			negatives++;
+		
+		if (posotives > negatives)
+			return +1;
+		else if (negatives > posotives)
+			return -1;
+		else
+		{
+			return (x-point.x) + (y-point.y) + (z-point.z);
+		}
+		
+		
 	}
 
 	/**
@@ -89,5 +116,19 @@ public class Point implements Serializable, Comparable<Point>
 		if (y < 0) {
 			y = 0;
 		}
+	}
+	
+	public double getDistanceTo(Point point)
+	{
+		return Math.sqrt(
+				((x-point.x)*(x-point.x)) +
+				((y-point.y)*(y-point.y)) +
+				((z-point.z)*(z-point.z))
+				);
+	}
+	
+	public static Point copy(Point point)
+	{
+		return new Point(point.x, point.y, point.z);
 	}
 }

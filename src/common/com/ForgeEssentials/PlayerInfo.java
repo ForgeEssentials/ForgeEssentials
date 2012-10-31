@@ -1,9 +1,12 @@
 package com.ForgeEssentials;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
+import com.ForgeEssentials.WorldControl.BackupArea;
+import com.ForgeEssentials.WorldControl.CopyArea;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
@@ -11,74 +14,68 @@ import net.minecraft.src.EntityPlayerMP;
 public class PlayerInfo
 {
 	private static HashMap<String, PlayerInfo> playerInfoMap;
-	private static HashMap<String, Point> selP1;
-	private static HashMap<String, Point> selP2;
 	
-	public static Point getPlayerPoint1(String username)
+	public static PlayerInfo getPlayerInfo(String username)
 	{
-		Point point = playerInfoMap.get(username).sel1;
-
-		if (point == null)
-			point = new Point(0, 0, 0);
-
-		return point;
-	}
-
-	// GET's
-
-	public static Point getPlayerPoint2(String username)
-	{
-		Point point = playerInfoMap.get(username).sel2;
-
-		if (point == null)
-			point = new Point(0, 0, 0);
-
-		return point;
-	}
-
-	// SET's
-
-	public static void setPlayerPoint1(String username, Point newPoint)
-	{
-		Point point = playerInfoMap.get(username).sel1;
-
-		if (point == null)
-			point = newPoint;
-		else
-			point.update(newPoint);
-		Selection.refreshSelection(username);
-	}
-
-	public static void setPlayerPoint1(EntityPlayer player, Point point)
-	{
-		setPlayerPoint1(player.username, point);
-	}
-
-	public static void setPlayerPoint2(String username, Point newPoint)
-	{
-		Point point = playerInfoMap.get(username).sel2;
-
-		if (point == null)
-			point = newPoint;
-		else
-			point.update(newPoint);
-		Selection.refreshSelection(username);
-	}
-
-	public static void setPlayerPoint2(EntityPlayer player, Point point)
-	{
-		setPlayerPoint2(player.username, point);
+		return playerInfoMap.get(username);
 	}
 	
-	// --------------------------------
-	// ------- the actual class now -------
-	// --------------------------------
-	
+	private boolean hasClientMod;
+	private String username;
 	private Point sel1;
 	private Point sel2;
+	private Selection selection;
+	private CopyArea copy;
+	private ArrayList<BackupArea> backups; // max = 5 backups.
 	
-	public PlayerInfo(EntityPlayerMP player)
+	public PlayerInfo(String username)
 	{
-		
+		this.username = username;
 	}
+
+	public Point getPoint1()
+	{
+		return sel1;
+	}
+
+	public void setPoint1(Point sel1)
+	{
+		this.sel1 = sel1;
+	}
+
+	public Point getPoint2()
+	{
+		return sel2;
+	}
+
+	public void setPoint2(Point sel2)
+	{
+		this.sel2 = sel2;
+	}
+	
+	public Selection getSelection()
+	{
+		return selection;
+	}
+
+	public CopyArea getCopy()
+	{
+		return copy;
+	}
+
+	public void setCopy(CopyArea copy)
+	{
+		this.copy = copy;
+	}
+
+	public boolean isHasClientMod()
+	{
+		return hasClientMod;
+	}
+
+	public String getUsername()
+	{
+		return username;
+	}
+	
 }

@@ -3,11 +3,13 @@ package com.ForgeEssentials.WorldControl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ForgeEssentials.AreaSelector.AreaBase;
-import com.ForgeEssentials.AreaSelector.Point;
-
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.MathHelper;
+import net.minecraft.src.World;
+
+import com.ForgeEssentials.AreaSelector.AreaBase;
+import com.ForgeEssentials.AreaSelector.Point;
+import com.ForgeEssentials.AreaSelector.Selection;
 
 /**
  * @author UnknownCoder : Max Bruce Defines an area to be
@@ -15,36 +17,39 @@ import net.minecraft.src.MathHelper;
 
 public class CopyArea extends AreaBase
 {
-	private List<BlueprintBlock> area = new ArrayList<BlueprintBlock>();
-	public String username;
-	public int worldEdit;
 	public Point offset;
-	public int id = 0;
-	public int copyDir = 0;
 	public boolean flipX = false;
 	public boolean flipY = false;
 	public boolean flipZ = false;
 	public boolean rotateX = false;
 	public boolean rotateY = false;
 	public boolean rotateZ = false;
-
-	public int getXLength()
+	
+	// yzx form.  list of all the blocks.
+	private List<BlueprintBlock> area = new ArrayList<BlueprintBlock>();
+	
+	public CopyArea(EntityPlayer player, Point start, Point end)
 	{
-		return Math.abs(end.x - start.x) + 1;
+		super(start, end);
+		this.alignPoints();
+		build(player.worldObj);
 	}
-
-	public int getZLength()
+	
+	public CopyArea(EntityPlayer player, Selection selection)
 	{
-		return Math.abs(end.z - start.z) + 1;
+		super(selection.start, selection.end);
+		this.alignPoints();
+		build(player.worldObj);
 	}
-
-	public CopyArea(String user, int id, int worldEdit)
+	
+	private void build(World world)
 	{
-		username = user;
-		this.worldEdit = worldEdit;
-		this.id = id;
+		for (int y = start.y; y < end.y; y++)
+			for (int z = start.z; z < end.z; z++)
+				for (int x = start.x; x < end.x; x++)
+					addBlock(x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z));
 	}
-
+	
 	public void clear()
 	{
 		area.clear();
@@ -52,7 +57,14 @@ public class CopyArea extends AreaBase
 
 	public void addBlock(int x, int y, int z, int blockID, int metadata)
 	{
-		area.add(new BlueprintBlock(x, y, z, blockID, metadata));
+		addBlock(new BlueprintBlock(x, y, z, blockID, metadata));
+	}
+	
+	public void addBlock(BlueprintBlock block)
+	{
+		if (area.contains(block) || block.isAir())
+			return;
+		area.add(block);
 	}
 
 	public void setOffset(int x, int y, int z)
@@ -66,32 +78,31 @@ public class CopyArea extends AreaBase
 		int playerY = MathHelper.floor_double(sender.posY);
 		int playerZ = MathHelper.floor_double(sender.posZ);
 
-		for (int i = 0; i < area.size(); i++)
+		for (BlueprintBlock afterBlock: area)
 		{
-			BlueprintBlock afterBlock = area.get(i);
 			int oldOffsetX = afterBlock.x - start.x;
 			int oldOffsetY = afterBlock.y - start.y;
 			int oldOffsetZ = afterBlock.z - start.z;
-			int oX = this.offset.x;
-			int oY = this.offset.y;
-			int oZ = this.offset.z;
+			int oX = offset.x;
+			int oY = offset.y;
+			int oZ = offset.z;
 
 			if (flipX)
 			{
-				oldOffsetX = (afterBlock.x - end.x) - oldOffsetX;
-				oX = (afterBlock.x - end.x) - oX;
+				oldOffsetX = afterBlock.x - end.x - oldOffsetX;
+				oX = afterBlock.x - end.x - oX;
 			}
 
 			if (flipY)
 			{
-				oldOffsetY = (afterBlock.y - end.y) - oldOffsetY;
-				oY = (afterBlock.y - end.y) - oY;
+				oldOffsetY = afterBlock.y - end.y - oldOffsetY;
+				oY = afterBlock.y - end.y - oY;
 			}
 
 			if (flipZ)
 			{
-				oldOffsetZ = (afterBlock.z - end.z) - oldOffsetZ;
-				oZ = (afterBlock.z - end.z) - oZ;
+				oldOffsetZ = afterBlock.z - end.z - oldOffsetZ;
+				oZ = afterBlock.z - end.z - oZ;
 			}
 
 			if (rotateX)
@@ -117,13 +128,8 @@ public class CopyArea extends AreaBase
 			int z = playerZ + oldOffsetZ - oZ;
 			int blockID = sender.worldObj.getBlockId(x, y, z);
 			int metadata = sender.worldObj.getBlockMetadata(x, y, z);
-
-			boolean good = true;
-
-			if (afterBlock.blockID == 0 && !clear)
-				good = false;
-
-			if (good)
+			
+			if (!afterBlock.isAir() || clear)
 			{
 				back.addBlockBefore(x, y, z, blockID, metadata);
 				sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, afterBlock.blockID, afterBlock.metadata);
@@ -142,34 +148,22 @@ public class CopyArea extends AreaBase
 			int offZ = obj.z - start.z;
 
 			if (flipX)
-			{
-				offX = (obj.x - end.x) - offX;
-			}
+				offX = obj.x - end.x - offX;
 
 			if (flipY)
-			{
-				offY = (obj.y - end.y) - offY;
-			}
+				offY = obj.y - end.y - offY;
 
 			if (flipZ)
-			{
-				offZ = (obj.z - end.z) - offZ;
-			}
+				offZ = obj.z - end.z - offZ;
 
 			if (rotateX)
-			{
 				offX = -offX;
-			}
 
 			if (rotateY)
-			{
 				offY = -offY;
-			}
 
 			if (rotateZ)
-			{
 				offZ = -offZ;
-			}
 
 			int x = offX + sX - offset.x;
 			int y = offY + sY - offset.y;

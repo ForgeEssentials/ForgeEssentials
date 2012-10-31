@@ -15,24 +15,25 @@ import net.minecraft.src.MathHelper;
 /**
  * @author UnknownCoder : Max Bruce Handles the saving and loading of blueprints (schematics?)
  */
-
+// TODO: FIX!!!
 public class BlueprintArea extends AreaBase
 {
-	private List<BlueprintBlock> area = new ArrayList<BlueprintBlock>();
+	private ArrayList<BlueprintBlock> area = new ArrayList<BlueprintBlock>();
+	String username;
 
 	public BlueprintArea(String user, int worldEdit)
 	{
+		super(null, null);
 		username = user;
-		this.worldEdit = worldEdit;
 	}
 
 	private BlueprintArea(Object[] obj)
 	{
-		this.area = (List<BlueprintBlock>) obj[0];
+		super(new Point((Integer) obj[2], (Integer) obj[3], (Integer) obj[4]), new Point((Integer) obj[5], (Integer) obj[6], (Integer) obj[7]));
+		this.area = (ArrayList<BlueprintBlock>) obj[0];
 		this.username = (String) obj[1];
-		this.worldEdit = (Integer) obj[2];
-		this.start = new Point((Integer) obj[3], (Integer) obj[4], (Integer) obj[5]);
-		this.end = new Point((Integer) obj[6], (Integer) obj[7], (Integer) obj[8]);
+		this.start = new Point((Integer) obj[2], (Integer) obj[3], (Integer) obj[4]);
+		this.end = new Point((Integer) obj[5], (Integer) obj[6], (Integer) obj[7]);
 	}
 
 	public void addBlock(int x, int y, int z, int blockID, int metadata)
@@ -48,7 +49,7 @@ public class BlueprintArea extends AreaBase
 			// if(file.canWrite()==false)return;
 			OutputStream output = new FileOutputStream(file);
 			ObjectOutputStream output2 = new ObjectOutputStream(output);
-			output2.writeObject(new Object[] { area, username, worldEdit, start.x, start.y, start.z, end.z, end.y, end.z });
+			output2.writeObject(new Object[] { area, username, start.x, start.y, start.z, end.z, end.y, end.z });
 			output2.close();
 			output.close();
 			return;
