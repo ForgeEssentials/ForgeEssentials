@@ -24,7 +24,7 @@ public class CommandCut extends CommandBase {
 				this.getCommandSenderAsPlayer(var1).addChatMessage("Cut Command Failed(Try /cut (<id>))");
 				return;
 			}
-			FunctionHandler.instance.cutCommand(id, this.getCommandSenderAsPlayer(var1));
+			FunctionHandler.instance.cutCommand(getCommandSenderAsPlayer(var1));
 		}catch(Exception e) {
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Cut Command Failed!(Unknown Reason)");
 		}

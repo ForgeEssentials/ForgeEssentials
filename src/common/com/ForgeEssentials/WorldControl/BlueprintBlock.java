@@ -43,6 +43,8 @@ public class BlueprintBlock implements Serializable
 
 	public boolean equals(BlueprintBlock block)
 	{
+		
+		// TODO: Abrar has to make this comparison of TE's work using their NBT or some mumbo jumbo like that
 		if (x == block.x && y == block.y && z == block.z && blockID == block.blockID && metadata == block.metadata && tileEntity == null)
 			return true;
 

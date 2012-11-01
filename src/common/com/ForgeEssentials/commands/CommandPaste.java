@@ -15,6 +15,8 @@ public class CommandPaste extends CommandBase {
 	@Override
 	public void processCommand(ICommandSender var1, String[] var2) {
 		try{
+			
+			// TODO: Find out what the hell this id thing does
 			int id = 0;
 			boolean clear = true;
 			if(var2.length==1) {
@@ -31,7 +33,7 @@ public class CommandPaste extends CommandBase {
 				this.getCommandSenderAsPlayer(var1).addChatMessage("Paste Command Failed(Try /paste (<id>) (<clear>))");
 				return;
 			}
-			FunctionHandler.instance.pasteCommand(id, this.getCommandSenderAsPlayer(var1), clear);
+			FunctionHandler.instance.pasteCommand(getCommandSenderAsPlayer(var1), clear);
 		}catch(Exception e) {
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Paste Command Failed!(Unknown Reason)");
 		}

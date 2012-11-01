@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.MathHelper;
+import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 
 import com.ForgeEssentials.AreaSelector.AreaBase;
@@ -24,42 +25,42 @@ public class CopyArea extends AreaBase
 	public boolean rotateX = false;
 	public boolean rotateY = false;
 	public boolean rotateZ = false;
-	
-	// yzx form.  list of all the blocks.
+
+	// yzx form. list of all the blocks.
 	private List<BlueprintBlock> area = new ArrayList<BlueprintBlock>();
-	
+
 	public CopyArea(EntityPlayer player, Point start, Point end)
 	{
 		super(start, end);
 		this.alignPoints();
 		build(player.worldObj);
 	}
-	
+
 	public CopyArea(EntityPlayer player, Selection selection)
 	{
 		super(selection.start, selection.end);
 		this.alignPoints();
 		build(player.worldObj);
 	}
-	
+
 	private void build(World world)
 	{
 		for (int y = start.y; y < end.y; y++)
 			for (int z = start.z; z < end.z; z++)
 				for (int x = start.x; x < end.x; x++)
-					addBlock(x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z));
+					addBlock(x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), world.getBlockTileEntity(x, y, z));
 	}
-	
+
 	public void clear()
 	{
 		area.clear();
 	}
 
-	public void addBlock(int x, int y, int z, int blockID, int metadata)
+	public void addBlock(int x, int y, int z, int blockID, int metadata, TileEntity te)
 	{
-		addBlock(new BlueprintBlock(x, y, z, blockID, metadata));
+		addBlock(new BlueprintBlock(x, y, z, blockID, metadata, te));
 	}
-	
+
 	public void addBlock(BlueprintBlock block)
 	{
 		if (area.contains(block) || block.isAir())
@@ -73,7 +74,7 @@ public class CopyArea extends AreaBase
 		int playerY = MathHelper.floor_double(sender.posY);
 		int playerZ = MathHelper.floor_double(sender.posZ);
 
-		for (BlueprintBlock afterBlock: area)
+		for (BlueprintBlock afterBlock : area)
 		{
 			int oldOffsetX = afterBlock.x - start.x;
 			int oldOffsetY = afterBlock.y - start.y;
@@ -121,14 +122,12 @@ public class CopyArea extends AreaBase
 			int x = playerX + oldOffsetX - oX;
 			int y = playerY + oldOffsetY - oY;
 			int z = playerZ + oldOffsetZ - oZ;
-			int blockID = sender.worldObj.getBlockId(x, y, z);
-			int metadata = sender.worldObj.getBlockMetadata(x, y, z);
-			
+
 			if (!afterBlock.isAir() || clear)
 			{
-				back.addBlockBefore(x, y, z, blockID, metadata);
+				back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
 				sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, afterBlock.blockID, afterBlock.metadata);
-				back.addBlockAfter(x, y, z, afterBlock.blockID, afterBlock.metadata);
+				back.addBlockAfter(x, y, z, afterBlock.blockID, afterBlock.metadata, afterBlock.tileEntity);
 			}
 		}
 	}
@@ -164,8 +163,6 @@ public class CopyArea extends AreaBase
 			int y = offY + sY - offset.y;
 			int z = offZ + sZ - offset.z;
 			int blockID = sender.worldObj.getBlockId(x, y, z);
-			int metadata = sender.worldObj.getBlockMetadata(x, y, z);
-
 			boolean good = true;
 
 			if (obj.blockID == 0 && !clear)
@@ -173,9 +170,9 @@ public class CopyArea extends AreaBase
 
 			if (good)
 			{
-				back.addBlockBefore(x, y, z, blockID, metadata);
+				back.addBlockBefore(x, y, z, blockID, sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
 				sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, obj.blockID, obj.metadata);
-				back.addBlockAfter(x, y, z, obj.blockID, obj.metadata);
+				back.addBlockAfter(x, y, z, obj.blockID, obj.metadata, obj.tileEntity);
 			}
 		}
 	}
@@ -195,9 +192,9 @@ public class CopyArea extends AreaBase
 
 			if (good)
 			{
-				back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z));
+				back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
 				sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, obj.blockID, obj.metadata);
-				back.addBlockAfter(x, y, z, obj.blockID, obj.metadata);
+				back.addBlockAfter(x, y, z, obj.blockID, obj.metadata, obj.tileEntity);
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.PlayerInfo;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
@@ -35,7 +36,7 @@ public class CommandHPos1 extends CommandBase
 			MovingObjectPosition mop = FunctionHandler.instance.rayTrace(Minecraft.getMinecraft().renderViewEntity);
 			if (mop != null)
 			{
-				Point.setPlayerPoint1(ep, new Point(mop.blockX, mop.blockY, mop.blockZ));
+				PlayerInfo.getPlayerInfo(ep.username).setPoint1(new Point(mop.blockX, mop.blockY, mop.blockZ));
 				this.getCommandSenderAsPlayer(var1).addChatMessage("HPos1 set to: " + mop.blockX + ", " + mop.blockY + ", " + mop.blockZ);
 			}
 			else

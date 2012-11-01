@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.PlayerInfo;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
@@ -37,8 +38,8 @@ public class CommandMiniChunk extends CommandBase
 		try
 		{
 			EntityPlayer ep = this.getCommandSenderAsPlayer(var1);
-			Point.setPlayerPoint1(ep, new Point(toChunk(ep.posX), toChunk(ep.posY), toChunk(ep.posZ)));
-			Point.setPlayerPoint2(ep, new Point(toChunk(ep.posX+16), toChunk(ep.posY+16), toChunk(ep.posZ+16)));
+			PlayerInfo.getPlayerInfo(ep.username).setPoint1(new Point(toChunk(ep.posX), toChunk(ep.posY), toChunk(ep.posZ)));
+			PlayerInfo.getPlayerInfo(ep.username).setPoint2(new Point(toChunk(ep.posX+16), toChunk(ep.posY+16), toChunk(ep.posZ+16)));
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Selected MiniChunk");
 		}
 		catch (Exception e)

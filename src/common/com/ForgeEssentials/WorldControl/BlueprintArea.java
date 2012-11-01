@@ -11,6 +11,8 @@ import com.ForgeEssentials.commands.CommandInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.MathHelper;
+import net.minecraft.src.TileEntity;
+import net.minecraft.src.World;
 
 /**
  * @author UnknownCoder : Max Bruce Handles the saving and loading of blueprints (schematics?)
@@ -36,9 +38,9 @@ public class BlueprintArea extends AreaBase
 		this.end = new Point((Integer) obj[5], (Integer) obj[6], (Integer) obj[7]);
 	}
 
-	public void addBlock(int x, int y, int z, int blockID, int metadata)
+	public void addBlock(int x, int y, int z, int blockID, int metadata, TileEntity te)
 	{
-		area.add(new BlueprintBlock(x, y, z, blockID, metadata));
+		area.add(new BlueprintBlock(x, y, z, blockID, metadata, te));
 	}
 
 	public void save(String path)
@@ -53,8 +55,7 @@ public class BlueprintArea extends AreaBase
 			output2.close();
 			output.close();
 			return;
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 			return;
@@ -76,8 +77,7 @@ public class BlueprintArea extends AreaBase
 			input2.close();
 			input.close();
 			return new BlueprintArea(obj);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 			return null;
@@ -95,11 +95,9 @@ public class BlueprintArea extends AreaBase
 		for (int i = 0; i < area.size(); i++)
 		{
 			BlueprintBlock obj = area.get(i);
-			int bid = sender.worldObj.getBlockId(obj.x, obj.y, obj.z);
-			int meta = sender.worldObj.getBlockMetadata(obj.x, obj.y, obj.z);
-			back.addBlockBefore(obj.x, obj.y, obj.z, bid, meta);
+			back.addBlockBefore(obj.x, obj.y, obj.z, sender.worldObj.getBlockId(obj.x, obj.y, obj.z), sender.worldObj.getBlockMetadata(obj.x, obj.y, obj.z), sender.worldObj.getBlockTileEntity(obj.x, obj.y, obj.z));
 			sender.worldObj.setBlockAndMetadataWithNotify(obj.x, obj.y, obj.z, obj.blockID, obj.metadata);
-			back.addBlockAfter(obj.x, obj.y, obj.z, obj.blockID, obj.metadata);
+			back.addBlockAfter(obj.x, obj.y, obj.z, obj.blockID, obj.metadata, obj.tileEntity);
 		}
 	}
 
@@ -123,11 +121,9 @@ public class BlueprintArea extends AreaBase
 			int x = plrX + offX;
 			int y = plrY + offY;
 			int z = plrZ + offZ;
-			int bid = sender.worldObj.getBlockId(x, y, z);
-			int meta = sender.worldObj.getBlockMetadata(x, y, z);
-			back.addBlockBefore(x, y, z, bid, meta);
+			back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
 			sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, obj.blockID, obj.metadata);
-			back.addBlockAfter(x, y, z, obj.blockID, obj.metadata);
+			back.addBlockAfter(x, y, z, obj.blockID, obj.metadata, obj.tileEntity);
 		}
 	}
 
@@ -148,11 +144,9 @@ public class BlueprintArea extends AreaBase
 			int x = tX + offX;
 			int y = tY + offY;
 			int z = tZ + offZ;
-			int bid = sender.worldObj.getBlockId(x, y, z);
-			int meta = sender.worldObj.getBlockMetadata(x, y, z);
-			back.addBlockBefore(x, y, z, bid, meta);
+			back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
 			sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, obj.blockID, obj.metadata);
-			back.addBlockAfter(x, y, z, obj.blockID, obj.metadata);
+			back.addBlockAfter(x, y, z, obj.blockID, obj.metadata, obj.tileEntity);
 		}
 	}
 }

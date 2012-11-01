@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl;
 
+import com.ForgeEssentials.PlayerInfo;
 import com.ForgeEssentials.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -16,29 +17,30 @@ public class WandController
 	{
 		if (event.entityPlayer.getCurrentEquippedItem().itemID != WorldControlMain.wandID)
 			return;
-		
+
 		if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
 			onLeftClick(event.entityPlayer, event.x, event.y, event.z, event.face);
 		else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
 			onRightClick(event.entityPlayer, event.x, event.y, event.z, event.face);
-		else return;
-		
+		else
+			return;
+
 		event.setResult(Result.DENY);
 	}
-	
+
 	private void onLeftClick(EntityPlayer player, int x, int y, int z, int side)
 	{
-		Point.setPlayerPoint1(player, new Point(x, y, z));
-		
+		PlayerInfo.getPlayerInfo(player.username).setPoint1(new Point(x, y, z));
+
 		if (FMLCommonHandler.instance().getSide().equals(Side.CLIENT))
-			player.addChatMessage("Pos1 set to: "+x+", "+y+", "+z);
+			player.addChatMessage("Pos1 set to: " + x + ", " + y + ", " + z);
 	}
-	
+
 	private void onRightClick(EntityPlayer player, int x, int y, int z, int side)
 	{
-		Point.setPlayerPoint2(player, new Point(x, y, z));
-		
+		PlayerInfo.getPlayerInfo(player.username).setPoint2(new Point(x, y, z));
+
 		if (FMLCommonHandler.instance().getEffectiveSide().equals(Side.CLIENT))
-			player.addChatMessage("Pos2 set to: "+x+", "+y+", "+z);
+			player.addChatMessage("Pos2 set to: " + x + ", " + y + ", " + z);
 	}
 }
