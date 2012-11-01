@@ -13,7 +13,7 @@ When more than one contributor is online, we use Saros to collaborate.
 
 Downloads
 =========
-Eclipse Juno with Saros setup: <a href="https://dl.dropbox.com/u/20748481/eclipse-juno.7z">Windows 32bit</a>  <a href="https://dl.dropbox.com/u/31042110/Eclipse.7z">Windows 64bit</a>  
+Eclipse Juno with Saros setup: <a href="https://dl.dropbox.com/u/20748481/eclipse-juno.7z">Windows 32-bit</a>  <a href="https://dl.dropbox.com/u/31042110/Eclipse.7z">Windows 64-bit</a>  
 Eclipse formatting profile: <a href="https://dl.dropbox.com/u/31042110/AbrarEclipseFormatter.xml">Eclipse Formatter File</a>
 
 
