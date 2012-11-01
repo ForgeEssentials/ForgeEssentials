@@ -5,30 +5,38 @@ import com.ForgeEssentials.WorldControl.FunctionHandler;
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.ICommandSender;
 
-public class CommandStack extends CommandBase {
+public class CommandStack extends CommandBase
+{
 
 	@Override
-	public String getCommandName() {
+	public String getCommandName()
+	{
 		return "stack";
 	}
 
 	@Override
-	public void processCommand(ICommandSender var1, String[] var2) {
-		try{
+	public void processCommand(ICommandSender commandSender, String[] args)
+	{
+		try
+		{
 			int id = 0;
 			int times = 0;
-			if(var2.length==1) {
-				times = Integer.parseInt(var2[0]);
-			}else if(var2.length==2) {
-				id = Integer.parseInt(var2[1]);
-				times = Integer.parseInt(var2[0]);
-			}else{
-				this.getCommandSenderAsPlayer(var1).addChatMessage("Stack Command Failed(Try /stack <times> (<id>))");
+			if (args.length == 1)
+			{
+				times = Integer.parseInt(args[0]);
+			} else if (args.length == 2)
+			{
+				id = Integer.parseInt(args[1]);
+				times = Integer.parseInt(args[0]);
+			} else
+			{
+				this.getCommandSenderAsPlayer(commandSender).addChatMessage("Stack Command Failed(Try /stack <times> (<id>))");
 				return;
 			}
-			FunctionHandler.instance.stackCommand(id, this.getCommandSenderAsPlayer(var1), times);
-		}catch(Exception e) {
-			this.getCommandSenderAsPlayer(var1).addChatMessage("Stack Command Failed!(Unknown Reason)");
+			FunctionHandler.instance.stackCommand(getCommandSenderAsPlayer(commandSender), times);
+		} catch (Exception e)
+		{
+			this.getCommandSenderAsPlayer(commandSender).addChatMessage("Stack Command Failed!(Unknown Reason)");
 		}
 	}
 

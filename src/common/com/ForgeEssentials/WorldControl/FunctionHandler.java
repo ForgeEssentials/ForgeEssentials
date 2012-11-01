@@ -961,17 +961,12 @@ public class FunctionHandler
 	public void pasteAt(EntityPlayer sender, boolean clear, int x, int y, int z, BackupArea back)
 	{
 		CopyArea area = PlayerInfo.getPlayerInfo(sender.username).getCopy();
-		area.loadAreaMove(sender, back, clear, x, y, z);
+		area.loadArea(sender, PlayerInfo.getPlayerInfo(sender.username).getPoint1(), back, clear);
 
 	}
 
-	public void stackCommand(int id, EntityPlayer sender, int times)
+	public void stackCommand(EntityPlayer sender, int times)
 	{
-		if (id > cpy.size())
-		{
-			sender.addChatMessage("Invalid Copy ID");
-			return;
-		}
 		CopyArea area = PlayerInfo.getPlayerInfo(sender.username).getCopy();
 		BackupArea back = new BackupArea();
 		int x = MathHelper.floor_double(sender.posX);
@@ -995,7 +990,7 @@ public class FunctionHandler
 		 */
 		for (int i = 0; i < times; i++)
 		{
-			area.loadAreaStack(sender, back, true, x, y, z);
+			area.loadArea(sender, new Point(x, y, z), back, true);
 			if (dir == 0)
 			{
 				z += length;
@@ -1021,11 +1016,11 @@ public class FunctionHandler
 		sender.addChatMessage("Blocks Loaded(" + times + ")");
 	}
 
-	public void pasteCommand(EntityPlayer sender, boolean clear)
+	public void pasteCommand(EntityPlayer sender, boolean point2, boolean clear)
 	{
-		CopyArea area = PlayerInfo.getPlayerInfo(sender.username).getCopy();
+		Point start = point2 ? PlayerInfo.getPlayerInfo(sender.username).getPoint2() : PlayerInfo.getPlayerInfo(sender.username).getPoint1();
 		BackupArea back = new BackupArea();
-		area.loadArea(sender, back, clear);
+		PlayerInfo.getPlayerInfo(sender.username).getCopy().loadArea(sender, start, back, clear);
 		addBackup(back);
 		sender.addChatMessage("Blocks Pasted");
 	}

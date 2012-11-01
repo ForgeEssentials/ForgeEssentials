@@ -18,7 +18,6 @@ import com.ForgeEssentials.AreaSelector.Selection;
 
 public class CopyArea extends AreaBase
 {
-	public Point offset;
 	public boolean flipX = false;
 	public boolean flipY = false;
 	public boolean flipZ = false;
@@ -68,133 +67,23 @@ public class CopyArea extends AreaBase
 		area.add(block);
 	}
 
-	public void loadArea(EntityPlayer sender, BackupArea back, boolean clear)
+	public void loadArea(EntityPlayer sender, Point loadStart, BackupArea back, boolean clear)
 	{
-		int playerX = MathHelper.floor_double(sender.posX);
-		int playerY = MathHelper.floor_double(sender.posY);
-		int playerZ = MathHelper.floor_double(sender.posZ);
-
 		for (BlueprintBlock afterBlock : area)
 		{
-			int oldOffsetX = afterBlock.x - start.x;
-			int oldOffsetY = afterBlock.y - start.y;
-			int oldOffsetZ = afterBlock.z - start.z;
-			int oX = offset.x;
-			int oY = offset.y;
-			int oZ = offset.z;
-
-			if (flipX)
-			{
-				oldOffsetX = afterBlock.x - end.x - oldOffsetX;
-				oX = afterBlock.x - end.x - oX;
-			}
-
-			if (flipY)
-			{
-				oldOffsetY = afterBlock.y - end.y - oldOffsetY;
-				oY = afterBlock.y - end.y - oY;
-			}
-
-			if (flipZ)
-			{
-				oldOffsetZ = afterBlock.z - end.z - oldOffsetZ;
-				oZ = afterBlock.z - end.z - oZ;
-			}
-
-			if (rotateX)
-			{
-				oldOffsetX = -oldOffsetX;
-				oX = -oX;
-			}
-
-			if (rotateY)
-			{
-				oldOffsetY = -oldOffsetY;
-				oY = -oY;
-			}
-
-			if (rotateZ)
-			{
-				oldOffsetZ = -oldOffsetZ;
-				oZ = -oZ;
-			}
-
-			int x = playerX + oldOffsetX - oX;
-			int y = playerY + oldOffsetY - oY;
-			int z = playerZ + oldOffsetZ - oZ;
+			int distFromStartX = afterBlock.x - start.x;
+			int distFromStartY = afterBlock.y - start.y;
+			int distFromStartZ = afterBlock.z - start.z;
+			int x = loadStart.x + distFromStartX;
+			int y = loadStart.x + distFromStartY;
+			int z = loadStart.x + distFromStartZ;
 
 			if (!afterBlock.isAir() || clear)
 			{
 				back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
 				sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, afterBlock.blockID, afterBlock.metadata);
+				sender.worldObj.setBlockTileEntity(x, y, z, afterBlock.tileEntity);
 				back.addBlockAfter(x, y, z, afterBlock.blockID, afterBlock.metadata, afterBlock.tileEntity);
-			}
-		}
-	}
-
-	public void loadAreaStack(EntityPlayer sender, BackupArea back, boolean clear, int sX, int sY, int sZ)
-	{
-		for (int i = 0; i < area.size(); i++)
-		{
-			BlueprintBlock obj = area.get(i);
-			int offX = obj.x - start.x;
-			int offY = obj.y - start.y;
-			int offZ = obj.z - start.z;
-
-			if (flipX)
-				offX = obj.x - end.x - offX;
-
-			if (flipY)
-				offY = obj.y - end.y - offY;
-
-			if (flipZ)
-				offZ = obj.z - end.z - offZ;
-
-			if (rotateX)
-				offX = -offX;
-
-			if (rotateY)
-				offY = -offY;
-
-			if (rotateZ)
-				offZ = -offZ;
-
-			int x = offX + sX - offset.x;
-			int y = offY + sY - offset.y;
-			int z = offZ + sZ - offset.z;
-			int blockID = sender.worldObj.getBlockId(x, y, z);
-			boolean good = true;
-
-			if (obj.blockID == 0 && !clear)
-				good = false;
-
-			if (good)
-			{
-				back.addBlockBefore(x, y, z, blockID, sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
-				sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, obj.blockID, obj.metadata);
-				back.addBlockAfter(x, y, z, obj.blockID, obj.metadata, obj.tileEntity);
-			}
-		}
-	}
-
-	public void loadAreaMove(EntityPlayer sender, BackupArea back, boolean clear, int sX, int sY, int sZ)
-	{
-		for (int i = 0; i < area.size(); i++)
-		{
-			BlueprintBlock obj = area.get(i);
-			int x = obj.x - start.x + sX;
-			int y = obj.y - start.y + sY;
-			int z = obj.z - start.z + sZ;
-
-			boolean good = true;
-			if (obj.blockID == 0 && !clear)
-				good = false;
-
-			if (good)
-			{
-				back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
-				sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, obj.blockID, obj.metadata);
-				back.addBlockAfter(x, y, z, obj.blockID, obj.metadata, obj.tileEntity);
 			}
 		}
 	}
