@@ -60,7 +60,7 @@ public class CommandProcesser {
 			}
 			for(int meta = 0;meta<subItems.size();meta++) {
 				ItemStack item = new ItemStack(block, 1, subItems.get(meta).getItemDamage());
-				String iName = (String)item.func_82833_r();
+				String iName = (String)item.getItemName();
 				iName=iName.toLowerCase().replace(" ", "").replace(".", "");
 				if(iName.equals(revised)) {
 					return new IDMETA(i, subItems.get(meta).getItemDamage());

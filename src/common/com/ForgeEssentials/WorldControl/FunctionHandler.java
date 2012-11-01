@@ -533,7 +533,7 @@ public class FunctionHandler
 		}
 		for (int i = 0; i < info.info.size(); i++)
 		{
-			String name = info.info.get(i).id == 0 ? "Air" : (String) new ItemStack(Block.blocksList[info.info.get(i).id], 1, info.info.get(i).meta).func_82833_r();
+			String name = info.info.get(i).id == 0 ? "Air" : (String) new ItemStack(Block.blocksList[info.info.get(i).id], 1, info.info.get(i).meta).getItemName();
 			sender.addChatMessage(name + ": " + (((info.info.get(i).amount + .0) / (count + .0)) * 100) + "%");
 		}
 		sender.addChatMessage("Distr Complete");
@@ -1315,7 +1315,7 @@ public class FunctionHandler
 		double var7 = ep.prevPosX + (ep.posX - ep.prevPosX) * (double) var4;
 		double var9 = ep.prevPosY + (ep.posY - ep.prevPosY) * (double) var4 + 1.62D - (double) ep.yOffset;
 		double var11 = ep.prevPosZ + (ep.posZ - ep.prevPosZ) * (double) var4;
-		Vec3 var13 = ep.worldObj.func_82732_R().getVecFromPool(var7, var9, var11);
+		Vec3 var13 = ep.worldObj.getWorldVec3Pool().getVecFromPool(var7, var9, var11);
 		float var14 = MathHelper.cos(-var6 * 0.017453292F - (float) Math.PI);
 		float var15 = MathHelper.sin(-var6 * 0.017453292F - (float) Math.PI);
 		float var16 = -MathHelper.cos(-var5 * 0.017453292F);
