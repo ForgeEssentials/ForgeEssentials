@@ -67,11 +67,6 @@ public class CopyArea extends AreaBase
 		area.add(block);
 	}
 
-	public void setOffset(int x, int y, int z)
-	{
-		offset = new Point(x, y, z);
-	}
-
 	public void loadArea(EntityPlayer sender, BackupArea back, boolean clear)
 	{
 		int playerX = MathHelper.floor_double(sender.posX);

@@ -2,11 +2,11 @@ package com.ForgeEssentials.WorldControl;
 
 import java.io.Serializable;
 
+import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 
 /**
- * @author UnknownCoder : Max Bruce
- * A class for Blocks that can be read/written from a binary file hence serializable.
+ * @author UnknownCoder : Max Bruce A class for Blocks that can be read/written from a binary file hence serializable.
  */
 public class BlueprintBlock implements Serializable
 {
@@ -15,38 +15,40 @@ public class BlueprintBlock implements Serializable
 	int z = 0;
 	int blockID = 0;
 	int metadata = 0;
+	TileEntity tileEntity;
 
-	public BlueprintBlock(int X, int Y, int Z, int bid, int meta)
+	public BlueprintBlock(int X, int Y, int Z, int bid, int meta, TileEntity te)
 	{
 		x = X;
 		y = Y;
 		z = Z;
 		blockID = bid;
 		metadata = meta;
+		tileEntity = te;
 	}
-	
+
 	public boolean isAir()
 	{
 		return blockID == 0;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj)
 	{
 		if (!(obj instanceof BlueprintBlock))
 			return false;
 		else
-			return equals((BlueprintBlock)obj);
+			return equals((BlueprintBlock) obj);
 	}
-	
+
 	public boolean equals(BlueprintBlock block)
 	{
-		if (x == block.x && y == block.y && z == block.z && blockID == block.blockID && metadata == block.metadata)
+		if (x == block.x && y == block.y && z == block.z && blockID == block.blockID && metadata == block.metadata && tileEntity == null)
 			return true;
-		
+
 		return false;
 	}
-	
+
 	public void setInWorld(World world)
 	{
 		world.setBlockAndMetadataWithNotify(x, y, z, blockID, metadata);
