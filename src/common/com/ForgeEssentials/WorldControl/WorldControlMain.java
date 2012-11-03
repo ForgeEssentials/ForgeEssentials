@@ -8,6 +8,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.ForgeEssentials.Main;
+import com.ForgeEssentials.OutputHandler;
 import com.ForgeEssentials.commands.CommandButcher;
 import com.ForgeEssentials.commands.CommandChunk;
 import com.ForgeEssentials.commands.CommandCopy;
@@ -76,18 +77,21 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author UnknownCoder : Max Bruce
  * @author AbrarSyed adapted the main WorldControl class
  */
-public class WorldControlMain {
+public class WorldControlMain
+{
 	public static int wandID;
 	public static final String CHANNEL = "WorldControl";
 	public static File blueprintDir;
 
-	public void preLoad(FMLPreInitializationEvent e) {
+	public void preLoad(FMLPreInitializationEvent e)
+	{
 		blueprintDir = new File(Main.FEDIR, "/blueprints/");
 		if (!blueprintDir.exists() || !blueprintDir.isDirectory())
 			blueprintDir.mkdir();
 	}
 
-	public void load(FMLInitializationEvent e) {
+	public void load(FMLInitializationEvent e)
+	{
 		new FunctionHandler();
 
 		MinecraftForge.EVENT_BUS.register(new WandController());
@@ -98,8 +102,9 @@ public class WorldControlMain {
 		loadPlugins();
 	}
 
-	public void serverLoad(FMLServerStartingEvent event) {
-		System.out.println("Commands loading");
+	public void serverLoad(FMLServerStartingEvent event)
+	{
+		OutputHandler.debug("Commands loading");
 		event.registerServerCommand(new CommandSet());
 		event.registerServerCommand(new CommandReplace());
 		event.registerServerCommand(new CommandCount());
@@ -148,7 +153,8 @@ public class WorldControlMain {
 		event.registerServerCommand(new CommandShift());
 		event.registerServerCommand(new CommandRotate());
 		event.registerServerCommand(new CommandFlip());
-		for (int i = 0; i < plugins.size(); i++) {
+		for (int i = 0; i < plugins.size(); i++)
+		{
 			plugins.get(i).loadCommands(event);
 		}
 	}
@@ -159,34 +165,28 @@ public class WorldControlMain {
 
 	public List<WCPlugin> plugins = new ArrayList<WCPlugin>();
 
-	public void loadPlugins() {
-		try {
-			File dir = new File(System.getProperty("user.dir")
-					+ "\\WCplugins\\");
+	public void loadPlugins()
+	{
+		try
+		{
+			File dir = new File(System.getProperty("user.dir") + "\\WCplugins\\");
 			if (!dir.exists())
 				dir.mkdir();
 
-			if (dir.isDirectory()) {
-				for (File child : dir.listFiles()) {
-					if (".".equals(child.getName())
-							|| "..".equals(child.getName())) {
+			if (dir.isDirectory())
+			{
+				for (File child : dir.listFiles())
+				{
+					if (".".equals(child.getName()) || "..".equals(child.getName()))
+					{
 						continue;
 					}
-					if (child.toString().endsWith(".jar")) {
+					if (child.toString().endsWith(".jar"))
+					{
 						JarFile jar = new JarFile(child);
-						for (Enumeration entry = jar.entries(); entry
-								.hasMoreElements();) {
-							WCPlugin plugin = (WCPlugin) CL
-									.loadClass(
-											"com.ForgeEssentials.WorldControl.plugin_"
-													+ child.getName()
-															.substring(
-																	0,
-																	child.getName()
-																			.length() - 4),
-											jar.getInputStream((JarEntry) entry
-													.nextElement()))
-									.newInstance();
+						for (Enumeration entry = jar.entries(); entry.hasMoreElements();)
+						{
+							WCPlugin plugin = (WCPlugin) CL.loadClass("com.ForgeEssentials.WorldControl.plugin_" + child.getName().substring(0, child.getName().length() - 4), jar.getInputStream((JarEntry) entry.nextElement())).newInstance();
 							plugins.add(plugin);
 							plugin.helper = APIHelper.instance;
 							plugin.load();
@@ -195,7 +195,9 @@ public class WorldControlMain {
 					}
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -203,26 +205,15 @@ public class WorldControlMain {
 	// used for tree spawning and any other commands that target what the player
 	// is looking at
 	// copied from buckets
-	public static MovingObjectPosition getMovingObjectPositionFromPlayer(
-			World par1World, EntityPlayer par2EntityPlayer) {
+	public static MovingObjectPosition getMovingObjectPositionFromPlayer(World par1World, EntityPlayer par2EntityPlayer)
+	{
 		float var4 = 1.0F;
-		float var5 = par2EntityPlayer.prevRotationPitch
-				+ (par2EntityPlayer.rotationPitch - par2EntityPlayer.prevRotationPitch)
-				* var4;
-		float var6 = par2EntityPlayer.prevRotationYaw
-				+ (par2EntityPlayer.rotationYaw - par2EntityPlayer.prevRotationYaw)
-				* var4;
-		double var7 = par2EntityPlayer.prevPosX
-				+ (par2EntityPlayer.posX - par2EntityPlayer.prevPosX)
-				* (double) var4;
-		double var9 = par2EntityPlayer.prevPosY
-				+ (par2EntityPlayer.posY - par2EntityPlayer.prevPosY)
-				* (double) var4 + 1.62D - (double) par2EntityPlayer.yOffset;
-		double var11 = par2EntityPlayer.prevPosZ
-				+ (par2EntityPlayer.posZ - par2EntityPlayer.prevPosZ)
-				* (double) var4;
-		Vec3 var13 = par1World.getWorldVec3Pool().getVecFromPool(var7, var9,
-				var11);
+		float var5 = par2EntityPlayer.prevRotationPitch + (par2EntityPlayer.rotationPitch - par2EntityPlayer.prevRotationPitch) * var4;
+		float var6 = par2EntityPlayer.prevRotationYaw + (par2EntityPlayer.rotationYaw - par2EntityPlayer.prevRotationYaw) * var4;
+		double var7 = par2EntityPlayer.prevPosX + (par2EntityPlayer.posX - par2EntityPlayer.prevPosX) * (double) var4;
+		double var9 = par2EntityPlayer.prevPosY + (par2EntityPlayer.posY - par2EntityPlayer.prevPosY) * (double) var4 + 1.62D - (double) par2EntityPlayer.yOffset;
+		double var11 = par2EntityPlayer.prevPosZ + (par2EntityPlayer.posZ - par2EntityPlayer.prevPosZ) * (double) var4;
+		Vec3 var13 = par1World.getWorldVec3Pool().getVecFromPool(var7, var9, var11);
 		float var14 = MathHelper.cos(-var6 * 0.017453292F - (float) Math.PI);
 		float var15 = MathHelper.sin(-var6 * 0.017453292F - (float) Math.PI);
 		float var16 = -MathHelper.cos(-var5 * 0.017453292F);
@@ -230,12 +221,11 @@ public class WorldControlMain {
 		float var18 = var15 * var16;
 		float var20 = var14 * var16;
 		double var21 = 5.0D;
-		if (par2EntityPlayer instanceof EntityPlayerMP) {
-			var21 = ((EntityPlayerMP) par2EntityPlayer).theItemInWorldManager
-					.getBlockReachDistance();
+		if (par2EntityPlayer instanceof EntityPlayerMP)
+		{
+			var21 = ((EntityPlayerMP) par2EntityPlayer).theItemInWorldManager.getBlockReachDistance();
 		}
-		Vec3 var23 = var13.addVector((double) var18 * var21, (double) var17
-				* var21, (double) var20 * var21);
+		Vec3 var23 = var13.addVector((double) var18 * var21, (double) var17 * var21, (double) var20 * var21);
 		return par1World.rayTraceBlocks_do_do(var13, var23, true, false);
 	}
 }

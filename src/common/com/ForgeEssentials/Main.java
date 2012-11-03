@@ -71,6 +71,7 @@ public class Main
 	@ServerStarting
 	public void serverStart(FMLServerStartingEvent e)
 	{
+		ConsoleInfo.instance = new ConsoleInfo();
 		worldControl.serverLoad(e);
 	}
 

@@ -2,6 +2,7 @@ package com.ForgeEssentials.WorldControl;
 
 import java.util.ArrayList;
 
+import com.ForgeEssentials.OutputHandler;
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
 
@@ -32,7 +33,7 @@ public class BackupArea
 	public void loadAreaBefore(World worldObj)
 	{
 		for (int i = 0; i < after.size(); i++)
-			after.get(i).setInWorld(worldObj);
+			before.get(i).setInWorld(worldObj);
 		hasUndone = true;
 	}
 

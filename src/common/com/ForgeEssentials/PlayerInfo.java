@@ -11,9 +11,9 @@ import com.ForgeEssentials.WorldControl.CopyArea;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 
-public class PlayerInfo
+public class PlayerInfo extends ConsoleInfo
 {
-	private static HashMap<String, PlayerInfo> playerInfoMap;
+	private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
 	
 	public static PlayerInfo getPlayerInfo(String username)
 	{
@@ -22,50 +22,12 @@ public class PlayerInfo
 	
 	private boolean hasClientMod;
 	private String username;
-	private Point sel1;
-	private Point sel2;
-	private Selection selection;
-	private CopyArea copy;
-	private ArrayList<BackupArea> backups; // max = 5 backups.
 	
 	public PlayerInfo(String username)
 	{
+		super();
 		this.username = username;
-	}
-
-	public Point getPoint1()
-	{
-		return sel1;
-	}
-
-	public void setPoint1(Point sel1)
-	{
-		this.sel1 = sel1;
-	}
-
-	public Point getPoint2()
-	{
-		return sel2;
-	}
-
-	public void setPoint2(Point sel2)
-	{
-		this.sel2 = sel2;
-	}
-	
-	public Selection getSelection()
-	{
-		return selection;
-	}
-
-	public CopyArea getCopy()
-	{
-		return copy;
-	}
-
-	public void setCopy(CopyArea copy)
-	{
-		this.copy = copy;
+		playerInfoMap.put(username, this);
 	}
 
 	public boolean isHasClientMod()

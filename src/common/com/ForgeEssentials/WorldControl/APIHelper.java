@@ -35,7 +35,7 @@ public class APIHelper
 	
 	public void addBackup(CopyArea area, String username)
 	{
-		FunctionHandler.cpy.put(new PlayerInfo(username), area);
+		//FunctionHandler.cpy.put(new PlayerInfo(username), area);
 	}
 	
 	public void placeBlock(int x, int y, int z, CommandInfo inf, EntityPlayer sender, BackupArea back)
