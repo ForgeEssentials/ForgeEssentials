@@ -15,7 +15,7 @@ public class WandController
 	@ForgeSubscribe
 	public void interact(PlayerInteractEvent event)
 	{
-		if (event.entityPlayer.getCurrentEquippedItem().itemID != WorldControlMain.wandID)
+		if (event.entityPlayer.getCurrentEquippedItem() == null || event.entityPlayer.getCurrentEquippedItem().itemID != WorldControlMain.wandID)
 			return;
 
 		if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
@@ -25,7 +25,10 @@ public class WandController
 		else
 			return;
 
-		event.setResult(Result.DENY);
+		if (event.hasResult())
+			event.setResult(Result.DENY);
+		else if (event.isCancelable())
+			event.setCanceled(true);
 	}
 
 	private void onLeftClick(EntityPlayer player, int x, int y, int z, int side)

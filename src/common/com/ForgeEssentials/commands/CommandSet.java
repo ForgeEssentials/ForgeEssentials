@@ -5,27 +5,37 @@ import com.ForgeEssentials.WorldControl.FunctionHandler;
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.ICommandSender;
 
-public class CommandSet extends CommandBase {
+public class CommandSet extends CommandBase
+{
 
 	@Override
-	public String getCommandName() {
+	public String getCommandName()
+	{
 		return "set";
 	}
 
 	@Override
-	public void processCommand(ICommandSender var1, String[] var2) {
-		try{
+	public void processCommand(ICommandSender var1, String[] var2)
+	{
+		try
+		{
 			CommandInfo inf = null;
-			if(var2.length==1) {
+			if (var2.length == 1)
+			{
 				inf = CommandProcesser.processIDMetaCombo(var2[0]);
-			}else{
+			}
+			else
+			{
 				this.getCommandSenderAsPlayer(var1).addChatMessage("Set Command Failed(Try /set <id(:meta)>)");
 				return;
 			}
-			if(inf!=null) {
-			FunctionHandler.instance.setCommand(inf, this.getCommandSenderAsPlayer(var1));
+			if (inf != null)
+			{
+				FunctionHandler.instance.setCommand(inf, this.getCommandSenderAsPlayer(var1));
 			}
-		}catch(Exception e) {
+		}
+		catch (Exception e)
+		{
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Set Command Failed!(Unknown Reason)");
 			e.printStackTrace();
 		}

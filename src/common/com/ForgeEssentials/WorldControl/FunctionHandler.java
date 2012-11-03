@@ -28,11 +28,14 @@ import net.minecraft.src.WorldGenTaiga1;
 import net.minecraft.src.WorldGenTaiga2;
 import net.minecraft.src.WorldGenTrees;
 import net.minecraft.src.WorldGenerator;
+import net.minecraft.src.WorldServer;
 
 import java.util.Map;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.commands.CommandInfo;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class FunctionHandler
 {
@@ -43,50 +46,21 @@ public class FunctionHandler
 		instance = this;
 	}
 
-	public static int worldEdits = 0;
-
-	public static void addBackup(BackupArea back)
+	public static void addBackup(String username, BackupArea back)
 	{
-		backup.add(back);
-		worldEdits++;
+		PlayerInfo.getPlayerInfo(username).addBackup(back);
 	}
 
-	public static List<BackupArea> backup = new ArrayList<BackupArea>();
-	public static Map<PlayerInfo, CopyArea> cpy = new HashMap<PlayerInfo, CopyArea>();
 	public static WorldGenerator trees = new WorldGenTrees(false);
-
-	public static void undoCommand(EntityPlayer sender)
+	
+	public static WorldServer getWorldForName(String name)
 	{
-		BackupArea backu = null;
-		int index = -1;
-		String user = sender.username;
-		int worldEdit = 0;
-		for (int i = 0; i < backup.size(); i++)
+		for (WorldServer world: FMLCommonHandler.instance().getMinecraftServerInstance().worldServers)
 		{
-			// TODO: get backup from PlayerInfo and redo it there.
-			/*
-			 * BackupArea back = backup.get(i); if (back.username.equalsIgnoreCase(user) && back.worldEdit >= worldEdit && back.hasUndone == false) { worldEdit = back.worldEdit; backu = back; index = i; }
-			 */
+			if (world.getWorldInfo().getWorldName().equalsIgnoreCase(name))
+				return world;
 		}
-		if (backu != null && index >= 0)
-		{
-			backu.loadAreaBefore(sender.worldObj);
-		}
-	}
-
-	public static void redoCommand(EntityPlayer sender)
-	{
-		String user = sender.username;
-		for (int i = 0; i <= backup.size(); i++)
-		{
-			// TODO: get backup from PlayerInfo and redo it there.
-			/*
-			 * BackupArea back = backup.get(i); if (back.username.equalsIgnoreCase(user) && back.worldEdit >= 0 && back.hasUndone == true) { if (back != null && i >= 0) { back.loadAreaAfter(sender.worldObj); return; } }
-			 */
-		}
-		// if(backu!=null&&index>=0) {
-		// backu.loadAreaAfter(sender.worldObj);
-		// }
+		return null;
 	}
 
 	/**
@@ -179,7 +153,7 @@ public class FunctionHandler
 		{
 			for (int y = point1.y; goodY ? y <= point2.y : y >= point2.y;)
 			{
-				for (int z = point1.z; goodZ ? z <= point2.x : z >= point2.z;)
+				for (int z = point1.z; goodZ ? z <= point2.z : z >= point2.z;)
 				{
 					if (placeBlock(x, y, z, inf, sender, back))
 					{
@@ -201,7 +175,7 @@ public class FunctionHandler
 				x--;
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Set " + changed + " Blocks to " + getIdString(inf));
 	}
 
@@ -240,7 +214,7 @@ public class FunctionHandler
 				x--;
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Deleted " + changed + " Blocks");
 	}
 
@@ -279,7 +253,7 @@ public class FunctionHandler
 				x--;
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 	}
 
 	public void saveCommand(String name, EntityPlayer sender)
@@ -289,7 +263,7 @@ public class FunctionHandler
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
-		BlueprintArea blue = new BlueprintArea(sender.username, worldEdits);
+		BlueprintArea blue = new BlueprintArea(sender.username);
 		int changed = 0;
 		for (int x = point1.x; goodX ? x <= point2.x : x >= point2.x;)
 		{
@@ -317,7 +291,6 @@ public class FunctionHandler
 		}
 		blue.start = point1;
 		blue.end = point2;
-		worldEdits++;
 		blue.save(sender.username + "_" + name);
 		sender.addChatMessage("Saved File: " + name);
 	}
@@ -326,7 +299,7 @@ public class FunctionHandler
 	{
 		BackupArea back = new BackupArea();
 		BlueprintArea.load(sender.username + "_" + name).loadArea(sender, back, clear);
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Loaded File: " + name);
 	}
 
@@ -334,7 +307,7 @@ public class FunctionHandler
 	{
 		BackupArea back = new BackupArea();
 		BlueprintArea.load(sender.username + "_" + name).loadAreaRelative(sender, back, clear);
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Loaded(Relative) File: " + name);
 	}
 
@@ -404,7 +377,7 @@ public class FunctionHandler
 				x--;
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Set " + changed + " Blocks to " + getIdString(inf));
 	}
 
@@ -564,7 +537,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -593,7 +566,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -625,7 +598,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -657,13 +630,13 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
 
 	public void copyCommand(EntityPlayer sender)
 	{
-		PlayerInfo.getPlayerInfo(sender.username).setCopy(new CopyArea(sender, PlayerInfo.getPlayerInfo(sender.username).getSelection()));
+		PlayerInfo.getPlayerInfo(sender.username).copy = new CopyArea(sender, PlayerInfo.getPlayerInfo(sender.username).getSelection());
 		sender.addChatMessage("Blocks Copied");
 	}
 
@@ -700,7 +673,7 @@ public class FunctionHandler
 			else
 				x--;
 		}
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Blocks Cut");
 	}
 
@@ -743,8 +716,8 @@ public class FunctionHandler
 		int oX = MathHelper.floor_double(sender.posX) - point1.x;
 		int oY = MathHelper.floor_double(sender.posY) - point1.y;
 		int oZ = MathHelper.floor_double(sender.posZ) - point1.z;
-		PlayerInfo.getPlayerInfo(sender.username).setCopy(copy);
-		addBackup(back);
+		PlayerInfo.getPlayerInfo(sender.username).copy = copy;
+		addBackup(sender.username, back);
 	}
 
 	public boolean isBlockExposedToAirAndAboveBlock(World worldObj, int x, int y, int z)
@@ -784,7 +757,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Overlayed Near(" + radius + ") " + changed + " Blocks to " + getIdString(end));
 	}
 
@@ -816,7 +789,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Snowed Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -850,7 +823,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("UnIced Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -884,7 +857,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Iced Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -914,7 +887,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Overlayed Near(" + radius + ") " + changed + " Blocks to " + getIdString(end));
 	}
 
@@ -944,7 +917,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Overlayed Near(" + radius + ") " + changed + " Blocks to " + getIdString(end));
 	}
 
@@ -954,20 +927,20 @@ public class FunctionHandler
 		cut2Move(5000, sender, back);
 		Point point = PlayerInfo.getPlayerInfo(sender.username).getPoint1();
 		pasteAt(sender, true, point.x + oX, point.y + oY, point.z + oZ, back);
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Blocks Moved");
 	}
 
 	public void pasteAt(EntityPlayer sender, boolean clear, int x, int y, int z, BackupArea back)
 	{
-		CopyArea area = PlayerInfo.getPlayerInfo(sender.username).getCopy();
+		CopyArea area = PlayerInfo.getPlayerInfo(sender.username).copy;
 		area.loadArea(sender, PlayerInfo.getPlayerInfo(sender.username).getPoint1(), back, clear);
 
 	}
 
 	public void stackCommand(EntityPlayer sender, int times)
 	{
-		CopyArea area = PlayerInfo.getPlayerInfo(sender.username).getCopy();
+		CopyArea area = PlayerInfo.getPlayerInfo(sender.username).copy;
 		BackupArea back = new BackupArea();
 		int x = MathHelper.floor_double(sender.posX);
 		int y = MathHelper.floor_double(sender.posY);
@@ -1012,7 +985,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Blocks Loaded(" + times + ")");
 	}
 
@@ -1020,8 +993,8 @@ public class FunctionHandler
 	{
 		Point start = point2 ? PlayerInfo.getPlayerInfo(sender.username).getPoint2() : PlayerInfo.getPlayerInfo(sender.username).getPoint1();
 		BackupArea back = new BackupArea();
-		PlayerInfo.getPlayerInfo(sender.username).getCopy().loadArea(sender, start, back, clear);
-		addBackup(back);
+		PlayerInfo.getPlayerInfo(sender.username).copy.loadArea(sender, start, back, clear);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Blocks Pasted");
 	}
 
@@ -1068,7 +1041,7 @@ public class FunctionHandler
 				x--;
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Replaced " + changed + " Blocks from " + getIdString(begin) + " to " + getIdString(end));
 	}
 
@@ -1098,7 +1071,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Replaced Near(" + radius + ") " + changed + " Blocks from " + getIdString(begin) + " to " + getIdString(end));
 	}
 
@@ -1127,7 +1100,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Extinguished Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -1172,7 +1145,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -1206,7 +1179,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Greened Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -1241,7 +1214,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Drained Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -1275,7 +1248,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Ungreened Near(" + radius + ") " + changed + " Blocks");
 	}
 
@@ -1302,7 +1275,7 @@ public class FunctionHandler
 			}
 		}
 
-		addBackup(back);
+		addBackup(sender.username, back);
 		sender.addChatMessage("Set Near(" + radius + ") " + changed + " Blocks to " + getIdString(inf));
 	}
 

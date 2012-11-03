@@ -76,6 +76,16 @@ public class AreaBase
 	}
 	
 	/**
+	 * Orders the points so the start is smaller than the end.
+	 */
+	public static Point[] getAlignedPoints(Point p1, Point p2)
+	{
+		AreaBase area = new AreaBase(p1, p2);
+		area.alignPoints();
+		return new Point[] {area.start, area.end};
+	}
+
+	/*
 	 * Determines if a given point is within the bounds of an area.
 	 * @param p Point to check against the Area
 	 * @return True, if the Point p is inside the area.

@@ -1,6 +1,9 @@
 package com.ForgeEssentials.network;
 
+import com.ForgeEssentials.PlayerInfo;
+
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.INetworkManager;
 import net.minecraft.src.NetHandler;
 import net.minecraft.src.NetLoginHandler;
@@ -10,10 +13,12 @@ import cpw.mods.fml.common.network.Player;
 
 public class ConnectionHandler implements IConnectionHandler
 {
-	// player logged in server
+	// player logged in server -- server
 	@Override
-	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager)
+	public void playerLoggedIn(Player playerFake, NetHandler netHandler, INetworkManager manager)
 	{
+		EntityPlayer player = (EntityPlayer) playerFake;
+		PlayerInfo info = new PlayerInfo(player.username);
 	}
 
 	@Override
@@ -22,13 +27,13 @@ public class ConnectionHandler implements IConnectionHandler
 		return null;
 	}
 
-	// connect to remote server
+	// connect to remote server -- client
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager)
 	{
 	}
 
-	// C0nnect to Integrated server
+	// Connect to Integrated server -- client
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager)
 	{

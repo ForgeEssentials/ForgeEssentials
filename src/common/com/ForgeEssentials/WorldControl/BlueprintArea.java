@@ -23,7 +23,7 @@ public class BlueprintArea extends AreaBase
 	private ArrayList<BlueprintBlock> area = new ArrayList<BlueprintBlock>();
 	String username;
 
-	public BlueprintArea(String user, int worldEdit)
+	public BlueprintArea(String user)
 	{
 		super(null, null);
 		username = user;
