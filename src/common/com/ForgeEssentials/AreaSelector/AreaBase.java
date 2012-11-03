@@ -74,4 +74,25 @@ public class AreaBase
 		start.update(new Point(newX1, newY1, newZ1));
 		end.update(new Point(newX2, newY2, newZ2));
 	}
+	
+	/**
+	 * Determines if a given point is within the bounds of an area.
+	 * @param p Point to check against the Area
+	 * @return True, if the Point p is inside the area.
+	 */
+	public boolean contains(Point p)
+	{
+		boolean flag = false;
+		if (this.start.x <= p.x && this.end.x >= p.x)
+		{
+			if (this.start.z <= p.z && this.end.z >= p.z)
+			{
+				if (this.start.y <= p.y && this.end.y >= p.y)
+				{
+					flag = true;
+				}
+			}
+		}
+		return flag;
+	}
 }
