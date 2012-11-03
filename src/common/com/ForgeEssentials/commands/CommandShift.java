@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import com.ForgeEssentials.PlayerInfo;
 import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
@@ -27,7 +28,7 @@ public class CommandShift extends CommandBase
 				int x = Integer.parseInt(var2[0]);
 				int y = Integer.parseInt(var2[1]);
 				int z = Integer.parseInt(var2[2]);
-				Selection select = Selection.getPlayerSelection(ep);
+				Selection select = PlayerInfo.getPlayerInfo(ep.username).getSelection();
 				select.shift(x, y, z);
 				ep.addChatMessage("Shifted by: " + x + ", " + y + ", " + z);
 			}

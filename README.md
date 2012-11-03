@@ -6,14 +6,14 @@ Setup
 =====
 Minecraft: 1.4.2  
 MCP: 7.19  
-Forge: #337
+Forge: #354
 
 Get the latest Forge, MCP, and MC jars, and decompile. Once you have a working Forge workspace, pull the repo into that MCP folder.
 When more than one contributor is online, we use Saros to collaborate.
 
 Downloads
 =========
-Eclipse Juno with Saros setup: <a href="https://dl.dropbox.com/u/20748481/eclipse-juno.7z">Windows 32bit</a>  <a href="https://dl.dropbox.com/u/31042110/Eclipse.7z">Windows 64bit</a>  
+Eclipse Juno with Saros setup: <a href="https://dl.dropbox.com/u/20748481/eclipse-juno.7z">Windows 32-bit</a>  <a href="https://dl.dropbox.com/u/31042110/Eclipse.7z">Windows 64-bit</a>  
 Eclipse formatting profile: <a href="https://dl.dropbox.com/u/31042110/AbrarEclipseFormatter.xml">Eclipse Formatter File</a>
 
 

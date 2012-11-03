@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl;
 
+import com.ForgeEssentials.PlayerInfo;
 import com.ForgeEssentials.commands.CommandInfo;
 import com.ForgeEssentials.commands.CommandProcesser;
 
@@ -32,9 +33,9 @@ public class APIHelper
 		return 0;
 	}
 	
-	public void addBackup(CopyArea area, int id, String username)
+	public void addBackup(CopyArea area, String username)
 	{
-		FunctionHandler.cpy.put(new FunctionHandler.PlayerInfo(id, username), area);
+		FunctionHandler.cpy.put(new PlayerInfo(username), area);
 	}
 	
 	public void placeBlock(int x, int y, int z, CommandInfo inf, EntityPlayer sender, BackupArea back)

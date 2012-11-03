@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import com.ForgeEssentials.PlayerInfo;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
@@ -24,17 +25,15 @@ public class CommandTpSel2 extends CommandBase
 			if (var2.length == 0)
 			{
 				EntityPlayer ep = this.getCommandSenderAsPlayer(var1);
-				Point point = Point.getPlayerPoint2(ep.username);
+				Point point = PlayerInfo.getPlayerInfo(ep.username).getPoint2();
 				ep.setPositionAndUpdate(point.x, point.y, point.z);
 				ep.addChatMessage("Teleported to Selection2");
-			}
-			else
+			} else
 			{
 				this.getCommandSenderAsPlayer(var1).addChatMessage("TpSel2 Command Failed(Try /tpsel1)");
 				return;
 			}
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			this.getCommandSenderAsPlayer(var1).addChatMessage("TpSel2 Command Failed!(Unknown Reason)");
 		}

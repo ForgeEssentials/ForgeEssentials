@@ -9,21 +9,22 @@ import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.asm.SideOnly;
 
-@SideOnly(value=Side.CLIENT)
-public class TickHandler implements ITickHandler
-{
+@SideOnly(value = Side.CLIENT)
+public class TickHandler implements ITickHandler {
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
-	{
-		if(Minecraft.getMinecraft().playerController!=null&&!(Minecraft.getMinecraft().playerController instanceof ExtendedPlayerControllerMP))
-		{
-			Minecraft.getMinecraft().playerController = new ExtendedPlayerControllerMP(Minecraft.getMinecraft(), Minecraft.getMinecraft().getSendQueue(), Minecraft.getMinecraft().playerController.isInCreativeMode());
+	public void tickStart(EnumSet<TickType> type, Object... tickData) {
+		if (Minecraft.getMinecraft().playerController != null
+				&& !(Minecraft.getMinecraft().playerController instanceof ExtendedPlayerControllerMP)) {
+			Minecraft.getMinecraft().playerController = new ExtendedPlayerControllerMP(
+					Minecraft.getMinecraft(), Minecraft.getMinecraft()
+							.getSendQueue(),
+					Minecraft.getMinecraft().playerController
+							.isInCreativeMode());
 		}
 	}
 
 	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
-	{
+	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
 		// do nothing.
 	}
 

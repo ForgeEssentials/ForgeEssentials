@@ -24,7 +24,7 @@ public class CommandCopy extends CommandBase {
 				this.getCommandSenderAsPlayer(var1).addChatMessage("Copy Command Failed(Try /copy (<id>))");
 				return;
 			}
-			FunctionHandler.instance.copyCommand(id, this.getCommandSenderAsPlayer(var1));
+			FunctionHandler.instance.copyCommand(getCommandSenderAsPlayer(var1));
 		}catch(Exception e) {
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Copy Command Failed!(Unknown Reason)");
 		}

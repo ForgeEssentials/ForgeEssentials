@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.PlayerInfo;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
@@ -30,7 +31,7 @@ public class CommandPos1 extends CommandBase {
 		{
 			EntityPlayer ep = this.getCommandSenderAsPlayer(var1);
 			Point point = new Point(MathHelper.floor_double(ep.posX), MathHelper.floor_double(ep.posZ), MathHelper.floor_double(ep.posZ));
-			Point.setPlayerPoint1(ep, point);
+			PlayerInfo.getPlayerInfo(ep.username).setPoint1(point);
 			this.getCommandSenderAsPlayer(var1).addChatMessage("Pos1 set to: " + point.x + ", " + point.y + ", " + point.z);
 		}
 		catch (Exception e)
