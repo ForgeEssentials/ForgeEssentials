@@ -2,6 +2,8 @@ package com.ForgeEssentials.WorldControl;
 
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
+import com.ForgeEssentials.permissions.Permission;
+import com.ForgeEssentials.permissions.PlayerInteractPermissionQuery;
 
 /**
  * 
@@ -12,11 +14,16 @@ import com.ForgeEssentials.AreaSelector.Point;
  */
 public class PermissionArea extends AreaBase {
 
-	// TODO: Some kind of member data that describes what permission is applied to this area. 
+	public Permission permission; 
 	
-	public PermissionArea(Point start, Point end) {
+	public PermissionArea(Point start, Point end, Permission permission) {
 		super(start, end);
 		// TODO Auto-generated constructor stub
+	}
+	
+	public boolean isPlayerInteractionPermitted(PlayerInteractPermissionQuery query) {
+		// TODO: Check the permission in the area.
+		return true;
 	}
 
 }

@@ -17,15 +17,9 @@ import net.minecraftforge.event.ForgeSubscribe;
  *
  */
 public final class FEPermissionHandler
-{
+{	
 	@ForgeSubscribe
-	public void handleGenericPermission(GenericPermission perm)
-	{
-		// do stuff?
-	}
-	
-	@ForgeSubscribe
-	public void handleGenericPlayerInteractPermission(GenericPlayerInteractPermission perm)
+	public void handleGenericPlayerInteractPermission(PlayerInteractPermissionQuery perm)
 	{
 		Point interactionPoint = new Point(perm.x, perm.y, perm.z);
 		
