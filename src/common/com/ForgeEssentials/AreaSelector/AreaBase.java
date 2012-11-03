@@ -74,4 +74,14 @@ public class AreaBase
 		start.update(new Point(newX1, newY1, newZ1));
 		end.update(new Point(newX2, newY2, newZ2));
 	}
+	
+	/**
+	 * just makes it so that the start is smaller than the end.
+	 */
+	public static Point[] getAlignedPoints(Point p1, Point p2)
+	{
+		AreaBase area = new AreaBase(p1, p2);
+		area.alignPoints();
+		return new Point[] {area.start, area.end};
+	}
 }

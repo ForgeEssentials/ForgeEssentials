@@ -31,23 +31,26 @@ public class CopyArea extends AreaBase
 	public CopyArea(EntityPlayer player, Point start, Point end)
 	{
 		super(start, end);
-		this.alignPoints();
 		build(player.worldObj);
 	}
 	
 	public CopyArea(EntityPlayer player, Selection selection)
 	{
 		super(selection.start, selection.end);
-		this.alignPoints();
 		build(player.worldObj);
 	}
 	
 	private void build(World world)
 	{
-		for (int y = start.y; y < end.y; y++)
-			for (int z = start.z; z < end.z; z++)
-				for (int x = start.x; x < end.x; x++)
-					addBlock(x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z));
+		Point[] alligned = getAlignedPoints(start, end);
+		int offsetsX =  alligned[0].x;
+		int offsetsY =  alligned[0].y;
+		int offsetsZ =  alligned[0].z;
+		
+		for (int y = 0; y < this.getYLength(); y++)
+			for (int z = 0; z < this.getZLength(); z++)
+				for (int x = 0; x < this.getXLength(); x++)
+					addBlock(x+offsetsX, y+offsetsY, z+offsetsZ, world.getBlockId(x+offsetsX, y+offsetsY, z+offsetsZ), world.getBlockMetadata(x+offsetsX, y+offsetsY, z+offsetsZ));
 	}
 	
 	public void clear()

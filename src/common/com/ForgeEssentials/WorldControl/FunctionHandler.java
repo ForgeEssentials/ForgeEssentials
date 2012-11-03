@@ -678,13 +678,14 @@ public class FunctionHandler
 
 	public void copyCommand(int id, EntityPlayer sender)
 	{
-		CopyArea copy = new CopyArea(sender, PlayerInfo.getPlayerInfo(sender.username).getSelection());
+		PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
+		CopyArea copy = new CopyArea(sender, info.getSelection());
 		// TODO: how do I do this....
 		int oX = MathHelper.floor_double(sender.posX) - point1.x;
 		int oY = MathHelper.floor_double(sender.posY) - point1.y;
 		int oZ = MathHelper.floor_double(sender.posZ) - point1.z;
 		copy.setOffset(oX, oY, oZ);
-		cpy.put(PlayerInfo.getFromPool(id, sender.username), copy);
+		info.setCopy(copy);
 		sender.addChatMessage("Blocks Copied");
 	}
 
