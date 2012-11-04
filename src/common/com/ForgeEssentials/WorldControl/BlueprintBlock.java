@@ -51,6 +51,11 @@ public class BlueprintBlock implements Serializable
 		metadata = meta;
 		tileEntity = null;
 	}
+	
+	public static BlueprintBlock loadFromWorld(World world, int x, int y, int z)
+	{
+		return new BlueprintBlock(x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), world.getBlockTileEntity(x, y, z));
+	}
 
 	public boolean isAir()
 	{
