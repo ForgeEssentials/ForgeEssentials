@@ -75,7 +75,7 @@ public class FunctionHandler
 	 * @param back Backup
 	 * @return when counter should go up
 	 */
-	public boolean placeBlock(int x, int y, int z, CommandInfo inf, EntityPlayer sender, BackupArea back)
+	public boolean setBlock(int x, int y, int z, CommandInfo inf, EntityPlayer sender, BackupArea back)
 	{
 		int bid = sender.worldObj.getBlockId(x, y, z);
 		int meta = sender.worldObj.getBlockMetadata(x, y, z);
@@ -103,9 +103,8 @@ public class FunctionHandler
 			back.addBlockAfter(new BlueprintBlock(x, y, z, chosenInf[0], chosenInf[1]));
 			return true;
 		}
-
-		// TODO: More magical TE comparison via NBT from Abrar
-		if (!(bid == blockID && meta == metadata && te == tileEntity) && good)
+		
+		if (!(bid == blockID && meta == metadata) && good)
 		{
 			boolean canPlace = Block.blocksList[blockID] == null ? true : Block.blocksList[blockID].canBlockStay(sender.worldObj, x, y, z);
 			if (!canPlace)
@@ -150,7 +149,7 @@ public class FunctionHandler
 			{
 				for (int z = point1.z; goodZ ? z <= point2.z : z >= point2.z;)
 				{
-					if (placeBlock(x, y, z, inf, sender, back))
+					if (setBlock(x, y, z, inf, sender, back))
 					{
 						changed++;
 					}
@@ -189,7 +188,7 @@ public class FunctionHandler
 			{
 				for (int z = point1.z; goodZ ? z <= point2.z : z >= point2.z;)
 				{
-					if (placeBlock(x, y, z, inf, sender, back))
+					if (setBlock(x, y, z, inf, sender, back))
 					{
 						changed++;
 					}
@@ -228,7 +227,7 @@ public class FunctionHandler
 			{
 				for (int z = point1.z; goodZ ? z <= point2.z : z >= point2.z;)
 				{
-					if (placeBlock(x, y, z, inf, sender, back))
+					if (setBlock(x, y, z, inf, sender, back))
 					{
 						changed++;
 					}
@@ -340,7 +339,7 @@ public class FunctionHandler
 						/*
 						 * int bid=sender.worldObj.getBlockId(x, y, z); int meta=sender.worldObj.getBlockMetadata(x, y, z); if(!(bid==blockID&&meta==metadata)) { changed++; back.addBlockBefore(x, y, z, bid, meta); sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, blockID, metadata); back.addBlockAfter(x, y, z, blockID, metadata); }
 						 */
-						if (placeBlock(x, y, z, inf, sender, back))
+						if (setBlock(x, y, z, inf, sender, back))
 						{
 							changed++;
 						}
@@ -352,7 +351,7 @@ public class FunctionHandler
 						 */
 						CommandInfo temp = new CommandInfo();
 						temp.setInfo(0, 0);
-						if (placeBlock(x, y, z, temp, sender, back))
+						if (setBlock(x, y, z, temp, sender, back))
 						{
 							changed++;
 						}
@@ -527,7 +526,7 @@ public class FunctionHandler
 			{
 				for (int z = plrZ - radius; z <= plrZ + radius; z++)
 				{
-					if (placeBlock(x, y, z, inf, sender, back))
+					if (setBlock(x, y, z, inf, sender, back))
 					{
 						changed++;
 					}
@@ -556,7 +555,7 @@ public class FunctionHandler
 			{
 				for (int z = plrZ - radius; z <= plrZ + radius; z++)
 				{
-					if (placeBlock(x, y, z, inf, sender, back))
+					if (setBlock(x, y, z, inf, sender, back))
 					{
 						changed++;
 					}
@@ -587,7 +586,7 @@ public class FunctionHandler
 				{
 					if (before.isGoodInfo(sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z)))
 					{
-						if (placeBlock(x, y, z, after, sender, back))
+						if (setBlock(x, y, z, after, sender, back))
 						{
 							changed++;
 						}
@@ -619,7 +618,7 @@ public class FunctionHandler
 				{
 					if (before.isGoodInfo(sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z)))
 					{
-						if (placeBlock(x, y, z, after, sender, back))
+						if (setBlock(x, y, z, after, sender, back))
 						{
 							changed++;
 						}
@@ -653,7 +652,7 @@ public class FunctionHandler
 				{
 					CommandInfo inf = new CommandInfo();
 					inf.setInfo(0, 0);
-					placeBlock(x, y, z, inf, sender, back);
+					setBlock(x, y, z, inf, sender, back);
 					if (goodZ)
 						z++;
 					else
@@ -745,7 +744,7 @@ public class FunctionHandler
 					// int meta=sender.worldObj.getBlockMetadata(x, y, z);
 					if (isBlockExposedToAirAndAboveBlock(sender.worldObj, x, y, z))
 					{
-						if (placeBlock(x, y + 1, z, end, sender, back))
+						if (setBlock(x, y + 1, z, end, sender, back))
 						{
 							changed++;
 						}
@@ -777,7 +776,7 @@ public class FunctionHandler
 					// int meta=sender.worldObj.getBlockMetadata(x, y, z);
 					if (isBlockExposedToAirAndAboveBlock(sender.worldObj, x, y, z))
 					{
-						if (placeBlock(x, y + 1, z, snow, sender, back))
+						if (setBlock(x, y + 1, z, snow, sender, back))
 						{
 							changed++;
 						}
@@ -811,7 +810,7 @@ public class FunctionHandler
 					int meta = sender.worldObj.getBlockMetadata(x, y, z);
 					if (ice.isGoodInfo(bid, meta))
 					{
-						if (placeBlock(x, y, z, water, sender, back))
+						if (setBlock(x, y, z, water, sender, back))
 						{
 							changed++;
 						}
@@ -845,7 +844,7 @@ public class FunctionHandler
 					int meta = sender.worldObj.getBlockMetadata(x, y, z);
 					if (water.isGoodInfo(bid, meta))
 					{
-						if (placeBlock(x, y, z, ice, sender, back))
+						if (setBlock(x, y, z, ice, sender, back))
 						{
 							changed++;
 						}
@@ -875,7 +874,7 @@ public class FunctionHandler
 					// int meta=sender.worldObj.getBlockMetadata(x, y, z);
 					if (isBlockExposedToAirAndAboveBlock(sender.worldObj, x, y, z))
 					{
-						if (placeBlock(x, y + 1, z, end, sender, back))
+						if (setBlock(x, y + 1, z, end, sender, back))
 						{
 							changed++;
 						}
@@ -905,7 +904,7 @@ public class FunctionHandler
 					// int meta=sender.worldObj.getBlockMetadata(x, y, z);
 					if (isBlockExposedToAirAndAboveBlock(sender.worldObj, x, y, z))
 					{
-						if (placeBlock(x, y, z, end, sender, back))
+						if (setBlock(x, y, z, end, sender, back))
 						{
 							changed++;
 						}
@@ -1014,7 +1013,7 @@ public class FunctionHandler
 						/*
 						 * back.addBlockBefore(x, y, z, bid, meta); sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, changeBlockID, changeMetadata); back.addBlockAfter(x, y, z, changeBlockID, changeMetadata);
 						 */
-						if (placeBlock(x, y, z, end, sender, back))
+						if (setBlock(x, y, z, end, sender, back))
 						{
 							changed++;
 						}
@@ -1056,7 +1055,7 @@ public class FunctionHandler
 					int meta = sender.worldObj.getBlockMetadata(x, y, z);
 					if (begin.isGoodInfo(bid, meta))
 					{
-						if (placeBlock(x, y, z, end, sender, back))
+						if (setBlock(x, y, z, end, sender, back))
 						{
 							changed++;
 						}
@@ -1085,7 +1084,7 @@ public class FunctionHandler
 					int bid = sender.worldObj.getBlockId(x, y, z);
 					if (bid == 51)
 					{
-						if (placeBlock(x, y, z, new CommandInfo(0, 0), sender, back))
+						if (setBlock(x, y, z, new CommandInfo(0, 0), sender, back))
 						{
 							changed++;
 						}
@@ -1123,14 +1122,14 @@ public class FunctionHandler
 					int meta = sender.worldObj.getBlockMetadata(x, y, z);
 					if (dirt.isGoodInfo(bid, meta))
 					{
-						if (placeBlock(x, y, z, grass, sender, back))
+						if (setBlock(x, y, z, grass, sender, back))
 						{
 							changed++;
 						}
 					}
 					if (snow.isGoodInfo(bid, meta))
 					{
-						if (placeBlock(x, y, z, air, sender, back))
+						if (setBlock(x, y, z, air, sender, back))
 						{
 							changed++;
 						}
@@ -1164,7 +1163,7 @@ public class FunctionHandler
 					int meta = sender.worldObj.getBlockMetadata(x, y, z);
 					if (snow.isGoodInfo(bid, meta))
 					{
-						if (placeBlock(x, y, z, air, sender, back))
+						if (setBlock(x, y, z, air, sender, back))
 						{
 							changed++;
 						}
@@ -1199,7 +1198,7 @@ public class FunctionHandler
 					int bid = sender.worldObj.getBlockId(x, y, z);
 					if (water.isGoodInfo(bid))
 					{
-						if (placeBlock(x, y, z, air, sender, back))
+						if (setBlock(x, y, z, air, sender, back))
 						{
 							changed++;
 						}
@@ -1233,7 +1232,7 @@ public class FunctionHandler
 					int meta = sender.worldObj.getBlockMetadata(x, y, z);
 					if (grass.isGoodInfo(bid, meta))
 					{
-						if (placeBlock(x, y, z, dirt, sender, back))
+						if (setBlock(x, y, z, dirt, sender, back))
 						{
 							changed++;
 						}
@@ -1261,7 +1260,7 @@ public class FunctionHandler
 				{
 					int bid = sender.worldObj.getBlockId(x, y, z);
 					int meta = sender.worldObj.getBlockMetadata(x, y, z);
-					if (placeBlock(x, y, z, inf, sender, back))
+					if (setBlock(x, y, z, inf, sender, back))
 					{
 						changed++;
 					}

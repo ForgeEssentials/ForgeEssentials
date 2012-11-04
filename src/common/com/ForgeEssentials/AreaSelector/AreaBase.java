@@ -5,6 +5,11 @@ public class AreaBase
 	public Point start;
 	public Point end;
 
+	/**
+	 * Points are inclusive.
+	 * @param start
+	 * @param end
+	 */
 	public AreaBase(Point start, Point end)
 	{
 		this.start = Point.copy(start);
@@ -85,24 +90,39 @@ public class AreaBase
 		return new Point[] {area.start, area.end};
 	}
 
-	/*
+	/**
 	 * Determines if a given point is within the bounds of an area.
 	 * @param p Point to check against the Area
 	 * @return True, if the Point p is inside the area.
 	 */
 	public boolean contains(Point p)
 	{
-		boolean flag = false;
-		if (this.start.x <= p.x && this.end.x >= p.x)
-		{
-			if (this.start.z <= p.z && this.end.z >= p.z)
-			{
-				if (this.start.y <= p.y && this.end.y >= p.y)
-				{
-					flag = true;
-				}
-			}
-		}
-		return flag;
+		Point[] points = getAlignedPoints(start, end);
+		
+		return start.compareTo(p) >= 0 && end.compareTo(p) <= 0;
+	}
+	
+	/**
+	 * checks if this area contains with another
+	 * @param area to check against this area
+	 * @return True, AreaBAse area is completely within this area
+	 */
+	public boolean contains(AreaBase area)
+	{
+		if (this.contains(area.start) && this.contains(area.end))
+			return true;
+		return false;
+	}
+	
+	/**
+	 * checks if this area is overlapping with another
+	 * @param area to check against this area
+	 * @return True, if the given area overlaps with this one.
+	 */
+	public boolean overlaps(AreaBase area)
+	{
+		if (this.contains(area.start) || this.contains(area.end))
+			return true;
+		return false;
 	}
 }

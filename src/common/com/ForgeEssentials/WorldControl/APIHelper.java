@@ -40,7 +40,7 @@ public class APIHelper
 	
 	public void placeBlock(int x, int y, int z, CommandInfo inf, EntityPlayer sender, BackupArea back)
 	{
-		FunctionHandler.instance.placeBlock(x, y, z, inf, sender, back);
+		FunctionHandler.instance.setBlock(x, y, z, inf, sender, back);
 	}
 
 }

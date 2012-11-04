@@ -1,9 +1,15 @@
 package com.ForgeEssentials.commands;
 
+import com.ForgeEssentials.ConsoleInfo;
+import com.ForgeEssentials.OutputHandler;
+import com.ForgeEssentials.PlayerInfo;
+import com.ForgeEssentials.WorldControl.CopyArea;
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
 import net.minecraft.src.CommandBase;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
+import net.minecraft.src.WorldServer;
 
 public class CommandSet extends CommandBase
 {
