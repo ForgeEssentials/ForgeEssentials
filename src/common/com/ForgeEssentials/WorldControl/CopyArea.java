@@ -28,16 +28,16 @@ public class CopyArea extends AreaBase
 	// yzx form. list of all the blocks.
 	private List<BlueprintBlock> area = new ArrayList<BlueprintBlock>();
 
-	public CopyArea(EntityPlayer player, Point start, Point end)
+	public CopyArea(World world, Point start, Point end)
 	{
 		super(start, end);
-		build(player.worldObj);
+		build(world);
 	}
 
-	public CopyArea(EntityPlayer player, Selection selection)
+	public CopyArea(World world, Selection selection)
 	{
 		super(selection.start, selection.end);
-		build(player.worldObj);
+		build(world);
 	}
 
 	private void build(World world)
@@ -47,9 +47,9 @@ public class CopyArea extends AreaBase
 		int offsetsY =  alligned[0].y;
 		int offsetsZ =  alligned[0].z;
 		
-		for (int y = 0; y < this.getYLength(); y++)
-			for (int z = 0; z < this.getZLength(); z++)
-				for (int x = 0; x < this.getXLength(); x++)
+		for (int y = 0; y <= start.y - end.y; y++)
+			for (int z = 0; z <= start.z - end.z; z++)
+				for (int x = 0; x <= start.x - end.x; x++)
 					addBlock(x+offsetsX, y+offsetsY, z+offsetsZ, world.getBlockId(x+offsetsX, y+offsetsY, z+offsetsZ), world.getBlockMetadata(x+offsetsX, y+offsetsY, z+offsetsZ), world.getBlockTileEntity(x+offsetsX, y+offsetsY, z+offsetsZ));
 	}
 
@@ -70,23 +70,19 @@ public class CopyArea extends AreaBase
 		area.add(block);
 	}
 
-	public void loadArea(EntityPlayer sender, Point loadStart, BackupArea back, boolean clear)
+	public void outputArea(World world, Point loadStart, BackupArea back, boolean clear)
 	{
-		for (BlueprintBlock afterBlock : area)
+		for (BlueprintBlock block : area)
 		{
-			int distFromStartX = afterBlock.x - start.x;
-			int distFromStartY = afterBlock.y - start.y;
-			int distFromStartZ = afterBlock.z - start.z;
-			int x = loadStart.x + distFromStartX;
-			int y = loadStart.x + distFromStartY;
-			int z = loadStart.x + distFromStartZ;
+			int x = block.x + (start.x - loadStart.x);
+			int y = block.y + (start.y - loadStart.y);
+			int z = block.z + (start.z - loadStart.x);
 
-			if (!afterBlock.isAir() || clear)
+			if (!block.isAir() || clear)
 			{
-				back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
-				sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, afterBlock.blockID, afterBlock.metadata);
-				sender.worldObj.setBlockTileEntity(x, y, z, afterBlock.tileEntity);
-				back.addBlockAfter(x, y, z, afterBlock.blockID, afterBlock.metadata, afterBlock.tileEntity);
+				back.addBlockBefore(new BlueprintBlock(x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), world.getBlockTileEntity(x, y, z)));
+				block.setInWorld(world);
+				back.addBlockBefore(new BlueprintBlock(x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), world.getBlockTileEntity(x, y, z)));
 			}
 		}
 	}

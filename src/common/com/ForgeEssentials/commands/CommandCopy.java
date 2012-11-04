@@ -1,32 +1,56 @@
 package com.ForgeEssentials.commands;
 
+import com.ForgeEssentials.ConsoleInfo;
+import com.ForgeEssentials.OutputHandler;
+import com.ForgeEssentials.PlayerInfo;
+import com.ForgeEssentials.WorldControl.CopyArea;
 import com.ForgeEssentials.WorldControl.FunctionHandler;
 
 import net.minecraft.src.CommandBase;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
+import net.minecraft.src.WorldServer;
 
-public class CommandCopy extends CommandBase {
+public class CommandCopy extends CommandBase
+{
 
 	@Override
-	public String getCommandName() {
+	public String getCommandName()
+	{
 		return "copy";
 	}
 
 	@Override
-	public void processCommand(ICommandSender var1, String[] var2) {
-		try{
-			int id = 0;
-			if(var2.length==1) {
-				id = Integer.parseInt(var2[0]);
-			}else if(var2.length==0) {
-				
-			}else{
-				this.getCommandSenderAsPlayer(var1).addChatMessage("Copy Command Failed(Try /copy (<id>))");
+	public void processCommand(ICommandSender var1, String[] var2)
+	{
+		if (var1 instanceof EntityPlayer)
+		{
+			// get PlayerInfo
+			EntityPlayer player = this.getCommandSenderAsPlayer(var1);
+			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
+			
+			// actually do copying.
+			info.copy = new CopyArea(player.worldObj, info.getSelection());
+			OutputHandler.chatConfirmation(player, "Blocks Copied");
+		}
+		else
+		{
+			if (var2.length < 1)
+			{
+				OutputHandler.SOP("No world specified");
 				return;
 			}
-			FunctionHandler.instance.copyCommand(getCommandSenderAsPlayer(var1));
-		}catch(Exception e) {
-			this.getCommandSenderAsPlayer(var1).addChatMessage("Copy Command Failed!(Unknown Reason)");
+			
+			WorldServer world = FunctionHandler.getWorldForName(var2[0]);
+			
+			if (world == null)
+			{
+				OutputHandler.SOP("No world with name '"+var2[0]+"' exists");
+				return;
+			}
+			
+			ConsoleInfo.instance.copy = new CopyArea(world, ConsoleInfo.instance.getSelection());
+			OutputHandler.SOP("Blocks Copied");
 		}
 	}
 

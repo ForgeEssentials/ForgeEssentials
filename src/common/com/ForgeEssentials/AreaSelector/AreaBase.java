@@ -42,9 +42,9 @@ public class AreaBase
 	 */
 	public void alignPoints()
 	{
-		int diffx = start.x - end.x;
-		int diffy = start.y - end.y;
-		int diffz = start.z - end.z;
+		int diffx = end.x - start.x;
+		int diffy = end.y - start.y;
+		int diffz = end.z - start.z;
 		
 		int newX1 = start.x;
 		int newX2 = end.x;

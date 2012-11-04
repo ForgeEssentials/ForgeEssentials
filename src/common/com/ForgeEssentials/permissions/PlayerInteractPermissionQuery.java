@@ -14,10 +14,11 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
  * @author MysteriousAges
  *
  */
-public class PlayerInteractPermissionQuery extends PlayerInteractEvent {
+public class PlayerInteractPermissionQuery extends PlayerInteractEvent
+{
 
-	public PlayerInteractPermissionQuery(EntityPlayer player,
-			Action action, int x, int y, int z, int face) {
+	public PlayerInteractPermissionQuery(EntityPlayer player, Action action, int x, int y, int z, int face)
+	{
 		super(player, action, x, y, z, face);
 	}
 

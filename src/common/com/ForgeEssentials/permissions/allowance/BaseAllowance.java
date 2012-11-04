@@ -15,6 +15,5 @@ public abstract class BaseAllowance
 	 * @param query The Event that can be cancelled
 	 * @param allowanceGranted Whether the permission is granting or denying an allowance.
 	 */
-	public abstract void processPermission(PlayerInteractPermissionQuery query,
-			boolean allowanceGranted);
+	public abstract void processPermission(PlayerInteractPermissionQuery query, boolean allowanceGranted);
 }

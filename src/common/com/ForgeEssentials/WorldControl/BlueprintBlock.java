@@ -16,7 +16,7 @@ public class BlueprintBlock implements Serializable
 	int z = 0;
 	int blockID = 0;
 	int metadata = 0;
-	TileEntity tileEntity;
+	NBTTagCompound tileEntity;
 
 	public BlueprintBlock(int X, int Y, int Z, int bid, int meta, TileEntity te)
 	{
@@ -25,7 +25,31 @@ public class BlueprintBlock implements Serializable
 		z = Z;
 		blockID = bid;
 		metadata = meta;
+		if (te != null)
+		{
+			tileEntity = new NBTTagCompound();
+			te.writeToNBT(tileEntity);
+		}
+	}
+	
+	public BlueprintBlock(int X, int Y, int Z, int bid, int meta, NBTTagCompound te)
+	{
+		x = X;
+		y = Y;
+		z = Z;
+		blockID = bid;
+		metadata = meta;
 		tileEntity = te;
+	}
+	
+	public BlueprintBlock(int X, int Y, int Z, int bid, int meta)
+	{
+		x = X;
+		y = Y;
+		z = Z;
+		blockID = bid;
+		metadata = meta;
+		tileEntity = null;
 	}
 
 	public boolean isAir()
@@ -44,26 +68,24 @@ public class BlueprintBlock implements Serializable
 
 	public boolean equals(BlueprintBlock block)
 	{
-		// TODO: Abrar has to make this comparison of TE's work using their NBT or some mumbo jumbo like that
-		return x == block.x && y == block.y && z == block.z && blockID == block.blockID && metadata == block.metadata && tileEntitiesSame(tileEntity, block.tileEntity);
-	}
-	
-	private boolean tileEntitiesSame(TileEntity te1, TileEntity te2)
-	{
-		if (te1 == te2)
+		if (this == block)
 			return true;
 		
-		NBTTagCompound tag1 = new NBTTagCompound();
-		NBTTagCompound tag2 = new NBTTagCompound();
+		boolean works = x == block.x && y == block.y && z == block.z && blockID == block.blockID && metadata == block.metadata;
 		
-		te1.writeToNBT(tag1);
-		te2.writeToNBT(tag2);
+		if (!works)
+			return false;
 		
-		return tag1.equals(tag2);
+		if (tileEntity == null)
+			return block.tileEntity == null;
+		
+		return tileEntity.equals(block.tileEntity);
 	}
 
 	public void setInWorld(World world)
 	{
 		world.setBlockAndMetadataWithNotify(x, y, z, blockID, metadata);
+		if (tileEntity != null)
+			world.getBlockTileEntity(x, y, z).readFromNBT(tileEntity);
 	}
 }

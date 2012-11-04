@@ -95,9 +95,9 @@ public class BlueprintArea extends AreaBase
 		for (int i = 0; i < area.size(); i++)
 		{
 			BlueprintBlock obj = area.get(i);
-			back.addBlockBefore(obj.x, obj.y, obj.z, sender.worldObj.getBlockId(obj.x, obj.y, obj.z), sender.worldObj.getBlockMetadata(obj.x, obj.y, obj.z), sender.worldObj.getBlockTileEntity(obj.x, obj.y, obj.z));
+			back.addBlockBefore(new BlueprintBlock(obj.x, obj.y, obj.z, sender.worldObj.getBlockId(obj.x, obj.y, obj.z), sender.worldObj.getBlockMetadata(obj.x, obj.y, obj.z), sender.worldObj.getBlockTileEntity(obj.x, obj.y, obj.z)));
 			sender.worldObj.setBlockAndMetadataWithNotify(obj.x, obj.y, obj.z, obj.blockID, obj.metadata);
-			back.addBlockAfter(obj.x, obj.y, obj.z, obj.blockID, obj.metadata, obj.tileEntity);
+			back.addBlockAfter(new BlueprintBlock(obj.x, obj.y, obj.z, obj.blockID, obj.metadata, obj.tileEntity));
 		}
 	}
 
@@ -121,9 +121,9 @@ public class BlueprintArea extends AreaBase
 			int x = plrX + offX;
 			int y = plrY + offY;
 			int z = plrZ + offZ;
-			back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
+			back.addBlockBefore(new BlueprintBlock(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z)));
 			sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, obj.blockID, obj.metadata);
-			back.addBlockAfter(x, y, z, obj.blockID, obj.metadata, obj.tileEntity);
+			back.addBlockAfter(new BlueprintBlock(x, y, z, obj.blockID, obj.metadata, obj.tileEntity));
 		}
 	}
 
@@ -144,9 +144,9 @@ public class BlueprintArea extends AreaBase
 			int x = tX + offX;
 			int y = tY + offY;
 			int z = tZ + offZ;
-			back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
+			back.addBlockBefore(new BlueprintBlock(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z)));
 			sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, obj.blockID, obj.metadata);
-			back.addBlockAfter(x, y, z, obj.blockID, obj.metadata, obj.tileEntity);
+			back.addBlockAfter(new BlueprintBlock(x, y, z, obj.blockID, obj.metadata, obj.tileEntity));
 		}
 	}
 }

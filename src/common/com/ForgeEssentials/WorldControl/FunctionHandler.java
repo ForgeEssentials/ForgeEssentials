@@ -39,7 +39,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class FunctionHandler
 {
-	public static FunctionHandler instance;
+	public static FunctionHandler	instance;
 
 	public FunctionHandler()
 	{
@@ -51,11 +51,11 @@ public class FunctionHandler
 		PlayerInfo.getPlayerInfo(username).addBackup(back);
 	}
 
-	public static WorldGenerator trees = new WorldGenTrees(false);
-	
+	public static WorldGenerator	trees	= new WorldGenTrees(false);
+
 	public static WorldServer getWorldForName(String name)
 	{
-		for (WorldServer world: FMLCommonHandler.instance().getMinecraftServerInstance().worldServers)
+		for (WorldServer world : FMLCommonHandler.instance().getMinecraftServerInstance().worldServers)
 		{
 			if (world.getWorldInfo().getWorldName().equalsIgnoreCase(name))
 				return world;
@@ -67,18 +67,12 @@ public class FunctionHandler
 	 * 
 	 * places block in world
 	 * 
-	 * @param x
-	 *            X-Coord
-	 * @param y
-	 *            Y-Coord
-	 * @param z
-	 *            Z-Coord
-	 * @param inf
-	 *            Command Info
-	 * @param sender
-	 *            Player
-	 * @param back
-	 *            Backup
+	 * @param x X-Coord
+	 * @param y Y-Coord
+	 * @param z Z-Coord
+	 * @param inf Command Info
+	 * @param sender Player
+	 * @param back Backup
 	 * @return when counter should go up
 	 */
 	public boolean placeBlock(int x, int y, int z, CommandInfo inf, EntityPlayer sender, BackupArea back)
@@ -95,7 +89,8 @@ public class FunctionHandler
 			int[] temp = inf.getInfo(0);
 			blockID = temp[0];
 			metadata = temp[1];
-		} else if (inf.getSize() > 1)
+		}
+		else if (inf.getSize() > 1)
 		{
 			good = false;
 			int size = inf.getSize();
@@ -103,9 +98,9 @@ public class FunctionHandler
 			boolean canPlace = Block.blocksList[chosenInf[0]] != null ? Block.blocksList[chosenInf[0]].canBlockStay(sender.worldObj, x, y, z) : true;
 			if (!canPlace)
 				return false;
-			back.addBlockBefore(x, y, z, bid, meta, te);
+			back.addBlockBefore(new BlueprintBlock(x, y, z, bid, meta, te));
 			sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, chosenInf[0], chosenInf[1]);
-			back.addBlockAfter(x, y, z, chosenInf[0], chosenInf[1], null);
+			back.addBlockAfter(new BlueprintBlock(x, y, z, chosenInf[0], chosenInf[1]));
 			return true;
 		}
 
@@ -115,9 +110,9 @@ public class FunctionHandler
 			boolean canPlace = Block.blocksList[blockID] == null ? true : Block.blocksList[blockID].canBlockStay(sender.worldObj, x, y, z);
 			if (!canPlace)
 				return false;
-			back.addBlockBefore(x, y, z, bid, meta, te);
+			back.addBlockBefore(new BlueprintBlock(x, y, z, bid, meta, te));
 			sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, blockID, metadata);
-			back.addBlockAfter(x, y, z, blockID, metadata, tileEntity);
+			back.addBlockAfter(new BlueprintBlock(x, y, z, blockID, metadata, tileEntity));
 			return true;
 		}
 		return false;
@@ -138,7 +133,7 @@ public class FunctionHandler
 		return false;
 	}
 
-	public static Random rand = new Random();
+	public static Random	rand	= new Random();
 
 	public void setCommand(CommandInfo inf, EntityPlayer sender)
 	{
@@ -349,7 +344,8 @@ public class FunctionHandler
 						{
 							changed++;
 						}
-					} else if (clearInsides)
+					}
+					else if (clearInsides)
 					{
 						/*
 						 * int bid=sender.worldObj.getBlockId(x, y, z); int meta=sender.worldObj.getBlockMetadata(x, y, z); back.addBlockBefore(x, y, z, bid, meta); sender.worldObj.setBlockAndMetadataWithNotify(x, y, z, 0, 0); back.addBlockAfter(x, y, z, blockID, metadata);
@@ -398,7 +394,8 @@ public class FunctionHandler
 					if (all)
 					{
 						count++;
-					} else
+					}
+					else
 					{
 						if (countBlock(x, y, z, inf, sender))
 						{
@@ -425,14 +422,14 @@ public class FunctionHandler
 
 	public class DistrInfo
 	{
-		int id = 0;
-		int meta = 0;
-		int amount = 0;
+		int	id		= 0;
+		int	meta	= 0;
+		int	amount	= 0;
 	}
 
 	public class DistrList
 	{
-		public List<DistrInfo> info = new ArrayList<DistrInfo>();
+		public List<DistrInfo>	info	= new ArrayList<DistrInfo>();
 
 		public void addBlock(int id, int meta)
 		{
@@ -454,7 +451,8 @@ public class FunctionHandler
 			{
 				info.remove(indexToChange);
 				info.add(indexToChange, toReplace);
-			} else
+			}
+			else
 			{
 				DistrInfo inf = new DistrInfo();
 				inf.id = id;
@@ -636,8 +634,6 @@ public class FunctionHandler
 
 	public void copyCommand(EntityPlayer sender)
 	{
-		PlayerInfo.getPlayerInfo(sender.username).copy = new CopyArea(sender, PlayerInfo.getPlayerInfo(sender.username).getSelection());
-		sender.addChatMessage("Blocks Copied");
 	}
 
 	public void cutCommand(EntityPlayer sender)
@@ -684,7 +680,7 @@ public class FunctionHandler
 		boolean goodX = point1.x <= point2.x;
 		boolean goodY = point1.y <= point2.y;
 		boolean goodZ = point1.z <= point2.z;
-		CopyArea copy = new CopyArea(sender, point1, point2);
+		CopyArea copy = new CopyArea(sender.worldObj, point1, point2);
 		for (int x = point1.x; goodX ? x <= point2.x : x >= point2.x;)
 		{
 			for (int y = point1.y; goodY ? y <= point2.y : y >= point2.y;)
@@ -693,9 +689,9 @@ public class FunctionHandler
 				{
 					CommandInfo inf = new CommandInfo();
 					inf.setInfo(0, 0);
-					back.addBlockBefore(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z));
+					back.addBlockBefore(new BlueprintBlock(x, y, z, sender.worldObj.getBlockId(x, y, z), sender.worldObj.getBlockMetadata(x, y, z), sender.worldObj.getBlockTileEntity(x, y, z)));
 					sender.worldObj.setBlockWithNotify(x, y, z, 0);
-					back.addBlockAfter(x, y, z, 0, 0, null);
+					back.addBlockAfter(new BlueprintBlock(x, y, z, 0, 0, (TileEntity)null));
 					if (goodZ)
 						z++;
 					else
@@ -725,7 +721,8 @@ public class FunctionHandler
 		if (worldObj.getBlockId(x, y, z) != 0 && worldObj.getBlockId(x, y + 1, z) == 0)
 		{
 			return true;
-		} else
+		}
+		else
 		{
 			return false;
 		}
@@ -934,7 +931,7 @@ public class FunctionHandler
 	public void pasteAt(EntityPlayer sender, boolean clear, int x, int y, int z, BackupArea back)
 	{
 		CopyArea area = PlayerInfo.getPlayerInfo(sender.username).copy;
-		area.loadArea(sender, PlayerInfo.getPlayerInfo(sender.username).getPoint1(), back, clear);
+		area.outputArea(sender.worldObj, PlayerInfo.getPlayerInfo(sender.username).getPoint1(), back, clear);
 
 	}
 
@@ -951,7 +948,8 @@ public class FunctionHandler
 		if (dir == 1 || dir == 3)
 		{
 			length = area.getXLength();
-		} else if (dir == 0 || dir == 2)
+		}
+		else if (dir == 0 || dir == 2)
 		{
 			length = area.getZLength();
 			// }else{
@@ -963,23 +961,28 @@ public class FunctionHandler
 		 */
 		for (int i = 0; i < times; i++)
 		{
-			area.loadArea(sender, new Point(x, y, z), back, true);
+			area.outputArea(sender.worldObj, new Point(x, y, z), back, true);
 			if (dir == 0)
 			{
 				z += length;
-			} else if (dir == 1)
+			}
+			else if (dir == 1)
 			{
 				x -= length;
-			} else if (dir == 2)
+			}
+			else if (dir == 2)
 			{
 				z -= length;
-			} else if (dir == 3)
+			}
+			else if (dir == 3)
 			{
 				x += length;
-			} else if (dir == 4)
+			}
+			else if (dir == 4)
 			{
 				y -= length;
-			} else if (dir == 5)
+			}
+			else if (dir == 5)
 			{
 				y += length;
 			}
@@ -987,15 +990,6 @@ public class FunctionHandler
 
 		addBackup(sender.username, back);
 		sender.addChatMessage("Blocks Loaded(" + times + ")");
-	}
-
-	public void pasteCommand(EntityPlayer sender, boolean point2, boolean clear)
-	{
-		Point start = point2 ? PlayerInfo.getPlayerInfo(sender.username).getPoint2() : PlayerInfo.getPlayerInfo(sender.username).getPoint1();
-		BackupArea back = new BackupArea();
-		PlayerInfo.getPlayerInfo(sender.username).copy.loadArea(sender, start, back, clear);
-		addBackup(sender.username, back);
-		sender.addChatMessage("Blocks Pasted");
 	}
 
 	public void replaceCommand(CommandInfo begin, CommandInfo end, EntityPlayer sender)
@@ -1320,35 +1314,43 @@ public class FunctionHandler
 		{
 			trees = new WorldGenTrees(false, 5, 0, 0, false);
 			trees.generate(sender.worldObj, rand, x, y, z);
-		} else if (type.equals("swamp"))
+		}
+		else if (type.equals("swamp"))
 		{
 			trees = new WorldGenTrees(false, 5, 0, 0, true);
 			trees.generate(sender.worldObj, rand, x, y, z);
-		} else if (type.equals("birch"))
+		}
+		else if (type.equals("birch"))
 		{
 			trees = new WorldGenTrees(false, 5, 2, 2, false);
 			trees.generate(sender.worldObj, rand, x, y, z);
-		} else if (type.equals("smalljungle"))
+		}
+		else if (type.equals("smalljungle"))
 		{
 			trees = new WorldGenTrees(false, 4 + rand.nextInt(7), 3, 3, true);
 			trees.generate(sender.worldObj, rand, x, y, z);
-		} else if (type.equals("bigjungle"))
+		}
+		else if (type.equals("bigjungle"))
 		{
 			trees = new WorldGenHugeTrees(false, 10 + rand.nextInt(20), 3, 3);
 			trees.generate(sender.worldObj, rand, x, y, z);
-		} else if (type.equals("shrubjungle"))
+		}
+		else if (type.equals("shrubjungle"))
 		{
 			trees = new WorldGenShrub(3, 0);
 			trees.generate(sender.worldObj, rand, x, y, z);
-		} else if (type.equals("taiga1"))
+		}
+		else if (type.equals("taiga1"))
 		{
 			trees = new WorldGenTaiga1();
 			trees.generate(sender.worldObj, rand, x, y, z);
-		} else if (type.equals("taiga2"))
+		}
+		else if (type.equals("taiga2"))
 		{
 			trees = new WorldGenTaiga2(false);
 			trees.generate(sender.worldObj, rand, x, y, z);
-		} else
+		}
+		else
 		{
 			sender.addChatMessage("Invalid Tree Type Types: oak, swamp, birch, smalljungle, bigjungle, shrubjungle, taiga1, taiga2");
 		}

@@ -19,15 +19,15 @@ public class BackupArea
 	public boolean hasUndone = false;
 
 	// implicit constructor
-
-	public void addBlockBefore(int x, int y, int z, int blockID, int metadata, TileEntity te)
+	
+	public void addBlockBefore(BlueprintBlock block)
 	{
-		before.add(new BlueprintBlock(x, y, z, blockID, metadata, te));
+		before.add(block);
 	}
 
-	public void addBlockAfter(int x, int y, int z, int blockID, int metadata, TileEntity te)
+	public void addBlockAfter(BlueprintBlock block)
 	{
-		after.add(new BlueprintBlock(x, y, z, blockID, metadata, te));
+		after.add(block);
 	}
 
 	public void loadAreaBefore(World worldObj)
