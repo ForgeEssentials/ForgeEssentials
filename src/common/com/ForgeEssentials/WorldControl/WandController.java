@@ -36,7 +36,7 @@ public class WandController
 		PlayerInfo.getPlayerInfo(player.username).setPoint1(new Point(x, y, z));
 
 		if (FMLCommonHandler.instance().getSide().equals(Side.CLIENT))
-			player.addChatMessage("Pos1 set to: " + x + ", " + y + ", " + z);
+			player.addChatMessage("Point 1 set to: " + x + ", " + y + ", " + z);
 	}
 
 	private void onRightClick(EntityPlayer player, int x, int y, int z, int side)
@@ -44,6 +44,6 @@ public class WandController
 		PlayerInfo.getPlayerInfo(player.username).setPoint2(new Point(x, y, z));
 
 		if (FMLCommonHandler.instance().getEffectiveSide().equals(Side.CLIENT))
-			player.addChatMessage("Pos2 set to: " + x + ", " + y + ", " + z);
+			player.addChatMessage("Point 2 set to: " + x + ", " + y + ", " + z);
 	}
 }
