@@ -5,6 +5,7 @@ import java.io.File;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.WorldControl.WorldControl;
 import com.ForgeEssentials.network.ConnectionHandler;
 import com.ForgeEssentials.network.HandlerClient;
 import com.ForgeEssentials.network.HandlerServer;
@@ -39,14 +40,19 @@ public class Main
 	public static Main instance;
 
 	public static final File FEDIR = new File("./ForgeEssentials/");
+	public static final File FECONFIG = new File(FEDIR, "config.txt");
 
 	public FEPermissionHandler pHandler;
+	public WorldControl worldcontrol;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		if (!FEDIR.exists())
 			FEDIR.mkdir();
+		
+		worldcontrol = new WorldControl();
+		worldcontrol.preLoad(e);
 
 		// configs.
 		Configuration config = new Configuration(new File(FEDIR, "config.txt"));
@@ -57,6 +63,7 @@ public class Main
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
+		worldcontrol.load(e);
 		proxy.load(e);
 		pHandler = new FEPermissionHandler();
 		MinecraftForge.EVENT_BUS.register(pHandler);
@@ -66,6 +73,7 @@ public class Main
 	public void serverStart(FMLServerStartingEvent e)
 	{
 		ConsoleInfo.instance = new ConsoleInfo();
+		worldcontrol.serverStarting(e);
 	}
 
 }

@@ -14,6 +14,10 @@ public class PlayerInfo extends ConsoleInfo
 	private boolean hasClientMod;
 	private String username;
 	
+	// wand stuff
+	public int wandID;
+	public boolean wandEnabled;
+	
 	public PlayerInfo(String username)
 	{
 		super();
