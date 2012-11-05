@@ -2,14 +2,14 @@ package com.ForgeEssentials;
 
 import java.io.File;
 
-import com.ForgeEssentials.WorldControl.WorldControlMain;
-import com.ForgeEssentials.network.HandlerClient;
-import com.ForgeEssentials.network.HandlerServer;
-import com.ForgeEssentials.network.ConnectionHandler;
-import com.ForgeEssentials.permissions.FEPermissionHandler;
-
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+
+import com.ForgeEssentials.network.ConnectionHandler;
+import com.ForgeEssentials.network.HandlerClient;
+import com.ForgeEssentials.network.HandlerServer;
+import com.ForgeEssentials.permissions.FEPermissionHandler;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -41,7 +41,6 @@ public class Main
 	public static final File FEDIR = new File("./ForgeEssentials/");
 
 	public FEPermissionHandler pHandler;
-	public WorldControlMain worldControl;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -49,13 +48,9 @@ public class Main
 		if (!FEDIR.exists())
 			FEDIR.mkdir();
 
-		worldControl = new WorldControlMain();
-		worldControl.preLoad(e);
-
 		// configs.
 		Configuration config = new Configuration(new File(FEDIR, "config.txt"));
 		config.load();
-		WorldControlMain.wandID = config.get("Wand", "Wand ID", 271).getInt();
 		config.save();
 	}
 
@@ -63,7 +58,6 @@ public class Main
 	public void load(FMLInitializationEvent e)
 	{
 		proxy.load(e);
-		worldControl.load(e);
 		pHandler = new FEPermissionHandler();
 		MinecraftForge.EVENT_BUS.register(pHandler);
 	}
@@ -72,7 +66,6 @@ public class Main
 	public void serverStart(FMLServerStartingEvent e)
 	{
 		ConsoleInfo.instance = new ConsoleInfo();
-		worldControl.serverLoad(e);
 	}
 
 }

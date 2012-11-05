@@ -1,15 +1,6 @@
 package com.ForgeEssentials;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.ForgeEssentials.AreaSelector.Point;
-import com.ForgeEssentials.AreaSelector.Selection;
-import com.ForgeEssentials.WorldControl.BackupArea;
-import com.ForgeEssentials.WorldControl.CopyArea;
-
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
 
 public class PlayerInfo extends ConsoleInfo
 {
