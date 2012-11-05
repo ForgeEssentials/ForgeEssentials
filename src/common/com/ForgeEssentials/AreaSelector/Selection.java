@@ -13,14 +13,4 @@ public class Selection extends AreaBase
 	{
 		super(point1, point2);
 	}
-	
-	public void shift(int x, int y, int z)
-	{
-		Point point = new Point(x, y, z);
-		start.add(point);
-		end.add(point);
-		
-		start.validate();
-		end.validate();
-	}
 }

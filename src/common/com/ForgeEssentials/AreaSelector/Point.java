@@ -18,10 +18,11 @@ public class Point implements Serializable, Comparable<Point>
 		this.z = z;
 	}
 
-	@Override
 	/**
-	 * decides whats bigger on all values (x ,y z)  perhaps whichever has more negatives or something.
+	 * This is calculated by the whichever has higher coords.
+	 * @return Posotive number if this Point is larger. 0 if they are equal. Negative if the provided point is larger.
 	 */
+	@Override
 	public int compareTo(Point point)
 	{
 		if (equals(point))
@@ -53,53 +54,7 @@ public class Point implements Serializable, Comparable<Point>
 		{
 			return (x-point.x) + (y-point.y) + (z-point.z);
 		}
-		
-		
-	}
 
-	/**
-	 * x = first value y = second value z = 3rd value. only puting 2 values sets x and y, but not z.
-	 * 
-	 * @param values
-	 */
-	public void setValues(int... values)
-	{
-		switch (values.length)
-		{
-			case 3:
-				z = values[2];
-			case 2:
-				y = values[1];
-			case 1:
-				x = values[0];
-				break;
-			default:
-				throw new IllegalArgumentException("There are too many values!");
-		}
-	}
-
-	public void update(Point point)
-	{
-		if (point.equals(this) || point == this)
-			return;
-
-		x = point.x;
-		y = point.y;
-		z = point.z;
-	}
-
-	public void add(Point point)
-	{
-		x += point.x;
-		y += point.y;
-		z += point.z;
-	}
-
-	public void subtract(Point point)
-	{
-		x -= point.x;
-		y -= point.y;
-		z -= point.z;
 	}
 
 	@Override
@@ -111,6 +66,10 @@ public class Point implements Serializable, Comparable<Point>
 		return false;
 	}
 
+	/**
+	 * ensures the Point is valid.
+	 * Just floors the Y axis to 0. Y can't be negative.
+	 */
 	public void validate()
 	{
 		if (y < 0) {
@@ -118,6 +77,10 @@ public class Point implements Serializable, Comparable<Point>
 		}
 	}
 	
+	/**
+	 * @param point
+	 * @return The distance to a given Block.
+	 */
 	public double getDistanceTo(Point point)
 	{
 		return Math.sqrt(
@@ -127,6 +90,11 @@ public class Point implements Serializable, Comparable<Point>
 				);
 	}
 	
+	/**
+	 * gets a new Point with the same data as the provided one.
+	 * @param point
+	 * @return
+	 */
 	public static Point copy(Point point)
 	{
 		return new Point(point.x, point.y, point.z);
