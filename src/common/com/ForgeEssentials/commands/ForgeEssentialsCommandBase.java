@@ -1,4 +1,4 @@
-package com.ForgeEssentials;
+package com.ForgeEssentials.commands;
 
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityClientPlayerMP;

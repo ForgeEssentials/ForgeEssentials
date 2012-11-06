@@ -8,7 +8,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.Main;
+import com.ForgeEssentials.ForgeEssentials;
 import com.ForgeEssentials.WorldControl.commands.*;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -25,7 +25,7 @@ public class WorldControl
 	// load.
 	public void preLoad(FMLPreInitializationEvent event)
 	{
-		Configuration config = new Configuration(Main.FECONFIG);
+		Configuration config = new Configuration(ForgeEssentials.FECONFIG);
 		config.load();
 		
 		config.addCustomCategoryComment("WorldControl", "The config area for the WorldControl submod of ForgeEssentials.");

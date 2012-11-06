@@ -25,13 +25,13 @@ import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 
 @NetworkMod(clientSideRequired = false, serverSideRequired = false, connectionHandler = ConnectionHandler.class, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerClient.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerServer.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.0.1")
-public class Main
+public class ForgeEssentials
 {
 	@SidedProxy(clientSide = "com.ForgeEssentials.ProxyClient", serverSide = "com.ForgeEssentials.ProxyCommon")
 	public static ProxyCommon proxy;
 
 	@Instance(value = "ForgeEssentials")
-	public static Main instance;
+	public static ForgeEssentials instance;
 
 	public static final File FEDIR = new File("./ForgeEssentials/");
 	public static final File FECONFIG = new File(FEDIR, "config.txt");
