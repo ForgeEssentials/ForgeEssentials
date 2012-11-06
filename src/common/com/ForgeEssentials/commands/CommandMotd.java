@@ -23,11 +23,6 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandBlock(TileEntityCommandBlock block, String[] args)
-	{
-	}
-
-	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		OutputHandler.SOP(ForgeEssentials.motd);
@@ -49,5 +44,18 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	public String getUsagePlayer(EntityPlayer player)
 	{
 		return "/motd [new MOTD] Get the Message Of The Day";
+	}
+	
+	@Override
+	public boolean canConsoleUseCommand()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canPlayerUseCommand(EntityPlayer player)
+	{
+		// TODO: check permissions
+		return true;
 	}
 }

@@ -51,6 +51,12 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 		OutputHandler.SOP("You cannot use the \""+getCommandName()+"\" command from the console");
 	}
 	
+	@Override
+	public boolean canConsoleUseCommand()
+	{
+		return false;
+	}
+	
 	public static int[] interpretIDAndMetaFromString(String msg)
 	{
 		int ID;
