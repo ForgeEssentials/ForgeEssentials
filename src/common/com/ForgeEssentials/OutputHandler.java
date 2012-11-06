@@ -20,7 +20,7 @@ public final class OutputHandler
 	public static final String GREY = "\u00a77";
 	public static final String DARKGREY = "\u00a78";
 	public static final String INDIGO = "\u00a79";
-	public static final String BRIGHTGREEN = "\u00a7a";
+	public static final String GREEN = "\u00a7a";
 	public static final String AQUA = "\u00a7b";
 	public static final String RED = "\u00a7c";
 	public static final String PINK = "\u00a7d";
@@ -52,7 +52,7 @@ public final class OutputHandler
 	 */
 	public static void chatConfirmation(EntityPlayer player, String msg)
 	{
-		player.addChatMessage(BRIGHTGREEN + BOLD + msg);
+		player.addChatMessage(GREEN + msg);
 	}
 
 	/**

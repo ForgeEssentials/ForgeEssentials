@@ -76,6 +76,6 @@ public class CommandWand extends WorldControlCommandBase
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		// TODO: check permissions.
-		return false;
+		return true;
 	}
 }

@@ -69,7 +69,6 @@ public class ForgeEssentials
 	@ServerStarting
 	public void serverStart(FMLServerStartingEvent e)
 	{
-		ConsoleInfo.instance = new ConsoleInfo();
 		worldcontrol.serverStarting(e);
 	}
 
