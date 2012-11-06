@@ -1,8 +1,11 @@
 package com.ForgeEssentials;
 
+import java.util.logging.Level;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.RConConsoleSource;
 
 public final class OutputHandler
 {
@@ -68,7 +71,13 @@ public final class OutputHandler
 	 */
 	public static void SOP(String msg)
 	{
-		System.out.println("{Forge Essentials} " + msg);
+
+		if (FMLCommonHandler.instance().getSide().isServer())
+		{
+			RConConsoleSource.consoleBuffer.sendChatToPlayer("{Forge Essentials} " + msg);
+		}
+		
+		FMLCommonHandler.instance().getFMLLogger().log(Level.FINE, ("{Forge Essentials} " + msg));
 	}
 
 }
