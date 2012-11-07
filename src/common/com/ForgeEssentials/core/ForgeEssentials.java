@@ -1,16 +1,8 @@
 package com.ForgeEssentials.core;
 
-import java.io.File;
-
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.MinecraftForge;
-
-import com.ForgeEssentials.WorldControl.WorldControl;
 import com.ForgeEssentials.client.network.HandlerClient;
-import com.ForgeEssentials.commands.Commands;
 import com.ForgeEssentials.network.ConnectionHandler;
 import com.ForgeEssentials.network.HandlerServer;
-import com.ForgeEssentials.permissions.FEPermissionHandler;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -33,41 +25,23 @@ public class ForgeEssentials
 
 	@Instance(value = "ForgeEssentials")
 	public static ForgeEssentials instance;
-
-	public FEPermissionHandler pHandler;
-	public WorldControl worldcontrol;
-	public Commands commands;
-
+    public static Module module;
 	
-	@PreInit
+    @PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		FEConfig.loadConfig();
-		Version.checkVersion();
-		worldcontrol = new WorldControl();
-		worldcontrol.preLoad(e);
-
-		// configs.
-		
+		module.preLoad(e);
 	}
-
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
-		worldcontrol.load(e);
+		module.load(e);
 		proxy.load(e);
-		pHandler = new FEPermissionHandler();
-		MinecraftForge.EVENT_BUS.register(pHandler);
 	}
-
-	@ServerStarting
+    @ServerStarting
 	public void serverStart(FMLServerStartingEvent e)
 	{
-		commands.serverStarting(e);
-		worldcontrol.serverStarting(e);
+		module.serverStarting(e);
 	}
 	//TODO set a per-player perms config in PERMSDIR
-
 }
-
-

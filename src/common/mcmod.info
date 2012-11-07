@@ -1,0 +1,17 @@
+[
+{
+  "modid": "ForgeEssentials",
+  "name": "Forge Essentials",
+  "description": "The Forge Essentials project consists of a permissions and protection system to be used with forge servers. It will replace worldedit and worldguard in functionality.",
+  "version": "0.0.1",
+  "mcversion": "1.4.2",
+  "logoFile": "/",
+  "url": "
+  "updateUrl": "",
+  "authors": ""'
+  "credits": "",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
