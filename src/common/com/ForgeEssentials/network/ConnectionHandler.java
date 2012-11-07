@@ -1,6 +1,6 @@
 package com.ForgeEssentials.network;
 
-import com.ForgeEssentials.PlayerInfo;
+import com.ForgeEssentials.core.PlayerInfo;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;

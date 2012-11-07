@@ -1,4 +1,6 @@
-package com.ForgeEssentials;
+package com.ForgeEssentials.client.core;
+
+import com.ForgeEssentials.core.ProxyCommon;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;

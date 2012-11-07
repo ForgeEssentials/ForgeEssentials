@@ -1,7 +1,9 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.ForgeEssentials;
-import com.ForgeEssentials.OutputHandler;
+import com.ForgeEssentials.core.FEConfig;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
@@ -22,9 +24,9 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 		if (args.length > 0)
 		{
 			ForgeEssentials.instance.config.changeConfig("Basic", "motd", args[0]);
-			OutputHandler.SOP("MOTD changed to " + ForgeEssentials.motd);
+			OutputHandler.SOP("MOTD changed to " + FEConfig.motd);
 		} else
-			player.addChatMessage(ForgeEssentials.motd);
+			player.addChatMessage(FEConfig.motd);
 	}
 
 	@Override
@@ -33,9 +35,9 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 		if (args.length > 0)
 		{
 			ForgeEssentials.instance.config.changeConfig("Basic", "motd", args[0]);
-			OutputHandler.SOP("MOTD changed to " + ForgeEssentials.motd);
+			OutputHandler.SOP("MOTD changed to " + FEConfig.motd);
 		} else
-			OutputHandler.SOP(ForgeEssentials.motd);
+			OutputHandler.SOP(FEConfig.motd);
 	}
 
 	@Override
