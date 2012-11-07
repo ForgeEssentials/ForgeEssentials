@@ -6,7 +6,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.WorldControl;
-import com.ForgeEssentials.commands.CommandMotd;
+import com.ForgeEssentials.commands.*;
 import com.ForgeEssentials.network.ConnectionHandler;
 import com.ForgeEssentials.network.HandlerClient;
 import com.ForgeEssentials.network.HandlerServer;
@@ -75,6 +75,7 @@ public class ForgeEssentials
 	{
 		// commands
 		e.registerServerCommand(new CommandMotd());
+		e.registerServerCommand(new CommandButcher());
 		
 		worldcontrol.serverStarting(e);
 	}
