@@ -1,8 +1,8 @@
 package com.ForgeEssentials.WorldControl;
 
-import com.ForgeEssentials.OutputHandler;
-import com.ForgeEssentials.PlayerInfo;
 import com.ForgeEssentials.AreaSelector.Point;
+import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.core.PlayerInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

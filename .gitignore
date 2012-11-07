@@ -27,3 +27,6 @@
 
 *.bat
 *.sh
+CHANGELOG
+LICENSE.txt
+!/src/common/mcmod.info
