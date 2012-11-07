@@ -11,7 +11,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	// ---------------------------
 	// processing command
 	// ---------------------------
-	
+
 	@Override
 	public final void processCommand(ICommandSender var1, String[] var2)
 	{
@@ -22,9 +22,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		else
 			processCommandConsole(var1, var2);
 	}
-	
+
 	public abstract void processCommandPlayer(EntityPlayer player, String[] args);
-	
+
 	/**
 	 * Override is optional. dos nothing by default.
 	 */
@@ -32,51 +32,72 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	{
 		// do nothing.
 	}
-	
+
 	public abstract void processCommandConsole(ICommandSender sender, String[] args);
-	
-	
+
 	// ---------------------------
 	// command usage
 	// ---------------------------
-	
+
 	@Override
 	public final String getCommandUsage(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
-			return getUsagePlayer((EntityPlayer) sender);
-		else if (sender instanceof TileEntityCommandBlock)
-			return getUsageCommandBlock((TileEntityCommandBlock) sender);
+		{
+			String usage;
+			try
+			{
+				usage = getSyntaxPlayer((EntityPlayer) sender) + " " + getInfoPlayer((EntityPlayer) sender);
+			} catch (NullPointerException e)
+			{
+				usage = "Not usable by player";
+			}
+			return usage;
+		} else if (sender instanceof TileEntityCommandBlock)
+			return getSyntaxCommandBlock((TileEntityCommandBlock) sender);
 		else
-			return getUsageConsole();
+		{
+			String usage;
+			try
+			{
+				usage = getSyntaxConsole() + " " + getInfoConsole();
+			} catch (NullPointerException e)
+			{
+				usage = "Not usable by console";
+			}
+			return usage;
+		}
 	}
-	
-	public abstract String getUsageConsole();
-	
-	public String getUsageCommandBlock(TileEntityCommandBlock block)
+
+	public abstract String getSyntaxConsole();
+
+	public String getSyntaxCommandBlock(TileEntityCommandBlock block)
 	{
-		return "/"+getCommandName();
+		return "/" + getCommandName();
 	}
-	
-	public abstract String getUsagePlayer(EntityPlayer player);
-	
+
+	public abstract String getSyntaxPlayer(EntityPlayer player);
+
+	public abstract String getInfoConsole();
+
+	public abstract String getInfoPlayer(EntityPlayer player);
+
 	// ---------------------------
 	// permissions
 	// ---------------------------
-	
-    public final boolean canCommandSenderUseCommand(ICommandSender sender)
-    {
+
+	public final boolean canCommandSenderUseCommand(ICommandSender sender)
+	{
 		if (sender instanceof EntityPlayer)
 			return canPlayerUseCommand((EntityPlayer) sender);
 		else if (sender instanceof TileEntityCommandBlock)
 			return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
 		else
 			return canConsoleUseCommand();
-    }
-    
-    
+	}
+
 	public abstract boolean canConsoleUseCommand();
-	
+
 	/**
 	 * returns false by default. Override if you wanna change that.
 	 */
@@ -84,7 +105,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	{
 		return false;
 	}
-	
+
 	public abstract boolean canPlayerUseCommand(EntityPlayer player);
 
 }

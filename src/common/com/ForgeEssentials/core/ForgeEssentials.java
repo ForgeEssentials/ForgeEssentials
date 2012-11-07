@@ -10,7 +10,7 @@ import com.ForgeEssentials.client.network.HandlerClient;
 import com.ForgeEssentials.commands.CommandButcher;
 import com.ForgeEssentials.commands.CommandHome;
 import com.ForgeEssentials.commands.CommandMotd;
-import com.ForgeEssentials.commands.CommandSetHome;
+import com.ForgeEssentials.commands.CommandRemove;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.network.ConnectionHandler;
 import com.ForgeEssentials.network.HandlerServer;
@@ -65,10 +65,10 @@ public class ForgeEssentials
 		// commands
 		e.registerServerCommand(new CommandMotd());
 		e.registerServerCommand(new CommandButcher());
+		e.registerServerCommand(new CommandRemove());
 		e.registerServerCommand(new CommandFEVersion());
 		//empty commands
 		e.registerServerCommand(new CommandHome());
-		e.registerServerCommand(new CommandSetHome());
 		worldcontrol.serverStarting(e);
 	}
 
