@@ -6,6 +6,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.WorldControl;
+import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.network.ConnectionHandler;
 import com.ForgeEssentials.network.HandlerClient;
 import com.ForgeEssentials.network.HandlerServer;
@@ -38,6 +39,7 @@ public class ForgeEssentials
 
 	public FEPermissionHandler pHandler;
 	public WorldControl worldcontrol;
+	public static FEConfig config;
 
 	public static String motd;
 
@@ -46,6 +48,8 @@ public class ForgeEssentials
 	{
 		if (!FEDIR.exists())
 			FEDIR.mkdir();
+		
+		config = new FEConfig();
 		
 		worldcontrol = new WorldControl();
 		worldcontrol.preLoad(e);
@@ -69,6 +73,9 @@ public class ForgeEssentials
 	@ServerStarting
 	public void serverStart(FMLServerStartingEvent e)
 	{
+		// commands
+		e.registerServerCommand(new CommandMotd());
+		
 		worldcontrol.serverStarting(e);
 	}
 
