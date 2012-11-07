@@ -40,6 +40,4 @@ public class Module {
 			commands.serverStarting(e);
 			worldcontrol.serverStarting(e);
 		}
-	    
-
 }

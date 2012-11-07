@@ -108,5 +108,4 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		// check permissions.
 		return true;
 	}
-
 }
