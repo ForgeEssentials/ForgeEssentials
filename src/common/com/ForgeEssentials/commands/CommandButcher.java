@@ -2,7 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
-import com.ForgeEssentials.OutputHandler;
+import com.ForgeEssentials.core.OutputHandler;
 
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.Entity;

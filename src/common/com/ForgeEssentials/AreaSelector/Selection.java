@@ -2,7 +2,7 @@ package com.ForgeEssentials.AreaSelector;
 
 import java.util.HashMap;
 
-import com.ForgeEssentials.PlayerInfo;
+import com.ForgeEssentials.core.PlayerInfo;
 
 
 import net.minecraft.src.EntityPlayer;

@@ -1,7 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.ForgeEssentials;
-import com.ForgeEssentials.OutputHandler;
+import com.ForgeEssentials.core.FEConfig;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.OutputHandler;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
@@ -19,23 +20,30 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
+
+		player.addChatMessage(FEConfig.instance.motd);
+
 		if (args.length > 0)
 		{
-			ForgeEssentials.instance.config.changeConfig("Basic", "motd", args[0]);
-			OutputHandler.SOP("MOTD changed to " + ForgeEssentials.motd);
+			FEConfig.instance.changeConfig("Basic", "motd", args[0]);
+			OutputHandler.SOP("MOTD changed to " + FEConfig.instance.motd);
 		} else
-			player.addChatMessage(ForgeEssentials.motd);
+			player.addChatMessage(FEConfig.instance.motd);
+
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		OutputHandler.SOP(FEConfig.instance.motd);
+
 		if (args.length > 0)
 		{
-			ForgeEssentials.instance.config.changeConfig("Basic", "motd", args[0]);
-			OutputHandler.SOP("MOTD changed to " + ForgeEssentials.motd);
+			FEConfig.instance.changeConfig("Basic", "motd", args[0]);
+			OutputHandler.SOP("MOTD changed to " + FEConfig.instance.motd);
 		} else
-			OutputHandler.SOP(ForgeEssentials.motd);
+			OutputHandler.SOP(FEConfig.instance.motd);
+
 	}
 
 	@Override
