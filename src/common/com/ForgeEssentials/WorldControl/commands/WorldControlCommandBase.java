@@ -4,9 +4,9 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.TileEntityCommandBlock;
 
-import com.ForgeEssentials.OutputHandler;
 import com.ForgeEssentials.WorldControl.WorldControl;
-import com.ForgeEssentials.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 {

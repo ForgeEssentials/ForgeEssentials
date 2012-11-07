@@ -1,4 +1,4 @@
-package com.ForgeEssentials;
+package com.ForgeEssentials.core;
 
 import java.io.File;
 
@@ -6,9 +6,13 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.WorldControl;
-import com.ForgeEssentials.commands.*;
+import com.ForgeEssentials.client.network.HandlerClient;
+import com.ForgeEssentials.commands.CommandButcher;
+import com.ForgeEssentials.commands.CommandHome;
+import com.ForgeEssentials.commands.CommandMotd;
+import com.ForgeEssentials.commands.CommandSetHome;
+import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.network.ConnectionHandler;
-import com.ForgeEssentials.network.HandlerClient;
 import com.ForgeEssentials.network.HandlerServer;
 import com.ForgeEssentials.permissions.FEPermissionHandler;
 
@@ -28,37 +32,22 @@ import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.0.1")
 public class ForgeEssentials
 {
-	@SidedProxy(clientSide = "com.ForgeEssentials.ProxyClient", serverSide = "com.ForgeEssentials.ProxyCommon")
+	@SidedProxy(clientSide = "com.ForgeEssentials.client.core.ProxyClient", serverSide = "com.ForgeEssentials.core.ProxyCommon")
 	public static ProxyCommon proxy;
 
 	@Instance(value = "ForgeEssentials")
 	public static ForgeEssentials instance;
 
-	public static final File FEDIR = new File("./ForgeEssentials/");
-	public static final File FECONFIG = new File(FEDIR, "config.txt");
-
 	public FEPermissionHandler pHandler;
 	public WorldControl worldcontrol;
 	public static FEConfig config;
 
-	public static String motd;
-
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		if (!FEDIR.exists())
-			FEDIR.mkdir();
-		
-		config = new FEConfig();
-		
+		Version.checkVersion();
 		worldcontrol = new WorldControl();
 		worldcontrol.preLoad(e);
-
-		// configs.
-		Configuration config = new Configuration(new File(FEDIR, "config.txt"));
-		config.load();
-		motd = config.get("Basic", "MOTD", "ForgeEssentials is awesome. https://github.com/ForgeEssentials/ForgeEssentialsMain").value;
-		config.save();
 	}
 
 	@Init
@@ -76,7 +65,10 @@ public class ForgeEssentials
 		// commands
 		e.registerServerCommand(new CommandMotd());
 		e.registerServerCommand(new CommandButcher());
-		
+		e.registerServerCommand(new CommandFEVersion());
+		//empty commands
+		e.registerServerCommand(new CommandHome());
+		e.registerServerCommand(new CommandSetHome());
 		worldcontrol.serverStarting(e);
 	}
 

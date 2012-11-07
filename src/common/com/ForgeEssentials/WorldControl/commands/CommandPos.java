@@ -1,9 +1,9 @@
 package com.ForgeEssentials.WorldControl.commands;
 
-import com.ForgeEssentials.OutputHandler;
-import com.ForgeEssentials.PlayerInfo;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.FunctionHelper;
+import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.core.PlayerInfo;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.MovingObjectPosition;

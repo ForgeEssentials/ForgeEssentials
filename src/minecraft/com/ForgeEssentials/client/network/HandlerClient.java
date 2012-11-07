@@ -1,4 +1,4 @@
-package com.ForgeEssentials.network;
+package com.ForgeEssentials.client.network;
 
 import net.minecraft.src.INetworkManager;
 import net.minecraft.src.Packet250CustomPayload;
