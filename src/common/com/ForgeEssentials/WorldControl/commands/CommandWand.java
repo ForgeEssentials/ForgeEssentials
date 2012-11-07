@@ -5,9 +5,9 @@ import net.minecraft.src.ICommandSender;
 import net.minecraft.src.Item;
 import net.minecraft.src.TileEntityCommandBlock;
 
-import com.ForgeEssentials.OutputHandler;
-import com.ForgeEssentials.PlayerInfo;
-import com.ForgeEssentials.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandWand extends WorldControlCommandBase
 {

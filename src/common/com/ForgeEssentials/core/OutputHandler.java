@@ -1,4 +1,4 @@
-package com.ForgeEssentials;
+package com.ForgeEssentials.core;
 
 import java.util.logging.Level;
 
@@ -77,7 +77,7 @@ public final class OutputHandler
 			RConConsoleSource.consoleBuffer.sendChatToPlayer("{Forge Essentials} " + msg);
 		}
 		
-		FMLCommonHandler.instance().getFMLLogger().log(Level.FINE, ("{Forge Essentials} " + msg));
+		System.out.println("{Forge Essentials} " + msg);
 	}
 
 }

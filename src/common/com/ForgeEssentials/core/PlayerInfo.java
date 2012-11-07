@@ -1,4 +1,4 @@
-package com.ForgeEssentials;
+package com.ForgeEssentials.core;
 
 import java.util.HashMap;
 
