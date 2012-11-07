@@ -31,6 +31,8 @@ public class ForgeEssentials
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		module.preLoad(e);
+		FEConfig.loadConfig();
+		Version.checkVersion();
 	}
 	@Init
 	public void load(FMLInitializationEvent e)

@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.Util;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;

@@ -1,21 +1,25 @@
-package com.ForgeEssentials.commands;
-
-import com.ForgeEssentials.core.OutputHandler;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+package com.ForgeEssentials.permissions.commands;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
-public class CommandHome extends ForgeEssentialsCommandBase{
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
+public class PermissionCommandBase extends ForgeEssentialsCommandBase{
+
+	/**
+	 * This CommandBase is for commands applying to the permissions system.
+	 */
+	
 	@Override
 	public String getCommandName() {
-		return "Go Home";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args) {
-		OutputHandler.chatError(player, "Not currently implemented");
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -34,17 +38,19 @@ public class CommandHome extends ForgeEssentialsCommandBase{
 	@Override
 	public String getUsagePlayer(EntityPlayer player) {
 		// TODO Auto-generated method stub
-		return "/home Teleports you back to your home location";
+		return null;
 	}
 
 	@Override
 	public boolean canConsoleUseCommand() {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player) {
-		return true;
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

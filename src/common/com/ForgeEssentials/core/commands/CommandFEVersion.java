@@ -1,50 +1,49 @@
-package com.ForgeEssentials.commands;
+package com.ForgeEssentials.core.commands;
 
 import com.ForgeEssentials.core.OutputHandler;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.Version;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
-public class CommandHome extends ForgeEssentialsCommandBase{
+public class CommandFEVersion extends ForgeEssentialsCommandBase{
 
 	@Override
 	public String getCommandName() {
-		return "Go Home";
+		return "feversion";
 	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args) {
-		OutputHandler.chatError(player, "Not currently implemented");
+		player.addChatMessage("You are currently running ForgeEssentials version " + Version.version);
 		
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args) {
-		// TODO Auto-generated method stub
+		OutputHandler.SOP("You are currently running ForgeEssentials version " + Version.version);
 		
 	}
 
 	@Override
 	public String getUsageConsole() {
-		// TODO Auto-generated method stub
-		return null;
+		return "/feversion";
 	}
 
 	@Override
 	public String getUsagePlayer(EntityPlayer player) {
-		// TODO Auto-generated method stub
-		return "/home Teleports you back to your home location";
+		return "/feversion";
 	}
 
 	@Override
 	public boolean canConsoleUseCommand() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player) {
 		return true;
 	}
+	
 
 }

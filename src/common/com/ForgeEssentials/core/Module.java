@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 import com.ForgeEssentials.WorldControl.WorldControl;
 import com.ForgeEssentials.commands.Commands;
 import com.ForgeEssentials.permissions.FEPermissionHandler;
+import com.ForgeEssentials.permissions.Permissions;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -16,14 +17,14 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
  */
 
 public class Module {
-	public FEPermissionHandler pHandler;
+	
 	public WorldControl worldcontrol;
 	public Commands commands;
+	public Permissions perms;
 	    // load.
 		public void preLoad(FMLPreInitializationEvent e)
 		{
-			FEConfig.loadConfig();
-			Version.checkVersion();
+			
 			worldcontrol = new WorldControl();
 			worldcontrol.preLoad(e);	
 		}
@@ -31,8 +32,7 @@ public class Module {
 		public void load(FMLInitializationEvent e)
 		{
 			worldcontrol.load(e);
-			pHandler = new FEPermissionHandler();
-			MinecraftForge.EVENT_BUS.register(pHandler);
+			perms.load(e);
 		}
 		// load.
 		public void serverStarting(FMLServerStartingEvent e)

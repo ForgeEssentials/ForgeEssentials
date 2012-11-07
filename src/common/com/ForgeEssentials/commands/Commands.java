@@ -5,7 +5,8 @@ import com.ForgeEssentials.core.Module;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**
- * Home of the Commands plugin
+ * Home of the Command plugin
+ * Command is for all general commands that somehow don't fit into the WorldControl or Permissions plugins.
  * @author luacs1998
  */
 
