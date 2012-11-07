@@ -8,29 +8,31 @@ import com.ForgeEssentials.AreaSelector.Selection;
 public class PlayerInfo
 {
 	private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
-	
+
 	public static PlayerInfo getPlayerInfo(String username)
 	{
-		
+
 		return playerInfoMap.get(username);
 	}
-	
+
 	private boolean hasClientMod;
 	private String username;
-	
+
 	// wand stuff
 	public int wandID;
 	public boolean wandEnabled;
-	
+
 	// selection stuff
 	private Point sel1;
 	private Point sel2;
 	private Selection selection;
-	
+
+	public Point home;
+
 	public PlayerInfo(String username)
 	{
-		sel1 = new Point(0,0,0);
-		sel2 = new Point(0,0,0);
+		sel1 = new Point(0, 0, 0);
+		sel2 = new Point(0, 0, 0);
 		selection = new Selection(sel1, sel2);
 		this.username = username;
 		playerInfoMap.put(username, this);
@@ -67,10 +69,9 @@ public class PlayerInfo
 		this.sel2 = sel2;
 		selection.end = sel2;
 	}
-	
+
 	public Selection getSelection()
 	{
 		return selection;
 	}
-	
 }

@@ -6,40 +6,60 @@ import com.ForgeEssentials.core.Version;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
-public class CommandFEVersion extends ForgeEssentialsCommandBase{
+public class CommandFEVersion extends ForgeEssentialsCommandBase
+{
 
 	@Override
-	public String getCommandName() {
+	public String getCommandName()
+	{
 		return "feversion";
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args) {
+	public void processCommandPlayer(EntityPlayer player, String[] args)
+	{
 		player.addChatMessage("You are currently running ForgeEssentials version " + Version.version);
 	}
 
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args) {
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
 		OutputHandler.SOP("You are currently running ForgeEssentials version " + Version.version);
 	}
 
 	@Override
-	public String getUsageConsole() {
+	public String getSyntaxConsole()
+	{
 		return "/feversion";
 	}
 
 	@Override
-	public String getUsagePlayer(EntityPlayer player) {
+	public String getSyntaxPlayer(EntityPlayer player)
+	{
 		return "/feversion";
 	}
 
 	@Override
-	public boolean canConsoleUseCommand() {
+	public boolean canConsoleUseCommand()
+	{
 		return true;
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player) {
+	public boolean canPlayerUseCommand(EntityPlayer player)
+	{
 		return true;
+	}
+
+	@Override
+	public String getInfoConsole()
+	{
+		return "Get the current version of ForgeEssentials";
+	}
+
+	@Override
+	public String getInfoPlayer(EntityPlayer player)
+	{
+		return "Get the current version of ForgeEssentials";
 	}
 }

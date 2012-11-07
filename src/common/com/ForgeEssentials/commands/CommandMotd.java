@@ -41,24 +41,6 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public String getUsageConsole()
-	{
-		return "/motd [new MOTD] Get the Message Of The Day";
-	}
-
-	@Override
-	public String getUsageCommandBlock(TileEntityCommandBlock block)
-	{
-		return null;
-	}
-
-	@Override
-	public String getUsagePlayer(EntityPlayer player)
-	{
-		return "/motd [new MOTD] Get the Message Of The Day";
-	}
-	
-	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return true;
@@ -69,5 +51,29 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	{
 		// TODO: check permissions
 		return true;
+	}
+
+	@Override
+	public String getSyntaxConsole()
+	{
+		return "/motd [new MOTD]";
+	}
+
+	@Override
+	public String getSyntaxPlayer(EntityPlayer player)
+	{
+		return "/motd [new MOTD]";
+	}
+
+	@Override
+	public String getInfoConsole()
+	{
+		return "Get/set the Message Of the Day";
+	}
+
+	@Override
+	public String getInfoPlayer(EntityPlayer player)
+	{
+		return "Get/set the Message Of the Day";
 	}
 }

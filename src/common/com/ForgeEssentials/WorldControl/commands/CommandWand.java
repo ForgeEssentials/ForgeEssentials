@@ -23,53 +23,43 @@ public class CommandWand extends WorldControlCommandBase
 	{
 		int id = player.getCurrentEquippedItem() == null ? 0 : player.getCurrentEquippedItem().itemID;
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
-		
+
 		if (args.length > 0)
 		{
 			if (args[0].equalsIgnoreCase("rebind"))
 			{
 				info.wandEnabled = true;
 				info.wandID = id;
-				OutputHandler.chatConfirmation(player, "Wand bound to ID "+id+", "+Item.itemsList[id].getLocalItemName(null));
+				OutputHandler.chatConfirmation(player, "Wand bound to ID " + id + ", " + Item.itemsList[id].getLocalItemName(null));
 				return;
-			}
-			else if (args[0].equalsIgnoreCase("unbind"))
+			} else if (args[0].equalsIgnoreCase("unbind"))
 			{
 				info.wandEnabled = false;
-				player.addChatMessage(OutputHandler.PINK+"Wand unbound from ID "+info.wandID+", "+Item.itemsList[info.wandID].getLocalItemName(null));
+				player.addChatMessage(OutputHandler.PINK + "Wand unbound from ID " + info.wandID + ", " + Item.itemsList[info.wandID].getLocalItemName(null));
 				return;
-			}
-			else
+			} else
 			{
 				id = this.interpretIDAndMetaFromString(args[0])[0];
 				info.wandEnabled = true;
 				info.wandID = id;
-				
-				OutputHandler.chatConfirmation(player, "Wand bound to ID "+id+", "+Item.itemsList[id].getLocalItemName(null));
+
+				OutputHandler.chatConfirmation(player, "Wand bound to ID " + id + ", " + Item.itemsList[id].getLocalItemName(null));
 			}
-		}
-		else
+		} else
 		{
 			if (info.wandEnabled)
 			{
 				info.wandEnabled = false;
-				player.addChatMessage(OutputHandler.PINK+"Wand unbound from ID "+info.wandID+", "+Item.itemsList[info.wandID].getLocalItemName(null));
+				player.addChatMessage(OutputHandler.PINK + "Wand unbound from ID " + info.wandID + ", " + Item.itemsList[info.wandID].getLocalItemName(null));
 				return;
-			}
-			else
+			} else
 			{
 				info.wandEnabled = true;
 				info.wandID = id;
-				OutputHandler.chatConfirmation(player, "Wand bound to ID "+id+", "+Item.itemsList[id].getLocalItemName(null));
+				OutputHandler.chatConfirmation(player, "Wand bound to ID " + id + ", " + Item.itemsList[id].getLocalItemName(null));
 				return;
 			}
 		}
-	}
-
-	@Override
-	public String getUsagePlayer(EntityPlayer player)
-	{
-		return "/"+getCommandName()+" [rebind|unbind|ITEM]";
 	}
 
 	@Override
@@ -77,5 +67,18 @@ public class CommandWand extends WorldControlCommandBase
 	{
 		// TODO: check permissions.
 		return true;
+	}
+
+	@Override
+	public String getSyntaxPlayer(EntityPlayer player)
+	{
+		return "/" + getCommandName() + " [rebind|unbind|ITEM]";
+	}
+
+	@Override
+	public String getInfoPlayer(EntityPlayer player)
+	{
+		// TODO explain what this does
+		return null;
 	}
 }

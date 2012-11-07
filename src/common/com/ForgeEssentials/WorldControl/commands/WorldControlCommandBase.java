@@ -15,30 +15,34 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	public final String getCommandName()
 	{
 		if (WorldControl.useExtraSlash)
-			return "/"+getName();
+			return "/" + getName();
 		else
 			return getName();
 	}
-	
+
 	public abstract String getName();
+
+	@Override
+	public String getSyntaxConsole()
+	{
+		// almost never called.
+		return "/" + getCommandName();
+	}
+
+	@Override
+	public String getInfoConsole()
+	{
+		// almost never called.
+		return "";
+	}
+
+	@Override
+	public String getSyntaxCommandBlock(TileEntityCommandBlock block)
+	{
+		// almost never called.
+		return "/" + getCommandName();
+	}
 	
-	@Override
-	public String getUsageConsole()
-	{
-		// almost never called.
-		return "/"+getCommandName();
-	}
-
-	@Override
-	public String getUsageCommandBlock(TileEntityCommandBlock block)
-	{
-		// almost never called.
-		return "/"+getCommandName();
-	}
-
-	@Override
-	public abstract String getUsagePlayer(EntityPlayer player);
-
 	@Override
 	public void processCommandBlock(TileEntityCommandBlock block, String[] args)
 	{
@@ -48,31 +52,30 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		OutputHandler.SOP("You cannot use the \""+getCommandName()+"\" command from the console");
+		OutputHandler.SOP("You cannot use the \"" + getCommandName() + "\" command from the console");
 	}
-	
+
 	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
 	}
-	
+
 	public static int[] interpretIDAndMetaFromString(String msg)
 	{
 		int ID;
 		int meta = 0;
-		
+
 		// try checking if its just an ID
 		try
 		{
 			ID = Integer.parseInt(msg);
-			return new int[] {ID, meta};
-		}
-		catch(NumberFormatException e)
+			return new int[] { ID, meta };
+		} catch (NumberFormatException e)
 		{
-			//do nothing. continue checking.
+			// do nothing. continue checking.
 		}
-		
+
 		// perhaps the ID:Meta format
 		try
 		{
@@ -81,18 +84,17 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 				String[] pair = msg.split(":", 2);
 				ID = Integer.parseInt(pair[0]);
 				meta = Integer.parseInt(pair[1]);
-				
-				return new int[] {ID, meta};
+
+				return new int[] { ID, meta };
 			}
-		}
-		catch(NumberFormatException e)
+		} catch (NumberFormatException e)
 		{
-			//do nothing. continue checking.
+			// do nothing. continue checking.
 		}
-		
+
 		// TODO: add name checking.
-		
-		return new int[] {0, 0};
+
+		return new int[] { 0, 0 };
 	}
 
 }

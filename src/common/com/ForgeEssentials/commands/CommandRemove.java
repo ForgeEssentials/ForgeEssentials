@@ -7,19 +7,17 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.Entity;
-import net.minecraft.src.EntityLiving;
+import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityTameable;
-import net.minecraft.src.EntityVillager;
 import net.minecraft.src.ICommandSender;
 
-public class CommandButcher extends ForgeEssentialsCommandBase
+public class CommandRemove extends ForgeEssentialsCommandBase
 {
 
 	@Override
 	public String getCommandName()
 	{
-		return "butcher";
+		return "remove";
 	}
 
 	@Override
@@ -53,53 +51,23 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 			}
 		}
 
-		List<EntityLiving> entityList = (List<EntityLiving>) player.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1));
+		List<EntityItem> entityList = (List<EntityItem>) player.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1));
 
 		int counter = 0;
 		for (int i = 0; i < entityList.size(); i++)
 		{
-			EntityLiving entity = entityList.get(i);
-
-			if (entity instanceof EntityPlayer || entity instanceof EntityVillager)
-				continue;
-
-			if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
-				continue;
-
+			EntityItem entity = entityList.get(i);
 			counter++;
 			entity.setDead();
 		}
 
-		OutputHandler.chatConfirmation(player, counter + " enem" + (counter == 1 ? "y" : "ies") + " killed");
+		OutputHandler.chatConfirmation(player, counter + " item" + (counter == 1 ? "" : "s") + " removed");
+
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/butcher [radius] [<x> <y> <z>]";
-	}
-
-	@Override
-	public String getSyntaxConsole()
-	{
-		return null;
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Kills enemies around you/the specified point within the radius";
-	}
-
-	@Override
-	public String getInfoConsole()
-	{
-		return null;
 	}
 
 	@Override
@@ -111,7 +79,32 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
+		// check permissions.
 		return true;
+	}
+
+	@Override
+	public String getSyntaxConsole()
+	{
+		return null;
+	}
+
+	@Override
+	public String getSyntaxPlayer(EntityPlayer player)
+	{
+		return "/remove [radius] [<x> <y> <z>]";
+	}
+
+	@Override
+	public String getInfoConsole()
+	{
+		return null;
+	}
+
+	@Override
+	public String getInfoPlayer(EntityPlayer player)
+	{
+		return "Removes all item entities around you/the specifies point within the radius";
 	}
 
 }
