@@ -46,6 +46,7 @@ public class ForgeEssentials
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		config.loadConfig();
+
 		Version.checkVersion();
 		worldcontrol = new WorldControl();
 		worldcontrol.preLoad(e);
@@ -61,7 +62,6 @@ public class ForgeEssentials
 		proxy.load(e);
 		pHandler = new FEPermissionHandler();
 		MinecraftForge.EVENT_BUS.register(pHandler);
-		Localization.addLocale("lang/FE/", "en_US");
 	}
 
 	@ServerStarting
@@ -70,6 +70,7 @@ public class ForgeEssentials
 		commands.serverStarting(e);
 		e.registerServerCommand(new CommandFEVersion());
         worldcontrol.serverStarting(e);
+
 	}
 
 }

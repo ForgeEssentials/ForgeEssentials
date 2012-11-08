@@ -21,7 +21,7 @@ public class WandController
 		
 		// get info now rather than later
 		EntityPlayer player = event.entityPlayer;
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
+		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 		
 		if (player.getCurrentEquippedItem().itemID != info.wandID || !info.wandEnabled)
 			return;  // wand does not activate

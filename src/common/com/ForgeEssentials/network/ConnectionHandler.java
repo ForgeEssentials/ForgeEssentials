@@ -17,8 +17,7 @@ public class ConnectionHandler implements IConnectionHandler
 	@Override
 	public void playerLoggedIn(Player playerFake, NetHandler netHandler, INetworkManager manager)
 	{
-		EntityPlayer player = (EntityPlayer) playerFake;
-		PlayerInfo info = new PlayerInfo(player.username);
+		PlayerInfo info = new PlayerInfo((EntityPlayer) playerFake);
 	}
 
 	@Override
@@ -42,6 +41,8 @@ public class ConnectionHandler implements IConnectionHandler
 	@Override
 	public void connectionClosed(INetworkManager manager)
 	{
+		// TODO get an event for the player leaving
+		// PlayerInfo.savePlayerInfo(player);
 	}
 
 	// player logged in server.. called client.
