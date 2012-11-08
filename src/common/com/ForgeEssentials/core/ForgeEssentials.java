@@ -1,5 +1,7 @@
 package com.ForgeEssentials.core;
 
+import java.io.File;
+
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.WorldControl;
@@ -45,8 +47,8 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		config.loadConfig();
-
+		
+		FEConfig.loadConfig();
 		Version.checkVersion();
 		worldcontrol = new WorldControl();
 		worldcontrol.preLoad(e);

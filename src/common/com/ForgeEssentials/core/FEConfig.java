@@ -17,9 +17,9 @@ public class FEConfig
 	// Default values - MUST BE CATEGORY THEN NAME, ALL LOWER CASE
 	public static String motd = "ForgeEssentials is awesome. https://github.com/ForgeEssentials/ForgeEssentialsMain";
 
-	public WorldControl wc;
+	public static WorldControl wc;
 
-	public void loadConfig()
+	public static void loadConfig()
 	{
 		Configuration config = new Configuration(FECONFIG);
 		OutputHandler.SOP("Loading config");
