@@ -13,7 +13,7 @@ public class FEConfig
 {
 
 	
-	public static final File FEDIR = new File("./config/ForgeEssentials/");
+	public static final File FEDIR = new File("./ForgeEssentials/");
 	public static final File FECONFIG = new File(FEDIR, "config.cfg");
 	// Default values - MUST BE CATEGORY THEN NAME, ALL LOWER CASE
 	public static String motd = "ForgeEssentials is awesome. https://github.com/ForgeEssentials/ForgeEssentialsMain";

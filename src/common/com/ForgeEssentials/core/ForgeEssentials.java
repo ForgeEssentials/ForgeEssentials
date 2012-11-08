@@ -23,6 +23,10 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 
+/**
+ * Main mod class
+ */
+
 @NetworkMod(clientSideRequired = false, serverSideRequired = false, connectionHandler = ConnectionHandler.class, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerClient.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerServer.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.0.1")
 public class ForgeEssentials
@@ -41,6 +45,7 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		config.loadConfig();
 		Version.checkVersion();
 		worldcontrol = new WorldControl();
 		worldcontrol.preLoad(e);
@@ -56,6 +61,7 @@ public class ForgeEssentials
 		proxy.load(e);
 		pHandler = new FEPermissionHandler();
 		MinecraftForge.EVENT_BUS.register(pHandler);
+		Localization.addLocale("lang/FE/", "en_US");
 	}
 
 	@ServerStarting
