@@ -11,14 +11,15 @@ import com.ForgeEssentials.WorldControl.WorldControl;
 
 public class FEConfig
 {
-
-	public static final File FECONFIG = new File(ForgeEssentials.FEDIR, "config.cfg");
+	
+	public static final File FEDIR = new File("./ForgeEssentials/");
+	public static final File FECONFIG = new File(FEDIR, "config.cfg");
 	// Default values - MUST BE CATEGORY THEN NAME, ALL LOWER CASE
 	public static String motd = "ForgeEssentials is awesome. https://github.com/ForgeEssentials/ForgeEssentialsMain";
 
-	public WorldControl wc;
+	public static WorldControl wc;
 
-	public void loadConfig()
+	public static void loadConfig()
 	{
 		Configuration config = new Configuration(FECONFIG);
 		OutputHandler.SOP("Loading config");
