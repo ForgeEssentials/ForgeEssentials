@@ -15,7 +15,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName()
 	{
-		return "MOTD";
+		return "motd";
 	}
 
 	@Override

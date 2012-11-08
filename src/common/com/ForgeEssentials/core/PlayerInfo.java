@@ -14,7 +14,7 @@ import com.ForgeEssentials.AreaSelector.Selection;
 
 public class PlayerInfo
 {
-	private transient static File FESAVES = new File(ForgeEssentials.FEDIR, "saves/");
+	private transient static File FESAVES = new File(FEConfig.FEDIR, "saves/");
 
 	private transient static HashMap<String, HashMap<String, PlayerInfo>> playerInfoMap = new HashMap<String, HashMap<String, PlayerInfo>>();
 
