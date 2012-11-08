@@ -3,8 +3,8 @@ package com.ForgeEssentials.AreaSelector;
 public class AreaBase
 {
 	// only really used for copying.. the points it was defined from.
-	public Point start; // start selection
-	public Point end; // end selection
+	private Point start; // start selection
+	private Point end; // end selection
 	
 	// used for pretty much everything else.
 	private Point high;

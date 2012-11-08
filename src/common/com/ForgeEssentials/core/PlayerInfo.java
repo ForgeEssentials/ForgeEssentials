@@ -57,7 +57,7 @@ public class PlayerInfo
 	public void setPoint1(Point sel1)
 	{
 		this.sel1 = sel1;
-		selection.start = sel1;
+		selection.setStart(sel1);
 	}
 
 	public Point getPoint2()
@@ -68,7 +68,7 @@ public class PlayerInfo
 	public void setPoint2(Point sel2)
 	{
 		this.sel2 = sel2;
-		selection.end = sel2;
+		selection.setEnd(sel2);
 	}
 
 	public Selection getSelection()
