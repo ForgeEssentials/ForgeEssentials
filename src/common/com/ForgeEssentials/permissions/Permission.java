@@ -2,64 +2,75 @@ package com.ForgeEssentials.permissions;
 
 import net.minecraft.src.EntityPlayer;
 
-import com.ForgeEssentials.permissions.allowance.BaseAllowance;
-
 /**
- * 
- * Determines whether the Allowance is allowed or denied for a certain target.
- * 
- * @author MysteriousAges
- *
+ * @author AbrarSyed
  */
 public class Permission
 {
-	private BaseAllowance allowance;
-	private boolean isPermitted;
+	private String name;
+	private boolean allowed;
 	
-	// Target applied to
-	private PermissionTarget target;
-	
-	public Permission(BaseAllowance allowObject, boolean permit, PermissionTarget playerGroup)
+	public Permission(String qualifiedName, Boolean allowed)
 	{
-		this.allowance = allowObject;
-		this.isPermitted = permit;
-		this.target = playerGroup;
+		name = qualifiedName;
+		this.allowed = allowed;
 	}
 	
 	/**
-	 * Determines whether the allowance applies to a specific player or not.
-	 * @param playerName The player's username
-	 * @return True, if the permission applies to this username, false otherwise.
+	 * @return the qualified full name of the parent of this permission's parent. returns "" if there is no parent. 
 	 */
-	public boolean doesPermissionApplyTo(String playerName)
+	public String getParent()
 	{
-		boolean flag = false;
-		if (this.target.isPlayerInTarget(playerName))
+		return name.substring(0, name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0);
+	}
+	
+	/**
+	 * @return the modID of the mod that added this permission. returns "" if there is none.
+	 */
+	public String getMod()
+	{
+		return name.split(".")[0];
+	}
+	
+	/**
+	 * @return if this permission has a parent.
+	 */
+	public boolean hasParent()
+	{
+		return name.contains(".");
+	}
+	
+	/**
+	 * @return if this Permission is a child of the given Permission.
+	 */
+	public boolean isChild(Permission perm)
+	{
+		String[] here = name.split(".");
+		String[] there = perm.name.split(".");
+		
+		if (here.length <= there.length)
+			return false;
+		
+		boolean worked = true;
+		for (int i = 0; i < there.length; i++)
 		{
-			flag = true;
+			worked = here[i].equals(there[i]);
+			
+			if (!worked)
+				break;
 		}
-		return flag;
+		
+		return false;
 	}
 	
-	/**
-	 * Allows an allowance to determine whether or not it should deny the action.
-	 * @param query 
-	 */
-	public void checkForPermission(PlayerInteractPermissionQuery query)
+	@Override
+	public boolean equals(Object object)
 	{
-		this.allowance.processPermission(query, this.isPermitted);
+		if (object instanceof Permission)
+		{
+			Permission perm = (Permission) object;
+			return perm.name.equals(name) && allowed == perm.allowed;
+		}
+		return false;
 	}
-	
-	public boolean isAllowancePermitted()
-	{
-		return this.isPermitted;
-	}
-	
-	public BaseAllowance getAllowance()
-	{
-		return this.allowance;
-	}
-	
-	// TODO: save this somehow.
-	
 }
