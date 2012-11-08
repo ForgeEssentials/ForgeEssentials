@@ -27,6 +27,7 @@ public class PlayerInfo
 	private Point sel2;
 	private Selection selection;
 
+	// home
 	public Point home;
 
 	public PlayerInfo(String username)

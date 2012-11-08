@@ -33,11 +33,13 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 			try
 			{
 				radius = Integer.parseInt(args[0]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
 				OutputHandler.chatError(player, "That won't work. try " + getSyntaxPlayer(player));
 			}
-		} else if (args.length == 4)
+		}
+		else if (args.length == 4)
 		{
 			try
 			{
@@ -45,7 +47,8 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 				centerX = Double.parseDouble(args[1]);
 				centerY = Double.parseDouble(args[2]);
 				centerZ = Double.parseDouble(args[3]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
 				OutputHandler.chatError(player, "That won't work. try " + getSyntaxPlayer(player));
 			}

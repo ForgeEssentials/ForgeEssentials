@@ -28,11 +28,13 @@ public class CommandHome extends ForgeEssentialsCommandBase
 			try
 			{
 				PlayerInfo.getPlayerInfo(player.username).home = new Point(new Integer(args[0]), new Integer(args[1]), new Integer(args[2]));
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
 				OutputHandler.chatError(player, "That won't work. try " + getSyntaxPlayer(player));
 			}
-		} else
+		}
+		else
 		{
 			Point home = PlayerInfo.getPlayerInfo(player.username).home;
 			if (home == null)
