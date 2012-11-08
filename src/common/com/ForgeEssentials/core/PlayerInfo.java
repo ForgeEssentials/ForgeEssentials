@@ -1,21 +1,46 @@
 package com.ForgeEssentials.core;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
+
+import net.minecraft.src.EntityPlayer;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 
 public class PlayerInfo
 {
-	private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
+	private transient static File FESAVES = new File(ForgeEssentials.FEDIR, "saves/");
 
-	public static PlayerInfo getPlayerInfo(String username)
+	private transient static HashMap<String, HashMap<String, PlayerInfo>> playerInfoMap = new HashMap<String, HashMap<String, PlayerInfo>>();
+
+	public static PlayerInfo getPlayerInfo(EntityPlayer player)
 	{
+		return playerInfoMap.get(player.worldObj.getWorldInfo().getWorldName()).get(player.username);
+	}
 
-		return playerInfoMap.get(username);
+	public static void savePlayerInfo(EntityPlayer player)
+	{
+		try
+		{
+			String world = player.worldObj.getSaveHandler().getSaveDirectoryName();
+			FileOutputStream fos = new FileOutputStream(FESAVES + world + "/" + player.username + ".ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(playerInfoMap.get(world).get(player.username));
+			oos.close();
+			fos.close();
+		} catch (Exception e)
+		{
+			OutputHandler.SOP("Error while saving info for player " + player.username);
+		}
 	}
 
 	private boolean hasClientMod;
+	private String worldName;
 	private String username;
 
 	// wand stuff
@@ -30,13 +55,28 @@ public class PlayerInfo
 	// home
 	public Point home;
 
-	public PlayerInfo(String username)
+	public PlayerInfo(EntityPlayer player)
 	{
 		sel1 = new Point(0, 0, 0);
 		sel2 = new Point(0, 0, 0);
 		selection = new Selection(sel1, sel2);
-		this.username = username;
-		playerInfoMap.put(username, this);
+		worldName = player.worldObj.getSaveHandler().getSaveDirectoryName();
+		username = player.username;
+		if (playerInfoMap.containsKey(worldName))
+		{
+			try
+			{
+				FileInputStream fis = new FileInputStream(FESAVES + worldName + "/" + username + ".ser");
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				playerInfoMap.get(worldName).put(username, (PlayerInfo) ois.readObject());
+				ois.close();
+				fis.close();
+			} catch (Exception e)
+			{
+				playerInfoMap.get(worldName).put(username, this);
+			}
+		} else
+			playerInfoMap.put(worldName, (HashMap<String, PlayerInfo>) new HashMap().put(username, this));
 	}
 
 	public boolean isHasClientMod()

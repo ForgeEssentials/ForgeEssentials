@@ -22,12 +22,12 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
 		if (args.length >= 1 && args[0].equals("here"))
-			PlayerInfo.getPlayerInfo(player.username).home = new Point((int) player.posX, (int) player.posY, (int) player.posZ);
+			PlayerInfo.getPlayerInfo(player).home = new Point((int) player.posX, (int) player.posY, (int) player.posZ);
 		else if (args.length >= 3)
 		{
 			try
 			{
-				PlayerInfo.getPlayerInfo(player.username).home = new Point(new Integer(args[0]), new Integer(args[1]), new Integer(args[2]));
+				PlayerInfo.getPlayerInfo(player).home = new Point(new Integer(args[0]), new Integer(args[1]), new Integer(args[2]));
 			}
 			catch (NumberFormatException e)
 			{
@@ -36,7 +36,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			Point home = PlayerInfo.getPlayerInfo(player.username).home;
+			Point home = PlayerInfo.getPlayerInfo(player).home;
 			if (home == null)
 				OutputHandler.chatError(player, "No home set. Try " + getSyntaxPlayer(player));
 			else

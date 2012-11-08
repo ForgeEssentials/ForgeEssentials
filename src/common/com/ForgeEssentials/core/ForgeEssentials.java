@@ -38,6 +38,7 @@ public class ForgeEssentials
 	@Instance(value = "ForgeEssentials")
 	public static ForgeEssentials instance;
 
+	public static final File FEDIR = new File("./ForgeEssentials/");
 	public FEPermissionHandler pHandler;
 	public WorldControl worldcontrol;
 	public static FEConfig config;
@@ -45,6 +46,8 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		if (!FEDIR.exists())
+			FEDIR.mkdir();
 		Version.checkVersion();
 		worldcontrol = new WorldControl();
 		worldcontrol.preLoad(e);
@@ -67,7 +70,7 @@ public class ForgeEssentials
 		e.registerServerCommand(new CommandButcher());
 		e.registerServerCommand(new CommandRemove());
 		e.registerServerCommand(new CommandFEVersion());
-		//empty commands
+		// empty commands
 		e.registerServerCommand(new CommandHome());
 		worldcontrol.serverStarting(e);
 	}

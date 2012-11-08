@@ -48,9 +48,9 @@ public class CommandPos extends WorldControlCommandBase
 			}
 
 			if (type == 1)
-				PlayerInfo.getPlayerInfo(player.username).setPoint1(new Point(x, y, z));
+				PlayerInfo.getPlayerInfo(player).setPoint1(new Point(x, y, z));
 			else
-				PlayerInfo.getPlayerInfo(player.username).setPoint2(new Point(x, y, z));
+				PlayerInfo.getPlayerInfo(player).setPoint2(new Point(x, y, z));
 
 			OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
 			return;
@@ -62,9 +62,9 @@ public class CommandPos extends WorldControlCommandBase
 		z = mop.blockZ;
 
 		if (type == 1)
-			PlayerInfo.getPlayerInfo(player.username).setPoint1(new Point(x, y, z));
+			PlayerInfo.getPlayerInfo(player).setPoint1(new Point(x, y, z));
 		else
-			PlayerInfo.getPlayerInfo(player.username).setPoint2(new Point(x, y, z));
+			PlayerInfo.getPlayerInfo(player).setPoint2(new Point(x, y, z));
 
 		OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
 		return;

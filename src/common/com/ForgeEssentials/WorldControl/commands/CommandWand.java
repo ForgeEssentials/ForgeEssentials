@@ -22,7 +22,7 @@ public class CommandWand extends WorldControlCommandBase
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
 		int id = player.getCurrentEquippedItem() == null ? 0 : player.getCurrentEquippedItem().itemID;
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
+		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 
 		if (args.length > 0)
 		{
