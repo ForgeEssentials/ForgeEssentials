@@ -1,11 +1,9 @@
 package com.ForgeEssentials.core;
 
-import java.util.logging.Level;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.RConConsoleSource;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 
 public final class OutputHandler
 {
@@ -34,7 +32,7 @@ public final class OutputHandler
 	public static final String UNDERLINE = "\u00a7n";
 	public static final String ITALICS = "\u00a7o";
 	public static final String RESET = "\u00a7r";
-
+	
 	/**
 	 * outputs a message in red text to the chat box of the given player.
 	 * @param msg the message to be chatted
