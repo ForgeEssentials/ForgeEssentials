@@ -15,8 +15,6 @@ public class CommandFEUpdate extends ForgeEssentialsCommandBase{
 
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -28,13 +26,12 @@ public class CommandFEUpdate extends ForgeEssentialsCommandBase{
 
 	@Override
 	public String getSyntaxConsole() {
-		// TODO Auto-generated method stub
-		return null;
+		return "/feupdate";
 	}
 
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -45,19 +42,17 @@ public class CommandFEUpdate extends ForgeEssentialsCommandBase{
 
 	@Override
 	public String getInfoPlayer(EntityPlayer player) {
-		// TODO Auto-generated method stub
+	
 		return null;
 	}
 
 	@Override
 	public boolean canConsoleUseCommand() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
