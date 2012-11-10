@@ -21,64 +21,79 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		if (args.length > 0)
-			ForgeEssentials.instance.config.changeConfig("basic", "rules", args[0]);
-		else
+		if (args.length > 1)
 		{
-			String rulesLine = ForgeEssentials.instance.config.getSetting("basic", "rules").toString() + "\\n";
-			ArrayList<String> rules = new ArrayList<String>();
-			int lastBreak = 0;
-			do
+			try
 			{
-				rules.add(rulesLine.substring(lastBreak, rulesLine.indexOf("\\n", lastBreak)));
-				lastBreak = rulesLine.indexOf("\\n", lastBreak);
-			} while (rulesLine.indexOf("\\n", lastBreak) != -1);
-			for (String rule : rules)
-				player.addChatMessage(rule);
+				String newRule = "";
+				for (int i = 1; i < args.length; i++)
+				{
+					newRule = newRule + " " + args[i];
+				}
+				ForgeEssentials.instance.config.changeConfig("rules", "rule" + new Integer(args[0]), newRule);
+			} catch (Exception e)
+			{
+			}
+		} else
+		{
+			for (int i = 1; i <= 5; i++)
+			{
+				String rule = ForgeEssentials.instance.config.getSetting("rules", "rule" + i).toString().trim();
+				if (!rule.equals(""))
+					player.addChatMessage(rule);
+			}
 		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length > 0)
-			ForgeEssentials.instance.config.changeConfig("basic", "rules", args[0]);
-		else
+		if (args.length > 1)
 		{
-			String rulesLine = ForgeEssentials.instance.config.getSetting("basic", "rules").toString();
-			ArrayList<String> rules = new ArrayList<String>();
-			int lastBreak = 0;
-			do
+			try
 			{
-				rules.add(rulesLine.substring(lastBreak, lastBreak = rulesLine.indexOf("\\n", lastBreak)));
-			} while (rulesLine.indexOf("\\n", lastBreak) != -1);
-			for (String rule : rules)
-				OutputHandler.SOP(rule);
+				String newRule = "";
+				for (int i = 1; i < args.length; i++)
+				{
+					newRule = newRule + " " + args[i];
+				}
+				ForgeEssentials.instance.config.changeConfig("rules", "rule" + new Integer(args[0]), newRule);
+			} catch (Exception e)
+			{
+			}
+		} else
+		{
+			for (int i = 1; i <= 5; i++)
+			{
+				String rule = ForgeEssentials.instance.config.getSetting("rules", "rule" + i).toString().trim();
+				if (!rule.equals(""))
+					OutputHandler.SOP(rule);
+			}
 		}
 	}
 
 	@Override
 	public String getSyntaxConsole()
 	{
-		return "/rules";
+		return "/rules [<number> <new rule>]";
 	}
 
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/rules";
+		return "/rules [<number> <new rule>]";
 	}
 
 	@Override
 	public String getInfoConsole()
 	{
-		return "Get the rules of the server";
+		return "Get/set the rules of the server";
 	}
 
 	@Override
 	public String getInfoPlayer(EntityPlayer player)
 	{
-		return "Get the rules of the server";
+		return "Get/set the rules of the server";
 	}
 
 	@Override
