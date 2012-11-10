@@ -21,6 +21,8 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
+		OutputHandler.chatError(player, "Not currently implemented");
+		/**
 		if (args.length > 0)
 			ForgeEssentials.instance.config.changeConfig("basic", "rules", args[0]);
 		else
@@ -35,12 +37,16 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			} while (rulesLine.indexOf("\\n", lastBreak) != -1);
 			for (String rule : rules)
 				player.addChatMessage(rule);
+				
 		}
+		*/
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		OutputHandler.SOP("Not currently implemented");
+		/**
 		if (args.length > 0)
 			ForgeEssentials.instance.config.changeConfig("basic", "rules", args[0]);
 		else
@@ -55,6 +61,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			for (String rule : rules)
 				OutputHandler.SOP(rule);
 		}
+		*/
 	}
 
 	@Override

@@ -35,6 +35,10 @@ public class FEConfig
 		config.load();
 		settings.get("basic").put("motd", config.get("basic", "motd", settings.get("basic").get("motd").toString()).value);
 		settings.get("basic").put("rules", config.get("basic", "rules", settings.get("basic").get("rules").toString()).value);
+		/**
+		 * WorldControl
+		 */
+		
 		config.addCustomCategoryComment("WorldControl", "The config area for the WorldControl submod of ForgeEssentials.");
 
 		Property prop;
