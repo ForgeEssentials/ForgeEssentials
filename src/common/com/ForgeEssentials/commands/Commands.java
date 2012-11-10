@@ -30,6 +30,7 @@ public class Commands
 	{
 		// commands
 				e.registerServerCommand(new CommandMotd());
+				e.registerServerCommand(new CommandRules());
 				e.registerServerCommand(new CommandButcher());
 				e.registerServerCommand(new CommandRemove());
 				

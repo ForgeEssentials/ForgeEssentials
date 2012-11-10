@@ -39,6 +39,7 @@ public class ForgeEssentials
 	@Instance(value = "ForgeEssentials")
 	public static ForgeEssentials instance;
 
+	public FEConfig config;
 	public FEPermissionHandler pHandler;
 	public WorldControl worldcontrol;
 	public Commands commands;
@@ -46,7 +47,8 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		FEConfig.loadConfig();
+		config = new FEConfig();
+		config.loadConfig();
 		Version.checkVersion();
 		worldcontrol = new WorldControl();
 		worldcontrol.preLoad(e);

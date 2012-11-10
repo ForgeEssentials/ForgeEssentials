@@ -1,6 +1,7 @@
 package com.ForgeEssentials.core;
 
 import java.io.File;
+import java.util.HashMap;
 
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -15,16 +16,25 @@ public class FEConfig
 	public static final File FEDIR = new File("./ForgeEssentials/");
 	public static final File FECONFIG = new File(FEDIR, "config.cfg");
 
-	private static String motd = "ForgeEssentials is awesome. https://github.com/ForgeEssentials/ForgeEssentialsMain";
+	private HashMap<String, HashMap<String, Object>> settings = new HashMap<String, HashMap<String, Object>>();
 
-	public static WorldControl wc;
+	public WorldControl wc;
 
-	public static void loadConfig()
+	public FEConfig()
+	{
+		HashMap<String, Object> basicMap = new HashMap<String, Object>();
+		basicMap.put("motd", "ForgeEssentials is awesome. https://github.com/ForgeEssentials/ForgeEssentialsMain");
+		basicMap.put("rules", "Don't grief or insult ForgeEssentials.");
+		settings.put("basic", basicMap);
+	}
+
+	public void loadConfig()
 	{
 		Configuration config = new Configuration(FECONFIG);
 		OutputHandler.SOP("Loading config");
 		config.load();
-		motd = config.get("Basic", "motd", motd).value;
+		settings.get("basic").put("motd", config.get("basic", "motd", settings.get("basic").get("motd").toString()).value);
+		settings.get("basic").put("rules", config.get("basic", "rules", settings.get("basic").get("rules").toString()).value);
 		config.addCustomCategoryComment("WorldControl", "The config area for the WorldControl submod of ForgeEssentials.");
 
 		Property prop;
@@ -39,16 +49,15 @@ public class FEConfig
 		config.save();
 	}
 
-	public static void changeConfig(String category, String name, Object newValue)
+	public void changeConfig(String category, String name, Object newValue)
 	{
-		if ((category.toLowerCase() + name.toLowerCase()).equals("basicmotd"))
-			motd = newValue.toString();
+		if (settings.containsKey(category) && settings.get(category).containsKey(name))
+			settings.get(category).put(name, newValue);
 		FECONFIG.delete();
-		loadConfig();
 	}
 
-	public static String getMotd()
+	public Object getSetting(String category, String name)
 	{
-		return motd;
+		return settings.get(category).get(name);
 	}
 }
