@@ -11,11 +11,11 @@ import com.ForgeEssentials.WorldControl.WorldControl;
 
 public class FEConfig
 {
-	
+
 	public static final File FEDIR = new File("./ForgeEssentials/");
 	public static final File FECONFIG = new File(FEDIR, "config.cfg");
-	// Default values - MUST BE CATEGORY THEN NAME, ALL LOWER CASE
-	public static String motd = "ForgeEssentials is awesome. https://github.com/ForgeEssentials/ForgeEssentialsMain";
+
+	private static String motd = "ForgeEssentials is awesome. https://github.com/ForgeEssentials/ForgeEssentialsMain";
 
 	public static WorldControl wc;
 
@@ -39,16 +39,16 @@ public class FEConfig
 		config.save();
 	}
 
-	public void changeConfig(String category, String name, Object newValue)
+	public static void changeConfig(String category, String name, Object newValue)
 	{
-		try
-		{
-			getClass().getField(category.toLowerCase() + name.toLowerCase()).set(this, newValue);
-		} catch (Exception e)
-		{
-			OutputHandler.SOP("Could not change config setting, a dev probably messed something up.");
-		}
+		if ((category.toLowerCase() + name.toLowerCase()).equals("basicmotd"))
+			motd = newValue.toString();
 		FECONFIG.delete();
 		loadConfig();
+	}
+
+	public static String getMotd()
+	{
+		return motd;
 	}
 }

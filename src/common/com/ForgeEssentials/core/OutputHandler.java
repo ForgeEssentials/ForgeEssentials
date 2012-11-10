@@ -58,7 +58,7 @@ public final class OutputHandler
 	 * outputs a string to the console if MCP is installed.
 	 * @param msg message to be outputted
 	 */
-	public static void debug(String msg)
+	public static void debug(Object msg)
 	{
 		if (Loader.instance().isModLoaded("mcp"))
 			System.out.println("DEBUG: >>>> " + msg);
@@ -68,7 +68,7 @@ public final class OutputHandler
 	 * outputs a string to the console;
 	 * @param msg message to be outputted
 	 */
-	public static void SOP(String msg)
+	public static void SOP(Object msg)
 	{
 		if (FMLCommonHandler.instance().getSide().isServer())
 		{

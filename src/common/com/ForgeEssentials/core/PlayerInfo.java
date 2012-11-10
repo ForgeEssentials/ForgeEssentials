@@ -76,7 +76,11 @@ public class PlayerInfo
 				playerInfoMap.get(worldName).put(username, this);
 			}
 		} else
-			playerInfoMap.put(worldName, (HashMap<String, PlayerInfo>) new HashMap().put(username, this));
+		{
+			HashMap<String, PlayerInfo> map = new HashMap();
+			map.put(username, this);
+			playerInfoMap.put(worldName, map);
+		}
 	}
 
 	public boolean isHasClientMod()

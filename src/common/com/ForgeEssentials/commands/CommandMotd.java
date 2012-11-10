@@ -23,10 +23,10 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	{
 		if (args.length > 0)
 		{
-			ForgeEssentials.instance.config.changeConfig("Basic", "motd", args[0]);
-			OutputHandler.SOP("MOTD changed to " + FEConfig.motd);
+			FEConfig.changeConfig("Basic", "motd", args[0]);
+			OutputHandler.SOP("MOTD changed to " + FEConfig.getMotd());
 		} else
-			player.addChatMessage(FEConfig.motd);
+			player.addChatMessage(FEConfig.getMotd());
 	}
 
 	@Override
@@ -34,10 +34,10 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	{
 		if (args.length > 0)
 		{
-			ForgeEssentials.instance.config.changeConfig("Basic", "motd", args[0]);
-			OutputHandler.SOP("MOTD changed to " + FEConfig.motd);
+			FEConfig.changeConfig("Basic", "motd", args[0]);
+			OutputHandler.SOP("MOTD changed to " + FEConfig.getMotd());
 		} else
-			OutputHandler.SOP(FEConfig.motd);
+			OutputHandler.SOP(FEConfig.getMotd());
 	}
 
 	@Override
