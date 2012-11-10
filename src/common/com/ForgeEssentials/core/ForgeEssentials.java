@@ -1,13 +1,11 @@
 package com.ForgeEssentials.core;
 
-import java.io.File;
-
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.WorldControl;
 import com.ForgeEssentials.client.network.HandlerClient;
-
 import com.ForgeEssentials.commands.Commands;
+import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.network.ConnectionHandler;
 import com.ForgeEssentials.network.HandlerServer;
@@ -71,6 +69,7 @@ public class ForgeEssentials
 	{
 		commands.serverStarting(e);
 		e.registerServerCommand(new CommandFEVersion());
+		e.registerServerCommand(new CommandFEUpdate());
 		worldcontrol.serverStarting(e);
 
 	}
