@@ -1,7 +1,5 @@
 package com.ForgeEssentials.permissions;
 
-import net.minecraft.src.EntityPlayer;
-
 /**
  * @author AbrarSyed
  */

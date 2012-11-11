@@ -1,14 +1,11 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ICommandSender;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandWand extends WorldControlCommandBase
 {

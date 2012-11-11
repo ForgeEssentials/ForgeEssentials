@@ -1,34 +1,30 @@
 package com.ForgeEssentials.client.core;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.HashMap;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
-import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.OutputHandler;
-import com.ForgeEssentials.core.PlayerInfo;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
 /**
  * Clone of the PlayerInfo for the client only.
+ * 
  * @author AbrarSyed
  */
 @SideOnly(value = Side.CLIENT)
 public class PlayerInfoClient implements Serializable
 {
 	public transient static File FECSAVES = new File(ProxyClient.FEDIRC, "saves/");
-	
+
 	private String worldName;
 
 	// selection stuff
@@ -55,13 +51,12 @@ public class PlayerInfoClient implements Serializable
 	public void setPoint1(Point sel1)
 	{
 		this.sel1 = sel1;
-		
+
 		if (selection == null)
 		{
 			if (sel1 != null && sel2 != null)
 				selection = new Selection(sel1, sel2);
-		}
-		else
+		} else
 			selection.setStart(sel1);
 	}
 
@@ -73,13 +68,12 @@ public class PlayerInfoClient implements Serializable
 	public void setPoint2(Point sel2)
 	{
 		this.sel2 = sel2;
-		
+
 		if (selection == null)
 		{
 			if (sel1 != null && sel2 != null)
 				selection = new Selection(sel1, sel2);
-		}
-		else
+		} else
 			selection.setEnd(sel2);
 	}
 
@@ -87,7 +81,7 @@ public class PlayerInfoClient implements Serializable
 	{
 		return selection;
 	}
-	
+
 	public void savePlayerInfo(EntityPlayer player)
 	{
 		try
@@ -99,7 +93,7 @@ public class PlayerInfoClient implements Serializable
 			fos.close();
 		} catch (Exception e)
 		{
-			OutputHandler.SOP("Error while saving info for player " + player.username+ " in world "+player.worldObj.getSaveHandler().getSaveDirectoryName());
+			OutputHandler.SOP("Error while saving info for player " + player.username + " in world " + player.worldObj.getSaveHandler().getSaveDirectoryName());
 		}
 	}
 }

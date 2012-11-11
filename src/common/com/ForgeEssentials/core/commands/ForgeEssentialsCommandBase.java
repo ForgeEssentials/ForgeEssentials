@@ -1,7 +1,6 @@
 package com.ForgeEssentials.core.commands;
 
 import net.minecraft.src.CommandBase;
-import net.minecraft.src.EntityClientPlayerMP;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.TileEntityCommandBlock;

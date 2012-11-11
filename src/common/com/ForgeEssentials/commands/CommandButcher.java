@@ -6,7 +6,6 @@ import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import net.minecraft.src.AxisAlignedBB;
-import net.minecraft.src.Entity;
 import net.minecraft.src.EntityLiving;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityTameable;

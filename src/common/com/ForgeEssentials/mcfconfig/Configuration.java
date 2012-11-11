@@ -20,7 +20,6 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
@@ -492,8 +491,8 @@ public class Configuration
 			{
 				propName = '"' + propName + '"';
 			}
-			//buffer.write("   " + propName + "=" + property.getValue());
-			if (property.value.size()>1)
+			// buffer.write("   " + propName + "=" + property.getValue());
+			if (property.value.size() > 1)
 				buffer.write("\r\n");
 		}
 	}

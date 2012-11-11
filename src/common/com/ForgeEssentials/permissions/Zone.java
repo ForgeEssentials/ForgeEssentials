@@ -1,8 +1,5 @@
 package com.ForgeEssentials.permissions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import net.minecraft.src.World;
 
 import com.ForgeEssentials.AreaSelector.AreaBase;

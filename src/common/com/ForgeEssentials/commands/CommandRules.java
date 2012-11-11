@@ -1,7 +1,5 @@
 package com.ForgeEssentials.commands;
 
-import java.util.ArrayList;
-
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 

@@ -1,9 +1,6 @@
 package com.ForgeEssentials.AreaSelector;
 
 import java.io.Serializable;
-import java.util.HashMap;
-
-import net.minecraft.src.EntityPlayer;
 
 public class Point implements Serializable, Comparable<Point>
 {
