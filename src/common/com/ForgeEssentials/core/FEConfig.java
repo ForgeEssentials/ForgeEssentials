@@ -30,8 +30,8 @@ public class FEConfig
 		rulesMap.put("rule3", "Rule 3");
 		rulesMap.put("rule4", "Rule 4");
 		rulesMap.put("rule5", "Rule 5");
-		settings.put("rules", rulesMap);
 		settings.put("basic", basicMap);
+		settings.put("rules", rulesMap);
 	}
 
 	public void loadConfig()
