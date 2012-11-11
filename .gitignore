@@ -24,6 +24,7 @@
 
 !/src/common/com/
 !/src/minecraft/com/
+!src/common/forgeessentials_at.cfg
 
 *.bat
 *.sh
