@@ -30,7 +30,7 @@ public class CommandWand extends WorldControlCommandBase
 			{
 				info.wandEnabled = true;
 				info.wandID = id;
-				OutputHandler.chatConfirmation(player, "Wand bound to ID " + id + ", " + Item.itemsList[id].getLocalItemName(null));
+				OutputHandler.chatConfirmation(player, "Wand bound to ID " + id + ", " + (id == 0 ? "your fists" : Item.itemsList[id].getLocalItemName(null)));
 				return;
 			} else if (args[0].equalsIgnoreCase("unbind"))
 			{
@@ -43,20 +43,20 @@ public class CommandWand extends WorldControlCommandBase
 				info.wandEnabled = true;
 				info.wandID = id;
 
-				OutputHandler.chatConfirmation(player, "Wand bound to ID " + id + ", " + Item.itemsList[id].getLocalItemName(null));
+				OutputHandler.chatConfirmation(player, "Wand bound to ID " + id + ", " + (id == 0 ? "your fists" : Item.itemsList[id].getLocalItemName(null)));
 			}
 		} else
 		{
 			if (info.wandEnabled)
 			{
 				info.wandEnabled = false;
-				player.addChatMessage(OutputHandler.PINK + "Wand unbound from ID " + info.wandID + ", " + Item.itemsList[info.wandID].getLocalItemName(null));
+				player.addChatMessage(OutputHandler.PINK + "Wand unbound from ID " + info.wandID + ", " + (id == 0 ? "your fists" : Item.itemsList[id].getLocalItemName(null)));
 				return;
 			} else
 			{
 				info.wandEnabled = true;
 				info.wandID = id;
-				OutputHandler.chatConfirmation(player, "Wand bound to ID " + id + ", " + Item.itemsList[id].getLocalItemName(null));
+				OutputHandler.chatConfirmation(player, "Wand bound to ID " + id + ", " + (id == 0 ? "your fists" : Item.itemsList[id].getLocalItemName(null)));
 				return;
 			}
 		}
