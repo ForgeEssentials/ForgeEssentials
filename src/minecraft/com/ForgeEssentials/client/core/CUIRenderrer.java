@@ -4,7 +4,9 @@ import java.util.EnumSet;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.asm.SideOnly;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.RenderManager;
@@ -16,6 +18,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GLContext;
 
+import com.ForgeEssentials.AreaSelector.Point;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.PlayerInfo;
+
+@SideOnly(value = Side.CLIENT)
 public class CUIRenderrer
 {
 
@@ -24,7 +31,7 @@ public class CUIRenderrer
 	{
 		EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
 		
-		if (player == null)
+		if (player == null || ForgeEssentials.proxy.getPlayerInfo(player).getSelection() == null)
 			return;
 
 		float ticks = event.partialTicks;
@@ -85,4 +92,5 @@ public class CUIRenderrer
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		GL11.glPopMatrix();
 	}
+	
 }

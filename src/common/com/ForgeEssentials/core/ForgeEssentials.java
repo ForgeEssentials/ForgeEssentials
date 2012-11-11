@@ -43,10 +43,18 @@ public class ForgeEssentials
 	public FEPermissionHandler pHandler;
 	public WorldControl worldcontrol;
 	public Commands commands;
+	
+	public static final File FEDIR = new File("./ForgeEssentials/");
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		// check directory constants and create...
+		if (!FEDIR.exists() || !FEDIR.isDirectory())
+			FEDIR.mkdir();
+		if (!PlayerInfo.FESAVES.exists() || !PlayerInfo.FESAVES.isDirectory())
+			PlayerInfo.FESAVES.mkdir();
+		
 		config = new FEConfig();
 		config.loadConfig();
 		Version.checkVersion();

@@ -1,6 +1,8 @@
 package com.ForgeEssentials.AreaSelector;
 
-public class AreaBase
+import java.io.Serializable;
+
+public class AreaBase implements Serializable
 {
 	// only really used for copying.. the points it was defined from.
 	private Point start; // start selection

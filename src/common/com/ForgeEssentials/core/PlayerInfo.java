@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 
 import net.minecraft.src.EntityPlayer;
@@ -12,9 +13,9 @@ import net.minecraft.src.EntityPlayer;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 
-public class PlayerInfo
+public class PlayerInfo implements Serializable
 {
-	private transient static File FESAVES = new File(FEConfig.FEDIR, "saves/");
+	public transient static File FESAVES = new File(ForgeEssentials.FEDIR, "saves/");
 
 	private transient static HashMap<String, HashMap<String, PlayerInfo>> playerInfoMap = new HashMap<String, HashMap<String, PlayerInfo>>();
 
@@ -62,6 +63,7 @@ public class PlayerInfo
 		selection = new Selection(sel1, sel2);
 		worldName = player.worldObj.getSaveHandler().getSaveDirectoryName();
 		username = player.username;
+		
 		if (playerInfoMap.containsKey(worldName))
 		{
 			try

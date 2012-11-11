@@ -12,9 +12,7 @@ import com.ForgeEssentials.WorldControl.WorldControl;
 
 public class FEConfig
 {
-
-	public static final File FEDIR = new File("./ForgeEssentials/");
-	public static final File FECONFIG = new File(FEDIR, "config.cfg");
+	public static final File FECONFIG = new File(ForgeEssentials.FEDIR, "config.cfg");
 
 	private HashMap<String, HashMap<String, Object>> settings = new HashMap<String, HashMap<String, Object>>();
 
