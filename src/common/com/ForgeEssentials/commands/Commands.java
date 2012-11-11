@@ -33,8 +33,7 @@ public class Commands
 				e.registerServerCommand(new CommandRules());
 				e.registerServerCommand(new CommandButcher());
 				e.registerServerCommand(new CommandRemove());
-				
-				//empty commands
 				e.registerServerCommand(new CommandHome());
+				e.registerServerCommand(new CommandRestart());
 	}
 }
