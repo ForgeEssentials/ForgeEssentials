@@ -28,13 +28,6 @@ public class FEModContainer extends DummyModContainer {
         bus.register(this);
         return true;
         }
-        /* 
-         * Use this in place of @Init, @Preinit, @Postinit in the file.
-         */
-        @Subscribe                
-        public void onServerStarting(FMLServerStartingEvent e) {
-                
-                
-        }
+        
         
 }

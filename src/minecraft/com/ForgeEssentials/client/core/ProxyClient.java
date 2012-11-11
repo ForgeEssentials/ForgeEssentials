@@ -2,6 +2,7 @@ package com.ForgeEssentials.client.core;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.client.WorldControl.CUI.CUIRenderrer;
 import com.ForgeEssentials.core.ProxyCommon;
 
 import cpw.mods.fml.common.Side;

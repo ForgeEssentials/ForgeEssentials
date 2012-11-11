@@ -1,20 +1,14 @@
-package com.ForgeEssentials.client.core;
-
-import java.util.EnumSet;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+package com.ForgeEssentials.client.WorldControl.CUI;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.RenderManager;
-import net.minecraft.src.TileEntityRenderer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GLContext;
+
+import cpw.mods.fml.client.FMLClientHandler;
 
 public class CUIRenderrer
 {

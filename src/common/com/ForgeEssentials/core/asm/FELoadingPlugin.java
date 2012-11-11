@@ -19,8 +19,7 @@ public class FELoadingPlugin implements IFMLLoadingPlugin{
 
 	@Override
 	public String getModContainerClass() {
-		// TODO Auto-generated method stub
-		return null;
+		return "com.ForgeEssentials.core.asm.FEModContainer";
 	}
 
 	@Override
