@@ -46,6 +46,7 @@ public class PlayerInfo implements Serializable
 
 	// wand stuff
 	public int wandID;
+	public int wandDmg;
 	public boolean wandEnabled;
 
 	// selection stuff
