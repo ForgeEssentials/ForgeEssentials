@@ -1,12 +1,13 @@
 package com.ForgeEssentials.core;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
+import com.ForgeEssentials.mcfconfig.Configuration;
+import com.ForgeEssentials.mcfconfig.Property;
 
 import com.ForgeEssentials.WorldControl.WorldControl;
 
@@ -21,15 +22,12 @@ public class FEConfig
 	public FEConfig()
 	{
 		HashMap<String, Object> basicMap = new HashMap<String, Object>();
-		HashMap<String, Object> rulesMap = new HashMap<String, Object>();
 		basicMap.put("motd", "ForgeEssentials is awesome. https://github.com/ForgeEssentials/ForgeEssentialsMain");
-		rulesMap.put("rule1", "Don't grief");
-		rulesMap.put("rule2", "Don't insult ForgeEssentials");
-		rulesMap.put("rule3", "Rule 3");
-		rulesMap.put("rule4", "Rule 4");
-		rulesMap.put("rule5", "Rule 5");
+		ArrayList<String> rules = new ArrayList<String>();
+		rules.add("Don't grief");
+		rules.add("Please grief");
+		basicMap.put("rules", rules);
 		settings.put("basic", basicMap);
-		settings.put("rules", rulesMap);
 	}
 
 	public void loadConfig()
@@ -38,11 +36,7 @@ public class FEConfig
 		OutputHandler.SOP("Loading config");
 		config.load();
 		settings.get("basic").put("motd", config.get("basic", "motd", settings.get("basic").get("motd").toString()).value);
-		settings.get("rules").put("rule1", config.get("rules", "rule1", settings.get("rules").get("rule1").toString()).value);
-		settings.get("rules").put("rule2", config.get("rules", "rule2", settings.get("rules").get("rule2").toString()).value);
-		settings.get("rules").put("rule3", config.get("rules", "rule3", settings.get("rules").get("rule3").toString()).value);
-		settings.get("rules").put("rule4", config.get("rules", "rule4", settings.get("rules").get("rule4").toString()).value);
-		settings.get("rules").put("rule5", config.get("rules", "rule5", settings.get("rules").get("rule5").toString()).value);
+		settings.get("basic").put("rules", config.get("basic", "rules", (ArrayList<String>) settings.get("basic").get("rules")).value);
 		config.addCustomCategoryComment("WorldControl", "The config area for the WorldControl submod of ForgeEssentials.");
 
 		Property prop;

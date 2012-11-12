@@ -22,12 +22,13 @@ public class Property
 
 	public Property()
 	{
+		value = new ArrayList<String>();
 	}
 
 	public Property(String name, String value, Type type)
 	{
 		setName(name);
-		this.value = new ArrayList<String>(0);
+		this.value = new ArrayList<String>();
 		this.value.add(value);
 		this.type = type;
 	}

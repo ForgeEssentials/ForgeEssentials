@@ -7,6 +7,7 @@ package com.ForgeEssentials.mcfconfig;
 
 import java.io.*;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -223,6 +224,40 @@ public class Configuration
 		}
 	}
 
+	public Property get(String category, String key, ArrayList<String> defaultValue)
+	{
+		return get(category, key, defaultValue, STRING);
+	}
+
+	public Property get(String category, String key, ArrayList<String> defaultValue, Property.Type type)
+	{
+		if (!caseSensitiveCustomCategories)
+		{
+			category = category.toLowerCase(Locale.ENGLISH);
+		}
+
+		Map<String, Property> source = categories.get(category);
+
+		if (source == null)
+		{
+			source = new TreeMap<String, Property>();
+			categories.put(category, source);
+		}
+
+		if (source.containsKey(key))
+		{
+			return source.get(key);
+		} else if (defaultValue != null)
+		{
+			Property prop = new Property(key, defaultValue, type);
+			source.put(key, prop);
+			return prop;
+		} else
+		{
+			return null;
+		}
+	}
+
 	public boolean hasCategory(String category)
 	{
 		return categories.get(category) != null;
@@ -351,7 +386,24 @@ public class Configuration
 
 									Property prop = new Property();
 									prop.setName(propertyName);
-									prop.value.set(0, line.substring(i + 1));
+									prop.value.add(0, line.substring(i + 1));
+									i = line.length();
+
+									currentMap.put(propertyName, prop);
+
+									break;
+
+								case '*':
+									propertyName = line.substring(nameStart, nameEnd + 1);
+
+									if (currentMap == null)
+									{
+										throw new RuntimeException("property " + propertyName + " has no scope");
+									}
+
+									prop = new Property();
+									prop.setName(propertyName);
+									prop.value.add(line.substring(i + 1));
 									i = line.length();
 
 									currentMap.put(propertyName, prop);
@@ -491,9 +543,9 @@ public class Configuration
 			{
 				propName = '"' + propName + '"';
 			}
-			// buffer.write("   " + propName + "=" + property.getValue());
-			if (property.value.size() > 1)
-				buffer.write("\r\n");
+			buffer.write("   " + propName + "=" + property.value.get(0) + "\r\n");
+			for (int i = 1; i < property.value.size(); i++)
+				buffer.write("     " + propName + "*" + property.value.get(i) + "\r\n");
 		}
 	}
 
