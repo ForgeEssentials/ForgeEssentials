@@ -22,9 +22,12 @@ public class CUIRenderrer
 	public void render(RenderWorldLastEvent event)
 	{
 		EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
+		PlayerInfoClient info = ProxyClient.info;
 		
-		if (player == null || ForgeEssentials.proxy.getPlayerInfo(player).getSelection() == null)
+		if (player == null)
 			return;
+		
+		
 
 		float ticks = event.partialTicks;
 

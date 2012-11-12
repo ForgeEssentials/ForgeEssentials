@@ -17,7 +17,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 @SideOnly(value=Side.CLIENT)
 public class ProxyClient extends ProxyCommon
 {
-	public PlayerInfo info;
+	public static PlayerInfoClient info;
 	public static final File FEDIRC = new File("./ForgeEssentialsClient/");
 	
 	@Override
@@ -34,14 +34,5 @@ public class ProxyClient extends ProxyCommon
 	public void load(FMLInitializationEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(new CUIRenderrer());
-	}
-	
-	@Override
-	public PlayerInfo getPlayerInfo(EntityPlayer player)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-			return info;
-		else
-			return PlayerInfo.getPlayerInfo(player);
 	}
 }

@@ -6,10 +6,8 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.WorldControl;
 import com.ForgeEssentials.client.network.HandlerClient;
-
 import com.ForgeEssentials.commands.Commands;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
-import com.ForgeEssentials.network.ConnectionHandler;
 import com.ForgeEssentials.network.HandlerServer;
 import com.ForgeEssentials.permissions.FEPermissionHandler;
 
@@ -24,12 +22,13 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Main mod class
  */
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false, connectionHandler = ConnectionHandler.class, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerClient.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerServer.class))
+@NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerClient.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerServer.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.0.1")
 public class ForgeEssentials
 {
@@ -70,8 +69,10 @@ public class ForgeEssentials
 		worldcontrol.load(e);
 		commands.load(e);
 		proxy.load(e);
+		
 		pHandler = new FEPermissionHandler();
 		MinecraftForge.EVENT_BUS.register(pHandler);
+		GameRegistry.registerPlayerTracker(new PlayerTracker());
 	}
 
 	@ServerStarting

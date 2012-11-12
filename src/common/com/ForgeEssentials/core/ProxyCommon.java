@@ -15,9 +15,4 @@ public class ProxyCommon
 	{
 		
 	}
-	
-	public PlayerInfo getPlayerInfo(EntityPlayer player)
-	{
-		return PlayerInfo.getPlayerInfo(player);
-	}
 }

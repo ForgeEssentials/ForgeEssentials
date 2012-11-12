@@ -15,75 +15,119 @@ import com.ForgeEssentials.AreaSelector.Selection;
 
 public class PlayerInfo implements Serializable
 {
-	public transient static File FESAVES = new File(ForgeEssentials.FEDIR, "saves/");
+	public transient static File							FESAVES			= new File(ForgeEssentials.FEDIR, "saves/");
 
-	private transient static HashMap<String, HashMap<String, PlayerInfo>> playerInfoMap = new HashMap<String, HashMap<String, PlayerInfo>>();
+	private transient static HashMap<String, PlayerInfo>	playerInfoMap	= new HashMap<String, PlayerInfo>();
 
 	public static PlayerInfo getPlayerInfo(EntityPlayer player)
 	{
-		return playerInfoMap.get(player.worldObj.getWorldInfo().getWorldName()).get(player.username);
+		return playerInfoMap.get(player.username);
 	}
 
-	public static void savePlayerInfo(EntityPlayer player)
+	public static void readOrGenerateInfo(EntityPlayer player)
 	{
+		String worldName = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
+		String username = player.username;
+
+		File saveFile = new File(FESAVES, worldName + "/" + username + ".ser").getAbsoluteFile();
+
+		// read file.
+		if (saveFile.exists() && saveFile.isFile() && saveFile.canRead())
+		{
+			try
+			{
+				FileInputStream fis = new FileInputStream(saveFile);
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				PlayerInfo info = (PlayerInfo) ois.readObject();
+				ois.close();
+				fis.close();
+				playerInfoMap.put(username, info);
+				return;
+			}
+			catch (Exception e)
+			{
+				OutputHandler.SOP("Failed in reading file: " + worldName + "/" + username);
+			}
+		}
+
+		// reading file failed.. continue with other stuff.
+		PlayerInfo info = new PlayerInfo(player);
+		playerInfoMap.put(username, info);
+
 		try
 		{
-			String world = player.worldObj.getSaveHandler().getSaveDirectoryName();
-			FileOutputStream fos = new FileOutputStream(FESAVES + world + "/" + player.username + ".ser");
+			FileOutputStream fos = new FileOutputStream(saveFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(playerInfoMap.get(world).get(player.username));
+			oos.writeObject(playerInfoMap.remove(username));
 			oos.close();
 			fos.close();
-		} catch (Exception e)
+		}
+		catch (Exception e)
+		{
+			OutputHandler.SOP("Failed in reading file: " + worldName + "/" + username);
+		}
+	}
+
+	public static void saveInfo(EntityPlayer player)
+	{
+		PlayerInfo info = getPlayerInfo(player);
+		try
+		{
+			File saveFile = new File(FESAVES, info.worldName + "/" + player.username + ".ser").getAbsoluteFile();
+			FileOutputStream fos = new FileOutputStream(saveFile);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(playerInfoMap.get(player.username));
+			oos.close();
+			fos.close();
+		}
+		catch (Exception e)
+		{
+			OutputHandler.SOP("Error while saving info file: " + info.worldName + "/" + player.username);
+		}
+	}
+
+	public static void saveAndDiscardInfo(EntityPlayer player)
+	{
+		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+		try
+		{
+			File saveFile = new File(FESAVES, info.worldName + "/" + player.username + ".ser").getAbsoluteFile();
+			FileOutputStream fos = new FileOutputStream(saveFile);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(playerInfoMap.remove(player.username));
+			oos.close();
+			fos.close();
+		}
+		catch (Exception e)
 		{
 			OutputHandler.SOP("Error while saving info for player " + player.username);
 		}
 	}
 
-	private boolean hasClientMod;
-	private String worldName;
-	private String username;
+	private boolean		hasClientMod;
+	private String		worldName;
+	private String		username;
 
 	// wand stuff
-	public int wandID;
-	public int wandDmg;
-	public boolean wandEnabled;
+	public int			wandID;
+	public int			wandDmg;
+	public boolean		wandEnabled;
 
 	// selection stuff
-	private Point sel1;
-	private Point sel2;
-	private Selection selection;
+	private Point		sel1;
+	private Point		sel2;
+	private Selection	selection;
 
 	// home
-	public Point home;
+	public Point		home;
 
-	public PlayerInfo(EntityPlayer player)
+	private PlayerInfo(EntityPlayer player)
 	{
-		sel1 = new Point(0, 0, 0);
-		sel2 = new Point(0, 0, 0);
-		selection = new Selection(sel1, sel2);
-		worldName = player.worldObj.getSaveHandler().getSaveDirectoryName();
+		sel1 = null;
+		sel2 = null;
+		selection = null;
+		worldName = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
 		username = player.username;
-		
-		if (playerInfoMap.containsKey(worldName))
-		{
-			try
-			{
-				FileInputStream fis = new FileInputStream(FESAVES + worldName + "/" + username + ".ser");
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				playerInfoMap.get(worldName).put(username, (PlayerInfo) ois.readObject());
-				ois.close();
-				fis.close();
-			} catch (Exception e)
-			{
-				playerInfoMap.get(worldName).put(username, this);
-			}
-		} else
-		{
-			HashMap<String, PlayerInfo> map = new HashMap();
-			map.put(username, this);
-			playerInfoMap.put(worldName, map);
-		}
 	}
 
 	public boolean isHasClientMod()
@@ -104,7 +148,14 @@ public class PlayerInfo implements Serializable
 	public void setPoint1(Point sel1)
 	{
 		this.sel1 = sel1;
-		selection.setStart(sel1);
+
+		if (selection == null)
+		{
+			if (sel1 != null && sel2 != null)
+				selection = new Selection(sel1, sel2);
+		}
+		else
+			selection.setStart(sel1);
 	}
 
 	public Point getPoint2()
@@ -115,7 +166,14 @@ public class PlayerInfo implements Serializable
 	public void setPoint2(Point sel2)
 	{
 		this.sel2 = sel2;
-		selection.setEnd(sel2);
+
+		if (selection == null)
+		{
+			if (sel1 != null && sel2 != null)
+				selection = new Selection(sel1, sel2);
+		}
+		else
+			selection.setEnd(sel2);
 	}
 
 	public Selection getSelection()
