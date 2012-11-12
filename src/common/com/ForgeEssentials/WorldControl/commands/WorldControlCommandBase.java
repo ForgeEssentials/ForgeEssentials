@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl.commands;
 
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.TileEntityCommandBlock;
 
@@ -41,7 +42,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 		// almost never called.
 		return "/" + getCommandName();
 	}
-	
+
 	@Override
 	public void processCommandBlock(TileEntityCommandBlock block, String[] args)
 	{
@@ -96,4 +97,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 		return new int[] { 0, 0 };
 	}
 
+	public void completeCommand()
+	{
+	}
 }
