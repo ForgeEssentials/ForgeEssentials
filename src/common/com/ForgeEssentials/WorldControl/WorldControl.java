@@ -1,9 +1,12 @@
 package com.ForgeEssentials.WorldControl;
 
+import java.util.ArrayList;
+
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.commands.CommandPos;
 import com.ForgeEssentials.WorldControl.commands.CommandWand;
+import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -15,6 +18,7 @@ public class WorldControl
 	// implicit constructor WorldControl()
 	public static int defaultWandID;
 	public static boolean useExtraSlash;
+	public static ArrayList<WorldControlCommandBase> unfinishedProcesses=new ArrayList<WorldControlCommandBase>();
 	
 	// load.
 	public void preLoad(FMLPreInitializationEvent event)
@@ -27,7 +31,7 @@ public class WorldControl
 	{
 		MinecraftForge.EVENT_BUS.register(new WandController());
 	}
-	
+
 	// load.
 	public void serverStarting(FMLServerStartingEvent e)
 	{
