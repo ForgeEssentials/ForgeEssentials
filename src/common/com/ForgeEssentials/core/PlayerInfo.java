@@ -9,9 +9,15 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.Packet;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
+import com.ForgeEssentials.network.PacketSelectionUpdate;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 
 public class PlayerInfo implements Serializable
 {
@@ -21,8 +27,16 @@ public class PlayerInfo implements Serializable
 
 	public static PlayerInfo getPlayerInfo(EntityPlayer player)
 	{
-		return playerInfoMap.get(player.username);
-	}
+		PlayerInfo info = playerInfoMap.get(player.username);
+		
+		if (info == null)
+		{
+			readOrGenerateInfo(player);
+			return playerInfoMap.get(player.username);
+		}
+		
+		return info;
+	} 
 
 	public static void readOrGenerateInfo(EntityPlayer player)
 	{
@@ -47,6 +61,7 @@ public class PlayerInfo implements Serializable
 			catch (Exception e)
 			{
 				OutputHandler.SOP("Failed in reading file: " + worldName + "/" + username);
+				e.printStackTrace();
 			}
 		}
 
@@ -56,6 +71,11 @@ public class PlayerInfo implements Serializable
 
 		try
 		{
+			if (!saveFile.exists())
+			{
+				saveFile.getParentFile().mkdirs();
+				saveFile.createNewFile();
+			}
 			FileOutputStream fos = new FileOutputStream(saveFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(playerInfoMap.remove(username));
@@ -65,7 +85,11 @@ public class PlayerInfo implements Serializable
 		catch (Exception e)
 		{
 			OutputHandler.SOP("Failed in reading file: " + worldName + "/" + username);
+			e.printStackTrace();
 		}
+		
+		// send packets.
+		ForgeEssentials.proxy.updateInfo(info, player);
 	}
 
 	public static void saveInfo(EntityPlayer player)
@@ -74,6 +98,11 @@ public class PlayerInfo implements Serializable
 		try
 		{
 			File saveFile = new File(FESAVES, info.worldName + "/" + player.username + ".ser").getAbsoluteFile();
+			if (!saveFile.exists())
+			{
+				saveFile.getParentFile().mkdirs();
+				saveFile.createNewFile();
+			}
 			FileOutputStream fos = new FileOutputStream(saveFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(playerInfoMap.get(player.username));
@@ -83,6 +112,7 @@ public class PlayerInfo implements Serializable
 		catch (Exception e)
 		{
 			OutputHandler.SOP("Error while saving info file: " + info.worldName + "/" + player.username);
+			e.printStackTrace();
 		}
 	}
 
@@ -92,6 +122,11 @@ public class PlayerInfo implements Serializable
 		try
 		{
 			File saveFile = new File(FESAVES, info.worldName + "/" + player.username + ".ser").getAbsoluteFile();
+			if (!saveFile.exists())
+			{
+				saveFile.getParentFile().mkdirs();
+				saveFile.createNewFile();
+			}
 			FileOutputStream fos = new FileOutputStream(saveFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(playerInfoMap.remove(player.username));
@@ -101,6 +136,7 @@ public class PlayerInfo implements Serializable
 		catch (Exception e)
 		{
 			OutputHandler.SOP("Error while saving info for player " + player.username);
+			e.printStackTrace();
 		}
 	}
 
@@ -156,6 +192,10 @@ public class PlayerInfo implements Serializable
 		}
 		else
 			selection.setStart(sel1);
+		
+		// send packets.
+		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+		ForgeEssentials.proxy.updateInfo(this, player);
 	}
 
 	public Point getPoint2()
@@ -174,6 +214,10 @@ public class PlayerInfo implements Serializable
 		}
 		else
 			selection.setEnd(sel2);
+		
+		// send packets.
+		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+		ForgeEssentials.proxy.updateInfo(this, player);
 	}
 
 	public Selection getSelection()

@@ -29,7 +29,8 @@ public class HandlerServer implements IPacketHandler
 			switch (ID)
 				{
 				// cast to the correct instance of ForgeEssentialsPacketbase and use the read methods.
-					case 0: // do nothing yet....
+					case 0:
+						((PacketSelectionUpdate) packet).readServer(stream, world, player);
 				}
 		}
 		catch (Exception e)

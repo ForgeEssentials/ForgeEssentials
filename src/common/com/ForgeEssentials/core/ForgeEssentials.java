@@ -28,7 +28,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * Main mod class
  */
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerClient.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials", "WorldControl" }, packetHandler = HandlerServer.class))
+@NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials"}, packetHandler = HandlerClient.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials"}, packetHandler = HandlerServer.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.0.1")
 public class ForgeEssentials
 {

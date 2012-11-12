@@ -21,11 +21,15 @@ public class CommandWand extends WorldControlCommandBase
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 		int currentID = player.getCurrentEquippedItem() == null ? 0 : player.getCurrentEquippedItem().itemID;
-		int currentDmg = player.getCurrentEquippedItem() == null ? 0 : player.getCurrentEquippedItem().getItemDamage();
-		String currentName = currentID == 0 ? "your fists" : Item.itemsList[info.wandID].getLocalItemName(new ItemStack(info.wandID, 1, info.wandDmg));
+		int currentDmg = 0;
+		
+		if (currentID != 0 && player.getCurrentEquippedItem().getHasSubtypes())
+			currentDmg = player.getCurrentEquippedItem().getItemDamage();
+		
+		String currentName = currentID == 0 ? "your fists" : player.getCurrentEquippedItem().getDisplayName();
 		String wandName = "";
 		if (info.wandEnabled)
-			wandName = info.wandID == 0 ? "your fists" : Item.itemsList[info.wandID].getLocalItemName(new ItemStack(info.wandID, 1, info.wandDmg));
+			wandName = info.wandID == 0 ? "your fists" : player.getCurrentEquippedItem().getDisplayName();
 
 		if (args.length > 0)
 		{

@@ -22,8 +22,13 @@ public class WandController
 		// get info now rather than later
 		EntityPlayer player = event.entityPlayer;
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+		
 		int id = player.getCurrentEquippedItem() == null ? 0 : player.getCurrentEquippedItem().itemID;
-		if (id != info.wandID || !info.wandEnabled)
+		int damage = 0;
+		if (id != 0 && player.getCurrentEquippedItem().getHasSubtypes())
+			damage = player.getCurrentEquippedItem().getItemDamage();
+		
+		if (id != info.wandID || !info.wandEnabled || damage != info.wandDmg)
 			return; // wand does not activate
 
 		// left Click
