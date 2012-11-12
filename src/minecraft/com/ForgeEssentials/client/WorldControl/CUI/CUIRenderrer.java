@@ -1,5 +1,6 @@
 package com.ForgeEssentials.client.WorldControl.CUI;
 
+
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.RenderManager;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -8,8 +9,14 @@ import net.minecraftforge.event.ForgeSubscribe;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import cpw.mods.fml.client.FMLClientHandler;
+import com.ForgeEssentials.client.core.PlayerInfoClient;
+import com.ForgeEssentials.client.core.ProxyClient;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
+
+@SideOnly(value = Side.CLIENT)
 public class CUIRenderrer
 {
 
@@ -17,9 +24,12 @@ public class CUIRenderrer
 	public void render(RenderWorldLastEvent event)
 	{
 		EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
+		PlayerInfoClient info = ProxyClient.info;
 		
 		if (player == null)
 			return;
+		
+		
 
 		float ticks = event.partialTicks;
 
@@ -79,4 +89,5 @@ public class CUIRenderrer
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		GL11.glPopMatrix();
 	}
+	
 }

@@ -36,12 +36,9 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			}
 		} else
 		{
-			for (int i = 1; i <= 5; i++)
-			{
-				String rule = ForgeEssentials.instance.config.getSetting("rules", "rule" + i).toString().trim();
+			for (String rule : (ArrayList<String>) ForgeEssentials.instance.config.getSetting("basic", "rules"))
 				if (!rule.equals(""))
 					player.addChatMessage(rule);
-			}
 		}
 	}
 

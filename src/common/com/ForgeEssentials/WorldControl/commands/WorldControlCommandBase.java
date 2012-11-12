@@ -1,6 +1,5 @@
 package com.ForgeEssentials.WorldControl.commands;
 
-import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.TileEntityCommandBlock;
 

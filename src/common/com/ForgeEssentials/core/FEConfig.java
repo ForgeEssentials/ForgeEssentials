@@ -1,20 +1,19 @@
 package com.ForgeEssentials.core;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
+import com.ForgeEssentials.mcfconfig.Configuration;
+import com.ForgeEssentials.mcfconfig.Property;
 
 import com.ForgeEssentials.WorldControl.WorldControl;
 
 public class FEConfig
 {
-
-	public static final File FEDIR = new File("./ForgeEssentials/");
-	public static final File FECONFIG = new File(FEDIR, "config.cfg");
+	public static final File FECONFIG = new File(ForgeEssentials.FEDIR, "config.cfg");
 
 	private HashMap<String, HashMap<String, Object>> settings = new HashMap<String, HashMap<String, Object>>();
 
@@ -23,15 +22,12 @@ public class FEConfig
 	public FEConfig()
 	{
 		HashMap<String, Object> basicMap = new HashMap<String, Object>();
-		HashMap<String, Object> rulesMap = new HashMap<String, Object>();
 		basicMap.put("motd", "ForgeEssentials is awesome. https://github.com/ForgeEssentials/ForgeEssentialsMain");
-		rulesMap.put("rule1", "Don't grief");
-		rulesMap.put("rule2", "Don't insult ForgeEssentials");
-		rulesMap.put("rule3", "Rule 3");
-		rulesMap.put("rule4", "Rule 4");
-		rulesMap.put("rule5", "Rule 5");
+		ArrayList<String> rules = new ArrayList<String>();
+		rules.add("Don't grief");
+		rules.add("Please grief");
+		basicMap.put("rules", rules);
 		settings.put("basic", basicMap);
-		settings.put("rules", rulesMap);
 	}
 
 	public void loadConfig()
