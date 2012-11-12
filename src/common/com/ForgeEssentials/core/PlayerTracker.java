@@ -28,6 +28,13 @@ public class PlayerTracker implements IPlayerTracker
 	@Override
 	public void onPlayerRespawn(EntityPlayer player)
 	{
+		String oldWorld = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
+		PlayerInfo oldInfo = PlayerInfo.getPlayerInfo(player);
+		
+		// if different
+		if (!oldWorld.equals(oldInfo.getWorldName()))
+			// do the dimensionCHange stuff.. because he went from one world, to the spawn world.
+			onPlayerChangedDimension(player);
 	}
 
 }

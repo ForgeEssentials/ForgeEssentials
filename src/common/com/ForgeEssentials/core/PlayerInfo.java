@@ -180,4 +180,9 @@ public class PlayerInfo implements Serializable
 	{
 		return selection;
 	}
+	
+	public String getWorldName()
+	{
+		return worldName;
+	}
 }
