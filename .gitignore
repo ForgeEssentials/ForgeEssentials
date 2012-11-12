@@ -23,6 +23,7 @@
 /src/minecraft_server/*
 
 !/src/common/com/
+!/src/common/mcmod.info
 !/src/minecraft/com/
 
 *.bat
