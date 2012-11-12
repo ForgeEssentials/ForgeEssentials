@@ -9,15 +9,11 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Packet;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
-import com.ForgeEssentials.network.PacketSelectionUpdate;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 
 public class PlayerInfo implements Serializable
 {
@@ -153,6 +149,8 @@ public class PlayerInfo implements Serializable
 	private Point		sel1;
 	private Point		sel2;
 	private Selection	selection;
+	
+	private HashMap<String, String> areaGroupMap;
 
 	// home
 	public Point		home;
@@ -164,6 +162,8 @@ public class PlayerInfo implements Serializable
 		selection = null;
 		worldName = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
 		username = player.username;
+		
+		areaGroupMap.put(worldName, "default");
 	}
 
 	public boolean isHasClientMod()
