@@ -53,6 +53,21 @@ public abstract class AreaBase implements Serializable
 		return Math.abs(end.y - start.y) + 1;
 	}
 	
+	public int getXDiff()
+	{
+		return Math.abs(low.x - high.x) + 1;
+	}
+
+	public int getZDiff()
+	{
+		return Math.abs(low.z - high.z) + 1;
+	}
+
+	public int getYDiff()
+	{
+		return Math.abs(low.y - high.y) + 1;
+	}
+	
 	public Point getHighPoint()
 	{
 		return high;
