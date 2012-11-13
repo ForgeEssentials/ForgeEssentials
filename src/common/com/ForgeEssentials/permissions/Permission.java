@@ -1,17 +1,38 @@
 package com.ForgeEssentials.permissions;
 
+import java.util.HashMap;
+
+import net.minecraftforge.event.Event.Result;
+import net.minecraftforge.event.Event.*;
+
 /**
  * @author AbrarSyed
  */
 public class Permission
 {
+	private static HashMap<String, Permission> defaults;
+	
+	public static Result getPermissionDefault(String name)
+	{
+		Permission perm = defaults.get(name);
+		if (perm != null)
+			return perm.allowed;
+		else
+			return Result.DENY;
+	}
+	
+	public static void addDefaultPermission(Permission perm)
+	{
+		defaults.put(perm.name, perm);
+	}
+	
 	private String	name;
-	private boolean	allowed;
+	private Result	allowed;
 
 	public Permission(String qualifiedName, Boolean allowed)
 	{
 		name = qualifiedName;
-		this.allowed = allowed;
+		this.allowed = allowed ? Result.ALLOW : Result.DENY;
 	}
 
 	/**
@@ -85,5 +106,11 @@ public class Permission
 			return true;
 
 		return false;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return name+" : "+allowed;
 	}
 }

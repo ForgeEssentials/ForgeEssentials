@@ -88,7 +88,6 @@ public class CommandWand extends WorldControlCommandBase
 	@Override
 	public String getInfoPlayer(EntityPlayer player)
 	{
-		// TODO explain what this does
-		return null;
+		return "Toggle the wand";
 	}
 }

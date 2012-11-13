@@ -86,8 +86,7 @@ public class CommandPos extends WorldControlCommandBase
 	@Override
 	public String getInfoPlayer(EntityPlayer player)
 	{
-		// TODO What does this do?
-		return null;
+		return "set Selection Positions";
 	}
 
 }

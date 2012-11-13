@@ -7,12 +7,13 @@ import com.ForgeEssentials.core.PlayerInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class WandController
 {
-	@ForgeSubscribe
+	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void playerInteractEvent(PlayerInteractEvent event)
 	{
 		// only server events please.

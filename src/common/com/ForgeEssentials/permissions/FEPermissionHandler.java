@@ -1,8 +1,10 @@
 package com.ForgeEssentials.permissions;
 
-import com.ForgeEssentials.AreaSelector.Point;
-
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event.Result;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
+
 
 /**
  * 
@@ -18,14 +20,25 @@ import net.minecraftforge.event.ForgeSubscribe;
  */
 public final class FEPermissionHandler
 {	
-	@ForgeSubscribe
-	public void handleGenericPlayerInteractPermission(PlayerInteractPermissionQuery perm)
+	@ForgeSubscribe(priority = EventPriority.LOWEST)
+	public void handlerQuery(FEPermissionsQuery event)
 	{
-		Point interactionPoint = new Point(perm.x, perm.y, perm.z);
+		//actually handle stuff here.
 		
 		// if we have a permission area that contains this point:
 		//		if we can not perform this action in this area:
 		//			-> Deny the action
-		
+	}
+	
+	public static boolean checkPermAllowed(FEPermissionsQuery query)
+	{
+		MinecraftForge.EVENT_BUS.post(query);
+		return false;
+	}
+	
+	public static Result checkPermResult(FEPermissionsQuery query)
+	{
+		MinecraftForge.EVENT_BUS.post(query);
+		return query.getResult();
 	}
 }
