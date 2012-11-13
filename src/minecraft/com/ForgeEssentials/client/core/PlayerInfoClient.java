@@ -23,10 +23,6 @@ import cpw.mods.fml.common.asm.SideOnly;
 @SideOnly(value = Side.CLIENT)
 public class PlayerInfoClient implements Serializable
 {
-	public transient static File FECSAVES = new File(ProxyClient.FEDIRC, "saves/");
-
-	private String worldName;
-
 	// selection stuff
 	private Point sel1;
 	private Point sel2;
@@ -35,12 +31,11 @@ public class PlayerInfoClient implements Serializable
 	// home
 	public Point home;
 
-	public PlayerInfoClient(World world)
+	public PlayerInfoClient()
 	{
 		sel1 = null;
 		sel2 = null;
 		selection = null;
-		worldName = world.getSaveHandler().getSaveDirectoryName();
 	}
 
 	public Point getPoint1()
@@ -80,20 +75,5 @@ public class PlayerInfoClient implements Serializable
 	public Selection getSelection()
 	{
 		return selection;
-	}
-
-	public void savePlayerInfo(EntityPlayer player)
-	{
-		try
-		{
-			String world = player.worldObj.getSaveHandler().getSaveDirectoryName();
-			FileOutputStream fos = new FileOutputStream(FECSAVES + world + ".ser");
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.close();
-			fos.close();
-		} catch (Exception e)
-		{
-			OutputHandler.SOP("Error while saving info for player " + player.username + " in world " + player.worldObj.getSaveHandler().getSaveDirectoryName());
-		}
 	}
 }

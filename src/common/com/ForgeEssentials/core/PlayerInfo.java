@@ -6,12 +6,17 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.Stack;
 
 import net.minecraft.src.EntityPlayer;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
+import com.ForgeEssentials.WorldControl.BackupArea;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class PlayerInfo implements Serializable
 {
@@ -21,7 +26,15 @@ public class PlayerInfo implements Serializable
 
 	public static PlayerInfo getPlayerInfo(EntityPlayer player)
 	{
-		return playerInfoMap.get(player.username);
+		PlayerInfo info = playerInfoMap.get(player.username);
+
+		if (info == null)
+		{
+			readOrGenerateInfo(player);
+			return playerInfoMap.get(player.username);
+		}
+
+		return info;
 	}
 
 	public static void readOrGenerateInfo(EntityPlayer player)
@@ -47,6 +60,7 @@ public class PlayerInfo implements Serializable
 			catch (Exception e)
 			{
 				OutputHandler.SOP("Failed in reading file: " + worldName + "/" + username);
+				e.printStackTrace();
 			}
 		}
 
@@ -56,6 +70,11 @@ public class PlayerInfo implements Serializable
 
 		try
 		{
+			if (!saveFile.exists())
+			{
+				saveFile.getParentFile().mkdirs();
+				saveFile.createNewFile();
+			}
 			FileOutputStream fos = new FileOutputStream(saveFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(playerInfoMap.remove(username));
@@ -65,7 +84,11 @@ public class PlayerInfo implements Serializable
 		catch (Exception e)
 		{
 			OutputHandler.SOP("Failed in reading file: " + worldName + "/" + username);
+			e.printStackTrace();
 		}
+
+		// send packets.
+		ForgeEssentials.proxy.updateInfo(info, player);
 	}
 
 	public static void saveInfo(EntityPlayer player)
@@ -74,6 +97,11 @@ public class PlayerInfo implements Serializable
 		try
 		{
 			File saveFile = new File(FESAVES, info.worldName + "/" + player.username + ".ser").getAbsoluteFile();
+			if (!saveFile.exists())
+			{
+				saveFile.getParentFile().mkdirs();
+				saveFile.createNewFile();
+			}
 			FileOutputStream fos = new FileOutputStream(saveFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(playerInfoMap.get(player.username));
@@ -83,6 +111,7 @@ public class PlayerInfo implements Serializable
 		catch (Exception e)
 		{
 			OutputHandler.SOP("Error while saving info file: " + info.worldName + "/" + player.username);
+			e.printStackTrace();
 		}
 	}
 
@@ -92,6 +121,11 @@ public class PlayerInfo implements Serializable
 		try
 		{
 			File saveFile = new File(FESAVES, info.worldName + "/" + player.username + ".ser").getAbsoluteFile();
+			if (!saveFile.exists())
+			{
+				saveFile.getParentFile().mkdirs();
+				saveFile.createNewFile();
+			}
 			FileOutputStream fos = new FileOutputStream(saveFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(playerInfoMap.remove(player.username));
@@ -101,25 +135,37 @@ public class PlayerInfo implements Serializable
 		catch (Exception e)
 		{
 			OutputHandler.SOP("Error while saving info for player " + player.username);
+			e.printStackTrace();
 		}
 	}
 
-	private boolean		hasClientMod;
-	private String		worldName;
-	private String		username;
+	// -------------------------------------------------------------------------------------------
+	// ---------------------------------- Actual Class Starts Now --------------------------------
+	// -------------------------------------------------------------------------------------------
+
+	private boolean					hasClientMod;
+	private String					worldName;
+	private String					username;
 
 	// wand stuff
-	public int			wandID;
-	public int			wandDmg;
-	public boolean		wandEnabled;
+	public int						wandID;
+	public int						wandDmg;
+	public boolean					wandEnabled;
 
 	// selection stuff
-	private Point		sel1;
-	private Point		sel2;
-	private Selection	selection;
+	private Point					sel1;
+	private Point					sel2;
+	private Selection				selection;
+
+	// permissions stuff
+	private HashMap<String, String>	areaGroupMap;
 
 	// home
-	public Point		home;
+	public Point					home;
+	
+	// undo and redo  stuff
+	private Stack<BackupArea> undos;
+	private Stack<BackupArea> redos;
 
 	private PlayerInfo(EntityPlayer player)
 	{
@@ -128,17 +174,36 @@ public class PlayerInfo implements Serializable
 		selection = null;
 		worldName = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
 		username = player.username;
+
+		areaGroupMap.put(worldName, "default");
+		
+		undos = new Stack<BackupArea>();
+		redos = new Stack<BackupArea>();
 	}
 
 	public boolean isHasClientMod()
 	{
 		return hasClientMod;
 	}
+	
+	public void setHasClientMod(boolean hasClient)
+	{
+		hasClientMod = hasClient;
+	}
 
 	public String getUsername()
 	{
 		return username;
 	}
+	
+	public String getWorldName()
+	{
+		return worldName;
+	}
+	
+	// ----------------------------------------------
+	// ------------ Selection stuff -----------------
+	// ----------------------------------------------
 
 	public Point getPoint1()
 	{
@@ -156,6 +221,10 @@ public class PlayerInfo implements Serializable
 		}
 		else
 			selection.setStart(sel1);
+
+		// send packets.
+		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+		ForgeEssentials.proxy.updateInfo(this, player);
 	}
 
 	public Point getPoint2()
@@ -174,15 +243,39 @@ public class PlayerInfo implements Serializable
 		}
 		else
 			selection.setEnd(sel2);
+
+		// send packets.
+		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+		ForgeEssentials.proxy.updateInfo(this, player);
 	}
 
 	public Selection getSelection()
 	{
 		return selection;
 	}
+
 	
-	public String getWorldName()
+	// ----------------------------------------------
+	// ------------ Undo/Redo stuff -----------------
+	// ----------------------------------------------
+	
+	public void addUndoAction(BackupArea backup)
 	{
-		return worldName;
+		undos.push(backup);
+		redos.clear();
+	}
+	
+	public BackupArea getNextUndo()
+	{
+		BackupArea back = undos.pop();
+		redos.push(back);
+		return back;
+	}
+	
+	public BackupArea getNextRedo()
+	{
+		BackupArea back = redos.pop();
+		undos.push(back);
+		return back;
 	}
 }

@@ -1,6 +1,9 @@
 package com.ForgeEssentials.network;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
@@ -12,10 +15,10 @@ import net.minecraft.src.WorldServer;
 
 public abstract class ForgeEssentialsPacketBase extends Packet250CustomPayload
 {
-	
-	public abstract void readServer(DataInputStream stream, WorldServer world, EntityPlayer player);
-	
+	public static final String FECHANNEL = "ForgeEssentials";
+
+	public abstract void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException;
+
 	@SideOnly(value = Side.CLIENT)
-	// DON't FORGET THE SIDEONLY!!!!
-	public abstract void readClient(DataInputStream stream, WorldClient world, EntityPlayer player);
+	public abstract void readClient(DataInputStream stream, WorldClient world, EntityPlayer player) throws IOException;
 }
