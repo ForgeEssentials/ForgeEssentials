@@ -1,4 +1,4 @@
-package com.ForgeEssentials.WorldControl.commands;
+package com.ForgeEssentials.WorldControl;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 
-public class SaveableBlock implements Serializable
+public class BlockSaveable implements Serializable
 {
 	private int				x;
 	private int				y;
@@ -22,7 +22,7 @@ public class SaveableBlock implements Serializable
 	 * @param y
 	 * @param z
 	 */
-	public SaveableBlock(World world, int x, int y, int z)
+	public BlockSaveable(World world, int x, int y, int z)
 	{
 		this.x = x;
 		this.y = y;
@@ -41,9 +41,9 @@ public class SaveableBlock implements Serializable
 	
 	public boolean equals(Object object)
 	{
-		if (object instanceof SaveableBlock)
+		if (object instanceof BlockSaveable)
 		{
-			SaveableBlock block = (SaveableBlock) object;
+			BlockSaveable block = (BlockSaveable) object;
 			return x == block.x && y == block.y && z == block.z && blockID == block.blockID && metadata == block.metadata && tile.equals(block.tile);
 		}
 		return false;
@@ -55,5 +55,10 @@ public class SaveableBlock implements Serializable
 		TileEntity entity = world.getBlockTileEntity(x, y, z);
 		if (entity != null && tile != null)
 			entity.readFromNBT(tile);
+	}
+	
+	public boolean isAir()
+	{
+		return blockID == 0;
 	}
 }

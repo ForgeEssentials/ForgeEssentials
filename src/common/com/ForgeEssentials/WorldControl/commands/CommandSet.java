@@ -5,15 +5,17 @@ import java.util.HashMap;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.World;
 
 import com.ForgeEssentials.AreaSelector.Point;
+import com.ForgeEssentials.AreaSelector.Selection;
+import com.ForgeEssentials.WorldControl.BackupArea;
+import com.ForgeEssentials.WorldControl.BlockSaveable;
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
 
 public class CommandSet extends WorldControlCommandBase
 {
-
-	private HashMap<String, Point> playerLastSet = new HashMap<String, Point>();
 
 	@Override
 	public String getName()
@@ -24,51 +26,47 @@ public class CommandSet extends WorldControlCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		if (playerLastSet.containsKey(player))
-		{
-			OutputHandler.chatError(player, "Your last set is still being processed, stop causing lag!");
-			return;
-		}
-		playerLastSet.put(player.username, PlayerInfo.getPlayerInfo(player).getPoint1());
-		completeCommand();
+		int ID = 0;
+		int metadata = 0;
+		
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
-		Point point1 = PlayerInfo.getPlayerInfo(player.username).getPoint1();
-		Point point2 = PlayerInfo.getPlayerInfo(player.username).getPoint2();
-		boolean goodX = point1.x <= point2.x;
-		boolean goodY = point1.y <= point2.y;
-		boolean goodZ = point1.z <= point2.z;
+		World world = player.worldObj;
+		Selection sel = info.getSelection();
 		BackupArea back = new BackupArea();
 		int changed = 0;
-		for (int x = point1.x; goodX ? x <= point2.x : x >= point2.x;)
-		{
-			for (int y = point1.y; goodY ? y <= point2.y : y >= point2.y;)
-			{
-				for (int z = point1.z; goodZ ? z <= point2.z : z >= point2.z;)
+		
+		for (int x = sel.getLowPoint().x; x < sel.getHighPoint().x; x++)
+			for (int y = sel.getLowPoint().y; y < sel.getHighPoint().y; y++)
+				for (int z = sel.getLowPoint().z; z < sel.getHighPoint().z; z++)
 				{
-					if (setBlock(x, y, z, inf, sender, back))
+					if (metadata == -1)
 					{
+						if (ID == world.getBlockId(x, y, z))
+							continue;
+
+						back.before.add(new BlockSaveable(world, x, y, z));
+						world.setBlock(x, y, z, ID);
+						back.after.add(new BlockSaveable(world, x, y, z));
+
 						changed++;
 					}
-					if (goodZ)
-						z++;
 					else
-						z--;
-				}
-				if (goodY)
-					y++;
-				else
-					y--;
-			}
-			if (goodX)
-				x++;
-			else
-				x--;
-		}
+					{
+						if (ID == world.getBlockId(x, y, z) && metadata == world.getBlockMetadata(x, y, z))
+							continue;
 
-		addBackup(sender.username, back);
-		sender.addChatMessage("Set " + changed + " Blocks to " + getIdString(inf));
+						back.before.add(new BlockSaveable(world, x, y, z));
+						world.setBlockAndMetadata(x, y, z, ID, metadata);
+						back.after.add(new BlockSaveable(world, x, y, z));
+						changed++;
+					}
+				}
+
+		info.addUndoAction(back);
+		OutputHandler.chatConfirmation(player, "Set " + changed + " Blocks to " + new ItemStack(ID, 1, metadata));
 	}
 
+	/*
 	@Override
 	public void completeCommand()
 	{
@@ -97,6 +95,7 @@ public class CommandSet extends WorldControlCommandBase
 		}
 		lastSearch.y = 0;
 	}
+	*/
 
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
