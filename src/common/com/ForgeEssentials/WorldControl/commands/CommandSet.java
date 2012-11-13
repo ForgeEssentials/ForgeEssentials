@@ -11,6 +11,8 @@ import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
+import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
+import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
 
@@ -34,6 +36,10 @@ public class CommandSet extends WorldControlCommandBase
 		Selection sel = info.getSelection();
 		BackupArea back = new BackupArea();
 		int changed = 0;
+		
+		//  do this once the Ticktask is finished
+		//TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
+		//
 		
 		for (int x = sel.getLowPoint().x; x < sel.getHighPoint().x; x++)
 			for (int y = sel.getLowPoint().y; y < sel.getHighPoint().y; y++)
