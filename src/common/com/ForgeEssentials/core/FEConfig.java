@@ -36,20 +36,13 @@ public class FEConfig
 		OutputHandler.SOP("Loading config");
 		config.load();
 		settings.get("basic").put("motd", config.get("basic", "motd", settings.get("basic").get("motd").toString()).value);
-		settings.get("rules").put("rule1", config.get("rules", "rule1", settings.get("rules").get("rule1").toString()).value);
-		settings.get("rules").put("rule2", config.get("rules", "rule2", settings.get("rules").get("rule2").toString()).value);
-		settings.get("rules").put("rule3", config.get("rules", "rule3", settings.get("rules").get("rule3").toString()).value);
-		settings.get("rules").put("rule4", config.get("rules", "rule4", settings.get("rules").get("rule4").toString()).value);
-		settings.get("rules").put("rule5", config.get("rules", "rule5", settings.get("rules").get("rule5").toString()).value);
-
-		/**
-		 * WorldControl
-		 */
-
+		settings.get("basic").put("rules", config.get("basic", "rules", (ArrayList<String>) settings.get("basic").get("rules")).value);
 		config.addCustomCategoryComment("WorldControl", "The config area for the WorldControl submod of ForgeEssentials.");
 
 		Property prop;
 
+		//WorldControl
+		
 		prop = config.get("WorldControl", "defaultWandID", (new ItemStack(Item.axeWood)).itemID);
 		prop.comment = "The default wand ID. it is set to a wooden axe to start with.";
 		wc.defaultWandID = prop.getInt((new ItemStack(Item.axeWood)).itemID);

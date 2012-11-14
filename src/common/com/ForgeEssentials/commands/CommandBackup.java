@@ -32,21 +32,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase{
 		
 	}
 
-	/** Not implemented
-	public void makeFileList(File node){
-	if(node.isFile()){
-			files.add(makeZipEntry(node.getAbsolutePath().toString()));
-		}
-		if (node.isDirectory());{
-		String[] subNote = node.list();	
-		for (String filename : subNote){
-			makeFileList(node, filename));
-		}
-		}
-		*/
-			
-		
-		@Override
+	@Override
 	    //TODO fix this
 		public void processCommandConsole(ICommandSender sender, String[] args) {
 		OutputHandler.SOP("Not implemented");

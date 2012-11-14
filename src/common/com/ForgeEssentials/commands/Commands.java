@@ -35,6 +35,6 @@ public class Commands
 				e.registerServerCommand(new CommandRemove());
 				e.registerServerCommand(new CommandHome());
 				e.registerServerCommand(new CommandRestart());
-				e.registerServerCommand(new CommandBackup());
+				
 	}
 }

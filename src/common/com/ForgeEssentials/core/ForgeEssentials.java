@@ -6,11 +6,10 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.WorldControl;
 import com.ForgeEssentials.client.network.HandlerClient;
-
 import com.ForgeEssentials.commands.Commands;
 import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
-
+import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.network.HandlerServer;
 import com.ForgeEssentials.permissions.FEPermissionHandler;
 
@@ -45,6 +44,7 @@ public class ForgeEssentials
 	public FEPermissionHandler pHandler;
 	public WorldControl worldcontrol;
 	public Commands commands;
+	public CoreCommands corecmd;
 	
 	public static final File FEDIR = new File("./ForgeEssentials/");
 
@@ -64,6 +64,8 @@ public class ForgeEssentials
 		worldcontrol.preLoad(e);
 		commands = new Commands();
 		commands.preLoad(e);
+		corecmd = new CoreCommands();
+		corecmd.preLoad(e);
 	}
 
 	@Init
@@ -71,6 +73,7 @@ public class ForgeEssentials
 	{
 		worldcontrol.load(e);
 		commands.load(e);
+		corecmd.load(e);
 		proxy.load(e);
 		
 		pHandler = new FEPermissionHandler();
@@ -82,8 +85,7 @@ public class ForgeEssentials
 	public void serverStart(FMLServerStartingEvent e)
 	{
 		commands.serverStarting(e);
-		e.registerServerCommand(new CommandFEVersion());
-		e.registerServerCommand(new CommandFEUpdate());
+		corecmd.serverStarting(e);
 		worldcontrol.serverStarting(e);
 
 	}
