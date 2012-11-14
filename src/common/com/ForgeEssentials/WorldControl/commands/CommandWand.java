@@ -37,7 +37,7 @@ public class CommandWand extends WorldControlCommandBase
 			{
 				info.wandEnabled = true;
 				info.wandID = currentID;
-				info.wandDmg = currentDmg;
+				info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
 				OutputHandler.chatConfirmation(player, "Wand bound to " + currentName);
 				return;
 			} else if (args[0].equalsIgnoreCase("unbind"))
@@ -48,10 +48,10 @@ public class CommandWand extends WorldControlCommandBase
 			} else
 			{
 				currentID = interpretIDAndMetaFromString(args[0])[0];
-				currentID = interpretIDAndMetaFromString(args[0])[1];
+				currentDmg = interpretIDAndMetaFromString(args[0])[1];
 				info.wandEnabled = true;
 				info.wandID = currentID;
-				info.wandDmg = currentDmg;
+				info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
 				OutputHandler.chatConfirmation(player, "Wand bound to " + currentName);
 			}
 		} else
@@ -65,7 +65,7 @@ public class CommandWand extends WorldControlCommandBase
 			{
 				info.wandEnabled = true;
 				info.wandID = currentID;
-				info.wandDmg = currentDmg;
+				info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
 				OutputHandler.chatConfirmation(player, "Wand bound to " + currentName);
 				return;
 			}

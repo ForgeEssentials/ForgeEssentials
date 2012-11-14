@@ -49,12 +49,21 @@ public class BlockSaveable implements Serializable
 		return false;
 	}
 	
-	public void setinWorld(World world)
+	/**
+	 * @param world
+	 * @return if the block was actually set.
+	 */
+	public boolean setinWorld(World world)
 	{
+		if (this.equals(new BlockSaveable(world, x, y, z)))
+			return false;
+		
 		world.setBlockAndMetadata(x, y, z, blockID, metadata);
 		TileEntity entity = world.getBlockTileEntity(x, y, z);
 		if (entity != null && tile != null)
 			entity.readFromNBT(tile);
+		
+		return true;
 	}
 	
 	public boolean isAir()

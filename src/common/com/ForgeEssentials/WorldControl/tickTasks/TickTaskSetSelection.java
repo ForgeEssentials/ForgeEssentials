@@ -44,6 +44,7 @@ public class TickTaskSetSelection implements ITickTask
 			for (int z = current.z; z <= last.z; z++)
 				for (int y = current.y; y <= last.y; y++)
 				{
+					current = new Point(x, y, z);
 					
 					if (metadata == -1)
 					{
@@ -53,7 +54,6 @@ public class TickTaskSetSelection implements ITickTask
 						back.before.add(new BlockSaveable(player.worldObj, x, y, z));
 						player.worldObj.setBlock(x, y, z, blockID);
 						back.after.add(new BlockSaveable(player.worldObj, x, y, z));
-						current = new Point(x, y, z);
 						changed++;
 					}
 					else
@@ -64,11 +64,10 @@ public class TickTaskSetSelection implements ITickTask
 						back.before.add(new BlockSaveable(player.worldObj, x, y, z));
 						player.worldObj.setBlockAndMetadata(x, y, z, blockID, metadata);
 						back.after.add(new BlockSaveable(player.worldObj, x, y, z));
-						current = new Point(x, y, z);
 						changed++;
 					}
 					
-					if (lastChanged >= 50)
+					if (lastChanged >= 20)
 						return;
 				}
 	}

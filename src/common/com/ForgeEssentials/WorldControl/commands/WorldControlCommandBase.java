@@ -64,7 +64,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	public static int[] interpretIDAndMetaFromString(String msg)
 	{
 		int ID;
-		int meta = 0;
+		int meta = -1;
 
 		// try checking if its just an ID
 		try
@@ -96,7 +96,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 
 		// TODO: add name checking.
 
-		return new int[] { 0, 0 };
+		return new int[] { 0, -1 };
 	}
 
 	public void completeCommand()
