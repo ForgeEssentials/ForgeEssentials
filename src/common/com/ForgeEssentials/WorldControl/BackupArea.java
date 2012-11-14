@@ -17,6 +17,7 @@ public class BackupArea implements Serializable, Comparable
 	public BackupArea()
 	{
 		before = new ArrayList<BlockSaveable>();
+		after = new ArrayList<BlockSaveable>();
 	}
 
 	@Override

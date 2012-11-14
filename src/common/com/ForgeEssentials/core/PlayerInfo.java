@@ -174,7 +174,8 @@ public class PlayerInfo implements Serializable
 		selection = null;
 		worldName = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
 		username = player.username;
-
+		
+		areaGroupMap = new HashMap<String, String>();
 		areaGroupMap.put(worldName, "default");
 		
 		undos = new Stack<BackupArea>();

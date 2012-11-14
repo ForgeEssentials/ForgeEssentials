@@ -2,6 +2,7 @@ package com.ForgeEssentials.WorldControl.tickTasks;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -9,7 +10,7 @@ import cpw.mods.fml.common.TickType;
 public final class TickTaskHandler implements ITickHandler
 {
 	public static final int MAX_BLOCK_UPDATES = 10;
-	private static ArrayList<ITickTask> tasks;
+	private static ConcurrentLinkedQueue<ITickTask> tasks = new ConcurrentLinkedQueue<ITickTask>();
 	
 	public static void addTask(ITickTask task)
 	{
@@ -26,7 +27,11 @@ public final class TickTaskHandler implements ITickHandler
 		for (ITickTask task: tasks)
 		{
 			if (task.isComplete())
+			{
+				task.onComplete();
 				tasks.remove(task);
+			}
+			
 			else if (task.editsBlocks() && blockCounter <= MAX_BLOCK_UPDATES)
 			{
 				task.tick();

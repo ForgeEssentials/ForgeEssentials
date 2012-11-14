@@ -71,7 +71,8 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 		{
 			ID = Integer.parseInt(msg);
 			return new int[] { ID, meta };
-		} catch (NumberFormatException e)
+		}
+		catch (NumberFormatException e)
 		{
 			// do nothing. continue checking.
 		}
@@ -87,7 +88,8 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 
 				return new int[] { ID, meta };
 			}
-		} catch (NumberFormatException e)
+		}
+		catch (NumberFormatException e)
 		{
 			// do nothing. continue checking.
 		}

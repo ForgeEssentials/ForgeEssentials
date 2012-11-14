@@ -1,52 +1,89 @@
 package com.ForgeEssentials.WorldControl.tickTasks;
 
 import com.ForgeEssentials.AreaSelector.AreaBase;
+import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
+import com.ForgeEssentials.WorldControl.BlockSaveable;
+import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.core.PlayerInfo;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 
 public class TickTaskSetSelection implements ITickTask
 {
-	private World world;
-	private int blockID;
-	private int metadata;
-	private BackupArea back;
-	private EntityPlayer player;
-	private AreaBase area; // this is better if its a clone of the Selection rather than an instance
-	
-	boolean completed = false;
-	
+	// stuff needed
+	private final int		blockID;
+	private final int		metadata;
+	private BackupArea		back;
+	private EntityPlayer	player;
+
+	// actually used
+	private Point			last;
+	private Point			current;
+	private int				changed;
+
 	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata, BackupArea back, AreaBase area)
 	{
 		this.player = player;
 		this.blockID = blockID;
 		this.metadata = metadata;
 		this.back = back;
-		this.area = new Selection(area.getLowPoint(), area.getHighPoint());
-		world = player.worldObj;
+		last = area.getHighPoint();
+		current = area.getLowPoint();
 	}
 
 	@Override
 	public void tick()
 	{
-		// TODO Auto-generated method stub
-		// place the blocks..
+		int lastChanged = changed;
+		
+		for (int x = current.x; x <= last.x; x++)
+			for (int z = current.z; z <= last.z; z++)
+				for (int y = current.y; y <= last.y; y++)
+				{
+					
+					if (metadata == -1)
+					{
+						if (blockID == player.worldObj.getBlockId(x, y, z))
+							continue;
+
+						back.before.add(new BlockSaveable(player.worldObj, x, y, z));
+						player.worldObj.setBlock(x, y, z, blockID);
+						back.after.add(new BlockSaveable(player.worldObj, x, y, z));
+						current = new Point(x, y, z);
+						changed++;
+					}
+					else
+					{
+						if (blockID == player.worldObj.getBlockId(x, y, z) && metadata == player.worldObj.getBlockMetadata(x, y, z))
+							continue;
+
+						back.before.add(new BlockSaveable(player.worldObj, x, y, z));
+						player.worldObj.setBlockAndMetadata(x, y, z, blockID, metadata);
+						back.after.add(new BlockSaveable(player.worldObj, x, y, z));
+						current = new Point(x, y, z);
+						changed++;
+					}
+					
+					if (lastChanged >= 50)
+						return;
+				}
 	}
-	
+
 	@Override
 	public void onComplete()
 	{
-		// TODO Auto-generated method stub
-		// chat confirmation and stuff
-		// add backup to player undo thingy...
+		PlayerInfo.getPlayerInfo(player).addUndoAction(back);
+		OutputHandler.chatConfirmation(player, "Set " + changed + " Blocks to " + (blockID == 0 ? "Air" : new ItemStack(blockID, 1, metadata).getDisplayName()));
 	}
 
 	@Override
 	public boolean isComplete()
 	{
-		return completed;
+		return last.equals(current);
 	}
 
 	@Override

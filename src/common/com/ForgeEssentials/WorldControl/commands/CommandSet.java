@@ -31,6 +31,18 @@ public class CommandSet extends WorldControlCommandBase
 		int ID = 0;
 		int metadata = 0;
 		
+		if (args.length == 1)
+		{
+			int[] data = this.interpretIDAndMetaFromString(args[0]);
+			ID = data[0];
+			metadata = data[1];
+		}
+		else
+		{
+			error(player);
+			return;
+		}
+		
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 		World world = player.worldObj;
 		Selection sel = info.getSelection();
@@ -38,70 +50,8 @@ public class CommandSet extends WorldControlCommandBase
 		int changed = 0;
 		
 		//  do this once the Ticktask is finished
-		//TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
-		//
-		
-		for (int x = sel.getLowPoint().x; x < sel.getHighPoint().x; x++)
-			for (int y = sel.getLowPoint().y; y < sel.getHighPoint().y; y++)
-				for (int z = sel.getLowPoint().z; z < sel.getHighPoint().z; z++)
-				{
-					if (metadata == -1)
-					{
-						if (ID == world.getBlockId(x, y, z))
-							continue;
-
-						back.before.add(new BlockSaveable(world, x, y, z));
-						world.setBlock(x, y, z, ID);
-						back.after.add(new BlockSaveable(world, x, y, z));
-
-						changed++;
-					}
-					else
-					{
-						if (ID == world.getBlockId(x, y, z) && metadata == world.getBlockMetadata(x, y, z))
-							continue;
-
-						back.before.add(new BlockSaveable(world, x, y, z));
-						world.setBlockAndMetadata(x, y, z, ID, metadata);
-						back.after.add(new BlockSaveable(world, x, y, z));
-						changed++;
-					}
-				}
-
-		info.addUndoAction(back);
-		OutputHandler.chatConfirmation(player, "Set " + changed + " Blocks to " + new ItemStack(ID, 1, metadata));
+		TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
 	}
-
-	/*
-	@Override
-	public void completeCommand()
-	{
-		int targetID = inventoryStacks[0].itemID;
-		int targetMetadata = inventoryStacks[0].getItemDamage();
-		int blocksSearched = 0;
-		for(int y = lastSearch.y; y >= -yCoord; y--) {
-			for(int x = Math.abs(lastSearch.x); x <= range; x++) {
-				for(int z = Math.abs(lastSearch.z); z <= range; z++) {
-					for(int i = lastSearch.x >= 0 ? 0 : 1; i < 2; i++) {
-						for(int j = lastSearch.z >= 0 ? 0 : 1; j < 2; j++) {
-							int xRel = i == 0 ? x : -x;
-							int zRel = j == 0 ? z : -z;
-							if(worldObj.getBlockId(xCoord + xRel, yCoord + y, zCoord + zRel) == targetID && worldObj.getBlockMetadata(xCoord + xRel, yCoord + y, zCoord + zRel) == targetMetadata)
-								detectedBlocks.add(new Point(xCoord + xRel, yCoord + y, zCoord + zRel));
-							if(++blocksSearched == 20) {
-								lastSearch.set(xRel, y, zRel);
-								return;
-							}
-						}
-					}
-				}
-				lastSearch.z = 0;
-			}
-			lastSearch.x = 0;
-		}
-		lastSearch.y = 0;
-	}
-	*/
 
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
