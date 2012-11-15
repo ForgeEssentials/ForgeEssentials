@@ -2,6 +2,7 @@ package com.ForgeEssentials.client.network;
 
 import com.ForgeEssentials.client.core.PlayerInfoClient;
 import com.ForgeEssentials.client.core.ProxyClient;
+import com.ForgeEssentials.core.OutputHandler;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.INetworkManager;
@@ -32,16 +33,16 @@ public class ClientConnectionHandler implements IConnectionHandler
 		return null;
 	}
 
-	@Override  // client
+	@Override  // client     MP!!!
 	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager)
 	{
-		// TODO Auto-generated method stub
+		ProxyClient.info = new PlayerInfoClient();
 	}
 
-	@Override // client
+	@Override // client      SP!!!
 	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager)
 	{
-		// TODO Auto-generated method stub
+		ProxyClient.info = new PlayerInfoClient();
 	}
 
 	@Override // both
@@ -54,7 +55,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 	@Override // client
 	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login)
 	{
-		ProxyClient.info = new PlayerInfoClient();
+		// going to use the connections instead.
 	}
 
 }
