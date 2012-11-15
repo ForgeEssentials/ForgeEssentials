@@ -16,13 +16,13 @@ public class Commands
 	// implicit constructor Commands()
 	
 	// load.
-	public void preLoad(FMLPreInitializationEvent event)
+	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Commands module is enabled. Loading...");
 	}
 	
 	// load.
-	public void load(FMLInitializationEvent event)
+	public void load(FMLInitializationEvent e)
 	{
 		
 	}

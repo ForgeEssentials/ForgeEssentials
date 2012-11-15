@@ -25,7 +25,7 @@ public class ProxyClient extends ProxyCommon
 	public static final File FEDIRC = new File("./ForgeEssentialsClient/");
 	
 	@Override
-	public void PreLoad(FMLPreInitializationEvent e)
+	public void preLoad(FMLPreInitializationEvent e)
 	{
 		// check directory constants and create...
 		if (!FEDIRC.exists() || !FEDIRC.isDirectory())
