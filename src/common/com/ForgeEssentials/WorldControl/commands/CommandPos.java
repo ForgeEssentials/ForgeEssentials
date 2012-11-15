@@ -32,7 +32,7 @@ public class CommandPos extends WorldControlCommandBase
 		{
 			if (args.length < 3)
 			{
-				OutputHandler.chatError(player, "That won't work. try " + getSyntaxPlayer(player));
+				error(player);
 				return;
 			}
 
@@ -43,7 +43,7 @@ public class CommandPos extends WorldControlCommandBase
 				z = Integer.parseInt(args[2]);
 			} catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(player, "That won't work. try " + getSyntaxPlayer(player));
+				error(player);
 				return;
 			}
 

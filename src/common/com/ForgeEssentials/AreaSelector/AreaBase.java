@@ -132,7 +132,7 @@ public abstract class AreaBase implements Serializable
 			newY2 = p2.y;
 		}
 		
-		if (diffx < 0)
+		if (diffz < 0)
 		{
 			newZ1 = p1.z;
 			newZ2 = p2.z;

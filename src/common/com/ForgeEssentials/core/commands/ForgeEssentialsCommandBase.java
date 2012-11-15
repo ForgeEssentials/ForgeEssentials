@@ -1,5 +1,7 @@
 package com.ForgeEssentials.core.commands;
 
+import com.ForgeEssentials.core.OutputHandler;
+
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
@@ -106,5 +108,15 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	}
 
 	public abstract boolean canPlayerUseCommand(EntityPlayer player);
+	
+	public void error(ICommandSender sender)
+	{
+		String usage = this.getCommandUsage(sender);
+		
+		if (sender instanceof EntityPlayer)
+			OutputHandler.chatError((EntityPlayer) sender, usage);
+		else
+			OutputHandler.SOP(usage);
+	}
 
 }

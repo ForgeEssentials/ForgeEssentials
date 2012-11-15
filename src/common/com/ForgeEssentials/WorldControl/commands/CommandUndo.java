@@ -12,45 +12,25 @@ import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
+import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetBackup;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
 
-public class CommandSet extends WorldControlCommandBase
+public class CommandUndo extends WorldControlCommandBase
 {
 
 	@Override
 	public String getName()
 	{
-		return "set";
+		return "undo";
 	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		int ID = 0;
-		int metadata = 0;
-		
-		if (args.length == 1)
-		{
-			int[] data = this.interpretIDAndMetaFromString(args[0]);
-			ID = data[0];
-			metadata = data[1];
-		}
-		else
-		{
-			error(player);
-			return;
-		}
-		
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
-		World world = player.worldObj;
-		Selection sel = info.getSelection();
-		BackupArea back = new BackupArea();
-		int changed = 0;
-		
-		//  do this once the Ticktask is finished
-		TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
+		BackupArea back = PlayerInfo.getPlayerInfo(player).getNextUndo();
+		TickTaskHandler.addTask(new TickTaskSetBackup(player, back, false));
 	}
 
 	@Override
@@ -63,12 +43,12 @@ public class CommandSet extends WorldControlCommandBase
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/" + getCommandName() + " [id:metadata]";
+		return "/" + getCommandName();
 	}
 
 	@Override
 	public String getInfoPlayer(EntityPlayer player)
 	{
-		return "Set the your selection to a certain id and metadata";
+		return "Undos the last WorldControl action";
 	}
 }

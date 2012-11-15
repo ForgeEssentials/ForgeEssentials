@@ -8,22 +8,15 @@ import net.minecraft.src.World;
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
 
-public class BackupArea implements Serializable, Comparable
+public class BackupArea implements Serializable
 {
 	public ArrayList<BlockSaveable> before;
 	public ArrayList<BlockSaveable> after;
-	public int backupID;
 	
 	public BackupArea()
 	{
 		before = new ArrayList<BlockSaveable>();
-	}
-
-	@Override
-	public int compareTo(Object arg0)
-	{
-		// TODO Auto-generated method stub
-		return 0;
+		after = new ArrayList<BlockSaveable>();
 	}
 	
 	public boolean equals(Object obj)
