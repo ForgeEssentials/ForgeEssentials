@@ -18,6 +18,7 @@ public class FEConfig
 	private HashMap<String, HashMap<String, Object>> settings = new HashMap<String, HashMap<String, Object>>();
 
 	public WorldControl wc;
+	public ForgeEssentials core;
 
 	public FEConfig()
 	{
@@ -37,13 +38,13 @@ public class FEConfig
 		config.load();
 		settings.get("basic").put("motd", config.get("basic", "motd", settings.get("basic").get("motd").toString()).value);
 		settings.get("basic").put("rules", config.get("basic", "rules", (ArrayList<String>) settings.get("basic").get("rules")).value);
-		config.addCustomCategoryComment("WorldControl", "The config area for the WorldControl submod of ForgeEssentials.");
-
 		Property prop;
-
+        prop = config.get("basic", "checkForUpdates", true);
+		prop.comment = "Check for updates to ForgeEssentials on load. If you turn this off, you can still use /feversion in game.";
+		core.verCheck = prop.getBoolean(true);
 		//WorldControl
-		
-		prop = config.get("WorldControl", "defaultWandID", (new ItemStack(Item.axeWood)).itemID);
+		config.addCustomCategoryComment("WorldControl", "The config area for the WorldControl submod of ForgeEssentials.");
+        prop = config.get("WorldControl", "defaultWandID", (new ItemStack(Item.axeWood)).itemID);
 		prop.comment = "The default wand ID. it is set to a wooden axe to start with.";
 		wc.defaultWandID = prop.getInt((new ItemStack(Item.axeWood)).itemID);
 

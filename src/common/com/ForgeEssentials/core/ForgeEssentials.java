@@ -45,6 +45,7 @@ public class ForgeEssentials
 	public WorldControl worldcontrol;
 	public Commands commands;
 	public CoreCommands corecmd;
+	public static boolean verCheck;
 	
 	public static final File FEDIR = new File("./ForgeEssentials/");
 
@@ -59,7 +60,9 @@ public class ForgeEssentials
 		
 		config = new FEConfig();
 		config.loadConfig();
+		if (verCheck = true){
 		Version.checkVersion();
+		}
 		worldcontrol = new WorldControl();
 		worldcontrol.preLoad(e);
 		commands = new Commands();

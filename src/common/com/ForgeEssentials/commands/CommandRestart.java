@@ -1,20 +1,11 @@
 package com.ForgeEssentials.commands;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.ServerConfigurationManager;
-import net.minecraft.src.WorldServer;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
 
-import com.ForgeEssentials.commands.util.SaveUtil;
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-
-import cpw.mods.fml.relauncher.ArgsWrapper;
-import cpw.mods.fml.relauncher.FMLRelauncher;
 
 public class CommandRestart extends ForgeEssentialsCommandBase {
 
@@ -28,8 +19,6 @@ public class CommandRestart extends ForgeEssentialsCommandBase {
 
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
