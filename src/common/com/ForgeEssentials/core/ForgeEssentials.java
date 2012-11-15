@@ -10,6 +10,7 @@ import com.ForgeEssentials.commands.Commands;
 import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.commands.CoreCommands;
+import com.ForgeEssentials.core.config.FEConfig;
 import com.ForgeEssentials.network.HandlerServer;
 import com.ForgeEssentials.permissions.FEPermissionHandler;
 

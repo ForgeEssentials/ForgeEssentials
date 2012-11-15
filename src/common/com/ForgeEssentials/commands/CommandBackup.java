@@ -9,10 +9,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
-import com.ForgeEssentials.core.FEConfig;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.config.FEConfig;
 
 public class CommandBackup extends ForgeEssentialsCommandBase{
 

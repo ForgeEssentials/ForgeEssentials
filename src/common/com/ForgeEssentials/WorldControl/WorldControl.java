@@ -6,6 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.commands.*;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
+import com.ForgeEssentials.core.OutputHandler;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -24,7 +25,7 @@ public class WorldControl
 	// load.
 	public void preLoad(FMLPreInitializationEvent event)
 	{
-
+		OutputHandler.SOP("WorldControl module is enabled. Loading...");
 	}
 
 	// load.

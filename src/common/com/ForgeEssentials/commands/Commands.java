@@ -1,5 +1,7 @@
 package com.ForgeEssentials.commands;
 
+import com.ForgeEssentials.core.OutputHandler;
+
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -16,7 +18,7 @@ public class Commands
 	// load.
 	public void preLoad(FMLPreInitializationEvent event)
 	{
-		
+		OutputHandler.SOP("Commands module is enabled. Loading...");
 	}
 	
 	// load.
