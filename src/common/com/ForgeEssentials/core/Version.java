@@ -8,10 +8,21 @@ import cpw.mods.fml.common.Loader;
 
 public class Version
 {
-	public static String		version	= "0.0.1";
+	public static String version = getVersion();
 	private static final String	latest	= "https://raw.github.com/ForgeEssentials/ForgeEssentialsMain/master/VERSION.TXT";
-
-	/**
+    //Only change me when updating versions
+	public static int major = 0;
+    public static int minor = 0;		
+    public static int revision = 1;
+    //Should always be 0
+    public static int jenkins = 0;
+	
+    public static String getVersion()
+    {
+        return String.format("%d.%d.%d.%d", major, minor, revision, jenkins);
+    }
+    
+    /**
 	 * Based on Pahimar's.
 	 */
 	public static void checkVersion()
@@ -29,7 +40,7 @@ public class Version
 			{
 				if (line.startsWith(Loader.instance().getMCVersionString()))
 				{
-					if (line.endsWith(version))
+					if (line.endsWith(getVersion()))
 						OutputHandler.SOP("You are running the latest version of ForgeEssentials.");
 					reader.close();
 					read.close();
