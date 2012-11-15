@@ -4,9 +4,9 @@ The Forge Essentials project consists of a permissions and protection system to 
 
 Setup
 =====
-Minecraft: 1.4.2  
-MCP: 7.19  
-Forge: #355
+Minecraft: 1.4.4  
+MCP: 7.21  
+Forge: #372
 
 Get the latest Forge, MCP, and MC jars, and decompile. Once you have a working Forge workspace, pull the repo into that MCP folder.
 When more than one contributor is online, we use Saros to collaborate.
@@ -22,3 +22,5 @@ FE Team Members:
 <a href="https://github.com/AbrarSyed">AbrarSyed</a>  
 <a href="https://github.com/Bob-A-Red-Dino">Bob A Red Dino</a>  
 <a href="https://github.com/bspkrs">bspkrs</a>
+<a href="https://github.com/MysteriousAges">MysteriousAges</a>
+<a href="https://github.com/luacs1998">luacs1998</a>
