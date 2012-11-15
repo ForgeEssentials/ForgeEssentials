@@ -5,19 +5,16 @@ import java.io.File;
 import net.minecraft.src.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.client.WorldControl.CUI.CUIRenderrer;
 import com.ForgeEssentials.client.network.ClientConnectionHandler;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.ProxyCommon;
-import com.ForgeEssentials.network.PacketSelectionUpdate;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 
 @SideOnly(value=Side.CLIENT)
 public class ProxyClient extends ProxyCommon

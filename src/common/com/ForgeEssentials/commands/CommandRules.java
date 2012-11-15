@@ -17,7 +17,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	{
 		return "rules";
 	}
-
+	
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
