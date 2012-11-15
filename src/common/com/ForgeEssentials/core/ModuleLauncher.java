@@ -30,7 +30,7 @@ public class ModuleLauncher {
 	public static boolean wcenabled = true;
 	
 	@PreInit
-	public void preInit(FMLPreInitializationEvent e)
+	public void preLoad(FMLPreInitializationEvent e)
 	{
 		worldcontrol = new WorldControl();
 		commands = new Commands();
@@ -60,7 +60,7 @@ public class ModuleLauncher {
 	}
 
 	@ServerStarting
-	public void serverStart(FMLServerStartingEvent e)
+	public void serverStarting(FMLServerStartingEvent e)
 	{
 		if (cmdenabled = true){
 		commands.serverStarting(e);
