@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl;
 
+//Depreciated
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.MathHelper;

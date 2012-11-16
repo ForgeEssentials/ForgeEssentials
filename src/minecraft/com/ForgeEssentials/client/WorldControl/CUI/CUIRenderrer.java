@@ -20,6 +20,7 @@ import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.core.ForgeEssentials;
 
+//Depreciated
 @SideOnly(value = Side.CLIENT)
 public class CUIRenderrer
 {

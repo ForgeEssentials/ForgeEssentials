@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl.commands;
 
+//Depreciated
 import java.util.HashMap;
 
 import net.minecraft.src.EntityPlayer;

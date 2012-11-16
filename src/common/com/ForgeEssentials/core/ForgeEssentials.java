@@ -2,17 +2,9 @@ package com.ForgeEssentials.core;
 
 import java.io.File;
 
-import net.minecraftforge.common.MinecraftForge;
-
-import com.ForgeEssentials.WorldControl.WorldControl;
 import com.ForgeEssentials.client.network.HandlerClient;
-import com.ForgeEssentials.commands.Commands;
-import com.ForgeEssentials.core.commands.CommandFEUpdate;
-import com.ForgeEssentials.core.commands.CommandFEVersion;
-import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.core.config.FEConfig;
 import com.ForgeEssentials.network.HandlerServer;
-import com.ForgeEssentials.permissions.FEPermissionHandler;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -42,10 +34,6 @@ public class ForgeEssentials
 	public static ForgeEssentials instance;
 
 	public FEConfig config;
-	public FEPermissionHandler pHandler;
-	public WorldControl worldcontrol;
-	public Commands commands;
-	public CoreCommands corecmd;
 	public ModuleLauncher mdlaunch;
 	public static boolean verCheck;
 	

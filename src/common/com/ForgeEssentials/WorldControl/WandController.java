@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl;
 
+//Depreciated
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;

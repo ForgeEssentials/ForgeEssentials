@@ -54,7 +54,7 @@ public class FEConfig
 		prop = config.get("basic", "checkForUpdates", true);
 		prop.comment = "Check for updates to ForgeEssentials on load. If you turn this off, you can still use /feversion in game.";
 		core.verCheck = prop.getBoolean(true);
-		// WorldControl
+		// WorldControl (depreciated)
 		config.addCustomCategoryComment("WorldControl", "The config area for the WorldControl submod of ForgeEssentials.");
         prop = config.get("WorldControl", "defaultWandID", (new ItemStack(Item.axeWood)).itemID);
 		prop.comment = "The default wand ID. it is set to a wooden axe to start with.";

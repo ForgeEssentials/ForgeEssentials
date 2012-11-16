@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl.commands;
 
+//Depreciated
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;

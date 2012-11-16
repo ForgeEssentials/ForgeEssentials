@@ -22,12 +22,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModuleLauncher {
 	
-	public WorldControl worldcontrol;
 	public Commands commands;
 	public CoreCommands corecmd;
 	public Permissions permission;
 	public static boolean cmdenabled = true;
+	//Depreciated
 	public static boolean wcenabled = true;
+	public WorldControl worldcontrol;
 	
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
@@ -36,6 +37,7 @@ public class ModuleLauncher {
 		commands = new Commands();
 		corecmd = new CoreCommands();
 		permission = new Permissions();
+		//Depreciated
 		if (wcenabled = true){
 		worldcontrol.preLoad(e);
 		}
@@ -49,6 +51,7 @@ public class ModuleLauncher {
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
+		//Depreciated
 		if (wcenabled = true){
 		worldcontrol.load(e);
 		}
@@ -66,6 +69,7 @@ public class ModuleLauncher {
 		commands.serverStarting(e);
 		}
 		corecmd.serverStarting(e);
+		//Depreciated
 		if (wcenabled = true){
 		worldcontrol.serverStarting(e);
 		}
