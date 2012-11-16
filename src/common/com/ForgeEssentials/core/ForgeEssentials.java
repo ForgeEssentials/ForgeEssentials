@@ -2,16 +2,9 @@ package com.ForgeEssentials.core;
 
 import java.io.File;
 
-import net.minecraftforge.common.MinecraftForge;
-
-import com.ForgeEssentials.WorldControl.WorldControl;
 import com.ForgeEssentials.client.network.HandlerClient;
-import com.ForgeEssentials.commands.Commands;
-import com.ForgeEssentials.core.commands.CommandFEUpdate;
-import com.ForgeEssentials.core.commands.CommandFEVersion;
-import com.ForgeEssentials.core.commands.CoreCommands;
+import com.ForgeEssentials.core.config.FEConfig;
 import com.ForgeEssentials.network.HandlerServer;
-import com.ForgeEssentials.permissions.FEPermissionHandler;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -41,10 +34,7 @@ public class ForgeEssentials
 	public static ForgeEssentials instance;
 
 	public FEConfig config;
-	public FEPermissionHandler pHandler;
-	public WorldControl worldcontrol;
-	public Commands commands;
-	public CoreCommands corecmd;
+	public ModuleLauncher mdlaunch;
 	public static boolean verCheck;
 	
 	public static final File FEDIR = new File("./ForgeEssentials/");
@@ -63,34 +53,22 @@ public class ForgeEssentials
 		if (verCheck = true){
 		Version.checkVersion();
 		}
-		worldcontrol = new WorldControl();
-		worldcontrol.preLoad(e);
-		commands = new Commands();
-		commands.preLoad(e);
-		corecmd = new CoreCommands();
-		corecmd.preLoad(e);
+		mdlaunch = new ModuleLauncher();
+		mdlaunch.preLoad(e);
 	}
 
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
-		worldcontrol.load(e);
-		commands.load(e);
-		corecmd.load(e);
+		mdlaunch.load(e);
 		proxy.load(e);
-		
-		pHandler = new FEPermissionHandler();
-		MinecraftForge.EVENT_BUS.register(pHandler);
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
 	}
 
 	@ServerStarting
-	public void serverStart(FMLServerStartingEvent e)
+	public void serverStarting(FMLServerStartingEvent e)
 	{
-		commands.serverStarting(e);
-		corecmd.serverStarting(e);
-		worldcontrol.serverStarting(e);
-
+		mdlaunch.serverStarting(e);
 	}
 
 }

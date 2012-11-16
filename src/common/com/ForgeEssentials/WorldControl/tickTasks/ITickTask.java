@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl.tickTasks;
 
+//Depreciated
 import java.io.Serializable;
 
 public interface ITickTask extends Serializable

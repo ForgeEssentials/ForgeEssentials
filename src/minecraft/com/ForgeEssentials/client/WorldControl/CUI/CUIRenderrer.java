@@ -1,6 +1,5 @@
 package com.ForgeEssentials.client.WorldControl.CUI;
 
-
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.RenderHelper;
 import net.minecraft.src.RenderManager;
@@ -21,7 +20,7 @@ import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.core.ForgeEssentials;
 
-
+//Depreciated
 @SideOnly(value = Side.CLIENT)
 public class CUIRenderrer
 {

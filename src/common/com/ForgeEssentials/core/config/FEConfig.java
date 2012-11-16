@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core;
+package com.ForgeEssentials.core.config;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,8 +6,10 @@ import java.util.HashMap;
 
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
-import com.ForgeEssentials.mcfconfig.Configuration;
-import com.ForgeEssentials.mcfconfig.Property;
+
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.ModuleLauncher;
+import com.ForgeEssentials.core.OutputHandler;
 
 import com.ForgeEssentials.WorldControl.WorldControl;
 
@@ -19,6 +21,7 @@ public class FEConfig
 
 	public WorldControl wc;
 	public ForgeEssentials core;
+	public ModuleLauncher mdlaunch;
 
 	public FEConfig()
 	{
@@ -39,10 +42,19 @@ public class FEConfig
 		settings.get("basic").put("motd", config.get("basic", "motd", settings.get("basic").get("motd").toString()).value);
 		settings.get("basic").put("rules", config.get("basic", "rules", (ArrayList<String>) settings.get("basic").get("rules")).value);
 		Property prop;
-        prop = config.get("basic", "checkForUpdates", true);
+        // Version toggling
+		config.addCustomCategoryComment("modules", "Turn ForgeEssentials modules on or off here.");
+		prop = config.get("modules", "enableWorldControl", true);
+		prop.comment = "Enable/disable the WorldControl module. Disabling this on client also disables the CUI.";
+		mdlaunch.wcenabled = prop.getBoolean(true);
+		prop = config.get("basic", "checkForUpdates", true);
+		prop.comment = "Enables/disables the Commands module.";
+		mdlaunch.cmdenabled = prop.getBoolean(true);
+		// Core
+		prop = config.get("basic", "checkForUpdates", true);
 		prop.comment = "Check for updates to ForgeEssentials on load. If you turn this off, you can still use /feversion in game.";
 		core.verCheck = prop.getBoolean(true);
-		//WorldControl
+		// WorldControl (depreciated)
 		config.addCustomCategoryComment("WorldControl", "The config area for the WorldControl submod of ForgeEssentials.");
         prop = config.get("WorldControl", "defaultWandID", (new ItemStack(Item.axeWood)).itemID);
 		prop.comment = "The default wand ID. it is set to a wooden axe to start with.";

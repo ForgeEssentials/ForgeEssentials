@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl.tickTasks;
 
+//Depreciated
 import java.util.ArrayList;
 
 import net.minecraft.src.EntityPlayer;
@@ -63,7 +64,7 @@ public class TickTaskSetBackup implements ITickTask
 	@Override
 	public void onComplete()
 	{
-		OutputHandler.chatConfirmation(player, "" + changed + " Blocks changed");
+		OutputHandler.chatConfirmation(player, "" + changed + " blocks changed");
 	}
 
 	@Override

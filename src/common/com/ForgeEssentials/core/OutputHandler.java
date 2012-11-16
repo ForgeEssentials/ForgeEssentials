@@ -1,5 +1,6 @@
 package com.ForgeEssentials.core;
 
+import java.util.logging.Logger;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
@@ -33,6 +34,8 @@ public final class OutputHandler
 	public static final String UNDERLINE = "\u00a7n";
 	public static final String ITALICS = "\u00a7o";
 	public static final String RESET = "\u00a7r";
+	
+	public static Logger felog  = Logger.getLogger("Forge Essentials");
 	
 	/**
 	 * outputs a message in red text to the chat box of the given player.
@@ -75,7 +78,7 @@ public final class OutputHandler
 			MinecraftServer.getServer().sendChatToPlayer("{Forge Essentials} " + msg);
 		}
 		else
-			System.out.println("{Forge Essentials} " + msg);
+			felog.info((String) msg);
 	}
 
 }

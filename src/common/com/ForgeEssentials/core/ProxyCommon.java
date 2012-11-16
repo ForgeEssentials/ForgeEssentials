@@ -10,7 +10,7 @@ import cpw.mods.fml.common.network.Player;
 
 public class ProxyCommon
 {
-	public void PreLoad(FMLPreInitializationEvent e)
+	public void preLoad(FMLPreInitializationEvent e)
 	{
 		
 	}

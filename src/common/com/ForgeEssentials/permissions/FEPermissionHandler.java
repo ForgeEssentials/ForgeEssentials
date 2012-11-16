@@ -5,7 +5,6 @@ import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
-
 /**
  * 
  * This is the default catcher of all the ForgeEssentials Permission checks.
