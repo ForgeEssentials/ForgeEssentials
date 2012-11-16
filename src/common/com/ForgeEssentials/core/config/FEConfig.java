@@ -40,7 +40,7 @@ public class FEConfig
 		OutputHandler.SOP("Loading config");
 		config.load();
 		settings.get("basic").put("motd", config.get("basic", "motd", settings.get("basic").get("motd").toString()).value);
-		settings.get("basic").put("rules", config.get("basic", "rules", (ArrayList<String>) settings.get("basic").get("rules")).value);
+		settings.get("basic").put("rules", config.get("basic", "rules", ((String)settings.get("basic").get("rules"))));
 		Property prop;
         // Version toggling
 		config.addCustomCategoryComment("modules", "Turn ForgeEssentials modules on or off here.");
