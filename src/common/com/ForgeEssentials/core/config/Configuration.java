@@ -7,11 +7,13 @@ package com.ForgeEssentials.core.config;
 
 import java.io.*;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +52,7 @@ public class Configuration
 
     File file;
 
-    public Map<String, Map<String, Property>> categories = new TreeMap<String, Map<String, Property>>();
+    public Map<String, Category> categories = new TreeMap<String, Category>();
     private Map<String, Configuration> children = new TreeMap<String, Configuration>();
 
     private Map<String,String> customCategoryComments = Maps.newHashMap();
@@ -209,22 +211,22 @@ public class Configuration
             category = category.toLowerCase(Locale.ENGLISH);
         }
 
-        Map<String, Property> source = categories.get(category);
+        Category source = categories.get(category);
 
         if(source == null)
         {
-            source = new TreeMap<String, Property>();
+            source = new Category(category);
             categories.put(category, source);
         }
 
-        if (source.containsKey(key))
+        if (source.properties.containsKey(key))
         {
-            return source.get(key);
+            return source.properties.get(key);
         }
         else if (defaultValue != null)
         {
             Property prop = new Property(key, defaultValue, type);
-            source.put(key, prop);
+            source.properties.put(key, prop);
             return prop;
         }
         else
@@ -240,7 +242,7 @@ public class Configuration
 
     public boolean hasKey(String category, String key)
     {
-        Map<String, Property> cat = categories.get(category);
+        Map<String, Property> cat = categories.get(category).properties;
         return cat != null && cat.get(key) != null;
     }
 
@@ -271,8 +273,7 @@ public class Configuration
 
                 String line;
                 
-                String currentCategory = null;
-                Map<String, Property> currentMap = null;
+                Category currentCat = null;
 
                 while (true)
                 {
@@ -289,7 +290,7 @@ public class Configuration
                     if (start.matches())
                     {
                         fileName = start.group(1);
-                        categories = new TreeMap<String, Map<String, Property>>();
+                        categories = new TreeMap<String, Category>();
                         customCategoryComments = Maps.newHashMap();
                         continue;
                     }
@@ -341,41 +342,28 @@ public class Configuration
                                     break;
 
                                 case '{':
-                                    String scopeName = line.substring(nameStart, nameEnd + 1);
+                                    String qualifiedName = line.substring(nameStart, nameEnd + 1);
                                     
-                                    if (currentCategory == null)
-                                    	currentCategory = scopeName;
-                                    else
-                                    	currentCategory = (new StringBuilder(currentCategory)).append(':').append(scopeName).toString();
+                                    Category tempCat = new Category(qualifiedName, currentCat);
+                                    qualifiedName = tempCat.getQualifiedName();
                                     
-                                    currentMap = categories.get(currentCategory);
-                                    if (currentMap == null)
+                                    currentCat = categories.get(qualifiedName);
+                                    if (currentCat == null)
                                     {
-                                        currentMap = new TreeMap<String, Property>();
-                                        categories.put(scopeName, currentMap);
+                                        currentCat = tempCat;
+                                        categories.put(currentCat.getQualifiedName(), currentCat);
                                     }
 
                                     break;
 
                                 case '}':
                                 	
-                                	if (currentCategory.contains(":"))
-                                	{
-                                		int index = currentCategory.lastIndexOf(':');
-                                		currentCategory = currentCategory.substring(0, index);
-                                		currentMap = categories.get(currentCategory);
-                                	}
-                                	else
-                                	{
-                                		currentCategory = null;
-                                        currentMap = null;
-                                        break;
-                                	}
+                                	currentCat = currentCat.parent;
 
                                 case '=':
                                     String propertyName = line.substring(nameStart, nameEnd + 1);
 
-                                    if (currentMap == null)
+                                    if (currentCat == null)
                                     {
                                         throw new RuntimeException("property " + propertyName + " has no scope");
                                     }
@@ -385,7 +373,7 @@ public class Configuration
                                     prop.value = line.substring(i + 1);
                                     i = line.length();
 
-                                    currentMap.put(propertyName, prop);
+                                    currentCat.properties.put(propertyName, prop);
 
                                     break;
 
@@ -472,7 +460,7 @@ public class Configuration
 
     private void save(BufferedWriter out) throws IOException
     {
-        for(Map.Entry<String, Map<String, Property>> category : categories.entrySet())
+        for(Entry<String, Category> category : categories.entrySet())
         {
             out.write("####################\r\n");
             out.write("# " + category.getKey() + " \r\n");
@@ -495,7 +483,7 @@ public class Configuration
                 catKey = '"'+catKey+'"';
             }
             out.write(catKey + " {\r\n");
-            writeProperties(out, category.getValue().values());
+            writeProperties(out, category.getValue().properties.values());
             out.write("}\r\n\r\n");
         }
     }
