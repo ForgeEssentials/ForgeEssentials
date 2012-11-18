@@ -78,7 +78,7 @@ public final class OutputHandler
 			MinecraftServer.getServer().sendChatToPlayer("{Forge Essentials} " + msg);
 		}
 		else
-			felog.info((String) msg);
+			felog.info("{Forge Essentials} " + msg);
 	}
 
 }

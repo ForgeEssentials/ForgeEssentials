@@ -17,10 +17,11 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	{
 		return "rules";
 	}
-	
+
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
+		/*
 		if (args.length > 1)
 		{
 			try
@@ -30,21 +31,26 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				{
 					newRule = newRule + " " + args[i];
 				}
-				ForgeEssentials.instance.config.changeConfig("rules", "rule" + new Integer(args[0]), newRule);
-			} catch (Exception e)
+				// ForgeEssentials.instance.config.changeConfig("rules", "rule" + new Integer(args[0]), newRule);
+			}
+			catch (Exception e)
 			{
 			}
-		} else
+		}
+		else
 		{
 			for (String rule : (ArrayList<String>) ForgeEssentials.instance.config.getSetting("basic", "rules"))
+
 				if (!rule.equals(""))
 					player.addChatMessage(rule);
 		}
+		*/
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		/*
 		if (args.length > 1)
 		{
 			try
@@ -55,18 +61,23 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					newRule = newRule + " " + args[i];
 				}
 				ForgeEssentials.instance.config.changeConfig("rules", "rule" + new Integer(args[0]), newRule);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 			}
-		} else
+		}
+		else
 		{
+			
 			for (int i = 1; i <= 5; i++)
 			{
 				String rule = ForgeEssentials.instance.config.getSetting("rules", "rule" + i).toString().trim();
 				if (!rule.equals(""))
 					OutputHandler.SOP(rule);
 			}
+			
 		}
+		*/
 	}
 
 	@Override

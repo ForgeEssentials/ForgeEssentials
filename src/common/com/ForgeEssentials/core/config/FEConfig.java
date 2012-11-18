@@ -16,6 +16,35 @@ import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 public class FEConfig
 {
 	public static final File FECONFIG = new File(ForgeEssentials.FEDIR, "config.cfg");
+	
+	public final Configuration config;
+	
+	// this is designed so it will work for any class.
+	public FEConfig()
+	{	
+		config = new Configuration(FECONFIG);
+		
+		// starting permissions and stuff...
+		
+		OutputHandler.SOP("Loading config");
+		config.load();
+		
+		// Rules
+		
+	}
+	
+	/**
+	 * @param name: ei WorldControl, Commands, Permissions, WorldEditCompat, WOrldGuardCompat, etc... whatever comes after Module
+	 * @return boolean
+	 */
+	public boolean isModuleEnabled(String name)
+	{
+		Property prop = config.get("Modules", "name"+"_Enabled", true);
+		return prop.getBoolean(true);
+	}
+	
+	/*
+	public static final File FECONFIG = new File(ForgeEssentials.FEDIR, "config.cfg");
 
 	private HashMap<String, HashMap<String, Object>> settings = new HashMap<String, HashMap<String, Object>>();
 
@@ -77,4 +106,5 @@ public class FEConfig
 	{
 		return settings.get(category).get(name);
 	}
+	*/
 }

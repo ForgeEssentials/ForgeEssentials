@@ -19,19 +19,23 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
+		/*
 		if (args.length > 0)
 			ForgeEssentials.instance.config.changeConfig("basic", "motd", args[0]);
 		else
 			player.addChatMessage(ForgeEssentials.instance.config.getSetting("basic", "motd").toString());
+			*/
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		/*
 		if (args.length > 0)
 			ForgeEssentials.instance.config.changeConfig("basic", "motd", args[0]);
 		else
 			OutputHandler.SOP(ForgeEssentials.instance.config.getSetting("basic", "motd"));
+			*/
 	}
 
 	@Override

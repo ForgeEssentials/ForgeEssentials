@@ -22,13 +22,16 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModuleLauncher {
 	
-	public ModuleCommands commands;
 	public CoreCommands corecmd;
+	
+	public ModuleCommands commands;
 	public ModulePermissions permission;
+	public ModuleWorldControl worldcontrol;
+	
 	public static boolean cmdenabled = true;
+	
 	//Depreciated
 	public static boolean wcenabled = true;
-	public ModuleWorldControl worldcontrol;
 	
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
