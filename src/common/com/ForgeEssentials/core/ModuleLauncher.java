@@ -22,7 +22,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModuleLauncher
 {
-
 	public CoreCommands			corecmd;
 
 	public ModuleCommands		commands;
@@ -33,7 +32,6 @@ public class ModuleLauncher
 	public static boolean		cmdEnabled		= true;
 	public static boolean		wcEnabled		= true;
 
-	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		worldcontrol = new ModuleWorldControl();
@@ -53,7 +51,6 @@ public class ModuleLauncher
 			permission.preLoad(e);
 	}
 
-	@Init
 	public void load(FMLInitializationEvent e)
 	{
 		corecmd.load(e);
@@ -68,7 +65,6 @@ public class ModuleLauncher
 			permission.load(e);
 	}
 
-	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		corecmd.serverStarting(e);

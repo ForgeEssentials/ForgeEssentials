@@ -182,7 +182,7 @@ public class Configuration
 
     public Property get(String category, String key, int defaultValue)
     {
-        Property prop = get(category, key, Integer.toString(defaultValue), INTEGER);
+        Property prop = get(category, key, new String[] {Integer.toString(defaultValue)}, INTEGER);
         if (!prop.isIntValue())
         {
             prop.value = Integer.toString(defaultValue);
@@ -192,7 +192,7 @@ public class Configuration
 
     public Property get(String category, String key, boolean defaultValue)
     {
-        Property prop = get(category, key, Boolean.toString(defaultValue), BOOLEAN);
+        Property prop = get(category, key, new String[] {Boolean.toString(defaultValue)}, BOOLEAN);
         if (!prop.isBooleanValue())
         {
             prop.value = Boolean.toString(defaultValue);
@@ -202,10 +202,15 @@ public class Configuration
 
     public Property get(String category, String key, String defaultValue)
     {
-        return get(category, key, defaultValue, STRING);
+        return get(category, key, new String[] {defaultValue}, STRING);
+    }
+    
+    public Property get(String category, String key, String[] defaultValue)
+    {
+        return get(category, key, defaultValue, LIST);
     }
 
-    public Property get(String category, String key, String defaultValue, Property.Type type)
+    public Property get(String category, String key, String[] defaultValue, Property.Type type)
 	{
 		if (!caseSensitiveCustomCategories)
 		{
@@ -278,7 +283,11 @@ public class Configuration
         }
         else if (defaultValue != null)
         {
-            Property prop = new Property(key, defaultValue, type);
+        	Property prop;
+        	if (type.equals(LIST))
+        		prop = new Property(key, defaultValue);
+        	else
+        		prop = new Property(key, defaultValue[0], type);
             source.properties.put(key, prop);
             return prop;
         }
@@ -358,6 +367,10 @@ public class Configuration
                     int nameStart = -1, nameEnd = -1;
                     boolean skip = false;
                     boolean quoted = false;
+                    
+                    String tempName;
+                    ArrayList<String> ListProp;
+                    
                     for (int i = 0; i < line.length() && !skip; ++i)
                     {
                         if (Character.isLetterOrDigit(line.charAt(i)) || ALLOWED_CHARS.indexOf(line.charAt(i)) != -1 || (quoted && line.charAt(i) != '"'))
@@ -380,6 +393,27 @@ public class Configuration
                                 case '#':
                                     skip = true;
                                     continue;
+                                case '<':
+                                	/*
+                                    String qualifiedName = line.substring(nameStart, nameEnd + 1);
+                                    
+                                    Category tempCat = new Category(qualifiedName, currentCat);
+                                    qualifiedName = tempCat.getQualifiedName();
+                                    
+                                    currentCat = categories.get(qualifiedName);
+                                    if (currentCat == null)
+                                    {
+                                        currentCat = tempCat;
+                                        categories.put(currentCat.getQualifiedName(), currentCat);
+                                    }
+                                    */
+
+                                    break;
+
+                                case '>':
+                                	
+                                	//currentCat = currentCat.parent;
+                                	break;
 
                                 case '"':
                                     if (quoted)
@@ -420,6 +454,7 @@ public class Configuration
                                         throw new RuntimeException("property " + propertyName + " has no scope");
                                     }
 
+                                    // TODO: replace with actual constructor
                                     Property prop = new Property();
                                     prop.setName(propertyName);
                                     prop.value = line.substring(i + 1);
@@ -596,6 +631,11 @@ public class Configuration
             buffer.write(offset + propName + "=" + property.value);
             buffer.write("\r\n");
         }
+    }
+    
+    private void writeListProperty(BufferedWriter buffer, Property prop, int leftOffset)
+    {
+    	
     }
     
     private String getOffsetString(int offset)
