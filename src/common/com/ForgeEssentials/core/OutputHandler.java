@@ -1,5 +1,6 @@
 package com.ForgeEssentials.core;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import net.minecraft.server.MinecraftServer;
@@ -78,6 +79,11 @@ public final class OutputHandler
 			MinecraftServer.getServer().sendChatToPlayer("{Forge Essentials} " + msg);
 		
 		felog.info(""+msg);
+	}
+	
+	public static void logConfigChange(String category, String prop, String oldVal, String newVal)
+	{
+		SOP("Config Changed: "+prop+" under "+"category"+" changed from "+oldVal+" to "+newVal);
 	}
 
 }

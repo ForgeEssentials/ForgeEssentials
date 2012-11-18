@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 
+import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.core.OutputHandler;
@@ -28,7 +29,6 @@ public class FEConfig
 	public static final File	FECONFIG	= new File(ForgeEssentials.FEDIR, "config.cfg");
 
 	// rules stuff
-	public static File			rulesFile	= new File(ForgeEssentials.FEDIR, "rules.txt");
 	public ArrayList<String>	rules;
 
 	public final Configuration	config;
@@ -40,100 +40,51 @@ public class FEConfig
 		config = new Configuration(FECONFIG);
 		// config.load  -- COnfigurations are loaded on Construction.
 		
+		// load the modules
+		loadModules();
 		
-		// do rules
-		loadRules();
+		// miscellanious stuff...
+		loadMisc();
 		
 		// other stuff.
 	}
-
-	private void loadRules()
+	
+	private void loadModules()
 	{
-		// Rules the rules file will be a flat strings file.. nothing special.
-		rules = new ArrayList<String>();
-
-		OutputHandler.SOP("Loading rules");
-		if (!rulesFile.exists())
-		{
-			try
-			{
-				OutputHandler.SOP("No rules file found. Generating with default rules..");
-
-				rulesFile.createNewFile();
-
-				// create streams
-				FileOutputStream stream = new FileOutputStream(rulesFile);
-				OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
-				BufferedWriter writer = new BufferedWriter(streamWriter);
-
-				writer.write("# " + rulesFile.getName() + " | numbers are automatically added");
-				writer.newLine();
-
-				writer.write("Obey the Admins");
-				rules.add("Obey the Admins");
-				writer.newLine();
-
-				writer.write("Do not greif");
-				rules.add("Do not greif");
-				writer.newLine();
-
-				writer.close();
-				streamWriter.close();
-				stream.close();
-
-				OutputHandler.SOP("Completed generating rules file.");
-			}
-			catch (Exception e)
-			{
-				Logger lof = OutputHandler.felog;
-				lof.logp(Level.SEVERE, "FEConfig", "Generating Rules", "Error reading or writing the Rules file", e);
-			}
-		}
-		else
-		{
-			try
-			{
-				OutputHandler.SOP("Rules file found. Reading...");
-
-				FileInputStream stream = new FileInputStream(rulesFile);
-				InputStreamReader streamReader = new InputStreamReader(stream);
-				BufferedReader reader = new BufferedReader(streamReader);
-
-				String read = reader.readLine();
-				int counter = 0;
-
-				while (read != null)
-				{
-					// ignore the comment things...
-					if (read.startsWith("#"))
-					{
-						read = reader.readLine();
-						continue;
-					}
-
-					// add to the rules list.
-					rules.add(read);
-
-					// read the next string
-					read = reader.readLine();
-
-					// increment counter
-					counter++;
-				}
-
-				reader.close();
-				streamReader.close();
-				stream.close();
-
-				OutputHandler.SOP("Completed reading rules file. " + counter + " rules read.");
-			}
-			catch (Exception e)
-			{
-				Logger lof = OutputHandler.felog;
-				lof.logp(Level.SEVERE, "FEConfig", "Constructor-Rules", "Error reading or writing the Rules file", e);
-			}
-		}
-
+		config.addCustomCategoryComment("Modules", "Here you can Enable and Disable ForgeEssentials Modules");
+		
+		Property prop = config.get("Modules", "Commands_Enabled", true);
+		prop.comment = "Disabling this will remove the non essentials commands. ie: /home, /motd, /rules, etc...";
+		ModuleLauncher.cmdEnabled = prop.getBoolean(true);
+		
+		prop = config.get("Modules", "WorldControl_Enabled", true);
+		prop.comment = "Disabling this will remove Selections and selection editting commands such as //set, //copy, etc...";
+		ModuleLauncher.wcEnabled = prop.getBoolean(true);
+		
+		prop = config.get("Modules", "Permissions_Enabled", true);
+		prop.comment = "Disabling this will remove any and all permissions integration";
+		ModuleLauncher.permsEnabled = prop.getBoolean(true);
+	}
+	
+	private void loadMisc()
+	{
+		config.addCustomCategoryComment("Miscellaneous", "here you can configure miscellanious things.");
+		
+		Property prop = config.get("Miscellaneous", "motd", "Welcome to a server running ForgeEssentials");
+		prop.comment = "the Message Of The Day is only used if the Commands module is enabled.";
+		ModuleCommands.motd = prop.value;
+		
+		prop = config.get("Miscellaneous", "versionCheck", true);
+		prop.comment = "to check for newer versions of ForgeEssenetials or not.";
+		ForgeEssentials.verCheck = prop.getBoolean(true);
+	}
+	
+	/**
+	 * will overwrite the current physical file.
+	 */
+	public void forceSave()
+	{
+		config.save();
 	}
 
 	/**
@@ -142,8 +93,26 @@ public class FEConfig
 	 */
 	public boolean isModuleEnabled(String name)
 	{
-		Property prop = config.get("Modules", "name" + "_Enabled", true);
+		Property prop = config.get("Modules", name + "_Enabled", true);
 		return prop.getBoolean(true);
+	}
+	
+	public void changeMiscProperty(String property, String newValue)
+	{
+		Property prop = config.get("Miscellaneous", property, newValue);
+		String oldVal = prop.value;
+		prop.value = newValue;
+		
+		OutputHandler.logConfigChange("Miscellaneous", property, oldVal, newValue);
+	}
+	
+	public void changeProperty(String category, String property, String newValue)
+	{
+		Property prop = config.get(category, property, newValue);
+		String oldVal = prop.value;
+		prop.value = newValue;
+		
+		OutputHandler.logConfigChange(category, property, oldVal, newValue);
 	}
 
 }

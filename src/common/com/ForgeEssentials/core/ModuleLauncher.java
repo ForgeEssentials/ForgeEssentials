@@ -41,11 +41,6 @@ public class ModuleLauncher
 		corecmd = new CoreCommands();
 		permission = new ModulePermissions();
 		
-		wcEnabled = ForgeEssentials.instance.config.isModuleEnabled("WorldControl");
-		cmdEnabled = ForgeEssentials.instance.config.isModuleEnabled("Commands");
-		permsEnabled = ForgeEssentials.instance.config.isModuleEnabled("Permissions");
-		
-		
 		corecmd.preLoad(e);
 		
 		if (wcEnabled)
