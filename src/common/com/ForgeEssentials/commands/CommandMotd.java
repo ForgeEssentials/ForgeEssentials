@@ -10,6 +10,8 @@ import net.minecraft.src.ICommandSender;
 public class CommandMotd extends ForgeEssentialsCommandBase
 {
 
+	public static String motd;
+
 	@Override
 	public String getCommandName()
 	{
@@ -19,23 +21,19 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		/*
 		if (args.length > 0)
-			ForgeEssentials.instance.config.changeConfig("basic", "motd", args[0]);
+			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd = args[0]);
 		else
-			player.addChatMessage(ForgeEssentials.instance.config.getSetting("basic", "motd").toString());
-			*/
+			player.addChatMessage(motd);
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		/*
 		if (args.length > 0)
-			ForgeEssentials.instance.config.changeConfig("basic", "motd", args[0]);
+			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd = args[0]);
 		else
-			sender.sendChatToPlayer(ForgeEssentials.instance.config.getSetting("basic", "motd"));
-			*/
+			sender.sendChatToPlayer(motd);
 	}
 
 	@Override
