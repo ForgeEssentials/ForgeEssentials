@@ -21,6 +21,7 @@
 /src/common/*
 /src/minecraft/*
 /src/minecraft_server/*
+/src/common/com/ForgeEssentials/coremod/
 
 !/src/common/com/
 !/src/common/mcmod.info
