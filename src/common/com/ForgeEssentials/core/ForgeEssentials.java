@@ -6,6 +6,7 @@ import com.ForgeEssentials.client.network.HandlerClient;
 import com.ForgeEssentials.core.config.FEConfig;
 import com.ForgeEssentials.network.HandlerServer;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -24,7 +25,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  */
 
 @NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials"}, packetHandler = HandlerClient.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials"}, packetHandler = HandlerServer.class))
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.0.1")
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials|Core", version = "0.0.1")
 public class ForgeEssentials
 {
 	@SidedProxy(clientSide = "com.ForgeEssentials.client.core.ProxyClient", serverSide = "com.ForgeEssentials.core.ProxyCommon")
@@ -36,12 +37,22 @@ public class ForgeEssentials
 	public FEConfig config;
 	public ModuleLauncher mdlaunch;
 	public static boolean verCheck;
+	public static boolean coremod;
 	
 	public static final File FEDIR = new File("./ForgeEssentials/");
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		// Check if preloader module is in coremods folder
+		coremod = Loader.isModLoaded("FEPreLoader");
+		if (coremod = true){
+			OutputHandler.SOP("Preload module found. Enabling WorldEdit/WorldGuard support.");
+			//init WE/WG support here
+		}
+		else{
+			OutputHandler.SOP("Preload module NOT found. WorldEdit/WorldGuard support DISABLED.");
+		}
 		// check directory constants and create...
 		if (!FEDIR.exists() || !FEDIR.isDirectory())
 			FEDIR.mkdir();
