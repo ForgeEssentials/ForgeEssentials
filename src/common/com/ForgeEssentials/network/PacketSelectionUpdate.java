@@ -11,6 +11,8 @@ import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.Packet;
+import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.WorldClient;
 import net.minecraft.src.WorldServer;
 import cpw.mods.fml.common.Side;

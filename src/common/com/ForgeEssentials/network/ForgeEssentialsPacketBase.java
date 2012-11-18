@@ -21,4 +21,20 @@ public abstract class ForgeEssentialsPacketBase extends Packet250CustomPayload
 
 	@SideOnly(value = Side.CLIENT)
 	public abstract void readClient(DataInputStream stream, WorldClient world, EntityPlayer player) throws IOException;
+	
+	/**
+	 * Converts the packet to a Packet250CustomPayload to be sent across the network. This is here to prevent
+	 * the client/server from freaking out when they encounter a packet that is part of ForgeEssentials.
+	 * @return
+	 */
+	public Packet250CustomPayload toPacket250()
+	{
+		Packet250CustomPayload newPacket = new Packet250CustomPayload();
+		
+		newPacket.channel = this.channel;
+		newPacket.data = this.data;
+		newPacket.length = this.length;
+		
+		return newPacket;
+	}
 }
