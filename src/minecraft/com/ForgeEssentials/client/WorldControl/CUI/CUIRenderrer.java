@@ -93,7 +93,7 @@ public class CUIRenderrer
 			GL11.glScalef(1.0F, -1.0F, -1.0F);
 			GL11.glColor3f(0, 5, 100);
 			//renderBlockBox(tess);
-			renderBlockBoxTo(tess, new Point(sel.getXDiff(), -sel.getYDiff(), -sel.getZDiff()));
+			renderBlockBoxTo(tess, new Point(sel.getXLength(), -sel.getYLength(), -sel.getZLength()));
 		}
 
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);

@@ -5,7 +5,7 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.TileEntityCommandBlock;
 
-import com.ForgeEssentials.WorldControl.WorldControl;
+import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
@@ -15,7 +15,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	@Override
 	public final String getCommandName()
 	{
-		if (WorldControl.useExtraSlash)
+		if (ModuleWorldControl.useExtraSlash)
 			return "/" + getName();
 		else
 			return getName();

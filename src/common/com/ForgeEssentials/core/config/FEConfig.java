@@ -11,7 +11,7 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.core.OutputHandler;
 
-import com.ForgeEssentials.WorldControl.WorldControl;
+import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 
 public class FEConfig
 {
@@ -19,7 +19,7 @@ public class FEConfig
 
 	private HashMap<String, HashMap<String, Object>> settings = new HashMap<String, HashMap<String, Object>>();
 
-	public WorldControl wc;
+	public ModuleWorldControl wc;
 	public ForgeEssentials core;
 	public ModuleLauncher mdlaunch;
 

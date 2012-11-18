@@ -4,15 +4,27 @@ import java.io.Serializable;
 
 public class Point implements Serializable, Comparable<Point>
 {
-	public int x;
-	public int y;
-	public int z;
+	public final int x;
+	public final int y;
+	public final int z;
 
 	public Point(int x, int y, int z)
 	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public int getZ() {
+		return z;
 	}
 
 	/**
@@ -62,17 +74,6 @@ public class Point implements Serializable, Comparable<Point>
 
 		return false;
 	}
-
-	/**
-	 * ensures the Point is valid.
-	 * Just floors the Y axis to 0. Y can't be negative.
-	 */
-	public void validate()
-	{
-		if (y < 0) {
-			y = 0;
-		}
-	}
 	
 	/**
 	 * @param point
@@ -95,5 +96,18 @@ public class Point implements Serializable, Comparable<Point>
 	public static Point copy(Point point)
 	{
 		return new Point(point.x, point.y, point.z);
+	}
+	
+	/**
+	 * ensures the Point is valid.
+	 * Just floors the Y axis to 0. Y can't be negative.
+	 */
+	public static Point validate(Point point)
+	{
+		if (point.y < 0) {
+			return new Point(point.x, 0, point.z);
+		}
+		else
+			return point; 
 	}
 }

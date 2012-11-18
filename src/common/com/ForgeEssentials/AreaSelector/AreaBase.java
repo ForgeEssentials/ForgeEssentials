@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public abstract class AreaBase implements Serializable
 {
-	// only really used for copying.. the points it was defined from.
-	private Point start; // start selection
-	private Point end; // end selection
 	
 	// used for pretty much everything else.
 	private Point high;
@@ -19,53 +16,24 @@ public abstract class AreaBase implements Serializable
 	 */
 	public AreaBase(Point start, Point end)
 	{
-		this.start = Point.copy(start);
-		this.end = Point.copy(end);
-		this.start.validate();
-		this.end.validate();
-		
 		Point[] points = getAlignedPoints(start, end);
 		low = points[0];
 		high = points[1];
 	}
-
-	public int[] getDimensions()
-	{
-		int[] array = new int[3];
-		array[0] = Math.abs(start.x - end.x);
-		array[1] = Math.abs(start.y - end.z);
-		array[2] = Math.abs(start.z - end.z);
-		return array;
-	}
-
+	
 	public int getXLength()
 	{
-		return Math.abs(end.x - start.x) + 1;
-	}
-
-	public int getZLength()
-	{
-		return Math.abs(end.z - start.z) + 1;
+		return high.x - low.x + 1;
 	}
 
 	public int getYLength()
 	{
-		return Math.abs(end.y - start.y) + 1;
-	}
-	
-	public int getXDiff()
-	{
-		return Math.abs(low.x - high.x) + 1;
+		return high.y - low.y + 1;
 	}
 
-	public int getZDiff()
+	public int getZLength()
 	{
-		return Math.abs(low.z - high.z) + 1;
-	}
-
-	public int getYDiff()
-	{
-		return Math.abs(low.y - high.y) + 1;
+		return high.z - low.z + 1;
 	}
 	
 	public Point getHighPoint()
@@ -76,32 +44,6 @@ public abstract class AreaBase implements Serializable
 	public Point getLowPoint()
 	{
 		return low;
-	}
-	
-	public Point getStart()
-	{
-		return start;
-	}
-
-	public void setStart(Point start)
-	{
-		this.start = start;
-		Point[] points = getAlignedPoints(start, end);
-		low = points[0];
-		high = points[1];
-	}
-
-	public Point getEnd()
-	{
-		return end;
-	}
-
-	public void setEnd(Point end)
-	{
-		this.end = end;
-		Point[] points = getAlignedPoints(start, end);
-		low = points[0];
-		high = points[1];
 	}
 
 	/**
@@ -172,5 +114,12 @@ public abstract class AreaBase implements Serializable
 		if (this.contains(area.high) || this.contains(area.low))
 			return true;
 		return false;
+	}
+	
+	public void redefine(Point p1, Point p2)
+	{
+		Point[] points = getAlignedPoints(p1, p2);
+		low = points[0];
+		high = points[1];
 	}
 }

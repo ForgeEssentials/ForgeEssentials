@@ -43,14 +43,4 @@ public class Zone extends AreaBase
 		zoneID = ID;
 	}
 
-	/**
-	 * @param start new start point
-	 * @param end new end point;
-	 */
-	public void redefine(Point start, Point end)
-	{
-		this.setStart(start);
-		this.setEnd(end);
-	}
-
 }

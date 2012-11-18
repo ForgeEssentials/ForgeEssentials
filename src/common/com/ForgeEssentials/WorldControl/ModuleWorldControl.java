@@ -16,7 +16,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 
 // central class for all the WorldControl stuff
-public class WorldControl
+public class ModuleWorldControl
 {
 	// implicit constructor WorldControl()
 	public static int defaultWandID;

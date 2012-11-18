@@ -2,11 +2,11 @@ package com.ForgeEssentials.core;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import com.ForgeEssentials.WorldControl.WorldControl;
+import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.commands.Commands;
 import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.permissions.FEPermissionHandler;
-import com.ForgeEssentials.permissions.Permissions;
+import com.ForgeEssentials.permissions.ModulePermissions;
 
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.PreInit;
@@ -24,19 +24,19 @@ public class ModuleLauncher {
 	
 	public Commands commands;
 	public CoreCommands corecmd;
-	public Permissions permission;
+	public ModulePermissions permission;
 	public static boolean cmdenabled = true;
 	//Depreciated
 	public static boolean wcenabled = true;
-	public WorldControl worldcontrol;
+	public ModuleWorldControl worldcontrol;
 	
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-		worldcontrol = new WorldControl();
+		worldcontrol = new ModuleWorldControl();
 		commands = new Commands();
 		corecmd = new CoreCommands();
-		permission = new Permissions();
+		permission = new ModulePermissions();
 		//Depreciated
 		if (wcenabled = true){
 		worldcontrol.preLoad(e);
