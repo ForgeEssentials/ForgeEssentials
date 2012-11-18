@@ -3,6 +3,7 @@ package com.ForgeEssentials.core;
 import com.ForgeEssentials.network.PacketSelectionUpdate;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.Packet250CustomPayload;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -22,6 +23,6 @@ public class ProxyCommon
 	
 	public void updateInfo(PlayerInfo info, EntityPlayer player)
 	{
-		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(info), (Player)player);
+		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(info)).toPacket250(), (Player)player);
 	}
 }

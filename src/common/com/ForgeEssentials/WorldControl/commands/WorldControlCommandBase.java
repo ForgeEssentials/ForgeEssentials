@@ -53,7 +53,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		OutputHandler.SOP("You cannot use the \"" + getCommandName() + "\" command from the console");
+		sender.sendChatToPlayer("You cannot use the \"" + getCommandName() + "\" command from the console");
 	}
 
 	@Override
