@@ -410,6 +410,7 @@ public class Configuration
                                 case '}':
                                 	
                                 	currentCat = currentCat.parent;
+                                	break;
 
                                 case '=':
                                     String propertyName = line.substring(nameStart, nameEnd + 1);

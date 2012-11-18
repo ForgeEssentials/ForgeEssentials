@@ -46,7 +46,8 @@ public class FEConfig
 		// miscellanious stuff...
 		loadMisc();
 		
-		// other stuff.
+		// Finish init and save.
+		config.save();
 	}
 	
 	private void loadModules()
@@ -75,8 +76,12 @@ public class FEConfig
 		ModuleCommands.motd = prop.value;
 		
 		prop = config.get("Miscellaneous", "versionCheck", true);
-		prop.comment = "to check for newer versions of ForgeEssenetials or not.";
+		prop.comment = "to check for newer versions of ForgeEssentials or not.";
 		ForgeEssentials.verCheck = prop.getBoolean(true);
+		
+		prop = config.get("Miscellaneous", "RulesFile", "rules.txt");
+		prop.comment = "the file where the rules will read from and written to. This path is relative to the ForgeEssentials folder.";
+		ModuleCommands.rulesFile = new File(ForgeEssentials.FEDIR, prop.value);
 	}
 	
 	/**
