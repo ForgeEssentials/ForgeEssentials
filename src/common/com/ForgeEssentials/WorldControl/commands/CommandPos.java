@@ -57,7 +57,7 @@ public class CommandPos extends WorldControlCommandBase
 			return;
 		}
 
-		MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player);
+		MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player, true);
 		x = mop.blockX;
 		y = mop.blockY;
 		z = mop.blockZ;

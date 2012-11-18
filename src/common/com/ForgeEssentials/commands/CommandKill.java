@@ -32,7 +32,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
 				sender.sendChatToPlayer("Woops, you died. My bad.");
 			} else
-				sender.sendChatToPlayer("That player does not exist");
+				OutputHandler.chatError(sender, "That player does not exist.");
 		} else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
@@ -51,9 +51,9 @@ public class CommandKill extends ForgeEssentialsCommandBase
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
 				sender.sendChatToPlayer("Woops, you died. My bad.");
 			} else
-				sender.sendChatToPlayer("That player does not exist");
+				sender.sendChatToPlayer("That player does not exist.");
 		} else
-			sender.sendChatToPlayer("You must specify a player");
+			sender.sendChatToPlayer("You must specify a player.");
 	}
 
 	@Override
