@@ -19,7 +19,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args)
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		if (args.length > 0)
 		{
@@ -28,7 +28,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 				motd = motd + arg + " ";
 			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
 		} else
-			player.addChatMessage(motd);
+			sender.sendChatToPlayer(motd);
 	}
 
 	@Override

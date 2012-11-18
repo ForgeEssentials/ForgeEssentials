@@ -51,6 +51,7 @@ public class ModuleCommands
 		e.registerServerCommand(new CommandMotd());
 		e.registerServerCommand(new CommandRules());
 		e.registerServerCommand(new CommandButcher());
+		e.registerServerCommand(new CommandKill());
 		e.registerServerCommand(new CommandRemove());
 		e.registerServerCommand(new CommandHome());
 		e.registerServerCommand(new CommandRestart());

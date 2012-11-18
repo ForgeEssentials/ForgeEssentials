@@ -18,19 +18,19 @@ public class CommandWand extends WorldControlCommandBase
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args)
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
-		int currentID = player.getCurrentEquippedItem() == null ? 0 : player.getCurrentEquippedItem().itemID;
+		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
+		int currentID = sender.getCurrentEquippedItem() == null ? 0 : sender.getCurrentEquippedItem().itemID;
 		int currentDmg = 0;
 		
-		if (currentID != 0 && player.getCurrentEquippedItem().getHasSubtypes())
-			currentDmg = player.getCurrentEquippedItem().getItemDamage();
+		if (currentID != 0 && sender.getCurrentEquippedItem().getHasSubtypes())
+			currentDmg = sender.getCurrentEquippedItem().getItemDamage();
 		
-		String currentName = currentID == 0 ? "your fists" : player.getCurrentEquippedItem().getDisplayName();
+		String currentName = currentID == 0 ? "your fists" : sender.getCurrentEquippedItem().getDisplayName();
 		String wandName = "";
 		if (info.wandEnabled)
-			wandName = info.wandID == 0 ? "your fists" : player.getCurrentEquippedItem().getDisplayName();
+			wandName = info.wandID == 0 ? "your fists" : sender.getCurrentEquippedItem().getDisplayName();
 
 		if (args.length > 0)
 		{
@@ -39,12 +39,12 @@ public class CommandWand extends WorldControlCommandBase
 				info.wandEnabled = true;
 				info.wandID = currentID;
 				info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
-				OutputHandler.chatConfirmation(player, "Wand bound to " + currentName);
+				OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
 				return;
 			} else if (args[0].equalsIgnoreCase("unbind"))
 			{
 				info.wandEnabled = false;
-				player.addChatMessage(OutputHandler.PINK + "Wand unbound from " + wandName);
+				sender.sendChatToPlayer(OutputHandler.PINK + "Wand unbound from " + wandName);
 				return;
 			} else
 			{
@@ -53,21 +53,21 @@ public class CommandWand extends WorldControlCommandBase
 				info.wandEnabled = true;
 				info.wandID = currentID;
 				info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
-				OutputHandler.chatConfirmation(player, "Wand bound to " + currentName);
+				OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
 			}
 		} else
 		{
 			if (info.wandEnabled)
 			{
 				info.wandEnabled = false;
-				player.addChatMessage(OutputHandler.PINK + "Wand unbound from " + wandName);
+				sender.sendChatToPlayer(OutputHandler.PINK + "Wand unbound from " + wandName);
 				return;
 			} else
 			{
 				info.wandEnabled = true;
 				info.wandID = currentID;
 				info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
-				OutputHandler.chatConfirmation(player, "Wand bound to " + currentName);
+				OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
 				return;
 			}
 		}

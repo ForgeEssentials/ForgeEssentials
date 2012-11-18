@@ -158,7 +158,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args)
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		if (args.length > 1)
 		{
@@ -169,10 +169,10 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					rules.remove(new Integer(args[0]) - 1);
 				} catch (NumberFormatException e)
 				{
-					player.addChatMessage("Not a number. Try " + getSyntaxConsole());
+					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
 				} catch (IndexOutOfBoundsException e)
 				{
-					player.addChatMessage("That rule does not exist.");
+					sender.sendChatToPlayer("That rule does not exist.");
 				}
 			} else
 			{
@@ -184,13 +184,13 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					rules.add(new Integer(args[0]) - 1, newRule);
 				} catch (NumberFormatException e)
 				{
-					player.addChatMessage("Not a number. Try " + getSyntaxConsole());
+					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
 				}
 			}
 			saveRules();
 		} else
 			for (String rule : rules)
-				player.addChatMessage(rule);
+				sender.sendChatToPlayer(rule);
 	}
 
 	@Override
