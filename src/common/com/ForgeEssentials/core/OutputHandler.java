@@ -6,6 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public final class OutputHandler
 {
@@ -48,7 +49,7 @@ public final class OutputHandler
 	}
 
 	/**
-	 * outputs a message in bright green and bold to the chat box of the given player.
+	 * outputs a message in bright green to the chat box of the given player.
 	 * @param msg the message to be chatted
 	 * @param player player to chat to.
 	 */
@@ -58,27 +59,25 @@ public final class OutputHandler
 	}
 
 	/**
-	 * outputs a string to the console if MCP is installed.
+	 * outputs a string to the console if the code is in MCP
 	 * @param msg message to be outputted
 	 */
 	public static void debug(Object msg)
 	{
-		if (Loader.instance().isModLoaded("mcp"))
+		if (ObfuscationReflectionHelper.obfuscation)
 			System.out.println("DEBUG: >>>> " + msg);
 	}
 
 	/**
-	 * outputs a string to the console;
+	 * outputs a string to the console. Messages here are also logged.
 	 * @param msg message to be outputted
 	 */
 	public static void SOP(Object msg)
 	{
 		if (FMLCommonHandler.instance().getSide().isServer())
-		{
 			MinecraftServer.getServer().sendChatToPlayer("{Forge Essentials} " + msg);
-		}
-		else
-			felog.info("{Forge Essentials} " + msg);
+		
+		felog.info(""+msg);
 	}
 
 }

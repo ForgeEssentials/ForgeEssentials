@@ -34,7 +34,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 		if (args.length > 0)
 			ForgeEssentials.instance.config.changeConfig("basic", "motd", args[0]);
 		else
-			OutputHandler.SOP(ForgeEssentials.instance.config.getSetting("basic", "motd"));
+			sender.sendChatToPlayer(ForgeEssentials.instance.config.getSetting("basic", "motd"));
 			*/
 	}
 

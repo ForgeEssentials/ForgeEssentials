@@ -35,9 +35,9 @@ public class CommandBackup extends ForgeEssentialsCommandBase{
 	@Override
 	    //TODO fix this
 		public void processCommandConsole(ICommandSender sender, String[] args) {
-		OutputHandler.SOP("Not implemented");
+		sender.sendChatToPlayer("Not implemented");
 			/** Not implemented
-		OutputHandler.SOP("Starting backup...");
+		sender.sendChatToPlayer("Starting backup...");
 		files = new ArrayList<String>();
 		Calendar calendar = Calendar.getInstance();
 		if (server.isDedicatedServer())	backupLoc = (new File(server.getFolderName())).getAbsolutePath() + File.separator; 
@@ -46,7 +46,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase{
 		if (!backupDir.exists()){
 			backupDir.mkdirs();
 		}
-		OutputHandler.SOP("Backing up world from " + backupLoc + "to" + backupDir);
+		sender.sendChatToPlayer("Backing up world from " + backupLoc + "to" + backupDir);
 		makeFileList(new File(backupLoc));
 		Integer day = calendar.get(calendar.DAY_OF_MONTH);
 		Integer month = calendar.get(calendar.MONTH);

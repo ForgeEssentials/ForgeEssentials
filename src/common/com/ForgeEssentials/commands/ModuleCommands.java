@@ -18,7 +18,7 @@ public class ModuleCommands
 	// load.
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-		OutputHandler.SOP("Commands module is enabled. Loading...");
+		sender.sendChatToPlayer("Commands module is enabled. Loading...");
 	}
 	
 	// load.
