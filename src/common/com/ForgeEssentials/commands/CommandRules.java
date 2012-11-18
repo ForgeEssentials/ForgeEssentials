@@ -162,11 +162,11 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	{
 		if (args.length > 1)
 		{
-			if (args[0].equals("remove"))
+			if (args[1].equals("remove"))
 			{
 				try
 				{
-					rules.remove(new Integer(args[1]));
+					rules.remove(new Integer(args[0]) - 1);
 				} catch (NumberFormatException e)
 				{
 					player.addChatMessage("Not a number. Try " + getSyntaxConsole());
@@ -178,7 +178,10 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			{
 				try
 				{
-					rules.add(new Integer(args[1]), args[0]);
+					String newRule = "";
+					for (int i = 1; i < args.length; i++)
+						newRule = newRule + args[i] + " ";
+					rules.add(new Integer(args[0]) - 1, newRule);
 				} catch (NumberFormatException e)
 				{
 					player.addChatMessage("Not a number. Try " + getSyntaxConsole());
@@ -195,11 +198,11 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	{
 		if (args.length > 1)
 		{
-			if (args[0].equals("remove"))
+			if (args[1].equals("remove"))
 			{
 				try
 				{
-					rules.remove(new Integer(args[1]));
+					rules.remove(new Integer(args[0]) - 1);
 				} catch (NumberFormatException e)
 				{
 					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
@@ -211,7 +214,10 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			{
 				try
 				{
-					rules.add(new Integer(args[1]), args[0]);
+					String newRule = "";
+					for (int i = 1; i < args.length; i++)
+						newRule = newRule + args[i] + " ";
+					rules.add(new Integer(args[0]) - 1, newRule);
 				} catch (NumberFormatException e)
 				{
 					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
@@ -226,13 +232,13 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	@Override
 	public String getSyntaxConsole()
 	{
-		return "/rules [<new rule>|remove <number>]";
+		return "/rules [<number> <new rule>|remove]";
 	}
 
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/rules [<new rule>|remove <number>]";
+		return "/rules [<number> <new rule>|remove]";
 	}
 
 	@Override

@@ -22,8 +22,12 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
 		if (args.length > 0)
-			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd = args[0]);
-		else
+		{
+			motd = "";
+			for (String arg : args)
+				motd = motd + arg + " ";
+			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
+		} else
 			player.addChatMessage(motd);
 	}
 
@@ -31,8 +35,12 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		if (args.length > 0)
-			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd = args[0]);
-		else
+		{
+			motd = "";
+			for (String arg : args)
+				motd = motd + arg + " ";
+			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
+		} else
 			sender.sendChatToPlayer(motd);
 	}
 

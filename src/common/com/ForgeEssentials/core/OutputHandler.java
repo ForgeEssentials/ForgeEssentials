@@ -65,7 +65,7 @@ public final class OutputHandler
 	 */
 	public static void debug(Object msg)
 	{
-		if (ObfuscationReflectionHelper.obfuscation)
+		if (!ObfuscationReflectionHelper.obfuscation)
 			System.out.println("DEBUG: >>>> " + msg);
 	}
 
