@@ -20,19 +20,19 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * Initialize modules here. Yes. HERE. NOT ForgeEssentials.java!
  */
 
-public class ModuleLauncher {
-	
-	public CoreCommands corecmd;
-	
-	public ModuleCommands commands;
-	public ModulePermissions permission;
-	public ModuleWorldControl worldcontrol;
-	
-	public static boolean cmdenabled = true;
-	
-	//Depreciated
-	public static boolean wcenabled = true;
-	
+public class ModuleLauncher
+{
+
+	public CoreCommands			corecmd;
+
+	public ModuleCommands		commands;
+	public ModulePermissions	permission;
+	public ModuleWorldControl	worldcontrol;
+
+	public static boolean		permsEnabled	= true;
+	public static boolean		cmdEnabled		= true;
+	public static boolean		wcEnabled		= true;
+
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
@@ -40,44 +40,52 @@ public class ModuleLauncher {
 		commands = new ModuleCommands();
 		corecmd = new CoreCommands();
 		permission = new ModulePermissions();
-		//Depreciated
-		if (wcenabled = true){
-		worldcontrol.preLoad(e);
-		}
-		if (cmdenabled = true){
-		commands.preLoad(e);
-		}
+		
+		wcEnabled = ForgeEssentials.instance.config.isModuleEnabled("WorldControl");
+		cmdEnabled = ForgeEssentials.instance.config.isModuleEnabled("Commands");
+		permsEnabled = ForgeEssentials.instance.config.isModuleEnabled("Permissions");
+		
+		
 		corecmd.preLoad(e);
-		permission.preLoad(e);
+		
+		if (wcEnabled)
+			worldcontrol.preLoad(e);
+		
+		if (cmdEnabled)
+			commands.preLoad(e);
+		
+		if (permsEnabled)
+			permission.preLoad(e);
 	}
 
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
-		//Depreciated
-		if (wcenabled = true){
-		worldcontrol.load(e);
-		}
-		if (cmdenabled = true){
-		commands.load(e);
-		}
 		corecmd.load(e);
-		permission.load(e);
+		
+		if (wcEnabled)
+			worldcontrol.load(e);
+		
+		if (cmdEnabled)
+			commands.load(e);
+		
+		if (permsEnabled)
+			permission.load(e);
 	}
 
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-		if (cmdenabled = true){
-		commands.serverStarting(e);
-		}
 		corecmd.serverStarting(e);
-		//Depreciated
-		if (wcenabled = true){
-		worldcontrol.serverStarting(e);
-		}
-		permission.serverStarting(e);
-
+		
+		if (wcEnabled)
+			worldcontrol.serverStarting(e);
+		
+		if (cmdEnabled)
+			commands.serverStarting(e);
+		
+		if (permsEnabled)
+			permission.serverStarting(e);
 	}
 
 }

@@ -106,7 +106,10 @@ public class FEConfig
 				{
 					// ignore the comment things...
 					if (read.startsWith("#"))
+					{
+						read = reader.readLine();
 						continue;
+					}
 
 					// add to the rules list.
 					rules.add(read);

@@ -23,21 +23,21 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * Main mod class
  */
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials"}, packetHandler = HandlerClient.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials"}, packetHandler = HandlerServer.class))
+@NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = HandlerClient.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = HandlerServer.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.0.1")
 public class ForgeEssentials
 {
 	@SidedProxy(clientSide = "com.ForgeEssentials.client.core.ProxyClient", serverSide = "com.ForgeEssentials.core.ProxyCommon")
-	public static ProxyCommon proxy;
+	public static ProxyCommon		proxy;
 
 	@Instance(value = "ForgeEssentials")
-	public static ForgeEssentials instance;
+	public static ForgeEssentials	instance;
 
-	public FEConfig config;
-	public ModuleLauncher mdlaunch;
-	public static boolean verCheck;
-	
-	public static final File FEDIR = new File("./ForgeEssentials/");
+	public static FEConfig			config;
+	public ModuleLauncher			mdlaunch;
+	public static boolean			verCheck	= true;
+
+	public static final File		FEDIR		= new File("./ForgeEssentials/");
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -47,12 +47,12 @@ public class ForgeEssentials
 			FEDIR.mkdir();
 		if (!PlayerInfo.FESAVES.exists() || !PlayerInfo.FESAVES.isDirectory())
 			PlayerInfo.FESAVES.mkdir();
-		
+
 		config = new FEConfig();
-		
-		if (verCheck = true){
-		Version.checkVersion();
-		}
+
+		if (verCheck)
+			Version.checkVersion();
+
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
 	}
@@ -60,8 +60,8 @@ public class ForgeEssentials
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
-		mdlaunch.load(e);
 		proxy.load(e);
+		mdlaunch.load(e);
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
 	}
 
