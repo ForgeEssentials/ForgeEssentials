@@ -4,7 +4,6 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.ServerConfigurationManager;
 
-import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandRestart extends ForgeEssentialsCommandBase {
@@ -18,7 +17,7 @@ public class CommandRestart extends ForgeEssentialsCommandBase {
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args) {
+	public void processCommandPlayer(EntityPlayer sender, String[] args) {
 	}
 
 	@Override

@@ -5,31 +5,40 @@
 
 package com.ForgeEssentials.core.config;
 
-import java.io.*;
+import static com.ForgeEssentials.core.config.Property.Type.BOOLEAN;
+import static com.ForgeEssentials.core.config.Property.Type.INTEGER;
+import static com.ForgeEssentials.core.config.Property.Type.STRING;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PushbackInputStream;
+import java.io.Reader;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Maps;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.relauncher.FMLInjectionData;
-
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
-import static com.ForgeEssentials.core.config.Property.Type.*;
+
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.relauncher.FMLInjectionData;
 
 /**
  * This class offers advanced configurations capabilities, allowing to provide

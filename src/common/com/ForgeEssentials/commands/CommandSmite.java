@@ -1,20 +1,15 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.AreaSelector.Point;
+import net.minecraft.src.EntityLightningBolt;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ICommandSender;
+import net.minecraft.src.MovingObjectPosition;
+
 import com.ForgeEssentials.WorldControl.FunctionHelper;
 import com.ForgeEssentials.core.OutputHandler;
-import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.EntityLightningBolt;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.MovingObjectPosition;
 
 public class CommandSmite extends ForgeEssentialsCommandBase
 {

@@ -1,11 +1,8 @@
 package com.ForgeEssentials.core;
 
-import net.minecraftforge.common.MinecraftForge;
-
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.commands.CoreCommands;
-import com.ForgeEssentials.permissions.FEPermissionHandler;
 import com.ForgeEssentials.permissions.ModulePermissions;
 
 import cpw.mods.fml.common.Mod.Init;
@@ -14,7 +11,6 @@ import cpw.mods.fml.common.Mod.ServerStarting;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Initialize modules here. Yes. HERE. NOT ForgeEssentials.java!

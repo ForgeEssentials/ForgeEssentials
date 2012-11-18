@@ -1,10 +1,9 @@
 package com.ForgeEssentials.core.commands;
 
-import com.ForgeEssentials.core.OutputHandler;
-import com.ForgeEssentials.core.Version;
-
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
+
+import com.ForgeEssentials.core.Version;
 
 public class CommandFEUpdate extends ForgeEssentialsCommandBase{
 

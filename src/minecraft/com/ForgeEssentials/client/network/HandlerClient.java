@@ -3,13 +3,13 @@ package com.ForgeEssentials.client.network;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 
-import com.ForgeEssentials.network.PacketSelectionUpdate;
-
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.INetworkManager;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.WorldClient;
-import net.minecraft.src.WorldServer;
+
+import com.ForgeEssentials.network.PacketSelectionUpdate;
+
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 

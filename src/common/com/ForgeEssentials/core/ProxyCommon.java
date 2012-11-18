@@ -1,9 +1,9 @@
 package com.ForgeEssentials.core;
 
+import net.minecraft.src.EntityPlayer;
+
 import com.ForgeEssentials.network.PacketSelectionUpdate;
 
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Packet250CustomPayload;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.PacketDispatcher;

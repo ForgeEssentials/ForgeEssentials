@@ -1,11 +1,10 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.OutputHandler;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
+
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandMotd extends ForgeEssentialsCommandBase
 {

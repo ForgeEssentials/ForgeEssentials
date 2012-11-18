@@ -1,30 +1,12 @@
 package com.ForgeEssentials.core.config;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
 
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
-import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.core.OutputHandler;
-
-import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 
 public class FEConfig
 {
