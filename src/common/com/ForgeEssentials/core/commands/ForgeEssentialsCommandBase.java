@@ -116,7 +116,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		if (sender instanceof EntityPlayer)
 			OutputHandler.chatError((EntityPlayer) sender, usage);
 		else
-			OutputHandler.SOP(usage);
+			sender.sendChatToPlayer(usage);
 	}
 
 }

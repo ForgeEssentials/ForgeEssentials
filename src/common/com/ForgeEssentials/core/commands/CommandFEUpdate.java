@@ -19,7 +19,7 @@ public class CommandFEUpdate extends ForgeEssentialsCommandBase{
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args) {
-		OutputHandler.SOP("Checking for updates...");
+		sender.sendChatToPlayer("Checking for updates...");
 		Version.checkVersion();
 		
 	}

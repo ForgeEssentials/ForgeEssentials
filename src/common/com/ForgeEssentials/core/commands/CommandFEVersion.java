@@ -24,7 +24,7 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		OutputHandler.SOP("You are currently running ForgeEssentials version " + Version.version);
+		sender.sendChatToPlayer("You are currently running ForgeEssentials version " + Version.version);
 	}
 
 	@Override

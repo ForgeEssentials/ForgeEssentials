@@ -23,9 +23,9 @@ public class CommandRestart extends ForgeEssentialsCommandBase {
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args) {
-		OutputHandler.SOP("Not yet implemented");
+		sender.sendChatToPlayer("Not yet implemented");
 		/** Not implemented
-		OutputHandler.SOP("Restarting server...");
+		sender.sendChatToPlayer("Restarting server...");
 		if (MinecraftServer.getServer().getNetworkThread() != null)
         {
 			MinecraftServer.getServer().getNetworkThread().stopListening();
@@ -33,12 +33,12 @@ public class CommandRestart extends ForgeEssentialsCommandBase {
 
         if (serverconfmgr != null)
         {
-            OutputHandler.SOP("Saving players");
+            sender.sendChatToPlayer("Saving players");
             serverconfmgr.saveAllPlayerData();
             serverconfmgr.removeAllPlayers();
         }
 
-        OutputHandler.SOP("Saving worlds");
+        sender.sendChatToPlayer("Saving worlds");
         SaveUtil.saveGame();
         WorldServer[] var1 = MinecraftServer.getServer().worldServers;
         int var2 = var1.length;
