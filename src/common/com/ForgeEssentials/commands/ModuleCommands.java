@@ -10,7 +10,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
  * Kindly register all commands in commands module here.
  */
 
-public class Commands
+public class ModuleCommands
 
 {
 	// implicit constructor Commands()

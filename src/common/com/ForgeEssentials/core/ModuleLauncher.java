@@ -3,7 +3,7 @@ package com.ForgeEssentials.core;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
-import com.ForgeEssentials.commands.Commands;
+import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.permissions.FEPermissionHandler;
 import com.ForgeEssentials.permissions.ModulePermissions;
@@ -22,7 +22,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModuleLauncher {
 	
-	public Commands commands;
+	public ModuleCommands commands;
 	public CoreCommands corecmd;
 	public ModulePermissions permission;
 	public static boolean cmdenabled = true;
@@ -34,7 +34,7 @@ public class ModuleLauncher {
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		worldcontrol = new ModuleWorldControl();
-		commands = new Commands();
+		commands = new ModuleCommands();
 		corecmd = new CoreCommands();
 		permission = new ModulePermissions();
 		//Depreciated
