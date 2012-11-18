@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -43,8 +44,9 @@ public class Configuration
     public static final String CATEGORY_GENERAL = "general";
     public static final String CATEGORY_BLOCK   = "block";
     public static final String CATEGORY_ITEM    = "item";
-    public static final String ALLOWED_CHARS = "._-:";
+    public static final String ALLOWED_CHARS = "._-";
     public static final String DEFAULT_ENCODING = "UTF-8";
+    public static final String CATEGORY_SPLITTER = ".";
     private static final Pattern CONFIG_START = Pattern.compile("START: \"([^\\\"]+)\"");
     private static final Pattern CONFIG_END = Pattern.compile("END: \"([^\\\"]+)\"");
     private static final CharMatcher allowedProperties = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.anyOf(ALLOWED_CHARS));
@@ -55,7 +57,6 @@ public class Configuration
     public Map<String, Category> categories = new TreeMap<String, Category>();
     private Map<String, Configuration> children = new TreeMap<String, Configuration>();
 
-    private Map<String,String> customCategoryComments = Maps.newHashMap();
     private boolean caseSensitiveCustomCategories;
     public String defaultEncoding = DEFAULT_ENCODING;
     private String fileName = null;
@@ -205,19 +206,71 @@ public class Configuration
     }
 
     public Property get(String category, String key, String defaultValue, Property.Type type)
-    {
-        if (!caseSensitiveCustomCategories)
-        {
-            category = category.toLowerCase(Locale.ENGLISH);
-        }
+	{
+		if (!caseSensitiveCustomCategories)
+		{
+			category = category.toLowerCase(Locale.ENGLISH);
+		}
 
-        Category source = categories.get(category);
+		Category source = categories.get(category);
 
-        if(source == null)
-        {
-            source = new Category(category);
-            categories.put(category, source);
-        }
+		if (source == null)
+		{
+			if (category.contains(CATEGORY_SPLITTER))
+			{
+				String[] hierarchy = category.split(CATEGORY_SPLITTER);
+
+				for (int i = 0; i < hierarchy.length; i++)
+				{
+					// only the first run.
+					if (i == 0)
+					{
+						Category cat = categories.get(hierarchy[i]);
+
+						if (cat == null)
+						{
+							cat = new Category(hierarchy[i]);
+							categories.put(hierarchy[i], cat);
+						}
+					}
+					// the last child
+					else if (i == hierarchy.length - 1)
+					{
+						Category parent = categories.get(hierarchy[i - 1]);
+
+						Category child = categories.get(hierarchy[i]);
+
+						if (child == null)
+						{
+							child = new Category(hierarchy[i], parent);
+							categories.put(hierarchy[i], child);
+							parent.children.add(child.name);
+						}
+
+						source = child;
+					}
+					// other children/parents between
+					else
+					{
+						Category parent = categories.get(hierarchy[i - 1]);
+
+						Category child = categories.get(hierarchy[i]);
+
+						if (child == null)
+						{
+							child = new Category(hierarchy[i], parent);
+							categories.put(hierarchy[i], child);
+							parent.children.add(child.name);
+						}
+					}
+				}
+			}
+			else
+			{
+				source = new Category(category);
+				categories.put(category, source);
+			}
+		}
 
         if (source.properties.containsKey(key))
         {
@@ -291,7 +344,6 @@ public class Configuration
                     {
                         fileName = start.group(1);
                         categories = new TreeMap<String, Category>();
-                        customCategoryComments = Maps.newHashMap();
                         continue;
                     }
                     else if (end.matches())
@@ -299,7 +351,6 @@ public class Configuration
                         fileName = end.group(1);
                         Configuration child = new Configuration();
                         child.categories = categories;
-                        child.customCategoryComments = customCategoryComments;
                         this.children.put(fileName, child);
                         continue;
                     }
@@ -460,43 +511,72 @@ public class Configuration
 
     private void save(BufferedWriter out) throws IOException
     {
-        for(Entry<String, Category> category : categories.entrySet())
+        for(Category category : categories.values())
         {
-            out.write("####################\r\n");
-            out.write("# " + category.getKey() + " \r\n");
-            if (customCategoryComments.containsKey(category.getKey()))
-            {
-                out.write("#===================\r\n");
-                String comment = customCategoryComments.get(category.getKey());
-                Splitter splitter = Splitter.onPattern("\r?\n");
-                for (String commentLine : splitter.split(comment))
-                {
-                    out.write("# ");
-                    out.write(commentLine+"\r\n");
-                }
-            }
-            out.write("####################\r\n\r\n");
-
-            String catKey = category.getKey();
-            if (!allowedProperties.matchesAllOf(catKey))
-            {
-                catKey = '"'+catKey+'"';
-            }
-            out.write(catKey + " {\r\n");
-            writeProperties(out, category.getValue().properties.values());
-            out.write("}\r\n\r\n");
+            // this means its a child of another category. Children are handled elsewhere
+            if (category.name.contains(CATEGORY_SPLITTER))
+                continue;
+            
+            writeCategory(out, category, 0);
         }
+    }
+    
+    private void writeCategory(BufferedWriter out, Category category, int leftOffset) throws IOException
+    {
+        // get the offset String
+        String offset = getOffsetString(leftOffset);
+        
+        // write comment
+        out.write(offset+"####################\r\n");
+        out.write(offset+"# " + category.name + " \r\n");
+        if (category.comment != null)
+        {
+            out.write(offset+"#===================\r\n");
+            Splitter splitter = Splitter.onPattern("\r?\n");
+            for (String commentLine : splitter.split(category.comment))
+            {
+                out.write(offset+"# ");
+                out.write(commentLine+"\r\n");
+            }
+        }
+        out.write(offset+"####################\r\n\r\n");
+        
+        // actually write the category
+        String catKey = category.name;
+        if (!allowedProperties.matchesAllOf(catKey))
+        {
+            catKey = '"'+catKey+'"';
+        }
+        out.write(offset+catKey + " {\r\n");
+        writeProperties(out, category.properties.values(), leftOffset+1);
+        
+        // sort and write children.
+        Collections.sort(category.children);
+        
+        for (String childName : category.children)
+        {
+            Category child = categories.get(category.getQualifiedName()+CATEGORY_SPLITTER+childName);
+            if (child == null) // just in case....
+                continue;
+            writeCategory(out, child, leftOffset+1);
+        }
+        
+        out.write(offset+"}\r\n\r\n");
     }
 
     public void addCustomCategoryComment(String category, String comment)
     {
         if (!caseSensitiveCustomCategories)
             category = category.toLowerCase(Locale.ENGLISH);
-        customCategoryComments.put(category, comment);
+        Category cat = categories.get(category);
+        if (cat != null)
+            cat.comment = comment;
     }
-
-    private void writeProperties(BufferedWriter buffer, Collection<Property> props) throws IOException
+    
+    private void writeProperties(BufferedWriter buffer, Collection<Property> props, int leftOffset) throws IOException
     {
+        String offset = getOffsetString(leftOffset);
+        
         for (Property property : props)
         {
             if (property.comment != null)
@@ -510,11 +590,19 @@ public class Configuration
             String propName = property.getName();
             if (!allowedProperties.matchesAllOf(propName))
             {
-            	propName = '"'+propName+'"';
+                propName = '"'+propName+'"';
             }
-            buffer.write("   " + propName + "=" + property.value);
+            buffer.write(offset + propName + "=" + property.value);
             buffer.write("\r\n");
         }
+    }
+    
+    private String getOffsetString(int offset)
+    {
+        StringBuilder builder = new StringBuilder("");
+        for (int i = 0; i < offset; i++)
+            builder.append("   ");
+        return builder.toString();
     }
 
     private void setChild(String name, Configuration child)
@@ -527,7 +615,6 @@ public class Configuration
         {
             Configuration old = children.get(name);
             child.categories = old.categories;
-            child.customCategoryComments = old.customCategoryComments;
             child.fileName = old.fileName;
         }
     }
