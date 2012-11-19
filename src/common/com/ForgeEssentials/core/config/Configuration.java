@@ -491,12 +491,14 @@ public class Configuration
 										break;
 
 									default:
+										input.close();
 										throw new RuntimeException("unknown character " + line.charAt(i));
 								}
 						}
 					}
 					if (quoted)
 					{
+						input.close();
 						throw new RuntimeException("unmatched quote");
 					}
 					else if (listProp != null)
@@ -504,6 +506,8 @@ public class Configuration
 						listProp.add(line.trim());
 					}
 				}
+				
+				input.close();
 			}
 		}
 		catch (IOException e)
@@ -550,9 +554,12 @@ public class Configuration
 				FileOutputStream fos = new FileOutputStream(file);
 				BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(fos, defaultEncoding));
 
-				buffer.write("# Configuration file\r\n");
-				buffer.write("# Generated on " + DateFormat.getInstance().format(new Date()) + "\r\n");
-				buffer.write("\r\n");
+				buffer.write("# Configuration file"); //\r\n");
+				buffer.newLine();
+				buffer.write("# Generated on " + DateFormat.getInstance().format(new Date())); // + "\r\n");
+				buffer.newLine();
+				buffer.newLine();
+				//buffer.write("\r\n");
 
 				if (children.isEmpty())
 				{
@@ -562,9 +569,11 @@ public class Configuration
 				{
 					for (Map.Entry<String, Configuration> entry : children.entrySet())
 					{
-						buffer.write("START: \"" + entry.getKey() + "\"\r\n");
+						buffer.write("START: \"" + entry.getKey() + "\""); //\r\n");
+						buffer.newLine();
 						entry.getValue().save(buffer);
-						buffer.write("END: \"" + entry.getKey() + "\"\r\n\r\n");
+						buffer.write("END: \"" + entry.getKey() + "\""); //\r\n\r\n");
+						buffer.newLine();
 					}
 				}
 
@@ -596,19 +605,25 @@ public class Configuration
 		String offset = getOffsetString(leftOffset);
 
 		// write comment
-		out.write(offset + "####################\r\n");
-		out.write(offset + "# " + category.name + " \r\n");
+		out.write(offset + "####################"); //\r\n");
+		out.newLine();
+		out.write(offset + "# " + category.name); //+ " \r\n");
+		out.newLine();
 		if (category.comment != null)
 		{
-			out.write(offset + "#===================\r\n");
+			out.write(offset + "#==================="); //\r\n");
+			out.newLine();
 			Splitter splitter = Splitter.onPattern("\r?\n");
 			for (String commentLine : splitter.split(category.comment))
 			{
 				out.write(offset + "# ");
-				out.write(commentLine + "\r\n");
+				out.write(commentLine); // + "\r\n");
+				out.newLine();
 			}
 		}
-		out.write(offset + "####################\r\n\r\n");
+		out.write(offset + "####################"); //\r\n\r\n");
+		out.newLine();
+		out.newLine();
 
 		// actually write the category
 		String catKey = category.name;
@@ -616,7 +631,9 @@ public class Configuration
 		{
 			catKey = '"' + catKey + '"';
 		}
-		out.write(offset + catKey + " {\r\n");
+		out.write(offset + catKey); // + " {\r\n");
+		out.newLine();
+		
 		writeProperties(out, category.properties.values(), leftOffset + 1);
 
 		// sort and write children.
@@ -630,7 +647,9 @@ public class Configuration
 			writeCategory(out, child, leftOffset + 1);
 		}
 
-		out.write(offset + "}\r\n\r\n");
+		out.write(offset + "}"); //\r\n\r\n");
+		out.newLine();
+		out.newLine();
 	}
 
 	public void addCustomCategoryComment(String category, String comment)
@@ -653,7 +672,8 @@ public class Configuration
 				Splitter splitter = Splitter.onPattern("\r?\n");
 				for (String commentLine : splitter.split(property.comment))
 				{
-					buffer.write("   # " + commentLine + "\r\n");
+					buffer.write("   # " + commentLine); // + "\r\n");
+					buffer.newLine();
 				}
 			}
 			String propName = property.name;
@@ -668,8 +688,9 @@ public class Configuration
 				continue;
 			}
 
-			buffer.write(offset + property.getType().getIDChar() + ":" + propName + "=" + property.value);
-			buffer.write("\r\n");
+			buffer.write(offset + property.getType().getIDChar() + " : " + propName + " = " + property.value);
+			buffer.newLine();
+			//.write("\r\n");
 		}
 	}
 
