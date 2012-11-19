@@ -97,8 +97,10 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 
 		return new int[] { 0, -1 };
 	}
-
-	public void completeCommand()
+	
+	@Override
+	public String getCommandPerm()
 	{
+		return "WorldControl.commands."+getName();
 	}
 }

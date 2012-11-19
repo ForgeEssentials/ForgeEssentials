@@ -28,6 +28,7 @@ public class FEConfig
 		loadMisc();
 		
 		// CONFIG TESTING!!!!
+		/*
 		config.addCustomCategoryComment("TEST", "this is for testing...");
 		config.addCustomCategoryComment("TEST.nestedTEST", "MORE TESTING!!!");
 		
@@ -40,6 +41,7 @@ public class FEConfig
 		
 		config.get("TEST", "testList", new String[] {"lala", "lala", "lala"});
 		config.get("TEST.nestedTEST", "testList", new String[] {"lala", "lala", "lala"});
+		*/
 
 		// Finish init and save.
 		config.save();

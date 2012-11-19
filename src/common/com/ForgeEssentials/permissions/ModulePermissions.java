@@ -10,19 +10,20 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class ModulePermissions
 {
-
-	public FEPermissionHandler	pHandler;
+	public static FEPermissionConfig config;
+	public static FEPermissionsHandler	pHandler;
 
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-
+		config = new FEPermissionConfig();
+		Zone.GLOBAL = new Zone("__GLOBAL__");
 	}
 
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
-		pHandler = new FEPermissionHandler();
+		pHandler = new FEPermissionsHandler();
 		MinecraftForge.EVENT_BUS.register(pHandler);
 	}
 

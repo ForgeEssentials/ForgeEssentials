@@ -34,11 +34,13 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 			try
 			{
 				radius = Integer.parseInt(args[0]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
 				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
 			}
-		} else if (args.length == 4)
+		}
+		else if (args.length == 4)
 		{
 			try
 			{
@@ -46,7 +48,8 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 				centerX = Double.parseDouble(args[1]);
 				centerY = Double.parseDouble(args[2]);
 				centerZ = Double.parseDouble(args[3]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
 				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
 			}
@@ -111,6 +114,12 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		return true;
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
 }

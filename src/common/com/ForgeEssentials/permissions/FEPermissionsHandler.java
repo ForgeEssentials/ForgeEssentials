@@ -17,7 +17,7 @@ import net.minecraftforge.event.ForgeSubscribe;
  * @author AbrarSyed
  *
  */
-public final class FEPermissionHandler
+public final class FEPermissionsHandler
 {	
 	@ForgeSubscribe(priority = EventPriority.LOWEST)
 	public void handlerQuery(FEPermissionsQuery event)
@@ -32,7 +32,7 @@ public final class FEPermissionHandler
 	public static boolean checkPermAllowed(FEPermissionsQuery query)
 	{
 		MinecraftForge.EVENT_BUS.post(query);
-		return false;
+		return query.getResult().equals(Result.ALLOW);
 	}
 	
 	public static Result checkPermResult(FEPermissionsQuery query)

@@ -109,4 +109,10 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 		return "Removes all item entities around you/the specifies point within the radius";
 	}
 
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+
 }

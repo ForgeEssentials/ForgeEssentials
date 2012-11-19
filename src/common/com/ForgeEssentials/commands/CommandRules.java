@@ -21,8 +21,8 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 public class CommandRules extends ForgeEssentialsCommandBase
 {
 
-	public static ArrayList<String> rules;
-	public static File rulesFile = new File(ForgeEssentials.FEDIR, "rules.txt");
+	public static ArrayList<String>	rules;
+	public static File				rulesFile	= new File(ForgeEssentials.FEDIR, "rules.txt");
 
 	public CommandRules()
 	{
@@ -64,12 +64,14 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				stream.close();
 
 				OutputHandler.SOP("Completed generating rules file.");
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				Logger lof = OutputHandler.felog;
 				lof.logp(Level.SEVERE, "FEConfig", "Generating Rules", "Error writing the Rules file: " + rulesFile.getName(), e);
 			}
-		} else
+		}
+		else
 		{
 			try
 			{
@@ -106,7 +108,8 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				stream.close();
 
 				OutputHandler.SOP("Completed reading rules file. " + counter + " rules read.");
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				Logger lof = OutputHandler.felog;
 				lof.logp(Level.SEVERE, "FEConfig", "Constructor-Rules", "Error reading or writing the Rules file: " + rulesFile.getName(), e);
@@ -144,7 +147,8 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			stream.close();
 
 			OutputHandler.SOP("Completed saving rules file.");
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			Logger lof = OutputHandler.felog;
 			lof.logp(Level.SEVERE, "FEConfig", "Saving Rules", "Error writing the Rules file: " + rulesFile.getName(), e);
@@ -167,14 +171,17 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				try
 				{
 					rules.remove(new Integer(args[0]) - 1);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
 					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
-				} catch (IndexOutOfBoundsException e)
+				}
+				catch (IndexOutOfBoundsException e)
 				{
 					sender.sendChatToPlayer("That rule does not exist.");
 				}
-			} else
+			}
+			else
 			{
 				try
 				{
@@ -182,13 +189,15 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					for (int i = 1; i < args.length; i++)
 						newRule = newRule + args[i] + " ";
 					rules.add(new Integer(args[0]) - 1, newRule);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
 					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
 				}
 			}
 			saveRules();
-		} else
+		}
+		else
 			for (String rule : rules)
 				sender.sendChatToPlayer(rule);
 	}
@@ -203,14 +212,17 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				try
 				{
 					rules.remove(new Integer(args[0]) - 1);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
 					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
-				} catch (IndexOutOfBoundsException e)
+				}
+				catch (IndexOutOfBoundsException e)
 				{
 					sender.sendChatToPlayer("That rule does not exist.");
 				}
-			} else
+			}
+			else
 			{
 				try
 				{
@@ -218,13 +230,15 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					for (int i = 1; i < args.length; i++)
 						newRule = newRule + args[i] + " ";
 					rules.add(new Integer(args[0]) - 1, newRule);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
 					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
 				}
 			}
 			saveRules();
-		} else
+		}
+		else
 			for (String rule : rules)
 				sender.sendChatToPlayer(rule);
 	}
@@ -263,6 +277,12 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		return true;
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
 }

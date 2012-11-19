@@ -50,10 +50,8 @@ public class FEPermissionsQuery extends Event
         return super.getResult();
     }
 	
-	protected static AreaBase getAreaofPlayer(EntityPlayer player)
+	protected static Point getAreaofPlayer(EntityPlayer player)
 	{
-		Point p2 = new Point((int)Math.ceil(player.posX), (int)Math.ceil(player.posY), (int)Math.ceil(player.posZ));
-		Point p1 = new Point((int)Math.floor(player.posX), (int)Math.floor(player.posY), (int)Math.floor(player.posZ));
-		return new Selection(p1, p2);
+		return new Point((int)Math.round(player.posX), (int)Math.round(player.posY), (int)Math.round(player.posZ));
 	}
 }

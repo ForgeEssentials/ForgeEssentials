@@ -28,7 +28,7 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 			String cmd = args[0];
 			for (int i = 1; i < args.length; ++i)
 			{
-				cmd = cmd + " " + args[i]; 
+				cmd = cmd + " " + args[i];
 			}
 			String result = DedicatedServer.getServer().executeCommand(cmd);
 			player.sendChatToPlayer(result);
@@ -52,7 +52,7 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	{
 		return false;
 	}
-	
+
 	/**
 	 * Restricts the usage of this command to ops so random jerkbags can't op themselves.
 	 * Once our permissions system gets working, we can use canPlayerUseCommand instead.
@@ -86,5 +86,11 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	{
 		// Not meant to be run on the console.
 		return null;
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 }

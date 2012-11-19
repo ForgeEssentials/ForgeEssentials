@@ -29,17 +29,20 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
 				sender.sendChatToPlayer("Was that really a good idea?");
-			} else
+			}
+			else
 			{
 				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 				if (victim != null)
 				{
 					sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
 					sender.sendChatToPlayer("You should feel bad about doing that.");
-				} else
+				}
+				else
 					OutputHandler.chatError(sender, "That player does not exist.");
 			}
-		} else
+		}
+		else
 		{
 			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
 			if (mop == null)
@@ -62,9 +65,11 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			{
 				victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
 				sender.sendChatToPlayer("You should feel bad about doing that.");
-			} else
+			}
+			else
 				sender.sendChatToPlayer("That player does not exist.");
-		} else
+		}
+		else
 			sender.sendChatToPlayer("You must specify a player.");
 	}
 
@@ -102,6 +107,12 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 	public String getInfoPlayer(EntityPlayer player)
 	{
 		return "Strike where you are looking, yourself, or another player with lightning";
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
 }

@@ -82,5 +82,11 @@ public class CommandBack extends ForgeEssentialsCommandBase
 	{
 		return "Teleports you your last death point";
 	}
+	
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands."+getCommandName();
+	}
 
 }

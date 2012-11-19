@@ -1,11 +1,14 @@
 package com.ForgeEssentials.core.commands;
 
 import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.permissions.FEPermissionsHandler;
+import com.ForgeEssentials.permissions.FEPermissionsQuery;
 
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.TileEntityCommandBlock;
+import net.minecraftforge.common.MinecraftForge;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
@@ -118,5 +121,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		else
 			sender.sendChatToPlayer(usage);
 	}
+	
+	public boolean checkCommandPerm(EntityPlayer player)
+	{
+		return FEPermissionsHandler.checkPermAllowed(new FEPermissionsQuery(player, getCommandPerm()));
+	}
+	
+	public abstract String getCommandPerm();
 
 }

@@ -4,6 +4,8 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
 import com.ForgeEssentials.core.Version;
+import com.ForgeEssentials.permissions.FEPermissionsHandler;
+import com.ForgeEssentials.permissions.FEPermissionsQuery;
 
 public class CommandFEVersion extends ForgeEssentialsCommandBase
 {
@@ -47,7 +49,7 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		return true;
+		return FEPermissionsHandler.checkPermAllowed(new FEPermissionsQuery(player, "ForgeEssentials.coreCommands.FEVersion"));
 	}
 
 	@Override
@@ -60,5 +62,11 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	public String getInfoPlayer(EntityPlayer player)
 	{
 		return "Get the current version of ForgeEssentials";
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.CoreCommands."+getCommandName();
 	}
 }

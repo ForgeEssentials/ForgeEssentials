@@ -85,4 +85,10 @@ public class CommandHome extends ForgeEssentialsCommandBase
 		return "Teleports you to/sets your home";
 	}
 
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+
 }
