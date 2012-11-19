@@ -3,10 +3,7 @@ package com.ForgeEssentials.permissions;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.minecraft.src.World;
-
 import com.ForgeEssentials.AreaSelector.AreaBase;
-import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 
 public class Zone extends AreaBase

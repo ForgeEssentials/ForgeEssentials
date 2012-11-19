@@ -1,12 +1,10 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated
-import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.TileEntityCommandBlock;
 
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
-import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase

@@ -20,12 +20,12 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args)
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		int radius = 10;
-		double centerX = player.posX;
-		double centerY = player.posY;
-		double centerZ = player.posZ;
+		double centerX = sender.posX;
+		double centerY = sender.posY;
+		double centerZ = sender.posZ;
 
 		if (args.length == 1)
 		{
@@ -35,7 +35,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 			}
 			catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(player, "That won't work. try " + getSyntaxPlayer(player));
+				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
 			}
 		}
 		else if (args.length == 4)
@@ -49,11 +49,11 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 			}
 			catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(player, "That won't work. try " + getSyntaxPlayer(player));
+				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
 			}
 		}
 
-		List<EntityItem> entityList = (List<EntityItem>) player.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1));
+		List<EntityItem> entityList = (List<EntityItem>) sender.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1));
 
 		int counter = 0;
 		for (int i = 0; i < entityList.size(); i++)
@@ -63,7 +63,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 			entity.setDead();
 		}
 
-		OutputHandler.chatConfirmation(player, counter + " item" + (counter == 1 ? "" : "s") + " removed");
+		OutputHandler.chatConfirmation(sender, counter + " item" + (counter == 1 ? "" : "s") + " removed");
 
 	}
 

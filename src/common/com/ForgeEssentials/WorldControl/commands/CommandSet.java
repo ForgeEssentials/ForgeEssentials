@@ -1,20 +1,13 @@
 package com.ForgeEssentials.WorldControl.commands;
 
-//Depreciated
-import java.util.HashMap;
-
+//Depreciated - Huh? Do you mean depracated?
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 
-import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
-import com.ForgeEssentials.WorldControl.BlockSaveable;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
-import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
 
 public class CommandSet extends WorldControlCommandBase
@@ -31,26 +24,25 @@ public class CommandSet extends WorldControlCommandBase
 	{
 		int ID = 0;
 		int metadata = 0;
-		
+
 		if (args.length == 1)
 		{
 			int[] data = this.interpretIDAndMetaFromString(args[0]);
 			ID = data[0];
 			metadata = data[1];
-		}
-		else
+		} else
 		{
 			error(player);
 			return;
 		}
-		
+
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 		World world = player.worldObj;
 		Selection sel = info.getSelection();
 		BackupArea back = new BackupArea();
 		int changed = 0;
-		
-		//  do this once the Ticktask is finished
+
+		// do this once the Ticktask is finished
 		TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
 	}
 

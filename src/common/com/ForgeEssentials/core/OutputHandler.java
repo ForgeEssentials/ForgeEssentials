@@ -1,12 +1,10 @@
 package com.ForgeEssentials.core;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public final class OutputHandler

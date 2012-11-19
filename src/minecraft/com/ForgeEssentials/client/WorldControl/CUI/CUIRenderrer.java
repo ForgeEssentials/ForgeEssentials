@@ -1,7 +1,6 @@
 package com.ForgeEssentials.client.WorldControl.CUI;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.RenderHelper;
 import net.minecraft.src.RenderManager;
 import net.minecraft.src.Tessellator;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -10,15 +9,14 @@ import net.minecraftforge.event.ForgeSubscribe;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.ForgeEssentials.AreaSelector.Point;
+import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.client.core.PlayerInfoClient;
 import com.ForgeEssentials.client.core.ProxyClient;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
-import com.ForgeEssentials.AreaSelector.Point;
-import com.ForgeEssentials.AreaSelector.Selection;
-import com.ForgeEssentials.core.ForgeEssentials;
 
 //Depreciated
 @SideOnly(value = Side.CLIENT)

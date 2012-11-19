@@ -1,16 +1,9 @@
 package com.ForgeEssentials.client.core;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.World;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
-import com.ForgeEssentials.core.OutputHandler;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;

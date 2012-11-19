@@ -21,12 +21,11 @@
 /src/common/*
 /src/minecraft/*
 /src/minecraft_server/*
-/src/common/com/ForgeEssentials/coremod/
 
 !/src/common/com/
 !/src/common/mcmod.info
 !/src/minecraft/com/
-!src/common/forgeessentials_at.cfg
+!/src/common/forgeessentials_at.cfg
 
 *.bat
 *.sh

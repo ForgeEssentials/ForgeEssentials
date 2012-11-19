@@ -19,28 +19,28 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args)
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		if (args.length >= 1 && args[0].equals("here"))
-			PlayerInfo.getPlayerInfo(player).home = new Point((int) player.posX, (int) player.posY, (int) player.posZ);
+			PlayerInfo.getPlayerInfo(sender).home = new Point((int) sender.posX, (int) sender.posY, (int) sender.posZ);
 		else if (args.length >= 3)
 		{
 			try
 			{
-				PlayerInfo.getPlayerInfo(player).home = new Point(new Integer(args[0]), new Integer(args[1]), new Integer(args[2]));
+				PlayerInfo.getPlayerInfo(sender).home = new Point(new Integer(args[0]), new Integer(args[1]), new Integer(args[2]));
 			}
 			catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(player, "That won't work. try " + getSyntaxPlayer(player));
+				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
 			}
 		}
 		else
 		{
-			Point home = PlayerInfo.getPlayerInfo(player).home;
+			Point home = PlayerInfo.getPlayerInfo(sender).home;
 			if (home == null)
-				OutputHandler.chatError(player, "No home set. Try " + getSyntaxPlayer(player));
+				OutputHandler.chatError(sender, "No home set. Try " + getSyntaxPlayer(sender));
 			else
-				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(home.x, home.y, home.z, player.rotationYaw, player.rotationPitch);
+				((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(home.x, home.y, home.z, sender.rotationYaw, sender.rotationPitch);
 		}
 	}
 

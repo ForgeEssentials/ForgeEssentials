@@ -1,21 +1,11 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated
-import java.util.HashMap;
-
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.World;
 
-import com.ForgeEssentials.AreaSelector.Point;
-import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
-import com.ForgeEssentials.WorldControl.BlockSaveable;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetBackup;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
-import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
 
 public class CommandRedo extends WorldControlCommandBase

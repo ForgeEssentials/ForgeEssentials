@@ -3,7 +3,6 @@ package com.ForgeEssentials.permissions;
 import java.util.HashMap;
 
 import net.minecraftforge.event.Event.Result;
-import net.minecraftforge.event.Event.*;
 
 /**
  * @author AbrarSyed

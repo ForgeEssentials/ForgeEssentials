@@ -1,16 +1,13 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.AreaSelector.Point;
+import net.minecraft.src.DamageSource;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ICommandSender;
+
 import com.ForgeEssentials.core.OutputHandler;
-import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ICommandSender;
 
 public class CommandKill extends ForgeEssentialsCommandBase
 {
