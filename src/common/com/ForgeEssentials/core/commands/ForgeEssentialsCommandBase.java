@@ -24,7 +24,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 			processCommandConsole(var1, var2);
 	}
 
-	public abstract void processCommandPlayer(EntityPlayer player, String[] args);
+	public abstract void processCommandPlayer(EntityPlayer sender, String[] args);
 
 	/**
 	 * Override is optional. dos nothing by default.

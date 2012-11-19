@@ -11,11 +11,13 @@ public class Property
     {
         STRING,
         INTEGER,
-        BOOLEAN
+        BOOLEAN,
+        LIST        
     }
 
     private String name;
     public String value;
+    public String[] valueList; // used for List configs
     public String comment;
     private Type type; //Currently does nothing, need to design a way to save/load from the file.
     
@@ -25,7 +27,22 @@ public class Property
     {
         setName(name);
         this.value = value;
+        this.valueList = new String[] {value};
         this.type = type;
+    }
+    
+    public Property(String name, String[] value)
+    {
+        setName(name);
+        this.valueList = value;
+        
+        StringBuilder builder = new StringBuilder();
+        for (String string : value)
+        	builder.append(":").append(string);
+        
+        this.value = builder.toString();
+        
+        this.type = Type.LIST;
     }
     
     /**
@@ -65,15 +82,7 @@ public class Property
      */
     public boolean isIntValue()
     {
-        try
-        {
-            Integer.parseInt(value);
-            return true;
-        }
-        catch (NumberFormatException e)
-        {
-            return false;
-        }
+    	return type.equals(Type.BOOLEAN);
     }
     
     /**
@@ -102,7 +111,12 @@ public class Property
      */
     public boolean isBooleanValue()
     {
-        return ("true".equals(value.toLowerCase()) || "false".equals(value.toLowerCase()));
+    	return type.equals(Type.BOOLEAN);
+    }
+    
+    public boolean isList()
+    {
+    	return type.equals(Type.LIST);
     }
 
     public String getName()

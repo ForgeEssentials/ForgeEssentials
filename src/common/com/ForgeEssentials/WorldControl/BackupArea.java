@@ -4,11 +4,6 @@ package com.ForgeEssentials.WorldControl;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import net.minecraft.src.World;
-
-import com.ForgeEssentials.AreaSelector.AreaBase;
-import com.ForgeEssentials.AreaSelector.Point;
-
 public class BackupArea implements Serializable
 {
 	public ArrayList<BlockSaveable> before;

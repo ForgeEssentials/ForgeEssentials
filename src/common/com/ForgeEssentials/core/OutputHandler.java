@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public final class OutputHandler
@@ -64,7 +63,7 @@ public final class OutputHandler
 	 */
 	public static void debug(Object msg)
 	{
-		if (ObfuscationReflectionHelper.obfuscation)
+		if (!ObfuscationReflectionHelper.obfuscation)
 			System.out.println("DEBUG: >>>> " + msg);
 	}
 
@@ -78,6 +77,11 @@ public final class OutputHandler
 			MinecraftServer.getServer().sendChatToPlayer("{Forge Essentials} " + msg);
 		
 		felog.info(""+msg);
+	}
+	
+	public static void logConfigChange(String category, String prop, String oldVal, String newVal)
+	{
+		SOP("Config Changed: "+prop+" under "+"category"+" changed from "+oldVal+" to "+newVal);
 	}
 
 }

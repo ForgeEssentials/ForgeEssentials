@@ -1,15 +1,14 @@
 package com.ForgeEssentials.client.network;
 
-import com.ForgeEssentials.client.core.PlayerInfoClient;
-import com.ForgeEssentials.client.core.ProxyClient;
-import com.ForgeEssentials.core.OutputHandler;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.INetworkManager;
 import net.minecraft.src.NetHandler;
 import net.minecraft.src.NetLoginHandler;
 import net.minecraft.src.Packet1Login;
-import cpw.mods.fml.client.FMLClientHandler;
+
+import com.ForgeEssentials.client.core.PlayerInfoClient;
+import com.ForgeEssentials.client.core.ProxyClient;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;

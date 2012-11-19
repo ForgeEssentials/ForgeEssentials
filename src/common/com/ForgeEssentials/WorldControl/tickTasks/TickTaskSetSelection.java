@@ -1,17 +1,15 @@
 package com.ForgeEssentials.WorldControl.tickTasks;
 
 //Depreciated
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
+
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
-import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
-
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.World;
 
 public class TickTaskSetSelection implements ITickTask
 {

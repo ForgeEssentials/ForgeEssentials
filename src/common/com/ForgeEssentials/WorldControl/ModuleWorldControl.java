@@ -23,7 +23,7 @@ public class ModuleWorldControl
 	public static boolean useExtraSlash;
 	public static ArrayList<WorldControlCommandBase> needsCompleteCommands = new ArrayList<WorldControlCommandBase>();
 
-	// load.
+	// preload.
 	public void preLoad(FMLPreInitializationEvent event)
 	{
 		OutputHandler.SOP("WorldControl module is enabled. Loading...");
@@ -36,7 +36,7 @@ public class ModuleWorldControl
 		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
 	}
 
-	// load.
+	// serverStart.
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandWand());
