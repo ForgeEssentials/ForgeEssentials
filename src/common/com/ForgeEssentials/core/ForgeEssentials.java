@@ -9,10 +9,12 @@ import com.ForgeEssentials.network.HandlerServer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.Mod.ServerStarting;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
@@ -33,11 +35,12 @@ public class ForgeEssentials
 	@Instance(value = "ForgeEssentials")
 	public static ForgeEssentials	instance;
 
-	public static FEConfig			config;
-	public ModuleLauncher			mdlaunch;
-	public static boolean			verCheck	= true;
-
-	public static final File		FEDIR		= new File("./ForgeEssentials/");
+	public static FEConfig config;
+	public ModuleLauncher mdlaunch;
+	public static boolean verCheck = true;
+	public LibraryDetector libdetect;
+	
+	public static final File FEDIR = new File("./ForgeEssentials/");
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -64,7 +67,11 @@ public class ForgeEssentials
 		mdlaunch.load(e);
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
 	}
-
+	@PostInit
+	public void postLoad (FMLPostInitializationEvent e){
+		libdetect = new LibraryDetector();
+		libdetect.detect();
+	}
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
 	{

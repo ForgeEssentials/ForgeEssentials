@@ -36,15 +36,15 @@ public class FEConfig
 		config.addCustomCategoryComment("Modules", "Here you can Enable and Disable ForgeEssentials Modules");
 
 		Property prop = config.get("Modules", "Commands_Enabled", true);
-		prop.comment = "Disabling this will remove the non essentials commands. ie: /home, /motd, /rules, etc...";
+		prop.comment = "Disabling this will remove non-essential commands. ie: /home, /motd, /rules, etc...";
 		ModuleLauncher.cmdEnabled = prop.getBoolean(true);
 
 		prop = config.get("Modules", "WorldControl_Enabled", true);
-		prop.comment = "Disabling this will remove Selections and selection editting commands such as //set, //copy, etc...";
+		prop.comment = "Disabling this will remove Selections and selection editing commands such as //set, //copy, etc...";
 		ModuleLauncher.wcEnabled = prop.getBoolean(true);
 
 		prop = config.get("Modules", "Permissions_Enabled", true);
-		prop.comment = "Disabling this will remove any and all permissions integration";
+		prop.comment = "Disabling this will remove any and all permissions integration. Other mods that use this may be affected.";
 		ModuleLauncher.permsEnabled = prop.getBoolean(true);
 	}
 
@@ -53,15 +53,15 @@ public class FEConfig
 		config.addCustomCategoryComment("Miscellaneous", "here you can configure miscellanious things.");
 
 		Property prop = config.get("Miscellaneous", "motd", "Welcome to a server running ForgeEssentials");
-		prop.comment = "the Message Of The Day is only used if the Commands module is enabled.";
+		prop.comment = "Specify the message that greets players when they log in to your server. Only ";
 		CommandMotd.motd = prop.value;
 
 		prop = config.get("Miscellaneous", "versionCheck", true);
-		prop.comment = "to check for newer versions of ForgeEssentials or not.";
+		prop.comment = "Check for newer versions of ForgeEssentials on load?";
 		ForgeEssentials.verCheck = prop.getBoolean(true);
 
 		prop = config.get("Miscellaneous", "RulesFile", "rules.txt");
-		prop.comment = "the file where the rules will read from and written to. This path is relative to the ForgeEssentials folder.";
+		prop.comment = "Specify the file where the rules will read from and written to. This path is relative to the ForgeEssentials folder.";
 		CommandRules.rulesFile = new File(ForgeEssentials.FEDIR, prop.value);
 	}
 
@@ -80,7 +80,7 @@ public class FEConfig
 	 */
 	public boolean isModuleEnabled(String name)
 	{
-		Property prop = config.get("Modules", name + "_Enabled", true);
+		Property prop = config.get("Modules", name + " Enabled", true);
 		return prop.getBoolean(true);
 	}
 
