@@ -38,7 +38,7 @@ public class ForgeEssentials
 	public static FEConfig config;
 	public ModuleLauncher mdlaunch;
 	public static boolean verCheck = true;
-	public LibraryDetector libdetect;
+	//public LibraryDetector libdetect;
 	
 	public static final File FEDIR = new File("./ForgeEssentials/");
 
@@ -69,8 +69,9 @@ public class ForgeEssentials
 	}
 	@PostInit
 	public void postLoad (FMLPostInitializationEvent e){
-		libdetect = new LibraryDetector();
-		libdetect.detect();
+		//needs some work done
+		//libdetect = new LibraryDetector();
+		//libdetect.detect();
 	}
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
