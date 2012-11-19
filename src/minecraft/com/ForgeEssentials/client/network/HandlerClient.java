@@ -3,7 +3,6 @@ package com.ForgeEssentials.client.network;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 
-import com.ForgeEssentials.network.PacketCommandServerDo;
 import com.ForgeEssentials.network.PacketSelectionUpdate;
 
 import net.minecraft.src.EntityPlayer;
@@ -34,9 +33,6 @@ public class HandlerClient implements IPacketHandler
 				// cast to the correct instance of ForgeEssentialsPacketbase and use the read methods.
 					case 0:
 						((PacketSelectionUpdate) packet).readClient(stream, world, player);
-						break;
-					case 1:
-						((PacketCommandServerDo) packet).readClient(stream, world, player);
 						break;
 				}
 		}

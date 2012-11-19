@@ -32,9 +32,6 @@ public class HandlerServer implements IPacketHandler
 					case 0:
 						((PacketSelectionUpdate) packet).readServer(stream, world, player);
 						break;
-					case 1:
-						((PacketCommandServerDo) packet).readServer(stream, world, player);
-						break;
 				}
 		}
 		catch (Exception e)
