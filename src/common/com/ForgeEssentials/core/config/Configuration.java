@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ForgeEssentials.core.config.Property.Type;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
@@ -336,6 +337,10 @@ public class Configuration
                 String line;
                 
                 Category currentCat = null;
+                
+                Type type = null;
+                String tempName = null;
+                ArrayList<String> listProp = null;
 
                 while (true)
                 {
@@ -368,9 +373,6 @@ public class Configuration
                     boolean skip = false;
                     boolean quoted = false;
                     
-                    String tempName;
-                    ArrayList<String> ListProp;
-                    
                     for (int i = 0; i < line.length() && !skip; ++i)
                     {
                         if (Character.isLetterOrDigit(line.charAt(i)) || ALLOWED_CHARS.indexOf(line.charAt(i)) != -1 || (quoted && line.charAt(i) != '"'))
@@ -393,28 +395,7 @@ public class Configuration
                                 case '#':
                                     skip = true;
                                     continue;
-                                case '<':
-                                	/*
-                                    String qualifiedName = line.substring(nameStart, nameEnd + 1);
                                     
-                                    Category tempCat = new Category(qualifiedName, currentCat);
-                                    qualifiedName = tempCat.getQualifiedName();
-                                    
-                                    currentCat = categories.get(qualifiedName);
-                                    if (currentCat == null)
-                                    {
-                                        currentCat = tempCat;
-                                        categories.put(currentCat.getQualifiedName(), currentCat);
-                                    }
-                                    */
-
-                                    break;
-
-                                case '>':
-                                	
-                                	//currentCat = currentCat.parent;
-                                	break;
-
                                 case '"':
                                     if (quoted)
                                     {
@@ -442,7 +423,6 @@ public class Configuration
                                     break;
 
                                 case '}':
-                                	
                                 	currentCat = currentCat.parent;
                                 	break;
 
@@ -450,19 +430,56 @@ public class Configuration
                                     String propertyName = line.substring(nameStart, nameEnd + 1);
 
                                     if (currentCat == null)
-                                    {
                                         throw new RuntimeException("property " + propertyName + " has no scope");
-                                    }
-
-                                    // TODO: replace with actual constructor
-                                    Property prop = new Property();
-                                    prop.setName(propertyName);
-                                    prop.value = line.substring(i + 1);
+                                    
+                                    // constructs the Property with the given type.
+                                    Property prop = new Property(propertyName, line.substring(i + 1), type);
                                     i = line.length();
-
                                     currentCat.properties.put(propertyName, prop);
-
                                     break;
+                                    
+                                case ':':
+                                	String name = line.substring(nameStart, nameEnd+1);
+                                	
+                                	switch(name.charAt(0))
+                                	{
+                                		case 'S' : 
+                                			type = Type.STRING;
+                                			break;
+                                		case 'I' : 
+                                			type = Type.INTEGER;
+                                			break;
+                                		case 'B' : 
+                                			type = Type.BOOLEAN;
+                                			break;
+                                		case 'D' :
+                                			type = Type.DOUBLE;
+                                			break;
+                                		case 'L' :
+                                			type = Type.LIST;
+                                			break;
+                                		default:
+                                			type = Type.STRING;
+                                			break;
+                                	}
+                                	
+                                	nameStart = nameEnd = -1;
+                                	break;
+                                	
+                                case '<':
+                                	tempName = line.substring(nameStart, nameEnd + 1);
+                                	listProp =  new ArrayList<String>();
+                                	
+                                    if (currentCat == null)
+                                    {
+                                        throw new RuntimeException("property " + tempName + " has no scope");
+                                    }
+                                    break;
+
+                                case '>':
+                                    Property prop1 = new Property(tempName, listProp.toArray(new String[listProp.size()]));
+                                    currentCat.properties.put(tempName, prop1);
+                                	break;
 
                                 default:
                                     throw new RuntimeException("unknown character " + line.charAt(i));
@@ -472,6 +489,10 @@ public class Configuration
                     if (quoted)
                     {
                         throw new RuntimeException("unmatched quote");
+                    }
+                    else if (listProp != null)
+                    {
+                    	listProp.add(line.trim());
                     }
                 }
             }
@@ -623,19 +644,35 @@ public class Configuration
                     buffer.write("   # " + commentLine + "\r\n");
                 }
             }
-            String propName = property.getName();
+            String propName = property.name;
             if (!allowedProperties.matchesAllOf(propName))
             {
                 propName = '"'+propName+'"';
             }
-            buffer.write(offset + propName + "=" + property.value);
+            
+            if (property.getType().equals(Type.LIST))
+            {
+            	writeListProperty(buffer, property, leftOffset);
+            	continue;
+            }
+            
+            buffer.write(offset + property.getType().getIDChar() + ":" + propName + "=" + property.value);
             buffer.write("\r\n");
         }
     }
     
-    private void writeListProperty(BufferedWriter buffer, Property prop, int leftOffset)
+    private void writeListProperty(BufferedWriter buffer, Property prop, int leftOffset) throws IOException
     {
+    	String offset = getOffsetString(leftOffset);
+    	String elementOffset = getOffsetString(leftOffset+1);
     	
+    	// write main line.
+    	buffer.write(offset + prop.getType().getIDChar() + ":" + prop.name + " <");
+    	
+    	for (String line : prop.valueList)
+    	{
+    		buffer.write(elementOffset + line);
+    	}
     }
     
     private String getOffsetString(int offset)
