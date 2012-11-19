@@ -2,16 +2,24 @@ package com.ForgeEssentials.core.commands;
 
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.permissions.FEPermissionsHandler;
-import com.ForgeEssentials.permissions.FEPermissionsQuery;
+import com.ForgeEssentials.permissions.PermQueryArea;
+import com.ForgeEssentials.permissions.PermQueryPlayer;
 
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event.Result;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
+	public ForgeEssentialsCommandBase()
+	{
+		super();
+		FEPermissionsHandler.registerPermission(this.getCommandPerm(), true);
+	}
+	
 	// ---------------------------
 	// processing command
 	// ---------------------------
@@ -30,7 +38,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public abstract void processCommandPlayer(EntityPlayer sender, String[] args);
 
 	/**
-	 * Override is optional. dos nothing by default.
+	 * Override is optional. does nothing by default.
 	 */
 	public void processCommandBlock(TileEntityCommandBlock block, String[] args)
 	{
@@ -124,7 +132,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
-		return FEPermissionsHandler.checkPermAllowed(new FEPermissionsQuery(player, getCommandPerm()));
+		return FEPermissionsHandler.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 	
 	public abstract String getCommandPerm();

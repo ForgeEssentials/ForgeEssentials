@@ -75,6 +75,8 @@ public final class OutputHandler
 	{
 		if (FMLCommonHandler.instance().getSide().isServer())
 			MinecraftServer.getServer().sendChatToPlayer("{Forge Essentials} " + msg);
+		else
+			System.out.println("{Forge Essentials} " + msg);
 		
 		felog.info(""+msg);
 	}

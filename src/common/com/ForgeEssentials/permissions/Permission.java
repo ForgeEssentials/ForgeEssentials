@@ -2,6 +2,8 @@ package com.ForgeEssentials.permissions;
 
 import java.util.HashMap;
 
+import com.ForgeEssentials.core.OutputHandler;
+
 import net.minecraftforge.event.Event.Result;
 
 /**
@@ -9,7 +11,7 @@ import net.minecraftforge.event.Event.Result;
  */
 public class Permission
 {
-	private static HashMap<String, Permission> defaults;
+	private static HashMap<String, Permission> defaults = new HashMap<String, Permission>();
 	
 	public static Result getPermissionDefault(String name)
 	{
@@ -20,13 +22,30 @@ public class Permission
 			return Result.DENY;
 	}
 	
-	public static void addDefaultPermission(Permission perm)
+	/**
+	 * This does NOT automatically register parents.
+	 * @param perm Permission to be added
+	 */
+	protected static void addDefaultPermission(Permission perm)
 	{
+		assert !defaults.containsKey(perm.name) : new IllegalArgumentException("You cannot override a default Permission");
 		defaults.put(perm.name, perm);
+		OutputHandler.SOP("Permission Registerred: "+perm);
 	}
 	
-	private String	name;
-	private Result	allowed;
+	public String	name;
+	public Result	allowed;
+	
+	/**
+	 * should only be used for temporary Perm checking.
+	 * @param qualifiedName
+	 * @param allowed
+	 */
+	public Permission(String qualifiedName)
+	{
+		name = qualifiedName;
+		this.allowed = Result.DEFAULT;
+	}
 
 	public Permission(String qualifiedName, Boolean allowed)
 	{
@@ -82,12 +101,19 @@ public class Permission
 	}
 
 	@Override
+	/**
+	 * doesn't check teh result.. only the name.
+	 */
 	public boolean equals(Object object)
 	{
 		if (object instanceof Permission)
 		{
 			Permission perm = (Permission) object;
-			return perm.name.equals(name) && allowed == perm.allowed;
+			return name.equals(perm.name);
+		}
+		if (object instanceof String)
+		{
+			return object.equals(name);
 		}
 		return false;
 	}

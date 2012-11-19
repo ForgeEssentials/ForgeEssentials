@@ -14,14 +14,15 @@ import net.minecraft.src.EntityPlayer;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
+import com.ForgeEssentials.permissions.Zone;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class PlayerInfo implements Serializable
 {
-	public transient static File FESAVES = new File(ForgeEssentials.FEDIR, "saves/");
+	public transient static File							FESAVES			= new File(ForgeEssentials.FEDIR, "saves/");
 
-	private transient static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
+	private transient static HashMap<String, PlayerInfo>	playerInfoMap	= new HashMap<String, PlayerInfo>();
 
 	public static PlayerInfo getPlayerInfo(EntityPlayer player)
 	{
@@ -55,7 +56,8 @@ public class PlayerInfo implements Serializable
 				fis.close();
 				playerInfoMap.put(username, info);
 				return;
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				OutputHandler.SOP("Failed in reading file: " + worldName + "/" + username);
 				e.printStackTrace();
@@ -78,7 +80,8 @@ public class PlayerInfo implements Serializable
 			oos.writeObject(playerInfoMap.remove(username));
 			oos.close();
 			fos.close();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			OutputHandler.SOP("Failed in reading file: " + worldName + "/" + username);
 			e.printStackTrace();
@@ -104,7 +107,8 @@ public class PlayerInfo implements Serializable
 			oos.writeObject(playerInfoMap.get(player.username));
 			oos.close();
 			fos.close();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			OutputHandler.SOP("Error while saving info file: " + info.worldName + "/" + player.username);
 			e.printStackTrace();
@@ -127,7 +131,8 @@ public class PlayerInfo implements Serializable
 			oos.writeObject(playerInfoMap.remove(player.username));
 			oos.close();
 			fos.close();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			OutputHandler.SOP("Error while saving info for player " + player.username);
 			e.printStackTrace();
@@ -138,32 +143,32 @@ public class PlayerInfo implements Serializable
 	// ---------------------------------- Actual Class Starts Now --------------------------------
 	// -------------------------------------------------------------------------------------------
 
-	private boolean hasClientMod;
-	private String worldName;
-	private String username;
+	private boolean					hasClientMod;
+	private String					worldName;
+	private String					username;
 
 	// wand stuff
-	public int wandID;
-	public int wandDmg;
-	public boolean wandEnabled;
+	public int						wandID;
+	public int						wandDmg;
+	public boolean					wandEnabled;
 
 	// selection stuff
-	private Point sel1;
-	private Point sel2;
-	private Selection selection;
+	private Point					sel1;
+	private Point					sel2;
+	private Selection				selection;
 
 	// permissions stuff
-	private HashMap<String, String> areaGroupMap;
+	private HashMap<String, String>	areaGroupMap;
 
 	// home
-	public Point home;
+	public Point					home;
 
 	// last death location
-	public Point lastDeath;
+	public Point					lastDeath;
 
 	// undo and redo stuff
-	private Stack<BackupArea> undos;
-	private Stack<BackupArea> redos;
+	private Stack<BackupArea>		undos;
+	private Stack<BackupArea>		redos;
 
 	private PlayerInfo(EntityPlayer player)
 	{
@@ -217,7 +222,8 @@ public class PlayerInfo implements Serializable
 		{
 			if (sel1 != null && sel2 != null)
 				selection = new Selection(sel1, sel2);
-		} else
+		}
+		else
 			selection.setStart(sel1);
 
 		// send packets.
@@ -238,7 +244,8 @@ public class PlayerInfo implements Serializable
 		{
 			if (sel1 != null && sel2 != null)
 				selection = new Selection(sel1, sel2);
-		} else
+		}
+		else
 			selection.setEnd(sel2);
 
 		// send packets.
@@ -273,5 +280,18 @@ public class PlayerInfo implements Serializable
 		BackupArea back = redos.pop();
 		undos.push(back);
 		return back;
+	}
+
+	// ----------------------------------------------
+	// --------- Group/Permission stuff -------------
+	// ----------------------------------------------
+
+	public String getGroupForZone(Zone zone)
+	{
+		String group = areaGroupMap.get(zone.getZoneID());
+		if (group == null)
+			return "DEFAULT";
+		else
+			return group;
 	}
 }
