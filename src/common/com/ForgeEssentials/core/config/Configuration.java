@@ -33,13 +33,10 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-<<<<<<< HEAD
 import com.ForgeEssentials.core.config.Property.Type;
-=======
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
 
->>>>>>> 1eb455b3962ca9672c08f3b94b5c2ad3e41bb58f
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 
@@ -98,7 +95,8 @@ public class Configuration
 		{
 			PARENT.setChild(path, this);
 			isChild = true;
-		} else
+		}
+		else
 		{
 			load();
 		}
@@ -126,14 +124,16 @@ public class Configuration
 		{
 			configBlocks[prop.getInt()] = true;
 			return prop;
-		} else
+		}
+		else
 		{
 			if (Block.blocksList[defaultID] == null && !configBlocks[defaultID])
 			{
 				prop.value = Integer.toString(defaultID);
 				configBlocks[defaultID] = true;
 				return prop;
-			} else
+			}
+			else
 			{
 				for (int j = configBlocks.length - 1; j > 0; j--)
 				{
@@ -164,14 +164,16 @@ public class Configuration
 		{
 			configItems[prop.getInt() + ITEM_SHIFT] = true;
 			return prop;
-		} else
+		}
+		else
 		{
 			if (Item.itemsList[defaultShift] == null && !configItems[defaultShift] && defaultShift > Block.blocksList.length)
 			{
 				prop.value = Integer.toString(defaultID);
 				configItems[defaultShift] = true;
 				return prop;
-			} else
+			}
+			else
 			{
 				for (int x = configItems.length - 1; x >= ITEM_SHIFT; x--)
 				{
@@ -277,514 +279,19 @@ public class Configuration
 						}
 					}
 				}
-			} else
+			}
+			else
 			{
 				source = new Category(category);
 				categories.put(category, source);
 			}
 		}
 
-<<<<<<< HEAD
-        if (source.properties.containsKey(key))
-        {
-            return source.properties.get(key);
-        }
-        else if (defaultValue != null)
-        {
-        	Property prop;
-        	if (type.equals(LIST))
-        		prop = new Property(key, defaultValue);
-        	else
-        		prop = new Property(key, defaultValue[0], type);
-            source.properties.put(key, prop);
-            return prop;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public boolean hasCategory(String category)
-    {
-        return categories.get(category) != null;
-    }
-
-    public boolean hasKey(String category, String key)
-    {
-        Map<String, Property> cat = categories.get(category).properties;
-        return cat != null && cat.get(key) != null;
-    }
-
-    public void load()
-    {
-        if (PARENT != null && PARENT != this)
-        {
-            return;
-        }
-        BufferedReader buffer = null;
-        try
-        {
-            if (file.getParentFile() != null)
-            {
-                file.getParentFile().mkdirs();
-            }
-
-            if (!file.exists() && !file.createNewFile())
-            {
-                return;
-            }
-
-            if (file.canRead())
-            {
-                UnicodeInputStreamReader input = new UnicodeInputStreamReader(new FileInputStream(file), defaultEncoding);
-                defaultEncoding = input.getEncoding();
-                buffer = new BufferedReader(input);
-
-                String line;
-                
-                Category currentCat = null;
-                
-                Type type = null;
-                String tempName = null;
-                ArrayList<String> listProp = null;
-
-                while (true)
-                {
-                    line = buffer.readLine();
-
-                    if (line == null)
-                    {
-                        break;
-                    }
-
-                    Matcher start = CONFIG_START.matcher(line);
-                    Matcher end = CONFIG_END.matcher(line);
-
-                    if (start.matches())
-                    {
-                        fileName = start.group(1);
-                        categories = new TreeMap<String, Category>();
-                        continue;
-                    }
-                    else if (end.matches())
-                    {
-                        fileName = end.group(1);
-                        Configuration child = new Configuration();
-                        child.categories = categories;
-                        this.children.put(fileName, child);
-                        continue;
-                    }
-
-                    int nameStart = -1, nameEnd = -1;
-                    boolean skip = false;
-                    boolean quoted = false;
-                    
-                    for (int i = 0; i < line.length() && !skip; ++i)
-                    {
-                        if (Character.isLetterOrDigit(line.charAt(i)) || ALLOWED_CHARS.indexOf(line.charAt(i)) != -1 || (quoted && line.charAt(i) != '"'))
-                        {
-                            if (nameStart == -1)
-                            {
-                                nameStart = i;
-                            }
-
-                            nameEnd = i;
-                        }
-                        else if (Character.isWhitespace(line.charAt(i)))
-                        {
-                            // ignore space charaters
-                        }
-                        else
-                        {
-                            switch (line.charAt(i))
-                            {
-                                case '#':
-                                    skip = true;
-                                    continue;
-                                    
-                                case '"':
-                                    if (quoted)
-                                    {
-                                        quoted = false;
-                                    }
-                                    if (!quoted && nameStart == -1)
-                                    {
-                                        quoted = true;
-                                    }
-                                    break;
-
-                                case '{':
-                                    String qualifiedName = line.substring(nameStart, nameEnd + 1);
-                                    
-                                    Category tempCat = new Category(qualifiedName, currentCat);
-                                    qualifiedName = tempCat.getQualifiedName();
-                                    
-                                    currentCat = categories.get(qualifiedName);
-                                    if (currentCat == null)
-                                    {
-                                        currentCat = tempCat;
-                                        categories.put(currentCat.getQualifiedName(), currentCat);
-                                    }
-
-                                    break;
-
-                                case '}':
-                                	currentCat = currentCat.parent;
-                                	break;
-
-                                case '=':
-                                    String propertyName = line.substring(nameStart, nameEnd + 1);
-
-                                    if (currentCat == null)
-                                        throw new RuntimeException("property " + propertyName + " has no scope");
-                                    
-                                    // constructs the Property with the given type.
-                                    Property prop = new Property(propertyName, line.substring(i + 1), type);
-                                    i = line.length();
-                                    currentCat.properties.put(propertyName, prop);
-                                    break;
-                                    
-                                case ':':
-                                	String name = line.substring(nameStart, nameEnd+1);
-                                	
-                                	switch(name.charAt(0))
-                                	{
-                                		case 'S' : 
-                                			type = Type.STRING;
-                                			break;
-                                		case 'I' : 
-                                			type = Type.INTEGER;
-                                			break;
-                                		case 'B' : 
-                                			type = Type.BOOLEAN;
-                                			break;
-                                		case 'D' :
-                                			type = Type.DOUBLE;
-                                			break;
-                                		case 'L' :
-                                			type = Type.LIST;
-                                			break;
-                                		default:
-                                			type = Type.STRING;
-                                			break;
-                                	}
-                                	
-                                	nameStart = nameEnd = -1;
-                                	break;
-                                	
-                                case '<':
-                                	tempName = line.substring(nameStart, nameEnd + 1);
-                                	listProp =  new ArrayList<String>();
-                                	
-                                    if (currentCat == null)
-                                    {
-                                        throw new RuntimeException("property " + tempName + " has no scope");
-                                    }
-                                    break;
-
-                                case '>':
-                                    Property prop1 = new Property(tempName, listProp.toArray(new String[listProp.size()]));
-                                    currentCat.properties.put(tempName, prop1);
-                                	break;
-
-                                default:
-                                    throw new RuntimeException("unknown character " + line.charAt(i));
-                            }
-                        }
-                    }
-                    if (quoted)
-                    {
-                        throw new RuntimeException("unmatched quote");
-                    }
-                    else if (listProp != null)
-                    {
-                    	listProp.add(line.trim());
-                    }
-                }
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            if (buffer != null)
-            {
-                try
-                {
-                    buffer.close();
-                } catch (IOException e){}
-            }
-        }
-    }
-
-    public void save()
-    {
-        if (PARENT != null && PARENT != this)
-        {
-            PARENT.save();
-            return;
-        }
-
-        try
-        {
-            if (file.getParentFile() != null)
-            {
-                file.getParentFile().mkdirs();
-            }
-
-            if (!file.exists() && !file.createNewFile())
-            {
-                return;
-            }
-
-            if (file.canWrite())
-            {
-                FileOutputStream fos = new FileOutputStream(file);
-                BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(fos, defaultEncoding));
-
-                buffer.write("# Configuration file\r\n");
-                buffer.write("# Generated on " + DateFormat.getInstance().format(new Date()) + "\r\n");
-                buffer.write("\r\n");
-
-                if (children.isEmpty())
-                {
-                    save(buffer);
-                }
-                else
-                {
-                    for (Map.Entry<String, Configuration> entry : children.entrySet())
-                    {
-                        buffer.write("START: \"" + entry.getKey() + "\"\r\n");
-                        entry.getValue().save(buffer);
-                        buffer.write("END: \"" + entry.getKey() + "\"\r\n\r\n");
-                    }
-                }
-
-                buffer.close();
-                fos.close();
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    private void save(BufferedWriter out) throws IOException
-    {
-        for(Category category : categories.values())
-        {
-            // this means its a child of another category. Children are handled elsewhere
-            if (category.name.contains(CATEGORY_SPLITTER))
-                continue;
-            
-            writeCategory(out, category, 0);
-        }
-    }
-    
-    private void writeCategory(BufferedWriter out, Category category, int leftOffset) throws IOException
-    {
-        // get the offset String
-        String offset = getOffsetString(leftOffset);
-        
-        // write comment
-        out.write(offset+"####################\r\n");
-        out.write(offset+"# " + category.name + " \r\n");
-        if (category.comment != null)
-        {
-            out.write(offset+"#===================\r\n");
-            Splitter splitter = Splitter.onPattern("\r?\n");
-            for (String commentLine : splitter.split(category.comment))
-            {
-                out.write(offset+"# ");
-                out.write(commentLine+"\r\n");
-            }
-        }
-        out.write(offset+"####################\r\n\r\n");
-        
-        // actually write the category
-        String catKey = category.name;
-        if (!allowedProperties.matchesAllOf(catKey))
-        {
-            catKey = '"'+catKey+'"';
-        }
-        out.write(offset+catKey + " {\r\n");
-        writeProperties(out, category.properties.values(), leftOffset+1);
-        
-        // sort and write children.
-        Collections.sort(category.children);
-        
-        for (String childName : category.children)
-        {
-            Category child = categories.get(category.getQualifiedName()+CATEGORY_SPLITTER+childName);
-            if (child == null) // just in case....
-                continue;
-            writeCategory(out, child, leftOffset+1);
-        }
-        
-        out.write(offset+"}\r\n\r\n");
-    }
-
-    public void addCustomCategoryComment(String category, String comment)
-    {
-        if (!caseSensitiveCustomCategories)
-            category = category.toLowerCase(Locale.ENGLISH);
-        Category cat = categories.get(category);
-        if (cat != null)
-            cat.comment = comment;
-    }
-    
-    private void writeProperties(BufferedWriter buffer, Collection<Property> props, int leftOffset) throws IOException
-    {
-        String offset = getOffsetString(leftOffset);
-        
-        for (Property property : props)
-        {
-            if (property.comment != null)
-            {
-                Splitter splitter = Splitter.onPattern("\r?\n");
-                for (String commentLine : splitter.split(property.comment))
-                {
-                    buffer.write("   # " + commentLine + "\r\n");
-                }
-            }
-            String propName = property.name;
-            if (!allowedProperties.matchesAllOf(propName))
-            {
-                propName = '"'+propName+'"';
-            }
-            
-            if (property.getType().equals(Type.LIST))
-            {
-            	writeListProperty(buffer, property, leftOffset);
-            	continue;
-            }
-            
-            buffer.write(offset + property.getType().getIDChar() + ":" + propName + "=" + property.value);
-            buffer.write("\r\n");
-        }
-    }
-    
-    private void writeListProperty(BufferedWriter buffer, Property prop, int leftOffset) throws IOException
-    {
-    	String offset = getOffsetString(leftOffset);
-    	String elementOffset = getOffsetString(leftOffset+1);
-    	
-    	// write main line.
-    	buffer.write(offset + prop.getType().getIDChar() + ":" + prop.name + " <");
-    	
-    	for (String line : prop.valueList)
-    	{
-    		buffer.write(elementOffset + line);
-    	}
-    }
-    
-    private String getOffsetString(int offset)
-    {
-        StringBuilder builder = new StringBuilder("");
-        for (int i = 0; i < offset; i++)
-            builder.append("   ");
-        return builder.toString();
-    }
-
-    private void setChild(String name, Configuration child)
-    {
-        if (!children.containsKey(name))
-        {
-            children.put(name, child);
-        }
-        else
-        {
-            Configuration old = children.get(name);
-            child.categories = old.categories;
-            child.fileName = old.fileName;
-        }
-    }
-
-    public static void enableGlobalConfig()
-    {
-        PARENT = new Configuration(new File(Loader.instance().getConfigDir(), "global.cfg"));
-        PARENT.load();
-    }
-
-    public static class UnicodeInputStreamReader extends Reader
-    {
-        private final InputStreamReader input;
-        private final String defaultEnc;
-
-        public UnicodeInputStreamReader(InputStream source, String encoding) throws IOException
-        {
-            defaultEnc = encoding;
-            String enc = encoding;
-            byte[] data = new byte[4];
-
-            PushbackInputStream pbStream = new PushbackInputStream(source, data.length);
-            int read = pbStream.read(data, 0, data.length);
-            int size = 0;
-
-            int bom16 = (data[0] & 0xFF) << 8 | (data[1] & 0xFF);
-            int bom24 = bom16 << 8 | (data[2] & 0xFF);
-            int bom32 = bom24 << 8 | (data[3] & 0xFF);
-
-            if (bom24 == 0xEFBBBF)
-            {
-                enc = "UTF-8";
-                size = 3;
-            }
-            else if (bom16 == 0xFEFF)
-            {
-                enc = "UTF-16BE";
-                size = 2;
-            }
-            else if (bom16 == 0xFFFE)
-            {
-                enc = "UTF-16LE";
-                size = 2;
-            }
-            else if (bom32 == 0x0000FEFF)
-            {
-                enc = "UTF-32BE";
-                size = 4;
-            }
-            else if (bom32 == 0xFFFE0000) //This will never happen as it'll be caught by UTF-16LE,
-            {                             //but if anyone ever runs across a 32LE file, i'd like to disect it.
-                enc = "UTF-32LE";
-                size = 4;
-            }
-
-            if (size < read)
-            {
-                pbStream.unread(data, size, read - size);
-            }
-
-            this.input = new InputStreamReader(pbStream, enc);
-        }
-
-        public String getEncoding()
-        {
-            return input.getEncoding();
-        }
-
-        @Override
-        public int read(char[] cbuf, int off, int len) throws IOException
-        {
-            return input.read(cbuf, off, len);
-        }
-
-        @Override
-        public void close() throws IOException
-        {
-            input.close();
-        }
-    }
-=======
 		if (source.properties.containsKey(key))
 		{
 			return source.properties.get(key);
-		} else if (defaultValue != null)
+		}
+		else if (defaultValue != null)
 		{
 			Property prop;
 			if (type.equals(LIST))
@@ -793,7 +300,8 @@ public class Configuration
 				prop = new Property(key, defaultValue[0], type);
 			source.properties.put(key, prop);
 			return prop;
-		} else
+		}
+		else
 		{
 			return null;
 		}
@@ -839,6 +347,10 @@ public class Configuration
 
 				Category currentCat = null;
 
+				Type type = null;
+				String tempName = null;
+				ArrayList<String> listProp = null;
+
 				while (true)
 				{
 					line = buffer.readLine();
@@ -856,7 +368,8 @@ public class Configuration
 						fileName = start.group(1);
 						categories = new TreeMap<String, Category>();
 						continue;
-					} else if (end.matches())
+					}
+					else if (end.matches())
 					{
 						fileName = end.group(1);
 						Configuration child = new Configuration();
@@ -869,9 +382,6 @@ public class Configuration
 					boolean skip = false;
 					boolean quoted = false;
 
-					String tempName;
-					ArrayList<String> ListProp;
-
 					for (int i = 0; i < line.length() && !skip; ++i)
 					{
 						if (Character.isLetterOrDigit(line.charAt(i)) || ALLOWED_CHARS.indexOf(line.charAt(i)) != -1 || (quoted && line.charAt(i) != '"'))
@@ -882,103 +392,133 @@ public class Configuration
 							}
 
 							nameEnd = i;
-						} else if (Character.isWhitespace(line.charAt(i)))
+						}
+						else if (Character.isWhitespace(line.charAt(i)))
 						{
 							// ignore space charaters
-						} else
+						}
+						else
 						{
 							switch (line.charAt(i))
-							{
-								case '#':
-									skip = true;
-									continue;
-								case '<':
-									/*
-									 * String qualifiedName = line.substring(nameStart, nameEnd + 1);
-									 * 
-									 * Category tempCat = new Category(qualifiedName, currentCat); qualifiedName = tempCat.getQualifiedName();
-									 * 
-									 * currentCat = categories.get(qualifiedName); if (currentCat == null) { currentCat = tempCat; categories.put(currentCat.getQualifiedName(), currentCat); }
-									 */
+								{
+									case '#':
+										skip = true;
+										continue;
 
-									break;
+									case '"':
+										if (quoted)
+										{
+											quoted = false;
+										}
+										if (!quoted && nameStart == -1)
+										{
+											quoted = true;
+										}
+										break;
 
-								case '>':
+									case '{':
+										String qualifiedName = line.substring(nameStart, nameEnd + 1);
 
-									// currentCat = currentCat.parent;
-									break;
+										Category tempCat = new Category(qualifiedName, currentCat);
+										qualifiedName = tempCat.getQualifiedName();
 
-								case '"':
-									if (quoted)
-									{
-										quoted = false;
-									}
-									if (!quoted && nameStart == -1)
-									{
-										quoted = true;
-									}
-									break;
+										currentCat = categories.get(qualifiedName);
+										if (currentCat == null)
+										{
+											currentCat = tempCat;
+											categories.put(currentCat.getQualifiedName(), currentCat);
+										}
 
-								case '{':
-									String qualifiedName = line.substring(nameStart, nameEnd + 1);
+										break;
 
-									Category tempCat = new Category(qualifiedName, currentCat);
-									qualifiedName = tempCat.getQualifiedName();
+									case '}':
+										currentCat = currentCat.parent;
+										break;
 
-									currentCat = categories.get(qualifiedName);
-									if (currentCat == null)
-									{
-										currentCat = tempCat;
-										categories.put(currentCat.getQualifiedName(), currentCat);
-									}
+									case '=':
+										String propertyName = line.substring(nameStart, nameEnd + 1);
 
-									break;
+										if (currentCat == null)
+											throw new RuntimeException("property " + propertyName + " has no scope");
 
-								case '}':
+										// constructs the Property with the given type.
+										Property prop = new Property(propertyName, line.substring(i + 1), type);
+										i = line.length();
+										currentCat.properties.put(propertyName, prop);
+										break;
 
-									currentCat = currentCat.parent;
-									break;
+									case ':':
+										String name = line.substring(nameStart, nameEnd + 1);
 
-								case '=':
-									String propertyName = line.substring(nameStart, nameEnd + 1);
+										switch (name.charAt(0))
+											{
+												case 'S':
+													type = Type.STRING;
+													break;
+												case 'I':
+													type = Type.INTEGER;
+													break;
+												case 'B':
+													type = Type.BOOLEAN;
+													break;
+												case 'D':
+													type = Type.DOUBLE;
+													break;
+												case 'L':
+													type = Type.LIST;
+													break;
+												default:
+													type = Type.STRING;
+													break;
+											}
 
-									if (currentCat == null)
-									{
-										throw new RuntimeException("property " + propertyName + " has no scope");
-									}
+										nameStart = nameEnd = -1;
+										break;
 
-									// TODO: replace with actual constructor
-									Property prop = new Property();
-									prop.setName(propertyName);
-									prop.value = line.substring(i + 1);
-									i = line.length();
+									case '<':
+										tempName = line.substring(nameStart, nameEnd + 1);
+										listProp = new ArrayList<String>();
 
-									currentCat.properties.put(propertyName, prop);
+										if (currentCat == null)
+										{
+											throw new RuntimeException("property " + tempName + " has no scope");
+										}
+										break;
 
-									break;
+									case '>':
+										Property prop1 = new Property(tempName, listProp.toArray(new String[listProp.size()]));
+										currentCat.properties.put(tempName, prop1);
+										break;
 
-								default:
-									throw new RuntimeException("unknown character " + line.charAt(i));
-							}
+									default:
+										throw new RuntimeException("unknown character " + line.charAt(i));
+								}
 						}
 					}
 					if (quoted)
 					{
 						throw new RuntimeException("unmatched quote");
 					}
+					else if (listProp != null)
+					{
+						listProp.add(line.trim());
+					}
 				}
 			}
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			e.printStackTrace();
-		} finally
+		}
+		finally
 		{
 			if (buffer != null)
 			{
 				try
 				{
 					buffer.close();
-				} catch (IOException e)
+				}
+				catch (IOException e)
 				{
 				}
 			}
@@ -1017,7 +557,8 @@ public class Configuration
 				if (children.isEmpty())
 				{
 					save(buffer);
-				} else
+				}
+				else
 				{
 					for (Map.Entry<String, Configuration> entry : children.entrySet())
 					{
@@ -1030,7 +571,8 @@ public class Configuration
 				buffer.close();
 				fos.close();
 			}
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -1114,19 +656,35 @@ public class Configuration
 					buffer.write("   # " + commentLine + "\r\n");
 				}
 			}
-			String propName = property.getName();
+			String propName = property.name;
 			if (!allowedProperties.matchesAllOf(propName))
 			{
 				propName = '"' + propName + '"';
 			}
-			buffer.write(offset + propName + "=" + property.value);
+
+			if (property.getType().equals(Type.LIST))
+			{
+				writeListProperty(buffer, property, leftOffset);
+				continue;
+			}
+
+			buffer.write(offset + property.getType().getIDChar() + ":" + propName + "=" + property.value);
 			buffer.write("\r\n");
 		}
 	}
 
-	private void writeListProperty(BufferedWriter buffer, Property prop, int leftOffset)
+	private void writeListProperty(BufferedWriter buffer, Property prop, int leftOffset) throws IOException
 	{
+		String offset = getOffsetString(leftOffset);
+		String elementOffset = getOffsetString(leftOffset + 1);
 
+		// write main line.
+		buffer.write(offset + prop.getType().getIDChar() + ":" + prop.name + " <");
+
+		for (String line : prop.valueList)
+		{
+			buffer.write(elementOffset + line);
+		}
 	}
 
 	private String getOffsetString(int offset)
@@ -1142,7 +700,8 @@ public class Configuration
 		if (!children.containsKey(name))
 		{
 			children.put(name, child);
-		} else
+		}
+		else
 		{
 			Configuration old = children.get(name);
 			child.categories = old.categories;
@@ -1158,8 +717,8 @@ public class Configuration
 
 	public static class UnicodeInputStreamReader extends Reader
 	{
-		private final InputStreamReader input;
-		private final String defaultEnc;
+		private final InputStreamReader	input;
+		private final String			defaultEnc;
 
 		public UnicodeInputStreamReader(InputStream source, String encoding) throws IOException
 		{
@@ -1179,20 +738,24 @@ public class Configuration
 			{
 				enc = "UTF-8";
 				size = 3;
-			} else if (bom16 == 0xFEFF)
+			}
+			else if (bom16 == 0xFEFF)
 			{
 				enc = "UTF-16BE";
 				size = 2;
-			} else if (bom16 == 0xFFFE)
+			}
+			else if (bom16 == 0xFFFE)
 			{
 				enc = "UTF-16LE";
 				size = 2;
-			} else if (bom32 == 0x0000FEFF)
+			}
+			else if (bom32 == 0x0000FEFF)
 			{
 				enc = "UTF-32BE";
 				size = 4;
-			} else if (bom32 == 0xFFFE0000) // This will never happen as it'll be caught by UTF-16LE,
-			{ // but if anyone ever runs across a 32LE file, i'd like to disect it.
+			}
+			else if (bom32 == 0xFFFE0000) // This will never happen as it'll be caught by UTF-16LE,
+			{                             // but if anyone ever runs across a 32LE file, i'd like to disect it.
 				enc = "UTF-32LE";
 				size = 4;
 			}
@@ -1222,5 +785,4 @@ public class Configuration
 			input.close();
 		}
 	}
->>>>>>> 1eb455b3962ca9672c08f3b94b5c2ad3e41bb58f
 }
