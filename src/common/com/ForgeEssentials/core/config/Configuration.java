@@ -5,10 +5,7 @@
 
 package com.ForgeEssentials.core.config;
 
-import static com.ForgeEssentials.core.config.Property.Type.BOOLEAN;
-import static com.ForgeEssentials.core.config.Property.Type.INTEGER;
-import static com.ForgeEssentials.core.config.Property.Type.STRING;
-import static com.ForgeEssentials.core.config.Property.Type.LIST;
+import static com.ForgeEssentials.core.config.Property.Type.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -209,6 +206,14 @@ public class Configuration
 		}
 		return prop;
 	}
+	
+	public Property get(String category, String key, double defaultValue)
+	{
+		Property prop = get(category, key, new String[] { Double.toString(defaultValue) }, DOUBLE);
+		if (!prop.isDoubleValue())
+			prop.value = Double.toString(defaultValue);
+		return prop;
+	}
 
 	public Property get(String category, String key, String defaultValue)
 	{
@@ -226,70 +231,21 @@ public class Configuration
 		{
 			category = category.toLowerCase(Locale.ENGLISH);
 		}
-
-		Category source = categories.get(category);
-
-		if (source == null)
-		{
-			if (category.contains(CATEGORY_SPLITTER))
-			{
-				String[] hierarchy = category.split(CATEGORY_SPLITTER);
-
-				for (int i = 0; i < hierarchy.length; i++)
-				{
-					// only the first run.
-					if (i == 0)
-					{
-						Category cat = categories.get(hierarchy[i]);
-
-						if (cat == null)
-						{
-							cat = new Category(hierarchy[i]);
-							categories.put(hierarchy[i], cat);
-						}
-					}
-					// the last child
-					else if (i == hierarchy.length - 1)
-					{
-						Category parent = categories.get(hierarchy[i - 1]);
-
-						Category child = categories.get(hierarchy[i]);
-
-						if (child == null)
-						{
-							child = new Category(hierarchy[i], parent);
-							categories.put(hierarchy[i], child);
-							parent.children.add(child.name);
-						}
-
-						source = child;
-					}
-					// other children/parents between
-					else
-					{
-						Category parent = categories.get(hierarchy[i - 1]);
-
-						Category child = categories.get(hierarchy[i]);
-
-						if (child == null)
-						{
-							child = new Category(hierarchy[i], parent);
-							categories.put(hierarchy[i], child);
-							parent.children.add(child.name);
-						}
-					}
-				}
-			}
-			else
-			{
-				source = new Category(category);
-				categories.put(category, source);
-			}
-		}
+		
+		Category source = getOrGenerateCategory(category);
 
 		if (source.properties.containsKey(key))
 		{
-			return source.properties.get(key);
+			Property prop = source.properties.get(key);
+			
+			// check for missing type.
+			if (prop.getType() == null)
+			{
+				prop = new Property(prop.name, prop.value, type);
+				source.properties.put(key, prop);
+			}
+			
+			return prop;
 		}
 		else if (defaultValue != null)
 		{
@@ -445,6 +401,8 @@ public class Configuration
 										Property prop = new Property(propertyName, line.substring(i + 1), type);
 										i = line.length();
 										currentCat.properties.put(propertyName, prop);
+										
+										type = null;
 										break;
 
 									case ':':
@@ -488,6 +446,9 @@ public class Configuration
 									case '>':
 										Property prop1 = new Property(tempName, listProp.toArray(new String[listProp.size()]));
 										currentCat.properties.put(tempName, prop1);
+										tempName = null;
+										type = null;
+										listProp = null;
 										break;
 
 									default:
@@ -592,7 +553,7 @@ public class Configuration
 		for (Category category : categories.values())
 		{
 			// this means its a child of another category. Children are handled elsewhere
-			if (category.name.contains(CATEGORY_SPLITTER))
+			if (category.getQualifiedName().contains(CATEGORY_SPLITTER))
 				continue;
 
 			writeCategory(out, category, 0);
@@ -603,6 +564,9 @@ public class Configuration
 	{
 		// get the offset String
 		String offset = getOffsetString(leftOffset);
+		
+		if (leftOffset > 0)
+			out.newLine();
 
 		// write comment
 		out.write(offset + "####################"); //\r\n");
@@ -631,7 +595,7 @@ public class Configuration
 		{
 			catKey = '"' + catKey + '"';
 		}
-		out.write(offset + catKey); // + " {\r\n");
+		out.write(offset + catKey + " {"); // + " {\r\n");
 		out.newLine();
 		
 		writeProperties(out, category.properties.values(), leftOffset + 1);
@@ -651,14 +615,78 @@ public class Configuration
 		out.newLine();
 		out.newLine();
 	}
+	
+	public Category getOrGenerateCategory(String category)
+	{
+		Category source = categories.get(category);
+
+		if (source == null)
+		{
+			if (category.contains(CATEGORY_SPLITTER))
+			{
+				String[] hierarchy = category.split("\\"+CATEGORY_SPLITTER);
+
+				for (int i = 0; i < hierarchy.length; i++)
+				{
+					// only the first run.
+					if (i == 0)
+					{
+						Category cat = categories.get(hierarchy[i]);
+
+						if (cat == null)
+						{
+							cat = new Category(hierarchy[i]);
+							categories.put(hierarchy[i], cat);
+						}
+					}
+					// the last child
+					else if (i == hierarchy.length - 1)
+					{
+						Category parent = categories.get(hierarchy[i - 1]);
+
+						Category child = categories.get(hierarchy[i]);
+
+						if (child == null)
+						{
+							child = new Category(hierarchy[i], parent);
+							categories.put(category, child);
+							parent.children.add(child.name);
+						}
+
+						source = child;
+					}
+					// other children/parents between
+					else
+					{
+						Category parent = categories.get(hierarchy[i - 1]);
+
+						Category child = categories.get(hierarchy[i]);
+
+						if (child == null)
+						{
+							child = new Category(hierarchy[i], parent);
+							categories.put(hierarchy[i], child);
+							parent.children.add(child.name);
+						}
+					}
+				}
+			}
+			else
+			{
+				source = new Category(category);
+				categories.put(category, source);
+			}
+		}
+		
+		return source;
+	}
 
 	public void addCustomCategoryComment(String category, String comment)
 	{
 		if (!caseSensitiveCustomCategories)
 			category = category.toLowerCase(Locale.ENGLISH);
-		Category cat = categories.get(category);
-		if (cat != null)
-			cat.comment = comment;
+		Category cat = getOrGenerateCategory(category);
+		cat.comment = comment;
 	}
 
 	private void writeProperties(BufferedWriter buffer, Collection<Property> props, int leftOffset) throws IOException
@@ -700,12 +728,17 @@ public class Configuration
 		String elementOffset = getOffsetString(leftOffset + 1);
 
 		// write main line.
-		buffer.write(offset + prop.getType().getIDChar() + ":" + prop.name + " <");
+		buffer.write(offset + prop.getType().getIDChar() + " : " + prop.name + " <");
+		buffer.newLine();
 
 		for (String line : prop.valueList)
 		{
 			buffer.write(elementOffset + line);
+			buffer.newLine();
 		}
+		
+		buffer.write(offset+" >");
+		buffer.newLine();
 	}
 
 	private String getOffsetString(int offset)

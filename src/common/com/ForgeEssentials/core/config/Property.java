@@ -125,14 +125,14 @@ public class Property
      */
     public boolean isBooleanValue()
     {
-    	return type.equals(Type.BOOLEAN);
+    	return ("true".equals(value.toLowerCase()) || "false".equals(value.toLowerCase()));
     }
     
     /**
      * Checks if the current value held by this property is a valid double value.
      * @return True if the value can be converted to an double
      */
-    public boolean isDouble()
+    public boolean isDoubleValue()
     {
         try
         {
