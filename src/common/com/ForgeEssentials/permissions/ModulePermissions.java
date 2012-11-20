@@ -10,20 +10,22 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class ModulePermissions
 {
-	public static FEPermissionConfig config;
-	public static FEPermissionsHandler	pHandler;
+	public static PermissionsConfig		config;
+	public static PermissionsHandler	pHandler;
+	public static ZoneManager			zManager;
 
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-		config = new FEPermissionConfig();
-		Zone.GLOBAL = new Zone("__GLOBAL__");
+		config = new PermissionsConfig();
+		zManager = new ZoneManager();
+		ZoneManager.GLOBAL = new Zone("__GLOBAL__");
 	}
 
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
-		pHandler = new FEPermissionsHandler();
+		pHandler = new PermissionsHandler();
 		MinecraftForge.EVENT_BUS.register(pHandler);
 	}
 

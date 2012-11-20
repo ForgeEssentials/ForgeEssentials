@@ -16,190 +16,85 @@ import com.ForgeEssentials.AreaSelector.Selection;
 
 public class Zone extends AreaBase implements Comparable, Serializable
 {
-	public static Zone						GLOBAL;
+	public int											priority;			// lowest priority is 0
+	private String										zoneID;			// unique string name
+	private Zone										parent;			// the unique name of the parent.
+	private ArrayList<String>							children;			// list of all children of this zone
+	private String										worldString;		// the WorldString of world this zone exists in.
+	private int											childStatus;		// tells us how many parents this zone is under
+	public final boolean								isWorldZone;		// flag for WorldZones
+	public final boolean								isGlobalZone;		// flag for GLOBAL zones
 
-	private static HashMap<String, Zone>	zoneMap	= new HashMap<String, Zone>();
+	// permission maps
+	protected HashMap<String, ArrayList<Permission>>	playerOverrides;	// <username, perm list>
+	protected HashMap<String, ArrayList<Permission>>	groupPerms;		// <groupName, perm list>
 
-	public static void deleteZone(String zoneID)
-	{
-		zoneMap.remove(zoneID);
-	}
-
-	public static boolean createZone(String zoneID, Selection sel, World world)
-	{
-		if (zoneMap.containsKey(zoneID))
-			return false;
-		zoneMap.put(zoneID, new Zone(zoneID, sel, world));
-		return true;
-	}
-
-	// TODO: we need an "applicable Area" thing.. to force onto areas..
-	public static Zone getWhichZoneIn(AreaBase area, World world)
-	{
-		String worldString = world.getWorldInfo().getWorldName() + "_" + world.getWorldInfo().getDimension();
-		ArrayList<Zone> zones = new ArrayList<Zone>();
-
-		// add all zones this point is in...
-		for (Zone zone : zoneMap.values())
-			if (zone.contains(area) && worldString.equals(zone.worldString))
-				zones.add(zone);
-
-		// only 1 zone? thats obvious
-		if (zones.size() == 1)
-			return zones.get(0);
-
-		// now the sorting fun.
-		else if (zones.size() > 1)
-			return narrow(zones, GLOBAL);
-
-		return GLOBAL;
-	}
-
-	public static Zone getWhichZoneIn(Point p1, World world)
-	{
-		String worldString = world.getWorldInfo().getWorldName() + "_" + world.getWorldInfo().getDimension();
-		ArrayList<Zone> zones = new ArrayList<Zone>();
-
-		// add all zones this point is in...
-		for (Zone zone : zoneMap.values())
-			if (zone.contains(p1) && worldString.equals(zone.worldString))
-				zones.add(zone);
-
-		// only 1 zone? thats obvious
-		if (zones.size() == 1)
-			return zones.get(0);
-
-		// now the sorting fun.
-		else if (zones.size() > 1)
-			return narrow(zones, GLOBAL);
-
-		return GLOBAL;
-	}
-
-	private static Zone narrow(ArrayList<Zone> zones, Zone parent)
-	{
-		ArrayList<Zone> allChildren = new ArrayList<Zone>();
-		ArrayList<Zone> directChildren = new ArrayList<Zone>();
-
-		// we are left with everything whos parent was NOT the one specified....
-		for (Zone zone : zones)
-			if (parent.isParentOf(zone))
-				allChildren.add(zone);
-			else if (zone.parentID.equals(parent.parentID))
-				directChildren.add(zone);
-
-		// nothing is a child of this parent?? check priorities.
-		if (allChildren.size() == 0)
-		{
-			// returns highest priority Zone.
-			Zone priority = null;
-
-			for (Zone zone : zones)
-				if (priority == null || priority.compareTo(zone) < 0)
-					priority = zone;
-
-			// returns highest priority
-			return priority;
-		}
-		else if (allChildren.size() == 1)
-			return allChildren.get(0);
-		else if (directChildren.size() == 1)
-			return narrow(allChildren, directChildren.get(0));
-		else
-		{
-			// get higest priority of direct children.
-			Zone priority = null;
-
-			for (Zone zone : zones)
-				if (priority == null || priority.compareTo(zone) < 0)
-					priority = zone;
-
-			return narrow(allChildren, parent);
-		}
-	}
-
-	// -------------------------------------------------------------------------------------------
-	// ---------------------------------- Actual Class Starts Now -------------------------------
-	// -------------------------------------------------------------------------------------------
-
-	public int								priority;			// lowest priority is 0
-	private String							zoneID;
-	private String							parentID;
-	private ArrayList<String>				children;
-	private String							worldString;
-
-	// PlayerOverrides
-	HashMap<String, ArrayList<Permission>>	playerOverrides;	// <username, perm list>
-
-	// group permissions
-	HashMap<String, ArrayList<Permission>>	groupPerms;		// <groupName, perm list>
-
-	private Zone(String ID, Selection sel, String parent)
+	protected Zone(String ID, Selection sel, Zone parent)
 	{
 		super(sel.getLowPoint(), sel.getHighPoint());
 		zoneID = ID;
-		parentID = parent;
-		worldString = zoneMap.get(parent).worldString;
-		zoneMap.get(parent).children.add(ID);
-		
+		this.parent = parent;
+		worldString = parent.worldString;
+		parent.children.add(zoneID);
+		childStatus = parent.childStatus+1;
+
 		playerOverrides = new HashMap<String, ArrayList<Permission>>();
 		groupPerms = new HashMap<String, ArrayList<Permission>>();
+
+		isWorldZone = isGlobalZone = false;
 	}
 
-	private Zone(String ID, Selection sel, World world)
+	protected Zone(String ID, Selection sel, World world)
 	{
 		super(sel.getLowPoint(), sel.getHighPoint());
 		zoneID = ID;
-		parentID = "__GLOBAL__";
-		GLOBAL.children.add(ID);
-		worldString = world.getWorldInfo().getWorldName() + "_" + world.getWorldInfo().getDimension();
-		
+		parent = ZoneManager.getWorldZone(world);
+		parent.children.add(ID);
+		childStatus = 3;
+
 		playerOverrides = new HashMap<String, ArrayList<Permission>>();
 		groupPerms = new HashMap<String, ArrayList<Permission>>();
+
+		isWorldZone = isGlobalZone = false;
 	}
 
+	/**
+	 * used to construct Global and World zones.
+	 * @param ID
+	 */
 	protected Zone(String ID)
 	{
 		super(new Point(0, 0, 0), new Point(0, 0, 0));
 		zoneID = ID;
-		
+
 		if (!ID.equals("__GLOBAL__"))
-				parentID = "__GLOBAL__";
-		
+		{
+			parent = ZoneManager.GLOBAL;
+			isGlobalZone = false;
+			isWorldZone = true;
+			childStatus = 1;
+		}
+		else
+		{
+			isGlobalZone = true;
+			isWorldZone = false;
+			childStatus = 0;
+		}
+
 		playerOverrides = new HashMap<String, ArrayList<Permission>>();
 		groupPerms = new HashMap<String, ArrayList<Permission>>();
 	}
 
-	public Zone getParentZone()
-	{
-		return zoneMap.get(parentID);
-	}
-
 	public boolean isParentOf(Zone zone)
 	{
-		if (zoneID.equals(zone.parentID))
+		if (zoneID.equals(zone.parent.zoneID))
 			return true;
-		else if (zone.parentID.equals("__GLOBAL__"))
+		else if (zone.isGlobalZone)
+			return false;
+		else if (zone.isWorldZone && !isGlobalZone)
 			return false;
 		else
-			return isParentOf(zoneMap.get(zone.parentID));
-	}
-
-	public String getParent()
-	{
-		return parentID;
-	}
-
-	public String getParentID()
-	{
-		return parentID;
-	}
-
-	public void setParentID(String parentID)
-	{
-		zoneMap.get(this.parentID).children.remove(zoneID);
-		this.parentID = parentID;
-		zoneMap.get(this.parentID).children.add(zoneID);
+			return isParentOf(zone.parent);
 	}
 
 	public String getZoneID()
@@ -211,33 +106,77 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	public int compareTo(Object o)
 	{
 		Zone zone = (Zone) o;
-
 		if (zone.isParentOf(this))
-			return -1;
+			return -100;
 		else if (this.isParentOf(zone))
-			return 1;
+			return 100;
 		else
-			return this.priority - zone.priority;
+		{
+			int priority =  this.priority - zone.priority;
+			
+			if (priority == 0)
+				return this.childStatus - zone.childStatus;
+			else
+				return priority;
+		}
 	}
 
-	public Result getPlayerOverride(EntityPlayer player, Permission perm)
+	/**
+	 * Gets the result of a permission for a player in this area
+	 * @param player the player to check.
+	 * @param check The permissionChecker to check against
+	 * @return DEFAULT if the permission is not specified in this area for this player. ALLOW/DENY if the Permission was found and read.
+	 */
+	public Result getPlayerOverride(EntityPlayer player, PermissionChecker check)
 	{
 		if (this.groupPerms.containsKey(player.username))
 		{
 			ArrayList<Permission> perms = groupPerms.get(player.username);
-			if (perms.contains(perm))
-				return perms.get(perms.indexOf(perm)).allowed;
+			Permission smallest = null;
+			for (Permission perm : perms)
+			{
+				if (check.equals(perm))
+					return perm.allowed;
+				else if (check.matches(perm))
+				{
+					if (smallest == null)
+						smallest = perm;
+					else if (smallest.isChildOf(perm))
+						smallest = perm;
+				}
+			}
+			if (smallest != null)
+				return smallest.allowed;
 		}
 		return Result.DEFAULT;
 	}
 
-	public Result getGroupOverride(String groupname, Permission perm)
+	/**
+	 * Gets the result of a permission for a group in this area
+	 * @param groupname the group to check.
+	 * @param check The permissionChecker to check against
+	 * @return DEFAULT if the permission is not specified in this area for this group. ALLOW/DENY if the Permission was found and read.
+	 */
+	public Result getGroupOverride(String groupname, PermissionChecker check)
 	{
 		if (this.groupPerms.containsKey(groupname))
 		{
 			ArrayList<Permission> perms = groupPerms.get(groupname);
-			if (perms.contains(perm))
-				return perms.get(perms.indexOf(perm)).allowed;
+			Permission smallest = null;
+			for (Permission perm : perms)
+			{
+				if (check.equals(perm))
+					return perm.allowed;
+				else if (check.matches(perm))
+				{
+					if (smallest == null)
+						smallest = perm;
+					else if (smallest.isChildOf(perm))
+						smallest = perm;
+				}
+			}
+			if (smallest != null)
+				return smallest.allowed;
 		}
 		return Result.DEFAULT;
 	}

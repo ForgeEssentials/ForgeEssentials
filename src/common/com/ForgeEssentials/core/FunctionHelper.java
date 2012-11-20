@@ -1,4 +1,4 @@
-package com.ForgeEssentials.WorldControl;
+package com.ForgeEssentials.core;
 
 //Depreciated
 import net.minecraft.src.EntityPlayer;
@@ -6,8 +6,9 @@ import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.MathHelper;
 import net.minecraft.src.MovingObjectPosition;
 import net.minecraft.src.Vec3;
+import net.minecraft.src.World;
 
-public class FunctionHelper
+public final class FunctionHelper
 {
 	/**
 	 * stolen from Item class
@@ -34,5 +35,15 @@ public class FunctionHelper
 		}
 		Vec3 var23 = var13.addVector((double) var18 * var21, (double) var17 * var21, (double) var20 * var21);
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
+	}
+	
+	public static String getWorldString(World world)
+	{
+		return world.getWorldInfo().getWorldName() + "_" + world.getWorldInfo().getDimension();
+	}
+	
+	public static String getZoneWorldString(World world)
+	{
+		return "WORLD_"+world.getWorldInfo().getWorldName() + "_" + world.getWorldInfo().getDimension();
 	}
 }

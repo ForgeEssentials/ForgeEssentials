@@ -5,7 +5,7 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.MovingObjectPosition;
 
-import com.ForgeEssentials.WorldControl.FunctionHelper;
+import com.ForgeEssentials.core.FunctionHelper;
 import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 

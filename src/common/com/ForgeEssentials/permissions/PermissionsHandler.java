@@ -20,7 +20,7 @@ import net.minecraftforge.event.ForgeSubscribe;
  * @author AbrarSyed
  *
  */
-public final class FEPermissionsHandler
+public final class PermissionsHandler
 {	
 	@ForgeSubscribe(priority = EventPriority.LOWEST)
 	public void handlerQuery(PermQueryPlayer event)
@@ -31,12 +31,12 @@ public final class FEPermissionsHandler
 		//		if we can not perform this action in this area:
 		//			-> Deny the action
 		
-		Zone zone = Zone.getWhichZoneIn(event.getDoerPoint(), event.doer.worldObj);
+		Zone zone = null; //Zone.getWhichZoneIn(event.getDoerPoint(), event.doer.worldObj);
 		Result result = getResultFromZone(zone, event.permission, event.doer);
 		event.setResult(result);
 	}
 	
-	private Result getResultFromZone(Zone zone, Permission perm, EntityPlayer player)
+	private Result getResultFromZone(Zone zone, PermissionChecker perm, EntityPlayer player)
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 		Result result = Result.DEFAULT;
@@ -51,10 +51,10 @@ public final class FEPermissionsHandler
 			
 			if (result.equals(Result.DEFAULT))
 			{
-				if (tempZone == Zone.GLOBAL)
+				if (tempZone == ZoneManager.GLOBAL)
 					result = Permission.getPermissionDefault(perm.name);
 				else
-					tempZone = tempZone.getParentZone();
+					tempZone = tempZone;//.getParentZone();
 			}
 		}
 		return result;

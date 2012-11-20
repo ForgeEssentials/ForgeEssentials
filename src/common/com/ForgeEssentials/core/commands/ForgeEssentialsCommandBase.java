@@ -1,7 +1,7 @@
 package com.ForgeEssentials.core.commands;
 
 import com.ForgeEssentials.core.OutputHandler;
-import com.ForgeEssentials.permissions.FEPermissionsHandler;
+import com.ForgeEssentials.permissions.PermissionsHandler;
 import com.ForgeEssentials.permissions.PermQueryArea;
 import com.ForgeEssentials.permissions.PermQueryPlayer;
 
@@ -17,7 +17,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public ForgeEssentialsCommandBase()
 	{
 		super();
-		FEPermissionsHandler.registerPermission(this.getCommandPerm(), true);
+		PermissionsHandler.registerPermission(this.getCommandPerm(), true);
 	}
 	
 	// ---------------------------
@@ -132,7 +132,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
-		return FEPermissionsHandler.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		return PermissionsHandler.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 	
 	public abstract String getCommandPerm();
