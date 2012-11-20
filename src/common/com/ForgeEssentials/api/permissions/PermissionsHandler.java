@@ -31,7 +31,7 @@ public final class PermissionsHandler
 		//		if we can not perform this action in this area:
 		//			-> Deny the action
 		
-		Zone zone = null; //Zone.getWhichZoneIn(event.getDoerPoint(), event.doer.worldObj);
+		Zone zone = ZoneManager.getWhichZoneIn(event.getDoerPoint(), event.doer.worldObj);
 		Result result = getResultFromZone(zone, event.permission, event.doer);
 		event.setResult(result);
 	}
@@ -46,7 +46,7 @@ public final class PermissionsHandler
 			String group = info.getGroupForZone(tempZone);
 			result = tempZone.getPlayerOverride(player, perm);
 			
-			if (result.equals(Result.DEFAULT))
+			if (result.equals(Result.DEFAULT)) // or group blankets
 				result = tempZone.getGroupOverride(group, perm);
 			
 			if (result.equals(Result.DEFAULT))
@@ -54,27 +54,27 @@ public final class PermissionsHandler
 				if (tempZone == ZoneManager.GLOBAL)
 					result = Permission.getPermissionDefault(perm.name);
 				else
-					tempZone = tempZone;//.getParentZone();
+					tempZone = tempZone.parent;
 			}
 		}
 		return result;
 	}
 	
-	public static boolean checkPermAllowed(PermQueryPlayer permQueryPlayer)
+	public static boolean checkPermAllowed(PermQueryPlayer query)
 	{
-		MinecraftForge.EVENT_BUS.post(permQueryPlayer);
-		return permQueryPlayer.getResult().equals(Result.ALLOW);
+		MinecraftForge.EVENT_BUS.post(query);
+		return query.getResult().equals(Result.ALLOW);
 	}
 	
-	public static Result checkPermResult(PermQueryArea query)
+	public static Result checkPermResult(PermQueryPlayer query)
 	{
 		MinecraftForge.EVENT_BUS.post(query);
 		return query.getResult();
 	}
 	
 	/**
-	 * This does NOT automatically register parents.
-	 * @param permName Permission to be added
+	 * Parent permissions need not be registerred.
+	 * @param permName Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
 	 * @param allow True if the permission is allowed by default
 	 */
 	public static void registerPermission(String permName, boolean allow)
@@ -85,7 +85,7 @@ public final class PermissionsHandler
 	
 	/**
 	 * This does NOT automatically register parents.
-	 * @param perm Permission to be added
+	 * @param perm Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
 	 */
 	public static void registerPermission(Permission perm)
 	{

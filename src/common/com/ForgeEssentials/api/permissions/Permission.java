@@ -3,6 +3,7 @@ package com.ForgeEssentials.api.permissions;
 import java.util.HashMap;
 
 import com.ForgeEssentials.core.config.FEConfig;
+import com.ForgeEssentials.permissions.ModulePermissions;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraftforge.event.Event.Result;
@@ -12,9 +13,8 @@ import net.minecraftforge.event.Event.Result;
  */
 public class Permission extends PermissionChecker
 {
-	private static HashMap<String, Permission> defaults = new HashMap<String, Permission>();
-	public static boolean permsVerbose = false;
-	
+	private static HashMap<String, Permission>	defaults		= new HashMap<String, Permission>();
+
 	public static final Result getPermissionDefault(String name)
 	{
 		Permission perm = defaults.get(name);
@@ -23,7 +23,7 @@ public class Permission extends PermissionChecker
 		else
 			return Result.DENY;
 	}
-	
+
 	/**
 	 * This does NOT automatically register parents.
 	 * @param perm Permission to be added
@@ -32,19 +32,18 @@ public class Permission extends PermissionChecker
 	{
 		assert !defaults.containsKey(perm.name) : new IllegalArgumentException("You cannot override a default Permission");
 		defaults.put(perm.name, perm);
-		if (permsVerbose ){
-		OutputHandler.SOP("Permission Registered: "+perm);
-		}
+		if (ModulePermissions.permsVerbose)
+			OutputHandler.SOP("Permission Registered: " + perm);
 	}
-	
+
 	public Result	allowed;
-	
+
 	public Permission(String qualifiedName, Boolean allowed)
 	{
 		super(qualifiedName);
 		this.allowed = allowed ? Result.ALLOW : Result.DENY;
 	}
-	
+
 	public boolean equals(Object object)
 	{
 		if (object instanceof Permission)
@@ -58,10 +57,10 @@ public class Permission extends PermissionChecker
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return name+" : "+allowed;
+		return name + " : " + allowed;
 	}
 }

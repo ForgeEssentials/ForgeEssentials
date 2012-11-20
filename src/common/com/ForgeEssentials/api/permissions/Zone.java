@@ -2,9 +2,7 @@ package com.ForgeEssentials.api.permissions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
@@ -16,18 +14,23 @@ import com.ForgeEssentials.AreaSelector.Selection;
 
 public class Zone extends AreaBase implements Comparable, Serializable
 {
-	public int											priority;			// lowest priority is 0
-	private String										zoneID;			// unique string name
-	private Zone										parent;			// the unique name of the parent.
-	private ArrayList<String>							children;			// list of all children of this zone
-	private String										worldString;		// the WorldString of world this zone exists in.
-	private int											childStatus;		// tells us how many parents this zone is under
-	public final boolean								isWorldZone;		// flag for WorldZones
-	public final boolean								isGlobalZone;		// flag for GLOBAL zones
+	/**
+	 * serilizeableID
+	 */
+	private static final long							serialVersionUID	= -8826384576342329738L;
+
+	public int											priority;										// lowest priority is 0
+	private String										zoneID;										// unique string name
+	protected Zone										parent;										// the unique name of the parent.
+	protected ArrayList<String>							children;										// list of all children of this zone
+	private String										worldString;									// the WorldString of world this zone exists in.
+	private int											childStatus;									// tells us how many parents this zone is under
+	public final boolean								isWorldZone;									// flag for WorldZones
+	public final boolean								isGlobalZone;									// flag for GLOBAL zones
 
 	// permission maps
-	protected HashMap<String, ArrayList<Permission>>	playerOverrides;	// <username, perm list>
-	protected HashMap<String, ArrayList<Permission>>	groupPerms;		// <groupName, perm list>
+	protected HashMap<String, ArrayList<Permission>>	playerOverrides;								// <username, perm list>
+	protected HashMap<String, ArrayList<Permission>>	groupPerms;									// <groupName, perm list>
 
 	public Zone(String ID, Selection sel, Zone parent)
 	{
@@ -36,12 +39,9 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		this.parent = parent;
 		worldString = parent.worldString;
 		parent.children.add(zoneID);
-		childStatus = parent.childStatus+1;
-
-		playerOverrides = new HashMap<String, ArrayList<Permission>>();
-		groupPerms = new HashMap<String, ArrayList<Permission>>();
-
+		childStatus = parent.childStatus + 1;
 		isWorldZone = isGlobalZone = false;
+		initMaps();
 	}
 
 	public Zone(String ID, Selection sel, World world)
@@ -51,11 +51,8 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		parent = ZoneManager.getWorldZone(world);
 		parent.children.add(ID);
 		childStatus = 3;
-
-		playerOverrides = new HashMap<String, ArrayList<Permission>>();
-		groupPerms = new HashMap<String, ArrayList<Permission>>();
-
 		isWorldZone = isGlobalZone = false;
+		initMaps();
 	}
 
 	/**
@@ -80,9 +77,15 @@ public class Zone extends AreaBase implements Comparable, Serializable
 			isWorldZone = false;
 			childStatus = 0;
 		}
-
+		
+		initMaps();
+	}
+	
+	private void initMaps()
+	{
 		playerOverrides = new HashMap<String, ArrayList<Permission>>();
 		groupPerms = new HashMap<String, ArrayList<Permission>>();
+		groupPerms.put("_DEFAULT_", new ArrayList<Permission>());
 	}
 
 	public boolean isParentOf(Zone zone)
@@ -97,6 +100,9 @@ public class Zone extends AreaBase implements Comparable, Serializable
 			return isParentOf(zone.parent);
 	}
 
+	/**
+	 * @return The Unique ID of this Zone.
+	 */
 	public String getZoneID()
 	{
 		return zoneID;
@@ -108,14 +114,14 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		Zone zone = (Zone) o;
 		if (zone.isParentOf(this))
 			return -100;
-		else if (this.isParentOf(zone))
+		else if (isParentOf(zone))
 			return 100;
 		else
 		{
-			int priority =  this.priority - zone.priority;
-			
+			int priority = this.priority - zone.priority;
+
 			if (priority == 0)
-				return this.childStatus - zone.childStatus;
+				return childStatus - zone.childStatus;
 			else
 				return priority;
 		}
@@ -129,22 +135,18 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	 */
 	public Result getPlayerOverride(EntityPlayer player, PermissionChecker check)
 	{
-		if (this.groupPerms.containsKey(player.username))
+		if (groupPerms.containsKey(player.username))
 		{
 			ArrayList<Permission> perms = groupPerms.get(player.username);
 			Permission smallest = null;
 			for (Permission perm : perms)
-			{
 				if (check.equals(perm))
 					return perm.allowed;
 				else if (check.matches(perm))
-				{
 					if (smallest == null)
 						smallest = perm;
 					else if (smallest.isChildOf(perm))
 						smallest = perm;
-				}
-			}
 			if (smallest != null)
 				return smallest.allowed;
 		}
@@ -159,22 +161,34 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	 */
 	public Result getGroupOverride(String groupname, PermissionChecker check)
 	{
-		if (this.groupPerms.containsKey(groupname))
+		if (groupPerms.containsKey(groupname))
 		{
 			ArrayList<Permission> perms = groupPerms.get(groupname);
 			Permission smallest = null;
 			for (Permission perm : perms)
-			{
 				if (check.equals(perm))
 					return perm.allowed;
 				else if (check.matches(perm))
-				{
 					if (smallest == null)
 						smallest = perm;
 					else if (smallest.isChildOf(perm))
 						smallest = perm;
-				}
-			}
+			if (smallest != null)
+				return smallest.allowed;
+		}
+		// this zone doesn't contain this groupname. check for blankets.
+		else
+		{
+			ArrayList<Permission> perms = groupPerms.get("_DEFAULT_");
+			Permission smallest = null;
+			for (Permission perm : perms)
+				if (check.equals(perm))
+					return perm.allowed;
+				else if (check.matches(perm))
+					if (smallest == null)
+						smallest = perm;
+					else if (smallest.isChildOf(perm))
+						smallest = perm;
 			if (smallest != null)
 				return smallest.allowed;
 		}

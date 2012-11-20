@@ -15,9 +15,10 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class ModulePermissions
 {
-	public static PermissionsConfig	config;
-	public static PermissionsHandler pHandler;
-	public static ZoneManager zManager;
+	public static PermissionsConfig		config;
+	public static PermissionsHandler	pHandler;
+	public static ZoneManager			zManager;
+	public static boolean				permsVerbose	= false;
 
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)

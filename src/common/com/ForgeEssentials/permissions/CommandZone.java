@@ -5,56 +5,31 @@ import net.minecraft.src.ICommandSender;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
-public class PermissionsCommand extends ForgeEssentialsCommandBase
+public class CommandZone extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
-		return "feperm";
+		// TODO Auto-generated method stub
+		return "zone";
 	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		// do something.
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-	}
-
-	@Override
-	public String getSyntaxConsole()
-	{
-		return null;
-	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getInfoConsole()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		// TODO Auto-generated method stub
-		return null;
+		// no defining zones from the console.
 	}
 
 	@Override
 	public boolean canConsoleUseCommand()
 	{
-		// TODO Auto-generated method stub
+		// TODO no command for this from the console.
 		return false;
 	}
 
@@ -68,7 +43,7 @@ public class PermissionsCommand extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return null;
+		return "ForgeEssentials.Permissions.Zone";
 	}
 
 }
