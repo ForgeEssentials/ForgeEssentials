@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.api.permissions;
 
 import java.util.HashMap;
 
@@ -30,7 +30,7 @@ public class Permission extends PermissionChecker
 	{
 		assert !defaults.containsKey(perm.name) : new IllegalArgumentException("You cannot override a default Permission");
 		defaults.put(perm.name, perm);
-		OutputHandler.SOP("Permission Registerred: "+perm);
+		OutputHandler.SOP("Permission Registered: "+perm);
 	}
 	
 	public Result	allowed;

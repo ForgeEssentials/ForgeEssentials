@@ -1,5 +1,8 @@
 package com.ForgeEssentials.permissions;
 
+import com.ForgeEssentials.api.permissions.PermissionsHandler;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraftforge.common.MinecraftForge;

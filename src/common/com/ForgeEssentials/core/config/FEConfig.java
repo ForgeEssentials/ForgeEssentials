@@ -54,7 +54,7 @@ public class FEConfig
 		ModuleLauncher.cmdEnabled = prop.getBoolean(true);
 
 		prop = config.get("Modules", "WorldControl_Enabled", true);
-		prop.comment = "Disabling this will remove Selections and selection editing commands such as //set, //copy, etc...";
+		prop.comment = "Disabling this will remove Selections and selection editing commands such as //set, //copy, etc... Note that this is force disabled if WorldEdit is installed.";
 		ModuleLauncher.wcEnabled = prop.getBoolean(true);
 
 		prop = config.get("Modules", "Permissions_Enabled", true);
@@ -102,15 +102,6 @@ public class FEConfig
 	{
 		Property prop = config.get("Modules", name + " Enabled", true);
 		return prop.getBoolean(true);
-	}
-
-	public void changeMiscProperty(String property, String newValue)
-	{
-		Property prop = config.get("Miscellaneous", property, newValue);
-		String oldVal = prop.value;
-		prop.value = newValue;
-
-		OutputHandler.logConfigChange("Miscellaneous", property, oldVal, newValue);
 	}
 
 	public void changeProperty(String category, String property, String newValue)

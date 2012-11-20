@@ -1,8 +1,8 @@
 package com.ForgeEssentials.core.commands;
 
-import com.ForgeEssentials.permissions.PermissionsHandler;
-import com.ForgeEssentials.permissions.PermQueryArea;
-import com.ForgeEssentials.permissions.PermQueryPlayer;
+import com.ForgeEssentials.api.permissions.PermQueryArea;
+import com.ForgeEssentials.api.permissions.PermQueryPlayer;
+import com.ForgeEssentials.api.permissions.PermissionsHandler;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.src.CommandBase;

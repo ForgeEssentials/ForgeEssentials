@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.api.permissions;
 
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;

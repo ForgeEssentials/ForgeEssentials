@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.api.permissions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	protected HashMap<String, ArrayList<Permission>>	playerOverrides;	// <username, perm list>
 	protected HashMap<String, ArrayList<Permission>>	groupPerms;		// <groupName, perm list>
 
-	protected Zone(String ID, Selection sel, Zone parent)
+	public Zone(String ID, Selection sel, Zone parent)
 	{
 		super(sel.getLowPoint(), sel.getHighPoint());
 		zoneID = ID;
@@ -44,7 +44,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		isWorldZone = isGlobalZone = false;
 	}
 
-	protected Zone(String ID, Selection sel, World world)
+	public Zone(String ID, Selection sel, World world)
 	{
 		super(sel.getLowPoint(), sel.getHighPoint());
 		zoneID = ID;
@@ -62,7 +62,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	 * used to construct Global and World zones.
 	 * @param ID
 	 */
-	protected Zone(String ID)
+	public Zone(String ID)
 	{
 		super(new Point(0, 0, 0), new Point(0, 0, 0));
 		zoneID = ID;

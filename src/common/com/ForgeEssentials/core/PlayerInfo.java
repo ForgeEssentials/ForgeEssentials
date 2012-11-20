@@ -14,7 +14,7 @@ import net.minecraft.src.EntityPlayer;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
-import com.ForgeEssentials.permissions.Zone;
+import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
