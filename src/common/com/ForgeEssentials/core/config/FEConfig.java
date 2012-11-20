@@ -2,6 +2,7 @@ package com.ForgeEssentials.core.config;
 
 import java.io.File;
 
+import com.ForgeEssentials.api.permissions.Permission;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -25,6 +26,7 @@ public class FEConfig
 		loadModules();
 		loadCore();
 		loadCmd();
+		loadPerms();
 		
 		// CONFIG TESTING!!!!
 		/*
@@ -82,6 +84,15 @@ public class FEConfig
 		prop = config.get("Commands", "RulesFile", "rules.txt");
 		prop.comment = "Specify the file where the rules will read from and written to. This path is relative to the ForgeEssentials folder.";
 		CommandRules.rulesFile = new File(ForgeEssentials.FEDIR, prop.value);
+	}
+	
+	private void loadPerms(){
+
+		config.addCustomCategoryComment("Permissions", "Configure ForgeEssentials Permissions. Only implemented if Permissions module is on.");
+		
+		Property prop = config.get("Permissions", "verbose", false);
+		prop.comment = "Specify if Verbose mode for Permissions module is enabled. If enabled, every permission registered is printed to the console. Only useful in debugging.";
+		Permission.permsVerbose = prop.getBoolean(false);
 	}
 	
 

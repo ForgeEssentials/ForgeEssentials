@@ -34,6 +34,8 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		// Rules the rules file will be a flat strings file.. nothing special.
 		ArrayList<String> rules = new ArrayList<String>();
 
+		// somehow a new rules.txt is generated EVERY load.
+		
 		OutputHandler.SOP("Loading rules");
 		if (!rulesFile.exists())
 		{

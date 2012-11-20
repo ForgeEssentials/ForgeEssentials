@@ -2,6 +2,7 @@ package com.ForgeEssentials.api.permissions;
 
 import java.util.HashMap;
 
+import com.ForgeEssentials.core.config.FEConfig;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraftforge.event.Event.Result;
@@ -12,6 +13,7 @@ import net.minecraftforge.event.Event.Result;
 public class Permission extends PermissionChecker
 {
 	private static HashMap<String, Permission> defaults = new HashMap<String, Permission>();
+	public static boolean permsVerbose = false;
 	
 	public static final Result getPermissionDefault(String name)
 	{
@@ -30,7 +32,9 @@ public class Permission extends PermissionChecker
 	{
 		assert !defaults.containsKey(perm.name) : new IllegalArgumentException("You cannot override a default Permission");
 		defaults.put(perm.name, perm);
+		if (permsVerbose ){
 		OutputHandler.SOP("Permission Registered: "+perm);
+		}
 	}
 	
 	public Result	allowed;
