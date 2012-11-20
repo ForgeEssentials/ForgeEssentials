@@ -23,9 +23,8 @@ public class FEConfig
 
 		// load the modules
 		loadModules();
-
-		// miscellanious stuff...
-		loadMisc();
+		loadCore();
+		loadCmd();
 		
 		// CONFIG TESTING!!!!
 		/*
@@ -47,9 +46,8 @@ public class FEConfig
 		config.save();
 	}
 
-	private void loadModules()
-	{
-		config.addCustomCategoryComment("Modules", "Here you can Enable and Disable ForgeEssentials Modules");
+	private void loadModules(){
+		config.addCustomCategoryComment("Modules", "Toggles Forge Essentials modules on or off. Set to true to turn on, false to turn off.");
 
 		Property prop = config.get("Modules", "Commands_Enabled", true);
 		prop.comment = "Disabling this will remove non-essential commands. ie: /home, /motd, /rules, etc...";
@@ -64,22 +62,28 @@ public class FEConfig
 		ModuleLauncher.permsEnabled = prop.getBoolean(true);
 	}
 
-	private void loadMisc()
-	{
-		config.addCustomCategoryComment("Miscellaneous", "here you can configure miscellanious things.");
+	private void loadCore(){
+		config.addCustomCategoryComment("Core", "Configure ForgeEssentials Core.");
 
-		Property prop = config.get("Miscellaneous", "motd", "Welcome to a server running ForgeEssentials");
-		prop.comment = "Specify the message that greets players when they log in to your server. Only ";
-		CommandMotd.motd = prop.value;
-
-		prop = config.get("Miscellaneous", "versionCheck", true);
+		Property prop = config.get("Core", "versionCheck", true);
 		prop.comment = "Check for newer versions of ForgeEssentials on load?";
 		ForgeEssentials.verCheck = prop.getBoolean(true);
 
-		prop = config.get("Miscellaneous", "RulesFile", "rules.txt");
+		
+	}
+	private void loadCmd(){
+		
+		config.addCustomCategoryComment("Commands", "Configure ForgeEssentials Commands. Only implemented if Commands module is on.");
+		
+		Property prop = config.get("Commands", "motd", "Welcome to a server running ForgeEssentials");
+		prop.comment = "Specify the message that greets players when they log in to your server.";
+		CommandMotd.motd = prop.value;
+		
+		prop = config.get("Commands", "RulesFile", "rules.txt");
 		prop.comment = "Specify the file where the rules will read from and written to. This path is relative to the ForgeEssentials folder.";
 		CommandRules.rulesFile = new File(ForgeEssentials.FEDIR, prop.value);
 	}
+	
 
 	/**
 	 * will overwrite the current physical file.
@@ -91,7 +95,7 @@ public class FEConfig
 
 	/**
 	 * @param name
-	 *            : ei WorldControl, Commands, Permissions, WorldEditCompat, WorldGuardCompat, etc... whatever comes after Module
+	 *            : ie WorldControl, Commands, Permissions, WorldEditCompat, WorldGuardCompat, etc... whatever comes after Module
 	 * @return boolean
 	 */
 	public boolean isModuleEnabled(String name)

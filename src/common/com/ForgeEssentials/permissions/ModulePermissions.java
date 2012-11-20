@@ -1,5 +1,7 @@
 package com.ForgeEssentials.permissions;
 
+import com.ForgeEssentials.util.OutputHandler;
+
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.PreInit;
@@ -10,13 +12,14 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class ModulePermissions
 {
-	public static PermissionsConfig		config;
-	public static PermissionsHandler	pHandler;
-	public static ZoneManager			zManager;
+	public static PermissionsConfig	config;
+	public static PermissionsHandler pHandler;
+	public static ZoneManager zManager;
 
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
+		OutputHandler.SOP("Permissions module is enabled. Loading...");
 		config = new PermissionsConfig();
 		zManager = new ZoneManager();
 		ZoneManager.GLOBAL = new Zone("__GLOBAL__");

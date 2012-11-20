@@ -5,6 +5,7 @@ import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.permissions.ModulePermissions;
 import com.ForgeEssentials.util.LibraryDetector;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -16,18 +17,19 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class ModuleLauncher
 {
-	public CoreCommands			corecmd;
+	public CoreCommands corecmd;
 
-	public ModuleCommands		commands;
-	public ModulePermissions	permission;
-	public ModuleWorldControl	worldcontrol;
+	public ModuleCommands commands;
+	public ModulePermissions permission;
+	public ModuleWorldControl worldcontrol;
 
-	public static boolean		permsEnabled	= true;
-	public static boolean		cmdEnabled		= true;
-	public static boolean		wcEnabled		= true;
+	public static boolean permsEnabled	= true;
+	public static boolean cmdEnabled		= true;
+	public static boolean wcEnabled		= true;
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
+		OutputHandler.SOP("Discovering and loading modules...");
 		worldcontrol = new ModuleWorldControl();
 		commands = new ModuleCommands();
 		corecmd = new CoreCommands();
