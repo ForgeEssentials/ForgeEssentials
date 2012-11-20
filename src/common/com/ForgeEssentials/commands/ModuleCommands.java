@@ -43,6 +43,7 @@ public class ModuleCommands
 		e.registerServerCommand(new CommandKill());
 		e.registerServerCommand(new CommandSmite());
 		e.registerServerCommand(new CommandHome());
+		e.registerServerCommand(new CommandSpawnAt());
 		e.registerServerCommand(new CommandBack());
 		e.registerServerCommand(new CommandRestart());
 		e.registerServerCommand(new CommandServerDo());

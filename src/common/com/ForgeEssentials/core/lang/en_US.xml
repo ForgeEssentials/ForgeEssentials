@@ -43,6 +43,7 @@
 	<entry key="message.butchered"> enemies killed</entry>
 	<entry key="message.removed"> items removed</entry>
 	<entry key="message.killed">You were killed. You probably deserved it.</entry>
+	<entry key="message.spawntypechanged">Your spawn type has been set to </entry>
 
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
 	<entry key="message.error.noplayer">That player does not exist.</entry>

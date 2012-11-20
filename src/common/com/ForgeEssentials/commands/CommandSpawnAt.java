@@ -6,6 +6,9 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
+import net.minecraft.src.DamageSource;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ICommandSender;
@@ -22,36 +25,61 @@ public class CommandSpawnAt extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length >= 1 && args[0].equals("here"))
-			PlayerInfo.getPlayerInfo(sender).home = new Point((int) sender.posX, (int) sender.posY, (int) sender.posZ);
-		else if (args.length >= 3)
+		try
 		{
-			try
+			if (args.length >= 2)
 			{
-				PlayerInfo.getPlayerInfo(sender).home = new Point(new Integer(args[0]), new Integer(args[1]), new Integer(args[2]));
-			} catch (NumberFormatException e)
+				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[1]);
+				if (victim != null)
+				{
+					int spawnType = new Integer(args[0]);
+					spawnType = spawnType < 0 ? 0 : spawnType > 3 ? 3 : spawnType;
+					PlayerInfo.getPlayerInfo(victim).spawnType = spawnType;
+					OutputHandler.chatConfirmation(victim, Localization.get("message.spawntypechanged") + spawnType);
+				} else
+					sender.sendChatToPlayer(Localization.get("message.error.noplayer"));
+			} else if (args.length == 1)
 			{
-				OutputHandler.chatError(sender, Localization.get("message.error.nan"));
-			}
-		} else
+				int spawnType = new Integer(args[0]);
+				spawnType = spawnType < 1 ? 1 : spawnType > 3 ? 3 : spawnType;
+				PlayerInfo.getPlayerInfo(sender).spawnType = spawnType;
+				OutputHandler.chatConfirmation(sender, Localization.get("message.spawntypechanged") + spawnType);
+			} else
+				OutputHandler.chatError(sender, Localization.get("message.error.badsyntax") + getSyntaxPlayer(sender));
+		} catch (NumberFormatException e)
 		{
-			Point home = PlayerInfo.getPlayerInfo(sender).home;
-			if (home == null)
-				OutputHandler.chatError(sender, Localization.get("message.error.nohome") + getSyntaxPlayer(sender));
-			else
-				((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(home.x, home.y, home.z, sender.rotationYaw, sender.rotationPitch);
+			OutputHandler.chatError(sender, Localization.get("message.error.nan"));
 		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		try
+		{
+			if (args.length >= 2)
+			{
+				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[1]);
+				if (victim != null)
+				{
+					int spawnType = new Integer(args[0]);
+					spawnType = spawnType < 0 ? 0 : spawnType > 3 ? 3 : spawnType;
+					PlayerInfo.getPlayerInfo(victim).spawnType = spawnType;
+					OutputHandler.chatConfirmation(victim, Localization.get("message.spawntypechanged") + spawnType);
+				} else
+					sender.sendChatToPlayer(Localization.get("message.error.noplayer"));
+			} else
+				sender.sendChatToPlayer(Localization.get("message.error.badsyntax") + getSyntaxConsole());
+		} catch (NumberFormatException e)
+		{
+			sender.sendChatToPlayer(Localization.get("message.error.nan"));
+		}
 	}
 
 	@Override
 	public boolean canConsoleUseCommand()
 	{
-		return false;
+		return true;
 	}
 
 	@Override
