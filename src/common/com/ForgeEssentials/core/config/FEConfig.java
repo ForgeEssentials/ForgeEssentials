@@ -71,6 +71,10 @@ public class FEConfig
 		Property prop = config.get("Core", "versionCheck", true);
 		prop.comment = "Check for newer versions of ForgeEssentials on load?";
 		ForgeEssentials.verCheck = prop.getBoolean(true);
+		
+		prop = config.get("Core", "modlistLocation", "modlist.txt");
+		prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
+		ForgeEssentials.modlistLocation = prop.value;
 
 	}
 

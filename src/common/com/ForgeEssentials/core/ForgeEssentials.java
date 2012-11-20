@@ -41,6 +41,8 @@ public class ForgeEssentials
 	public ModuleLauncher mdlaunch;
 	public Localization localization;
 	public static boolean verCheck = true;
+
+	public static String modlistLocation;
 	public LibraryDetector libdetect;
 
 	public static final File FEDIR = new File("./ForgeEssentials/");
@@ -80,11 +82,12 @@ public class ForgeEssentials
 		libdetect = new LibraryDetector();
 		libdetect.detect();
 	}
-
+	
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		mdlaunch.serverStarting(e);
+		ModListFile.makeModList();
 	}
 
 }
