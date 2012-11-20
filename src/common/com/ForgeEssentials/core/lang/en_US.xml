@@ -6,47 +6,53 @@
 	<entry key="command.motd.syntax.player">/motd [new motd]</entry>
 	<entry key="command.motd.info.console">Get/set the message of the day</entry>
 	<entry key="command.motd.info.player">Get/set the message of the day</entry>
-	
+
 	<entry key="command.rules.syntax.console">/rules [&lt;number> &lt;new rule>|remove]</entry>
 	<entry key="command.rules.syntax.player">/rules [&lt;number> &lt;new rule>|remove]</entry>
 	<entry key="command.rules.info.console">Get/set the rules of the server</entry>
 	<entry key="command.rules.info.player">Get/set the rules of the server</entry>
-	
+
 	<entry key="command.butcher.syntax.player">/butcher [radius] [&lt;x> &lt;y> &lt;z>]</entry>
 	<entry key="command.butcher.info.player">Kill enemies around you/the specified point within the radius</entry>
-	
+
 	<entry key="command.remove.syntax.player">/remove [radius] [&lt;x> &lt;y> &lt;z>]</entry>
 	<entry key="command.remove.info.player">Remove all item entities around you/the specifies point within the radius</entry>
-	
+
 	<entry key="command.kill.syntax.console">/kill &lt;player></entry>
 	<entry key="command.kill.syntax.player">/kill [player]</entry>
 	<entry key="command.kill.info.console">Kill the specified player</entry>
 	<entry key="command.kill.info.player">Kill yourself or the specified player</entry>
-	
+
 	<entry key="command.smite.syntax.console">/smite &lt;player></entry>
 	<entry key="command.smite.syntax.player">/smite [me|&lt;player>]</entry>
 	<entry key="command.smite.info.console">Strike the specified player with lightning</entry>
 	<entry key="command.smite.info.player">Strike where you are looking, yourself, or another player with lightning</entry>
-	
+
 	<entry key="command.home.syntax.player">/home [here|&lt;x> &lt;y> &lt;z>]</entry>
 	<entry key="command.home.info.player">Teleport you to/sets your home</entry>
-	
+
 	<entry key="command.back.syntax.player">/home</entry>
 	<entry key="command.back.info.player">Teleport you your last death point</entry>
-	
+
 	<entry key="command.restart.syntax.console">/restart</entry>
 	<entry key="command.restart.info.console">Restart the server</entry>
-	
+
 	<entry key="command.serverdo.syntax.player">/serverdo &lt;command> [arg1]...</entry>
 	<entry key="command.serverdo.info.player">Run a console command as a player</entry>
-	
+
 	<entry key="message.butchered"> enemies killed</entry>
 	<entry key="message.removed"> items removed</entry>
 	<entry key="message.killed">You were killed. You probably deserved it.</entry>
-	
+
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
 	<entry key="message.error.noplayer">That player does not exist.</entry>
 	<entry key="message.error.nan">That wasn't a number. Try again, you can do it.</entry>
 	<entry key="message.error.nodeathpoint">You have not died yet.</entry>
 	<entry key="message.error.nohome">No home set. Try this: </entry>
+	
+	<entry key="command.modlist.header">--- Showing the modlist page %p of %t ---</entry>
+	<entry key="command.modlist.syntax.console">/modlist [page]</entry>
+	<entry key="command.modlist.syntax.player">/modlist [page]</entry>
+	<entry key="command.modlist.info.console">Get a list of mods used by the server</entry>
+	<entry key="command.modlist.info.player">Get a list of mods used by the server</entry>
 </properties>

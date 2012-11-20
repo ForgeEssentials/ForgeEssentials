@@ -46,5 +46,6 @@ public class ModuleCommands
 		e.registerServerCommand(new CommandBack());
 		e.registerServerCommand(new CommandRestart());
 		e.registerServerCommand(new CommandServerDo());
+		e.registerServerCommand(new CommandModlist());
 	}
 }
