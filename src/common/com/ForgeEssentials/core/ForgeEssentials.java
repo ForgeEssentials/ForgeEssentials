@@ -39,9 +39,10 @@ public class ForgeEssentials
 
 	public static FEConfig config;
 	public ModuleLauncher mdlaunch;
+	public Localization localization;
 	public static boolean verCheck = true;
 	public LibraryDetector libdetect;
-	
+
 	public static final File FEDIR = new File("./ForgeEssentials/");
 
 	@PreInit
@@ -60,6 +61,8 @@ public class ForgeEssentials
 
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
+
+		localization = new Localization();
 	}
 
 	@Init
@@ -67,13 +70,17 @@ public class ForgeEssentials
 	{
 		proxy.load(e);
 		mdlaunch.load(e);
+		localization.load();
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
 	}
+
 	@PostInit
-	public void postLoad (FMLPostInitializationEvent e){
+	public void postLoad(FMLPostInitializationEvent e)
+	{
 		libdetect = new LibraryDetector();
 		libdetect.detect();
 	}
+
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
 	{

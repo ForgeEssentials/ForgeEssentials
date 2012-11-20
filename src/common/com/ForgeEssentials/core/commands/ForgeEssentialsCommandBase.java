@@ -3,6 +3,7 @@ package com.ForgeEssentials.core.commands;
 import com.ForgeEssentials.api.permissions.PermQueryArea;
 import com.ForgeEssentials.api.permissions.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.PermissionsHandler;
+import com.ForgeEssentials.core.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.src.CommandBase;
@@ -19,7 +20,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		super();
 		PermissionsHandler.registerPermission(this.getCommandPerm(), true);
 	}
-	
+
 	// ---------------------------
 	// processing command
 	// ---------------------------
@@ -81,18 +82,38 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		}
 	}
 
-	public abstract String getSyntaxConsole();
+	public String getSyntaxConsole()
+	{
+		if (canConsoleUseCommand())
+			return Localization.get("command." + getCommandName() + ".syntax.console");
+		return null;
+	}
 
 	public String getSyntaxCommandBlock(TileEntityCommandBlock block)
 	{
 		return "/" + getCommandName();
 	}
 
-	public abstract String getSyntaxPlayer(EntityPlayer player);
+	public String getSyntaxPlayer(EntityPlayer player)
+	{
+		if (canPlayerUseCommand(player))
+			return Localization.get("command." + getCommandName() + ".syntax.player");
+		return null;
+	}
 
-	public abstract String getInfoConsole();
+	public String getInfoConsole()
+	{
+		if (canConsoleUseCommand())
+			return Localization.get("command." + getCommandName() + ".info.console");
+		return null;
+	}
 
-	public abstract String getInfoPlayer(EntityPlayer player);
+	public String getInfoPlayer(EntityPlayer player)
+	{
+		if (canPlayerUseCommand(player))
+			return Localization.get("command." + getCommandName() + ".info.player");
+		return null;
+	}
 
 	// ---------------------------
 	// permissions
@@ -119,22 +140,22 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	}
 
 	public abstract boolean canPlayerUseCommand(EntityPlayer player);
-	
+
 	public void error(ICommandSender sender)
 	{
 		String usage = this.getCommandUsage(sender);
-		
+
 		if (sender instanceof EntityPlayer)
 			OutputHandler.chatError((EntityPlayer) sender, usage);
 		else
 			sender.sendChatToPlayer(usage);
 	}
-	
+
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
 		return PermissionsHandler.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
-	
+
 	public abstract String getCommandPerm();
 
 }

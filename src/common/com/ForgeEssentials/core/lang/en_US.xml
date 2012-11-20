@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties version="1.0">
+	<comment>English (US) Localization File</comment>
+	<entry key="command.home.syntax.player">/home [here|&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.home.info.player">Teleports you to/sets your home</entry>
+</properties>

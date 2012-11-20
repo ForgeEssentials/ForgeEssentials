@@ -28,13 +28,11 @@ public class CommandHome extends ForgeEssentialsCommandBase
 			try
 			{
 				PlayerInfo.getPlayerInfo(sender).home = new Point(new Integer(args[0]), new Integer(args[1]), new Integer(args[2]));
-			}
-			catch (NumberFormatException e)
+			} catch (NumberFormatException e)
 			{
 				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
 			}
-		}
-		else
+		} else
 		{
 			Point home = PlayerInfo.getPlayerInfo(sender).home;
 			if (home == null)
@@ -50,18 +48,6 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public String getSyntaxConsole()
-	{
-		return null;
-	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/home [here|<x> <y> <z>]";
-	}
-
-	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
@@ -71,18 +57,6 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		return true;
-	}
-
-	@Override
-	public String getInfoConsole()
-	{
-		return null;
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Teleports you to/sets your home";
 	}
 
 	@Override
