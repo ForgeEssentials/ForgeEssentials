@@ -7,7 +7,7 @@ import net.minecraft.src.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
-import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class TickTaskSetBackup implements ITickTask
 {

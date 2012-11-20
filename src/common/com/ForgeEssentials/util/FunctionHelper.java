@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core;
+package com.ForgeEssentials.util;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;

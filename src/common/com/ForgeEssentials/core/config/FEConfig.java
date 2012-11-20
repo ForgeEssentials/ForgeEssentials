@@ -6,7 +6,7 @@ import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.ModuleLauncher;
-import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class FEConfig
 {

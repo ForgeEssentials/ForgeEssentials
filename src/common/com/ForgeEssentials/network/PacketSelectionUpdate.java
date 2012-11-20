@@ -11,8 +11,8 @@ import net.minecraft.src.WorldServer;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.client.core.ProxyClient;
-import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;

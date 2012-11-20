@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import net.minecraftforge.event.Event.Result;
 
-import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class PermissionChecker
 {

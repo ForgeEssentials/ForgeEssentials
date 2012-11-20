@@ -1,6 +1,7 @@
-package com.ForgeEssentials.core;
+package com.ForgeEssentials.util;
 
 import java.io.File;
+
 
 import cpw.mods.fml.common.Loader;
 

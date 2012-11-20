@@ -5,6 +5,8 @@ import java.io.File;
 import com.ForgeEssentials.client.network.HandlerClient;
 import com.ForgeEssentials.core.config.FEConfig;
 import com.ForgeEssentials.network.HandlerServer;
+import com.ForgeEssentials.util.LibraryDetector;
+import com.ForgeEssentials.util.Version;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;

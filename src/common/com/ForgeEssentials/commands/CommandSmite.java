@@ -5,9 +5,9 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.MovingObjectPosition;
 
-import com.ForgeEssentials.core.FunctionHelper;
-import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

@@ -1,8 +1,9 @@
-package com.ForgeEssentials.core;
+package com.ForgeEssentials.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+
 
 import cpw.mods.fml.common.Loader;
 

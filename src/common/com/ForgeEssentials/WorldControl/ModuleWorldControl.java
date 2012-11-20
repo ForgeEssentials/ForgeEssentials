@@ -7,7 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.commands.*;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
-import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.event.FMLInitializationEvent;

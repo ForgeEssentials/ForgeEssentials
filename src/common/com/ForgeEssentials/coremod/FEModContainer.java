@@ -2,7 +2,7 @@ package com.ForgeEssentials.coremod;
 
 import java.util.Arrays;
 
-import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 

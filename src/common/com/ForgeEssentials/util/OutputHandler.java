@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core;
+package com.ForgeEssentials.util;
 
 import java.util.logging.Logger;
 

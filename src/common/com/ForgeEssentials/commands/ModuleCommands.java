@@ -1,7 +1,7 @@
 package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.core.ModuleLauncher;
-import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

@@ -2,7 +2,7 @@ package com.ForgeEssentials.permissions;
 
 import java.util.HashMap;
 
-import com.ForgeEssentials.core.OutputHandler;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraftforge.event.Event.Result;
 

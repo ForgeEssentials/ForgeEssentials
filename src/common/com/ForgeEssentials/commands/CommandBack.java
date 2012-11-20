@@ -7,9 +7,9 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import com.ForgeEssentials.AreaSelector.Point;
-import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandBack extends ForgeEssentialsCommandBase
 {

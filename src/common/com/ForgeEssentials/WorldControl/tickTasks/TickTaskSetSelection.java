@@ -8,8 +8,8 @@ import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
-import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class TickTaskSetSelection implements ITickTask
 {

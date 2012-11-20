@@ -4,6 +4,7 @@ import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.permissions.ModulePermissions;
+import com.ForgeEssentials.util.LibraryDetector;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

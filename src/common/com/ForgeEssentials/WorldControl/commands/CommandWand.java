@@ -3,8 +3,8 @@ package com.ForgeEssentials.WorldControl.commands;
 //Depreciated
 import net.minecraft.src.EntityPlayer;
 
-import com.ForgeEssentials.core.OutputHandler;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandWand extends WorldControlCommandBase
 {
