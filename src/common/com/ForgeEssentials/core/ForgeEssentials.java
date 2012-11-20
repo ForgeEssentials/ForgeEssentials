@@ -26,19 +26,19 @@ import cpw.mods.fml.common.registry.GameRegistry;
  */
 
 @NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = HandlerClient.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = HandlerServer.class))
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.0.1")
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "0.1.0")
 public class ForgeEssentials
 {
 	@SidedProxy(clientSide = "com.ForgeEssentials.client.core.ProxyClient", serverSide = "com.ForgeEssentials.core.ProxyCommon")
-	public static ProxyCommon		proxy;
+	public static ProxyCommon proxy;
 
 	@Instance(value = "ForgeEssentials")
-	public static ForgeEssentials	instance;
+	public static ForgeEssentials instance;
 
 	public static FEConfig config;
 	public ModuleLauncher mdlaunch;
 	public static boolean verCheck = true;
-	//public LibraryDetector libdetect;
+	public LibraryDetector libdetect;
 	
 	public static final File FEDIR = new File("./ForgeEssentials/");
 
@@ -69,9 +69,8 @@ public class ForgeEssentials
 	}
 	@PostInit
 	public void postLoad (FMLPostInitializationEvent e){
-		//needs some work done
-		//libdetect = new LibraryDetector();
-		//libdetect.detect();
+		libdetect = new LibraryDetector();
+		libdetect.detect();
 	}
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)

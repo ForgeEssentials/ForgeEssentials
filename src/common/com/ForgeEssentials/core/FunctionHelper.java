@@ -1,6 +1,5 @@
 package com.ForgeEssentials.core;
 
-//Depreciated
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.MathHelper;

@@ -34,7 +34,7 @@ public class ModuleLauncher
 		
 		corecmd.preLoad(e);
 		
-		if (wcEnabled)
+		if (wcEnabled && LibraryDetector.wepresent != true)
 			worldcontrol.preLoad(e);
 		
 		if (cmdEnabled)
@@ -48,7 +48,7 @@ public class ModuleLauncher
 	{
 		corecmd.load(e);
 		
-		if (wcEnabled)
+		if (wcEnabled && LibraryDetector.wepresent != true)
 			worldcontrol.load(e);
 		
 		if (cmdEnabled)
@@ -62,7 +62,7 @@ public class ModuleLauncher
 	{
 		corecmd.serverStarting(e);
 		
-		if (wcEnabled)
+		if (wcEnabled && LibraryDetector.wepresent != true)
 			worldcontrol.serverStarting(e);
 		
 		if (cmdEnabled)
