@@ -12,8 +12,8 @@ public class Version
 	private static final String	latest	= "https://raw.github.com/ForgeEssentials/ForgeEssentialsMain/master/VERSION.TXT";
     //Only change me when updating versions
 	public static int major = 0;
-    public static int minor = 0;		
-    public static int revision = 1;
+    public static int minor = 1;		
+    public static int revision = 0;
     //Should always be 0
     public static int jenkins = 0;
 	
