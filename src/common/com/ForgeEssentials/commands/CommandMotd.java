@@ -9,7 +9,7 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 public class CommandMotd extends ForgeEssentialsCommandBase
 {
 
-	public static String	motd;
+	public static String motd;
 
 	@Override
 	public String getCommandName()
@@ -26,8 +26,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 			for (String arg : args)
 				motd = motd + arg + " ";
 			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
-		}
-		else
+		} else
 			sender.sendChatToPlayer(motd);
 	}
 
@@ -40,8 +39,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 			for (String arg : args)
 				motd = motd + arg + " ";
 			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
-		}
-		else
+		} else
 			sender.sendChatToPlayer(motd);
 	}
 
@@ -54,32 +52,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		// TODO: check permissions
 		return true;
-	}
-
-	@Override
-	public String getSyntaxConsole()
-	{
-		return "/motd [new MOTD]";
-	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/motd [new MOTD]";
-	}
-
-	@Override
-	public String getInfoConsole()
-	{
-		return "Get/set the Message Of the Day";
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Get/set the Message Of the Day";
 	}
 
 	@Override

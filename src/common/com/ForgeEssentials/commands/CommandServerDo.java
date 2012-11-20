@@ -36,26 +36,13 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/serverdo <command> [command args]";
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Runs command with any args as though it had been typed from the server console.";
-	}
-
-	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
 	}
 
 	/**
-	 * Restricts the usage of this command to ops so random jerkbags can't op themselves.
-	 * Once our permissions system gets working, we can use canPlayerUseCommand instead.
+	 * Restricts the usage of this command to ops so random jerkbags can't op themselves. Once our permissions system gets working, we can use canPlayerUseCommand instead.
 	 */
 	public int getRequiredPermissionLevel()
 	{
@@ -72,20 +59,6 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		// Does nothing on the console.
-	}
-
-	@Override
-	public String getSyntaxConsole()
-	{
-		// Not meant to be run on the console.
-		return null;
-	}
-
-	@Override
-	public String getInfoConsole()
-	{
-		// Not meant to be run on the console.
-		return null;
 	}
 
 	@Override

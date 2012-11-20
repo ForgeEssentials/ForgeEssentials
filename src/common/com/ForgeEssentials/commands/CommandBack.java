@@ -48,18 +48,6 @@ public class CommandBack extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public String getSyntaxConsole()
-	{
-		return null;
-	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/back";
-	}
-
-	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
@@ -72,21 +60,9 @@ public class CommandBack extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public String getInfoConsole()
-	{
-		return null;
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Teleports you your last death point";
-	}
-	
-	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands."+getCommandName();
+		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
 }

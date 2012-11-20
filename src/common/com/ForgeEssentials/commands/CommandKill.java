@@ -28,11 +28,9 @@ public class CommandKill extends ForgeEssentialsCommandBase
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
 				sender.sendChatToPlayer("Woops, you died. My bad.");
-			}
-			else
+			} else
 				OutputHandler.chatError(sender, "That player does not exist.");
-		}
-		else
+		} else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
 			sender.sendChatToPlayer("Woops, you died. My bad.");
@@ -49,24 +47,10 @@ public class CommandKill extends ForgeEssentialsCommandBase
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
 				sender.sendChatToPlayer("Woops, you died. My bad.");
-			}
-			else
+			} else
 				sender.sendChatToPlayer("That player does not exist.");
-		}
-		else
+		} else
 			sender.sendChatToPlayer("You must specify a player.");
-	}
-
-	@Override
-	public String getSyntaxConsole()
-	{
-		return "/kill <Player>";
-	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/kill [Player]";
 	}
 
 	@Override
@@ -82,21 +66,9 @@ public class CommandKill extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public String getInfoConsole()
-	{
-		return "Kills the specified player";
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Kills yourself or the specified player";
-	}
-	
-	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands."+getCommandName();
+		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
 }
