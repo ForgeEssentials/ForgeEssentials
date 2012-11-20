@@ -110,20 +110,25 @@ public class ZoneManager
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 			if (zone.contains(p1) && worldZone.isParentOf(zone))
-				zones.add(zone);
+				if (zone.hasChildThatContains(p1))
+					continue;
+				else
+					zones.add(zone);
+
 
 		switch (zones.size())
 			{
 			// no children of the world? return the worldZone
 				case 0:
 					return worldZone;
-					// only 1 useable Zone? use it.
+					// only 1 usable Zone? use it.
 				case 1:
 					return zones.get(0);
 
 					// else.. narrow it down
 				default:
 					{
+						// get the one with the highest priority
 						Zone priority = null;
 
 						for (Zone zone : zones)

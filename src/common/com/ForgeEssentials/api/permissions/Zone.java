@@ -24,7 +24,6 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	protected Zone										parent;										// the unique name of the parent.
 	protected ArrayList<String>							children;										// list of all children of this zone
 	private String										worldString;									// the WorldString of world this zone exists in.
-	private int											childStatus;									// tells us how many parents this zone is under
 	public final boolean								isWorldZone;									// flag for WorldZones
 	public final boolean								isGlobalZone;									// flag for GLOBAL zones
 
@@ -39,7 +38,6 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		this.parent = parent;
 		worldString = parent.worldString;
 		parent.children.add(zoneID);
-		childStatus = parent.childStatus + 1;
 		isWorldZone = isGlobalZone = false;
 		initMaps();
 	}
@@ -50,7 +48,6 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		zoneID = ID;
 		parent = ZoneManager.getWorldZone(world);
 		parent.children.add(ID);
-		childStatus = 3;
 		isWorldZone = isGlobalZone = false;
 		initMaps();
 	}
@@ -69,18 +66,16 @@ public class Zone extends AreaBase implements Comparable, Serializable
 			parent = ZoneManager.GLOBAL;
 			isGlobalZone = false;
 			isWorldZone = true;
-			childStatus = 1;
 		}
 		else
 		{
 			isGlobalZone = true;
 			isWorldZone = false;
-			childStatus = 0;
 		}
-		
+
 		initMaps();
 	}
-	
+
 	private void initMaps()
 	{
 		playerOverrides = new HashMap<String, ArrayList<Permission>>();
@@ -108,6 +103,74 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		return zoneID;
 	}
 
+	/**
+	 * Recursively checks...
+	 * @param area
+	 * @return TRUE if atleast 1 child intersects with the area
+	 */
+	public boolean hasChildIntersectWith(AreaBase area)
+	{
+		boolean intersects = false;
+		for (String child : children)
+		{
+			Zone zone = ZoneManager.zoneMap.get(child);
+			intersects = zone.intersectsWith(area);
+
+			if (!intersects)
+				intersects = zone.hasChildIntersectWith(area);
+
+			if (intersects)
+				return true;
+		}
+
+		return intersects;
+	}
+
+	/**
+	 * Recursively checks...
+	 * @param area
+	 * @return TRUE if atleast 1 child intersects with the area
+	 */
+	public boolean hasChildThatContains(AreaBase area)
+	{
+		boolean intersects = false;
+		for (String child : children)
+		{
+			Zone zone = ZoneManager.zoneMap.get(child);
+			intersects = zone.intersectsWith(area);
+
+			if (!intersects)
+				intersects = zone.hasChildThatContains(area);
+			if (intersects)
+				return true;
+		}
+
+		return intersects;
+	}
+
+	/**
+	 * Recursively checks...
+	 * @param p
+	 * @return TRUE if atleast 1 child contains the point.
+	 */
+	public boolean hasChildThatContains(Point p)
+	{
+		boolean intersects = false;
+		for (String child : children)
+		{
+			Zone zone = ZoneManager.zoneMap.get(child);
+			intersects = zone.contains(p);
+
+			if (!intersects)
+				intersects = zone.hasChildThatContains(p);
+
+			if (intersects)
+				return true;
+		}
+
+		return intersects;
+	}
+
 	@Override
 	public int compareTo(Object o)
 	{
@@ -117,14 +180,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		else if (isParentOf(zone))
 			return 100;
 		else
-		{
-			int priority = this.priority - zone.priority;
-
-			if (priority == 0)
-				return childStatus - zone.childStatus;
-			else
-				return priority;
-		}
+			return priority - zone.priority;
 	}
 
 	/**
