@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.core.Localization;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -34,7 +35,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 				radius = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
+				OutputHandler.chatError(sender, Localization.get("message.error.nan"));
 			}
 		} else if (args.length == 4)
 		{
@@ -46,7 +47,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 				centerZ = Double.parseDouble(args[3]);
 			} catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
+				OutputHandler.chatError(sender, Localization.get("message.error.nan"));
 			}
 		}
 
@@ -59,8 +60,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 			counter++;
 			entity.setDead();
 		}
-
-		OutputHandler.chatConfirmation(sender, counter + " item" + (counter == 1 ? "" : "s") + " removed");
+		OutputHandler.chatConfirmation(sender, counter + Localization.get("message.removed"));
 
 	}
 

@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.core.Localization;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -36,7 +37,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 				radius = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
+				OutputHandler.chatError(sender, Localization.get("message.error.nan"));
 			}
 		} else if (args.length == 4)
 		{
@@ -48,7 +49,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 				centerZ = Double.parseDouble(args[3]);
 			} catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
+				OutputHandler.chatError(sender, Localization.get("message.error.nan"));
 			}
 		}
 
@@ -68,8 +69,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 			counter++;
 			entity.setDead();
 		}
-
-		OutputHandler.chatConfirmation(sender, counter + " enem" + (counter == 1 ? "y" : "ies") + " killed");
+		OutputHandler.chatConfirmation(sender, counter + Localization.get("message.butchered"));
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties version="1.0">
-	<comment>English (US) Localization File</comment>
+	<comment>English (US) Localization File, &lt; is the less than or left arrow sign</comment>
 	<entry key="command.motd.syntax.console">/motd [new motd]</entry>
 	<entry key="command.motd.syntax.player">/motd [new motd]</entry>
 	<entry key="command.motd.info.console">Get/set the message of the day</entry>
@@ -18,13 +18,13 @@
 	<entry key="command.remove.syntax.player">/remove [radius] [&lt;x> &lt;y> &lt;z>]</entry>
 	<entry key="command.remove.info.player">Remove all item entities around you/the specifies point within the radius</entry>
 	
-	<entry key="command.kill.syntax.console">/kill <player></entry>
+	<entry key="command.kill.syntax.console">/kill &lt;player></entry>
 	<entry key="command.kill.syntax.player">/kill [player]</entry>
 	<entry key="command.kill.info.console">Kill the specified player</entry>
 	<entry key="command.kill.info.player">Kill yourself or the specified player</entry>
 	
-	<entry key="command.smite.syntax.console">/smite <player></entry>
-	<entry key="command.smite.syntax.player">/smite [me|<player>]</entry>
+	<entry key="command.smite.syntax.console">/smite &lt;player></entry>
+	<entry key="command.smite.syntax.player">/smite [me|&lt;player>]</entry>
 	<entry key="command.smite.info.console">Strike the specified player with lightning</entry>
 	<entry key="command.smite.info.player">Strike where you are looking, yourself, or another player with lightning</entry>
 	
@@ -37,6 +37,16 @@
 	<entry key="command.restart.syntax.console">/restart</entry>
 	<entry key="command.restart.info.console">Restart the server</entry>
 	
-	<entry key="command.serverdo.syntax.player">/serverdo <command> [arg1]...</entry>
+	<entry key="command.serverdo.syntax.player">/serverdo &lt;command> [arg1]...</entry>
 	<entry key="command.serverdo.info.player">Run a console command as a player</entry>
+	
+	<entry key="message.butchered"> enemies killed</entry>
+	<entry key="message.removed"> items removed</entry>
+	<entry key="message.killed">You were killed. You probably deserved it.</entry>
+	
+	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
+	<entry key="message.error.noplayer">That player does not exist.</entry>
+	<entry key="message.error.nan">That wasn't a number. Try again, you can do it.</entry>
+	<entry key="message.error.nodeathpoint">You have not died yet.</entry>
+	<entry key="message.error.nohome">No home set. Try this: </entry>
 </properties>

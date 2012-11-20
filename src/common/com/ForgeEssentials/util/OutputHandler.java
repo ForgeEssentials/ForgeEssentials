@@ -2,8 +2,11 @@ package com.ForgeEssentials.util;
 
 import java.util.logging.Logger;
 
+import com.ForgeEssentials.core.Localization;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ICommandSender;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
@@ -34,13 +37,16 @@ public final class OutputHandler
 	public static final String UNDERLINE = "\u00a7n";
 	public static final String ITALICS = "\u00a7o";
 	public static final String RESET = "\u00a7r";
-	
-	public static Logger felog  = Logger.getLogger("Forge Essentials");
-	
+
+	public static Logger felog = Logger.getLogger("Forge Essentials");
+
 	/**
 	 * outputs a message in red text to the chat box of the given player.
-	 * @param msg the message to be chatted
-	 * @param player player to chat to.
+	 * 
+	 * @param msg
+	 *            the message to be chatted
+	 * @param player
+	 *            player to chat to.
 	 */
 	public static void chatError(EntityPlayer player, String msg)
 	{
@@ -49,8 +55,11 @@ public final class OutputHandler
 
 	/**
 	 * outputs a message in bright green to the chat box of the given player.
-	 * @param msg the message to be chatted
-	 * @param player player to chat to.
+	 * 
+	 * @param msg
+	 *            the message to be chatted
+	 * @param player
+	 *            player to chat to.
 	 */
 	public static void chatConfirmation(EntityPlayer player, String msg)
 	{
@@ -59,7 +68,9 @@ public final class OutputHandler
 
 	/**
 	 * outputs a string to the console if the code is in MCP
-	 * @param msg message to be outputted
+	 * 
+	 * @param msg
+	 *            message to be outputted
 	 */
 	public static void debug(Object msg)
 	{
@@ -69,7 +80,9 @@ public final class OutputHandler
 
 	/**
 	 * outputs a string to the console. Messages here are also logged.
-	 * @param msg message to be outputted
+	 * 
+	 * @param msg
+	 *            message to be outputted
 	 */
 	public static void SOP(Object msg)
 	{
@@ -77,13 +90,13 @@ public final class OutputHandler
 			MinecraftServer.getServer().sendChatToPlayer("{Forge Essentials} " + msg);
 		else
 			System.out.println("{Forge Essentials} " + msg);
-		
-		felog.info(""+msg);
+
+		felog.info("" + msg);
 	}
-	
+
 	public static void logConfigChange(String category, String prop, String oldVal, String newVal)
 	{
-		SOP("Config Changed: "+prop+" under "+"category"+" changed from "+oldVal+" to "+newVal);
+		SOP("Config Changed: " + prop + " under " + "category" + " changed from " + oldVal + " to " + newVal);
 	}
 
 }

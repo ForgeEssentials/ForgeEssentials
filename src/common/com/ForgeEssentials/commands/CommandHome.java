@@ -1,6 +1,7 @@
 package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.AreaSelector.Point;
+import com.ForgeEssentials.core.Localization;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.OutputHandler;
@@ -30,13 +31,13 @@ public class CommandHome extends ForgeEssentialsCommandBase
 				PlayerInfo.getPlayerInfo(sender).home = new Point(new Integer(args[0]), new Integer(args[1]), new Integer(args[2]));
 			} catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender, "That won't work. try " + getSyntaxPlayer(sender));
+				OutputHandler.chatError(sender, Localization.get("message.error.nan"));
 			}
 		} else
 		{
 			Point home = PlayerInfo.getPlayerInfo(sender).home;
 			if (home == null)
-				OutputHandler.chatError(sender, "No home set. Try " + getSyntaxPlayer(sender));
+				OutputHandler.chatError(sender, Localization.get("message.error.nohome") + getSyntaxPlayer(sender));
 			else
 				((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(home.x, home.y, home.z, sender.rotationYaw, sender.rotationPitch);
 		}

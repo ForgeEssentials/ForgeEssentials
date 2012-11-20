@@ -4,6 +4,7 @@ import net.minecraft.src.DamageSource;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
+import com.ForgeEssentials.core.Localization;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -27,13 +28,13 @@ public class CommandKill extends ForgeEssentialsCommandBase
 			if (victim != null)
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				sender.sendChatToPlayer("Woops, you died. My bad.");
+				victim.sendChatToPlayer(Localization.get("message.killed"));
 			} else
-				OutputHandler.chatError(sender, "That player does not exist.");
+				sender.sendChatToPlayer(Localization.get("message.error.noplayer"));
 		} else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
-			sender.sendChatToPlayer("Woops, you died. My bad.");
+			sender.sendChatToPlayer(Localization.get("message.killed"));
 		}
 	}
 
@@ -46,11 +47,11 @@ public class CommandKill extends ForgeEssentialsCommandBase
 			if (victim != null)
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				sender.sendChatToPlayer("Woops, you died. My bad.");
+				victim.sendChatToPlayer(Localization.get("message.killed"));
 			} else
-				sender.sendChatToPlayer("That player does not exist.");
+				sender.sendChatToPlayer(Localization.get("message.error.noplayer"));
 		} else
-			sender.sendChatToPlayer("You must specify a player.");
+			sender.sendChatToPlayer(Localization.get("message.error.badsyntax") + getSyntaxConsole());
 	}
 
 	@Override
