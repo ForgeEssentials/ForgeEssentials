@@ -4,9 +4,9 @@ The Forge Essentials project consists of a permissions and protection system to 
 
 Setup
 =====
-Minecraft: 1.4.4  
-MCP: 7.21  
-Forge: #372
+Minecraft: 1.4.5b (yes, a patch to 1.4.5)  
+MCP: 7.23  
+Forge: #393 (later builds may work, there is no Forge RB for 1.4.5b yet)
 
 Get the mentioned Forge and MCP, and decompile (using install.cmd/sh). Once you have a working Forge workspace, pull the repo into that MCP folder.
 When more than one contributor is online, we use Saros to collaborate.
@@ -17,7 +17,7 @@ Eclipse Juno with Saros setup: <a href="https://dl.dropbox.com/u/20748481/eclips
 
 Eclipse formatting profile: <a href="https://dl.dropbox.com/u/31042110/AbrarEclipseFormatter.xml">Eclipse Formatter File</a>
 
-Builds: <a href="http://files.minecraftforge.net/ForgeEssentials/">Jenkins Build System</a>
+Builds: <a href="http://files.minecraftforge.net/ForgeEssentials/">Jenkins Build System</a> (currently broken)
 
 
 FE Team Members:
