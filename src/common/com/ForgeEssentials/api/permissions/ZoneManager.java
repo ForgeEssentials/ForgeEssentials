@@ -2,6 +2,7 @@ package com.ForgeEssentials.api.permissions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import net.minecraft.src.World;
 import net.minecraft.src.WorldInfo;
@@ -22,7 +23,7 @@ public class ZoneManager
 	{
 		GLOBAL = new Zone("_GLOBAL_");
 		worldZoneMap = new HashMap<String, Zone>();
-		zoneMap = new HashMap<String, Zone>();
+		zoneMap = new TreeMap<String, Zone>();
 	}
 
 	// ----------------------------------------------
@@ -64,7 +65,7 @@ public class ZoneManager
 	// ----------------------------------------------
 
 	// normal zone map. WorldZones and Globals are not included.
-	public static HashMap<String, Zone>	zoneMap;
+	public static TreeMap<String, Zone>	zoneMap;
 
 	public static void deleteZone(String zoneID)
 	{

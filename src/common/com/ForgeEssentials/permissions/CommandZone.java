@@ -1,8 +1,13 @@
 package com.ForgeEssentials.permissions;
 
+import java.util.Set;
+import java.util.SortedSet;
+
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandZone extends ForgeEssentialsCommandBase
@@ -17,7 +22,27 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		// do something.
+		switch(args.length)
+		{
+			case 1:
+			{
+				if (args[0].equalsIgnoreCase("list"))
+				{
+					Set<String> set = ZoneManager.zoneMap.keySet();
+					sender.sendChatToPlayer(" -- Zones List -- (1/"+((set.size()/15)+1)+")");
+					int itterrator = 0;
+					for (String zone : set)
+					{
+						if (itterrator == 15)
+							break;
+						sender.sendChatToPlayer(" -"+zone);
+					}
+					return;
+				}
+				else
+					error(sender);
+			}
+		}
 	}
 
 	@Override
