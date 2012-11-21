@@ -2,9 +2,13 @@ package com.ForgeEssentials.core;
 
 import java.io.File;
 
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.WorldEvent;
+
 import com.ForgeEssentials.client.network.HandlerClient;
 import com.ForgeEssentials.core.config.FEConfig;
 import com.ForgeEssentials.network.HandlerServer;
+import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.LibraryDetector;
 import com.ForgeEssentials.util.Version;
 
@@ -14,11 +18,13 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.Mod.ServerStarting;
+import cpw.mods.fml.common.Mod.ServerStopping;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -88,6 +94,18 @@ public class ForgeEssentials
 	{
 		mdlaunch.serverStarting(e);
 		ModListFile.makeModList();
+		DataStorage.load();
 	}
-
+	
+	@ServerStopping
+	public void serverStopping(FMLServerStoppingEvent event)
+	{
+		DataStorage.save();
+	}
+	
+	@ForgeSubscribe
+	public void chuckSave(WorldEvent.Save event)
+	{
+		DataStorage.save();
+	}
 }
