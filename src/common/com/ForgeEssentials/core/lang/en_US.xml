@@ -57,6 +57,8 @@
 	<entry key="message.error.noselection">Thats an invalid selection. Select something first.</entry>
 	<entry key="message.error.permdenied">You are not allowed to do that.</entry>
 	
+	<entry key="message.done">Done!</entry>
+	
 	<entry key="command.modlist.header">--- Showing the modlist page %p of %t ---</entry>
 	<entry key="command.modlist.syntax.console">/modlist [page]</entry>
 	<entry key="command.modlist.syntax.player">/modlist [page]</entry>
@@ -117,9 +119,6 @@
 	<entry key="message.error.nan">That wasn't a number. Try again, you can do it.</entry>
 	<entry key="message.error.nodeathpoint">You have not died yet.</entry>
 	<entry key="message.error.nohome">No home set. Try this: </entry>
-	
-	<entry key="message.error.nopermisison">You don't have permission to do that!</entry>
-	<entry key="message.done">Done!</entry>
 	
 	<entry key="command.modlist.header">--- Showing the modlist page %p of %t ---</entry>
 	<entry key="command.modlist.syntax.console">/modlist [page]</entry>

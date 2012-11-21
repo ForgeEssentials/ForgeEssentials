@@ -57,7 +57,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get("message.error.nopermisison"));
+					OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
 				}
 			}
 			else
@@ -107,7 +107,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get("message.error.nopermisison"));
+				OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
 			}
 		}
 		else
