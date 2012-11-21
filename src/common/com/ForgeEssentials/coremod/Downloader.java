@@ -2,6 +2,8 @@ package com.ForgeEssentials.coremod;
 
 import cpw.mods.fml.relauncher.ILibrarySet;
 
+//Kindly do not reference any FE classes outside the coremod package in this class.
+
 public class Downloader implements ILibrarySet{
 
 	private static String[] libraries = { "WorldEdit.jar, WorldGuard.jar" };

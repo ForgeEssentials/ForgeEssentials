@@ -2,15 +2,13 @@ package com.ForgeEssentials.coremod;
 
 import java.util.Arrays;
 
-import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.LoadController;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModMetadata;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+
+// Kindly do not reference any FE classes outside the coremod package in this class.
 
 public class FEModContainer extends DummyModContainer {
         
