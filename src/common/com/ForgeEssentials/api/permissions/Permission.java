@@ -21,7 +21,9 @@ public class Permission extends PermissionChecker
 		if (perm != null)
 			return perm.allowed;
 		else
-			return Result.DENY;
+		{
+			return getPermissionDefault((new PermissionChecker(name).getImmediateParent()));
+		}
 	}
 
 	/**

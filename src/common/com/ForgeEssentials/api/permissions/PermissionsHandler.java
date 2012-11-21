@@ -39,13 +39,23 @@ public final class PermissionsHandler
 		if (event.getClass().getName().equals(PermQueryArea.class.getName()))
 		{
 			PermQueryArea eArea = (PermQueryArea) event;
-			eArea.applicable = getApplicableZones(eArea.permission, eArea.doer, eArea.doneTo);
-			if (eArea.applicable == null)
-				eArea.setResult(Result.DENY);
-			else if (eArea.applicable.isEmpty())
-				eArea.setResult(Result.ALLOW);
+			
+			if (eArea.allOrNothing)
+			{
+				Zone zone = ZoneManager.getWhichZoneIn(eArea.doneTo, event.doer.worldObj);
+				Result result = getResultFromZone(zone, event.permission, event.doer);
+				event.setResult(result);
+			}
 			else
-				eArea.setResult(Result.DEFAULT);
+			{
+				eArea.applicable = getApplicableZones(eArea.permission, eArea.doer, eArea.doneTo);
+				if (eArea.applicable == null)
+					eArea.setResult(Result.DENY);
+				else if (eArea.applicable.isEmpty())
+					eArea.setResult(Result.ALLOW);
+				else
+					eArea.setResult(Result.DEFAULT);
+			}
 		}
 		else
 		{
@@ -79,7 +89,7 @@ public final class PermissionsHandler
 				if (tempZone == ZoneManager.GLOBAL)
 					result = Permission.getPermissionDefault(perm.name);
 				else
-					tempZone = tempZone.parent;
+					tempZone = tempZone.getParent();
 		}
 		return result;
 	}

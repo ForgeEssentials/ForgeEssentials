@@ -18,13 +18,15 @@ import com.ForgeEssentials.AreaSelector.Selection;
 public class PermQueryArea extends PermQueryPlayer
 {
 	public ArrayList<AreaBase>	applicable;
-	public AreaBase				doneTo;
+	public final AreaBase				doneTo;
+	public final boolean allOrNothing;
 
-	public PermQueryArea(EntityPlayer player, String permission, AreaBase doneTo)
+	public PermQueryArea(EntityPlayer player, String permission, AreaBase doneTo, boolean allOrNothing)
 	{
 		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = doneTo;
+		this.allOrNothing = allOrNothing;
 	}
 	
 	public PermQueryArea(EntityPlayer player, String permission, Point doneTo)
@@ -32,6 +34,7 @@ public class PermQueryArea extends PermQueryPlayer
 		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = new Selection(doneTo, doneTo);
+		allOrNothing = true;
 	}
 
 	/**

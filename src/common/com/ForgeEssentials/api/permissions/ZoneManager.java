@@ -70,7 +70,12 @@ public class ZoneManager
 	public static void deleteZone(String zoneID)
 	{
 		Zone zone = zoneMap.remove(zoneID);
-		zone.parent.children.remove(zoneID);
+		zone.getParent().children.remove(zoneID);
+		for (String children : zone.children)
+		{
+			Zone child = zoneMap.get("children");
+			child.setParent(zone.getParent());
+		}
 	}
 
 	public static boolean createZone(String zoneID, Selection sel, World world)
@@ -112,6 +117,44 @@ public class ZoneManager
 		for (Zone zone : zoneMap.values())
 			if (zone.contains(p1) && worldZone.isParentOf(zone))
 				if (zone.hasChildThatContains(p1))
+					continue;
+				else
+					zones.add(zone);
+
+
+		switch (zones.size())
+			{
+			// no children of the world? return the worldZone
+				case 0:
+					return worldZone;
+					// only 1 usable Zone? use it.
+				case 1:
+					return zones.get(0);
+
+					// else.. narrow it down
+				default:
+					{
+						// get the one with the highest priority
+						Zone priority = null;
+
+						for (Zone zone : zones)
+							if (priority == null || priority.compareTo(zone) < 0)
+								priority = zone;
+
+						return priority;
+					}
+			}
+	}
+	
+	public static Zone getWhichZoneIn(AreaBase area, World world)
+	{
+		Zone worldZone = getWorldZone(world);
+		ArrayList<Zone> zones = new ArrayList<Zone>();
+
+		// add all zones this point is in...
+		for (Zone zone : zoneMap.values())
+			if (zone.contains(area) && worldZone.isParentOf(zone))
+				if (zone.hasChildThatContains(area))
 					continue;
 				else
 					zones.add(zone);

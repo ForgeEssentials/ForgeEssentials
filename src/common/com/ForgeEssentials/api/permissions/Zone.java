@@ -21,7 +21,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 
 	public int											priority;										// lowest priority is 0
 	private String										zoneID;										// unique string name
-	protected Zone										parent;										// the unique name of the parent.
+	private Zone										parent;										// the unique name of the parent.
 	protected ArrayList<String>							children;										// list of all children of this zone
 	private String										worldString;									// the WorldString of world this zone exists in.
 	public final boolean								isWorldZone;									// flag for WorldZones
@@ -181,6 +181,18 @@ public class Zone extends AreaBase implements Comparable, Serializable
 			return 100;
 		else
 			return priority - zone.priority;
+	}
+	
+	public Zone getParent()
+	{
+		return parent;
+	}
+	
+	public void setParent(Zone parent)
+	{
+		this.parent.children.remove(zoneID);
+		this.parent = parent;
+		this.parent.children.add(zoneID);
 	}
 
 	/**
