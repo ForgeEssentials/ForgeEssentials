@@ -189,7 +189,7 @@ public class Configuration
 
 	public Property get(String category, String key, int defaultValue)
 	{
-		Property prop = get(category, key, new String[] { Integer.toString(defaultValue) }, INTEGER);
+		Property prop = get(category, key, Integer.toString(defaultValue), INTEGER);
 		if (!prop.isIntValue())
 		{
 			prop.value = Integer.toString(defaultValue);
@@ -199,7 +199,7 @@ public class Configuration
 
 	public Property get(String category, String key, boolean defaultValue)
 	{
-		Property prop = get(category, key, new String[] { Boolean.toString(defaultValue) }, BOOLEAN);
+		Property prop = get(category, key, Boolean.toString(defaultValue), BOOLEAN);
 		if (!prop.isBooleanValue())
 		{
 			prop.value = Boolean.toString(defaultValue);
@@ -209,7 +209,7 @@ public class Configuration
 	
 	public Property get(String category, String key, double defaultValue)
 	{
-		Property prop = get(category, key, new String[] { Double.toString(defaultValue) }, DOUBLE);
+		Property prop = get(category, key, Double.toString(defaultValue), DOUBLE);
 		if (!prop.isDoubleValue())
 			prop.value = Double.toString(defaultValue);
 		return prop;
@@ -217,12 +217,88 @@ public class Configuration
 
 	public Property get(String category, String key, String defaultValue)
 	{
-		return get(category, key, new String[] { defaultValue }, STRING);
+		return get(category, key, defaultValue, STRING);
 	}
 
 	public Property get(String category, String key, String[] defaultValue)
 	{
-		return get(category, key, defaultValue, LIST);
+		return get(category, key, defaultValue, STRING);
+	}
+	
+	public Property get(String category, String key, int[] defaultValue)
+	{
+		String[] values = new String[defaultValue.length];
+		for (int i = 0; i < defaultValue.length; i++)
+			values[i] = Integer.toString(defaultValue[i]);
+		
+		Property prop =  get(category, key, values, INTEGER);
+		
+		if (!prop.isIntList())
+			prop.valueList = values;
+		
+		return prop;
+	}
+	
+	public Property get(String category, String key, double[] defaultValue)
+	{
+		String[] values = new String[defaultValue.length];
+		for (int i = 0; i < defaultValue.length; i++)
+			values[i] = Double.toString(defaultValue[i]);
+		
+		Property prop =  get(category, key, values, DOUBLE);
+		
+		if (!prop.isDoubleList())
+			prop.valueList = values;
+		
+		return prop;
+	}
+	
+	public Property get(String category, String key, boolean[] defaultValue)
+	{
+		String[] values = new String[defaultValue.length];
+		for (int i = 0; i < defaultValue.length; i++)
+			values[i] = Boolean.toString(defaultValue[i]);
+		
+		Property prop =  get(category, key, values, BOOLEAN);
+		
+		if (!prop.isBooleanList())
+			prop.valueList = values;
+		
+		return prop;
+	}
+	
+	public Property get(String category, String key, String defaultValue, Property.Type type)
+	{
+		if (!caseSensitiveCustomCategories)
+		{
+			category = category.toLowerCase(Locale.ENGLISH);
+		}
+		
+		Category source = getOrGenerateCategory(category);
+
+		if (source.properties.containsKey(key))
+		{
+			Property prop = source.properties.get(key);
+			
+			// check for missing type.
+			if (prop.getType() == null)
+			{
+				prop = new Property(prop.name, prop.value, type);
+				source.properties.put(key, prop);
+			}
+			
+			return prop;
+		}
+		else if (defaultValue != null)
+		{
+			Property prop = new Property(key, defaultValue, type);
+			source.properties.put(key, prop);
+			return prop;
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public Property get(String category, String key, String[] defaultValue, Property.Type type)
@@ -249,11 +325,7 @@ public class Configuration
 		}
 		else if (defaultValue != null)
 		{
-			Property prop;
-			if (type.equals(LIST))
-				prop = new Property(key, defaultValue);
-			else
-				prop = new Property(key, defaultValue[0], type);
+			Property prop = new Property(key, defaultValue, type);
 			source.properties.put(key, prop);
 			return prop;
 		}
@@ -422,9 +494,6 @@ public class Configuration
 												case 'D':
 													type = Type.DOUBLE;
 													break;
-												case 'L':
-													type = Type.LIST;
-													break;
 												default:
 													type = Type.STRING;
 													break;
@@ -434,6 +503,9 @@ public class Configuration
 										break;
 
 									case '<':
+										if (listProp != null)
+											throw new RuntimeException("malformed list property");
+										
 										tempName = line.substring(nameStart, nameEnd + 1);
 										listProp = new ArrayList<String>();
 
@@ -444,7 +516,9 @@ public class Configuration
 										break;
 
 									case '>':
-										Property prop1 = new Property(tempName, listProp.toArray(new String[listProp.size()]));
+										if (listProp == null)
+											throw new RuntimeException("malformed list property");
+										Property prop1 = new Property(tempName, listProp.toArray(new String[listProp.size()]), type);
 										currentCat.properties.put(tempName, prop1);
 										tempName = null;
 										type = null;
@@ -710,13 +784,13 @@ public class Configuration
 				propName = '"' + propName + '"';
 			}
 
-			if (property.getType().equals(Type.LIST))
+			if (property.isList)
 			{
 				writeListProperty(buffer, property, leftOffset);
 				continue;
 			}
 
-			buffer.write(offset + property.getType().getIDChar() + " : " + propName + " = " + property.value);
+			buffer.write(offset + property.getType().getIDChar() + ":" + propName + "=" + property.value);
 			buffer.newLine();
 			//.write("\r\n");
 		}
@@ -728,7 +802,7 @@ public class Configuration
 		String elementOffset = getOffsetString(leftOffset + 1);
 
 		// write main line.
-		buffer.write(offset + prop.getType().getIDChar() + " : " + prop.name + " <");
+		buffer.write(offset + prop.getType().getIDChar() + ":" + prop.name + " <");
 		buffer.newLine();
 
 		for (String line : prop.valueList)

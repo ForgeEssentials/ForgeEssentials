@@ -198,14 +198,13 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canConsoleUseCommand()
 	{
-		// TODO no command for this from the console.
 		return false;
 	}
 
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		return true;
+		return PermissionsHandler.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.zone"));
 	}
 
 	@Override
