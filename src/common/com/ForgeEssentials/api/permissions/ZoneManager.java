@@ -12,6 +12,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
+import com.ForgeEssentials.permissions.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
 
 public class ZoneManager
@@ -30,7 +31,7 @@ public class ZoneManager
 	// ------------ WorldZone stuff -----------------
 	// ----------------------------------------------
 
-	protected static HashMap<String, Zone>	worldZoneMap;
+	public static HashMap<String, Zone>	worldZoneMap;
 
 	// to load WorldZones
 	@ForgeSubscribe
@@ -70,12 +71,7 @@ public class ZoneManager
 	public static void deleteZone(String zoneID)
 	{
 		Zone zone = zoneMap.remove(zoneID);
-		zone.getParent().children.remove(zoneID);
-		for (String children : zone.children)
-		{
-			Zone child = zoneMap.get("children");
-			child.setParent(zone.getParent());
-		}
+		zone.delete();
 	}
 
 	public static boolean createZone(String zoneID, Selection sel, World world)

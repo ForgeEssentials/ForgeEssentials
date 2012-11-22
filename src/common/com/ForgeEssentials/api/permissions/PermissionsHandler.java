@@ -10,6 +10,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.permissions.Zone;
 
 /**
  * 

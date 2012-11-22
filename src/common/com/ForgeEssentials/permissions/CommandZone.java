@@ -9,7 +9,6 @@ import net.minecraft.src.ICommandSender;
 import com.ForgeEssentials.api.permissions.PermQueryArea;
 import com.ForgeEssentials.api.permissions.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.PermissionsHandler;
-import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.Localization;
 import com.ForgeEssentials.core.PlayerInfo;

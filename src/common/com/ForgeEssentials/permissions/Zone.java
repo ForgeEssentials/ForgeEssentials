@@ -1,8 +1,9 @@
-package com.ForgeEssentials.api.permissions;
+package com.ForgeEssentials.permissions;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.HashMap;
+import java.util.Set;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
@@ -11,6 +12,9 @@ import net.minecraftforge.event.Event.Result;
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
+import com.ForgeEssentials.api.permissions.Permission;
+import com.ForgeEssentials.api.permissions.PermissionChecker;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 
 public class Zone extends AreaBase implements Comparable, Serializable
 {
@@ -22,14 +26,14 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	public int											priority;										// lowest priority is 0
 	private String										zoneID;										// unique string name
 	private Zone										parent;										// the unique name of the parent.
-	protected ArrayList<String>							children;										// list of all children of this zone
+	protected HashSet<String>							children;										// list of all children of this zone
 	private String										worldString;									// the WorldString of world this zone exists in.
 	public final boolean								isWorldZone;									// flag for WorldZones
 	public final boolean								isGlobalZone;									// flag for GLOBAL zones
 
 	// permission maps
-	protected HashMap<String, ArrayList<Permission>>	playerOverrides;								// <username, perm list>
-	protected HashMap<String, ArrayList<Permission>>	groupPerms;									// <groupName, perm list>
+	protected HashMap<String, HashSet<Permission>>	playerOverrides;								// <username, perm list>
+	protected HashMap<String, HashSet<Permission>>	groupOverrides;									// <groupName, perm list>
 
 	public Zone(String ID, Selection sel, Zone parent)
 	{
@@ -78,9 +82,9 @@ public class Zone extends AreaBase implements Comparable, Serializable
 
 	private void initMaps()
 	{
-		playerOverrides = new HashMap<String, ArrayList<Permission>>();
-		groupPerms = new HashMap<String, ArrayList<Permission>>();
-		groupPerms.put("_DEFAULT_", new ArrayList<Permission>());
+		playerOverrides = new HashMap<String, HashSet<Permission>>();
+		groupOverrides = new HashMap<String, HashSet<Permission>>();
+		groupOverrides.put("_DEFAULT_", new HashSet<Permission>());
 	}
 
 	public boolean isParentOf(Zone zone)
@@ -194,6 +198,16 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		this.parent = parent;
 		this.parent.children.add(zoneID);
 	}
+	
+	public void delete()
+	{
+		parent.children.remove(zoneID);
+		for (String child : children)
+		{
+			Zone zone = ZoneManager.zoneMap.get(child);
+			zone.setParent(parent);
+		}
+	}
 
 	/**
 	 * Gets the result of a permission for a player in this area
@@ -203,9 +217,9 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	 */
 	public Result getPlayerOverride(EntityPlayer player, PermissionChecker check)
 	{
-		if (groupPerms.containsKey(player.username))
+		if (groupOverrides.containsKey(player.username))
 		{
-			ArrayList<Permission> perms = groupPerms.get(player.username);
+			HashSet<Permission> perms = groupOverrides.get(player.username);
 			Permission smallest = null;
 			for (Permission perm : perms)
 				if (check.equals(perm))
@@ -229,9 +243,9 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	 */
 	public Result getGroupOverride(String groupname, PermissionChecker check)
 	{
-		if (groupPerms.containsKey(groupname))
+		if (groupOverrides.containsKey(groupname))
 		{
-			ArrayList<Permission> perms = groupPerms.get(groupname);
+			HashSet<Permission> perms = groupOverrides.get(groupname);
 			Permission smallest = null;
 			for (Permission perm : perms)
 				if (check.equals(perm))
@@ -247,7 +261,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		// this zone doesn't contain this groupname. check for blankets.
 		else
 		{
-			ArrayList<Permission> perms = groupPerms.get("_DEFAULT_");
+			HashSet<Permission> perms = groupOverrides.get("_DEFAULT_");
 			Permission smallest = null;
 			for (Permission perm : perms)
 				if (check.equals(perm))
@@ -261,5 +275,15 @@ public class Zone extends AreaBase implements Comparable, Serializable
 				return smallest.allowed;
 		}
 		return Result.DEFAULT;
+	}
+	
+	public Set<String> getPlayersOverriden()
+	{
+		return playerOverrides.keySet();
+	}
+	
+	public Set<String> getGroupsOverriden()
+	{
+		return groupOverrides.keySet();
 	}
 }
