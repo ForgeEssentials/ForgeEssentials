@@ -16,13 +16,6 @@ import net.minecraft.src.NBTTagCompound;
 
 public class CommandWarp extends ForgeEssentialsCommandBase
 {
-	public CommandWarp()
-	{
-		super();
-		//TODO This needs to be false, but since you can set permissions yet...
-		PermissionsHandler.registerPermission(getCommandPerm() + "admin", true);
-	}
-
 	@Override
 	public String getCommandName()
 	{

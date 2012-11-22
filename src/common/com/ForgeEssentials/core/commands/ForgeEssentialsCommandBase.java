@@ -15,12 +15,6 @@ import net.minecraftforge.event.Event.Result;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
-	public ForgeEssentialsCommandBase()
-	{
-		super();
-		PermissionsHandler.registerPermission(this.getCommandPerm(), true);
-	}
-
 	// ---------------------------
 	// processing command
 	// ---------------------------

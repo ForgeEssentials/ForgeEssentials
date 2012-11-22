@@ -154,25 +154,4 @@ public final class PermissionsHandler
 		MinecraftForge.EVENT_BUS.post(query);
 		return query.getResult();
 	}
-
-	/**
-	 * Parent permissions need not be registerred.
-	 * @param permName Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
-	 * @param allow True if the permission is allowed by default
-	 */
-	public static void registerPermission(String permName, boolean allow)
-	{
-		Permission perm = new Permission(permName, allow);
-		Permission.addDefaultPermission(perm);
-	}
-
-	/**
-	 * This does NOT automatically register parents.
-	 * @param perm Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
-	 */
-	public static void registerPermission(Permission perm)
-	{
-		assert !perm.allowed.equals(Result.DEFAULT) : new IllegalArgumentException("You cannot register a permission with a default value of DEFAULT!");
-		Permission.addDefaultPermission(perm);
-	}
 }

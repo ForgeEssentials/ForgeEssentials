@@ -8,14 +8,16 @@ import com.ForgeEssentials.util.LibraryDetector;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**
  * Initialize modules here. Yes. HERE. NOT ForgeEssentials.java!
  */
 
-public class ModuleLauncher
+public class ModuleLauncher implements IFEModule
 {
 	public CoreCommands corecmd;
 
@@ -60,6 +62,12 @@ public class ModuleLauncher
 		if (permsEnabled)
 			permission.load(e);
 	}
+	
+	@Override
+	public void postLoad(FMLPostInitializationEvent e)
+	{
+		
+	}
 
 	public void serverStarting(FMLServerStartingEvent e)
 	{
@@ -73,6 +81,12 @@ public class ModuleLauncher
 		
 		if (permsEnabled)
 			permission.serverStarting(e);
+	}
+
+	@Override
+	public void serverStarted(FMLServerStartedEvent e)
+	{
+		
 	}
 
 }
