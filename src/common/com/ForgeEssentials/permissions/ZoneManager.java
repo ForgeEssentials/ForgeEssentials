@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.permissions;
+package com.ForgeEssentials.permissions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
-import com.ForgeEssentials.permissions.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
 
 public class ZoneManager

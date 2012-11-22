@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.permissions;
+package com.ForgeEssentials.permissions;
 
 import java.util.HashMap;
 

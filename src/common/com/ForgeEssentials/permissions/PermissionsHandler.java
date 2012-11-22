@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.permissions;
+package com.ForgeEssentials.permissions;
 
 import java.util.ArrayList;
 
@@ -9,8 +9,9 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.AreaSelector.AreaBase;
+import com.ForgeEssentials.api.permissions.PermQueryArea;
+import com.ForgeEssentials.api.permissions.PermQueryPlayer;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.permissions.Zone;
 
 /**
  * 
@@ -141,17 +142,5 @@ public final class PermissionsHandler
 			}
 
 		return applicable;
-	}
-
-	public static boolean checkPermAllowed(PermQueryPlayer query)
-	{
-		MinecraftForge.EVENT_BUS.post(query);
-		return query.getResult().equals(Result.ALLOW);
-	}
-
-	public static Result checkPermResult(PermQueryPlayer query)
-	{
-		MinecraftForge.EVENT_BUS.post(query);
-		return query.getResult();
 	}
 }

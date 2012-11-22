@@ -2,7 +2,7 @@ package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.api.permissions.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.PermissionsHandler;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.core.Localization;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
@@ -43,7 +43,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		{
 			if(warpdata.hasKey(args[0].toLowerCase()))
 			{
-				if(PermissionsHandler.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+				if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					NBTTagCompound warp = warpdata.getCompoundTag(args[0].toLowerCase());
 					((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(warp.getDouble("X"), warp.getDouble("Y"), warp.getDouble("Z"), warp.getFloat("Yaw"), warp.getFloat("Pitch"));
@@ -60,7 +60,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		}
 		else if(args.length == 2)
 		{
-			if(PermissionsHandler.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
 			{
 				if(args[0].equalsIgnoreCase("set"))
 				{

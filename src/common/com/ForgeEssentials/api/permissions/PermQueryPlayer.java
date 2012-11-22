@@ -3,6 +3,8 @@ package com.ForgeEssentials.api.permissions;
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
+import com.ForgeEssentials.permissions.Permission;
+import com.ForgeEssentials.permissions.PermissionChecker;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraftforge.event.Event;

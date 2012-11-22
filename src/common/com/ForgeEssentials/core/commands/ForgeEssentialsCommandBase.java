@@ -2,8 +2,9 @@ package com.ForgeEssentials.core.commands;
 
 import com.ForgeEssentials.api.permissions.PermQueryArea;
 import com.ForgeEssentials.api.permissions.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.PermissionsHandler;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.core.Localization;
+import com.ForgeEssentials.permissions.PermissionsHandler;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.src.CommandBase;
@@ -147,7 +148,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
-		return PermissionsHandler.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
 	public abstract String getCommandPerm();

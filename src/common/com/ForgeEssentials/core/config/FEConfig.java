@@ -2,12 +2,12 @@ package com.ForgeEssentials.core.config;
 
 import java.io.File;
 
-import com.ForgeEssentials.api.permissions.Permission;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.permissions.ModulePermissions;
+import com.ForgeEssentials.permissions.Permission;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class FEConfig

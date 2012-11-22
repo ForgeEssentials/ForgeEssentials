@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.permissions;
+package com.ForgeEssentials.permissions;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
@@ -42,5 +42,10 @@ public class FEPermissionRegisterEvent
 		
 		Permission perm = new Permission(permName, allow);
 		Permission.addDefaultPermission(perm);
+	}
+	
+	public boolean isRegisterring()
+	{
+		return isRegisterring();
 	}
 }

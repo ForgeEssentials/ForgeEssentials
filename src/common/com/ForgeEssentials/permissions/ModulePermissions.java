@@ -1,8 +1,7 @@
 package com.ForgeEssentials.permissions;
 
-import com.ForgeEssentials.api.permissions.FEPermissionRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsHandler;
-import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.api.permissions.IPermissionsRegister;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -16,7 +15,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-public class ModulePermissions implements IFEModule
+public class ModulePermissions implements IFEModule, IPermissionsRegister
 {
 	public static PermissionsConfig		config;
 	public static PermissionsHandler	pHandler;
@@ -36,8 +35,12 @@ public class ModulePermissions implements IFEModule
 	public void load(FMLInitializationEvent e)
 	{
 		OutputHandler.SOP("Starting permissions registration period.");
+		
+		PermissionsAPI.registerPermissionsRegistrar(this);
+		
 		permEvent = new FEPermissionRegisterEvent();
 		pHandler = new PermissionsHandler();
+		
 		MinecraftForge.EVENT_BUS.register(pHandler);
 	}
 
@@ -46,6 +49,12 @@ public class ModulePermissions implements IFEModule
 	{
 		OutputHandler.SOP("Ending permissions registration period.");
 		permEvent.endPermissionRegistration(this);
+		
+		for (IPermissionsRegister register : PermissionsAPI.registers)
+			register.registerPermissions(permEvent);
+		
+		PermissionsAPI.registers = null;
+		
 		config = new PermissionsConfig();
 		// TODO Auto-generated method stub
 
@@ -54,7 +63,8 @@ public class ModulePermissions implements IFEModule
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-
+		e.registerServerCommand(new CommandZone());
+		e.registerServerCommand(new CommandFEPerm());
 	}
 
 	@Override
@@ -62,6 +72,16 @@ public class ModulePermissions implements IFEModule
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void registerPermissions(FEPermissionRegisterEvent event)
+	{
+		event.registerGlobalPermission("ForgeEssentials.permissions.zone.list", true);
+		event.registerGlobalPermission("ForgeEssentials.permissions.zone.define", true);
+		event.registerGlobalPermission("ForgeEssentials.permissions.zone.remove", true);
+		event.registerGlobalPermission("ForgeEssentials.permissions.zone.redefine", true);
+		event.registerGlobalPermission("ForgeEssentials.permissions.zone.setparent", true);
 	}
 
 }

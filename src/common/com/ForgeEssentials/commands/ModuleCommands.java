@@ -1,9 +1,10 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.api.permissions.FEPermissionRegisterEvent;
 import com.ForgeEssentials.api.permissions.IPermissionsRegister;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
+import com.ForgeEssentials.permissions.FEPermissionRegisterEvent;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -34,7 +35,7 @@ public class ModuleCommands implements IFEModule, IPermissionsRegister
 	// load.
 	public void load(FMLInitializationEvent e)
 	{
-		
+		PermissionsAPI.registerPermissionsRegistrar(this);
 	}
 	
 	@Override

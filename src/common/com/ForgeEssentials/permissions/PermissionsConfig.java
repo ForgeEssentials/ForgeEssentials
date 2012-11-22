@@ -5,9 +5,6 @@ import java.util.HashSet;
 
 import net.minecraftforge.event.Event.Result;
 
-import com.ForgeEssentials.api.permissions.Permission;
-import com.ForgeEssentials.api.permissions.PermissionChecker;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.config.Category;
 import com.ForgeEssentials.core.config.Configuration;

@@ -4,7 +4,7 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
 import com.ForgeEssentials.api.permissions.PermQueryArea;
-import com.ForgeEssentials.api.permissions.PermissionsHandler;
+import com.ForgeEssentials.permissions.PermissionsHandler;
 import com.ForgeEssentials.util.Version;
 
 public class CommandFEVersion extends ForgeEssentialsCommandBase

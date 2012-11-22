@@ -12,9 +12,6 @@ import net.minecraftforge.event.Event.Result;
 import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
-import com.ForgeEssentials.api.permissions.Permission;
-import com.ForgeEssentials.api.permissions.PermissionChecker;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 
 public class Zone extends AreaBase implements Comparable, Serializable
 {

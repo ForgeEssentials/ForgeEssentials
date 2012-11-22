@@ -1,9 +1,8 @@
-package com.ForgeEssentials.api.permissions;
+package com.ForgeEssentials.permissions;
 
 import java.util.HashMap;
 
 import com.ForgeEssentials.core.config.FEConfig;
-import com.ForgeEssentials.permissions.ModulePermissions;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraftforge.event.Event.Result;
