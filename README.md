@@ -17,8 +17,7 @@ Eclipse Juno with Saros setup: <a href="https://dl.dropbox.com/u/20748481/eclips
 
 Eclipse formatting profile: <a href="https://dl.dropbox.com/u/31042110/AbrarEclipseFormatter.xml">Eclipse Formatter File</a>
 
-Builds: <a href="http://files.minecraftforge.net/ForgeEssentials/">Jenkins Build System</a> (currently broken)
-
+Builds: <a href="http://files.minecraftforge.net/ForgeEssentials/">Jenkins Build System</a>
 
 FE Team Members:
 ================
