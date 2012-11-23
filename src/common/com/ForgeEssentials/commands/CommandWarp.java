@@ -9,6 +9,8 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ICommandSender;
@@ -21,8 +23,6 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	{
 		return "warp";
 	}
-	
-	//TODO implement dimention changing!!
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
@@ -46,6 +46,10 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 				if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					NBTTagCompound warp = warpdata.getCompoundTag(args[0].toLowerCase());
+					if(sender.dimension != warp.getInteger("dim"))
+					{
+						FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP)sender, warp.getInteger("dim"));
+					}
 					((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(warp.getDouble("X"), warp.getDouble("Y"), warp.getDouble("Z"), warp.getFloat("Yaw"), warp.getFloat("Pitch"));
 				}
 				else
@@ -76,6 +80,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 							warp.setDouble("Z", sender.posZ);
 							warp.setFloat("Yaw", sender.rotationYaw);
 							warp.setFloat("Pitch", sender.rotationPitch);
+							warp.setInteger("dim", sender.dimension);
 						warpdata.setCompoundTag(args[1].toLowerCase(), warp);
 						
 						OutputHandler.chatConfirmation(sender, Localization.get("message.done"));
