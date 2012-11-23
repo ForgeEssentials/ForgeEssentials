@@ -18,7 +18,13 @@ public class Permission extends PermissionChecker
 	{
 		Permission perm = defaults.get(name);
 		if (perm != null)
+		{
 			return perm.allowed;
+		}
+		else if (name.isEmpty())
+		{
+			return Result.ALLOW;
+		}
 		else
 		{
 			return getPermissionDefault((new PermissionChecker(name).getImmediateParent()));
