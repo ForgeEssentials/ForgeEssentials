@@ -7,7 +7,11 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.commands.*;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.config.Configuration;
+import com.ForgeEssentials.core.config.FEConfig;
+import com.ForgeEssentials.core.config.Property;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Side;
@@ -25,6 +29,9 @@ public class ModuleWorldControl implements IFEModule
 	public static int defaultWandID;
 	public static boolean useExtraSlash;
 	public static ArrayList<WorldControlCommandBase> needsCompleteCommands = new ArrayList<WorldControlCommandBase>();
+	
+	// Some static fields for WorldControl config.
+	public static int WCblocksPerTick;
 
 	// preload.
 	public void preLoad(FMLPreInitializationEvent event)
@@ -37,6 +44,18 @@ public class ModuleWorldControl implements IFEModule
 	{
 		MinecraftForge.EVENT_BUS.register(new WandController());
 		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
+		
+		OutputHandler.SOP("WorldControl loading configuration...");
+		
+		Configuration conf = ForgeEssentials.config.config;
+		
+		conf.addCustomCategoryComment("WorldControl", "Properties used by WorldControl");
+		
+		Property prop = conf.get("WorldControl", "BlocksPerTick", 20);
+		prop.comment = "Specifies the maximum blocks/tick that can be changed via the WorldControl functions. Powerful computers may set higher, servers may want to keep it lower.";
+		ModuleWorldControl.WCblocksPerTick = prop.getInt();
+		
+		ForgeEssentials.config.config.save();
 	}
 	
 	@Override
@@ -55,6 +74,7 @@ public class ModuleWorldControl implements IFEModule
 		e.registerServerCommand(new CommandSet());
 		e.registerServerCommand(new CommandRedo());
 		e.registerServerCommand(new CommandUndo());
+		e.registerServerCommand(new CommandReplace());
 	}
 
 	@Override

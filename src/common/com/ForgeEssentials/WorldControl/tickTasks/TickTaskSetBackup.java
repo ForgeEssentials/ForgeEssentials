@@ -7,6 +7,7 @@ import net.minecraft.src.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
+import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class TickTaskSetBackup implements ITickTask
@@ -52,7 +53,7 @@ public class TickTaskSetBackup implements ITickTask
 			if (list.get(i).setinWorld(player.worldObj))
 				changed++;
 			
-			if (lastChanged >= 20)
+			if (lastChanged >= ModuleWorldControl.WCblocksPerTick)
 				return;
 		}
 	}

@@ -8,21 +8,24 @@ import com.ForgeEssentials.AreaSelector.AreaBase;
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
+import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class TickTaskSetSelection implements ITickTask
 {
 	// stuff needed
-	private final int		blockID;
-	private final int		metadata;
-	private BackupArea		back;
-	private EntityPlayer	player;
+	private final int blockID;
+	private final int metadata;
+	private BackupArea back;
+	private EntityPlayer player;
 
 	// actually used
-	private Point			last;
-	private Point			current;
-	private int				changed;
+	private Point first;
+	private Point last;
+	private Point current;
+	private int changed;
+	private boolean isComplete;
 
 	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata, BackupArea back, AreaBase area)
 	{
@@ -31,44 +34,74 @@ public class TickTaskSetSelection implements ITickTask
 		this.metadata = metadata;
 		this.back = back;
 		last = area.getHighPoint();
-		current = area.getLowPoint();
+		first = current = area.getLowPoint();
+		
+		this.isComplete = false;
 	}
 
 	@Override
 	public void tick()
 	{
-		int lastChanged = changed;
+		int currentTickChanged = 0;
+		boolean continueFlag = true;
 		
-		for (int x = current.x; x <= last.x; x++)
-			for (int z = current.z; z <= last.z; z++)
-				for (int y = current.y; y <= last.y; y++)
+		int x = current.x;
+		int y = current.y;
+		int z = current.z;
+		
+		while (continueFlag && !this.isComplete)
+		{
+			if (metadata == -1)
+			{
+				if (blockID != player.worldObj.getBlockId(x, y, z))
 				{
-					current = new Point(x, y, z);
-					
-					if (metadata == -1)
-					{
-						if (blockID == player.worldObj.getBlockId(x, y, z))
-							continue;
-
-						back.before.add(new BlockSaveable(player.worldObj, x, y, z));
-						player.worldObj.setBlock(x, y, z, blockID);
-						back.after.add(new BlockSaveable(player.worldObj, x, y, z));
-						changed++;
-					}
-					else
-					{
-						if (blockID == player.worldObj.getBlockId(x, y, z) && metadata == player.worldObj.getBlockMetadata(x, y, z))
-							continue;
-
-						back.before.add(new BlockSaveable(player.worldObj, x, y, z));
-						player.worldObj.setBlockAndMetadata(x, y, z, blockID, metadata);
-						back.after.add(new BlockSaveable(player.worldObj, x, y, z));
-						changed++;
-					}
-					
-					if (lastChanged >= 20)
-						return;
+					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
+					player.worldObj.setBlock(x, y, z, blockID);
+					back.after.add(new BlockSaveable(player.worldObj, x, y, z));
+					currentTickChanged++;
 				}
+			}
+			else
+			{
+				if (!(blockID == player.worldObj.getBlockId(x, y, z) && metadata == player.worldObj.getBlockMetadata(x, y, z)))
+				{
+					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
+					player.worldObj.setBlockAndMetadata(x, y, z, blockID, metadata);
+					back.after.add(new BlockSaveable(player.worldObj, x, y, z));
+					currentTickChanged++;
+				}
+			}
+			
+			y++;
+			// Bounds checking comes first to avoid fencepost errors.
+			if (y > last.y)
+			{
+				// Reset y, increment z.
+				y = first.y;
+				z++;
+				
+				if (z > last.z)
+				{
+					// Reset z, increment x.
+					z = first.z;
+					x++;
+					
+					// Check stop condition
+					if (x > last.x)
+					{
+						this.isComplete = true;
+					}
+				}
+			}
+			
+			if (isComplete || currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
+			{
+				// Stop running this tick.
+				changed += currentTickChanged;
+				current = new Point(x, y, z);
+				continueFlag = false;
+			}
+		}
 	}
 
 	@Override
@@ -81,7 +114,7 @@ public class TickTaskSetSelection implements ITickTask
 	@Override
 	public boolean isComplete()
 	{
-		return last.equals(current);
+		return this.isComplete;
 	}
 
 	@Override

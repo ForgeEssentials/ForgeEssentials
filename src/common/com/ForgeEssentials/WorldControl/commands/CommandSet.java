@@ -40,7 +40,6 @@ public class CommandSet extends WorldControlCommandBase
 		World world = player.worldObj;
 		Selection sel = info.getSelection();
 		BackupArea back = new BackupArea();
-		int changed = 0;
 
 		// do this once the Ticktask is finished
 		TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
