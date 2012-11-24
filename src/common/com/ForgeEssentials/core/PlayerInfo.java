@@ -15,6 +15,7 @@ import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.permissions.Zone;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -40,7 +41,7 @@ public class PlayerInfo implements Serializable
 
 	public static void readOrGenerateInfo(EntityPlayer player)
 	{
-		String worldName = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).getChunkSaveLocation() + "_" + player.worldObj.getWorldInfo().getDimension();
+		String worldName = FunctionHelper.getWorldString(player.worldObj);
 		String username = player.username;
 
 		File saveFile = new File(ForgeEssentials.FEDIR, worldName + "/" + username + ".ser").getAbsoluteFile();

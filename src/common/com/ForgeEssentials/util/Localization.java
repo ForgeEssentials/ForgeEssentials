@@ -1,6 +1,5 @@
-package com.ForgeEssentials.core;
+package com.ForgeEssentials.util;
 
-import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.registry.LanguageRegistry;
 

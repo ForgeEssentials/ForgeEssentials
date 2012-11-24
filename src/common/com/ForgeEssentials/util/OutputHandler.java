@@ -2,7 +2,6 @@ package com.ForgeEssentials.util;
 
 import java.util.logging.Logger;
 
-import com.ForgeEssentials.core.Localization;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;

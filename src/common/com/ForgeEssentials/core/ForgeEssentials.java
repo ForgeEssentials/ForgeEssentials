@@ -10,6 +10,7 @@ import com.ForgeEssentials.core.config.FEConfig;
 import com.ForgeEssentials.network.HandlerServer;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.LibraryDetector;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.Version;
 
 import cpw.mods.fml.common.Mod;

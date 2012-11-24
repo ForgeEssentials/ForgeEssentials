@@ -11,9 +11,9 @@ import net.minecraft.src.MovingObjectPosition;
 import net.minecraft.src.NumberInvalidException;
 import net.minecraft.src.WrongUsageException;
 
-import com.ForgeEssentials.core.Localization;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;

@@ -1,5 +1,6 @@
 package com.ForgeEssentials.util;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.MathHelper;
@@ -38,7 +39,7 @@ public final class FunctionHelper
 	
 	public static String getWorldString(World world)
 	{
-		return world.getWorldInfo().getWorldName() + "_" + world.getWorldInfo().getDimension();
+		return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).getChunkSaveLocation() + "_" + world.getWorldInfo().getDimension();
 	}
 	
 	public static String getZoneWorldString(World world)
