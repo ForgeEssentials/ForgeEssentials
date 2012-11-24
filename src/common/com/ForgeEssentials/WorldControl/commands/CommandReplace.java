@@ -2,6 +2,7 @@ package com.ForgeEssentials.WorldControl.commands;
 
 import javax.activation.CommandInfo;
 
+import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.World;
@@ -72,12 +73,31 @@ public class CommandReplace extends WorldControlCommandBase
 			// Execute command if both arguments are okay.
 			if (firstID != -1 && secondID != -1)
 			{
-				PlayerInfo info = PlayerInfo.getPlayerInfo(player);
-				World world = player.worldObj;
-				Selection sel = info.getSelection();
-				BackupArea back = new BackupArea();
+				if (firstID <= Block.blocksList.length || secondID <= Block.blocksList.length)
+				{
+					player.sendChatToPlayer("Block IDs cannot exceed " + Block.blocksList.length + "!");
+				}
+				else if (Block.blocksList[firstID] == null)
+				{
+					player.sendChatToPlayer(firstID + " is not a valid block ID!");
+				}
+				else if (Block.blocksList[secondID] == null)
+				{
+					player.sendChatToPlayer(secondID + " is not a valid block ID!");
+				}
+				else
+				{
+					PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+					World world = player.worldObj;
+					Selection sel = info.getSelection();
+					BackupArea back = new BackupArea();
 
-				TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
+					TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
+				}
+			}
+			else
+			{
+				error(player);
 			}
 		}
 		else

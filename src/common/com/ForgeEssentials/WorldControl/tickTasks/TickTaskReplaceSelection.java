@@ -14,6 +14,8 @@ public class TickTaskReplaceSelection implements ITickTask
 {
 	private BackupArea		backup;
 	private EntityPlayer	player;
+	private int changed;
+	private int ticks;
 	
 	// Stores our actual task.
 	private int targetId;
@@ -22,7 +24,6 @@ public class TickTaskReplaceSelection implements ITickTask
 	private int newMeta;
 	
 	// Defines our bounds and current position
-	private int changed;
 	private Point high;
 	private Point current;
 	private Point first;
@@ -46,6 +47,7 @@ public class TickTaskReplaceSelection implements ITickTask
 	@Override
 	public void tick()
 	{
+		this.ticks++;
 		int currentTickChanged = 0;
 		boolean continueFlag = true;
 		
@@ -114,7 +116,7 @@ public class TickTaskReplaceSelection implements ITickTask
 	public void onComplete()
 	{
 		PlayerInfo.getPlayerInfo(player).addUndoAction(backup);
-		OutputHandler.chatConfirmation(player, String.format("Replace command complete. %d %s replaced.", changed, (changed == 1) ? "block" : "blocks"));
+		OutputHandler.chatConfirmation(player, String.format("Replace command complete. %d %s replaced over %d ticks.", changed, (changed == 1) ? "block" : "blocks", this.ticks));
 	}
 
 	@Override
