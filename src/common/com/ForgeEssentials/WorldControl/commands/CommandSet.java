@@ -1,6 +1,7 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated - Huh? Do you mean depracated?
+import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
 
@@ -30,19 +31,27 @@ public class CommandSet extends WorldControlCommandBase
 			int[] data = this.interpretIDAndMetaFromString(args[0]);
 			ID = data[0];
 			metadata = data[1];
-		} else
+			
+			if (Block.blocksList[ID] != null)
+			{
+				PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+				World world = player.worldObj;
+				Selection sel = info.getSelection();
+				BackupArea back = new BackupArea();
+	
+				// do this once the Ticktask is finished
+				TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
+			}
+			else
+			{
+				player.sendChatToPlayer(ID + " is not a valid block ID!");
+			}
+		}
+		else
 		{
 			error(player);
-			return;
 		}
 
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
-		World world = player.worldObj;
-		Selection sel = info.getSelection();
-		BackupArea back = new BackupArea();
-
-		// do this once the Ticktask is finished
-		TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
 	}
 
 	@Override

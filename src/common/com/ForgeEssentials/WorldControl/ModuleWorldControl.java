@@ -54,6 +54,7 @@ public class ModuleWorldControl implements IFEModule
 		Property prop = conf.get("WorldControl", "BlocksPerTick", 20);
 		prop.comment = "Specifies the maximum blocks/tick that can be changed via the WorldControl functions. Powerful computers may set higher, servers may want to keep it lower.";
 		ModuleWorldControl.WCblocksPerTick = prop.getInt();
+		OutputHandler.SOP("Setting blocks/tick to: " + WCblocksPerTick);
 		
 		ForgeEssentials.config.config.save();
 	}
