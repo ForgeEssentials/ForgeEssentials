@@ -258,7 +258,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		// this zone doesn't contain this groupname. check for blankets.
 		else
 		{
-			HashSet<Permission> perms = groupOverrides.get("_DEFAULT_");
+			HashSet<Permission> perms = groupOverrides.get(PermissionsAPI.GROUP_DEFAULT);
 			Permission smallest = null;
 			for (Permission perm : perms)
 				if (check.equals(perm))

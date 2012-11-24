@@ -1,10 +1,10 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.api.permissions.IPermissionsRegister;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import net.minecraftforge.event.ForgeSubscribe;
+
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
-import com.ForgeEssentials.permissions.FEPermissionRegisterEvent;
+import com.ForgeEssentials.permissions.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -17,7 +17,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
  * Kindly register all commands in commands module here.
  */
 
-public class ModuleCommands implements IFEModule, IPermissionsRegister
+public class ModuleCommands implements IFEModule
 {
 
 	public ModuleCommands()
@@ -35,7 +35,6 @@ public class ModuleCommands implements IFEModule, IPermissionsRegister
 	// load.
 	public void load(FMLInitializationEvent e)
 	{
-		PermissionsAPI.registerPermissionsRegistrar(this);
 	}
 	
 	@Override
@@ -71,9 +70,10 @@ public class ModuleCommands implements IFEModule, IPermissionsRegister
 		
 	}
 
-	@Override
-	public void registerPermissions(FEPermissionRegisterEvent event)
+	@ForgeSubscribe
+	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
+		event.registerGlobalPermission("ForgeEssentials.commands", true);
 		event.registerGlobalPermission("ForgeEssentials.commands.remove", true);
 		event.registerGlobalPermission("ForgeEssentials.commands.restart", true);
 		event.registerGlobalPermission("ForgeEssentials.commands.rules", true);

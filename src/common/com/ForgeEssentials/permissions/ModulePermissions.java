@@ -1,11 +1,11 @@
 package com.ForgeEssentials.permissions;
 
-import com.ForgeEssentials.api.permissions.IPermissionsRegister;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.util.OutputHandler;
 
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.Mod.ServerStarting;
@@ -15,13 +15,13 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-public class ModulePermissions implements IFEModule, IPermissionsRegister
+public class ModulePermissions implements IFEModule
 {
 	public static PermissionsConfig		config;
 	public static PermissionsHandler	pHandler;
 	public static ZoneManager			zManager;
 	public static boolean				permsVerbose	= false;
-	private FEPermissionRegisterEvent	permEvent;
+	private ForgeEssentialsPermissionRegistrationEvent	permEvent;
 
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
@@ -36,9 +36,9 @@ public class ModulePermissions implements IFEModule, IPermissionsRegister
 	{
 		OutputHandler.SOP("Starting permissions registration period.");
 		
-		PermissionsAPI.registerPermissionsRegistrar(this);
+		MinecraftForge.EVENT_BUS.register(this);
 		
-		permEvent = new FEPermissionRegisterEvent();
+		permEvent = new ForgeEssentialsPermissionRegistrationEvent();
 		pHandler = new PermissionsHandler();
 		
 		MinecraftForge.EVENT_BUS.register(pHandler);
@@ -48,12 +48,8 @@ public class ModulePermissions implements IFEModule, IPermissionsRegister
 	public void postLoad(FMLPostInitializationEvent e)
 	{
 		OutputHandler.SOP("Ending permissions registration period.");
-		permEvent.endPermissionRegistration(this);
 		
-		for (IPermissionsRegister register : PermissionsAPI.registers)
-			register.registerPermissions(permEvent);
-		
-		PermissionsAPI.registers = null;
+		MinecraftForge.EVENT_BUS.post(null);
 		
 		config = new PermissionsConfig();
 		// TODO Auto-generated method stub
@@ -74,8 +70,8 @@ public class ModulePermissions implements IFEModule, IPermissionsRegister
 
 	}
 
-	@Override
-	public void registerPermissions(FEPermissionRegisterEvent event)
+	@ForgeSubscribe
+	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
 		event.registerGlobalPermission("ForgeEssentials.permissions.zone.list", true);
 		event.registerGlobalPermission("ForgeEssentials.permissions.zone.define", true);

@@ -1,10 +1,10 @@
 package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.AreaSelector.Point;
-import com.ForgeEssentials.api.permissions.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.permissions.PermQueryPlayer;
+import com.ForgeEssentials.permissions.PermissionsAPI;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;

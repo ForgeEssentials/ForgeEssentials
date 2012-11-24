@@ -9,8 +9,6 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.AreaSelector.AreaBase;
-import com.ForgeEssentials.api.permissions.PermQueryArea;
-import com.ForgeEssentials.api.permissions.PermQueryPlayer;
 import com.ForgeEssentials.core.PlayerInfo;
 
 /**

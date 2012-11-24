@@ -6,9 +6,6 @@ import java.util.SortedSet;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
-import com.ForgeEssentials.api.permissions.PermQueryArea;
-import com.ForgeEssentials.api.permissions.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
