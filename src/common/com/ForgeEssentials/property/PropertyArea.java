@@ -24,13 +24,33 @@ public class PropertyArea extends AreaBase
 
 	public void sellProperty()
 	{
-		ArrayList<ItemStack> addedStacks=new ArrayList<ItemStack>();
-		for(ItemStack stack:price){
-			if(owner.inventory.addItemStackToInventory(stack))
+		ArrayList<ItemStack> addedStacks = new ArrayList<ItemStack>();
+		for (ItemStack stack : price)
+		{
+			if (owner.inventory.addItemStackToInventory(stack))
 				addedStacks.add(stack);
-			else {
-				
+			else
+			{
+				for (ItemStack addedStack : addedStacks)
+					for (int i = 0; i < addedStack.stackSize; i++)
+						owner.inventory.consumeInventoryItem(addedStack.itemID);// Abrar's PR: ,addedStack.getItemDamage());
+				break;
 			}
+		}
+		ArrayList<ItemStack> takenStacks = new ArrayList<ItemStack>();
+		for (ItemStack stack : price)
+		{
+			ItemStack copyStack = stack.copy();
+			copyStack.stackSize = 0;
+			do
+			{
+				if (!buyer.inventory.consumeInventoryItem(stack.itemID))
+					for (ItemStack takenStack : takenStacks)
+						owner.inventory.addItemStackToInventory(copyStack);
+				copyStack.stackSize++;
+			} while (copyStack.stackSize < stack.stackSize);
+			if (copyStack.stackSize == stack.stackSize)
+				takenStacks.add(copyStack);
 		}
 	}
 }
