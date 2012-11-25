@@ -1,10 +1,5 @@
 *.class
 
-# Package Files #
-*.jar
-*.war
-*.ear
-
 /bin/*
 /conf/*
 /docs/*
@@ -26,6 +21,8 @@
 !/src/common/mcmod.info
 !/src/minecraft/com/
 !/src/common/forgeessentials_at.cfg
+
+!/jars/coremods/
 
 *.bat
 *.sh
