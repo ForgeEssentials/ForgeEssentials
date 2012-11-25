@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 //In the event we need to mess with ASM and such, this is the place.
 //Kindly do not reference any FE classes outside the coremod package in this class.
+//Somehow or rather a nullpointer is thrown at load, @bspkrs please fix this, if you can.
 
 public class FECoreLoader implements IFMLLoadingPlugin{
 

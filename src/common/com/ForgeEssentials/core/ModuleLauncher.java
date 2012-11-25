@@ -15,9 +15,10 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**
  * Initialize modules here. Yes. HERE. NOT ForgeEssentials.java!
+ * This is the springboard...
  */
 
-public class ModuleLauncher implements IFEModule
+public class ModuleLauncher
 {
 	public CoreCommands corecmd;
 
@@ -63,11 +64,6 @@ public class ModuleLauncher implements IFEModule
 			permission.load(e);
 	}
 	
-	@Override
-	public void postLoad(FMLPostInitializationEvent e)
-	{
-		
-	}
 
 	public void serverStarting(FMLServerStartingEvent e)
 	{
@@ -82,11 +78,4 @@ public class ModuleLauncher implements IFEModule
 		if (permsEnabled)
 			permission.serverStarting(e);
 	}
-
-	@Override
-	public void serverStarted(FMLServerStartedEvent e)
-	{
-		
-	}
-
 }
