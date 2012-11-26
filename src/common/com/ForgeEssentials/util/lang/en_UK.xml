@@ -1,7 +1,7 @@
 
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties version="1.0">
-	<comment>English (US) Localization File, &lt; is the less than or left arrow sign</comment>
+	<comment>English (UK) Localization File, &lt; is the less than or left arrow sign</comment>
 	<entry key="command.motd.syntax.console">[new motd]</entry>
 	<entry key="command.motd.syntax.player">[new motd]</entry>
 	<entry key="command.motd.info.console">Get/set the message of the day</entry>
