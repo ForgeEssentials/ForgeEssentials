@@ -20,10 +20,15 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class CommandReplace extends WorldControlCommandBase
 {
 
+	public CommandReplace()
+	{
+		super(true);
+	}
+
 	@Override
 	public String getName()
 	{
-		return "/replace";
+		return "replace";
 	}
 
 	@Override

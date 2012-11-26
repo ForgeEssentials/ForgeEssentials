@@ -9,11 +9,22 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 {
+	
+	protected boolean usesExtraSlash;
+	
+	/**
+	 * 
+	 * @param doubleSlashCommand
+	 */
+	WorldControlCommandBase(boolean doubleSlashCommand)
+	{
+		this.usesExtraSlash = doubleSlashCommand;
+	}
 
 	@Override
 	public final String getCommandName()
 	{
-		if (ModuleWorldControl.useExtraSlash)
+		if (this.usesExtraSlash)
 			return "/" + getName();
 		else
 			return getName();

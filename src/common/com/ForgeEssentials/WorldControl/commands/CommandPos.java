@@ -15,6 +15,7 @@ public class CommandPos extends WorldControlCommandBase
 
 	public CommandPos(int type)
 	{
+		super(true);
 		this.type = type;
 	}
 

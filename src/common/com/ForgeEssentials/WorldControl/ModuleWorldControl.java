@@ -27,7 +27,6 @@ public class ModuleWorldControl implements IFEModule
 {
 	// implicit constructor WorldControl()
 	public static int defaultWandID;
-	public static boolean useExtraSlash;
 	public static ArrayList<WorldControlCommandBase> needsCompleteCommands = new ArrayList<WorldControlCommandBase>();
 	
 	// Some static fields for WorldControl config.

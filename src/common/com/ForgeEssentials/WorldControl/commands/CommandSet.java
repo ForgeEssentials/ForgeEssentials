@@ -16,10 +16,15 @@ import com.ForgeEssentials.util.Localization;
 public class CommandSet extends WorldControlCommandBase
 {
 
+	public CommandSet()
+	{
+		super(true);
+	}
+
 	@Override
 	public String getName()
 	{
-		return "/set";
+		return "set";
 	}
 
 	@Override

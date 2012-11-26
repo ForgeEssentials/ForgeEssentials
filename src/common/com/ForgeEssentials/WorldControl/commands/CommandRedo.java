@@ -11,6 +11,11 @@ import com.ForgeEssentials.core.PlayerInfo;
 public class CommandRedo extends WorldControlCommandBase
 {
 
+	public CommandRedo()
+	{
+		super(true);
+	}
+
 	@Override
 	public String getName()
 	{

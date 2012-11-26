@@ -2,42 +2,42 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties version="1.0">
 	<comment>English (US) Localization File, &lt; is the less than or left arrow sign</comment>
-	<entry key="command.motd.syntax.console">/motd [new motd]</entry>
-	<entry key="command.motd.syntax.player">/motd [new motd]</entry>
+	<entry key="command.motd.syntax.console">[new motd]</entry>
+	<entry key="command.motd.syntax.player">[new motd]</entry>
 	<entry key="command.motd.info.console">Get/set the message of the day</entry>
 	<entry key="command.motd.info.player">Get/set the message of the day</entry>
 
-	<entry key="command.rules.syntax.console">/rules [&lt;number> &lt;new rule>|remove]</entry>
-	<entry key="command.rules.syntax.player">/rules [&lt;number> &lt;new rule>|remove]</entry>
+	<entry key="command.rules.syntax.console">[&lt;number> &lt;new rule>|remove]</entry>
+	<entry key="command.rules.syntax.player">[&lt;number> &lt;new rule>|remove]</entry>
 	<entry key="command.rules.info.console">Get/set the rules of the server</entry>
 	<entry key="command.rules.info.player">Get/set the rules of the server</entry>
 
-	<entry key="command.butcher.syntax.player">/butcher [radius] [&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.butcher.syntax.player">[radius] [&lt;x> &lt;y> &lt;z>]</entry>
 	<entry key="command.butcher.info.player">Kill enemies around you/the specified point within the radius</entry>
 
 	<entry key="command.remove.syntax.player">/remove [radius] [&lt;x> &lt;y> &lt;z>]</entry>
 	<entry key="command.remove.info.player">Remove all item entities around you/the specifies point within the radius</entry>
 
-	<entry key="command.kill.syntax.console">/kill &lt;player></entry>
-	<entry key="command.kill.syntax.player">/kill [player]</entry>
+	<entry key="command.kill.syntax.console">&lt;player></entry>
+	<entry key="command.kill.syntax.player">[player]</entry>
 	<entry key="command.kill.info.console">Kill the specified player</entry>
 	<entry key="command.kill.info.player">Kill yourself or the specified player</entry>
 
-	<entry key="command.smite.syntax.console">/smite &lt;player></entry>
-	<entry key="command.smite.syntax.player">/smite [me|&lt;player>]</entry>
+	<entry key="command.smite.syntax.console">&lt;player></entry>
+	<entry key="command.smite.syntax.player">[me|&lt;player>]</entry>
 	<entry key="command.smite.info.console">Strike the specified player with lightning</entry>
 	<entry key="command.smite.info.player">Strike where you are looking, yourself, or another player with lightning</entry>
 
-	<entry key="command.home.syntax.player">/home [here|&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.home.syntax.player">[here|&lt;x> &lt;y> &lt;z>]</entry>
 	<entry key="command.home.info.player">Teleport you to/sets your home</entry>
 
-	<entry key="command.back.syntax.player">/home</entry>
+	<entry key="command.back.syntax.player"></entry>
 	<entry key="command.back.info.player">Teleport you your last death point</entry>
 
-	<entry key="command.restart.syntax.console">/restart</entry>
+	<entry key="command.restart.syntax.console"></entry>
 	<entry key="command.restart.info.console">Restart the server</entry>
 
-	<entry key="command.serverdo.syntax.player">/serverdo &lt;command> [arg1]...</entry>
+	<entry key="command.serverdo.syntax.player">&lt;command> [arg1]...</entry>
 	<entry key="command.serverdo.info.player">Run a console command as a player</entry>
 
 	<entry key="message.butchered"> enemies killed</entry>
@@ -59,8 +59,8 @@
 	<entry key="message.done">Done!</entry>
 	
 	<entry key="command.modlist.header">--- Showing the modlist page %p of %t ---</entry>
-	<entry key="command.modlist.syntax.console">/modlist [page]</entry>
-	<entry key="command.modlist.syntax.player">/modlist [page]</entry>
+	<entry key="command.modlist.syntax.console">[page]</entry>
+	<entry key="command.modlist.syntax.player">[page]</entry>
 	<entry key="command.modlist.info.console">Get a list of mods used by the server</entry>
 	<entry key="command.modlist.info.player">Get a list of mods used by the server</entry>
 	<entry key="command.zone.info.player">Define, remove, and edit zones</entry>
@@ -70,14 +70,15 @@
 	<entry key="command.warp.notfound">That warp doesn't exist!</entry>
     <entry key="command.warp.list">All the warps on the server:</entry>
     <entry key="command.warp.alreadyexists">That warp already exists. Use "/warp del &lt;name>" to delete.</entry>
-    <entry key="command.warp.syntax.player">/warp [name] OR &lt;set|del> &lt;name> </entry>
+    <entry key="command.warp.syntax.player">[name] OR &lt;set|del> &lt;name> </entry>
     <entry key="command.warp.info.player">Teleport you to a warp point.</entry>
 	
 	<!-- Some localization for WorldControl -->
-	<entry key="command./set.syntax.player">//set &lt;blockID[:metadata]></entry>
+	<entry key="command./set.syntax.player">&lt;blockID[:metadata]></entry>
 	<entry key="command./set.info.player">Sets all blocks in selection to given ID/metadata</entry>
-	<entry key="command./replace.syntax.player">//replace &lt;blockID[:metadata]> &lt;blockID[:metadata]></entry>
+	<entry key="command./replace.syntax.player">&lt;blockID[:metadata]> &lt;blockID[:metadata]></entry>
 	<entry key="command./replace.info.player">Replaces blocks of the first ID with blocks of the second</entry>
+	
 	<entry key="forgeEssentials.wc.invalidBlockId">%d is not a valid block ID!</entry>
 	<entry key="forgeEssentials.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
 </properties>

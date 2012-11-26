@@ -55,7 +55,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 			String usage;
 			try
 			{
-				usage = getSyntaxPlayer((EntityPlayer) sender) + " " + getInfoPlayer((EntityPlayer) sender);
+				usage = "/" + getCommandName() + " " + getSyntaxPlayer((EntityPlayer) sender) + " " + getInfoPlayer((EntityPlayer) sender);
 			} catch (NullPointerException e)
 			{
 				usage = "Not usable by player";

@@ -9,6 +9,11 @@ import com.ForgeEssentials.util.OutputHandler;
 public class CommandWand extends WorldControlCommandBase
 {
 
+	public CommandWand()
+	{
+		super(true);
+	}
+
 	@Override
 	public String getName()
 	{

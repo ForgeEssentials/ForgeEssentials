@@ -11,6 +11,11 @@ import com.ForgeEssentials.core.PlayerInfo;
 public class CommandUndo extends WorldControlCommandBase
 {
 
+	public CommandUndo()
+	{
+		super(true);
+	}
+
 	@Override
 	public String getName()
 	{
