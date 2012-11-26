@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties version="1.0">
 	<comment>English (US) Localization File, &lt; is the less than or left arrow sign</comment>
@@ -72,4 +72,12 @@
     <entry key="command.warp.alreadyexists">That warp already exists. Use "/warp del &lt;name>" to delete.</entry>
     <entry key="command.warp.syntax.player">/warp [name] OR &lt;set|del> &lt;name> </entry>
     <entry key="command.warp.info.player">Teleport you to a warp point.</entry>
+	
+	<!-- Some localization for WorldControl -->
+	<entry key="command./set.syntax.player">//set &lt;blockID[:metadata]></entry>
+	<entry key="command./set.info.player">Sets all blocks in selection to given ID/metadata</entry>
+	<entry key="command./replace.syntax.player">//replace &lt;blockID[:metadata]> &lt;blockID[:metadata]></entry>
+	<entry key="command./replace.info.player">Replaces blocks of the first ID with blocks of the second</entry>
+	<entry key="forgeEssentials.wc.invalidBlockId">%d is not a valid block ID!</entry>
+	<entry key="forgeEssentials.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
 </properties>

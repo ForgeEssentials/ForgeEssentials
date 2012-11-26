@@ -13,6 +13,9 @@ import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskReplaceSelection;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.Localization;
+
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class CommandReplace extends WorldControlCommandBase
 {
@@ -20,7 +23,7 @@ public class CommandReplace extends WorldControlCommandBase
 	@Override
 	public String getName()
 	{
-		return "replace";
+		return "/replace";
 	}
 
 	@Override
@@ -46,7 +49,7 @@ public class CommandReplace extends WorldControlCommandBase
 			}
 			catch (Exception e)
 			{
-				player.sendChatToPlayer("Invalid use of /" + getCommandName() + ": First argument is invalid.");
+				error(player);
 				firstID = -1;
 			}
 			
@@ -65,7 +68,7 @@ public class CommandReplace extends WorldControlCommandBase
 				}
 				catch (Exception e)
 				{
-					player.sendChatToPlayer("Invalid use of /" + getCommandName() + ": Second argument is invalid.");
+					error(player);
 					secondID = -1;						
 				}
 			}
@@ -73,17 +76,17 @@ public class CommandReplace extends WorldControlCommandBase
 			// Execute command if both arguments are okay.
 			if (firstID != -1 && secondID != -1)
 			{
-				if (firstID <= Block.blocksList.length || secondID <= Block.blocksList.length)
+				if (firstID >= Block.blocksList.length || secondID >= Block.blocksList.length)
 				{
-					player.sendChatToPlayer("Block IDs cannot exceed " + Block.blocksList.length + "!");
+					player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.blockIdOutOfRange"), Block.blocksList.length));
 				}
 				else if (Block.blocksList[firstID] == null)
 				{
-					player.sendChatToPlayer(firstID + " is not a valid block ID!");
+					player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.invalidBlockId"), firstID));
 				}
 				else if (Block.blocksList[secondID] == null)
 				{
-					player.sendChatToPlayer(secondID + " is not a valid block ID!");
+					player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.invalidBlockId"), secondID));
 				}
 				else
 				{
@@ -112,18 +115,6 @@ public class CommandReplace extends WorldControlCommandBase
 	{
 		// TODO: check permissions.
 		return true;
-	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/" + getCommandName() + " <id[:metadata]> <id[:metadata]";
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Searches an area for the first id:metadata pair and replaces it with the second id:metadata. -1 in first pair will replace ALL occurances.";
 	}
 
 }
