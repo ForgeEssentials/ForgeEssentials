@@ -10,6 +10,7 @@ Forge: #393 (later builds may work, there is no Forge RB for 1.4.5b yet)
 
 Get the mentioned Forge and MCP, and decompile (using install.cmd/sh). Once you have a working Forge workspace, pull the repo into that MCP folder.
 When more than one contributor is online, we use Saros to collaborate.
+Also download WorldEdit and WorldGuard from the Downloads section and place them in lib IN YOUR MCP FOLDER.
 
 Downloads
 =========
