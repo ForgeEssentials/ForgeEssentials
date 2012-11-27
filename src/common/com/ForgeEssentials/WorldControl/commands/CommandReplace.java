@@ -85,11 +85,11 @@ public class CommandReplace extends WorldControlCommandBase
 				{
 					player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.blockIdOutOfRange"), Block.blocksList.length));
 				}
-				else if (Block.blocksList[firstID] == null)
+				else if (firstID != 0 && Block.blocksList[firstID] == null)
 				{
 					player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.invalidBlockId"), firstID));
 				}
-				else if (Block.blocksList[secondID] == null)
+				else if (secondID != 0 && Block.blocksList[secondID] == null)
 				{
 					player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.invalidBlockId"), secondID));
 				}

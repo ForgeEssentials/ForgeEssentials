@@ -43,7 +43,7 @@ public class CommandSet extends WorldControlCommandBase
 			{
 				player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.blockIdOutOfRange"), Block.blocksList.length));
 			}
-			else if (Block.blocksList[ID] == null)
+			else if (ID != 0 && Block.blocksList[ID] == null)
 			{
 				player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.invalidBlockId"), ID));
 			}
