@@ -83,15 +83,15 @@ public class CommandReplace extends WorldControlCommandBase
 			{
 				if (firstID >= Block.blocksList.length || secondID >= Block.blocksList.length)
 				{
-					player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.blockIdOutOfRange"), Block.blocksList.length));
+					error(player, String.format(Localization.get("message.wc.blockIdOutOfRange"), Block.blocksList.length));
 				}
 				else if (firstID != 0 && Block.blocksList[firstID] == null)
 				{
-					player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.invalidBlockId"), firstID));
+					error(player, String.format(Localization.get("message.wc.invalidBlockId"), firstID));
 				}
 				else if (secondID != 0 && Block.blocksList[secondID] == null)
 				{
-					player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.invalidBlockId"), secondID));
+					error(player, String.format(Localization.get("message.wc.invalidBlockId"), secondID));
 				}
 				else
 				{
@@ -113,13 +113,6 @@ public class CommandReplace extends WorldControlCommandBase
 			// The syntax of the command is not correct.
 			error(player);
 		}
-	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		// TODO: check permissions.
-		return true;
 	}
 
 }

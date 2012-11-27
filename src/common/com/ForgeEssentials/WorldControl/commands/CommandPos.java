@@ -73,13 +73,6 @@ public class CommandPos extends WorldControlCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		// check permissions
-		return true;
-	}
-
-	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
 		return "/" + getCommandName() + " [<x> <y> <z]";

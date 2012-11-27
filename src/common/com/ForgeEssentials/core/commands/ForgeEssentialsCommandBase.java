@@ -136,14 +136,42 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public abstract boolean canPlayerUseCommand(EntityPlayer player);
 
+	/**
+	 * Simply prints a usage message to the sender of the command.
+	 * @param sender Object that issued the command
+	 */
 	public void error(ICommandSender sender)
 	{
-		String usage = this.getCommandUsage(sender);
-
+		this.error(sender, this.getCommandUsage(sender));
+	}
+	
+	/**
+	 * Prints an error message to the sender of the command.
+	 * @param sender Object that issued the command
+	 * @param message Error message
+	 */
+	public void error(ICommandSender sender, String message)
+	{
 		if (sender instanceof EntityPlayer)
-			OutputHandler.chatError((EntityPlayer) sender, usage);
+		{
+			OutputHandler.chatError((EntityPlayer) sender, message);
+		}
 		else
-			sender.sendChatToPlayer(usage);
+		{
+			sender.sendChatToPlayer(message);
+		}
+	}
+	
+	/**
+	 * Fetches a localized format string, and inserts any provided arguments into it.
+	 * A wrapper for all the "String.format(Localization.get(key), ...)" calls in commands.
+	 * @param localizationKey Key to get the appropriate entry in the current localization file.
+	 * @param args Arguments required to populate the localized string
+	 * @return String String containing the localized, formatted string.
+	 */
+	public String formatLocalizedString(String localizationKey, Object ...args)
+	{
+		return String.format(Localization.get(localizationKey), args);
 	}
 
 	public boolean checkCommandPerm(EntityPlayer player)

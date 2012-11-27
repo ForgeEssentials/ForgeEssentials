@@ -10,6 +10,7 @@ import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class TickTaskSetSelection implements ITickTask
@@ -49,7 +50,7 @@ public class TickTaskSetSelection implements ITickTask
 		int y = current.y;
 		int z = current.z;
 		
-		while (continueFlag && !this.isComplete)
+		while (continueFlag)
 		{
 			if (metadata == -1)
 			{
@@ -108,7 +109,8 @@ public class TickTaskSetSelection implements ITickTask
 	public void onComplete()
 	{
 		PlayerInfo.getPlayerInfo(player).addUndoAction(back);
-		OutputHandler.chatConfirmation(player, "Set " + changed + " Blocks to " + (blockID == 0 ? "Air" : new ItemStack(blockID, 1, metadata).getDisplayName()));
+		OutputHandler.chatConfirmation(player, String.format(Localization.get("message.wc.setConfirmBlocksChanged"), changed, 
+				(blockID == 0) ? Localization.get("tile.air.name") : new ItemStack(blockID, 1, metadata).getDisplayName()));
 	}
 
 	@Override

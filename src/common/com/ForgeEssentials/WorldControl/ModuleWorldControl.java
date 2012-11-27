@@ -7,6 +7,8 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.commands.*;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
+import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator;
+import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator.Mode;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.config.Configuration;
@@ -75,6 +77,9 @@ public class ModuleWorldControl implements IFEModule
 		e.registerServerCommand(new CommandRedo());
 		e.registerServerCommand(new CommandUndo());
 		e.registerServerCommand(new CommandReplace());
+		e.registerServerCommand(new CommandTopManipulate("thaw", Mode.THAW));
+		e.registerServerCommand(new CommandTopManipulate("freeze", Mode.FREEZE));
+		e.registerServerCommand(new CommandTopManipulate("snow", Mode.SNOW));
 	}
 
 	@Override

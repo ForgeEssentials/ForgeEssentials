@@ -1,6 +1,7 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.TileEntityCommandBlock;
 
@@ -113,5 +114,12 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "WorldControl.commands."+getName();
+	}
+	
+	@Override
+	public boolean canPlayerUseCommand(EntityPlayer player)
+	{
+		// TODO Integrate with permissions system.
+		return true;
 	}
 }

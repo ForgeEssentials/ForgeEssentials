@@ -1,6 +1,8 @@
 package com.ForgeEssentials.WorldControl.tickTasks;
 
+import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
 
 import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.AreaSelector.Selection;
@@ -8,6 +10,7 @@ import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class TickTaskReplaceSelection implements ITickTask
@@ -55,7 +58,7 @@ public class TickTaskReplaceSelection implements ITickTask
 		int y = current.y;
 		int z = current.z;
 		
-		while (continueFlag && !this.isComplete)
+		while (continueFlag)
 		{
 			if (targetMeta == -1)
 			{
@@ -116,7 +119,42 @@ public class TickTaskReplaceSelection implements ITickTask
 	public void onComplete()
 	{
 		PlayerInfo.getPlayerInfo(player).addUndoAction(backup);
-		OutputHandler.chatConfirmation(player, String.format("Replace command complete. %d %s replaced over %d ticks.", changed, (changed == 1) ? "block" : "blocks", this.ticks));
+		String targetName;
+		// Determine the target block name
+		if (targetId == 0)
+		{
+			targetName = Localization.get("tile.air.name");
+		}
+		else
+		{
+			if (targetMeta == -1)
+			{
+				targetName = new ItemStack(Block.blocksList[targetId]).getDisplayName();
+			}
+			else
+			{
+				targetName = new ItemStack(targetId, 1, targetMeta).getDisplayName();
+			}
+		}
+		String newName;
+		// Determine the new block name.
+		if (newId == 0)
+		{
+			newName = Localization.get("tile.air.name");
+		}
+		else
+		{
+			if (newMeta == -1)
+			{
+				newName = new ItemStack(Block.blocksList[newId]).getDisplayName();
+			}
+			else
+			{
+				newName = new ItemStack(newId, 1, newMeta).getDisplayName();
+			}
+		}		
+		OutputHandler.chatConfirmation(player, String.format(Localization.get("message.wc.replaceConfirmBlocksChanged"),
+				changed, targetName, newName));
 	}
 
 	@Override

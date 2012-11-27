@@ -207,7 +207,8 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					rules.remove(new Integer(args[0]) - 1);
 				} catch (NumberFormatException e)
 				{
-					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
+					sender.sendChatToPlayer(formatLocalizedString("message.error.notANumber", 0));
+					error(sender);
 				} catch (IndexOutOfBoundsException e)
 				{
 					sender.sendChatToPlayer("That rule does not exist.");
@@ -222,7 +223,8 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					rules.add(new Integer(args[0]) - 1, newRule);
 				} catch (NumberFormatException e)
 				{
-					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
+					sender.sendChatToPlayer(formatLocalizedString("message.error.notANumber", 0));
+					error(sender);
 				}
 			}
 			saveRules();

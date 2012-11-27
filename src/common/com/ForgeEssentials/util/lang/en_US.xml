@@ -39,13 +39,19 @@
 	<entry key="command.serverdo.syntax.player">&lt;command> [arg1]...</entry>
 	<entry key="command.serverdo.info.player">Run a console command as a player</entry>
 
-	<entry key="message.butchered"> enemies killed</entry>
-	<entry key="message.removed"> items removed</entry>
+	<entry key="message.butchered">%d enemies killed</entry>
+	<entry key="message.removed">%d items removed</entry>
 	<entry key="message.killed">You were killed. You probably deserved it.</entry>
 	<entry key="message.spawntypechanged">Your spawn type has been set to </entry>
-
+	<entry key="message.smite.self">Was that really a good idea?</entry>
+	<entry key="message.smite.player">You should feel bad about doing that.</entry>
+	<entry key="message.smite.ground">I hope that didn't start a fire.</entry>
+	<entry key="message.smite.targetError">You must look at the ground! Maximum range is 500 blocks.</entry>
+	
+	<entry key="message.error.noPlayerX">Player %s does not exist.</entry>
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
 	<entry key="message.error.noplayer">That player does not exist.</entry>
+	<entry key="message.error.specifyPlayer">You must specify a player.</entry>
 	<entry key="message.error.nan">That wasn't a number. Try again, you can do it.</entry>
 	<entry key="message.error.nodeathpoint">You have not died yet.</entry>
 	<entry key="message.error.nohome">No home set. Try this: </entry>
@@ -54,10 +60,11 @@
 	<entry key="message.error.yeszone">A zone of that ID already exists!</entry>
 	<entry key="message.error.noselection">Thats an invalid selection. Select something first.</entry>
 	<entry key="message.error.permdenied">You are not allowed to do that.</entry>
+	<entry key="message.error.notANumber">#%d param is not a number.</entry>
 	
 	<entry key="message.done">Done!</entry>
 	
-	<entry key="command.modlist.header">--- Showing the modlist page %p of %t ---</entry>
+	<entry key="command.modlist.header">--- Showing the modlist page %1$d of %2$d ---</entry>
 	<entry key="command.modlist.syntax.console">[page]</entry>
 	<entry key="command.modlist.syntax.player">[page]</entry>
 	<entry key="command.modlist.info.console">Get a list of mods used by the server</entry>
@@ -77,7 +84,20 @@
 	<entry key="command./set.info.player">Sets all blocks in selection to given ID/metadata</entry>
 	<entry key="command./replace.syntax.player">&lt;blockID[:metadata]> &lt;blockID[:metadata]></entry>
 	<entry key="command./replace.info.player">Replaces blocks of the first ID with blocks of the second</entry>
+	<entry key="command.thaw.syntax.player">&lt;radius of effect> [&lt;x> &lt;z>]</entry>
+	<entry key="command.thaw.info.player">Removes snow and ice from the exposed blocks, starting from the player's position or specified X and Z.</entry>
+	<entry key="command.freeze.syntax.player">&lt;radius of effect> [&lt;x> &lt;z>]</entry>
+	<entry key="command.freeze.info.player">Freezes exposed (open to the sky) water to ice.</entry>
+	<entry key="command.snow.syntax.player">&lt;radius of effect> [&lt;x> &lt;z>]</entry>
+	<entry key="command.snow.info.player">Adds a dusting of snow to blocks open to the sky.</entry>
 	
-	<entry key="forgeEssentials.wc.invalidBlockId">%d is not a valid block ID!</entry>
-	<entry key="forgeEssentials.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
+	<entry key="message.wc.setConfirmBlocksChanged">Set %1$d blocks changed to %2$s</entry>
+	<entry key="message.wc.replaceConfirmBlocksChanged">Replaced %1$d %2$s blocks with %3$s</entry>
+	<entry key="message.wc.thawConfirm">%d blocks have been thawed.</entry>
+	<entry key="message.wc.freezeConfirm">%d blocks have been frozen.</entry>
+	<entry key="message.wc.snowConfirm">%d blocks have been dusted with snow.</entry>
+	<entry key="message.wc.invalidBlockId">%d is not a valid block ID!</entry>
+	<entry key="message.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
+	
+	<entry key="tile.air.name">Air</entry>
 </properties>

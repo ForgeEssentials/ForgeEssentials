@@ -30,13 +30,6 @@ public class CommandRedo extends WorldControlCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		// TODO: check permissions.
-		return true;
-	}
-
-	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
 		return "/" + getCommandName();

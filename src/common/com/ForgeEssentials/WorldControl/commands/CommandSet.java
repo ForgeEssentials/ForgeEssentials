@@ -41,11 +41,11 @@ public class CommandSet extends WorldControlCommandBase
 			
 			if (ID >= Block.blocksList.length)
 			{
-				player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.blockIdOutOfRange"), Block.blocksList.length));
+				error(player, String.format(Localization.get("message.wc.blockIdOutOfRange"), Block.blocksList.length));
 			}
 			else if (ID != 0 && Block.blocksList[ID] == null)
 			{
-				player.sendChatToPlayer(String.format(Localization.get("forgeEssentials.wc.invalidBlockId"), ID));
+				error(player, String.format(Localization.get("message.wc.invalidBlockId"), ID));
 			}
 			else
 			{
@@ -62,12 +62,5 @@ public class CommandSet extends WorldControlCommandBase
 			error(player);
 		}
 
-	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		// TODO: check permissions.
-		return true;
 	}
 }

@@ -28,26 +28,26 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			if (args[0].toLowerCase().equals("me"))
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-				sender.sendChatToPlayer("Was that really a good idea?");
+				sender.sendChatToPlayer(formatLocalizedString("message.smite.self"));
 			} else
 			{
 				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 				if (victim != null)
 				{
 					sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-					sender.sendChatToPlayer("You should feel bad about doing that.");
+					sender.sendChatToPlayer(formatLocalizedString("message.smite.player"));
 				} else
-					OutputHandler.chatError(sender, "That player does not exist.");
+					OutputHandler.chatError(sender, formatLocalizedString("message.error.noPlayerX", args[0]));
 			}
 		} else
 		{
 			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
 			if (mop == null)
-				OutputHandler.chatError(sender, "LOOK AT THE GROUND. Also, the range is 500 blocks.");
+				OutputHandler.chatError(sender, formatLocalizedString("message.smite.targetError"));
 			else
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
-				sender.sendChatToPlayer("I hope that didn't start a fire.");
+				sender.sendChatToPlayer(formatLocalizedString("message.smite.ground"));
 			}
 		}
 	}
@@ -61,11 +61,11 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			if (victim != null)
 			{
 				victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
-				sender.sendChatToPlayer("You should feel bad about doing that.");
+				sender.sendChatToPlayer(formatLocalizedString("message.smite.player"));
 			} else
-				sender.sendChatToPlayer("That player does not exist.");
+				sender.sendChatToPlayer(formatLocalizedString("message.error.noPlayerX", args[0]));
 		} else
-			sender.sendChatToPlayer("You must specify a player.");
+			sender.sendChatToPlayer(formatLocalizedString("message.error.specifyPlayer"));
 	}
 
 	@Override
