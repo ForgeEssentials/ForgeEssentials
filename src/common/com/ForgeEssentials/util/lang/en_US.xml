@@ -64,7 +64,7 @@
 	
 	<entry key="message.done">Done!</entry>
 	
-	<entry key="command.modlist.header">--- Showing the modlist page %1$d of %2$d ---</entry>
+	<entry key="command.modlist.header">--- Showing the modlist page %p of %t ---</entry>
 	<entry key="command.modlist.syntax.console">[page]</entry>
 	<entry key="command.modlist.syntax.player">[page]</entry>
 	<entry key="command.modlist.info.console">Get a list of mods used by the server</entry>
