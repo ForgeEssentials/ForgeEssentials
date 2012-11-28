@@ -23,6 +23,8 @@
 !/src/common/forgeessentials_at.cfg
 
 !/jars/coremods/
+!/lib/WorldEdit.jar
+!/lib/WorldGuard.jar
 
 *.bat
 *.sh
