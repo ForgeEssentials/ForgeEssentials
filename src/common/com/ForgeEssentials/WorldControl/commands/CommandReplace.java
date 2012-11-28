@@ -83,15 +83,15 @@ public class CommandReplace extends WorldControlCommandBase
 			{
 				if (firstID >= Block.blocksList.length || secondID >= Block.blocksList.length)
 				{
-					error(player, String.format(Localization.get("message.wc.blockIdOutOfRange"), Block.blocksList.length));
+					error(player, Localization.formatLocalizedString("message.wc.blockIdOutOfRange", Block.blocksList.length));
 				}
 				else if (firstID != 0 && Block.blocksList[firstID] == null)
 				{
-					error(player, String.format(Localization.get("message.wc.invalidBlockId"), firstID));
+					error(player, Localization.formatLocalizedString("message.wc.invalidBlockId", firstID));
 				}
 				else if (secondID != 0 && Block.blocksList[secondID] == null)
 				{
-					error(player, String.format(Localization.get("message.wc.invalidBlockId"), secondID));
+					error(player, Localization.formatLocalizedString("message.wc.invalidBlockId", secondID));
 				}
 				else
 				{

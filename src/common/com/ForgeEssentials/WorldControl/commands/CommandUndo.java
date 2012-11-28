@@ -28,16 +28,4 @@ public class CommandUndo extends WorldControlCommandBase
 		BackupArea back = PlayerInfo.getPlayerInfo(player).getNextUndo();
 		TickTaskHandler.addTask(new TickTaskSetBackup(player, back, false));
 	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/" + getCommandName();
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Undos the last WorldControl action";
-	}
 }

@@ -7,6 +7,7 @@ import net.minecraft.src.MovingObjectPosition;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -28,26 +29,26 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			if (args[0].toLowerCase().equals("me"))
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-				sender.sendChatToPlayer(formatLocalizedString("message.smite.self"));
+				sender.sendChatToPlayer(Localization.formatLocalizedString("message.smite.self"));
 			} else
 			{
 				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 				if (victim != null)
 				{
 					sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-					sender.sendChatToPlayer(formatLocalizedString("message.smite.player"));
+					sender.sendChatToPlayer(Localization.formatLocalizedString("message.smite.player"));
 				} else
-					OutputHandler.chatError(sender, formatLocalizedString("message.error.noPlayerX", args[0]));
+					OutputHandler.chatError(sender, Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
 			}
 		} else
 		{
 			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
 			if (mop == null)
-				OutputHandler.chatError(sender, formatLocalizedString("message.smite.targetError"));
+				OutputHandler.chatError(sender, Localization.formatLocalizedString("message.smite.targetError"));
 			else
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
-				sender.sendChatToPlayer(formatLocalizedString("message.smite.ground"));
+				sender.sendChatToPlayer(Localization.formatLocalizedString("message.smite.ground"));
 			}
 		}
 	}
@@ -61,11 +62,11 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			if (victim != null)
 			{
 				victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
-				sender.sendChatToPlayer(formatLocalizedString("message.smite.player"));
+				sender.sendChatToPlayer(Localization.formatLocalizedString("message.smite.player"));
 			} else
-				sender.sendChatToPlayer(formatLocalizedString("message.error.noPlayerX", args[0]));
+				sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
 		} else
-			sender.sendChatToPlayer(formatLocalizedString("message.error.specifyPlayer"));
+			sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.specifyPlayer"));
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import net.minecraft.src.ICommandSender;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandRules extends ForgeEssentialsCommandBase
@@ -207,7 +208,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					rules.remove(new Integer(args[0]) - 1);
 				} catch (NumberFormatException e)
 				{
-					sender.sendChatToPlayer(formatLocalizedString("message.error.notANumber", 0));
+					sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.notANumber", 0));
 					error(sender);
 				} catch (IndexOutOfBoundsException e)
 				{
@@ -223,7 +224,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					rules.add(new Integer(args[0]) - 1, newRule);
 				} catch (NumberFormatException e)
 				{
-					sender.sendChatToPlayer(formatLocalizedString("message.error.notANumber", 0));
+					sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.notANumber", 0));
 					error(sender);
 				}
 			}

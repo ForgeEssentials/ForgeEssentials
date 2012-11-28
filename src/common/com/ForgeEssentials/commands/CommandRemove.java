@@ -60,7 +60,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 			counter++;
 			entity.setDead();
 		}
-		OutputHandler.chatConfirmation(sender, formatLocalizedString("message.removed", counter));
+		OutputHandler.chatConfirmation(sender, Localization.formatLocalizedString("message.removed", counter));
 
 	}
 

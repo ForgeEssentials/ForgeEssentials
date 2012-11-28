@@ -69,7 +69,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 			counter++;
 			entity.setDead();
 		}
-		OutputHandler.chatConfirmation(sender, formatLocalizedString("message.butchered", counter));
+		OutputHandler.chatConfirmation(sender, Localization.formatLocalizedString("message.butchered", counter));
 	}
 
 	@Override

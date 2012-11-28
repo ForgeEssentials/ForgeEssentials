@@ -28,16 +28,4 @@ public class CommandRedo extends WorldControlCommandBase
 		BackupArea back = PlayerInfo.getPlayerInfo(player).getNextRedo();
 		TickTaskHandler.addTask(new TickTaskSetBackup(player, back, true));
 	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/" + getCommandName();
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Redos the last WorldControl action";
-	}
 }

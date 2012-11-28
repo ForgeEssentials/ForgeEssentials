@@ -161,7 +161,7 @@ public class TickTaskTopManipulator implements ITickTask
 				confirmMessage = "snow";
 				break;
 		}
-		OutputHandler.chatConfirmation(player, String.format(Localization.get("message.wc." + confirmMessage + "Confirm"),
+		OutputHandler.chatConfirmation(player, Localization.formatLocalizedString("message.wc." + confirmMessage + "Confirm",
 				this.changed));
 	}
 

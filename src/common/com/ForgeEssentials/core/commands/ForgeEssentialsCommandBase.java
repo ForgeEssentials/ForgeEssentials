@@ -161,18 +161,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 			sender.sendChatToPlayer(message);
 		}
 	}
-	
-	/**
-	 * Fetches a localized format string, and inserts any provided arguments into it.
-	 * A wrapper for all the "String.format(Localization.get(key), ...)" calls in commands.
-	 * @param localizationKey Key to get the appropriate entry in the current localization file.
-	 * @param args Arguments required to populate the localized string
-	 * @return String String containing the localized, formatted string.
-	 */
-	public String formatLocalizedString(String localizationKey, Object ...args)
-	{
-		return String.format(Localization.get(localizationKey), args);
-	}
 
 	public boolean checkCommandPerm(EntityPlayer player)
 	{

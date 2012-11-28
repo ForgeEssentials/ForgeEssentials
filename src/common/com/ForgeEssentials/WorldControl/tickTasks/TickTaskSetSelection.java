@@ -109,7 +109,8 @@ public class TickTaskSetSelection implements ITickTask
 	public void onComplete()
 	{
 		PlayerInfo.getPlayerInfo(player).addUndoAction(back);
-		OutputHandler.chatConfirmation(player, String.format(Localization.get("message.wc.setConfirmBlocksChanged"), changed, 
+		OutputHandler.chatConfirmation(player, Localization.formatLocalizedString("message.wc.setConfirmBlocksChanged",
+				changed, 
 				(blockID == 0) ? Localization.get("tile.air.name") : new ItemStack(blockID, 1, metadata).getDisplayName()));
 	}
 
