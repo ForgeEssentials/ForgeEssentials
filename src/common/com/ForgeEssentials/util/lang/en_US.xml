@@ -90,12 +90,18 @@
 	<entry key="command.freeze.info.player">Freezes exposed (open to the sky) water to ice.</entry>
 	<entry key="command.snow.syntax.player">&lt;radius of effect> [&lt;x> &lt;z>]</entry>
 	<entry key="command.snow.info.player">Adds a dusting of snow to blocks open to the sky.</entry>
+	<entry key="command.till.syntax.player">&lt;radius of effect> [&lt;x> &lt;y>]</entry>
+	<entry key="command.till.info.player">Tills exposed grass and dirt for planting crops.</entry>
+	<entry key="command.untill.syntax.player">&lt;radius of effect> [&lt;x> &lt;y>]</entry>
+	<entry key="command.untill.info.player">Replaces farmland open to the sky with dirt.</entry>
 	
 	<entry key="message.wc.setConfirmBlocksChanged">Set %1$d blocks changed to %2$s</entry>
 	<entry key="message.wc.replaceConfirmBlocksChanged">Replaced %1$d %2$s blocks with %3$s</entry>
 	<entry key="message.wc.thawConfirm">%d blocks have been thawed.</entry>
 	<entry key="message.wc.freezeConfirm">%d blocks have been frozen.</entry>
 	<entry key="message.wc.snowConfirm">%d blocks have been dusted with snow.</entry>
+	<entry key="message.wc.tillConfirm">%d blocks have been tilled.</entry>
+	<entry key="message.wc.untillConfirm">%d blocks of farmland have been trampled.</entry>
 	<entry key="message.wc.invalidBlockId">%d is not a valid block ID!</entry>
 	<entry key="message.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
 	

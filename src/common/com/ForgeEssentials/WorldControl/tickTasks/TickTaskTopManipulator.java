@@ -20,6 +20,8 @@ public class TickTaskTopManipulator implements ITickTask
 		THAW, // Removes top snow/ice block. Replaces ice with water.
 		FREEZE, // Replaces exposed water with ice.
 		SNOW, // Adds a dusting of snow to exposed non-liquid blocks.
+		TILL, // Transforms exposed grass & dirt into tilled farmland.
+		UNTILL, // Replaces farmland with bare dirt
 	}
 
 	// Data that is determined at start and does not change.
@@ -116,6 +118,24 @@ public class TickTaskTopManipulator implements ITickTask
 							backup.before.add(new BlockSaveable(world, x, y + 1, z));
 							world.setBlock(x, y + 1, z, Block.snow.blockID);
 							backup.after.add(new BlockSaveable(world, x, y + 1, z));
+							currentBlocksChanged++;
+						}
+						break;
+					case TILL:
+						if (blockID == Block.dirt.blockID || blockID == Block.grass.blockID)
+						{
+							backup.before.add(new BlockSaveable(world, x, y, z));
+							world.setBlock(x, y, z, Block.tilledField.blockID);
+							backup.after.add(new BlockSaveable(world, x, y, z));
+							currentBlocksChanged++;
+						}
+						break;
+					case UNTILL:
+						if (blockID == Block.tilledField.blockID)
+						{
+							backup.before.add(new BlockSaveable(world, x, y, z));
+							world.setBlock(x, y, z, Block.dirt.blockID);
+							backup.after.add(new BlockSaveable(world, x, y, z));
 							currentBlocksChanged++;
 						}
 						break;

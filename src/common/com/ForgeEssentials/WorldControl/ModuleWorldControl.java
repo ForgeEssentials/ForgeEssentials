@@ -80,6 +80,8 @@ public class ModuleWorldControl implements IFEModule
 		e.registerServerCommand(new CommandTopManipulate("thaw", Mode.THAW));
 		e.registerServerCommand(new CommandTopManipulate("freeze", Mode.FREEZE));
 		e.registerServerCommand(new CommandTopManipulate("snow", Mode.SNOW));
+		e.registerServerCommand(new CommandTopManipulate("till", Mode.TILL));
+		e.registerServerCommand(new CommandTopManipulate("untill", Mode.UNTILL));
 	}
 
 	@Override
