@@ -3,12 +3,10 @@ package com.ForgeEssentials.permissions;
 import java.io.File;
 import java.util.HashSet;
 
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.event.Event.Result;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.config.Category;
-import com.ForgeEssentials.core.config.Configuration;
-import com.ForgeEssentials.core.config.Property;
 
 public class PermissionsConfig
 {
@@ -157,7 +155,7 @@ public class PermissionsConfig
 		config.save();
 	}
 
-	private void readGroupPerms(Zone zone, Category cat, String parentCat)
+	private void readGroupPerms(Zone zone, ConfigCategory cat, String parentCat)
 	{
 		for (String group : ZoneManager.GLOBAL.getGroupsOverriden())
 		{
@@ -167,7 +165,7 @@ public class PermissionsConfig
 				config.get(parentCat + ".groups." + group, perm.name, perm.allowed.equals(Result.ALLOW));
 
 			// read permissions
-			Category groupCat = config.categories.get(parentCat + ".groups." + group);
+			ConfigCategory groupCat = config.categories.get(parentCat + ".groups." + group);
 
 			HashSet<Permission> perms = zone.groupOverrides.get(group);
 			if (perms == null)

@@ -2,6 +2,9 @@ package com.ForgeEssentials.core.config;
 
 import java.io.File;
 
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
+
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.core.ForgeEssentials;
