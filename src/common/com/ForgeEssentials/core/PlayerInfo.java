@@ -11,9 +11,9 @@ import java.util.Stack;
 
 import net.minecraft.src.EntityPlayer;
 
-import com.ForgeEssentials.AreaSelector.Point;
-import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
+import com.ForgeEssentials.core.AreaSelector.Point;
+import com.ForgeEssentials.core.AreaSelector.Selection;
 import com.ForgeEssentials.permissions.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;

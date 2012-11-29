@@ -2,8 +2,8 @@ package com.ForgeEssentials.client.core;
 
 import java.io.Serializable;
 
-import com.ForgeEssentials.AreaSelector.Point;
-import com.ForgeEssentials.AreaSelector.Selection;
+import com.ForgeEssentials.core.AreaSelector.Point;
+import com.ForgeEssentials.core.AreaSelector.Selection;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;

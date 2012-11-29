@@ -4,12 +4,12 @@ import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
 
-import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator.Mode;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.AreaSelector.Point;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 

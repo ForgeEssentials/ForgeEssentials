@@ -3,8 +3,6 @@ package com.ForgeEssentials.WorldControl.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ForgeEssentials.AreaSelector.Point;
-import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskReplaceSelection;
@@ -12,6 +10,8 @@ import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator.Mode;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.AreaSelector.Point;
+import com.ForgeEssentials.core.AreaSelector.Selection;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.CommandBase;

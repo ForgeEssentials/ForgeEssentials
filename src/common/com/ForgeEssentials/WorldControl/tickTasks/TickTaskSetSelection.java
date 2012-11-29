@@ -4,12 +4,12 @@ package com.ForgeEssentials.WorldControl.tickTasks;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 
-import com.ForgeEssentials.AreaSelector.AreaBase;
-import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.AreaSelector.AreaBase;
+import com.ForgeEssentials.core.AreaSelector.Point;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 

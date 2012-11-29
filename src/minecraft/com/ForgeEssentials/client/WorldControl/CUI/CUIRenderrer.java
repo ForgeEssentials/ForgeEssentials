@@ -9,10 +9,10 @@ import net.minecraftforge.event.ForgeSubscribe;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.ForgeEssentials.AreaSelector.Point;
-import com.ForgeEssentials.AreaSelector.Selection;
 import com.ForgeEssentials.client.core.PlayerInfoClient;
 import com.ForgeEssentials.client.core.ProxyClient;
+import com.ForgeEssentials.core.AreaSelector.Point;
+import com.ForgeEssentials.core.AreaSelector.Selection;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Side;

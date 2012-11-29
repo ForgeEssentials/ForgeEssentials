@@ -1,7 +1,7 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.AreaSelector.Point;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.AreaSelector.Point;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permissions.PermQueryPlayer;
 import com.ForgeEssentials.permissions.PermissionsAPI;

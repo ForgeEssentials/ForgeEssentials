@@ -7,7 +7,7 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.client.network.HandlerClient;
 import com.ForgeEssentials.core.config.FEConfig;
-import com.ForgeEssentials.network.HandlerServer;
+import com.ForgeEssentials.core.network.HandlerServer;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.LibraryDetector;
 import com.ForgeEssentials.util.Localization;

@@ -1,4 +1,4 @@
-package com.ForgeEssentials.network;
+package com.ForgeEssentials.core.network;
 
 import java.io.DataInputStream;
 import java.io.IOException;
