@@ -3,7 +3,9 @@ package com.ForgeEssentials.permissions;
 import java.io.File;
 import java.util.HashSet;
 
+import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
 import net.minecraftforge.event.Event.Result;
 
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -171,10 +173,10 @@ public class PermissionsConfig
 			if (perms == null)
 				perms = new HashSet<Permission>();
 
-			for (Property prop : groupCat.properties.values())
+			for (Property prop : groupCat.values())
 			{
-				Permission newPerm = new Permission(prop.name, prop.getBoolean(true));
-				PermissionChecker check = new Permission(prop.name, prop.getBoolean(true));
+				Permission newPerm = new Permission(prop.getName(), prop.getBoolean(true));
+				PermissionChecker check = new Permission(prop.getName(), prop.getBoolean(true));
 
 				if (perms.contains(check) && !perms.contains(newPerm))
 					perms.remove(check);
@@ -184,7 +186,7 @@ public class PermissionsConfig
 		}
 	}
 
-	private void readPlayerPerms(Zone zone, Category cat, String parentCat)
+	private void readPlayerPerms(Zone zone, ConfigCategory cat, String parentCat)
 	{
 		for (String player : zone.getPlayersOverriden())
 		{
@@ -194,16 +196,16 @@ public class PermissionsConfig
 				config.get(parentCat + ".players." + player, perm.name, perm.allowed.equals(Result.ALLOW));
 
 			// read permissions
-			Category groupCat = config.categories.get(parentCat + ".players." + player);
+			ConfigCategory groupCat = config.categories.get(parentCat + ".players." + player);
 
 			HashSet<Permission> perms = zone.groupOverrides.get(player);
 			if (perms == null)
 				perms = new HashSet<Permission>();
 
-			for (Property prop : groupCat.properties.values())
+			for (Property prop : groupCat.values())
 			{
-				Permission newPerm = new Permission(prop.name, prop.getBoolean(true));
-				PermissionChecker check = new Permission(prop.name, prop.getBoolean(true));
+				Permission newPerm = new Permission(prop.getName(), prop.getBoolean(true));
+				PermissionChecker check = new Permission(prop.getName(), prop.getBoolean(true));
 
 				if (perms.contains(check) && !perms.contains(newPerm))
 					perms.remove(check);
