@@ -9,9 +9,9 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
 import net.minecraftforge.event.Event.Result;
 
-import com.ForgeEssentials.core.AreaSelector.AreaBase;
-import com.ForgeEssentials.core.AreaSelector.Point;
-import com.ForgeEssentials.core.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.AreaBase;
+import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class Zone extends AreaBase implements Comparable, Serializable
 {

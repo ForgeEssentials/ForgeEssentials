@@ -1,13 +1,13 @@
 package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.AreaSelector.Point;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permissions.PermQueryPlayer;
 import com.ForgeEssentials.permissions.PermissionsAPI;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

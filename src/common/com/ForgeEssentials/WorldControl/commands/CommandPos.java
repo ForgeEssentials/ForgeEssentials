@@ -2,9 +2,9 @@ package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.AreaSelector.Point;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.Point;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.MovingObjectPosition;

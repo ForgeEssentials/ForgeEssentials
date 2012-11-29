@@ -10,8 +10,8 @@ import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator.Mode;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.AreaSelector.Point;
-import com.ForgeEssentials.core.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.Selection;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.CommandBase;

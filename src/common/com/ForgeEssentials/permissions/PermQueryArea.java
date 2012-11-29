@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import net.minecraft.src.EntityPlayer;
 import net.minecraftforge.event.Event.HasResult;
 
-import com.ForgeEssentials.core.AreaSelector.AreaBase;
-import com.ForgeEssentials.core.AreaSelector.Point;
-import com.ForgeEssentials.core.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.AreaBase;
+import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.Selection;
 
 /**
  * Reuslts are: default, allow, deny.

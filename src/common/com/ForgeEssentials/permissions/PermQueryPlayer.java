@@ -1,8 +1,8 @@
 package com.ForgeEssentials.permissions;
 
-import com.ForgeEssentials.core.AreaSelector.AreaBase;
-import com.ForgeEssentials.core.AreaSelector.Point;
-import com.ForgeEssentials.core.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.AreaBase;
+import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.Selection;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraftforge.event.Event;

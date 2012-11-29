@@ -12,11 +12,11 @@ import java.util.Stack;
 import net.minecraft.src.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
-import com.ForgeEssentials.core.AreaSelector.Point;
-import com.ForgeEssentials.core.AreaSelector.Selection;
 import com.ForgeEssentials.permissions.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.Selection;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

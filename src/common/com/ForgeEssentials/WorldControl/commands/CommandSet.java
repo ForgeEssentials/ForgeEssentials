@@ -10,8 +10,8 @@ import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskReplaceSelection;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.AreaSelector.Selection;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class CommandSet extends WorldControlCommandBase
 {

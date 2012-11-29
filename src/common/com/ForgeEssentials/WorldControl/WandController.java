@@ -2,8 +2,8 @@ package com.ForgeEssentials.WorldControl;
 
 //Depreciated
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.AreaSelector.Point;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

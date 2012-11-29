@@ -1,4 +1,4 @@
-package com.ForgeEssentials.client.network;
+package com.ForgeEssentials.client.core.network;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;

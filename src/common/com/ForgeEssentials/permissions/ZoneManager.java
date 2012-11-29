@@ -9,10 +9,10 @@ import net.minecraft.src.WorldInfo;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
-import com.ForgeEssentials.core.AreaSelector.AreaBase;
-import com.ForgeEssentials.core.AreaSelector.Point;
-import com.ForgeEssentials.core.AreaSelector.Selection;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.AreaSelector.AreaBase;
+import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class ZoneManager
 {

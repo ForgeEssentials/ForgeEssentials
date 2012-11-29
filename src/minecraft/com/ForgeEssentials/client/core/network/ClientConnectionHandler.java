@@ -1,4 +1,4 @@
-package com.ForgeEssentials.client.network;
+package com.ForgeEssentials.client.core.network;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.INetworkManager;

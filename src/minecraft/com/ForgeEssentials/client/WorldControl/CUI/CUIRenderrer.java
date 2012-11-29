@@ -11,8 +11,8 @@ import org.lwjgl.opengl.GL12;
 
 import com.ForgeEssentials.client.core.PlayerInfoClient;
 import com.ForgeEssentials.client.core.ProxyClient;
-import com.ForgeEssentials.core.AreaSelector.Point;
-import com.ForgeEssentials.core.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.Selection;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Side;

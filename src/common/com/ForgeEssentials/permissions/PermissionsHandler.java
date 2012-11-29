@@ -9,7 +9,7 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.AreaSelector.AreaBase;
+import com.ForgeEssentials.util.AreaSelector.AreaBase;
 
 /**
  * 

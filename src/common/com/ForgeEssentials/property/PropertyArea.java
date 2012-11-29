@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 
-import com.ForgeEssentials.core.AreaSelector.AreaBase;
-import com.ForgeEssentials.core.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.AreaBase;
+import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class PropertyArea extends AreaBase
 {

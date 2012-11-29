@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core.AreaSelector;
+package com.ForgeEssentials.util.AreaSelector;
 
 public class Selection extends AreaBase
 {
