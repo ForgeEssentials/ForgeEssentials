@@ -5,6 +5,7 @@ import net.minecraft.src.ICommandSender;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandMotd extends ForgeEssentialsCommandBase
 {
@@ -26,6 +27,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 			for (String arg : args)
 				motd = motd + arg + " ";
 			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
+			OutputHandler.chatConfirmation(sender, "MOTD successfully changed.");
 		} else
 			sender.sendChatToPlayer(motd);
 	}
@@ -39,6 +41,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 			for (String arg : args)
 				motd = motd + arg + " ";
 			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
+			OutputHandler.SOP("MOTD successfully changed");
 		} else
 			sender.sendChatToPlayer(motd);
 	}
