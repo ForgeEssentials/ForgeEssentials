@@ -18,10 +18,10 @@ public class FEModContainer extends DummyModContainer {
                 super(new ModMetadata());
                 /* ModMetadata is the same as mcmod.info */
                 ModMetadata myMeta = super.getMetadata();
-                myMeta.authorList = Arrays.asList(new String[] { "AbrarSyed", "Bob-A-Red-Dino", "bspkrs", "MysteriousAges", "luacs1998" });
-                myMeta.description = "A permissions and protection system for use on Forge servers, replacing WorldEdit and WorldGuard functionality. ";
+                myMeta.authorList = Arrays.asList(new String[] { "bspkrs", "luacs1998" });
+                myMeta.description = "The preloader for Forge Essentials.";
                 myMeta.modId = "FEPreLoader";
-                myMeta.version = "0.0.1";
+                myMeta.version = "0.1.0";
                 myMeta.name = "Forge Essentials|PreLoader";
                 myMeta.url = "";
         }

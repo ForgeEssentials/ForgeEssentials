@@ -95,10 +95,6 @@ public class FEConfig
 		prop = config.get("Commands", "backupName", "%world_%month-%day_%hourh%min"); 
 		prop.comment = "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world";
 		CommandBackup.backupName = prop.value;
-		
-		prop = config.get("Commands", "backupDir", "backups/");
-		prop.comment = "The path to the backup folder. This is relative to the ForgeEssentials folder.";
-		CommandBackup.backupDir = prop.value;
 	}
 
 	private void loadPerms()
