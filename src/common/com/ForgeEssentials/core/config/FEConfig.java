@@ -5,6 +5,7 @@ import java.io.File;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.commands.CommandBackup;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -92,6 +93,10 @@ public class FEConfig
 		prop = config.get("Commands", "RulesFile", "rules.txt");
 		prop.comment = "Specify the file where the rules will read from and written to. This path is relative to the ForgeEssentials folder.";
 		CommandRules.rulesFile = new File(ForgeEssentials.FEDIR, prop.value);
+		
+		prop = config.get("Commands", "backupName", "%world_%month-%day_%hourh%min"); 
+		prop.comment = "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world";
+		CommandBackup.backupName = prop.value;
 	}
 
 	private void loadPerms()
