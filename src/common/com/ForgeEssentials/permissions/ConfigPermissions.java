@@ -10,29 +10,33 @@ import net.minecraftforge.event.Event.Result;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 
-public class PermissionsConfig
+public class ConfigPermissions
 {
-	public static File		permissionsFile	= new File(ForgeEssentials.FEDIR, "permissions.txt");
+	public static File		permissionsFile	= new File(ModulePermissions.permsFolder, "permissions.cfg");
 
 	public Configuration	config;
+	
+	private String global;
 
-	public PermissionsConfig()
+	public ConfigPermissions()
 	{
 		config = new Configuration(permissionsFile, true);
 
+		global = ZoneManager.GLOBAL.getZoneID();
+		
 		// GLOBAL properties
-		if (config.categories.containsKey("__GLOBAL__"))
+		if (config.categories.containsKey(global))
 		{
-			config.addCustomCategoryComment("__GLOBAL__", "the last stop where permissions get checked before their defaults");
+			config.addCustomCategoryComment(global, "the last stop where permissions get checked before their defaults");
 
-			if (config.categories.containsKey("__GLOBAL__.groups"))
-				readGroupPerms(ZoneManager.GLOBAL, config.categories.get("__GLOBAL__.groups"), "__GLOBAL__");
+			if (config.categories.containsKey(global+".groups"))
+				readGroupPerms(ZoneManager.GLOBAL, config.categories.get(global+".groups"), global);
 
-			if (config.categories.containsKey("__GLOBAL__.players"))
-				readPlayerPerms(ZoneManager.GLOBAL, config.categories.get("__GLOBAL__.players"), "__GLOBAL__");
+			if (config.categories.containsKey(global+".players"))
+				readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(global+".players"), global);
 		}
-		writeGroupPerms(ZoneManager.GLOBAL, "__GLOBAL__");
-		writePlayerPerms(ZoneManager.GLOBAL, "__GLOBAL__");
+		writeGroupPerms(ZoneManager.GLOBAL, global);
+		writePlayerPerms(ZoneManager.GLOBAL, global);
 
 		// WorldZones
 		for (Zone worldZone : ZoneManager.worldZoneMap.values())
@@ -100,15 +104,15 @@ public class PermissionsConfig
 		config.load();
 
 		// GLOBAL properties
-		if (config.categories.containsKey("__GLOBAL__"))
+		if (config.categories.containsKey(global))
 		{
-			config.addCustomCategoryComment("__GLOBAL__", "the last stop where permissions get checked before their defaults");
+			config.addCustomCategoryComment(global, "the last stop where permissions get checked before their defaults");
 
-			if (config.categories.containsKey("__GLOBAL__.groups"))
-				readGroupPerms(ZoneManager.GLOBAL, config.categories.get("__GLOBAL__.groups"), "__GLOBAL__");
+			if (config.categories.containsKey(global+".groups"))
+				readGroupPerms(ZoneManager.GLOBAL, config.categories.get(global+".groups"), global);
 
-			if (config.categories.containsKey("__GLOBAL__.players"))
-				readPlayerPerms(ZoneManager.GLOBAL, config.categories.get("__GLOBAL__.players"), "__GLOBAL__");
+			if (config.categories.containsKey(global+".players"))
+				readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(global+".players"), global);
 		}
 
 		// WorldZones
@@ -137,8 +141,8 @@ public class PermissionsConfig
 	public void saveAll()
 	{
 		// GLOBAL properties
-		writeGroupPerms(ZoneManager.GLOBAL, "__GLOBAL__");
-		writePlayerPerms(ZoneManager.GLOBAL, "__GLOBAL__");
+		writeGroupPerms(ZoneManager.GLOBAL, global);
+		writePlayerPerms(ZoneManager.GLOBAL, global);
 
 		// WorldZones
 		for (Zone worldZone : ZoneManager.worldZoneMap.values())

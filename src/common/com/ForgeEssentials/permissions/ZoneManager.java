@@ -30,7 +30,7 @@ public class ZoneManager
 	// ------------ WorldZone stuff -----------------
 	// ----------------------------------------------
 
-	public static HashMap<String, Zone>	worldZoneMap;
+	protected static HashMap<String, Zone>	worldZoneMap;
 
 	// to load WorldZones
 	@ForgeSubscribe
@@ -65,7 +65,7 @@ public class ZoneManager
 	// ----------------------------------------------
 
 	// normal zone map. WorldZones and Globals are not included.
-	public static TreeMap<String, Zone>	zoneMap;
+	protected static TreeMap<String, Zone>	zoneMap;
 
 	public static void deleteZone(String zoneID)
 	{

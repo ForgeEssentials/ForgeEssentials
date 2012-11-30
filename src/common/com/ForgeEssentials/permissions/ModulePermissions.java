@@ -1,8 +1,11 @@
 package com.ForgeEssentials.permissions;
 
+import java.io.File;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -17,15 +20,21 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class ModulePermissions implements IFEModule
 {
-	public static PermissionsConfig		config;
+	public static ConfigPermissions		config;
 	public static PermissionsHandler	pHandler;
 	public static ZoneManager			zManager;
 	public static boolean				permsVerbose	= false;
+	
+	public static File permsFolder = new File(ForgeEssentials.FEDIR, "/Permissions/");
+	
 	private ForgeEssentialsPermissionRegistrationEvent	permEvent;
 
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
+		if (!permsFolder.exists() || !permsFolder.isDirectory())
+			permsFolder.mkdirs();
+		
 		OutputHandler.SOP("Permissions module is enabled. Loading...");
 		zManager = new ZoneManager();
 		ZoneManager.GLOBAL = new Zone("__GLOBAL__");
@@ -51,7 +60,7 @@ public class ModulePermissions implements IFEModule
 		
 		MinecraftForge.EVENT_BUS.post(null);
 		
-		config = new PermissionsConfig();
+		config = new ConfigPermissions();
 		// TODO Auto-generated method stub
 
 	}

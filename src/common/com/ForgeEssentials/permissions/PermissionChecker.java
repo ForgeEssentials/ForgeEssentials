@@ -1,19 +1,12 @@
 package com.ForgeEssentials.permissions;
 
-import java.util.HashMap;
-
-import net.minecraftforge.event.Event.Result;
-
-import com.ForgeEssentials.util.OutputHandler;
-
 public class PermissionChecker
 {
-	
 	/**
-	 *  fully qualified name in format ModName.parent1.parent2.parentN.name
+	 * fully qualified name in format ModName.parent1.parent2.parentN.name
 	 */
 	public String	name;
-	
+
 	/**
 	 * should only be used for temporary Perm checking.
 	 * @param qualifiedName
@@ -83,27 +76,25 @@ public class PermissionChecker
 			return name.equals(perm.name);
 		}
 		else if (object instanceof String)
-		{
 			return object.equals(name);
-		}
 		return false;
 	}
 
 	/**
 	 * checks if this Permission can determine the result of the given Permission
 	 * @param perm
-	 * @return True if THIS can determine the result of the given permission 
+	 * @return True if THIS can determine the result of the given permission
 	 */
 	public boolean matches(PermissionChecker perm)
 	{
-		if (this.equals(perm))
+		if (equals(perm))
 			return true;
 		else if (perm.isChildOf(this))
 			return true;
 
 		return false;
 	}
-	
+
 	@Override
 	public String toString()
 	{
