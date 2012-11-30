@@ -30,7 +30,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase{
 	static List<String> fileList;
 	static String backupdir;
 	public static String backupName;
-	
+
 	@Override
 	public String getCommandName() {
 		return "backup";
@@ -38,7 +38,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase{
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args) {
-		
+
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase{
 			OutputHandler.SOP("Could not save world.");
 		}
 		OutputHandler.SOP("World save completed. Starting backup...");
-		
+
         fileList = new ArrayList<String>();
 		Calendar cal = Calendar.getInstance();
 		if (svr.isDedicatedServer())	source = (new File(svr.getFolderName())).getAbsolutePath() + File.separator; 
@@ -125,7 +125,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase{
 		}
 
 	}
-	
+
 	public static void generateFileList(File node)
     {
     	//add file only
@@ -140,7 +140,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase{
     		}
     	}
     }
-	
+
 	private static String generateZipEntry(String file){
     	return file.substring(source.length(), file.length());
     }

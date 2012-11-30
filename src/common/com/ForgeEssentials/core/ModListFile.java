@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ForgeEssentials.core.config.FEConfig;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Loader;

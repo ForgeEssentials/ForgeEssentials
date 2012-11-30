@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core.config;
+package com.ForgeEssentials.core;
 
 import java.io.File;
 
@@ -8,8 +8,6 @@ import net.minecraftforge.common.Property;
 import com.ForgeEssentials.commands.CommandBackup;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.permissions.ModulePermissions;
 import com.ForgeEssentials.permissions.Permission;
 import com.ForgeEssentials.util.OutputHandler;
@@ -60,7 +58,7 @@ public class FEConfig
 		ModuleLauncher.cmdEnabled = prop.getBoolean(true);
 
 		prop = config.get("Modules", "WorldControl_Enabled", true);
-		prop.comment = "Disabling this will remove Selections and selection editing commands such as //set, //copy, etc... Note that this is force disabled if WorldEdit is installed.";
+		prop.comment = "Disabling this will remove Selections and selection editing commands such as //set, //copy, etc... Note that this is force disabled if WEIntegration is loaded.";
 		ModuleLauncher.wcEnabled = prop.getBoolean(true);
 
 		prop = config.get("Modules", "Permissions_Enabled", true);
@@ -97,6 +95,10 @@ public class FEConfig
 		prop = config.get("Commands", "backupName", "%world_%month-%day_%hourh%min"); 
 		prop.comment = "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world";
 		CommandBackup.backupName = prop.value;
+		
+		prop = config.get("Commands", "backupDir", "backups/");
+		prop.comment = "The path to the backup folder. This is relative to the ForgeEssentials folder.";
+		CommandBackup.backupDir = prop.value;
 	}
 
 	private void loadPerms()

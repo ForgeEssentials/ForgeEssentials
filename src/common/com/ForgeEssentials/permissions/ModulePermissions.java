@@ -25,7 +25,7 @@ public class ModulePermissions implements IFEModule
 	public static ZoneManager			zManager;
 	public static boolean				permsVerbose	= false;
 	
-	public static File permsFolder = new File(ForgeEssentials.FEDIR, "/Permissions/");
+	public static File permsFolder = new File(ForgeEssentials.FEDIR, "/permissions/");
 	
 	private ForgeEssentialsPermissionRegistrationEvent	permEvent;
 
