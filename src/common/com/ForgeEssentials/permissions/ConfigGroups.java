@@ -30,6 +30,8 @@ public class ConfigGroups
 			config.addCustomCategoryComment(defaultGroup, "very default of all default groups. "+config.NEW_LINE+" This is also used for blanket permissions that are not applied to players but to zones");
 			//config...
 			config.get(defaultGroup, "promoteGroup", "", "The group to which this group will promote to");
+			config.get(defaultGroup, "chatPrefix", "", "text to go before the username in chat. format char: \u00a7");
+			config.get(defaultGroup, "chatSuffix", "", "text to go after the username in chat. format char: \u00a7");
 		}
 	}
 }

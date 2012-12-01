@@ -32,7 +32,7 @@ public class HandlerClient implements IPacketHandler
 				{
 				// cast to the correct instance of ForgeEssentialsPacketbase and use the read methods.
 					case 0:
-						((PacketSelectionUpdate) packet).readClient(stream, world, player);
+						PacketSelectionUpdate.readClient(stream, world, player);
 						break;
 				}
 		}

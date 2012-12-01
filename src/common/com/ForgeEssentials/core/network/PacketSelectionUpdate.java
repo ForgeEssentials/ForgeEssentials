@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.WorldClient;
 import net.minecraft.src.WorldServer;
 
@@ -17,12 +18,16 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
-public class PacketSelectionUpdate extends ForgeEssentialsPacketBase
+public class PacketSelectionUpdate implements IForgeEssentialsPacket
 {
 	public static final byte	packetID	= 0;
 	
+	private Packet250CustomPayload packet;
+	
 	public PacketSelectionUpdate(PlayerInfo info)
 	{
+		packet = new Packet250CustomPayload();
+		
 		ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
 		DataOutputStream stream = new DataOutputStream(streambyte);
 
@@ -55,9 +60,9 @@ public class PacketSelectionUpdate extends ForgeEssentialsPacketBase
 			stream.close();
 			streambyte.close();
 			
-			this.channel = FECHANNEL;
-			this.data = streambyte.toByteArray();
-			this.length = data.length;
+			packet.channel = FECHANNEL;
+			packet.data = streambyte.toByteArray();
+			packet.length = packet.data.length;
 		}
 
 		catch (Exception e)
@@ -66,15 +71,13 @@ public class PacketSelectionUpdate extends ForgeEssentialsPacketBase
 		}
 	}
 
-	@Override
-	public void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException
+	public static void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException
 	{
 		// should never be received here.
 	}
 
-	@Override
 	@SideOnly(Side.CLIENT)
-	public void readClient(DataInputStream stream, WorldClient world, EntityPlayer player) throws IOException
+	public static void readClient(DataInputStream stream, WorldClient world, EntityPlayer player) throws IOException
 	{
 		// point 1 available.
 		if (stream.readBoolean())
@@ -95,6 +98,12 @@ public class PacketSelectionUpdate extends ForgeEssentialsPacketBase
 			
 			ProxyClient.info.setPoint2(new Point(x, y, z));
 		}
+	}
+
+	@Override
+	public Packet250CustomPayload getPayload()
+	{
+		return packet;
 	}
 
 }
