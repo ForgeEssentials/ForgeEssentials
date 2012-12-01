@@ -59,6 +59,10 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandWarp());
 		e.registerServerCommand(new CommandBackup());
 		e.registerServerCommand(new CommandBurn());
+		e.registerServerCommand(new CommandList());
+		e.registerServerCommand(new CommandCompass());
+		e.registerServerCommand(new CommandRepair());
+		e.registerServerCommand(new CommandHeal());
 	}
 
 	@Override
@@ -79,5 +83,9 @@ public class ModuleCommands implements IFEModule
 		event.registerGlobalPermission("ForgeEssentials.commands.modlist", true);
 		event.registerGlobalPermission("ForgeEssentials.commands.motd", true);
 		event.registerGlobalPermission("ForgeEssentials.commands.burn", true);
+		event.registerGlobalPermission("ForgeEssentials.commands.list", true);
+		event.registerGlobalPermission("ForgeEssentials.commands.compass", true);
+		event.registerGlobalPermission("ForgeEssentials.commands.repair", true);
+		event.registerGlobalPermission("ForgeEssentials.commands.heal", true);
 	}
 }
