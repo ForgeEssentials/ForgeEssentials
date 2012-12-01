@@ -55,8 +55,6 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandWarp());
 		e.registerServerCommand(new CommandBackup());
 		e.registerServerCommand(new CommandBurn());
-		e.registerServerCommand(new CommandList());
-		e.registerServerCommand(new CommandCompass());
 		e.registerServerCommand(new CommandRepair());
 		e.registerServerCommand(new CommandHeal());
 	}

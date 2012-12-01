@@ -11,10 +11,10 @@
 	<entry key="command.rules.info.console">Get/set the rules of the server</entry>
 	<entry key="command.rules.info.player">Get/set the rules of the server</entry>
 
-	<entry key="command.butcher.syntax.player">[radius] [x, y, z]</entry>
+	<entry key="command.butcher.syntax.player">[radius] [&lt;x> &lt;y> &lt;z>]</entry>
 	<entry key="command.butcher.info.player">Kill enemies around you/the specified point within the radius</entry>
 
-	<entry key="command.remove.syntax.player">/remove [radius] [x, y, z]</entry>
+	<entry key="command.remove.syntax.player">/remove [radius] [&lt;x> &lt;y> &lt;z>]</entry>
 	<entry key="command.remove.info.player">Remove all item entities around you/the specified point within the radius</entry>
 
 	<entry key="command.kill.syntax.console">&lt;player></entry>
@@ -26,17 +26,27 @@
 	<entry key="command.smite.syntax.player">[me|&lt;player>]</entry>
 	<entry key="command.smite.info.console">Strike the specified player with lightning</entry>
 	<entry key="command.smite.info.player">Strike where you are looking, yourself, or another player with lightning</entry>
-
-	<entry key="command.home.syntax.player">[here|x, y, z]</entry>
-	<entry key="command.home.info.player">Teleport to/sets your home</entry>
 	
-	<entry key="command.spawn.syntax.console">&lt;player></entry>
-	<entry key="command.spawn.syntax.player">[player]</entry>
-	<entry key="command.spawn.info.console">Teleport a player to their spawn</entry>
-	<entry key="command.spawn.info.player">Teleport yourself or another player to your/their spawn</entry>
+	<entry key="command.burn.syntax.console">&lt;player></entry>
+	<entry key="command.burn.syntax.player">[me|&lt;player>]</entry>
+	<entry key="command.burn.info.console">Set the specified player on fire</entry>
+	<entry key="command.burn.info.player">Set yourself or the specified player on fire</entry>
+	
+	<entry key="command.repair.info.player">Repairs the target's held item</entry>
+	<entry key="command.repair.info.console">Repairs the target's held item</entry>
+	<entry key="command.repair.syntax.player">&lt;player></entry>
+	<entry key="command.repair.syntax.console">&lt;player></entry>
+	
+	<entry key="command.heal.info.player">Restores the target's health, hunger and extinguishes them</entry>
+	<entry key="command.heal.info.console">Restores the target's health, hunger and extinguishes them</entry>
+	<entry key="command.heal.syntax.player">&lt;player></entry>
+	<entry key="command.heal.syntax.console">&lt;player></entry>
+		
+	<entry key="command.home.syntax.player">[here|&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.home.info.player">Teleport you to/sets your home</entry>
 
 	<entry key="command.back.syntax.player"></entry>
-	<entry key="command.back.info.player">Teleport to your last death point</entry>
+	<entry key="command.back.info.player">Teleport you your last death point</entry>
 
 	<entry key="command.restart.syntax.console"></entry>
 	<entry key="command.restart.info.console">Restart the server</entry>
@@ -47,17 +57,22 @@
 	<entry key="message.butchered">%d enemies killed</entry>
 	<entry key="message.removed">%d items removed</entry>
 	<entry key="message.killed">You were killed. You probably deserved it.</entry>
-	<entry key="message.spawned">You were teleported to spawn.</entry>
+	<entry key="message.spawntypechanged">Your spawn type has been set to </entry>
 	<entry key="message.smite.self">Was that really a good idea?</entry>
 	<entry key="message.smite.player">You should feel bad about doing that.</entry>
 	<entry key="message.smite.ground">I hope that didn't start a fire.</entry>
 	<entry key="message.smite.targetError">You must look at the ground! Maximum range is 500 blocks.</entry>
 	
+	<entry key="message.burn.self">Ouch! Hot!</entry>
+	<entry key="message.burn.player">You should feel bad about doing that.</entry>
+	
+	<entry key="message.heal.healed">Healed.</entry>
+
 	<entry key="message.error.noPlayerX">Player %s does not exist.</entry>
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
 	<entry key="message.error.noplayer">That player does not exist.</entry>
 	<entry key="message.error.specifyPlayer">You must specify a player.</entry>
-	<entry key="message.error.nan">#%d param is not a number. Try again, you can do it.</entry>
+	<entry key="message.error.nan">That wasn't a number. Try again, you can do it.</entry>
 	<entry key="message.error.nodeathpoint">You have not died yet.</entry>
 	<entry key="message.error.nohome">No home set. Try this: </entry>
 	<entry key="message.error.nopage">No page of that number exists!</entry>
@@ -65,7 +80,9 @@
 	<entry key="message.error.yeszone">A zone of that ID already exists!</entry>
 	<entry key="message.error.noselection">Thats an invalid selection. Select something first.</entry>
 	<entry key="message.error.permdenied">You are not allowed to do that.</entry>
-	
+	<entry key="message.error.noItemPlayer">You must be holding a valid item.</entry>
+	<entry key="message.error.noItemTarget">The specified player is not holding a valid item.</entry>
+
 	<entry key="message.done">Done!</entry>
 	
 	<entry key="command.modlist.header">--- Showing the modlist page %p of %t ---</entry>

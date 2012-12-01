@@ -32,8 +32,6 @@
 	<entry key="command.burn.info.console">Set the specified player on fire</entry>
 	<entry key="command.burn.info.player">Set yourself or the specified player on fire</entry>
 	
-	<entry key="command.compass.info.player">Returns the direction you are facing</entry>
-	
 	<entry key="command.repair.info.player">Repairs the target's held item</entry>
 	<entry key="command.repair.info.console">Repairs the target's held item</entry>
 	<entry key="command.repair.syntax.player">&lt;player></entry>
@@ -68,8 +66,6 @@
 	<entry key="message.burn.self">Ouch! Hot!</entry>
 	<entry key="message.burn.player">You should feel bad about doing that.</entry>
 	
-	<entry key="message.compass.direction">You are facing </entry>
-	
 	<entry key="message.heal.healed">Healed.</entry>
 
 	<entry key="message.error.noPlayerX">Player %s does not exist.</entry>
@@ -84,7 +80,6 @@
 	<entry key="message.error.yeszone">A zone of that ID already exists!</entry>
 	<entry key="message.error.noselection">Thats an invalid selection. Select something first.</entry>
 	<entry key="message.error.permdenied">You are not allowed to do that.</entry>
-	<entry key="message.error.notANumber">#%d param is not a number.</entry>
 	<entry key="message.error.noItemPlayer">You must be holding a valid item.</entry>
 	<entry key="message.error.noItemTarget">The specified player is not holding a valid item.</entry>
 
