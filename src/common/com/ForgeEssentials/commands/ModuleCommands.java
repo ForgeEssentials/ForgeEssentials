@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.IFEModule;
@@ -26,28 +27,23 @@ public class ModuleCommands implements IFEModule
 			return;
 	}
 
-	// load.
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Commands module is enabled. Loading...");
 	}
 
-	// load.
 	public void load(FMLInitializationEvent e)
 	{
+		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
-	
+
 	@Override
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
-	// load.
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-		// commands
 		e.registerServerCommand(new CommandMotd());
 		e.registerServerCommand(new CommandRules());
 		e.registerServerCommand(new CommandButcher());
@@ -67,8 +63,6 @@ public class ModuleCommands implements IFEModule
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	@ForgeSubscribe
