@@ -30,10 +30,10 @@
 	<entry key="command.home.syntax.player">[here|x, y, z]</entry>
 	<entry key="command.home.info.player">Teleport to/sets your home</entry>
 	
-	<entry key="command.spawn.syntax.console">&lt;set &lt;here|x, y, z>|reset></entry>
-	<entry key="command.spawn.syntax.player">[here|x, y, z]</entry>
-	<entry key="command.spawn.info.console">Teleport to/set the spawn</entry>
-	<entry key="command.spawn.info.player">Teleport to/set the spawn</entry>
+	<entry key="command.spawn.syntax.console">&lt;player></entry>
+	<entry key="command.spawn.syntax.player">[player]</entry>
+	<entry key="command.spawn.info.console">Teleport a player to their spawn</entry>
+	<entry key="command.spawn.info.player">Teleport yourself or another player to your/their spawn</entry>
 
 	<entry key="command.back.syntax.player"></entry>
 	<entry key="command.back.info.player">Teleport to your last death point</entry>
@@ -47,7 +47,7 @@
 	<entry key="message.butchered">%d enemies killed</entry>
 	<entry key="message.removed">%d items removed</entry>
 	<entry key="message.killed">You were killed. You probably deserved it.</entry>
-	<entry key="message.spawntypechanged">Your spawn type has been set to </entry>
+	<entry key="message.spawned">You were teleported to spawn.</entry>
 	<entry key="message.smite.self">Was that really a good idea?</entry>
 	<entry key="message.smite.player">You should feel bad about doing that.</entry>
 	<entry key="message.smite.ground">I hope that didn't start a fire.</entry>
@@ -57,7 +57,7 @@
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
 	<entry key="message.error.noplayer">That player does not exist.</entry>
 	<entry key="message.error.specifyPlayer">You must specify a player.</entry>
-	<entry key="message.error.nan">That wasn't a number. Try again, you can do it.</entry>
+	<entry key="message.error.nan">#%d param is not a number. Try again, you can do it.</entry>
 	<entry key="message.error.nodeathpoint">You have not died yet.</entry>
 	<entry key="message.error.nohome">No home set. Try this: </entry>
 	<entry key="message.error.nopage">No page of that number exists!</entry>
@@ -65,7 +65,6 @@
 	<entry key="message.error.yeszone">A zone of that ID already exists!</entry>
 	<entry key="message.error.noselection">Thats an invalid selection. Select something first.</entry>
 	<entry key="message.error.permdenied">You are not allowed to do that.</entry>
-	<entry key="message.error.notANumber">#%d param is not a number.</entry>
 	
 	<entry key="message.done">Done!</entry>
 	
