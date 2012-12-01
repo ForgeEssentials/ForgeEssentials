@@ -35,7 +35,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 				if (victim != null)
 				{
-					sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
+					victim.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
 					sender.sendChatToPlayer(Localization.formatLocalizedString("message.smite.player"));
 				} else
 					OutputHandler.chatError(sender, Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
