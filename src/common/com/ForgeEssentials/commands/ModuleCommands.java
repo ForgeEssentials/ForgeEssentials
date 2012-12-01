@@ -58,6 +58,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandModlist());
 		e.registerServerCommand(new CommandWarp());
 		e.registerServerCommand(new CommandBackup());
+		e.registerServerCommand(new CommandBurn());
 	}
 
 	@Override
@@ -77,5 +78,6 @@ public class ModuleCommands implements IFEModule
 		event.registerGlobalPermission("ForgeEssentials.commands.kill", true);
 		event.registerGlobalPermission("ForgeEssentials.commands.modlist", true);
 		event.registerGlobalPermission("ForgeEssentials.commands.motd", true);
+		event.registerGlobalPermission("ForgeEssentials.commands.burn", true);
 	}
 }
