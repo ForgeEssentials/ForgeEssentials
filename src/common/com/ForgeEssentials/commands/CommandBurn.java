@@ -37,7 +37,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			}
 		} else
 		{
-			OutputHandler.chatError(sender, Localization.formatLocalizedString("message.burn.notEnoughArgs"));
+			OutputHandler.chatError(sender, (Localization.get("message.error.badsyntax") + getSyntaxPlayer(sender)));
 		}
 	}
 
@@ -54,7 +54,9 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			} else
 				sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
 		} else
-			sender.sendChatToPlayer(Localization.formatLocalizedString("message.burn.notEnoughArgs"));
+		{
+			sender.sendChatToPlayer(Localization.get("message.error.badsyntax") + getSyntaxConsole());	
+		}
 	}
 
 	@Override
