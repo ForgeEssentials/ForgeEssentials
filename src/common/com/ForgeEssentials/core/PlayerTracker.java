@@ -1,6 +1,11 @@
 package com.ForgeEssentials.core;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.EntityPlayerMP;
+
+import com.ForgeEssentials.commands.CommandSpawn;
+import com.ForgeEssentials.util.AreaSelector.Point;
+
 import cpw.mods.fml.common.IPlayerTracker;
 
 public class PlayerTracker implements IPlayerTracker
@@ -30,11 +35,10 @@ public class PlayerTracker implements IPlayerTracker
 	{
 		String oldWorld = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
 		PlayerInfo oldInfo = PlayerInfo.getPlayerInfo(player);
-		
+
 		// if different
 		if (!oldWorld.equals(oldInfo.getWorldName()))
 			// do the dimensionCHange stuff.. because he went from one world, to the spawn world.
 			onPlayerChangedDimension(player);
 	}
-
 }

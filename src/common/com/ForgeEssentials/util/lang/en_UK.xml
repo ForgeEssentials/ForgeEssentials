@@ -1,4 +1,3 @@
-
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties version="1.0">
 	<comment>English (UK) Localization File, &lt; is the less than or left arrow sign</comment>
@@ -12,10 +11,10 @@
 	<entry key="command.rules.info.console">Get/set the rules of the server</entry>
 	<entry key="command.rules.info.player">Get/set the rules of the server</entry>
 
-	<entry key="command.butcher.syntax.player">[radius] [&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.butcher.syntax.player">[radius] [x, y, z]</entry>
 	<entry key="command.butcher.info.player">Kill enemies around you/the specified point within the radius</entry>
 
-	<entry key="command.remove.syntax.player">/remove [radius] [&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.remove.syntax.player">/remove [radius] [x, y, z]</entry>
 	<entry key="command.remove.info.player">Remove all item entities around you/the specified point within the radius</entry>
 
 	<entry key="command.kill.syntax.console">&lt;player></entry>
@@ -28,11 +27,16 @@
 	<entry key="command.smite.info.console">Strike the specified player with lightning</entry>
 	<entry key="command.smite.info.player">Strike where you are looking, yourself, or another player with lightning</entry>
 
-	<entry key="command.home.syntax.player">[here|&lt;x> &lt;y> &lt;z>]</entry>
-	<entry key="command.home.info.player">Teleport you to/sets your home</entry>
+	<entry key="command.home.syntax.player">[here|x, y, z]</entry>
+	<entry key="command.home.info.player">Teleport to/sets your home</entry>
+	
+	<entry key="command.spawn.syntax.console">&lt;set &lt;here|x, y, z>|reset></entry>
+	<entry key="command.spawn.syntax.player">[here|x, y, z]</entry>
+	<entry key="command.spawn.info.console">Teleport to/set the spawn</entry>
+	<entry key="command.spawn.info.player">Teleport to/set the spawn</entry>
 
 	<entry key="command.back.syntax.player"></entry>
-	<entry key="command.back.info.player">Teleport you your last death point</entry>
+	<entry key="command.back.info.player">Teleport to your last death point</entry>
 
 	<entry key="command.restart.syntax.console"></entry>
 	<entry key="command.restart.info.console">Restart the server</entry>
@@ -40,13 +44,19 @@
 	<entry key="command.serverdo.syntax.player">&lt;command> [arg1]...</entry>
 	<entry key="command.serverdo.info.player">Run a console command as a player</entry>
 
-	<entry key="message.butchered"> enemies killed</entry>
-	<entry key="message.removed"> items removed</entry>
+	<entry key="message.butchered">%d enemies killed</entry>
+	<entry key="message.removed">%d items removed</entry>
 	<entry key="message.killed">You were killed. You probably deserved it.</entry>
 	<entry key="message.spawntypechanged">Your spawn type has been set to </entry>
-
+	<entry key="message.smite.self">Was that really a good idea?</entry>
+	<entry key="message.smite.player">You should feel bad about doing that.</entry>
+	<entry key="message.smite.ground">I hope that didn't start a fire.</entry>
+	<entry key="message.smite.targetError">You must look at the ground! Maximum range is 500 blocks.</entry>
+	
+	<entry key="message.error.noPlayerX">Player %s does not exist.</entry>
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
 	<entry key="message.error.noplayer">That player does not exist.</entry>
+	<entry key="message.error.specifyPlayer">You must specify a player.</entry>
 	<entry key="message.error.nan">That wasn't a number. Try again, you can do it.</entry>
 	<entry key="message.error.nodeathpoint">You have not died yet.</entry>
 	<entry key="message.error.nohome">No home set. Try this: </entry>
@@ -55,6 +65,7 @@
 	<entry key="message.error.yeszone">A zone of that ID already exists!</entry>
 	<entry key="message.error.noselection">Thats an invalid selection. Select something first.</entry>
 	<entry key="message.error.permdenied">You are not allowed to do that.</entry>
+	<entry key="message.error.notANumber">#%d param is not a number.</entry>
 	
 	<entry key="message.done">Done!</entry>
 	
@@ -65,20 +76,39 @@
 	<entry key="command.modlist.info.player">Get a list of mods used by the server</entry>
 	<entry key="command.zone.info.player">Define, remove, and edit zones</entry>
 	
-	<entry key="command.zone.syntax.player">/zone &lt;define|redefine|remove|setparent &lt;newParent>> &lt;zoneID></entry>
+	<entry key="command.zone.syntax.player">&lt;define|redefine|remove|setparent &lt;newParent>> &lt;zoneID></entry>
 	
 	<entry key="command.warp.notfound">That warp doesn't exist!</entry>
-    <entry key="command.warp.list">All the warps on the server:</entry>
-    <entry key="command.warp.alreadyexists">That warp already exists. Use "/warp del &lt;name>" to delete.</entry>
-    <entry key="command.warp.syntax.player">[name] OR &lt;set|del> &lt;name> </entry>
-    <entry key="command.warp.info.player">Teleport you to a warp point.</entry>
+	<entry key="command.warp.list">All the warps on the server:</entry>
+	<entry key="command.warp.alreadyexists">That warp already exists. Use "/warp del &lt;name>" to delete.</entry>
+	<entry key="command.warp.syntax.player">[name] OR &lt;set|del> &lt;name> </entry>
+	<entry key="command.warp.info.player">Teleport you to a warp point.</entry>
 	
 	<!-- Some localization for WorldControl -->
 	<entry key="command./set.syntax.player">&lt;blockID[:metadata]></entry>
 	<entry key="command./set.info.player">Sets all blocks in selection to given ID/metadata</entry>
 	<entry key="command./replace.syntax.player">&lt;blockID[:metadata]> &lt;blockID[:metadata]></entry>
 	<entry key="command./replace.info.player">Replaces blocks of the first ID with blocks of the second</entry>
+	<entry key="command.thaw.syntax.player">&lt;radius of effect> [&lt;x> &lt;z>]</entry>
+	<entry key="command.thaw.info.player">Removes snow and ice from the exposed blocks, starting from the player's position or specified X and Z.</entry>
+	<entry key="command.freeze.syntax.player">&lt;radius of effect> [&lt;x> &lt;z>]</entry>
+	<entry key="command.freeze.info.player">Freezes exposed (open to the sky) water to ice.</entry>
+	<entry key="command.snow.syntax.player">&lt;radius of effect> [&lt;x> &lt;z>]</entry>
+	<entry key="command.snow.info.player">Adds a dusting of snow to blocks open to the sky.</entry>
+	<entry key="command.till.syntax.player">&lt;radius of effect> [&lt;x> &lt;y>]</entry>
+	<entry key="command.till.info.player">Tills exposed grass and dirt for planting crops.</entry>
+	<entry key="command.untill.syntax.player">&lt;radius of effect> [&lt;x> &lt;y>]</entry>
+	<entry key="command.untill.info.player">Replaces farmland open to the sky with dirt.</entry>
 	
-	<entry key="forgeEssentials.wc.invalidBlockId">%d is not a valid block ID!</entry>
-	<entry key="forgeEssentials.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
+	<entry key="message.wc.setConfirmBlocksChanged">Set %1$d blocks changed to %2$s</entry>
+	<entry key="message.wc.replaceConfirmBlocksChanged">Replaced %1$d %2$s blocks with %3$s</entry>
+	<entry key="message.wc.thawConfirm">%d blocks have been thawed.</entry>
+	<entry key="message.wc.freezeConfirm">%d blocks have been frozen.</entry>
+	<entry key="message.wc.snowConfirm">%d blocks have been dusted with snow.</entry>
+	<entry key="message.wc.tillConfirm">%d blocks have been tilled.</entry>
+	<entry key="message.wc.untillConfirm">%d blocks of farmland have been trampled.</entry>
+	<entry key="message.wc.invalidBlockId">%d is not a valid block ID!</entry>
+	<entry key="message.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
+	
+	<entry key="tile.air.name">Air</entry>
 </properties>
