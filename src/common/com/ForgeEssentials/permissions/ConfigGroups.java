@@ -29,7 +29,7 @@ public class ConfigGroups
 		if (config.categories.size() == 0)
 		{
 			config.addCustomCategoryComment("members", "Generated group for your conveniance");
-			config.get("members", "promoteGroup", "owners", "The group to which this group will promote to");
+			config.get("members", "promoteGroup", "owners", "The group to which this group will promote");
 			config.get("members", "chatPrefix", "", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed");
 			config.get("members", "chatSuffix", "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed");
 			
