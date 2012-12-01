@@ -21,7 +21,7 @@ public class Downloader implements ILibrarySet{
 
 	@Override
 	public String getRootURL() {
-		return "https://github.com/ForgeEssentials/ForgeEssentialsMain/blob/master/lib/%s?raw=true";
+		return "https://github.com/ForgeEssentials/ForgeEssentialsMain/raw/master/lib/%s";
 	}
 
 }

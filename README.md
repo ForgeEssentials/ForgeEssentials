@@ -1,6 +1,6 @@
 ForgeEssentialsMain
 ===================
-The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating WorldEdit and WorldGuard functionality. More info can be found at the #forgeessentials IRC channel on EsperNet.
+The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating WorldEdit and WorldGuard functionality. More info can be found <a href="https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/About-ForgeEssentials">here</a> or on our IRC channel (#forgeessentials on EsperNet).
 
 Setup
 =====
@@ -9,7 +9,7 @@ MCP: 7.23
 Forge: #407
 
 Get the mentioned Forge and MCP, and decompile (using install.cmd/sh). Once you have a working Forge workspace, pull the repo into that MCP folder.
-Also download WorldEdit and WorldGuard from the Downloads section and place them in lib IN YOUR MCP FOLDER.
+
 
 Downloads
 =========
@@ -30,3 +30,5 @@ FE Team Members:
 <a href="https://github.com/MysteriousAges">MysteriousAges</a>
 
 <a href="https://github.com/luacs1998">luacs1998</a>
+
+<a href="https://github.com/dries007">Dries007</a>
