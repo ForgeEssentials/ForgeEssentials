@@ -40,7 +40,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 			Point death = info.lastDeath;
 			((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(death.x, death.y, death.z, sender.rotationYaw, sender.rotationPitch);
 		} else
-			OutputHandler.chatError(sender, Localization.get("message.error.nodeathpoint"));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NODEATHPOINT));
 	}
 
 	@Override

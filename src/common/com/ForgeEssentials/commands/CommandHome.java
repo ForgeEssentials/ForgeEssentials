@@ -26,13 +26,34 @@ public class CommandHome extends ForgeEssentialsCommandBase
 			PlayerInfo.getPlayerInfo(sender).home = new Point((int) sender.posX, (int) sender.posY, (int) sender.posZ);
 		else if (args.length >= 3)
 		{
+			int x = 0;
+			int y = 0;
+			int z = 0;
 			try
 			{
-				PlayerInfo.getPlayerInfo(sender).home = new Point(new Integer(args[0]), new Integer(args[1]), new Integer(args[2]));
+				x = new Integer(args[0]);
 			} catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender, Localization.get("message.error.nan"));
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
+				return;
 			}
+			try
+			{
+				y = new Integer(args[1]);
+			} catch (NumberFormatException e)
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+				return;
+			}
+			try
+			{
+				z = new Integer(args[2]);
+			} catch (NumberFormatException e)
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
+				return;
+			}
+			PlayerInfo.getPlayerInfo(sender).home = new Point(x, y, z);
 		} else
 		{
 			Point home = PlayerInfo.getPlayerInfo(sender).home;

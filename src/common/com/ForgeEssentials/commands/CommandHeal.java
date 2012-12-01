@@ -33,12 +33,12 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		} 
 		else
 		{
-			OutputHandler.chatError(sender, (Localization.get("message.error.badsyntax") + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 		}
 	}
 
@@ -55,12 +55,12 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		} 
 		else
 		{
-			sender.sendChatToPlayer(Localization.get("message.error.badsyntax") + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 		target.heal(20);
 		target.extinguish();
 		target.getFoodStats().addStats(20, 1.0F);
-		target.sendChatToPlayer(Localization.formatLocalizedString("message.heal.healed"));
+		target.sendChatToPlayer(Localization.get(Localization.HEALED));
 	}
 	
 	@Override

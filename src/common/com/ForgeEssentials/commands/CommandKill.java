@@ -28,13 +28,13 @@ public class CommandKill extends ForgeEssentialsCommandBase
 			if (victim != null)
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				victim.sendChatToPlayer(Localization.get("message.killed"));
+				victim.sendChatToPlayer(Localization.get(Localization.KILLED));
 			} else
-				sender.sendChatToPlayer(Localization.get("message.error.noplayer"));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		} else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
-			sender.sendChatToPlayer(Localization.get("message.killed"));
+			sender.sendChatToPlayer(Localization.get(Localization.KILLED));
 		}
 	}
 
@@ -47,11 +47,11 @@ public class CommandKill extends ForgeEssentialsCommandBase
 			if (victim != null)
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				victim.sendChatToPlayer(Localization.get("message.killed"));
+				victim.sendChatToPlayer(Localization.get(Localization.KILLED));
 			} else
-				sender.sendChatToPlayer(Localization.get("message.error.noplayer"));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		} else
-			sender.sendChatToPlayer(Localization.get("message.error.badsyntax") + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 	}
 
 	@Override

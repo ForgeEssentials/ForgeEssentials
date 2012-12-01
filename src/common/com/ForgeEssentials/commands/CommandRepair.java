@@ -23,19 +23,16 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 		if (args.length == 0)
 		{
 			ItemStack item = sender.getHeldItem();
-			
+
 			if (item == null)
-			{
-				OutputHandler.chatError(sender, Localization.formatLocalizedString("message.error.noItemSelf"));
-			}
-			
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
+
 			item.setItemDamage(0);
-			
-		} 
-		else if (args.length == 1)
+
+		} else if (args.length == 1)
 		{
 			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			
+
 			if (target != null)
 			{
 				ItemStack item = target.getHeldItem();
@@ -43,20 +40,17 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 				if (item != null)
 				{
 					item.setItemDamage(0);
-				}
-				else
+				} else
 				{
-					OutputHandler.chatError(sender, Localization.formatLocalizedString("message.error.noItemTarget"));
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMTARGET));
 				}
-			}
-			else
+			} else
 			{
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} 
-		else
+		} else
 		{
-			OutputHandler.chatError(sender, (Localization.get("message.error.badsyntax") + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 		}
 	}
 
@@ -66,7 +60,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			
+
 			if (target != null)
 			{
 				ItemStack item = target.getHeldItem();
@@ -74,20 +68,17 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 				if (item != null)
 				{
 					item.setItemDamage(0);
-				}
-				else
+				} else
 				{
-					sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.noItemTarget"));
+					sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOITEMTARGET));
 				}
-			}
-			else
+			} else
 			{
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} 
-		else
+		} else
 		{
-			sender.sendChatToPlayer(Localization.get("message.error.badsyntax") + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

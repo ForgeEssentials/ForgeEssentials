@@ -24,20 +24,20 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			if (args[0].toLowerCase().equals("me"))
 			{
 				sender.setFire(Integer.parseInt(args[1]));
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.burn.self"));
+				sender.sendChatToPlayer(Localization.get(Localization.BURN_SELF));
 			} else
 			{
 				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 				if (victim != null)
 				{
 					victim.setFire(Integer.parseInt(args[1]));
-					sender.sendChatToPlayer(Localization.formatLocalizedString("message.burn.player"));
+					sender.sendChatToPlayer(Localization.get(Localization.BURN_PLAYER));
 				} else
-					OutputHandler.chatError(sender, Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		} else
 		{
-			OutputHandler.chatError(sender, (Localization.get("message.error.badsyntax") + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 		}
 	}
 
@@ -50,12 +50,12 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			if (victim != null)
 			{
 				victim.setFire(Integer.parseInt(args[1]));
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.burn.player"));
+				sender.sendChatToPlayer(Localization.get(Localization.BURN_PLAYER));
 			} else
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		} else
 		{
-			sender.sendChatToPlayer(Localization.get("message.error.badsyntax") + getSyntaxConsole());	
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());	
 		}
 	}
 

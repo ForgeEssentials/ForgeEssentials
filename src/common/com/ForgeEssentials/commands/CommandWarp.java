@@ -54,7 +54,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}
 			}
 			else
@@ -83,7 +83,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 							warp.setInteger("dim", sender.dimension);
 						warpdata.setCompoundTag(args[1].toLowerCase(), warp);
 						
-						OutputHandler.chatConfirmation(sender, Localization.get("message.done"));
+						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
 					}
 				}
 				else if(args[0].equalsIgnoreCase("del"))
@@ -91,7 +91,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 					if(warpdata.hasKey(args[1].toLowerCase()))
 					{
 						warpdata.removeTag(args[1].toLowerCase());
-						OutputHandler.chatConfirmation(sender, Localization.get("message.done"));
+						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
 					}
 					else
 					{
@@ -100,12 +100,12 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get("message.error.badsyntax") + getSyntaxPlayer(sender));
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 				}
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 			}
 		}
 		else

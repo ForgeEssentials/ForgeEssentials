@@ -37,16 +37,16 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			{
 				ChunkCoordinates spawn = player.getBedLocation();
 				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
-				player.sendChatToPlayer(Localization.get("message.spawned"));
+				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			} else
-				sender.sendChatToPlayer(Localization.get("message.error.noplayer"));
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		} else
 		{
 			ChunkCoordinates spawn = sender.getBedLocation();
 			if (spawn != null)
 			{
 				((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
-				sender.sendChatToPlayer(Localization.get("message.spawned"));
+				sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			}
 		}
 	}
@@ -61,9 +61,9 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			{
 				ChunkCoordinates spawn = player.getBedLocation();
 				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
-				player.sendChatToPlayer(Localization.get("message.spawned"));
+				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			} else
-				sender.sendChatToPlayer(Localization.get("message.error.noplayer"));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		}
 	}
 

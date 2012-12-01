@@ -41,11 +41,11 @@ public class CommandSet extends WorldControlCommandBase
 			
 			if (ID >= Block.blocksList.length)
 			{
-				error(player, Localization.formatLocalizedString("message.wc.blockIdOutOfRange", Block.blocksList.length));
+				error(player, Localization.format("message.wc.blockIdOutOfRange", Block.blocksList.length));
 			}
 			else if (ID != 0 && Block.blocksList[ID] == null)
 			{
-				error(player, Localization.formatLocalizedString("message.wc.invalidBlockId", ID));
+				error(player, Localization.format("message.wc.invalidBlockId", ID));
 			}
 			else
 			{

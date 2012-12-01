@@ -35,19 +35,37 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 				radius = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender, Localization.get("message.error.nan"));
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
 			}
 		} else if (args.length == 4)
 		{
 			try
 			{
 				radius = Integer.parseInt(args[0]);
+			} catch (NumberFormatException e)
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
+			}
+			try
+			{
 				centerX = Double.parseDouble(args[1]);
+			} catch (NumberFormatException e)
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+			}
+			try
+			{
 				centerY = Double.parseDouble(args[2]);
+			} catch (NumberFormatException e)
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
+			}
+			try
+			{
 				centerZ = Double.parseDouble(args[3]);
 			} catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender, Localization.get("message.error.nan"));
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[3]));
 			}
 		}
 
@@ -60,7 +78,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 			counter++;
 			entity.setDead();
 		}
-		OutputHandler.chatConfirmation(sender, Localization.formatLocalizedString("message.removed", counter));
+		OutputHandler.chatConfirmation(sender, Localization.format(Localization.REMOVED, counter));
 
 	}
 

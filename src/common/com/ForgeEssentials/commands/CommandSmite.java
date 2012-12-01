@@ -29,26 +29,26 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			if (args[0].toLowerCase().equals("me"))
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.smite.self"));
+				sender.sendChatToPlayer(Localization.get(Localization.SMITE_SELF));
 			} else
 			{
 				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 				if (victim != null)
 				{
 					victim.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-					sender.sendChatToPlayer(Localization.formatLocalizedString("message.smite.player"));
+					sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
 				} else
-					OutputHandler.chatError(sender, Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		} else
 		{
 			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
 			if (mop == null)
-				OutputHandler.chatError(sender, Localization.formatLocalizedString("message.smite.targetError"));
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_TARGET));
 			else
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.smite.ground"));
+				sender.sendChatToPlayer(Localization.get(Localization.SMITE_GROUND));
 			}
 		}
 	}
@@ -62,11 +62,11 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			if (victim != null)
 			{
 				victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.smite.player"));
+				sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
 			} else
-				sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.noPlayerX", args[0]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		} else
-			sender.sendChatToPlayer(Localization.formatLocalizedString("message.error.specifyPlayer"));
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 	}
 
 	@Override

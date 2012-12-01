@@ -57,24 +57,20 @@
 	<entry key="message.butchered">%d enemies killed</entry>
 	<entry key="message.removed">%d items removed</entry>
 	<entry key="message.killed">You were killed. You probably deserved it.</entry>
-	<entry key="message.spawntypechanged">Your spawn type has been set to </entry>
 	<entry key="message.smite.self">Was that really a good idea?</entry>
 	<entry key="message.smite.player">You should feel bad about doing that.</entry>
 	<entry key="message.smite.ground">I hope that didn't start a fire.</entry>
-	<entry key="message.smite.targetError">You must look at the ground! Maximum range is 500 blocks.</entry>
-	
 	<entry key="message.burn.self">Ouch! Hot!</entry>
 	<entry key="message.burn.player">You should feel bad about doing that.</entry>
+	<entry key="message.healed">Healed.</entry>
+	<entry key="message.spawned">Teleported to spawn.</entry>
 	
-	<entry key="message.heal.healed">Healed.</entry>
-
 	<entry key="message.error.noPlayerX">Player %s does not exist.</entry>
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
-	<entry key="message.error.noplayer">That player does not exist.</entry>
-	<entry key="message.error.specifyPlayer">You must specify a player.</entry>
-	<entry key="message.error.nan">That wasn't a number. Try again, you can do it.</entry>
+	<entry key="message.error.nan">#%d param is not a number. Try again, you can do it.</entry>
 	<entry key="message.error.nodeathpoint">You have not died yet.</entry>
 	<entry key="message.error.nohome">No home set. Try this: </entry>
+	<entry key="message.error.target">You must look at the ground!</entry>
 	<entry key="message.error.nopage">No page of that number exists!</entry>
 	<entry key="message.error.nozone">No zone of that ID exists!</entry>
 	<entry key="message.error.yeszone">A zone of that ID already exists!</entry>
