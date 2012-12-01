@@ -23,6 +23,6 @@ public class ProxyCommon
 	
 	public void updateInfo(PlayerInfo info, EntityPlayer player)
 	{
-		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(info)).toPacket250(), (Player)player);
+		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(info)).getPayload(), (Player)player);
 	}
 }

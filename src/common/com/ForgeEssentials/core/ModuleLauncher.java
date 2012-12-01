@@ -75,7 +75,7 @@ public class ModuleLauncher
 	{
 		corecmd.serverStarting(e);
 
-		if (wcEnabled && LibraryDetector.wepresent != true)
+		if (wcEnabled) // && LibraryDetector.wepresent != true)
 			worldcontrol.serverStarting(e);
 
 		if (cmdEnabled)

@@ -5,6 +5,8 @@ public class Group
 	private String promote;
 	private String demote;
 	private String parent;
+	public String prefix;
+	public String suffix;
 	public final String name;
 	
 	public Group(String name)
@@ -15,7 +17,7 @@ public class Group
 	public Group(String name, String above)
 	{
 		this(name);
-		//this.setLadderAbove(above);
+		this.setLadderAbove(GroupManager.groups.get(above));
 	}
 	
 	/**
@@ -24,6 +26,12 @@ public class Group
 	 */
 	public void setLadderAbove(Group  above)
 	{
+		if (above == null)
+		{
+			promote = "";
+			return;
+		}
+		
 		promote = above.name;
 		above.demote = name;
 	}
