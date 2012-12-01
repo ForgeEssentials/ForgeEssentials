@@ -30,7 +30,7 @@
 	<entry key="command.burn.syntax.console">&lt;player></entry>
 	<entry key="command.burn.syntax.player">[me|&lt;player>]</entry>
 	<entry key="command.burn.info.console">Set the specified player on fire</entry>
-	<entry key="command.burn.info.player">Burn yourself or the specified player</entry>
+	<entry key="command.burn.info.player">Set yourself or the specified player on fire</entry>
 
 	<entry key="command.home.syntax.player">[here|&lt;x> &lt;y> &lt;z>]</entry>
 	<entry key="command.home.info.player">Teleport you to/sets your home</entry>
@@ -55,7 +55,6 @@
 	
 	<entry key="message.burn.self">Ouch! Hot!</entry>
 	<entry key="message.burn.player">You should feel bad about doing that.</entry>
-	<entry key="message.burn.notEnoughArgs">You must specify a player and a burn time.</entry>
 
 	<entry key="message.error.noPlayerX">Player %s does not exist.</entry>
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
