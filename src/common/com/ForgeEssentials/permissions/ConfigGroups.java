@@ -29,7 +29,7 @@ public class ConfigGroups
 		{
 			config.addCustomCategoryComment(defaultGroup, "very default of all default groups. "+config.NEW_LINE+" This is also used for blanket permissions that are not applied to players but to zones");
 			//config...
-			// what else needs to be saved in a group...
+			config.get(defaultGroup, "promoteGroup", "", "The group to which this group will promote to");
 		}
 	}
 }
