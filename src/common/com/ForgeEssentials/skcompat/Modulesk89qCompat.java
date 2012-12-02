@@ -1,5 +1,7 @@
 package com.ForgeEssentials.skcompat;
 
+import com.sk89q.worldedit.WorldEdit;
+
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -13,6 +15,8 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class Modulesk89qCompat implements IFEModule{
 
+	public WorldEdit we;
+	
 	@Override
 	public void preLoad(FMLPreInitializationEvent e) {
 		OutputHandler.SOP("Starting WorldEdit/WorldGuard integration module...");
