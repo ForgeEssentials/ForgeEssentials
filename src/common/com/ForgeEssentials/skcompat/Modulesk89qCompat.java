@@ -1,7 +1,44 @@
 package com.ForgeEssentials.skcompat;
 
-//For whoever's doing the WE/WC integration
+import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.util.OutputHandler;
 
-public class Modulesk89qCompat {
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+
+//For whoever's doing the WE/WG integration
+
+public class Modulesk89qCompat implements IFEModule{
+
+	@Override
+	public void preLoad(FMLPreInitializationEvent e) {
+		OutputHandler.SOP("Starting WorldEdit/WorldGuard integration module...");
+	}
+
+	@Override
+	public void load(FMLInitializationEvent e) {
+		LibraryDetector.detect();
+	}
+
+	@Override
+	public void postLoad(FMLPostInitializationEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void serverStarting(FMLServerStartingEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void serverStarted(FMLServerStartedEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

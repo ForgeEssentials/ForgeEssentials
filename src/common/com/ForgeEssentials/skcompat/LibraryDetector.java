@@ -15,7 +15,7 @@ public class LibraryDetector {
 	static File we = new File ("./lib/WorldEdit.jar");
 	static File wg = new File ("./lib/WorldGuard.jar");
 	
-	public void detect(){
+	public static void detect(){
 		OutputHandler.SOP("Testing to see if preloader, WorldEdit and WorldControl are downloaded successfully.");
 		// look for preloader
 		preLoaderFound = Loader.isModLoaded("FEPreLoader");
