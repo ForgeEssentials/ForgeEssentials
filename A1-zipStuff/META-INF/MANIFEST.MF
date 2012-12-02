@@ -1,2 +1,3 @@
 Manifest-Version: 1.0
-FMLCorePlugin: com.ForgeEssentials.core.FELoadingPlugin
+FMLCorePlugin: com.ForgeEssentials.coremod.FECoreLoader
+Created-By: 1.7.0 (Oracle Corporation)
