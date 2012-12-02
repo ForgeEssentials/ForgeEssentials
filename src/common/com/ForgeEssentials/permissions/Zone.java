@@ -240,6 +240,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	 */
 	public Result getGroupOverride(String groupname, PermissionChecker check)
 	{
+		Group group = GroupManager.groups.get(groupname);
 		if (groupOverrides.containsKey(groupname))
 		{
 			HashSet<Permission> perms = groupOverrides.get(groupname);
@@ -254,6 +255,21 @@ public class Zone extends AreaBase implements Comparable, Serializable
 						smallest = perm;
 			if (smallest != null)
 				return smallest.allowed;
+			else if (group!= null && group.hasParent() && groupOverrides.containsKey(group.getParent()))
+			{
+				perms = groupOverrides.get(group.getParent());
+				for (Permission perm : perms)
+					if (check.equals(perm))
+						return perm.allowed;
+					else if (check.matches(perm))
+						if (smallest == null)
+							smallest = perm;
+						else if (smallest.isChildOf(perm))
+							smallest = perm;
+				
+				if (smallest != null)
+					return smallest.allowed;
+			}
 		}
 		// this zone doesn't contain this groupname. check for blankets.
 		else

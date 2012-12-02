@@ -5,16 +5,7 @@ import net.minecraftforge.event.Event.Result;
 
 
 public class PermissionsAPI
-{
-	/**
-	 * Used for blankets permissions tied to no particular layer or group in a zone.
-	 * This is the also the group all players are assigned to if they are members of no other groups.
-	 * This includes new players when they first log in.
-	 * The players in this group are usually denied commands and breaking blocks before they are promoted to members.
-	 * This group is guaranteed existence
-	 */
-	public static final String GROUP_DEFAULT = "_DEFAULT_";
-	
+{	
 	/**
 	 * This is automatically assigned to the server owner when they make a world available to the LAN.
 	 * This is also best kep for layers that have direct access to the server console.
@@ -28,6 +19,22 @@ public class PermissionsAPI
 	 * **CAUTION MAY OR MAY NOT EXIST**
 	 */
 	public static final String GROUP_MEMBERS = "Members";
+	
+	/**
+	 * This is usually for players that are admins or owners of a given zone
+	 * They will most likely have WorldEdit access, as well as the power to edit permissions in the zone.
+	 * **CAUTION MAY OR MAY NOT EXIST**
+	 */
+	public static final String GROUP_ZONE_ADMINS = "ZoneAdmins";
+	
+	/**
+	 * Used for blankets permissions tied to no particular layer or group in a zone.
+	 * This is the also the group all players are assigned to if they are members of no other groups.
+	 * This includes new players when they first log in.
+	 * The players in this group are usually denied commands and breaking blocks before they are promoted to members.
+	 * This group is guaranteed existence
+	 */
+	public static final String GROUP_DEFAULT = "_DEFAULT_";
 	
 	/**
 	 * Use this to check AllOrNothing Area queries, Player Queries, or Point Queries.

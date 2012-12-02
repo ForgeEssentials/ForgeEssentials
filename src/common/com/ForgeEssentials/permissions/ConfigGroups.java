@@ -1,6 +1,7 @@
 package com.ForgeEssentials.permissions;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import net.minecraftforge.common.ConfigCategory;
@@ -16,37 +17,80 @@ public class ConfigGroups
 	public static File		groupsFile	= new File(ModulePermissions.permsFolder, "groups.cfg");
 
 	public Configuration	config;
-
-	private String			defaultGroup;
+	
+	private static final String PREFIX = "chatPrefix";
+	private static final String SUFFIX = "chatSuffix";
+	private static final String PROM_LADDERS = "_PROMOTION_LADDERS_";
 
 	public ConfigGroups()
 	{
 		config = new Configuration(groupsFile, true);
-
-		defaultGroup = GroupManager.DEFAULT.name;
+		
+		boolean generateDefaults = false;
+		
+		// to be used lots of places...
+		String gPromote;
+		Group group; // temporary group.
 		
 		// check for other groups. or generate
 		if (config.categories.size() == 0)
 		{
-			config.addCustomCategoryComment("members", "Generated group for your conveniance");
-			config.get("members", "promoteGroup", "owners", "The group to which this group will promote");
-			config.get("members", "chatPrefix", "", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed");
-			config.get("members", "chatSuffix", "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed");
+			generateDefaults = true;
 			
-			config.addCustomCategoryComment("owners", "Generated group for your conveniance");
-			config.get("owners", "promoteGroup", "", "The group to which this group will promote to");
-			config.get("owners", "chatPrefix", OutputHandler.GOLD+"[OWNER]", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed");
-			config.get("owners", "chatSuffix", "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed");
+			group = new Group(PermissionsAPI.GROUP_MEMBERS);
+			group.prefix = config.get(PermissionsAPI.GROUP_MEMBERS, PREFIX, "", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			group.suffix = config.get(PermissionsAPI.GROUP_MEMBERS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			GroupManager.groups.put(group.name, group);
 			
+			group = new Group(PermissionsAPI.GROUP_OWNERS);
+			group.prefix = config.get(PermissionsAPI.GROUP_OWNERS, PREFIX, OutputHandler.GOLD+"[OWNER]"+OutputHandler.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			group.suffix = config.get(PermissionsAPI.GROUP_OWNERS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			GroupManager.groups.put(group.name, group);
 			
+			group = new Group(PermissionsAPI.GROUP_ZONE_ADMINS);
+			group.prefix = config.get(PermissionsAPI.GROUP_ZONE_ADMINS, PREFIX, OutputHandler.GOLD+"[OWNER]"+OutputHandler.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			group.suffix = config.get(PermissionsAPI.GROUP_ZONE_ADMINS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			GroupManager.groups.put(group.name, group);
 		}
 
 		// default group
 		{
-			config.addCustomCategoryComment(defaultGroup, "very default of all default groups. " + config.NEW_LINE + " This is also used for blanket permissions that are not applied to players but to zones");
-			String gPromote = config.get(defaultGroup, "promoteGroup", "members", "The group to which this group will promote to").value;
-			String gPrefix = config.get(defaultGroup, "chatPrefix", OutputHandler.GREY+"[Default]", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
-			String gSuffix = config.get(defaultGroup, "chatSuffix", "", "text to go after the username in chat. format char: \u00a7 Only works with the Chat module installed").value;
+			GroupManager.DEFAULT.prefix = config.get(PermissionsAPI.GROUP_DEFAULT, PREFIX, OutputHandler.GREY+"[Default]", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			GroupManager.DEFAULT.suffix = config.get(PermissionsAPI.GROUP_DEFAULT, SUFFIX, "+OutputHandler.WHITE", "text to go after the username in chat. format char: \u00a7 Only works with the Chat module installed").value;
 		}
+		
+		// all other groups...
+		for (ConfigCategory cat: config.categories.values())
+		{
+			if (cat.getQualifiedName().equals(GroupManager.DEFAULT) || cat.getQualifiedName().equals("PROM_LADDERS"))
+				continue;
+			
+			if (cat.isChild())
+				if (cat.getFirstParent().getQualifiedName().equals(PROM_LADDERS))
+					continue;
+				else
+					throw new RuntimeException("nested categories not allowed in Groups.cfg");
+			
+			group = new Group(cat.getQualifiedName());
+			group.prefix = config.get(group.name, PREFIX, "", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			group.suffix = config.get(group.name, SUFFIX, "", "text to go after the username in chat. format char: \u00a7 Only works with the Chat module installed").value;
+			GroupManager.groups.put(group.name, group);
+		}
+		
+		// ladders...
+		{
+			if (generateDefaults)
+			{
+				config.get(PROM_LADDERS, "", new String[] {PermissionsAPI.GROUP_OWNERS, PermissionsAPI.GROUP_ZONE_ADMINS, PermissionsAPI.GROUP_MEMBERS, PermissionsAPI.GROUP_DEFAULT});
+				
+			}
+		}
+		
+		
+		// category comments
+		config.addCustomCategoryComment(PermissionsAPI.GROUP_OWNERS, "Generated group for your conveniance");
+		config.addCustomCategoryComment(PermissionsAPI.GROUP_MEMBERS, "Generated group for your conveniance");
+		config.addCustomCategoryComment(PermissionsAPI.GROUP_DEFAULT, "very default of all default groups. " + config.NEW_LINE + " This is also used for blanket permissions that are not applied to players but to zones");
+		config.addCustomCategoryComment(PROM_LADDERS, "Top is highest, botom is lowest. A group cannot be in 2 ladders at once.");
 	}
 }

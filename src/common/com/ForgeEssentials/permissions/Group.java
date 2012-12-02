@@ -45,4 +45,18 @@ public class Group
 		this.parent = parent;
 	}
 	
+	/**
+	 * Sets what group is the parent of this one
+	 * @param parent The group from which this group inherits functionality
+	 */
+	public String getParent()
+	{
+		return parent;
+	}
+	
+	public boolean hasParent()
+	{
+		return parent == null || parent.isEmpty(); 
+	}
+	
 }
