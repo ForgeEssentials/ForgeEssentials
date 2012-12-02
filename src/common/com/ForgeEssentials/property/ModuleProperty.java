@@ -7,6 +7,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleProperty implements IFEModule
 {
@@ -34,5 +35,11 @@ public class ModuleProperty implements IFEModule
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
 	{
+	}
+
+	@Override
+	public void serverStopping(FMLServerStoppingEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

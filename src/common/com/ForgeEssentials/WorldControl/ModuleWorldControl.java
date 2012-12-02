@@ -22,6 +22,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 
 // central class for all the WorldControl stuff
@@ -87,6 +88,12 @@ public class ModuleWorldControl implements IFEModule
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
 	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void serverStopping(FMLServerStoppingEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
