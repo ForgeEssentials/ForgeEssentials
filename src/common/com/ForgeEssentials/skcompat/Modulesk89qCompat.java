@@ -13,36 +13,41 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 //For whoever's doing the WE/WG integration
 
-public class Modulesk89qCompat implements IFEModule{
+public class Modulesk89qCompat implements IFEModule
+{
+	public WorldEdit	we;
 
-	public WorldEdit we;
-	
 	@Override
-	public void preLoad(FMLPreInitializationEvent e) {
+	public void preLoad(FMLPreInitializationEvent e)
+	{
 		OutputHandler.SOP("Starting WorldEdit/WorldGuard integration module...");
 	}
 
 	@Override
-	public void load(FMLInitializationEvent e) {
+	public void load(FMLInitializationEvent e)
+	{
 		LibraryDetector.detect();
 	}
 
 	@Override
-	public void postLoad(FMLPostInitializationEvent e) {
+	public void postLoad(FMLPostInitializationEvent e)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void serverStarting(FMLServerStartingEvent e) {
+	public void serverStarting(FMLServerStartingEvent e)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void serverStarted(FMLServerStartedEvent e) {
+	public void serverStarted(FMLServerStartedEvent e)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
