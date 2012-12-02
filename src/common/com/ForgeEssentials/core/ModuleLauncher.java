@@ -5,12 +5,14 @@ import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.permissions.ModulePermissions;
+import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.property.ModuleProperty;
 import com.ForgeEssentials.skcompat.LibraryDetector;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**
@@ -27,12 +29,14 @@ public class ModuleLauncher
 	public ModuleWorldControl worldcontrol;
 	public ModuleProperty property;
 	public ModuleWorldBorder worldborder;
+	public ModulePlayerLogger playerLogger;
 
 	public static boolean permsEnabled = true;
 	public static boolean cmdEnabled = true;
 	public static boolean wcEnabled = true;
 	public static boolean propEnabled = true;
-	public static boolean borderEnabled = true;
+	public static boolean borderEnabled = false;
+	public static boolean loggerEnabled = false;
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
@@ -44,6 +48,7 @@ public class ModuleLauncher
 		permission = new ModulePermissions();
 		property = new ModuleProperty();
 		worldborder = new ModuleWorldBorder();
+		playerLogger = new ModulePlayerLogger();
 		
 		corecmd.preLoad(e);
 
@@ -61,6 +66,9 @@ public class ModuleLauncher
 		
 		if (borderEnabled)
 			worldborder.preLoad(e);
+		
+		if (loggerEnabled)
+			playerLogger.preLoad(e);
 	}
 
 	public void load(FMLInitializationEvent e)
@@ -81,6 +89,9 @@ public class ModuleLauncher
 
 		if (borderEnabled)
 			worldborder.load(e);
+		
+		if (loggerEnabled)
+			playerLogger.load(e);
 	}
 
 	public void serverStarting(FMLServerStartingEvent e)
@@ -101,5 +112,29 @@ public class ModuleLauncher
 
 		if (borderEnabled)
 			worldborder.serverStarting(e);
+		
+		if (loggerEnabled)
+			playerLogger.serverStarting(e);
+	}
+	
+	public void serverStarted(FMLServerStartedEvent e)
+	{
+		if (wcEnabled) // && LibraryDetector.wepresent != true)
+			worldcontrol.serverStarted(e);
+
+		if (cmdEnabled)
+			commands.serverStarted(e);
+
+		if (permsEnabled)
+			permission.serverStarted(e);
+
+		if (propEnabled)
+			property.serverStarted(e);
+
+		if (borderEnabled)
+			worldborder.serverStarted(e);
+		
+		if (loggerEnabled)
+			playerLogger.serverStarted(e);
 	}
 }

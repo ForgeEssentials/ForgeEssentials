@@ -40,11 +40,13 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 			return;
 	}
 
+	@Override
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("WorldBorder module is enabled. Loading...");
 	}
 
+	@Override
 	public void load(FMLInitializationEvent e)
 	{
 		
@@ -56,6 +58,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		
 	}
 
+	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandWB());
