@@ -1,10 +1,14 @@
 package com.ForgeEssentials.commands;
 
+import java.util.List;
+
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
@@ -86,5 +90,17 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-
+	
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+    {
+    	if(args.length == 1)
+    	{
+    		return getListOfStringsMatchingLastWord(args, "here");
+    	}
+    	else
+    	{
+    		return null;
+    	}
+    }
 }

@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +19,8 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandRules extends ForgeEssentialsCommandBase
 {
@@ -251,5 +254,18 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
+	
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+    {
+    	if(args.length == 1)
+    	{
+    		return getListOfStringsMatchingLastWord(args, "remove");
+    	}
+    	else
+    	{
+    		return null;
+    	}
+    }
 
 }

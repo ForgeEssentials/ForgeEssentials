@@ -1,5 +1,7 @@
 package com.ForgeEssentials.commands;
 
+import java.util.List;
+
 import net.minecraft.src.DamageSource;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
@@ -71,5 +73,18 @@ public class CommandKill extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
+	
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+    {
+    	if(args.length == 1)
+    	{
+    		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+    	}
+    	else
+    	{
+    		return null;
+    	}
+    }
 
 }
