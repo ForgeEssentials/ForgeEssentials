@@ -1,5 +1,9 @@
 package com.ForgeEssentials.commands;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permissions.PermQueryPlayer;
@@ -138,5 +142,31 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
+	
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+    {
+		NBTTagCompound warps = DataStorage.getData("warpdata");
+    	Iterator warpsIt = warps.getTags().iterator();
+    	List<String> list = new ArrayList<String>();
+    	while(warpsIt.hasNext()) {
+    		NBTTagCompound buffer = (NBTTagCompound) warpsIt.next();
+    		list.add(buffer.getName());
+    	}
+    	
+    	if(args.length == 1)
+    	{
+    		NBTTagCompound warpdata = DataStorage.getData("warpdata");
+    		return getListOfStringsFromIterableMatchingLastWord(args, list);
+    	}
+    	else if(args.length == 2)
+    	{
+    		return getListOfStringsMatchingLastWord(args, "se", "del");
+    	}
+    	else
+    	{
+    		return null;
+    	}
+    }
 
 }
