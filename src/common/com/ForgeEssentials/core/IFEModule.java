@@ -6,6 +6,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public interface IFEModule
 {
@@ -18,4 +19,6 @@ public interface IFEModule
 	public void serverStarting(FMLServerStartingEvent e);
 	
 	public void serverStarted(FMLServerStartedEvent e);
+
+	public void serverStopping(FMLServerStoppingEvent e);
 }
