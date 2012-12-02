@@ -25,6 +25,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 
 public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
@@ -174,6 +175,12 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		{
 			return 0;
 		}
+	}
+
+	@Override
+	public void serverStopping(FMLServerStoppingEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

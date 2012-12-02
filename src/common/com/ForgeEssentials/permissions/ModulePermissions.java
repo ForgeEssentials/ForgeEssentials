@@ -17,6 +17,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModulePermissions implements IFEModule
 {
@@ -87,6 +88,12 @@ public class ModulePermissions implements IFEModule
 		event.registerGlobalPermission("ForgeEssentials.permissions.zone.remove", true);
 		event.registerGlobalPermission("ForgeEssentials.permissions.zone.redefine", true);
 		event.registerGlobalPermission("ForgeEssentials.permissions.zone.setparent", true);
+	}
+
+	@Override
+	public void serverStopping(FMLServerStoppingEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

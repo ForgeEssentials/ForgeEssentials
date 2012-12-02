@@ -14,6 +14,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 /**
  * Initialize modules here. Yes. HERE. NOT ForgeEssentials.java! This is the springboard...
@@ -136,5 +137,11 @@ public class ModuleLauncher
 		
 		if (loggerEnabled)
 			playerLogger.serverStarted(e);
+	}
+
+	public void serverStopping(FMLServerStoppingEvent e) 
+	{
+		if (loggerEnabled)
+			playerLogger.serverStopping(e);
 	}
 }

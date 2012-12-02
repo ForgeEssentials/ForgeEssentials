@@ -9,6 +9,7 @@ import com.ForgeEssentials.commands.CommandBackup;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.permissions.ModulePermissions;
+import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class FEConfig
@@ -29,6 +30,7 @@ public class FEConfig
 		loadCore();
 		loadCmd();
 		loadPerms();
+		loadLogger();
 
 		// CONFIG TESTING!!!!
 		/*
@@ -68,9 +70,13 @@ public class FEConfig
 		prop.comment = "Disabling this will remove Properties.";
 		ModuleLauncher.propEnabled = prop.getBoolean(true);
 		
-		prop = config.get("Modules", "WorldBorder_Enabled", true);
+		prop = config.get("Modules", "WorldBorder_Enabled", false);
 		prop.comment = "Disabling this will remove Any WorldBorder setup.";
-		ModuleLauncher.borderEnabled = prop.getBoolean(true);
+		ModuleLauncher.borderEnabled = prop.getBoolean(false);
+		
+		prop = config.get("Modules", "PlayerLogger_Enabled", false);
+		prop.comment = "Enabeling this will enable the logger. Make shure to check the settings!";
+		ModuleLauncher.loggerEnabled = prop.getBoolean(false);
 	}
 
 	private void loadCore()
@@ -111,6 +117,28 @@ public class FEConfig
 		Property prop = config.get("Permissions", "verbose", false);
 		prop.comment = "Specify if Verbose mode for Permissions module is enabled. If enabled, every permission registered is printed to the console. Only useful in debugging.";
 		ModulePermissions.permsVerbose = prop.getBoolean(false);
+	}
+	
+	private void loadLogger()
+	{
+		config.addCustomCategoryComment("PlayerLogger", "PlayerLogger settings");
+
+		Property prop = config.get("PlayerLogger", "DB_url", "jdbc:mysql://localhost:3306/testdb");
+		ModulePlayerLogger.url = prop.value;
+		
+		prop = config.get("PlayerLogger", "DB_username", "root");
+		ModulePlayerLogger.username = prop.value;
+		
+		prop = config.get("PlayerLogger", "DB_password", "root");
+		ModulePlayerLogger.password = prop.value;
+		
+		prop = config.get("PlayerLogger", "stopServerIfFail", false);
+		prop.comment = "Stop the server when the logging fails";
+		ModulePlayerLogger.ragequit = prop.getBoolean(false);
+		
+		prop = config.get("PlayerLogger", "interval", 300);
+		prop.comment = "Interval in sec. for saving logs to DB";
+		ModulePlayerLogger.interval = prop.getInt(300);
 	}
 
 	/**

@@ -13,6 +13,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleCommands implements IFEModule
 {
@@ -81,5 +82,11 @@ public class ModuleCommands implements IFEModule
 		event.registerGlobalPermission("ForgeEssentials.commands.compass", true);
 		event.registerGlobalPermission("ForgeEssentials.commands.repair", true);
 		event.registerGlobalPermission("ForgeEssentials.commands.heal", true);
+	}
+
+	@Override
+	public void serverStopping(FMLServerStoppingEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
