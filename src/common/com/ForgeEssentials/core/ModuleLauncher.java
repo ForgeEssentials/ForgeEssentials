@@ -1,5 +1,6 @@
 package com.ForgeEssentials.core;
 
+import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.commands.CoreCommands;
@@ -24,11 +25,13 @@ public class ModuleLauncher
 	public ModulePermissions permission;
 	public ModuleWorldControl worldcontrol;
 	public ModuleProperty property;
+	public ModuleWorldBorder worldborder;
 
 	public static boolean permsEnabled = true;
 	public static boolean cmdEnabled = true;
 	public static boolean wcEnabled = true;
 	public static boolean propEnabled = true;
+	public static boolean borderEnabled = true;
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
@@ -38,7 +41,8 @@ public class ModuleLauncher
 		corecmd = new CoreCommands();
 		permission = new ModulePermissions();
 		property = new ModuleProperty();
-
+		worldborder = new ModuleWorldBorder();
+		
 		corecmd.preLoad(e);
 
 		if (wcEnabled && LibraryDetector.wepresent != true)
@@ -52,6 +56,9 @@ public class ModuleLauncher
 
 		if (propEnabled)
 			property.preLoad(e);
+		
+		if (borderEnabled)
+			worldborder.preLoad(e);
 	}
 
 	public void load(FMLInitializationEvent e)
@@ -69,6 +76,9 @@ public class ModuleLauncher
 
 		if (propEnabled)
 			property.load(e);
+
+		if (borderEnabled)
+			worldborder.load(e);
 	}
 
 	public void serverStarting(FMLServerStartingEvent e)
@@ -86,5 +96,8 @@ public class ModuleLauncher
 
 		if (propEnabled)
 			property.serverStarting(e);
+
+		if (borderEnabled)
+			worldborder.serverStarting(e);
 	}
 }
