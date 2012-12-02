@@ -28,28 +28,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length == 0)
-		{
-			sender.sendChatToPlayer("WorldBorder status: " + ModuleWorldBorder.WBenabled);
-		}
-		else if (args.length == 1)
-		{
-			if(args[0].equalsIgnoreCase("on"))
-			{
-				ModuleWorldBorder.WBenabled = true;
-				sender.sendChatToPlayer("WorldBorder turned on.");
-			}
-			else if(args[0].equalsIgnoreCase("off"))
-			{
-				ModuleWorldBorder.WBenabled = false;
-				sender.sendChatToPlayer("WorldBorder turned off.");
-			}
-			else
-			{
-				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
-			}
-		}
-		else if (args.length == 2)
+		if (args.length == 2)
 		{
 			if(args[0].equalsIgnoreCase("set"))
 			{
@@ -89,28 +68,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length == 0)
-		{
-			sender.sendChatToPlayer("WorldBorder status: " + ModuleWorldBorder.WBenabled);
-		}
-		else if (args.length == 1)
-		{
-			if(args[0].equalsIgnoreCase("on"))
-			{
-				ModuleWorldBorder.WBenabled = true;
-				sender.sendChatToPlayer("WorldBorder turned on.");
-			}
-			else if(args[0].equalsIgnoreCase("off"))
-			{
-				ModuleWorldBorder.WBenabled = false;
-				sender.sendChatToPlayer("WorldBorder turned off.");
-			}
-			else
-			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-			}
-		}
-		else if (args.length == 4)
+		if (args.length == 4)
 		{
 			if(args[0].equalsIgnoreCase("set"))
 			{

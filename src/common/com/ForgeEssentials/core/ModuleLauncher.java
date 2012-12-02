@@ -6,7 +6,7 @@ import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.permissions.ModulePermissions;
 import com.ForgeEssentials.property.ModuleProperty;
-import com.ForgeEssentials.util.LibraryDetector;
+import com.ForgeEssentials.skcompat.LibraryDetector;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -15,6 +15,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**
  * Initialize modules here. Yes. HERE. NOT ForgeEssentials.java! This is the springboard...
+ * TODO trap NoClassDefFound if a certain module is not found, right now all are required and you use the config.
  */
 
 public class ModuleLauncher
@@ -36,6 +37,7 @@ public class ModuleLauncher
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Discovering and loading modules...");
+		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/config.cfg.");
 		worldcontrol = new ModuleWorldControl();
 		commands = new ModuleCommands();
 		corecmd = new CoreCommands();

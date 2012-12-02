@@ -9,7 +9,6 @@ import com.ForgeEssentials.commands.CommandBackup;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.permissions.ModulePermissions;
-import com.ForgeEssentials.permissions.Permission;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class FEConfig
@@ -64,6 +63,14 @@ public class FEConfig
 		prop = config.get("Modules", "Permissions_Enabled", true);
 		prop.comment = "Disabling this will remove any and all permissions integration. Other mods that use this may be affected.";
 		ModuleLauncher.permsEnabled = prop.getBoolean(true);
+		
+		prop = config.get("Modules", "Property_Enabled", true);
+		prop.comment = "Disabling this will remove Properties.";
+		ModuleLauncher.propEnabled = prop.getBoolean(true);
+		
+		prop = config.get("Modules", "WorldBorder_Enabled", true);
+		prop.comment = "Disabling this will remove Any WorldBorder setup.";
+		ModuleLauncher.borderEnabled = prop.getBoolean(true);
 	}
 
 	private void loadCore()

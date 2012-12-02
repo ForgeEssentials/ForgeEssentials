@@ -2,10 +2,8 @@ package com.ForgeEssentials.util;
 
 import java.util.logging.Logger;
 
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ICommandSender;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 

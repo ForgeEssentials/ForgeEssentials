@@ -1,11 +1,6 @@
 package com.ForgeEssentials.core;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-
-import com.ForgeEssentials.commands.CommandSpawn;
-import com.ForgeEssentials.util.AreaSelector.Point;
-
 import cpw.mods.fml.common.IPlayerTracker;
 
 public class PlayerTracker implements IPlayerTracker

@@ -1,6 +1,8 @@
-package com.ForgeEssentials.util;
+package com.ForgeEssentials.skcompat;
 
 import java.io.File;
+
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Loader;
 
