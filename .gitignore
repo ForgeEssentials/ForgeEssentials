@@ -26,6 +26,7 @@
 !/jars/coremods/
 !/lib/WorldEdit.jar
 !/lib/WorldGuard.jar
+!/eclipse/Minecraft/.classpath
 
 *.bat
 *.sh
