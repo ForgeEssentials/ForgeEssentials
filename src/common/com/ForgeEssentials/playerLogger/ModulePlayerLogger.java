@@ -10,33 +10,38 @@ import java.util.Calendar;
 import java.util.HashSet;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.Point;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModulePlayerLogger implements IFEModule
 {
-	private static final boolean DEBUG = true;
+	static final boolean DEBUG = !ObfuscationReflectionHelper.obfuscation;
+	
+	public static ConfigPlayerLogger config;
+	
 	public static String url;
 	public static String username;
 	public static String password;
-	public static boolean ragequit;
-	public static ConfigPlayerLogger config;
+	public static boolean ragequitOn;
+	public static int interval;
+	public static boolean verbose;
 	
-	public static int interval; 
-	
-	public static HashSet<logEntry> buffer = new HashSet<logEntry> ();
-	private Logger logger;
-	private Thread loggerThread;
+	public EventLogger eLogger;
 	
 	public ModulePlayerLogger()
 	{
@@ -44,6 +49,8 @@ public class ModulePlayerLogger implements IFEModule
 			return;
 		
 		OutputHandler.debug("MYSQL logger enabled");
+		
+		eLogger = new EventLogger();
 	}
 
 	@Override
@@ -68,17 +75,18 @@ public class ModulePlayerLogger implements IFEModule
 	public void serverStarting(FMLServerStartingEvent e) 
 	{
 		MySQLConnector connector = new MySQLConnector();
+		if(!ModuleLauncher.loggerEnabled) return;
 		connector.makeTable();
 		connector.close();
-		logger = new Logger();
-		new Thread(logger, "MySQL Connection Thread - PlayerLogger").start();
+		
+		eLogger.start();
 		
 		if(DEBUG)
 		{
-			OutputHandler.debug("Debug mods engaged.");
+			OutputHandler.debug("Debug mode engaged.");
 			for(int i = 0; i < 10; i++)
 			{
-				buffer.add(new logEntry("Test" + i, Calendar.getInstance().getTime().toGMTString(), "CatTest" + i, "Disc " + i + " loc: X Y Z"));
+				eLogger.logLoop.buffer.add(new logEntry("Test" + i, LogCatagory.DEBUG, "Disc " + i + ""));
 			}
 		}
 	}
@@ -92,24 +100,18 @@ public class ModulePlayerLogger implements IFEModule
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e) 
 	{
-		logger.makeLogs();
-		logger.end();
+		//eLogger.logLoop.makeLogs();
+		eLogger.logLoop.end();
+	}
+
+	public static void ragequit() 
+	{
+		if(ragequitOn)
+			FMLCommonHandler.instance().raiseException(new RuntimeException(), "Database connection lost.", true);
 	}
 	
-	public class logEntry
+	public static void print(String msg)
 	{
-		public String player;
-		public String time;
-		public String category;
-		public String disciption;
-		
-		public logEntry(String player, String time, String category, String disciption)
-		{
-			OutputHandler.debug("new logEntry("+player+")");
-			this.player = player;
-			this.time = time;
-			this.category = category;
-			this.disciption = disciption;
-		}
+		if(verbose) OutputHandler.SOP(msg);
 	}
 }

@@ -24,5 +24,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/guava-12.0.1.jar" sourcepath="lib/guava-12.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/WorldEdit.jar"/>
 	<classpathentry kind="lib" path="lib/WorldGuard.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

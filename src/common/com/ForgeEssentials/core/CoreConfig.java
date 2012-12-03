@@ -78,7 +78,7 @@ public class CoreConfig
 		
 		prop = config.get("Modules", "WEIntegration_Enabled", false);
 		prop.comment = "Enabling this will enable WorldEdit/WorldGuard compatibility. Does nothing at the moment.";
-		ModuleLauncher.loggerEnabled = prop.getBoolean(false);
+		ModuleLauncher.skEnabled = prop.getBoolean(false);
 	}
 
 	private void loadCore()

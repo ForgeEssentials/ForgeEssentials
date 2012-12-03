@@ -16,6 +16,7 @@ import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.Mod.ServerStarted;
 import cpw.mods.fml.common.Mod.ServerStarting;
 import cpw.mods.fml.common.Mod.ServerStopping;
 import cpw.mods.fml.common.SidedProxy;
@@ -95,7 +96,7 @@ public class ForgeEssentials
 		DataStorage.load();
 	}
 	
-	@ServerStarting
+	@ServerStarted
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		mdlaunch.serverStarted(e);
