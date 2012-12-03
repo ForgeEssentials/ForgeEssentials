@@ -11,7 +11,7 @@ import com.ForgeEssentials.WorldControl.commands.*;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator.Mode;
-import com.ForgeEssentials.core.FEConfig;
+import com.ForgeEssentials.core.CoreConfig;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.util.OutputHandler;
