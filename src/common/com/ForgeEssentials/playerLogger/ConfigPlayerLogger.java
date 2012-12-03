@@ -11,8 +11,10 @@ import com.ForgeEssentials.util.OutputHandler;
 public class ConfigPlayerLogger {
 	public static final File plconfig = new File(ForgeEssentials.FEDIR, "playerlogger.cfg");
 	public final Configuration config;
+	
 	public ConfigPlayerLogger()
 	{
+		OutputHandler.debug("...");
 		config = new Configuration(plconfig, true);
 		config.addCustomCategoryComment("PlayerLogger", "PlayerLogger settings");
 
