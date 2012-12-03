@@ -30,6 +30,7 @@ public class ModulePlayerLogger implements IFEModule
 	public static String username;
 	public static String password;
 	public static boolean ragequit;
+	public static ConfigPlayerLogger config;
 	
 	public static int interval; 
 	
@@ -48,7 +49,7 @@ public class ModulePlayerLogger implements IFEModule
 	@Override
 	public void preLoad(FMLPreInitializationEvent e) 
 	{
-		
+		config = new ConfigPlayerLogger();
 	}
 
 	@Override

@@ -13,7 +13,6 @@ public class ConfigPlayerLogger {
 	public final Configuration config;
 	public ConfigPlayerLogger()
 	{
-	
 		config = new Configuration(plconfig, true);
 		config.addCustomCategoryComment("PlayerLogger", "PlayerLogger settings");
 
@@ -35,5 +34,5 @@ public class ConfigPlayerLogger {
 		ModulePlayerLogger.interval = prop.getInt(300);
 		config.save();
 	}
-		
+
 }

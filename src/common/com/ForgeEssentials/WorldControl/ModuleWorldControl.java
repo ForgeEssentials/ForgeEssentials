@@ -61,9 +61,6 @@ public class ModuleWorldControl implements IFEModule
 		MinecraftForge.EVENT_BUS.register(new WandController());
 		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
 		
-		
-		
-		
 	}
 	
 	@Override
