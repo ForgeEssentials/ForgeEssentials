@@ -1,62 +1,87 @@
 package com.ForgeEssentials.permissions;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.minecraftforge.common.Property;
+
 public class Group
 {
-	private String promote;
-	private String demote;
-	private String parent;
-	public String prefix;
-	public String suffix;
-	public final String name;
-	
+	private HashMap<String, String>		promote;
+	private HashMap<String, String>		demote;
+	private HashMap<String, Property>	extraData;
+	public String						parent;
+	public String						prefix;
+	public String						suffix;
+	public final String					name;
+	public final String					zoneID;
+
 	public Group(String name)
 	{
-		this.name = name;
+		this(name, ZoneManager.GLOBAL.getZoneID());
 	}
-	
-	public Group(String name, String above)
+
+	public Group(String name, String zone)
 	{
-		this(name);
-		this.setLadderAbove(GroupManager.groups.get(above));
+		this.name = name;
+		zoneID = zone;
+		promote = new HashMap<String, String>();
+		demote = new HashMap<String, String>();
+		extraData = new HashMap<String, Property>();
 	}
-	
+
 	/**
 	 * Sets what group is the promotion of this one.
 	 * @param above Group to promote to when /promote command is used
 	 */
-	public void setLadderAbove(Group  above)
+	public void setLadderAbove(Group above, String zoneID)
 	{
 		if (above == null)
 		{
-			promote = "";
+			promote.remove(zoneID);
 			return;
 		}
-		
-		promote = above.name;
-		above.demote = name;
+
+		promote.put(zoneID, above.name);
+		above.demote.put(zoneID, name);
 	}
-	
+
 	/**
-	 * Sets what group is the parent of this one
-	 * @param parent The group from which this group inherits functionality
+	 * 
+	 * @param zoneID when in doubt use GLOBAL
 	 */
-	public void setParent(String parent)
+	public String getPromotion(String zoneID)
 	{
-		this.parent = parent;
+		return promote.get(zoneID);
 	}
-	
+
 	/**
-	 * Sets what group is the parent of this one
-	 * @param parent The group from which this group inherits functionality
+	 * 
+	 * @param zoneID when in doubt use GLOBAL
 	 */
-	public String getParent()
+	public String getDemotion(String zoneID)
 	{
-		return parent;
+		return demote.get(zoneID);
 	}
-	
+
 	public boolean hasParent()
 	{
-		return parent == null || parent.isEmpty(); 
+		return parent == null || parent.isEmpty();
 	}
-	
+
+	public void addData(Property prop)
+	{
+		extraData.put(prop.getName(), prop);
+	}
+
+	public Property getData(String dataKey)
+	{
+		return extraData.get(dataKey);
+	}
+
+	public Map<String, Property> getData()
+	{
+		return extraData;
+	}
+
 }
