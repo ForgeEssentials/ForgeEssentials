@@ -23,7 +23,7 @@ public class ModListFile
 			PrintWriter out = new PrintWriter(fstream);
 			out.println("# --- ModList ---");
 			out.println("# Generated: " + cal.get(Calendar.DAY_OF_MONTH) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR) + " (Server time)");
-			out.println("# Change the location of this file in " + FEConfig.FECONFIG);
+			out.println("# Change the location of this file in " + CoreConfig.mainconfig);
 			out.println();
 			
 			for(ModContainer mod : Loader.instance().getModList())

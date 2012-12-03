@@ -7,7 +7,6 @@ import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.permissions.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.property.ModuleProperty;
-import com.ForgeEssentials.skcompat.LibraryDetector;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -37,12 +36,13 @@ public class ModuleLauncher
 	public static boolean wcEnabled = true;
 	public static boolean propEnabled = true;
 	public static boolean borderEnabled = false;
-	public static boolean loggerEnabled = false;
+	public static boolean loggerEnabled = true;
+	public static boolean skEnabled = false;
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Discovering and loading modules...");
-		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/config.cfg.");
+		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/core.cfg.");
 		worldcontrol = new ModuleWorldControl();
 		commands = new ModuleCommands();
 		corecmd = new CoreCommands();
@@ -53,7 +53,7 @@ public class ModuleLauncher
 		
 		corecmd.preLoad(e);
 
-		if (wcEnabled && LibraryDetector.wepresent != true)
+		if (wcEnabled && skEnabled != true)
 			worldcontrol.preLoad(e);
 
 		if (cmdEnabled)
@@ -76,7 +76,7 @@ public class ModuleLauncher
 	{
 		corecmd.load(e);
 
-		if (wcEnabled && LibraryDetector.wepresent != true)
+		if (wcEnabled && skEnabled != true)
 			worldcontrol.load(e);
 
 		if (cmdEnabled)
@@ -99,7 +99,7 @@ public class ModuleLauncher
 	{
 		corecmd.serverStarting(e);
 
-		if (wcEnabled) // && LibraryDetector.wepresent != true)
+		if (wcEnabled&& skEnabled != true)
 			worldcontrol.serverStarting(e);
 
 		if (cmdEnabled)
@@ -120,7 +120,7 @@ public class ModuleLauncher
 	
 	public void serverStarted(FMLServerStartedEvent e)
 	{
-		if (wcEnabled) // && LibraryDetector.wepresent != true)
+		if (wcEnabled && skEnabled != true)
 			worldcontrol.serverStarted(e);
 
 		if (cmdEnabled)
