@@ -47,6 +47,11 @@
 
 	<entry key="command.back.syntax.player"></entry>
 	<entry key="command.back.info.player">Teleport you your last death point</entry>
+	
+	<entry key="command.list.syntax.console"></entry>
+	<entry key="command.list.info.console">Get a list of the current players</entry>
+	<entry key="command.list.syntax.player"></entry>
+	<entry key="command.list.info.player">Get a list of the current players</entry>
 
 	<entry key="command.restart.syntax.console"></entry>
 	<entry key="command.restart.info.console">Restart the server</entry>
@@ -86,8 +91,8 @@
 	<entry key="command.modlist.syntax.player">[page]</entry>
 	<entry key="command.modlist.info.console">Get a list of mods used by the server</entry>
 	<entry key="command.modlist.info.player">Get a list of mods used by the server</entry>
-	<entry key="command.zone.info.player">Define, remove, and edit zones</entry>
 	
+	<entry key="command.zone.info.player">Define, remove, and edit zones</entry>
 	<entry key="command.zone.syntax.player">&lt;define|redefine|remove|setparent &lt;newParent>> &lt;zoneID></entry>
 	
 	<entry key="command.warp.notfound">That warp doesn't exist!</entry>
@@ -95,6 +100,13 @@
 	<entry key="command.warp.alreadyexists">That warp already exists. Use "/warp del &lt;name>" to delete.</entry>
 	<entry key="command.warp.syntax.player">[name] OR &lt;set|del> &lt;name> </entry>
 	<entry key="command.warp.info.player">Teleport you to a warp point.</entry>
+	
+	<!-- Some localization for WorldBorder -->
+	<entry key="command.worldborder.syntax.console">[on|off] OR &lt;set> &lt;Radius> &lt;X> &lt;Z></entry>
+	<entry key="command.worldborder.syntax.player">[on|off] OR &lt;set> &lt;Radius> [X] [Z]</entry>
+	<entry key="command.worldborder.info.console">Set the worldborder.</entry>
+	<entry key="command.worldborder.info.player">Set the worldborder.</entry>
+	<entry key="worldborder.message">You have reached the worlds border.</entry>
 	
 	<!-- Some localization for WorldControl -->
 	<entry key="command./set.syntax.player">&lt;blockID[:metadata]></entry>

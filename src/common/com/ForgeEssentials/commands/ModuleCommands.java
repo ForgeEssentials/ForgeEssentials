@@ -19,7 +19,7 @@ public class ModuleCommands implements IFEModule
 {
 
 	public static ConfigCmd conf;
-	
+
 	public ModuleCommands()
 	{
 		if (!ModuleLauncher.cmdEnabled)
@@ -62,6 +62,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandBurn());
 		e.registerServerCommand(new CommandRepair());
 		e.registerServerCommand(new CommandHeal());
+		e.registerServerCommand(new CommandList());
 	}
 
 	@Override
@@ -89,8 +90,9 @@ public class ModuleCommands implements IFEModule
 	}
 
 	@Override
-	public void serverStopping(FMLServerStoppingEvent e) {
+	public void serverStopping(FMLServerStoppingEvent e)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 }
