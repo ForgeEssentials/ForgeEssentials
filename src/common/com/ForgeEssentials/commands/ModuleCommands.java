@@ -18,6 +18,8 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 public class ModuleCommands implements IFEModule
 {
 
+	public static ConfigCmd conf;
+	
 	public ModuleCommands()
 	{
 		if (!ModuleLauncher.cmdEnabled)
@@ -27,6 +29,7 @@ public class ModuleCommands implements IFEModule
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Commands module is enabled. Loading...");
+		conf = new ConfigCmd();
 	}
 
 	public void load(FMLInitializationEvent e)

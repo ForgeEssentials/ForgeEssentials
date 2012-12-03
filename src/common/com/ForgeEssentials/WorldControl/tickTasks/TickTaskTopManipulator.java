@@ -180,6 +180,12 @@ public class TickTaskTopManipulator implements ITickTask
 			case SNOW:
 				confirmMessage = "snow";
 				break;
+			case TILL:
+				confirmMessage = "till";
+				break;
+			case UNTILL:
+				confirmMessage = "untill";
+				break;
 		}
 		OutputHandler.chatConfirmation(player, Localization.format("message.wc." + confirmMessage + "Confirm",
 				this.changed));

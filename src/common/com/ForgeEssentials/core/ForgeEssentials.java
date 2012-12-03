@@ -43,7 +43,7 @@ public class ForgeEssentials
 	@Instance(value = "ForgeEssentials")
 	public static ForgeEssentials instance;
 
-	public static FEConfig config;
+	public static CoreConfig config;
 	public ModuleLauncher mdlaunch;
 	public Localization localization;
 	public static boolean verCheck = true;
@@ -61,7 +61,7 @@ public class ForgeEssentials
 		if (!PlayerInfo.FESAVES.exists() || !PlayerInfo.FESAVES.isDirectory())
 			PlayerInfo.FESAVES.mkdir();
 
-		config = new FEConfig();
+		config = new CoreConfig();
 
 		if (verCheck)
 			Version.checkVersion();
