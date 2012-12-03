@@ -28,9 +28,7 @@ public class CoreConfig
 		// load the modules
 		loadModules();
 		loadCore();
-		loadCmd();
 		loadPerms();
-		loadLogger();
 
 		// CONFIG TESTING!!!!
 		/*
@@ -97,23 +95,6 @@ public class CoreConfig
 
 	}
 
-	private void loadCmd()
-	{
-		config.addCustomCategoryComment("Commands", "Configure ForgeEssentials Commands. Only implemented if Commands module is on.");
-
-		Property prop = config.get("Commands", "motd", "Welcome to a server running ForgeEssentials");
-		prop.comment = "Specify the message that greets players when they log in to your server.";
-		CommandMotd.motd = prop.value;
-
-		prop = config.get("Commands", "RulesFile", "rules.txt");
-		prop.comment = "Specify the file where the rules will read from and written to. This path is relative to the ForgeEssentials folder.";
-		CommandRules.rulesFile = new File(ForgeEssentials.FEDIR, prop.value);
-		
-		prop = config.get("Commands", "backupName", "%world_%month-%day_%hourh%min"); 
-		prop.comment = "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world";
-		CommandBackup.backupName = prop.value;
-	}
-
 	private void loadPerms()
 	{
 		config.addCustomCategoryComment("Permissions", "Configure ForgeEssentials Permissions. Only implemented if Permissions module is enabled.");
@@ -123,27 +104,7 @@ public class CoreConfig
 		ModulePermissions.permsVerbose = prop.getBoolean(false);
 	}
 	
-	private void loadLogger()
-	{
-		config.addCustomCategoryComment("PlayerLogger", "PlayerLogger settings");
-
-		Property prop = config.get("PlayerLogger", "DB_url", "jdbc:mysql://localhost:3306/testdb");
-		ModulePlayerLogger.url = prop.value;
-		
-		prop = config.get("PlayerLogger", "DB_username", "root");
-		ModulePlayerLogger.username = prop.value;
-		
-		prop = config.get("PlayerLogger", "DB_password", "root");
-		ModulePlayerLogger.password = prop.value;
-		
-		prop = config.get("PlayerLogger", "stopServerIfFail", false);
-		prop.comment = "Stop the server when the logging fails";
-		ModulePlayerLogger.ragequit = prop.getBoolean(false);
-		
-		prop = config.get("PlayerLogger", "interval", 300);
-		prop.comment = "Interval in sec. for saving logs to DB";
-		ModulePlayerLogger.interval = prop.getInt(300);
-	}
+	
 
 	/**
 	 * will overwrite the current physical file.

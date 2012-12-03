@@ -1,6 +1,7 @@
 package com.ForgeEssentials.WorldControl;
 
 //Depreciated
+import java.io.File;
 import java.util.ArrayList;
 
 import net.minecraftforge.common.Configuration;
@@ -35,10 +36,23 @@ public class ModuleWorldControl implements IFEModule
 	// Some static fields for WorldControl config.
 	public static int WCblocksPerTick;
 
+	public static final File wcconf = new File(ForgeEssentials.FEDIR, "WorldControl.cfg");
+	
 	// preload.
 	public void preLoad(FMLPreInitializationEvent event)
 	{
 		OutputHandler.SOP("WorldControl module is enabled. Loading...");
+		Configuration conf = new Configuration(wcconf, true);
+		
+		conf.load();
+		conf.addCustomCategoryComment("WorldControl", "Properties used by WorldControl");
+		
+		Property prop = conf.get("WorldControl", "BlocksPerTick", 20);
+		prop.comment = "Specifies the maximum blocks/tick that can be changed via the WorldControl functions. Powerful computers may set higher, servers may want to keep it lower.";
+		WCblocksPerTick = prop.getInt();
+		OutputHandler.SOP("Setting blocks/tick to: " + WCblocksPerTick);
+		
+		conf.save();
 	}
 
 	// load.
@@ -47,18 +61,9 @@ public class ModuleWorldControl implements IFEModule
 		MinecraftForge.EVENT_BUS.register(new WandController());
 		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
 		
-		OutputHandler.SOP("WorldControl loading configuration...");
 		
-		Configuration conf = ForgeEssentials.config.config;
 		
-		conf.addCustomCategoryComment("WorldControl", "Properties used by WorldControl");
 		
-		Property prop = conf.get("WorldControl", "BlocksPerTick", 20);
-		prop.comment = "Specifies the maximum blocks/tick that can be changed via the WorldControl functions. Powerful computers may set higher, servers may want to keep it lower.";
-		ModuleWorldControl.WCblocksPerTick = prop.getInt();
-		OutputHandler.SOP("Setting blocks/tick to: " + WCblocksPerTick);
-		
-		ForgeEssentials.config.config.save();
 	}
 	
 	@Override

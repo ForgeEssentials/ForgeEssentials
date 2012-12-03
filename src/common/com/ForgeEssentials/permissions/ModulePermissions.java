@@ -2,6 +2,7 @@ package com.ForgeEssentials.permissions;
 
 import java.io.File;
 
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
