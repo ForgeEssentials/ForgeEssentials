@@ -1,15 +1,16 @@
 package com.ForgeEssentials.playerLogger;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.ForgeEssentials.playerLogger.ModulePlayerLogger.logEntry;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.Point;
 
-public class Logger implements Runnable
+public class LogLoop implements Runnable
 {
 	private boolean run = true;
-
+	public ArrayList<logEntry> buffer = new ArrayList<logEntry> ();
+	
 	@Override
 	public void run() 
 	{
@@ -21,23 +22,24 @@ public class Logger implements Runnable
 				Thread.sleep(1000 * ModulePlayerLogger.interval);
 			}
 			catch (final InterruptedException e){}
-			OutputHandler.SOP("Making logs");
+			ModulePlayerLogger.print("Making logs");
 			makeLogs();
+			ModulePlayerLogger.print("Done making logs");
 		}
 	}
 
 	public void makeLogs() 
 	{
 		MySQLConnector connector = new MySQLConnector();
-		Iterator<logEntry> i = ModulePlayerLogger.buffer.iterator();
-		HashSet<logEntry> delBuffer = new HashSet<logEntry>();
+		Iterator<logEntry> i = buffer.iterator();
+		ArrayList<logEntry> delBuffer = new ArrayList<logEntry>();
 		while (i.hasNext())
 		{
 			logEntry log = i.next();
 			delBuffer.add(log);
 			connector.makeLog(log);
 		}
-		ModulePlayerLogger.buffer.removeAll(delBuffer);
+		buffer.removeAll(delBuffer);
 		connector.close();
 	}
 

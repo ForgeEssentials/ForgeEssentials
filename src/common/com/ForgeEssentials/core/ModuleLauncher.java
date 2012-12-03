@@ -36,7 +36,7 @@ public class ModuleLauncher
 	public static boolean wcEnabled = true;
 	public static boolean propEnabled = true;
 	public static boolean borderEnabled = false;
-	public static boolean loggerEnabled = true;
+	public static boolean loggerEnabled = false;
 	public static boolean skEnabled = false;
 
 	public void preLoad(FMLPreInitializationEvent e)

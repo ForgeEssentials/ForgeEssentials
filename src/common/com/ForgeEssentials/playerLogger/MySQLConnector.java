@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.ForgeEssentials.playerLogger.ModulePlayerLogger.logEntry;
+import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class MySQLConnector 
@@ -27,14 +27,21 @@ public class MySQLConnector
 				OutputHandler.SOP("### Where is your MySQL JDBC Driver? ");
 				OutputHandler.SOP("### No driver means no PlayerLogger!");
 				OutputHandler.SOP("########################################");
+				ModulePlayerLogger.ragequit();
+				ModuleLauncher.loggerEnabled = false;
 				return;
 			}
 			DBcon = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
+			ModulePlayerLogger.print("Connected to DB");
 		}
 		catch (Exception ex1) 
 		{
-			OutputHandler.SOP("Cannot connect to database server");
-			if(ModulePlayerLogger.ragequit) throw new RuntimeException("Cannot connect to database server");
+			OutputHandler.SOP("########################################");
+			OutputHandler.SOP("### Cannot connect to database server");
+			OutputHandler.SOP("### Server offline? Login info correct?");
+			OutputHandler.SOP("########################################");
+			ModulePlayerLogger.ragequit();
+			ModuleLauncher.loggerEnabled = false;
 		}
 	}
 	
@@ -43,20 +50,27 @@ public class MySQLConnector
 		try 
 		{
 			s = DBcon.createStatement();
-			s.executeUpdate ("CREATE TABLE logs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id),time CHAR(64), player CHAR(64), category CHAR(64), disciption CHAR(128))");
-			OutputHandler.debug("Table made.");
+			
+			// TODO For debug ONLY. Clears table so you get clear results
+			boolean clearTable = true;
+			if(ModulePlayerLogger.DEBUG && clearTable)
+			{
+				s.executeUpdate("DROP TABLE IF EXISTS logs");
+			}
+			s.executeUpdate ("CREATE TABLE logs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id),time CHAR(64), player CHAR(64), category CHAR(64), X INT, Y INT, Z INT, disciption CHAR(128))");
+			ModulePlayerLogger.print("Connected to DB");
 		}
-		catch (SQLException ex2) 
+		catch (SQLException ex2)
 		{
-			OutputHandler.debug("Table already exists");
+			ModulePlayerLogger.print("Connected to DB");
 		}
 		finally
 		{
-			try 
+			try
 			{
 				s.close();
 			}
-			catch (SQLException e) 
+			catch (Exception e) 
 			{
 				OutputHandler.SOP("Error closing the statement");
 				OutputHandler.debug(e.getMessage());
@@ -77,18 +91,20 @@ public class MySQLConnector
 		}
 	}
 
-	public void makeLog(logEntry log) 
+	public boolean makeLog(logEntry log) 
 	{
 		try 
 		{
 			s = DBcon.createStatement();
-			s.executeUpdate("INSERT INTO logs(time, player, category, disciption) VALUES('" + log.time + "', '" + log.player + "', '" + log.category + "', '" + log.disciption + "')");
-			OutputHandler.debug("Entry made.");
+			s.executeUpdate(log.getSQL());
+			OutputHandler.debug("Entry made. (" + log.player + " > " + log.category.toString() + ")");
 		}
 		catch (SQLException ex2) 
 		{
 			OutputHandler.debug("Error logging data!");
-			if(ModulePlayerLogger.ragequit) throw new RuntimeException("Cannot connect to database server");
+			OutputHandler.debug(ex2.getMessage());
+			ModulePlayerLogger.ragequit();
+			return false;
 		}
 		finally
 		{
@@ -100,7 +116,9 @@ public class MySQLConnector
 			{
 				OutputHandler.SOP("Error closing the statement");
 				OutputHandler.debug(e.getMessage());
+				return false;
 			}
 		}
+		return true;
 	}
 }

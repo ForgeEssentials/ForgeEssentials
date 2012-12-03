@@ -42,6 +42,7 @@ public class ModuleCommands implements IFEModule
 	{
 	}
 
+	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandMotd());
