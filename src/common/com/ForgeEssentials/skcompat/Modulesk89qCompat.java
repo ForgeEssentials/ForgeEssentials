@@ -10,6 +10,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 //For whoever's doing the WE/WG integration
 
@@ -48,6 +49,13 @@ public class Modulesk89qCompat implements IFEModule
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void serverStopping(FMLServerStoppingEvent e)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }
