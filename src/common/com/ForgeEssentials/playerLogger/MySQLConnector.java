@@ -23,10 +23,8 @@ public class MySQLConnector
 			}
 			catch (ClassNotFoundException error)
 			{
-				OutputHandler.SOP("########################################");
-				OutputHandler.SOP("### Where is your MySQL JDBC Driver? ");
-				OutputHandler.SOP("### No driver means no PlayerLogger!");
-				OutputHandler.SOP("########################################");
+				OutputHandler.felog.severe("Could not find MySQL JDBC Driver. PlayerLogger module disabled.");
+				OutputHandler.SOP("An error was caught loading the MySQL database. Look in ForgeModLoader-server-0.log for more details.");
 				ModulePlayerLogger.ragequit();
 				ModuleLauncher.loggerEnabled = false;
 				return;
@@ -36,10 +34,10 @@ public class MySQLConnector
 		}
 		catch (Exception ex1) 
 		{
-			OutputHandler.SOP("########################################");
-			OutputHandler.SOP("### Cannot connect to database server");
-			OutputHandler.SOP("### Server offline? Login info correct?");
-			OutputHandler.SOP("########################################");
+			OutputHandler.SOP("An error was caught loading the MySQL database. Look in ForgeModLoader-server-0.log for more details.");
+			OutputHandler.felog.severe("Could not connect to the database server.");
+			OutputHandler.felog.severe("Ensure the server is online and your login info has been properly configured.");
+			OutputHandler.felog.severe("This can be configured in playerlogger.cfg in your ForgeEssentials folder.");
 			ModulePlayerLogger.ragequit();
 			ModuleLauncher.loggerEnabled = false;
 		}

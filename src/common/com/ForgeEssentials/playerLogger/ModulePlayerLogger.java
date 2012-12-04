@@ -45,17 +45,13 @@ public class ModulePlayerLogger implements IFEModule
 	
 	public ModulePlayerLogger()
 	{
-		if (!ModuleLauncher.loggerEnabled)
-			return;
-		
-		OutputHandler.debug("MYSQL logger enabled");
-		
 		eLogger = new EventLogger();
 	}
 
 	@Override
 	public void preLoad(FMLPreInitializationEvent e) 
 	{
+		OutputHandler.SOP("PlayerLogger module is enabled. Loading...");
 		config = new ConfigPlayerLogger();
 	}
 
