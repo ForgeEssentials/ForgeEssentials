@@ -7,6 +7,7 @@ import net.minecraft.src.MathHelper;
 import net.minecraft.src.MovingObjectPosition;
 import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
+import net.minecraft.src.WorldServer;
 
 public final class FunctionHelper
 {
@@ -36,14 +37,19 @@ public final class FunctionHelper
 		Vec3 var23 = var13.addVector((double) var18 * var21, (double) var17 * var21, (double) var20 * var21);
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
-	
+
 	public static String getWorldString(World world)
 	{
-		return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).getChunkSaveLocation() + "_" + world.getWorldInfo().getDimension();
+		return getDimension(0).getChunkSaveLocation() + "_" + world.getWorldInfo().getDimension();
 	}
-	
+
 	public static String getZoneWorldString(World world)
 	{
-		return "WORLD_"+world.getWorldInfo().getWorldName() + "_" + world.getWorldInfo().getDimension();
+		return "WORLD_" + world.getWorldInfo().getWorldName() + "_" + world.getWorldInfo().getDimension();
+	}
+
+	public static WorldServer getDimension(int dimension)
+	{
+		return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension);
 	}
 }

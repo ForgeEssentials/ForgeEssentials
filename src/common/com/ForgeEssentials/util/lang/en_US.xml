@@ -48,6 +48,16 @@
 	<entry key="command.back.syntax.player"></entry>
 	<entry key="command.back.info.player">Teleport you your last death point</entry>
 	
+	<entry key="command.tpspawn.syntax.console">[player]</entry>
+	<entry key="command.tpspawn.info.console">Teleport you/a player to your/their spawnpoint</entry>
+	<entry key="command.tpspawn.syntax.player">[player]</entry>
+	<entry key="command.tpspawn.info.player">Teleport a player to their spawnpoint</entry>
+	
+	<entry key="command.spawn.syntax.console">&lt;mob type> [number] [x, y, z]</entry>
+	<entry key="command.spawn.info.console">Teleport you/a player to your/their spawnpoint</entry>
+	<entry key="command.spawn.syntax.player">&lt;mob type> &t;number> &lt;x, y, z> [dimension]</entry>
+	<entry key="command.spawn.info.player">Teleport a player to their spawnpoint</entry>
+	
 	<entry key="command.list.syntax.console"></entry>
 	<entry key="command.list.info.console">Get a list of the current players</entry>
 	<entry key="command.list.syntax.player"></entry>
@@ -83,6 +93,7 @@
 	<entry key="message.error.permdenied">You are not allowed to do that.</entry>
 	<entry key="message.error.noItemPlayer">You must be holding a valid item.</entry>
 	<entry key="message.error.noItemTarget">The specified player is not holding a valid item.</entry>
+	<entry key="message.error.noMobX">Mob %s does not exist.</entry>
 
 	<entry key="message.done">Done!</entry>
 	

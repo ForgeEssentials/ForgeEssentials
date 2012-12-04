@@ -4,7 +4,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class Localization
 {
-	private String[] langFiles = { "en_US.xml" };
+	private String[] langFiles = { "en_US.xml", "en_UK.xml", "da_DK.xml" };
 
 	// Constants for localization messages, so we don't get duplicates or errors
 	public static final String BUTCHERED = "message.butchered";
@@ -30,6 +30,7 @@ public class Localization
 	public static final String ERROR_PERMDENIED = "message.error.permdenied";
 	public static final String ERROR_NOITEMPLAYER = "message.error.noItemPlayer";
 	public static final String ERROR_NOITEMTARGET = "message.error.noItemTarget";
+	public static final String ERROR_NOMOB = "message.error.noMobX";
 
 	public static final String DONE = "message.done";
 
