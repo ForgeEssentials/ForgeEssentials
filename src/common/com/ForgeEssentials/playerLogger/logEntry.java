@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class logEntry 
 {
@@ -12,7 +12,7 @@ public class logEntry
 	public String time;
 	public LogCatagory category;
 	public String disciption;
-	public Point point;
+	public WorldPoint point;
 	
 	public logEntry(String player, Date time, LogCatagory category, String disciption)
 	{
@@ -23,7 +23,7 @@ public class logEntry
 		this.disciption = disciption;
 	}
 			
-	public logEntry(String player, Date time, LogCatagory category, String disciption, Point point)
+	public logEntry(String player, Date time, LogCatagory category, String disciption, WorldPoint point)
 	{
 		OutputHandler.debug("Entry made. (" + player + " > " + category.toString() + ")");
 		this.player = player;
@@ -42,7 +42,7 @@ public class logEntry
 		this.disciption = disciption;
 	}
 			
-	public logEntry(String player, LogCatagory category, String disciption, Point point)
+	public logEntry(String player, LogCatagory category, String disciption, WorldPoint point)
 	{
 		OutputHandler.debug("Entry made. (" + player + " > " + category.toString() + ")");
 		this.player = player;
@@ -56,11 +56,11 @@ public class logEntry
 	{
 		if(point == null)
 		{
-			return "INSERT INTO logs(time, player, category, X, Y, Z, disciption) VALUES('" + time + "', '" + player + "', '" + category.toString() + "', NULL, NULL, NULL, '" + disciption + "')";
+			return "INSERT INTO logs(time, player, category, disciption) VALUES('" + time + "', '" + player + "', '" + category.toString() + "', '" + disciption + "')";
 		}
 		else
 		{
-			return "INSERT INTO logs(time, player, category, X, Y, Z, disciption) VALUES('" + time + "', '" + player + "', '" + category.toString() + "', '" + point.getX() + "', '" + point.getY() + "', '" + point.getZ() + "', '" + disciption + "')";
+			return "INSERT INTO logs(time, player, category, Dim, X, Y, Z, disciption) VALUES('" + time + "', '" + player + "', '" + category.toString() + "', '" + point.dim + "', '" + point.getX() + "', '" + point.getY() + "', '" + point.getZ() + "', '" + disciption + "')";
 		}
 	}
 }
