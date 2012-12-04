@@ -3,7 +3,6 @@ package com.ForgeEssentials.core;
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.commands.ModuleCommands;
-import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.permissions.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.property.ModuleProperty;
@@ -22,8 +21,6 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleLauncher
 {
-	public CoreCommands corecmd;
-
 	public ModuleCommands commands;
 	public ModulePermissions permission;
 	public ModuleWorldControl worldcontrol;
@@ -45,13 +42,11 @@ public class ModuleLauncher
 		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/core.cfg.");
 		worldcontrol = new ModuleWorldControl();
 		commands = new ModuleCommands();
-		corecmd = new CoreCommands();
 		permission = new ModulePermissions();
 		property = new ModuleProperty();
 		worldborder = new ModuleWorldBorder();
 		playerLogger = new ModulePlayerLogger();
 		
-		corecmd.preLoad(e);
 
 		if (wcEnabled && skEnabled != true)
 			worldcontrol.preLoad(e);
@@ -74,7 +69,7 @@ public class ModuleLauncher
 
 	public void load(FMLInitializationEvent e)
 	{
-		corecmd.load(e);
+		
 
 		if (wcEnabled && skEnabled != true)
 			worldcontrol.load(e);
@@ -97,7 +92,7 @@ public class ModuleLauncher
 
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-		corecmd.serverStarting(e);
+		
 
 		if (wcEnabled&& skEnabled != true)
 			worldcontrol.serverStarting(e);

@@ -6,6 +6,8 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.client.core.network.HandlerClient;
+import com.ForgeEssentials.core.commands.CommandFEUpdate;
+import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.network.HandlerServer;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
@@ -94,6 +96,8 @@ public class ForgeEssentials
 		mdlaunch.serverStarting(e);
 		ModListFile.makeModList();
 		DataStorage.load();
+		e.registerServerCommand(new CommandFEVersion());
+		e.registerServerCommand(new CommandFEUpdate());
 	}
 	
 	@ServerStarted
