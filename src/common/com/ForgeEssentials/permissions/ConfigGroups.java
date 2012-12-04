@@ -63,8 +63,8 @@ public class ConfigGroups
 		// default Ladders...
 		if (generateDefaults)
 		{
-			String[] ladder = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PROM_LADDERS, "", new String[] { PermissionsAPI.GROUP_OWNERS, PermissionsAPI.GROUP_ZONE_ADMINS, PermissionsAPI.GROUP_MEMBERS, PermissionsAPI.GROUP_DEFAULT }).valueList;
-			loadLadderFromList(ladder, ZoneManager.GLOBAL.getZoneID());
+			String[] ladder = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PROM_LADDERS, "DEFAULT", new String[] { PermissionsAPI.GROUP_OWNERS, PermissionsAPI.GROUP_ZONE_ADMINS, PermissionsAPI.GROUP_MEMBERS, PermissionsAPI.GROUP_DEFAULT }).valueList;
+			loadLadderFromList(ladder, ZoneManager.GLOBAL.getZoneID(), "DEFAULT");
 		}
 		
 		forceLoadConfig();
@@ -119,7 +119,7 @@ public class ConfigGroups
 				{
 					if (!prop.isList())
 						throw new RuntimeException("only ladders lists are allowed in the ladders ");
-					loadLadderFromList(prop.valueList, cat.getQualifiedName());
+					loadLadderFromList(prop.valueList, cat.getQualifiedName(), prop.getName());
 				}
 		}
 	}
@@ -179,17 +179,10 @@ public class ConfigGroups
 			return names[names.length - 1];
 	}
 
-	private void loadLadderFromList(String[] ladderList, String zoneID)
+	private void loadLadderFromList(String[] ladderList, String zoneID, String name)
 	{
-		Group temp = null;
-		// increments up to down.
-		for (int i = ladderList.length - 2; i > 0; i--)
-		{
-			temp = GroupManager.getGroupName(ladderList[i]);
-			if (temp == null)
-				throw new RuntimeException("Non-existant group: " + ladderList[i]);
-			temp.setLadderAbove(GroupManager.getGroupName(ladderList[i + 1]), zoneID);
-		}
+		PromotionLadder ladder = new PromotionLadder(name, zoneID, ladderList);
+		ZoneManager.getZone(zoneID).ladders.put(name, ladder);
 	}
 
 }

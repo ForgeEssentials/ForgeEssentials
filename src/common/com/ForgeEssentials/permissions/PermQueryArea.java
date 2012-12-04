@@ -15,11 +15,11 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
  * 
  */
 @HasResult
-public class PermQueryArea extends PermQueryPlayer
+public class PermQueryArea extends PermQueryBase
 {
 	public ArrayList<AreaBase>	applicable;
-	public final AreaBase				doneTo;
-	public final boolean allOrNothing;
+	public final AreaBase		doneTo;
+	public final boolean		allOrNothing;
 
 	public PermQueryArea(EntityPlayer player, String permission, AreaBase doneTo, boolean allOrNothing)
 	{
@@ -28,7 +28,7 @@ public class PermQueryArea extends PermQueryPlayer
 		this.doneTo = doneTo;
 		this.allOrNothing = allOrNothing;
 	}
-	
+
 	public PermQueryArea(EntityPlayer player, String permission, Point doneTo)
 	{
 		super(player, permission);
@@ -38,18 +38,9 @@ public class PermQueryArea extends PermQueryPlayer
 	}
 
 	/**
-	 * @return DEFAULT if the applicable areas should be checked. ALLOW/DENY if permission is completely allowed or denied.
-	 */
-	@Override
-	public Result getResult()
-	{
-		return super.getResult();
-	}
-
-	/**
 	 * set DEFAULT if the applicable regions list is to be used.
 	 * set DENY if the permissions is completely denied throughout the requested area.
-	 * set ALLOW if the permission is compeltely allowed throughout the requested area.
+	 * set ALLOW if the permission is completely allowed throughout the requested area.
 	 * 
 	 * @param value The new result
 	 */

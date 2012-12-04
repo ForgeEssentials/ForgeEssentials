@@ -18,19 +18,20 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	/**
 	 * serilizeableID
 	 */
-	private static final long							serialVersionUID	= -8826384576342329738L;
+	private static final long						serialVersionUID	= -8826384576342329738L;
 
-	public int											priority;										// lowest priority is 0
-	private String										zoneID;										// unique string name
-	private Zone										parent;										// the unique name of the parent.
-	protected HashSet<String>							children;										// list of all children of this zone
-	private String										worldString;									// the WorldString of world this zone exists in.
-	public final boolean								isWorldZone;									// flag for WorldZones
-	public final boolean								isGlobalZone;									// flag for GLOBAL zones
+	public int										priority;										// lowest priority is 0
+	private String									zoneID;										// unique string name
+	private Zone									parent;										// the unique name of the parent.
+	protected HashSet<String>						children;										// list of all children of this zone
+	private String									worldString;									// the WorldString of world this zone exists in.
+	public final boolean							isWorldZone;									// flag for WorldZones
+	public final boolean							isGlobalZone;									// flag for GLOBAL zones
 
 	// permission maps
 	protected HashMap<String, HashSet<Permission>>	playerOverrides;								// <username, perm list>
-	protected HashMap<String, HashSet<Permission>>	groupOverrides;									// <groupName, perm list>
+	protected HashMap<String, HashSet<Permission>>	groupOverrides;								// <groupName, perm list>
+	protected HashMap<String, PromotionLadder>		ladders;										// the ladders present in this zone
 
 	public Zone(String ID, Selection sel, Zone parent)
 	{
@@ -79,6 +80,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 
 	private void initMaps()
 	{
+		ladders = new HashMap<String, PromotionLadder>();
 		playerOverrides = new HashMap<String, HashSet<Permission>>();
 		groupOverrides = new HashMap<String, HashSet<Permission>>();
 		groupOverrides.put("_DEFAULT_", new HashSet<Permission>());
@@ -183,19 +185,19 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		else
 			return priority - zone.priority;
 	}
-	
+
 	public Zone getParent()
 	{
 		return parent;
 	}
-	
+
 	public void setParent(Zone parent)
 	{
 		this.parent.children.remove(zoneID);
 		this.parent = parent;
 		this.parent.children.add(zoneID);
 	}
-	
+
 	public void delete()
 	{
 		parent.children.remove(zoneID);
@@ -204,6 +206,15 @@ public class Zone extends AreaBase implements Comparable, Serializable
 			Zone zone = ZoneManager.zoneMap.get(child);
 			zone.setParent(parent);
 		}
+	}
+	
+	/**
+	 * @param name
+	 * @return NULL if the ladder doesn't exist here
+	 */
+	public PromotionLadder getLadder(String name)
+	{
+		return ladders.get(name);
 	}
 
 	/**
@@ -255,7 +266,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 						smallest = perm;
 			if (smallest != null)
 				return smallest.allowed;
-			else if (group!= null && group.hasParent() && groupOverrides.containsKey(group.parent))
+			else if (group != null && group.hasParent() && groupOverrides.containsKey(group.parent))
 			{
 				perms = groupOverrides.get(group.parent);
 				for (Permission perm : perms)
@@ -266,7 +277,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 							smallest = perm;
 						else if (smallest.isChildOf(perm))
 							smallest = perm;
-				
+
 				if (smallest != null)
 					return smallest.allowed;
 			}
@@ -289,12 +300,12 @@ public class Zone extends AreaBase implements Comparable, Serializable
 		}
 		return Result.DEFAULT;
 	}
-	
+
 	public Set<String> getPlayersOverriden()
 	{
 		return playerOverrides.keySet();
 	}
-	
+
 	public Set<String> getGroupsOverriden()
 	{
 		return groupOverrides.keySet();

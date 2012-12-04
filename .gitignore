@@ -26,6 +26,8 @@
 !/jars/coremods/
 !/lib/WorldEdit.jar
 !/lib/WorldGuard.jar
+!/lib/mysql-connector-java-bin.jar
+!/lib/checksums.txt
 !/eclipse/Minecraft/.classpath
 
 *.bat

@@ -6,8 +6,8 @@ import cpw.mods.fml.relauncher.ILibrarySet;
 
 public class Downloader implements ILibrarySet{
 
-	private static String[] libraries = { "WorldEdit.jar", "WorldGuard.jar" };
-	private static String[] checksums = { "2190c96afbf717a01d0cdceaa772866cd1794c45", "c5f93238788238da399ec0ed1eed3e0c3af54912"};
+	private static String[] libraries = { "WorldEdit.jar", "WorldGuard.jar", "mysql-connector-java-bin.jar" };
+	private static String[] checksums = { "2190c96afbf717a01d0cdceaa772866cd1794c45", "c5f93238788238da399ec0ed1eed3e0c3af54912", "3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15"};
 
 	@Override
 	public String[] getLibraries() {

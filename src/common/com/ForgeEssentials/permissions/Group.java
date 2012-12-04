@@ -7,9 +7,8 @@ import net.minecraftforge.common.Property;
 
 public class Group
 {
-	private HashMap<String, String>		promote;
-	private HashMap<String, String>		demote;
-	private HashMap<String, Property>	extraData;
+	private HashMap<String, String>		ladderNames;	// zoneID, ladderName
+	private HashMap<String, Property>	extraData;		// tag based extra data
 	public String						parent;
 	public String						prefix;
 	public String						suffix;
@@ -25,43 +24,26 @@ public class Group
 	{
 		this.name = name;
 		zoneID = zone;
-		promote = new HashMap<String, String>();
-		demote = new HashMap<String, String>();
+		ladderNames = new HashMap<String, String>();
 		extraData = new HashMap<String, Property>();
 	}
 
 	/**
-	 * Sets what group is the promotion of this one.
-	 * @param above Group to promote to when /promote command is used
-	 */
-	public void setLadderAbove(Group above, String zoneID)
-	{
-		if (above == null)
-		{
-			promote.remove(zoneID);
-			return;
-		}
-
-		promote.put(zoneID, above.name);
-		above.demote.put(zoneID, name);
-	}
-
-	/**
-	 * 
+	 * You really shouldn't use this.. get the ladder somehow and check that...
 	 * @param zoneID when in doubt use GLOBAL
 	 */
 	public String getPromotion(String zoneID)
 	{
-		return promote.get(zoneID);
+		return ZoneManager.getZone(zoneID).getLadder(ladderNames.get(zoneID)).getPromotion(name);
 	}
 
 	/**
-	 * 
+	 * You really shouldn't use this.. get the ladder somehow and check that...
 	 * @param zoneID when in doubt use GLOBAL
 	 */
 	public String getDemotion(String zoneID)
 	{
-		return demote.get(zoneID);
+		return ZoneManager.getZone(zoneID).getLadder(ladderNames.get(zoneID)).getDemotion(name);
 	}
 
 	public boolean hasParent()
@@ -82,6 +64,15 @@ public class Group
 	public Map<String, Property> getData()
 	{
 		return extraData;
+	}
+	
+	/**
+	 * @param zoneID
+	 * return NULL if this group has no ladder in this zone.
+	 */
+	public String getLadderName(String zoneID)
+	{
+		return ladderNames.get(zoneID);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.ForgeEssentials.permissions;
 
+import java.util.HashSet;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event.Result;
 
@@ -41,7 +43,7 @@ public class PermissionsAPI
 	 * @param query
 	 * @return TRUE if the permission is allowed. FALSE if the permission is denied or partially allowed.
 	 */
-	public static boolean checkPermAllowed(PermQueryPlayer query)
+	public static boolean checkPermAllowed(PermQueryBase query)
 	{
 		MinecraftForge.EVENT_BUS.post(query);
 		return query.getResult().equals(Result.ALLOW);
@@ -52,9 +54,81 @@ public class PermissionsAPI
 	 * @param query
 	 * @return the Result of the query
 	 */
-	public static Result checkPermResult(PermQueryPlayer query)
+	public static Result checkPermResult(PermQueryBase query)
 	{
 		MinecraftForge.EVENT_BUS.post(query);
 		return query.getResult();
 	}
+	
+	/**
+	 * Constructs, registers, and returns a group.
+	 * @param groupName
+	 * @param ZoneID
+	 * @return NULL if the construction or registration fails.
+	 */
+	public static Group createGroupInZone(String groupName, String ZoneID)
+	{
+		if (GroupManager.groups.containsKey(groupName))
+			return null;
+		
+		Group newG = new Group(groupName, ZoneID);
+		GroupManager.groups.put(groupName, newG);
+		return newG;
+	}
+	
+	public static void setPlayerPermission(String username, String permission, boolean allow, String zoneID)
+	{
+		Zone zone = ZoneManager.getZone(zoneID);
+		if (zone == null)
+			return;
+		
+		Permission perm = new Permission(permission, allow);
+		HashSet<Permission> perms = zone.playerOverrides.get(username);
+		
+		if (perms == null)
+		{
+			perms = new HashSet<Permission>();
+			perms.add(perm);
+			zone.playerOverrides.put(username, perms);
+		}
+		else
+		{
+			PermissionChecker checker = new PermissionChecker(permission);
+			if (perms.contains(checker))
+				perms.remove(checker);
+			perms.add(perm);
+		}
+	}
+	
+	/**
+	 * Sets a permission for a group in a zone.
+	 * Does nothing if the Group or the Zone do not exist.
+	 * @param username player to apply the permission to.
+	 * @param permission Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
+	 * @param allow
+	 */
+	public static void setGroupPermission(String group, String permission, boolean allow, String zoneID)
+	{
+		Zone zone = ZoneManager.getZone(zoneID);
+		if (!GroupManager.groups.containsKey(group) || zone == null)
+			return;
+		
+		Permission perm = new Permission(permission, allow);
+		HashSet<Permission> perms = zone.groupOverrides.get(group);
+		
+		if (perms == null)
+		{
+			perms = new HashSet<Permission>();
+			perms.add(perm);
+			zone.groupOverrides.put(group, perms);
+		}
+		else
+		{
+			PermissionChecker checker = new PermissionChecker(permission);
+			if (perms.contains(checker))
+				perms.remove(checker);
+			perms.add(perm);
+		}
+	}
+	
 }

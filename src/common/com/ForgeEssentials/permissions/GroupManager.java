@@ -13,12 +13,12 @@ public class GroupManager
 	
 	public GroupManager()
 	{
-		Group defaults = new Group(PermissionsAPI.GROUP_DEFAULT);
+		DEFAULT = new Group(PermissionsAPI.GROUP_DEFAULT);
+		loginGroup = DEFAULT;
 		config = new ConfigGroups();
 	}
 	
 	/**
-	 * 
 	 * @param name of the group
 	 * @return NULL if the group does not exist
 	 */

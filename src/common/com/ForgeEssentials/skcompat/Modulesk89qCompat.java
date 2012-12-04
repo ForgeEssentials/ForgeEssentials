@@ -12,8 +12,6 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-//For whoever's doing the WE/WG integration
-
 public class Modulesk89qCompat implements IFEModule
 {
 	public WorldEdit	we;

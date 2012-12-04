@@ -11,10 +11,10 @@
 	<entry key="command.rules.info.console">Get/set the rules of the server</entry>
 	<entry key="command.rules.info.player">Get/set the rules of the server</entry>
 
-	<entry key="command.butcher.syntax.player">[radius] [&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.butcher.syntax.player">[radius] [x, y, z]</entry>
 	<entry key="command.butcher.info.player">Kill enemies around you/the specified point within the radius</entry>
 
-	<entry key="command.remove.syntax.player">/remove [radius] [&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.remove.syntax.player">/remove [radius] [x, y, z]</entry>
 	<entry key="command.remove.info.player">Remove all item entities around you/the specified point within the radius</entry>
 
 	<entry key="command.kill.syntax.console">&lt;player></entry>
@@ -42,11 +42,26 @@
 	<entry key="command.heal.syntax.player">&lt;player></entry>
 	<entry key="command.heal.syntax.console">&lt;player></entry>
 		
-	<entry key="command.home.syntax.player">[here|&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.home.syntax.player">[here|x, y, z]</entry>
 	<entry key="command.home.info.player">Teleport you to/sets your home</entry>
 
 	<entry key="command.back.syntax.player"></entry>
 	<entry key="command.back.info.player">Teleport you your last death point</entry>
+	
+	<entry key="command.tpspawn.syntax.console">[player]</entry>
+	<entry key="command.tpspawn.info.console">Teleport you/a player to your/their spawnpoint</entry>
+	<entry key="command.tpspawn.syntax.player">[player]</entry>
+	<entry key="command.tpspawn.info.player">Teleport a player to their spawnpoint</entry>
+	
+	<entry key="command.spawn.syntax.console">&lt;mob type> [number] [x, y, z]</entry>
+	<entry key="command.spawn.info.console">Teleport you/a player to your/their spawnpoint</entry>
+	<entry key="command.spawn.syntax.player">&lt;mob type> &lt;number> &lt;x, y, z> [dimension]</entry>
+	<entry key="command.spawn.info.player">Teleport a player to their spawnpoint</entry>
+	
+	<entry key="command.list.syntax.console"></entry>
+	<entry key="command.list.info.console">Get a list of the current players</entry>
+	<entry key="command.list.syntax.player"></entry>
+	<entry key="command.list.info.player">Get a list of the current players</entry>
 
 	<entry key="command.restart.syntax.console"></entry>
 	<entry key="command.restart.info.console">Restart the server</entry>
@@ -65,6 +80,13 @@
 	<entry key="message.healed">Healed.</entry>
 	<entry key="message.spawned">Teleported to spawn.</entry>
 	
+	<entry key="message.credits.AbrarSyed">Insert contributions here</entry>
+	<entry key="message.credits.Bob_A_Red_Dino">Essentials-like commands</entry>
+	<entry key="message.credits.bspkrs">Insert contributions here</entry>
+	<entry key="message.credits.MysteriousAges">Insert contributions here</entry>
+	<entry key="message.credits.luacs1998">Insert contributions here</entry>
+	<entry key="message.credits.Dries007">Insert contributions here</entry>
+	
 	<entry key="message.error.noPlayerX">Player %s does not exist.</entry>
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
 	<entry key="message.error.nan">#%d param is not a number. Try again, you can do it.</entry>
@@ -78,6 +100,7 @@
 	<entry key="message.error.permdenied">You are not allowed to do that.</entry>
 	<entry key="message.error.noItemPlayer">You must be holding a valid item.</entry>
 	<entry key="message.error.noItemTarget">The specified player is not holding a valid item.</entry>
+	<entry key="message.error.noMobX">Mob %s does not exist.</entry>
 
 	<entry key="message.done">Done!</entry>
 	
@@ -86,8 +109,8 @@
 	<entry key="command.modlist.syntax.player">[page]</entry>
 	<entry key="command.modlist.info.console">Get a list of mods used by the server</entry>
 	<entry key="command.modlist.info.player">Get a list of mods used by the server</entry>
-	<entry key="command.zone.info.player">Define, remove, and edit zones</entry>
 	
+	<entry key="command.zone.info.player">Define, remove, and edit zones</entry>
 	<entry key="command.zone.syntax.player">&lt;define|redefine|remove|setparent &lt;newParent>> &lt;zoneID></entry>
 	
 	<entry key="command.warp.notfound">That warp doesn't exist!</entry>
@@ -95,6 +118,13 @@
 	<entry key="command.warp.alreadyexists">That warp already exists. Use "/warp del &lt;name>" to delete.</entry>
 	<entry key="command.warp.syntax.player">[name] OR &lt;set|del> &lt;name> </entry>
 	<entry key="command.warp.info.player">Teleport you to a warp point.</entry>
+	
+	<!-- Some localization for WorldBorder -->
+	<entry key="command.worldborder.syntax.console">[on|off] OR &lt;set> &lt;Radius> &lt;X> &lt;Z></entry>
+	<entry key="command.worldborder.syntax.player">[on|off] OR &lt;set> &lt;Radius> [X] [Z]</entry>
+	<entry key="command.worldborder.info.console">Set the worldborder.</entry>
+	<entry key="command.worldborder.info.player">Set the worldborder.</entry>
+	<entry key="worldborder.message">You have reached the worlds border.</entry>
 	
 	<!-- Some localization for WorldControl -->
 	<entry key="command./set.syntax.player">&lt;blockID[:metadata]></entry>
