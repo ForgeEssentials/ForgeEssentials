@@ -14,7 +14,6 @@ public class ConfigCmd {
 	public final Configuration config;
 	public ConfigCmd()
 	{
-		OutputHandler.SOP("Loading configs");
 		config = new Configuration(cmdconfig, true);
 		config.addCustomCategoryComment("Commands", "Configure ForgeEssentials Commands.");
 

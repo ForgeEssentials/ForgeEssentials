@@ -9,6 +9,7 @@ import com.ForgeEssentials.property.ModuleProperty;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -138,5 +139,12 @@ public class ModuleLauncher
 	{
 		if (loggerEnabled)
 			playerLogger.serverStopping(e);
+	}
+
+	
+	public void postLoad(FMLPostInitializationEvent e) {
+		if (permsEnabled)
+			permission.postLoad(e);
+		
 	}
 }
