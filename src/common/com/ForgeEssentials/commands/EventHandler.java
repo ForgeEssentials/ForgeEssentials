@@ -1,7 +1,7 @@
 package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -14,6 +14,6 @@ public class EventHandler
 	public void onPlayerDeath(LivingDeathEvent e)
 	{
 		if (e.entity instanceof EntityPlayer)
-			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).lastDeath = new Point((int) e.entity.posX, (int) e.entity.posY, (int) e.entity.posZ);
+			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).lastDeath = new WorldPoint((int) e.entity.posX, (int) e.entity.posY, (int) e.entity.posZ, e.entity.worldObj.getWorldInfo().getDimension());
 	}
 }

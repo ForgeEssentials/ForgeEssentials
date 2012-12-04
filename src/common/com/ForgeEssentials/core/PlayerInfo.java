@@ -17,6 +17,7 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -36,6 +37,13 @@ public class PlayerInfo implements Serializable
 			return playerInfoMap.get(player.username);
 		}
 
+		return info;
+	}
+	
+	public static PlayerInfo getPlayerInfo(String username)
+	{
+		PlayerInfo info = playerInfoMap.get(username);
+		
 		return info;
 	}
 
@@ -159,8 +167,8 @@ public class PlayerInfo implements Serializable
 	// permissions stuff
 	private HashMap<String, String> areaGroupMap;
 
-	public Point home;
-	public Point lastDeath;
+	public WorldPoint home;
+	public WorldPoint lastDeath;
 	// 0: Normal 1: World spawn 2: Bed 3: Home
 	public int spawnType;
 

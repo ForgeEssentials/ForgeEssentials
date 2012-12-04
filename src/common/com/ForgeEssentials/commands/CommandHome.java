@@ -7,6 +7,7 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -27,7 +28,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		if (args.length >= 1 && args[0].equals("here"))
-			PlayerInfo.getPlayerInfo(sender).home = new Point((int) sender.posX, (int) sender.posY, (int) sender.posZ);
+			PlayerInfo.getPlayerInfo(sender).home = new WorldPoint((int) sender.posX, (int) sender.posY, (int) sender.posZ, sender.worldObj.getWorldInfo().getDimension());
 		else if (args.length >= 3)
 		{
 			int x = 0;
@@ -57,7 +58,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
 				return;
 			}
-			PlayerInfo.getPlayerInfo(sender).home = new Point(x, y, z);
+			PlayerInfo.getPlayerInfo(sender).home = new WorldPoint(x, y, z, sender.worldObj.getWorldInfo().getDimension());
 		} else
 		{
 			Point home = PlayerInfo.getPlayerInfo(sender).home;

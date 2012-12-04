@@ -11,6 +11,7 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class CommandBack extends ForgeEssentialsCommandBase
 {
@@ -21,7 +22,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 		if (e.entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) e.entity;
-			PlayerInfo.getPlayerInfo(player).lastDeath = new Point((int) player.posX, (int) player.posY, (int) player.posZ);
+			PlayerInfo.getPlayerInfo(player).lastDeath = new WorldPoint((int) player.posX, (int) player.posY, (int) player.posZ, player.worldObj.getWorldInfo().getDimension());
 		}
 	}
 

@@ -33,14 +33,6 @@ public class CommandTopManipulate extends WorldControlCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
-	{
-		List list = new ArrayList<String>();
-		list.add("unice");
-		return list;
-	}
-
-	@Override
 	public String getName()
 	{
 		return this.name;
