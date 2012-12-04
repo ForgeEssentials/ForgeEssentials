@@ -4,7 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
-import com.ForgeEssentials.core.data.DataPersister;
+import com.ForgeEssentials.core.data.DataAdapter;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
@@ -17,7 +17,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
  *
  * @param <T> Class that extending Persisters save data for.
  */
-public abstract class FileSystemDataPersister<T> extends DataPersister<T>
+public abstract class FileSystemDataAdapter<SavedType, KeyType> extends DataAdapter<SavedType, KeyType>
 {	
 	// Convenience function to convert Points into an int[3]
 	protected int[] pointToIntArray(Point p)

@@ -8,6 +8,9 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.ForgeEssentials.client.core.network.HandlerClient;
 import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
+import com.ForgeEssentials.core.data.DataDriver;
+import com.ForgeEssentials.core.data.DataStorageManager;
+import com.ForgeEssentials.core.data.filesystem.FileSystemDataDriver;
 import com.ForgeEssentials.core.network.HandlerServer;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
@@ -55,6 +58,8 @@ public class ForgeEssentials
 	public static String fedirloc = "./ForgeEssentials/";
 
 	public static final File FEDIR = new File(fedirloc);
+	
+	private DataDriver dataStore = null;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -68,7 +73,12 @@ public class ForgeEssentials
 		config = new CoreConfig();
 
 		if (verCheck)
+		{
 			Version.checkVersion();
+		}
+		
+		// Add hooks for initializing new data backing API
+		DataStorageManager.setupDriver(config.config);
 
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
@@ -88,9 +98,7 @@ public class ForgeEssentials
 	@PostInit
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		
 		mdlaunch.postLoad(e);
-		// Add hooks for initializing new data backing API
 	}
 	
 	@ServerStarting
@@ -120,5 +128,19 @@ public class ForgeEssentials
 	public void chuckSave(WorldEvent.Save event)
 	{
 		DataStorage.save();
+	}
+
+	public DataDriver dataDriver()
+	{
+		return dataStore;
+	}
+
+	public void setDataStore(DataDriver driver)
+	{
+		// Only set this once to prevent strangeness.
+		if (this.dataStore != null)
+		{
+			this.dataStore = driver;
+		}
 	}
 }

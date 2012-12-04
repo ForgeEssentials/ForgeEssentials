@@ -30,20 +30,6 @@ public class CoreConfig
 		loadCore();
 		loadPerms();
 
-		// CONFIG TESTING!!!!
-		/*
-		 * config.addCustomCategoryComment("TEST", "this is for testing...");
-		 * config.addCustomCategoryComment("TEST.nestedTEST", "MORE TESTING!!!");
-		 * config.get("TEST", "test1", false);
-		 * config.get("TEST", "test2", false);
-		 * config.get("TEST", "test3", false);
-		 * config.get("TEST.nestedTEST", "test1", false);
-		 * config.get("TEST.nestedTEST", "test2", false);
-		 * config.get("TEST.nestedTEST", "test3", false);
-		 * config.get("TEST", "testList", new String[] {"lala", "lala", "lala"});
-		 * config.get("TEST.nestedTEST", "testList", new String[] {"lala", "lala", "lala"});
-		 */
-
 		// Finish init and save.
 		config.save();
 	}
