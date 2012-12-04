@@ -25,9 +25,13 @@ public class ConfigCmd {
 		prop.comment = "Specify the file where the rules will read from and written to. This path is relative to this folder.";
 		CommandRules.rulesFile = new File(cmddir, prop.value);
 		
-		prop = config.get("Commands", "backupName", "%world_%month-%day_%hourh%min"); 
+		prop = config.get("Commands", "backupName", "%world_%month/%day_%hour:%min"); 
 		prop.comment = "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world";
 		CommandBackup.backupName = prop.value;
+		
+		prop = config.get("Commands", "backupdir", "backups/");
+		prop.comment = "The path to the backup folder.";
+		CommandBackup.backupdir = ForgeEssentials.fedirloc + prop.value;
 		config.save();
 	}
 

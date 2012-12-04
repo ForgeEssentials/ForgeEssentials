@@ -52,8 +52,9 @@ public class ForgeEssentials
 	public static boolean verCheck = true;
 
 	public static String modlistLocation;
+	public static String fedirloc = "./ForgeEssentials/";
 
-	public static final File FEDIR = new File("./ForgeEssentials/");
+	public static final File FEDIR = new File(fedirloc);
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
