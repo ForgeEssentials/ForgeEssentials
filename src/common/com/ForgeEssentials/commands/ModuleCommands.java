@@ -75,20 +75,20 @@ public class ModuleCommands implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		event.registerGlobalPermission("ForgeEssentials.commands", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.remove", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.restart", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.rules", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.serverdo", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.smite", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.kill", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.modlist", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.motd", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.burn", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.list", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.compass", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.repair", true);
-		event.registerGlobalPermission("ForgeEssentials.commands.heal", true);
+		event.registerPermissionDefault("ForgeEssentials.commands", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.remove", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.restart", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.rules", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.serverdo", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.smite", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.kill", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.modlist", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.motd", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.burn", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.list", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.compass", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.repair", true);
+		event.registerPermissionDefault("ForgeEssentials.commands.heal", true);
 	}
 
 	@Override

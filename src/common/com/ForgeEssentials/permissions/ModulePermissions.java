@@ -25,6 +25,7 @@ public class ModulePermissions implements IFEModule
 	public static ConfigPermissions		config;
 	public static PermissionsHandler	pHandler;
 	public static ZoneManager			zManager;
+	public static GroupManager			gManager;
 	public static boolean				permsVerbose	= false;
 	
 	public static File permsFolder = new File(ForgeEssentials.FEDIR, "/permissions/");
@@ -39,7 +40,7 @@ public class ModulePermissions implements IFEModule
 		
 		OutputHandler.SOP("Permissions module is enabled. Loading...");
 		zManager = new ZoneManager();
-		ZoneManager.GLOBAL = new Zone("__GLOBAL__");
+		gManager = new GroupManager();
 	}
 
 	@Init
@@ -84,11 +85,11 @@ public class ModulePermissions implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		event.registerGlobalPermission("ForgeEssentials.permissions.zone.list", true);
-		event.registerGlobalPermission("ForgeEssentials.permissions.zone.define", true);
-		event.registerGlobalPermission("ForgeEssentials.permissions.zone.remove", true);
-		event.registerGlobalPermission("ForgeEssentials.permissions.zone.redefine", true);
-		event.registerGlobalPermission("ForgeEssentials.permissions.zone.setparent", true);
+		event.registerPermissionDefault("ForgeEssentials.permissions.zone.list", true);
+		event.registerPermissionDefault("ForgeEssentials.permissions.zone.define", true);
+		event.registerPermissionDefault("ForgeEssentials.permissions.zone.remove", true);
+		event.registerPermissionDefault("ForgeEssentials.permissions.zone.redefine", true);
+		event.registerPermissionDefault("ForgeEssentials.permissions.zone.setparent", true);
 	}
 
 	@Override

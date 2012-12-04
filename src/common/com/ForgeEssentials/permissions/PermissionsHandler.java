@@ -25,43 +25,39 @@ import com.ForgeEssentials.util.AreaSelector.AreaBase;
  */
 public final class PermissionsHandler
 {
-	@ForgeSubscribe(priority = EventPriority.LOWEST)
+	@ForgeSubscribe(priority = EventPriority.NORMAL)
 	public void handlerQuery(PermQueryPlayer event)
 	{
-		// actually handle stuff here.
+		Zone zone = ZoneManager.getWhichZoneIn(event.getDoerPoint(), event.doer.worldObj);
+		Result result = getResultFromZone(zone, event.permission, event.doer);
+		event.setResult(result);
+	}
+	
+	@ForgeSubscribe(priority = EventPriority.NORMAL)
+	public void handlerQuery(PermQueryZone event)
+	{
+		Result result = getResultFromZone(event.toCheck, event.permission, event.doer);
+		event.setResult(result);
+	}
 
-		// if we have a permission area that contains this point:
-		// if we can not perform this action in this area:
-		// -> Deny the action
-
-		// gets the result of the player in the area.
-
-		if (event.getClass().getName().equals(PermQueryArea.class.getName()))
+	@ForgeSubscribe(priority = EventPriority.NORMAL)
+	public void handlerQuery(PermQueryArea event)
+	{
+		if (event.allOrNothing)
 		{
-			PermQueryArea eArea = (PermQueryArea) event;
-			
-			if (eArea.allOrNothing)
-			{
-				Zone zone = ZoneManager.getWhichZoneIn(eArea.doneTo, event.doer.worldObj);
-				Result result = getResultFromZone(zone, event.permission, event.doer);
-				event.setResult(result);
-			}
-			else
-			{
-				eArea.applicable = getApplicableZones(eArea.permission, eArea.doer, eArea.doneTo);
-				if (eArea.applicable == null)
-					eArea.setResult(Result.DENY);
-				else if (eArea.applicable.isEmpty())
-					eArea.setResult(Result.ALLOW);
-				else
-					eArea.setResult(Result.DEFAULT);
-			}
+			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo, event.doer.worldObj);
+			Result result = getResultFromZone(zone, event.permission, event.doer);
+			event.setResult(result);
 		}
 		else
 		{
-			Zone zone = ZoneManager.getWhichZoneIn(event.getDoerPoint(), event.doer.worldObj);
-			Result result = getResultFromZone(zone, event.permission, event.doer);
-			event.setResult(result);
+			event.applicable = getApplicableZones(event.permission, event.doer, event.doneTo);
+			if (event.applicable == null)
+				event.setResult(Result.DENY);
+			else if (event.applicable.isEmpty())
+				event.setResult(Result.ALLOW);
+			else
+				event.setResult(Result.DEFAULT);
 		}
 	}
 

@@ -75,9 +75,9 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		event.registerGlobalPermission("ForgeEssentials.worldborder", false);
-		event.registerGlobalPermission("ForgeEssentials.worldborder.bypass", false);
-		event.registerGlobalPermission("ForgeEssentials.worldborder.admin", false);
+		event.registerPermissionDefault("ForgeEssentials.worldborder", false);
+		event.registerPermissionDefault("ForgeEssentials.worldborder.bypass", false);
+		event.registerPermissionDefault("ForgeEssentials.worldborder.admin", false);
 	}
 	
 	public static void setCenter(int rad, int posX, int posZ) 

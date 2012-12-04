@@ -2,6 +2,7 @@ package com.ForgeEssentials.permissions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.TreeMap;
 
 import net.minecraft.src.World;
@@ -67,6 +68,9 @@ public class ZoneManager
 	// normal zone map. WorldZones and Globals are not included.
 	protected static TreeMap<String, Zone>	zoneMap;
 
+	/**
+	 * WorldZones are not included here.
+	 */
 	public static void deleteZone(String zoneID)
 	{
 		Zone zone = zoneMap.remove(zoneID);
@@ -75,15 +79,28 @@ public class ZoneManager
 	
 	public static Zone getZone(String zoneID)
 	{
-		return zoneMap.get(zoneID);
+		if (zoneID.equals(GLOBAL.getZoneID()))
+			return GLOBAL;
+		else if (zoneID.startsWith("WORLD_"))
+			return worldZoneMap.get(zoneID);
+		else
+			return zoneMap.get(zoneID);
 	}
 
+	/**
+	 * WorldZones are not included here.
+	 */
 	public static boolean createZone(String zoneID, Selection sel, World world)
 	{
 		if (zoneMap.containsKey(zoneID))
 			return false;
 		zoneMap.put(zoneID, new Zone(zoneID, sel, world));
 		return true;
+	}
+	
+	public static Set<String> zoneSet()
+	{
+		return zoneMap.keySet();
 	}
 
 	public static Zone getWhichZoneIn(Point p1, World world)
