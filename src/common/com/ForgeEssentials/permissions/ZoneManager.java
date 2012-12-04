@@ -72,6 +72,11 @@ public class ZoneManager
 		Zone zone = zoneMap.remove(zoneID);
 		zone.delete();
 	}
+	
+	public static Zone getZone(String zoneID)
+	{
+		return zoneMap.get(zoneID);
+	}
 
 	public static boolean createZone(String zoneID, Selection sel, World world)
 	{
@@ -80,28 +85,6 @@ public class ZoneManager
 		zoneMap.put(zoneID, new Zone(zoneID, sel, world));
 		return true;
 	}
-
-	// // TODO: we need an "applicable Area" thing.. to force onto areas..
-	// public Zone getWhichZoneIn(AreaBase area, World world)
-	// {
-	// Zone worldZone = getWorldZone(world);
-	// ArrayList<Zone> zones = new ArrayList<Zone>();
-	//
-	// // add all zones this point is in...
-	// for (Zone zone : zoneMap.values())
-	// if (zone.contains(area) && worldZone.isParentOf(zone))
-	// zones.add(zone);
-	//
-	// // only 1 zone? thats obvious
-	// if (zones.size() == 1)
-	// return zones.get(0);
-	//
-	// // now the sorting fun.
-	// else if (zones.size() > 1)
-	// return narrow(zones, ZoneManager.GLOBAL);
-	//
-	// return worldZone;
-	// }
 
 	public static Zone getWhichZoneIn(Point p1, World world)
 	{
@@ -178,45 +161,4 @@ public class ZoneManager
 					}
 			}
 	}
-
-//	private static Zone narrow(ArrayList<Zone> zones, Zone parent)
-//	{
-//
-//		// we are left with everything whos parent was NOT the one specified....
-//		for (Zone zone : zones)
-//			if (parent.isParentOf(zone))
-//				allChildren.add(zone);
-//			else if (zone.parentID.equals(parent.parentID))
-//				directChildren.add(zone);
-//
-//		// nothing is a child of this parent?? check priorities.
-//		if (allChildren.size() == 0)
-//		{
-//			// returns highest priority Zone.
-//			Zone priority = null;
-//
-//			for (Zone zone : zones)
-//				if (priority == null || priority.compareTo(zone) < 0)
-//					priority = zone;
-//
-//			// returns highest priority
-//			return priority;
-//		}
-//		else if (allChildren.size() == 1)
-//			return allChildren.get(0);
-//		else if (directChildren.size() == 1)
-//			return narrow(allChildren, directChildren.get(0));
-//		else
-//		{
-//			// get higest priority of direct children.
-//			Zone priority = null;
-//
-//			for (Zone zone : zones)
-//				if (priority == null || priority.compareTo(zone) < 0)
-//					priority = zone;
-//
-//			return narrow(allChildren, parent);
-//		}
-//
-//	}
 }
