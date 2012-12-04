@@ -22,20 +22,20 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleLauncher
 {
-	public ModuleCommands commands;
-	public ModulePermissions permission;
-	public ModuleWorldControl worldcontrol;
-	public ModuleProperty property;
-	public ModuleWorldBorder worldborder;
-	public ModulePlayerLogger playerLogger;
+	public ModuleCommands		commands;
+	public ModulePermissions	permission;
+	public ModuleWorldControl	worldcontrol;
+	public ModuleProperty		property;
+	public ModuleWorldBorder	worldborder;
+	public ModulePlayerLogger	playerLogger;
 
-	public static boolean permsEnabled = true;
-	public static boolean cmdEnabled = true;
-	public static boolean wcEnabled = true;
-	public static boolean propEnabled = true;
-	public static boolean borderEnabled = false;
-	public static boolean loggerEnabled = false;
-	public static boolean skEnabled = false;
+	public static boolean		permsEnabled	= true;
+	public static boolean		cmdEnabled		= true;
+	public static boolean		wcEnabled		= true;
+	public static boolean		propEnabled		= true;
+	public static boolean		borderEnabled	= false;
+	public static boolean		loggerEnabled	= false;
+	public static boolean		skEnabled		= false;
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
@@ -47,7 +47,6 @@ public class ModuleLauncher
 		property = new ModuleProperty();
 		worldborder = new ModuleWorldBorder();
 		playerLogger = new ModulePlayerLogger();
-		
 
 		if (wcEnabled && skEnabled != true)
 			worldcontrol.preLoad(e);
@@ -60,17 +59,16 @@ public class ModuleLauncher
 
 		if (propEnabled)
 			property.preLoad(e);
-		
+
 		if (borderEnabled)
 			worldborder.preLoad(e);
-		
+
 		if (loggerEnabled)
 			playerLogger.preLoad(e);
 	}
 
 	public void load(FMLInitializationEvent e)
 	{
-		
 
 		if (wcEnabled && skEnabled != true)
 			worldcontrol.load(e);
@@ -86,16 +84,15 @@ public class ModuleLauncher
 
 		if (borderEnabled)
 			worldborder.load(e);
-		
+
 		if (loggerEnabled)
 			playerLogger.load(e);
 	}
 
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-		
 
-		if (wcEnabled&& skEnabled != true)
+		if (wcEnabled && skEnabled != true)
 			worldcontrol.serverStarting(e);
 
 		if (cmdEnabled)
@@ -109,11 +106,11 @@ public class ModuleLauncher
 
 		if (borderEnabled)
 			worldborder.serverStarting(e);
-		
+
 		if (loggerEnabled)
 			playerLogger.serverStarting(e);
 	}
-	
+
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		if (wcEnabled && skEnabled != true)
@@ -130,21 +127,21 @@ public class ModuleLauncher
 
 		if (borderEnabled)
 			worldborder.serverStarted(e);
-		
+
 		if (loggerEnabled)
 			playerLogger.serverStarted(e);
 	}
 
-	public void serverStopping(FMLServerStoppingEvent e) 
+	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		if (loggerEnabled)
 			playerLogger.serverStopping(e);
 	}
 
-	
-	public void postLoad(FMLPostInitializationEvent e) {
+	public void postLoad(FMLPostInitializationEvent e)
+	{
 		if (permsEnabled)
 			permission.postLoad(e);
-		
+
 	}
 }

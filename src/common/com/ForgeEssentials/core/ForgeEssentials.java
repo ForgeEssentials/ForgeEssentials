@@ -88,7 +88,7 @@ public class ForgeEssentials
 	@PostInit
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		
+		mdlaunch.postLoad(e);
 	}
 	
 	@ServerStarting

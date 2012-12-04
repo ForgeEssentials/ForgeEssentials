@@ -26,6 +26,8 @@ public class ConfigGroups
 
 	public ConfigGroups()
 	{
+		OutputHandler.SOP("ConfigGroups initlializing...");
+		
 		config = new Configuration(groupsFile, true);
 
 		boolean generateDefaults = false;
@@ -35,7 +37,7 @@ public class ConfigGroups
 		Group tempGroup; // temporary group.
 
 		// check for other groups. or generate
-		if (config.categories.get(ZoneManager.GLOBAL.getZoneID()) == null || doesCategoryHaveChilldren(config.categories.get(ZoneManager.GLOBAL.getZoneID())))
+		if (config.categories.get(ZoneManager.GLOBAL.getZoneID()) == null || !doesCategoryHaveChilldren(config.categories.get(ZoneManager.GLOBAL.getZoneID())))
 		{
 			generateDefaults = true;
 			tempGroup = new Group(PermissionsAPI.GROUP_MEMBERS);
@@ -74,6 +76,10 @@ public class ConfigGroups
 		config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, "Generated group for your conveniance");
 		config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, "very default of all default groups. " + config.NEW_LINE + " This is also used for blanket permissions that are not applied to players but to zones");
 		config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PROM_LADDERS, "Top is highest, botom is lowest. A group cannot be in 2 ladders at once.");
+		
+		config.save();
+		
+		OutputHandler.SOP("ConfigGroups initlialization complete");
 	}
 	
 	public void forceLoadConfig()
