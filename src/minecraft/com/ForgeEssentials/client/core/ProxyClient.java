@@ -5,7 +5,7 @@ import java.io.File;
 import net.minecraft.src.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.ForgeEssentials.client.WorldControl.CUI.CUIRenderrer;
+import com.ForgeEssentials.client.CUI.CUIRenderrer;
 import com.ForgeEssentials.client.core.network.ClientConnectionHandler;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.ProxyCommon;

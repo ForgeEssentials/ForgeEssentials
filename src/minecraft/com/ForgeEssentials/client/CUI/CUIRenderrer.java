@@ -1,4 +1,4 @@
-package com.ForgeEssentials.client.WorldControl.CUI;
+package com.ForgeEssentials.client.CUI;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.RenderManager;
@@ -85,7 +85,7 @@ public class CUIRenderrer
 			float y = (float) (sel.getLowPoint().y - sel.getEnd().y);
 			float z = (float) (sel.getLowPoint().z - sel.getEnd().z) -1 ;
 
-			// translae tp the lowppoint.. hopefully...
+			// translate to the low point..
 			GL11.glTranslated(x, y, z);
 			
 			GL11.glScalef(1.0F, -1.0F, -1.0F);
