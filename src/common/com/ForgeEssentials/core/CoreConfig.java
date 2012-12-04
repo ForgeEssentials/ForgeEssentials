@@ -103,8 +103,6 @@ public class CoreConfig
 		prop.comment = "Specify if Verbose mode for Permissions module is enabled. If enabled, every permission registered is printed to the console. Only useful in debugging.";
 		ModulePermissions.permsVerbose = prop.getBoolean(false);
 	}
-	
-	
 
 	/**
 	 * will overwrite the current physical file.
