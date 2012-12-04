@@ -88,6 +88,8 @@ public class ForgeEssentials
 	@PostInit
 	public void postLoad(FMLPostInitializationEvent e)
 	{
+		
+		mdlaunch.postLoad(e);
 		// Add hooks for initializing new data backing API
 	}
 	

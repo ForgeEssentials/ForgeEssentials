@@ -9,6 +9,7 @@ import net.minecraftforge.common.Property;
 import net.minecraftforge.event.Event.Result;
 
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigPermissions
 {
@@ -20,6 +21,7 @@ public class ConfigPermissions
 
 	public ConfigPermissions()
 	{
+		OutputHandler.SOP("ConfigPermissions initlializing...");
 		config = new Configuration(permissionsFile, true);
 
 		global = ZoneManager.GLOBAL.getZoneID();
@@ -69,6 +71,7 @@ public class ConfigPermissions
 		}
 
 		config.save();
+		OutputHandler.SOP("ConfigPermissions initlialization complete");
 	}
 
 	/**
