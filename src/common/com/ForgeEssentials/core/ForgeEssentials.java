@@ -64,21 +64,12 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		// check directory constants and create...
-		if (!FEDIR.exists() || !FEDIR.isDirectory())
-			FEDIR.mkdir();
-		if (!PlayerInfo.FESAVES.exists() || !PlayerInfo.FESAVES.isDirectory())
-			PlayerInfo.FESAVES.mkdir();
-
 		config = new CoreConfig();
 
 		if (verCheck)
 		{
 			Version.checkVersion();
 		}
-		
-		// Add hooks for initializing new data backing API
-		DataStorageManager.setupDriver(config.config);
 
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
@@ -106,6 +97,10 @@ public class ForgeEssentials
 	{
 		mdlaunch.serverStarting(e);
 		ModListFile.makeModList();
+		
+		// Add hooks for initializing new data backing API
+		DataStorageManager.setupDriver(config.config, e);
+		
 		DataStorage.load();
 		e.registerServerCommand(new CommandFEVersion());
 		e.registerServerCommand(new CommandFEUpdate());
@@ -130,9 +125,19 @@ public class ForgeEssentials
 		DataStorage.save();
 	}
 
-	public DataDriver dataDriver()
+	public DataDriver getDataDriver()
 	{
 		return dataStore;
+	}
+	
+	public static DataDriver getInstanceDataDriver()
+	{
+		DataDriver d = null;
+		if (ForgeEssentials.instance != null && instance.dataStore != null)
+		{
+			d = instance.dataStore;
+		}
+		return d;
 	}
 
 	public void setDataStore(DataDriver driver)
