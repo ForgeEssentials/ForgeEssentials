@@ -22,9 +22,16 @@ public class LogLoop implements Runnable
 				Thread.sleep(1000 * ModulePlayerLogger.interval);
 			}
 			catch (final InterruptedException e){}
-			ModulePlayerLogger.print("Making logs");
-			makeLogs();
-			ModulePlayerLogger.print("Done making logs");
+			if(buffer.isEmpty())
+			{
+				ModulePlayerLogger.print("No logs to make");
+			}
+			else
+			{
+				ModulePlayerLogger.print("Making logs");
+				makeLogs();
+				ModulePlayerLogger.print("Done making logs");
+			}
 		}
 	}
 

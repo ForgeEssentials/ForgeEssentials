@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class Point implements Serializable, Comparable<Point>
 {
-	public final int	x;
-	public final int	y;
-	public final int	z;
+	public int x;
+	public int y;
+	public int z;
 
 	public Point(int x, int y, int z)
 	{
@@ -32,6 +32,7 @@ public class Point implements Serializable, Comparable<Point>
 
 	/**
 	 * This is calculated by the whichever has higher coords.
+	 * 
 	 * @return Posotive number if this Point is larger. 0 if they are equal. Negative if the provided point is larger.
 	 */
 	@Override
@@ -40,33 +41,30 @@ public class Point implements Serializable, Comparable<Point>
 		if (equals(point))
 			return 0;
 
-		int posotives = 0;
+		int positives = 0;
 		int negatives = 0;
 
 		if (x > point.x)
-			posotives++;
+			positives++;
 		else
 			negatives++;
 
 		if (y > point.y)
-			posotives++;
+			positives++;
 		else
 			negatives++;
 
 		if (z > point.z)
-			posotives++;
+			positives++;
 		else
 			negatives++;
 
-		if (posotives > negatives)
+		if (positives > negatives)
 			return +1;
-		else if (negatives > posotives)
+		else if (negatives > positives)
 			return -1;
 		else
-		{
 			return (x - point.x) + (y - point.y) + (z - point.z);
-		}
-
 	}
 
 	@Override
@@ -86,8 +84,7 @@ public class Point implements Serializable, Comparable<Point>
 	{
 		return Math.sqrt(((x - point.x) * (x - point.x)) + ((y - point.y) * (y - point.y)) + ((z - point.z) * (z - point.z)));
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param p
@@ -100,6 +97,7 @@ public class Point implements Serializable, Comparable<Point>
 
 	/**
 	 * gets a new Point with the same data as the provided one.
+	 * 
 	 * @param point
 	 * @return
 	 */
@@ -109,16 +107,14 @@ public class Point implements Serializable, Comparable<Point>
 	}
 
 	/**
-	 * ensures the Point is valid.
-	 * Just floors the Y axis to 0. Y can't be negative.
+	 * ensures the Point is valid. Just floors the Y axis to 0. Y can't be negative.
 	 */
 	public static Point validate(Point point)
 	{
 		if (point.y < 0)
 		{
 			return new Point(point.x, 0, point.z);
-		}
-		else
+		} else
 			return point;
 	}
 }

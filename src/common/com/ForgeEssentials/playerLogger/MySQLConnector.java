@@ -55,7 +55,7 @@ public class MySQLConnector
 			{
 				s.executeUpdate("DROP TABLE IF EXISTS logs");
 			}
-			s.executeUpdate ("CREATE TABLE logs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id),time CHAR(64), player CHAR(64), category CHAR(64), X INT, Y INT, Z INT, disciption CHAR(128))");
+			s.executeUpdate ("CREATE TABLE logs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id),time CHAR(64), player CHAR(64), category CHAR(64),Dim INT, X INT, Y INT, Z INT, disciption CHAR(128))");
 			ModulePlayerLogger.print("Connected to DB");
 		}
 		catch (SQLException ex2)

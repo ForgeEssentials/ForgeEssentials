@@ -39,6 +39,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	{
 		if (!ModuleLauncher.borderEnabled)
 			return;
+		WBenabled = true;
 	}
 
 	@Override
@@ -69,6 +70,8 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
 	{
+		OutputHandler.SOP("WorldBorder data loaded.");
+		DataStorage.load();
 		borderData = DataStorage.getData("WorldBorder");
 	}
 
@@ -90,11 +93,12 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		borderData.setInteger("maxZ", posZ + rad);
 		
 		DataStorage.setData("WorldBorder", borderData);
+		DataStorage.save();
 	}
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) 
-	{
+	{		
 		try
 		{
 			if(this.ticks >= Integer.MAX_VALUE) this.ticks = 1;
@@ -116,25 +120,55 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 
 	private void checkPlayer(EntityPlayerMP player) 
 	{
-		if(player.posX < borderData.getInteger("minX"))
+		//OutputHandler.debug("WorldBorder checked " + player.username);
+		if(player.ridingEntity != null)
 		{
-			player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
-			player.playerNetServerHandler.setPlayerLocation(borderData.getInteger("minX"), player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+			if(player.ridingEntity.posX < borderData.getInteger("minX"))
+			{
+				player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
+				player.ridingEntity.setLocationAndAngles(borderData.getInteger("minX"), player.ridingEntity.posY, player.ridingEntity.posZ, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
+				player.playerNetServerHandler.setPlayerLocation(borderData.getInteger("minX"), player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+			}
+			if(player.ridingEntity.posX > borderData.getInteger("maxX"))
+			{
+				player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
+				player.ridingEntity.setLocationAndAngles(borderData.getInteger("maxX"), player.ridingEntity.posY, player.ridingEntity.posZ, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
+			}
+			if(player.ridingEntity.posZ < borderData.getInteger("minZ"))
+			{
+				player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
+				player.ridingEntity.setLocationAndAngles(player.ridingEntity.posX, player.ridingEntity.posY, borderData.getInteger("minZ"), player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
+				player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, borderData.getInteger("minZ"), player.rotationYaw, player.rotationPitch);
+			}
+			if(player.ridingEntity.posZ > borderData.getInteger("maxZ"))
+			{
+				player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
+				player.ridingEntity.setLocationAndAngles(player.ridingEntity.posX, player.ridingEntity.posY, borderData.getInteger("maxZ"), player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
+				player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, borderData.getInteger("maxZ"), player.rotationYaw, player.rotationPitch);
+			}
 		}
-		if(player.posX > borderData.getInteger("maxX"))
+		else
 		{
-			player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
-			player.playerNetServerHandler.setPlayerLocation(borderData.getInteger("maxX"), player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
-		}
-		if(player.posZ < borderData.getInteger("minZ"))
-		{
-			player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
-			player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, borderData.getInteger("minZ"), player.rotationYaw, player.rotationPitch);
-		}
-		if(player.posZ > borderData.getInteger("maxZ"))
-		{
-			player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
-			player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, borderData.getInteger("maxZ"), player.rotationYaw, player.rotationPitch);
+			if(player.posX < borderData.getInteger("minX"))
+			{
+				player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
+				player.playerNetServerHandler.setPlayerLocation(borderData.getInteger("minX"), player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+			}
+			if(player.posX > borderData.getInteger("maxX"))
+			{
+				player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
+				player.playerNetServerHandler.setPlayerLocation(borderData.getInteger("maxX"), player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+			}
+			if(player.posZ < borderData.getInteger("minZ"))
+			{
+				player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
+				player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, borderData.getInteger("minZ"), player.rotationYaw, player.rotationPitch);
+			}
+			if(player.posZ > borderData.getInteger("maxZ"))
+			{
+				player.sendChatToPlayer("\u00a7c" + Localization.get("worldborder.message"));
+				player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, borderData.getInteger("maxZ"), player.rotationYaw, player.rotationPitch);
+			}
 		}
 	}
 
@@ -178,8 +212,8 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	}
 
 	@Override
-	public void serverStopping(FMLServerStoppingEvent e) {
-		// TODO Auto-generated method stub
+	public void serverStopping(FMLServerStoppingEvent e) 
+	{
 		
 	}
 	

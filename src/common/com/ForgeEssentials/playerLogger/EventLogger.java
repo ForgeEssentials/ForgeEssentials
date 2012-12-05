@@ -2,11 +2,12 @@ package com.ForgeEssentials.playerLogger;
 
 import java.util.HashSet;
 
-import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.*;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -32,6 +33,8 @@ public class EventLogger implements IPlayerTracker
 	public static boolean logPlayerChangedDimension = true;
 	public static boolean logPlayerRespawn = true;
 	public static boolean logCommands = true;
+	public static boolean logItemUsage = true;
+	public static boolean logBlockChanges = true;
 	
 	@Override
 	public void onPlayerLogin(EntityPlayer player) 
@@ -60,21 +63,32 @@ public class EventLogger implements IPlayerTracker
 	@ForgeSubscribe
 	public void command(CommandEvent e)
 	{
-		if(logCommands) logLoop.buffer.add(new logEntry(e.sender.getCommandSenderName(), LogCatagory.Command, getCommand(e)));
+		if(logCommands && e.sender instanceof EntityPlayer) logLoop.buffer.add(new logEntry(e.sender.getCommandSenderName(), LogCatagory.Command, getCommand(e), playerLoc((EntityPlayer) e.sender)));
+		if(logCommands && !(e.sender instanceof EntityPlayer)) logLoop.buffer.add(new logEntry(e.sender.getCommandSenderName(), LogCatagory.Command, getCommand(e)));
 	}
+	
+	@ForgeSubscribe
+	public void playerInteractin(PlayerInteractEvent e)
+	{
+		if(e.action == e.action.LEFT_CLICK_BLOCK)
+		{
+			
+		}
+	}
+	
 
 	/*
 	 * Needed background stuff
 	 */
 	
-	public Point playerLoc(EntityPlayer player)
+	public WorldPoint playerLoc(EntityPlayer player)
 	{
-		return new Point((int) player.posX, (int) player.posY, (int) player.posZ);
+		return new WorldPoint(player.dimension, (int) player.posX, (int) player.posY, (int) player.posZ);
 	}
 	
 	public String getCommand(CommandEvent e)
 	{
-		String command = e.command.getCommandName();
+		String command = "/" + e.command.getCommandName();
 		for(String str : e.parameters)
 		{
 			command = command + " " + str;

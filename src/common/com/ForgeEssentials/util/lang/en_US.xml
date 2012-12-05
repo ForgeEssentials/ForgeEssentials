@@ -10,11 +10,15 @@
 	<entry key="command.rules.syntax.player">[&lt;number> &lt;new rule>|remove]</entry>
 	<entry key="command.rules.info.console">Get/set the rules of the server</entry>
 	<entry key="command.rules.info.player">Get/set the rules of the server</entry>
-
+	
+	<entry key="command.butcher.syntax.console">&lt;radius> &lt;x, y, z> [dimension]</entry>
+	<entry key="command.butcher.info.console">Kill enemies around the specified point within the radius</entry>
 	<entry key="command.butcher.syntax.player">[radius] [x, y, z]</entry>
-	<entry key="command.butcher.info.player">Kill enemies around you/the specified point within the radius</entry>
+	<entry key="command.butcher.info.player">Kill enemies you/the specified point within the radius</entry>
 
-	<entry key="command.remove.syntax.player">/remove [radius] [x, y, z]</entry>
+	<entry key="command.remove.syntax.console">&lt;radius> %lt;x, y, z> [dimension]</entry>
+	<entry key="command.remove.info.console">Remove all item entities around you/the specified point within the radius</entry>
+	<entry key="command.remove.syntax.player">[radius] [x, y, z]</entry>
 	<entry key="command.remove.info.player">Remove all item entities around you/the specified point within the radius</entry>
 
 	<entry key="command.kill.syntax.console">&lt;player></entry>
@@ -85,7 +89,7 @@
 	<entry key="message.credits.bspkrs">Insert contributions here</entry>
 	<entry key="message.credits.MysteriousAges">Backend, WorldControl commands, neurotic formatting</entry>
 	<entry key="message.credits.luacs1998">Why is my name here? LOL.</entry>
-	<entry key="message.credits.Dries007">Insert contributions here</entry>
+	<entry key="message.credits.Dries007">Logger, random command stuff. Every spelling mistake ever.</entry>
 	
 	<entry key="message.error.noPlayerX">Player %s does not exist.</entry>
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
