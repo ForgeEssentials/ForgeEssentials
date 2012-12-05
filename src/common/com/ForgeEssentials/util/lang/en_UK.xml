@@ -89,7 +89,7 @@
 	<entry key="message.credits.bspkrs">Insert contributions here</entry>
 	<entry key="message.credits.MysteriousAges">Backend, WorldControl commands, neurotic formatting</entry>
 	<entry key="message.credits.luacs1998">Why is my name here? LOL.</entry>
-	<entry key="message.credits.Dries007">Insert contributions here</entry>
+	<entry key="message.credits.Dries007">Logger, random command stuff.</entry>
 	
 	<entry key="message.error.noPlayerX">Player %s does not exist.</entry>
 	<entry key="message.error.badsyntax">That won't work. Try this: </entry>
