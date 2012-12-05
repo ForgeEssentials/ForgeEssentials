@@ -15,5 +15,7 @@ public abstract class DataAdapter<SavedType, KeyType>
 {
 	abstract public boolean saveData(SavedType object);
 	
-	abstract public boolean loadData(KeyType loadingKey, SavedType object);
+	abstract public boolean loadData(KeyType uniqueObjectKey, SavedType object);
+	
+	abstract public boolean deleteData(KeyType uniqueObjectKey);
 }

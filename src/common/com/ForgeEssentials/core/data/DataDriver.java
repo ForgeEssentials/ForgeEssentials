@@ -28,12 +28,25 @@ public abstract class DataDriver
 	}
 	
 	/**
-	 * Gives the DataDriver a chance to load any information from the FE Configs.
+	 * Gives the DataDriver a chance to load any information from the FE Configs, or
+	 * determine any other information it needs to operate.
 	 * Called by the core during @PreInit.
 	 * 
 	 * @param config Main configuration object used by FE
+	 * @param worldName 
 	 */
-	public abstract void parseConfigs(Configuration config);
+	public abstract void parseConfigs(Configuration config, String worldName);
+	
+	/**
+	 * Allows the DataDriver to register all Adapters it provides with the DataDriver Map
+	 * of Class -> Adapters. 
+	 */
+	protected abstract void registerAdapters();
+	
+	public static DataDriver getInstance()
+	{
+		return DataDriver.instance;
+	}
 	
 	/**
 	 * Checks the DataDriver to see if it knows how to persist an object.
@@ -81,9 +94,9 @@ public abstract class DataDriver
 	 * the information from the store. This helps to get around issues with constructors
 	 * requiring objects that are not available during load.
 	 * 
-	 * If no DataDriver has been loaded, the function will not return
+	 * If no DataDriver has been loaded, the function will not populate the destination object.
 	 * 
-	 * @param loadingKey Object required by the Pesister
+	 * @param loadingKey Object required by the DataAdapter to uniquely determine which record to load
 	 * @param destination Instance of an object that will be populated with data from the store
 	 * @return True, if the Driver has a mapping for the object and is able to successfully load from the store. False otherwise.
 	 */

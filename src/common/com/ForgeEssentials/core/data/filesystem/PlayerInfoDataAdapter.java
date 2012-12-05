@@ -6,6 +6,7 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.data.DataAdapter;
+import com.ForgeEssentials.core.data.DataDriver;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
@@ -17,12 +18,12 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
  */
 public class PlayerInfoDataAdapter extends FileSystemDataAdapter<PlayerInfo, String>
 {
-	private String dataDir;
+	private static String dataDir;
 	
-	public PlayerInfoDataAdapter(String baseFilePath)
+	public PlayerInfoDataAdapter()
 	{
-		this.dataDir = baseFilePath + "PlayerInfo/";
-		File f = new File(this.dataDir);
+		this.dataDir = ((FileSystemDataDriver)DataDriver.getInstance()).baseFilePath + "PlayerInfo/";
+		File f = new File(dataDir);
 		
 		// Ensure the PlayerInfo directory exists.
 		if (!f.exists())
@@ -169,5 +170,12 @@ public class PlayerInfoDataAdapter extends FileSystemDataAdapter<PlayerInfo, Str
 		}
 		
 		return flag;
+	}
+
+	@Override
+	public boolean deleteData(String uniqueObjectKey)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

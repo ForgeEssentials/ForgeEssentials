@@ -3,12 +3,16 @@ package com.ForgeEssentials.core.data;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import net.minecraft.src.DedicatedServer;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.CoreConfig;
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.data.filesystem.FileSystemDataDriver;
 import com.ForgeEssentials.util.OutputHandler;
+
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**
  * Manages the DataDrivers and selects the correct one based on configuration settings.
@@ -27,7 +31,7 @@ public class DataStorageManager
 	 * Parses the ForgeEssentials config file and determines which Driver to use. 
 	 * @param config
 	 */
-	public static void setupDriver(Configuration config)
+	public static void setupDriver(Configuration config, FMLServerStartingEvent event)
 	{
 		config.addCustomCategoryComment("Data", "Configuration options for how ForgeEssentials will save its data for persistence between sessions.");
 		
@@ -66,7 +70,15 @@ public class DataStorageManager
 			// If there is a problem constructing the driver, this line will fail and we will enter the catch block.
 			driver = (DataDriver)(c.getConstructor().newInstance());
 		
-			driver.parseConfigs(config);
+			String worldName = event.getServer().getFolderName();
+			
+			// Allows the driver a chance to read config values.
+			driver.parseConfigs(config, worldName);
+			// Register all 
+			driver.registerAdapters();
+			
+			// Update the ForgeEssentials object with this driver.
+			ForgeEssentials.instance.setDataStore(driver);
 		}
 		catch (Exception e)
 		{
