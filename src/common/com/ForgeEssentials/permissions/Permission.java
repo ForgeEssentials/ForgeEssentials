@@ -2,33 +2,26 @@ package com.ForgeEssentials.permissions;
 
 import java.util.HashMap;
 
-import com.ForgeEssentials.core.CoreConfig;
-import com.ForgeEssentials.util.OutputHandler;
-
 import net.minecraftforge.event.Event.Result;
+
+import com.ForgeEssentials.util.OutputHandler;
 
 /**
  * @author AbrarSyed
  */
 public class Permission extends PermissionChecker
 {
-	private static HashMap<String, Permission>	defaults		= new HashMap<String, Permission>();
+	private static HashMap<String, Permission>	defaults	= new HashMap<String, Permission>();
 
-	public static final Result getPermissionDefault(String name)
+	public static Result getPermissionDefault(String name)
 	{
 		Permission perm = defaults.get(name);
 		if (perm != null)
-		{
 			return perm.allowed;
-		}
 		else if (name.isEmpty())
-		{
 			return Result.ALLOW;
-		}
 		else
-		{
-			return getPermissionDefault((new PermissionChecker(name).getImmediateParent()));
-		}
+			return getPermissionDefault(new PermissionChecker(name).getImmediateParent());
 	}
 
 	/**
@@ -51,17 +44,16 @@ public class Permission extends PermissionChecker
 		this.allowed = allowed ? Result.ALLOW : Result.DENY;
 	}
 
+	@Override
 	public boolean equals(Object object)
 	{
 		if (object instanceof Permission)
 		{
 			Permission perm = (Permission) object;
-			return name.equals(perm.name) && this.allowed.equals(perm.allowed);
+			return name.equals(perm.name) && allowed.equals(perm.allowed);
 		}
 		else if (object instanceof String)
-		{
 			return object.equals(name);
-		}
 		return false;
 	}
 
