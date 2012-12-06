@@ -11,11 +11,11 @@ import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.network.HandlerServer;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.DataStorageManager;
-import com.ForgeEssentials.data.filesystem.FileSystemDataDriver;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.Version;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -53,6 +53,7 @@ public class ForgeEssentials
 	public ModuleLauncher mdlaunch;
 	public Localization localization;
 	public static boolean verCheck = true;
+	public static boolean preload;
 
 	public static String modlistLocation;
 	public static String fedirloc = "./ForgeEssentials/";
@@ -64,6 +65,7 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		
 		config = new CoreConfig();
 
 		if (verCheck)
@@ -89,6 +91,10 @@ public class ForgeEssentials
 	@PostInit
 	public void postLoad(FMLPostInitializationEvent e)
 	{
+		preload = Loader.isModLoaded("FEPreLoader");
+		if (preload != true){
+			throw new RuntimeException("Corrupt FE installation detected, you NEED the preloader.");
+		}
 		mdlaunch.postLoad(e);
 	}
 	

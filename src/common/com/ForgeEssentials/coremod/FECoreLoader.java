@@ -17,7 +17,7 @@ public class FECoreLoader implements IFMLLoadingPlugin, IFMLCallHook{
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{"com.ForgeEssentials.coremod.FEPermissionsTransformer"};
+		return new String[]{"com.ForgeEssentials.coremod.FEPermissionsTransformer"};//Perms
 	}
 
 	@Override
@@ -37,7 +37,6 @@ public class FECoreLoader implements IFMLLoadingPlugin, IFMLCallHook{
 
 	@Override
 	public Void call() throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
