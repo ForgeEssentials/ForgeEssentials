@@ -18,7 +18,7 @@ public class PlayerTracker implements IPlayerTracker
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
 		info.save();
-		PlayerInfo.discardIndo(player.username);
+		PlayerInfo.discardInfo(player.username);
 	}
 
 	@Override
