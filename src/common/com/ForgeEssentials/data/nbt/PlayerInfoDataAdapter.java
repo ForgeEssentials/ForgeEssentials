@@ -13,6 +13,7 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.IDataAdapter;
 import com.ForgeEssentials.data.filesystem.FileSystemDataDriver;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class PlayerInfoDataAdapter implements IDataAdapter<PlayerInfo, String>
@@ -35,7 +36,7 @@ public class PlayerInfoDataAdapter implements IDataAdapter<PlayerInfo, String>
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				OutputHandler.SOP("Error while creating Playerinfodirectory");
 			}
 		}
 	}
@@ -102,12 +103,15 @@ public class PlayerInfoDataAdapter implements IDataAdapter<PlayerInfo, String>
 		try {
 			CompressedStreamTools.writeCompressed(nbtTag, new FileOutputStream(file));
 		} catch (FileNotFoundException e) {
-			//TODO Errorhandling is missing
+			flag = false;
+			OutputHandler.SOP("NBTfile for player "+object.getUsername() + " was not found");
 		} catch (IOException e) {
 			flag = false;
-			//TODO Errorhandling is missing
+			OutputHandler.SOP("IOError while writing the NBTfile for player" + object.getUsername());
 
-			e.printStackTrace();
+		} catch (Exception e) {
+			flag = false;
+			OutputHandler.SOP("Error while writing the NBTfile for player" + object.getUsername());
 		}
 		
 		return flag;
@@ -149,13 +153,13 @@ public class PlayerInfoDataAdapter implements IDataAdapter<PlayerInfo, String>
 			}
 			object.spawnType = nbtTag.getInteger("spawnType");
 		} catch (FileNotFoundException e) {
-			//TODO Errorhandling is missing
-			e.printStackTrace();
+			// I think this error can be empty because it only should be called if there is no file for the player which means he visits the server for first time since FE is installed
 		} catch (IOException e) {
 			flag = false;
-			//TODO Errorhandling is missing
-
-			e.printStackTrace();
+			OutputHandler.SOP("IOError while reading the NBTfile for player" + object.getUsername());
+		} catch (Exception e) {
+			flag = false;
+			OutputHandler.SOP("Error while reading the NBTfile for player" + object.getUsername());
 		}
 		return flag;
 	}
