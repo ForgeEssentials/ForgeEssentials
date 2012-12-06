@@ -1,0 +1,56 @@
+Forge Essentials
+For Minecraft servers (and with added goodies for clients)
+ 
+News
+Apparently our old thread got wiped, so here's a new one.
+
+About
+With the recent discontinuation of the MCPortCentral integrated build, most server owners would be looking for an alternative to
+ 
+the craftbukkit addons they use. Forge Essentials aims to solve this problem. We are a bukkit plugin replacement (not port!) for
+ 
+use on Minecraft Forge powered servers, with many features designed to help the average server with what they used to do with
+ 
+certain bukkit plugins.
+ 
+Overview
+We aim to provide the following features:
+Provide essential commands for server management and usage, like the Essentials and CommandBook plugins
+Provide an interface to use WorldEdit and WorldGuard in a Minecraft Forge SMP environment
+Provide a basic permissions system for other mods to implement, extend and use (PEX-compatible)
+Provide a world protection solution for Minecraft Forge powered servers
+
+Download (Universal)
+Current version is pre2 for Minecraft 1.4.5:
+http://www.mediafire...rodah8rwmuf80l5
+ 
+ForgeEssentials is primarily meant to be used as a server-addon, however, extra features can be enabled when the mod is installed
+ 
+on your client. These include a WorldEdit-like CUI, as well as any future GUIs that require rendering client-side.
+ 
+Installation Instructions
+Download and install the latest version of Minecraft Forge from here: http://files.minecraftforge.net/
+ 
+Download the mod from the link above.
+ 
+EXTRACT the zip into your Minecraft directory (do not place into the mods folder)
+ 
+Run Minecraft. It will download the necessary libraries for operation, so please ensure you have an active Internet connection.
+Changelog
+Kindly refer to the following link for all changes to the mod since its inception: https://github.com/F...lsMain/commits/
+ 
+Team Members
+AbrarSyed (Lead)
+luacs1998
+Bob-A-Red-Dino
+bspkrs
+MysteriousAges
+dries007
+ 
+How to Contact the Team
+ 
+If you've found a bug, please report the problem at our GitHub project page: https://github.com/F...Main/issues/new
+When reporting a bug, please make sure that you provide the exact error from your logs, in addition to what you were doing when
+the error occured. Leaving out one or the other will prevent us from addressing the problem as fast as we are able to.
+ 
+If you want to follow development, or hang out with us on IRC, come join us in #forgeessentials on irc.esper.net.
