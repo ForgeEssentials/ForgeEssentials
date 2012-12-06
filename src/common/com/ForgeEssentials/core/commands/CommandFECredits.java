@@ -1,12 +1,11 @@
-package com.ForgeEssentials.commands;
+package com.ForgeEssentials.core.commands;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 
-public class CommandCredits extends ForgeEssentialsCommandBase
+public class CommandFECredits extends ForgeEssentialsCommandBase
 {
 
 	@Override

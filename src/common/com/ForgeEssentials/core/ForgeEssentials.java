@@ -6,6 +6,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.client.core.network.HandlerClient;
+import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.network.HandlerServer;
@@ -110,6 +111,7 @@ public class ForgeEssentials
 		DataStorage.load();
 		e.registerServerCommand(new CommandFEVersion());
 		e.registerServerCommand(new CommandFEUpdate());
+		e.registerServerCommand(new CommandFECredits());
 	}
 	
 	@ServerStarted

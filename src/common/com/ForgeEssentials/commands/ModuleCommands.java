@@ -3,7 +3,6 @@ package com.ForgeEssentials.commands;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import com.ForgeEssentials.core.CoreConfig;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
@@ -47,27 +46,31 @@ public class ModuleCommands implements IFEModule
 	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
+		//general
 		e.registerServerCommand(new CommandMotd());
 		e.registerServerCommand(new CommandRules());
+		e.registerServerCommand(new CommandModlist());
+		//utility
 		e.registerServerCommand(new CommandButcher());
 		e.registerServerCommand(new CommandRemove());
 		e.registerServerCommand(new CommandKill());
-		e.registerServerCommand(new CommandSmite());
 		e.registerServerCommand(new CommandSpawn());
+		e.registerServerCommand(new CommandBackup());
+		e.registerServerCommand(new CommandList());
+		//op
+		e.registerServerCommand(new CommandServerDo());
+		//fun
+		e.registerServerCommand(new CommandSmite());
+		e.registerServerCommand(new CommandBurn());
+		//teleport
 		e.registerServerCommand(new CommandHome());
 		e.registerServerCommand(new CommandTpSpawn());
 		e.registerServerCommand(new CommandBack());
-		e.registerServerCommand(new CommandRestart());
-		e.registerServerCommand(new CommandServerDo());
-		e.registerServerCommand(new CommandModlist());
 		e.registerServerCommand(new CommandWarp());
-		e.registerServerCommand(new CommandBackup());
-		e.registerServerCommand(new CommandBurn());
+		//cheat
 		e.registerServerCommand(new CommandRepair());
 		e.registerServerCommand(new CommandHeal());
-		e.registerServerCommand(new CommandList());
-		e.registerServerCommand(new CommandCredits());
-	}
+		}
 
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
