@@ -53,7 +53,7 @@ public class PlayerInfo
 		return info;
 	}
 	
-	public static void discardIndo(String username)
+	public static void discardInfo(String username)
 	{
 		playerInfoMap.remove(username);
 	}
