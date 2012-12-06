@@ -6,7 +6,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import com.ForgeEssentials.core.CoreConfig;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
-import com.ForgeEssentials.permissions.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;

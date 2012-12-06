@@ -1,10 +1,14 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import java.util.HashMap;
 
 import net.minecraftforge.event.Event.Result;
 
+<<<<<<< HEAD:src/common/com/ForgeEssentials/permissions/Permission.java
 import com.ForgeEssentials.core.CoreConfig;
+=======
+import com.ForgeEssentials.permissions.query.PermQuery.PermResult;
+>>>>>>> 154a95d61351999494239026bf569ebe7feee2f2:src/common/com/ForgeEssentials/permission/Permission.java
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
@@ -14,13 +18,13 @@ public class Permission extends PermissionChecker
 {
 	private static HashMap<String, Permission>	defaults	= new HashMap<String, Permission>();
 
-	public static Result getPermissionDefault(String name)
+	public static PermResult getPermissionDefault(String name)
 	{
 		Permission perm = defaults.get(name);
 		if (perm != null)
 			return perm.allowed;
 		else if (name.isEmpty())
-			return Result.ALLOW;
+			return PermResult.ALLOW;
 		else
 			return getPermissionDefault(new PermissionChecker(name).getImmediateParent());
 	}
@@ -37,12 +41,12 @@ public class Permission extends PermissionChecker
 			OutputHandler.SOP("Permission Registered: " + perm);
 	}
 
-	public Result	allowed;
+	public PermResult	allowed;
 
 	public Permission(String qualifiedName, Boolean allowed)
 	{
 		super(qualifiedName);
-		this.allowed = allowed ? Result.ALLOW : Result.DENY;
+		this.allowed = allowed ? PermResult.ALLOW : PermResult.DENY;
 	}
 
 	@Override

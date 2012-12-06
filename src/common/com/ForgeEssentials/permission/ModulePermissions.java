@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import java.io.File;
 
@@ -47,8 +47,7 @@ public class ModulePermissions implements IFEModule
 
 		permEvent = new ForgeEssentialsPermissionRegistrationEvent();
 		pHandler = new PermissionsHandler();
-
-		MinecraftForge.EVENT_BUS.register(pHandler);
+		PermissionsAPI.QUERY_BUS.register(pHandler);
 	}
 
 	@Override

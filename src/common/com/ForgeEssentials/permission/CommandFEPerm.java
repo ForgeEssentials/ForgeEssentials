@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
