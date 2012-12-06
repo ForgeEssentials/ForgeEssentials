@@ -38,10 +38,39 @@ public abstract class DataDriver
 	public abstract void parseConfigs(Configuration config, String worldName);
 	
 	/**
+	 * Returns the type of the current DataDriver to allow ForgeEssentials addon modules to determine
+	 * which DataDriver is currently in use.
+	 * 
+	 * @return The type of the current DataDriver being used.
+	 */
+	public Class getDataDriverType()
+	{
+		return this.getClass();
+	}
+	
+	/**
 	 * Allows the DataDriver to register all Adapters it provides with the DataDriver Map
-	 * of Class -> Adapters. 
+	 * of Class -> Adapters that are provided by ForgeEssentials.
 	 */
 	protected abstract void registerAdapters();
+	
+	/**
+	 * Allows ForgeEssentials addon modules to register their own DataAdapters into the system.
+	 * 
+	 * @param saveType The addon module's class the adapter manages
+	 * @param adapter the DataAdapter object
+	 * @return True, if the mapping was added successfully.
+	 */
+	public boolean registerExternalAdapter(Class saveType, DataAdapter adapter)
+	{
+		boolean flag = false;
+		if (!this.map.containsKey(saveType))
+		{
+			this.map.put(saveType, adapter);
+			flag = true;
+		}
+		return flag;
+	}
 	
 	public static DataDriver getInstance()
 	{

@@ -22,7 +22,7 @@ public class PlayerInfoDataAdapter extends FileSystemDataAdapter<PlayerInfo, Str
 	
 	public PlayerInfoDataAdapter()
 	{
-		this.dataDir = ((FileSystemDataDriver)DataDriver.getInstance()).baseFilePath + "PlayerInfo/";
+		this.dataDir = ((FileSystemDataDriver)DataDriver.getInstance()).getBaseBath() + "PlayerInfo/";
 		File f = new File(dataDir);
 		
 		// Ensure the PlayerInfo directory exists.

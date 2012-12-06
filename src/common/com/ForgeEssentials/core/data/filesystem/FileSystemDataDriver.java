@@ -22,7 +22,7 @@ public class FileSystemDataDriver extends DataDriver
 {
 	public static final String driverType = "FileSystem";
 	
-	protected String baseFilePath;
+	private String baseFilePath;
 	public static String newline = "\r\n";
 
 	public FileSystemDataDriver()
@@ -61,7 +61,7 @@ public class FileSystemDataDriver extends DataDriver
 		config.save();
 	}
 	
-	protected String getBaseBath()
+	public String getBaseBath()
 	{
 		return this.baseFilePath;
 	}
