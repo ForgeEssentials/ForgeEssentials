@@ -1,14 +1,17 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.permissions.query.PermQueryArea;
+import com.ForgeEssentials.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.permissions.query.PermQueryZone;
+import com.ForgeEssentials.permissions.query.PermSubscribe;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 
 /**
@@ -25,39 +28,39 @@ import com.ForgeEssentials.util.AreaSelector.AreaBase;
  */
 public final class PermissionsHandler
 {
-	@ForgeSubscribe(priority = EventPriority.NORMAL)
+	@PermSubscribe(priority = EventPriority.NORMAL)
 	public void handlerQuery(PermQueryPlayer event)
 	{
 		Zone zone = ZoneManager.getWhichZoneIn(event.getDoerPoint(), event.doer.worldObj);
-		Result result = getResultFromZone(zone, event.permission, event.doer);
+		PermResult result = getResultFromZone(zone, event.checker, event.doer);
 		event.setResult(result);
 	}
 	
-	@ForgeSubscribe(priority = EventPriority.NORMAL)
+	@PermSubscribe(priority = EventPriority.NORMAL)
 	public void handlerQuery(PermQueryZone event)
 	{
-		Result result = getResultFromZone(event.toCheck, event.permission, event.doer);
+		PermResult result = getResultFromZone(event.toCheck, event.checker, event.doer);
 		event.setResult(result);
 	}
 
-	@ForgeSubscribe(priority = EventPriority.NORMAL)
+	@PermSubscribe(priority = EventPriority.NORMAL)
 	public void handlerQuery(PermQueryArea event)
 	{
 		if (event.allOrNothing)
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo, event.doer.worldObj);
-			Result result = getResultFromZone(zone, event.permission, event.doer);
+			PermResult result = getResultFromZone(zone, event.checker, event.doer);
 			event.setResult(result);
 		}
 		else
 		{
-			event.applicable = getApplicableZones(event.permission, event.doer, event.doneTo);
+			event.applicable = getApplicableZones(event.checker, event.doer, event.doneTo);
 			if (event.applicable == null)
-				event.setResult(Result.DENY);
+				event.setResult(PermResult.DENY);
 			else if (event.applicable.isEmpty())
-				event.setResult(Result.ALLOW);
+				event.setResult(PermResult.ALLOW);
 			else
-				event.setResult(Result.DEFAULT);
+				event.setResult(PermResult.PARTIAL);
 		}
 	}
 
@@ -68,20 +71,20 @@ public final class PermissionsHandler
 	 * @param player Player to check/
 	 * @return the result for the perm.
 	 */
-	private Result getResultFromZone(Zone zone, PermissionChecker perm, EntityPlayer player)
+	private PermResult getResultFromZone(Zone zone, PermissionChecker perm, EntityPlayer player)
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
-		Result result = Result.DEFAULT;
+		PermResult result = PermResult.UNKNOWN;
 		Zone tempZone = zone;
-		while (result.equals(Result.DEFAULT))
+		while (result.equals(PermResult.UNKNOWN))
 		{
 			String group = info.getGroupForZone(tempZone);
 			result = tempZone.getPlayerOverride(player, perm);
 
-			if (result.equals(Result.DEFAULT)) // or group blankets
+			if (result.equals(PermResult.UNKNOWN)) // or group blankets
 				result = tempZone.getGroupOverride(group, perm);
 
-			if (result.equals(Result.DEFAULT))
+			if (result.equals(PermResult.UNKNOWN))
 				if (tempZone == ZoneManager.GLOBAL)
 					result = Permission.getPermissionDefault(perm.name);
 				else
@@ -111,8 +114,8 @@ public final class PermissionsHandler
 			// no children of the world? return the worldZone
 				case 0:
 					{
-						Result result = getResultFromZone(worldZone, perm, player);
-						if (result.equals(Result.ALLOW))
+						PermResult result = getResultFromZone(worldZone, perm, player);
+						if (result.equals(PermResult.ALLOW))
 							return applicable;
 						else
 							return null;
@@ -120,8 +123,8 @@ public final class PermissionsHandler
 				// only 1 usable Zone? use it.
 				case 1:
 					{
-						Result result = getResultFromZone(zones.get(0), perm, player);
-						if (result.equals(Result.ALLOW))
+						PermResult result = getResultFromZone(zones.get(0), perm, player);
+						if (result.equals(PermResult.ALLOW))
 							return applicable;
 						else
 							return null;
@@ -130,7 +133,7 @@ public final class PermissionsHandler
 				default:
 					{
 						for (Zone zone : zones)
-							if (getResultFromZone(zone, perm, player).equals(Result.ALLOW))
+							if (getResultFromZone(zone, perm, player).equals(PermResult.ALLOW))
 								applicable.add(doneTo.getIntersection(zone));
 					}
 			}

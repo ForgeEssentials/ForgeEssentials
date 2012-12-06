@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permissions.query;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,7 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
  * 
  */
 @HasResult
-public class PermQueryArea extends PermQueryBase
+public class PermQueryArea extends PermQueryPlayer
 {
 	public ArrayList<AreaBase>	applicable;
 	public final AreaBase		doneTo;
@@ -45,19 +45,17 @@ public class PermQueryArea extends PermQueryBase
 	 * @param value The new result
 	 */
 	@Override
-	public void setResult(Result value)
+	public void setResult(PermResult value)
 	{
-		switch (value)
-			{
-				case ALLOW:
-					applicable.clear();
-					applicable.add(doneTo);
-					break;
-				case DENY:
-					applicable.clear();
-				default:
-					break;
-			}
+		if (value.equals(PermResult.ALLOW))
+		{
+			applicable.clear();
+			applicable.add(doneTo);
+		}
+		else if (value.equals(PermResult.DENY))
+		{
+			applicable.clear();
+		}
 		super.setResult(value);
 	}
 }

@@ -1,13 +1,18 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import java.util.HashSet;
 
+import com.ForgeEssentials.permissions.query.PermQuery;
+import com.ForgeEssentials.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.permissions.query.PermissionQueryBus;
+
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.EventBus;
 import net.minecraftforge.event.Event.Result;
 
 
 public class PermissionsAPI
-{	
+{
 	/**
 	 * This is automatically assigned to the server owner when they make a world available to the LAN.
 	 * This is also best kep for layers that have direct access to the server console.
@@ -38,15 +43,17 @@ public class PermissionsAPI
 	 */
 	public static final String GROUP_DEFAULT = "_DEFAULT_";
 	
+    public static final PermissionQueryBus QUERY_BUS = new PermissionQueryBus();
+	
 	/**
 	 * Use this to check AllOrNothing Area queries, Player Queries, or Point Queries.
 	 * @param query
 	 * @return TRUE if the permission is allowed. FALSE if the permission is denied or partially allowed.
 	 */
-	public static boolean checkPermAllowed(PermQueryBase query)
+	public static boolean checkPermAllowed(PermQuery query)
 	{
-		MinecraftForge.EVENT_BUS.post(query);
-		return query.getResult().equals(Result.ALLOW);
+		QUERY_BUS.post(query);
+		return query.isAllowed();
 	}
 
 	/**
@@ -54,9 +61,9 @@ public class PermissionsAPI
 	 * @param query
 	 * @return the Result of the query
 	 */
-	public static Result checkPermResult(PermQueryBase query)
+	public static PermResult checkPermResult(PermQuery query)
 	{
-		MinecraftForge.EVENT_BUS.post(query);
+		QUERY_BUS.post(query);
 		return query.getResult();
 	}
 	

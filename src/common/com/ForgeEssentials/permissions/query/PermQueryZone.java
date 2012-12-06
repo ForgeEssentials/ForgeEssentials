@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permissions.query;
 
 import java.util.ArrayList;
 
@@ -6,6 +6,8 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
 import net.minecraftforge.event.Event.HasResult;
 
+import com.ForgeEssentials.permission.Zone;
+import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
@@ -16,7 +18,7 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
  * 
  */
 @HasResult
-public class PermQueryZone extends PermQueryBase
+public class PermQueryZone extends PermQueryPlayer
 {
 	public final Zone toCheck;
 

@@ -1,5 +1,6 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permissions.query;
 
+import com.ForgeEssentials.permission.PermissionChecker;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
@@ -14,8 +15,11 @@ import net.minecraftforge.event.Event.*;
  *
  */
 @HasResult
-public class PermQueryPlayer extends PermQueryBase
+public class PermQueryPlayer extends PermQuery
 {
+	public EntityPlayer doer;
+	public PermissionChecker checker;
+	
 	/**
 	 * Assumes the Players position as the "doneTo" point.
 	 * @param player
@@ -23,7 +27,8 @@ public class PermQueryPlayer extends PermQueryBase
 	 */
 	public PermQueryPlayer(EntityPlayer player, String permission)
 	{
-		super(player, permission);
+		this.doer = player;
+		checker = new PermissionChecker(permission);
 	}
 	
 	public Point getDoerPoint()

@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import java.util.HashSet;
 

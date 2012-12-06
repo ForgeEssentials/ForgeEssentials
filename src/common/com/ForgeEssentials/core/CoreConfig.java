@@ -8,7 +8,7 @@ import net.minecraftforge.common.Property;
 import com.ForgeEssentials.commands.CommandBackup;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
-import com.ForgeEssentials.permissions.ModulePermissions;
+import com.ForgeEssentials.permission.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.util.OutputHandler;
 

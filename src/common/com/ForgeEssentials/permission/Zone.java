@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -9,6 +9,7 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
 import net.minecraftforge.event.Event.Result;
 
+import com.ForgeEssentials.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
@@ -223,7 +224,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	 * @param check The permissionChecker to check against
 	 * @return DEFAULT if the permission is not specified in this area for this player. ALLOW/DENY if the Permission was found and read.
 	 */
-	public Result getPlayerOverride(EntityPlayer player, PermissionChecker check)
+	public PermResult getPlayerOverride(EntityPlayer player, PermissionChecker check)
 	{
 		if (groupOverrides.containsKey(player.username))
 		{
@@ -240,7 +241,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 			if (smallest != null)
 				return smallest.allowed;
 		}
-		return Result.DEFAULT;
+		return PermResult.UNKNOWN;
 	}
 
 	/**
@@ -249,7 +250,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	 * @param check The permissionChecker to check against
 	 * @return DEFAULT if the permission is not specified in this area for this group. ALLOW/DENY if the Permission was found and read.
 	 */
-	public Result getGroupOverride(String groupname, PermissionChecker check)
+	public PermResult getGroupOverride(String groupname, PermissionChecker check)
 	{
 		Group group = GroupManager.groups.get(groupname);
 		if (groupOverrides.containsKey(groupname))
@@ -298,7 +299,7 @@ public class Zone extends AreaBase implements Comparable, Serializable
 			if (smallest != null)
 				return smallest.allowed;
 		}
-		return Result.DEFAULT;
+		return PermResult.UNKNOWN;
 	}
 
 	public Set<String> getPlayersOverriden()
