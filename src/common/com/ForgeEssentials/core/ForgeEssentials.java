@@ -8,13 +8,13 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.ForgeEssentials.client.core.network.HandlerClient;
 import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
-import com.ForgeEssentials.core.data.DataDriver;
-import com.ForgeEssentials.core.data.DataStorageManager;
-import com.ForgeEssentials.core.data.filesystem.FileSystemDataDriver;
 import com.ForgeEssentials.core.network.HandlerServer;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.Version;
+import com.ForgeEssentials.util.data.DataDriver;
+import com.ForgeEssentials.util.data.DataStorageManager;
+import com.ForgeEssentials.util.data.filesystem.FileSystemDataDriver;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;

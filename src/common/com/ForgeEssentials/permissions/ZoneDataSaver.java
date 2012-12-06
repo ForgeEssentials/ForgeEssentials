@@ -5,9 +5,9 @@ import java.io.Serializable;
 
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.core.data.DataDriver;
-import com.ForgeEssentials.core.data.filesystem.FileSystemDataAdapter;
-import com.ForgeEssentials.core.data.filesystem.FileSystemDataDriver;
+import com.ForgeEssentials.util.data.DataDriver;
+import com.ForgeEssentials.util.data.filesystem.FileSystemDataAdapter;
+import com.ForgeEssentials.util.data.filesystem.FileSystemDataDriver;
 
 public class ZoneDataSaver extends FileSystemDataAdapter<Zone, String> implements Serializable
 {
