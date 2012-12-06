@@ -4,11 +4,8 @@ import java.util.HashMap;
 
 import net.minecraftforge.event.Event.Result;
 
-<<<<<<< HEAD:src/common/com/ForgeEssentials/permissions/Permission.java
 import com.ForgeEssentials.core.CoreConfig;
-=======
 import com.ForgeEssentials.permissions.query.PermQuery.PermResult;
->>>>>>> 154a95d61351999494239026bf569ebe7feee2f2:src/common/com/ForgeEssentials/permission/Permission.java
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
