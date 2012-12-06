@@ -31,9 +31,8 @@ public class MySQLConnector
 				return;
 			}
 			DBcon = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
-			if (CoreConfig.verbose){
-			OutputHandler.SOP("Connected to DB");
-			}
+			OutputHandler.debug("Connected to DB");
+			
 		}
 		catch (Exception ex1) 
 		{
@@ -59,15 +58,13 @@ public class MySQLConnector
 				s.executeUpdate("DROP TABLE IF EXISTS logs");
 			}
 			s.executeUpdate ("CREATE TABLE logs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id),time CHAR(64), player CHAR(64), category CHAR(64),Dim INT, X INT, Y INT, Z INT, disciption CHAR(128))");
-			if (CoreConfig.verbose){
-			OutputHandler.SOP("Connected to DB");
-			}
+			OutputHandler.debug("Connected to DB");
+			
 		}
 		catch (SQLException ex2)
 		{
-			if (CoreConfig.verbose){
-				OutputHandler.SOP("Connected to DB");
-				}
+			OutputHandler.debug("Connected to DB");
+			
 		}
 		finally
 		{
@@ -78,9 +75,8 @@ public class MySQLConnector
 			catch (Exception e) 
 			{
 				OutputHandler.SOP("Error closing the statement");
-				if (CoreConfig.verbose){
-					OutputHandler.debug(e.getMessage());
-					}
+				OutputHandler.debug(e.getMessage());
+				
 				}
 		}
 	}
@@ -94,9 +90,8 @@ public class MySQLConnector
 		catch (SQLException ex)
 		{
 			OutputHandler.SOP("Could not close connection");
-			if (CoreConfig.verbose){
-				OutputHandler.SOP(ex.getMessage());
-				}
+			OutputHandler.debug(ex.getMessage());
+			
 			
 		}
 	}
@@ -107,17 +102,15 @@ public class MySQLConnector
 		{
 			s = DBcon.createStatement();
 			s.executeUpdate(log.getSQL());
-			if (CoreConfig.verbose){
-				OutputHandler.debug("Entry made. (" + log.player + " > " + log.category.toString() + ")");
-				}
+			OutputHandler.debug("Entry made. (" + log.player + " > " + log.category.toString() + ")");
+			
 			
 		}
 		catch (SQLException ex2) 
 		{
 			OutputHandler.SOP("Error logging data!");
-			if (CoreConfig.verbose){
-				OutputHandler.SOP(ex2.getMessage());
-				}
+			OutputHandler.debug(ex2.getMessage());
+			
 			ModulePlayerLogger.ragequit();
 			return false;
 		}
@@ -130,9 +123,8 @@ public class MySQLConnector
 			catch (SQLException e) 
 			{
 				OutputHandler.SOP("Error closing the statement");
-				if (CoreConfig.verbose){
-					OutputHandler.SOP(e.getMessage());
-					}
+				OutputHandler.debug(e.getMessage());
+				
 				return false;
 			}
 		}

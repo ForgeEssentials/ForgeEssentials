@@ -17,15 +17,12 @@ public class CoreConfig
 	public static final File	mainconfig	= new File(ForgeEssentials.FEDIR, "core.cfg");
 
 	public final Configuration	config;
-
-	public static boolean verbose = false;
 	
 	// this is designed so it will work for any class.
 	public CoreConfig()
 	{
-		if (verbose){
-		OutputHandler.SOP("Loading configs");
-		}
+		OutputHandler.debug("Loading configs");
+		
 		config = new Configuration(mainconfig, true);
 		// config.load -- Configurations are loaded on Construction.
 
@@ -81,7 +78,7 @@ public class CoreConfig
 		
 		prop = config.get("Core", "verbose", false);
 		prop.comment = "Specify if Verbose mode is enabled. Only useful in debugging.";
-		verbose = prop.getBoolean(false);
+		OutputHandler.verbose = prop.getBoolean(false);
 
 	}
 

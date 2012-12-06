@@ -30,10 +30,7 @@ public class ModuleCommands implements IFEModule
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-		if (CoreConfig.verbose){
-			OutputHandler.SOP("Commands module is enabled. Loading...");
-			}
-		
+		OutputHandler.SOP("Commands module is enabled. Loading...");
 		conf = new ConfigCmd();
 	}
 

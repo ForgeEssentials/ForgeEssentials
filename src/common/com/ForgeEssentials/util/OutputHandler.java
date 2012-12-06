@@ -2,6 +2,8 @@ package com.ForgeEssentials.util;
 
 import java.util.logging.Logger;
 
+import com.ForgeEssentials.core.CoreConfig;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -34,6 +36,8 @@ public final class OutputHandler
 	public static final String UNDERLINE = "\u00a7n";
 	public static final String ITALICS = "\u00a7o";
 	public static final String RESET = "\u00a7r";
+	
+	public static boolean verbose;
 
 	public static Logger felog = Logger.getLogger("Forge Essentials");
 
@@ -69,7 +73,7 @@ public final class OutputHandler
 	 * @param msg
 	 *            message to be outputted
 	 */
-	public static void debug(Object msg)
+	public static void devdebug(Object msg)
 	{
 		if (!ObfuscationReflectionHelper.obfuscation)
 			System.out.println("DEBUG: >>>> " + msg);
@@ -89,6 +93,11 @@ public final class OutputHandler
 			System.out.println("{Forge Essentials} " + msg);
 
 		felog.info("" + msg);
+	}
+	//At Dries' request
+	public static void debug(Object msg){
+		if (verbose)
+			SOP(msg);
 	}
 
 	public static void logConfigChange(String category, String prop, String oldVal, String newVal)

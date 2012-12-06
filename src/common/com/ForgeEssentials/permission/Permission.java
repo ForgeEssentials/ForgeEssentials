@@ -34,8 +34,7 @@ public class Permission extends PermissionChecker
 	{
 		assert !defaults.containsKey(perm.name) : new IllegalArgumentException("You cannot override a default Permission");
 		defaults.put(perm.name, perm);
-		if (CoreConfig.verbose)
-			OutputHandler.SOP("Permission Registered: " + perm);
+		OutputHandler.debug("Permission Registered: " + perm);
 	}
 
 	public PermResult	allowed;
