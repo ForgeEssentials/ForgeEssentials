@@ -26,7 +26,7 @@ public class ConfigGroups
 
 	public ConfigGroups()
 	{
-		OutputHandler.SOP("ConfigGroups initlializing...");
+		OutputHandler.debug("ConfigGroups initlializing...");
 		
 		config = new Configuration(groupsFile, true);
 
@@ -82,7 +82,7 @@ public class ConfigGroups
 		
 		config.save();
 		
-		OutputHandler.SOP("ConfigGroups initlialization complete");
+		OutputHandler.debug("ConfigGroups initlialization complete");
 	}
 	
 	public void forceLoadConfig()

@@ -21,7 +21,7 @@ public class ConfigPermissions
 
 	public ConfigPermissions()
 	{
-		OutputHandler.SOP("ConfigPermissions initlializing...");
+		OutputHandler.debug("ConfigPermissions initlializing...");
 		config = new Configuration(permissionsFile, true);
 
 		global = ZoneManager.GLOBAL.getZoneID();
@@ -71,7 +71,7 @@ public class ConfigPermissions
 		}
 
 		config.save();
-		OutputHandler.SOP("ConfigPermissions initlialization complete");
+		OutputHandler.debug("ConfigPermissions initlialization complete");
 	}
 
 	/**
