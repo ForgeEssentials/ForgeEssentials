@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permissions.PermQueryPlayer;
-import com.ForgeEssentials.permissions.PermissionsAPI;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;

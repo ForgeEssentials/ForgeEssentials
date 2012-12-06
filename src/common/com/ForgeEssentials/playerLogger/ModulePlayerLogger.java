@@ -39,7 +39,6 @@ public class ModulePlayerLogger implements IFEModule
 	public static String password;
 	public static boolean ragequitOn;
 	public static int interval;
-	public static boolean verbose;
 	
 	public EventLogger eLogger;
 	
@@ -104,10 +103,5 @@ public class ModulePlayerLogger implements IFEModule
 	{
 		if(ragequitOn)
 			FMLCommonHandler.instance().raiseException(new RuntimeException(), "Database connection lost.", true);
-	}
-	
-	public static void print(String msg)
-	{
-		if(verbose) OutputHandler.SOP(msg);
 	}
 }

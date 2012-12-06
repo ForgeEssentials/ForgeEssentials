@@ -8,7 +8,7 @@ import net.minecraftforge.common.Property;
 import com.ForgeEssentials.commands.CommandBackup;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
-import com.ForgeEssentials.permissions.ModulePermissions;
+import com.ForgeEssentials.permission.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -18,17 +18,20 @@ public class CoreConfig
 
 	public final Configuration	config;
 
+	public static boolean verbose = false;
+	
 	// this is designed so it will work for any class.
 	public CoreConfig()
 	{
+		if (verbose){
 		OutputHandler.SOP("Loading configs");
+		}
 		config = new Configuration(mainconfig, true);
 		// config.load -- Configurations are loaded on Construction.
 
 		// load the modules
 		loadModules();
 		loadCore();
-		loadPerms();
 
 		// Finish init and save.
 		config.save();
@@ -78,16 +81,11 @@ public class CoreConfig
 		prop = config.get("Core", "modlistLocation", "modlist.txt");
 		prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
 		ForgeEssentials.modlistLocation = prop.value;
+		
+		prop = config.get("Core", "verbose", false);
+		prop.comment = "Specify if Verbose mode is enabled. Only useful in debugging.";
+		verbose = prop.getBoolean(false);
 
-	}
-
-	private void loadPerms()
-	{
-		config.addCustomCategoryComment("Permissions", "Configure ForgeEssentials Permissions. Only implemented if Permissions module is enabled.");
-
-		Property prop = config.get("Permissions", "verbose", false);
-		prop.comment = "Specify if Verbose mode for Permissions module is enabled. If enabled, every permission registered is printed to the console. Only useful in debugging.";
-		ModulePermissions.permsVerbose = prop.getBoolean(false);
 	}
 
 	/**
