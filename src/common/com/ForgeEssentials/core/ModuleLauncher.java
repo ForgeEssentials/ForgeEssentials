@@ -35,7 +35,6 @@ public class ModuleLauncher
 	public static boolean		propEnabled		= true;
 	public static boolean		borderEnabled	= false;
 	public static boolean		loggerEnabled	= false;
-	public static boolean		skEnabled		= false;
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
@@ -48,7 +47,7 @@ public class ModuleLauncher
 		worldborder = new ModuleWorldBorder();
 		playerLogger = new ModulePlayerLogger();
 
-		if (wcEnabled && skEnabled != true)
+		if (wcEnabled)
 			worldcontrol.preLoad(e);
 
 		if (cmdEnabled)
@@ -70,7 +69,7 @@ public class ModuleLauncher
 	public void load(FMLInitializationEvent e)
 	{
 
-		if (wcEnabled && skEnabled != true)
+		if (wcEnabled)
 			worldcontrol.load(e);
 
 		if (cmdEnabled)
@@ -92,7 +91,7 @@ public class ModuleLauncher
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 
-		if (wcEnabled && skEnabled != true)
+		if (wcEnabled)
 			worldcontrol.serverStarting(e);
 
 		if (cmdEnabled)
@@ -113,7 +112,7 @@ public class ModuleLauncher
 
 	public void serverStarted(FMLServerStartedEvent e)
 	{
-		if (wcEnabled && skEnabled != true)
+		if (wcEnabled)
 			worldcontrol.serverStarted(e);
 
 		if (cmdEnabled)

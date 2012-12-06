@@ -17,7 +17,6 @@ public class FECoreLoader implements IFMLLoadingPlugin, IFMLCallHook{
 
 	@Override
 	public String[] getASMTransformerClass() {
-		// So far, so good. We don't have to use ASM and may not have to.
 		return new String[]{"com.ForgeEssentials.coremod.FEPermissionsTransformer"};
 	}
 
