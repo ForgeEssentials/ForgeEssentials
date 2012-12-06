@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions.query;
+package com.ForgeEssentials.permission.query;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

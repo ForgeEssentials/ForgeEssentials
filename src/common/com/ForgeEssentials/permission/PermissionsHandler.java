@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
 
@@ -7,11 +7,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.EventPriority;
 
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.permissions.query.PermQueryArea;
-import com.ForgeEssentials.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.permissions.query.PermQueryZone;
-import com.ForgeEssentials.permissions.query.PermSubscribe;
+import com.ForgeEssentials.permission.query.PermQueryArea;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
+import com.ForgeEssentials.permission.query.PermQueryZone;
+import com.ForgeEssentials.permission.query.PermSubscribe;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 
 /**

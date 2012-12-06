@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions.query;
+package com.ForgeEssentials.permission.query;
 
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;

@@ -1,10 +1,10 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import java.util.HashSet;
 
-import com.ForgeEssentials.permissions.query.PermQuery;
-import com.ForgeEssentials.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.permissions.query.PermissionQueryBus;
+import com.ForgeEssentials.permission.query.PermQuery;
+import com.ForgeEssentials.permission.query.PermissionQueryBus;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.EventBus;

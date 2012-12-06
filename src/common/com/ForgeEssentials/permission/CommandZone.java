@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import java.util.Set;
 import java.util.SortedSet;
@@ -8,8 +8,8 @@ import net.minecraft.src.ICommandSender;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permissions.query.PermQueryArea;
-import com.ForgeEssentials.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.permission.query.PermQueryArea;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 

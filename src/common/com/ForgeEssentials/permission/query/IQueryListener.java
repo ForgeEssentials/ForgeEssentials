@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permissions.query;
+package com.ForgeEssentials.permission.query;
 
 import net.minecraftforge.event.Event;
 

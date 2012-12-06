@@ -37,7 +37,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.ForgeEssentials.permissions.query.PermQuery;
+import com.ForgeEssentials.permission.query.PermQuery;
 
 import cpw.mods.fml.relauncher.IClassTransformer;
 
@@ -50,7 +50,7 @@ public class FEPermissionsTransformer implements IClassTransformer
 	@Override
 	public byte[] transform(String name, byte[] bytes)
 	{
-		if (name.equals("com.ForgeEssentials.permissions.query.PermQuery") || name.startsWith("net.minecraft.") || name.indexOf('.') == -1)
+		if (name.equals("com.ForgeEssentials.permission.query.PermQuery") || name.startsWith("net.minecraft.") || name.indexOf('.') == -1)
 			return bytes;
 		ClassReader cr = new ClassReader(bytes);
 		ClassNode classNode = new ClassNode();
@@ -85,7 +85,7 @@ public class FEPermissionsTransformer implements IClassTransformer
 		boolean hasGetListenerList = false;
 		boolean hasDefaultCtr = false;
 
-		Class<?> listenerListClazz = Class.forName("com.ForgeEssentials.permissions.query.FEListenerList", false, getClass().getClassLoader());
+		Class<?> listenerListClazz = Class.forName("com.ForgeEssentials.permission.query.FEListenerList", false, getClass().getClassLoader());
 		Type tList = Type.getType(listenerListClazz);
 
 		for (MethodNode method : (List<MethodNode>) classNode.methods)

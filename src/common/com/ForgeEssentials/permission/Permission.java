@@ -1,11 +1,11 @@
-package com.ForgeEssentials.permissions;
+package com.ForgeEssentials.permission;
 
 import java.util.HashMap;
 
 import net.minecraftforge.event.Event.Result;
 
 import com.ForgeEssentials.core.CoreConfig;
-import com.ForgeEssentials.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
