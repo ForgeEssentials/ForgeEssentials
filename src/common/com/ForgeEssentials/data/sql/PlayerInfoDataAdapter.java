@@ -1,9 +1,9 @@
-package com.ForgeEssentials.data.mysql;
+package com.ForgeEssentials.data.sql;
 
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.data.DataAdapter;
+import com.ForgeEssentials.data.IDataAdapter;
 
-public class PlayerInfoDataAdapter extends DataAdapter<PlayerInfo, String>
+public class PlayerInfoDataAdapter implements IDataAdapter<PlayerInfo, String>
 {
 
 	@Override

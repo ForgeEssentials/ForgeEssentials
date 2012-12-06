@@ -39,7 +39,7 @@ public class DataStorageManager
 		config.addCustomCategoryComment("Data", "Configuration options for how ForgeEssentials will save its data for persistence between sessions.");
 		
 		Property prop = config.get("Data", "storaageType", defaultDriver);
-		prop.comment = "Specifies the variety of data storage FE will use. Options: FileSystem, MySQL (coming soon)";
+		prop.comment = "Specifies the variety of data storage FE will use. Options: FileSystem, SQL (MySQL)";
 		String driverName = prop.value;
 		Class c;
 		DataDriver driver;
@@ -52,7 +52,6 @@ public class DataStorageManager
 		{
 			OutputHandler.SOP(String.format("Colud not load storageType specified by configs! (%sDataDriver not found!)", driverName));
 			OutputHandler.SOP("Falling back to using default driver.");
-			driverName = defaultDriver;
 			
 			try
 			{
@@ -76,12 +75,19 @@ public class DataStorageManager
 			String worldName = event.getServer().getFolderName();
 			
 			// Allows the driver a chance to read config values.
-			driver.parseConfigs(config, worldName);
-			// Register all 
-			driver.registerAdapters();
-			
-			// Update the ForgeEssentials object with this driver.
-			ForgeEssentials.instance.setDataStore(driver);
+			if (driver.parseConfigs(config, worldName))
+			{
+				// Register all 
+				driver.registerAdapters();
+				
+				// Update the ForgeEssentials object with this driver.
+				ForgeEssentials.instance.setDataStore(driver);
+			}
+			else
+			{
+				OutputHandler.SOP("There was a problem parsing the configs. The driver is NOT LOADED.");
+				OutputHandler.SOP("ForgeEssentials will not be able to save any of its data.");
+			}
 		}
 		catch (Exception e)
 		{

@@ -5,13 +5,13 @@ import java.io.File;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.data.DataAdapter;
+import com.ForgeEssentials.data.IDataAdapter;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 /**
- * This DataAdapter is responsible for saving PlayerInfo objects to a flat-file data backing.
+ * This IDataAdapter is responsible for saving PlayerInfo objects to a flat-file data backing.
  * 
  * @author MysteriousAges
  *

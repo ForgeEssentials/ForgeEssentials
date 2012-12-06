@@ -33,7 +33,7 @@ public class FileSystemDataDriver extends DataDriver
 	}
 	
 	@Override
-	public void parseConfigs(Configuration config, String worldName)
+	public boolean parseConfigs(Configuration config, String worldName)
 	{
 		Property prop;
 		
@@ -59,6 +59,9 @@ public class FileSystemDataDriver extends DataDriver
 		}
 		
 		config.save();
+		
+		// Nothing to fail on.
+		return true;
 	}
 	
 	public String getBaseBath()

@@ -4,7 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
-import com.ForgeEssentials.data.DataAdapter;
+import com.ForgeEssentials.data.IDataAdapter;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
@@ -17,7 +17,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
  *
  * @param <T> Class that extending Persisters save data for.
  */
-public abstract class FileSystemDataAdapter<SavedType, KeyType> extends DataAdapter<SavedType, KeyType>
+public abstract class FileSystemDataAdapter<SavedType, KeyType> implements IDataAdapter<SavedType, KeyType>
 {	
 	// Convenience function to convert Points into an int[3]
 	protected int[] pointToIntArray(Point p)

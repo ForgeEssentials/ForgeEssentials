@@ -20,11 +20,11 @@ public abstract class DataDriver
 	protected static DataDriver instance;
 	
 	// Stores bindings between logic classes and their data classes.
-	protected HashMap<Class, DataAdapter> map;
+	protected HashMap<Class, IDataAdapter> map;
 
 	public DataDriver()
 	{
-		this.map = new HashMap<Class, DataAdapter>();
+		this.map = new HashMap<Class, IDataAdapter>();
 	}
 	
 	/**
@@ -34,8 +34,9 @@ public abstract class DataDriver
 	 * 
 	 * @param config Main configuration object used by FE
 	 * @param worldName 
+	 * @return Whether or not the parsing was successful. 
 	 */
-	public abstract void parseConfigs(Configuration config, String worldName);
+	public abstract boolean parseConfigs(Configuration config, String worldName);
 	
 	/**
 	 * Returns the type of the current DataDriver to allow ForgeEssentials addon modules to determine
@@ -58,10 +59,10 @@ public abstract class DataDriver
 	 * Allows ForgeEssentials addon modules to register their own DataAdapters into the system.
 	 * 
 	 * @param saveType The addon module's class the adapter manages
-	 * @param adapter the DataAdapter object
+	 * @param adapter the IDataAdapter object
 	 * @return True, if the mapping was added successfully.
 	 */
-	public boolean registerExternalAdapter(Class saveType, DataAdapter adapter)
+	public boolean registerExternalAdapter(Class saveType, IDataAdapter adapter)
 	{
 		boolean flag = false;
 		if (!this.map.containsKey(saveType))
@@ -81,7 +82,7 @@ public abstract class DataDriver
 	 * Checks the DataDriver to see if it knows how to persist an object.
 	 * 
 	 * @param o Instance of any class
-	 * @return true if and only if the class has a binding to a DataAdapter in the current driver.
+	 * @return true if and only if the class has a binding to a IDataAdapter in the current driver.
 	 */
 	public boolean hasMapping(Object o)
 	{
@@ -103,7 +104,7 @@ public abstract class DataDriver
 		{
 			if (d.hasMapping(o))
 			{
-				DataAdapter da = d.map.get(o.getClass());
+				IDataAdapter da = d.map.get(o.getClass());
 				
 				if (da != null)
 				{
@@ -125,7 +126,7 @@ public abstract class DataDriver
 	 * 
 	 * If no DataDriver has been loaded, the function will not populate the destination object.
 	 * 
-	 * @param loadingKey Object required by the DataAdapter to uniquely determine which record to load
+	 * @param loadingKey Object required by the IDataAdapter to uniquely determine which record to load
 	 * @param destination Instance of an object that will be populated with data from the store
 	 * @return True, if the Driver has a mapping for the object and is able to successfully load from the store. False otherwise.
 	 */
@@ -137,7 +138,7 @@ public abstract class DataDriver
 		{
 			if (d.hasMapping(destination))
 			{
-				DataAdapter da = d.map.get(destination.getClass());
+				IDataAdapter da = d.map.get(destination.getClass());
 				
 				if (da != null)
 				{
