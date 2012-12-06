@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.ForgeEssentials.core.CoreConfig;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -30,7 +31,9 @@ public class MySQLConnector
 				return;
 			}
 			DBcon = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
-			ModulePlayerLogger.print("Connected to DB");
+			if (CoreConfig.verbose){
+			OutputHandler.SOP("Connected to DB");
+			}
 		}
 		catch (Exception ex1) 
 		{
@@ -56,11 +59,11 @@ public class MySQLConnector
 				s.executeUpdate("DROP TABLE IF EXISTS logs");
 			}
 			s.executeUpdate ("CREATE TABLE logs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id),time CHAR(64), player CHAR(64), category CHAR(64),Dim INT, X INT, Y INT, Z INT, disciption CHAR(128))");
-			ModulePlayerLogger.print("Connected to DB");
+			OutputHandler.SOP("Connected to DB");
 		}
 		catch (SQLException ex2)
 		{
-			ModulePlayerLogger.print("Connected to DB");
+			OutputHandler.SOP("Connected to DB");
 		}
 		finally
 		{

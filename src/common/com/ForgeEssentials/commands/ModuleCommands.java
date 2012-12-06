@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.core.CoreConfig;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.permissions.ForgeEssentialsPermissionRegistrationEvent;
@@ -28,7 +29,10 @@ public class ModuleCommands implements IFEModule
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-		OutputHandler.SOP("Commands module is enabled. Loading...");
+		if (CoreConfig.verbose){
+			OutputHandler.SOP("Commands module is enabled. Loading...");
+			}
+		
 		conf = new ConfigCmd();
 	}
 

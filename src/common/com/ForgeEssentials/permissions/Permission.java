@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.minecraftforge.event.Event.Result;
 
+import com.ForgeEssentials.core.CoreConfig;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
@@ -32,7 +33,7 @@ public class Permission extends PermissionChecker
 	{
 		assert !defaults.containsKey(perm.name) : new IllegalArgumentException("You cannot override a default Permission");
 		defaults.put(perm.name, perm);
-		if (ModulePermissions.permsVerbose)
+		if (CoreConfig.verbose)
 			OutputHandler.SOP("Permission Registered: " + perm);
 	}
 

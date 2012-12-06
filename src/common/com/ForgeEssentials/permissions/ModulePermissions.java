@@ -22,7 +22,6 @@ public class ModulePermissions implements IFEModule
 	public static PermissionsHandler					pHandler;
 	public static ZoneManager							zManager;
 	public static GroupManager							gManager;
-	public static boolean								permsVerbose	= false;
 
 	public static File									permsFolder		= new File(ForgeEssentials.FEDIR, "/permissions/");
 

@@ -35,10 +35,6 @@ public class ConfigPlayerLogger {
 		prop.comment = "Stop the server when the logging fails";
 		ModulePlayerLogger.ragequitOn = prop.getBoolean(false);
 		
-		prop = config.get("DB", "verbose", true);
-		prop.comment = "Toggles debug mode. Only turn this on if told to do so by a dev.";
-		ModulePlayerLogger.verbose = prop.getBoolean(true);
-		
 		prop = config.get("DB", "interval", 300);
 		prop.comment = "Interval in sec. for saving logs to DB";
 		ModulePlayerLogger.interval = prop.getInt(300);

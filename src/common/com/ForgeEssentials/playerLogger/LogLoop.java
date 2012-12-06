@@ -24,13 +24,13 @@ public class LogLoop implements Runnable
 			catch (final InterruptedException e){}
 			if(buffer.isEmpty())
 			{
-				ModulePlayerLogger.print("No logs to make");
+				OutputHandler.SOP("No logs to make");
 			}
 			else
 			{
-				ModulePlayerLogger.print("Making logs");
+				OutputHandler.SOP("Making logs");
 				makeLogs();
-				ModulePlayerLogger.print("Done making logs");
+				OutputHandler.SOP("Done making logs");
 			}
 		}
 	}
