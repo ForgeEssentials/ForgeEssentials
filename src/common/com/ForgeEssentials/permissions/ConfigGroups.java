@@ -41,16 +41,19 @@ public class ConfigGroups
 		{
 			generateDefaults = true;
 			tempGroup = new Group(PermissionsAPI.GROUP_MEMBERS);
+			tempGroup.parent = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, PermissionsAPI.GROUP_DEFAULT, "the group from which this group will inherit permissions").value;
 			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PREFIX, "", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			GroupManager.groups.put(tempGroup.name, tempGroup);
 
 			tempGroup = new Group(PermissionsAPI.GROUP_OWNERS);
+			tempGroup.parent = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, PermissionsAPI.GROUP_ZONE_ADMINS, "the group from which this group will inherit permissions").value;
 			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, PREFIX, OutputHandler.GOLD + "[OWNER]" + OutputHandler.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			GroupManager.groups.put(tempGroup.name, tempGroup);
 
 			tempGroup = new Group(PermissionsAPI.GROUP_ZONE_ADMINS);
+			tempGroup.parent = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, PermissionsAPI.GROUP_MEMBERS, "the group from which this group will inherit permissions").value;
 			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, PREFIX, OutputHandler.GOLD + "[OWNER]" + OutputHandler.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			GroupManager.groups.put(tempGroup.name, tempGroup);
@@ -106,9 +109,9 @@ public class ConfigGroups
 				{
 					// read group...
 					tempGroup = new Group(getGroupNameFromCategory(group), cat.getQualifiedName());
-					tempGroup.parent = config.get(group, PARENT, "", "the group from which this group will inherit permissions").value;
-					tempGroup.prefix = config.get(group, PREFIX, "", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
-					tempGroup.suffix = config.get(group, SUFFIX, "", "text to go after the username in chat. format char: \u00a7 Only works with the Chat module installed").value;
+					tempGroup.parent = config.get(group, PARENT, "").value;
+					tempGroup.prefix = config.get(group, PREFIX, "").value;
+					tempGroup.suffix = config.get(group, SUFFIX, "").value;
 
 					for (Property prop : config.categories.get(group).getValues().values())
 						if (prop.getName().equals(PREFIX) || prop.getName().equals(SUFFIX))
