@@ -9,12 +9,12 @@ import com.ForgeEssentials.client.core.network.HandlerClient;
 import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.network.HandlerServer;
+import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.DataStorageManager;
+import com.ForgeEssentials.data.filesystem.FileSystemDataDriver;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.Version;
-import com.ForgeEssentials.util.data.DataDriver;
-import com.ForgeEssentials.util.data.DataStorageManager;
-import com.ForgeEssentials.util.data.filesystem.FileSystemDataDriver;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
