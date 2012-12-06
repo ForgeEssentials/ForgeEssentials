@@ -1,39 +1,42 @@
 package com.ForgeEssentials.core;
 
+import java.util.HashMap;
+
 import net.minecraft.src.EntityPlayer;
 import cpw.mods.fml.common.IPlayerTracker;
 
 public class PlayerTracker implements IPlayerTracker
-{
-
+{	
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
-		PlayerInfo.readOrGenerateInfo(player);
+		PlayerInfo.getPlayerInfo(player);
 	}
 
 	@Override
 	public void onPlayerLogout(EntityPlayer player)
 	{
-		PlayerInfo.saveAndDiscardInfo(player);
+		PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
+		info.save();
+		PlayerInfo.discardIndo(player.username);
 	}
 
 	@Override
 	public void onPlayerChangedDimension(EntityPlayer player)
 	{
-		PlayerInfo.saveAndDiscardInfo(player);
-		PlayerInfo.readOrGenerateInfo(player);
+		// Not sure if we need to do anything here.		
 	}
 
 	@Override
 	public void onPlayerRespawn(EntityPlayer player)
 	{
-		String oldWorld = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
+		// This is old code. I don't think we need it if we don't track which dimension players are in.
+		/*String oldWorld = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
 		PlayerInfo oldInfo = PlayerInfo.getPlayerInfo(player);
 
 		// if different
 		if (!oldWorld.equals(oldInfo.getWorldName()))
 			// do the dimensionCHange stuff.. because he went from one world, to the spawn world.
-			onPlayerChangedDimension(player);
+			onPlayerChangedDimension(player);*/
 	}
 }

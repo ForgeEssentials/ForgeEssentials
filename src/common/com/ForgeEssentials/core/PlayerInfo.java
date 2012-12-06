@@ -21,11 +21,9 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class PlayerInfo implements Serializable
+public class PlayerInfo
 {
-	public transient static File FESAVES = new File(ForgeEssentials.FEDIR, "saves/");
-
-	private transient static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
+	private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
 
 	public static PlayerInfo getPlayerInfo(EntityPlayer player)
 	{
@@ -33,8 +31,16 @@ public class PlayerInfo implements Serializable
 
 		if (info == null)
 		{
-			readOrGenerateInfo(player);
-			return playerInfoMap.get(player.username);
+			info = new PlayerInfo(player);
+			
+			// Attempt to populate this info with some data from our storage.
+			if (!ForgeEssentials.getInstanceDataDriver().loadObject(player.username, info))
+			{
+				// Loading was unsuccessful. Save this object while we can.
+				info.save();
+			}
+			
+			playerInfoMap.put(player.username, info);
 		}
 
 		return info;
@@ -46,103 +52,10 @@ public class PlayerInfo implements Serializable
 		
 		return info;
 	}
-
-	public static void readOrGenerateInfo(EntityPlayer player)
+	
+	public static void discardIndo(String username)
 	{
-		String worldName = FunctionHelper.getWorldString(player.worldObj);
-		String username = player.username;
-
-		File saveFile = new File(ForgeEssentials.FEDIR, worldName + "/" + username + ".ser").getAbsoluteFile();
-
-		// read file.
-		if (saveFile.exists() && saveFile.isFile() && saveFile.canRead())
-		{
-			try
-			{
-				FileInputStream fis = new FileInputStream(saveFile);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				PlayerInfo info = (PlayerInfo) ois.readObject();
-				ois.close();
-				fis.close();
-				playerInfoMap.put(username, info);
-				return;
-			} catch (Exception e)
-			{
-				OutputHandler.SOP("Failed in reading file: " + worldName + "/" + username);
-				e.printStackTrace();
-			}
-		}
-
-		// reading file failed.. continue with other stuff.
-		PlayerInfo info = new PlayerInfo(player);
-		playerInfoMap.put(username, info);
-
-		try
-		{
-			if (!saveFile.exists())
-			{
-				saveFile.getParentFile().mkdirs();
-				saveFile.createNewFile();
-			}
-			FileOutputStream fos = new FileOutputStream(saveFile);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(playerInfoMap.remove(username));
-			oos.close();
-			fos.close();
-		} catch (Exception e)
-		{
-			OutputHandler.SOP("Failed in reading file: " + worldName + "/" + username);
-			e.printStackTrace();
-		}
-
-		// send packets.
-		ForgeEssentials.proxy.updateInfo(info, player);
-	}
-
-	public static void saveInfo(EntityPlayer player)
-	{
-		PlayerInfo info = getPlayerInfo(player);
-		try
-		{
-			File saveFile = new File(FESAVES, info.worldName + "/" + player.username + ".ser").getAbsoluteFile();
-			if (!saveFile.exists())
-			{
-				saveFile.getParentFile().mkdirs();
-				saveFile.createNewFile();
-			}
-			FileOutputStream fos = new FileOutputStream(saveFile);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(playerInfoMap.get(player.username));
-			oos.close();
-			fos.close();
-		} catch (Exception e)
-		{
-			OutputHandler.SOP("Error while saving info file: " + info.worldName + "/" + player.username);
-			e.printStackTrace();
-		}
-	}
-
-	public static void saveAndDiscardInfo(EntityPlayer player)
-	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
-		try
-		{
-			File saveFile = new File(FESAVES, info.worldName + "/" + player.username + ".ser").getAbsoluteFile();
-			if (!saveFile.exists())
-			{
-				saveFile.getParentFile().mkdirs();
-				saveFile.createNewFile();
-			}
-			FileOutputStream fos = new FileOutputStream(saveFile);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(playerInfoMap.remove(player.username));
-			oos.close();
-			fos.close();
-		} catch (Exception e)
-		{
-			OutputHandler.SOP("Error while saving info for player " + player.username);
-			e.printStackTrace();
-		}
+		playerInfoMap.remove(username);
 	}
 
 	// -------------------------------------------------------------------------------------------
@@ -209,6 +122,14 @@ public class PlayerInfo implements Serializable
 	public String getWorldName()
 	{
 		return worldName;
+	}
+	
+	/**
+	 * Notifies the PlayerInfo to save itself to the Data store. 
+	 */
+	public void save()
+	{
+		ForgeEssentials.getInstanceDataDriver().saveObject(this);
 	}
 
 	// ----------------------------------------------
