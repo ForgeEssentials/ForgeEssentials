@@ -12,7 +12,7 @@ import java.util.Stack;
 import net.minecraft.src.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
-import com.ForgeEssentials.permission.Zone;
+import com.ForgeEssentials.permissions.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;

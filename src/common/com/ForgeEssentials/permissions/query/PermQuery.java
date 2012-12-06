@@ -1,6 +1,6 @@
 package com.ForgeEssentials.permissions.query;
 
-import com.ForgeEssentials.permission.PermissionChecker;
+import com.ForgeEssentials.permissions.PermissionChecker;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraftforge.event.ListenerList;

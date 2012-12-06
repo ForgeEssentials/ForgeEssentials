@@ -3,7 +3,7 @@ package com.ForgeEssentials.core.commands;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
-import com.ForgeEssentials.permission.PermissionsHandler;
+import com.ForgeEssentials.permissions.PermissionsHandler;
 import com.ForgeEssentials.permissions.query.PermQueryArea;
 import com.ForgeEssentials.util.Version;
 

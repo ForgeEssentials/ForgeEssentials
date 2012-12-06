@@ -1,6 +1,6 @@
 package com.ForgeEssentials.permissions.query;
 
-import com.ForgeEssentials.permission.PermissionChecker;
+import com.ForgeEssentials.permissions.PermissionChecker;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;

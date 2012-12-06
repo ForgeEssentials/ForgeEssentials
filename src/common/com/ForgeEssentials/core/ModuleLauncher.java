@@ -3,7 +3,7 @@ package com.ForgeEssentials.core;
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.commands.ModuleCommands;
-import com.ForgeEssentials.permission.ModulePermissions;
+import com.ForgeEssentials.permissions.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.property.ModuleProperty;
 import com.ForgeEssentials.util.OutputHandler;

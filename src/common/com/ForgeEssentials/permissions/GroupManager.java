@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permission;
+package com.ForgeEssentials.permissions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
