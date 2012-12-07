@@ -1,5 +1,7 @@
 package com.ForgeEssentials.data.filesystem;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.src.IntegratedServer;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
@@ -49,13 +51,15 @@ public class FileSystemDataDriver extends DataDriver
 		}
 		else
 		{
-			if (Side.CLIENT == FMLCommonHandler.instance().getEffectiveSide())
+			if (MinecraftServer.getServer() instanceof IntegratedServer)
 			{
-				this.baseFilePath = "./saves/" + worldName + "/";
+				// We are running from the client. Use the Client save directory.
+				this.baseFilePath = "./saves/" + worldName + "/FEData/";
 			}
 			else
 			{
-				this.baseFilePath = "./" + worldName +"/";
+				// Dedicated server. Use the base path + world name.
+				this.baseFilePath = "./" + worldName +"/FEData/";
 			}
 		}
 		
