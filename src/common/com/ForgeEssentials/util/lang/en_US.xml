@@ -128,7 +128,28 @@
 	<entry key="command.worldborder.syntax.player">[on|off] OR &lt;set> &lt;Radius> [X] [Z]</entry>
 	<entry key="command.worldborder.info.console">Set the worldborder.</entry>
 	<entry key="command.worldborder.info.player">Set the worldborder.</entry>
-	<entry key="worldborder.message">You have reached the worlds border.</entry>
+	
+	<entry key="message.wb.hitborder">You have reached the worlds border.</entry>
+	
+	<entry key="message.wb.status.header">Worldborder status:</entry>
+	<entry key="message.wb.status.borderset">Border set!</entry>
+	<entry key="message.wb.status.bordernotset">No border set!</entry>
+	
+	<entry key="message.wb.lagwarning">This will cause lag!</entry>
+	
+	<entry key="message.wb.fill.info">This command will fill all chuncks within the worldborder.</entry>
+	<entry key="message.wb.fill.confirm">To execute, do /worldborder fill ok</entry>
+	<entry key="message.wb.fill.onlyonce">You can't run this more then once at the same time!</entry>
+	<entry key="message.wb.fill.consoleneedsdim">You must enter the dimension id you want generated. (0 for overworld)</entry>
+	<entry key="message.wb.fill.start">Starting filling of world, expect huge lag!</entry>
+	
+	<entry key="message.wb.turbo.info">Speed x10, lag x10.</entry>
+	<entry key="message.wb.turbo.confirm">To execute, do "/worldborder turbo on" use off to turn turbo mode off.</entry>
+	<entry key="message.wb.turbo.nothingtodo">You need a running filler command to (dis)engage the turbo!</entry>
+	<entry key="message.wb.turbo.on">Turbo mode engaged! Prepare for more lag!</entry>
+	<entry key="message.wb.turbo.off">Turbo mode disengaged! Lag should lower.</entry>
+	
+	<entry key="message.wb.set">WorldBorder set with radius %r  at point X:%x Z:%z</entry>
 	
 	<!-- Some localization for WorldControl -->
 	<entry key="command./set.syntax.player">&lt;blockID[:metadata]></entry>
@@ -157,4 +178,6 @@
 	<entry key="message.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
 	
 	<entry key="tile.air.name">Air</entry>
+	
+	<entry key="unit.seconds">sec</entry>
 </properties>

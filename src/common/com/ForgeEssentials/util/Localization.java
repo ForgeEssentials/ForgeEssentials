@@ -51,6 +51,32 @@ public class Localization
 	public static final String WC_INVALIDBLOCKID = "message.wc.invalidBlockId";
 	public static final String WC_BLOCKIDOUTOFRANGE = "message.wc.blockIdOutOfRange";
 
+	public static final String WB_HITBORDER = "message.wb.hitborder";
+	
+	public static final String WB_STATUS_HEADER = "message.wb.status.header";	
+	public static final String WB_STATUS_BORDERSET = "message.wb.status.borderset";
+	public static final String WB_STATUS_BORDERNOTSET = "message.wb.status.bordernotset";
+	
+	public static final String WB_LAGWARING = "message.wb.lagwarning";
+	
+	public static final String WB_FILL_INFO = "message.wb.fill.info";
+	public static final String WB_FILL_CONFIRM = "message.wb.fill.confirm";
+	public static final String WB_FILL_ONLYONCE = "message.wb.fill.onlyonce";
+	public static final String WB_FILL_CONSOLENEEDSDIM = "message.wb.fill.consoleneedsdim";
+	public static final String WB_FILL_START = "message.wb.fill.start";
+	
+	public static final String WB_TURBO_INFO = "message.wb.turbo.info";
+	public static final String WB_TURBO_CONFIRM = "message.wb.turbo.confirm";
+	public static final String WB_TURBO_NOTHINGTODO = "message.wb.turbo.nothingtodo";
+	public static final String WB_TURBO_ON = "message.wb.turbo.on";
+	public static final String WB_TURBO_OFF = "message.wb.turbo.off";
+	
+	public static final String WB_SET = "message.wb.set";
+	
+	public static final String UNIT_SECONDS = "unit.seconds";
+	
+	//public static final String WB_ = "message.wb.";
+
 	public void load()
 	{
 		OutputHandler.SOP("Loading languages");

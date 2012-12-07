@@ -3,8 +3,12 @@ package com.ForgeEssentials.WorldBorder;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
+import net.minecraft.src.WorldServer;
+
+import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -12,7 +16,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandWB extends ForgeEssentialsCommandBase
 {
-
+	public static TickTaskFill taskGooing = null; 
+	
 	@Override
 	public String getCommandName()
 	{
@@ -28,67 +33,192 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length == 2)
+		boolean set = ModuleWorldBorder.borderData.getBoolean("set");
+		if (args.length == 0)
 		{
-			if(args[0].equalsIgnoreCase("set"))
+			sender.sendChatToPlayer(Localization.get(Localization.WB_STATUS_HEADER));
+			if(set)
 			{
-				int rad = parseIntWithMin(sender, args[1], 0);
-				ModuleWorldBorder.setCenter(rad, (int) sender.posX, (int) sender.posZ);
-				
-				sender.sendChatToPlayer("WorldBorder set with radius " + rad + " at point X:" + (int) sender.posX + " Z:" + (int) sender.posZ);
+				sender.sendChatToPlayer(OutputHandler.GREEN + Localization.get(Localization.WB_STATUS_BORDERSET));
+				sender.sendChatToPlayer("Coordinates :");
+				sender.sendChatToPlayer("minX:" + ModuleWorldBorder.borderData.getInteger("minX") + "  maxX" + ModuleWorldBorder.borderData.getInteger("maxX"));
+				sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.borderData.getInteger("minZ") + "  maxZ" + ModuleWorldBorder.borderData.getInteger("maxZ"));
 			}
 			else
 			{
-				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_STATUS_BORDERNOTSET));
+			}
+			return;
+		}
+		
+		if(args[0].equalsIgnoreCase("fill"))
+		{
+			if(args.length == 1)
+			{
+				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_LAGWARING));
+				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_FILL_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_CONFIRM));
+				return;
+			}
+			if(args[1].equalsIgnoreCase("ok"))
+			{
+				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+				WorldServer world = server.worldServers[sender.dimension];
+				boolean canNotSaveBefore = world.canNotSave;
+				
+				if(taskGooing != null)
+				{
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_ONLYONCE));
+				}
+				else
+				{
+					world.canNotSave = true;
+					taskGooing = new TickTaskFill(canNotSaveBefore, world);
+					TickTaskHandler.addTask(taskGooing);
+				}
+				return;
+			}
+			if(args[1].equalsIgnoreCase("cancel"))
+			{
+				taskGooing.stop();
+				return;
 			}
 		}
-		else if (args.length == 4)
+		if(args[0].equalsIgnoreCase("turbo"))
 		{
-			if(args[0].equalsIgnoreCase("set"))
+			if(args.length == 1)
 			{
-				int rad = parseIntWithMin(sender, args[1], 0);
+				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_LAGWARING));
+				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_TURBO_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_TURBO_CONFIRM));
+				return;
+			}
+			if(args[1].equalsIgnoreCase("ok"))
+			{
+				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+				WorldServer world = server.worldServers[sender.dimension];
+				boolean canNotSaveBefore = world.canNotSave;
+				
+				if(taskGooing != null)
+				{
+						sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_ONLYONCE));
+					}
+					else
+					{
+						world.canNotSave = true;
+						taskGooing = new TickTaskFill(canNotSaveBefore, world);
+						TickTaskHandler.addTask(taskGooing);
+					}
+					return;
+				}
+				if(args[1].equalsIgnoreCase("cancel"))
+				{
+					taskGooing.stop();
+					return;
+				}
+			}
+		
+		if(args[0].equalsIgnoreCase("set") && args.length >= 2)
+		{
+			int rad = parseIntWithMin(sender, args[1], 0);
+			
+			if(args.length == 2)
+			{
+				ModuleWorldBorder.setCenter(rad, (int) sender.posX, (int) sender.posZ);
+				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + (int) sender.posX).replaceAll("%z", "" + (int) sender.posZ));
+				return;
+			}
+			else if(args.length == 4)
+			{
 				int X = parseInt(sender, args[2]);
 				int Z = parseInt(sender, args[3]);
 				
 				ModuleWorldBorder.setCenter(rad, X, Z);
-				
-				sender.sendChatToPlayer("WorldBorder set with radius " + rad + " at point X:" + X + " Z:" + Z);
-			}
-			else
-			{
-				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + X).replaceAll("%z", "" + Z));
+				return;
 			}
 		}
-		else
-		{
-			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
-		}
+		//Command unknown
+		OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 	}
+		
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length == 4)
+		boolean set = ModuleWorldBorder.borderData.getBoolean("set");
+		if (args.length == 0)
 		{
-			if(args[0].equalsIgnoreCase("set"))
+			sender.sendChatToPlayer(Localization.get(Localization.WB_STATUS_HEADER));
+			if(set)
 			{
-				int rad = parseIntWithMin(sender, args[1], 0);
+				sender.sendChatToPlayer(OutputHandler.GREEN + Localization.get(Localization.WB_STATUS_BORDERSET));
+				sender.sendChatToPlayer("Coordinates :");
+				sender.sendChatToPlayer("minX:" + ModuleWorldBorder.borderData.getInteger("minX") + "  maxX" + ModuleWorldBorder.borderData.getInteger("maxX"));
+				sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.borderData.getInteger("minZ") + "  maxZ" + ModuleWorldBorder.borderData.getInteger("maxZ"));
+			}
+			else
+			{
+				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_STATUS_BORDERNOTSET));
+			}
+			return;
+		}
+		
+		if(args[0].equalsIgnoreCase("fill"))
+		{
+			if(args.length == 1)
+			{
+				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_LAGWARING));
+				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_FILL_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_CONFIRM));
+				return;
+			}
+			if(args[1].equalsIgnoreCase("ok"))
+			{
+				if(args.length != 3)
+				{
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_CONSOLENEEDSDIM));
+					return;
+				}
+				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+				int dim = this.parseInt(sender, args[2]);
+				WorldServer world = server.worldServers[dim];
+				boolean canNotSaveBefore = world.canNotSave;
+				
+				if(taskGooing != null)
+				{
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_ONLYONCE));
+				}
+				else
+				{
+					world.canNotSave = true;
+					taskGooing = new TickTaskFill(canNotSaveBefore, world);
+					TickTaskHandler.addTask(taskGooing);
+				}
+				return;
+			}
+			if(args[1].equalsIgnoreCase("cancel"))
+			{
+				taskGooing.stop();
+				return;
+			}
+		}
+		if(args[0].equalsIgnoreCase("set") && args.length >= 2)
+		{
+			int rad = parseIntWithMin(sender, args[1], 0);
+			
+			if(args.length == 4)
+			{
 				int X = parseInt(sender, args[2]);
 				int Z = parseInt(sender, args[3]);
 				
 				ModuleWorldBorder.setCenter(rad, X, Z);
-				
-				sender.sendChatToPlayer("WorldBorder set with radius " + rad + " at point X:" + X + " Z:" + Z);
-			}
-			else
-			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + X).replaceAll("%z", "" + Z));
+				return;
 			}
 		}
-		else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-		}
+		//Command unknown
+		sender.sendChatToPlayer((Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
 	}
 	
 	@Override
@@ -113,7 +243,11 @@ public class CommandWB extends ForgeEssentialsCommandBase
     {
     	if(args.length==1)
     	{
-    		return getListOfStringsMatchingLastWord(args, "on", "off", "set");
+    		return getListOfStringsMatchingLastWord(args, "set", "fill", "turbo");
+    	}
+    	else if(args.length==2 && args[0].equalsIgnoreCase("fill"))
+    	{
+    		return getListOfStringsMatchingLastWord(args, "ok", "cancel");
     	}
     	else
     	{

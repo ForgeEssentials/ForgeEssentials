@@ -57,6 +57,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandSpawn());
 		e.registerServerCommand(new CommandBackup());
 		e.registerServerCommand(new CommandList());
+		e.registerServerCommand(new CommandTPS());
 		//op
 		e.registerServerCommand(new CommandServerDo());
 		//fun
@@ -99,6 +100,7 @@ public class ModuleCommands implements IFEModule
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.list", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.rules", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.motd", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.tps", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.commands.compass", true);
 	}
 
