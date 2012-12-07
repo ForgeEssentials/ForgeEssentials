@@ -9,13 +9,13 @@ public class GroupManager
 	protected static HashMap<String, Group> groups = new HashMap<String, Group>();
 	
 	private Group loginGroup;
-	public ConfigGroups config;
+	public ConfigGroup config;
 	
 	public GroupManager()
 	{
 		DEFAULT = new Group(PermissionsAPI.GROUP_DEFAULT);
 		loginGroup = DEFAULT;
-		config = new ConfigGroups();
+		config = new ConfigGroup();
 	}
 	
 	/**

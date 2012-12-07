@@ -13,7 +13,7 @@ import net.minecraftforge.event.Event.Result;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class ConfigGroups
+public class ConfigGroup
 {
 	public static File			groupsFile		= new File(ModulePermissions.permsFolder, "groups.cfg");
 
@@ -24,7 +24,7 @@ public class ConfigGroups
 	private static final String	PARENT			= "parent";
 	private static final String	PROM_LADDERS	= "_PROMOTION_LADDERS_";
 
-	public ConfigGroups()
+	public ConfigGroup()
 	{
 		OutputHandler.debug("ConfigGroups initlializing...");
 		
@@ -41,19 +41,19 @@ public class ConfigGroups
 		{
 			generateDefaults = true;
 			tempGroup = new Group(PermissionsAPI.GROUP_MEMBERS);
-			tempGroup.parent = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, PermissionsAPI.GROUP_DEFAULT, "the group from which this group will inherit permissions").value;
+			tempGroup.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, "g:"+PermissionsAPI.GROUP_DEFAULT, "the group from which this group will inherit permissions").value);
 			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PREFIX, "", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			GroupManager.groups.put(tempGroup.name, tempGroup);
 
 			tempGroup = new Group(PermissionsAPI.GROUP_OWNERS);
-			tempGroup.parent = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, PermissionsAPI.GROUP_ZONE_ADMINS, "the group from which this group will inherit permissions").value;
+			tempGroup.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, "g:"+PermissionsAPI.GROUP_ZONE_ADMINS, "the group from which this group will inherit permissions").value);
 			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, PREFIX, OutputHandler.GOLD + "[OWNER]" + OutputHandler.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			GroupManager.groups.put(tempGroup.name, tempGroup);
 
 			tempGroup = new Group(PermissionsAPI.GROUP_ZONE_ADMINS);
-			tempGroup.parent = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, PermissionsAPI.GROUP_MEMBERS, "the group from which this group will inherit permissions").value;
+			tempGroup.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, "g:"+PermissionsAPI.GROUP_MEMBERS, "the group from which this group will inherit permissions").value);
 			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, PREFIX, OutputHandler.GOLD + "[OWNER]" + OutputHandler.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			GroupManager.groups.put(tempGroup.name, tempGroup);
@@ -109,7 +109,8 @@ public class ConfigGroups
 				{
 					// read group...
 					tempGroup = new Group(getGroupNameFromCategory(group), cat.getQualifiedName());
-					tempGroup.parent = config.get(group, PARENT, "").value;
+					
+					tempGroup.setParent(config.get(group, PARENT, "").value);
 					tempGroup.prefix = config.get(group, PREFIX, "").value;
 					tempGroup.suffix = config.get(group, SUFFIX, "").value;
 
@@ -138,7 +139,7 @@ public class ConfigGroups
 		for (Group group: GroupManager.groups.values())
 		{
 			String category = (new StringBuilder()).append(group.zoneID).append('.').append(group.name).toString();
-			config.get(category, PARENT, "").value = group.parent;
+			config.get(category, PARENT, "").value = group.getParent();
 			config.get(category, PREFIX, "").value = group.prefix;
 			config.get(category, SUFFIX, "").value = group.suffix;
 			

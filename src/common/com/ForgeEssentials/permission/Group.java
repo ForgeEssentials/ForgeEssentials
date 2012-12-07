@@ -1,6 +1,7 @@
 package com.ForgeEssentials.permission;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import net.minecraftforge.common.Property;
@@ -9,7 +10,7 @@ public class Group
 {
 	private HashMap<String, String>		ladderNames;	// zoneID, ladderName
 	private HashMap<String, Property>	extraData;		// tag based extra data
-	public String						parent;
+	private String						parent;
 	public String						prefix;
 	public String						suffix;
 	public final String					name;
@@ -51,6 +52,26 @@ public class Group
 		return parent == null || parent.isEmpty();
 	}
 
+	public boolean isParentGroup()
+	{
+		return parent.toLowerCase().startsWith("g:");
+	}
+
+	public boolean isParentPlayer()
+	{
+		return parent.toLowerCase().startsWith("p:");
+	}
+
+	public String getParent()
+	{
+		return parent.substring(2);
+	}
+
+	public void setParent(String parent)
+	{
+		this.parent = parent;
+	}
+
 	public void addData(Property prop)
 	{
 		extraData.put(prop.getName(), prop);
@@ -65,7 +86,7 @@ public class Group
 	{
 		return extraData;
 	}
-	
+
 	/**
 	 * @param zoneID
 	 * return NULL if this group has no ladder in this zone.

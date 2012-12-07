@@ -267,9 +267,9 @@ public class Zone extends AreaBase implements Comparable
 						smallest = perm;
 			if (smallest != null)
 				return smallest.allowed;
-			else if (group != null && group.hasParent() && groupOverrides.containsKey(group.parent))
+			else if (group != null && group.hasParent() && groupOverrides.containsKey(group.getParent()))
 			{
-				perms = groupOverrides.get(group.parent);
+				perms = groupOverrides.get(group.getParent());
 				for (Permission perm : perms)
 					if (check.equals(perm))
 						return perm.allowed;
