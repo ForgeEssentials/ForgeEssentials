@@ -73,6 +73,7 @@ public class SQLDataDriver extends DataDriver
 		try
 		{
 			Class driverClass = Class.forName("com.mysql.jdbc.Driver");
+			
 			String connectionString = "jdbc:" + dbType + "://" + server + ":" + port + "/" + database;
 			DriverManager.getConnection(connectionString, username, password);
 			

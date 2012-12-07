@@ -2,13 +2,8 @@ package com.ForgeEssentials.util.AreaSelector;
 
 import java.io.Serializable;
 
-public abstract class AreaBase implements Serializable
+public abstract class AreaBase
 {
-	/**
-	 * generated SerializeableID;
-	 */
-	private static final long	serialVersionUID	= 2510091976804474583L;
-	
 	// used for pretty much everything else.
 	private Point				high;
 	private Point				low;

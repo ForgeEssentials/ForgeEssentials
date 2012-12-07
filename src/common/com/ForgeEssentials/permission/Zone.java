@@ -14,13 +14,8 @@ import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
-public class Zone extends AreaBase implements Comparable, Serializable
+public class Zone extends AreaBase implements Comparable
 {
-	/**
-	 * serilizeableID
-	 */
-	private static final long						serialVersionUID	= -8826384576342329738L;
-
 	public int										priority;										// lowest priority is 0
 	private String									zoneID;										// unique string name
 	private Zone									parent;										// the unique name of the parent.
@@ -191,6 +186,11 @@ public class Zone extends AreaBase implements Comparable, Serializable
 	{
 		return parent;
 	}
+	
+	public String[] getChildren()
+	{
+		return this.children.toArray(new String[this.children.size()]);
+	}
 
 	public void setParent(Zone parent)
 	{
@@ -300,6 +300,11 @@ public class Zone extends AreaBase implements Comparable, Serializable
 				return smallest.allowed;
 		}
 		return PermResult.UNKNOWN;
+	}
+	
+	public String getWorldString()
+	{
+		return this.worldString;
 	}
 
 	public Set<String> getPlayersOverriden()

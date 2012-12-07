@@ -18,7 +18,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
  */
 public class PlayerInfoDataAdapter extends FileSystemDataAdapter<PlayerInfo, String>
 {
-	private static String dataDir;
+	private String dataDir;
 	
 	public PlayerInfoDataAdapter()
 	{
@@ -50,55 +50,46 @@ public class PlayerInfoDataAdapter extends FileSystemDataAdapter<PlayerInfo, Str
 		data.get("wand", "id", object.wandID);
 		data.get("wand", "meta", object.wandDmg);
 		data.get("wand", "enabled", object.wandEnabled);
+		Point p;
+		WorldPoint w;
 		
-		// buffer to hold point data
-		int[] pnt;
-		
-		if (object.getPoint1() != null)
+		if ((p = object.getPoint1()) != null)
 		{
-			pnt = pointToIntArray(object.getPoint1());
-		
-			data.get("selection", "x1", pnt[0]);
-			data.get("selection", "y1", pnt[1]);
-			data.get("selection", "z1", pnt[2]);
+			data.get("selection", "x1", p.x);
+			data.get("selection", "y1", p.y);
+			data.get("selection", "z1", p.z);
 		}
 		else
 		{
 			data.get("selection", "1", false);
 		}
-		if (object.getPoint2() != null)
+		if ((p = object.getPoint2()) != null)
 		{
-			pnt = pointToIntArray(object.getPoint2());
-			
-			data.get("selection", "x2", pnt[0]);
-			data.get("selection", "y2", pnt[1]);
-			data.get("selection", "z2", pnt[2]);
+			data.get("selection", "x2", p.x);
+			data.get("selection", "y2", p.y);
+			data.get("selection", "z2", p.z);
 		}
 		else
 		{
 			data.get("selection", "2", false);
 		}
-		if (object.home != null)
+		if ((w = object.home) != null)
 		{
-			pnt = worldPointToIntArray(object.home);		
-			
-			data.get("home", "x", pnt[0]);
-			data.get("home", "y", pnt[1]);
-			data.get("home", "z", pnt[2]);
-			data.get("home", "dim", pnt[3]);
+			data.get("home", "x", w.x);
+			data.get("home", "y", w.y);
+			data.get("home", "z", w.z);
+			data.get("home", "dim", w.dim);
 		}
 		else
 		{
 			data.get("home", "none", true);
 		}
-		if (object.lastDeath != null)
+		if ((w = object.lastDeath) != null)
 		{
-			pnt = worldPointToIntArray(object.lastDeath);
-			
-			data.get("death", "x", pnt[0]);
-			data.get("death", "y", pnt[1]);
-			data.get("death", "z", pnt[2]);
-			data.get("death", "dim", pnt[3]);
+			data.get("death", "x", w.x);
+			data.get("death", "y", w.y);
+			data.get("death", "z", w.z);
+			data.get("death", "dim", w.dim);
 		}
 		else
 		{

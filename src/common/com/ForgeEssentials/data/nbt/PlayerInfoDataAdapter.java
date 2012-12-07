@@ -19,7 +19,7 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 public class PlayerInfoDataAdapter implements IDataAdapter<PlayerInfo, String>
 {
 
-	private static String dataDir;
+	private String dataDir;
 	
 	public PlayerInfoDataAdapter()
 	{

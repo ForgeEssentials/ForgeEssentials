@@ -7,6 +7,7 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.DataStorageManager;
+import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -76,7 +77,7 @@ public class FileSystemDataDriver extends DataDriver
 	protected void registerAdapters()
 	{
 		this.map.put(PlayerInfo.class, new PlayerInfoDataAdapter());
-		
+		this.map.put(Zone.class, new ZoneDataAdapter());
 		// Add additional flat-file storage classes here.
 	}
 }
