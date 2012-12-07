@@ -8,7 +8,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 //In the event we need to mess with ASM and such, this is the place.
 //Kindly do not reference any FE classes outside the coremod package in this class.
 
-public class FECoreLoader implements IFMLLoadingPlugin, IFMLCallHook{
+public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook{
 
 	@Override
 	public String[] getLibraryRequestClass() {
@@ -17,7 +17,7 @@ public class FECoreLoader implements IFMLLoadingPlugin, IFMLCallHook{
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{"com.ForgeEssentials.coremod.FEPermissionsTransformer"};//Perms
+		return Data.transformers;
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class FECoreLoader implements IFMLLoadingPlugin, IFMLCallHook{
 
 	@Override
 	public String getSetupClass() {
-		return "com.ForgeEssentials.coremod.FECoreLoader";
+		return "com.ForgeEssentials.coremod.FEPreLoader";
 	}
 
 	@Override

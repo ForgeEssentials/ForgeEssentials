@@ -80,7 +80,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public String getSyntaxConsole()
 	{
 		if (canConsoleUseCommand())
-			return Localization.get("command." + getCommandName() + ".syntax.console");
+			return "/" + getCommandName() + Localization.get("command." + getCommandName() + ".syntax.console");
 		return null;
 	}
 
@@ -92,21 +92,21 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
 		if (canPlayerUseCommand(player))
-			return Localization.get("command." + getCommandName() + ".syntax.player");
+			return "/" + getCommandName() + Localization.get("command." + getCommandName() + ".syntax.player");
 		return null;
 	}
 
 	public String getInfoConsole()
 	{
 		if (canConsoleUseCommand())
-			return Localization.get("command." + getCommandName() + ".info.console");
+			return "/" + getCommandName() + Localization.get("command." + getCommandName() + ".info.console");
 		return null;
 	}
 
 	public String getInfoPlayer(EntityPlayer player)
 	{
 		if (canPlayerUseCommand(player))
-			return Localization.get("command." + getCommandName() + ".info.player");
+			return "/" + getCommandName() + Localization.get("command." + getCommandName() + ".info.player");
 		return null;
 	}
 
