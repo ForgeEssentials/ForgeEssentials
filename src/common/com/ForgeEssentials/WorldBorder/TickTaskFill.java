@@ -45,10 +45,10 @@ public class TickTaskFill implements ITickTask
 		this.isComplete = false;
 		this.canNotSaveBefore = canNotSaveBefore;
 		this.world = world;
-		this.X = this.minX = ModuleWorldBorder.borderData.getInteger("minX");
-		this.Z = this.minZ = ModuleWorldBorder.borderData.getInteger("minZ");
-		this.maxX = ModuleWorldBorder.borderData.getInteger("maxX");
-		this.maxZ = ModuleWorldBorder.borderData.getInteger("maxZ");
+		this.X = this.minX = ModuleWorldBorder.borderData.getInteger("minX") - 320;
+		this.Z = this.minZ = ModuleWorldBorder.borderData.getInteger("minZ") - 320;
+		this.maxX = ModuleWorldBorder.borderData.getInteger("maxX") + 320;
+		this.maxZ = ModuleWorldBorder.borderData.getInteger("maxZ") + 320;
 		
 		this.eta = (int) (((MathHelper.abs_int((this.maxX - this.minX)/16) * MathHelper.abs_int((this.minZ - this.maxZ)/16))));
 		
@@ -56,7 +56,7 @@ public class TickTaskFill implements ITickTask
 		warnEveryone(OutputHandler.AQUA + "minX:" + this.minX + "  maxX:" + this.maxX);
 		warnEveryone(OutputHandler.AQUA + "minZ:" + this.minZ + "  maxZ:" + this.maxZ);
 		
-		warnEveryone("ETA: " + getETA());
+		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
 	}
 	
 	public double getTPS()

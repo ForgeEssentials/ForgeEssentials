@@ -66,6 +66,7 @@ public class Localization
 	public static final String WB_FILL_START = "message.wb.fill.start";
 	public static final String WB_FILL_STILLGOING = "message.wb.fill.stillgoing";
 	public static final String WB_FILL_DONE = "message.wb.fill.done";
+	public static final String WB_FILL_ETA = "message.wb.fill.eta";
 	public static final String WB_FILL_ABORTED = "message.wb.fill.aborted";
 	public static final String WB_FILL_FINISHED = "message.wb.fill.finished";
 	

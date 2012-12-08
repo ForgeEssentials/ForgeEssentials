@@ -148,6 +148,7 @@
 	<entry key="message.wb.fill.consoleneedsdim">You must enter the dimension id you want generated. (0 for overworld)</entry>
 	<entry key="message.wb.fill.start">Starting filling of world, expect huge lag!</entry>
 	<entry key="message.wb.fill.stillgoing">Still filling the world. ETA: %eta</entry>
+	<entry key="message.wb.fill.eta">ETA: %eta</entry>
 	<entry key="message.wb.fill.done">Done filling the world, now saving!</entry>
 	<entry key="message.wb.fill.aborted">Done filling the world, now saving!</entry>
 	<entry key="message.wb.fill.finished">Done saving! Time needed: %ticks ticks or %sec sec.</entry>
