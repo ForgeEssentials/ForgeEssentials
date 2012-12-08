@@ -34,6 +34,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		boolean set = ModuleWorldBorder.borderData.getBoolean("set");
+		//Info
 		if (args.length == 0)
 		{
 			sender.sendChatToPlayer(Localization.get(Localization.WB_STATUS_HEADER));
@@ -50,7 +51,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			}
 			return;
 		}
-		
+		//Fill
 		if(args[0].equalsIgnoreCase("fill"))
 		{
 			if(args.length == 1)
@@ -84,6 +85,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				return;
 			}
 		}
+		//Turbo
 		if(args[0].equalsIgnoreCase("turbo"))
 		{
 			if(args.length == 1)
@@ -93,31 +95,32 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get(Localization.WB_TURBO_CONFIRM));
 				return;
 			}
-			if(args[1].equalsIgnoreCase("ok"))
+			if(args[1].equalsIgnoreCase("on"))
 			{
-				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-				WorldServer world = server.worldServers[sender.dimension];
-				boolean canNotSaveBefore = world.canNotSave;
-				
 				if(taskGooing != null)
 				{
-						sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_ONLYONCE));
-					}
-					else
-					{
-						world.canNotSave = true;
-						taskGooing = new TickTaskFill(canNotSaveBefore, world);
-						TickTaskHandler.addTask(taskGooing);
-					}
-					return;
+					taskGooing.engageTurbo();
 				}
-				if(args[1].equalsIgnoreCase("cancel"))
+				else
 				{
-					taskGooing.stop();
-					return;
+					sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_TURBO_NOTHINGTODO));
 				}
+				return;
 			}
-		
+			if(args[1].equalsIgnoreCase("off"))
+			{
+				if(taskGooing != null)
+				{
+					taskGooing.disEngageTurbo();
+				}
+				else
+				{
+					sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_TURBO_NOTHINGTODO));
+				}
+				return;
+			}
+		}
+		//Set
 		if(args[0].equalsIgnoreCase("set") && args.length >= 2)
 		{
 			int rad = parseIntWithMin(sender, args[1], 0);
@@ -147,6 +150,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		boolean set = ModuleWorldBorder.borderData.getBoolean("set");
+		//Info
 		if (args.length == 0)
 		{
 			sender.sendChatToPlayer(Localization.get(Localization.WB_STATUS_HEADER));
@@ -163,7 +167,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			}
 			return;
 		}
-		
+		//Fill
 		if(args[0].equalsIgnoreCase("fill"))
 		{
 			if(args.length == 1)
@@ -203,6 +207,42 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				return;
 			}
 		}
+		//Turbo
+		if(args[0].equalsIgnoreCase("turbo"))
+		{
+			if(args.length == 1)
+			{
+				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_LAGWARING));
+				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_TURBO_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_TURBO_CONFIRM));
+				return;
+			}
+			if(args[1].equalsIgnoreCase("on"))
+			{
+				if(taskGooing != null)
+				{
+					taskGooing.engageTurbo();
+				}
+				else
+				{
+					sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_TURBO_NOTHINGTODO));
+				}
+				return;
+			}
+			if(args[1].equalsIgnoreCase("off"))
+			{
+				if(taskGooing != null)
+				{
+					taskGooing.disEngageTurbo();
+				}
+				else
+				{
+					sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_TURBO_NOTHINGTODO));
+				}
+				return;
+			}
+		}
+		//Set
 		if(args[0].equalsIgnoreCase("set") && args.length >= 2)
 		{
 			int rad = parseIntWithMin(sender, args[1], 0);
@@ -248,6 +288,10 @@ public class CommandWB extends ForgeEssentialsCommandBase
     	else if(args.length==2 && args[0].equalsIgnoreCase("fill"))
     	{
     		return getListOfStringsMatchingLastWord(args, "ok", "cancel");
+    	}
+    	else if(args.length==2 && args[0].equalsIgnoreCase("turbo"))
+    	{
+    		return getListOfStringsMatchingLastWord(args, "on", "off");
     	}
     	else
     	{
