@@ -49,6 +49,7 @@ public class ModuleLauncher
 		property = new ModuleProperty();
 		worldborder = new ModuleWorldBorder();
 		playerLogger = new ModulePlayerLogger();
+		economy = new ModuleEconomy();
 
 		if (wcEnabled)
 			worldcontrol.preLoad(e);
