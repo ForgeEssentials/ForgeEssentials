@@ -3,6 +3,7 @@ package com.ForgeEssentials.core;
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.commands.ModuleCommands;
+import com.ForgeEssentials.economy.ModuleEconomy;
 import com.ForgeEssentials.permission.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.property.ModuleProperty;
@@ -28,11 +29,13 @@ public class ModuleLauncher
 	public ModuleProperty		property;
 	public ModuleWorldBorder	worldborder;
 	public ModulePlayerLogger	playerLogger;
+	public ModuleEconomy		economy;
 
 	public static boolean		permsEnabled	= true;
 	public static boolean		cmdEnabled		= true;
 	public static boolean		wcEnabled		= true;
 	public static boolean		propEnabled		= true;
+	public static boolean		economyEnabled	= true;
 	public static boolean		borderEnabled	= false;
 	public static boolean		loggerEnabled	= false;
 
@@ -64,6 +67,9 @@ public class ModuleLauncher
 
 		if (loggerEnabled)
 			playerLogger.preLoad(e);
+		
+		if (economyEnabled)
+			economy.preLoad(e);
 	}
 
 	public void load(FMLInitializationEvent e)
@@ -86,6 +92,9 @@ public class ModuleLauncher
 
 		if (loggerEnabled)
 			playerLogger.load(e);
+		
+		if (economyEnabled)
+			economy.load(e);
 	}
 
 	public void serverStarting(FMLServerStartingEvent e)
@@ -108,6 +117,9 @@ public class ModuleLauncher
 
 		if (loggerEnabled)
 			playerLogger.serverStarting(e);
+		
+		if (economyEnabled)
+			economy.serverStarting(e);
 	}
 
 	public void serverStarted(FMLServerStartedEvent e)
