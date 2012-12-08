@@ -45,6 +45,11 @@
 	<entry key="command.heal.info.console">Restores the target's health, hunger and extinguishes them</entry>
 	<entry key="command.heal.syntax.player">&lt;player></entry>
 	<entry key="command.heal.syntax.console">&lt;player></entry>
+	
+	<entry key="command.tps.info.player">Gets the lag on the server.</entry>
+	<entry key="command.tps.info.console">Gets the lag on the server.</entry>
+	<entry key="command.tps.syntax.player">[all|dimension id]</entry>
+	<entry key="command.tps.syntax.console">[all|dimension id]</entry>
 		
 	<entry key="command.home.syntax.player">[here|x, y, z]</entry>
 	<entry key="command.home.info.player">Teleport you to/sets your home</entry>
@@ -124,8 +129,8 @@
 	<entry key="command.warp.info.player">Teleport you to a warp point.</entry>
 	
 	<!-- Some localization for WorldBorder -->
-	<entry key="command.worldborder.syntax.console">[on|off] OR &lt;set> &lt;Radius> &lt;X> &lt;Z></entry>
-	<entry key="command.worldborder.syntax.player">[on|off] OR &lt;set> &lt;Radius> [X] [Z]</entry>
+	<entry key="command.worldborder.syntax.console">[fill|turbo] OR [set] &lt;Radius> &lt;X> &lt;Z></entry>
+	<entry key="command.worldborder.syntax.player">[fill|turbo] OR [set] &lt;Radius> [X] [Z]</entry>
 	<entry key="command.worldborder.info.console">Set the worldborder.</entry>
 	<entry key="command.worldborder.info.player">Set the worldborder.</entry>
 	
@@ -142,6 +147,12 @@
 	<entry key="message.wb.fill.onlyonce">You can't run this more then once at the same time!</entry>
 	<entry key="message.wb.fill.consoleneedsdim">You must enter the dimension id you want generated. (0 for overworld)</entry>
 	<entry key="message.wb.fill.start">Starting filling of world, expect huge lag!</entry>
+	<entry key="message.wb.fill.stillgoing">Still filling the world. ETA: %eta</entry>
+	<entry key="message.wb.fill.done">Done filling the world, now saving!</entry>
+	<entry key="message.wb.fill.aborted">Done filling the world, now saving!</entry>
+	<entry key="message.wb.fill.finished">Done saving! Time needed: %ticks ticks or %sec sec.</entry>
+	
+	<entry key="message.wb.saving.failed">Error saving the world!</entry>
 	
 	<entry key="message.wb.turbo.info">Speed x10, lag x10.</entry>
 	<entry key="message.wb.turbo.confirm">To execute, do "/worldborder turbo on" use off to turn turbo mode off.</entry>

@@ -36,7 +36,7 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 	@Override
 	public List getCommandAliases()
     {
-		return Arrays.asList(new String[] {"TPS", "lag"});
+		return Arrays.asList(new String[] {"lag"});
     }
 	
 	private static final DecimalFormat DF = new DecimalFormat("########0.000");
@@ -60,40 +60,97 @@ public class CommandTPS extends ForgeEssentialsCommandBase
         return (((double)var2 / (double)par1ArrayOfLong.length) * 1.0E-6D);
     }
 	
-	public double getTPS()
+	public String getTPS(long[] par1ArrayOfLong)
 	{
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		return (this.func_79015_a(server.tickTimeArray));
-		//return ;
+		double tps = (this.func_79015_a(par1ArrayOfLong)); 
+		if(tps < 50)
+		{
+			return "20";
+		}
+		else
+		{
+			return DF.format((1000/tps));
+		}
 	}
 	
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		double tps = getTPS();
-		if(tps < 50)
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		if(args.length == 0)
 		{
-			
-			sender.sendChatToPlayer("TPS: 20");
+			long var1 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        
+			sender.sendChatToPlayer("Memory use: " + var1 / 1024L / 1024L + " mb (" + Runtime.getRuntime().freeMemory() * 100L / Runtime.getRuntime().maxMemory() + "% free)");
+			sender.sendChatToPlayer("Threads: " + TcpConnection.field_74471_a.get() + " + " + TcpConnection.field_74469_b.get());
+			sender.sendChatToPlayer("Avg tick: " + this.getTPS(server.tickTimeArray));
+			sender.sendChatToPlayer("Avg sent: " + (int)this.func_79015_a(server.sentPacketCountArray) + ", Avg size: " + (int)this.func_79015_a(server.sentPacketSizeArray));
+			sender.sendChatToPlayer("Avg rec: " + (int)this.func_79015_a(server.receivedPacketCountArray) + ", Avg size: " + (int)this.func_79015_a(server.receivedPacketSizeArray));
+			return;
 		}
-		else
-		{
-			sender.sendChatToPlayer("TPS: " + DF.format((1000/tps)));
-		}
+        if(args.length == 1)
+        {
+        	if(args[0].equalsIgnoreCase("all"))
+        	{
+        		 if (server.worldServers != null)
+        		 {
+        			 int x = 0;
+        			 for (Integer id : DimensionManager.getIDs())
+        			 {
+        				 sender.sendChatToPlayer("Lvl " + id + " TPS: " + this.getTPS(server.worldTickTimes.get(id)));
+        				 x++;
+        			 }
+        		 }
+        		 return;
+        	}
+        	else
+        	{
+        		int dim = this.parseIntBounded(sender, args[0], DimensionManager.getIDs()[0], (DimensionManager.getNextFreeDimId()-1));
+        		sender.sendChatToPlayer("Lvl " + dim + " TPS: " + this.getTPS(server.worldTickTimes.get(dim)));
+        	}
+        	return;
+        }
+        OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		double tps = getTPS();
-		if(tps < 50)
-		{	
-			sender.sendChatToPlayer("TPS: 20");
-		}
-		else
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		if(args.length == 0)
 		{
-			sender.sendChatToPlayer("TPS: " + DF.format((1000/tps)));
+			long var1 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        
+			sender.sendChatToPlayer("Memory use: " + var1 / 1024L / 1024L + " mb (" + Runtime.getRuntime().freeMemory() * 100L / Runtime.getRuntime().maxMemory() + "% free)");
+			sender.sendChatToPlayer("Threads: " + TcpConnection.field_74471_a.get() + " + " + TcpConnection.field_74469_b.get());
+			sender.sendChatToPlayer("Avg tick: " + this.getTPS(server.tickTimeArray));
+			sender.sendChatToPlayer("Avg sent: " + (int)this.func_79015_a(server.sentPacketCountArray) + ", Avg size: " + (int)this.func_79015_a(server.sentPacketSizeArray));
+			sender.sendChatToPlayer("Avg rec: " + (int)this.func_79015_a(server.receivedPacketCountArray) + ", Avg size: " + (int)this.func_79015_a(server.receivedPacketSizeArray));
+			return;
 		}
+        if(args.length == 1)
+        {
+        	if(args[0].equalsIgnoreCase("all"))
+        	{
+        		 if (server.worldServers != null)
+        		 {
+        			 int x = 0;
+        			 for (Integer id : DimensionManager.getIDs())
+        			 {
+        				 sender.sendChatToPlayer("Lvl " + id + " TPS: " + this.getTPS(server.worldTickTimes.get(id)));
+        				 x++;
+        			 }
+        		 }
+        		 return;
+        	}
+        	else
+        	{
+        		int dim = this.parseIntBounded(sender, args[0], DimensionManager.getIDs()[0], (DimensionManager.getNextFreeDimId()-1));
+        		sender.sendChatToPlayer("Lvl " + dim + " TPS: " + this.getTPS(server.worldTickTimes.get(dim)));
+        	}
+        	return;
+        }
+        sender.sendChatToPlayer((Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
 	}
 
 	@Override
@@ -117,6 +174,6 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-		return null;
+		return getListOfStringsMatchingLastWord(args, "all");
     }
 }

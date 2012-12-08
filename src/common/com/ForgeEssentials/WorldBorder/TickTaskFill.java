@@ -112,7 +112,7 @@ public class TickTaskFill implements ITickTask
 		ticks ++;
 		if(ticks % (20 * 10) == 0)
 		{
-			warnEveryone("Still filling the world. ETA: " + getETA());
+			warnEveryone(Localization.get(Localization.WB_FILL_STILLGOING).replaceAll("%eta", getETA()));
 		}
 		
 		int i = 0;
@@ -144,11 +144,12 @@ public class TickTaskFill implements ITickTask
 	@Override
 	public void onComplete()
 	{
-		warnEveryone("Done filling the world, now saving!");
+		warnEveryone(Localization.get(Localization.WB_FILL_DONE));
 		this.world.canNotSave = false;
-		try {world.saveAllChunks(true, (IProgressUpdate)null);}catch (MinecraftException e) {warnEveryone("Error saving the world!");}
+		try {world.saveAllChunks(true, (IProgressUpdate)null);}
+		catch (MinecraftException e) {warnEveryone(Localization.get(Localization.WB_SAVING_FAILED));}
 		world.canNotSave = canNotSaveBefore;
-		warnEveryone("Done saving! Time needed: " + ticks + "ticks or " + (int)(ticks / 20) + "sec.");
+		warnEveryone(Localization.get(Localization.WB_FILL_FINISHED).replaceAll("%ticks", "" + ticks).replaceAll("%sec", "" + (int)(ticks / 20)));
 		CommandWB.taskGooing = null;
 	}
 
@@ -166,7 +167,7 @@ public class TickTaskFill implements ITickTask
 
 	public void stop() 
 	{
-		warnEveryone("Filling aborted!");
+		warnEveryone(Localization.get(Localization.WB_FILL_ABORTED));
 		isComplete = true;
 	}
 

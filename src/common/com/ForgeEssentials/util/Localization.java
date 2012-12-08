@@ -64,6 +64,12 @@ public class Localization
 	public static final String WB_FILL_ONLYONCE = "message.wb.fill.onlyonce";
 	public static final String WB_FILL_CONSOLENEEDSDIM = "message.wb.fill.consoleneedsdim";
 	public static final String WB_FILL_START = "message.wb.fill.start";
+	public static final String WB_FILL_STILLGOING = "message.wb.fill.stillgoing";
+	public static final String WB_FILL_DONE = "message.wb.fill.done";
+	public static final String WB_FILL_ABORTED = "message.wb.fill.aborted";
+	public static final String WB_FILL_FINISHED = "message.wb.fill.finished";
+	
+	public static final String WB_SAVING_FAILED = "message.wb.saving.failed";
 	
 	public static final String WB_TURBO_INFO = "message.wb.turbo.info";
 	public static final String WB_TURBO_CONFIRM = "message.wb.turbo.confirm";
