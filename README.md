@@ -6,7 +6,7 @@ Setup
 =====
 Minecraft: 1.4.5b (yes, a patch to 1.4.5)  
 MCP: 7.23  
-Forge: #407
+Forge: #426 (Version fixes "malformed property" error in group.cfg)
 
 Get the mentioned Forge and MCP, and decompile (using install.cmd/sh). Once you have a working Forge workspace, pull the repo into that MCP folder.
 
