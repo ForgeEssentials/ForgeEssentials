@@ -54,6 +54,10 @@ public class CoreConfig
 		prop.comment = "Disabling this will remove Properties.";
 		ModuleLauncher.propEnabled = prop.getBoolean(true);
 		
+		prop = config.get("Modules", "Economy_Enabled", true);
+		prop.comment = "Disabling this will remove Economy.";
+		ModuleLauncher.propEnabled = prop.getBoolean(true);
+		
 		prop = config.get("Modules", "WorldBorder_Enabled", false);
 		prop.comment = "Disabling this will remove Any WorldBorder setup.";
 		ModuleLauncher.borderEnabled = prop.getBoolean(false);

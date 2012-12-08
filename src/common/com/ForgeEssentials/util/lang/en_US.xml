@@ -180,4 +180,46 @@
 	<entry key="tile.air.name">Air</entry>
 	
 	<entry key="unit.seconds">sec</entry>
+	
+	<!-- Some localization for Economy -->
+	
+	<!-- SERVER ADMINS if you edit a command name such as walletset -->
+	<!-- make sure to change the command syntax and info below as well -->
+
+	<entry key="message.wallet.walletname">wallet</entry>
+	<entry key="message.wallet.currencysingular">gold</entry>
+	<entry key="message.wallet.currencyplural">gold</entry>
+	<entry key="message.wallet.walletset">walletset</entry>
+	<entry key="message.wallet.walletsetself">Your wallet was set to </entry>
+	<entry key="message.wallet.walletsettarget">Wallet set to </entry>
+	<entry key="message.wallet.walletadd">walletadd</entry>
+	<entry key="message.wallet.walletaddself"> added to your wallet.</entry>
+	<entry key="message.wallet.walletaddtarget"> added to the wallet.</entry>
+	<entry key="message.wallet.walletremove">walletremove</entry>
+	<entry key="message.wallet.walletremoveself"> was removed from your wallet</entry>
+	<entry key="message.wallet.walletremovetarget"> was removed from the wallet.</entry>
+	<entry key="message.wallet.walletget">walletget</entry>
+	<entry key="message.wallet.walletgetself">Your wallet contains </entry>
+	<entry key="message.wallet.walletgettarget">'s wallet contains </entry>
+	
+	<entry key="command.walletset.syntax.player">[&lt;player> &lt;amount to set>]</entry>
+	<entry key="command.walletset.info.player">Sets the target's wallet to the amount specified.</entry>
+	<entry key="command.walletset.syntax.console">[&lt;player> &lt;wallet amount>]</entry>
+	<entry key="command.walletset.info.console">Sets the target's wallet to the amount specified.</entry>
+	
+	<entry key="command.walletadd.syntax.player">[&lt;player> &lt;amount to add>]</entry>
+	<entry key="command.walletadd.info.player">Adds the specified amount to the target's wallet.</entry>
+	<entry key="command.walletadd.syntax.console">[&lt;player> &lt;amount to add>]</entry>
+	<entry key="command.walletadd.info.console">Adds the specified amount to the target's wallet.</entry>
+	
+	<entry key="command.walletremove.syntax.player">[&lt;player> &lt;amount to remove>]</entry>
+	<entry key="command.walletremove.info.player">Removes the specified amount from the target's wallet.</entry>
+	<entry key="command.walletremove.syntax.console">[&lt;player> &lt;amount to remove>]</entry>
+	<entry key="command.walletremove.info.console">Removes the specified amount from the target's wallet.</entry>
+	
+	<entry key="command.walletget.syntax.player">[&lt;player>]</entry>
+	<entry key="command.walletget.info.player">Returns the target's wallet.</entry>
+	<entry key="command.walletget.syntax.console">[&lt;player>]</entry>
+	<entry key="command.walletget.info.console">Returns the target's wallet.</entry>
+	
 </properties>
