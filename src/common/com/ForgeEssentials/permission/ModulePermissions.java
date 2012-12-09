@@ -9,6 +9,7 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -96,6 +97,11 @@ public class ModulePermissions implements IFEModule
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.permissions.zone", false);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.permissions.zone", false);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.permissions", true);
+		
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, TeleportCenter.BYPASS_COOLDOWN, false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, TeleportCenter.BYPASS_WARMUP, false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, TeleportCenter.BYPASS_WARMUP, true);
 	}
 
 	@Override

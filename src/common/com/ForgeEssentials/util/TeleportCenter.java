@@ -8,6 +8,8 @@ import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ServerConfigurationManager;
 
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -22,9 +24,12 @@ public class TeleportCenter implements IScheduledTickHandler
 	public static int tpWarmup;
 	public static int tpCooldown;
 	
+	public static final String BYPASS_WARMUP = "ForgeEssentials.TeleportCenter.BypassWarmup";
+	public static final String BYPASS_COOLDOWN = "ForgeEssentials.TeleportCenter.BypassCooldown";
+	
 	public static void addToTpQue(WarpPoint point, EntityPlayer player)
 	{
-		if(PlayerInfo.getPlayerInfo(player).TPcooldown != 0)
+		if(PlayerInfo.getPlayerInfo(player).TPcooldown != 0 || PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
 		{
 			player.sendChatToPlayer("Cooldown still active. Still got " + PlayerInfo.getPlayerInfo(player).TPcooldown + "sec to go.");
 		}
@@ -32,7 +37,7 @@ public class TeleportCenter implements IScheduledTickHandler
 		{
 			PlayerInfo.getPlayerInfo(player).TPcooldown = tpCooldown;
 			TPdata data = new TPdata(point, player);
-			if(tpWarmup == 0)
+			if(tpWarmup == 0 || PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_WARMUP)))
 			{
 				data.doTP();
 			}
