@@ -43,6 +43,7 @@ public class ModuleLauncher
 	{
 		OutputHandler.SOP("Discovering and loading modules...");
 		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/core.cfg.");
+		try{
 		worldcontrol = new ModuleWorldControl();
 		commands = new ModuleCommands();
 		permission = new ModulePermissions();
@@ -50,7 +51,12 @@ public class ModuleLauncher
 		worldborder = new ModuleWorldBorder();
 		playerLogger = new ModulePlayerLogger();
 		economy = new ModuleEconomy();
+		}
+		catch (NoClassDefFoundError e1){
+			// Nothing to see here, carry on, carry on
+		}
 
+		try{
 		if (wcEnabled)
 			worldcontrol.preLoad(e);
 
@@ -71,11 +77,16 @@ public class ModuleLauncher
 		
 		if (economyEnabled)
 			economy.preLoad(e);
+		}
+		catch (NullPointerException e2){
+			
+		}
 	}
 
 	public void load(FMLInitializationEvent e)
 	{
 
+		try{
 		if (wcEnabled)
 			worldcontrol.load(e);
 
@@ -96,11 +107,16 @@ public class ModuleLauncher
 		
 		if (economyEnabled)
 			economy.load(e);
+		}
+		catch (NullPointerException e3){
+			
+		}
 	}
 
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 
+		try{
 		if (wcEnabled)
 			worldcontrol.serverStarting(e);
 
@@ -121,10 +137,15 @@ public class ModuleLauncher
 		
 		if (economyEnabled)
 			economy.serverStarting(e);
+		}
+		catch (NullPointerException e4){
+			
+		}
 	}
 
 	public void serverStarted(FMLServerStartedEvent e)
 	{
+		try{
 		if (wcEnabled)
 			worldcontrol.serverStarted(e);
 
@@ -142,18 +163,32 @@ public class ModuleLauncher
 
 		if (loggerEnabled)
 			playerLogger.serverStarted(e);
+		}
+		catch (NullPointerException e5){
+			
+		}
 	}
 
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
+		try{
 		if (loggerEnabled)
 			playerLogger.serverStopping(e);
+		}
+		catch (NullPointerException e6){
+			
+		}
 	}
 
 	public void postLoad(FMLPostInitializationEvent e)
 	{
+		try{
 		if (permsEnabled)
 			permission.postLoad(e);
+		}
+		catch (NullPointerException e7){
+			
+		}
 
 	}
 }
