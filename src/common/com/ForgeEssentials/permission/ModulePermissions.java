@@ -59,33 +59,43 @@ public class ModulePermissions implements IFEModule
 		OutputHandler.SOP("Ending permissions registration period.");
 
 		config = new ConfigPermissions();
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandZone());
-		e.registerServerCommand(new CommandFEPerm());
+		//e.registerServerCommand(new CommandFEPerm());
 		
 	}
 
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
+		event.registerPermissionDefault("ForgeEssentials.permissions.zone", true);
 		event.registerPermissionDefault("ForgeEssentials.permissions.zone.list", true);
 		event.registerPermissionDefault("ForgeEssentials.permissions.zone.define", true);
 		event.registerPermissionDefault("ForgeEssentials.permissions.zone.remove", true);
 		event.registerPermissionDefault("ForgeEssentials.permissions.zone.redefine", true);
 		event.registerPermissionDefault("ForgeEssentials.permissions.zone.setparent", true);
+		
+		event.registerPermissionDefault("ForgeEssentials.permissions.permissions.set", true);
+		event.registerPermissionDefault("ForgeEssentials.permissions.groups.create", true);
+		event.registerPermissionDefault("ForgeEssentials.permissions.groups.delete", true);
+		event.registerPermissionDefault("ForgeEssentials.permissions.groups.addplayer", true);
+		event.registerPermissionDefault("ForgeEssentials.permissions.player.setgroup", true);
+		event.registerPermissionDefault("ForgeEssentials.permissions.player.setsuperperm", true);
+		
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.permissions.zone", false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.permissions.zone", false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.permissions", true);
 	}
 
 	@Override

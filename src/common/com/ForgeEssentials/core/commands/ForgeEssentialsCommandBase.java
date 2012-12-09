@@ -21,7 +21,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	// ---------------------------
 
 	@Override
-	public final void processCommand(ICommandSender var1, String[] var2)
+	public void processCommand(ICommandSender var1, String[] var2)
 	{
 		if (var1 instanceof EntityPlayer)
 			processCommandPlayer((EntityPlayer) var1, var2);
@@ -48,14 +48,14 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	// ---------------------------
 
 	@Override
-	public final String getCommandUsage(ICommandSender sender)
+	public String getCommandUsage(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
 		{
 			String usage;
 			try
 			{
-				usage = "/" + getCommandName() + " " + getSyntaxPlayer((EntityPlayer) sender) + " " + getInfoPlayer((EntityPlayer) sender);
+				usage = "/" + getCommandName() + " " + getCommandSyntax(sender) + " " + getCommandInfo(sender);
 			} catch (NullPointerException e)
 			{
 				usage = "Not usable by player";
@@ -68,13 +68,29 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 			String usage;
 			try
 			{
-				usage = getSyntaxConsole() + " " + getInfoConsole();
+				usage = getCommandSyntax(sender) + " " + getCommandInfo(sender);
 			} catch (NullPointerException e)
 			{
 				usage = "Not usable by console";
 			}
 			return usage;
 		}
+	}
+	
+	public String getCommandInfo(ICommandSender sender)
+	{
+		if (sender instanceof EntityPlayer)
+			return getInfoPlayer((EntityPlayer) sender);
+		else
+			return getInfoConsole();
+	}
+	
+	public String getCommandSyntax(ICommandSender sender)
+	{
+		if (sender instanceof EntityPlayer)
+			return getSyntaxPlayer((EntityPlayer) sender);
+		else
+			return getSyntaxConsole();
 	}
 
 	public String getSyntaxConsole()
@@ -114,7 +130,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	// permissions
 	// ---------------------------
 
-	public final boolean canCommandSenderUseCommand(ICommandSender sender)
+	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
 			return canPlayerUseCommand((EntityPlayer) sender);
