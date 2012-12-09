@@ -22,7 +22,7 @@ public class ZoneManager
 
 	public ZoneManager()
 	{
-		GLOBAL = new Zone("_GLOBAL_");
+		GLOBAL = new Zone("_GLOBAL_", null);
 		worldZoneMap = new HashMap<String, Zone>();
 		zoneMap = new TreeMap<String, Zone>();
 	}
@@ -41,7 +41,7 @@ public class ZoneManager
 
 		if (!worldZoneMap.containsKey(worldString))
 		{
-			Zone zone = new Zone(worldString);
+			Zone zone = new Zone(worldString, e.world);
 			worldZoneMap.put(worldString, zone);
 		}
 	}
@@ -54,7 +54,7 @@ public class ZoneManager
 
 		if (zone == null)
 		{
-			zone = new Zone(worldString);
+			zone = new Zone(worldString, world);
 			worldZoneMap.put(worldString, zone);
 		}
 

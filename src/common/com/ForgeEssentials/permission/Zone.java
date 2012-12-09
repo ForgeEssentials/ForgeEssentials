@@ -1,6 +1,7 @@
 package com.ForgeEssentials.permission;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Set;
@@ -10,6 +11,7 @@ import net.minecraft.src.World;
 import net.minecraftforge.event.Event.Result;
 
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
@@ -45,6 +47,7 @@ public class Zone extends AreaBase implements Comparable
 		super(sel.getLowPoint(), sel.getHighPoint());
 		zoneID = ID;
 		parent = ZoneManager.getWorldZone(world);
+		worldString = parent.getWorldString();
 		parent.children.add(ID);
 		isWorldZone = isGlobalZone = false;
 		initMaps();
@@ -54,7 +57,7 @@ public class Zone extends AreaBase implements Comparable
 	 * used to construct Global and World zones.
 	 * @param ID
 	 */
-	public Zone(String ID)
+	public Zone(String ID, World world)
 	{
 		super(new Point(0, 0, 0), new Point(0, 0, 0));
 		zoneID = ID;
@@ -69,6 +72,7 @@ public class Zone extends AreaBase implements Comparable
 		{
 			isGlobalZone = true;
 			isWorldZone = false;
+			worldString = FunctionHelper.getWorldString(world);
 		}
 
 		initMaps();
@@ -315,5 +319,25 @@ public class Zone extends AreaBase implements Comparable
 	public Set<String> getGroupsOverriden()
 	{
 		return groupOverrides.keySet();
+	}
+	
+	public static void load(String id, String parentID, String worldString, int priority, Selection area, String[] children)
+	{
+		Zone zone = ZoneManager.getZone(id);
+		Zone parent = ZoneManager.getZone(parentID);
+		World world = FunctionHelper.getWorldFromWorldString(worldString); 
+		
+		if (parent == null)
+			parent = ZoneManager.getWorldZone(world);
+		
+		if (zone == null)
+			zone = new Zone(id, area, parent);
+		
+		zone.priority = priority;
+		for (String child : children)
+			if (!zone.children.contains(child))
+				zone.children.add(child);
+		
+		ZoneManager.zoneMap.put(id, zone);
 	}
 }

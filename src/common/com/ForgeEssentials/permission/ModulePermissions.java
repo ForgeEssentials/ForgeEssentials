@@ -7,6 +7,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -67,6 +68,7 @@ public class ModulePermissions implements IFEModule
 	{
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
+		
 	}
 
 	@Override
@@ -89,8 +91,8 @@ public class ModulePermissions implements IFEModule
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		// TODO Auto-generated method stub
-
+		for (Zone zone : ZoneManager.zoneMap.values())
+			DataDriver.saveObject(zone);
 	}
 
 }

@@ -9,6 +9,7 @@ import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.nbt.NBTDataDriver;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class ZoneDataAdapter extends FileSystemDataAdapter<Zone, String>
 {
@@ -102,6 +103,7 @@ public class ZoneDataAdapter extends FileSystemDataAdapter<Zone, String>
 			y = c.get("p2", "y", 0).getInt();
 			z = c.get("p2", "z", 0).getInt();
 			Point high = new Point(x, y, z);
+			Zone.load(zoneID, parent, world, priority, new Selection(low, high), children);
 		}
 		else
 		{
