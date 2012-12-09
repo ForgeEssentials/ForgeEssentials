@@ -11,7 +11,9 @@ import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -50,11 +52,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 				if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					NBTTagCompound warp = warpdata.getCompoundTag(args[0].toLowerCase());
-					if(sender.dimension != warp.getInteger("dim"))
-					{
-						FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP)sender, warp.getInteger("dim"));
-					}
-					((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(warp.getDouble("X"), warp.getDouble("Y"), warp.getDouble("Z"), warp.getFloat("Yaw"), warp.getFloat("Pitch"));
+					TeleportCenter.addToTpQue(new WarpPoint(warp.getInteger("dim"), (int)warp.getDouble("X"), (int)warp.getDouble("Y"), (int)warp.getDouble("Z"), warp.getFloat("Yaw"), warp.getFloat("Pitch")), sender);
 				}
 				else
 				{

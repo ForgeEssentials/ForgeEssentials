@@ -17,6 +17,7 @@ import cpw.mods.fml.common.TickType;
 public class TeleportCenter implements IScheduledTickHandler
 {
 	private static ArrayList<TPdata> que = new ArrayList();
+	private static ArrayList<TPdata> removeQue = new ArrayList();
 	
 	public static int tpWarmup;
 	public static int tpCooldown;
@@ -29,6 +30,7 @@ public class TeleportCenter implements IScheduledTickHandler
 		}
 		else
 		{
+			PlayerInfo.getPlayerInfo(player).TPcooldown = tpCooldown;
 			TPdata data = new TPdata(point, player);
 			if(tpWarmup == 0)
 			{
@@ -36,6 +38,7 @@ public class TeleportCenter implements IScheduledTickHandler
 			}
 			else
 			{
+				player.sendChatToPlayer("Stand still for " + tpWarmup + "sec.");
 				que.add(data);
 			}
 		}
@@ -43,8 +46,14 @@ public class TeleportCenter implements IScheduledTickHandler
 	
 	public static void abort(TPdata tpData) 
 	{
-		que.remove(tpData);
+		removeQue.add(tpData);
 		tpData.getPlayer().sendChatToPlayer("TP aborted");
+	}
+	
+	public static void TPdone(TPdata tpData) 
+	{
+		removeQue.add(tpData);
+		tpData.getPlayer().sendChatToPlayer("*Poof*");
 	}
 	
 	@Override
@@ -54,6 +63,8 @@ public class TeleportCenter implements IScheduledTickHandler
 		{
 			data.count();
 		}
+		que.removeAll(removeQue);
+		removeQue.clear();
 		for(Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
 		{
 			PlayerInfo.getPlayerInfo((EntityPlayer) player).TPcooldownTick();

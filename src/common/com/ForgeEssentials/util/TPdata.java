@@ -6,6 +6,7 @@ import net.minecraft.src.ServerConfigurationManager;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -13,6 +14,8 @@ public class TPdata
 {
 	private WarpPoint point;
 	private EntityPlayer player;
+	private WorldPoint lastPos;
+	private WorldPoint currentPos;
 	int waittime;
 	
 	public TPdata(WarpPoint point, EntityPlayer player)
@@ -20,11 +23,16 @@ public class TPdata
 		this.point = point;
 		this.player = player;
 		this.waittime = TeleportCenter.tpWarmup;
+		lastPos = new WorldPoint(player.dimension, (int) player.posX, (int) player.posY, (int) player.posZ);
 	}
 	
 	public void count()
 	{
-		TeleportCenter.abort(this);
+		currentPos = new WorldPoint(player.dimension, (int) player.posX, (int) player.posY, (int) player.posZ);
+		if(!lastPos.equals(currentPos))
+		{
+			TeleportCenter.abort(this);
+		}
 		
 		waittime --;
 		if(waittime == 0)
@@ -42,6 +50,7 @@ public class TPdata
 		}
 		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y, point.z, point.yaw, point.pitch);
 		PlayerInfo.getPlayerInfo((EntityPlayer) player).TPcooldown = TeleportCenter.tpCooldown;
+		TeleportCenter.TPdone(this);
 	}
 
 	public EntityPlayer getPlayer()
