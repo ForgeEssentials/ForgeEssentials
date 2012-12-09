@@ -89,6 +89,8 @@ public class PlayerInfo
 	private Stack<BackupArea> undos;
 	private Stack<BackupArea> redos;
 
+	public int TPcooldown = 0;
+	
 	private PlayerInfo(EntityPlayer player)
 	{
 		sel1 = null;
@@ -130,6 +132,18 @@ public class PlayerInfo
 	public void save()
 	{
 		ForgeEssentials.getInstanceDataDriver().saveObject(this);
+	}
+	
+	// ----------------------------------------------
+	// ---------------- TP stuff --------------------
+	// ----------------------------------------------
+	
+	public void TPcooldownTick() 
+	{
+		if(TPcooldown != 0)
+		{
+			TPcooldown--;
+		}
 	}
 
 	// ----------------------------------------------

@@ -14,9 +14,11 @@ import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Version;
 
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PostInit;
@@ -34,6 +36,7 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
 
 /**
  * Main mod class
@@ -102,6 +105,9 @@ public class ForgeEssentials
 		
 		// Add hooks for initializing new data backing API
 		DataStorageManager.setupDriver(config.config, e);
+		
+		//Central TP system
+		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
 		
 		DataStorage.load();
 		e.registerServerCommand(new CommandFEVersion());

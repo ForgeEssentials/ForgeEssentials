@@ -11,6 +11,7 @@ import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.permission.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
 
 public class CoreConfig
 {
@@ -83,7 +84,14 @@ public class CoreConfig
 		prop = config.get("Core", "verbose", false);
 		prop.comment = "Specify if Verbose mode is enabled. Only useful in debugging.";
 		OutputHandler.verbose = prop.getBoolean(false);
-
+		
+		prop = config.get("Core", "tpWarmup", 5);
+		prop.comment = "The amount of time you need to keep still to tp.";
+		TeleportCenter.tpWarmup = prop.getInt(5);
+		
+		prop = config.get("Core", "tpCooldown", 5);
+		prop.comment = "The amount of time you need to wait to TP again.";
+		TeleportCenter.tpCooldown = prop.getInt(5);
 	}
 
 	/**
