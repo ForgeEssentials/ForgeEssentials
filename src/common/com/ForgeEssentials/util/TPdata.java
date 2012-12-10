@@ -10,6 +10,13 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
+/**
+ * Uses by TeleportCenter.
+ * 
+ * @author Dries007
+ *
+ */
+
 public class TPdata 
 {
 	private WarpPoint point;

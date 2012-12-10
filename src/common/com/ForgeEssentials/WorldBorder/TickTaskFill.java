@@ -19,6 +19,13 @@ import net.minecraft.src.MathHelper;
 import net.minecraft.src.MinecraftException;
 import net.minecraft.src.WorldServer;
 
+/**
+ * Does the actual filling, with limited chuncks per tick.
+ * 
+ * @author Dries007
+ *
+ */
+
 public class TickTaskFill implements ITickTask
 {
 	private boolean isComplete;

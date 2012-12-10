@@ -9,12 +9,14 @@ import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.registry.TickRegistry;
 
 public class ModuleCommands implements IFEModule
 {
@@ -58,6 +60,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandBackup());
 		e.registerServerCommand(new CommandList());
 		e.registerServerCommand(new CommandTPS());
+		e.registerServerCommand(new CommandKit());
 		//op
 		e.registerServerCommand(new CommandServerDo());
 		//fun
@@ -76,6 +79,7 @@ public class ModuleCommands implements IFEModule
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
 	{
+		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
 	}
 
 	@ForgeSubscribe
