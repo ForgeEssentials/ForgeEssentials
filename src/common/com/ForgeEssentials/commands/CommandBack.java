@@ -38,8 +38,14 @@ public class CommandBack extends ForgeEssentialsCommandBase
 		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
 		if (info.lastDeath != null)
 		{
-			Point death = info.lastDeath;
-			((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(death.x, death.y, death.z, sender.rotationYaw, sender.rotationPitch);
+			WorldPoint death = info.lastDeath;
+			EntityPlayerMP player = ((EntityPlayerMP) sender);
+			if (player.dimension != death.dim)
+			{
+				// Home is not in this dimension. Move the player.
+				player.mcServer.getConfigurationManager().transferPlayerToDimension(player, death.dim);
+			}
+			player.playerNetServerHandler.setPlayerLocation(death.x, death.y + 1, death.z, player.rotationYaw, player.rotationPitch);
 		} else
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NODEATHPOINT));
 	}

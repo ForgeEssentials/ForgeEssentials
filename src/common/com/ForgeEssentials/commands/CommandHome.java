@@ -67,11 +67,19 @@ public class CommandHome extends ForgeEssentialsCommandBase
 			sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
 		} else
 		{
-			Point home = PlayerInfo.getPlayerInfo(sender).home;
+			WorldPoint home = PlayerInfo.getPlayerInfo(sender).home;
 			if (home == null)
 				OutputHandler.chatError(sender, Localization.get("message.error.nohome") + getSyntaxPlayer(sender));
 			else
-				((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(home.x, home.y, home.z, sender.rotationYaw, sender.rotationPitch);
+			{
+				EntityPlayerMP player = ((EntityPlayerMP) sender);
+				if (player.dimension != home.dim)
+				{
+					// Home is not in this dimension. Move the player.
+					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, home.dim);
+				}
+				player.playerNetServerHandler.setPlayerLocation(home.x, home.y + 1, home.z, player.rotationYaw, player.rotationPitch);
+			}
 		}
 	}
 
