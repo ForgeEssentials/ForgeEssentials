@@ -27,8 +27,12 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length >= 1 && args[0].equals("here"))
-			PlayerInfo.getPlayerInfo(sender).home = new WorldPoint((int) sender.posX, (int) sender.posY, (int) sender.posZ, sender.worldObj.getWorldInfo().getDimension());
+		if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
+		{
+			WorldPoint p = new WorldPoint(sender.worldObj.getWorldInfo().getDimension(), (int) sender.posX, (int) sender.posY, (int) sender.posZ);
+			PlayerInfo.getPlayerInfo(sender).home = p;
+			sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
+		}
 		else if (args.length >= 3)
 		{
 			int x = 0;
@@ -58,7 +62,9 @@ public class CommandHome extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
 				return;
 			}
-			PlayerInfo.getPlayerInfo(sender).home = new WorldPoint(x, y, z, sender.worldObj.getWorldInfo().getDimension());
+			WorldPoint p = new WorldPoint(sender.worldObj.getWorldInfo().getDimension(), x, y, z);
+			PlayerInfo.getPlayerInfo(sender).home = p;
+			sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
 		} else
 		{
 			Point home = PlayerInfo.getPlayerInfo(sender).home;

@@ -44,57 +44,77 @@ public class PlayerInfoDataAdapter extends FileSystemDataAdapter<PlayerInfo, Str
 	public boolean saveData(PlayerInfo object)
 	{
 		boolean flag = true;
-		String file = this.dataDir + object.getUsername().toLowerCase();
-		Configuration data = new Configuration(new File(file), false);
+		File f = new File(this.dataDir + object.getUsername().toLowerCase() + ".txt");
+		
+		// Remove the file if it exists; otherwise tha data will not change.
+		if (f.exists())
+		{
+			f.delete();
+		}
+		
+		Configuration data = new Configuration(f, false);
 		
 		data.get("wand", "id", object.wandID);
 		data.get("wand", "meta", object.wandDmg);
 		data.get("wand", "enabled", object.wandEnabled);
 		Point p;
 		WorldPoint w;
+		boolean boolData = true;
 		
 		if ((p = object.getPoint1()) != null)
 		{
 			data.get("selection", "x1", p.x);
 			data.get("selection", "y1", p.y);
 			data.get("selection", "z1", p.z);
+			boolData = true;
 		}
 		else
 		{
-			data.get("selection", "1", false);
+			boolData = false;
 		}
+		data.get("selection", "1", boolData);
+		
 		if ((p = object.getPoint2()) != null)
 		{
 			data.get("selection", "x2", p.x);
 			data.get("selection", "y2", p.y);
 			data.get("selection", "z2", p.z);
+			boolData = true;
 		}
 		else
 		{
-			data.get("selection", "2", false);
+			boolData = false;
 		}
+		data.get("selection", "2", boolData);
+		
 		if ((w = object.home) != null)
 		{
 			data.get("home", "x", w.x);
 			data.get("home", "y", w.y);
 			data.get("home", "z", w.z);
 			data.get("home", "dim", w.dim);
+			boolData = true;
 		}
 		else
 		{
-			data.get("home", "none", true);
+			boolData = false;
 		}
+		data.get("home", "exists", boolData);
+		
 		if ((w = object.lastDeath) != null)
 		{
 			data.get("death", "x", w.x);
 			data.get("death", "y", w.y);
 			data.get("death", "z", w.z);
 			data.get("death", "dim", w.dim);
+			boolData = true;
 		}
 		else
 		{
-			data.get("death", "none", true);
+			boolData = false;
 		}
+		data.get("death", "exists", boolData);
+		
 		data.get("spawn", "type", object.spawnType);
 		
 		data.save();
@@ -106,7 +126,7 @@ public class PlayerInfoDataAdapter extends FileSystemDataAdapter<PlayerInfo, Str
 	public boolean loadData(String username, PlayerInfo object)
 	{
 		boolean flag = true;
-		File file = new File(this.dataDir + username.toLowerCase());
+		File file = new File(this.dataDir + username.toLowerCase() + ".txt");
 		
 		if (file.exists())
 		{
@@ -121,7 +141,7 @@ public class PlayerInfoDataAdapter extends FileSystemDataAdapter<PlayerInfo, Str
 			// buffer to hold point data
 			int[] pnt = new int[4];
 			
-			if (!data.hasKey("selection", "1"))
+			if (data.get("selection", "1", false).getBoolean(false))
 			{
 				pnt[0] = data.get("selection", "x1", 0).getInt();
 				pnt[1] = data.get("selection", "y1", 0).getInt();
@@ -129,7 +149,7 @@ public class PlayerInfoDataAdapter extends FileSystemDataAdapter<PlayerInfo, Str
 				object.setPoint1(new Point(pnt[0], pnt[1], pnt[2]));
 			}
 
-			if (!data.hasKey("selection", "2"))
+			if (data.get("selection", "2", false).getBoolean(false))
 			{
 				pnt[0] = data.get("selection", "x2", 0).getInt();
 				pnt[1] = data.get("selection", "y2", 0).getInt();
@@ -137,21 +157,21 @@ public class PlayerInfoDataAdapter extends FileSystemDataAdapter<PlayerInfo, Str
 				object.setPoint2(new Point(pnt[0], pnt[1], pnt[2]));
 			}
 
-			if (!data.hasKey("home", "none"))
+			if (data.get("home", "exists", false).getBoolean(false))
 			{				
 				pnt[0] = data.get("home", "x", 0).getInt();
 				pnt[1] = data.get("home", "y", pnt[1]).getInt();
 				pnt[2] = data.get("home", "z", pnt[2]).getInt();
 				pnt[3] = data.get("home", "dim", pnt[3]).getInt();
-				object.home = new WorldPoint(pnt[0], pnt[1], pnt[2], pnt[3]);
+				object.home = new WorldPoint(pnt[3], pnt[0], pnt[1], pnt[2]);
 			}
-			if (!data.hasKey("death", "none"))
+			if (data.get("death", "none", false).getBoolean(false))
 			{			
 				pnt[0] = data.get("death", "x", pnt[0]).getInt();
 				pnt[1] = data.get("death", "y", pnt[1]).getInt();
 				pnt[2] = data.get("death", "z", pnt[2]).getInt();
 				pnt[3] = data.get("death", "dim", pnt[3]).getInt();
-				object.lastDeath = new WorldPoint(pnt[0], pnt[1], pnt[2], pnt[3]);
+				object.lastDeath = new WorldPoint(pnt[3], pnt[0], pnt[1], pnt[2]);
 			}
 			object.spawnType = data.get("spawn", "type", 0).getInt();
 		}

@@ -22,7 +22,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 		if (e.entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) e.entity;
-			PlayerInfo.getPlayerInfo(player).lastDeath = new WorldPoint((int) player.posX, (int) player.posY, (int) player.posZ, player.worldObj.getWorldInfo().getDimension());
+			PlayerInfo.getPlayerInfo(player).lastDeath = new WorldPoint(player.worldObj.getWorldInfo().getDimension(), (int) player.posX, (int) player.posY, (int) player.posZ);
 		}
 	}
 

@@ -53,6 +53,7 @@
 		
 	<entry key="command.home.syntax.player">[here|x, y, z]</entry>
 	<entry key="command.home.info.player">Teleport you to/sets your home</entry>
+	<entry key="command.home.confirm">Home set to: %1$d %2$d %3$d</entry>
 
 	<entry key="command.back.syntax.player"></entry>
 	<entry key="command.back.info.player">Teleport you your last death point</entry>
