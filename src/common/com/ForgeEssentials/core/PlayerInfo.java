@@ -90,6 +90,7 @@ public class PlayerInfo
 	private Stack<BackupArea> redos;
 
 	public int TPcooldown = 0;
+	public HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
 	
 	private PlayerInfo(EntityPlayer player)
 	{
@@ -143,6 +144,25 @@ public class PlayerInfo
 		if(TPcooldown != 0)
 		{
 			TPcooldown--;
+		}
+	}
+	
+	// ----------------------------------------------
+	// ------------- Command stuff ------------------
+	// ----------------------------------------------
+	
+	public void KitCooldownTick()
+	{
+		for(String key : kitCooldown.keySet())
+		{
+			if(kitCooldown.get(key) == 0)
+			{
+				kitCooldown.remove(key);
+			}
+			else
+			{
+				kitCooldown.put(key, kitCooldown.get(key) - 1);
+			}
 		}
 	}
 

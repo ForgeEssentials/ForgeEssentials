@@ -22,6 +22,14 @@ import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.NBTTagCompound;
 
+/**
+ * Now uses TeleportCenter.
+ * TODO get rid of DataStorage
+ * 
+ * @author Dries007
+ *
+ */
+
 public class CommandWarp extends ForgeEssentialsCommandBase
 {
 	@Override
@@ -109,13 +117,8 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 			}
+			DataStorage.setData("warpdata", warpdata);
 		}
-		else
-		{
-			
-		}
-		
-		DataStorage.setData("warpdata", warpdata);
 	}
 
 	@Override
@@ -154,12 +157,11 @@ public class CommandWarp extends ForgeEssentialsCommandBase
     	
     	if(args.length == 1)
     	{
-    		NBTTagCompound warpdata = DataStorage.getData("warpdata");
     		return getListOfStringsFromIterableMatchingLastWord(args, list);
     	}
     	else if(args.length == 2)
     	{
-    		return getListOfStringsMatchingLastWord(args, "se", "del");
+    		return getListOfStringsMatchingLastWord(args, "set", "del");
     	}
     	else
     	{

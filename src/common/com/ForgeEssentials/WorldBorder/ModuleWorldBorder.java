@@ -36,6 +36,14 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 
+/**
+ * Bounces players back into the border if they pass it.
+ * No bypass permissions available, If needed, tell me on github.
+ * 
+ * @author Dries007
+ *
+ */
+
 public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 {
 	public static boolean WBenabled = false;

@@ -14,6 +14,13 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
+/**
+ * Used to check, set and fill the border. You need to activate the module before this command is usable.
+ * 
+ * @author Dries007
+ *
+ */
+
 public class CommandWB extends ForgeEssentialsCommandBase
 {
 	public static TickTaskFill taskGooing = null; 

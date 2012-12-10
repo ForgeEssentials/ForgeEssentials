@@ -22,6 +22,18 @@ public class Localization
 	public static final String SPAWNED = "message.spawned";
 	
 	/*
+	 * Kit command & tickHandler
+	 */
+	
+	public static final String KIT_LIST = "command.kit.list";
+	public static final String KIT_NOTEXISTS = "command.kit.noExists";
+	public static final String KIT_MADE = "command.kit.made";
+	public static final String KIT_ALREADYEXISTS = "command.kit.alreadyExists";
+	public static final String KIT_REMOVED = "command.kit.removed";
+	public static final String KIT_STILLINCOOLDOWN = "command.kit.stillInCooldown";
+	public static final String KIT_DONE = "command.kit.done";
+	
+	/*
 	 * Ego boosts
 	 */
 	

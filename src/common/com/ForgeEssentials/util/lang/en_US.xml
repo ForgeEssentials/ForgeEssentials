@@ -1,6 +1,18 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties version="1.0">
 	<comment>English (US) Localization File, &lt; is the less than or left arrow sign</comment>
+	
+	<entry key="command.kit.syntax.player">[name] OR [name] [set|del] &lt;cooldown></entry>
+	<entry key="command.kit.info.player">Free stuff!</entry>
+	
+	<entry key="command.kit.list">This is a list of all available carepackages:</entry>
+	<entry key="command.kit.noExists">This is a list of all available carepackages:</entry>
+	<entry key="command.kit.made">Carepackage made. %c sec cooldown.</entry>
+	<entry key="command.kit.alreadyExists">This carepackage already exists.</entry>
+	<entry key="command.kit.removed">Carepackage removed.</entry>
+	<entry key="command.kit.stillInCooldown">Carepackage cooldown active, %c sec to go!</entry>
+	<entry key="command.kit.done">Carepackage dropped.</entry>
+	
 	<entry key="command.motd.syntax.console">[new motd]</entry>
 	<entry key="command.motd.syntax.player">[new motd]</entry>
 	<entry key="command.motd.info.console">Get/set the message of the day</entry>

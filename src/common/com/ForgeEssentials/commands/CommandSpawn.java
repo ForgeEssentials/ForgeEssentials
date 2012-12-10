@@ -129,9 +129,9 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 				return;
 			}
 			int amount = 1;
-			int x = mop.blockX;
-			int y = mop.blockY + 1;
-			int z = mop.blockZ;
+			double x = mop.blockX + 0.5D;
+			double y = mop.blockY + 1;
+			double z = mop.blockZ + 0.5D;
 			if (args.length >= 2)
 			{
 				try
@@ -273,7 +273,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+			return getListOfStringsFromIterableMatchingLastWord(args, mobNames.keySet());
 		} else
 		{
 			return null;

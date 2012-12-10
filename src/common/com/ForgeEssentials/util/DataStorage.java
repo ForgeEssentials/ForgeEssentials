@@ -14,6 +14,14 @@ import net.minecraft.src.CompressedStreamTools;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.WorldServer;
 
+/**
+ * This needs replacing!
+ * TODO Someone who understands the persistence data system, please tell me how or diy ;)
+ * 
+ * @author Dries007
+ *
+ */
+
 public class DataStorage
 {
 	private static NBTTagCompound mainData;
@@ -34,6 +42,7 @@ public class DataStorage
 	public static void setData(String name, NBTTagCompound data)
 	{
 		mainData.setCompoundTag(name, data);
+		save();
 	}
 	
 	public static void load()
