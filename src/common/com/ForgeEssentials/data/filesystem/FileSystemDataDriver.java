@@ -51,12 +51,13 @@ public class FileSystemDataDriver extends DataDriver
 		}
 		else
 		{
-			if (MinecraftServer.getServer() instanceof IntegratedServer)
+			try
 			{
+				Class c = Class.forName("net.minecraft.src.IntegratedServer");
 				// We are running from the client. Use the Client save directory.
 				this.baseFilePath = "./saves/" + worldName + "/FEData/";
 			}
-			else
+			catch (Exception e)
 			{
 				// Dedicated server. Use the base path + world name.
 				this.baseFilePath = "./" + worldName +"/FEData/";
