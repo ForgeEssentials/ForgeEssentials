@@ -110,6 +110,12 @@
 	<entry key="message.error.noItemPlayer">You must be holding a valid item.</entry>
 	<entry key="message.error.noItemTarget">The specified player is not holding a valid item.</entry>
 	<entry key="message.error.noMobX">Mob %s does not exist.</entry>
+	
+	<!-- Some localization for TeleportCenter -->
+	<entry key="message.tc.cooldown">Cooldown still active. Still got %c sec to go.</entry>
+	<entry key="message.tc.warmup">Stand still for %w sec.</entry>
+	<entry key="message.tc.aborted">TP aborted.</entry>
+	<entry key="message.tc.done">*poof*</entry>
 
 	<entry key="message.done">Done!</entry>
 	

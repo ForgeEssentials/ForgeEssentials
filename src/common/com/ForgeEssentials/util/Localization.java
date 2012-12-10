@@ -6,7 +6,10 @@ public class Localization
 {
 	private String[] langFiles = { "en_US.xml", "en_UK.xml" };
 
-	// Constants for localization messages, so we don't get duplicates or errors
+	/*
+	 * Command stuff
+	 */
+	
 	public static final String BUTCHERED = "message.butchered";
 	public static final String REMOVED = "message.removed";
 	public static final String KILLED = "message.killed";
@@ -17,7 +20,11 @@ public class Localization
 	public static final String BURN_PLAYER = "message.burn.player";
 	public static final String HEALED = "message.healed";
 	public static final String SPAWNED = "message.spawned";
-
+	
+	/*
+	 * Ego boosts
+	 */
+	
 	public static final String CREDITS_ABRARSYED = "message.credits.AbrarSyed";
 	public static final String CREDITS_BOBAREDDINO = "message.credits.Bob_A_Red_Dino";
 	public static final String CREDITS_BSPKRS = "message.credits.bspkrs";
@@ -25,6 +32,10 @@ public class Localization
 	public static final String CREDITS_LUACS1998 = "message.credits.luacs1998";
 	public static final String CREDITS_DRIES007 = "message.credits.Dries007";
 
+	/*
+	 * Errors & general messages
+	 */
+	
 	public static final String ERROR_NOPLAYER = "message.error.noPlayerX";
 	public static final String ERROR_BADSYNTAX = "message.error.badsyntax";
 	public static final String ERROR_NAN = "message.error.nan";
@@ -40,6 +51,10 @@ public class Localization
 	public static final String ERROR_NOMOB = "message.error.noMobX";
 
 	public static final String DONE = "message.done";
+	
+	/*
+	 * WorldControl
+	 */
 
 	public static final String WC_SETCONFIRMBLOCKSCHANGED = "message.wc.setConfirmBlocksChanged";
 	public static final String WC_REPLACECONFIRMBLOCKSCHANGED = "message.wc.replaceConfirmBlocksChanged";
@@ -51,6 +66,19 @@ public class Localization
 	public static final String WC_INVALIDBLOCKID = "message.wc.invalidBlockId";
 	public static final String WC_BLOCKIDOUTOFRANGE = "message.wc.blockIdOutOfRange";
 
+	/*
+	 * TeleportCenter
+	 */
+	
+	public static final String TC_COOLDOWN = "message.tc.cooldown";
+	public static final String TC_WARMUP = "message.tc.warmup";
+	public static final String TC_ABORTED = "message.tc.aborted";
+	public static final String TC_DONE = "message.tc.done";
+	
+	/*
+	 * WorldBorder
+	 */
+	
 	public static final String WB_HITBORDER = "message.wb.hitborder";
 	
 	public static final String WB_STATUS_HEADER = "message.wb.status.header";	
@@ -82,7 +110,9 @@ public class Localization
 	
 	public static final String UNIT_SECONDS = "unit.seconds";
 	
-	//public static final String WB_ = "message.wb.";
+	/*
+	 * Wallet
+	 */
 	
 	public static final String WALLET = "message.wallet.walletname";
 	public static final String WALLET_CURRENCY_SINGULAR = "message.wallet.currencysingular";

@@ -31,7 +31,7 @@ public class TeleportCenter implements IScheduledTickHandler
 	{
 		if(PlayerInfo.getPlayerInfo(player).TPcooldown != 0 || PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
 		{
-			player.sendChatToPlayer("Cooldown still active. Still got " + PlayerInfo.getPlayerInfo(player).TPcooldown + "sec to go.");
+			player.sendChatToPlayer(Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", ""+PlayerInfo.getPlayerInfo(player).TPcooldown));
 		}
 		else
 		{
@@ -43,7 +43,7 @@ public class TeleportCenter implements IScheduledTickHandler
 			}
 			else
 			{
-				player.sendChatToPlayer("Stand still for " + tpWarmup + "sec.");
+				player.sendChatToPlayer(Localization.get(Localization.TC_WARMUP).replaceAll("%w", ""+tpWarmup));
 				que.add(data);
 			}
 		}
@@ -52,13 +52,13 @@ public class TeleportCenter implements IScheduledTickHandler
 	public static void abort(TPdata tpData) 
 	{
 		removeQue.add(tpData);
-		tpData.getPlayer().sendChatToPlayer("TP aborted");
+		tpData.getPlayer().sendChatToPlayer(Localization.get(Localization.TC_ABORTED));
 	}
 	
 	public static void TPdone(TPdata tpData) 
 	{
 		removeQue.add(tpData);
-		tpData.getPlayer().sendChatToPlayer("*Poof*");
+		tpData.getPlayer().sendChatToPlayer(Localization.get(Localization.TC_DONE));
 	}
 	
 	@Override
