@@ -7,7 +7,6 @@
 /eclipse/*
 /forge/*
 /jars/*
-/lib/*
 /logs/*
 /modsrc/*
 /reobf/*
@@ -18,18 +17,20 @@
 /src/minecraft/*
 /src/minecraft_server/*
 
+/lib/argo-2.25.jar
+/lib/asm-all-4.0.jar
+/lib/asm-debug-all-4.0.jar
+/lib/asm-all-4.0-source.jar
+/lib/guava-12.0.1.jar
+/lib/guava-12.0.1-sources.jar
+
 !/src/common/com/
 !/src/common/mcmod.info
 !/src/minecraft/com/
 !/src/common/forgeessentials_at.cfg
 
 !/jars/coremods/
-!/lib/WorldEdit.jar
-!/lib/WorldGuard.jar
-!/lib/mysql-connector-java-bin.jar
-!/lib/sqlite-jdbc.jar
-!/lib/sqlite-jdbc-javadoc.jar
-!/lib/checksums.txt
+
 !/eclipse/Minecraft/.classpath
 
 *.bat

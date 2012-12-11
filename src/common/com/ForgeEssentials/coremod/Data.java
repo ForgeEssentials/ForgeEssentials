@@ -9,7 +9,7 @@ public class Data
 {
 
 	protected static String[]	libraries		= { "WorldEdit.jar", "WorldGuard.jar", "mysql-connector-java-bin.jar", "sqlite-jdbc.jar" };
-	protected static String[]	checksums		= { "2190c96afbf717a01d0cdceaa772866cd1794c45", "c5f93238788238da399ec0ed1eed3e0c3af54912", "3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15, cea9f7f8e6bcb580d953a8651fb8391640de0f85" };
+	protected static String[]	checksums		= { "2190c96afbf717a01d0cdceaa772866cd1794c45", "c5f93238788238da399ec0ed1eed3e0c3af54912", "3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15", "cea9f7f8e6bcb580d953a8651fb8391640de0f85" };
 	protected static String[]	transformers	= { "com.ForgeEssentials.coremod.FEPermissionsTransformer" };
 
 }
