@@ -3,6 +3,7 @@ package com.ForgeEssentials.WorldBorder;
 import java.util.EnumSet;
 
 import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.MathHelper;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -12,6 +13,7 @@ import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.vector.Vector2;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IScheduledTickHandler;
@@ -39,6 +41,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	public static NBTTagCompound borderData;
 	private int ticks = 0;
 	private int players = 1;
+	public static BorderShape shape;
 	
 	public ModuleWorldBorder()
 	{
@@ -78,35 +81,45 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		OutputHandler.SOP("WorldBorder data loaded.");
 		DataStorage.load();
 		borderData = DataStorage.getData("WorldBorder");
+		
+		shape =	BorderShape.getFromByte(borderData.getByte("shape"));
 	}
 
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
 		event.registerPermissionDefault("ForgeEssentials.worldborder", false);
-		event.registerPermissionDefault("ForgeEssentials.worldborder.bypass", false);
 		event.registerPermissionDefault("ForgeEssentials.worldborder.admin", false);
 	}
 	
-	public static void setCenter(int rad, int posX, int posZ) 
+	public static void setCenter(int rad, int posX, int posZ, BorderShape shapeToSet) 
 	{
 		if(borderData == null) borderData = new NBTTagCompound();
 		
+		shape = shapeToSet;
+		
 		borderData.setBoolean("set", true);
 		
-		borderData.setInteger("minX", posX - rad);
-		borderData.setInteger("maxX", posX + rad);
+		borderData.setInteger("centerX", posX);
+		borderData.setInteger("centerZ", posZ);
+		borderData.setInteger("rad", rad);
+		borderData.setByte("shape", shape.getByte());
 		
-		borderData.setInteger("minZ", posZ - rad);
-		borderData.setInteger("maxZ", posZ + rad);
+		if(shape.equals(BorderShape.square))
+		{
+			borderData.setInteger("minX", posX - rad);
+			borderData.setInteger("minZ", posZ - rad);
+			
+			borderData.setInteger("maxX", posX + rad);
+			borderData.setInteger("maxZ", posZ + rad);
+		}
 		
 		DataStorage.setData("WorldBorder", borderData);
-		DataStorage.save();
 	}
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) 
-	{		
+	{
 		try
 		{
 			if(this.ticks >= Integer.MAX_VALUE) this.ticks = 1;
@@ -121,15 +134,52 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 			else
 			{
 				EntityPlayerMP player = ((EntityPlayerMP)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get((int) (ticks % players - 1)));
-				checkPlayer(player);
+				if(shape.equals(BorderShape.round))
+				{
+					checkPlayerRound(player);
+				}
+				else if(shape.equals(BorderShape.square))
+				{
+					checkPlayerSquare(player);
+				}
 			}
 		}
-		catch(Exception e) {}
+		catch(Exception e) 
+		{
+			//Failed to tick ??
+			OutputHandler.SOP("Failed to tick WorldBorder");
+			OutputHandler.SOP("" + e.getLocalizedMessage());
+		}
 	}
 
-	private void checkPlayer(EntityPlayerMP player) 
+	private static void checkPlayerRound(EntityPlayerMP player)
 	{
-		//OutputHandler.debug("WorldBorder checked " + player.username);
+		if(outDistance(borderData.getInteger("centerX"), borderData.getInteger("centerZ"), borderData.getInteger("rad"), (int) player.posX, (int) player.posZ))
+		{
+			Vector2 vecp = new Vector2(borderData.getInteger("centerX") - (int) player.posX, borderData.getInteger("centerZ") - (int)player.posZ);
+			vecp.normalize();
+			vecp.multiply(borderData.getInteger("rad"));
+			vecp.multiply(new Vector2(-1,-1));
+			vecp.add(0.5);
+			
+			//vecp.add(new Vector2(borderData.getInteger("centerX"), borderData.getInteger("centerZ")));
+			//player.sendChatToPlayer("X:" + vecp.x + " Y:" + vecp.y);
+			
+			if(player.ridingEntity != null)
+			{
+				player.ridingEntity.setLocationAndAngles(vecp.x, player.ridingEntity.posY, vecp.y, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
+				player.playerNetServerHandler.setPlayerLocation(vecp.x, player.posY, vecp.y, player.rotationYaw, player.rotationPitch);
+			}
+			else
+			{
+				player.playerNetServerHandler.setPlayerLocation(vecp.x, player.posY, vecp.y, player.rotationYaw, player.rotationPitch);
+			}
+			player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));			
+		}
+	}
+	
+	private static void checkPlayerSquare(EntityPlayerMP player) 
+	{
 		if(player.ridingEntity != null)
 		{
 			if(player.ridingEntity.posX < borderData.getInteger("minX"))
@@ -224,5 +274,50 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	public void serverStopping(FMLServerStoppingEvent e) 
 	{
 		
-	}	
+	}
+	
+	/*
+	 * Gets distance for round
+	 */
+	public static boolean outDistance(int centerX, int centerZ, int rad, int X, int Z)
+	{
+		int difX = centerX - X;
+		int difZ = centerZ - Z;
+		
+		return (rad * rad) < ((difX * difX) + (difZ * difZ));
+	}
+	
+	/*
+	 * Used to get determen shapes
+	 */
+	public enum BorderShape
+	{
+		round, square;
+		
+		public byte getByte()
+		{
+			if(this.equals(round))
+			{
+				return 1;
+			}
+			if(this.equals(square))
+			{
+				return 2;
+			}
+			return 0;
+		}
+
+		public static BorderShape getFromByte(byte byte1) 
+		{
+			if(byte1 == 1)
+			{
+				return BorderShape.round;
+			}
+			else if(byte1 == 2)
+			{
+				return BorderShape.square;
+			}
+			return null;
+		}
+	}
 }

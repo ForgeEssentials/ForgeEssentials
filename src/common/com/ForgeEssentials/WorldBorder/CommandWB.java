@@ -8,6 +8,7 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.WorldServer;
 
+import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
@@ -62,6 +63,12 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		//Fill
 		if(args[0].equalsIgnoreCase("fill"))
 		{
+			if(ModuleWorldBorder.shape == BorderShape.round)
+			{
+				//TODO Make the filler
+				sender.sendChatToPlayer("Not done yet!");
+				return;
+			}
 			if(args.length == 1)
 			{
 				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_LAGWARING));
@@ -131,20 +138,21 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		//Set
 		if(args[0].equalsIgnoreCase("set") && args.length >= 2)
 		{
-			int rad = parseIntWithMin(sender, args[1], 0);
+			BorderShape shape = BorderShape.valueOf(args[1].toLowerCase());
+			int rad = parseIntWithMin(sender, args[2], 0);
 			
-			if(args.length == 2)
+			if(args.length == 3)
 			{
-				ModuleWorldBorder.setCenter(rad, (int) sender.posX, (int) sender.posZ);
+				ModuleWorldBorder.setCenter(rad, (int) sender.posX, (int) sender.posZ, shape);
 				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + (int) sender.posX).replaceAll("%z", "" + (int) sender.posZ));
 				return;
 			}
 			else if(args.length == 4)
 			{
-				int X = parseInt(sender, args[2]);
-				int Z = parseInt(sender, args[3]);
+				int X = parseInt(sender, args[3]);
+				int Z = parseInt(sender, args[4]);
 				
-				ModuleWorldBorder.setCenter(rad, X, Z);
+				ModuleWorldBorder.setCenter(rad, X, Z, shape);
 				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + X).replaceAll("%z", "" + Z));
 				return;
 			}
@@ -178,6 +186,12 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		//Fill
 		if(args[0].equalsIgnoreCase("fill"))
 		{
+			if(ModuleWorldBorder.shape == BorderShape.round)
+			{
+				//TODO Make the filler
+				sender.sendChatToPlayer("Not done yet!");
+				return;
+			}
 			if(args.length == 1)
 			{
 				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_LAGWARING));
@@ -253,14 +267,15 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		//Set
 		if(args[0].equalsIgnoreCase("set") && args.length >= 2)
 		{
-			int rad = parseIntWithMin(sender, args[1], 0);
+			BorderShape shape = BorderShape.valueOf(args[1].toLowerCase());
+			int rad = parseIntWithMin(sender, args[2], 0);
 			
-			if(args.length == 4)
+			if(args.length == 5)
 			{
-				int X = parseInt(sender, args[2]);
-				int Z = parseInt(sender, args[3]);
+				int X = parseInt(sender, args[3]);
+				int Z = parseInt(sender, args[4]);
 				
-				ModuleWorldBorder.setCenter(rad, X, Z);
+				ModuleWorldBorder.setCenter(rad, X, Z, shape);
 				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + X).replaceAll("%z", "" + Z));
 				return;
 			}
@@ -293,18 +308,20 @@ public class CommandWB extends ForgeEssentialsCommandBase
     	{
     		return getListOfStringsMatchingLastWord(args, "set", "fill", "turbo");
     	}
-    	else if(args.length==2 && args[0].equalsIgnoreCase("fill"))
+    	if(args.length==2 && args[0].equalsIgnoreCase("set"))
+    	{
+    		return getListOfStringsMatchingLastWord(args, "square", "round");
+    	}
+    	if(args.length==2 && args[0].equalsIgnoreCase("fill"))
     	{
     		return getListOfStringsMatchingLastWord(args, "ok", "cancel");
     	}
-    	else if(args.length==2 && args[0].equalsIgnoreCase("turbo"))
+    	if(args.length==2 && args[0].equalsIgnoreCase("turbo"))
     	{
     		return getListOfStringsMatchingLastWord(args, "on", "off");
     	}
-    	else
-    	{
-    		return null;
-    	}
+    	
+    	return null;
     }
 
 }
