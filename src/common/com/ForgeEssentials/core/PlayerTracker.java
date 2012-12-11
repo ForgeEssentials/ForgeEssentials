@@ -1,7 +1,5 @@
 package com.ForgeEssentials.core;
 
-import java.util.HashMap;
-
 import net.minecraft.src.EntityPlayer;
 import cpw.mods.fml.common.IPlayerTracker;
 

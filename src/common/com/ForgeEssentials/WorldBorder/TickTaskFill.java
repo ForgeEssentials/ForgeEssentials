@@ -1,23 +1,16 @@
 package com.ForgeEssentials.WorldBorder;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
+import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.IProgressUpdate;
+import net.minecraft.src.MathHelper;
+import net.minecraft.src.MinecraftException;
+import net.minecraft.src.WorldServer;
 
-import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.WorldControl.tickTasks.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-
-import net.minecraft.src.ChunkCoordIntPair;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.IProgressUpdate;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.MathHelper;
-import net.minecraft.src.MinecraftException;
-import net.minecraft.src.WorldServer;
 
 /**
  * Does the actual filling, with limited chuncks per tick.

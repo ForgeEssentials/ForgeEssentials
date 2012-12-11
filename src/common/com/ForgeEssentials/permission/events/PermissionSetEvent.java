@@ -1,10 +1,10 @@
 package com.ForgeEssentials.permission.events;
 
-import com.ForgeEssentials.permission.Permission;
-import com.ForgeEssentials.permission.Zone;
-
 import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.Event;
+
+import com.ForgeEssentials.permission.Permission;
+import com.ForgeEssentials.permission.Zone;
 
 @Cancelable
 /**

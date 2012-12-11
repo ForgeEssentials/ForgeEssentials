@@ -15,7 +15,6 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.IProgressUpdate;
 import net.minecraft.src.MinecraftException;
-import net.minecraft.src.Packet3Chat;
 import net.minecraft.src.WorldServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;

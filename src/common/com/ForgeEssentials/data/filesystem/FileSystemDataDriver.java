@@ -1,19 +1,12 @@
 package com.ForgeEssentials.data.filesystem;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.IntegratedServer;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.data.DataDriver;
-import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.permission.Zone;
-import com.ForgeEssentials.util.FunctionHelper;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Side;
 
 /**
  * Storage driver for filesystem (flat-file) persistence.

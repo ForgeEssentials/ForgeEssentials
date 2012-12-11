@@ -12,7 +12,6 @@ import net.minecraft.src.NBTTagCompound;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.IDataAdapter;
-import com.ForgeEssentials.data.filesystem.FileSystemDataDriver;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 

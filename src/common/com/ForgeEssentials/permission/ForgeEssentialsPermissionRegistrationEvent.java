@@ -2,11 +2,7 @@ package com.ForgeEssentials.permission;
 
 import java.util.HashSet;
 
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.IFEModule;
-
 import net.minecraftforge.event.Event;
-import net.minecraftforge.event.Event.Result;
 
 public class ForgeEssentialsPermissionRegistrationEvent extends Event
 {

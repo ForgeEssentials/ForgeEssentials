@@ -12,8 +12,6 @@ import com.ForgeEssentials.permission.query.PermQueryBlanketSpot;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public abstract class CommandFEPermBase extends ForgeEssentialsCommandBase
 {
 	public final String getCommandName()

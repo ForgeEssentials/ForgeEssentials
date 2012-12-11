@@ -1,7 +1,6 @@
 package com.ForgeEssentials.permission;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import net.minecraftforge.common.Property;

@@ -1,6 +1,6 @@
 package com.ForgeEssentials.data;
 
-import java.util.*;
+import java.util.HashMap;
 
 import net.minecraftforge.common.Configuration;
 

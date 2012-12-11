@@ -1,6 +1,7 @@
 package com.ForgeEssentials.economy;
 
 import net.minecraft.src.EntityPlayer;
+
 import com.ForgeEssentials.util.Localization;
 
 /**

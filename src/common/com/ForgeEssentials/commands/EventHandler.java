@@ -1,11 +1,11 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-
 import net.minecraft.src.EntityPlayer;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class EventHandler
 {

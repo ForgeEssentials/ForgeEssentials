@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.ForgeEssentials.core.CoreConfig;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.util.OutputHandler;
 

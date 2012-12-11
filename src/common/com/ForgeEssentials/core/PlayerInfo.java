@@ -1,11 +1,5 @@
 package com.ForgeEssentials.core;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -13,8 +7,6 @@ import net.minecraft.src.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.permission.Zone;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;

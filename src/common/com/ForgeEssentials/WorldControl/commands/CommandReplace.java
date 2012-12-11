@@ -1,21 +1,15 @@
 package com.ForgeEssentials.WorldControl.commands;
 
-import javax.activation.CommandInfo;
-
 import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ICommandSender;
 import net.minecraft.src.World;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskReplaceSelection;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.AreaSelector.Selection;
-
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class CommandReplace extends WorldControlCommandBase
 {

@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
+
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandList extends ForgeEssentialsCommandBase

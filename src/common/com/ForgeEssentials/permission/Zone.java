@@ -1,14 +1,11 @@
 package com.ForgeEssentials.permission;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
-import net.minecraftforge.event.Event.Result;
 
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.FunctionHelper;

@@ -1,19 +1,10 @@
 package com.ForgeEssentials.commands;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.ServerConfigurationManager;
 
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.permission.PermissionsAPI;
-import com.ForgeEssentials.permission.query.PermQueryPlayer;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IScheduledTickHandler;

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import net.minecraftforge.common.Property;
-
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 
 public class PlayerManager

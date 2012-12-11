@@ -6,7 +6,6 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigPlayerLogger {
 	public static final File plconfig = new File(ForgeEssentials.FEDIR, "playerlogger.cfg");

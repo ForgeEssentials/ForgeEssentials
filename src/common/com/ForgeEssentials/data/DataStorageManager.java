@@ -1,13 +1,8 @@
 package com.ForgeEssentials.data;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-
-import net.minecraft.src.DedicatedServer;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.core.CoreConfig;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.filesystem.FileSystemDataDriver;
 import com.ForgeEssentials.util.OutputHandler;

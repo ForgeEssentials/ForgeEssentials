@@ -1,23 +1,12 @@
 package com.ForgeEssentials.WorldControl.commands;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.World;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskReplaceSelection;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator.Mode;
-import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.Selection;
-
-import net.minecraft.src.Block;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.World;
 
 public class CommandTopManipulate extends WorldControlCommandBase
 {
