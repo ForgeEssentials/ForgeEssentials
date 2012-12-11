@@ -1,15 +1,11 @@
 package com.ForgeEssentials.data.nbt;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.data.DataDriver;
-import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Side;

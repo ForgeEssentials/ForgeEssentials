@@ -1,9 +1,6 @@
 package com.ForgeEssentials.permission.query;
 
-import net.minecraft.src.EntityPlayer;
-
 import com.ForgeEssentials.permission.PermissionChecker;
-import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class PermQueryBlanketSpot extends PermQuery

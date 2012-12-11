@@ -1,29 +1,20 @@
 package com.ForgeEssentials.commands;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.PermissionsAPI;
-import com.ForgeEssentials.permission.query.PermQueryPlayer;
-import com.ForgeEssentials.util.DataStorage;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ICommandSender;
-import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TcpConnection;
 import net.minecraftforge.common.DimensionManager;
+
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandTPS extends ForgeEssentialsCommandBase
 {

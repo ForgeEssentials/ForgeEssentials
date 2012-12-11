@@ -1,7 +1,5 @@
 package com.ForgeEssentials.util;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.MathHelper;
@@ -9,6 +7,7 @@ import net.minecraft.src.MovingObjectPosition;
 import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
 import net.minecraft.src.WorldServer;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public final class FunctionHelper
 {

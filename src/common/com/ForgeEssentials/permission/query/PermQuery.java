@@ -2,9 +2,6 @@ package com.ForgeEssentials.permission.query;
 
 import com.ForgeEssentials.permission.PermissionChecker;
 
-import net.minecraft.src.EntityPlayer;
-import net.minecraftforge.event.ListenerList;
-
 public class PermQuery
 {	
     public enum PermResult

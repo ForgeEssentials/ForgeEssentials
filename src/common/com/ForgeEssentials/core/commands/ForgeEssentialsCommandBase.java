@@ -1,18 +1,14 @@
 package com.ForgeEssentials.core.commands;
 
-import com.ForgeEssentials.permission.PermissionsAPI;
-import com.ForgeEssentials.permission.PermissionsHandler;
-import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
-import com.ForgeEssentials.permission.query.PermQueryPlayer;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.TileEntityCommandBlock;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event.Result;
+
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {

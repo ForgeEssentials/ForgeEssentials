@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ForgeEssentials.core.PlayerInfo;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ICommandSender;
+import net.minecraft.src.NBTTagCompound;
+
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
@@ -12,15 +15,7 @@ import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.NBTTagCompound;
 
 /**
  * Now uses TeleportCenter.

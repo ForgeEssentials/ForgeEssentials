@@ -6,13 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import net.minecraft.src.CompressedStreamTools;
+import net.minecraft.src.NBTTagCompound;
+
 import com.ForgeEssentials.core.ForgeEssentials;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-
-import net.minecraft.src.CompressedStreamTools;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.WorldServer;
 
 /**
  * This needs replacing!

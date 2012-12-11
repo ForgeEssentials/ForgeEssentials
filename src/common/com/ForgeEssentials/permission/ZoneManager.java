@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import net.minecraft.src.World;
-import net.minecraft.src.WorldInfo;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 

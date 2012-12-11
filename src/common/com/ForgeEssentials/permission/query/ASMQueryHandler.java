@@ -13,9 +13,7 @@ import static org.objectweb.asm.Opcodes.V1_6;
 
 import java.lang.reflect.Method;
 
-import net.minecraftforge.event.Event;
 import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.IEventListener;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;

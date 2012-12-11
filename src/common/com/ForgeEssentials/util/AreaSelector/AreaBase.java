@@ -1,6 +1,5 @@
 package com.ForgeEssentials.util.AreaSelector;
 
-import java.io.Serializable;
 
 public abstract class AreaBase
 {

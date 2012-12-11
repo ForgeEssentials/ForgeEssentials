@@ -2,12 +2,7 @@ package com.ForgeEssentials.permission.query;
 
 import java.util.ArrayList;
 
-import net.minecraft.src.EntityPlayer;
-
-import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
-import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class PermQueryBlanketArea extends PermQuery
 {

@@ -2,8 +2,6 @@ package com.ForgeEssentials.util;
 
 import java.util.logging.Logger;
 
-import com.ForgeEssentials.core.CoreConfig;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -87,12 +85,15 @@ public final class OutputHandler
 	 */
 	public static void SOP(Object msg)
 	{
-		if (FMLCommonHandler.instance().getSide().isServer())
+		if (FMLCommonHandler.instance().getSide().isServer()){
 			MinecraftServer.getServer().sendChatToPlayer("{Forge Essentials} " + msg);
-		else
+		    felog.info("" + msg);
+		}
+		else{
 			System.out.println("{Forge Essentials} " + msg);
+		    felog.info("" + msg);
+		}
 
-		felog.info("" + msg);
 	}
 	//At Dries' request
 	public static void debug(Object msg){

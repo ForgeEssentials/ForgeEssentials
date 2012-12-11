@@ -3,10 +3,8 @@ package com.ForgeEssentials.data.filesystem;
 import java.io.File;
 
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.data.DataDriver;
-import com.ForgeEssentials.data.nbt.NBTDataDriver;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;

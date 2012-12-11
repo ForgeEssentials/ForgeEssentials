@@ -1,9 +1,5 @@
 package com.ForgeEssentials.data.filesystem;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.ArrayList;
-
 import com.ForgeEssentials.data.IDataAdapter;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;

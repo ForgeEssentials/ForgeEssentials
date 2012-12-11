@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ServerConfigurationManager;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.PermissionsAPI;

@@ -2,27 +2,16 @@ package com.ForgeEssentials.WorldBorder;
 
 import java.util.EnumSet;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.ChunkCoordIntPair;
-import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.IProgressUpdate;
-import net.minecraft.src.MinecraftException;
 import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.Packet;
-import net.minecraft.src.WorldServer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IScheduledTickHandler;

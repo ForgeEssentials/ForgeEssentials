@@ -1,13 +1,13 @@
 package com.ForgeEssentials.playerLogger;
 
-import java.util.HashSet;
+import net.minecraft.src.EntityPlayer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
-import net.minecraft.src.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.*;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.registry.GameRegistry;
 

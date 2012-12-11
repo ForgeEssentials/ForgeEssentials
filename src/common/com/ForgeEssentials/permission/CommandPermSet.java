@@ -1,12 +1,10 @@
 package com.ForgeEssentials.permission;
 
-import com.ForgeEssentials.permission.query.PermQueryPlayer;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 import net.minecraftforge.event.Event.Result;
+
+import com.ForgeEssentials.util.Localization;
 
 public class CommandPermSet extends CommandFEPermBase
 {

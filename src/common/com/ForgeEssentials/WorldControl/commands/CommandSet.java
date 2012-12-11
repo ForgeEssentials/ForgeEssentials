@@ -7,7 +7,6 @@ import net.minecraft.src.World;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskReplaceSelection;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.Localization;

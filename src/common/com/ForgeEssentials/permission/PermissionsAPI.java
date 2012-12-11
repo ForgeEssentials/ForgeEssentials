@@ -3,12 +3,8 @@ package com.ForgeEssentials.permission;
 import java.util.HashSet;
 
 import com.ForgeEssentials.permission.query.PermQuery;
-import com.ForgeEssentials.permission.query.PermissionQueryBus;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.EventBus;
-import net.minecraftforge.event.Event.Result;
+import com.ForgeEssentials.permission.query.PermissionQueryBus;
 
 
 public class PermissionsAPI

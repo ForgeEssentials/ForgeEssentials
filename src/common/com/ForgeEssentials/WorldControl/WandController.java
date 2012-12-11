@@ -1,16 +1,16 @@
 package com.ForgeEssentials.WorldControl;
 
 //Depreciated
+import net.minecraft.src.EntityPlayer;
+import net.minecraftforge.event.EventPriority;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-
-import net.minecraft.src.EntityPlayer;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class WandController
 {

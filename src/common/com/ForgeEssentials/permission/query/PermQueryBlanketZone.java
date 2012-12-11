@@ -1,6 +1,5 @@
 package com.ForgeEssentials.permission.query;
 
-import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
 
 import com.ForgeEssentials.permission.Zone;

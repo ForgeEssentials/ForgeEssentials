@@ -1,7 +1,6 @@
 package com.ForgeEssentials.commands;
 
 import net.minecraft.src.DedicatedServer;
-import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
 
@@ -9,7 +8,6 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class CommandServerDo extends ForgeEssentialsCommandBase
 {

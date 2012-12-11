@@ -5,7 +5,6 @@ import java.io.File;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.data.IDataAdapter;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
