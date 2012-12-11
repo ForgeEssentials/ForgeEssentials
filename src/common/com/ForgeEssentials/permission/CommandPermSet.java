@@ -1,6 +1,8 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
@@ -42,24 +44,43 @@ public class CommandPermSet extends CommandFEPermBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		Zone zone;
+		Zone zone = ZoneManager.GLOBAL;
 		
 		switch(args.length)
 		{
-			case 3:
-				zone = ZoneManager.GLOBAL;
 			case 4:
+				if (!ZoneManager.zoneMap.containsKey(args[3]))
+				{
+					sender.sendChatToPlayer(Localization.format("message.error.nozone", args[3]));
+					return;
+				}
+				zone = ZoneManager.getZone(args[3]);
+				
+				break;
+			case 3:			
 				// check allow/deny part.
-				Result result = parseAllow(args[2]);
+				Result result = parseAllow(args[1]);
 				if (result.equals(Result.DEFAULT))
 				{
-					sender.sendChatToPlayer(Localization.format("message.error.illegalState", args[2]));
+					sender.sendChatToPlayer(Localization.format("message.error.illegalState", args[1]));
 					return;
 				}
 				
+				// check Groups.
+				String[] entities = args[2].split(":");
+				if (entities.length != 2)
+					sender.sendChatToPlayer(Localization.format("message.error.illegalEntity", args[2]));
 				
-				
-				break;
+				if (entities[0].equalsIgnoreCase("g"))
+				{
+					PermissionsAPI.setGroupPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
+				}
+				else if (entities[0].equalsIgnoreCase("p"))
+				{
+					PermissionsAPI.setPlayerPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
+				}
+				else
+					sender.sendChatToPlayer(Localization.format("message.error.illegalEntity", args[2]));
 			default:
 				this.error(sender);
 				return;

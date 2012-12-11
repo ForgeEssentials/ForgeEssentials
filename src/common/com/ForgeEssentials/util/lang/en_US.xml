@@ -257,6 +257,7 @@
 	<entry key="command.permissions.set.info">Sets a permissions for the player/group in the zone. GLOBAL used by default.</entry>
 	
 	<entry key="message.error.illegalState">"%s" is niether allow or deny</entry>
+	<entry key="message.error.illegalEntity">"%s" must be in form "p:Player" or "g:Group"</entry>
 	
 	<!-- Some localization for Zones -->
 	<entry key="command.permissions.zone.list.header">--- Showing the modlist page %d of %d ---</entry>
