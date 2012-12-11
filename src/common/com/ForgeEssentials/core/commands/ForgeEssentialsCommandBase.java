@@ -2,7 +2,7 @@ package com.ForgeEssentials.core.commands;
 
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.PermissionsHandler;
-import com.ForgeEssentials.permission.query.PermQueryArea;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;

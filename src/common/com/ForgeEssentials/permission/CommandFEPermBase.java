@@ -1,22 +1,47 @@
 package com.ForgeEssentials.permission;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICommandSender;
+import net.minecraft.src.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.permission.query.PermQueryBlanketSpot;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class CommandFEPermBase extends ForgeEssentialsCommandBase
 {
-	@Override
-	public abstract String getCommandSyntax(ICommandSender sender);
+	public final String getCommandName()
+	{
+		return "feperm "+getCommand();
+	}
+	
+	public abstract String getCommand();
 	
 	@Override
-	public abstract String getCommandInfo(ICommandSender sender);
+    public List getCommandAliases()
+    {
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("fep "+getCommand());
+        return list;
+    }
 	
 	@Override
-	public abstract void processCommand(ICommandSender var1, String[] var2);
+	public String getCommandSyntax(ICommandSender sender)
+	{
+		return Localization.get("command.permissions."+getCommand()+".syntax");
+	}
+	
+	@Override
+	public String getCommandInfo(ICommandSender sender)
+	{
+		return Localization.get("command.permissions."+getCommand()+".info");
+	}
 	
 	// ------------------------------------------
 	// -------STUFF-THAT-DOESNT-MATTER-----------
@@ -34,14 +59,9 @@ public abstract class CommandFEPermBase extends ForgeEssentialsCommandBase
 		return true;
 	}
 	
-	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
 	{
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
+		return PermissionsAPI.checkPermAllowed(new PermQueryBlanketSpot(new WorldPoint(block.worldObj, block.xCoord, block.yCoord, block.zCoord), this.getCommandPerm()));
 	}
 
 }

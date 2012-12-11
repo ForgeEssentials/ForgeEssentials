@@ -17,6 +17,8 @@ public class PermQuery
     
     private PermResult result = PermResult.UNKNOWN;
     private static FEListenerList listeners = new FEListenerList();
+    
+    public PermissionChecker checker;
 	
 	public PermQuery()
 	{

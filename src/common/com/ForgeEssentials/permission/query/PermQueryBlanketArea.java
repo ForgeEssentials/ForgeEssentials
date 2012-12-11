@@ -3,38 +3,23 @@ package com.ForgeEssentials.permission.query;
 import java.util.ArrayList;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraftforge.event.Event.HasResult;
 
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
-/**
- * Reuslts are: default, allow, deny.
- * @author AbrarSyed
- * 
- */
-@HasResult
-public class PermQueryArea extends PermQueryPlayer
+public class PermQueryBlanketArea extends PermQuery
 {
 	public ArrayList<AreaBase>	applicable;
 	public final AreaBase		doneTo;
 	public final boolean		allOrNothing;
 
-	public PermQueryArea(EntityPlayer player, String permission, AreaBase doneTo, boolean allOrNothing)
+	public PermQueryBlanketArea(String permission, AreaBase doneTo, boolean allOrNothing)
 	{
-		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = doneTo;
 		this.allOrNothing = allOrNothing;
-	}
-
-	public PermQueryArea(EntityPlayer player, String permission, Point doneTo)
-	{
-		super(player, permission);
-		applicable = new ArrayList<AreaBase>();
-		this.doneTo = new Selection(doneTo, doneTo);
-		allOrNothing = true;
 	}
 
 	/**

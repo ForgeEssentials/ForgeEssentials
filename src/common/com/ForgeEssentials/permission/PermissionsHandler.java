@@ -7,9 +7,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.EventPriority;
 
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.permission.query.PermQueryArea;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
-import com.ForgeEssentials.permission.query.PermQueryZone;
+import com.ForgeEssentials.permission.query.PermQueryPlayerZone;
 import com.ForgeEssentials.permission.query.PermSubscribe;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
@@ -37,14 +37,14 @@ public final class PermissionsHandler
 	}
 	
 	@PermSubscribe(priority = EventPriority.NORMAL)
-	public void handlerQuery(PermQueryZone event)
+	public void handlerQuery(PermQueryPlayerZone event)
 	{
 		PermResult result = getResultFromZone(event.toCheck, event.checker, event.doer);
 		event.setResult(result);
 	}
 
 	@PermSubscribe(priority = EventPriority.NORMAL)
-	public void handlerQuery(PermQueryArea event)
+	public void handlerQuery(PermQueryPlayerArea event)
 	{
 		if (event.allOrNothing)
 		{

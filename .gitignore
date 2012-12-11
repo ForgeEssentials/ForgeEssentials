@@ -27,6 +27,8 @@
 !/lib/WorldEdit.jar
 !/lib/WorldGuard.jar
 !/lib/mysql-connector-java-bin.jar
+!/lib/sqlite-jdbc.jar
+!/lib/sqlite-jdbc-javadoc.jar
 !/lib/checksums.txt
 !/eclipse/Minecraft/.classpath
 

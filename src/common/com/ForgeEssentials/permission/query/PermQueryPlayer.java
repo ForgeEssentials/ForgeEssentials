@@ -18,7 +18,6 @@ import net.minecraftforge.event.Event.*;
 public class PermQueryPlayer extends PermQuery
 {
 	public EntityPlayer doer;
-	public PermissionChecker checker;
 	
 	/**
 	 * Assumes the Players position as the "doneTo" point.

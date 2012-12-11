@@ -1,5 +1,7 @@
 package com.ForgeEssentials.util.AreaSelector;
 
+import net.minecraft.src.World;
+
 /**
  * Almost exactly like a Point, except with an additional dimension member so we can tell things apart. (So we can get back to The End or Nether using /back)
  * 
@@ -14,6 +16,12 @@ public class WorldPoint extends Point
 	{
 		super(x, y, z);
 		this.dim = dimension;
+	}
+	
+	public WorldPoint(World world, int x, int y, int z)
+	{
+		super(x, y, z);
+		this.dim = world.getWorldInfo().getDimension();
 	}
 
 	public int compareTo(WorldPoint p)

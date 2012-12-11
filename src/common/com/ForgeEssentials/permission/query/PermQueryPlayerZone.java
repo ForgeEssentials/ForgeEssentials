@@ -18,17 +18,17 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
  * 
  */
 @HasResult
-public class PermQueryZone extends PermQueryPlayer
+public class PermQueryPlayerZone extends PermQueryPlayer
 {
 	public final Zone toCheck;
 
-	public PermQueryZone(EntityPlayer player, String permission, String zoneID)
+	public PermQueryPlayerZone(EntityPlayer player, String permission, String zoneID)
 	{
 		super(player, permission);
 		toCheck = ZoneManager.getZone(zoneID);
 	}
 	
-	public PermQueryZone(EntityPlayer player, String permission, Zone zone)
+	public PermQueryPlayerZone(EntityPlayer player, String permission, Zone zone)
 	{
 		super(player, permission);
 		toCheck = zone;
@@ -38,7 +38,7 @@ public class PermQueryZone extends PermQueryPlayer
 	 * uses the WorldZone for the specified world
 	 * @param world
 	 */
-	public PermQueryZone(EntityPlayer player, String permission, World world)
+	public PermQueryPlayerZone(EntityPlayer player, String permission, World world)
 	{
 		super(player, permission);
 		toCheck = ZoneManager.getWorldZone(world);
@@ -47,7 +47,7 @@ public class PermQueryZone extends PermQueryPlayer
 	/**
 	 * Assumes GLOBAL as the zone
 	 */
-	public PermQueryZone(EntityPlayer player, String permission)
+	public PermQueryPlayerZone(EntityPlayer player, String permission)
 	{
 		super(player, permission);
 		toCheck = ZoneManager.GLOBAL;
