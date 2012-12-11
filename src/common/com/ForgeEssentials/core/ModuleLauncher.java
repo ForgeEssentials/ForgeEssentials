@@ -39,6 +39,8 @@ public class ModuleLauncher
 	public static boolean		borderEnabled	= false;
 	public static boolean		loggerEnabled	= false;
 
+	// note to self: if possible, make this classload. 
+	
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Discovering and loading modules...");

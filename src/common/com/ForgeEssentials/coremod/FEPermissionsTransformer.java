@@ -37,8 +37,6 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.ForgeEssentials.permission.query.PermQuery;
-
 import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class FEPermissionsTransformer implements IClassTransformer
@@ -78,7 +76,7 @@ public class FEPermissionsTransformer implements IClassTransformer
 	private boolean buildEvents(ClassNode classNode) throws Exception
 	{
 		Class<?> parent = this.getClass().getClassLoader().loadClass(classNode.superName.replace('/', '.'));
-		if (!PermQuery.class.isAssignableFrom(parent))
+		if (!com.ForgeEssentials.permission.query.PermQuery.class.isAssignableFrom(parent))
 			return false;
 
 		boolean hasSetup = false;
