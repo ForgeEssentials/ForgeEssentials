@@ -47,7 +47,7 @@ public class CommandPermSet extends CommandFEPermBase
 		switch(args.length)
 		{
 			case 4:
-				if (!ZoneManager.zoneMap.containsKey(args[3]))
+				if (!ZoneManager.doesZoneExist(args[2]))
 				{
 					sender.sendChatToPlayer(Localization.format("message.error.nozone", args[3]));
 					return;
@@ -71,6 +71,7 @@ public class CommandPermSet extends CommandFEPermBase
 				
 				if (entities[0].equalsIgnoreCase("g"))
 				{
+					//GroupManager.
 					PermissionsAPI.setGroupPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
 				}
 				else if (entities[0].equalsIgnoreCase("p"))
