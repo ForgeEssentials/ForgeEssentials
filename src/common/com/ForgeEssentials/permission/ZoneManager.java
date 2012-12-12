@@ -76,6 +76,16 @@ public class ZoneManager
 		zone.delete();
 	}
 	
+	public static boolean doesZoneExist(String zoneID)
+	{
+		if (zoneID.equals(GLOBAL.getZoneID()))
+			return true;
+		else if (zoneID.startsWith("WORLD_"))
+			return true;
+		else
+			return zoneMap.containsKey(zoneID);
+	}
+	
 	public static Zone getZone(String zoneID)
 	{
 		if (zoneID.equals(GLOBAL.getZoneID()))
