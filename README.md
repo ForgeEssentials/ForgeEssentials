@@ -21,8 +21,6 @@ Builds: <a href="http://files.minecraftforge.net/ForgeEssentials/">Jenkins Build
 
 Libraries (extract into /lib) http://www.mediafire.com/download.php?xsd4bn8k37e19b6
 
-Old WorldControl backup (devs only) http://www.mediafire.com/download.php?4e44id1dd65hmv3
-
 FE Team Members:
 ================
 <a href="https://github.com/AbrarSyed">AbrarSyed</a>  
