@@ -68,11 +68,6 @@
 	<entry key="command.spawn.info.console">Teleport you/a player to your/their spawnpoint</entry>
 	<entry key="command.spawn.syntax.player">&lt;mob type> &lt;number> &lt;x, y, z> [dimension]</entry>
 	<entry key="command.spawn.info.player">Teleport a player to their spawnpoint</entry>
-	
-	<entry key="command.list.syntax.console"></entry>
-	<entry key="command.list.info.console">Get a list of the current players</entry>
-	<entry key="command.list.syntax.player"></entry>
-	<entry key="command.list.info.player">Get a list of the current players</entry>
 
 	<entry key="command.restart.syntax.console"></entry>
 	<entry key="command.restart.info.console">Restart the server</entry>
