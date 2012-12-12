@@ -105,14 +105,12 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		borderData.setInteger("rad", rad);
 		borderData.setByte("shape", shape.getByte());
 		
-		if(shape.equals(BorderShape.square))
-		{
-			borderData.setInteger("minX", posX - rad);
-			borderData.setInteger("minZ", posZ - rad);
+		borderData.setInteger("minX", posX - rad);
+		borderData.setInteger("minZ", posZ - rad);
 			
-			borderData.setInteger("maxX", posX + rad);
-			borderData.setInteger("maxZ", posZ + rad);
-		}
+		borderData.setInteger("maxX", posX + rad);
+		borderData.setInteger("maxZ", posZ + rad);
+		
 		
 		DataStorage.setData("WorldBorder", borderData);
 	}
@@ -156,25 +154,23 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	{
 		if(outDistance(borderData.getInteger("centerX"), borderData.getInteger("centerZ"), borderData.getInteger("rad"), (int) player.posX, (int) player.posZ))
 		{
-			Vector2 vecp = new Vector2(borderData.getInteger("centerX") - (int) player.posX, borderData.getInteger("centerZ") - (int)player.posZ);
+			Vector2 vecp = new Vector2(borderData.getInteger("centerX") - player.posX, borderData.getInteger("centerZ") - player.posZ);
 			vecp.normalize();
 			vecp.multiply(borderData.getInteger("rad"));
-			vecp.multiply(new Vector2(-1,-1));
-			vecp.add(0.5);
-			
-			//vecp.add(new Vector2(borderData.getInteger("centerX"), borderData.getInteger("centerZ")));
-			//player.sendChatToPlayer("X:" + vecp.x + " Y:" + vecp.y);
+			vecp.add(new Vector2(borderData.getInteger("centerX"), borderData.getInteger("centerZ")));
+			vecp.multiply(-1);
 			
 			if(player.ridingEntity != null)
 			{
-				player.ridingEntity.setLocationAndAngles(vecp.x, player.ridingEntity.posY, vecp.y, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
-				player.playerNetServerHandler.setPlayerLocation(vecp.x, player.posY, vecp.y, player.rotationYaw, player.rotationPitch);
+				player.ridingEntity.setLocationAndAngles(vecp.x, player.ridingEntity.prevPosY, vecp.y, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
+				player.playerNetServerHandler.setPlayerLocation(vecp.x, player.prevPosY + 1D, vecp.y, player.rotationYaw, player.rotationPitch);
 			}
 			else
 			{
-				player.playerNetServerHandler.setPlayerLocation(vecp.x, player.posY, vecp.y, player.rotationYaw, player.rotationPitch);
+				player.playerNetServerHandler.setPlayerLocation(vecp.x, player.prevPosY + 1D, vecp.y, player.rotationYaw, player.rotationPitch);
+				player.worldObj.setBlock((int) player.posX, (int) ((int) player.posY),(int) player.posZ, 1);
 			}
-			player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));			
+			player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));		
 		}
 	}
 	

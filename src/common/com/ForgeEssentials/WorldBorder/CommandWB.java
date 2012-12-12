@@ -9,6 +9,7 @@ import net.minecraft.src.ICommandSender;
 import net.minecraft.src.WorldServer;
 
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
+import com.ForgeEssentials.WorldControl.tickTasks.ITickTask;
 import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
@@ -51,8 +52,16 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			{
 				sender.sendChatToPlayer(OutputHandler.GREEN + Localization.get(Localization.WB_STATUS_BORDERSET));
 				sender.sendChatToPlayer("Coordinates :");
-				sender.sendChatToPlayer("minX:" + ModuleWorldBorder.borderData.getInteger("minX") + "  maxX" + ModuleWorldBorder.borderData.getInteger("maxX"));
-				sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.borderData.getInteger("minZ") + "  maxZ" + ModuleWorldBorder.borderData.getInteger("maxZ"));
+				if(ModuleWorldBorder.shape.equals(BorderShape.square))
+				{
+					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.borderData.getInteger("minX") + "  maxX:" + ModuleWorldBorder.borderData.getInteger("maxX"));
+					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.borderData.getInteger("minZ") + "  maxZ:" + ModuleWorldBorder.borderData.getInteger("maxZ"));
+				}
+				if(ModuleWorldBorder.shape.equals(BorderShape.round))
+				{
+					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.borderData.getInteger("centerX") + "  centerZ:" + ModuleWorldBorder.borderData.getInteger("centerZ"));
+					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.borderData.getInteger("rad"));
+				}
 			}
 			else
 			{
@@ -63,12 +72,6 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		//Fill
 		if(args[0].equalsIgnoreCase("fill"))
 		{
-			if(ModuleWorldBorder.shape == BorderShape.round)
-			{
-				//TODO Make the filler
-				sender.sendChatToPlayer("Not done yet!");
-				return;
-			}
 			if(args.length == 1)
 			{
 				sender.sendChatToPlayer(OutputHandler.RED + Localization.get(Localization.WB_LAGWARING));
@@ -89,7 +92,14 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				else
 				{
 					world.canNotSave = true;
-					taskGooing = new TickTaskFill(canNotSaveBefore, world);
+					if(ModuleWorldBorder.shape == BorderShape.round)
+					{
+						taskGooing = new TickTaskFillRound(canNotSaveBefore, world);
+					}
+					if(ModuleWorldBorder.shape == BorderShape.square)
+					{
+						taskGooing = new TickTaskFillSquare(canNotSaveBefore, world);
+					}
 					TickTaskHandler.addTask(taskGooing);
 				}
 				return;
@@ -174,8 +184,16 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			{
 				sender.sendChatToPlayer(OutputHandler.GREEN + Localization.get(Localization.WB_STATUS_BORDERSET));
 				sender.sendChatToPlayer("Coordinates :");
-				sender.sendChatToPlayer("minX:" + ModuleWorldBorder.borderData.getInteger("minX") + "  maxX" + ModuleWorldBorder.borderData.getInteger("maxX"));
-				sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.borderData.getInteger("minZ") + "  maxZ" + ModuleWorldBorder.borderData.getInteger("maxZ"));
+				if(ModuleWorldBorder.shape.equals(BorderShape.square))
+				{
+					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.borderData.getInteger("minX") + "  maxX:" + ModuleWorldBorder.borderData.getInteger("maxX"));
+					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.borderData.getInteger("minZ") + "  maxZ:" + ModuleWorldBorder.borderData.getInteger("maxZ"));
+				}
+				if(ModuleWorldBorder.shape.equals(BorderShape.round))
+				{
+					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.borderData.getInteger("centerX") + "  centerZ:" + ModuleWorldBorder.borderData.getInteger("centerZ"));
+					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.borderData.getInteger("rad"));
+				}
 			}
 			else
 			{
@@ -218,7 +236,14 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				else
 				{
 					world.canNotSave = true;
-					taskGooing = new TickTaskFill(canNotSaveBefore, world);
+					if(ModuleWorldBorder.shape == BorderShape.round)
+					{
+						taskGooing = new TickTaskFillRound(canNotSaveBefore, world);
+					}
+					if(ModuleWorldBorder.shape == BorderShape.square)
+					{
+						taskGooing = new TickTaskFillSquare(canNotSaveBefore, world);
+					}
 					TickTaskHandler.addTask(taskGooing);
 				}
 				return;
