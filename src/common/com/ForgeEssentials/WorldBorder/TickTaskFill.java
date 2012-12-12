@@ -21,42 +21,32 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TickTaskFill implements ITickTask
 {
-	private boolean isComplete;
-	private boolean canNotSaveBefore;
+	protected boolean isComplete;
+	protected boolean canNotSaveBefore;
 	
-	private WorldServer world;
-	private int dim;
+	protected WorldServer world;
+	protected int dim;
 	
-	private int minX;
-	private int minZ;
+	protected int minX;
+	protected int minZ;
 	
-	private int maxX;
-	private int maxZ;
+	protected int maxX;
+	protected int maxZ;
 	
-	private int X;
-	private int Z;
+	protected int centerX;
+	protected int centerZ;
+	protected int rad;
 	
-	private int eta; //in ticks
-	private Long ticks = 0L;
-	private int chunksAtick = 1;
+	protected int X;
+	protected int Z;
+	
+	protected int eta; //in ticks
+	protected Long ticks = 0L;
+	protected int chunksAtick = 1;
 	
 	public TickTaskFill(boolean canNotSaveBefore, WorldServer world)
 	{
-		this.isComplete = false;
-		this.canNotSaveBefore = canNotSaveBefore;
-		this.world = world;
-		this.X = this.minX = ModuleWorldBorder.borderData.getInteger("minX") - 320;
-		this.Z = this.minZ = ModuleWorldBorder.borderData.getInteger("minZ") - 320;
-		this.maxX = ModuleWorldBorder.borderData.getInteger("maxX") + 320;
-		this.maxZ = ModuleWorldBorder.borderData.getInteger("maxZ") + 320;
 		
-		this.eta = (int) (((MathHelper.abs_int((this.maxX - this.minX)/16) * MathHelper.abs_int((this.minZ - this.maxZ)/16))));
-		
-		warnEveryone(Localization.get(Localization.WB_FILL_START));
-		warnEveryone(OutputHandler.AQUA + "minX:" + this.minX + "  maxX:" + this.maxX);
-		warnEveryone(OutputHandler.AQUA + "minZ:" + this.minZ + "  maxZ:" + this.maxZ);
-		
-		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
 	}
 	
 	public double getTPS()
@@ -109,36 +99,7 @@ public class TickTaskFill implements ITickTask
 	@Override
 	public void tick()
 	{
-		ticks ++;
-		if(ticks % (20 * 10) == 0)
-		{
-			warnEveryone(Localization.get(Localization.WB_FILL_STILLGOING).replaceAll("%eta", getETA()));
-		}
 		
-		int i = 0;
-		while (i < chunksAtick)
-		{
-			i++;
-			world.theChunkProviderServer.provideChunk((X >> 4), (Z >> 4));	
-			if(X <= maxX)
-			{
-				X += 16;
-			}
-			else
-			{
-				//New row!
-				if(Z <= maxZ)
-				{
-					Z += 16;
-					X = minX;
-				}	
-				else
-				{
-					//Done!
-					isComplete = true;
-				}
-			}
-		}
 	}
 
 	@Override
