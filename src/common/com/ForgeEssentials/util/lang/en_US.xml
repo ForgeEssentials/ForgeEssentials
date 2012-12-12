@@ -130,8 +130,8 @@
 	<entry key="command.warp.info.player">Teleport you to a warp point.</entry>
 	
 	<!-- Some localization for WorldBorder -->
-	<entry key="command.worldborder.syntax.console">[fill|turbo] OR [set] &lt;Radius> &lt;X> &lt;Z></entry>
-	<entry key="command.worldborder.syntax.player">[fill|turbo] OR [set] &lt;Radius> [X] [Z]</entry>
+	<entry key="command.worldborder.syntax.console">[fill|turbo] OR [set] &lt;round|square> &lt;Radius> &lt;X> &lt;Z></entry>
+	<entry key="command.worldborder.syntax.player">[fill|turbo] OR [set] &lt;round|square> &lt;Radius> [X] [Z]</entry>
 	<entry key="command.worldborder.info.console">Set the worldborder.</entry>
 	<entry key="command.worldborder.info.player">Set the worldborder.</entry>
 	

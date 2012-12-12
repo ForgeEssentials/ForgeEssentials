@@ -146,7 +146,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			}
 		}
 		//Set
-		if(args[0].equalsIgnoreCase("set") && args.length >= 2)
+		if(args[0].equalsIgnoreCase("set") && args.length >= 3)
 		{
 			BorderShape shape = BorderShape.valueOf(args[1].toLowerCase());
 			int rad = parseIntWithMin(sender, args[2], 0);
@@ -157,7 +157,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + (int) sender.posX).replaceAll("%z", "" + (int) sender.posZ));
 				return;
 			}
-			else if(args.length == 4)
+			if(args.length == 4)
 			{
 				int X = parseInt(sender, args[3]);
 				int Z = parseInt(sender, args[4]);
@@ -290,7 +290,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			}
 		}
 		//Set
-		if(args[0].equalsIgnoreCase("set") && args.length >= 2)
+		if(args[0].equalsIgnoreCase("set") && args.length >= 5)
 		{
 			BorderShape shape = BorderShape.valueOf(args[1].toLowerCase());
 			int rad = parseIntWithMin(sender, args[2], 0);
