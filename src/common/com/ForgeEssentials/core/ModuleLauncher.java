@@ -2,6 +2,7 @@ package com.ForgeEssentials.core;
 
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
+import com.ForgeEssentials.chat.ModuleChat;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.economy.ModuleEconomy;
 import com.ForgeEssentials.permission.ModulePermissions;
@@ -30,7 +31,9 @@ public class ModuleLauncher
 	public ModuleWorldBorder	worldborder;
 	public ModulePlayerLogger	playerLogger;
 	public ModuleEconomy		economy;
-
+	public ModuleChat			chat;
+	
+	public static boolean       chatEnabled     = true;
 	public static boolean		permsEnabled	= true;
 	public static boolean		cmdEnabled		= true;
 	public static boolean		wcEnabled		= true;
@@ -53,6 +56,7 @@ public class ModuleLauncher
 		worldborder = new ModuleWorldBorder();
 		playerLogger = new ModulePlayerLogger();
 		economy = new ModuleEconomy();
+		chat = new ModuleChat();
 		}
 		catch (NoClassDefFoundError e1){
 			// Nothing to see here, carry on, carry on
@@ -79,6 +83,9 @@ public class ModuleLauncher
 		
 		if (economyEnabled)
 			economy.preLoad(e);
+		
+		if (chatEnabled)
+			chat.preLoad(e);
 		}
 		catch (NullPointerException e2){
 			
@@ -109,6 +116,9 @@ public class ModuleLauncher
 		
 		if (economyEnabled)
 			economy.load(e);
+		
+		if (chatEnabled)
+			chat.load(e);
 		}
 		catch (NullPointerException e3){
 			
@@ -139,6 +149,9 @@ public class ModuleLauncher
 		
 		if (economyEnabled)
 			economy.serverStarting(e);
+		
+		if (chatEnabled)
+			chat.serverStarting(e);
 		}
 		catch (NullPointerException e4){
 			
@@ -165,6 +178,9 @@ public class ModuleLauncher
 
 		if (loggerEnabled)
 			playerLogger.serverStarted(e);
+		
+		if (chatEnabled)
+			chat.serverStarted(e);
 		}
 		catch (NullPointerException e5){
 			

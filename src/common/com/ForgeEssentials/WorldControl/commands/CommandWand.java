@@ -4,6 +4,7 @@ package com.ForgeEssentials.WorldControl.commands;
 import net.minecraft.src.EntityPlayer;
 
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandWand extends WorldControlCommandBase
@@ -47,7 +48,7 @@ public class CommandWand extends WorldControlCommandBase
 			} else if (args[0].equalsIgnoreCase("unbind"))
 			{
 				info.wandEnabled = false;
-				sender.sendChatToPlayer(OutputHandler.PINK + "Wand unbound from " + wandName);
+				sender.sendChatToPlayer(FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
 				return;
 			} else
 			{
@@ -63,7 +64,7 @@ public class CommandWand extends WorldControlCommandBase
 			if (info.wandEnabled)
 			{
 				info.wandEnabled = false;
-				sender.sendChatToPlayer(OutputHandler.PINK + "Wand unbound from " + wandName);
+				sender.sendChatToPlayer(FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
 				return;
 			} else
 			{

@@ -8,6 +8,7 @@ import net.minecraft.src.WorldServer;
 
 import com.ForgeEssentials.WorldControl.tickTasks.ITickTask;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -53,8 +54,8 @@ public class TickTaskFill implements ITickTask
 		this.eta = (int) (((MathHelper.abs_int((this.maxX - this.minX)/16) * MathHelper.abs_int((this.minZ - this.maxZ)/16))));
 		
 		warnEveryone(Localization.get(Localization.WB_FILL_START));
-		warnEveryone(OutputHandler.AQUA + "minX:" + this.minX + "  maxX:" + this.maxX);
-		warnEveryone(OutputHandler.AQUA + "minZ:" + this.minZ + "  maxZ:" + this.maxZ);
+		warnEveryone(FEChatFormatCodes.AQUA + "minX:" + this.minX + "  maxX:" + this.maxX);
+		warnEveryone(FEChatFormatCodes.AQUA + "minZ:" + this.minZ + "  maxZ:" + this.maxZ);
 		
 		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
 	}
@@ -90,7 +91,7 @@ public class TickTaskFill implements ITickTask
 		OutputHandler.SOP("#### " + msg);
 		for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
         {
-            ((EntityPlayerMP)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(OutputHandler.AQUA + msg);
+            ((EntityPlayerMP)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
         }
 	}
 	
