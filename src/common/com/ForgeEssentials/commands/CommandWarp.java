@@ -52,6 +52,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		{
 			if(warpdata.hasKey(args[0].toLowerCase()))
 			{
+				if(true)
 				if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					NBTTagCompound warp = warpdata.getCompoundTag(args[0].toLowerCase());
@@ -69,6 +70,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		}
 		else if(args.length == 2)
 		{
+			if(true)
 			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
 			{
 				if(args[0].equalsIgnoreCase("set"))

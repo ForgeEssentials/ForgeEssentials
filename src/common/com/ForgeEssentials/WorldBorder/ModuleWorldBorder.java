@@ -2,6 +2,7 @@ package com.ForgeEssentials.WorldBorder;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.src.EntityPlayerMP;
@@ -10,7 +11,7 @@ import net.minecraft.src.NBTTagCompound;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import com.ForgeEssentials.WorldBorder.Penalties.IPenalty;
+import com.ForgeEssentials.WorldBorder.Effects.*;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
@@ -46,10 +47,9 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	public static NBTTagCompound borderData;
 	private int ticks = 0;
 	private int players = 1;
-	public static  ConfigWorldBorder config;
+	public static ConfigWorldBorder config;
 	public static BorderShape shape;
-	public static List<IPenalty> penalties = new ArrayList();
-	public static int maxReach;
+	public static HashMap<Integer, IEffect[]> penalties = new HashMap();
 	
 	public ModuleWorldBorder()
 	{
@@ -59,25 +59,45 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		OutputHandler.SOP("WorldBorder module is enabled. Loading...");
 		config = new ConfigWorldBorder();
 	}
-
-	@Override
-	public void preLoad(FMLPreInitializationEvent e)
+	
+	/*
+	 * Penalty part
+	 */
+	
+	public static void registerEffect(int dist, IEffect[] instance) 
 	{
-		
+		penalties.put(dist, instance);
+	}
+	
+	public static IEffect[] getClosestEffect(int dist)
+	{
+		dist -= ModuleWorldBorder.borderData.getInteger("rad");
+		for(int i = dist; i >= 0; i--)
+		{
+			if(penalties.containsKey(i))
+			{
+				return penalties.get(i);
+			}
+		}
+		return null;
 	}
 
+	/*
+	 * Module part
+	 */
+	
 	@Override
-	public void load(FMLInitializationEvent e)
-	{
-		
-	}
+	public void preLoad(FMLPreInitializationEvent e){}
 
 	@Override
-	public void postLoad(FMLPostInitializationEvent e)
-	{
-		
-	}
+	public void load(FMLInitializationEvent e){}
 
+	@Override
+	public void postLoad(FMLPostInitializationEvent e){}
+
+	@Override
+	public void serverStopping(FMLServerStoppingEvent e) {}
+	
 	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
@@ -125,6 +145,10 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		DataStorage.setData("WorldBorder", borderData);
 	}
 
+	/*
+	 * Tickhandler part
+	 */
+	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) 
 	{
@@ -154,7 +178,6 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		}
 		catch(Exception e) 
 		{
-			//Failed to tick ??
 			OutputHandler.SOP("Failed to tick WorldBorder");
 			OutputHandler.SOP("" + e.getLocalizedMessage());
 		}
@@ -162,25 +185,21 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 
 	private static void checkPlayerRound(EntityPlayerMP player)
 	{
-		if(outDistance(borderData.getInteger("centerX"), borderData.getInteger("centerZ"), borderData.getInteger("rad"), (int) player.posX, (int) player.posZ))
+		int dist = (int) distance(borderData.getInteger("centerX"), borderData.getInteger("centerZ"), (int) player.posX, (int) player.posZ);
+		if(dist > borderData.getInteger("rad"))
 		{
-			Vector2 vecp = new Vector2(borderData.getInteger("centerX") - player.posX, borderData.getInteger("centerZ") - player.posZ);
-			vecp.normalize();
-			vecp.multiply(borderData.getInteger("rad"));
-			vecp.add(new Vector2(borderData.getInteger("centerX"), borderData.getInteger("centerZ")));
-			vecp.multiply(-1);
-			
-			if(player.ridingEntity != null)
+			IEffect[] effects = getClosestEffect(dist);
+			if(effects != null)
 			{
-				player.ridingEntity.setLocationAndAngles(vecp.x, player.ridingEntity.prevPosY, vecp.y, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
-				player.playerNetServerHandler.setPlayerLocation(vecp.x, player.prevPosY + 1D, vecp.y, player.rotationYaw, player.rotationPitch);
+				for(IEffect effect : effects)
+				{
+					effect.execute(player);
+				}
 			}
 			else
 			{
-				player.playerNetServerHandler.setPlayerLocation(vecp.x, player.prevPosY + 1D, vecp.y, player.rotationYaw, player.rotationPitch);
-				player.worldObj.setBlock((int) player.posX, (int) ((int) player.posY),(int) player.posZ, 1);
+				player.sendChatToPlayer("Effect not found.");
 			}
-			player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));		
 		}
 	}
 	
@@ -238,10 +257,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	}
 
 	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData) 
-	{
-		
-	}
+	public void tickEnd(EnumSet<TickType> type, Object... tickData) {}
 
 	@Override
 	public EnumSet<TickType> ticks() 
@@ -276,34 +292,27 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		}
 	}
 
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e) 
-	{
-		
-	}
-	
-	/*
-	 * Penalty system
-	 */
-	public static void registerPenalty(int dist, IPenalty instance) 
-	{
-		
-	}
-	
-	/*
-	 * Gets distance for round
-	 */
-	public static boolean outDistance(int centerX, int centerZ, int rad, int X, int Z)
+	// Only uses by BorderShape.round
+	public static double distance(int centerX, int centerZ, int X, int Z)
 	{
 		int difX = centerX - X;
 		int difZ = centerZ - Z;
 		
-		return (rad * rad) < ((difX * difX) + (difZ * difZ));
+		return Math.sqrt(((difX * difX) + (difZ * difZ)));
+	}
+	
+	public static Vector2 getDirectionVector(EntityPlayerMP player)
+	{
+		Vector2 vecp = new Vector2(borderData.getInteger("centerX") - player.posX, borderData.getInteger("centerZ") - player.posZ);
+		vecp.normalize();
+		vecp.multiply(-1);
+		return vecp;
 	}
 	
 	/*
 	 * Used to get determen shapes
 	 */
+	
 	public enum BorderShape
 	{
 		round, square;
