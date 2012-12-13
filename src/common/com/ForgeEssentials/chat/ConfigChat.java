@@ -25,6 +25,7 @@ public class ConfigChat {
 		prop.comment += "\nIf you want a red color and special formatcodes, the color needs to be first before the special code";
 		prop.comment += "\nExamples: '%red%username' '%red%bold%username'\n Not OK:'%bold%gold%underline%username' In this example you would get the username in gold and underline but without bold";
 		prop.comment += "\nList of possible variables:";
+		prop.comment += "\nFor the username: %username The health of the player can be used with %health. The variable, you need for the message:%message ";
 		prop.comment += "\nColors:%black,%darkblue,%darkgreen,%darkaqua,%darkred,%purple,%gold,%grey,%darkgrey,%indigo,\n       %green,%aqua,%red,%pink,%yellow,%white";
 		prop.comment += "\nSpecial formatcodes: %random,%bold,%strike,%underline,%italics";
 		prop.comment += "\nTo reset all formatcodes, you can use %reset";
