@@ -9,32 +9,7 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public final class OutputHandler
 {
-	// colors
-	public static final String BLACK = "\u00a70";
-	public static final String DARKBLUE = "\u00a71";
-	public static final String DARKGREEN = "\u00a72";
-	public static final String DARKAQUA = "\u00a73";
-	public static final String DARKRED = "\u00a74";
-	public static final String PURPLE = "\u00a75";
-	public static final String GOLD = "\u00a76";
-	public static final String GREY = "\u00a77";
-	public static final String DARKGREY = "\u00a78";
-	public static final String INDIGO = "\u00a79";
-	public static final String GREEN = "\u00a7a";
-	public static final String AQUA = "\u00a7b";
-	public static final String RED = "\u00a7c";
-	public static final String PINK = "\u00a7d";
-	public static final String YELLOW = "\u00a7e";
-	public static final String WHITE = "\u00a7f";
 
-	// special format codes
-	public static final String RANDOM = "\u00a7k";
-	public static final String BOLD = "\u00a7l";
-	public static final String STRIKE = "\u00a7m";
-	public static final String UNDERLINE = "\u00a7n";
-	public static final String ITALICS = "\u00a7o";
-	public static final String RESET = "\u00a7r";
-	
 	public static boolean verbose;
 
 	public static Logger felog = Logger.getLogger("Forge Essentials");
@@ -49,7 +24,7 @@ public final class OutputHandler
 	 */
 	public static void chatError(EntityPlayer player, String msg)
 	{
-		player.addChatMessage(RED + msg);
+		player.addChatMessage(FEChatFormatCodes.RED + msg);
 	}
 
 	/**
@@ -62,7 +37,7 @@ public final class OutputHandler
 	 */
 	public static void chatConfirmation(EntityPlayer player, String msg)
 	{
-		player.addChatMessage(GREEN + msg);
+		player.addChatMessage(FEChatFormatCodes.GREEN + msg);
 	}
 
 	/**

@@ -7,6 +7,7 @@ import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigGroup
@@ -42,20 +43,20 @@ public class ConfigGroup
 
 			tempGroup = new Group(PermissionsAPI.GROUP_OWNERS);
 			tempGroup.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, "g:" + PermissionsAPI.GROUP_ZONE_ADMINS, "the group from which this group will inherit permissions").value);
-			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, PREFIX, OutputHandler.GOLD + "[OWNER]" + OutputHandler.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, PREFIX, FEChatFormatCodes.GOLD + "[OWNER]" + FEChatFormatCodes.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			GroupManager.groups.put(tempGroup.name, tempGroup);
 
 			tempGroup = new Group(PermissionsAPI.GROUP_ZONE_ADMINS);
 			tempGroup.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, "g:" + PermissionsAPI.GROUP_MEMBERS, "the group from which this group will inherit permissions").value);
-			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, PREFIX, OutputHandler.GOLD + "[OWNER]" + OutputHandler.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, PREFIX, FEChatFormatCodes.GOLD + "[OWNER]" + FEChatFormatCodes.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			GroupManager.groups.put(tempGroup.name, tempGroup);
 		}
 
 		// default group
 		{
-			GroupManager.DEFAULT.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, PREFIX, OutputHandler.GREY + "[Default]", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
+			GroupManager.DEFAULT.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, PREFIX, FEChatFormatCodes.GREY + "[Default]", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			GroupManager.DEFAULT.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, SUFFIX, "+OutputHandler.WHITE", "text to go after the username in chat. format char: \u00a7 Only works with the Chat module installed").value;
 		}
 

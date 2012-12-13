@@ -7,6 +7,7 @@ import net.minecraft.src.MinecraftException;
 import net.minecraft.src.WorldServer;
 
 import com.ForgeEssentials.WorldControl.tickTasks.ITickTask;
+import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -80,7 +81,7 @@ public class TickTaskFill implements ITickTask
 		OutputHandler.SOP("#### " + msg);
 		for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
         {
-            ((EntityPlayerMP)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(OutputHandler.AQUA + msg);
+            ((EntityPlayerMP)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
         }
 	}
 	
