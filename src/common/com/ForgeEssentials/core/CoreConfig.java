@@ -62,6 +62,10 @@ public class CoreConfig
 		prop.comment = "Enabling this will enable the logger. Make sure to check the settings!";
 		ModuleLauncher.loggerEnabled = prop.getBoolean(false);
 		
+		prop = config.get("Modules", "Chat_Enabled", true);
+		prop.comment = "Enabling this will enable the chatformatter!";
+		ModuleLauncher.chatEnabled = prop.getBoolean(true);
+		
 	}
 
 	private void loadCore()

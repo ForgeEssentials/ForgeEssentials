@@ -23,11 +23,13 @@ public class ModuleChat implements IFEModule {
 	public ModuleChat() {
 		if (!ModuleLauncher.chatEnabled)
 			return;
+		
+		conf = new ConfigChat();
+
 	}
 	@Override
 	public void preLoad(FMLPreInitializationEvent e) {
 		OutputHandler.SOP("Chat module is enabled. Loading...");
-		conf = new ConfigChat();
 
 	}
 
