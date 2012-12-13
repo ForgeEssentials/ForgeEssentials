@@ -1,15 +1,20 @@
 package com.ForgeEssentials.WorldBorder;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.MathHelper;
 import net.minecraft.src.NBTTagCompound;
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.WorldBorder.Penalties.IPenalty;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.playerLogger.ConfigPlayerLogger;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -41,19 +46,24 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	public static NBTTagCompound borderData;
 	private int ticks = 0;
 	private int players = 1;
+	public static  ConfigWorldBorder config;
 	public static BorderShape shape;
+	public static List<IPenalty> penalties = new ArrayList();
+	public static int maxReach;
 	
 	public ModuleWorldBorder()
 	{
 		if (!ModuleLauncher.borderEnabled)
 			return;
 		WBenabled = true;
+		OutputHandler.SOP("WorldBorder module is enabled. Loading...");
+		config = new ConfigWorldBorder();
 	}
 
 	@Override
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-		OutputHandler.SOP("WorldBorder module is enabled. Loading...");
+		
 	}
 
 	@Override
@@ -268,6 +278,14 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e) 
+	{
+		
+	}
+	
+	/*
+	 * Penalty system
+	 */
+	public static void registerPenalty(int dist, IPenalty instance) 
 	{
 		
 	}
