@@ -119,9 +119,6 @@ public class ZoneManager
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 			if (zone.contains(p1) && worldZone.isParentOf(zone))
-				if (zone.hasChildThatContains(p1))
-					continue;
-				else
 					zones.add(zone);
 
 
@@ -149,6 +146,12 @@ public class ZoneManager
 			}
 	}
 	
+	/**
+	 * used for AllorNothing areas..
+	 * @param area
+	 * @param world
+	 * @return
+	 */
 	public static Zone getWhichZoneIn(AreaBase area, World world)
 	{
 		Zone worldZone = getWorldZone(world);
@@ -157,9 +160,6 @@ public class ZoneManager
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 			if (zone.contains(area) && worldZone.isParentOf(zone))
-				if (zone.hasChildThatContains(area))
-					continue;
-				else
 					zones.add(zone);
 
 

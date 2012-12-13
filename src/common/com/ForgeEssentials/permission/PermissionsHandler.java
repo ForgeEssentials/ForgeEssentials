@@ -103,9 +103,6 @@ public final class PermissionsHandler
 		// add all children
 		for (Zone zone : ZoneManager.zoneMap.values())
 			if (zone.intersectsWith(doneTo) && worldZone.isParentOf(zone))
-				if (zone.hasChildThatContains(doneTo))
-					continue;
-				else
 					zones.add(zone);
 
 		switch (zones.size())

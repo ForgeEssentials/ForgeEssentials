@@ -67,9 +67,6 @@ public class ZoneDataAdapter extends FileSystemDataAdapter<Zone, String>
 		config.get("p2", "x", p.x);
 		config.get("p2", "y", p.y);
 		config.get("p2", "z", p.z);
-		// all children names
-		String[] children = object.getChildren();
-		config.get("base", "children", children);
 		
 		config.save();
 		
@@ -91,7 +88,6 @@ public class ZoneDataAdapter extends FileSystemDataAdapter<Zone, String>
 			String zoneName = c.get("base", "zoneID", " ").value;
 			String parent = c.get("base", "parentID", " ").value;
 			String world = c.get("base", "world", " ").value;
-			String[] children = c.get("base", "children", (String[])null).valueList;
 			int x, y, z = 0;
 			x = c.get("p1", "x", 0).getInt();
 			y = c.get("p1", "y", 0).getInt();
@@ -101,7 +97,7 @@ public class ZoneDataAdapter extends FileSystemDataAdapter<Zone, String>
 			y = c.get("p2", "y", 0).getInt();
 			z = c.get("p2", "z", 0).getInt();
 			Point high = new Point(x, y, z);
-			Zone.load(zoneID, parent, world, priority, new Selection(low, high), children);
+			Zone.load(zoneID, parent, world, priority, new Selection(low, high));
 		}
 		else
 		{

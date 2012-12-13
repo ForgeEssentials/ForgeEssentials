@@ -17,8 +17,7 @@ public class Zone extends AreaBase implements Comparable
 {
 	public int										priority;			// lowest priority is 0
 	private String									zoneID;			// unique string name
-	public String								parent;			// the unique name of the parent.
-	protected HashSet<String>						children;			// list of all children of this zone
+	public String									parent;			// the unique name of the parent.
 	private String									worldString;		// the WorldString of world this zone exists in.
 	public final boolean							isWorldZone;		// flag for WorldZones
 	public final boolean							isGlobalZone;		// flag for GLOBAL zones
@@ -94,7 +93,7 @@ public class Zone extends AreaBase implements Comparable
 		else
 			return isParentOf(ZoneManager.getZone(zone.parent));
 	}
-	
+
 	/**
 	 * @return if this Permission is a child of the given Permission.
 	 */
@@ -118,74 +117,6 @@ public class Zone extends AreaBase implements Comparable
 		return zoneID;
 	}
 
-	/**
-	 * Recursively checks...
-	 * @param area
-	 * @return TRUE if atleast 1 child intersects with the area
-	 */
-	public boolean hasChildIntersectWith(AreaBase area)
-	{
-		boolean intersects = false;
-		for (String child : children)
-		{
-			Zone zone = ZoneManager.zoneMap.get(child);
-			intersects = zone.intersectsWith(area);
-
-			if (!intersects)
-				intersects = zone.hasChildIntersectWith(area);
-
-			if (intersects)
-				return true;
-		}
-
-		return intersects;
-	}
-
-	/**
-	 * Recursively checks...
-	 * @param area
-	 * @return TRUE if atleast 1 child intersects with the area
-	 */
-	public boolean hasChildThatContains(AreaBase area)
-	{
-		boolean intersects = false;
-		for (String child : children)
-		{
-			Zone zone = ZoneManager.zoneMap.get(child);
-			intersects = zone.intersectsWith(area);
-
-			if (!intersects)
-				intersects = zone.hasChildThatContains(area);
-			if (intersects)
-				return true;
-		}
-
-		return intersects;
-	}
-
-	/**
-	 * Recursively checks...
-	 * @param p
-	 * @return TRUE if atleast 1 child contains the point.
-	 */
-	public boolean hasChildThatContains(Point p)
-	{
-		boolean intersects = false;
-		for (String child : children)
-		{
-			Zone zone = ZoneManager.zoneMap.get(child);
-			intersects = zone.contains(p);
-
-			if (!intersects)
-				intersects = zone.hasChildThatContains(p);
-
-			if (intersects)
-				return true;
-		}
-
-		return intersects;
-	}
-
 	@Override
 	public int compareTo(Object o)
 	{
@@ -196,11 +127,6 @@ public class Zone extends AreaBase implements Comparable
 			return 100;
 		else
 			return priority - zone.priority;
-	}
-
-	public String[] getChildren()
-	{
-		return this.children.toArray(new String[this.children.size()]);
 	}
 
 	/**
@@ -311,7 +237,7 @@ public class Zone extends AreaBase implements Comparable
 		return groupOverrides.keySet();
 	}
 
-	public static void load(String id, String parentID, String worldString, int priority, Selection area, String[] children)
+	public static void load(String id, String parentID, String worldString, int priority, Selection area)
 	{
 		Zone zone = ZoneManager.getZone(id);
 		Zone parent = ZoneManager.getZone(parentID);
@@ -324,9 +250,6 @@ public class Zone extends AreaBase implements Comparable
 			zone = new Zone(id, area, parent);
 
 		zone.priority = priority;
-		for (String child : children)
-			if (!zone.children.contains(child))
-				zone.children.add(child);
 
 		ZoneManager.zoneMap.put(id, zone);
 	}
