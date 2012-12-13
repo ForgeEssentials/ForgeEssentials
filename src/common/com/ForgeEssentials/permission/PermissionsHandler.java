@@ -87,7 +87,7 @@ public final class PermissionsHandler
 				if (tempZone == ZoneManager.GLOBAL)
 					result = Permission.getPermissionDefault(perm.name);
 				else
-					tempZone = tempZone.getParent();
+					tempZone = ZoneManager.getZone(tempZone.parent);
 		}
 		return result;
 	}

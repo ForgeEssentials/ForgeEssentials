@@ -10,6 +10,8 @@ import com.ForgeEssentials.util.OutputHandler;
  */
 public class Permission extends PermissionChecker
 {
+	public static final String					ALL			= "_ALL_";
+
 	private static HashMap<String, Permission>	defaults	= new HashMap<String, Permission>();
 
 	public static PermResult getPermissionDefault(String name)

@@ -54,7 +54,7 @@ public class ZoneDataAdapter extends FileSystemDataAdapter<Zone, String>
 		// name
 		config.get("base", "zoneID", object.getZoneID());
 		// parent
-		config.get("base", "parentID", object.getParent().getZoneID());
+		config.get("base", "parentID", object.parent);
 		// world name
 		config.get("base", "world", object.getWorldString());
 		// area low point

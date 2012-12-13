@@ -15,26 +15,25 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class Zone extends AreaBase implements Comparable
 {
-	public int										priority;										// lowest priority is 0
-	private String									zoneID;										// unique string name
-	private Zone									parent;										// the unique name of the parent.
-	protected HashSet<String>						children;										// list of all children of this zone
-	private String									worldString;									// the WorldString of world this zone exists in.
-	public final boolean							isWorldZone;									// flag for WorldZones
-	public final boolean							isGlobalZone;									// flag for GLOBAL zones
+	public int										priority;			// lowest priority is 0
+	private String									zoneID;			// unique string name
+	public String								parent;			// the unique name of the parent.
+	protected HashSet<String>						children;			// list of all children of this zone
+	private String									worldString;		// the WorldString of world this zone exists in.
+	public final boolean							isWorldZone;		// flag for WorldZones
+	public final boolean							isGlobalZone;		// flag for GLOBAL zones
 
 	// permission maps
-	protected HashMap<String, HashSet<Permission>>	playerOverrides;								// <username, perm list>
-	protected HashMap<String, HashSet<Permission>>	groupOverrides;								// <groupName, perm list>
-	protected HashMap<String, PromotionLadder>		ladders;										// the ladders present in this zone
+	protected HashMap<String, HashSet<Permission>>	playerOverrides;	// <username, perm list>
+	protected HashMap<String, HashSet<Permission>>	groupOverrides;	// <groupName, perm list>
+	protected HashMap<String, PromotionLadder>		ladders;			// the ladders present in this zone
 
 	public Zone(String ID, Selection sel, Zone parent)
 	{
 		super(sel.getLowPoint(), sel.getHighPoint());
 		zoneID = ID;
-		this.parent = parent;
+		this.parent = parent.zoneID;
 		worldString = parent.worldString;
-		parent.children.add(zoneID);
 		isWorldZone = isGlobalZone = false;
 		initMaps();
 	}
@@ -43,9 +42,8 @@ public class Zone extends AreaBase implements Comparable
 	{
 		super(sel.getLowPoint(), sel.getHighPoint());
 		zoneID = ID;
-		parent = ZoneManager.getWorldZone(world);
-		worldString = parent.getWorldString();
-		parent.children.add(ID);
+		parent = FunctionHelper.getZoneWorldString(world);
+		worldString = FunctionHelper.getWorldString(world);
 		isWorldZone = isGlobalZone = false;
 		initMaps();
 	}
@@ -61,7 +59,7 @@ public class Zone extends AreaBase implements Comparable
 
 		if (!ID.equals("__GLOBAL__"))
 		{
-			parent = ZoneManager.GLOBAL;
+			parent = ZoneManager.GLOBAL.zoneID;
 			isGlobalZone = false;
 			isWorldZone = true;
 		}
@@ -85,14 +83,31 @@ public class Zone extends AreaBase implements Comparable
 
 	public boolean isParentOf(Zone zone)
 	{
-		if (zoneID.equals(zone.parent.zoneID))
+		if (isGlobalZone)
+			return true;
+		else if (zoneID.equals(zone.parent))
 			return true;
 		else if (zone.isGlobalZone)
 			return false;
 		else if (zone.isWorldZone && !isGlobalZone)
 			return false;
 		else
-			return isParentOf(zone.parent);
+			return isParentOf(ZoneManager.getZone(zone.parent));
+	}
+	
+	/**
+	 * @return if this Permission is a child of the given Permission.
+	 */
+	public boolean isChildOf(Zone zone)
+	{
+		if (zone.isGlobalZone)
+			return true;
+		else if (zone.isWorldZone)
+			return zone.worldString.equals(worldString);
+		else if (zone.zoneID.equals(parent))
+			return true;
+		else
+			return ZoneManager.getZone(parent).isChildOf(zone);
 	}
 
 	/**
@@ -183,33 +198,11 @@ public class Zone extends AreaBase implements Comparable
 			return priority - zone.priority;
 	}
 
-	public Zone getParent()
-	{
-		return parent;
-	}
-	
 	public String[] getChildren()
 	{
 		return this.children.toArray(new String[this.children.size()]);
 	}
 
-	public void setParent(Zone parent)
-	{
-		this.parent.children.remove(zoneID);
-		this.parent = parent;
-		this.parent.children.add(zoneID);
-	}
-
-	public void delete()
-	{
-		parent.children.remove(zoneID);
-		for (String child : children)
-		{
-			Zone zone = ZoneManager.zoneMap.get(child);
-			zone.setParent(parent);
-		}
-	}
-	
 	/**
 	 * @param name
 	 * @return NULL if the ladder doesn't exist here
@@ -302,7 +295,7 @@ public class Zone extends AreaBase implements Comparable
 		}
 		return PermResult.UNKNOWN;
 	}
-	
+
 	public String getWorldString()
 	{
 		return this.worldString;
@@ -317,24 +310,24 @@ public class Zone extends AreaBase implements Comparable
 	{
 		return groupOverrides.keySet();
 	}
-	
+
 	public static void load(String id, String parentID, String worldString, int priority, Selection area, String[] children)
 	{
 		Zone zone = ZoneManager.getZone(id);
 		Zone parent = ZoneManager.getZone(parentID);
-		World world = FunctionHelper.getWorldFromWorldString(worldString); 
-		
+		World world = FunctionHelper.getWorldFromWorldString(worldString);
+
 		if (parent == null)
 			parent = ZoneManager.getWorldZone(world);
-		
+
 		if (zone == null)
 			zone = new Zone(id, area, parent);
-		
+
 		zone.priority = priority;
 		for (String child : children)
 			if (!zone.children.contains(child))
 				zone.children.add(child);
-		
+
 		ZoneManager.zoneMap.put(id, zone);
 	}
 }

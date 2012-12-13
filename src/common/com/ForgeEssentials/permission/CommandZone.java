@@ -180,7 +180,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 										OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
 									else
 									{
-										ZoneManager.zoneMap.get(args[1]).setParent(ZoneManager.zoneMap.get(args[2]));
+										(ZoneManager.zoneMap.get(args[1])).parent = args[2];
 										OutputHandler.chatConfirmation(sender, args[1] + "redefined successfully");
 									}
 								}

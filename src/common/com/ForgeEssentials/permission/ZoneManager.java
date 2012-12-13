@@ -73,7 +73,6 @@ public class ZoneManager
 	public static void deleteZone(String zoneID)
 	{
 		Zone zone = zoneMap.remove(zoneID);
-		zone.delete();
 	}
 	
 	public static boolean doesZoneExist(String zoneID)
