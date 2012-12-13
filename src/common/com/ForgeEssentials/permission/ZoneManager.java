@@ -72,9 +72,9 @@ public class ZoneManager
 	 */
 	public static void deleteZone(String zoneID)
 	{
-		Zone zone = zoneMap.remove(zoneID);
+		zoneMap.remove(zoneID);
 	}
-	
+
 	public static boolean doesZoneExist(String zoneID)
 	{
 		if (zoneID.equals(GLOBAL.getZoneID()))
@@ -84,7 +84,7 @@ public class ZoneManager
 		else
 			return zoneMap.containsKey(zoneID);
 	}
-	
+
 	public static Zone getZone(String zoneID)
 	{
 		if (zoneID.equals(GLOBAL.getZoneID()))
@@ -105,7 +105,7 @@ public class ZoneManager
 		zoneMap.put(zoneID, new Zone(zoneID, sel, world));
 		return true;
 	}
-	
+
 	public static Set<String> zoneSet()
 	{
 		return zoneMap.keySet();
@@ -119,8 +119,7 @@ public class ZoneManager
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 			if (zone.contains(p1) && worldZone.isParentOf(zone))
-					zones.add(zone);
-
+				zones.add(zone);
 
 		switch (zones.size())
 			{
@@ -145,7 +144,7 @@ public class ZoneManager
 					}
 			}
 	}
-	
+
 	/**
 	 * used for AllorNothing areas..
 	 * @param area
@@ -160,8 +159,7 @@ public class ZoneManager
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 			if (zone.contains(area) && worldZone.isParentOf(zone))
-					zones.add(zone);
-
+				zones.add(zone);
 
 		switch (zones.size())
 			{

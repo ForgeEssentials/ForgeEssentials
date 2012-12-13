@@ -83,12 +83,12 @@ public class PlayerManager
 		else
 			return PermResult.UNKNOWN;
 	}
-	
+
 	public static void setSuperPermission(String username, String permission, boolean allowed)
 	{
 		PermissionChecker checker = new PermissionChecker(permission);
 		Permission newPerm = new Permission(permission, allowed);
-		
+
 		HashSet<Permission> perms = playerSupers.get(username);
 		if (perms.contains(checker) && !perms.contains(newPerm))
 			perms.remove(checker);

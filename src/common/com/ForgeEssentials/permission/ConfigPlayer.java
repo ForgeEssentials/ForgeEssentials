@@ -26,15 +26,12 @@ public class ConfigPlayer
 
 		config = new Configuration(playersFile, true);
 
-		boolean generateDefaults = false;
-
 		// to be used lots of places...
 		PlayerPermData tempPlayer; // temporary group.
 
 		// check for other groups. or generate
 		if (config.categories.get(ZoneManager.GLOBAL.getZoneID()) == null || !doesCategoryHaveChilldren(config.categories.get(ZoneManager.GLOBAL.getZoneID())))
 		{
-			generateDefaults = true;
 			tempPlayer = new PlayerPermData("AbrarSyed");
 			tempPlayer.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "AbrarSyed", PARENT, "", "the group from which this group will inherit permissions").value);
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "AbrarSyed", PREFIX, OutputHandler.DARKRED + "[DevLead]" + OutputHandler.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
@@ -91,7 +88,7 @@ public class ConfigPlayer
 
 			// all the world/Global categories now...
 
-			ArrayList<String> childrenWithLadders = new ArrayList<String>();
+			new ArrayList<String>();
 
 			// Iterate through children.
 			for (String group : getCategoryChildren(cat))
@@ -119,7 +116,7 @@ public class ConfigPlayer
 	{
 		for (Group group : GroupManager.groups.values())
 		{
-			String category = (new StringBuilder()).append(group.zoneID).append('.').append(group.name).toString();
+			String category = new StringBuilder().append(group.zoneID).append('.').append(group.name).toString();
 			config.get(category, PARENT, "").value = group.getParent();
 			config.get(category, PREFIX, "").value = group.prefix;
 			config.get(category, SUFFIX, "").value = group.suffix;
@@ -147,8 +144,6 @@ public class ConfigPlayer
 
 	private boolean doesCategoryHaveChilldren(ConfigCategory cat)
 	{
-		boolean hasChildren = false;
-
 		for (ConfigCategory other : config.categories.values())
 		{
 			if (!cat.isChild())
@@ -162,7 +157,7 @@ public class ConfigPlayer
 
 	private String getPlayerNameFromCategory(String qualifiedName)
 	{
-		String[] names = qualifiedName.split("\\" + config.CATEGORY_SPLITTER);
+		String[] names = qualifiedName.split("\\" + Configuration.CATEGORY_SPLITTER);
 
 		if (names.length == 0)
 			return qualifiedName;

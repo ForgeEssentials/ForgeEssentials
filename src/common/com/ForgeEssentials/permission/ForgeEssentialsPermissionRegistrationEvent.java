@@ -16,7 +16,7 @@ public class ForgeEssentialsPermissionRegistrationEvent extends Event
 		Permission perm = new Permission(permName, allow);
 		Permission.addDefaultPermission(perm);
 	}
-	
+
 	/**
 	 * This is to define the level the permission should be used for by defualt..
 	 * see @see com.ForgeEssentials.permissions.PermissionsAPI for the default groups
@@ -29,10 +29,10 @@ public class ForgeEssentialsPermissionRegistrationEvent extends Event
 	{
 		if (!GroupManager.groups.containsKey(group))
 			return;
-		
+
 		Permission perm = new Permission(permission, allow);
 		HashSet<Permission> perms = ZoneManager.GLOBAL.groupOverrides.get(group);
-		
+
 		if (perms == null)
 		{
 			perms = new HashSet<Permission>();

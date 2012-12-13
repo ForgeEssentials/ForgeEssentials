@@ -34,7 +34,7 @@ public final class PermissionsHandler
 		PermResult result = getResultFromZone(zone, event.checker, event.doer);
 		event.setResult(result);
 	}
-	
+
 	@PermSubscribe(priority = EventPriority.NORMAL)
 	public void handlerQuery(PermQueryPlayerZone event)
 	{
@@ -103,7 +103,7 @@ public final class PermissionsHandler
 		// add all children
 		for (Zone zone : ZoneManager.zoneMap.values())
 			if (zone.intersectsWith(doneTo) && worldZone.isParentOf(zone))
-					zones.add(zone);
+				zones.add(zone);
 
 		switch (zones.size())
 			{

@@ -14,33 +14,34 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public abstract class CommandFEPermBase extends ForgeEssentialsCommandBase
 {
+	@Override
 	public final String getCommandName()
 	{
-		return "feperm "+getCommand();
+		return "feperm " + getCommand();
 	}
-	
+
 	public abstract String getCommand();
-	
+
 	@Override
-    public List getCommandAliases()
-    {
+	public List getCommandAliases()
+	{
 		ArrayList<String> list = new ArrayList<String>();
-		list.add("fep "+getCommand());
-        return list;
-    }
-	
+		list.add("fep " + getCommand());
+		return list;
+	}
+
 	@Override
 	public String getCommandSyntax(ICommandSender sender)
 	{
-		return Localization.get("command.permissions."+getCommand()+".syntax");
+		return Localization.get("command.permissions." + getCommand() + ".syntax");
 	}
-	
+
 	@Override
 	public String getCommandInfo(ICommandSender sender)
 	{
-		return Localization.get("command.permissions."+getCommand()+".info");
+		return Localization.get("command.permissions." + getCommand() + ".info");
 	}
-	
+
 	// ------------------------------------------
 	// -------STUFF-THAT-DOESNT-MATTER-----------
 	// ------------------------------------------
@@ -56,10 +57,11 @@ public abstract class CommandFEPermBase extends ForgeEssentialsCommandBase
 	{
 		return true;
 	}
-	
+
+	@Override
 	public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
 	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryBlanketSpot(new WorldPoint(block.worldObj, block.xCoord, block.yCoord, block.zCoord), this.getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryBlanketSpot(new WorldPoint(block.worldObj, block.xCoord, block.yCoord, block.zCoord), getCommandPerm()));
 	}
 
 }

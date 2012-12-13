@@ -224,7 +224,7 @@ public class Zone extends AreaBase implements Comparable
 
 	public String getWorldString()
 	{
-		return this.worldString;
+		return worldString;
 	}
 
 	public Set<String> getPlayersOverriden()

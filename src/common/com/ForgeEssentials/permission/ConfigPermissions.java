@@ -13,13 +13,13 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigPermissions
 {
-	public static File		permissionsFile	= new File(ModulePermissions.permsFolder, "permissions.cfg");
+	public static File			permissionsFile	= new File(ModulePermissions.permsFolder, "permissions.cfg");
 
-	private static final String SUPERS = "_PLAYER_SUPERS_";
-	
-	public Configuration	config;
-	
-	private String global;
+	private static final String	SUPERS			= "_PLAYER_SUPERS_";
+
+	public Configuration		config;
+
+	private String				global;
 
 	public ConfigPermissions()
 	{
@@ -27,7 +27,7 @@ public class ConfigPermissions
 		config = new Configuration(permissionsFile, true);
 
 		global = ZoneManager.GLOBAL.getZoneID();
-		
+
 		// Supers properties
 		if (config.categories.containsKey(SUPERS))
 		{
@@ -35,17 +35,17 @@ public class ConfigPermissions
 			readPlayerSupers(config.categories.get(SUPERS));
 		}
 		writePlayerSupers(SUPERS);
-		
+
 		// GLOBAL properties
 		if (config.categories.containsKey(global))
 		{
 			config.addCustomCategoryComment(global, "the last stop where permissions get checked before their defaults");
 
-			if (config.categories.containsKey(global+".groups"))
-				readGroupPerms(ZoneManager.GLOBAL, config.categories.get(global+".groups"));
+			if (config.categories.containsKey(global + ".groups"))
+				readGroupPerms(ZoneManager.GLOBAL, config.categories.get(global + ".groups"));
 
-			if (config.categories.containsKey(global+".players"))
-				readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(global+".players"));
+			if (config.categories.containsKey(global + ".players"))
+				readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(global + ".players"));
 		}
 		writeGroupPerms(ZoneManager.GLOBAL, global);
 		writePlayerPerms(ZoneManager.GLOBAL, global);
@@ -111,7 +111,7 @@ public class ConfigPermissions
 		writePlayerPerms(zone, zone.getZoneID());
 		config.save();
 	}
-	
+
 	public void forceLoadSupers()
 	{
 		config.load();
@@ -122,7 +122,7 @@ public class ConfigPermissions
 			readPlayerSupers(config.categories.get(SUPERS));
 		}
 	}
-	
+
 	public void forceSaveSupers()
 	{
 		writePlayerSupers(SUPERS);
@@ -138,11 +138,11 @@ public class ConfigPermissions
 		{
 			config.addCustomCategoryComment(global, "the last stop where permissions get checked before their defaults");
 
-			if (config.categories.containsKey(global+".groups"))
-				readGroupPerms(ZoneManager.GLOBAL, config.categories.get(global+".groups"));
+			if (config.categories.containsKey(global + ".groups"))
+				readGroupPerms(ZoneManager.GLOBAL, config.categories.get(global + ".groups"));
 
-			if (config.categories.containsKey(global+".players"))
-				readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(global+".players"));
+			if (config.categories.containsKey(global + ".players"))
+				readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(global + ".players"));
 		}
 
 		// WorldZones
@@ -194,7 +194,7 @@ public class ConfigPermissions
 	private void readGroupPerms(Zone zone, ConfigCategory cat)
 	{
 		ArrayList<String> children = getCategoryChildren(cat);
-		
+
 		for (String child : children)
 		{
 			// read permissions
@@ -216,11 +216,11 @@ public class ConfigPermissions
 			}
 		}
 	}
-	
+
 	private void readPlayerSupers(ConfigCategory cat)
 	{
 		ArrayList<String> children = getCategoryChildren(cat);
-		
+
 		for (String child : children)
 		{
 			// read permissions
@@ -246,14 +246,14 @@ public class ConfigPermissions
 	private void readPlayerPerms(Zone zone, ConfigCategory cat)
 	{
 		ArrayList<String> children = getCategoryChildren(cat);
-		
+
 		for (String child : children)
 		{
 			// read permissions
 			ConfigCategory groupCat = config.categories.get(child);
 
 			HashSet<Permission> perms = zone.playerOverrides.get(getPlayerNameFromCategory(child));
-			
+
 			if (perms == null)
 				perms = new HashSet<Permission>();
 
@@ -269,7 +269,7 @@ public class ConfigPermissions
 			}
 		}
 	}
-	
+
 	private void writePlayerSupers(String parentCat)
 	{
 		for (String player : PlayerManager.playerSupers.keySet())
@@ -279,7 +279,7 @@ public class ConfigPermissions
 				config.get(parentCat + "." + player, perm.name, perm.allowed.equals(Result.ALLOW));
 		}
 	}
-	
+
 	private void writePlayerPerms(Zone zone, String parentCat)
 	{
 		for (String player : zone.getPlayersOverriden())
@@ -299,7 +299,7 @@ public class ConfigPermissions
 				config.get(parentCat + ".groups." + group, perm.name, perm.allowed.equals(Result.ALLOW));
 		}
 	}
-	
+
 	private ArrayList<String> getCategoryChildren(ConfigCategory category)
 	{
 		ArrayList<String> categories = new ArrayList<String>();
@@ -315,10 +315,10 @@ public class ConfigPermissions
 
 		return categories;
 	}
-	
+
 	private String getPlayerNameFromCategory(String qualifiedName)
 	{
-		String[] names = qualifiedName.split("\\" + config.CATEGORY_SPLITTER);
+		String[] names = qualifiedName.split("\\" + Configuration.CATEGORY_SPLITTER);
 
 		if (names.length == 0)
 			return qualifiedName;
