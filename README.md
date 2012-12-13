@@ -34,3 +34,5 @@ FE Team Members:
 <a href="https://github.com/luacs1998">luacs1998</a>
 
 <a href="https://github.com/dries007">Dries007</a>
+
+<a href="https://github.com/Weneg">Weneg</a>
