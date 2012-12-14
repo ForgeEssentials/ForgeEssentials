@@ -22,9 +22,6 @@ public class knockback implements IEffect
 		vecp.multiply(ModuleWorldBorder.borderData.getInteger("rad"));
 		vecp.add(new Vector2(ModuleWorldBorder.borderData.getInteger("centerX"), ModuleWorldBorder.borderData.getInteger("centerZ")));
 		
-		player.sendChatToPlayer("X" + vecp.x + " Z:" + vecp.y);
-		
-		
 		if(player.ridingEntity != null)
 		{
 			player.ridingEntity.setLocationAndAngles(vecp.x, player.ridingEntity.prevPosY, vecp.y, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);

@@ -28,7 +28,12 @@ public class ConfigWorldBorder
 	public static final File wbconfigExample = new File(ForgeEssentials.FEDIR, "WorldBorder_Example.cfg");
 	public final Configuration config;
 	public static Configuration configExample;
-	public static final List<String> PossibleEffects = Arrays.asList("knockback", "message");
+	
+	/**
+	 * This list makes sure the effect is in the example file.
+	 * Not used for parsing the list from the config.
+	 */
+	public static final List<String> PossibleEffects = Arrays.asList("knockback", "message", "potion", "damage", "smite", "serverkick", "executecommand");
 	
 	public ConfigWorldBorder()
 	{
@@ -50,7 +55,7 @@ public class ConfigWorldBorder
 			
 			int dist = config.get(cat, "Distance", 0, "The distance outside the border when this gets activated. WARING this needs to be unique! You can specify 2 penalties in 1 stage.").getInt();
 			
-			String[] effects = {"message", "knockback"};
+			String[] effects = {"message", "knockback", "damage"};
 			effects = config.get(cat, "effects", effects, "Get the list of possibilitys in the example file").valueList;
 			
 			IEffect[] effctList = new IEffect[effects.length];
@@ -134,9 +139,11 @@ public class ConfigWorldBorder
 		
 		int dist = configExample.get(cat, "Distance", 0, "The distance outside the border when this gets activated. WARING this needs to be unique! You can specify 2 penalties in 1 stage.").getInt();
 		
-		String[] kinds = {"message"};
+		String[] kinds = {"message", "potion"};
 		kinds = configExample.get(cat, "kind", kinds, "Get the list of possibilitys on the github wiki.").valueList;
 		
+		String[] potionEffects = {"9:5:0"};
+		configExample.get(cat + "." + "potion", "potionEffects", potionEffects, "Format like this: 'ID:duration:amplifire'");
 		configExample.get(cat + "." + "message", "Message", "YOU SHALL NOT PASS!", "Message to send to the player. You can use color codes.");
 	}
 	
@@ -148,11 +155,12 @@ public class ConfigWorldBorder
 		
 		int dist = configExample.get(cat, "Distance", 10, "The distance outside the border when this gets activated. WARING this needs to be unique! You can specify 2 penalties in 1 stage.").getInt();
 		
-		String[] kinds = {"message", "knockback"};
+		String[] kinds = {"message", "knockback", "damage"};
 		kinds = configExample.get(cat, "kind", kinds, "Get the list of possibilitys on the github wiki.").valueList;
 		
 		configExample.addCustomCategoryComment(cat + ".knockback", "This effect has no option.");
 		configExample.get(cat + "." + "message", "Message", "Told ya!", "Message to send to the player. You can use color codes.");
+		configExample.get(cat + "." + "damage", "damage", 2, "Amount of damage in 1/2 harts.");
 	}
 
 }

@@ -185,7 +185,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 
 	private static void checkPlayerRound(EntityPlayerMP player)
 	{
-		int dist = (int) distance(borderData.getInteger("centerX"), borderData.getInteger("centerZ"), (int) player.posX, (int) player.posZ);
+		int dist = (int) getDistanceRound(borderData.getInteger("centerX"), borderData.getInteger("centerZ"), (int) player.posX, (int) player.posZ);
 		if(dist > borderData.getInteger("rad"))
 		{
 			IEffect[] effects = getClosestEffect(dist);
@@ -293,7 +293,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	}
 
 	// Only uses by BorderShape.round
-	public static double distance(int centerX, int centerZ, int X, int Z)
+	public static double getDistanceRound(int centerX, int centerZ, int X, int Z)
 	{
 		int difX = centerX - X;
 		int difZ = centerZ - Z;
