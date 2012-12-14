@@ -1,5 +1,8 @@
 package com.ForgeEssentials.util;
 
+import com.ForgeEssentials.util.AreaSelector.Point;
+
+import net.minecraft.src.Entity;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.MathHelper;
@@ -38,6 +41,10 @@ public final class FunctionHelper
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
 
+	@Deprecated
+	/**
+	 * use DimensionIDs instead
+	 */
 	public static String getWorldString(World world)
 	{
 		return getDimension(0).getChunkSaveLocation() + "_" + world.getWorldInfo().getDimension();
@@ -45,9 +52,13 @@ public final class FunctionHelper
 
 	public static String getZoneWorldString(World world)
 	{
-		return "WORLD_" + world.getWorldInfo().getWorldName() + "_" + world.getWorldInfo().getDimension();
+		return "WORLD_" + world.provider.getDimensionName() + "_" +world.provider.dimensionId;
 	}
 	
+	@Deprecated
+	/**
+	 * use DimensionIDs instead
+	 */
 	public static WorldServer getWorldFromWorldString(String worldString)
 	{
 		int dimensionID = Integer.parseInt(worldString.substring(worldString.lastIndexOf('_'))); 
@@ -57,5 +68,10 @@ public final class FunctionHelper
 	public static WorldServer getDimension(int dimension)
 	{
 		return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension);
+	}
+	
+	public static Point getEntityPoint(Entity entity)
+	{
+		return new Point((int)Math.round(entity.posX), (int)Math.round(entity.posY), (int)Math.round(entity.posZ));
 	}
 }

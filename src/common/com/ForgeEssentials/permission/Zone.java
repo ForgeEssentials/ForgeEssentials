@@ -18,7 +18,7 @@ public class Zone extends AreaBase implements Comparable
 	public int										priority;			// lowest priority is 0
 	private String									zoneID;			// unique string name
 	public String									parent;			// the unique name of the parent.
-	private String									worldString;		// the WorldString of world this zone exists in.
+	private int										dimension;			// the WorldString of world this zone exists in.
 	public final boolean							isWorldZone;		// flag for WorldZones
 	public final boolean							isGlobalZone;		// flag for GLOBAL zones
 
@@ -32,7 +32,7 @@ public class Zone extends AreaBase implements Comparable
 		super(sel.getLowPoint(), sel.getHighPoint());
 		zoneID = ID;
 		this.parent = parent.zoneID;
-		worldString = parent.worldString;
+		dimension = parent.dimension;
 		isWorldZone = isGlobalZone = false;
 		initMaps();
 	}
@@ -42,7 +42,7 @@ public class Zone extends AreaBase implements Comparable
 		super(sel.getLowPoint(), sel.getHighPoint());
 		zoneID = ID;
 		parent = FunctionHelper.getZoneWorldString(world);
-		worldString = FunctionHelper.getWorldString(world);
+		dimension = world.provider.dimensionId;
 		isWorldZone = isGlobalZone = false;
 		initMaps();
 	}
@@ -61,6 +61,7 @@ public class Zone extends AreaBase implements Comparable
 			parent = ZoneManager.GLOBAL.zoneID;
 			isGlobalZone = false;
 			isWorldZone = true;
+			dimension = world.provider.dimensionId;
 		}
 		else
 		{
@@ -101,7 +102,7 @@ public class Zone extends AreaBase implements Comparable
 		if (zone.isGlobalZone)
 			return true;
 		else if (zone.isWorldZone)
-			return zone.worldString.equals(worldString);
+			return dimension == zone.dimension;
 		else if (zone.zoneID.equals(parent))
 			return true;
 		else
@@ -186,9 +187,9 @@ public class Zone extends AreaBase implements Comparable
 						smallest = perm;
 			if (smallest != null)
 				return smallest.allowed;
-			else if (group != null && group.hasParent() && groupOverrides.containsKey(group.getParent()))
+			else if (group != null && group.hasParent() && groupOverrides.containsKey(group.parent))
 			{
-				perms = groupOverrides.get(group.getParent());
+				perms = groupOverrides.get(group.parent);
 				for (Permission perm : perms)
 					if (check.equals(perm))
 						return perm.allowed;
@@ -221,9 +222,9 @@ public class Zone extends AreaBase implements Comparable
 		return PermResult.UNKNOWN;
 	}
 
-	public String getWorldString()
+	public int getDimension()
 	{
-		return worldString;
+		return dimension;
 	}
 
 	public Set<String> getPlayersOverriden()
@@ -236,11 +237,11 @@ public class Zone extends AreaBase implements Comparable
 		return groupOverrides.keySet();
 	}
 
-	public static void load(String id, String parentID, String worldString, int priority, Selection area)
+	public static void load(String id, String parentID, int dimension, int priority, Selection area)
 	{
 		Zone zone = ZoneManager.getZone(id);
 		Zone parent = ZoneManager.getZone(parentID);
-		World world = FunctionHelper.getWorldFromWorldString(worldString);
+		World world = FunctionHelper.getDimension(dimension);
 
 		if (parent == null)
 			parent = ZoneManager.getWorldZone(world);

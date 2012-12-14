@@ -2,6 +2,7 @@ package com.ForgeEssentials.permission;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
@@ -16,7 +17,6 @@ public class ConfigPlayer
 
 	private static final String	PREFIX		= "chatPrefix";
 	private static final String	SUFFIX		= "chatSuffix";
-	private static final String	PARENT		= "parent";
 	private static final String	GROUP		= "group";
 
 	public Configuration		config;
@@ -34,35 +34,30 @@ public class ConfigPlayer
 		if (config.categories.get(ZoneManager.GLOBAL.getZoneID()) == null || !doesCategoryHaveChilldren(config.categories.get(ZoneManager.GLOBAL.getZoneID())))
 		{
 			tempPlayer = new PlayerPermData("AbrarSyed");
-			tempPlayer.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "AbrarSyed", PARENT, "", "the group from which this group will inherit permissions").value);
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "AbrarSyed", PREFIX, FEChatFormatCodes.DARKRED + "[DevLead]" + FEChatFormatCodes.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "AbrarSyed", SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempPlayer.group = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "AbrarSyed", GROUP, PermissionsAPI.GROUP_OWNERS, "The group this player will be in while in this Zone").value;
 			PlayerManager.putPlayerData(tempPlayer);
 
 			tempPlayer = new PlayerPermData("An_Sar");
-			tempPlayer.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "An_Sar", PARENT, "").value);
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "An_Sar", PREFIX, FEChatFormatCodes.DARKGREEN + "[AwesomeGuy]" + FEChatFormatCodes.WHITE).value;
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "An_Sar", SUFFIX, "").value;
 			tempPlayer.group = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "An_Sar", GROUP, PermissionsAPI.GROUP_MEMBERS).value;
 			PlayerManager.putPlayerData(tempPlayer);
 
 			tempPlayer = new PlayerPermData("Luacs1998");
-			tempPlayer.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Luacs1998", PARENT, "").value);
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Luacs1998", PREFIX, FEChatFormatCodes.RED + "[Dev]" + FEChatFormatCodes.WHITE).value;
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Luacs1998", SUFFIX, "").value;
 			tempPlayer.group = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Luacs1998", GROUP, PermissionsAPI.GROUP_ZONE_ADMINS).value;
 			PlayerManager.putPlayerData(tempPlayer);
 
 			tempPlayer = new PlayerPermData("MysteriousAges");
-			tempPlayer.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "MysteriousAges", PARENT, "").value);
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "MysteriousAges", PREFIX, FEChatFormatCodes.RED + "[Dev]" + FEChatFormatCodes.WHITE).value;
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "MysteriousAges", SUFFIX, "").value;
 			tempPlayer.group = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "MysteriousAges", GROUP, PermissionsAPI.GROUP_ZONE_ADMINS).value;
 			PlayerManager.putPlayerData(tempPlayer);
 
 			tempPlayer = new PlayerPermData("Bob_A_Red_Dino");
-			tempPlayer.setParent(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Bob_A_Red_Dino", PARENT, "").value);
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Bob_A_Red_Dino", PREFIX, FEChatFormatCodes.RED + "[Dev]" + FEChatFormatCodes.WHITE).value;
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Bob_A_Red_Dino", SUFFIX, "").value;
 			tempPlayer.group = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Bob_A_Red_Dino", GROUP, PermissionsAPI.GROUP_ZONE_ADMINS).value;
@@ -97,7 +92,6 @@ public class ConfigPlayer
 				// read Player
 				tempPlayer = new PlayerPermData(getPlayerNameFromCategory(group), cat.getQualifiedName());
 
-				tempPlayer.setParent(config.get(group, PARENT, "").value);
 				tempPlayer.prefix = config.get(group, PREFIX, "").value;
 				tempPlayer.suffix = config.get(group, SUFFIX, "").value;
 				tempPlayer.group = config.get(group, GROUP, "").value;
@@ -115,16 +109,17 @@ public class ConfigPlayer
 
 	public void forceSaveConfigs()
 	{
-		for (Group group : GroupManager.groups.values())
-		{
-			String category = new StringBuilder().append(group.zoneID).append('.').append(group.name).toString();
-			config.get(category, PARENT, "").value = group.getParent();
-			config.get(category, PREFIX, "").value = group.prefix;
-			config.get(category, SUFFIX, "").value = group.suffix;
+		for (HashMap<String, PlayerPermData> map : PlayerManager.playerDats.values())
+			for (PlayerPermData data : map.values())
+			{
+				String category = new StringBuilder().append(data.zoneID).append('.').append(data.username).toString();
+				config.get(category, PREFIX, "").value = data.prefix;
+				config.get(category, SUFFIX, "").value = data.suffix;
+				config.get(category, GROUP, "").value = data.group;
 
-			ConfigCategory cat = config.categories.get(category);
-			cat.putAll(group.getData());
-		}
+				ConfigCategory cat = config.categories.get(category);
+				cat.putAll(data.getData());
+			}
 	}
 
 	private ArrayList<String> getCategoryChildren(ConfigCategory category)

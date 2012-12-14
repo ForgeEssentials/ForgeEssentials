@@ -9,7 +9,7 @@ public class Group
 {
 	private HashMap<String, String>		ladderNames;	// zoneID, ladderName
 	private HashMap<String, Property>	extraData;		// tag based extra data
-	private String						parent;
+	public String						parent;
 	public String						prefix;
 	public String						suffix;
 	public final String					name;
@@ -49,26 +49,6 @@ public class Group
 	public boolean hasParent()
 	{
 		return parent == null || parent.isEmpty();
-	}
-
-	public boolean isParentGroup()
-	{
-		return parent.toLowerCase().startsWith("g:");
-	}
-
-	public boolean isParentPlayer()
-	{
-		return parent.toLowerCase().startsWith("p:");
-	}
-
-	public String getParent()
-	{
-		return parent.substring(2);
-	}
-
-	public void setParent(String parent)
-	{
-		this.parent = parent;
 	}
 
 	public void addData(Property prop)

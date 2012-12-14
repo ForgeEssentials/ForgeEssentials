@@ -7,19 +7,19 @@ public class PromotionLadder
 {
 	public final String				name;
 	public final String				zoneID;
-	private final ArrayList<String>	ladder;
+	private final ArrayList<String>	groupsList;
 
 	public PromotionLadder(String name, String zoneID, String[] list)
 	{
 		this.name = name;
 		this.zoneID = zoneID;
-		ladder = new ArrayList<String>();
-		ladder.addAll(Arrays.asList(list));
+		groupsList = new ArrayList<String>();
+		groupsList.addAll(Arrays.asList(list));
 	}
 
 	public boolean containsGroup(String group)
 	{
-		return ladder.contains(group);
+		return groupsList.contains(group);
 	}
 
 	/**
@@ -28,14 +28,14 @@ public class PromotionLadder
 	 */
 	public String getPromotion(String group)
 	{
-		if (!ladder.contains(group))
+		if (!groupsList.contains(group))
 			return null;
 
-		int index = ladder.indexOf(group);
+		int index = groupsList.indexOf(group);
 		if (index == 0)
 			return null;
 		else
-			return ladder.get(index - 1);
+			return groupsList.get(index - 1);
 	}
 
 	/**
@@ -44,14 +44,14 @@ public class PromotionLadder
 	 */
 	public String getDemotion(String group)
 	{
-		if (!ladder.contains(group))
+		if (!groupsList.contains(group))
 			return null;
 
-		int index = ladder.indexOf(group);
-		if (index == ladder.size() - 1)
+		int index = groupsList.indexOf(group);
+		if (index == groupsList.size() - 1)
 			return null;
 		else
-			return ladder.get(index - 1);
+			return groupsList.get(index - 1);
 	}
 
 	/**
@@ -59,6 +59,6 @@ public class PromotionLadder
 	 */
 	public String[] getListGroup()
 	{
-		return ladder.toArray(new String[] {});
+		return groupsList.toArray(new String[] {});
 	}
 }

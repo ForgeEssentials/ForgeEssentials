@@ -26,10 +26,5 @@ public class PermQueryPlayer extends PermQuery
 		this.doer = player;
 		checker = new PermissionChecker(permission);
 	}
-	
-	public Point getDoerPoint()
-	{
-		return new Point((int)Math.round(doer.posX), (int)Math.round(doer.posY), (int)Math.round(doer.posZ));
-	}
 }
 

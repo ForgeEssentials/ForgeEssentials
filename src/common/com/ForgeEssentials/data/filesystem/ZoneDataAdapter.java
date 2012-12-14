@@ -56,7 +56,7 @@ public class ZoneDataAdapter extends FileSystemDataAdapter<Zone, String>
 		// parent
 		config.get("base", "parentID", object.parent);
 		// world name
-		config.get("base", "world", object.getWorldString());
+		config.get("base", "world", object.getDimension());
 		// area low point
 		Point p = object.getLowPoint();
 		config.get("p1", "x", p.x);
@@ -87,7 +87,7 @@ public class ZoneDataAdapter extends FileSystemDataAdapter<Zone, String>
 			int priority = c.get("base", "priority", 0).getInt();
 			String zoneName = c.get("base", "zoneID", " ").value;
 			String parent = c.get("base", "parentID", " ").value;
-			String world = c.get("base", "world", " ").value;
+			int world = c.get("base", "world", 0).getInt();
 			int x, y, z = 0;
 			x = c.get("p1", "x", 0).getInt();
 			y = c.get("p1", "y", 0).getInt();
