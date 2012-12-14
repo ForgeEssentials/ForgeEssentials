@@ -56,7 +56,7 @@ public class Zone extends AreaBase implements Comparable
 		super(new Point(0, 0, 0), new Point(0, 0, 0));
 		zoneID = ID;
 
-		if (!ID.equals("__GLOBAL__"))
+		if (!ID.equals("_GLOBAL_"))
 		{
 			parent = ZoneManager.GLOBAL.zoneID;
 			isGlobalZone = false;
@@ -66,7 +66,6 @@ public class Zone extends AreaBase implements Comparable
 		{
 			isGlobalZone = true;
 			isWorldZone = false;
-			worldString = FunctionHelper.getWorldString(world);
 		}
 
 		initMaps();

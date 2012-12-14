@@ -40,6 +40,8 @@ public class ModulePermissions implements IFEModule
 		zManager = new ZoneManager();
 		gManager = new GroupManager();
 		pManager = new PlayerManager();
+		
+		MinecraftForge.EVENT_BUS.register(zManager);
 	}
 
 	@Override

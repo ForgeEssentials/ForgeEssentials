@@ -7,7 +7,7 @@ import java.util.TreeMap;
 
 import net.minecraft.src.World;
 import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.world.WorldEvent.Load;
 
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
@@ -34,7 +34,7 @@ public class ZoneManager
 
 	// to load WorldZones
 	@ForgeSubscribe
-	public void worldLoader(WorldEvent.Load e)
+	public void worldLoader(Load e) // thats the WorldLoad event.
 	{
 		String worldString = FunctionHelper.getZoneWorldString(e.world);
 
