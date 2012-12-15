@@ -53,16 +53,31 @@ public class Localization
 	public static final String ERROR_NAN = "message.error.nan";
 	public static final String ERROR_NODEATHPOINT = "message.error.nodeathpoint";
 	public static final String ERROR_NOHOME = "message.error.nohome";
+	public static final String ERROR_NOSELECTION = "message.error.noselection";
 	public static final String ERROR_TARGET = "message.error.target";
 	public static final String ERROR_NOPAGE = "message.error.nopage";
-	public static final String ERROR_NOZONE = "message.error.nozone";
-	public static final String ERROR_YESZONE = "message.error.yeszone";
 	public static final String ERROR_PERMDENIED = "message.error.permdenied";
 	public static final String ERROR_NOITEMPLAYER = "message.error.noItemPlayer";
 	public static final String ERROR_NOITEMTARGET = "message.error.noItemTarget";
 	public static final String ERROR_NOMOB = "message.error.noMobX";
 
 	public static final String DONE = "message.done";
+	
+	
+	/*
+	 * Permissions stuff
+	 */
+	
+	public static final String ERROR_ZONE_NOZONE = "message.error.nozone";
+	public static final String ERROR_ZONE_YESZONE = "message.error.yeszone";
+	public static final String CONFIRM_ZONE_REMOVE = "message.confirm.zone.remove";
+	public static final String CONFIRM_ZONE_DEFINE = "message.confirm.zone.define";
+	public static final String CONFIRM_ZONE_REDEFINE = "message.confirm.zone.redefine";
+	public static final String CONFIRM_ZONE_SETPARENT = "message.confirm.zone.setparent";
+	public static final String ERROR_ILLEGAL_STATE = "message.error.illegalState";
+	public static final String ERROR_ILLEGAL_ENTITY = "message.error.illegalState";
+	
+	
 	
 	/*
 	 * WorldControl

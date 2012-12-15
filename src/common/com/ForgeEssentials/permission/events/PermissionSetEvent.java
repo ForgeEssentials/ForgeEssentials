@@ -34,10 +34,14 @@ public class PermissionSetEvent extends Event
 		super.setCanceled(cancel);
 	}
 	
+	@Deprecated
+	/**
+	 * @see com.ForgeEssentials.permissions.event.PermissionSetEvent.setCancelled(boolean, reason)
+	 */
 	public void setCanceled(boolean cancel)
 	{
 		if (cancel)
-			this.reason = "unspecified";
+			this.reason = "unspecified reason";
 		
 		super.setCanceled(cancel);
 	}

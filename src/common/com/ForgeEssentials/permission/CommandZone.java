@@ -43,8 +43,8 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					{
 						if (args[0].equalsIgnoreCase("list"))
 						{
-							if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.zone.list")))
-								OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
+							if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+".list")))
+								OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 							else
 							{
 								OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.zone.list.header", 1, zonePages));
@@ -66,14 +66,14 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					{
 						if (args[0].equalsIgnoreCase("list"))
 						{
-							if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.zone.list")))
-								OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
+							if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+".list")))
+								OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 							else
 								try
 								{
 									int page = Integer.parseInt(args[1]);
 									if (page <= 0 || page > zonePages)
-										OutputHandler.chatConfirmation(sender, Localization.get("message.error.nopage"));
+										OutputHandler.chatConfirmation(sender, Localization.get(Localization.ERROR_NOPAGE));
 									else
 									{
 										OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.zone.list.header", page, zonePages));
@@ -84,21 +84,21 @@ public class CommandZone extends ForgeEssentialsCommandBase
 								}
 								catch (NumberFormatException e)
 								{
-									OutputHandler.chatError(sender, Localization.format("message.error.nan", 1));
+									OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, 1));
 								}
 							return;
 						}
 						else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete"))
 						{
 							if (!ZoneManager.zoneMap.containsKey(args[1]))
-								OutputHandler.chatError(sender, Localization.format("message.error.nozone", args[1]));
+								OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
 							else
 							{
-								if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.zone.remove." + args[1])))
-									OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
+								if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+".remove." + args[1])))
+									OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 								{
 									ZoneManager.deleteZone(args[1]);
-									OutputHandler.chatConfirmation(sender, Localization.format("message.confirm.zone.remove", args[1]));
+									OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_REMOVE, args[1]));
 								}
 							}
 							return;
@@ -106,38 +106,38 @@ public class CommandZone extends ForgeEssentialsCommandBase
 						else if (args[0].equalsIgnoreCase("define"))
 						{
 							if (ZoneManager.zoneMap.containsKey(args[1]))
-								OutputHandler.chatError(sender, Localization.format("message.error.yeszone", args[1]));
+								OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_YESZONE, args[1]));
 							else if (info.getSelection() == null)
 							{
-								OutputHandler.chatError(sender, Localization.get("message.error.noselection"));
+								OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOSELECTION));
 								return;
 							}
-							else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(sender, "ForgeEssentials.zone.define", info.getSelection(), true)))
-								OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
+							else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm()+".define", info.getSelection(), true)))
+								OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 							else
 							{
 								ZoneManager.createZone(args[1], info.getSelection(), sender.worldObj);
-								OutputHandler.chatConfirmation(sender, Localization.format("message.confirm.zone.define", args[1]));
+								OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_DEFINE, args[1]));
 							}
 							return;
 						}
 						else if (args[0].equalsIgnoreCase("redefine"))
 						{
 							if (!ZoneManager.zoneMap.containsKey(args[1]))
-								OutputHandler.chatError(sender, Localization.format("message.error.yeszone", args[1]));
-							else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.zone.redefine." + args[1])))
-								OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
+								OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_YESZONE, args[1]));
+							else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+".redefine." + args[1])))
+								OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 							else if (info.getSelection() == null)
 							{
-								OutputHandler.chatError(sender, Localization.get("message.error.noselection"));
+								OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOSELECTION));
 								return;
 							}
-							else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(sender, "ForgeEssentials.zone.redefine." + args[1], info.getSelection(), true)))
-								OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
+							else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm()+".redefine." + args[1], info.getSelection(), true)))
+								OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 							else
 							{
 								ZoneManager.zoneMap.get(args[1]).redefine(info.getPoint1(), info.getPoint2());
-								OutputHandler.chatConfirmation(sender, Localization.format("message.confirm.zone.redefine", args[1]));
+								OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_REDEFINE, args[1]));
 							}
 							return;
 						}
@@ -149,16 +149,16 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					{
 						if (args[0].equalsIgnoreCase("setParent"))
 						{
-							if (ZoneManager.zoneMap.containsKey(args[1]))
-								OutputHandler.chatError(sender, Localization.get("message.error.nozone"));
-							else if (ZoneManager.zoneMap.containsKey(args[2]))
-								OutputHandler.chatError(sender, Localization.get("message.error.nozone"));
-							else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.zone.setparent." + args[1])))
-								OutputHandler.chatError(sender, Localization.get("message.error.permdenied"));
+							if (!ZoneManager.zoneMap.containsKey(args[1]))
+								OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
+							else if (!ZoneManager.zoneMap.containsKey(args[2]))
+								OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+							else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+".setparent." + args[1])))
+								OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 							else
 							{
 								ZoneManager.zoneMap.get(args[1]).parent = args[2];
-								OutputHandler.chatConfirmation(sender, args[1] + "redefined successfully");
+								OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_SETPARENT, args[1], args[2]));
 							}
 							return;
 						}

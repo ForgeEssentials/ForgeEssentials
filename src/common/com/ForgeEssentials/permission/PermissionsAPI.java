@@ -2,9 +2,13 @@ package com.ForgeEssentials.permission;
 
 import java.util.HashSet;
 
+import net.minecraftforge.common.MinecraftForge;
+
+import com.ForgeEssentials.permission.events.PermissionSetEvent;
 import com.ForgeEssentials.permission.query.PermQuery;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.permission.query.PermissionQueryBus;
+import com.ForgeEssentials.util.Localization;
 
 public class PermissionsAPI
 {
@@ -78,59 +82,99 @@ public class PermissionsAPI
 		return newG;
 	}
 
-	public static void setPlayerPermission(String username, String permission, boolean allow, String zoneID)
+	/**
+	 * Sets a permission for a player in a zone.
+	 * @param username player to apply the permission to.
+	 * @param permission Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
+	 * @param allow
+	 * @return Reason for set cancellation NULL if the set succeeds. EMpty String if it fails but has no reason.
+	 */
+	public static String setPlayerPermission(String username, String permission, boolean allow, String zoneID)
 	{
-		Zone zone = ZoneManager.getZone(zoneID);
-		if (zone == null)
-			return;
-
-		Permission perm = new Permission(permission, allow);
-		HashSet<Permission> perms = zone.playerOverrides.get(username);
-
-		if (perms == null)
+		try
 		{
-			perms = new HashSet<Permission>();
-			perms.add(perm);
-			zone.playerOverrides.put(username, perms);
+			Zone zone = ZoneManager.getZone(zoneID);
+			if (zone == null)
+				return Localization.format("message.error.nozone", zoneID);
+
+			Permission perm = new Permission(permission, allow);
+			
+			// send out permission string.
+			PermissionSetEvent event = new PermissionSetEvent(perm, zone, "p:" + username);
+			if (MinecraftForge.EVENT_BUS.post(event))
+				return event.getCancelReason();
+			
+			HashSet<Permission> perms = zone.playerOverrides.get(username);
+
+			if (perms == null)
+			{
+				perms = new HashSet<Permission>();
+				perms.add(perm);
+				zone.playerOverrides.put(username, perms);
+			}
+			else
+			{
+				PermissionChecker checker = new PermissionChecker(permission);
+				if (perms.contains(checker))
+					perms.remove(checker);
+				perms.add(perm);
+			}
 		}
-		else
+		catch (Throwable t)
 		{
-			PermissionChecker checker = new PermissionChecker(permission);
-			if (perms.contains(checker))
-				perms.remove(checker);
-			perms.add(perm);
+			return t.getMessage();
 		}
+
+		return null;
 	}
 
 	/**
 	 * Sets a permission for a group in a zone.
-	 * Does nothing if the Group or the Zone do not exist.
 	 * @param username player to apply the permission to.
 	 * @param permission Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
 	 * @param allow
+	 * @return Reason for set cancellation NULL if the set succeeds. EMpty String if it fails but has no reason.
 	 */
-	public static void setGroupPermission(String group, String permission, boolean allow, String zoneID)
+	public static String setGroupPermission(String group, String permission, boolean allow, String zoneID)
 	{
-		Zone zone = ZoneManager.getZone(zoneID);
-		if (!GroupManager.groups.containsKey(group) || zone == null)
-			return;
-
-		Permission perm = new Permission(permission, allow);
-		HashSet<Permission> perms = zone.groupOverrides.get(group);
-
-		if (perms == null)
+		try
 		{
-			perms = new HashSet<Permission>();
-			perms.add(perm);
-			zone.groupOverrides.put(group, perms);
+			Zone zone = ZoneManager.getZone(zoneID);
+			
+			if (zone == null)
+				return Localization.format("message.error.nozone", zoneID);
+			
+			if (!GroupManager.groups.containsKey(group) || zone == null)
+				return Localization.format("message.error.nogroup", group);
+
+			Permission perm = new Permission(permission, allow);
+
+			// send out permission string.
+			PermissionSetEvent event = new PermissionSetEvent(perm, zone, "g:" + group);
+			if (MinecraftForge.EVENT_BUS.post(event))
+				return event.getCancelReason();
+
+			HashSet<Permission> perms = zone.groupOverrides.get(group);
+
+			if (perms == null)
+			{
+				perms = new HashSet<Permission>();
+				perms.add(perm);
+				zone.groupOverrides.put(group, perms);
+			}
+			else
+			{
+				PermissionChecker checker = new PermissionChecker(permission);
+				if (perms.contains(checker))
+					perms.remove(checker);
+				perms.add(perm);
+			}
 		}
-		else
+		catch (Throwable t)
 		{
-			PermissionChecker checker = new PermissionChecker(permission);
-			if (perms.contains(checker))
-				perms.remove(checker);
-			perms.add(perm);
+			return t.getMessage();
 		}
+
+		return null;
 	}
-
 }

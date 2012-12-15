@@ -254,12 +254,16 @@
 	<entry key="message.error.illegalState">"%s" is niether allow or deny</entry>
 	<entry key="message.error.illegalEntity">"%s" must be in form "p:Player" or "g:Group"</entry>
 	
+	<entry key="message.error.nogroup">No group of name %s exists!</entry>
+	<entry key="message.error.yesgroup">A group of name %s already exists!</entry>
+	
 	<!-- Some localization for Zones -->
 	<entry key="command.permissions.zone.list.header">--- Showing the modlist page %d of %d ---</entry>
 	<entry key="message.error.nozone">No zone of name %s exists!</entry>
 	<entry key="message.error.yeszone">A zone of name %s already exists!</entry>
-	<entry key="message.confirm.zone.removee">%s removed successfully</entry>
+	<entry key="message.confirm.zone.remove">%s removed successfully</entry>
 	<entry key="message.confirm.zone.define">%s defined successfully</entry>
 	<entry key="message.confirm.zone.redefine">%s redefined successfully</entry>
+	<entry key="message.confirm.zone.setparent">parent of %s successfully set to %s</entry>
 	
 </properties>
