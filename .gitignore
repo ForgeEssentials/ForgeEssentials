@@ -13,9 +13,7 @@
 /runtime/*
 /temp/*
 
-/src/common/*
-/src/minecraft/*
-/src/minecraft_server/*
+/src/minecraft/
 
 /lib/argo-2.25.jar
 /lib/asm-all-4.0.jar
@@ -24,11 +22,6 @@
 /lib/guava-12.0.1.jar
 /lib/guava-12.0.1-sources.jar
 /lib/bcprov-jdk15on-147.jar
-
-!/src/common/com/
-!/src/common/mcmod.info
-!/src/minecraft/com/
-!/src/common/forgeessentials_at.cfg
 
 !/jars/coremods/
 
