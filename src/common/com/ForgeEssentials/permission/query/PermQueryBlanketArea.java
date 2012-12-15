@@ -2,6 +2,8 @@ package com.ForgeEssentials.permission.query;
 
 import java.util.ArrayList;
 
+import net.minecraft.src.World;
+
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 
 public class PermQueryBlanketArea extends PermQuery
@@ -10,7 +12,7 @@ public class PermQueryBlanketArea extends PermQuery
 	public final AreaBase		doneTo;
 	public final boolean		allOrNothing;
 
-	public PermQueryBlanketArea(String permission, AreaBase doneTo, boolean allOrNothing)
+	public PermQueryBlanketArea(String permission, AreaBase doneTo, World world, boolean allOrNothing)
 	{
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = doneTo;
