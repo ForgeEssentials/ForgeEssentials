@@ -27,10 +27,10 @@ public class TickTaskFillRound extends TickTaskFill
 		this.isComplete = false;
 		this.canNotSaveBefore = canNotSaveBefore;
 		this.world = world;
-		this.X = this.minX = ModuleWorldBorder.borderData.getInteger("minX") - 320;
-		this.Z = this.minZ = ModuleWorldBorder.borderData.getInteger("minZ") - 320;
-		this.maxX = ModuleWorldBorder.borderData.getInteger("maxX") + 320;
-		this.maxZ = ModuleWorldBorder.borderData.getInteger("maxZ") + 320;
+		this.X = this.minX = ModuleWorldBorder.borderData.getInteger("minX") - ModuleWorldBorder.overGenerate;
+		this.Z = this.minZ = ModuleWorldBorder.borderData.getInteger("minZ") - ModuleWorldBorder.overGenerate;
+		this.maxX = ModuleWorldBorder.borderData.getInteger("maxX") + ModuleWorldBorder.overGenerate;
+		this.maxZ = ModuleWorldBorder.borderData.getInteger("maxZ") + ModuleWorldBorder.overGenerate;
 		this.centerX = ModuleWorldBorder.borderData.getInteger("centerX");
 		this.centerZ = ModuleWorldBorder.borderData.getInteger("centerZ");
 		this.rad = ModuleWorldBorder.borderData.getInteger("rad");
@@ -53,7 +53,7 @@ public class TickTaskFillRound extends TickTaskFill
 		int i = 0;
 		while (i < chunksAtick)
 		{
-			if((rad + 320) > ModuleWorldBorder.getDistanceRound(centerX, centerZ, X, Z))
+			if((rad + ModuleWorldBorder.overGenerate) > ModuleWorldBorder.getDistanceRound(centerX, centerZ, X, Z))
 			{
 				i++;
 				world.theChunkProviderServer.provideChunk((X >> 4), (Z >> 4));	

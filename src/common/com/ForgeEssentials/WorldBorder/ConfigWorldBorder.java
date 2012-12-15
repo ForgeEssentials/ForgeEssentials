@@ -42,8 +42,39 @@ public class ConfigWorldBorder
 		makeExamples();
 		
 		config = new Configuration(wbconfig, true);
-		String penaltyBasePackage = IEffect.class.getPackage().getName() + ".";
 		
+		penaltiesConfig(config);
+		commonConfig(config);
+		
+		config.save();
+	}
+	
+	/**
+	 * Does all the rest of the config
+	 * @param config
+	 */
+	public static void commonConfig(Configuration config)
+	{
+		String category = "Settings";
+		config.addCustomCategoryComment(category, "Common settings.");
+		
+		ModuleWorldBorder.logToConsole = config.get(category, "LogToConsole", true, "Enable logging to the server console & the log file").getBoolean(true);
+		Property prop = config.get(category, "overGenerate", 345);
+			prop.comment = "The amount of blocks that will be generated outside the radius of the border. This is important!" +
+					"/nIf you set this high, you will need exponentially more time while generating, but you won't get extra land if a player does pass the border." +
+					"/nIf you use something like Dynmap you should put this number higher, if the border is not there for aesthetic purposes, then you don't need that." +
+					"/nThe default value (345) is calcultated like this: (20 chuncks for vieuw distance * 16 blocks per chunck) + 25 as backup" +
+					"/nThis allows players to pass the border 25 blocks before generating new land.";
+		ModuleWorldBorder.overGenerate = prop.getInt(345);
+	}
+	
+	/**
+	 * Does penalty part on config
+	 * @param config
+	 */
+	public static void penaltiesConfig(Configuration config)
+	{
+		String penaltyBasePackage = IEffect.class.getPackage().getName() + ".";
 		config.addCustomCategoryComment("Penalties", "This is what will happen to the player if he passes the world boder.");
 		
 		String[] stages = {"Stage1"};
@@ -83,9 +114,8 @@ public class ConfigWorldBorder
 				}
 			}
 			
-			ModuleWorldBorder.registerEffect(dist, effctList);
+			ModuleWorldBorder.registerEffects(dist, effctList);
 		}
-		config.save();
 	}
 	
 	/*
@@ -97,8 +127,11 @@ public class ConfigWorldBorder
 		configExample = new Configuration(wbconfigExample, true);
 		String penaltyBasePackage = IEffect.class.getPackage().getName() + ".";
 		
-		configExample.addCustomCategoryComment("Penalties", "This is just an example file!");
+		/*
+		 * PENALTIES
+		 */
 		
+		configExample.addCustomCategoryComment("Penalties", "This is just an example file!");
 		String[] stages = {"Stage1", "Stage2"};
 		stages = configExample.get("Penalties", "stages", stages, "If you add an item here, a subcategory will be generated").valueList;
 		
@@ -127,6 +160,13 @@ public class ConfigWorldBorder
 				OutputHandler.SOP("'" + effect + "' in the stage '" + "EXAMPLE_FILE" + "' does not exist!");
 			}
 		}
+		
+		/*
+		 * COMMON SETTINGS
+		 */
+		
+		commonConfig(configExample);
+		
 		
 		configExample.save();
 	}

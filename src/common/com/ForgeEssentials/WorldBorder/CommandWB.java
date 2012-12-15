@@ -56,13 +56,15 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer("Coordinates :");
 				if(ModuleWorldBorder.shape.equals(BorderShape.square))
 				{
+					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.borderData.getInteger("centerX") + "  centerZ:" + ModuleWorldBorder.borderData.getInteger("centerZ"));
+					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.borderData.getInteger("rad") + " Shape: Square");
 					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.borderData.getInteger("minX") + "  maxX:" + ModuleWorldBorder.borderData.getInteger("maxX"));
 					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.borderData.getInteger("minZ") + "  maxZ:" + ModuleWorldBorder.borderData.getInteger("maxZ"));
 				}
 				if(ModuleWorldBorder.shape.equals(BorderShape.round))
 				{
 					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.borderData.getInteger("centerX") + "  centerZ:" + ModuleWorldBorder.borderData.getInteger("centerZ"));
-					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.borderData.getInteger("rad"));
+					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.borderData.getInteger("rad") + " Shape: Round");
 				}
 			}
 			else

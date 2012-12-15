@@ -19,7 +19,10 @@ public class ModListFile
 		try
 		{
 			Calendar cal = Calendar.getInstance();
-			FileWriter fstream = new FileWriter(new File(ForgeEssentials.FEDIR, ForgeEssentials.modlistLocation));
+			File modListFile = new File(ForgeEssentials.FEDIR, ForgeEssentials.modlistLocation);
+			if(modListFile.exists())
+				modListFile.delete();
+			FileWriter fstream = new FileWriter(modListFile);
 			PrintWriter out = new PrintWriter(fstream);
 			out.println("# --- ModList ---");
 			out.println("# Generated: " + cal.get(Calendar.DAY_OF_MONTH) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR) + " (Server time)");

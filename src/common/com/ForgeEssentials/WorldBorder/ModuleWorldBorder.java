@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.MathHelper;
 import net.minecraft.src.NBTTagCompound;
@@ -45,11 +46,14 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 {
 	public static boolean WBenabled = false;
 	public static NBTTagCompound borderData;
-	private int ticks = 0;
-	private int players = 1;
+	public static boolean logToConsole = true;
 	public static ConfigWorldBorder config;
 	public static BorderShape shape;
-	public static HashMap<Integer, IEffect[]> penalties = new HashMap();
+	public static HashMap<Integer, IEffect[]> effectsList = new HashMap();
+	public static int overGenerate = 345;
+	
+	private int ticks = 0;
+	private int players = 1;
 	
 	public ModuleWorldBorder()
 	{
@@ -58,28 +62,6 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		WBenabled = true;
 		OutputHandler.SOP("WorldBorder module is enabled. Loading...");
 		config = new ConfigWorldBorder();
-	}
-	
-	/*
-	 * Penalty part
-	 */
-	
-	public static void registerEffect(int dist, IEffect[] instance) 
-	{
-		penalties.put(dist, instance);
-	}
-	
-	public static IEffect[] getClosestEffect(int dist)
-	{
-		dist -= ModuleWorldBorder.borderData.getInteger("rad");
-		for(int i = dist; i >= 0; i--)
-		{
-			if(penalties.containsKey(i))
-			{
-				return penalties.get(i);
-			}
-		}
-		return null;
 	}
 
 	/*
@@ -121,29 +103,6 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		event.registerPermissionDefault("ForgeEssentials.worldborder", false);
 		event.registerPermissionDefault("ForgeEssentials.worldborder.admin", false);
 	}
-	
-	public static void setCenter(int rad, int posX, int posZ, BorderShape shapeToSet) 
-	{
-		if(borderData == null) borderData = new NBTTagCompound();
-		
-		shape = shapeToSet;
-		
-		borderData.setBoolean("set", true);
-		
-		borderData.setInteger("centerX", posX);
-		borderData.setInteger("centerZ", posZ);
-		borderData.setInteger("rad", rad);
-		borderData.setByte("shape", shape.getByte());
-		
-		borderData.setInteger("minX", posX - rad);
-		borderData.setInteger("minZ", posZ - rad);
-			
-		borderData.setInteger("maxX", posX + rad);
-		borderData.setInteger("maxZ", posZ + rad);
-		
-		
-		DataStorage.setData("WorldBorder", borderData);
-	}
 
 	/*
 	 * Tickhandler part
@@ -166,14 +125,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 			else
 			{
 				EntityPlayerMP player = ((EntityPlayerMP)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get((int) (ticks % players - 1)));
-				if(shape.equals(BorderShape.round))
-				{
-					checkPlayerRound(player);
-				}
-				else if(shape.equals(BorderShape.square))
-				{
-					checkPlayerSquare(player);
-				}
+				shape.doCheck(player);
 			}
 		}
 		catch(Exception e) 
@@ -183,78 +135,6 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		}
 	}
 
-	private static void checkPlayerRound(EntityPlayerMP player)
-	{
-		int dist = (int) getDistanceRound(borderData.getInteger("centerX"), borderData.getInteger("centerZ"), (int) player.posX, (int) player.posZ);
-		if(dist > borderData.getInteger("rad"))
-		{
-			IEffect[] effects = getClosestEffect(dist);
-			if(effects != null)
-			{
-				for(IEffect effect : effects)
-				{
-					effect.execute(player);
-				}
-			}
-			else
-			{
-				player.sendChatToPlayer("Effect not found.");
-			}
-		}
-	}
-	
-	private static void checkPlayerSquare(EntityPlayerMP player) 
-	{
-		if(player.ridingEntity != null)
-		{
-			if(player.ridingEntity.posX < borderData.getInteger("minX"))
-			{
-				player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));
-				player.ridingEntity.setLocationAndAngles(borderData.getInteger("minX"), player.ridingEntity.posY, player.ridingEntity.posZ, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
-				player.playerNetServerHandler.setPlayerLocation(borderData.getInteger("minX"), player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
-			}
-			if(player.ridingEntity.posX > borderData.getInteger("maxX"))
-			{
-				player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));
-				player.ridingEntity.setLocationAndAngles(borderData.getInteger("maxX"), player.ridingEntity.posY, player.ridingEntity.posZ, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
-			}
-			if(player.ridingEntity.posZ < borderData.getInteger("minZ"))
-			{
-				player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));
-				player.ridingEntity.setLocationAndAngles(player.ridingEntity.posX, player.ridingEntity.posY, borderData.getInteger("minZ"), player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
-				player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, borderData.getInteger("minZ"), player.rotationYaw, player.rotationPitch);
-			}
-			if(player.ridingEntity.posZ > borderData.getInteger("maxZ"))
-			{
-				player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));
-				player.ridingEntity.setLocationAndAngles(player.ridingEntity.posX, player.ridingEntity.posY, borderData.getInteger("maxZ"), player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
-				player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, borderData.getInteger("maxZ"), player.rotationYaw, player.rotationPitch);
-			}
-		}
-		else
-		{
-			if(player.posX < borderData.getInteger("minX"))
-			{
-				player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));
-				player.playerNetServerHandler.setPlayerLocation(borderData.getInteger("minX"), player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
-			}
-			if(player.posX > borderData.getInteger("maxX"))
-			{
-				player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));
-				player.playerNetServerHandler.setPlayerLocation(borderData.getInteger("maxX"), player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
-			}
-			if(player.posZ < borderData.getInteger("minZ"))
-			{
-				player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));
-				player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, borderData.getInteger("minZ"), player.rotationYaw, player.rotationPitch);
-			}
-			if(player.posZ > borderData.getInteger("maxZ"))
-			{
-				player.sendChatToPlayer("\u00a7c" + Localization.get(Localization.WB_HITBORDER));
-				player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, borderData.getInteger("maxZ"), player.rotationYaw, player.rotationPitch);
-			}
-		}
-	}
 
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) {}
@@ -274,15 +154,11 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	@Override
 	public int nextTickSpacing() 
 	{
-		if(players < 50)
-		{
-			return 20;
-		}
-		else if (players < 100)
+		if(players < 10)
 		{
 			return 10;
 		}
-		else if (players < 200)
+		else if (players < 20)
 		{
 			return 5;
 		}
@@ -291,26 +167,9 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 			return 0;
 		}
 	}
-
-	// Only uses by BorderShape.round
-	public static double getDistanceRound(int centerX, int centerZ, int X, int Z)
-	{
-		int difX = centerX - X;
-		int difZ = centerZ - Z;
-		
-		return Math.sqrt(((difX * difX) + (difZ * difZ)));
-	}
-	
-	public static Vector2 getDirectionVector(EntityPlayerMP player)
-	{
-		Vector2 vecp = new Vector2(borderData.getInteger("centerX") - player.posX, borderData.getInteger("centerZ") - player.posZ);
-		vecp.normalize();
-		vecp.multiply(-1);
-		return vecp;
-	}
 	
 	/*
-	 * Used to get determen shapes
+	 * Used to get determen shapes & execute the actual check.
 	 */
 	
 	public enum BorderShape
@@ -342,5 +201,111 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 			}
 			return null;
 		}
+		
+		public void doCheck(EntityPlayerMP player)
+		{
+			if(this.equals(round))
+			{
+				int dist = (int) getDistanceRound(borderData.getInteger("centerX"), borderData.getInteger("centerZ"), (int) player.posX, (int) player.posZ);
+				if(dist > borderData.getInteger("rad"))
+				{
+					executeClosestEffects(dist - ModuleWorldBorder.borderData.getInteger("rad"), player);
+				}
+			}
+			if(this.equals(square))
+			{
+				if(player.posX < borderData.getInteger("minX"))
+				{
+					executeClosestEffects((int) player.posX - borderData.getInteger("minX"), player);
+				}
+				if(player.posX > borderData.getInteger("maxX"))
+				{
+					executeClosestEffects((int) player.posX - borderData.getInteger("maxX"), player);
+				}
+				if(player.posZ < borderData.getInteger("minZ"))
+				{
+					executeClosestEffects((int) player.posZ - borderData.getInteger("minZ"), player);
+				}
+				if(player.posZ > borderData.getInteger("maxZ"))
+				{
+					executeClosestEffects((int) player.posZ - borderData.getInteger("maxZ"), player);
+				}
+			}
+		}
+	}
+
+	
+	/*
+	 * Penalty part
+	 */
+	
+	public static void registerEffects(int dist, IEffect[] effects) 
+	{
+		effectsList.put(dist, effects);
+	}
+	
+	public static void executeClosestEffects(int dist, EntityPlayerMP player)
+	{
+		dist = Math.abs(dist);
+		log(player, dist);
+		for(int i = dist; i >= 0; i--)
+		{
+			if(effectsList.containsKey(i))
+			{
+				for(IEffect effect : effectsList.get(i))
+				{
+					effect.execute(player);
+				}
+			}
+		}
+	}
+	
+	/*
+	 * Static Helper Methods
+	 */
+	
+	public static double getDistanceRound(int centerX, int centerZ, int X, int Z)
+	{
+		int difX = centerX - X;
+		int difZ = centerZ - Z;
+		
+		return Math.sqrt(((difX * difX) + (difZ * difZ)));
+	}
+	
+	public static Vector2 getDirectionVector(EntityPlayerMP player)
+	{
+		Vector2 vecp = new Vector2(borderData.getInteger("centerX") - player.posX, borderData.getInteger("centerZ") - player.posZ);
+		vecp.normalize();
+		vecp.multiply(-1);
+		return vecp;
+	}
+	
+	public static void log(EntityPlayerMP player, int dist)
+	{
+		if(logToConsole)
+			OutputHandler.SOP(player.username + " passed the worldborder by " + dist + " blocks.");
+	}
+	
+	public static void setCenter(int rad, int posX, int posZ, BorderShape shapeToSet) 
+	{
+		if(borderData == null) borderData = new NBTTagCompound();
+		
+		shape = shapeToSet;
+		
+		borderData.setBoolean("set", true);
+		
+		borderData.setInteger("centerX", posX);
+		borderData.setInteger("centerZ", posZ);
+		borderData.setInteger("rad", rad);
+		borderData.setByte("shape", shape.getByte());
+		
+		borderData.setInteger("minX", posX - rad);
+		borderData.setInteger("minZ", posZ - rad);
+			
+		borderData.setInteger("maxX", posX + rad);
+		borderData.setInteger("maxZ", posZ + rad);
+		
+		
+		DataStorage.setData("WorldBorder", borderData);
 	}
 }
