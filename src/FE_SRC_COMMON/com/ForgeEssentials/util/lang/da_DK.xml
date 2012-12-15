@@ -1,0 +1,109 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties version="1.0">
+	<comment>Dansk (DK) Localization fil, &lt; er mindre end eller h�jre pil tegnet</comment>
+	<entry key="command.motd.syntax.console">[ny motd]</entry>
+	<entry key="command.motd.syntax.player">[ny motd]</entry>
+	<entry key="command.motd.info.console">Hent/s�t dagens besked</entry>
+	<entry key="command.motd.info.player">Hent/s�t dagens besked</entry>
+
+	<entry key="command.rules.syntax.console">[&lt;tal> &lt;ny regel>|fjern]</entry>
+	<entry key="command.rules.syntax.player">[&lt;tal> &lt;ny regel>|fjern]</entry>
+	<entry key="command.rules.info.console">Hent/S�t regler for serveren</entry>
+	<entry key="command.rules.info.player">Hent/S�t regler for serveren</entry>
+
+	<entry key="command.butcher.syntax.player">[radius] [&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.butcher.info.player">Dræb fjender i nærheden af dig eller et specifikt oåde indenfor det bestemte punkt</entry>
+
+	<entry key="command.remove.syntax.player">/remove [radius] [&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.remove.info.player">Fjern alle entities rundt om dig eller indenfor det angivede område.</entry>
+
+	<entry key="command.kill.syntax.console">&lt;spiller></entry>
+	<entry key="command.kill.syntax.player">[spiller]</entry>
+	<entry key="command.kill.info.console">Dr�b den angivede spiller.</entry>
+	<entry key="command.kill.info.player">Begåselvmord eller dr�b en bestemt spiller.</entry>
+
+	<entry key="command.smite.syntax.console">&lt;spiller></entry>
+	<entry key="command.smite.syntax.player">[me|&lt;spiller>]</entry>
+	<entry key="command.smite.info.console">Smid lyn efter den specificerede spiller.</entry>
+	<entry key="command.smite.info.player">Smid lyn p� det du kigger på, dig selv eller p� en anden spille.</entry>
+
+	<entry key="command.home.syntax.player">[here|&lt;x> &lt;y> &lt;z>]</entry>
+	<entry key="command.home.info.player">Teleportere dig til dit hjem eller s�tter det.</entry>
+
+	<entry key="command.back.syntax.player"></entry>
+	<entry key="command.back.info.player">Teleportere dig til det punkt du d�de.</entry>
+
+	<entry key="command.restart.syntax.console"></entry>
+	<entry key="command.restart.info.console">Genstart serveren</entry>
+
+	<entry key="command.serverdo.syntax.player">&lt;kommando> [arg1]...</entry>
+	<entry key="command.serverdo.info.player">K�r en konsol kommando som en spiller</entry>
+
+	<entry key="message.butchered">%d fjender slagtede</entry>
+	<entry key="message.removed">%d ting fjernet</entry>
+	<entry key="message.killed">Du blev dr�bt. Du har sikkert fortjent det.</entry>
+	<entry key="message.spawntypechanged">Your spawn type has been set to </entry>
+	<entry key="message.smite.self">Var det nu ogs� en god ide?</entry>
+	<entry key="message.smite.player">Du burde have d�rlig samvitighed.</entry>
+	<entry key="message.smite.ground">H�ber ikke du har startet en brænd!</entry>
+	<entry key="message.smite.targetError">Du skal kigge på jorden! Maks. rækkevide er 500 blo.</entry>
+	
+	<entry key="message.error.noPlayerX">Spilleren %s eksistere ikke.</entry>
+	<entry key="message.error.badsyntax">Det ville ikke virke, prøv dette:</entry>
+	<entry key="message.error.noplayer">Den spiller eksistere ikke.</entry>
+	<entry key="message.error.specifyPlayer">Du skal angive en spiller.</entry>
+	<entry key="message.error.nan">Det var ikke et nummer, prøv igen du kan godt!</entry>
+	<entry key="message.error.nodeathpoint">Du har ikke været død endnu! godt gået!</entry>
+	<entry key="message.error.nohome">Intet hjem sat. Prøv dette: </entry>
+	<entry key="message.error.nopage">Kunne ikke finde en side med det nummer!</entry>
+	<entry key="message.error.nozone">Ingen zone med det ID eksistere!</entry>
+	<entry key="message.error.yeszone">Der findes allerede en zone med det ID!</entry>
+	<entry key="message.error.noselection">Intet område valg! Marker et område først.</entry>
+	<entry key="message.error.permdenied">Du har ikke rettigheder til den handling.</entry>
+	<entry key="message.error.notANumber">#%d param er ikke et tal.</entry>
+	
+	<entry key="message.done">Færdig!</entry>
+	
+	<entry key="command.modlist.header">--- Viser side %p af %t af mods ---</entry>
+	<entry key="command.modlist.syntax.console">[side]</entry>
+	<entry key="command.modlist.syntax.player">[side]</entry>
+	<entry key="command.modlist.info.console">Vis en liste af mods som serveren bruger.</entry>
+	<entry key="command.modlist.info.player">Vis en liste af mods som serveren bruger.</entry>
+	<entry key="command.zone.info.player">Opret, fjern og redigere områder.</entry>
+	
+	<entry key="command.zone.syntax.player">&lt;define|redefine|remove|setparent &lt;newParent>> &lt;område id></entry>
+	
+	<entry key="command.warp.notfound">Det warp eksistere ikke!</entry>
+	<entry key="command.warp.list">Alle warps på serveren:</entry>
+	<entry key="command.warp.alreadyexists">Det warp eksistere allerede. Brug "/warp del &lt;navn>" for at slette det.</entry>
+	<entry key="command.warp.syntax.player">[navn] Eller &lt;set|del> &lt;navn> </entry>
+	<entry key="command.warp.info.player">Teleportere dig til et warp punkt.</entry>
+	
+	<!-- Some localization for WorldControl -->
+	<entry key="command./set.syntax.player">&lt;blockID[:metadata]></entry>
+	<entry key="command./set.info.player">Sætter alle blokke i det valgte område til den angivne ID/metada.</entry>
+	<entry key="command./replace.syntax.player">&lt;blockID[:metadata]> &lt;blockID[:metadata]></entry>
+	<entry key="command./replace.info.player">Erstat blokke med det først angivne ID med det sekundær.</entry>
+	<entry key="command.thaw.syntax.player">&lt;radius af effekten> [&lt;x> &lt;z>]</entry>
+	<entry key="command.thaw.info.player">Fjerner sne og is omkring spilleren eller i det angivne område.</entry>
+	<entry key="command.freeze.syntax.player">&lt;radius af effekten> [&lt;x> &lt;z>]</entry>
+	<entry key="command.freeze.info.player">Fryser vandoverflader til is (kræver direkte adgang til en skyblock henove)</entry>
+	<entry key="command.snow.syntax.player">&lt;radius af effekten> [&lt;x> &lt;z>]</entry>
+	<entry key="command.snow.info.player">Dækker landskabet med et lag af sne.</entry>
+	<entry key="command.till.syntax.player">&lt;radius af effekten> [&lt;x> &lt;y>]</entry>
+	<entry key="command.till.info.player">Dyrker jord og græs så man kan plante afgrø.</entry>
+	<entry key="command.untill.syntax.player">&lt;radius af effekten> [&lt;x> &lt;y>]</entry>
+	<entry key="command.untill.info.player">Udskifter opdyrket land med direkte udsyn til himlen med jord.</entry>
+	
+	<entry key="message.wc.setConfirmBlocksChanged">Set %1$d blocks changed to %2$s</entry>
+	<entry key="message.wc.replaceConfirmBlocksChanged">Replaced %1$d %2$s blocks with %3$s</entry>
+	<entry key="message.wc.thawConfirm">%d blokke er blevet optøet.</entry>
+	<entry key="message.wc.freezeConfirm">%d blokke er blevet ændret til is.</entry>
+	<entry key="message.wc.snowConfirm">%d blokke er blevet dække med sne.</entry>
+	<entry key="message.wc.tillConfirm">%d blokke er blevet konverteret til opdyrket land.</entry>
+	<entry key="message.wc.untillConfirm">%d blokke af opdyrket land er blevet konverteret til normal jord.</entry>
+	<entry key="message.wc.invalidBlockId">%d er ikke et valid blok ID!</entry>
+	<entry key="message.wc.blockIdOutOfRange">Blok ID'ere kan ikke større end %d!</entry>
+	
+	<entry key="tile.air.name">Luft</entry>
+</properties>
