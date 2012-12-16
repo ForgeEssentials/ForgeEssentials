@@ -28,8 +28,6 @@ public class ModulePermissions implements IFEModule
 
 	public static File									permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
 
-	private ForgeEssentialsPermissionRegistrationEvent	permEvent;
-
 	@Override
 	public void preLoad(FMLPreInitializationEvent e)
 	{
@@ -51,7 +49,8 @@ public class ModulePermissions implements IFEModule
 
 		MinecraftForge.EVENT_BUS.register(this);
 
-		permEvent = new ForgeEssentialsPermissionRegistrationEvent();
+		MinecraftForge.EVENT_BUS.post(new ForgeEssentialsPermissionRegistrationEvent());
+		
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
 	}

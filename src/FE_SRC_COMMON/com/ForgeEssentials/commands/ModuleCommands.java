@@ -98,13 +98,14 @@ public class ModuleCommands implements IFEModule
 		event.registerPermissionDefault("ForgeEssentials.commands.compass", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.repair", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.heal", false);
+		event.registerPermissionDefault("ForgeEssentials.commands.tps", false);
 		
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.commands", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.commands.compass", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.list", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.rules", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.motd", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.tps", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.commands.compass", true);
 	}
 
 	@Override

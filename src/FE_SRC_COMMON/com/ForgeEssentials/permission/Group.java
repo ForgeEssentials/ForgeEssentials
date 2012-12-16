@@ -14,6 +14,7 @@ public class Group
 	public String						suffix;
 	public final String					name;
 	public final String					zoneID;
+	public int							priority;		// lowest priority is 0
 
 	public Group(String name)
 	{
