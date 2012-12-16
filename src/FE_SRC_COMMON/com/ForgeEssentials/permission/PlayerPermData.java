@@ -17,11 +17,7 @@ public class PlayerPermData
 
 	public PlayerPermData(String username)
 	{
-		this.username = username;
-		zoneID = ZoneManager.GLOBAL.getZoneID();
-		extraData = new HashMap<String, Property>();
-		groupList = new ArrayList<String>();
-		groupList.add(PermissionsAPI.GROUP_DEFAULT);
+		this(username, ZoneManager.GLOBAL.getZoneID());
 	}
 
 	public PlayerPermData(String username, String ZoneID)
@@ -29,6 +25,7 @@ public class PlayerPermData
 		this.username = username;
 		zoneID = ZoneID;
 		extraData = new HashMap<String, Property>();
+		groupList = new ArrayList<String>();
 	}
 
 	public void addData(Property prop)
