@@ -72,9 +72,6 @@ public class DataStorageManager
 			// Allows the driver a chance to read config values.
 			if (driver.parseConfigs(config, worldName))
 			{
-				// Register all 
-				driver.registerAdapters();
-				
 				// Update the ForgeEssentials object with this driver.
 				ForgeEssentials.instance.setDataStore(driver);
 			}

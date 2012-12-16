@@ -1,26 +1,19 @@
 package com.ForgeEssentials.data.nbt;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-
-import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.data.DataDriver;
-import com.ForgeEssentials.data.IDataAdapter;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.data.TaggedClass.SavedField;
 
-public class PlayerInfoDataAdapter implements IDataAdapter<PlayerInfo, String>
+public class NBTDataAdapter<SavedType> extends DataAdapter<SavedType>
 {
 
-	private String dataDir;
+	public NBTDataAdapter(DataDriver driver, Class<SavedType> type)
+	{
+		super(driver, type);
+		// TODO Auto-generated constructor stub
+	}
+	/*private String dataDir;
 	
-	public PlayerInfoDataAdapter()
+	public NBTDataAdapter()
 	{
 		this.dataDir = ((NBTDataDriver)DataDriver.getInstance()).getBaseBath() + "PlayerInfo/";
 		File f = new File(dataDir);
@@ -170,6 +163,30 @@ public class PlayerInfoDataAdapter implements IDataAdapter<PlayerInfo, String>
 		file.delete();
 		
 		return file.exists() ? false : true;
+	}*/
+	@Override
+	public SavedField[] loadData(Object uniqueObjectKey)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public SavedField[][] loadAll()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean deleteData(Object uniqueObjectKey)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean saveData(SavedType object)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

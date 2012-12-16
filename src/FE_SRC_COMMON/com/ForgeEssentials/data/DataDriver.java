@@ -1,155 +1,116 @@
 package com.ForgeEssentials.data;
 
-import java.util.HashMap;
+import java.util.*;
 
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.util.OutputHandler;
 
-/**
- * The basic container for a data persistence "driver". Defines some generic functions
- * for saving and loading objects. DataDriver is meant to be extended to provide
- * support for a variety of different storage mediums. (flat-file, relational DBs...
- * that's probably about it. Different DBMSs may need specialized drivers.)
- * 
- * @author MysteriousAges
- *
- */
+
 public abstract class DataDriver
 {
-	protected static DataDriver instance;
+	private HashMap<Class, TypeTagger> taggerList;
 	
-	// Stores bindings between logic classes and their data classes.
-	protected HashMap<Class, IDataAdapter> map;
-
 	public DataDriver()
 	{
-		this.map = new HashMap<Class, IDataAdapter>();
+		this.taggerList = new HashMap<Class, TypeTagger>();
 	}
-	
-	/**
-	 * Gives the DataDriver a chance to load any information from the FE Configs, or
-	 * determine any other information it needs to operate.
-	 * Called by the core during @PreInit.
-	 * 
-	 * @param config Main configuration object used by FE
-	 * @param worldName 
-	 * @return Whether or not the parsing was successful. 
-	 */
-	public abstract boolean parseConfigs(Configuration config, String worldName);
-	
-	/**
-	 * Returns the type of the current DataDriver to allow ForgeEssentials addon modules to determine
-	 * which DataDriver is currently in use.
-	 * 
-	 * @return The type of the current DataDriver being used.
-	 */
+
 	public Class getDataDriverType()
 	{
 		return this.getClass();
 	}
-	
-	/**
-	 * Allows the DataDriver to register all Adapters it provides with the DataDriver Map
-	 * of Class -> Adapters that are provided by ForgeEssentials.
-	 */
-	protected abstract void registerAdapters();
-	
-	/**
-	 * Allows ForgeEssentials addon modules to register their own DataAdapters into the system.
-	 * 
-	 * @param saveType The addon module's class the adapter manages
-	 * @param adapter the IDataAdapter object
-	 * @return True, if the mapping was added successfully.
-	 */
-	public boolean registerExternalAdapter(Class saveType, IDataAdapter adapter)
+
+	public boolean registerClass(Class type)
 	{
 		boolean flag = false;
-		if (!this.map.containsKey(saveType))
+		SaveableObject a;
+		if ((a = (SaveableObject)type.getAnnotation(SaveableObject.class)) != null)
 		{
-			this.map.put(saveType, adapter);
-			flag = true;
+			// Create a tagger for this object and save it in our hashmap.
+			this.taggerList.put(type, new TypeTagger(this, type));
 		}
 		return flag;
 	}
-	
-	public static DataDriver getInstance()
-	{
-		return DataDriver.instance;
-	}
-	
-	/**
-	 * Checks the DataDriver to see if it knows how to persist an object.
-	 * 
-	 * @param o Instance of any class
-	 * @return true if and only if the class has a binding to a IDataAdapter in the current driver.
-	 */
+
 	public boolean hasMapping(Object o)
 	{
-		return this.map.containsKey(o.getClass());
+		return this.taggerList.containsKey(o.getClass());
 	}
 	
-	/**
-	 * Saves an object to the data storage defined by this Driver. If the class does not have
-	 * a mapping in the current backing, it will not be saved. (See hasMapping() )
-	 * 
-	 * @param o Object to save
-	 * @return True if the DataDriver has an adapter for the object type and is able to write its data to the store.
-	 */
-	public static boolean saveObject(Object o)
+	public boolean hasMapping(Class type)
 	{
-		DataDriver d = DataDriver.instance;
-		boolean flag = false;
-		if (d != null)
+		return this.taggerList.containsKey(type);
+	}
+	
+	public TypeTagger getTaggerForType(Class type)
+	{
+		if (!this.hasMapping(type))
 		{
-			if (d.hasMapping(o))
-			{
-				IDataAdapter da = d.map.get(o.getClass());
-				
-				if (da != null)
-				{
-					flag = da.saveData(o);
-				}
-				else
-				{
-					OutputHandler.SOP("DataDriver " + " does not have an instance for " + o.getClass());
-				}
-			}
+			this.registerClass(type);
 		}
+		return this.taggerList.get(type);
+	}
+
+	public boolean saveObject(Object o)
+	{
+		boolean flag = false;
+		
+		TypeTagger t;
+		if ((t = getTaggerForType(o.getClass())) != null)
+		{
+			flag = true;
+			this.saveData(o.getClass(), t.getTaggedClassFromObject(o));
+		}
+		
 		return flag;
 	}
 	
-	/**
-	 * Loads data from a store and populates an existing instance of the requested type with
-	 * the information from the store. This helps to get around issues with constructors
-	 * requiring objects that are not available during load.
-	 * 
-	 * If no DataDriver has been loaded, the function will not populate the destination object.
-	 * 
-	 * @param loadingKey Object required by the IDataAdapter to uniquely determine which record to load
-	 * @param destination Instance of an object that will be populated with data from the store
-	 * @return True, if the Driver has a mapping for the object and is able to successfully load from the store. False otherwise.
-	 */
-	public static boolean loadObject(Object loadingKey, Object destination)
+	@Deprecated
+	public boolean loadObject(String type, Object loadingKey)
 	{
-		DataDriver d = DataDriver.instance;
-		boolean success = false;
-		if (d != null)
-		{
-			if (d.hasMapping(destination))
-			{
-				IDataAdapter da = d.map.get(destination.getClass());
-				
-				if (da != null)
-				{
-					success = da.loadData(loadingKey, destination);
-				}
-				else
-				{
-					OutputHandler.SOP("DataDriver does not have an instance for " + destination.getClass());
-				}
-			}
-		}
-		return success;
+		return false;
 	}
+
+	public Object loadObject(Class type, Object loadingKey)
+	{
+		Object newObject = null;
+		TaggedClass data = this.loadData(type, loadingKey);
+
+		if (data != null)
+		{
+			newObject = this.taggerList.get(type).createFromFields(data);
+		}
+		
+		return newObject;
+	}
+	
+	public Object[] loadAllObjects(Class type)
+	{
+		ArrayList<Object> list = new ArrayList<Object>();
+		TaggedClass[] objectData = loadAll(type);
+		
+		// Each element of the field array represents an object, stored as an array of fields.
+		if (objectData != null && objectData.length > 0)
+		{
+			
+		}
+
+		return list.toArray(new Object[list.size()]);
+	}
+	
+	public boolean deleteObject(Class type, Object loadingKey)
+	{
+		return deleteData(type, loadingKey);
+	}
+
+	abstract public boolean parseConfigs(Configuration config, String worldName);
+
+	abstract protected boolean saveData(Class type, TaggedClass fieldList);
+	
+	abstract protected TaggedClass loadData(Class type, Object uniqueKey);
+	
+	abstract protected TaggedClass[] loadAll(Class type);
+	
+	abstract protected boolean deleteData(Class type, Object uniqueObjectKey);
 }

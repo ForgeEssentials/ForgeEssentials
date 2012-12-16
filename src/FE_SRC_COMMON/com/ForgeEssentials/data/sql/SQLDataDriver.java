@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -90,13 +89,6 @@ public class SQLDataDriver extends DataDriver
 		}
 		
 		return isSuccess;
-	}
-
-	@Override
-	protected void registerAdapters()
-	{
-		this.map.put(PlayerInfo.class, new PlayerInfoDataAdapter());
-
 	}
 	
 	public Connection getConnection()
