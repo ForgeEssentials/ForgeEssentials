@@ -9,6 +9,7 @@ import net.minecraftforge.common.Property;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.TaggedClass;
+import com.ForgeEssentials.data.TypeTagger;
 import com.ForgeEssentials.data.TaggedClass.SavedField;
 
 /**
@@ -112,7 +113,7 @@ public class FileSystemDataDriver extends DataDriver
 	private void saveFields(Configuration cfg, String parentName, SavedField[] fieldList)
 	{
 		String tagPrefix;
-		if (parentName != null && parentName.length() > 0)
+		if (parentName != null && !parentName.isEmpty())
 		{
 			tagPrefix = parentName + ".";
 		}
@@ -120,6 +121,7 @@ public class FileSystemDataDriver extends DataDriver
 		{
 			tagPrefix = "";
 		}
+		
 		for (TaggedClass.SavedField field : fieldList)
 		{
 			if (field.Value instanceof TaggedClass)
@@ -167,42 +169,42 @@ public class FileSystemDataDriver extends DataDriver
 	
 	private void saveFieldToProperty(Configuration cfg, String category, TaggedClass.SavedField field)
 	{
-		if (field.Type == Integer.class)
+		if (field.Type.equals(Integer.class))
 		{
 			cfg.get(category, "value", ((Integer)field.Value).intValue());
 			cfg.get(category, "type", field.Type.getName());
 		}
-		else if (field.Type == int[].class)
+		else if (field.Type.equals(int[].class))
 		{
 			cfg.get(category, "value", (int[])field.Value);
 			cfg.get(category, "type", field.Type.getName());
 		}
-		else if (field.Type == Float.class || field.Type == Double.class)
+		else if (field.Type.equals(Float.class) || field.Type.equals(Double.class))
 		{
 			cfg.get(category, "value", ((Double)field.Value).doubleValue());
 			cfg.get(category, "type", field.Type.getName());
 		}
-		else if (field.Type == double[].class)
+		else if (field.Type.equals(double[].class))
 		{
 			cfg.get(category, "value", (double[])field.Value);
 			cfg.get(category, "type", field.Type.getName());
 		}
-		else if (field.Type == Boolean.class)
+		else if (field.Type.equals(Boolean.class))
 		{
 			cfg.get(category, "value", ((Boolean)field.Value).booleanValue());
 			cfg.get(category, "type", field.Type.getName());
 		}
-		else if (field.Type == boolean[].class)
+		else if (field.Type.equals(boolean[].class))
 		{
 			cfg.get(category, "value", (boolean[])field.Value);
 			cfg.get(category, "type", field.Type.getName());
 		}
-		else if (field.Type == String.class)
+		else if (field.Type.equals(String.class))
 		{
 			cfg.get(category, "value", (String)field.Value);
 			cfg.get(category, "type", field.Type.getName());
 		}
-		else if (field.Type == String[].class)
+		else if (field.Type.equals(String[].class))
 		{
 			cfg.get(category, "value", (String[])field.Value);
 			cfg.get(category, "type", field.Type.getName());

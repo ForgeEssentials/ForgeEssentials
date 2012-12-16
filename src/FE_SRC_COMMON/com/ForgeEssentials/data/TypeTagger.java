@@ -1,6 +1,7 @@
 package com.ForgeEssentials.data;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,12 @@ public class TypeTagger
 					SaveableField sf = (SaveableField)a;
 					if (sf.uniqueLoadingField())
 					{
+						// something was previously set a Primary Field
+						if (loadingField != null)
+							throw new RuntimeException("Only 1 field may have be a unique loading field");
+						else if(!f.getType().isPrimitive() && !type.isAssignableFrom(String.class))
+							throw new RuntimeException("Unique loading fields must be primitives or strings");
+						
 						loadingField = f.getName();
 					}
 					else
@@ -56,7 +63,7 @@ public class TypeTagger
 		}
 		while ((currentType = currentType.getSuperclass()) != null);
 		
-		this.savedFields = tempList.toArray(new String[tempList.size()]);
+		this.savedFields = tempList.toArray(new String[] {});
 	}
 	
 	protected DataDriver getParent()
@@ -72,8 +79,7 @@ public class TypeTagger
 	public TaggedClass getTaggedClassFromObject(Object objectSaved)
 	{
 		TaggedClass data = new TaggedClass();
-		data.Type = objectSaved.getClass();
-		Class c = objectSaved.getClass();
+		Class c = data.Type = objectSaved.getClass();
 		Field f;
 		Object obj;		
 		
@@ -127,7 +133,7 @@ public class TypeTagger
 				}
 				--i;
 			}
-			catch (Exception e)
+			catch (Throwable e)
 			{
 				// This... Should not happen. Unless something stupid.
 				OutputHandler.SOP("Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.");
@@ -211,7 +217,6 @@ public class TypeTagger
 	}
 	
 	/**
-	 * 
 	 * @param t Type of object to check
 	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to corretly save the object.
 	 */
