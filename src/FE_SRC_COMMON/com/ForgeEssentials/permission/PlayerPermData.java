@@ -1,5 +1,6 @@
 package com.ForgeEssentials.permission;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,10 +8,10 @@ import net.minecraftforge.common.Property;
 
 public class PlayerPermData
 {
-	private HashMap<String, Property>	extraData;								// tag based extra data
+	private HashMap<String, Property>	extraData;	// tag based extra data
 	public String						prefix;
 	public String						suffix;
-	public String						group	= GroupManager.DEFAULT.name;
+	private ArrayList<String>			groupList;
 	public final String					username;
 	public final String					zoneID;
 
@@ -19,6 +20,8 @@ public class PlayerPermData
 		this.username = username;
 		zoneID = ZoneManager.GLOBAL.getZoneID();
 		extraData = new HashMap<String, Property>();
+		groupList = new ArrayList<String>();
+		groupList.add(PermissionsAPI.GROUP_DEFAULT);
 	}
 
 	public PlayerPermData(String username, String ZoneID)
@@ -41,5 +44,28 @@ public class PlayerPermData
 	public Map<String, Property> getData()
 	{
 		return extraData;
+	}
+
+	public void removeFromGroup(String group)
+	{
+		groupList.remove(group);
+	}
+
+	public void addGroup(String group)
+	{
+		if (!groupList.contains(group))
+			groupList.add(group);
+	}
+
+	public void addGroupAll(String[] groups)
+	{
+		for (String group : groups)
+			if (!groupList.contains(group))
+				groupList.add(group);
+	}
+	
+	public ArrayList<String> getGroupList()
+	{
+		return groupList;
 	}
 }

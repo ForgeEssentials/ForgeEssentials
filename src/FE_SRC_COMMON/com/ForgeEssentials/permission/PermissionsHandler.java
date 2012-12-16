@@ -73,12 +73,11 @@ public final class PermissionsHandler
 	 */
 	private PermResult getResultFromZone(Zone zone, PermissionChecker perm, EntityPlayer player)
 	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 		PermResult result = PermResult.UNKNOWN;
 		Zone tempZone = zone;
 		while (result.equals(PermResult.UNKNOWN))
 		{
-			String group = info.getGroupForZone(tempZone);
+			String group = "_DEFAULT_";
 			result = tempZone.getPlayerOverride(player, perm);
 
 			if (result.equals(PermResult.UNKNOWN)) // or group blankets

@@ -69,9 +69,6 @@ public class PlayerInfo
 	private Point sel2;
 	private Selection selection;
 
-	// permissions stuff
-	private HashMap<String, String> areaGroupMap;
-
 	public WorldPoint home;
 	public WorldPoint lastDeath;
 	// 0: Normal 1: World spawn 2: Bed 3: Home
@@ -91,9 +88,6 @@ public class PlayerInfo
 		selection = null;
 		worldName = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
 		username = player.username;
-
-		areaGroupMap = new HashMap<String, String>();
-		areaGroupMap.put(worldName, "default");
 
 		undos = new Stack<BackupArea>();
 		redos = new Stack<BackupArea>();
@@ -231,18 +225,5 @@ public class PlayerInfo
 		BackupArea back = redos.pop();
 		undos.push(back);
 		return back;
-	}
-
-	// ----------------------------------------------
-	// --------- Group/Permission stuff -------------
-	// ----------------------------------------------
-
-	public String getGroupForZone(Zone zone)
-	{
-		String group = areaGroupMap.get(zone.getZoneID());
-		if (group == null)
-			return "DEFAULT";
-		else
-			return group;
 	}
 }

@@ -36,31 +36,31 @@ public class ConfigPlayer
 			tempPlayer = new PlayerPermData("AbrarSyed");
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "AbrarSyed", PREFIX, FEChatFormatCodes.DARKRED + "[DevLead]" + FEChatFormatCodes.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "AbrarSyed", SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
-			tempPlayer.group = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "AbrarSyed", GROUP, PermissionsAPI.GROUP_OWNERS, "The group this player will be in while in this Zone").value;
+			tempPlayer.addGroupAll(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "AbrarSyed", GROUP, new String[] {PermissionsAPI.GROUP_OWNERS}, "The group this player will be in while in this Zone").valueList);
 			PlayerManager.putPlayerData(tempPlayer);
 
 			tempPlayer = new PlayerPermData("An_Sar");
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "An_Sar", PREFIX, FEChatFormatCodes.DARKGREEN + "[AwesomeGuy]" + FEChatFormatCodes.WHITE).value;
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "An_Sar", SUFFIX, "").value;
-			tempPlayer.group = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "An_Sar", GROUP, PermissionsAPI.GROUP_MEMBERS).value;
+			tempPlayer.addGroupAll(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "An_Sar", GROUP, new String[] {PermissionsAPI.GROUP_MEMBERS}).valueList);
 			PlayerManager.putPlayerData(tempPlayer);
 
 			tempPlayer = new PlayerPermData("Luacs1998");
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Luacs1998", PREFIX, FEChatFormatCodes.RED + "[Dev]" + FEChatFormatCodes.WHITE).value;
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Luacs1998", SUFFIX, "").value;
-			tempPlayer.group = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Luacs1998", GROUP, PermissionsAPI.GROUP_ZONE_ADMINS).value;
+			tempPlayer.addGroupAll(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Luacs1998", GROUP, new String[] {PermissionsAPI.GROUP_ZONE_ADMINS}).valueList);
 			PlayerManager.putPlayerData(tempPlayer);
 
 			tempPlayer = new PlayerPermData("MysteriousAges");
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "MysteriousAges", PREFIX, FEChatFormatCodes.RED + "[Dev]" + FEChatFormatCodes.WHITE).value;
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "MysteriousAges", SUFFIX, "").value;
-			tempPlayer.group = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "MysteriousAges", GROUP, PermissionsAPI.GROUP_ZONE_ADMINS).value;
+			tempPlayer.addGroupAll(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "MysteriousAges", GROUP, new String[] {PermissionsAPI.GROUP_ZONE_ADMINS}).valueList);
 			PlayerManager.putPlayerData(tempPlayer);
 
 			tempPlayer = new PlayerPermData("Bob_A_Red_Dino");
 			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Bob_A_Red_Dino", PREFIX, FEChatFormatCodes.RED + "[Dev]" + FEChatFormatCodes.WHITE).value;
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Bob_A_Red_Dino", SUFFIX, "").value;
-			tempPlayer.group = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Bob_A_Red_Dino", GROUP, PermissionsAPI.GROUP_ZONE_ADMINS).value;
+			tempPlayer.addGroupAll(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Bob_A_Red_Dino", GROUP, new String[] {PermissionsAPI.GROUP_ZONE_ADMINS}).valueList);
 			PlayerManager.putPlayerData(tempPlayer);
 		}
 
@@ -94,7 +94,7 @@ public class ConfigPlayer
 
 				tempPlayer.prefix = config.get(group, PREFIX, "").value;
 				tempPlayer.suffix = config.get(group, SUFFIX, "").value;
-				tempPlayer.group = config.get(group, GROUP, "").value;
+				tempPlayer.addGroupAll(config.get(group, GROUP, new String[] {}).valueList);
 
 				for (Property prop : config.categories.get(group).getValues().values())
 					if (prop.getName().equals(PREFIX) || prop.getName().equals(SUFFIX))
@@ -115,7 +115,7 @@ public class ConfigPlayer
 				String category = new StringBuilder().append(data.zoneID).append('.').append(data.username).toString();
 				config.get(category, PREFIX, "").value = data.prefix;
 				config.get(category, SUFFIX, "").value = data.suffix;
-				config.get(category, GROUP, "").value = data.group;
+				config.get(category, GROUP, new String[] {}).valueList = data.getGroupList().toArray(new String[] {});
 
 				ConfigCategory cat = config.categories.get(category);
 				cat.putAll(data.getData());
