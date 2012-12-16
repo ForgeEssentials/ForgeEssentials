@@ -1,6 +1,7 @@
 package com.ForgeEssentials.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TaggedClass
 {
@@ -22,15 +23,15 @@ public class TaggedClass
 	
 	public Class Type;
 	public SavedField LoadingKey;
-	public ArrayList<SavedField> TaggedMembers;
+	public HashMap<String, SavedField> TaggedMembers;
 	
 	public TaggedClass()
 	{
-		this.TaggedMembers = new ArrayList<SavedField>();
+		this.TaggedMembers = new HashMap<String, SavedField>();
 	}
 	
 	public void addField(SavedField field)
 	{
-		this.TaggedMembers.add(field);
+		this.TaggedMembers.put(field.FieldName, field);
 	}
 }

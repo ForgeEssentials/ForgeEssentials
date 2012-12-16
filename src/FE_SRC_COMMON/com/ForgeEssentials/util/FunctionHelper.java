@@ -75,4 +75,9 @@ public final class FunctionHelper
 	{
 		return new Point((int)Math.round(entity.posX), (int)Math.round(entity.posY), (int)Math.round(entity.posZ));
 	}
+	
+	public static EntityPlayer getPlayerFromUsername(String username)
+	{
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+	}
 }

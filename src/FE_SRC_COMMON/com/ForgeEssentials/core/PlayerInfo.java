@@ -6,13 +6,19 @@ import java.util.Stack;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
+import com.ForgeEssentials.data.SaveableObject;
+import com.ForgeEssentials.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.data.TaggedClass;
 import com.ForgeEssentials.permission.Zone;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
+@SaveableObject
 public class PlayerInfo
 {
 	private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
@@ -49,29 +55,47 @@ public class PlayerInfo
 	{
 		playerInfoMap.remove(username);
 	}
+	
+	@Reconstructor()
+	private static PlayerInfo reconstruct(TaggedClass tag)
+	{
+		String username = (String) tag.LoadingKey.Value;
+		PlayerInfo info = new PlayerInfo(FunctionHelper.getPlayerFromUsername(username));
+		
+		
+		return null;
+	}
 
 	// -------------------------------------------------------------------------------------------
-	// ---------------------------------- Actual Class Starts Now
-	// --------------------------------
+	// ---------------------------------- Actual Class Starts Now --------------------------------
 	// -------------------------------------------------------------------------------------------
-
-	private boolean hasClientMod;
+	@SaveableField
 	private String worldName;
+	
+	@SaveableField(uniqueLoadingField = true)
 	private String username;
 
 	// wand stuff
+	@SaveableField(nullableField = true)
 	public int wandID;
+	@SaveableField(nullableField = true)
 	public int wandDmg;
 	public boolean wandEnabled;
 
 	// selection stuff
+	@SaveableField(nullableField = true)
 	private Point sel1;
+	@SaveableField(nullableField = true)
 	private Point sel2;
 	private Selection selection;
 
+	@SaveableField(nullableField = true)
 	public WorldPoint home;
+	@SaveableField(nullableField = true)
 	public WorldPoint lastDeath;
+	
 	// 0: Normal 1: World spawn 2: Bed 3: Home
+	@SaveableField
 	public int spawnType;
 
 	// undo and redo stuff
@@ -91,16 +115,6 @@ public class PlayerInfo
 
 		undos = new Stack<BackupArea>();
 		redos = new Stack<BackupArea>();
-	}
-
-	public boolean isHasClientMod()
-	{
-		return hasClientMod;
-	}
-
-	public void setHasClientMod(boolean hasClient)
-	{
-		hasClientMod = hasClient;
 	}
 
 	public String getUsername()
