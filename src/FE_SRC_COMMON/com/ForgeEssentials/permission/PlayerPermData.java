@@ -45,22 +45,24 @@ public class PlayerPermData
 
 	public void removeFromGroup(String group)
 	{
-		groupList.remove(group);
+		if (group != null)
+			groupList.remove(group);
 	}
 
 	public void addGroup(String group)
 	{
-		if (!groupList.contains(group))
+		if (group != null && !groupList.contains(group))
 			groupList.add(group);
 	}
 
 	public void addGroupAll(String[] groups)
 	{
-		for (String group : groups)
-			if (!groupList.contains(group))
-				groupList.add(group);
+		if (groups != null)
+			for (String group : groups)
+				if (!groupList.contains(group))
+					groupList.add(group);
 	}
-	
+
 	public ArrayList<String> getGroupList()
 	{
 		return groupList;
