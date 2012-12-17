@@ -9,6 +9,7 @@ import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.data.TaggedClass;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -57,7 +58,7 @@ public class PlayerInfo
 	@Reconstructor()
 	private static PlayerInfo reconstruct(TaggedClass tag)
 	{
-		String username = (String) tag.LoadingKey.Value;
+		String username = (String) tag.TaggedMembers.get("username").Value;
 		PlayerInfo info = new PlayerInfo(FunctionHelper.getPlayerFromUsername(username));
 		
 		info.setPoint1((Point) tag.TaggedMembers.get("sel1").Value);
@@ -74,7 +75,7 @@ public class PlayerInfo
 	// -------------------------------------------------------------------------------------------
 	// ---------------------------------- Actual Class Starts Now --------------------------------
 	// -------------------------------------------------------------------------------------------
-	@SaveableField(uniqueLoadingField = true)
+	@SaveableField()
 	public final String username;
 
 	// wand stuff
@@ -125,6 +126,12 @@ public class PlayerInfo
 	public void save()
 	{
 		ForgeEssentials.getInstanceDataDriver().saveObject(this);
+	}
+	
+	@UniqueLoadingKey
+	private String loadingKey()
+	{
+		return username;
 	}
 	
 	// ----------------------------------------------
