@@ -39,21 +39,21 @@ public class TypeTagger
 		ArrayList<String> tempList = new ArrayList<String>();
 		Annotation a;
 		
-		// Iterate through this class and superclasses and get saveable fields
+		// Iterate through this class and superclass's and get saveable fields
 		do
 		{
 			// Locate all members that are saveable.
 			for (Field f : currentType.getDeclaredFields())
 			{
-				if ((a = f.getAnnotation(SaveableField.class)) != null)
+				if (f.isAnnotationPresent(SaveableField.class))
 				{
-					SaveableField sf = (SaveableField)a;
+					SaveableField sf = (SaveableField)f.getAnnotation(SaveableField.class);
 					if (sf.uniqueLoadingField())
 					{
 						// something was previously set a Primary Field
 						if (loadingField != null && type.equals(currentType))
 							throw new RuntimeException("Only 1 field may have be a unique loading field");
-						else if(!f.getType().isPrimitive() && !type.isAssignableFrom(String.class))
+						else if(!f.getType().isPrimitive() && !f.getType().equals(String.class))
 							throw new RuntimeException("Unique loading fields must be primitives or strings");
 						
 						loadingField = f.getName();
@@ -75,17 +75,11 @@ public class TypeTagger
 			if (m.getAnnotation(Reconstructor.class) == null)
 				continue;
 			
-			if (!Modifier.isStatic(m.getModifiers()))
-				throw new RuntimeException("The reconstructor method must be static!");
-			else if (!m.getReturnType().equals(type))
-				throw new RuntimeException("The reconstructor method must return "+type+"");
-			else if (m.getParameterTypes().length != 1)
-				throw new RuntimeException("The reconstructor method must have exactly 1 paremeter/argument");
-			else if (m.getParameterTypes()[0].equals(TaggedClass.class))
-				throw new RuntimeException("The reconstructor method must have a "+TaggedClass.class+" parameter");
-			
-			if (reconstructorMethod != null)
-				throw new RuntimeException("Each class may only have 1 reconstructor method");
+			assert Modifier.isStatic(m.getModifiers()) : new RuntimeException("The reconstructor method must be static!");
+			assert m.getReturnType().equals(type) : new RuntimeException("The reconstructor method must return "+type);
+			assert m.getParameterTypes().length == 1 : new RuntimeException("The reconstructor method must have exactly 1 paremeter/argument");
+			assert m.getParameterTypes()[0].equals(TaggedClass.class) : new RuntimeException("The reconstructor method must have a "+TaggedClass.class+" parameter");
+			assert reconstructorMethod == null : new RuntimeException("Each class may only have 1 reconstructor method");
 			
 			reconstructorMethod = m.getName();
 		}
@@ -108,7 +102,7 @@ public class TypeTagger
 		TaggedClass data = new TaggedClass();
 		Class c = data.Type = objectSaved.getClass();
 		Field f;
-		Object obj;		
+		Object obj;
 		
 		// And the loading field.
 		if (loadingField != null)
@@ -136,6 +130,7 @@ public class TypeTagger
 				f = currentClass.getDeclaredField(savedFields[i]);
 				f.setAccessible(true);
 				obj = f.get(objectSaved);
+				
 				if (obj != null)
 				{
 					if (this.isTypeComplex(obj))
@@ -183,54 +178,6 @@ public class TypeTagger
 		{
 			OutputHandler.felog.log(Level.SEVERE, "Error loading " + data.Type + " with name " + data.LoadingKey.Value, thrown);
 		}
-
-		/*
-		try
-		{
-			// Attempt to create the object. 
-			newObject = this.forType.newInstance();
-			
-			// Loop through each field and populate.
-			for (int i = 0; i < data.TaggedMembers.size(); ++i)
-			{
-				try
-				{
-					obj = this.savedFieldToObject(data.TaggedMembers.get(i));
-
-					// Set the value of the field.
-					f = this.forType.getDeclaredField(data.TaggedMembers.get(i).FieldName);
-					f.setAccessible(true);
-					f.set(newObject, obj);
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-			
-			// Don't forget about the loading field.
-			if (data.LoadingKey != null)
-			{
-				try
-				{
-					obj = this.savedFieldToObject(data.LoadingKey);
-					
-					f = this.forType.getDeclaredField(data.LoadingKey.FieldName);
-					f.setAccessible(true);
-					f.set(newObject, obj);
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			// If we can't create the object using its default constructor, just give up.
-			e.printStackTrace();
-		}
-		*/
 		
 		return null;
 	}
@@ -240,14 +187,10 @@ public class TypeTagger
 		Object obj = null;
 		// If the value of the field is a TaggedClass, run this function on it to recreate the original object.
 		if (field.Value instanceof TaggedClass)
-		{
 			obj = this.parent.getTaggerForType(field.Type).createFromFields((TaggedClass)field.Value);
-		}
 		else
-		{
 			// Simple case.
 			obj = field.Value;
-		}
 		return obj;
 	}
 	
@@ -268,5 +211,22 @@ public class TypeTagger
 		}
 		
 		return flag;
+	}
+	
+	/**
+	 * @param t class check
+	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.
+	 */
+	private boolean isTypeComplex(Class obj)
+	{
+		if ( obj.isPrimitive() || obj.equals(Integer.class) || obj.equals(int[].class) ||
+				obj.equals(Float.class) || obj.equals(Double.class) || obj.equals(double[].class) ||
+				obj.equals(Boolean.class) || obj.equals(boolean[].class) || obj.equals(String.class) || 
+				obj.equals(String[].class))
+		{
+			return false;
+		}
+		
+		return true;
 	}
 }

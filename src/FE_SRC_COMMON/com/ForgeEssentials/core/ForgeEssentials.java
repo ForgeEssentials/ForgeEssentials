@@ -68,7 +68,6 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		
 		config = new CoreConfig();
 
 		if (verCheck)
@@ -89,6 +88,8 @@ public class ForgeEssentials
 		mdlaunch.load(e);
 		localization.load();
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
+		
+		
 	}
 
 	@PostInit
@@ -105,6 +106,8 @@ public class ForgeEssentials
 		
 		// Add hooks for initializing new data backing API
 		DataStorageManager.setupDriver(config.config, e);
+		
+		dataStore.registerClass(PlayerInfo.class);
 		
 		//Central TP system
 		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
@@ -151,8 +154,10 @@ public class ForgeEssentials
 
 	public void setDataStore(DataDriver driver)
 	{
+		assert driver != null : new IllegalArgumentException("You cannot assign a null DataDriver");
+		
 		// Only set this once to prevent strangeness.
-		if (this.dataStore != null)
+		if (this.dataStore == null)
 		{
 			this.dataStore = driver;
 		}

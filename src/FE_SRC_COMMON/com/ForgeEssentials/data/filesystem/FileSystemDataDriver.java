@@ -101,7 +101,7 @@ public class FileSystemDataDriver extends DataDriver
 		
 		this.saveFieldToProperty(cfg, objectData.LoadingKey.FieldName, objectData.LoadingKey);
 		
-		TaggedClass.SavedField[] fieldList = objectData.TaggedMembers.toArray(new TaggedClass.SavedField[objectData.TaggedMembers.size()]);
+		TaggedClass.SavedField[] fieldList = objectData.TaggedMembers.values().toArray(new TaggedClass.SavedField[objectData.TaggedMembers.size()]);
 		
 		this.saveFields(cfg, "", fieldList);
 		
@@ -128,7 +128,7 @@ public class FileSystemDataDriver extends DataDriver
 			{
 				// Nested classes SHOULD NOT have a loading field.
 				TaggedClass innerObject = (TaggedClass)field.Value;
-				TaggedClass.SavedField[] fields = innerObject.TaggedMembers.toArray(new TaggedClass.SavedField[innerObject.TaggedMembers.size()]);
+				TaggedClass.SavedField[] fields = innerObject.TaggedMembers.values().toArray(new TaggedClass.SavedField[innerObject.TaggedMembers.size()]);
 				this.saveFields(cfg, tagPrefix + field.FieldName, fields);
 			}
 			else

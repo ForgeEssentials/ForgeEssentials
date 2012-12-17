@@ -56,13 +56,6 @@ public abstract class DataDriver
 		return flag;
 	}
 
-	@Deprecated
-	public boolean loadObject(String type, Object loadingKey)
-	{
-		// TODO: REMOVE WHEN WE FIX PLAYERINFO!
-		return false;
-	}
-
 	public Object loadObject(Class type, Object loadingKey)
 	{
 		Object newObject = null;
@@ -81,11 +74,10 @@ public abstract class DataDriver
 
 		// Each element of the field array represents an object, stored as an array of fields.
 		if (objectData != null && objectData.length > 0)
-		{
-			// TODO: implement reconstructor method
-		}
+			for (TaggedClass tag: objectData)
+				list.add(loadObject(type, tag.LoadingKey.Value));
 
-		return list.toArray(new Object[list.size()]);
+		return list.toArray(new Object[] {});
 	}
 
 	public boolean deleteObject(Class type, Object loadingKey)

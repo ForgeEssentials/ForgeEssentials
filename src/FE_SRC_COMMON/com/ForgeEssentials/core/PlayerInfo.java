@@ -27,16 +27,14 @@ public class PlayerInfo
 	{
 		PlayerInfo info = playerInfoMap.get(player.username);
 
+		// load or create one
 		if (info == null)
 		{
-			info = new PlayerInfo(player);
-			
 			// Attempt to populate this info with some data from our storage.
-			if (!ForgeEssentials.getInstanceDataDriver().loadObject(player.username, info))
-			{
-				// Loading was unsuccessful. Save this object while we can.
-				info.save();
-			}
+			info = (PlayerInfo) ForgeEssentials.getInstanceDataDriver().loadObject(PlayerInfo.class, player.username);
+			
+			if (info == null)
+				info = new PlayerInfo(player);
 			
 			playerInfoMap.put(player.username, info);
 		}
@@ -62,6 +60,13 @@ public class PlayerInfo
 		String username = (String) tag.LoadingKey.Value;
 		PlayerInfo info = new PlayerInfo(FunctionHelper.getPlayerFromUsername(username));
 		
+		info.setPoint1((Point) tag.TaggedMembers.get("sel1").Value);
+		info.setPoint2((Point) tag.TaggedMembers.get("sel2").Value);
+		
+		info.home = (WorldPoint) tag.TaggedMembers.get("home").Value;
+		info.lastDeath = (WorldPoint) tag.TaggedMembers.get("lastDeath").Value;
+		
+		info.spawnType = (Integer) tag.TaggedMembers.get("spawnType").Value;
 		
 		return null;
 	}
@@ -69,28 +74,26 @@ public class PlayerInfo
 	// -------------------------------------------------------------------------------------------
 	// ---------------------------------- Actual Class Starts Now --------------------------------
 	// -------------------------------------------------------------------------------------------
-	@SaveableField
-	private String worldName;
-	
 	@SaveableField(uniqueLoadingField = true)
-	private String username;
+	public final String username;
 
 	// wand stuff
-	@SaveableField(nullableField = true)
-	public int wandID;
-	@SaveableField(nullableField = true)
-	public int wandDmg;
-	public boolean wandEnabled;
+	public int wandID = 0;
+	public int wandDmg = 0;
+	public boolean wandEnabled = false;
 
 	// selection stuff
 	@SaveableField(nullableField = true)
 	private Point sel1;
+	
 	@SaveableField(nullableField = true)
 	private Point sel2;
+	
 	private Selection selection;
 
 	@SaveableField(nullableField = true)
 	public WorldPoint home;
+	
 	@SaveableField(nullableField = true)
 	public WorldPoint lastDeath;
 	
@@ -110,21 +113,10 @@ public class PlayerInfo
 		sel1 = null;
 		sel2 = null;
 		selection = null;
-		worldName = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
 		username = player.username;
 
 		undos = new Stack<BackupArea>();
 		redos = new Stack<BackupArea>();
-	}
-
-	public String getUsername()
-	{
-		return username;
-	}
-
-	public String getWorldName()
-	{
-		return worldName;
 	}
 	
 	/**
