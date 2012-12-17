@@ -103,10 +103,11 @@ public class TypeTagger
 			Method m;
 			m = c.getDeclaredMethod(uniqueKey, new Class[] {});
 			m.setAccessible(true);
+			data.LoadingKey = m.invoke(objectSaved, new Object[] {});
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.");
+			OutputHandler.SOP("Reflection error trying to get UniqueLoadingKey from " + objectSaved.getClass() + ". FE will continue without saving this.");
 			e.printStackTrace();
 		}
 		
@@ -165,7 +166,7 @@ public class TypeTagger
 		}
 		catch (Throwable thrown)
 		{
-			OutputHandler.felog.log(Level.SEVERE, "Error loading " + data.Type + " with name " + data.LoadingKey.Value, thrown);
+			OutputHandler.felog.log(Level.SEVERE, "Error loading " + data.Type + " with name " + data.LoadingKey, thrown);
 		}
 		
 		return null;

@@ -78,7 +78,7 @@ public class FileSystemDataDriver extends DataDriver
 	{
 		boolean wasSuccessful = false;
 		
-		File file = this.getFilePath(type, objectData.LoadingKey.Value);
+		File file = this.getFilePath(type, objectData.LoadingKey);
 		
 		// Wipe existing Forge Configuration file - they don't take new data.
 		if (file.exists())
@@ -87,8 +87,6 @@ public class FileSystemDataDriver extends DataDriver
 		}
 		
 		Configuration cfg = new Configuration(file, true);
-		
-		this.saveFieldToProperty(cfg, type.getSimpleName(), objectData.LoadingKey);
 		
 		for (SavedField field : objectData.TaggedMembers.values())
 			saveFieldToProperty(cfg, type.getSimpleName(), field);
@@ -169,8 +167,6 @@ public class FileSystemDataDriver extends DataDriver
 		{
 			TaggedClass tag = (TaggedClass) field.Value;
 			String newcat = category+"."+tag.Type.getSimpleName();
-			
-			saveFieldToProperty(cfg, newcat, tag.LoadingKey);
 			
 			for (SavedField f : tag.TaggedMembers.values())
 				saveFieldToProperty(cfg, newcat, f);
