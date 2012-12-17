@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
@@ -24,7 +25,7 @@ public class TypeTagger
 {
 	private DataDriver parent;
 	protected Class forType;
-	protected String loadingField;
+	protected String uniqueKey;
 	protected String reconstructorMethod;
 	protected String[] savedFields;
 	protected HashMap<String, Class> fieldToTypeMap;
@@ -47,22 +48,7 @@ public class TypeTagger
 			{
 				if (f.isAnnotationPresent(SaveableField.class))
 				{
-					SaveableField sf = (SaveableField)f.getAnnotation(SaveableField.class);
-					if (sf.uniqueLoadingField() && type.equals(currentType))
-					{
-						// something was previously set a Primary Field
-						if (loadingField != null)
-							throw new RuntimeException("Only 1 field may have be a unique loading field");
-						else if(!f.getType().isPrimitive() && !f.getType().equals(String.class))
-							throw new RuntimeException("Unique loading fields must be primitives or strings");
-						
-						loadingField = f.getName();
-					}
-					else
-					{
-						tempList.add(f.getName());
-					}
-
+					tempList.add(f.getName());
 					fieldToTypeMap.put(f.getName(), f.getType());
 				}
 			}
@@ -72,16 +58,24 @@ public class TypeTagger
 		// find reconstructor method
 		for (Method m : type.getDeclaredMethods())
 		{
-			if (m.getAnnotation(Reconstructor.class) == null)
-				continue;
-			
-			assert Modifier.isStatic(m.getModifiers()) : new RuntimeException("The reconstructor method must be static!");
-			assert m.getReturnType().equals(type) : new RuntimeException("The reconstructor method must return "+type);
-			assert m.getParameterTypes().length == 1 : new RuntimeException("The reconstructor method must have exactly 1 paremeter/argument");
-			assert m.getParameterTypes()[0].equals(TaggedClass.class) : new RuntimeException("The reconstructor method must have a "+TaggedClass.class+" parameter");
-			assert reconstructorMethod == null : new RuntimeException("Each class may only have 1 reconstructor method");
-			
-			reconstructorMethod = m.getName();
+			if (m.isAnnotationPresent(Reconstructor.class))
+			{
+				assert reconstructorMethod == null : new RuntimeException("Each class may only have 1 reconstructor method");
+				assert Modifier.isStatic(m.getModifiers()) : new RuntimeException("The reconstructor method must be static!");
+				assert m.getReturnType().equals(type) : new RuntimeException("The reconstructor method must return "+type);
+				assert m.getParameterTypes().length == 1 : new RuntimeException("The reconstructor method must have exactly 1 paremeter/argument");
+				assert m.getParameterTypes()[0].equals(TaggedClass.class) : new RuntimeException("The reconstructor method must have a "+TaggedClass.class+" parameter");
+				
+				reconstructorMethod = m.getName();
+			}
+			else if (m.isAnnotationPresent(UniqueLoadingKey.class))
+			{
+				assert uniqueKey == null : new RuntimeException("Each class may only have 1 UniqueLoadingKey method");
+				assert m.getParameterTypes().length == 0 : new RuntimeException("The reconstructor method must have no paremeters");
+				assert (m.getReturnType().isPrimitive() && m.getReturnType().equals(Void.class)) || m.getReturnType().equals(String.class)  : new RuntimeException("The reconstructor method must return a primitive or a string");
+				
+				uniqueKey = m.getName();
+			}
 		}
 		
 		this.savedFields = tempList.toArray(new String[] {});
@@ -104,21 +98,16 @@ public class TypeTagger
 		Field f;
 		Object obj;
 		
-		// And the loading field.
-		if (loadingField != null)
+		try
 		{
-			try
-			{
-				f = c.getDeclaredField(loadingField);
-				f.setAccessible(true);
-				data.LoadingKey = data.new SavedField(loadingField, f.get(objectSaved));
-				
-			}
-			catch (Exception e)
-			{
-				OutputHandler.SOP("Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.");
-				e.printStackTrace();
-			}
+			Method m;
+			m = c.getDeclaredMethod(uniqueKey, new Class[] {});
+			m.setAccessible(true);
+		}
+		catch (Exception e)
+		{
+			OutputHandler.SOP("Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.");
+			e.printStackTrace();
 		}
 		
 		Class currentClass = c;
