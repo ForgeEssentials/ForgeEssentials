@@ -25,8 +25,8 @@ public class FileSystemDataDriver extends DataDriver
 	
 	private HashMap<Class, String> filePaths;
 	
-	private String baseFilePath;
-	private static String newline = "\r\n";
+	private File baseFile;
+	private static final String NEWLINE = Configuration.NEW_LINE;
 	
 	public FileSystemDataDriver()
 	{
@@ -45,7 +45,7 @@ public class FileSystemDataDriver extends DataDriver
 		
 		if (useFEDir)
 		{
-			this.baseFilePath = ForgeEssentials.FEDIR.toString() + "saves/" + worldName + "/";
+			this.baseFile = new File(ForgeEssentials.FEDIR , "saves/" + worldName + "/");
 		}
 		else
 		{
@@ -53,12 +53,12 @@ public class FileSystemDataDriver extends DataDriver
 			{
 				Class c = Class.forName("net.minecraft.src.IntegratedServer");
 				// We are running from the client. Use the Client save directory.
-				this.baseFilePath = "./saves/" + worldName + "/FEData/";
+				this.baseFile = new File("./saves/" + worldName + "/FEData/");
 			}
 			catch (Exception e)
 			{
 				// Dedicated server. Use the base path + world name.
-				this.baseFilePath = "./" + worldName +"/FEData/";
+				this.baseFile = new File("./" + worldName +"/FEData/");
 			}
 		}
 		
@@ -68,20 +68,9 @@ public class FileSystemDataDriver extends DataDriver
 		return true;
 	}
 	
-	private String getFilePath(Class type, Object loadingKey)
+	private File getFilePath(Class type, Object loadingKey)
 	{
-		String path = this.baseFilePath + type.getSimpleName() + "/";
-		
-		if (loadingKey instanceof String)
-		{
-			path = path + loadingKey;
-		}
-		else
-		{
-			path = path + loadingKey.toString();
-		}
-		
-		return path + ".cfg";
+		return new File(baseFile, type.getSimpleName() + "/"+loadingKey.toString()+".cfg");
 	}
 
 	@Override
@@ -89,7 +78,7 @@ public class FileSystemDataDriver extends DataDriver
 	{
 		boolean wasSuccessful = false;
 		
-		File file = new File(this.getFilePath(type, objectData.LoadingKey.Value));
+		File file = this.getFilePath(type, objectData.LoadingKey.Value);
 		
 		// Wipe existing Forge Configuration file - they don't take new data.
 		if (file.exists())
@@ -156,7 +145,7 @@ public class FileSystemDataDriver extends DataDriver
 	protected boolean deleteData(Class type, Object uniqueObjectKey)
 	{
 		boolean isSuccess = false;
-		File f = new File(this.getFilePath(type, uniqueObjectKey));
+		File f = this.getFilePath(type, uniqueObjectKey);
 		
 		if (f.exists())
 		{
