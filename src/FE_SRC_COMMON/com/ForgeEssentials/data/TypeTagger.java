@@ -48,10 +48,10 @@ public class TypeTagger
 				if (f.isAnnotationPresent(SaveableField.class))
 				{
 					SaveableField sf = (SaveableField)f.getAnnotation(SaveableField.class);
-					if (sf.uniqueLoadingField())
+					if (sf.uniqueLoadingField() && type.equals(currentType))
 					{
 						// something was previously set a Primary Field
-						if (loadingField != null && type.equals(currentType))
+						if (loadingField != null)
 							throw new RuntimeException("Only 1 field may have be a unique loading field");
 						else if(!f.getType().isPrimitive() && !f.getType().equals(String.class))
 							throw new RuntimeException("Unique loading fields must be primitives or strings");

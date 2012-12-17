@@ -86,47 +86,18 @@ public class FileSystemDataDriver extends DataDriver
 			file.delete();
 		}
 		
-		Configuration cfg = new Configuration(file);
+		Configuration cfg = new Configuration(file, true);
 		
-		this.saveFieldToProperty(cfg, objectData.LoadingKey.FieldName, objectData.LoadingKey);
+		this.saveFieldToProperty(cfg, type.getSimpleName(), objectData.LoadingKey);
 		
-		TaggedClass.SavedField[] fieldList = objectData.TaggedMembers.values().toArray(new TaggedClass.SavedField[objectData.TaggedMembers.size()]);
-		
-		this.saveFields(cfg, "", fieldList);
+		for (SavedField field : objectData.TaggedMembers.values())
+			saveFieldToProperty(cfg, type.getSimpleName(), field);
 		
 		cfg.save();
 		
 		return wasSuccessful;
 	}
-
-	private void saveFields(Configuration cfg, String parentName, SavedField[] fieldList)
-	{
-		String tagPrefix;
-		if (parentName != null && !parentName.isEmpty())
-		{
-			tagPrefix = parentName + ".";
-		}
-		else
-		{
-			tagPrefix = "";
-		}
-		
-		for (TaggedClass.SavedField field : fieldList)
-		{
-			if (field.Value instanceof TaggedClass)
-			{
-				// Nested classes SHOULD NOT have a loading field.
-				TaggedClass innerObject = (TaggedClass)field.Value;
-				TaggedClass.SavedField[] fields = innerObject.TaggedMembers.values().toArray(new TaggedClass.SavedField[innerObject.TaggedMembers.size()]);
-				this.saveFields(cfg, tagPrefix + field.FieldName, fields);
-			}
-			else
-			{
-				this.saveFieldToProperty(cfg, tagPrefix + field.FieldName, field);
-			}
-		}
-	}
-
+	
 	@Override
 	protected TaggedClass loadData(Class type, Object uniqueKey)
 	{
@@ -156,47 +127,53 @@ public class FileSystemDataDriver extends DataDriver
 		return isSuccess;
 	}
 	
-	private void saveFieldToProperty(Configuration cfg, String category, TaggedClass.SavedField field)
+	private void saveFieldToProperty(Configuration cfg, String category, SavedField field)
 	{
-		if (field.Type.equals(Integer.class))
+		if (field == null || field.Type == null)
 		{
-			cfg.get(category, "value", ((Integer)field.Value).intValue());
-			cfg.get(category, "type", field.Type.getName());
+			// ignore.
+		}
+		else if (field.Type.equals(Integer.class))
+		{
+			cfg.get(category, field.FieldName, ((Integer)field.Value).intValue());
 		}
 		else if (field.Type.equals(int[].class))
 		{
-			cfg.get(category, "value", (int[])field.Value);
-			cfg.get(category, "type", field.Type.getName());
+			cfg.get(category, field.FieldName, (int[])field.Value);
 		}
 		else if (field.Type.equals(Float.class) || field.Type.equals(Double.class))
 		{
-			cfg.get(category, "value", ((Double)field.Value).doubleValue());
-			cfg.get(category, "type", field.Type.getName());
+			cfg.get(category, field.FieldName, ((Double)field.Value).doubleValue());
 		}
 		else if (field.Type.equals(double[].class))
 		{
-			cfg.get(category, "value", (double[])field.Value);
-			cfg.get(category, "type", field.Type.getName());
+			cfg.get(category, field.FieldName, (double[])field.Value);
 		}
 		else if (field.Type.equals(Boolean.class))
 		{
-			cfg.get(category, "value", ((Boolean)field.Value).booleanValue());
-			cfg.get(category, "type", field.Type.getName());
+			cfg.get(category, field.FieldName, ((Boolean)field.Value).booleanValue());
 		}
 		else if (field.Type.equals(boolean[].class))
 		{
-			cfg.get(category, "value", (boolean[])field.Value);
-			cfg.get(category, "type", field.Type.getName());
+			cfg.get(category, field.FieldName, (boolean[])field.Value);
 		}
 		else if (field.Type.equals(String.class))
 		{
-			cfg.get(category, "value", (String)field.Value);
-			cfg.get(category, "type", field.Type.getName());
+			cfg.get(category, field.FieldName, (String)field.Value);
 		}
 		else if (field.Type.equals(String[].class))
 		{
-			cfg.get(category, "value", (String[])field.Value);
-			cfg.get(category, "type", field.Type.getName());
+			cfg.get(category, field.FieldName, (String[])field.Value);
+		}
+		else if (field.Type.equals(TaggedClass.class))
+		{
+			TaggedClass tag = (TaggedClass) field.Value;
+			String newcat = category+"."+tag.Type.getSimpleName();
+			
+			saveFieldToProperty(cfg, newcat, tag.LoadingKey);
+			
+			for (SavedField f : tag.TaggedMembers.values())
+				saveFieldToProperty(cfg, newcat, f);
 		}
 		else
 		{
