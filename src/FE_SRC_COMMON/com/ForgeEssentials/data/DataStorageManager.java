@@ -34,7 +34,7 @@ public class DataStorageManager
 		config.addCustomCategoryComment("Data", "Configuration options for how ForgeEssentials will save its data for persistence between sessions.");
 		
 		Property prop = config.get("Data", "storaageType", defaultDriver);
-		prop.comment = "Specifies the variety of data storage FE will use. Options: FileSystem, SQL (MySQL)";
+		prop.comment = "Specifies the variety of data storage FE will use. Options: FileSystem, SQL, NBT";
 		String driverName = prop.value;
 		Class c;
 		DataDriver driver;
