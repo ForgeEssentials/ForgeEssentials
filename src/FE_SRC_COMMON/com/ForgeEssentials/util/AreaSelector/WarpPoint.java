@@ -4,6 +4,7 @@ import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.TaggedClass;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 
 @SaveableObject(SaveInline = true)
 public class WarpPoint extends WorldPoint
@@ -40,6 +41,12 @@ public class WarpPoint extends WorldPoint
 		float pitch = (Float) tag.TaggedMembers.get("pitch").Value;
 		float yaw = (Float) tag.TaggedMembers.get("yaw").Value;
 		return new WarpPoint(dim, x, y, z, pitch, yaw);
+	}
+	
+	@UniqueLoadingKey()
+	private String getLoadingField()
+	{
+		return "warppoint_"+dim+"_"+x+"_"+y+"_"+z+"_"+pitch+"_"+yaw;
 	}
 
 }

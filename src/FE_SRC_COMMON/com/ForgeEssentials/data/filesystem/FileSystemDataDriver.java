@@ -1,6 +1,9 @@
 package com.ForgeEssentials.data.filesystem;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import net.minecraftforge.common.Configuration;
@@ -12,6 +15,8 @@ import com.ForgeEssentials.data.TaggedClass;
 import com.ForgeEssentials.data.TypeTagger;
 import com.ForgeEssentials.data.TaggedClass.SavedField;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 /**
  * Storage driver for filesystem (flat-file) persistence.
  * 
@@ -21,7 +26,7 @@ import com.ForgeEssentials.data.TaggedClass.SavedField;
 public class FileSystemDataDriver extends DataDriver
 {
 
-	public static String driverType = "FileSystem";
+	public static String driverType = "FlatFile_ForgeConfig";
 	
 	private HashMap<Class, String> filePaths;
 	
@@ -38,7 +43,7 @@ public class FileSystemDataDriver extends DataDriver
 	{
 		Property prop;
 		
-		prop = config.get("Data.FileSystem", "useFEDataDir", false);
+		prop = config.get("Data.FlatFile", "useFEDataDir", false);
 		prop.comment = "Set to true to use the '.minecraft/ForgeEssentials/saves' directory instead of a world. Server owners may wish to set this to true.";
 		
 		boolean useFEDir = prop.getBoolean(false);
@@ -49,17 +54,11 @@ public class FileSystemDataDriver extends DataDriver
 		}
 		else
 		{
-			try
-			{
-				Class c = Class.forName("net.minecraft.src.IntegratedServer");
-				// We are running from the client. Use the Client save directory.
-				this.baseFile = new File("./saves/" + worldName + "/FEData/");
-			}
-			catch (Exception e)
-			{
-				// Dedicated server. Use the base path + world name.
-				this.baseFile = new File("./" + worldName +"/FEData/");
-			}
+			File parent = new File("./saves/");
+			if (FMLCommonHandler.instance().getSide().isServer())
+				parent = new File(".");
+			
+			this.baseFile = new File(parent, worldName + "/FEData/");
 		}
 		
 		config.save();
@@ -68,9 +67,14 @@ public class FileSystemDataDriver extends DataDriver
 		return true;
 	}
 	
-	private File getFilePath(Class type, Object loadingKey)
+	private File getTypePath(Class type)
 	{
-		return new File(baseFile, type.getSimpleName() + "/"+loadingKey.toString()+".cfg");
+		return new File(baseFile, type.getSimpleName()+"/");
+	}
+	
+	private File getFilePath(Class type, Object uniqueKey)
+	{
+		return new File(getTypePath(type), uniqueKey.toString()+".cfg");
 	}
 
 	@Override
@@ -99,15 +103,23 @@ public class FileSystemDataDriver extends DataDriver
 	@Override
 	protected TaggedClass loadData(Class type, Object uniqueKey)
 	{
-		// TODO Auto-generated method stub
+		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
+		
+		
 		return null;
 	}
 
 	@Override
 	protected TaggedClass[] loadAll(Class type)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		File[] files = getTypePath(type).listFiles();
+		ArrayList<TaggedClass> data = new ArrayList<TaggedClass>();
+		
+		for (File file : files)
+			if (!file.isDirectory() && file.getName().endsWith(".cfg"))
+				data.add(loadData(type, file.getName().replace(".cfg", "")));
+		
+		return data.toArray(new TaggedClass[] {});
 	}
 
 	@Override
@@ -174,6 +186,51 @@ public class FileSystemDataDriver extends DataDriver
 		else
 		{
 			throw new IllegalArgumentException("Cannot save object type.");
+		}
+	}
+	
+	private void readFieldFromProperty(Configuration cfg, String category, SavedField field)
+	{
+		if (field.Type.equals(Integer.class))
+		{
+			cfg.get(category, field.FieldName, 0);
+		}
+		else if (field.Type.equals(int[].class))
+		{
+			cfg.get(category, field.FieldName, new int[] {});
+		}
+		else if (field.Type.equals(Float.class) || field.Type.equals(Double.class))
+		{
+			cfg.get(category, field.FieldName, 0d);
+		}
+		else if (field.Type.equals(double[].class))
+		{
+			cfg.get(category, field.FieldName, new double[] {});
+		}
+		else if (field.Type.equals(Boolean.class))
+		{
+			cfg.get(category, field.FieldName, false);
+		}
+		else if (field.Type.equals(boolean[].class))
+		{
+			cfg.get(category, field.FieldName, new boolean[] {});
+		}
+		else if (field.Type.equals(String.class))
+		{
+			cfg.get(category, field.FieldName, "");
+		}
+		else if (field.Type.equals(String[].class))
+		{
+			cfg.get(category, field.FieldName, new String[] {});
+		}
+		else if (field.Type.equals(TaggedClass.class))
+		{
+			// TODO: change
+			TaggedClass tag = (TaggedClass) field.Value;
+			String newcat = category+"."+tag.Type.getSimpleName();
+			
+			for (SavedField f : tag.TaggedMembers.values())
+				saveFieldToProperty(cfg, newcat, f);
 		}
 	}
 }
