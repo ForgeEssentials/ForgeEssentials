@@ -4,7 +4,6 @@
 /bin/*
 /conf/*
 /docs/*
-/eclipse/*
 /forge/*
 /jars/*
 /logs/*
@@ -12,6 +11,9 @@
 /reobf/*
 /runtime/*
 /temp/*
+
+/eclipse/.metadata/
+/eclipse/Minecraft/bin/
 
 /src/minecraft/
 
@@ -24,8 +26,6 @@
 /lib/bcprov-jdk15on-147.jar
 
 !/jars/coremods/
-
-!/eclipse/Minecraft/.classpath
 
 *.bat
 *.sh
