@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.data.TaggedClass.SavedField;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
@@ -25,6 +26,7 @@ public class TypeTagger
 {
 	private DataDriver parent;
 	protected Class forType;
+	boolean isUniqueKeyField;
 	protected String uniqueKey;
 	protected String reconstructorMethod;
 	protected String[] savedFields;
@@ -48,9 +50,20 @@ public class TypeTagger
 			{
 				if (f.isAnnotationPresent(SaveableField.class))
 				{
-					tempList.add(f.getName());
+					if (f.isAnnotationPresent(UniqueLoadingKey.class))
+					{
+						assert uniqueKey == null : new RuntimeException("Each class may only have 1 UniqueLoadingKey");
+						assert f.getType().isPrimitive() || f.getType().equals(String.class)  : new RuntimeException("The UniqueLoadingKey must be a primitive or a string");
+						isUniqueKeyField = true;
+						uniqueKey = f.getName();
+					}
+					else
+						tempList.add(f.getName());
+					
 					fieldToTypeMap.put(f.getName(), f.getType());
 				}
+				else if (f.isAnnotationPresent(UniqueLoadingKey.class))
+					throw new RuntimeException("if the UniqueLoadingKey is to be a field, it must be a SaveableField as well");
 			}
 		}
 		while ((currentType = currentType.getSuperclass()) != null);
@@ -70,11 +83,12 @@ public class TypeTagger
 			}
 			else if (m.isAnnotationPresent(UniqueLoadingKey.class))
 			{
-				assert uniqueKey == null : new RuntimeException("Each class may only have 1 UniqueLoadingKey method");
+				assert uniqueKey == null : new RuntimeException("Each class may only have 1 UniqueLoadingKey");
 				assert m.getParameterTypes().length == 0 : new RuntimeException("The reconstructor method must have no paremeters");
-				assert (m.getReturnType().isPrimitive() && m.getReturnType().equals(Void.class)) || m.getReturnType().equals(String.class)  : new RuntimeException("The reconstructor method must return a primitive or a string");
+				assert (m.getReturnType().isPrimitive() && m.getReturnType().equals(Void.class)) || m.getReturnType().equals(String.class)  : new RuntimeException("The UniqueLoadingKey method must return a primitive or a string");
 				
 				uniqueKey = m.getName();
+				isUniqueKeyField = false;
 			}
 		}
 		
@@ -100,10 +114,24 @@ public class TypeTagger
 		
 		try
 		{
-			Method m;
-			m = c.getDeclaredMethod(uniqueKey, new Class[] {});
-			m.setAccessible(true);
-			data.LoadingKey = m.invoke(objectSaved, new Object[] {});
+			data.LoadingKey = data.new SavedField();
+			if (isUniqueKeyField)
+			{
+				f = c.getDeclaredField(uniqueKey);
+				f.setAccessible(true);
+				data.LoadingKey.FieldName = f.getName();
+				data.LoadingKey.Type = f.getType();
+				data.LoadingKey.Value = f.get(objectSaved);
+			}
+			else
+			{
+				Method m;
+				m = c.getDeclaredMethod(uniqueKey, new Class[] {});
+				m.setAccessible(true);
+				data.LoadingKey.FieldName = m.getName()+"()"; // idk.. what should it be??
+				data.LoadingKey.Type = m.getReturnType();
+				data.LoadingKey.Value = m.invoke(objectSaved, new Object[] {});
+			}
 		}
 		catch (Exception e)
 		{

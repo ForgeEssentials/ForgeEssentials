@@ -22,7 +22,7 @@ public class TaggedClass
 	}
 	
 	public Class Type;
-	public Object LoadingKey;
+	public SavedField LoadingKey;
 	public HashMap<String, SavedField> TaggedMembers;
 	
 	public TaggedClass()

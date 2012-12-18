@@ -21,10 +21,6 @@ public @interface SaveableObject
     
     /**
      * Marks a field within a class as saveable by the Data API.
-     * One field per @SaveableObject should have the objectLoadingField set to true - this
-     * will be used by the API as the 'uniqueLoadingKey' which must be some piece of data
-     * that identifies the object uniquely.
-     * 
      * @author MysteriousAges
      *
      */
@@ -36,16 +32,14 @@ public @interface SaveableObject
     }
     
     /**
-     * Marks a field within a class as saveable by the Data API.
-     * One field per @SaveableObject should have the objectLoadingField set to true - this
-     * will be used by the API as the 'uniqueLoadingKey' which must be some piece of data
-     * that identifies the object uniquely.
-     * 
-     * @author MysteriousAges
+     * Marks a field or method as the UniqueLoadingKey.
+     * There must be 1, and only 1 of these in each class. They are not inherited.
+     * this must be/return some piece of data that identifies the object uniquely from others of its type.
+     * @author AbrarSyed
      *
      */
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.METHOD})
+    @Target({ElementType.METHOD, ElementType.FIELD})
     public @interface UniqueLoadingKey{}
     
 	
@@ -54,6 +48,7 @@ public @interface SaveableObject
      *When an object is loaded, this method will be called with a TaggedClass populated with all the read data.
      *In this method, the object should be constructed and registered as necessary.
      *This method may NOT be inherited
+     *@author AbrarSyed
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
