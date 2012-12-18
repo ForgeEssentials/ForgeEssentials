@@ -156,6 +156,11 @@ public class TypeTagger
 		return data;
 	}
 	
+	/**
+	 * Reocnstructs the object from its TaggedClass
+	 * @param data
+	 * @return
+	 */
 	public Object createFromFields(TaggedClass data)
 	{
 		try
