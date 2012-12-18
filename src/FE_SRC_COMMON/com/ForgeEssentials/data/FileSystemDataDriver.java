@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
@@ -21,10 +22,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
  *
  */
 public class FileSystemDataDriver extends DataDriver
-{
-
-	public static String driverType = "FlatFile_ForgeConfig";
-	
+{	
 	private HashMap<Class, String> filePaths;
 	
 	private File baseFile;
@@ -90,7 +88,7 @@ public class FileSystemDataDriver extends DataDriver
 		Configuration cfg = new Configuration(file, true);
 		
 		for (SavedField field : objectData.TaggedMembers.values())
-			saveFieldToProperty(cfg, type.getSimpleName(), field);
+			writeFieldToProperty(cfg, type.getSimpleName(), field);
 		
 		cfg.save();
 		
@@ -101,9 +99,9 @@ public class FileSystemDataDriver extends DataDriver
 	protected TaggedClass loadData(Class type, Object uniqueKey)
 	{
 		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
+		TypeTagger tag = this.getTaggerForType(type);
 		
-		
-		return null;
+		return readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), tag);
 	}
 
 	@Override
@@ -134,7 +132,7 @@ public class FileSystemDataDriver extends DataDriver
 		return isSuccess;
 	}
 	
-	private void saveFieldToProperty(Configuration cfg, String category, SavedField field)
+	private void writeFieldToProperty(Configuration cfg, String category, SavedField field)
 	{
 		if (field == null || field.Type == null)
 		{
@@ -178,7 +176,7 @@ public class FileSystemDataDriver extends DataDriver
 			String newcat = category+"."+tag.Type.getSimpleName();
 			
 			for (SavedField f : tag.TaggedMembers.values())
-				saveFieldToProperty(cfg, newcat, f);
+				writeFieldToProperty(cfg, newcat, f);
 		}
 		else
 		{
@@ -186,48 +184,72 @@ public class FileSystemDataDriver extends DataDriver
 		}
 	}
 	
-	private void readFieldFromProperty(Configuration cfg, String category, SavedField field)
+	private Object readFieldFromProperty(Configuration cfg, String category, SavedField field)
 	{
 		if (field.Type.equals(Integer.class))
 		{
-			cfg.get(category, field.FieldName, 0);
+			return cfg.get(category, field.FieldName, 0).getInt();
 		}
 		else if (field.Type.equals(int[].class))
 		{
-			cfg.get(category, field.FieldName, new int[] {});
+			return cfg.get(category, field.FieldName, new int[] {}).getIntList();
 		}
 		else if (field.Type.equals(Float.class) || field.Type.equals(Double.class))
 		{
-			cfg.get(category, field.FieldName, 0d);
+			return cfg.get(category, field.FieldName, 0d).getDouble(0);
 		}
 		else if (field.Type.equals(double[].class))
 		{
-			cfg.get(category, field.FieldName, new double[] {});
+			return cfg.get(category, field.FieldName, new double[] {}).getDoubleList();
 		}
 		else if (field.Type.equals(Boolean.class))
 		{
-			cfg.get(category, field.FieldName, false);
+			return cfg.get(category, field.FieldName, false).getBoolean(false);
 		}
 		else if (field.Type.equals(boolean[].class))
 		{
-			cfg.get(category, field.FieldName, new boolean[] {});
+			return cfg.get(category, field.FieldName, new boolean[] {}).getBooleanList();
 		}
 		else if (field.Type.equals(String.class))
 		{
-			cfg.get(category, field.FieldName, "");
+			return cfg.get(category, field.FieldName, "").value;
 		}
 		else if (field.Type.equals(String[].class))
 		{
-			cfg.get(category, field.FieldName, new String[] {});
+			return cfg.get(category, field.FieldName, new String[] {}).valueList;
 		}
-		else if (field.Type.equals(TaggedClass.class))
+		else  // this should never happen...
+			return null;
+	}
+	
+	private TaggedClass readClassFromProperty(Configuration cfg, ConfigCategory cat, TypeTagger tag)
+	{
+		TaggedClass data = null;
+
+		if (cat != null)
 		{
-			// TODO: change
-			TaggedClass tag = (TaggedClass) field.Value;
-			String newcat = category+"."+tag.Type.getSimpleName();
+			SavedField field;
+	
+			for (Property prop : cat.getValues().values())
+			{
+				field = data.new SavedField();
+				field.FieldName = prop.getName();
+				field.Type = tag.getTypeOfField(field.FieldName);
+				field.Value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
+			}
 			
-			for (SavedField f : tag.TaggedMembers.values())
-				saveFieldToProperty(cfg, newcat, f);
+			for (ConfigCategory child : cfg.categories.values())
+			{
+				if (child.isChild() && child.parent == cat)  // intentional use of ==
+				{
+					field = data.new SavedField();
+					field.FieldName = cat.getQualifiedName().replace(cat.getQualifiedName()+".", "");
+					field.Type = tag.getTypeOfField(field.FieldName);
+					field.Value = readClassFromProperty(cfg, child, getTaggerForType(field.Type));
+				}
+			}
 		}
+		
+		return data;
 	}
 }
