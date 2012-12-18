@@ -4,6 +4,7 @@ import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.TaggedClass;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 
 import net.minecraft.world.World;
 
@@ -66,5 +67,11 @@ public class WorldPoint extends Point
 		int z = (Integer) tag.TaggedMembers.get("z").Value;
 		int dim = (Integer) tag.TaggedMembers.get("dim").Value;
 		return new WorldPoint(dim, x, y, z);
+	}
+	
+	@UniqueLoadingKey()
+	private String getLoadingField()
+	{
+		return "worldpoint_"+dim+"_"+x+"_"+y+"_"+z;
 	}
 }

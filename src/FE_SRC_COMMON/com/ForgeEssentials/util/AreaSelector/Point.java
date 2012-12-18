@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.data.SaveableObject;
+import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.data.TaggedClass;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
@@ -138,5 +139,11 @@ public class Point implements Serializable, Comparable<Point>
 		int y = (Integer) tag.TaggedMembers.get("y").Value;
 		int z = (Integer) tag.TaggedMembers.get("z").Value;
 		return new Point(x, y, z);
+	}
+	
+	@UniqueLoadingKey()
+	private String getLoadingField()
+	{
+		return "point_"+x+"_"+y+"_"+z;
 	}
 }
