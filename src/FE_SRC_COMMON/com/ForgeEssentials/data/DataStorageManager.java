@@ -4,7 +4,6 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.data.filesystem.FileSystemDataDriver;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -41,7 +40,7 @@ public class DataStorageManager
 		
 		try
 		{
-			c = Class.forName(dataBasePackage + driverName.toLowerCase() + "." + driverName + "DataDriver");
+			c = Class.forName(dataBasePackage + driverName + "DataDriver");
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -50,7 +49,7 @@ public class DataStorageManager
 			
 			try
 			{
-				c = Class.forName(dataBasePackage + driverName.toLowerCase() + "." + driverName + "DataDriver");
+				c = Class.forName(dataBasePackage + defaultDriver + "DataDriver");
 			}
 			catch (ClassNotFoundException ex)
 			{

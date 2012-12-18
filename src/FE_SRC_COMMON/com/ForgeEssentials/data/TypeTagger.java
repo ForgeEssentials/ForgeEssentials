@@ -86,6 +86,16 @@ public class TypeTagger
 		return this.parent;
 	}
 	
+	public String[] getSavedFieldNames()
+	{
+		return this.savedFields;
+	}
+	
+	public HashMap<String, Class> getFieldToTypeMap()
+	{
+		return this.fieldToTypeMap;
+	}
+	
 	public Class getTypeOfField(String fieldName)
 	{
 		return this.fieldToTypeMap.get(fieldName);
