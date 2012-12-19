@@ -34,12 +34,12 @@ public class WarpPoint extends WorldPoint
 	@Reconstructor()
 	private static WarpPoint reconstruct(TaggedClass tag)
 	{
-		int x = (Integer) tag.TaggedMembers.get("x").value;
-		int y = (Integer) tag.TaggedMembers.get("y").value;
-		int z = (Integer) tag.TaggedMembers.get("z").value;
-		int dim = (Integer) tag.TaggedMembers.get("dim").value;
-		float pitch = (Float) tag.TaggedMembers.get("pitch").value;
-		float yaw = (Float) tag.TaggedMembers.get("yaw").value;
+		int x = (Integer) tag.getFieldValue("x");
+		int y = (Integer) tag.getFieldValue("y");
+		int z = (Integer) tag.getFieldValue("z");
+		int dim = (Integer) tag.getFieldValue("dim");
+		float pitch = (Float) tag.getFieldValue("pitch");
+		float yaw = (Float) tag.getFieldValue("yaw");
 		return new WarpPoint(dim, x, y, z, pitch, yaw);
 	}
 	
