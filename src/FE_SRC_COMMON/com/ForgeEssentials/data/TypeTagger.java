@@ -118,29 +118,29 @@ public class TypeTagger
 	public TaggedClass getTaggedClassFromObject(Object objectSaved)
 	{
 		TaggedClass data = new TaggedClass();
-		Class c = data.Type = objectSaved.getClass();
+		Class c = data.type = objectSaved.getClass();
 		Field f;
 		Object obj;
 		
 		try
 		{
-			data.LoadingKey = data.new SavedField();
+			data.uniqueKey = data.new SavedField();
 			if (isUniqueKeyField)
 			{
 				f = c.getDeclaredField(uniqueKey);
 				f.setAccessible(true);
-				data.LoadingKey.FieldName = f.getName();
-				data.LoadingKey.Type = f.getType();
-				data.LoadingKey.Value = f.get(objectSaved);
+				data.uniqueKey.name = f.getName();
+				data.uniqueKey.type = f.getType();
+				data.uniqueKey.value = f.get(objectSaved);
 			}
 			else
 			{
 				Method m;
 				m = c.getDeclaredMethod(uniqueKey, new Class[] {});
 				m.setAccessible(true);
-				data.LoadingKey.FieldName = m.getName()+"()"; // idk.. what should it be??
-				data.LoadingKey.Type = m.getReturnType();
-				data.LoadingKey.Value = m.invoke(objectSaved, new Object[] {});
+				data.uniqueKey.name = m.getName()+"()"; // idk.. what should it be??
+				data.uniqueKey.type = m.getReturnType();
+				data.uniqueKey.value = m.invoke(objectSaved, new Object[] {});
 			}
 		}
 		catch (Exception e)
@@ -203,13 +203,13 @@ public class TypeTagger
 	{
 		try
 		{
-			Method reconstructor = data.Type.getMethod(reconstructorMethod, TaggedClass.class);
+			Method reconstructor = data.type.getMethod(reconstructorMethod, TaggedClass.class);
 			reconstructor.setAccessible(true);
 			Object obj = reconstructor.invoke(null, data);
 		}
 		catch (Throwable thrown)
 		{
-			OutputHandler.felog.log(Level.SEVERE, "Error loading " + data.Type + " with name " + data.LoadingKey, thrown);
+			OutputHandler.felog.log(Level.SEVERE, "Error loading " + data.type + " with name " + data.uniqueKey, thrown);
 		}
 		
 		return null;
@@ -219,11 +219,11 @@ public class TypeTagger
 	{
 		Object obj = null;
 		// If the value of the field is a TaggedClass, run this function on it to recreate the original object.
-		if (field.Value instanceof TaggedClass)
-			obj = this.parent.getTaggerForType(field.Type).createFromFields((TaggedClass)field.Value);
+		if (field.value instanceof TaggedClass)
+			obj = this.parent.getTaggerForType(field.type).createFromFields((TaggedClass)field.value);
 		else
 			// Simple case.
-			obj = field.Value;
+			obj = field.value;
 		return obj;
 	}
 	

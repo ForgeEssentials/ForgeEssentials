@@ -69,7 +69,7 @@ public class ForgeConfigDataDriver extends DataDriver
 	{
 		boolean wasSuccessful = false;
 		
-		File file = this.getFilePath(type, objectData.LoadingKey);
+		File file = this.getFilePath(type, objectData.uniqueKey);
 		
 		// Wipe existing Forge Configuration file - they don't take new data.
 		if (file.exists())
@@ -126,46 +126,46 @@ public class ForgeConfigDataDriver extends DataDriver
 	
 	private void writeFieldToProperty(Configuration cfg, String category, SavedField field)
 	{
-		if (field == null || field.Type == null)
+		if (field == null || field.type == null)
 		{
 			// ignore.
 		}
-		else if (field.Type.equals(Integer.class))
+		else if (field.type.equals(Integer.class))
 		{
-			cfg.get(category, field.FieldName, ((Integer)field.Value).intValue());
+			cfg.get(category, field.name, ((Integer)field.value).intValue());
 		}
-		else if (field.Type.equals(int[].class))
+		else if (field.type.equals(int[].class))
 		{
-			cfg.get(category, field.FieldName, (int[])field.Value);
+			cfg.get(category, field.name, (int[])field.value);
 		}
-		else if (field.Type.equals(Float.class) || field.Type.equals(Double.class))
+		else if (field.type.equals(Float.class) || field.type.equals(Double.class))
 		{
-			cfg.get(category, field.FieldName, ((Double)field.Value).doubleValue());
+			cfg.get(category, field.name, ((Double)field.value).doubleValue());
 		}
-		else if (field.Type.equals(double[].class))
+		else if (field.type.equals(double[].class))
 		{
-			cfg.get(category, field.FieldName, (double[])field.Value);
+			cfg.get(category, field.name, (double[])field.value);
 		}
-		else if (field.Type.equals(Boolean.class))
+		else if (field.type.equals(Boolean.class))
 		{
-			cfg.get(category, field.FieldName, ((Boolean)field.Value).booleanValue());
+			cfg.get(category, field.name, ((Boolean)field.value).booleanValue());
 		}
-		else if (field.Type.equals(boolean[].class))
+		else if (field.type.equals(boolean[].class))
 		{
-			cfg.get(category, field.FieldName, (boolean[])field.Value);
+			cfg.get(category, field.name, (boolean[])field.value);
 		}
-		else if (field.Type.equals(String.class))
+		else if (field.type.equals(String.class))
 		{
-			cfg.get(category, field.FieldName, (String)field.Value);
+			cfg.get(category, field.name, (String)field.value);
 		}
-		else if (field.Type.equals(String[].class))
+		else if (field.type.equals(String[].class))
 		{
-			cfg.get(category, field.FieldName, (String[])field.Value);
+			cfg.get(category, field.name, (String[])field.value);
 		}
-		else if (field.Type.equals(TaggedClass.class))
+		else if (field.type.equals(TaggedClass.class))
 		{
-			TaggedClass tag = (TaggedClass) field.Value;
-			String newcat = category+"."+tag.Type.getSimpleName();
+			TaggedClass tag = (TaggedClass) field.value;
+			String newcat = category+"."+tag.type.getSimpleName();
 			
 			for (SavedField f : tag.TaggedMembers.values())
 				writeFieldToProperty(cfg, newcat, f);
@@ -178,37 +178,37 @@ public class ForgeConfigDataDriver extends DataDriver
 	
 	private Object readFieldFromProperty(Configuration cfg, String category, SavedField field)
 	{
-		if (field.Type.equals(Integer.class))
+		if (field.type.equals(Integer.class))
 		{
-			return cfg.get(category, field.FieldName, 0).getInt();
+			return cfg.get(category, field.name, 0).getInt();
 		}
-		else if (field.Type.equals(int[].class))
+		else if (field.type.equals(int[].class))
 		{
-			return cfg.get(category, field.FieldName, new int[] {}).getIntList();
+			return cfg.get(category, field.name, new int[] {}).getIntList();
 		}
-		else if (field.Type.equals(Float.class) || field.Type.equals(Double.class))
+		else if (field.type.equals(Float.class) || field.type.equals(Double.class))
 		{
-			return cfg.get(category, field.FieldName, 0d).getDouble(0);
+			return cfg.get(category, field.name, 0d).getDouble(0);
 		}
-		else if (field.Type.equals(double[].class))
+		else if (field.type.equals(double[].class))
 		{
-			return cfg.get(category, field.FieldName, new double[] {}).getDoubleList();
+			return cfg.get(category, field.name, new double[] {}).getDoubleList();
 		}
-		else if (field.Type.equals(Boolean.class))
+		else if (field.type.equals(Boolean.class))
 		{
-			return cfg.get(category, field.FieldName, false).getBoolean(false);
+			return cfg.get(category, field.name, false).getBoolean(false);
 		}
-		else if (field.Type.equals(boolean[].class))
+		else if (field.type.equals(boolean[].class))
 		{
-			return cfg.get(category, field.FieldName, new boolean[] {}).getBooleanList();
+			return cfg.get(category, field.name, new boolean[] {}).getBooleanList();
 		}
-		else if (field.Type.equals(String.class))
+		else if (field.type.equals(String.class))
 		{
-			return cfg.get(category, field.FieldName, "").value;
+			return cfg.get(category, field.name, "").value;
 		}
-		else if (field.Type.equals(String[].class))
+		else if (field.type.equals(String[].class))
 		{
-			return cfg.get(category, field.FieldName, new String[] {}).valueList;
+			return cfg.get(category, field.name, new String[] {}).valueList;
 		}
 		else  // this should never happen...
 			return null;
@@ -227,17 +227,17 @@ public class ForgeConfigDataDriver extends DataDriver
 				if (tag.isUniqueKeyField && prop.getName().equals(tag.uniqueKey))
 				{
 					field = data.new SavedField();
-					field.FieldName = tag.uniqueKey;
-					field.Type = tag.getTypeOfField(field.FieldName);
-					field.Value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
-					data.LoadingKey = field;
+					field.name = tag.uniqueKey;
+					field.type = tag.getTypeOfField(field.name);
+					field.value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
+					data.uniqueKey = field;
 					continue;
 				}
 				
 				field = data.new SavedField();
-				field.FieldName = prop.getName();
-				field.Type = tag.getTypeOfField(field.FieldName);
-				field.Value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
+				field.name = prop.getName();
+				field.type = tag.getTypeOfField(field.name);
+				field.value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
 				data.addField(field);
 			}
 			
@@ -246,9 +246,9 @@ public class ForgeConfigDataDriver extends DataDriver
 				if (child.isChild() && child.parent == cat)  // intentional use of ==
 				{
 					field = data.new SavedField();
-					field.FieldName = cat.getQualifiedName().replace(cat.getQualifiedName()+".", "");
-					field.Type = tag.getTypeOfField(field.FieldName);
-					field.Value = readClassFromProperty(cfg, child, getTaggerForType(field.Type));
+					field.name = cat.getQualifiedName().replace(cat.getQualifiedName()+".", "");
+					field.type = tag.getTypeOfField(field.name);
+					field.value = readClassFromProperty(cfg, child, getTaggerForType(field.type));
 					data.addField(field);
 				}
 			}

@@ -135,9 +135,9 @@ public class Point implements Serializable, Comparable<Point>
 	@Reconstructor()
 	private static Point reconstruct(TaggedClass tag)
 	{
-		int x = (Integer) tag.TaggedMembers.get("x").Value;
-		int y = (Integer) tag.TaggedMembers.get("y").Value;
-		int z = (Integer) tag.TaggedMembers.get("z").Value;
+		int x = (Integer) tag.TaggedMembers.get("x").value;
+		int y = (Integer) tag.TaggedMembers.get("y").value;
+		int z = (Integer) tag.TaggedMembers.get("z").value;
 		return new Point(x, y, z);
 	}
 	

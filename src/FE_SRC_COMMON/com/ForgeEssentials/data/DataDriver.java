@@ -75,7 +75,7 @@ public abstract class DataDriver
 		// Each element of the field array represents an object, stored as an array of fields.
 		if (objectData != null && objectData.length > 0)
 			for (TaggedClass tag: objectData)
-				list.add(loadObject(type, tag.LoadingKey));
+				list.add(loadObject(type, tag.uniqueKey));
 
 		return list.toArray(new Object[] {});
 	}

@@ -284,7 +284,7 @@ public class SQLiteDataDriver extends DataDriver
 			
 			for (SavedField f : tc.TaggedMembers.values())
 			{
-				this.valueToFieldEntry(fieldName + "-" + f.FieldName, f.Type, f.Value);
+				this.valueToFieldEntry(fieldName + "-" + f.name, f.type, f.value);
 			}
 		}
 		else // What the fuck? This will be unpredictable.
