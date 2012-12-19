@@ -22,30 +22,22 @@ import cpw.mods.fml.common.FMLCommonHandler;
  *
  */
 public class ForgeConfigDataDriver extends DataDriver
-{	
-	private HashMap<Class, String> filePaths;
-	
+{
 	private File baseFile;
-	private static final String NEWLINE = Configuration.NEW_LINE;
-	
-	public ForgeConfigDataDriver()
-	{
-		this.filePaths = new HashMap<Class, String>();
-	}
 	
 	@Override
 	public boolean parseConfigs(Configuration config, String worldName)
 	{
 		Property prop;
 		
-		prop = config.get("Data.FlatFile", "useFEDataDir", false);
+		prop = config.get("Data.ForgeConfig", "useFEDataDir", false);
 		prop.comment = "Set to true to use the '.minecraft/ForgeEssentials/saves' directory instead of a world. Server owners may wish to set this to true.";
 		
 		boolean useFEDir = prop.getBoolean(false);
 		
 		if (useFEDir)
 		{
-			this.baseFile = new File(ForgeEssentials.FEDIR , "saves/" + worldName + "/");
+			this.baseFile = new File(ForgeEssentials.FEDIR , "saves/ForgeConfig/" + worldName + "/");
 		}
 		else
 		{
@@ -53,7 +45,7 @@ public class ForgeConfigDataDriver extends DataDriver
 			if (FMLCommonHandler.instance().getSide().isServer())
 				parent = new File(".");
 			
-			this.baseFile = new File(parent, worldName + "/FEData/");
+			this.baseFile = new File(parent, worldName + "/FEData/ForgeConfig/");
 		}
 		
 		config.save();
@@ -224,7 +216,7 @@ public class ForgeConfigDataDriver extends DataDriver
 	
 	private TaggedClass readClassFromProperty(Configuration cfg, ConfigCategory cat, TypeTagger tag)
 	{
-		TaggedClass data = null;
+		TaggedClass data = new TaggedClass();
 
 		if (cat != null)
 		{
@@ -232,10 +224,21 @@ public class ForgeConfigDataDriver extends DataDriver
 	
 			for (Property prop : cat.getValues().values())
 			{
+				if (tag.isUniqueKeyField && prop.getName().equals(tag.uniqueKey))
+				{
+					field = data.new SavedField();
+					field.FieldName = tag.uniqueKey;
+					field.Type = tag.getTypeOfField(field.FieldName);
+					field.Value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
+					data.LoadingKey = field;
+					continue;
+				}
+				
 				field = data.new SavedField();
 				field.FieldName = prop.getName();
 				field.Type = tag.getTypeOfField(field.FieldName);
 				field.Value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
+				data.addField(field);
 			}
 			
 			for (ConfigCategory child : cfg.categories.values())
@@ -246,6 +249,7 @@ public class ForgeConfigDataDriver extends DataDriver
 					field.FieldName = cat.getQualifiedName().replace(cat.getQualifiedName()+".", "");
 					field.Type = tag.getTypeOfField(field.FieldName);
 					field.Value = readClassFromProperty(cfg, child, getTaggerForType(field.Type));
+					data.addField(field);
 				}
 			}
 		}
