@@ -17,7 +17,7 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class SQLiteDataDriver extends DataDriver
 {
-	private String DriverClass = "org.sqlite.jdbc";
+	private String DriverClass = "org.sqlite.JDBC";
 	private Connection dbConnection;
 	private HashMap<Class, Boolean> classTableChecked = new HashMap<Class, Boolean>();
 	
@@ -28,20 +28,20 @@ public class SQLiteDataDriver extends DataDriver
 	{
 		boolean isSuccess = true;
 		String type;
-		String connectionString = "";
 
 		// Set up the SQLite connection.
 		Property prop = config.get("Data.SQLite", "dataFile", "ForgeEssentials/sqlite.db");
 		prop.comment = "Path to the SQLite database file (only use leading slashes for an absolute path)";
-		String path = prop.value;	
+		String path = prop.value;
 		
-		connectionString = "jdbc:sqlite:" + path;
+		// Save any additional categories we may have created.
+		config.save();
 
 		try
 		{
 			Class driverClass = Class.forName(DriverClass);
 
-			this.dbConnection = DriverManager.getConnection(connectionString);
+			this.dbConnection = DriverManager.getConnection("jdbc:sqlite:" + path);
 			
 			isSuccess = true;
 		}
@@ -59,14 +59,26 @@ public class SQLiteDataDriver extends DataDriver
 	}
 
 	@Override
+	public void registerClass(Class type)
+	{
+		super.registerClass(type);
+
+		SaveableObject annotation;
+		if ((annotation = (SaveableObject)type.getAnnotation(SaveableObject.class)) != null)
+		{
+			// If this is the first time registering a class that is NOT saved inline,
+			//  attempt to create a table.
+			if (!(annotation.SaveInline() || this.classTableChecked.containsKey(type)))
+			{
+				this.createTable(type);
+			}
+		}
+	}
+
+	@Override
 	protected boolean saveData(Class type, TaggedClass fieldList)
 	{
 		boolean isSuccess = false;
-
-		if (!this.classTableChecked.containsKey(type))
-		{
-			this.createTable(type);
-		}
 
 		return isSuccess;
 	}
@@ -76,11 +88,6 @@ public class SQLiteDataDriver extends DataDriver
 	{
 		TaggedClass reconstructed = null;
 		
-		if (this.classTableChecked.containsKey(type))
-		{
-			
-		}
-		
 		return reconstructed;
 	}
 
@@ -88,14 +95,11 @@ public class SQLiteDataDriver extends DataDriver
 	protected TaggedClass[] loadAll(Class type)
 	{
 		TaggedClass[] value = null;
+
+		ArrayList<TaggedClass> values = new ArrayList<TaggedClass>();
 		
-		if (this.classTableChecked.containsKey(type))
-		{
-			ArrayList<TaggedClass> values = new ArrayList<TaggedClass>();
-			
-			value = values.toArray(new TaggedClass[values.size()]);
-		}
-		
+		value = values.toArray(new TaggedClass[values.size()]);
+
 		return value;
 	}
 
@@ -103,10 +107,7 @@ public class SQLiteDataDriver extends DataDriver
 	protected boolean deleteData(Class type, Object uniqueObjectKey)
 	{
 		boolean isSuccess = false;
-		if (this.classTableChecked.containsKey(type))
-		{
-			
-		}
+
 		return isSuccess;
 	}
 	
@@ -123,19 +124,11 @@ public class SQLiteDataDriver extends DataDriver
 		
 		TypeTagger tagger = this.getTaggerForType(type);
 		HashMap<String, Class> fields = tagger.getFieldToTypeMap();
-		
-		Iterator<Entry<String, Class>> iterator = fields.entrySet().iterator();
 		ArrayList<String> tableFields = new ArrayList<String>();
 		String keyClause = null;
 		
-		while (iterator.hasNext())
-		{
-			Entry<String, Class> entry = iterator.next();
-			if (entry.getKey() == tagger.uniqueKey)
-			{
-				keyClause = "PRIMARY KEY (" + entry.getKey() + ")";
-			}
-			
+		for (Entry<String, Class> entry : fields.entrySet())
+		{			
 			if (!TypeTagger.isTypeComplex(entry.getValue()))
 			{
 				// Simple case. 1 value = 1 column.
@@ -146,7 +139,17 @@ public class SQLiteDataDriver extends DataDriver
 				// We're going to do some unrolling in here. 1 value = 1+ columns.
 				tableFields.addAll(this.complexFieldToColumns(entry.getKey(), entry.getValue()));
 			}
-			
+		}
+
+		if (tagger.isUniqueKeyField)
+		{
+			keyClause = "PRIMARY KEY (" + tagger.uniqueKey + ")";
+		}
+		else
+		{
+			// Is a method. Extra field required.
+			tableFields.add("uniqueIdentifier TEXT");
+			keyClause = "PRIMARY KEY (uniqueIdentifier)";
 		}
 		
 		// Build up the create statement
@@ -177,11 +180,13 @@ public class SQLiteDataDriver extends DataDriver
 	private String simpleFieldToColumn(String fieldName, Class type)
 	{
 		String value = null;
-		if (type.equals(Integer.class) || type.equals(Boolean.class))
+		if (type.equals(int.class) || type.equals(Integer.class) ||
+				type.equals(boolean.class) || type.equals(Boolean.class))
 		{
 			value = fieldName + " INTEGER";
 		}
-		else if (type.equals(Float.class) || type.equals(Double.class))
+		else if (type.equals(float.class) || type.equals(Float.class) ||
+				type.equals(double.class) || type.equals(Double.class))
 		{
 			value = fieldName + " REAL";
 		}

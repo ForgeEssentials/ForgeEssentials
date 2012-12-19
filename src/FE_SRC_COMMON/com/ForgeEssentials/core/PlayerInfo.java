@@ -129,12 +129,6 @@ public class PlayerInfo
 		ForgeEssentials.getInstanceDataDriver().saveObject(this);
 	}
 	
-	@UniqueLoadingKey
-	private String loadingKey()
-	{
-		return username;
-	}
-	
 	// ----------------------------------------------
 	// ---------------- TP stuff --------------------
 	// ----------------------------------------------

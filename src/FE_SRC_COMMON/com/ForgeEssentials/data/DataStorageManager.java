@@ -33,7 +33,7 @@ public class DataStorageManager
 		config.addCustomCategoryComment("Data", "Configuration options for how ForgeEssentials will save its data for persistence between sessions.");
 		
 		String temp = FileSystemDataDriver.class.getSimpleName();
-		Property prop = config.get("Data", "storaageType", temp.substring(0, temp.indexOf("DataDriver")));
+		Property prop = config.get("Data", "storageType", temp.substring(0, temp.indexOf("DataDriver")));
 		prop.comment = "Specifies the variety of data storage FE will use. Options: FileSystem, SQLite, NBT";
 		String driverName = prop.value;
 		Class c;
