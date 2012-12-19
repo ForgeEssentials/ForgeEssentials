@@ -12,7 +12,7 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook{
 
 	@Override
 	public String[] getLibraryRequestClass() {
-		return new String[]{"com.ForgeEssentials.coremod.Downloader"};
+		return Data.downloaders;
 	}
 
 	@Override
