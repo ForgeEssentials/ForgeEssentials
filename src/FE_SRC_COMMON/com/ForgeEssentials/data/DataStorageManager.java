@@ -19,7 +19,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 public class DataStorageManager
 {
 	// Default driver is Flat-file. ALWAYS have this as a fallback plan.
-	private static String defaultDriver = FileSystemDataDriver.class.getName();
+	private static String defaultDriver = ForgeConfigDataDriver.class.getName();
 	
 	/**
 	 * Parses the ForgeEssentials config file and determines which Driver to use. 
@@ -32,7 +32,7 @@ public class DataStorageManager
 		
 		config.addCustomCategoryComment("Data", "Configuration options for how ForgeEssentials will save its data for persistence between sessions.");
 		
-		String temp = FileSystemDataDriver.class.getSimpleName();
+		String temp = ForgeConfigDataDriver.class.getSimpleName();
 		Property prop = config.get("Data", "storageType", temp.substring(0, temp.indexOf("DataDriver")));
 		prop.comment = "Specifies the variety of data storage FE will use. Options: FileSystem, SQLite, NBT";
 		String driverName = prop.value;
