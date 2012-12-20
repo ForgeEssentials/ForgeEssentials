@@ -21,9 +21,8 @@ public class MySQLDataDriver extends DataDriver
 	// Default constructor is good enough for us.
 
 	@Override
-	public boolean parseConfigs(Configuration config, String worldName)
+	public void parseConfigs(Configuration config, String worldName) throws SQLException, ClassNotFoundException
 	{
-		boolean isSuccess = true;
 		String type;
 		String connectionString = "";
 
@@ -56,20 +55,17 @@ public class MySQLDataDriver extends DataDriver
 			Class driverClass = Class.forName(DriverClass);
 
 			this.dbConnection = DriverManager.getConnection(connectionString, username, password);
-			
-			isSuccess = true;
 		}
 		catch (SQLException e)
 		{
 			OutputHandler.SOP("Unable to connect to the database!");
-			e.printStackTrace();
+			throw e;
 		}
 		catch (ClassNotFoundException e)
 		{
 			OutputHandler.SOP("Could not load the MySQL JDBC Driver! Does it exist in the lib directory?");
+			throw e;
 		}
-		
-		return isSuccess;
 	}
 
 	@Override
@@ -104,12 +100,12 @@ public class MySQLDataDriver extends DataDriver
 	
 	private void ensureTableExists(Class type)
 	{
-		TypeTagger tagger = this.getTaggerForType(type);
+		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
 	}
 	
 	private void createTable(Class type)
 	{
-		TypeTagger tagger = this.getTaggerForType(type);
+		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
 		HashMap<String, Class> fields = tagger.getFieldToTypeMap();
 		
 		Iterator<Entry<String, Class>> iterator = fields.entrySet().iterator();

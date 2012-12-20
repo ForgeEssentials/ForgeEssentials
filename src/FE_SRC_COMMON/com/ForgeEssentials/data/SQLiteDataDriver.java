@@ -25,9 +25,8 @@ public class SQLiteDataDriver extends DataDriver
 	// Default constructor is good enough for us.
 
 	@Override
-	public boolean parseConfigs(Configuration config, String worldName)
+	public void parseConfigs(Configuration config, String worldName) throws SQLException, ClassNotFoundException
 	{
-		boolean isSuccess = true;
 		String type;
 
 		// Set up the SQLite connection.
@@ -43,37 +42,26 @@ public class SQLiteDataDriver extends DataDriver
 			Class driverClass = Class.forName(DriverClass);
 
 			this.dbConnection = DriverManager.getConnection("jdbc:sqlite:" + path);
-			
-			isSuccess = true;
 		}
 		catch (SQLException e)
 		{
 			OutputHandler.SOP("Unable to connect to the database!");
-			e.printStackTrace();
+			throw e;
 		}
 		catch (ClassNotFoundException e)
 		{
 			OutputHandler.SOP("Could not load the SQLite JDBC Driver! Does it exist in the lib directory?");
+			throw e;
 		}
-		
-		return isSuccess;
 	}
 
 	@Override
-	public void registerClass(Class type)
+	public void onClassRegisterred(TypeTagger tagger)
 	{
-		super.registerClass(type);
-
-		SaveableObject annotation;
-		if ((annotation = (SaveableObject)type.getAnnotation(SaveableObject.class)) != null)
-		{
-			// If this is the first time registering a class that is NOT saved inline,
-			//  attempt to create a table.
-			if (!(annotation.SaveInline() || this.classTableChecked.containsKey(type)))
-			{
-				this.createTable(type);
-			}
-		}
+		// If this is the first time registering a class that is NOT saved inline,
+		//  attempt to create a table.
+		if (!(tagger.inLine || this.classTableChecked.containsKey(tagger.forType)))
+			this.createTable(tagger.forType);
 	}
 
 	@Override
@@ -123,7 +111,7 @@ public class SQLiteDataDriver extends DataDriver
 	{
 		boolean isSuccess = false;
 		
-		TypeTagger tagger = this.getTaggerForType(type);
+		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
 		HashMap<String, Class> fields = tagger.getFieldToTypeMap();
 		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
 		String keyClause = null;
@@ -210,9 +198,9 @@ public class SQLiteDataDriver extends DataDriver
 		else
 		{
 			// Complex type we can't handle.
-			TypeTagger tagger = this.getTaggerForType(type);
+			TypeTagger tagger = DataStorageManager.getTaggerForType(type);
 			Iterator<Entry<String, Class>> iterator = tagger.fieldToTypeMap.entrySet().iterator();
-			
+		
 			// Iterate over the stored fields. Recurse if nessecary.
 			while (iterator.hasNext())
 			{
@@ -291,7 +279,7 @@ public class SQLiteDataDriver extends DataDriver
 			
 			for (SavedField f : tc.TaggedMembers.values())
 			{
-				data.addAll(this.fieldToValues(fieldName + "_" + f.FieldName, f.Type, f.Value));
+				data.addAll(this.fieldToValues(fieldName + "_" + f.name, f.type, f.value));
 			}
 		}
 		else // What the fuck? This will be unpredictable.
