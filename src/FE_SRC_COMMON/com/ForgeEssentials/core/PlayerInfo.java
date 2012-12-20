@@ -6,6 +6,7 @@ import java.util.Stack;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
+import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
@@ -31,8 +32,8 @@ public class PlayerInfo
 		// load or create one
 		if (info == null)
 		{
-			// Attempt to populate this info with some data from our storage.
-			info = (PlayerInfo) ForgeEssentials.getInstanceDataDriver().loadObject(PlayerInfo.class, player.username);
+			// Attempt to populate this info with some data from our storage.  TODO: get the actual config-given choice...
+			info = (PlayerInfo) DataStorageManager.getDriverOfName("ForgeConfig").loadObject(PlayerInfo.class, player.username);
 			
 			if (info == null)
 				info = new PlayerInfo(player);
@@ -127,7 +128,8 @@ public class PlayerInfo
 	 */
 	public void save()
 	{
-		ForgeEssentials.getInstanceDataDriver().saveObject(this);
+		// TODO: get the actual config-given choice...
+		DataStorageManager.getDriverOfName("ForgeConfig").saveObject(this);
 	}
 	
 	// ----------------------------------------------

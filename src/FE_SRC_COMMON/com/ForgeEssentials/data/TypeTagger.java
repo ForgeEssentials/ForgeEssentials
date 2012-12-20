@@ -24,17 +24,19 @@ import com.ForgeEssentials.util.OutputHandler;
  */
 public class TypeTagger
 {
-	private DataDriver parent;
 	protected Class forType;
-	boolean isUniqueKeyField;
+	protected boolean isUniqueKeyField;
+	protected boolean inLine;
 	protected String uniqueKey;
 	protected String reconstructorMethod;
 	protected String[] savedFields;
 	protected HashMap<String, Class> fieldToTypeMap;
 
-	public TypeTagger(DataDriver driver, Class type)
+	public TypeTagger(Class type)
 	{
-		this.parent = driver;
+		SaveableObject AObj = (SaveableObject) type.getAnnotation(SaveableObject.class);
+		inLine = AObj.SaveInline();
+		
 		this.forType = type;
 		Class currentType = this.forType;
 		this.fieldToTypeMap = new HashMap<String, Class>();
@@ -93,11 +95,6 @@ public class TypeTagger
 		}
 		
 		this.savedFields = tempList.toArray(new String[] {});
-	}
-	
-	protected DataDriver getParent()
-	{
-		return this.parent;
 	}
 	
 	public String[] getSavedFieldNames()
@@ -164,7 +161,7 @@ public class TypeTagger
 					if (TypeTagger.isTypeComplex(obj))
 					{
 						// This object is not a primitive. Call this function on the appropriate TypeTagger.
-						obj = this.parent.getTaggerForType(obj.getClass()).getTaggedClassFromObject(obj);
+						obj = DataStorageManager.getTaggerForType(obj.getClass()).getTaggedClassFromObject(obj);
 					}
 					data.addField(data.new SavedField(savedFields[i], obj));
 				}
@@ -220,7 +217,7 @@ public class TypeTagger
 		Object obj = null;
 		// If the value of the field is a TaggedClass, run this function on it to recreate the original object.
 		if (field.value instanceof TaggedClass)
-			obj = this.parent.getTaggerForType(field.type).createFromFields((TaggedClass)field.value);
+			obj = DataStorageManager.getTaggerForType(field.type).createFromFields((TaggedClass)field.value);
 		else
 			// Simple case.
 			obj = field.value;

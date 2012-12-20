@@ -26,7 +26,7 @@ public class ForgeConfigDataDriver extends DataDriver
 	private File baseFile;
 	
 	@Override
-	public boolean parseConfigs(Configuration config, String worldName)
+	public void parseConfigs(Configuration config, String worldName)
 	{
 		Property prop;
 		
@@ -49,9 +49,6 @@ public class ForgeConfigDataDriver extends DataDriver
 		}
 		
 		config.save();
-		
-		// Nothing to fail on.
-		return true;
 	}
 	
 	private File getTypePath(Class type)
@@ -91,7 +88,7 @@ public class ForgeConfigDataDriver extends DataDriver
 	protected TaggedClass loadData(Class type, Object uniqueKey)
 	{
 		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
-		TypeTagger tag = this.getTaggerForType(type);
+		TypeTagger tag = DataStorageManager.getTaggerForType(type);
 		
 		return readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), tag);
 	}
@@ -248,7 +245,7 @@ public class ForgeConfigDataDriver extends DataDriver
 					field = data.new SavedField();
 					field.name = cat.getQualifiedName().replace(cat.getQualifiedName()+".", "");
 					field.type = tag.getTypeOfField(field.name);
-					field.value = readClassFromProperty(cfg, child, getTaggerForType(field.type));
+					field.value = readClassFromProperty(cfg, child, DataStorageManager.getTaggerForType(field.type));
 					data.addField(field);
 				}
 			}

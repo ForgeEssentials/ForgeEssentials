@@ -31,7 +31,7 @@ public class NBTDataDriver extends DataDriver
 	private File baseFile;
 
 	@Override
-	public boolean parseConfigs(Configuration config, String worldName)
+	public void parseConfigs(Configuration config, String worldName)
 	{
 		Property prop;
 
@@ -54,9 +54,6 @@ public class NBTDataDriver extends DataDriver
 		}
 
 		config.save();
-
-		// Nothing to fail on.
-		return true;
 	}
 	
 	private File getTypePath(Class type)
@@ -151,7 +148,7 @@ public class NBTDataDriver extends DataDriver
 		if (nbt == null)
 			return null;
 		
-		TypeTagger tag = this.getTaggerForType(type);
+		TypeTagger tag = DataStorageManager.getTaggerForType(type);
 		
 		return readClassFromTag(nbt, tag);
 	}
@@ -319,7 +316,7 @@ public class NBTDataDriver extends DataDriver
 		else if (field.type.equals(TaggedClass.class))
 		{
 			NBTTagCompound compound = new NBTTagCompound();
-			return readClassFromTag(compound, this.getTaggerForType(tagger.getTypeOfField(field.name)));
+			return readClassFromTag(compound, DataStorageManager.getTaggerForType(tagger.getTypeOfField(field.name)));
 		}
 		else  // this should never happen...
 			return null;

@@ -7,39 +7,14 @@ import net.minecraftforge.common.Configuration;
 
 public abstract class DataDriver
 {
-	private HashMap<Class, TypeTagger>	taggerList;
 
 	public DataDriver()
 	{
-		taggerList = new HashMap<Class, TypeTagger>();
 	}
-
-	public Class getDataDriverType()
+	
+	public void onClassRegisterred(TypeTagger tagger)
 	{
-		return this.getClass();
-	}
-
-	public void registerClass(Class type)
-	{
-		assert type.isAnnotationPresent(SaveableObject.class) : new IllegalArgumentException("Only classes that have the @SaveableObject annotation may be registerred!");
-		taggerList.put(type, new TypeTagger(this, type));
-	}
-
-	public boolean hasMapping(Object o)
-	{
-		return taggerList.containsKey(o.getClass());
-	}
-
-	public boolean hasMapping(Class type)
-	{
-		return taggerList.containsKey(type);
-	}
-
-	public TypeTagger getTaggerForType(Class type)
-	{
-		if (!this.hasMapping(type))
-			registerClass(type);
-		return taggerList.get(type);
+		
 	}
 
 	public boolean saveObject(Object o)
@@ -47,7 +22,7 @@ public abstract class DataDriver
 		boolean flag = false;
 
 		TypeTagger t;
-		if ((t = getTaggerForType(o.getClass())) != null)
+		if ((t = DataStorageManager.getTaggerForType(o.getClass())) != null)
 		{
 			flag = true;
 			saveData(o.getClass(), t.getTaggedClassFromObject(o));
@@ -62,7 +37,7 @@ public abstract class DataDriver
 		TaggedClass data = loadData(type, loadingKey);
 
 		if (data != null)
-			newObject = taggerList.get(type).createFromFields(data);
+			newObject = DataStorageManager.taggerList.get(type).createFromFields(data);
 
 		return newObject;
 	}
@@ -85,7 +60,7 @@ public abstract class DataDriver
 		return deleteData(type, loadingKey);
 	}
 
-	abstract public boolean parseConfigs(Configuration config, String worldName);
+	abstract public void parseConfigs(Configuration config, String worldName) throws Exception;
 
 	abstract protected boolean saveData(Class type, TaggedClass fieldList);
 
