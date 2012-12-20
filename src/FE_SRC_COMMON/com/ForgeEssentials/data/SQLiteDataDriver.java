@@ -14,6 +14,7 @@ import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.data.TaggedClass.SavedField;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.Pair;
 
 public class SQLiteDataDriver extends DataDriver
 {
@@ -124,21 +125,12 @@ public class SQLiteDataDriver extends DataDriver
 		
 		TypeTagger tagger = this.getTaggerForType(type);
 		HashMap<String, Class> fields = tagger.getFieldToTypeMap();
-		ArrayList<String> tableFields = new ArrayList<String>();
+		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
 		String keyClause = null;
 		
 		for (Entry<String, Class> entry : fields.entrySet())
-		{			
-			if (!TypeTagger.isTypeComplex(entry.getValue()))
-			{
-				// Simple case. 1 value = 1 column.
-				tableFields.add(this.simpleFieldToColumn(entry.getKey(), entry.getValue()));
-			}
-			else
-			{
-				// We're going to do some unrolling in here. 1 value = 1+ columns.
-				tableFields.addAll(this.complexFieldToColumns(entry.getKey(), entry.getValue()));
-			}
+		{
+			tableFields.addAll(this.fieldToColumns(entry.getKey(), entry.getValue()));
 		}
 
 		if (tagger.isUniqueKeyField)
@@ -148,15 +140,15 @@ public class SQLiteDataDriver extends DataDriver
 		else
 		{
 			// Is a method. Extra field required.
-			tableFields.add("uniqueIdentifier TEXT");
+			tableFields.add(new Pair<String, String>("uniqueIdentifier", "TEXT"));
 			keyClause = "PRIMARY KEY (uniqueIdentifier)";
 		}
 		
 		// Build up the create statement
-		StringBuilder tableCreate = new StringBuilder("CREATE TABLE " + type.getSimpleName() + " (");
-		for (String s : tableFields)
+		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + type.getSimpleName() + " (");
+		for (Pair<String, String> pair : tableFields)
 		{
-			tableCreate.append(s + ",");
+			tableCreate.append(pair.getFirst() + " " + pair.getSecond() + ", ");
 		}
 		// Add primary key clause.
 		tableCreate.append(keyClause + ")");
@@ -165,7 +157,7 @@ public class SQLiteDataDriver extends DataDriver
 		{
 			// Attempt to execute the statement.
 			Statement s = this.dbConnection.createStatement();
-			s.executeQuery(tableCreate.toString());
+			s.execute(tableCreate.toString());
 			
 			isSuccess = true;
 		}
@@ -177,119 +169,134 @@ public class SQLiteDataDriver extends DataDriver
 		return isSuccess;
 	}
 	
-	private String simpleFieldToColumn(String fieldName, Class type)
+	/**
+	 * Examines the provided type and produces an array of field => SQLite Type pairs,
+	 * ideal for creating new tables with. Complex type fields are broken down into
+	 * constituent primitives in the form of: "parentField_childFieldName"
+	 * 
+	 * @param fieldName Name of saved field
+	 * @param type Type of saved field
+	 * @return Array of field => SQLite type names.
+	 */
+	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, Class type)
 	{
-		String value = null;
-		if (type.equals(int.class) || type.equals(Integer.class) ||
+		ArrayList<Pair<String, String>> fields = new ArrayList<Pair<String, String>>();
+		
+		if (!TypeTagger.isTypeComplex(type))
+		{
+			if (type.equals(int.class) || type.equals(Integer.class) ||
 				type.equals(boolean.class) || type.equals(Boolean.class))
-		{
-			value = fieldName + " INTEGER";
-		}
-		else if (type.equals(float.class) || type.equals(Float.class) ||
-				type.equals(double.class) || type.equals(Double.class))
-		{
-			value = fieldName + " REAL";
-		}
-		else if (type.equals(String.class) || type.equals(double[].class) ||
-				type.equals(int[].class) || type.equals(boolean[].class) ||
-				type.equals(String[].class))
-		{
-			// We are going to roll arrays up into arbitrary long text fields.
-			value = fieldName + " TEXT";
-		}
-		else
-		{
-			// Unsupported. This will probably be crazy.
-			value = fieldName + " BLOB";
-		}
-		return value;
-	}
-	
-	private ArrayList<String> complexFieldToColumns(String fieldName, Class type)
-	{
-		ArrayList<String> fields = new ArrayList<String>();
-		
-		// Complex type we can't handle.
-		TypeTagger tagger = this.getTaggerForType(type);
-		Iterator<Entry<String, Class>> iterator = tagger.fieldToTypeMap.entrySet().iterator();
-		
-		// Iterate over the stored fields. Recurse if nessecary.
-		while (iterator.hasNext())
-		{
-			Entry<String, Class> entry = iterator.next();
-			if (!TypeTagger.isTypeComplex(entry.getValue()))
 			{
-				// Simple case. 1 value = 1 column.
-				fields.add(this.simpleFieldToColumn(fieldName + "-" + entry.getKey(), entry.getValue()));
+				fields.add(new Pair<String, String>(fieldName, "INTEGER"));
+			}
+			else if (type.equals(float.class) || type.equals(Float.class) ||
+					type.equals(double.class) || type.equals(Double.class))
+			{
+				fields.add(new Pair<String, String>(fieldName, "REAL"));
+			}
+			else if (type.equals(String.class) || type.equals(double[].class) ||
+					type.equals(int[].class) || type.equals(boolean[].class) ||
+					type.equals(String[].class))
+			{
+				// We are going to roll arrays up into arbitrary long text fields.
+				fields.add(new Pair<String, String>(fieldName, "TEXT"));
 			}
 			else
 			{
-				// We're going to do some unrolling in here. 1 value = 1+ columns.
-				fields.addAll(this.complexFieldToColumns(fieldName + "-" + entry.getKey(), entry.getValue()));
+				// Unsupported. This will probably be crazy.
+				fields.add(new Pair<String, String>(fieldName, "BLOB"));
+			}
+		}
+		else
+		{
+			// Complex type we can't handle.
+			TypeTagger tagger = this.getTaggerForType(type);
+			Iterator<Entry<String, Class>> iterator = tagger.fieldToTypeMap.entrySet().iterator();
+			
+			// Iterate over the stored fields. Recurse if nessecary.
+			while (iterator.hasNext())
+			{
+				Entry<String, Class> entry = iterator.next();
+				fields.addAll(this.fieldToColumns(fieldName + "_" + entry.getKey(), entry.getValue()));
 			}
 		}
 	
 		return fields;
 	}
 	
-	private String valueToFieldEntry(String fieldName, Class type, Object value)
+	/**
+	 * Generates an array of fieldname => String(Value) pairs, useful for Inserts, Updates, or Deletes.
+	 * 
+	 * @param fieldName Name of the field in the SQLite DB
+	 * @param type Type of field (Java)
+	 * @param value
+	 * @return Array of fieldname => value pairs
+	 */
+	private ArrayList<Pair<String, String>> fieldToValues(String fieldName, Class type, Object value)
 	{
-		String data = null;
+		ArrayList<Pair<String, String>> data = new ArrayList<Pair<String, String>>();
 		if (type.equals(Integer.class) || type.equals(Boolean.class) || type.equals(Float.class) ||
 				type.equals(Double.class) ||type.equals(String.class))
 		{
-			data = value.toString();
+			data.add(new Pair(fieldName, value.toString()));
 		}
 		else if (type.equals(double[].class) && ((double[])value).length > 0)
 		{
 			double[] arr = (double[])value;
-			data = String.valueOf(arr[0]);
+			StringBuilder tempStr = new StringBuilder();
+			tempStr.append(String.valueOf(arr[0]));
 			for (int i = 1; i < arr.length; ++i)
 			{
-				data = data + "," + String.valueOf(arr[i]);
+				tempStr.append("," + String.valueOf(arr[i]));
 			}
+			data.add(new Pair(fieldName, tempStr.toString()));
 		}
 		else if (type.equals(int[].class) && ((int[])value).length > 0)
 		{
 			int[] arr = (int[])value;
-			data = String.valueOf(arr[0]);
+			StringBuilder tempStr = new StringBuilder();
+			tempStr.append(String.valueOf(arr[0]));
 			for (int i = 1; i < arr.length; ++i)
 			{
-				data = data + "," + String.valueOf(arr[i]);
-			}			
+				tempStr.append("," + String.valueOf(arr[i]));
+			}
+			data.add(new Pair(fieldName, tempStr.toString()));		
 		}
 		else if (type.equals(boolean[].class) && ((boolean[])value).length > 0)
 		{
 			boolean[] arr = (boolean[])value;
-			data = String.valueOf(arr[0]);
+			StringBuilder tempStr = new StringBuilder();
+			tempStr.append(String.valueOf(arr[0]));
 			for (int i = 1; i < arr.length; ++i)
 			{
-				data = data + "," + String.valueOf(arr[i]);
-			}	
+				tempStr.append("," + String.valueOf(arr[i]));
+			}
+			data.add(new Pair(fieldName, tempStr.toString()));
 		}
 		else if (type.equals(String[].class) && ((String[])value).length > 0)
 		{
 			String[] arr = (String[])value;
-			data = String.valueOf(arr[0]);
+			StringBuilder tempStr = new StringBuilder();
+			tempStr.append(String.valueOf(arr[0]));
 			for (int i = 1; i < arr.length; ++i)
 			{
-				data = data + "!??!" + String.valueOf(arr[i]);
-			}				
+				tempStr.append("!??!" + String.valueOf(arr[i]));
+			}
+			data.add(new Pair(fieldName, tempStr.toString()));			
 		}
 		else if (type.equals(TaggedClass.class))
 		{
 			// Tricky business involving recursion.
 			TaggedClass tc = (TaggedClass)value;
-			data = "";
 			
 			for (SavedField f : tc.TaggedMembers.values())
 			{
-				this.valueToFieldEntry(fieldName + "-" + f.FieldName, f.Type, f.Value);
+				data.addAll(this.fieldToValues(fieldName + "_" + f.FieldName, f.Type, f.Value));
 			}
 		}
 		else // What the fuck? This will be unpredictable.
 		{
-			data = value.toString();
+			data.add(new Pair(fieldName, value.toString()));
 		}
 		return data;
 	}
