@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.data.TaggedClass.SavedField;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**

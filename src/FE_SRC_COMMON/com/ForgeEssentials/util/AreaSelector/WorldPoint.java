@@ -1,12 +1,12 @@
 package com.ForgeEssentials.util.AreaSelector;
 
+import net.minecraft.world.World;
+
 import com.ForgeEssentials.data.SaveableObject;
-import com.ForgeEssentials.data.TaggedClass;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
-
-import net.minecraft.world.World;
+import com.ForgeEssentials.data.TaggedClass;
 
 
 /**

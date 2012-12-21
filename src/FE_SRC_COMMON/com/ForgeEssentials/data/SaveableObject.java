@@ -1,6 +1,9 @@
 package com.ForgeEssentials.data;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Marks an object as saveable by the Data API. In order to be useful, it should contain at least

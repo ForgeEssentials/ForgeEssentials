@@ -10,10 +10,10 @@ import com.ForgeEssentials.client.core.PlayerInfoClient;
 import com.ForgeEssentials.client.core.ProxyClient;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ClientConnectionHandler implements IConnectionHandler

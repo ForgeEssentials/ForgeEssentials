@@ -7,7 +7,6 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 

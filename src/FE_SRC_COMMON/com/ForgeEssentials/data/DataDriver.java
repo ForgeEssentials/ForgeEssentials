@@ -1,7 +1,6 @@
 package com.ForgeEssentials.data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import net.minecraftforge.common.Configuration;
 

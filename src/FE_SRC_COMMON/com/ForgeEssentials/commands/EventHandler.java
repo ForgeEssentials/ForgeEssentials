@@ -6,7 +6,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class EventHandler
 {

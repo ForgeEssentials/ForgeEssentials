@@ -1,6 +1,5 @@
 package com.ForgeEssentials.data;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaggedClass

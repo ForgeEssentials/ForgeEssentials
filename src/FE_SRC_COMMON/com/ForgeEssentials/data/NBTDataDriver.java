@@ -3,7 +3,6 @@ package com.ForgeEssentials.data;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import com.ForgeEssentials.data.TaggedClass.SavedField;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Side;
 
 public class NBTDataDriver extends DataDriver
 {

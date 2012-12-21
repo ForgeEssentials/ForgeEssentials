@@ -15,8 +15,8 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketSelectionUpdate implements IForgeEssentialsPacket
 {

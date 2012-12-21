@@ -7,7 +7,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Side;
+import cpw.mods.fml.relauncher.Side;
 
 public class CommandServerDo extends ForgeEssentialsCommandBase
 {

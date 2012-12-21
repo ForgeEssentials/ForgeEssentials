@@ -11,13 +11,12 @@ import org.lwjgl.opengl.GL12;
 
 import com.ForgeEssentials.client.core.PlayerInfoClient;
 import com.ForgeEssentials.client.core.ProxyClient;
-import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 //Depreciated
 @SideOnly(value = Side.CLIENT)
