@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -26,7 +27,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
 		{
-			WorldPoint p = new WorldPoint(sender.worldObj.getWorldInfo().getDimension(), (int) sender.posX, (int) sender.posY, (int) sender.posZ);
+			WorldPoint p = FunctionHelper.getEntityPoint(sender);
 			PlayerInfo.getPlayerInfo(sender).home = p;
 			sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
 		}
@@ -75,7 +76,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 					// Home is not in this dimension. Move the player.
 					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, home.dim);
 				}
-				player.playerNetServerHandler.setPlayerLocation(home.x, home.y + 1, home.z, player.rotationYaw, player.rotationPitch);
+				player.playerNetServerHandler.setPlayerLocation(home.x+0.5, home.y + 1, home.z+0.5, player.rotationYaw, player.rotationPitch);
 			}
 		}
 	}
