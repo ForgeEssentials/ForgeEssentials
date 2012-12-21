@@ -2,6 +2,7 @@ package com.ForgeEssentials.data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -69,6 +70,20 @@ public class SQLiteDataDriver extends DataDriver
 	{
 		boolean isSuccess = false;
 
+		try
+		{
+			Statement s;
+			s = this.dbConnection.createStatement();
+			s.executeUpdate(createInsertStatement(type, fieldList));
+			
+			isSuccess = true;
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.SOP("Couldn't save object of type " + type.getSimpleName() + " to SQLite DB. Server will continue running.");
+			e.printStackTrace();
+		}
+
 		return isSuccess;
 	}
 
@@ -77,19 +92,41 @@ public class SQLiteDataDriver extends DataDriver
 	{
 		TaggedClass reconstructed = null;
 		
+		try
+		{
+			Statement s = this.dbConnection.createStatement();
+			ResultSet result = s.executeQuery(this.createSelectStatement(type, uniqueKey));
+			
+			// Should only be one item in this set.
+			reconstructed = this.createTaggedClassFromResult(type, result);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+
 		return reconstructed;
 	}
 
 	@Override
 	protected TaggedClass[] loadAll(Class type)
 	{
-		TaggedClass[] value = null;
-
 		ArrayList<TaggedClass> values = new ArrayList<TaggedClass>();
 		
-		value = values.toArray(new TaggedClass[values.size()]);
+		try
+		{
+			Statement s = this.dbConnection.createStatement();
+			ResultSet result = s.executeQuery(this.createSelectAllStatement(type));
+			
+			// TODO
+			
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 
-		return value;
+		return values.toArray(new TaggedClass[values.size()]);
 	}
 
 	@Override
@@ -97,9 +134,134 @@ public class SQLiteDataDriver extends DataDriver
 	{
 		boolean isSuccess = false;
 
+		try
+		{
+			Statement s = this.dbConnection.createStatement();
+			s.execute(this.createDeleteStatement(type, uniqueObjectKey));
+			
+			isSuccess = true;
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.SOP("Problem deleting data from SQLite DB (May not actually be a critical error):");
+			e.printStackTrace();
+		}
+		
 		return isSuccess;
 	}
+
+	private TaggedClass createTaggedClassFromResult(Class type, ResultSet result)
+	{
+		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+		
+		// TODO
+		
+		return null;
+	}
 	
+	private String createDeleteStatement(Class type, Object uniqueObjectKey)
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("DELETE FROM " + type.getSimpleName() + " WHERE ");
+		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+		if (tagger.isUniqueKeyField)
+		{
+			builder.append(tagger.uniqueKey + " = ");
+		}
+		else
+		{
+			builder.append("uniqueIdentifier = ");
+		}
+		builder.append(uniqueObjectKey.toString());
+		
+		return builder.toString();
+	}
+	
+	private String createSelectAllStatement(Class type)
+	{
+		return this.createSelectStatement(type, null);
+	}
+
+	private String createSelectStatement(Class type, Object uniqueObjectKey)
+	{
+		StringBuilder builder = new StringBuilder();
+		
+		// Basic SELECT syntax
+		builder.append("SELECT * FROM " + type.getSimpleName());
+		// Conditional
+		if (uniqueObjectKey != null)
+		{
+			builder.append(" WHERE ");
+			TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+			if (tagger.isUniqueKeyField)
+			{
+				builder.append(tagger.uniqueKey);
+			}
+			else
+			{
+				builder.append("uniqueIdentifier");
+			}
+			builder.append(" = ");
+			
+			if (uniqueObjectKey instanceof String)
+			{
+				builder.append("'").append((String)uniqueObjectKey).append("'");
+			}
+			else
+			{
+				builder.append(uniqueObjectKey.toString());
+			}
+		}
+		
+		return builder.toString();
+	}
+	
+	private String createInsertStatement(Class type, TaggedClass fieldList)
+	{
+		ArrayList<Pair<String, String>> fieldValueMap = new ArrayList<Pair<String, String>>();
+		// Iterate through fields and build up name=>value pair list.
+		for (SavedField field : fieldList.TaggedMembers.values())
+		{
+			fieldValueMap.addAll(this.fieldToValues(field.name, field.type, field.value));
+		}
+		
+		// Build up update statement.
+		StringBuilder query = new StringBuilder();
+		query.append("INSERT OR REPLACE INTO " + type.getSimpleName() + ' ');
+		
+		StringBuilder fields = new StringBuilder();
+		StringBuilder values = new StringBuilder();
+		fields.append('(');
+		values.append('(');
+		
+		// Deal with unique field
+		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+		if (tagger.isUniqueKeyField)
+		{
+			fields.append(fieldList.uniqueKey.name);
+		}
+		else
+		{
+			fields.append("uniqueIdentifier");
+		}
+		values.append(fieldList.uniqueKey.value);
+		
+		Iterator<Pair<String, String>> itr = fieldValueMap.iterator();
+		Pair<String, String> pair;
+		while (itr.hasNext())
+		{
+			pair = itr.next();
+			fields.append(", " + pair.getFirst());
+			values.append(", " + pair.getSecond());
+		}
+		fields.append(')');
+		values.append(')');
+		
+		query.append(fields.toString() + " VALUES " + values.toString());
+		
+		return query.toString();
+	}
+
 	/**
 	 * Attempts to create a table to store the type passed to it. These should only be top-level types that
 	 * need to be stored, such as PlayerInfo and Zones. Points, WorldPoints and other "simple" types that are
@@ -223,6 +385,7 @@ public class SQLiteDataDriver extends DataDriver
 	private ArrayList<Pair<String, String>> fieldToValues(String fieldName, Class type, Object value)
 	{
 		ArrayList<Pair<String, String>> data = new ArrayList<Pair<String, String>>();
+		
 		if (type.equals(Integer.class) || type.equals(Boolean.class) || type.equals(Float.class) ||
 				type.equals(Double.class) ||type.equals(String.class))
 		{
@@ -232,45 +395,45 @@ public class SQLiteDataDriver extends DataDriver
 		{
 			double[] arr = (double[])value;
 			StringBuilder tempStr = new StringBuilder();
-			tempStr.append(String.valueOf(arr[0]));
+			tempStr.append("'").append(String.valueOf(arr[0]));
 			for (int i = 1; i < arr.length; ++i)
 			{
 				tempStr.append("," + String.valueOf(arr[i]));
 			}
-			data.add(new Pair(fieldName, tempStr.toString()));
+			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
 		else if (type.equals(int[].class) && ((int[])value).length > 0)
 		{
 			int[] arr = (int[])value;
 			StringBuilder tempStr = new StringBuilder();
-			tempStr.append(String.valueOf(arr[0]));
+			tempStr.append("'").append(String.valueOf(arr[0]));
 			for (int i = 1; i < arr.length; ++i)
 			{
 				tempStr.append("," + String.valueOf(arr[i]));
 			}
-			data.add(new Pair(fieldName, tempStr.toString()));		
+			data.add(new Pair(fieldName, tempStr.append("'").toString()));		
 		}
 		else if (type.equals(boolean[].class) && ((boolean[])value).length > 0)
 		{
 			boolean[] arr = (boolean[])value;
 			StringBuilder tempStr = new StringBuilder();
-			tempStr.append(String.valueOf(arr[0]));
+			tempStr.append("'").append(String.valueOf(arr[0]));
 			for (int i = 1; i < arr.length; ++i)
 			{
 				tempStr.append("," + String.valueOf(arr[i]));
 			}
-			data.add(new Pair(fieldName, tempStr.toString()));
+			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
 		else if (type.equals(String[].class) && ((String[])value).length > 0)
 		{
 			String[] arr = (String[])value;
 			StringBuilder tempStr = new StringBuilder();
-			tempStr.append(String.valueOf(arr[0]));
+			tempStr.append("'").append(String.valueOf(arr[0]).replace("'", "\"\""));
 			for (int i = 1; i < arr.length; ++i)
 			{
-				tempStr.append("!??!" + String.valueOf(arr[i]));
+				tempStr.append("!??!" + String.valueOf(arr[i]).replace("'", "\"\""));
 			}
-			data.add(new Pair(fieldName, tempStr.toString()));			
+			data.add(new Pair(fieldName, tempStr.append("'").toString()));			
 		}
 		else if (type.equals(TaggedClass.class))
 		{

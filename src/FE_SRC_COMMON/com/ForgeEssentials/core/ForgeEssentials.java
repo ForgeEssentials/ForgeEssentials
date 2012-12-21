@@ -98,10 +98,10 @@ public class ForgeEssentials
 			dataManager.registerDriver("SQLite", SQLiteDataDriver.class);
 			
 			// Register saveables..
-			dataManager.registerClass(PlayerInfo.class);
-			dataManager.registerClass(Point.class);
-			dataManager.registerClass(WorldPoint.class);
-			dataManager.registerClass(WarpPoint.class);
+			dataManager.registerSaveableClass(PlayerInfo.class);
+			dataManager.registerSaveableClass(Point.class);
+			dataManager.registerSaveableClass(WorldPoint.class);
+			dataManager.registerSaveableClass(WarpPoint.class);
 		}
 
 		localization = new Localization();

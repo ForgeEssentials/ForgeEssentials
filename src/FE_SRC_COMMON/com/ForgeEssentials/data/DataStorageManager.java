@@ -76,6 +76,10 @@ public class DataStorageManager
 				// things MAY error here as well...
 				driver.parseConfigs(config, worldName);
 				
+				// register tagged classes...
+				for (TypeTagger tag : taggerList.values())
+					driver.onClassRegisterred(tag);
+				
 				instanceMap.put(entry.getKey(), driver);
 			}
 			catch (Exception e)
@@ -125,7 +129,6 @@ public class DataStorageManager
 	{
 		try
 		{
-			
 			// If there is a problem constructing the driver, this line will fail and we will enter the catch block.
 			DataDriver driver = ForgeEssentials.dataManager.classMap.get(type).newInstance();
 		
@@ -134,6 +137,10 @@ public class DataStorageManager
 			
 			// things MAY error here as well...
 			driver.parseConfigs(config, worldName);
+			
+			// register tagged classes...
+			for (TypeTagger tag : taggerList.values())
+				driver.onClassRegisterred(tag);
 			
 			return driver;
 		}
@@ -146,7 +153,7 @@ public class DataStorageManager
 		}
 	}
 	
-	public static void registerClass(Class type)
+	public static void registerSaveableClass(Class type)
 	{
 		assert type.isAnnotationPresent(SaveableObject.class) : new IllegalArgumentException("Only classes that have the @SaveableObject annotation may be registerred!");
 		taggerList.put(type, new TypeTagger(type));
@@ -165,7 +172,7 @@ public class DataStorageManager
 	public static TypeTagger getTaggerForType(Class type)
 	{
 		if (!hasMapping(type))
-			registerClass(type);
+			registerSaveableClass(type);
 		return taggerList.get(type);
 	}
 }
