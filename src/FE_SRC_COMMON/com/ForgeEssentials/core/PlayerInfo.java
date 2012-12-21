@@ -6,6 +6,7 @@ import java.util.Stack;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
+import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
@@ -31,8 +32,8 @@ public class PlayerInfo
 		// load or create one
 		if (info == null)
 		{
-			// Attempt to populate this info with some data from our storage.
-			info = (PlayerInfo) ForgeEssentials.getInstanceDataDriver().loadObject(PlayerInfo.class, player.username);
+			// Attempt to populate this info with some data from our storage.  TODO: get the actual config-given choice...
+			info = (PlayerInfo) DataStorageManager.getDriverOfName("ForgeConfig").loadObject(PlayerInfo.class, player.username);
 			
 			if (info == null)
 				info = new PlayerInfo(player);
@@ -58,16 +59,17 @@ public class PlayerInfo
 	@Reconstructor()
 	private static PlayerInfo reconstruct(TaggedClass tag)
 	{
-		String username = (String) tag.TaggedMembers.get("username").Value;
+		String username = (String) tag.getFieldValue("username");
+		
 		PlayerInfo info = new PlayerInfo(FunctionHelper.getPlayerFromUsername(username));
 		
-		info.setPoint1((Point) tag.TaggedMembers.get("sel1").Value);
-		info.setPoint2((Point) tag.TaggedMembers.get("sel2").Value);
+		info.setPoint1((Point) tag.getFieldValue("sel1"));
+		info.setPoint2((Point) tag.getFieldValue("sel2"));
 		
-		info.home = (WorldPoint) tag.TaggedMembers.get("home").Value;
-		info.lastDeath = (WorldPoint) tag.TaggedMembers.get("lastDeath").Value;
+		info.home = (WorldPoint) tag.getFieldValue("home");
+		info.lastDeath = (WorldPoint) tag.getFieldValue("lastDeath");
 		
-		info.spawnType = (Integer) tag.TaggedMembers.get("spawnType").Value;
+		info.spawnType = (Integer) tag.getFieldValue("spawnType");
 		
 		return null;
 	}
@@ -126,7 +128,8 @@ public class PlayerInfo
 	 */
 	public void save()
 	{
-		ForgeEssentials.getInstanceDataDriver().saveObject(this);
+		// TODO: get the actual config-given choice...
+		DataStorageManager.getDriverOfName("ForgeConfig").saveObject(this);
 	}
 	
 	// ----------------------------------------------
