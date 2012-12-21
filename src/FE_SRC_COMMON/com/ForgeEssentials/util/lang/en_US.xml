@@ -54,7 +54,7 @@
 		
 	<entry key="command.home.syntax.player">[here|x, y, z]</entry>
 	<entry key="command.home.info.player">Teleport you to/sets your home</entry>
-	<entry key="command.home.confirm">Home set to: %1$d %2$d %3$d</entry>
+	<entry key="command.home.confirm">Home set to: %1$d, %2$d, %3$d</entry>
 
 	<entry key="command.back.syntax.player"></entry>
 	<entry key="command.back.info.player">Teleport you your last death point</entry>
@@ -258,7 +258,7 @@
 	<entry key="message.error.yesgroup">A group of name %s already exists!</entry>
 	
 	<!-- Some localization for Zones -->
-	<entry key="command.permissions.zone.list.header">--- Showing the modlist page %d of %d ---</entry>
+	<entry key="command.permissions.zone.list.header">--- Showing the zonelist page %1$d of %2$d ---</entry>
 	<entry key="message.error.nozone">No zone of name %s exists!</entry>
 	<entry key="message.error.yeszone">A zone of name %s already exists!</entry>
 	<entry key="message.confirm.zone.remove">%s removed successfully</entry>

@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -71,8 +72,8 @@ public final class FunctionHelper
 		return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension);
 	}
 	
-	public static Point getEntityPoint(Entity entity)
+	public static WorldPoint getEntityPoint(Entity entity)
 	{
-		return new Point((int)Math.round(entity.posX), (int)Math.round(entity.posY), (int)Math.round(entity.posZ));
+		return new WorldPoint(entity.worldObj, (int)Math.round(entity.posX), (int)Math.round(entity.posY), (int)Math.round(entity.posZ));
 	}
 }

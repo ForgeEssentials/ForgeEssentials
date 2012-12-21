@@ -14,17 +14,6 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class CommandBack extends ForgeEssentialsCommandBase
 {
-
-	@ForgeSubscribe
-	public void onPlayerDeath(LivingDeathEvent e)
-	{
-		if (e.entity instanceof EntityPlayer)
-		{
-			EntityPlayer player = (EntityPlayer) e.entity;
-			PlayerInfo.getPlayerInfo(player).lastDeath = new WorldPoint(player.worldObj.getWorldInfo().getDimension(), (int) player.posX, (int) player.posY, (int) player.posZ);
-		}
-	}
-
 	@Override
 	public String getCommandName()
 	{
@@ -44,7 +33,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 				// Home is not in this dimension. Move the player.
 				player.mcServer.getConfigurationManager().transferPlayerToDimension(player, death.dim);
 			}
-			player.playerNetServerHandler.setPlayerLocation(death.x, death.y + 1, death.z, player.rotationYaw, player.rotationPitch);
+			player.playerNetServerHandler.setPlayerLocation(death.x+0.5, death.y + 1, death.z+0.5, player.rotationYaw, player.rotationPitch);
 		} else
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NODEATHPOINT));
 	}

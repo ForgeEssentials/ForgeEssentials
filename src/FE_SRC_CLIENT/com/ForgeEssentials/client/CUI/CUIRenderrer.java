@@ -29,7 +29,7 @@ public class CUIRenderrer
 		EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
 		PlayerInfoClient info = ProxyClient.info;
 
-		if (player == null || (info.getPoint1() == null && info.getPoint2() == null))
+		if (player == null || info == null || (info.getPoint1() == null && info.getPoint2() == null))
 			return;
 
 		float ticks = event.partialTicks;
