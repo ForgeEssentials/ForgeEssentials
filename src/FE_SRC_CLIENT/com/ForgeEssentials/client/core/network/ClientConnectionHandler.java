@@ -28,27 +28,28 @@ public class ClientConnectionHandler implements IConnectionHandler
 	@Override // SERVER! IGNORE!!!
 	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override  // client     MP!!!
 	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager)
 	{
-		ProxyClient.info = new PlayerInfoClient();
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			ProxyClient.setInfo(new PlayerInfoClient());
 	}
 
 	@Override // client      SP!!!
 	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager)
 	{
-		ProxyClient.info = new PlayerInfoClient();
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			ProxyClient.setInfo(new PlayerInfoClient());
 	}
 
 	@Override // both
 	public void connectionClosed(INetworkManager manager)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-			ProxyClient.info = null;
+			ProxyClient.setInfo(null);
 	}
 
 	@Override // client

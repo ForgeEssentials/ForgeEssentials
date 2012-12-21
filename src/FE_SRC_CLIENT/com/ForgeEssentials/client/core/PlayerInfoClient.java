@@ -14,15 +14,12 @@ import cpw.mods.fml.common.asm.SideOnly;
  * @author AbrarSyed
  */
 @SideOnly(value = Side.CLIENT)
-public class PlayerInfoClient implements Serializable
+public class PlayerInfoClient
 {
 	// selection stuff
 	private Point sel1;
 	private Point sel2;
 	private Selection selection;
-
-	// home
-	public Point home;
 
 	public PlayerInfoClient()
 	{

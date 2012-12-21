@@ -19,7 +19,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 @SideOnly(value=Side.CLIENT)
 public class ProxyClient extends ProxyCommon
 {
-	public static PlayerInfoClient info;
+	private static PlayerInfoClient info;
 	
 	// needed? probably not...
 	public static final File FEDIRC = new File("./ForgeEssentialsClient/");
@@ -44,5 +44,17 @@ public class ProxyClient extends ProxyCommon
 	{
 		info.setPoint1(infoServer.getPoint1());
 		info.setPoint2(infoServer.getPoint2());
+	}
+
+	public static PlayerInfoClient getInfo()
+	{
+		if (info == null)
+			info = new PlayerInfoClient();
+		return info;
+	}
+
+	public static void setInfo(PlayerInfoClient info)
+	{
+		ProxyClient.info = info;
 	}
 }

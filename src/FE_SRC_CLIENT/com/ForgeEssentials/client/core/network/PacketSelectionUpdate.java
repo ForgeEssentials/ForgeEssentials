@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core.network;
+package com.ForgeEssentials.client.core.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -12,6 +12,7 @@ import net.minecraft.world.WorldServer;
 
 import com.ForgeEssentials.client.core.ProxyClient;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.network.IForgeEssentialsPacket;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 

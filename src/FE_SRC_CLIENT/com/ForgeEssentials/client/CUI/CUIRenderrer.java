@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL12;
 
 import com.ForgeEssentials.client.core.PlayerInfoClient;
 import com.ForgeEssentials.client.core.ProxyClient;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
@@ -27,15 +28,19 @@ public class CUIRenderrer
 	public void render(RenderWorldLastEvent event)
 	{
 		EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
-		PlayerInfoClient info = ProxyClient.info;
+		PlayerInfoClient info = ProxyClient.getInfo();
 
 		if (player == null || info == null || (info.getPoint1() == null && info.getPoint2() == null))
+		{
+			//OutputHandler.devdebug("NOT RENDERRING");
 			return;
+		}
 
 		float ticks = event.partialTicks;
 
 		GL11.glPushMatrix();
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		Tessellator tess = Tessellator.instance;
 		tess.renderingWorldRenderer = false;
@@ -95,6 +100,7 @@ public class CUIRenderrer
 		}
 
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		//tess.renderingWorldRenderer = true;
 		GL11.glPopMatrix();
