@@ -6,13 +6,21 @@ import java.util.Stack;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
+import com.ForgeEssentials.data.DataStorageManager;
+import com.ForgeEssentials.data.SaveableObject;
+import com.ForgeEssentials.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.data.TaggedClass;
 import com.ForgeEssentials.permission.Zone;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
+@SaveableObject
 public class PlayerInfo
 {
 	private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
@@ -21,16 +29,14 @@ public class PlayerInfo
 	{
 		PlayerInfo info = playerInfoMap.get(player.username);
 
+		// load or create one
 		if (info == null)
 		{
-			info = new PlayerInfo(player);
+			// Attempt to populate this info with some data from our storage.  TODO: get the actual config-given choice...
+			info = (PlayerInfo) DataStorageManager.getDriverOfName("ForgeConfig").loadObject(PlayerInfo.class, player.username);
 			
-			// Attempt to populate this info with some data from our storage.
-			if (!ForgeEssentials.getInstanceDataDriver().loadObject(player.username, info))
-			{
-				// Loading was unsuccessful. Save this object while we can.
-				info.save();
-			}
+			if (info == null)
+				info = new PlayerInfo(player);
 			
 			playerInfoMap.put(player.username, info);
 		}
@@ -49,29 +55,54 @@ public class PlayerInfo
 	{
 		playerInfoMap.remove(username);
 	}
+	
+	@Reconstructor()
+	private static PlayerInfo reconstruct(TaggedClass tag)
+	{
+		String username = (String) tag.getFieldValue("username");
+		
+		PlayerInfo info = new PlayerInfo(FunctionHelper.getPlayerFromUsername(username));
+		
+		info.setPoint1((Point) tag.getFieldValue("sel1"));
+		info.setPoint2((Point) tag.getFieldValue("sel2"));
+		
+		info.home = (WorldPoint) tag.getFieldValue("home");
+		info.lastDeath = (WorldPoint) tag.getFieldValue("lastDeath");
+		
+		info.spawnType = (Integer) tag.getFieldValue("spawnType");
+		
+		return null;
+	}
 
 	// -------------------------------------------------------------------------------------------
-	// ---------------------------------- Actual Class Starts Now
-	// --------------------------------
+	// ---------------------------------- Actual Class Starts Now --------------------------------
 	// -------------------------------------------------------------------------------------------
-
-	private boolean hasClientMod;
-	private String worldName;
-	private String username;
+	@UniqueLoadingKey()
+	@SaveableField()
+	public final String username;
 
 	// wand stuff
-	public int wandID;
-	public int wandDmg;
-	public boolean wandEnabled;
+	public int wandID = 0;
+	public int wandDmg = 0;
+	public boolean wandEnabled = false;
 
 	// selection stuff
+	@SaveableField(nullableField = true)
 	private Point sel1;
+	
+	@SaveableField(nullableField = true)
 	private Point sel2;
+	
 	private Selection selection;
 
+	@SaveableField(nullableField = true)
 	public WorldPoint home;
+	
+	@SaveableField(nullableField = true)
 	public WorldPoint lastDeath;
+	
 	// 0: Normal 1: World spawn 2: Bed 3: Home
+	@SaveableField
 	public int spawnType;
 
 	// undo and redo stuff
@@ -86,31 +117,10 @@ public class PlayerInfo
 		sel1 = null;
 		sel2 = null;
 		selection = null;
-		worldName = player.worldObj.getWorldInfo().getWorldName() + "_" + player.worldObj.getWorldInfo().getDimension();
 		username = player.username;
 
 		undos = new Stack<BackupArea>();
 		redos = new Stack<BackupArea>();
-	}
-
-	public boolean isHasClientMod()
-	{
-		return hasClientMod;
-	}
-
-	public void setHasClientMod(boolean hasClient)
-	{
-		hasClientMod = hasClient;
-	}
-
-	public String getUsername()
-	{
-		return username;
-	}
-
-	public String getWorldName()
-	{
-		return worldName;
 	}
 	
 	/**
@@ -118,7 +128,8 @@ public class PlayerInfo
 	 */
 	public void save()
 	{
-		ForgeEssentials.getInstanceDataDriver().saveObject(this);
+		// TODO: get the actual config-given choice...
+		DataStorageManager.getDriverOfName("ForgeConfig").saveObject(this);
 	}
 	
 	// ----------------------------------------------

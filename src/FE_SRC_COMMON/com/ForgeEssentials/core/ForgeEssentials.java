@@ -12,11 +12,19 @@ import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.network.HandlerServer;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.DataStorageManager;
+import com.ForgeEssentials.data.ForgeConfigDataDriver;
+import com.ForgeEssentials.data.MySQLDataDriver;
+import com.ForgeEssentials.data.NBTDataDriver;
+import com.ForgeEssentials.data.SQLiteDataDriver;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Version;
+import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -63,12 +71,11 @@ public class ForgeEssentials
 
 	public static final File FEDIR = new File(fedirloc);
 	
-	private DataDriver dataStore = null;
+	public static DataStorageManager dataManager;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		
 		config = new CoreConfig();
 
 		if (verCheck)
@@ -78,6 +85,24 @@ public class ForgeEssentials
 
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
+		
+		// Data API stuff
+		{
+			// setup
+			dataManager = new DataStorageManager(config.config);
+			
+			// register DataDrivers
+			dataManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
+			dataManager.registerDriver("NBT", NBTDataDriver.class);
+			dataManager.registerDriver("MySQL", MySQLDataDriver.class);
+			dataManager.registerDriver("SQLite", SQLiteDataDriver.class);
+			
+			// Register saveables..
+			dataManager.registerSaveableClass(PlayerInfo.class);
+			dataManager.registerSaveableClass(Point.class);
+			dataManager.registerSaveableClass(WorldPoint.class);
+			dataManager.registerSaveableClass(WarpPoint.class);
+		}
 
 		localization = new Localization();
 	}
@@ -89,6 +114,8 @@ public class ForgeEssentials
 		mdlaunch.load(e);
 		localization.load();
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
+		
+		
 	}
 
 	@PostInit
@@ -100,11 +127,12 @@ public class ForgeEssentials
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-		mdlaunch.serverStarting(e);
 		ModListFile.makeModList();
 		
-		// Add hooks for initializing new data backing API
-		DataStorageManager.setupDriver(config.config, e);
+		// Data API stuff
+		if (FMLCommonHandler.instance().getSide().isClient())
+			dataManager.clearDrivers(); // clear before fuilling up.. if its the client...
+		dataManager.setupManager(e);
 		
 		//Central TP system
 		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
@@ -113,6 +141,10 @@ public class ForgeEssentials
 		e.registerServerCommand(new CommandFEVersion());
 		e.registerServerCommand(new CommandFEUpdate());
 		e.registerServerCommand(new CommandFECredits());
+		
+		
+		// do modules last... just in case...
+		mdlaunch.serverStarting(e);
 	}
 	
 	@ServerStarted
@@ -125,6 +157,10 @@ public class ForgeEssentials
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		mdlaunch.serverStopping(e);
+		
+		if (FMLCommonHandler.instance().getSide().isServer())
+			dataManager.clearDrivers();
+		
 		DataStorage.save();
 	}
 	
@@ -132,29 +168,5 @@ public class ForgeEssentials
 	public void chuckSave(WorldEvent.Save event)
 	{
 		DataStorage.save();
-	}
-
-	public DataDriver getDataDriver()
-	{
-		return dataStore;
-	}
-	
-	public static DataDriver getInstanceDataDriver()
-	{
-		DataDriver d = null;
-		if (ForgeEssentials.instance != null && instance.dataStore != null)
-		{
-			d = instance.dataStore;
-		}
-		return d;
-	}
-
-	public void setDataStore(DataDriver driver)
-	{
-		// Only set this once to prevent strangeness.
-		if (this.dataStore != null)
-		{
-			this.dataStore = driver;
-		}
 	}
 }

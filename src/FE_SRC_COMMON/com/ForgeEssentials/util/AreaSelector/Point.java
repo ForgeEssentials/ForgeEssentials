@@ -2,10 +2,24 @@ package com.ForgeEssentials.util.AreaSelector;
 
 import java.io.Serializable;
 
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.data.SaveableObject;
+import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.data.TaggedClass;
+import com.ForgeEssentials.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.util.FunctionHelper;
+
+@SaveableObject(SaveInline = true)
 public class Point implements Serializable, Comparable<Point>
 {
+	@SaveableField
 	public int x;
+	
+	@SaveableField
 	public int y;
+	
+	@SaveableField
 	public int z;
 
 	public Point(int x, int y, int z)
@@ -116,5 +130,20 @@ public class Point implements Serializable, Comparable<Point>
 			return new Point(point.x, 0, point.z);
 		} else
 			return point;
+	}
+	
+	@Reconstructor()
+	private static Point reconstruct(TaggedClass tag)
+	{
+		int x = (Integer) tag.getFieldValue("x");
+		int y = (Integer) tag.getFieldValue("y");
+		int z = (Integer) tag.getFieldValue("z");
+		return new Point(x, y, z);
+	}
+	
+	@UniqueLoadingKey()
+	private String getLoadingField()
+	{
+		return "point_"+x+"_"+y+"_"+z;
 	}
 }

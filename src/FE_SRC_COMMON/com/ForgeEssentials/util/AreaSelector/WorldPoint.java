@@ -1,5 +1,11 @@
 package com.ForgeEssentials.util.AreaSelector;
 
+import com.ForgeEssentials.data.SaveableObject;
+import com.ForgeEssentials.data.TaggedClass;
+import com.ForgeEssentials.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
+
 import net.minecraft.world.World;
 
 
@@ -9,8 +15,10 @@ import net.minecraft.world.World;
  * @author MysteriousAges
  * 
  */
+@SaveableObject(SaveInline = true)
 public class WorldPoint extends Point
 {
+	@SaveableField
 	public int dim;
 
 	public WorldPoint(int dimension, int x, int y, int z)
@@ -49,5 +57,21 @@ public class WorldPoint extends Point
 	public WorldPoint copy(WorldPoint p)
 	{
 		return new WorldPoint(p.dim, p.x, p.y, p.z);
+	}
+	
+	@Reconstructor()
+	private static WorldPoint reconstruct(TaggedClass tag)
+	{
+		int x = (Integer) tag.getFieldValue("x");
+		int y = (Integer) tag.getFieldValue("y");
+		int z = (Integer) tag.getFieldValue("z");
+		int dim = (Integer) tag.getFieldValue("dim");
+		return new WorldPoint(dim, x, y, z);
+	}
+	
+	@UniqueLoadingKey()
+	private String getLoadingField()
+	{
+		return "worldpoint_"+dim+"_"+x+"_"+y+"_"+z;
 	}
 }
