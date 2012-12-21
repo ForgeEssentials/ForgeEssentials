@@ -60,6 +60,8 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandBackup());
 		e.registerServerCommand(new CommandTPS());
 		e.registerServerCommand(new CommandKit());
+		e.registerServerCommand(new CommandEnderchest());
+		e.registerServerCommand(new CommandVirtualchest());
 		//op
 		e.registerServerCommand(new CommandServerDo());
 		//fun
@@ -99,6 +101,8 @@ public class ModuleCommands implements IFEModule
 		event.registerPermissionDefault("ForgeEssentials.commands.repair", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.heal", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.tps", false);
+		event.registerPermissionDefault("ForgeEssentials.commands.enderchest", false);
+		event.registerPermissionDefault("ForgeEssentials.commands.virtualchest", false);
 		
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.commands", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.commands.compass", true);
