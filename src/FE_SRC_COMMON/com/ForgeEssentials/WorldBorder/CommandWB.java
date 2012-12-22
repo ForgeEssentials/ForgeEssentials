@@ -9,11 +9,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
 
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TickTaskHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

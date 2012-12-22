@@ -1,4 +1,4 @@
-package com.ForgeEssentials.WorldControl.tickTasks;
+package com.ForgeEssentials.WorldControl.TickTasks;
 
 //Depreciated
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,6 +8,7 @@ import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.BlockSaveable;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;

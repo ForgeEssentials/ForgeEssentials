@@ -1,4 +1,4 @@
-package com.ForgeEssentials.WorldControl.tickTasks;
+package com.ForgeEssentials.util;
 
 //Depreciated
 import java.util.EnumSet;

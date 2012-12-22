@@ -6,10 +6,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskSetSelection;
+import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class CommandSet extends WorldControlCommandBase

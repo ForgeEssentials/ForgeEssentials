@@ -5,10 +5,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskReplaceSelection;
+import com.ForgeEssentials.WorldControl.TickTasks.TickTaskReplaceSelection;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class CommandReplace extends WorldControlCommandBase
