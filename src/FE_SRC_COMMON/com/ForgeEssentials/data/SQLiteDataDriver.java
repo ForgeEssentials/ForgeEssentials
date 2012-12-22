@@ -531,9 +531,83 @@ public class SQLiteDataDriver extends DataDriver
 		return data;
 	}
 	
+	// Transforms the raw DB type back into a Java object.
 	private Object valueToField(Class targetType, Object dbValue)
 	{
 		Object value = null;
+		if (targetType.equals(Integer.class))
+		{
+			// DB Value is an integer
+			value = (Integer)dbValue;
+		}
+		else if (targetType.equals(Double.class))
+		{
+			// DB Value is a double
+			value = (Double)dbValue;
+		}
+		else if (targetType.equals(Float.class))
+		{
+			// DB value is a Double.
+			value = (Float)((Double)dbValue).floatValue();
+		}
+		else if (targetType.equals(String.class))
+		{
+			// DB Value is a string
+			value = (String)dbValue;
+		}
+		else if (targetType.equals(Boolean.class))
+		{
+			// DB Value is an integer (1=true, 0=false)
+			value = ((Integer)dbValue).equals(1);
+		}
+		else if (targetType.equals(double[].class))
+		{
+			// DB value is a string representing an array of doubles, separated by ','
+			String[] values = ((String)dbValue).split(",");
+			double[] result = new double[values.length]; 
+			
+			for (int i = 0; i < values.length; ++i)
+			{
+				result[i] = Double.valueOf(values[i]).doubleValue();
+			}
+			value = result;
+		}
+		else if (targetType.equals(int[].class))
+		{
+			// DB value is a string representing an array of integers, separated by ','
+			String[] values = ((String)dbValue).split(",");
+			int[] result = new int[values.length]; 
+			
+			for (int i = 0; i < values.length; ++i)
+			{
+				result[i] = Integer.valueOf(values[i]).intValue();
+			}
+			value = result;	
+		}
+		else if (targetType.equals(boolean[].class))
+		{
+			// DB value is a string representing an array of booleans, separated by ','
+			String[] values = ((String)dbValue).split(",");
+			boolean[] result = new boolean[values.length]; 
+			
+			for (int i = 0; i < values.length; ++i)
+			{
+				result[i] = Boolean.valueOf(values[i]).booleanValue();
+			}
+			value = result;
+		}
+		else if (targetType.equals(String[].class))
+		{
+			// DB value is a string representing an array of strings, separated by '!??!'
+			// Each item may contain instances of '""', which represents a single apostrophe.
+			String[] values = ((String)dbValue).split("!??!");
+			
+			for (int i = 0; i < values.length; ++i)
+			{
+				values[i] = values[i].replaceAll("\"\"", "'");
+			}
+			value = values;		
+		}
 		return value;
 	}
 }
