@@ -14,9 +14,8 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-public class ModuleChat implements IFEModule {
-
-	
+public class ModuleChat implements IFEModule 
+{	
 	public static ConfigChat conf;
 
 	public ModuleChat() {

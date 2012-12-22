@@ -47,6 +47,11 @@ public class ModuleWorldControl implements IFEModule
 	public void preLoad(FMLPreInitializationEvent event)
 	{
 		OutputHandler.SOP("WorldControl module is enabled. Loading...");
+		doConfig();
+	}
+	
+	public static void doConfig()
+	{
 		Configuration conf = new Configuration(wcconf, true);
 		
 		conf.load();
