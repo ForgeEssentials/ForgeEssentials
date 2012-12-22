@@ -76,7 +76,7 @@ public class SQLiteDataDriver extends DataDriver
 		{
 			Statement s;
 			s = this.dbConnection.createStatement();
-			s.executeUpdate(createInsertStatement(type, fieldList));
+			int count = s.executeUpdate(createInsertStatement(type, fieldList));
 			
 			isSuccess = true;
 		}
@@ -177,9 +177,15 @@ public class SQLiteDataDriver extends DataDriver
 			}
 			
 			// Pull values into map.
+			Object val = null;
 			for (String name : names)
 			{
-				map.put(name, result.getObject(name));
+				val = result.getObject(name);
+				if (val != null)
+				{
+					// Only add something to the map if it has a value.
+					map.put(name, val);
+				}
 			}
 			
 		}
@@ -226,7 +232,8 @@ public class SQLiteDataDriver extends DataDriver
 					{
 						// An object lives here.
 						tmpField.value = cursor = new TaggedClass();
-						taggerCursor = DataStorageManager.getTaggerForType(taggerCursor.getTypeOfField(fieldHeiarchy[i]));
+						tmpField.type = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
+						taggerCursor = DataStorageManager.getTaggerForType(tmpField.type);
 					}
 					else
 					{
@@ -327,7 +334,14 @@ public class SQLiteDataDriver extends DataDriver
 		{
 			fields.append("uniqueIdentifier");
 		}
-		values.append(fieldList.uniqueKey.value);
+		if (fieldList.uniqueKey.type.equals(String.class))
+		{
+			values.append("'" + fieldList.uniqueKey.value + "'");
+		}
+		else
+		{
+			values.append(fieldList.uniqueKey.value);
+		}
 		
 		Iterator<Pair<String, String>> itr = fieldValueMap.iterator();
 		Pair<String, String> pair;
@@ -335,7 +349,15 @@ public class SQLiteDataDriver extends DataDriver
 		{
 			pair = itr.next();
 			fields.append(", " + pair.getFirst());
-			values.append(", " + pair.getSecond());
+			values.append(", ");
+			if (pair.getSecond().getClass().equals(String.class))
+			{
+				values.append("'" + pair.getSecond() + "'");
+			}
+			else
+			{
+				values.append(pair.getSecond());
+			}
 		}
 		fields.append(')');
 		values.append(')');
