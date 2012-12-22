@@ -219,17 +219,21 @@ public class SQLiteDataDriver extends DataDriver
 						// Create a new node for this position.
 						tmpField = cursor.new SavedField();
 						tmpField.name = fieldHeiarchy[i];
-						if (fieldHeiarchy.length > i + 1)
-						{
-							// An object lives here.
-							tmpField.value = cursor = new TaggedClass();
-						}
-						else
-						{
-							// Only one item.
-							Class fieldType = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
-							cursor.addField(cursor.new SavedField());
-						}
+						cursor.addField(tmpField);
+					}
+					
+					if (fieldHeiarchy.length > i + 1)
+					{
+						// An object lives here.
+						tmpField.value = cursor = new TaggedClass();
+						taggerCursor = DataStorageManager.getTaggerForType(taggerCursor.getTypeOfField(fieldHeiarchy[i]));
+					}
+					else
+					{
+						// Primitive type.
+						Class fieldType = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
+						tmpField.value = this.valueToField(taggerCursor.getTypeOfField(fieldHeiarchy[i]), result.get(fieldHeiarchy[i]));
+						tmpField.type = fieldType;
 					}
 				}
 			}
