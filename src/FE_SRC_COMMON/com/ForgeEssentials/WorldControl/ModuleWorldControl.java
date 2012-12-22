@@ -8,7 +8,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
+import com.ForgeEssentials.WorldControl.Ticks.TickTaskTopManipulator.Mode;
 import com.ForgeEssentials.WorldControl.commands.CommandPos;
 import com.ForgeEssentials.WorldControl.commands.CommandRedo;
 import com.ForgeEssentials.WorldControl.commands.CommandReplace;

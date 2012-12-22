@@ -1,4 +1,4 @@
-package com.ForgeEssentials.WorldControl.TickTasks;
+package com.ForgeEssentials.WorldControl.Ticks;
 
 //Depreciated
 import java.util.ArrayList;
