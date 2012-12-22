@@ -9,6 +9,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
+import com.ForgeEssentials.WorldControl.commands.CommandDeselect;
 import com.ForgeEssentials.WorldControl.commands.CommandPos;
 import com.ForgeEssentials.WorldControl.commands.CommandRedo;
 import com.ForgeEssentials.WorldControl.commands.CommandReplace;
@@ -84,6 +85,7 @@ public class ModuleWorldControl implements IFEModule
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandWand());
+		e.registerServerCommand(new CommandDeselect());
 		e.registerServerCommand(new CommandPos(1));
 		e.registerServerCommand(new CommandPos(2));
 		e.registerServerCommand(new CommandSet());

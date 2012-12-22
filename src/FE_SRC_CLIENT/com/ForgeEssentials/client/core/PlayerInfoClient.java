@@ -35,12 +35,15 @@ public class PlayerInfoClient
 	{
 		this.sel1 = sel1;
 
-		if (selection == null)
+		if (sel1 != null)
 		{
-			if (sel1 != null && sel2 != null)
-				selection = new Selection(sel1, sel2);
-		} else
-			selection.setStart(sel1);
+			if (selection == null)
+			{
+				if (sel1 != null && sel2 != null)
+					selection = new Selection(sel1, sel2);
+			} else
+				selection.setStart(sel1);
+		}
 	}
 
 	public Point getPoint2()
@@ -52,12 +55,15 @@ public class PlayerInfoClient
 	{
 		this.sel2 = sel2;
 
-		if (selection == null)
+		if (sel2 != null)
 		{
-			if (sel1 != null && sel2 != null)
-				selection = new Selection(sel1, sel2);
-		} else
-			selection.setEnd(sel2);
+			if (selection == null)
+			{
+				if (sel1 != null && sel2 != null)
+					selection = new Selection(sel1, sel2);
+			} else
+				selection.setEnd(sel2);
+		}
 	}
 
 	public Selection getSelection()

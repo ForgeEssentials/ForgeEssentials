@@ -180,6 +180,7 @@
 	<entry key="command.untill.syntax.player">&lt;radius of effect> [&lt;x> &lt;y>]</entry>
 	<entry key="command.untill.info.player">Replaces farmland open to the sky with dirt.</entry>
 	
+	<entry key="message.wc.deselection">Selection cleared</entry>
 	<entry key="message.wc.setConfirmBlocksChanged">Set %1$d blocks changed to %2$s</entry>
 	<entry key="message.wc.replaceConfirmBlocksChanged">Replaced %1$d %2$s blocks with %3$s</entry>
 	<entry key="message.wc.thawConfirm">%d blocks have been thawed.</entry>

@@ -157,6 +157,8 @@ public class Localization
 	public static final String WALLET_GET_SELF = "message.wallet.walletgetself";
 	public static final String WALLET_GET_TARGET = "message.wallet.walletgettarget";
 
+	public static final String COMMAND_DESELECT = "message.wc.deselection";
+
 	public void load()
 	{
 		OutputHandler.SOP("Loading languages");

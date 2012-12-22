@@ -165,7 +165,7 @@ public class PlayerInfo
 	// ----------------------------------------------
 	// ------------ Selection stuff -----------------
 	// ----------------------------------------------
-
+	
 	public Point getPoint1()
 	{
 		return sel1;
@@ -175,12 +175,15 @@ public class PlayerInfo
 	{
 		this.sel1 = sel1;
 
-		if (selection == null)
+		if (sel1 != null)
 		{
-			if (sel1 != null && sel2 != null)
-				selection = new Selection(sel1, sel2);
-		} else
-			selection.setStart(sel1);
+			if (selection == null)
+			{
+				if (sel1 != null && sel2 != null)
+					selection = new Selection(sel1, sel2);
+			} else
+				selection.setStart(sel1);
+		}
 
 		// send packets.
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
@@ -196,12 +199,15 @@ public class PlayerInfo
 	{
 		this.sel2 = sel2;
 
-		if (selection == null)
+		if (sel2 != null)
 		{
-			if (sel1 != null && sel2 != null)
-				selection = new Selection(sel1, sel2);
-		} else
-			selection.setEnd(sel2);
+			if (selection == null)
+			{
+				if (sel1 != null && sel2 != null)
+					selection = new Selection(sel1, sel2);
+			} else
+				selection.setEnd(sel2);
+		}
 
 		// send packets.
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
