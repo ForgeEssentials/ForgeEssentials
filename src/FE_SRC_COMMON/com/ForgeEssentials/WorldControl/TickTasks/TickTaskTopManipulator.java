@@ -1,4 +1,4 @@
-package com.ForgeEssentials.WorldControl.Ticks;
+package com.ForgeEssentials.WorldControl.TickTasks;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;

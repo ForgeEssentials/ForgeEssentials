@@ -1,4 +1,4 @@
-package com.ForgeEssentials.WorldControl.Ticks;
+package com.ForgeEssentials.WorldControl.TickTasks;
 
 //Depreciated
 import net.minecraft.entity.player.EntityPlayer;

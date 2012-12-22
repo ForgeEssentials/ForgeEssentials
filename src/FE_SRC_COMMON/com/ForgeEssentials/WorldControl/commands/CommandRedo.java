@@ -4,7 +4,7 @@ package com.ForgeEssentials.WorldControl.commands;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
-import com.ForgeEssentials.WorldControl.Ticks.TickTaskSetBackup;
+import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetBackup;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.TickTaskHandler;
 
