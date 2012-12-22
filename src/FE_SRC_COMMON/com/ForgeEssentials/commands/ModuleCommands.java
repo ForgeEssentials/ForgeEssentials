@@ -20,7 +20,6 @@ import cpw.mods.fml.relauncher.Side;
 
 public class ModuleCommands implements IFEModule
 {
-
 	public static ConfigCmd conf;
 
 	public ModuleCommands()

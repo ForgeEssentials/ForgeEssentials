@@ -7,6 +7,7 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.client.core.network.HandlerClient;
 import com.ForgeEssentials.core.commands.CommandFECredits;
+import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.network.HandlerServer;
@@ -15,6 +16,7 @@ import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.MySQLDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLiteDataDriver;
+import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -140,10 +142,17 @@ public class ForgeEssentials
 		e.registerServerCommand(new CommandFEVersion());
 		e.registerServerCommand(new CommandFEUpdate());
 		e.registerServerCommand(new CommandFECredits());
+		e.registerServerCommand(new CommandFEReload());
 		
 		
 		// do modules last... just in case...
 		mdlaunch.serverStarting(e);
+	}
+	
+	@ForgeSubscribe
+	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	{
+		event.registerPermissionDefault("ForgeEssentials.commands.reload", false);
 	}
 	
 	@ServerStarted

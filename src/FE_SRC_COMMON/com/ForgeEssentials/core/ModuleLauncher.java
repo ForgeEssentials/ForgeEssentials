@@ -2,12 +2,16 @@ package com.ForgeEssentials.core;
 
 import java.util.logging.Level;
 
+import com.ForgeEssentials.WorldBorder.ConfigWorldBorder;
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
+import com.ForgeEssentials.chat.ConfigChat;
 import com.ForgeEssentials.chat.ModuleChat;
+import com.ForgeEssentials.commands.ConfigCmd;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.economy.ModuleEconomy;
 import com.ForgeEssentials.permission.ModulePermissions;
+import com.ForgeEssentials.playerLogger.ConfigPlayerLogger;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.property.ModuleProperty;
 import com.ForgeEssentials.util.OutputHandler;
@@ -46,6 +50,22 @@ public class ModuleLauncher
 
 	// note to self: if possible, make this classload.
 
+	/*
+	 * I put this here so we won't forget to add new modules.
+	 */
+	public static void ReloadConfigs()
+	{
+		ModuleCommands.conf = new ConfigCmd();
+		ModuleChat.conf = new ConfigChat();
+		ForgeEssentials.config = new CoreConfig();
+		ModulePlayerLogger.config = new ConfigPlayerLogger();
+		ModuleWorldBorder.config = new ConfigWorldBorder();
+		ModuleWorldControl.doConfig();
+		/*
+		 * TODO: @AbarSyed Can the permissions be reloaded from file after launch? if so, you can add that here.
+		 */
+	}
+	
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Discovering and loading modules...");
