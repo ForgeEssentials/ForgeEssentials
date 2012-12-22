@@ -4,8 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.BackupArea;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator;
+import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator;
+import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class CommandTopManipulate extends WorldControlCommandBase

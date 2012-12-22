@@ -5,8 +5,8 @@ import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldServer;
 
-import com.ForgeEssentials.WorldControl.tickTasks.ITickTask;
 import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 

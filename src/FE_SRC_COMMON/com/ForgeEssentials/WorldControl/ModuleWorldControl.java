@@ -8,6 +8,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
 import com.ForgeEssentials.WorldControl.commands.CommandPos;
 import com.ForgeEssentials.WorldControl.commands.CommandRedo;
 import com.ForgeEssentials.WorldControl.commands.CommandReplace;
@@ -16,11 +17,10 @@ import com.ForgeEssentials.WorldControl.commands.CommandTopManipulate;
 import com.ForgeEssentials.WorldControl.commands.CommandUndo;
 import com.ForgeEssentials.WorldControl.commands.CommandWand;
 import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskHandler;
-import com.ForgeEssentials.WorldControl.tickTasks.TickTaskTopManipulator.Mode;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TickTaskHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
