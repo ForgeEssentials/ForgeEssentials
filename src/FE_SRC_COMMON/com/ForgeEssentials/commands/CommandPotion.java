@@ -17,7 +17,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandPotion extends ForgeEssentialsCommandBase
 {
-	private static final HashMap<String, Integer> names;
+	public static HashMap<String, Integer> names;
     static
     {
         names = new HashMap<String, Integer>();

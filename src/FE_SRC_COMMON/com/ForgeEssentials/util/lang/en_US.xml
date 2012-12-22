@@ -53,6 +53,11 @@
 	<entry key="command.virtualchest.info.console"></entry>
 	<entry key="command.virtualchest.info.player">Open your virtual chest.</entry>
 	
+	<entry key="command.capabilities.syntax.console">[player] [capability] [value|default]</entry>
+	<entry key="command.capabilities.syntax.player">[player] [capability] [value|default]</entry>
+	<entry key="command.capabilities.info.console">Allows you to modify a bunch of interesting stuff related to the player.</entry>
+	<entry key="command.capabilities.info.player">Allows you to modify a bunch of interesting stuff related to the player.</entry>
+	
 	<entry key="command.potion.syntax.console">&lt;player> &lt;effect|id> &lt;duration in sec> [amplifier]</entry>
 	<entry key="command.potion.syntax.player">&lt;player> &lt;effect|id> &lt;duration in sec> [amplifier]</entry>
 	<entry key="command.potion.info.console">Give a player a potion effect.</entry>

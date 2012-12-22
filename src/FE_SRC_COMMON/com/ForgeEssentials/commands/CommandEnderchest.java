@@ -16,6 +16,11 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
+/**
+ * Opens your enderchest.
+ * @author Dries007
+ *
+ */
 public class CommandEnderchest extends ForgeEssentialsCommandBase
 {
 	public static boolean useAlias = true;

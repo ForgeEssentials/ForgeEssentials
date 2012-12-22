@@ -61,6 +61,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandKit());
 		e.registerServerCommand(new CommandEnderchest());
 		e.registerServerCommand(new CommandVirtualchest());
+		e.registerServerCommand(new CommandCapabilities());
 		//op
 		e.registerServerCommand(new CommandServerDo());
 		//fun
