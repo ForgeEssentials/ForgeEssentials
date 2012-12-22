@@ -6,6 +6,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -23,20 +25,21 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length >= 2)
+		if (args.length == 1)
 		{
-			if (args[0].toLowerCase().equals("me"))
+			if (args[0].toLowerCase().equals("me") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+".me")))
 			{
 				sender.setFire(Integer.parseInt(args[1]));
-				sender.sendChatToPlayer(Localization.get(Localization.BURN_SELF));
+				OutputHandler.chatError(sender, Localization.get(Localization.BURN_SELF));
 			} else
 			{
 				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-				if (victim != null)
+				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+"."+args[0])))
 				{
 					victim.setFire(Integer.parseInt(args[1]));
-					sender.sendChatToPlayer(Localization.get(Localization.BURN_PLAYER));
-				} else
+					OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
+				}
+				else
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		} else
@@ -48,7 +51,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length >= 1)
+		if (args.length == 1)
 		{
 			EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			if (victim != null)

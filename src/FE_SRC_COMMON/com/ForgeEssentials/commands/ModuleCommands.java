@@ -61,11 +61,13 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandKit());
 		e.registerServerCommand(new CommandEnderchest());
 		e.registerServerCommand(new CommandVirtualchest());
+		e.registerServerCommand(new CommandCapabilities());
 		//op
 		e.registerServerCommand(new CommandServerDo());
 		//fun
 		e.registerServerCommand(new CommandSmite());
 		e.registerServerCommand(new CommandBurn());
+		e.registerServerCommand(new CommandPotion());
 		//teleport
 		e.registerServerCommand(new CommandHome());
 		e.registerServerCommand(new CommandTpSpawn());
@@ -100,6 +102,7 @@ public class ModuleCommands implements IFEModule
 		event.registerPermissionDefault("ForgeEssentials.commands.repair", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.heal", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.tps", false);
+		event.registerPermissionDefault("ForgeEssentials.commands.potion", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.enderchest", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.virtualchest", false);
 		
