@@ -3,6 +3,7 @@ package com.ForgeEssentials.data;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import com.ForgeEssentials.util.Pair;
 
 public class SQLiteDataDriver extends DataDriver
 {
+	private static String separationString = "__";
 	private String DriverClass = "org.sqlite.JDBC";
 	private Connection dbConnection;
 	private HashMap<Class, Boolean> classTableChecked = new HashMap<Class, Boolean>();
@@ -97,8 +99,12 @@ public class SQLiteDataDriver extends DataDriver
 			Statement s = this.dbConnection.createStatement();
 			ResultSet result = s.executeQuery(this.createSelectStatement(type, uniqueKey));
 			
-			// Should only be one item in this set.
-			reconstructed = this.createTaggedClassFromResult(type, result);
+			// ResultSet initially sits just before first result.
+			if (result.next())
+			{
+				// Should only be one item in this set.
+				reconstructed = this.createTaggedClassFromResult(type, this.resultRowToMap(result));
+			}
 		}
 		catch (SQLException e)
 		{
@@ -118,8 +124,11 @@ public class SQLiteDataDriver extends DataDriver
 			Statement s = this.dbConnection.createStatement();
 			ResultSet result = s.executeQuery(this.createSelectAllStatement(type));
 			
-			// TODO
-			
+			while (result.next())
+			{
+				// Continue reading rows as they exist.
+				values.add(this.createTaggedClassFromResult(type, this.resultRowToMap(result)));
+			}			
 		}
 		catch (SQLException e)
 		{
@@ -149,14 +158,84 @@ public class SQLiteDataDriver extends DataDriver
 		
 		return isSuccess;
 	}
-
-	private TaggedClass createTaggedClassFromResult(Class type, ResultSet result)
+	
+	// Transforms a ResultSet row into a HashMap. Assumes a valid result is currently selected.
+	private HashMap<String, Object> resultRowToMap(ResultSet result)
 	{
-		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+		HashMap<String, Object> map = new HashMap();
 		
-		// TODO
+		try
+		{
+			// Determine column names
+			ResultSetMetaData meta = result.getMetaData();
+			ArrayList<String> names = new ArrayList();
+			
+			// ResultSet columns start at 1. (Crazy, right?)
+			for (int i = 1; i < meta.getColumnCount(); ++i)
+			{
+				names.add(meta.getColumnName(i));
+			}
+			
+			// Pull values into map.
+			for (String name : names)
+			{
+				map.put(name, result.getObject(name));
+			}
+			
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}		
 		
-		return null;
+		return map;
+	}
+
+	private TaggedClass createTaggedClassFromResult(Class type, HashMap<String, Object> result)
+	{
+		TypeTagger rootTagger = DataStorageManager.getTaggerForType(type);
+		TypeTagger taggerCursor;
+		TaggedClass value = new TaggedClass();
+		value.type = type;
+		TaggedClass cursor = null;
+		SavedField tmpField = null;
+		
+		for (Entry<String, Object> entry : result.entrySet())
+		{
+			cursor = value;
+			taggerCursor = rootTagger;
+			
+			String[] fieldHeiarchy = entry.getKey().split(separationString);
+			if (fieldHeiarchy != null)
+			{
+				// Iterate over the list of items in the heiarchy to rebuild the TaggedClass.
+				for (int i = 0; i < fieldHeiarchy.length; ++i)
+				{
+					// Grab the next item
+					tmpField = cursor.TaggedMembers.get(fieldHeiarchy[i]);
+					
+					if (tmpField == null)
+					{
+						// Create a new node for this position.
+						tmpField = cursor.new SavedField();
+						tmpField.name = fieldHeiarchy[i];
+						if (fieldHeiarchy.length > i + 1)
+						{
+							// An object lives here.
+							tmpField.value = cursor = new TaggedClass();
+						}
+						else
+						{
+							// Only one item.
+							Class fieldType = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
+							cursor.addField(cursor.new SavedField());
+						}
+					}
+				}
+			}
+		}
+		
+		return value;
 	}
 	
 	private String createDeleteStatement(Class type, Object uniqueObjectKey)
@@ -367,7 +446,7 @@ public class SQLiteDataDriver extends DataDriver
 			while (iterator.hasNext())
 			{
 				Entry<String, Class> entry = iterator.next();
-				fields.addAll(this.fieldToColumns(fieldName + "_" + entry.getKey(), entry.getValue()));
+				fields.addAll(this.fieldToColumns(fieldName + separationString + entry.getKey(), entry.getValue()));
 			}
 		}
 	
@@ -442,7 +521,7 @@ public class SQLiteDataDriver extends DataDriver
 			
 			for (SavedField f : tc.TaggedMembers.values())
 			{
-				data.addAll(this.fieldToValues(fieldName + "_" + f.name, f.type, f.value));
+				data.addAll(this.fieldToValues(fieldName + separationString + f.name, f.type, f.value));
 			}
 		}
 		else // What the fuck? This will be unpredictable.
@@ -450,5 +529,11 @@ public class SQLiteDataDriver extends DataDriver
 			data.add(new Pair(fieldName, value.toString()));
 		}
 		return data;
+	}
+	
+	private Object valueToField(Class targetType, Object dbValue)
+	{
+		Object value = null;
+		return value;
 	}
 }
