@@ -36,6 +36,27 @@
 	<entry key="command.burn.syntax.player">[me|&lt;player>]</entry>
 	<entry key="command.burn.info.console">Set the specified player on fire</entry>
 	<entry key="command.burn.info.player">Set yourself or the specified player on fire</entry>
+
+	<entry key="command.potion.effectnotfound">That potion effect is not found.</entry>
+	<entry key="command.potion.syntax.console">&lt;player> &lt;effect> &lt;duration> [ampl]</entry>
+	<entry key="command.potion.syntax.player">&lt;player> &lt;effect> &lt;duration> [ampl]</entry>
+	<entry key="command.potion.info.console">Give someone a potion effect.</entry>
+	<entry key="command.potion.info.player">Give someone a potion effect.</entry>
+	
+	<entry key="command.enderchest.syntax.console"></entry>
+	<entry key="command.enderchest.syntax.player"></entry>
+	<entry key="command.enderchest.info.console">Reload ForgeEssentials' configs</entry>
+	<entry key="command.enderchest.info.player">Reload ForgeEssentials' configs</entry>
+	
+	<entry key="command.virtualchest.syntax.console"></entry>
+	<entry key="command.virtualchest.syntax.player"></entry>
+	<entry key="command.virtualchest.info.console"></entry>
+	<entry key="command.virtualchest.info.player">Open your virtual chest.</entry>
+	
+	<entry key="command.potion.syntax.console">&lt;player> &lt;effect|id> &lt;duration in sec> [amplifier]</entry>
+	<entry key="command.potion.syntax.player">&lt;player> &lt;effect|id> &lt;duration in sec> [amplifier]</entry>
+	<entry key="command.potion.info.console">Give a player a potion effect.</entry>
+	<entry key="command.potion.info.player">Give a player a potion effect.</entry>
 	
 	<entry key="command.repair.info.player">Repairs the target's held item</entry>
 	<entry key="command.repair.info.console">Repairs the target's held item</entry>
