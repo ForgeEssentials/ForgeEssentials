@@ -1,4 +1,4 @@
-package com.ForgeEssentials.commands;
+package com.ForgeEssentials.commands.util;
 
 import java.util.EnumSet;
 
