@@ -9,6 +9,7 @@ import com.ForgeEssentials.chat.ConfigChat;
 import com.ForgeEssentials.chat.ModuleChat;
 import com.ForgeEssentials.commands.ConfigCmd;
 import com.ForgeEssentials.commands.ModuleCommands;
+import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.economy.ModuleEconomy;
 import com.ForgeEssentials.permission.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ConfigPlayerLogger;
@@ -38,7 +39,7 @@ public class ModuleLauncher
 	public ModulePlayerLogger	playerLogger;
 	public ModuleEconomy		economy;
 	public ModuleChat			chat;
-	public ModuleBannedItems	bannedItems;
+	
 
 	public static boolean		chatEnabled		= true;
 	public static boolean		permsEnabled	= true;
@@ -81,7 +82,7 @@ public class ModuleLauncher
 			playerLogger = new ModulePlayerLogger();
 			economy = new ModuleEconomy();
 			chat = new ModuleChat();
-			bannedItems = new ModuleBannedItems();
+			
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -243,7 +244,7 @@ public class ModuleLauncher
 				permission.postLoad(e);
 
 			// Banned Items module always available.
-			bannedItems.postLoad(e);
+			
 		}
 		catch (NullPointerException e7)
 		{

@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core;
+package com.ForgeEssentials.core.misc;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ForgeEssentials.core.CoreConfig;
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Loader;

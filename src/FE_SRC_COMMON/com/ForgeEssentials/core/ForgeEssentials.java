@@ -10,6 +10,8 @@ import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
+import com.ForgeEssentials.core.misc.BannedItems;
+import com.ForgeEssentials.core.misc.ModListFile;
 import com.ForgeEssentials.core.network.HandlerServer;
 import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
@@ -73,6 +75,7 @@ public class ForgeEssentials
 	public static final File FEDIR = new File(fedirloc);
 	
 	public static DataStorageManager dataManager;
+	public BannedItems	bannedItems;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -84,6 +87,7 @@ public class ForgeEssentials
 			Version.checkVersion();
 		}
 
+		bannedItems = new BannedItems();
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
 		
@@ -123,6 +127,7 @@ public class ForgeEssentials
 	public void postLoad(FMLPostInitializationEvent e)
 	{
 		mdlaunch.postLoad(e);
+		bannedItems.postLoad(e);
 	}
 	
 	@ServerStarting
