@@ -65,7 +65,6 @@ public class CoreConfig
 		prop = config.get("Modules", "Chat_Enabled", true);
 		prop.comment = "Enabling this will enable the chatformatter!";
 		ModuleLauncher.chatEnabled = prop.getBoolean(true);
-		
 	}
 
 	private void loadCore()

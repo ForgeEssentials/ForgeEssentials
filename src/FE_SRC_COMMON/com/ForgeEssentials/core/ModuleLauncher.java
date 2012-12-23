@@ -38,6 +38,7 @@ public class ModuleLauncher
 	public ModulePlayerLogger	playerLogger;
 	public ModuleEconomy		economy;
 	public ModuleChat			chat;
+	public ModuleBannedItems	bannedItems;
 
 	public static boolean		chatEnabled		= true;
 	public static boolean		permsEnabled	= true;
@@ -80,6 +81,7 @@ public class ModuleLauncher
 			playerLogger = new ModulePlayerLogger();
 			economy = new ModuleEconomy();
 			chat = new ModuleChat();
+			bannedItems = new ModuleBannedItems();
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -147,7 +149,7 @@ public class ModuleLauncher
 
 			if (chatEnabled)
 				chat.load(e);
-		}
+			}
 		catch (NullPointerException e3)
 		{
 
@@ -239,6 +241,9 @@ public class ModuleLauncher
 		{
 			if (permsEnabled)
 				permission.postLoad(e);
+
+			// Banned Items module always available.
+			bannedItems.postLoad(e);
 		}
 		catch (NullPointerException e7)
 		{
