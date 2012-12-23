@@ -20,12 +20,13 @@ public class ConfigCmd {
 	{
 		config = new Configuration(cmdconfig, true);
 		
-		CommandMotd.motd = config.get(config.CATEGORY_GENERAL, "motd", "Welcome to a server running ForgeEssentials", "Specify the message that greets players when they log in to your server.").value;
-		CommandRules.rulesFile = new File(cmddir, config.get(config.CATEGORY_GENERAL, "RulesFile", "rules.txt", "Specify the file where the rules will read from and written to. This path is relative to this folder.").value);
-		CommandEnderchest.useAlias = config.get(config.CATEGORY_GENERAL, "useEnderChestAlias", true, "Use the alisa '/echest' for the command '/enderchest'.").getBoolean(true);
-		CommandVirtualchest.useAlias = config.get(config.CATEGORY_GENERAL, "useVirtualChestAlias", true, "Use the alisa '/vchest' for the command '/virtualchest'.").getBoolean(true);
-		CommandVirtualchest.size = config.get(config.CATEGORY_GENERAL, "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").getInt(6) * 9;
-		CommandVirtualchest.name = config.get(config.CATEGORY_GENERAL, "VirtualChestName", "Vault 13", "Don't use special stuff....").value;
+		config.addCustomCategoryComment("general", "General Commands configuration.");
+		CommandMotd.motd = config.get("general", "motd", "Welcome to a server running ForgeEssentials", "Specify the message that greets players when they log in to your server.").value;
+		CommandRules.rulesFile = new File(cmddir, config.get("general", "RulesFile", "rules.txt", "Specify the file where the rules will read from and written to. This path is relative to this folder.").value);
+		CommandEnderchest.useAlias = config.get("general", "useEnderChestAlias", true, "Use the alisa '/echest' for the command '/enderchest'.").getBoolean(true);
+		CommandVirtualchest.useAlias = config.get("general", "useVirtualChestAlias", true, "Use the alias '/vchest' for the command '/virtualchest'.").getBoolean(true);
+		CommandVirtualchest.size = config.get("general", "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").getInt(6) * 9;
+		CommandVirtualchest.name = config.get("general", "VirtualChestName", "Vault 13", "Don't use special stuff....").value;
 		
 		config.addCustomCategoryComment("Backups", "Configure the backup system.");
 		CommandBackup.backupName = config.get("Backups", "name", "%world-%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world").value;
