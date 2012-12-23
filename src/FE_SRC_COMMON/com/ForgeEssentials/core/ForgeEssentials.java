@@ -119,9 +119,7 @@ public class ForgeEssentials
 		mdlaunch.load(e);
 		localization.load();
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
-		
-		
-	}
+		}
 
 	@PostInit
 	public void postLoad(FMLPostInitializationEvent e)

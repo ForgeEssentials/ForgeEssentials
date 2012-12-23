@@ -1,4 +1,6 @@
-package com.ForgeEssentials.coremod;
+package com.ForgeEssentials.coremod.libget;
+
+import com.ForgeEssentials.coremod.Data;
 
 import cpw.mods.fml.relauncher.ILibrarySet;
 
