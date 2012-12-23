@@ -57,10 +57,10 @@ public class ConfigWorldBorder
 		ModuleWorldBorder.logToConsole = config.get(category, "LogToConsole", true, "Enable logging to the server console & the log file").getBoolean(true);
 		Property prop = config.get(category, "overGenerate", 345);
 			prop.comment = "The amount of blocks that will be generated outside the radius of the border. This is important!" +
-					"/nIf you set this high, you will need exponentially more time while generating, but you won't get extra land if a player does pass the border." +
-					"/nIf you use something like Dynmap you should put this number higher, if the border is not there for aesthetic purposes, then you don't need that." +
-					"/nThe default value (345) is calcultated like this: (20 chuncks for vieuw distance * 16 blocks per chunck) + 25 as backup" +
-					"/nThis allows players to pass the border 25 blocks before generating new land.";
+					" \nIf you set this high, you will need exponentially more time while generating, but you won't get extra land if a player does pass the border." +
+					" \nIf you use something like Dynmap you should put this number higher, if the border is not there for aesthetic purposes, then you don't need that." +
+					" \nThe default value (345) is calcultated like this: (20 chuncks for vieuw distance * 16 blocks per chunck) + 25 as backup" +
+					" \nThis allows players to pass the border 25 blocks before generating new land.";
 		ModuleWorldBorder.overGenerate = prop.getInt(345);
 	}
 	

@@ -16,7 +16,6 @@ public class TickTaskFillRound extends TickTaskFill
 {
 	public TickTaskFillRound(boolean canNotSaveBefore, WorldServer world)
 	{
-		super(canNotSaveBefore, world);
 		this.isComplete = false;
 		this.canNotSaveBefore = canNotSaveBefore;
 		this.world = world;

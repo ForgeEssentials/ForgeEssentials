@@ -62,6 +62,12 @@ public class ConfigPlayer
 			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Bob_A_Red_Dino", SUFFIX, "").value;
 			tempPlayer.addGroupAll(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Bob_A_Red_Dino", GROUP, new String[] {PermissionsAPI.GROUP_ZONE_ADMINS}).valueList);
 			PlayerManager.putPlayerData(tempPlayer);
+			
+			tempPlayer = new PlayerPermData("Dries007");
+			tempPlayer.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Dries007", PREFIX, FEChatFormatCodes.RED + "[Dev]" + FEChatFormatCodes.WHITE).value;
+			tempPlayer.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Dries007", SUFFIX, "").value;
+			tempPlayer.addGroupAll(config.get(ZoneManager.GLOBAL.getZoneID() + "." + "Dries007", GROUP, new String[] {PermissionsAPI.GROUP_ZONE_ADMINS}).valueList);
+			PlayerManager.putPlayerData(tempPlayer);
 		}
 
 		forceLoadConfig();

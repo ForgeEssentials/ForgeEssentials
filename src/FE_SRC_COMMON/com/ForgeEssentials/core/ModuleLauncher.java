@@ -15,6 +15,8 @@ import com.ForgeEssentials.permission.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ConfigPlayerLogger;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.property.ModuleProperty;
+import com.ForgeEssentials.protection.ConfigProtection;
+import com.ForgeEssentials.protection.ModuleProtection;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -39,6 +41,7 @@ public class ModuleLauncher
 	public ModulePlayerLogger	playerLogger;
 	public ModuleEconomy		economy;
 	public ModuleChat			chat;
+	public ModuleProtection		protection;
 	
 
 	public static boolean		chatEnabled		= true;
@@ -49,6 +52,7 @@ public class ModuleLauncher
 	public static boolean		economyEnabled	= true;
 	public static boolean		borderEnabled	= false;
 	public static boolean		loggerEnabled	= false;
+	public static boolean		protectionEnabled= true;
 
 	// note to self: if possible, make this classload.
 
@@ -63,6 +67,7 @@ public class ModuleLauncher
 		ModulePlayerLogger.config = new ConfigPlayerLogger();
 		ModuleWorldBorder.config = new ConfigWorldBorder();
 		ModuleWorldControl.doConfig();
+		ModuleProtection.config = new ConfigProtection();
 		/*
 		 * TODO: @AbarSyed Can the permissions be reloaded from file after launch? if so, you can add that here.
 		 */
@@ -82,6 +87,7 @@ public class ModuleLauncher
 			playerLogger = new ModulePlayerLogger();
 			economy = new ModuleEconomy();
 			chat = new ModuleChat();
+			protection = new ModuleProtection();
 			
 		}
 		catch (NoClassDefFoundError e1)
@@ -114,6 +120,9 @@ public class ModuleLauncher
 
 			if (chatEnabled)
 				chat.preLoad(e);
+			
+			if (protectionEnabled)
+				protection.preLoad(e);
 		}
 		catch (NullPointerException e2)
 		{
@@ -150,6 +159,9 @@ public class ModuleLauncher
 
 			if (chatEnabled)
 				chat.load(e);
+			
+			if (protectionEnabled)
+				protection.load(e);
 			}
 		catch (NullPointerException e3)
 		{
@@ -185,6 +197,9 @@ public class ModuleLauncher
 
 			if (chatEnabled)
 				chat.serverStarting(e);
+			
+			if (protectionEnabled)
+				protection.serverStarting(e);
 		}
 		catch (NullPointerException e4)
 		{
@@ -216,6 +231,9 @@ public class ModuleLauncher
 
 			if (chatEnabled)
 				chat.serverStarted(e);
+			
+			if (protectionEnabled)
+				protection.serverStarted(e);
 		}
 		catch (NullPointerException e5)
 		{
@@ -229,6 +247,9 @@ public class ModuleLauncher
 		{
 			if (loggerEnabled)
 				playerLogger.serverStopping(e);
+			
+			if (protectionEnabled)
+				protection.serverStopping(e);
 		}
 		catch (NullPointerException e6)
 		{
@@ -242,6 +263,9 @@ public class ModuleLauncher
 		{
 			if (permsEnabled)
 				permission.postLoad(e);
+			
+			if (protectionEnabled)
+				protection.postLoad(e);
 
 			// Banned Items module always available.
 			
