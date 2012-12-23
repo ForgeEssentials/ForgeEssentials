@@ -5,8 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.chat.ConfigChat;
 import com.ForgeEssentials.chat.ModuleChat;
-import com.ForgeEssentials.commands.ConfigCmd;
 import com.ForgeEssentials.commands.ModuleCommands;
+import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.core.CoreConfig;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.ModuleLauncher;

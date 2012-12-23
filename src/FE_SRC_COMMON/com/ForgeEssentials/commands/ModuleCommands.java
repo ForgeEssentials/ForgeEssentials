@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.IFEModule;

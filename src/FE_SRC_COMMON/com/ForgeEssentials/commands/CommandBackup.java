@@ -28,7 +28,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	static String			source;
 	static String			output;
 	static List<String>		fileList;
-	static String			backupdir;
+	public static String			backupdir;
 	public static String	backupName;
 
 	@Override
