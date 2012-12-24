@@ -3,8 +3,8 @@ package com.ForgeEssentials.WorldControl.commands;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator;
+import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 

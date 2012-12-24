@@ -5,13 +5,13 @@ import java.util.Stack;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.WorldControl.BackupArea;
 import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.data.TaggedClass;
+import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;

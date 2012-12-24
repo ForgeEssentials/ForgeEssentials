@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Queue;
 
+import com.ForgeEssentials.util.BackupArea;
+
 public class BackupList implements Queue<BackupArea>
 {
 

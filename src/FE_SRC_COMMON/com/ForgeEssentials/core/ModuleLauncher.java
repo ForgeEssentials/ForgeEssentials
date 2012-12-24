@@ -123,10 +123,9 @@ public class ModuleLauncher
 			if (protectionEnabled)
 				protection.preLoad(e);
 		}
-		catch (NullPointerException e2)
+		catch (NoClassDefFoundError e2)
 		{
-			OutputHandler.felog.log(Level.SEVERE, "A Module has errored!!", e2);
-			throw new RuntimeException("ForgeEssentials ModuleLoading error");
+			
 		}
 	}
 
@@ -162,7 +161,7 @@ public class ModuleLauncher
 			if (protectionEnabled)
 				protection.load(e);
 			}
-		catch (NullPointerException e3)
+		catch (NoClassDefFoundError e3)
 		{
 
 		}
@@ -200,7 +199,7 @@ public class ModuleLauncher
 			if (protectionEnabled)
 				protection.serverStarting(e);
 		}
-		catch (NullPointerException e4)
+		catch (NoClassDefFoundError e4)
 		{
 
 		}
@@ -234,7 +233,7 @@ public class ModuleLauncher
 			if (protectionEnabled)
 				protection.serverStarted(e);
 		}
-		catch (NullPointerException e5)
+		catch (NoClassDefFoundError e5)
 		{
 
 		}
@@ -250,7 +249,7 @@ public class ModuleLauncher
 			if (protectionEnabled)
 				protection.serverStopping(e);
 		}
-		catch (NullPointerException e6)
+		catch (NoClassDefFoundError e6)
 		{
 
 		}
@@ -265,10 +264,8 @@ public class ModuleLauncher
 			
 			if (protectionEnabled)
 				protection.postLoad(e);
-
-			
-		}
-		catch (NullPointerException e7)
+}
+		catch (NoClassDefFoundError e7)
 		{
 
 		}

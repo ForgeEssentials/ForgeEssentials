@@ -1,4 +1,4 @@
-package com.ForgeEssentials.WorldControl;
+package com.ForgeEssentials.util;
 
 //Depreciated
 import java.io.Serializable;
