@@ -32,8 +32,7 @@ public class ModuleProtection implements IFEModule
 	
 	public ModuleProtection()
 	{
-		if (!ModuleLauncher.borderEnabled)
-			return;
+		
 		OutputHandler.SOP("Protection module is enabled. Loading...");
 		config = new ConfigProtection();
 		MinecraftForge.EVENT_BUS.register(this);

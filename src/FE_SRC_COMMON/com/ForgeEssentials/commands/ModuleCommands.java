@@ -27,8 +27,7 @@ public class ModuleCommands implements IFEModule
 
 	public ModuleCommands()
 	{
-		if (!ModuleLauncher.cmdEnabled)
-			return;
+		
 	}
 
 	public void preLoad(FMLPreInitializationEvent e)

@@ -50,8 +50,6 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	
 	public ModuleWorldBorder()
 	{
-		if (!ModuleLauncher.borderEnabled)
-			return;
 		WBenabled = true;
 		OutputHandler.SOP("WorldBorder module is enabled. Loading...");
 		config = new ConfigWorldBorder();

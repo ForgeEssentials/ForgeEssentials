@@ -19,8 +19,7 @@ public class ModuleChat implements IFEModule
 	public static ConfigChat conf;
 
 	public ModuleChat() {
-		if (!ModuleLauncher.chatEnabled)
-			return;
+		
 		
 		conf = new ConfigChat();
 

@@ -26,7 +26,7 @@ public class MySQLConnector
 				OutputHandler.felog.severe("Could not find MySQL JDBC Driver. PlayerLogger module disabled.");
 				OutputHandler.SOP("An error was caught loading the MySQL database. Look in ForgeModLoader-server-0.log for more details.");
 				ModulePlayerLogger.ragequit();
-				ModuleLauncher.loggerEnabled = false;
+				
 				return;
 			}
 			DBcon = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
@@ -40,7 +40,7 @@ public class MySQLConnector
 			OutputHandler.felog.severe("Ensure the server is online and your login info has been properly configured.");
 			OutputHandler.felog.severe("This can be configured in playerlogger.cfg in your ForgeEssentials folder.");
 			ModulePlayerLogger.ragequit();
-			ModuleLauncher.loggerEnabled = false;
+			
 		}
 	}
 	

@@ -55,7 +55,7 @@ public class ModulePlayerLogger implements IFEModule
 	public void serverStarting(FMLServerStartingEvent e) 
 	{
 		MySQLConnector connector = new MySQLConnector();
-		if(!ModuleLauncher.loggerEnabled) return;
+		
 		connector.makeTable();
 		connector.close();
 		

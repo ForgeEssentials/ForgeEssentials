@@ -42,17 +42,6 @@ public class ModuleLauncher
 	public ModuleChat			chat;
 	public ModuleProtection		protection;
 	
-
-	public static boolean		chatEnabled		= true;
-	public static boolean		permsEnabled	= true;
-	public static boolean		cmdEnabled		= true;
-	public static boolean		wcEnabled		= true;
-	public static boolean		propEnabled		= true;
-	public static boolean		economyEnabled	= true;
-	public static boolean		borderEnabled	= false;
-	public static boolean		loggerEnabled	= false;
-	public static boolean		protectionEnabled= true;
-
 	// note to self: if possible, make this classload.
 
 	/*
@@ -96,36 +85,19 @@ public class ModuleLauncher
 
 		try
 		{
-			if (wcEnabled)
-				worldcontrol.preLoad(e);
-
-			if (cmdEnabled)
-				commands.preLoad(e);
-
-			if (permsEnabled)
-				permission.preLoad(e);
-
-			if (propEnabled)
-				property.preLoad(e);
-
-			if (borderEnabled)
-				worldborder.preLoad(e);
-
-			if (loggerEnabled)
-				playerLogger.preLoad(e);
-
-			if (economyEnabled)
-				economy.preLoad(e);
-
-			if (chatEnabled)
-				chat.preLoad(e);
-			
-			if (protectionEnabled)
-				protection.preLoad(e);
+			worldcontrol.preLoad(e);
+			commands.preLoad(e);
+			permission.preLoad(e);
+			property.preLoad(e);
+			worldborder.preLoad(e);
+			playerLogger.preLoad(e);
+			economy.preLoad(e);
+			chat.preLoad(e);
+			protection.preLoad(e);
 		}
 		catch (NoClassDefFoundError e2)
 		{
-			
+			OutputHandler.SOP("One or more modules could not be found.");
 		}
 	}
 
@@ -134,32 +106,15 @@ public class ModuleLauncher
 
 		try
 		{
-			if (wcEnabled)
-				worldcontrol.load(e);
-
-			if (cmdEnabled)
-				commands.load(e);
-
-			if (permsEnabled)
-				permission.load(e);
-
-			if (propEnabled)
-				property.load(e);
-
-			if (borderEnabled)
-				worldborder.load(e);
-
-			if (loggerEnabled)
-				playerLogger.load(e);
-
-			if (economyEnabled)
-				economy.load(e);
-
-			if (chatEnabled)
-				chat.load(e);
-			
-			if (protectionEnabled)
-				protection.load(e);
+			worldcontrol.load(e);
+			commands.load(e);
+			permission.load(e);
+			property.load(e);
+			worldborder.load(e);
+			playerLogger.load(e);
+			economy.load(e);
+			chat.load(e);
+			protection.load(e);
 			}
 		catch (NoClassDefFoundError e3)
 		{
@@ -172,32 +127,15 @@ public class ModuleLauncher
 
 		try
 		{
-			if (wcEnabled)
-				worldcontrol.serverStarting(e);
-
-			if (cmdEnabled)
-				commands.serverStarting(e);
-
-			if (permsEnabled)
-				permission.serverStarting(e);
-
-			if (propEnabled)
-				property.serverStarting(e);
-
-			if (borderEnabled)
-				worldborder.serverStarting(e);
-
-			if (loggerEnabled)
-				playerLogger.serverStarting(e);
-
-			if (economyEnabled)
-				economy.serverStarting(e);
-
-			if (chatEnabled)
-				chat.serverStarting(e);
-			
-			if (protectionEnabled)
-				protection.serverStarting(e);
+			worldcontrol.serverStarting(e);
+			commands.serverStarting(e);
+			permission.serverStarting(e);
+			property.serverStarting(e);
+			worldborder.serverStarting(e);
+			playerLogger.serverStarting(e);
+			economy.serverStarting(e);
+			chat.serverStarting(e);
+			protection.serverStarting(e);
 		}
 		catch (NoClassDefFoundError e4)
 		{
@@ -209,29 +147,14 @@ public class ModuleLauncher
 	{
 		try
 		{
-			if (wcEnabled)
-				worldcontrol.serverStarted(e);
-
-			if (cmdEnabled)
-				commands.serverStarted(e);
-
-			if (permsEnabled)
-				permission.serverStarted(e);
-
-			if (propEnabled)
-				property.serverStarted(e);
-
-			if (borderEnabled)
-				worldborder.serverStarted(e);
-
-			if (loggerEnabled)
-				playerLogger.serverStarted(e);
-
-			if (chatEnabled)
-				chat.serverStarted(e);
-			
-			if (protectionEnabled)
-				protection.serverStarted(e);
+			worldcontrol.serverStarted(e);
+			commands.serverStarted(e);
+			permission.serverStarted(e);
+			property.serverStarted(e);
+			worldborder.serverStarted(e);
+			playerLogger.serverStarted(e);
+			chat.serverStarted(e);
+			protection.serverStarted(e);
 		}
 		catch (NoClassDefFoundError e5)
 		{
@@ -243,11 +166,8 @@ public class ModuleLauncher
 	{
 		try
 		{
-			if (loggerEnabled)
-				playerLogger.serverStopping(e);
-			
-			if (protectionEnabled)
-				protection.serverStopping(e);
+			playerLogger.serverStopping(e);
+			protection.serverStopping(e);
 		}
 		catch (NoClassDefFoundError e6)
 		{
@@ -259,11 +179,8 @@ public class ModuleLauncher
 	{
 		try
 		{
-			if (permsEnabled)
-				permission.postLoad(e);
-			
-			if (protectionEnabled)
-				protection.postLoad(e);
+			permission.postLoad(e);
+			protection.postLoad(e);
 }
 		catch (NoClassDefFoundError e7)
 		{
