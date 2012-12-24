@@ -266,7 +266,6 @@ public class ModuleLauncher
 			if (protectionEnabled)
 				protection.postLoad(e);
 
-			// Banned Items module always available.
 			
 		}
 		catch (NullPointerException e7)
