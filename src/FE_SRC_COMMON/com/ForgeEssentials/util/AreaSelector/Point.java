@@ -2,6 +2,9 @@ package com.ForgeEssentials.util.AreaSelector;
 
 import java.io.Serializable;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
@@ -25,6 +28,13 @@ public class Point implements Serializable, Comparable<Point>
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	public Point(EntityPlayer player) 
+	{
+		this.x = (int)player.posX;
+		this.y = (int)player.posY;
+		this.z = (int)player.posZ;
 	}
 
 	public int getX()

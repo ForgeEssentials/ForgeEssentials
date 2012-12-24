@@ -62,7 +62,7 @@ public class PlayerPermData
 				if (!groupList.contains(group))
 					groupList.add(group);
 	}
-
+	
 	public ArrayList<String> getGroupList()
 	{
 		return groupList;

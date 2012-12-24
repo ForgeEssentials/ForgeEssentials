@@ -29,6 +29,7 @@ public class ConfigChat {
 		prop.comment += "\nColors:%black,%darkblue,%darkgreen,%darkaqua,%darkred,%purple,%gold,%grey,%darkgrey,%indigo,\n       %green,%aqua,%red,%pink,%yellow,%white";
 		prop.comment += "\nSpecial formatcodes: %random,%bold,%strike,%underline,%italics";
 		prop.comment += "\nTo reset all formatcodes, you can use %reset";
+		prop.comment += "\nUse %rank to display a users rank, %zone to spcify there current zone";
 		
 		chatFormat = prop.value;
 		

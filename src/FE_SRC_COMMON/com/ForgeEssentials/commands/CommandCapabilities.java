@@ -32,8 +32,6 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         names.add("allowflying");
         names.add("iscreativemode");
         names.add("allowedit");
-        names.add("flyspeed");
-        names.add("walkSpeed");
     }
     
 	@Override
@@ -86,10 +84,6 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 			sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
 			sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
 			sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
-			float flySpeed = ReflectionHelper.getPrivateValue(PlayerCapabilities.class, target.capabilities, "flySpeed");
-			sender.sendChatToPlayer(names.get(5) + " = " + flySpeed);
-			float walkSpeed = ReflectionHelper.getPrivateValue(PlayerCapabilities.class, target.capabilities, "walkSpeed");
-			sender.sendChatToPlayer(names.get(6) + " = " + walkSpeed);
 		}
 		else if(args.length == 2)
 		{
@@ -113,16 +107,6 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 			else if(args[1].equalsIgnoreCase(names.get(4)))
 			{
 				sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
-			}
-			else if(args[1].equalsIgnoreCase(names.get(5)))
-			{
-				float flySpeed = ReflectionHelper.getPrivateValue(PlayerCapabilities.class, target.capabilities, "flySpeed");
-				sender.sendChatToPlayer(names.get(5) + " = " + flySpeed);
-			}
-			else if(args[1].equalsIgnoreCase(names.get(6)))
-			{
-				float walkSpeed = ReflectionHelper.getPrivateValue(PlayerCapabilities.class, target.capabilities, "walkSpeed");
-				sender.sendChatToPlayer(names.get(6) + " = " + walkSpeed);
 			}
 		}
 		else if(args.length == 3)
@@ -157,24 +141,6 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 				boolean bln = Boolean.parseBoolean(args[2]);
 				target.capabilities.allowEdit = bln;
 				sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
-			}
-			else if(args[1].equalsIgnoreCase(names.get(5)))
-			{
-				float value = 0.05F;
-				if(!args[2].equalsIgnoreCase("default")) value = Float.parseFloat(args[2]);
-				ReflectionHelper.setPrivateValue(PlayerCapabilities.class, target.capabilities, value, "flySpeed");
-				
-				float flySpeed = ReflectionHelper.getPrivateValue(PlayerCapabilities.class, target.capabilities, "flySpeed");
-				sender.sendChatToPlayer(names.get(5) + " = " + flySpeed);
-			}
-			else if(args[1].equalsIgnoreCase(names.get(6)))
-			{
-				float value = 0.1F;
-				if(!args[2].equalsIgnoreCase("default")) value = Float.parseFloat(args[2]);
-				ReflectionHelper.setPrivateValue(PlayerCapabilities.class, target.capabilities, value, "walkSpeed");
-				
-				float walkSpeed = ReflectionHelper.getPrivateValue(PlayerCapabilities.class, target.capabilities, "walkSpeed");
-				sender.sendChatToPlayer(names.get(6) + " = " + walkSpeed);
 			}
 			
 			//important!
@@ -213,7 +179,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     	}
     	else if (args.length == 3)
     	{
-    		return getListOfStringsMatchingLastWord(args, "default");
+    		return getListOfStringsMatchingLastWord(args, "true", "false");
     	}
     	else
     	{
