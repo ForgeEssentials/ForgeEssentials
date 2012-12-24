@@ -1,9 +1,6 @@
 package com.ForgeEssentials.commands;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;

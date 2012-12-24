@@ -1,16 +1,9 @@
 package com.ForgeEssentials.protection;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
@@ -18,27 +11,16 @@ import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.permission.query.PermQuery;
-import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.permission.query.PermQueryPlayerZone;
-import com.ForgeEssentials.util.DataStorage;
-import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.vector.Vector2;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.IScheduledTickHandler;
-import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 /**
  * @author Dries007
@@ -52,7 +34,7 @@ public class ModuleProtection implements IFEModule
 	{
 		if (!ModuleLauncher.borderEnabled)
 			return;
-		OutputHandler.SOP("ModuleProtection module is enabled. Loading...");
+		OutputHandler.SOP("Protection module is enabled. Loading...");
 		config = new ConfigProtection();
 		MinecraftForge.EVENT_BUS.register(this);
 	}

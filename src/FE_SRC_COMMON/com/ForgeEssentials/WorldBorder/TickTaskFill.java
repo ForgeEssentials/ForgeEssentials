@@ -1,8 +1,6 @@
 package com.ForgeEssentials.WorldBorder;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldServer;
 
 import com.ForgeEssentials.util.FEChatFormatCodes;

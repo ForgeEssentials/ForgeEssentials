@@ -3,7 +3,6 @@ package com.ForgeEssentials.commands.util;
 import java.io.File;
 
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.commands.CommandBackup;
 import com.ForgeEssentials.commands.CommandEnderchest;

@@ -9,7 +9,6 @@ import com.ForgeEssentials.chat.ConfigChat;
 import com.ForgeEssentials.chat.ModuleChat;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.commands.util.ConfigCmd;
-import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.economy.ModuleEconomy;
 import com.ForgeEssentials.permission.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ConfigPlayerLogger;

@@ -3,17 +3,8 @@ package com.ForgeEssentials.core.commands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.chat.ConfigChat;
-import com.ForgeEssentials.chat.ModuleChat;
-import com.ForgeEssentials.commands.ModuleCommands;
-import com.ForgeEssentials.commands.util.ConfigCmd;
-import com.ForgeEssentials.core.CoreConfig;
-import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.ModuleLauncher;
-import com.ForgeEssentials.playerLogger.ConfigPlayerLogger;
-import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.Localization;
 
 public class CommandFEReload extends ForgeEssentialsCommandBase
 {

@@ -7,15 +7,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.InventoryEnderChest;
 import net.minecraft.network.packet.Packet100OpenWindow;
 
 import com.ForgeEssentials.commands.util.VirtualChest;
-import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 /**
  * Opens a configurable virtual chest
