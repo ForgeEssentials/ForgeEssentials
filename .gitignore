@@ -29,5 +29,6 @@
 
 *.bat
 *.sh
+*.db
 CHANGELOG
 modlist.txt
