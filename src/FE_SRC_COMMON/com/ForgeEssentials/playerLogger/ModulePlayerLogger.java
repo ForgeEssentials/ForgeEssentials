@@ -54,20 +54,27 @@ public class ModulePlayerLogger implements IFEModule
 	@Override
 	public void serverStarting(FMLServerStartingEvent e) 
 	{
-		MySQLConnector connector = new MySQLConnector();
-		
-		connector.makeTable();
-		connector.close();
-		
-		eLogger.start();
-		
-		if(DEBUG)
+		try
 		{
-			OutputHandler.debug("Debug mode engaged.");
-			for(int i = 0; i < 10; i++)
+			MySQLConnector connector = new MySQLConnector();
+		
+			connector.makeTable();
+			connector.close();
+		
+			eLogger.start();
+		
+			if(DEBUG)
 			{
-				eLogger.logLoop.buffer.add(new logEntry("Test" + i, LogCatagory.DEBUG, "Disc " + i + ""));
+				OutputHandler.debug("Debug mode engaged.");
+				for(int i = 0; i < 10; i++)
+				{
+					eLogger.logLoop.buffer.add(new logEntry("Test" + i, LogCatagory.DEBUG, "Disc " + i + ""));
+				}
 			}
+		}
+		catch (Exception ex)
+		{
+			OutputHandler.SOP("WARNING! MySQLConnector for playerLogger failed!");
 		}
 	}
 
@@ -80,8 +87,15 @@ public class ModulePlayerLogger implements IFEModule
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e) 
 	{
-		//eLogger.logLoop.makeLogs();
-		eLogger.logLoop.end();
+		try
+		{
+			//eLogger.logLoop.makeLogs();
+			eLogger.logLoop.end();
+		}
+		catch (Exception ex)
+		{
+			OutputHandler.SOP("WARNING! MySQLConnector for playerLogger failed!");
+		}
 	}
 
 	public static void ragequit() 
