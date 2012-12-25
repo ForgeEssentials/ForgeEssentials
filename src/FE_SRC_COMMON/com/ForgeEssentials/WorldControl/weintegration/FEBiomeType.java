@@ -1,7 +1,7 @@
 package com.ForgeEssentials.WorldControl.weintegration;
 
-import java.lang.reflect.Field;
 import java.util.Locale;
+
 import com.sk89q.worldedit.BiomeType;
 
 //May not be compatible with ExtraBiomesXL or Biomes O'Plenty.

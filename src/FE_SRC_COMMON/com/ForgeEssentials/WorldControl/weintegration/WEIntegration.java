@@ -1,145 +1,95 @@
 package com.ForgeEssentials.WorldControl.weintegration;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
 
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.sk89q.worldedit.LocalConfiguration;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.packet.NetHandler;
+import net.minecraft.network.packet.Packet3Chat;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
+
+import com.sk89q.worldedit.LocalEntity;
+import com.sk89q.worldedit.LocalPlayer;
+import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.WorldEdit;
 
-public class WEIntegration {
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Mod.ServerStarting;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.IChatListener;
 
-	public WorldEdit controller;
-	public Constructor<?> worldvector;
-	public Method handleCommand;
-	public Method handleBlockLeftClick;
-	public Method handleBlockRightClick;
-	public Method handleArmSwing;
-	public Method handleRightClick;
-	public ConsoleLocalPlayer localplayer;
-	private ConsoleServerInterface serverinterface;
-	private LocalConfiguration localconfiguration = new LocalConfig(ForgeEssentials.FEDIR);
+public class WEIntegration implements IChatListener {
+	
+	public static WorldEdit instance;
+	public static MinecraftServer server;
 
-	public WEIntegration() throws Throwable {
-		this.localconfiguration.load();
-		this.serverinterface = new ConsoleServerInterface(Helper.getOwner().getWorld());
+	protected WorldEdit we;
+	private LocalConfig config;
+	protected FEServerInterface serverInterface;
 
-		Class<?> e;
-		try {
-			e = Class.forName("com.sk89q.worldedit.WorldEdit");
-			this.controller = (WorldEdit)e.getConstructors()[0].newInstance(new Object[]{this.getServerinterface(), this.getLocalconfiguration()});
-			Method[] m = e.getMethods();
+	protected List<String> whitelist = new ArrayList<String>();
+	private Map<EntityPlayer, LocalPlayer> players = new WeakHashMap<EntityPlayer, LocalPlayer>();
+	private Map<World, LocalWorld> worlds = new WeakHashMap<World, LocalWorld>();
+	private Map<Entity, LocalEntity> entities = new WeakHashMap<Entity, LocalEntity>();
 
-			for(int i = 0; i < m.length; ++i) {
-				if(m[i].getName().compareTo("handleCommand") == 0) {
-					this.handleCommand = m[i];
-				} else if(m[i].getName().compareTo("handleBlockLeftClick") == 0) {
-					this.handleBlockLeftClick = m[i];
-				} else if(m[i].getName().compareTo("handleBlockRightClick") == 0) {
-					this.handleBlockRightClick = m[i];
-				} else if(m[i].getName().compareTo("handleRightClick") == 0) {
-					this.handleRightClick = m[i];
-				} else if(m[i].getName().compareTo("handleArmSwing") == 0) {
-					this.handleArmSwing = m[i];
-				}
-			}
-		} catch (Exception var7) {
-			var7.printStackTrace();
-			throw new Exception("Couldn't find the WorldEdit method.");
-		}
+	@ServerStarting
+	public void onServerStarting(FMLServerStartingEvent event) {
+		server = event.getServer();
+		
 
 		try {
-			e = Class.forName("com.sk89q.worldedit.WorldVector");
-			Class<?> localworld = Class.forName("com.sk89q.worldedit.LocalWorld");
-			this.worldvector = e.getConstructor(new Class<?>[]{localworld, Integer.TYPE, Integer.TYPE, Integer.TYPE});
-		} catch (Exception var6) {
-			var6.printStackTrace();
-			throw new Exception("Couldn't find the WorldVector method.");
+			we = new com.sk89q.worldedit.WorldEdit(new FEServerInterface(), config);
+		} catch (Throwable e) 
+		{}
+		}
+
+	@Override
+	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message) {
+		if (message.message.startsWith("//")) {
+			we.handleCommand(getPlayer(handler.getPlayer()), message.message.split(" "));
+			return new Packet3Chat("");
+		}
+
+		return message;
+	}
+
+	@Override
+	public Packet3Chat clientChat(NetHandler handler, Packet3Chat message) {
+		return message;
+	}
+
+	protected LocalPlayer getPlayer(EntityPlayer player) {
+		if (players.containsKey(player)) {
+			return players.get(player);
+		} else {
+			LocalPlayer ret = new FELocalPlayer(player);
+			players.put(player, ret);
+			return ret;
 		}
 	}
 
-	// This goes here for the moment..
-	public static void handleMouseButtonDown(Player spcplayer, int blockx, int blocky, int blockz, int side, boolean isLeft) {
-
-		if(Console.PLUGIN_MANAGER == null || !Helper.WORLDEDITLOADED || spc_WorldEdit.WEP == null) {
-			System.out.println("Can't handle click.");
-			return;
-		}
-
-		if(blocky >= 0) {
-			try {
-				ConsoleLocalPlayer player = new ConsoleLocalPlayer(spc_WorldEdit.WEP.getServerinterface(), spcplayer);
-				player.hide = true;
-				if(!isLeft) {
-					spc_WorldEdit.WEP.getHandleRightClick().invoke(spc_WorldEdit.WEP.getController(), new Object[]{player});
-					if((blockx != player.blockrightx || blocky != player.blockrighty || blockz != player.blockrightz) && blocky > -1) {
-						Object e = spc_WorldEdit.WEP.getWorldvector().newInstance(new Object[]{player.getWorld(), Integer.valueOf(blockx), Integer.valueOf(blocky), Integer.valueOf(blockz)});
-						spc_WorldEdit.WEP.getHandleBlockRightClick().invoke(spc_WorldEdit.WEP.getController(), new Object[]{player, e});
-						player.blockrightx = blockx;
-						player.blockrighty = blocky;
-						player.blockrightz = blockz;
-					}
-				} else {
-					spc_WorldEdit.WEP.getHandleArmSwing().invoke(spc_WorldEdit.WEP.getController(), new Object[]{player});
-					if((blockx != player.blockleftx || blocky != player.blocklefty || blockz != player.blockleftz) && blocky > -1) {
-						Object e = spc_WorldEdit.WEP.getWorldvector().newInstance(new Object[]{player.getWorld(), Integer.valueOf(blockx), Integer.valueOf(blocky), Integer.valueOf(blockz)});
-						spc_WorldEdit.WEP.getHandleBlockLeftClick().invoke(spc_WorldEdit.WEP.getController(), new Object[]{player, e});
-						player.blockleftx = blockx;
-						player.blocklefty = blocky;
-						player.blockleftz = blockz;
-					}
-				}
-			} catch (Throwable var3) {
-				var3.printStackTrace();
-			}
-
+	protected LocalWorld getWorld(World world) {
+		if (worlds.containsKey(world)) {
+			return worlds.get(world);
+		} else {
+			LocalWorld ret = new FELocalWorld(world);
+			worlds.put(world, ret);
+			return ret;
 		}
 	}
 
-	public Object getController() {
-		return this.controller;
+	protected LocalEntity getEntity(Entity entity) {
+		if (entities.containsKey(entity)) {
+			return entities.get(entity);
+		} else {
+			LocalEntity ret = new FELocalEntity(entity);
+			entities.put(entity, ret);
+			return ret;
+		}
 	}
-
-	public Constructor<?> getWorldvector() {
-		return this.worldvector;
-	}
-
-	public Method getHandleCommand() {
-		return this.handleCommand;
-	}
-
-	public Method getHandleBlockLeftClick() {
-		return this.handleBlockLeftClick;
-	}
-
-	public Method getHandleBlockRightClick() {
-		return this.handleBlockRightClick;
-	}
-
-	public Method getHandleArmSwing() {
-		return this.handleArmSwing;
-	}
-
-	public Method getHandleRightClick() {
-		return this.handleRightClick;
-	}
-
-	public void setPlayer(Player player) {
-		this.localplayer = new ConsoleLocalPlayer(this.getServerinterface(), player);
-		this.controller.getSession(this.localplayer).setCUISupport(true);
-		this.controller.getSession(this.localplayer).dispatchCUISetup(this.localplayer);
-	}
-
-	public ConsoleLocalPlayer getPlayer() {
-		return this.localplayer;
-	}
-
-	public ConsoleServerInterface getServerinterface() {
-		return this.serverinterface;
-	}
-
-	public LocalConfiguration getLocalconfiguration() {
-		return this.localconfiguration;
-	}
-
 }
