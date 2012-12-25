@@ -29,6 +29,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
+			// homes aren't saving...
 			WorldPoint home = PlayerInfo.getPlayerInfo(sender).home;
 			if (home == null)
 				OutputHandler.chatError(sender, Localization.get("message.error.nohome") + getSyntaxPlayer(sender));

@@ -21,6 +21,7 @@ import com.ForgeEssentials.data.SQLiteDataDriver;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Version;
 import com.ForgeEssentials.util.AreaSelector.Point;
@@ -80,6 +81,7 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		OutputHandler.SOP("Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
 		config = new CoreConfig();
 
 		if (verCheck)
