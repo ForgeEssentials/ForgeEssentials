@@ -1,6 +1,9 @@
+VERSION="0.1.0.${BUILD_NUMBER}"
+
 echo "Downloading Forge..."
 wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
 unzip minecraftforge-src-*.zip
+rm minecraftforge-src-*.zip
 cd forge
 
 echo "Installing Forge..."
@@ -31,4 +34,5 @@ cp -rf ${WORKSPACE}/A1-zipStuff/* .
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/com/ForgeEssentials/util/lang/* ./com/ForgeEssentials/util/lang/
 rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
-jar cvfm "${WORKSPACE}/${JOB_NAME}.jar" ./META-INF/MANIFEST.MF *
+jar cvfm "${WORKSPACE}/${JOB_NAME}-core-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* ./com/ForgeEssentials/client/core/* logo.png mcmod.info
+zip -r9 "${WORKSPACE}/${JOB_NAME}-modules-${VERSION}.zip" ./com/ForgeEssentials/client/CUI/* ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/commands/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/playerLogger/* ./com/ForgeEssentials/property/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/WorldBorder/* ./com/ForgeEssentials/WorldControl/* 
