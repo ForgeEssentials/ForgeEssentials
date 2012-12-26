@@ -86,6 +86,7 @@ public class ForgeEssentials
 
 		if (verCheck)
 		{
+			try{Version.jenkins = Integer.parseInt(e.getModMetadata().version.split(":")[1]);}catch(Exception ex){}
 			Version.checkVersion();
 		}
 
