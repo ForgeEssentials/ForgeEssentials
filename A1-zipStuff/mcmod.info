@@ -3,7 +3,7 @@
   "modid": "ForgeEssentials",
   "name": "Forge Essentials",
   "description": "WorldEdit, Worldguard, Essentials, and Permissions all in one Forge mod",
-  "version": "0.1.0",
+  "version": "0.1.0 Build: @build@",
   "url": "https://github.com/ForgeEssentials/ForgeEssentialsMain",
   "updateUrl": "",
   "authorList": [
