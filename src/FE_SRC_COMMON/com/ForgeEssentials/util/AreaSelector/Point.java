@@ -154,4 +154,10 @@ public class Point implements Serializable, Comparable<Point>
 	{
 		return "point_"+x+"_"+y+"_"+z;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "[" + x + ";" + y + ";" + z + "]";
+	}
 }

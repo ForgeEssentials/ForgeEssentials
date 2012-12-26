@@ -74,4 +74,10 @@ public class WorldPoint extends Point
 	{
 		return "worldpoint_"+dim+"_"+x+"_"+y+"_"+z;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "[" + dim + ";" + x + ";" + y + ";" + z + "]";
+	}
 }

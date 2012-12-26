@@ -16,6 +16,8 @@ import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.property.ModuleProperty;
 import com.ForgeEssentials.protection.ConfigProtection;
 import com.ForgeEssentials.protection.ModuleProtection;
+import com.ForgeEssentials.snooper.ConfigSnooper;
+import com.ForgeEssentials.snooper.ModuleSnooper;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -41,6 +43,7 @@ public class ModuleLauncher
 	public ModuleEconomy		economy;
 	public ModuleChat			chat;
 	public ModuleProtection		protection;
+	public ModuleSnooper 		snooper;
 	
 	// note to self: if possible, make this classload.
 
@@ -56,6 +59,7 @@ public class ModuleLauncher
 		ModuleWorldBorder.config = new ConfigWorldBorder();
 		ModuleWorldControl.doConfig();
 		ModuleProtection.config = new ConfigProtection();
+		ModuleSnooper.configSnooper = new ConfigSnooper();
 		/*
 		 * TODO: @AbarSyed Can the permissions be reloaded from file after launch? if so, you can add that here.
 		 */
@@ -76,7 +80,7 @@ public class ModuleLauncher
 			economy = new ModuleEconomy();
 			chat = new ModuleChat();
 			protection = new ModuleProtection();
-			
+			snooper = new ModuleSnooper();
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -94,6 +98,7 @@ public class ModuleLauncher
 			economy.preLoad(e);
 			chat.preLoad(e);
 			protection.preLoad(e);
+			snooper.preLoad(e);
 		}
 		catch (NoClassDefFoundError e2)
 		{
@@ -115,7 +120,8 @@ public class ModuleLauncher
 			economy.load(e);
 			chat.load(e);
 			protection.load(e);
-			}
+			snooper.load(e);
+		}
 		catch (NoClassDefFoundError e3)
 		{
 
@@ -136,6 +142,7 @@ public class ModuleLauncher
 			economy.serverStarting(e);
 			chat.serverStarting(e);
 			protection.serverStarting(e);
+			snooper.serverStarting(e);
 		}
 		catch (NoClassDefFoundError e4)
 		{
@@ -155,6 +162,7 @@ public class ModuleLauncher
 			playerLogger.serverStarted(e);
 			chat.serverStarted(e);
 			protection.serverStarted(e);
+			snooper.serverStarted(e);
 		}
 		catch (NoClassDefFoundError e5)
 		{
@@ -168,6 +176,7 @@ public class ModuleLauncher
 		{
 			playerLogger.serverStopping(e);
 			protection.serverStopping(e);
+			snooper.serverStopping(e);
 		}
 		catch (NoClassDefFoundError e6)
 		{
@@ -181,7 +190,8 @@ public class ModuleLauncher
 		{
 			permission.postLoad(e);
 			protection.postLoad(e);
-}
+			snooper.postLoad(e);
+		}
 		catch (NoClassDefFoundError e7)
 		{
 
