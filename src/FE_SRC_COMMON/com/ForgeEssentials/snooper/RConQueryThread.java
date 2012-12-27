@@ -96,7 +96,7 @@ public class RConQueryThread implements Runnable
     /** A list of registered ServerSockets */
     protected List serverSocketList = new ArrayList();
     
-    HashMap<String, String> data = new HashMap();
+    HashMap<String, String> ServerData = new HashMap();
 
     public RConQueryThread(IServer par1IServer)
     {
@@ -141,24 +141,21 @@ public class RConQueryThread implements Runnable
         this.queryClients = new HashMap();
         this.time = (new Date()).getTime();
         
+        HashMap<String, String> ModData = new HashMap();
         List<ModContainer> modlist = Loader.instance().getActiveModList();
-		String mods = "[";
-		for(int i = 0; i < modlist.size() - 1; i++)
+		for(int i = 0; i < modlist.size(); i++)
 		{
-			ModContainer mod = modlist.get(i);
-			mods += mod.getName() + ";" + mod.getDisplayVersion() + ", ";
+			ModData.put(modlist.get(i).getName(), modlist.get(i).getDisplayVersion());
 		}
-		ModContainer mod = modlist.get(modlist.size() - 1);
-		mods += mod.getName() + ";" + mod.getDisplayVersion();
-		mods += "]";
+        ServerData.put("mods", TextFormatter.toJSON(ModData));
         
-    	data.put("gametype", this.server.getGameType().getName());
-    	data.put("version", this.server.getMinecraftVersion());
-    	data.put("mods", mods);
-    	data.put("map", this.worldName);
-    	data.put("maxplayers", "" + this.maxPlayers);
-    	data.put("hostport", "" + this.serverPort);
-    	data.put("hostip", this.queryHostname);
+    	ServerData.put("gametype", this.server.getGameType().getName());
+    	ServerData.put("version", this.server.getMinecraftVersion());
+    	ServerData.put("map", this.worldName);
+    	ServerData.put("maxplayers", "" + this.maxPlayers);
+    	ServerData.put("hostport", "" + this.serverPort);
+    	ServerData.put("hostip", this.queryHostname);
+    	
     }
 
     /**
@@ -246,28 +243,24 @@ public class RConQueryThread implements Runnable
         else
         {
         	//Date that needs updating here
-        	data.put("numplayers", "" + this.server.getCurrentPlayerCount());
-        	data.put("motd", this.server.getServerMOTD());
+        	ServerData.put("numplayers", "" + this.server.getCurrentPlayerCount());
+        	ServerData.put("motd", this.server.getServerMOTD());
         	
         	this.lastQueryResponseTime = var2;
             this.output.reset();
             this.output.writeInt(0);
             this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
             
-            for(Entry<String, String> set : data.entrySet())
-        	{
-            	this.output.writeString(set.getKey() + ":" + set.getValue());
-            	this.output.writeString("#");
-        	}
-            
-            this.output.writeString("players");
+            this.output.writeString(TextFormatter.toJSON(ServerData));
             this.output.writeString("#");
             
+            HashMap<String, String> PlayerData = new HashMap();
             for(String username : this.server.getAllUsernames())
             {
-            	this.output.writeString("#");
-            	this.output.writeString(username + ":" + "[" + getUserData(username) + "]");
+            	PlayerData.put(username, TextFormatter.toJSON(getUserData(username)));
             }
+            
+            this.output.writeString(TextFormatter.toJSON(PlayerData));
             
             return this.output.toByteArray();
         }
@@ -278,18 +271,19 @@ public class RConQueryThread implements Runnable
      * @param username
      * @return All of the date in this format: [key1;value1, key2;value2]
      */
-    public static String getUserData(String username) 
+    public static HashMap<String, String> getUserData(String username) 
 	{
+    	HashMap<String, String> PlayerData = new HashMap();
     	EntityPlayer player = server.getConfigurationManager().getPlayerForUsername(username);
-		String temp = "";
-		/*PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+		String temp = "[";
+		PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
 		if(pi != null)
 		{
-			if(pi.home != null) temp += "home;" + pi.home.toString() + ", ";
-			if(pi.lastDeath != null) temp += "lastdeath;" + pi.lastDeath.toString() + ", ";
-		}*/
-		temp += "wallet;" + Wallet.getWallet(player);
-		return temp;
+			if(pi.home != null) PlayerData.put("home", pi.home.toString());
+			if(pi.lastDeath != null) PlayerData.put("lastDeath", pi.lastDeath.toString());
+		}
+		PlayerData.put("wallet", ""+Wallet.getWallet(player));
+		return PlayerData;
 	}	
 
     /**
