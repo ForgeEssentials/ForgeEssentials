@@ -74,7 +74,6 @@ public class ModuleLauncher
 			worldcontrol = new ModuleWorldControl();
 			commands = new ModuleCommands();
 			permission = new ModulePermissions();
-			property = new ModuleProperty();
 			worldborder = new ModuleWorldBorder();
 			playerLogger = new ModulePlayerLogger();
 			economy = new ModuleEconomy();
@@ -92,7 +91,6 @@ public class ModuleLauncher
 			worldcontrol.preLoad(e);
 			commands.preLoad(e);
 			permission.preLoad(e);
-			property.preLoad(e);
 			worldborder.preLoad(e);
 			playerLogger.preLoad(e);
 			economy.preLoad(e);
@@ -114,7 +112,6 @@ public class ModuleLauncher
 			worldcontrol.load(e);
 			commands.load(e);
 			permission.load(e);
-			property.load(e);
 			worldborder.load(e);
 			playerLogger.load(e);
 			economy.load(e);
@@ -136,7 +133,6 @@ public class ModuleLauncher
 			worldcontrol.serverStarting(e);
 			commands.serverStarting(e);
 			permission.serverStarting(e);
-			property.serverStarting(e);
 			worldborder.serverStarting(e);
 			playerLogger.serverStarting(e);
 			economy.serverStarting(e);
@@ -157,7 +153,6 @@ public class ModuleLauncher
 			worldcontrol.serverStarted(e);
 			commands.serverStarted(e);
 			permission.serverStarted(e);
-			property.serverStarted(e);
 			worldborder.serverStarted(e);
 			playerLogger.serverStarted(e);
 			chat.serverStarted(e);
