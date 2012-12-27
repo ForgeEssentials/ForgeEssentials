@@ -1,6 +1,8 @@
 package com.ForgeEssentials.permission;
 
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraftforge.common.MinecraftForge;
 
@@ -104,11 +106,11 @@ public class PermissionsAPI
 			if (MinecraftForge.EVENT_BUS.post(event))
 				return event.getCancelReason();
 			
-			HashSet<Permission> perms = zone.playerOverrides.get(username);
+			Set<Permission> perms = zone.playerOverrides.get(username);
 
 			if (perms == null)
 			{
-				perms = new HashSet<Permission>();
+				perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
 				perms.add(perm);
 				zone.playerOverrides.put(username, perms);
 			}
@@ -154,11 +156,11 @@ public class PermissionsAPI
 			if (MinecraftForge.EVENT_BUS.post(event))
 				return event.getCancelReason();
 
-			HashSet<Permission> perms = zone.groupOverrides.get(group);
+			Set<Permission> perms = zone.groupOverrides.get(group);
 
 			if (perms == null)
 			{
-				perms = new HashSet<Permission>();
+				perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
 				perms.add(perm);
 				zone.groupOverrides.put(group, perms);
 			}

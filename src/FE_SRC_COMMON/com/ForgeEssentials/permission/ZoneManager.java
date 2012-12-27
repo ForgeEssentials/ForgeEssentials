@@ -1,9 +1,11 @@
 package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -22,15 +24,15 @@ public class ZoneManager
 	public ZoneManager()
 	{
 		GLOBAL = new Zone("_GLOBAL_", null);
-		worldZoneMap = new HashMap<String, Zone>();
-		zoneMap = new TreeMap<String, Zone>();
+		worldZoneMap = new ConcurrentHashMap<String, Zone>();
+		zoneMap = Collections.synchronizedSortedMap(new TreeMap<String, Zone>());
 	}
 
 	// ----------------------------------------------
 	// ------------ WorldZone stuff -----------------
 	// ----------------------------------------------
 
-	protected static HashMap<String, Zone>	worldZoneMap;
+	protected static ConcurrentHashMap<String, Zone>	worldZoneMap;
 
 	// to load WorldZones
 	@ForgeSubscribe
@@ -65,7 +67,7 @@ public class ZoneManager
 	// ----------------------------------------------
 
 	// normal zone map. WorldZones and Globals are not included.
-	protected static TreeMap<String, Zone>	zoneMap;
+	protected static SortedMap<String, Zone>	zoneMap;
 
 	/**
 	 * WorldZones are not included here.

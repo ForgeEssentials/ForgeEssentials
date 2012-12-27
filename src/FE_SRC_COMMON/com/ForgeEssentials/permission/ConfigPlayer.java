@@ -2,7 +2,7 @@ package com.ForgeEssentials.permission;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
@@ -115,7 +115,7 @@ public class ConfigPlayer
 
 	public void forceSaveConfigs()
 	{
-		for (HashMap<String, PlayerPermData> map : PlayerManager.playerDats.values())
+		for (ConcurrentHashMap<String, PlayerPermData> map : PlayerManager.playerDats.values())
 			for (PlayerPermData data : map.values())
 			{
 				String category = new StringBuilder().append(data.zoneID).append('.').append(data.username).toString();

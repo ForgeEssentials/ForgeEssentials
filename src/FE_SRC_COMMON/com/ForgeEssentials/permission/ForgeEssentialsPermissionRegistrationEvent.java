@@ -1,6 +1,8 @@
 package com.ForgeEssentials.permission;
 
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraftforge.event.Event;
 
@@ -31,11 +33,11 @@ public class ForgeEssentialsPermissionRegistrationEvent extends Event
 			return;
 
 		Permission perm = new Permission(permission, allow);
-		HashSet<Permission> perms = ZoneManager.GLOBAL.groupOverrides.get(group);
+		Set<Permission> perms = ZoneManager.GLOBAL.groupOverrides.get(group);
 
 		if (perms == null)
 		{
-			perms = new HashSet<Permission>();
+			perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
 			perms.add(perm);
 			ZoneManager.GLOBAL.groupOverrides.put(group, perms);
 		}

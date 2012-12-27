@@ -72,8 +72,7 @@ public class PermissionChecker
 	{
 		if (object instanceof PermissionChecker)
 		{
-			PermissionChecker perm = (PermissionChecker) object;
-			return name.equals(perm.name);
+			return name.equals(((PermissionChecker)object).name);
 		}
 		else if (object instanceof String)
 			return object.equals(name);
@@ -82,6 +81,7 @@ public class PermissionChecker
 
 	/**
 	 * checks if this Permission can determine the result of the given Permission
+	 * AKA: checks this permission AND parents.
 	 * @param perm
 	 * @return True if THIS can determine the result of the given permission
 	 */

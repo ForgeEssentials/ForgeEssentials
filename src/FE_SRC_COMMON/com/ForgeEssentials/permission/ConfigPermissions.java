@@ -2,7 +2,9 @@ package com.ForgeEssentials.permission;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
@@ -200,9 +202,12 @@ public class ConfigPermissions
 			// read permissions
 			ConfigCategory groupCat = config.categories.get(child);
 
-			HashSet<Permission> perms = zone.groupOverrides.get(getPlayerNameFromCategory(child));
+			Set<Permission> perms = zone.groupOverrides.get(getPlayerNameFromCategory(child));
 			if (perms == null)
-				perms = new HashSet<Permission>();
+			{
+				perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
+				zone.groupOverrides.put(getPlayerNameFromCategory(child), perms);
+			}
 
 			for (Property prop : groupCat.values())
 			{
@@ -226,9 +231,12 @@ public class ConfigPermissions
 			// read permissions
 			ConfigCategory groupCat = config.categories.get(child);
 
-			HashSet<Permission> perms = PlayerManager.playerSupers.get(getPlayerNameFromCategory(child));
+			Set<Permission> perms = PlayerManager.playerSupers.get(getPlayerNameFromCategory(child));
 			if (perms == null)
-				perms = new HashSet<Permission>();
+			{
+				perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
+				PlayerManager.playerSupers.put(getPlayerNameFromCategory(child), perms);
+			}
 
 			for (Property prop : groupCat.values())
 			{
@@ -252,10 +260,13 @@ public class ConfigPermissions
 			// read permissions
 			ConfigCategory groupCat = config.categories.get(child);
 
-			HashSet<Permission> perms = zone.playerOverrides.get(getPlayerNameFromCategory(child));
-
+			Set<Permission> perms = zone.playerOverrides.get(getPlayerNameFromCategory(child));
+			
 			if (perms == null)
-				perms = new HashSet<Permission>();
+			{
+				perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
+				zone.playerOverrides.put(getPlayerNameFromCategory(child), perms);
+			}
 
 			for (Property prop : groupCat.values())
 			{
@@ -274,7 +285,7 @@ public class ConfigPermissions
 	{
 		for (String player : PlayerManager.playerSupers.keySet())
 		{
-			HashSet<Permission> list = PlayerManager.playerSupers.get(player);
+			Set<Permission> list = PlayerManager.playerSupers.get(player);
 			for (Permission perm : list)
 				config.get(parentCat + "." + player, perm.name, perm.allowed.equals(Result.ALLOW));
 		}
@@ -284,7 +295,7 @@ public class ConfigPermissions
 	{
 		for (String player : zone.getPlayersOverriden())
 		{
-			HashSet<Permission> list = zone.playerOverrides.get(player);
+			Set<Permission> list = zone.playerOverrides.get(player);
 			for (Permission perm : list)
 				config.get(parentCat + ".players." + player, perm.name, perm.allowed.equals(Result.ALLOW));
 		}
@@ -294,7 +305,7 @@ public class ConfigPermissions
 	{
 		for (String group : zone.getGroupsOverriden())
 		{
-			HashSet<Permission> list = zone.groupOverrides.get(group);
+			Set<Permission> list = zone.groupOverrides.get(group);
 			for (Permission perm : list)
 				config.get(parentCat + ".groups." + group, perm.name, perm.allowed.equals(Result.ALLOW));
 		}

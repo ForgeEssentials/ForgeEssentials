@@ -1,8 +1,9 @@
 package com.ForgeEssentials.permission;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -23,8 +24,8 @@ public class Zone extends AreaBase implements Comparable
 	public final boolean							isGlobalZone;		// flag for GLOBAL zones
 
 	// permission maps
-	protected HashMap<String, HashSet<Permission>>	playerOverrides;	// <username, perm list>
-	protected HashMap<String, HashSet<Permission>>	groupOverrides;	// <groupName, perm list>
+	protected HashMap<String, Set<Permission>>	playerOverrides;	// <username, perm list>
+	protected HashMap<String, Set<Permission>>	groupOverrides;	// <groupName, perm list>
 	protected HashMap<String, PromotionLadder>		ladders;			// the ladders present in this zone
 
 	public Zone(String ID, Selection sel, Zone parent)
@@ -75,9 +76,9 @@ public class Zone extends AreaBase implements Comparable
 	private void initMaps()
 	{
 		ladders = new HashMap<String, PromotionLadder>();
-		playerOverrides = new HashMap<String, HashSet<Permission>>();
-		groupOverrides = new HashMap<String, HashSet<Permission>>();
-		groupOverrides.put("_DEFAULT_", new HashSet<Permission>());
+		playerOverrides = new HashMap<String, Set<Permission>>();
+		groupOverrides = new HashMap<String, Set<Permission>>();
+		groupOverrides.put("_DEFAULT_", Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>()));
 	}
 
 	public boolean isParentOf(Zone zone)
@@ -148,7 +149,7 @@ public class Zone extends AreaBase implements Comparable
 	{
 		if (groupOverrides.containsKey(player.username))
 		{
-			HashSet<Permission> perms = groupOverrides.get(player.username);
+			Set<Permission> perms = groupOverrides.get(player.username);
 			Permission smallest = null;
 			for (Permission perm : perms)
 				if (check.equals(perm))
@@ -175,7 +176,7 @@ public class Zone extends AreaBase implements Comparable
 		Group group = GroupManager.groups.get(groupname);
 		if (groupOverrides.containsKey(groupname))
 		{
-			HashSet<Permission> perms = groupOverrides.get(groupname);
+			Set<Permission> perms = groupOverrides.get(groupname);
 			Permission smallest = null;
 			for (Permission perm : perms)
 				if (check.equals(perm))
@@ -206,7 +207,7 @@ public class Zone extends AreaBase implements Comparable
 		// this zone doesn't contain this groupname. check for blankets.
 		else
 		{
-			HashSet<Permission> perms = groupOverrides.get(PermissionsAPI.GROUP_DEFAULT);
+			Set<Permission> perms = groupOverrides.get(PermissionsAPI.GROUP_DEFAULT);
 			Permission smallest = null;
 			for (Permission perm : perms)
 				if (check.equals(perm))

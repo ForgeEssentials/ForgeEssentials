@@ -1,16 +1,17 @@
 package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 
 public class PlayerManager
 {
-	protected static HashMap<String, HashMap<String, PlayerPermData>>	playerDats		= new HashMap<String, HashMap<String, PlayerPermData>>();
+	protected static ConcurrentHashMap<String, ConcurrentHashMap<String, PlayerPermData>>	playerDats		= new ConcurrentHashMap<String, ConcurrentHashMap<String, PlayerPermData>>();
 
-	protected static HashMap<String, HashSet<Permission>>				playerSupers	= new HashMap<String, HashSet<Permission>>();
+	protected static ConcurrentHashMap<String, Set<Permission>>				playerSupers	= new ConcurrentHashMap<String, Set<Permission>>();
 
 	public ConfigPlayer													config;
 
@@ -30,11 +31,11 @@ public class PlayerManager
 
 	public static void putPlayerData(PlayerPermData data)
 	{
-		HashMap<String, PlayerPermData> map = playerDats.get(data.zoneID);
+		ConcurrentHashMap<String, PlayerPermData> map = playerDats.get(data.zoneID);
 
 		if (map == null)
 		{
-			map = new HashMap<String, PlayerPermData>();
+			map = new ConcurrentHashMap<String, PlayerPermData>();
 			map.put(data.username, data);
 			playerDats.put(data.zoneID, map);
 		}
@@ -64,7 +65,7 @@ public class PlayerManager
 	public static PermResult getSuperPermission(String username, String permission)
 	{
 		PermissionChecker checker = new PermissionChecker(permission);
-		HashSet<Permission> perms = playerSupers.get(username);
+		Set<Permission> perms = playerSupers.get(username);
 
 		if (perms == null)
 			return PermResult.UNKNOWN;
@@ -89,7 +90,14 @@ public class PlayerManager
 		PermissionChecker checker = new PermissionChecker(permission);
 		Permission newPerm = new Permission(permission, allowed);
 
-		HashSet<Permission> perms = playerSupers.get(username);
+		Set<Permission> perms = playerSupers.get(username);
+		
+		if (perms == null)
+		{
+			perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
+			playerSupers.put(username, perms);
+		}
+		
 		if (perms.contains(checker) && !perms.contains(newPerm))
 			perms.remove(checker);
 

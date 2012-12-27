@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class GroupManager
 {
 	public static Group						DEFAULT;
-	
+
 	protected static HashMap<String, Group>	groups	= new HashMap<String, Group>();
 
 	private Group							loginGroup;
