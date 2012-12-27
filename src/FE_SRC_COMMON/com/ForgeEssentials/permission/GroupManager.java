@@ -1,7 +1,13 @@
 package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.TreeSet;
+
+import com.ForgeEssentials.util.FunctionHelper;
+
+import net.minecraft.entity.player.EntityPlayer;
 
 public class GroupManager
 {
@@ -42,5 +48,33 @@ public class GroupManager
 				gs.add(g);
 
 		return gs;
+	}
+
+	/**
+	 * Returns the list of all the groups the player is in at a given time. It is in order of priority the first bieng the highest.
+	 * It will always have at least the DEFAULT groups.
+	 * @param player
+	 */
+	public static ArrayList<Group> getApplicableGroups(EntityPlayer player)
+	{
+		TreeSet<Group> list = new TreeSet<Group>();
+		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
+		PlayerPermData playerData;
+
+		while (zone != null)
+		{
+			playerData = PlayerManager.getPlayerData(zone.getZoneID(), player.username);
+			for (String group : playerData.getGroupList())
+				list.add(GroupManager.getGroupName(group));
+			
+			
+			zone = ZoneManager.getZone(zone.parent);
+		}
+		
+		list.add(DEFAULT);
+		
+		ArrayList<Group> returnable = new ArrayList<Group>();
+		returnable.addAll(list);
+		return returnable;
 	}
 }

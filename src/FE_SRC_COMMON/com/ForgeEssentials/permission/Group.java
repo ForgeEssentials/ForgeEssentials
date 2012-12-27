@@ -5,7 +5,7 @@ import java.util.Map;
 
 import net.minecraftforge.common.Property;
 
-public class Group
+public class Group implements Comparable
 {
 	private HashMap<String, String>		ladderNames;	// zoneID, ladderName
 	private HashMap<String, Property>	extraData;		// tag based extra data
@@ -74,6 +74,31 @@ public class Group
 	public String getLadderName(String zoneID)
 	{
 		return ladderNames.get(zoneID);
+	}
+	
+	@Override
+	public int compareTo(Object obj)
+	{
+		if (!(obj instanceof Group))
+			return Integer.MIN_VALUE;
+		
+		Group g = (Group) obj;
+		
+		if (this.equals(g))
+			return 0;
+		
+		Zone my = ZoneManager.getZone(zoneID);
+		Zone their = ZoneManager.getZone(g.zoneID);
+		
+		int end = my.compareTo(their);
+		
+		if (end == 0)
+			end =  priority - their.priority;
+		
+		if (end == 0)
+			throw new RuntimeException("COLLIDING GROUPS! "+this.name+" in "+this.zoneID+" : -- : "+g.name+" in "+g.zoneID);
+		
+		return end;
 	}
 
 }

@@ -60,7 +60,7 @@ public class ConfigGroup
 		// default group
 		{
 			GroupManager.DEFAULT.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, PREFIX, FEChatFormatCodes.GREY + "[Default]", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
-			GroupManager.DEFAULT.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, SUFFIX, "+OutputHandler.WHITE", "text to go after the username in chat. format char: \u00a7 Only works with the Chat module installed").value;
+			GroupManager.DEFAULT.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, SUFFIX, ""+FEChatFormatCodes.WHITE, "text to go after the username in chat. format char: \u00a7 Only works with the Chat module installed").value;
 		}
 
 		// default Ladders...

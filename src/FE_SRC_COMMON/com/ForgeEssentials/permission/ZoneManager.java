@@ -15,6 +15,7 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class ZoneManager
 {
@@ -89,7 +90,9 @@ public class ZoneManager
 
 	public static Zone getZone(String zoneID)
 	{
-		if (zoneID.equals(GLOBAL.getZoneID()))
+		if (zoneID == null)
+			return null;
+		else if (zoneID.equals(GLOBAL.getZoneID()))
 			return GLOBAL;
 		else if (zoneID.startsWith("WORLD_"))
 			return worldZoneMap.get(zoneID);
@@ -146,6 +149,41 @@ public class ZoneManager
 					}
 			}
 	}
+	
+	public static Zone getWhichZoneIn(WorldPoint point)
+	{
+		Zone worldZone = getWorldZone(FunctionHelper.getDimension(point.dim));
+		ArrayList<Zone> zones = new ArrayList<Zone>();
+
+		// add all zones this point is in...
+		for (Zone zone : zoneMap.values())
+			if (zone.contains(point) && worldZone.isParentOf(zone))
+				zones.add(zone);
+
+		switch (zones.size())
+			{
+			// no children of the world? return the worldZone
+				case 0:
+					return worldZone;
+					// only 1 usable Zone? use it.
+				case 1:
+					return zones.get(0);
+
+					// else.. narrow it down
+				default:
+					{
+						// get the one with the highest priority
+						Zone priority = null;
+
+						for (Zone zone : zones)
+							if (priority == null || priority.compareTo(zone) < 0)
+								priority = zone;
+
+						return priority;
+					}
+			}
+	}
+
 
 	/**
 	 * used for AllorNothing areas..

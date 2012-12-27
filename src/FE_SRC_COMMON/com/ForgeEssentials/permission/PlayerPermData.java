@@ -22,6 +22,8 @@ public class PlayerPermData
 
 	public PlayerPermData(String username, String ZoneID)
 	{
+		prefix = "";
+		suffix = "";
 		this.username = username;
 		zoneID = ZoneID;
 		extraData = new HashMap<String, Property>();
@@ -62,9 +64,14 @@ public class PlayerPermData
 				if (!groupList.contains(group))
 					groupList.add(group);
 	}
-	
+
 	public ArrayList<String> getGroupList()
 	{
 		return groupList;
+	}
+
+	public boolean isEmpty()
+	{
+		return prefix.isEmpty() && suffix.isEmpty() && groupList.isEmpty() && extraData.isEmpty();
 	}
 }

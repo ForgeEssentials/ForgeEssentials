@@ -7,11 +7,14 @@ import net.minecraft.network.packet.Packet3Chat;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 
+import com.ForgeEssentials.permission.Group;
+import com.ForgeEssentials.permission.GroupManager;
 import com.ForgeEssentials.permission.PlayerManager;
 import com.ForgeEssentials.permission.PlayerPermData;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.network.IChatListener;
@@ -20,33 +23,40 @@ public class Chat implements IChatListener {
 
 
 	@ForgeSubscribe
-	public  void chatEvent(ServerChatEvent event) 
+	public void chatEvent(ServerChatEvent event)
 	{
-		String prexif = "";
+		String prefix = "";
 		String suffix = "";
 		String rank = "";
 		String zoneID = "";
-		
+
 		try
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player), event.player.worldObj);
-			if(!zone.isWorldZone) zoneID = zone.getZoneID();
-			else zoneID = "Dim" + event.player.dimension;
-			PlayerPermData playerData = PlayerManager.getPlayerData(ZoneManager.GLOBAL.getZoneID(), event.username);
-			if(playerData != null)
+			PlayerPermData playerData = PlayerManager.getPlayerData(zone.getZoneID(), event.username);
+			
+			prefix = playerData.prefix;
+			suffix = playerData.suffix;
+			
+			ArrayList<Group> groups = GroupManager.getApplicableGroups(event.player);
+			rank = groups.get(0).name;
+			
+			for (Group group : groups)
 			{
-				prexif = playerData.prefix;
-				suffix = playerData.suffix;
-				ArrayList<String> groups = playerData.getGroupList();
-				rank = groups.get(groups.size() - 1);
+				prefix = group.prefix + prefix;
+				suffix = suffix + group.suffix;
 			}
 		}
-		catch (Exception e) {e.printStackTrace();}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		
+		OutputHandler.debug("TESTING!!!!!   prefix: "+prefix+"    suffix: "+suffix);
+
 		String format = ModuleChat.conf.chatFormat;
 		format = ModuleChat.conf.chatFormat == null || ModuleChat.conf.chatFormat == "" ? "<%username>%message" :ModuleChat.conf.chatFormat;
-		event.line = prexif 
-				+ format.replaceAll("%health", ""+event.player.getHealth()).replaceAll("%reset", FEChatFormatCodes.RESET+"")
+		event.line = format.replaceAll("%health", ""+event.player.getHealth()).replaceAll("%reset", FEChatFormatCodes.RESET+"")
 				.replaceAll("%red",FEChatFormatCodes.RED+"").replaceAll("%yellow",FEChatFormatCodes.YELLOW+"").replaceAll("%black",FEChatFormatCodes.BLACK+"").replaceAll("%darkblue",FEChatFormatCodes.DARKBLUE+"")
 				.replaceAll("%darkgreen",FEChatFormatCodes.DARKGREEN+"").replaceAll("%darkaqua",FEChatFormatCodes.DARKAQUA+"").replaceAll("%darkred",FEChatFormatCodes.DARKRED+"").replaceAll("%purple",FEChatFormatCodes.PURPLE+"")
 				.replaceAll("%gold",FEChatFormatCodes.GOLD+"").replaceAll("%grey",FEChatFormatCodes.GREY+"").replaceAll("%darkgrey",FEChatFormatCodes.DARKGREY+"").replaceAll("%indigo",FEChatFormatCodes.INDIGO+"")
@@ -54,7 +64,7 @@ public class Chat implements IChatListener {
 				.replaceAll("%random",FEChatFormatCodes.RANDOM+"").replaceAll("%bold",FEChatFormatCodes.BOLD+"").replaceAll("%strike",FEChatFormatCodes.STRIKE+"").replaceAll("%underline",FEChatFormatCodes.UNDERLINE+"")
 				.replaceAll("%italics",FEChatFormatCodes.ITALICS+"").replaceAll("%message", event.message).replaceAll("%username", event.username)
 				.replaceAll("%rank", rank).replaceAll("%zone", zoneID)
-				+ suffix;
+				.replace("%prefix", prefix).replaceAll("%suffix", suffix);
 	}
 	@Override
 	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message) 

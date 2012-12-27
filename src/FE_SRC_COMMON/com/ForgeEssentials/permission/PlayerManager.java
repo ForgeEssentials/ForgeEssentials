@@ -26,7 +26,22 @@ public class PlayerManager
 	 */
 	public static PlayerPermData getPlayerData(String zoneID, String username)
 	{
-		return playerDats.get(zoneID).get(username);
+		ConcurrentHashMap<String, PlayerPermData> map = playerDats.get(zoneID);
+		if (map == null)
+		{
+			map = new ConcurrentHashMap<String, PlayerPermData>();
+			playerDats.put(zoneID, map);
+		}
+		
+		PlayerPermData data = map.get(username); 
+		
+		if (data == null)
+		{
+			data = new PlayerPermData(username, zoneID);
+			putPlayerData(data);
+		}
+		
+		return data;
 	}
 
 	public static void putPlayerData(PlayerPermData data)
