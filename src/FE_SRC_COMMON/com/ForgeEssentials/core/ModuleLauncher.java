@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import com.ForgeEssentials.WorldBorder.ConfigWorldBorder;
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
+import com.ForgeEssentials.backup.ModuleBackup;
 import com.ForgeEssentials.chat.ConfigChat;
 import com.ForgeEssentials.chat.ModuleChat;
 import com.ForgeEssentials.commands.ModuleCommands;
@@ -13,7 +14,6 @@ import com.ForgeEssentials.economy.ModuleEconomy;
 import com.ForgeEssentials.permission.ModulePermissions;
 import com.ForgeEssentials.playerLogger.ConfigPlayerLogger;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
-import com.ForgeEssentials.property.ModuleProperty;
 import com.ForgeEssentials.protection.ConfigProtection;
 import com.ForgeEssentials.protection.ModuleProtection;
 import com.ForgeEssentials.snooper.ConfigSnooper;
@@ -35,9 +35,9 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 public class ModuleLauncher
 {
 	public ModuleCommands		commands;
+	public ModuleBackup			backup;
 	public ModulePermissions	permission;
 	public ModuleWorldControl	worldcontrol;
-	public ModuleProperty		property;
 	public ModuleWorldBorder	worldborder;
 	public ModulePlayerLogger	playerLogger;
 	public ModuleEconomy		economy;
@@ -62,6 +62,7 @@ public class ModuleLauncher
 		ModuleSnooper.configSnooper = new ConfigSnooper();
 		/*
 		 * TODO: @AbarSyed Can the permissions be reloaded from file after launch? if so, you can add that here.
+		 * AbrarSyed: depends on the module.
 		 */
 	}
 	
@@ -72,6 +73,7 @@ public class ModuleLauncher
 		try
 		{
 			worldcontrol = new ModuleWorldControl();
+			backup = new ModuleBackup();
 			commands = new ModuleCommands();
 			permission = new ModulePermissions();
 			worldborder = new ModuleWorldBorder();
@@ -89,6 +91,7 @@ public class ModuleLauncher
 		try
 		{
 			worldcontrol.preLoad(e);
+			backup.preLoad(e);
 			commands.preLoad(e);
 			permission.preLoad(e);
 			worldborder.preLoad(e);
@@ -110,6 +113,7 @@ public class ModuleLauncher
 		try
 		{
 			worldcontrol.load(e);
+			backup.load(e);
 			commands.load(e);
 			permission.load(e);
 			worldborder.load(e);
@@ -124,6 +128,27 @@ public class ModuleLauncher
 
 		}
 	}
+	
+	public void postLoad(FMLPostInitializationEvent e)
+	{
+		try
+		{
+			worldcontrol.postLoad(e);
+			backup.postLoad(e);
+			commands.postLoad(e);
+			permission.postLoad(e);
+			worldborder.postLoad(e);
+			playerLogger.postLoad(e);
+			chat.postLoad(e);
+			protection.postLoad(e);
+			snooper.postLoad(e);
+		}
+		catch (NoClassDefFoundError e7)
+		{
+
+		}
+
+	}
 
 	public void serverStarting(FMLServerStartingEvent e)
 	{
@@ -131,6 +156,7 @@ public class ModuleLauncher
 		try
 		{
 			worldcontrol.serverStarting(e);
+			backup.serverStarting(e);
 			commands.serverStarting(e);
 			permission.serverStarting(e);
 			worldborder.serverStarting(e);
@@ -151,6 +177,7 @@ public class ModuleLauncher
 		try
 		{
 			worldcontrol.serverStarted(e);
+			backup.serverStarted(e);
 			commands.serverStarted(e);
 			permission.serverStarted(e);
 			worldborder.serverStarted(e);
@@ -169,7 +196,13 @@ public class ModuleLauncher
 	{
 		try
 		{
+			worldcontrol.serverStopping(e);
+			backup.serverStopping(e);
+			commands.serverStopping(e);
+			permission.serverStopping(e);
+			worldborder.serverStopping(e);
 			playerLogger.serverStopping(e);
+			chat.serverStopping(e);
 			protection.serverStopping(e);
 			snooper.serverStopping(e);
 		}
@@ -177,20 +210,5 @@ public class ModuleLauncher
 		{
 
 		}
-	}
-
-	public void postLoad(FMLPostInitializationEvent e)
-	{
-		try
-		{
-			permission.postLoad(e);
-			protection.postLoad(e);
-			snooper.postLoad(e);
-		}
-		catch (NoClassDefFoundError e7)
-		{
-
-		}
-
 	}
 }

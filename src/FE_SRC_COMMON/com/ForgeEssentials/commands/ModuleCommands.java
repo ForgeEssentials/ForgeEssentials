@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.backup.CommandBackup;
 import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
@@ -39,6 +40,7 @@ public class ModuleCommands implements IFEModule
 	public void load(FMLInitializationEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
+		MinecraftForge.EVENT_BUS.register(this); // for the permissions.
 	}
 
 	@Override
@@ -58,7 +60,6 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandRemove());
 		e.registerServerCommand(new CommandKill());
 		e.registerServerCommand(new CommandSpawn());
-		e.registerServerCommand(new CommandBackup());
 		e.registerServerCommand(new CommandTPS());
 		e.registerServerCommand(new CommandKit());
 		e.registerServerCommand(new CommandEnderchest());
