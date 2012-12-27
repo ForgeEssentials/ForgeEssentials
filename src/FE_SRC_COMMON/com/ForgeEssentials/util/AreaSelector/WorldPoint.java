@@ -1,5 +1,6 @@
 package com.ForgeEssentials.util.AreaSelector;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.data.SaveableObject;
@@ -31,6 +32,12 @@ public class WorldPoint extends Point
 	{
 		super(x, y, z);
 		this.dim = world.getWorldInfo().getDimension();
+	}
+
+	public WorldPoint(EntityPlayer player) 
+	{
+		super(player);
+		this.dim = player.dimension;
 	}
 
 	public int compareTo(WorldPoint p)

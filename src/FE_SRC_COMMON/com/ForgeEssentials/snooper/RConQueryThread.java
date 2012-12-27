@@ -147,7 +147,7 @@ public class RConQueryThread implements Runnable
 		{
 			ModData.put(modlist.get(i).getName(), modlist.get(i).getDisplayVersion());
 		}
-        ServerData.put("mods", TextFormatter.toJSON(ModData));
+        ServerData.put("mods", TextFormatter.mapToJSON(ModData));
         
     	ServerData.put("gametype", this.server.getGameType().getName());
     	ServerData.put("version", this.server.getMinecraftVersion());
@@ -188,26 +188,24 @@ public class RConQueryThread implements Runnable
                         this.logDebug("Invalid challenge [" + var4 + "]");
                         return false;
                     }
-                    else if (15 == var3)
+                    else
                     {
-                        this.sendResponsePacket(this.createQueryResponse(par1DatagramPacket), par1DatagramPacket);
-                        this.logDebug("Rules [" + var4 + "]");
+                        this.sendResponsePacket(this.createQueryResponseCase0(par1DatagramPacket), par1DatagramPacket);
+                        this.logDebug("Case 0 [" + var4 + "]");
+                    }
+                    return true;
+                case 1:
+                    if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
+                    {
+                        this.logDebug("Invalid challenge [" + var4 + "]");
+                        return false;
                     }
                     else
                     {
-                        RConOutputStream var5 = new RConOutputStream(1460);
-                        var5.writeInt(0);
-                        var5.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
-                        var5.writeString(this.serverMotd);
-                        var5.writeString("SMP");
-                        var5.writeString(this.worldName);
-                        var5.writeString(Integer.toString(this.getNumberOfPlayers()));
-                        var5.writeString(Integer.toString(this.maxPlayers));
-                        var5.writeShort((short)this.serverPort);
-                        var5.writeString(this.queryHostname);
-                        this.sendResponsePacket(var5.toByteArray(), par1DatagramPacket);
-                        this.logDebug("Status [" + var4 + "]");
+                        this.sendResponsePacket(this.createQueryResponseCase1(par1DatagramPacket), par1DatagramPacket);
+                        this.logDebug("Case 1 [" + var4 + "]");
                     }
+                    return true;
                 case 9:
                     this.sendAuthChallenge(par1DatagramPacket);
                     this.logDebug("Challenge [" + var4 + "]");
@@ -224,9 +222,10 @@ public class RConQueryThread implements Runnable
     }
 
     /**
-     * Creates a query response as a byte array for the specified query DatagramPacket
+     * Creates a query response for Case0
+     * Server info
      */
-    private byte[] createQueryResponse(DatagramPacket par1DatagramPacket) throws IOException
+    private byte[] createQueryResponseCase0(DatagramPacket par1DatagramPacket) throws IOException
     {
         long var2 = System.currentTimeMillis();
         
@@ -242,7 +241,7 @@ public class RConQueryThread implements Runnable
         }
         else
         {
-        	//Date that needs updating here
+        	// Needs to get update every time
         	ServerData.put("numplayers", "" + this.server.getCurrentPlayerCount());
         	ServerData.put("motd", this.server.getServerMOTD());
         	
@@ -251,40 +250,49 @@ public class RConQueryThread implements Runnable
             this.output.writeInt(0);
             this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
             
-            this.output.writeString(TextFormatter.toJSON(ServerData));
-            this.output.writeString("#");
-            
-            HashMap<String, String> PlayerData = new HashMap();
-            for(String username : this.server.getAllUsernames())
-            {
-            	PlayerData.put(username, TextFormatter.toJSON(getUserData(username)));
-            }
-            
-            this.output.writeString(TextFormatter.toJSON(PlayerData));
+            this.output.writeString(TextFormatter.mapToJSON(ServerData));
             
             return this.output.toByteArray();
         }
     }
     
     /**
-     * Get all of the info!
-     * @param username
-     * @return All of the date in this format: [key1;value1, key2;value2]
+     * Creates a query response for Case1
+     * Player info
      */
-    public static HashMap<String, String> getUserData(String username) 
-	{
-    	HashMap<String, String> PlayerData = new HashMap();
-    	EntityPlayer player = server.getConfigurationManager().getPlayerForUsername(username);
-		String temp = "[";
-		PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-		if(pi != null)
-		{
-			if(pi.home != null) PlayerData.put("home", pi.home.toString());
-			if(pi.lastDeath != null) PlayerData.put("lastDeath", pi.lastDeath.toString());
-		}
-		PlayerData.put("wallet", ""+Wallet.getWallet(player));
-		return PlayerData;
-	}	
+    private byte[] createQueryResponseCase1(DatagramPacket par1DatagramPacket) throws IOException
+    {
+        long var2 = System.currentTimeMillis();
+        
+        if (var2 < this.lastQueryResponseTime + 5000L)
+        {
+            byte[] var7 = this.output.toByteArray();
+            byte[] var8 = this.getRequestId(par1DatagramPacket.getSocketAddress());
+            var7[1] = var8[0];
+            var7[2] = var8[1];
+            var7[3] = var8[2];
+            var7[4] = var8[3];
+            return var7;
+        }
+        else
+        {
+        	// Needs to get update every time
+        	HashMap<String, String> PlayerData = new HashMap();
+            for(String username : this.server.getAllUsernames())
+            {
+            	PlayerData.put(username, TextFormatter.mapToJSON(ModuleSnooper.getUserData(username)));
+            }
+        	
+        	this.lastQueryResponseTime = var2;
+            this.output.reset();
+            this.output.writeInt(0);
+            this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
+            
+            this.output.writeString(TextFormatter.mapToJSON(PlayerData));
+            
+            return this.output.toByteArray();
+        }
+    }
 
     /**
      * Returns the request ID provided by the authorized client
@@ -466,7 +474,7 @@ public class RConQueryThread implements Runnable
      */
     protected void logDebug(String par1Str)
     {
-        this.server.logDebug(par1Str);
+        this.server.logInfo(par1Str);
     }
 
     /**
