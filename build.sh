@@ -2,7 +2,7 @@ VERSION="0.1.0.${BUILD_NUMBER}"
 MC="1.4.6"
 
 echo "Downloading Forge..."
-wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
+wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip 
 unzip minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
 cd forge
