@@ -40,8 +40,8 @@ sed -i 's/@build@/'${BUILD_NUMBER}'/g' mcmod.info
 
 echo "Creating distribution packages"
 mkdir ${WORKSPACE}/output
-jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* ./com/ForgeEssentials/client/core/* logo.png mcmod.info
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/CUI/* ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/commands/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/playerLogger/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/WorldBorder/* ./com/ForgeEssentials/WorldControl/* ./com/ForgeEssentials/backup/* 
+jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/* ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/commands/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/playerLogger/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/WorldBorder/* ./com/ForgeEssentials/WorldControl/* ./com/ForgeEssentials/backup/* 
 
 cd ${WORKSPACE}/output
 #upload
