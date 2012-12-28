@@ -1,6 +1,8 @@
 package com.ForgeEssentials.snooper;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -143,21 +145,26 @@ public class RConQueryThread implements Runnable
         this.queryClients = new HashMap();
         this.time = (new Date()).getTime();
         
-        List<ModContainer> modlist = Loader.instance().getActiveModList();
-        String[] ModData = new String[modlist.size()];
-		for(int i = 0; i < modlist.size(); i++)
-		{
-			ModData[i] = modlist.get(i).getName();
-		}
-        ServerData.put("mods", TextFormatter.arrayToJSON(ModData));
+        if(ConfigSnooper.send_Mods)
+        {
+        	List<ModContainer> modlist = Loader.instance().getActiveModList();
+        	String[] ModData = new String[modlist.size()];
+        	for(int i = 0; i < modlist.size(); i++)
+        	{
+        		ModData[i] = modlist.get(i).getName();
+        	}
+        	ServerData.put("mods", TextFormatter.toJSON(ModData));
+        }
         
     	ServerData.put("gametype", this.server.getGameType().getName());
     	ServerData.put("version", this.server.getMinecraftVersion());
     	ServerData.put("map", this.worldName);
     	ServerData.put("maxplayers", "" + this.maxPlayers);
-    	ServerData.put("hostport", "" + this.serverPort);
-    	ServerData.put("hostip", this.queryHostname);
-    	
+    	if(ConfigSnooper.send_IP)
+    	{
+    		ServerData.put("hostport", "" + this.serverPort);
+        	ServerData.put("hostip", this.queryHostname);
+    	}
     }
 
     /**
@@ -216,9 +223,9 @@ public class RConQueryThread implements Runnable
                     }
                     else if(var3 > 11)
                     {
-                    	byte[] nameArray = Arrays.copyOfRange(var2, 11, var2.length);
+                    	byte[] nameArray = Arrays.copyOfRange(var2, 11, var3);
                     	String name = new String(nameArray);
-                        this.sendResponsePacket(this.createQueryResponseCase2(par1DatagramPacket, name), par1DatagramPacket);
+                        this.sendResponsePacket(this.createQueryResponseCase2(par1DatagramPacket, name.trim()), par1DatagramPacket);
                         this.logDebug("Case 2 [" + var4 + "] " + name);
                     }
                     else
@@ -235,9 +242,9 @@ public class RConQueryThread implements Runnable
                     }
                     else if(var3 > 11)
                     {
-                    	byte[] nameArray = Arrays.copyOfRange(var2, 11, var2.length);
+                    	byte[] nameArray = Arrays.copyOfRange(var2, 11, var3);
                     	String name = new String(nameArray);
-                        this.sendResponsePacket(this.createQueryResponseCase3(par1DatagramPacket, name), par1DatagramPacket);
+                        this.sendResponsePacket(this.createQueryResponseCase3(par1DatagramPacket, name.trim()), par1DatagramPacket);
                         this.logDebug("Case 3 [" + var4 + "] " + name);
                     }
                     else
@@ -269,31 +276,28 @@ public class RConQueryThread implements Runnable
     {
         long var2 = System.currentTimeMillis();
         
-        if (var2 < this.lastQueryResponseTime + 5000L)
-        {
-            byte[] var7 = this.output.toByteArray();
-            byte[] var8 = this.getRequestId(par1DatagramPacket.getSocketAddress());
-            var7[1] = var8[0];
-            var7[2] = var8[1];
-            var7[3] = var8[2];
-            var7[4] = var8[3];
-            return var7;
-        }
-        else
-        {
-        	// Needs to get update every time
-        	ServerData.put("numplayers", "" + this.server.getCurrentPlayerCount());
-        	ServerData.put("motd", this.server.getServerMOTD());
-        	
-        	this.lastQueryResponseTime = var2;
-            this.output.reset();
-            this.output.writeInt(0);
-            this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
+        // Needs to get update every time
+        ServerData.put("numplayers", "" + this.server.getCurrentPlayerCount());
+        if(ConfigSnooper.send_Motd)ServerData.put("motd", this.server.getServerMOTD());
+        ServerData.put("tps", TextFormatter.toJSON(ModuleSnooper.getTPS()));
+        
+        String uptime = "";
+        RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
+        int secsIn = (int) (rb.getUptime() / 1000);
+        int hours = secsIn / 3600, remainder = secsIn % 3600, minutes = remainder / 60,	seconds = remainder % 60;
+        
+        uptime += ( (hours < 10 ? "0" : "") + hours + " h " + (minutes < 10 ? "0" : "") + minutes + " min " + (seconds< 10 ? "0" : "") + seconds + " sec.");
+        
+        ServerData.put("uptime", uptime);
+        
+        this.lastQueryResponseTime = var2;
+        this.output.reset();
+        this.output.writeInt(0);
+        this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
             
-            this.output.writeString(TextFormatter.mapToJSON(ServerData));
-            
-            return this.output.toByteArray();
-        }
+        this.output.writeString(TextFormatter.toJSON(ServerData));
+        
+        return this.output.toByteArray();
     }
     
     /**
@@ -304,35 +308,28 @@ public class RConQueryThread implements Runnable
     {
         long var2 = System.currentTimeMillis();
         
-        if (var2 < this.lastQueryResponseTime + 5000L)
+        this.lastQueryResponseTime = var2;
+        this.output.reset();
+        this.output.writeInt(0);
+        this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
+        
+        if(!ConfigSnooper.send_Players)
         {
-            byte[] var7 = this.output.toByteArray();
-            byte[] var8 = this.getRequestId(par1DatagramPacket.getSocketAddress());
-            var7[1] = var8[0];
-            var7[2] = var8[1];
-            var7[3] = var8[2];
-            var7[4] = var8[3];
-            return var7;
+        	this.output.writeString("_NOT_ALLOWED_");
+        	return this.output.toByteArray();
         }
-        else
+        
+        HashMap<String, String> temp = new HashMap();
+        String[] array = new String[server.getCurrentPlayerCount()];
+        int i = 0;
+        for(String username : server.getConfigurationManager().getAllUsernames())
         {
-        	this.lastQueryResponseTime = var2;
-            this.output.reset();
-            this.output.writeInt(0);
-            this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
-            
-            HashMap<String, String> temp = new HashMap();
-            String[] array = new String[server.getCurrentPlayerCount()];
-            int i = 0;
-            for(String username : server.getConfigurationManager().getAllUsernames())
-            {
-            	array[i] = username;
-            }
-            temp.put("players", TextFormatter.arrayToJSON(array));
-			this.output.writeString(TextFormatter.mapToJSON(temp));
-			
-            return this.output.toByteArray();
+        	array[i] = username;
         }
+        temp.put("players", TextFormatter.toJSON(array));
+        this.output.writeString(TextFormatter.toJSON(temp));
+        
+        return this.output.toByteArray();
     }
     
     /**
@@ -342,48 +339,37 @@ public class RConQueryThread implements Runnable
     private byte[] createQueryResponseCase2(DatagramPacket par1DatagramPacket, String username) throws IOException
     {
         long var2 = System.currentTimeMillis();
+       
+        this.lastQueryResponseTime = var2;
+        this.output.reset();
+        this.output.writeInt(0);
+        this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
         
-        if (var2 < this.lastQueryResponseTime + 5000L)
+        //No player given            
+        if(username == null)
         {
-            byte[] var7 = this.output.toByteArray();
-            byte[] var8 = this.getRequestId(par1DatagramPacket.getSocketAddress());
-            var7[1] = var8[0];
-            var7[2] = var8[1];
-            var7[3] = var8[2];
-            var7[4] = var8[3];
-            return var7;
+        	HashMap<String, String> temp = new HashMap();
+        	temp.put("", TextFormatter.toJSON(new String[0]));
+        	this.output.writeString(TextFormatter.toJSON(temp));
+        	return this.output.toByteArray();
         }
-        else
+        
+        EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
+        //Player is not online
+        if(player == null)
         {
-        	this.lastQueryResponseTime = var2;
-            this.output.reset();
-            this.output.writeInt(0);
-            this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
-            //No player given            
-            if(username == null)
-            {
-            	HashMap<String, String> temp = new HashMap();
-            	temp.put(null, TextFormatter.arrayToJSON(new String[0]));
-            	this.output.writeString(TextFormatter.mapToJSON(temp));
-            	return this.output.toByteArray();
-            }
-            
-            EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
-            //Player is not online
-            if(player == null)
-            {
-            	HashMap<String, String> temp = new HashMap();
-            	temp.put(null, TextFormatter.arrayToJSON(new String[0]));
-            	this.output.writeString(TextFormatter.mapToJSON(temp));
-            	return this.output.toByteArray();
-            }
-            
-            this.output.writeString(TextFormatter.mapToJSON(ModuleSnooper.getUserData(player)));
-            this.output.writeString("#");
-            this.output.writeString(TextFormatter.mapToJSON(ModuleSnooper.getArmorData(player)));
-            
-            return this.output.toByteArray();
+        	HashMap<String, String> temp = new HashMap();
+        	temp.put("", TextFormatter.toJSON(new String[0]));
+        	this.output.writeString(TextFormatter.toJSON(temp));
+        	return this.output.toByteArray();
         }
+        if(!ConfigSnooper.send_Player_info) this.output.writeString("_NOT_ALLOWED_");
+        else this.output.writeString(TextFormatter.toJSON(ModuleSnooper.getUserData(player)));
+        this.output.writeString("#");
+        if(!ConfigSnooper.send_Player_armor) this.output.writeString("_NOT_ALLOWED_");
+        else this.output.writeString(TextFormatter.toJSON(ModuleSnooper.getArmorData(player)));
+        
+        return this.output.toByteArray();
     }
     
     /**
@@ -393,45 +379,33 @@ public class RConQueryThread implements Runnable
     private byte[] createQueryResponseCase3(DatagramPacket par1DatagramPacket, String username) throws IOException
     {
         long var2 = System.currentTimeMillis();
+    
+        this.lastQueryResponseTime = var2;
+        this.output.reset();
+        this.output.writeInt(0);
+        this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
+        //No player given            
+        if(username == null)
+        {
+        	HashMap<String, String> temp = new HashMap();
+        	temp.put(null, TextFormatter.toJSON(new String[0]));
+        	this.output.writeString(TextFormatter.toJSON(temp));
+        	return this.output.toByteArray();
+        }
         
-        if (var2 < this.lastQueryResponseTime + 5000L)
+        EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
+        //Player is not online
+        if(player == null)
         {
-            byte[] var7 = this.output.toByteArray();
-            byte[] var8 = this.getRequestId(par1DatagramPacket.getSocketAddress());
-            var7[1] = var8[0];
-            var7[2] = var8[1];
-            var7[3] = var8[2];
-            var7[4] = var8[3];
-            return var7;
+        	HashMap<String, String> temp = new HashMap();
+        	temp.put(null, TextFormatter.toJSON(new String[0]));
+        	this.output.writeString(TextFormatter.toJSON(temp));
+        	return this.output.toByteArray();
         }
-        else
-        {
-        	this.lastQueryResponseTime = var2;
-            this.output.reset();
-            this.output.writeInt(0);
-            this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
-            //No player given            
-            if(username == null)
-            {
-            	HashMap<String, String> temp = new HashMap();
-            	temp.put(null, TextFormatter.arrayToJSON(new String[0]));
-            	this.output.writeString(TextFormatter.mapToJSON(temp));
-            	return this.output.toByteArray();
-            }
-            
-            EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
-            //Player is not online
-            if(player == null)
-            {
-            	HashMap<String, String> temp = new HashMap();
-            	temp.put(null, TextFormatter.arrayToJSON(new String[0]));
-            	this.output.writeString(TextFormatter.mapToJSON(temp));
-            	return this.output.toByteArray();
-            }
-            this.output.writeString(TextFormatter.mapToJSON(ModuleSnooper.getInvData(player)));
-            
-            return this.output.toByteArray();
-        }
+        if(!ConfigSnooper.send_Player_inv) this.output.writeString("_NOT_ALLOWED_");
+        else this.output.writeString(TextFormatter.toJSON(ModuleSnooper.getInvData(player)));
+        
+        return this.output.toByteArray();
     }
 
     /**
