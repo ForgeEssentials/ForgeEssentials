@@ -1,4 +1,7 @@
-* text eol=lf
+* text auto
+*.java eol=lf
+*.sh eol=lf
+*.txt eol=lf
 *.bat text eol=crlf
 *.png binary
 *.exe binary
