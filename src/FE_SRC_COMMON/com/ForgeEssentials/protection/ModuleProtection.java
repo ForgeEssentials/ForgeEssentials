@@ -40,6 +40,7 @@ public class ModuleProtection implements IFEModule
 	@ForgeSubscribe
 	public void playerInteractin(PlayerInteractEvent e)
 	{
+		/*
 		String perm = "ForgeEssentials.allowedit";
 		
 		if(e.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
@@ -68,6 +69,7 @@ public class ModuleProtection implements IFEModule
 		{
 			//e.setCanceled(true);
 		}
+		*/
 	}
 
 	/*

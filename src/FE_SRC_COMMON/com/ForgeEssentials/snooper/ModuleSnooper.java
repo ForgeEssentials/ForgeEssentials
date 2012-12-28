@@ -1,6 +1,7 @@
 package com.ForgeEssentials.snooper;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -39,7 +41,7 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 public class ModuleSnooper implements IFEModule
 {
 	public static ConfigSnooper configSnooper;
-
+	
 	public static int port;
 	public static boolean enable;
 	
@@ -91,31 +93,35 @@ public class ModuleSnooper implements IFEModule
     	PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
 		if(pi != null)
 		{
-			if(pi.home != null) PlayerData.put("home", TextFormatter.pointToJSON(pi.home));
-			if(pi.lastDeath != null) PlayerData.put("lastDeath", TextFormatter.pointToJSON(pi.lastDeath));
+			if(pi.home != null) PlayerData.put("home", TextFormatter.toJSON(pi.home));
+			if(pi.lastDeath != null) PlayerData.put("lastDeath", TextFormatter.toJSON(pi.lastDeath));
 		}
 		
 		PlayerData.put("armor", "" + player.inventory.getTotalArmorValue());
 		PlayerData.put("wallet", "" + Wallet.getWallet(player));
 		PlayerData.put("health", "" + player.getHealth());
-		PlayerData.put("pos", TextFormatter.pointToJSON(new WorldPoint(player)));
-		PlayerData.put("potion", TextFormatter.potionsToJSON(player.getActivePotionEffects()));
+		PlayerData.put("pos", TextFormatter.toJSON(new WorldPoint(player)));
 		PlayerData.put("ping", "" + player.ping);
 		PlayerData.put("gm", player.theItemInWorldManager.getGameType().getName());
+		
+		if(!player.getActivePotionEffects().isEmpty())
+		{
+			PlayerData.put("potion", TextFormatter.toJSON(player.getActivePotionEffects()));
+		}
 		
 		{
 			tempMap.clear();
 			tempMap.put("lvl", "" + player.experienceLevel);
 			tempMap.put("bar", "" + player.experience);
 		}
-		PlayerData.put("xp", TextFormatter.mapToJSON(tempMap));
+		PlayerData.put("xp", TextFormatter.toJSON(tempMap));
 		
 		{
 			tempMap.clear();
 			tempMap.put("food", "" + player.getFoodStats().getFoodLevel());
 			tempMap.put("saturation", "" + player.getFoodStats().getSaturationLevel());
 		}
-		PlayerData.put("foodStats", TextFormatter.mapToJSON(tempMap));
+		PlayerData.put("foodStats", TextFormatter.toJSON(tempMap));
 		
 		{
 			tempMap.clear();
@@ -124,7 +130,7 @@ public class ModuleSnooper implements IFEModule
 			tempMap.put("isFly", "" + player.capabilities.isFlying);
 			tempMap.put("noDamage", "" + player.capabilities.disableDamage);
 		}
-		PlayerData.put("capabilities", TextFormatter.mapToJSON(tempMap));
+		PlayerData.put("capabilities", TextFormatter.toJSON(tempMap));
 		
 		return PlayerData;
 	}
@@ -139,56 +145,86 @@ public class ModuleSnooper implements IFEModule
     	HashMap<String, String> PlayerData = new HashMap();
     	String username = player.username;
 
-    	ItemStack stack = player.inventory.armorInventory[3];
-    	if(stack != null)
+    	for(int i = 0; i < 3; i++)
     	{
-    		PlayerData.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack, true));
-    	}
-
-    	stack = player.inventory.armorInventory[2];
-    	if(stack != null)
-    	{
-    		PlayerData.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack, true));
-    	}
-    	
-    	stack = player.inventory.armorInventory[1];
-    	if(stack != null)
-    	{
-    		PlayerData.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack, true));
-    	}
-
-    	stack = player.inventory.armorInventory[0];
-    	if(stack != null)
-    	{
-    		PlayerData.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack, true));
-    	}
-    	
-		return PlayerData;
-	}
-    
-    /**
-     * Get all of the inv data
-     * @param player
-     * @return
-     */
-    public static HashMap<String, String> getInvData(EntityPlayerMP player) 
-	{
-    	HashMap<String, String> PlayerData = new HashMap();
-    	String username = player.username;
-
-    	int i = 0;
-    	for(ItemStack stack : player.inventory.mainInventory)
-    	{
-    		if(stack != null)
+    		System.out.println(i);
+    		ItemStack stack = player.inventory.armorInventory[i];
+        	if(stack != null)
         	{
-        		PlayerData.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack, false));
-        		i ++;
+        		PlayerData.put("" + i, TextFormatter.toJSON(stack, true));
         	}
     	}
     	
 		return PlayerData;
 	}
     
+    public static HashMap<String, String> getTPS()
+    {
+    	HashMap<String, String> data = new HashMap();
+    	for (Integer id : DimensionManager.getIDs())
+    	{
+    		data.put("dim " + id, "" + getTPSFromData(server.worldTickTimes.get(id)));
+    	}
+    	return data;
+    }
+    
+    /**
+     * Get all of the inv data
+     * @param player
+     * @return
+     */
+    public static ArrayList<String> getInvData(EntityPlayerMP player) 
+	{
+    	ArrayList<String> tempArgs = new ArrayList();
+    	String username = player.username;
+
+    	for(ItemStack stack : player.inventory.mainInventory)
+    	{
+    		if(stack != null)
+        	{
+    			tempArgs.add(TextFormatter.toJSON(stack, false));
+        	}
+    	}
+		return tempArgs;
+	}
+    
+    /*
+     * TPS needed functions
+     */
+	
+	private static final DecimalFormat DF = new DecimalFormat("########0.000");
+	/**
+	 * 
+	 * @param par1ArrayOfLong
+	 * @return amount of time for 1 tick in ms
+	 */
+	private static double func_79015_a(long[] par1ArrayOfLong)
+    {
+        long var2 = 0L;
+        long[] var4 = par1ArrayOfLong;
+        int var5 = par1ArrayOfLong.length;
+
+        for (int var6 = 0; var6 < var5; ++var6)
+        {
+            long var7 = var4[var6];
+            var2 += var7;
+        }
+
+        return (((double)var2 / (double)par1ArrayOfLong.length) * 1.0E-6D);
+    }
+    
+	public static String getTPSFromData(long[] par1ArrayOfLong)
+	{
+		double tps = (func_79015_a(par1ArrayOfLong)); 
+		if(tps < 50)
+		{
+			return "20";
+		}
+		else
+		{
+			return DF.format((1000/tps));
+		}
+	}
 	
 	/*
 	 * Not needed
