@@ -27,25 +27,54 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			if (args[0].toLowerCase().equals("me") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+".me")))
+			if (args[0].toLowerCase().equals("me") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".me")))
 			{
-				sender.setFire(Integer.parseInt(args[1]));
+				sender.setFire(15);
 				OutputHandler.chatError(sender, Localization.get(Localization.BURN_SELF));
-			} else
+			}
+			else
 			{
 				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+"."+args[0])))
+				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
 				{
-					victim.setFire(Integer.parseInt(args[1]));
+					victim.setFire(15);
 					OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
 				}
 				else
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} else
-		{
-			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 		}
+		else if (args.length == 2)
+		{
+			if (args[0].toLowerCase().equals("me") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".me")))
+				try
+				{
+					sender.setFire(Integer.parseInt(args[1]));
+					OutputHandler.chatError(sender, Localization.get(Localization.BURN_SELF));
+				}
+				catch (NumberFormatException e)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+				}
+			else
+			{
+				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
+					try
+					{
+						victim.setFire(Integer.parseInt(args[1]));
+						OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
+					}
+					catch (NumberFormatException e)
+					{
+						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+					}
+				else
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 	}
 
 	@Override
@@ -58,12 +87,12 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			{
 				victim.setFire(Integer.parseInt(args[1]));
 				sender.sendChatToPlayer(Localization.get(Localization.BURN_PLAYER));
-			} else
+			}
+			else
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-		} else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());	
 		}
+		else
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 	}
 
 	@Override
@@ -83,17 +112,13 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-    	if(args.length == 1)
-    	{
-    		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    }
+	{
+		if (args.length == 1)
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		else
+			return null;
+	}
 }
