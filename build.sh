@@ -42,4 +42,5 @@ echo "Creating distribution packages"
 jar cvfm "${WORKSPACE}/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* ./com/ForgeEssentials/client/core/* logo.png mcmod.info
 zip -r9 "${WORKSPACE}/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/CUI/* ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/commands/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/playerLogger/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/WorldBorder/* ./com/ForgeEssentials/WorldControl/* ./com/ForgeEssentials/backup/* 
 
+cd ${WORKSPACE}
 #upload
