@@ -11,6 +11,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.rcon.*;
 import net.minecraft.server.MinecraftServer;
 
@@ -141,13 +143,13 @@ public class RConQueryThread implements Runnable
         this.queryClients = new HashMap();
         this.time = (new Date()).getTime();
         
-        HashMap<String, String> ModData = new HashMap();
         List<ModContainer> modlist = Loader.instance().getActiveModList();
+        String[] ModData = new String[modlist.size()];
 		for(int i = 0; i < modlist.size(); i++)
 		{
-			ModData.put(modlist.get(i).getName(), modlist.get(i).getDisplayVersion());
+			ModData[i] = modlist.get(i).getName();
 		}
-        ServerData.put("mods", TextFormatter.mapToJSON(ModData));
+        ServerData.put("mods", TextFormatter.arrayToJSON(ModData));
         
     	ServerData.put("gametype", this.server.getGameType().getName());
     	ServerData.put("version", this.server.getMinecraftVersion());
@@ -179,7 +181,7 @@ public class RConQueryThread implements Runnable
         if (3 <= var3 && -2 == var2[0] && -3 == var2[1])
         {
             this.logDebug("Packet \'" + RConUtils.getByteAsHexString(var2[2]) + "\' [" + var4 + "]");
-
+            
             switch (var2[2])
             {
                 case 0:
@@ -204,6 +206,44 @@ public class RConQueryThread implements Runnable
                     {
                         this.sendResponsePacket(this.createQueryResponseCase1(par1DatagramPacket), par1DatagramPacket);
                         this.logDebug("Case 1 [" + var4 + "]");
+                    }
+                    return true;
+                case 2:
+                    if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
+                    {
+                        this.logDebug("Invalid challenge [" + var4 + "]");
+                        return false;
+                    }
+                    else if(var3 > 11)
+                    {
+                    	byte[] nameArray = Arrays.copyOfRange(var2, 11, var2.length);
+                    	String name = new String(nameArray);
+                        this.sendResponsePacket(this.createQueryResponseCase2(par1DatagramPacket, name), par1DatagramPacket);
+                        this.logDebug("Case 2 [" + var4 + "] " + name);
+                    }
+                    else
+                    {
+                    	this.sendResponsePacket(this.createQueryResponseCase2(par1DatagramPacket, null), par1DatagramPacket);
+                        this.logDebug("Case 2 [" + var4 + "] NO USERNAME");
+                    }
+                    return true;
+                case 3:
+                    if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
+                    {
+                        this.logDebug("Invalid challenge [" + var4 + "]");
+                        return false;
+                    }
+                    else if(var3 > 11)
+                    {
+                    	byte[] nameArray = Arrays.copyOfRange(var2, 11, var2.length);
+                    	String name = new String(nameArray);
+                        this.sendResponsePacket(this.createQueryResponseCase3(par1DatagramPacket, name), par1DatagramPacket);
+                        this.logDebug("Case 3 [" + var4 + "] " + name);
+                    }
+                    else
+                    {
+                    	this.sendResponsePacket(this.createQueryResponseCase3(par1DatagramPacket, null), par1DatagramPacket);
+                        this.logDebug("Case 3 [" + var4 + "] NO USERNAME");
                     }
                     return true;
                 case 9:
@@ -258,7 +298,7 @@ public class RConQueryThread implements Runnable
     
     /**
      * Creates a query response for Case1
-     * Player info
+     * All online players
      */
     private byte[] createQueryResponseCase1(DatagramPacket par1DatagramPacket) throws IOException
     {
@@ -276,19 +316,119 @@ public class RConQueryThread implements Runnable
         }
         else
         {
-        	// Needs to get update every time
-        	HashMap<String, String> PlayerData = new HashMap();
-            for(String username : this.server.getAllUsernames())
-            {
-            	PlayerData.put(username, TextFormatter.mapToJSON(ModuleSnooper.getUserData(username)));
-            }
-        	
         	this.lastQueryResponseTime = var2;
             this.output.reset();
             this.output.writeInt(0);
             this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
             
-            this.output.writeString(TextFormatter.mapToJSON(PlayerData));
+            HashMap<String, String> temp = new HashMap();
+            String[] array = new String[server.getCurrentPlayerCount()];
+            int i = 0;
+            for(String username : server.getConfigurationManager().getAllUsernames())
+            {
+            	array[i] = username;
+            }
+            temp.put("players", TextFormatter.arrayToJSON(array));
+			this.output.writeString(TextFormatter.mapToJSON(temp));
+			
+            return this.output.toByteArray();
+        }
+    }
+    
+    /**
+     * Creates a query response for Case2
+     * Player info
+     */
+    private byte[] createQueryResponseCase2(DatagramPacket par1DatagramPacket, String username) throws IOException
+    {
+        long var2 = System.currentTimeMillis();
+        
+        if (var2 < this.lastQueryResponseTime + 5000L)
+        {
+            byte[] var7 = this.output.toByteArray();
+            byte[] var8 = this.getRequestId(par1DatagramPacket.getSocketAddress());
+            var7[1] = var8[0];
+            var7[2] = var8[1];
+            var7[3] = var8[2];
+            var7[4] = var8[3];
+            return var7;
+        }
+        else
+        {
+        	this.lastQueryResponseTime = var2;
+            this.output.reset();
+            this.output.writeInt(0);
+            this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
+            //No player given            
+            if(username == null)
+            {
+            	HashMap<String, String> temp = new HashMap();
+            	temp.put(null, TextFormatter.arrayToJSON(new String[0]));
+            	this.output.writeString(TextFormatter.mapToJSON(temp));
+            	return this.output.toByteArray();
+            }
+            
+            EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
+            //Player is not online
+            if(player == null)
+            {
+            	HashMap<String, String> temp = new HashMap();
+            	temp.put(null, TextFormatter.arrayToJSON(new String[0]));
+            	this.output.writeString(TextFormatter.mapToJSON(temp));
+            	return this.output.toByteArray();
+            }
+            
+            this.output.writeString(TextFormatter.mapToJSON(ModuleSnooper.getUserData(player)));
+            this.output.writeString("#");
+            this.output.writeString(TextFormatter.mapToJSON(ModuleSnooper.getArmorData(player)));
+            
+            return this.output.toByteArray();
+        }
+    }
+    
+    /**
+     * Creates a query response for Case3
+     * Inv info
+     */
+    private byte[] createQueryResponseCase3(DatagramPacket par1DatagramPacket, String username) throws IOException
+    {
+        long var2 = System.currentTimeMillis();
+        
+        if (var2 < this.lastQueryResponseTime + 5000L)
+        {
+            byte[] var7 = this.output.toByteArray();
+            byte[] var8 = this.getRequestId(par1DatagramPacket.getSocketAddress());
+            var7[1] = var8[0];
+            var7[2] = var8[1];
+            var7[3] = var8[2];
+            var7[4] = var8[3];
+            return var7;
+        }
+        else
+        {
+        	this.lastQueryResponseTime = var2;
+            this.output.reset();
+            this.output.writeInt(0);
+            this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
+            //No player given            
+            if(username == null)
+            {
+            	HashMap<String, String> temp = new HashMap();
+            	temp.put(null, TextFormatter.arrayToJSON(new String[0]));
+            	this.output.writeString(TextFormatter.mapToJSON(temp));
+            	return this.output.toByteArray();
+            }
+            
+            EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
+            //Player is not online
+            if(player == null)
+            {
+            	HashMap<String, String> temp = new HashMap();
+            	temp.put(null, TextFormatter.arrayToJSON(new String[0]));
+            	this.output.writeString(TextFormatter.mapToJSON(temp));
+            	return this.output.toByteArray();
+            }
+            this.output.writeString(TextFormatter.mapToJSON(ModuleSnooper.getInvData(player)));
             
             return this.output.toByteArray();
         }

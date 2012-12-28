@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.rcon.IServer;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -76,12 +79,14 @@ public class ModuleSnooper implements IFEModule
     /**
      * Get all of the info!
      * @param username
-     * @return All of the date in this format: [key1;value1, key2;value2]
+     * @return All of the date!
      */
-    public static HashMap<String, String> getUserData(String username) 
+    public static HashMap<String, String> getUserData(EntityPlayerMP player) 
 	{
     	HashMap<String, String> PlayerData = new HashMap();
-    	EntityPlayer player = server.getConfigurationManager().getPlayerForUsername(username);
+    	HashMap<String, String> tempMap = new HashMap();
+    	ArrayList<String> tempArgs = new ArrayList();
+    	String username = player.username;
 		
     	PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
 		if(pi != null)
@@ -90,36 +95,100 @@ public class ModuleSnooper implements IFEModule
 			if(pi.lastDeath != null) PlayerData.put("lastDeath", TextFormatter.pointToJSON(pi.lastDeath));
 		}
 		
-		PlayerData.put("wallet", ""+Wallet.getWallet(player));
-		PlayerData.put("health", ""+player.getHealth());
-		PlayerData.put("food", ""+player.getFoodStats());
+		PlayerData.put("armor", "" + player.inventory.getTotalArmorValue());
+		PlayerData.put("wallet", "" + Wallet.getWallet(player));
+		PlayerData.put("health", "" + player.getHealth());
 		PlayerData.put("pos", TextFormatter.pointToJSON(new WorldPoint(player)));
+		PlayerData.put("potion", TextFormatter.potionsToJSON(player.getActivePotionEffects()));
+		PlayerData.put("ping", "" + player.ping);
+		PlayerData.put("gm", player.theItemInWorldManager.getGameType().getName());
 		
-		HashMap<String, String> temp = new HashMap();
-		for(Object effectObj : player.getActivePotionEffects())
 		{
-			PotionEffect effect = ((PotionEffect) effectObj);
-			HashMap<String, String> temp2 = new HashMap();
-			temp2.put("name", "" + effect.getEffectName());
-			temp2.put("amp", "" + effect.getAmplifier());
-			temp2.put("dur", "" + effect.getDuration());
-		
-			temp.put("" + effect.getPotionID(), TextFormatter.mapToJSON(temp2));
+			tempMap.clear();
+			tempMap.put("lvl", "" + player.experienceLevel);
+			tempMap.put("bar", "" + player.experience);
 		}
-		PlayerData.put("potion", TextFormatter.mapToJSON(temp));
-		temp.clear();
+		PlayerData.put("xp", TextFormatter.mapToJSON(tempMap));
 		
-		for(ItemStack stack: player.inventory.armorInventory)
 		{
-			if(stack != null)
-			{
-				temp.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack));
-			}
+			tempMap.clear();
+			tempMap.put("food", "" + player.getFoodStats().getFoodLevel());
+			tempMap.put("saturation", "" + player.getFoodStats().getSaturationLevel());
 		}
-		PlayerData.put("armor", TextFormatter.mapToJSON(temp));
+		PlayerData.put("foodStats", TextFormatter.mapToJSON(tempMap));
+		
+		{
+			tempMap.clear();
+			tempMap.put("edit", "" + player.capabilities.allowEdit);
+			tempMap.put("allowFly", "" + player.capabilities.allowFlying);
+			tempMap.put("isFly", "" + player.capabilities.isFlying);
+			tempMap.put("noDamage", "" + player.capabilities.disableDamage);
+		}
+		PlayerData.put("capabilities", TextFormatter.mapToJSON(tempMap));
 		
 		return PlayerData;
-	}	
+	}
+    
+    /**
+     * Get all of the armor data
+     * @param player
+     * @return
+     */
+    public static HashMap<String, String> getArmorData(EntityPlayerMP player) 
+	{
+    	HashMap<String, String> PlayerData = new HashMap();
+    	String username = player.username;
+
+    	ItemStack stack = player.inventory.armorInventory[3];
+    	if(stack != null)
+    	{
+    		PlayerData.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack, true));
+    	}
+
+    	stack = player.inventory.armorInventory[2];
+    	if(stack != null)
+    	{
+    		PlayerData.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack, true));
+    	}
+    	
+    	stack = player.inventory.armorInventory[1];
+    	if(stack != null)
+    	{
+    		PlayerData.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack, true));
+    	}
+
+    	stack = player.inventory.armorInventory[0];
+    	if(stack != null)
+    	{
+    		PlayerData.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack, true));
+    	}
+    	
+		return PlayerData;
+	}
+    
+    /**
+     * Get all of the inv data
+     * @param player
+     * @return
+     */
+    public static HashMap<String, String> getInvData(EntityPlayerMP player) 
+	{
+    	HashMap<String, String> PlayerData = new HashMap();
+    	String username = player.username;
+
+    	int i = 0;
+    	for(ItemStack stack : player.inventory.mainInventory)
+    	{
+    		if(stack != null)
+        	{
+        		PlayerData.put(stack.getDisplayName(), TextFormatter.itemStackToJSON(stack, false));
+        		i ++;
+        	}
+    	}
+    	
+		return PlayerData;
+	}
+    
 	
 	/*
 	 * Not needed
