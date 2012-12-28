@@ -469,7 +469,7 @@ public class MySQLDataDriver extends DataDriver
 			}
 			else if (type.equals(String.class))
 			{
-				fields.add(new Pair<String, String>(fieldName, "VARCHAR(1024)"));
+				fields.add(new Pair<String, String>(fieldName, "VARCHAR(700)"));
 			}
 			else if (type.equals(double[].class) ||
 					type.equals(int[].class) || type.equals(boolean[].class) ||
