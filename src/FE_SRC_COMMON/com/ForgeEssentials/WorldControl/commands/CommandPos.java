@@ -6,6 +6,7 @@ import net.minecraft.util.MovingObjectPosition;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
@@ -59,6 +60,13 @@ public class CommandPos extends WorldControlCommandBase
 		}
 
 		MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player, true);
+		
+		if (mop == null)
+		{
+			OutputHandler.chatError(player, Localization.ERROR_TARGET);
+			return;
+		}
+		
 		x = mop.blockX;
 		y = mop.blockY;
 		z = mop.blockZ;
