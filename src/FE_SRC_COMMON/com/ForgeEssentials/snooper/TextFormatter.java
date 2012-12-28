@@ -21,7 +21,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class TextFormatter 
 {
-	public static String mapToJSON(HashMap<String, String> data)
+	public static String toJSON(HashMap<String, String> data)
 	{
 		if(data.isEmpty())
 		{
@@ -31,8 +31,7 @@ public class TextFormatter
 		
         for(Entry<String, String> set : data.entrySet())
     	{
-        	
-        	if(set.getValue().startsWith("{"))
+        	if(set.getValue().startsWith("{") || set.getValue().startsWith("["))
         	{
         		toSend += "\"" + set.getKey() + "\": " + set.getValue() + ", ";
         	}
@@ -48,33 +47,33 @@ public class TextFormatter
 		return toSend;
 	}
 	
-	public static String arrayToJSON(String[] data)
+	public static String toJSON(String[] data)
 	{
 		if(data.length == 0)
 		{
-			return "[]";
+			return "[\"\"]";
 		}
 		String toSend = "[";
 		
         for(String value : data)
     	{
-        	if(value.startsWith("{"))
+        	if(value.startsWith("{") || value.startsWith("["))
         	{
-        		toSend += value + ", ";
+        		toSend += value + ",";
         	}
         	else
         	{
-        		toSend += "'" + value + "', ";
+        		toSend += "\"" + value + "\",";
         	}
     	}
         
-        toSend = toSend.substring(0, toSend.length() - 2);
+        toSend = toSend.substring(0, toSend.length() - 1);
         toSend += "]";
 		
 		return toSend;
 	}
 	
-	public static String pointToJSON(Point point)
+	public static String toJSON(Point point)
 	{
 		HashMap<String, String> data = new HashMap();
 		data.put("x", "" + point.x);
@@ -90,39 +89,42 @@ public class TextFormatter
 			data.put("pitch", "" + ((WarpPoint)point).pitch);
 			data.put("yaw", "" + ((WarpPoint)point).yaw);
 		}
-		return mapToJSON(data);
+		return toJSON(data);
 	}
 	
-	public static String itemStackToJSON(ItemStack stack, boolean listEnch)
+	public static String toJSON(ItemStack stack, Boolean listEnch)
 	{
 		HashMap<String, String> data = new HashMap();
-		if(stack.stackTagCompound.getCompoundTag("display").hasKey("Name")) data.put("name", "" + stack.getItemName().replaceAll("item.", "").replaceAll("tile.", "")); 
+		if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display") && stack.stackTagCompound.getCompoundTag("display").hasKey("Name")) data.put("item", stack.getItemName().replaceAll("item.", "").replaceAll("tile.", "")); 
+		if(stack.stackSize != 1) data.put("amount", "" + stack.stackSize);
 		data.put("id", "" + stack.itemID);
-		data.put("amount", "" + stack.stackSize);
 		data.put("damage", "" + stack.getItemDamage());
+		data.put("name", stack.getDisplayName());
 		
-		ArrayList<String> tempArgs = new ArrayList();
-		NBTTagList var10 = stack.getEnchantmentTagList();
-        if (var10 != null)
-        { 
-            for (int var7 = 0; var7 < var10.tagCount(); ++var7)
-            {
-                short var8 = ((NBTTagCompound)var10.tagAt(var7)).getShort("id");
-                short var9 = ((NBTTagCompound)var10.tagAt(var7)).getShort("lvl");
-
-                if (Enchantment.enchantmentsList[var8] != null)
-                {
-                	if(listEnch) tempArgs.add(Enchantment.enchantmentsList[var8].getTranslatedName(var9));
-                	else tempArgs.add("[" + var8 + ", " + var9 + "]"); 
-                }
-            }
-            data.put("ench", listToJSON(tempArgs));
-        }
+		if(listEnch)
+		{
+			ArrayList<String> tempArgs = new ArrayList();
+			NBTTagList var10 = stack.getEnchantmentTagList();
+			if (var10 != null)
+			{ 
+				for (int var7 = 0; var7 < var10.tagCount(); ++var7)
+				{
+					short var8 = ((NBTTagCompound)var10.tagAt(var7)).getShort("id");
+					short var9 = ((NBTTagCompound)var10.tagAt(var7)).getShort("lvl");
+					
+					if (Enchantment.enchantmentsList[var8] != null)
+					{
+						tempArgs.add(Enchantment.enchantmentsList[var8].getTranslatedName(var9));
+					}
+				}
+				data.put("ench", toJSON(tempArgs));
+			}
+		}
 		
-		return mapToJSON(data);
+		return toJSON(data);
 	}
 	
-	public static String potionsToJSON(Collection collection)
+	public static String toJSON(Collection collection)
 	{
 		String[] data = new String[collection.size()];
 		Iterator i = collection.iterator();
@@ -134,7 +136,7 @@ public class TextFormatter
 			data[id] = translatePotion(effect);
 			id ++;
 		}
-		return arrayToJSON(data);
+		return toJSON(data);
 	}
 	
     public static String translatePotion(PotionEffect effect)
@@ -148,7 +150,7 @@ public class TextFormatter
         return name;
     }
 
-	public static String listToJSON(ArrayList<String> data) 
+	public static String toJSON(ArrayList<String> data) 
 	{
 		if(data.size() == 0)
 		{
@@ -156,19 +158,19 @@ public class TextFormatter
 		}
 		String toSend = "[";
 		
-        for(String value : data)
-    	{
-        	if(value.startsWith("{"))
-        	{
-        		toSend += value + ", ";
-        	}
-        	else
-        	{
-        		toSend += "'" + value + "', ";
-        	}
-    	}
+		for(String value : data)
+		{
+			if(value.startsWith("{") || value.startsWith("["))
+			{
+				toSend += value + ",";
+			}
+			else
+			{
+				toSend += "\"" + value + "\",";
+			}
+		}
         
-        toSend = toSend.substring(0, toSend.length() - 2);
+        toSend = toSend.substring(0, toSend.length() - 1);
         toSend += "]";
 		
 		return toSend;
