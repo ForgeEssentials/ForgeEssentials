@@ -65,7 +65,7 @@ public class ConfigWorldBorder
 	 */
 	public static void penaltiesConfig(Configuration config)
 	{
-		String penaltyBasePackage = IEffect.class.getPackage().getName() + ".";
+		String penaltyBasePackage = "com.ForgeEssentials.WorldBorder.Effects.";
 		config.addCustomCategoryComment("Penalties", "This is what will happen to the player if he passes the world boder.");
 		
 		String[] stages = {"Stage1"};
