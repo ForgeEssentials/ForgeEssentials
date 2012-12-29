@@ -243,6 +243,10 @@ public class ForgeConfigDataDriver extends DataDriver
 					field = data.new SavedField();
 					field.name = child.getQualifiedName().replace(cat.getQualifiedName()+".", "");
 					field.type = tag.getTypeOfField(field.name);
+					
+					if (field.type == null)
+						continue;
+					
 					field.value = readClassFromProperty(cfg, child, DataStorageManager.getTaggerForType(field.type));
 					data.addField(field);
 				}

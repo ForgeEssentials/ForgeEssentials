@@ -38,7 +38,7 @@ public class WandController
 		if (id != info.wandID || !info.wandEnabled || damage != info.wandDmg)
 			return; // wand does not activate
 		
-		WorldPoint point = new WorldPoint(player.worldObj, event.x, event.y, event.z);
+		Point point = new Point(event.x, event.y, event.z);
 		
 		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, "WorldControl.commands.pos", point)))
 		{

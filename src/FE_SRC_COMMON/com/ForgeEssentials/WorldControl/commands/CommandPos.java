@@ -75,7 +75,7 @@ public class CommandPos extends WorldControlCommandBase
 		y = mop.blockY;
 		z = mop.blockZ;
 		
-		WorldPoint point = new WorldPoint(player.worldObj, x, y, z);
+		Point point = new Point(x, y, z);
 		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, this.getCommandPerm(), point)))
 		{
 			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
