@@ -83,8 +83,7 @@ public class PlayerInfoResonce extends Response
 		
 		try
 		{
-			ArrayList<Group> groups = GroupManager.getApplicableGroups(player);
-			Group group = groups.get(groups.size() - 1);
+			Group group = GroupManager.getHighestGroup(player);
 			PlayerData.put("group", group.name);
 		}catch(Exception e){}
 		

@@ -52,10 +52,10 @@ public class GroupManager
 
 	/**
 	 * Returns the list of all the groups the player is in at a given time. It is in order of priority the first bieng the highest.
-	 * It will always have at least the DEFAULT groups.
+	 * NEVER includes the default group.
 	 * @param player
 	 */
-	public static ArrayList<Group> getApplicableGroups(EntityPlayer player)
+	public static ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
 		TreeSet<Group> list = new TreeSet<Group>();
 		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
@@ -65,16 +65,50 @@ public class GroupManager
 		{
 			playerData = PlayerManager.getPlayerData(zone.getZoneID(), player.username);
 			for (String group : playerData.getGroupList())
+			{
+				if (!includeDefaults && group.equals(DEFAULT.name))
+					continue;
 				list.add(GroupManager.getGroupName(group));
+			}
 			
 			
 			zone = ZoneManager.getZone(zone.parent);
 		}
 		
-		list.add(DEFAULT);
+		if (includeDefaults)
+			list.add(DEFAULT);
 		
 		ArrayList<Group> returnable = new ArrayList<Group>();
 		returnable.addAll(list);
 		return returnable;
+	}
+	
+	public static Group getHighestGroup(EntityPlayer player)
+	{
+		Group high;
+		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
+		PlayerPermData playerData;
+		TreeSet<Group> list = new TreeSet<Group>();
+
+		while (zone != null && list.size() <= 0)
+		{
+			playerData = PlayerManager.getPlayerData(zone.getZoneID(), player.username);
+			
+			if (playerData.getGroupList().isEmpty())
+			{
+				zone = ZoneManager.getZone(zone.parent);
+				continue;
+			}
+			
+			for (String group : playerData.getGroupList())
+				list.add(GroupManager.getGroupName(group));
+			
+			zone = ZoneManager.getZone(zone.parent);
+		}
+		
+		if (list.size() == 0)
+			return DEFAULT;
+		else
+			return list.pollFirst();
 	}
 }
