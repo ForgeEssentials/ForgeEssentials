@@ -8,9 +8,10 @@ echo "Version of ${JOB_NAME} is: ${VERSION} for MC ${MC}"
 
 echo "Downloading Forge..."
 #wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip 
-wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-1.4.6-4.5.0.489.zip 
+wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-1.4.6-6.5.0.489.zip
 unzip minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
+rm "For later.zip"
 cd forge
 
 echo "Installing Forge..."
