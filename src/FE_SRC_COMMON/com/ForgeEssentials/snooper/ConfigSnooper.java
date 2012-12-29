@@ -25,8 +25,13 @@ public class ConfigSnooper
 		
 		String cat = "Snooper";
 		
-		ModuleSnooper.port = config.get(cat, "port", 25565).getInt();
+		ModuleSnooper.port = config.get(cat, "port", 25565, "The query port").getInt();
+		ModuleSnooper.hostname = config.get(cat, "hostname", "", "The query hostname/IP").value;
 		ModuleSnooper.enable = config.get(cat, "enable", false).getBoolean(false);
+		
+		ModuleSnooper.overrideIP = config.get(cat, "overrideIP", false, "If set to true, will send 'overrideIPValue' instead of IP").getBoolean(false);
+		ModuleSnooper.overrideIPValue = config.get(cat, "overrideIPValue", "", "Value to send if overrideIP = true").value;
+		
 		
 		send_Mods = config.get(cat, "send_Mods", true, "Send mod info").getBoolean(true);
 		send_IP = config.get(cat, "send_IP", true, "Send ip & port").getBoolean(true);

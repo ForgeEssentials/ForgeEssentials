@@ -17,6 +17,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Property;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.WorldBorder.ConfigWorldBorder;
@@ -43,12 +44,16 @@ public class ModuleSnooper implements IFEModule
 	public static ConfigSnooper configSnooper;
 	
 	public static int port;
+	public static String hostname;
 	public static boolean enable;
 	
 	public static RConQueryThread theThread;
 	private static ArrayList<String> names;
 
 	private static MinecraftServer server;
+
+	public static boolean overrideIP;
+	public static String overrideIPValue;
 	
 	public ModuleSnooper()
 	{
