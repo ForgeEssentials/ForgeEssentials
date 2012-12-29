@@ -30,8 +30,8 @@ cp -rf ${WORKSPACE}/lib/* .
 cd ..
 
 echo "injecting version into places"
-sed -i 's/@VERSION@/'${VERSION}'/g' A1-zipStuff/mcmod.info
-sed -i 's/@MC@/'${MC}'/g' A1-zipStuff/mcmod.info
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/mcmod.info
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/mcmod.info
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/ForgeEssentials.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/client/ForgeEssentialsClient.java
 
