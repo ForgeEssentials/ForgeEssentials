@@ -63,7 +63,7 @@ public class ForgeConfigDataDriver extends DataDriver
 	{
 		boolean wasSuccessful = false;
 		
-		File file = this.getFilePath(type, objectData.uniqueKey);
+		File file = this.getFilePath(type, objectData.uniqueKey.value);
 		
 		// Wipe existing Forge Configuration file - they don't take new data.
 		if (file.exists())
