@@ -21,6 +21,11 @@
 			<locationURI>MCP_LOC/src/FE_SRC_COMMON</locationURI>
 		</link>
 		<link>
+			<name>FE_SRC_CLIENT</name>
+			<type>2</type>
+			<locationURI>MCP_LOC/src/FE_SRC_CLIENT</locationURI>
+		</link>
+		<link>
 			<name>jars</name>
 			<type>2</type>
 			<locationURI>MCP_LOC/jars</locationURI>
