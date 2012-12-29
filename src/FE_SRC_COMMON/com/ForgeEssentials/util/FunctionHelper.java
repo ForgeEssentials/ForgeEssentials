@@ -65,7 +65,7 @@ public final class FunctionHelper
 	}
 
 	/**
-	 * 
+	 * does NOT check if its a valid BlockID and stuff.. this may be used for items.
 	 * @return never NULL. always {0, -1}. Meta by default is -1.
 	 * @throws RuntimeException the message is a formatted chat string.
 	 */
@@ -74,35 +74,44 @@ public final class FunctionHelper
 		int ID;
 		int meta = -1;
 
+		// perhaps the ID:Meta format
+		if (msg.contains(":"))
+		{
+			String[] pair = msg.split(":", 2);
+			
+			try
+			{
+				ID = Integer.parseInt(pair[0]);
+			}
+			catch (NumberFormatException e)
+			{
+				throw new RuntimeException(Localization.format(Localization.ERROR_NAN, pair[0]));
+			}
+			
+			try
+			{
+				meta = Integer.parseInt(pair[1]);
+			}
+			catch (NumberFormatException e)
+			{
+				throw new RuntimeException(Localization.format(Localization.ERROR_NAN, pair[1]));
+			}
+			
+			return new int[] { ID, meta };
+		}
+		
+		// TODO: add name checking.
+		
 		// try checking if its just an ID
 		try
 		{
 			ID = Integer.parseInt(msg);
-			return new int[] { ID, meta };
+			meta = -1;
 		}
 		catch (NumberFormatException e)
 		{
-			// do nothing. continue checking.
+			throw new RuntimeException(Localization.format(Localization.ERROR_NAN, msg));
 		}
-
-		// perhaps the ID:Meta format
-		try
-		{
-			if (msg.contains(":"))
-			{
-				String[] pair = msg.split(":", 2);
-				ID = Integer.parseInt(pair[0]);
-				meta = Integer.parseInt(pair[1]);
-
-				return new int[] { ID, meta };
-			}
-		}
-		catch (NumberFormatException e)
-		{
-			// do nothing. continue checking.
-		}
-
-		// TODO: add name checking.
 
 		return new int[] { 0, -1 };
 	}
