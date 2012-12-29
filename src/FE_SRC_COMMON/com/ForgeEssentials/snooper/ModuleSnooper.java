@@ -54,6 +54,8 @@ public class ModuleSnooper implements IFEModule
 
 	public static boolean overrideIP;
 	public static String overrideIPValue;
+
+	public static boolean autoReboot;
 	
 	public ModuleSnooper()
 	{
@@ -68,9 +70,8 @@ public class ModuleSnooper implements IFEModule
 		if(enable)
 		{
 			e.registerServerCommand(new CommandReloadQuery());
-			theThread = new RConQueryThread((IServer) e.getServer());
-			theThread.startThread();
 			server = e.getServer();
+			startQuery();
 		}
 	}
 	
@@ -103,6 +104,16 @@ public class ModuleSnooper implements IFEModule
 		return tempArgs;
 	}
     
+    public static void startQuery()
+    {
+    	if(theThread != null)
+    	{
+    		ModuleSnooper.theThread.closeAllSockets_do(true);
+    		ModuleSnooper.theThread.running = false;
+    	}
+    	theThread = new RConQueryThread((IServer) server);
+		theThread.startThread();
+    }
 
 	/*
 	 * Not needed

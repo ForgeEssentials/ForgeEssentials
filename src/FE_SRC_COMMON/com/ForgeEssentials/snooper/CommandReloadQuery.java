@@ -35,8 +35,7 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase
 		ModuleSnooper.theThread.closeAllSockets_do(true);
 		ModuleSnooper.theThread.running = false;
 		sender.sendChatToPlayer("Making new one....");
-		ModuleSnooper.theThread = new RConQueryThread((IServer) FMLCommonHandler.instance().getMinecraftServerInstance());
-		ModuleSnooper.theThread.startThread();
+		ModuleSnooper.startQuery();
 	}
 	
 	@Override

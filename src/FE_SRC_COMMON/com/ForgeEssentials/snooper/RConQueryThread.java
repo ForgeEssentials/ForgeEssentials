@@ -422,7 +422,7 @@ public class RConQueryThread implements Runnable
      */
     protected void logDebug(String par1Str)
     {
-        this.server.logInfo(par1Str);
+        this.server.logDebug(par1Str);
     }
 
     /**
@@ -577,6 +577,11 @@ public class RConQueryThread implements Runnable
         if (par1 && 0 < var2)
         {
             this.logWarning("Force closed " + var2 + " sockets");
+        }
+        
+        if(ModuleSnooper.autoReboot)
+        {
+        	ModuleSnooper.startQuery();
         }
     }
 }

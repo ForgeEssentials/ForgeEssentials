@@ -33,6 +33,7 @@ public class ConfigSnooper
 		ModuleSnooper.overrideIP = config.get(cat, "overrideIP", false, "If set to true, will send 'overrideIPValue' instead of IP").getBoolean(false);
 		ModuleSnooper.overrideIPValue = config.get(cat, "overrideIPValue", "", "Value to send if overrideIP = true").value;
 		
+		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automaticly reload the query system if a fatal error occures").getBoolean(true);
 		
 		send_Mods = config.get(cat, "send_Mods", true, "Send mod info").getBoolean(true);
 		send_IP = config.get(cat, "send_IP", true, "Send ip & port").getBoolean(true);

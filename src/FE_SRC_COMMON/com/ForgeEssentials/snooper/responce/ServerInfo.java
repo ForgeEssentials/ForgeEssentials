@@ -44,7 +44,7 @@ public class ServerInfo extends Response
 		if(ConfigSnooper.send_IP)
 		{
 			if(ModuleSnooper.overrideIP) data.put("hostip", "" + ModuleSnooper.overrideIPValue);
-			else data.put("hostip", server.getHostname());
+			else data.put("hostip", getIP());
 			data.put("hostport", "" + server.getPort());
 		}
 		// MC version
