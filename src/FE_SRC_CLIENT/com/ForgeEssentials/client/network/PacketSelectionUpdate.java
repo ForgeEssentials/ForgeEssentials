@@ -1,9 +1,7 @@
-package com.ForgeEssentials.client;
+package com.ForgeEssentials.client.network;
 
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.network.IForgeEssentialsPacket;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.client.ForgeEssentialsClient;
+import com.ForgeEssentials.client.util.Point;
 
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,51 +23,10 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 
 	private Packet250CustomPayload	packet;
 
-	public PacketSelectionUpdate(PlayerInfo info)
+	@Deprecated
+	public PacketSelectionUpdate()
 	{
-		packet = new Packet250CustomPayload();
-
-		ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
-		DataOutputStream stream = new DataOutputStream(streambyte);
-
-		try
-		{
-			stream.write(packetID);
-
-			if (info != null && info.getPoint1() != null)
-			{
-				Point p1 = info.getPoint1();
-				stream.writeBoolean(true);
-				stream.writeInt(p1.x);
-				stream.writeInt(p1.y);
-				stream.writeInt(p1.z);
-			}
-			else
-				stream.writeBoolean(false);
-
-			if (info != null && info.getPoint2() != null)
-			{
-				Point p2 = info.getPoint2();
-				stream.writeBoolean(true);
-				stream.writeInt(p2.x);
-				stream.writeInt(p2.y);
-				stream.writeInt(p2.z);
-			}
-			else
-				stream.writeBoolean(false);
-
-			stream.close();
-			streambyte.close();
-
-			packet.channel = FECHANNEL;
-			packet.data = streambyte.toByteArray();
-			packet.length = packet.data.length;
-		}
-
-		catch (Exception e)
-		{
-			OutputHandler.SOP("Error creating packet >> " + this.getClass());
-		}
+		// should never be sent from the client..
 	}
 
 	public static void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException

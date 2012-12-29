@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandWand extends WorldControlCommandBase
@@ -52,8 +53,9 @@ public class CommandWand extends WorldControlCommandBase
 				return;
 			} else
 			{
-				currentID = interpretIDAndMetaFromString(args[0])[0];
-				currentDmg = interpretIDAndMetaFromString(args[0])[1];
+				int[] parsed = FunctionHelper.parseIdAndMetaFromString(args[0]);
+				currentID = parsed[0];
+				currentDmg = parsed[1];
 				info.wandEnabled = true;
 				info.wandID = currentID;
 				info.wandDmg = currentDmg == -1 ? 0 : currentDmg;

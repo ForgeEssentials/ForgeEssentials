@@ -14,7 +14,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = com.ForgeEssentials.client.PacketHandler.class))
+@NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = com.ForgeEssentials.client.network.PacketHandler.class))
 @Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client", version = "@VERSION@")
 public class ForgeEssentialsClient
 {

@@ -70,44 +70,6 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	{
 		return false;
 	}
-
-	public static int[] interpretIDAndMetaFromString(String msg)
-	{
-		int ID;
-		int meta = -1;
-
-		// try checking if its just an ID
-		try
-		{
-			ID = Integer.parseInt(msg);
-			return new int[] { ID, meta };
-		}
-		catch (NumberFormatException e)
-		{
-			// do nothing. continue checking.
-		}
-
-		// perhaps the ID:Meta format
-		try
-		{
-			if (msg.contains(":"))
-			{
-				String[] pair = msg.split(":", 2);
-				ID = Integer.parseInt(pair[0]);
-				meta = Integer.parseInt(pair[1]);
-
-				return new int[] { ID, meta };
-			}
-		}
-		catch (NumberFormatException e)
-		{
-			// do nothing. continue checking.
-		}
-
-		// TODO: add name checking.
-
-		return new int[] { 0, -1 };
-	}
 	
 	@Override
 	public String getCommandPerm()

@@ -42,28 +42,9 @@ public final class FunctionHelper
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
 
-	@Deprecated
-	/**
-	 * use DimensionIDs instead
-	 */
-	public static String getWorldString(World world)
-	{
-		return getDimension(0).getChunkSaveLocation() + "_" + world.getWorldInfo().getDimension();
-	}
-
 	public static String getZoneWorldString(World world)
 	{
 		return "WORLD_" + world.provider.getDimensionName() + "_" +world.provider.dimensionId;
-	}
-	
-	@Deprecated
-	/**
-	 * use DimensionIDs instead
-	 */
-	public static WorldServer getWorldFromWorldString(String worldString)
-	{
-		int dimensionID = Integer.parseInt(worldString.substring(worldString.lastIndexOf('_'))); 
-		return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionID);
 	}
 
 	public static WorldServer getDimension(int dimension)
@@ -79,5 +60,48 @@ public final class FunctionHelper
 	public static EntityPlayer getPlayerFromUsername(String username)
 	{
 		return FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+	}
+	
+	/**
+	 * 
+	 * @return never NULL. always {0, -1}. Meta by default is -1.
+	 * @throws RuntimeException the message is a formatted chat string.
+	 */
+	public static int[] parseIdAndMetaFromString(String msg) throws RuntimeException
+	{
+		int ID;
+		int meta = -1;
+
+		// try checking if its just an ID
+		try
+		{
+			ID = Integer.parseInt(msg);
+			return new int[] { ID, meta };
+		}
+		catch (NumberFormatException e)
+		{
+			// do nothing. continue checking.
+		}
+
+		// perhaps the ID:Meta format
+		try
+		{
+			if (msg.contains(":"))
+			{
+				String[] pair = msg.split(":", 2);
+				ID = Integer.parseInt(pair[0]);
+				meta = Integer.parseInt(pair[1]);
+
+				return new int[] { ID, meta };
+			}
+		}
+		catch (NumberFormatException e)
+		{
+			// do nothing. continue checking.
+		}
+
+		// TODO: add name checking.
+
+		return new int[] { 0, -1 };
 	}
 }

@@ -1,4 +1,4 @@
-package com.ForgeEssentials.client;
+package com.ForgeEssentials.client.network;
 
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;

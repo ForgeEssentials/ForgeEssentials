@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Selection;
@@ -34,7 +35,7 @@ public class CommandSet extends WorldControlCommandBase
 
 		if (args.length == 1)
 		{
-			int[] data = this.interpretIDAndMetaFromString(args[0]);
+			int[] data = FunctionHelper.parseIdAndMetaFromString(args[0]);
 			ID = data[0];
 			metadata = data[1];
 			

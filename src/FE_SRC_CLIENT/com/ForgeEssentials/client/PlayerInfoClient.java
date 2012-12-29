@@ -1,7 +1,7 @@
 package com.ForgeEssentials.client;
 
-import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.Selection;
+import com.ForgeEssentials.client.util.Point;
+import com.ForgeEssentials.client.util.Selection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
