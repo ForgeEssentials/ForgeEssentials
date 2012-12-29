@@ -19,8 +19,7 @@ public class WEDownloader implements ILibrarySet{
 
 	@Override
 	public String getRootURL() {
-		return "https://github.com/ForgeEssentials/ForgeEssentialsMain/raw/master/lib/%s";
-		//return "http://build.sk89q.com/job/WorldEdit/1309/com.sk89q$worldedit/artifact/com.sk89q/worldedit/5.4.6-SNAPSHOT/%s";
+		return "http://build.sk89q.com/job/WorldEdit/1309/com.sk89q$worldedit/artifact/com.sk89q/worldedit/5.4.6-SNAPSHOT/%s";
 	}
 
 }

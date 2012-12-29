@@ -9,7 +9,7 @@ public class Data
 {
 
 	public static String[]	libraries		= { "mysql-connector-java-bin.jar", "sqlite-jdbc.jar" };
-	public static String[]	checksums		= { "3AE0CFF91D7F40D5B4C7CEFBBD1EAB34025BDC15", "CEA9F7F8E6BCB580D953A8651FB8391640DE0F85" };
+	public static String[]	checksums		= { "3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15", "cea9f7f8e6bcb580d953a8651fb8391640de0f85" };
 	protected static String[]	transformers	= { "com.ForgeEssentials.coremod.FEPermissionsTransformer" };
     protected static String[]   downloaders     = {"com.ForgeEssentials.coremod.libget.SQLDownloader", "com.ForgeEssentials.coremod.libget.WEDownloader"};
 }
