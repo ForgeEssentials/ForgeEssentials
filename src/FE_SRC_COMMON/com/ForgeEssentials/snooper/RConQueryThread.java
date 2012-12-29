@@ -130,7 +130,7 @@ public class RConQueryThread implements Runnable
             }
             catch (UnknownHostException var3)
             {
-                this.logWarning("Unable to determine local host IP, please set server-ip in \'" + par1IServer.getSettingsFilePath() + "\' : " + var3.getMessage());
+                this.logWarning("Unable to determine local host IP, please set server-ip in \'" + par1IServer.getSettingsFilename() + "\' : " + var3.getMessage());
             }
         }
 
@@ -570,7 +570,7 @@ public class RConQueryThread implements Runnable
             }
             else
             {
-                this.logWarning("Invalid query port " + this.queryPort + " found in \'" + ((IServer) this.server).getSettingsFilePath() + "\' (queries disabled)");
+                this.logWarning("Invalid query port " + this.queryPort + " found in \'" + ((IServer) this.server).getSettingsFilename() + "\' (queries disabled)");
             }
         }
     }
