@@ -1,41 +1,40 @@
-package com.ForgeEssentials.client.core.network;
+package com.ForgeEssentials.client;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.network.IForgeEssentialsPacket;
+import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.Point;
 
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
-import com.ForgeEssentials.client.core.ProxyClient;
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.network.IForgeEssentialsPacket;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketSelectionUpdate implements IForgeEssentialsPacket
 {
-	public static final byte	packetID	= 0;
-	
-	private Packet250CustomPayload packet;
-	
+	public static final byte		packetID	= 0;
+
+	private Packet250CustomPayload	packet;
+
 	public PacketSelectionUpdate(PlayerInfo info)
 	{
 		packet = new Packet250CustomPayload();
-		
+
 		ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
 		DataOutputStream stream = new DataOutputStream(streambyte);
 
 		try
 		{
 			stream.write(packetID);
-			
+
 			if (info != null && info.getPoint1() != null)
 			{
 				Point p1 = info.getPoint1();
@@ -57,10 +56,10 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 			}
 			else
 				stream.writeBoolean(false);
-			
+
 			stream.close();
 			streambyte.close();
-			
+
 			packet.channel = FECHANNEL;
 			packet.data = streambyte.toByteArray();
 			packet.length = packet.data.length;
@@ -68,7 +67,7 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error creating packet >> "+this.getClass());
+			OutputHandler.SOP("Error creating packet >> " + this.getClass());
 		}
 	}
 
@@ -86,18 +85,18 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 			int x = stream.readInt();
 			int y = stream.readInt();
 			int z = stream.readInt();
-			
-			ProxyClient.getInfo().setPoint1(new Point(x, y, z));
+
+			ForgeEssentialsClient.getInfo().setPoint1(new Point(x, y, z));
 		}
-		
+
 		// point 2 available
 		if (stream.readBoolean())
 		{
 			int x = stream.readInt();
 			int y = stream.readInt();
 			int z = stream.readInt();
-			
-			ProxyClient.getInfo().setPoint2(new Point(x, y, z));
+
+			ForgeEssentialsClient.getInfo().setPoint2(new Point(x, y, z));
 		}
 	}
 

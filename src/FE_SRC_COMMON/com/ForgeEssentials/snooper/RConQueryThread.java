@@ -107,7 +107,7 @@ public class RConQueryThread implements Runnable
     	this.server = FMLCommonHandler.instance().getMinecraftServerInstance();
     	
         this.queryPort = ModuleSnooper.port;
-        this.serverHostname = par1IServer.getHostname();
+        this.serverHostname = ModuleSnooper.hostname;
         this.serverPort = par1IServer.getPort();
         this.serverMotd = par1IServer.getServerMOTD();
         this.maxPlayers = par1IServer.getMaxPlayers();
@@ -130,7 +130,7 @@ public class RConQueryThread implements Runnable
             }
             catch (UnknownHostException var3)
             {
-                this.logWarning("Unable to determine local host IP, please set server-ip in \'" + par1IServer.getSettingsFilePath() + "\' : " + var3.getMessage());
+                this.logWarning("Unable to determine local host IP, please set server-ip/hostname in the snooper config : " + var3.getMessage());
             }
         }
 
@@ -162,7 +162,8 @@ public class RConQueryThread implements Runnable
     	ServerData.put("maxplayers", "" + this.maxPlayers);
     	if(ConfigSnooper.send_IP)
     	{
-    		ServerData.put("hostport", "" + this.serverPort);
+    		if(ModuleSnooper.overrideIP) ServerData.put("hostport", "" + ModuleSnooper.overrideIPValue);
+    		else ServerData.put("hostport", "" + this.serverPort);
         	ServerData.put("hostip", this.queryHostname);
     	}
     }
@@ -319,15 +320,7 @@ public class RConQueryThread implements Runnable
         	return this.output.toByteArray();
         }
         
-        HashMap<String, String> temp = new HashMap();
-        String[] array = new String[server.getCurrentPlayerCount()];
-        int i = 0;
-        for(String username : server.getConfigurationManager().getAllUsernames())
-        {
-        	array[i] = username;
-        }
-        temp.put("players", TextFormatter.toJSON(array));
-        this.output.writeString(TextFormatter.toJSON(temp));
+        this.output.writeString(TextFormatter.toJSON(server.getConfigurationManager().getAllUsernames()));
         
         return this.output.toByteArray();
     }
@@ -570,7 +563,7 @@ public class RConQueryThread implements Runnable
             }
             else
             {
-                this.logWarning("Invalid query port " + this.queryPort + " found in \'" + ((IServer) this.server).getSettingsFilePath() + "\' (queries disabled)");
+                this.logWarning("Invalid query port " + this.queryPort + " found in the Snooper configs! (queries disabled)");
             }
         }
     }

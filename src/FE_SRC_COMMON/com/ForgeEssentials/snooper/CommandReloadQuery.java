@@ -14,7 +14,7 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName() 
 	{
-		return "reloadquery";
+		return "queryreload";
 	}
 
 	@Override

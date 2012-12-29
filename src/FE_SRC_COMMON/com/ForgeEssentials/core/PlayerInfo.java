@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.core.network.PacketSelectionUpdate;
 import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
@@ -18,6 +19,8 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 
 @SaveableObject
 public class PlayerInfo
@@ -187,7 +190,7 @@ public class PlayerInfo
 
 		// send packets.
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-		ForgeEssentials.proxy.updateInfo(this, player);
+		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(this)).getPayload(), (Player)player);
 	}
 
 	public Point getPoint2()
@@ -211,7 +214,7 @@ public class PlayerInfo
 
 		// send packets.
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-		ForgeEssentials.proxy.updateInfo(this, player);
+		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(this)).getPayload(), (Player)player);
 	}
 
 	public Selection getSelection()
