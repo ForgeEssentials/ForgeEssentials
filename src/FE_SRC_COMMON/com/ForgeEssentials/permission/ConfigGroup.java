@@ -167,10 +167,10 @@ public class ConfigGroup
 	{
 		for (ConfigCategory other : config.categories.values())
 		{
-			if (!cat.isChild())
+			if (!other.isChild())
 				continue;
 
-			if (cat.getQualifiedName().startsWith(cat.getQualifiedName()))
+			if (other.getQualifiedName().startsWith(cat.getQualifiedName()))
 				return true;
 		}
 		return false;
