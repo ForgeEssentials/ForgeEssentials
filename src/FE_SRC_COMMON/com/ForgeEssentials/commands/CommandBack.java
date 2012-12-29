@@ -52,7 +52,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		return checkCommandPerm(player);
 	}
 
 	@Override
