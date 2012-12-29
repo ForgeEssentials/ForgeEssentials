@@ -11,14 +11,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.network.rcon.RConOutputStream;
 import net.minecraft.server.MinecraftServer;
 
-public class Responce 
+public class Response 
 {
 	RConOutputStream output;
 	MinecraftServer server;
 	String dataString = "";
 	boolean allowed = true;
 	
-	public Responce(DatagramPacket packet)
+	public Response(DatagramPacket packet)
 	{
 		server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		output = new RConOutputStream(1460);

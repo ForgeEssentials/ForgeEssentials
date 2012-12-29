@@ -22,7 +22,7 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 
-public class ServerInfo extends Responce
+public class ServerInfo extends Response
 {
 	public ServerInfo(DatagramPacket packet)
 	{

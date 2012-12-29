@@ -23,7 +23,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 
-public class PlayerInfoResonce extends Responce
+public class PlayerInfoResonce extends Response
 {
 	public PlayerInfoResonce(DatagramPacket packet)
 	{

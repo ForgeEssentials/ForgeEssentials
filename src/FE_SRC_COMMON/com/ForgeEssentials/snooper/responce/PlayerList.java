@@ -14,7 +14,7 @@ import com.ForgeEssentials.snooper.TextFormatter;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 
-public class PlayerList extends Responce
+public class PlayerList extends Response
 {
 	public PlayerList(DatagramPacket packet)
 	{

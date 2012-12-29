@@ -23,7 +23,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 
-public class PlayerInv extends Responce
+public class PlayerInv extends Response
 {
 	public PlayerInv(DatagramPacket packet)
 	{
