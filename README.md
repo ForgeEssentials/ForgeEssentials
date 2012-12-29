@@ -4,9 +4,9 @@ The Forge Essentials project consists of a permissions and protection system to 
 
 Setup
 =====
-Minecraft: 1.4.6  
+Minecraft: 1.4.7  
 MCP: 7.25  
-Forge: #490  
+Forge: #491  
 
 Get the mentioned Forge, and decompile (using install.cmd/sh). Once you have a working Forge workspace, pull the repo into that MCP folder.
 

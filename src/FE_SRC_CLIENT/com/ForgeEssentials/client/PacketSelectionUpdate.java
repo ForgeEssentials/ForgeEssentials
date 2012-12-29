@@ -18,6 +18,7 @@ import java.io.IOException;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class PacketSelectionUpdate implements IForgeEssentialsPacket
 {
 	public static final byte		packetID	= 0;

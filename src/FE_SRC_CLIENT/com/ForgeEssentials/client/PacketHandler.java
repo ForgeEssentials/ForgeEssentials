@@ -10,7 +10,10 @@ import java.io.DataInputStream;
 
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class PacketHandler implements IPacketHandler
 {
 	@Override
