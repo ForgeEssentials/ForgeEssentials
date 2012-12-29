@@ -18,6 +18,7 @@ public class ConfigGroup
 
 	private static final String	PREFIX			= "chatPrefix";
 	private static final String	SUFFIX			= "chatSuffix";
+	private static final String	PRIORITY		= "groupPriority";
 	private static final String	PARENT			= "parent";
 	private static final String	PROM_LADDERS	= "_PROMOTION_LADDERS_";
 
@@ -39,28 +40,28 @@ public class ConfigGroup
 			tempGroup.parent = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, "g:" + PermissionsAPI.GROUP_DEFAULT, "the group from which this group will inherit permissions").value;
 			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PREFIX, "", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
-			tempGroup.priority = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, SUFFIX, 0, "Priority of the group").getInt();
+			tempGroup.priority = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PRIORITY, 0, "Priority of the group").getInt();
 			GroupManager.groups.put(tempGroup.name, tempGroup);
 
 			tempGroup = new Group(PermissionsAPI.GROUP_OWNERS);
 			tempGroup.parent = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, "g:" + PermissionsAPI.GROUP_ZONE_ADMINS, "the group from which this group will inherit permissions").value;
 			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, PREFIX, FEChatFormatCodes.GOLD + "[OWNER]" + FEChatFormatCodes.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
-			tempGroup.priority = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, SUFFIX, 999, "Priority of the group").getInt();
+			tempGroup.priority = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, PRIORITY, 999, "Priority of the group").getInt();
 			GroupManager.groups.put(tempGroup.name, tempGroup);
 
 			tempGroup = new Group(PermissionsAPI.GROUP_ZONE_ADMINS);
 			tempGroup.parent = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, PARENT, "g:" + PermissionsAPI.GROUP_MEMBERS, "the group from which this group will inherit permissions").value;
 			tempGroup.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, PREFIX, FEChatFormatCodes.GOLD + "[OWNER]" + FEChatFormatCodes.WHITE, "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
-			tempGroup.priority = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, SUFFIX, 999, "Priority of the group").getInt();
+			tempGroup.priority = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, PRIORITY, 998, "Priority of the group").getInt();
 			GroupManager.groups.put(tempGroup.name, tempGroup);
 		}
 
 		// default group
 		{
 			GroupManager.DEFAULT.prefix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, PREFIX, FEChatFormatCodes.GREY + "[Default]", "text to go before the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
-			GroupManager.DEFAULT.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, SUFFIX, ""+FEChatFormatCodes.WHITE, "text to go after the username in chat. format char: \u00a7 Only works with the Chat module installed").value;
+			GroupManager.DEFAULT.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, SUFFIX, "" + FEChatFormatCodes.WHITE, "text to go after the username in chat. format char: \u00a7 Only works with the Chat module installed").value;
 		}
 
 		// default Ladders...
@@ -110,6 +111,7 @@ public class ConfigGroup
 					tempGroup.parent = config.get(group, PARENT, "").value;
 					tempGroup.prefix = config.get(group, PREFIX, "").value;
 					tempGroup.suffix = config.get(group, SUFFIX, "").value;
+					tempGroup.priority = config.get(group, PRIORITY, 0).getInt();
 
 					for (Property prop : config.categories.get(group).getValues().values())
 						if (prop.getName().equals(PREFIX) || prop.getName().equals(SUFFIX))
@@ -138,6 +140,7 @@ public class ConfigGroup
 			config.get(category, PARENT, "").value = group.parent;
 			config.get(category, PREFIX, "").value = group.prefix;
 			config.get(category, SUFFIX, "").value = group.suffix;
+			config.get(category, PRIORITY, 0).value = ""+group.priority;
 
 			ConfigCategory cat = config.categories.get(category);
 			cat.putAll(group.getData());
