@@ -1,16 +1,17 @@
-package com.ForgeEssentials.client.core.network;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
+package com.ForgeEssentials.client;
 
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
-public class HandlerClient implements IPacketHandler
+public class PacketHandler implements IPacketHandler
 {
 	@Override
 	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player playerFake)

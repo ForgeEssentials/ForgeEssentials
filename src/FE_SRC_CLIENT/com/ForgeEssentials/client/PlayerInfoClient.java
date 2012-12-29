@@ -1,4 +1,4 @@
-package com.ForgeEssentials.client.core;
+package com.ForgeEssentials.client;
 
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
@@ -15,9 +15,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PlayerInfoClient
 {
 	// selection stuff
-	private Point sel1;
-	private Point sel2;
-	private Selection selection;
+	private Point		sel1;
+	private Point		sel2;
+	private Selection	selection;
 
 	public PlayerInfoClient()
 	{
@@ -36,14 +36,13 @@ public class PlayerInfoClient
 		this.sel1 = sel1;
 
 		if (sel1 != null)
-		{
 			if (selection == null)
 			{
 				if (sel1 != null && sel2 != null)
 					selection = new Selection(sel1, sel2);
-			} else
+			}
+			else
 				selection.setStart(sel1);
-		}
 	}
 
 	public Point getPoint2()
@@ -56,14 +55,13 @@ public class PlayerInfoClient
 		this.sel2 = sel2;
 
 		if (sel2 != null)
-		{
 			if (selection == null)
 			{
 				if (sel1 != null && sel2 != null)
 					selection = new Selection(sel1, sel2);
-			} else
+			}
+			else
 				selection.setEnd(sel2);
-		}
 	}
 
 	public Selection getSelection()

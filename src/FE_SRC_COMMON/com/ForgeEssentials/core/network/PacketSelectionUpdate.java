@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
-import com.ForgeEssentials.client.core.ProxyClient;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
@@ -74,30 +73,6 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 	public static void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException
 	{
 		// should never be received here.
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static void readClient(DataInputStream stream, WorldClient world, EntityPlayer player) throws IOException
-	{
-		// point 1 available.
-		if (stream.readBoolean())
-		{
-			int x = stream.readInt();
-			int y = stream.readInt();
-			int z = stream.readInt();
-			
-			ProxyClient.getInfo().setPoint1(new Point(x, y, z));
-		}
-		
-		// point 2 available
-		if (stream.readBoolean())
-		{
-			int x = stream.readInt();
-			int y = stream.readInt();
-			int z = stream.readInt();
-			
-			ProxyClient.getInfo().setPoint2(new Point(x, y, z));
-		}
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
-public class HandlerServer implements IPacketHandler
+public class PacketHandler implements IPacketHandler
 {
 
 	@Override
