@@ -8,7 +8,7 @@ echo "Version of ${JOB_NAME} is: ${VERSION} for MC ${MC}"
 
 echo "Downloading Forge..."
 #wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip 
-wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-1.4.6-6.5.0.489.zip
+wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-1.4.7-6.6.0.491.zip
 unzip minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
 rm "For later.zip"
@@ -30,8 +30,8 @@ cp -rf ${WORKSPACE}/lib/* .
 cd ..
 
 echo "injecting version into places"
-sed -i 's/@VERSION@/'${VERSION}'/g' mcmod.info
-sed -i 's/@MC@/'${MC}'/g' mcmod.info
+sed -i 's/@VERSION@/'${VERSION}'/g' A1-zipStuff/mcmod.info
+sed -i 's/@MC@/'${MC}'/g' A1-zipStuff/mcmod.info
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/ForgeEssentials.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/client/ForgeEssentialsClient.java
 
