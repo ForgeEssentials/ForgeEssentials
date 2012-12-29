@@ -1,6 +1,9 @@
 package com.ForgeEssentials.snooper;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 
@@ -16,6 +19,7 @@ public class ConfigSnooper
 	public static boolean send_Player_info;
 	public static boolean send_Player_armor;
 	public static boolean send_Player_inv;
+	public static int[] TPSList;	
 	
 	public static final File wbconfig = new File(ForgeEssentials.FEDIR, "Snooper.cfg");
 	public final Configuration config;
@@ -44,7 +48,7 @@ public class ConfigSnooper
 		send_Player_armor = config.get(cat, "send_Player_armor", true, "Send player armor").getBoolean(true);
 		send_Player_inv = config.get(cat, "send_Player_inv", true, "Send player inventory").getBoolean(true);
 		
-		
+		TPSList = config.get(cat, "TPS_dim", new int[]{-1 ,0 ,1}, "Dimentions to send TPS of").getIntList();
 		
 		config.save();
 	}

@@ -96,9 +96,12 @@ public class ServerInfo extends Response
     public String getTPS()
     {
     	HashMap<String, String> data = new HashMap();
-    	for (Integer id : DimensionManager.getIDs())
+    	for (int id : ConfigSnooper.TPSList)
     	{
-    		data.put("dim " + id, "" + getTPSFromData(server.worldTickTimes.get(id)));
+    		if(server.worldTickTimes.containsKey(id))
+    		{
+    			data.put("dim " + id, "" + getTPSFromData(server.worldTickTimes.get(id)));
+    		}
     	}
     	return TextFormatter.toJSON(data);
     }
