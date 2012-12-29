@@ -20,7 +20,7 @@
 #
 
 #Default configuration file
-CONFIG_FILE=~/.dropbox_uploader
+CONFIG_FILE=../../dropbox_uploader
 
 #If you are experiencing problems establishing SSL connection with the DropBox
 #server, try to uncomment this option.
