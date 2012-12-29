@@ -11,6 +11,7 @@ public class ConfigSnooper
 	public static boolean send_Mods;
 	public static boolean send_IP;
 	public static boolean send_Motd;
+	public static boolean send_WB;
 	public static boolean send_Players;
 	public static boolean send_Player_info;
 	public static boolean send_Player_armor;
@@ -36,6 +37,7 @@ public class ConfigSnooper
 		send_Mods = config.get(cat, "send_Mods", true, "Send mod info").getBoolean(true);
 		send_IP = config.get(cat, "send_IP", true, "Send ip & port").getBoolean(true);
 		send_Motd = config.get(cat, "send_Motd", true, "Send motd").getBoolean(true);
+		send_WB = config.get(cat, "send_WorldBorder", true, "Send World border info (size)").getBoolean(true);
 		send_Players = config.get(cat, "send_Players", true, "Send online player list").getBoolean(true);
 		send_Player_info = config.get(cat, "send_Player_info", true, "Send player info").getBoolean(true);
 		send_Player_armor = config.get(cat, "send_Player_armor", true, "Send player armor").getBoolean(true);

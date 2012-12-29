@@ -16,14 +16,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>FE_SRC_CLIENT</name>
-			<type>2</type>
-			<location>MCP_LOC/src/FE_SRC_CLIENT</location>
-		</link>
-		<link>
 			<name>FE_SRC_COMMON</name>
 			<type>2</type>
-			<location>MCP_LOC/src/FE_SRC_COMMON</location>
+			<locationURI>MCP_LOC/src/FE_SRC_COMMON</locationURI>
 		</link>
 		<link>
 			<name>jars</name>

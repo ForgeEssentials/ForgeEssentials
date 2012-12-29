@@ -39,7 +39,7 @@ public class Chat implements IChatListener {
 			suffix = playerData.suffix;
 			
 			ArrayList<Group> groups = GroupManager.getApplicableGroups(event.player);
-			rank = groups.get(0).name;
+			rank = groups.get(groups.size()-1).name;
 			
 			for (Group group : groups)
 			{
