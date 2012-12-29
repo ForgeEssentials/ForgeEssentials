@@ -216,6 +216,8 @@
 	<entry key="message.wc.untillConfirm">%d blocks of farmland have been trampled.</entry>
 	<entry key="message.wc.invalidBlockId">%d is not a valid block ID!</entry>
 	<entry key="message.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
+	<entry key="message.wc.noUndo">Nothing to Undo!</entry>
+	<entry key="message.wc.noRedo">Nothing to Redo!</entry>
 	
 	<entry key="tile.air.name">Air</entry>
 	

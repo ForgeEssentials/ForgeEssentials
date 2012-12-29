@@ -90,6 +90,8 @@ public class Localization
 	public static final String	WC_UNTILLCONFIRM				= "message.wc.untillConfirm";
 	public static final String	WC_INVALIDBLOCKID				= "message.wc.invalidBlockId";
 	public static final String	WC_BLOCKIDOUTOFRANGE			= "message.wc.blockIdOutOfRange";
+	public static final String	WC_NOUNDO						= "message.wc.noUndo";
+	public static final String	WC_NOREDO						= "message.wc.noRedo";
 
 	/*
 	 * TeleportCenter
@@ -161,7 +163,7 @@ public class Localization
 	{
 		OutputHandler.SOP("Loading languages");
 		String langDir = "com/ForgeEssentials/util/lang/";
-		
+
 		for (String langFile : langFiles)
 			try
 			{
