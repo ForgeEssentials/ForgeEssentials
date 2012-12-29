@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
+
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
@@ -11,6 +13,7 @@ import com.ForgeEssentials.util.BlockSaveable;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
@@ -20,6 +23,7 @@ public class TickTaskReplaceSelection implements ITickTask
 	private EntityPlayer	player;
 	private int changed;
 	private int ticks;
+	private ArrayList<AreaBase> applicable;
 	
 	// Stores our actual task.
 	private int targetId;
@@ -47,6 +51,12 @@ public class TickTaskReplaceSelection implements ITickTask
 		this.backup = backupArea;
 		this.player = player;
 	}
+	
+	public TickTaskReplaceSelection(EntityPlayer player, int firstID, int firstMeta, int secondID, int secondMeta, BackupArea backupArea, Selection selection, ArrayList<AreaBase> applicable)
+	{
+		this(player, firstID, firstMeta, secondID, secondMeta, backupArea, selection);
+		this.applicable = applicable;
+	}
 
 	@Override
 	public void tick()
@@ -63,7 +73,7 @@ public class TickTaskReplaceSelection implements ITickTask
 		{
 			if (targetMeta == -1)
 			{
-				if (targetId == player.worldObj.getBlockId(x, y, z))
+				if (targetId == player.worldObj.getBlockId(x, y, z) && isApplicable(x, y, z))
 				{
 					doReplace(x, y, z);
 					currentTickChanged++; 
@@ -71,7 +81,7 @@ public class TickTaskReplaceSelection implements ITickTask
 			}
 			else
 			{
-				if (targetId == player.worldObj.getBlockId(x, y, z) && targetMeta == player.worldObj.getBlockMetadata(x, y, z))
+				if (targetId == player.worldObj.getBlockId(x, y, z) && targetMeta == player.worldObj.getBlockMetadata(x, y, z) && isApplicable(x, y, z))
 				{
 					doReplace(x, y, z);
 					currentTickChanged++;
@@ -168,6 +178,24 @@ public class TickTaskReplaceSelection implements ITickTask
 	public boolean editsBlocks()
 	{
 		return true;
+	}
+	
+	private boolean isApplicable(int x, int y, int z)
+	{
+		Point p = new Point(x, y, z);
+		if (applicable == null)
+			return true;
+		
+		boolean contains = false;
+		
+		for (AreaBase area : applicable)
+		{
+			contains = area.contains(p);
+			if (contains)
+				return true;
+		}
+		
+		return contains;
 	}
 
 }

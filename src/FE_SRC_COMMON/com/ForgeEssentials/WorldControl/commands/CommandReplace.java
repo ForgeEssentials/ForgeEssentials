@@ -5,7 +5,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskReplaceSelection;
+import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -37,9 +41,9 @@ public class CommandReplace extends WorldControlCommandBase
 			int firstMeta = -1;
 			int secondID = -1;
 			int secondMeta = -1;
-			
+
 			// Begin parsing 1st argument pair
-					
+
 			try
 			{
 				temp = FunctionHelper.parseIdAndMetaFromString(args[0]);
@@ -51,7 +55,7 @@ public class CommandReplace extends WorldControlCommandBase
 				OutputHandler.chatError(player, e.getMessage());
 				return;
 			}
-			
+
 			// Begin parsing 2nd argument pair if 1st was good.
 			try
 			{
@@ -64,7 +68,7 @@ public class CommandReplace extends WorldControlCommandBase
 				OutputHandler.chatError(player, e.getMessage());
 				return;
 			}
-			
+
 			if (firstID >= Block.blocksList.length || secondID >= Block.blocksList.length)
 			{
 				error(player, Localization.format("message.wc.blockIdOutOfRange", Block.blocksList.length));
@@ -84,7 +88,21 @@ public class CommandReplace extends WorldControlCommandBase
 				Selection sel = info.getSelection();
 				BackupArea back = new BackupArea();
 
-				TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
+				PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
+				PermResult result = PermissionsAPI.checkPermResult(query);
+
+				switch (result)
+					{
+						case ALLOW:
+							TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
+							return;
+						case PARTIAL:
+							TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel, query.applicable));
+						default:
+							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+							return;
+					}
+
 			}
 		}
 		else

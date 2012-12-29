@@ -80,7 +80,6 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		// TODO Integrate with permissions system.
 		return true;
 	}
 }
