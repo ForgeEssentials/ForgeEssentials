@@ -1,12 +1,10 @@
 SHA1 Sums
 If adding a new library, validate the SHA1Sum of the library, then place the SHA1sum here.
 
-mysql-connector-java-bin.jar: 3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15
+mysql-connector-java-bin.jar: 3AE0CFF91D7F40D5B4C7CEFBBD1EAB34025BDC15
 
-worldedit-5.4.6-SNAPSHOT.jar: de96549f9c31aa9268f649fc6757e7b68b180549
+worldedit-5.4.6-SNAPSHOT.jar: DE96549F9C31AA9268F649FC6757E7B68B180549
 
-sqlite-jdbc.jar:
-cea9f7f8e6bcb580d953a8651fb8391640de0f85
+sqlite-jdbc.jar: CEA9F7F8E6BCB580D953A8651FB8391640DE0F85
 
-sqlite-jdbc-javadoc.jar:
-c02545d6dcfc058adaf606bd7f2087fc11482179
+sqlite-jdbc-javadoc.jar: C02545D6DCFC058ADAF606BD7F2087FC11482179
