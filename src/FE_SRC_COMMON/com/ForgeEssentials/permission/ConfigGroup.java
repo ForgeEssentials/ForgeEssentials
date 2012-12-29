@@ -56,6 +56,10 @@ public class ConfigGroup
 			tempGroup.suffix = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, SUFFIX, "", "text to go after the username in chat. format char: \u00a7  Only works with the Chat module installed").value;
 			tempGroup.priority = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_ZONE_ADMINS, PRIORITY, 998, "Priority of the group").getInt();
 			GroupManager.groups.put(tempGroup.name, tempGroup);
+			
+			config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, "Generated group for your conveniance");
+			config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, "Generated group for your conveniance");
+			config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, "very default of all default groups. " + Configuration.NEW_LINE + " This is also used for blanket permissions that are not applied to players but to zones");
 		}
 
 		// default group
@@ -69,15 +73,10 @@ public class ConfigGroup
 		{
 			String[] ladder = config.get(ZoneManager.GLOBAL.getZoneID() + "." + PROM_LADDERS, "DEFAULT", new String[] { PermissionsAPI.GROUP_OWNERS, PermissionsAPI.GROUP_ZONE_ADMINS, PermissionsAPI.GROUP_MEMBERS, PermissionsAPI.GROUP_DEFAULT }).valueList;
 			loadLadderFromList(ladder, ZoneManager.GLOBAL.getZoneID(), "DEFAULT");
+			config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PROM_LADDERS, "Top is highest, botom is lowest. A group cannot be in 2 ladders at once.");
 		}
 
 		forceLoadConfig();
-
-		// category comments since it doesn't set these if its null...
-		config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_OWNERS, "Generated group for your conveniance");
-		config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_MEMBERS, "Generated group for your conveniance");
-		config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PermissionsAPI.GROUP_DEFAULT, "very default of all default groups. " + Configuration.NEW_LINE + " This is also used for blanket permissions that are not applied to players but to zones");
-		config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneID() + "." + PROM_LADDERS, "Top is highest, botom is lowest. A group cannot be in 2 ladders at once.");
 
 		config.save();
 
