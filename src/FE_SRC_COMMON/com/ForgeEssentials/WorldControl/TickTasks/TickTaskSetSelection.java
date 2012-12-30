@@ -4,6 +4,8 @@ package com.ForgeEssentials.WorldControl.TickTasks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
+
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
@@ -21,6 +23,7 @@ public class TickTaskSetSelection implements ITickTask
 	private final int metadata;
 	private BackupArea back;
 	private EntityPlayer player;
+	private ArrayList<AreaBase> applicable;
 
 	// actually used
 	private Point first;
@@ -40,6 +43,12 @@ public class TickTaskSetSelection implements ITickTask
 		
 		this.isComplete = false;
 	}
+	
+	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata, BackupArea back, AreaBase area, ArrayList<AreaBase> appliccable)
+	{
+		this(player, blockID, metadata, back, area);
+		this.applicable = appliccable;
+	}
 
 	@Override
 	public void tick()
@@ -55,7 +64,7 @@ public class TickTaskSetSelection implements ITickTask
 		{
 			if (metadata == -1)
 			{
-				if (blockID != player.worldObj.getBlockId(x, y, z))
+				if (blockID != player.worldObj.getBlockId(x, y, z) && isApplicable(x, y, z))
 				{
 					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
 					player.worldObj.setBlock(x, y, z, blockID);
@@ -65,7 +74,7 @@ public class TickTaskSetSelection implements ITickTask
 			}
 			else
 			{
-				if (!(blockID == player.worldObj.getBlockId(x, y, z) && metadata == player.worldObj.getBlockMetadata(x, y, z)))
+				if ((!(blockID == player.worldObj.getBlockId(x, y, z) || metadata != player.worldObj.getBlockMetadata(x, y, z)) && isApplicable(x, y, z)))
 				{
 					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
 					player.worldObj.setBlockAndMetadata(x, y, z, blockID, metadata);
@@ -125,6 +134,24 @@ public class TickTaskSetSelection implements ITickTask
 	public boolean editsBlocks()
 	{
 		return true;
+	}
+	
+	private boolean isApplicable(int x, int y, int z)
+	{
+		Point p = new Point(x, y, z);
+		if (applicable == null)
+			return true;
+		
+		boolean contains = false;
+		
+		for (AreaBase area : applicable)
+		{
+			contains = area.contains(p);
+			if (contains)
+				return true;
+		}
+		
+		return contains;
 	}
 
 }

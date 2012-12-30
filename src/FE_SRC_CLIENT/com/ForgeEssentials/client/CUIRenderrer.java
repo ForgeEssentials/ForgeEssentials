@@ -1,7 +1,7 @@
 package com.ForgeEssentials.client;
 
-import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.Selection;
+import com.ForgeEssentials.client.util.Point;
+import com.ForgeEssentials.client.util.Selection;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;

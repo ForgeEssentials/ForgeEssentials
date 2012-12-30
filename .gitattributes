@@ -1,6 +1,7 @@
 * text auto
-*.java eol=lf
-*.sh eol=lf
+*.java text eol=lf
+*.sh text eol=lf
+dropbox_uploader text eol+lf
 *.txt eol=lf
 *.xml text
 *.bat text eol=crlf

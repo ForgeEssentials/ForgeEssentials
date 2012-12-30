@@ -19,8 +19,8 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.network.IChatListener;
 
-public class Chat implements IChatListener {
-
+public class Chat implements IChatListener
+{
 
 	@ForgeSubscribe
 	public void chatEvent(ServerChatEvent event)
@@ -34,50 +34,51 @@ public class Chat implements IChatListener {
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player), event.player.worldObj);
 			PlayerPermData playerData = PlayerManager.getPlayerData(zone.getZoneID(), event.username);
-			
+
 			prefix = playerData.prefix;
 			suffix = playerData.suffix;
-			
-			ArrayList<Group> groups = GroupManager.getApplicableGroups(event.player);
-			rank = groups.get(0).name;
-			
-			for (Group group : groups)
+
+			ArrayList<Group> groups = GroupManager.getApplicableGroups(event.player, false);
+
+			if (groups.isEmpty())
 			{
-				prefix = group.prefix + prefix;
-				suffix = suffix + group.suffix;
+				rank = GroupManager.DEFAULT.name;
+				prefix = GroupManager.DEFAULT.prefix + prefix;
+				suffix = suffix + GroupManager.DEFAULT.suffix;
+			}
+			else
+			{
+				rank = groups.get(groups.size() - 1).name;
+
+				for (Group group : groups)
+				{
+					prefix = group.prefix + prefix;
+					suffix = suffix + group.suffix;
+				}
 			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-		
-		OutputHandler.debug("TESTING!!!!!   prefix: "+prefix+"    suffix: "+suffix);
+
+		OutputHandler.debug("TESTING!!!!!   prefix: " + prefix + "    suffix: " + suffix);
 
 		String format = ModuleChat.conf.chatFormat;
-		format = ModuleChat.conf.chatFormat == null || ModuleChat.conf.chatFormat == "" ? "<%username>%message" :ModuleChat.conf.chatFormat;
-		event.line = format.replaceAll("%health", ""+event.player.getHealth()).replaceAll("%reset", FEChatFormatCodes.RESET+"")
-				.replaceAll("%red",FEChatFormatCodes.RED+"").replaceAll("%yellow",FEChatFormatCodes.YELLOW+"").replaceAll("%black",FEChatFormatCodes.BLACK+"").replaceAll("%darkblue",FEChatFormatCodes.DARKBLUE+"")
-				.replaceAll("%darkgreen",FEChatFormatCodes.DARKGREEN+"").replaceAll("%darkaqua",FEChatFormatCodes.DARKAQUA+"").replaceAll("%darkred",FEChatFormatCodes.DARKRED+"").replaceAll("%purple",FEChatFormatCodes.PURPLE+"")
-				.replaceAll("%gold",FEChatFormatCodes.GOLD+"").replaceAll("%grey",FEChatFormatCodes.GREY+"").replaceAll("%darkgrey",FEChatFormatCodes.DARKGREY+"").replaceAll("%indigo",FEChatFormatCodes.INDIGO+"")
-				.replaceAll("%green",FEChatFormatCodes.GREEN+"").replaceAll("%aqua",FEChatFormatCodes.AQUA+"").replaceAll("%pink",FEChatFormatCodes.PINK+"").replaceAll("%white",FEChatFormatCodes.WHITE+"")
-				.replaceAll("%random",FEChatFormatCodes.RANDOM+"").replaceAll("%bold",FEChatFormatCodes.BOLD+"").replaceAll("%strike",FEChatFormatCodes.STRIKE+"").replaceAll("%underline",FEChatFormatCodes.UNDERLINE+"")
-				.replaceAll("%italics",FEChatFormatCodes.ITALICS+"").replaceAll("%message", event.message).replaceAll("%username", event.username)
-				.replaceAll("%rank", rank).replaceAll("%zone", zoneID)
-				.replace("%prefix", prefix).replaceAll("%suffix", suffix);
+		format = ModuleChat.conf.chatFormat == null || ModuleChat.conf.chatFormat == "" ? "<%username>%message" : ModuleChat.conf.chatFormat;
+		event.line = format.replaceAll("%health", "" + event.player.getHealth()).replaceAll("%reset", FEChatFormatCodes.RESET + "").replaceAll("%red", FEChatFormatCodes.RED + "").replaceAll("%yellow", FEChatFormatCodes.YELLOW + "").replaceAll("%black", FEChatFormatCodes.BLACK + "").replaceAll("%darkblue", FEChatFormatCodes.DARKBLUE + "").replaceAll("%darkgreen", FEChatFormatCodes.DARKGREEN + "").replaceAll("%darkaqua", FEChatFormatCodes.DARKAQUA + "").replaceAll("%darkred", FEChatFormatCodes.DARKRED + "").replaceAll("%purple", FEChatFormatCodes.PURPLE + "").replaceAll("%gold", FEChatFormatCodes.GOLD + "").replaceAll("%grey", FEChatFormatCodes.GREY + "").replaceAll("%darkgrey", FEChatFormatCodes.DARKGREY + "").replaceAll("%indigo", FEChatFormatCodes.INDIGO + "").replaceAll("%green", FEChatFormatCodes.GREEN + "").replaceAll("%aqua", FEChatFormatCodes.AQUA + "").replaceAll("%pink", FEChatFormatCodes.PINK + "").replaceAll("%white", FEChatFormatCodes.WHITE + "").replaceAll("%random", FEChatFormatCodes.RANDOM + "").replaceAll("%bold", FEChatFormatCodes.BOLD + "").replaceAll("%strike", FEChatFormatCodes.STRIKE + "").replaceAll("%underline", FEChatFormatCodes.UNDERLINE + "").replaceAll("%italics", FEChatFormatCodes.ITALICS + "").replaceAll("%message", event.message).replaceAll("%username", event.username).replaceAll("%rank", rank).replaceAll("%zone", zoneID).replace("%prefix", prefix).replaceAll("%suffix", suffix);
 	}
+
 	@Override
-	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message) 
+	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message)
 	{
 		return message;
 	}
 
 	@Override
-	public Packet3Chat clientChat(NetHandler handler, Packet3Chat message) 
-	{	
+	public Packet3Chat clientChat(NetHandler handler, Packet3Chat message)
+	{
 		return message;
 	}
-
-	
 
 }

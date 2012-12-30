@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.economy.ModuleEconomy;
-import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.snooper.responce.*;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -77,18 +75,9 @@ public class RConQueryThread implements Runnable
      * The time that this RConThreadQuery was constructed, from (new Date()).getTime()
      */
     private long time;
-
-    /** The RConQuery output stream */
-    private RConOutputStream output;
-
-    /** The time of the last query response sent */
-    private long lastQueryResponseTime;
     
     /** True if the Thread is running, false otherwise */
     protected boolean running = false;
-
-    /** Reference to the IServer object. */
-    protected static MinecraftServer server;
 
     /** Thread for this runnable class */
     protected Thread rconThread;
@@ -99,22 +88,17 @@ public class RConQueryThread implements Runnable
 
     /** A list of registered ServerSockets */
     protected List serverSocketList = new ArrayList();
-    
-    HashMap<String, String> ServerData = new HashMap();
+
+	private IServer server;
 
     public RConQueryThread(IServer par1IServer)
-    {
-    	this.server = FMLCommonHandler.instance().getMinecraftServerInstance();
-    	
+    {	
         this.queryPort = ModuleSnooper.port;
         this.serverHostname = ModuleSnooper.hostname;
         this.serverPort = par1IServer.getPort();
-        this.serverMotd = par1IServer.getServerMOTD();
-        this.maxPlayers = par1IServer.getMaxPlayers();
-        this.worldName = par1IServer.getFolderName();
-        this.lastQueryResponseTime = 0L;
         this.queryHostname = "0.0.0.0";
-
+        this.server = par1IServer;
+        
         if (0 != this.serverHostname.length() && !this.queryHostname.equals(this.serverHostname))
         {
             this.queryHostname = this.serverHostname;
@@ -141,31 +125,9 @@ public class RConQueryThread implements Runnable
         }
 
         this.field_72644_p = new HashMap();
-        this.output = new RConOutputStream(1460);
+        
         this.queryClients = new HashMap();
         this.time = (new Date()).getTime();
-        
-        if(ConfigSnooper.send_Mods)
-        {
-        	List<ModContainer> modlist = Loader.instance().getActiveModList();
-        	String[] ModData = new String[modlist.size()];
-        	for(int i = 0; i < modlist.size(); i++)
-        	{
-        		ModData[i] = modlist.get(i).getName();
-        	}
-        	ServerData.put("mods", TextFormatter.toJSON(ModData));
-        }
-        
-    	ServerData.put("gametype", this.server.getGameType().getName());
-    	ServerData.put("version", this.server.getMinecraftVersion());
-    	ServerData.put("map", this.worldName);
-    	ServerData.put("maxplayers", "" + this.maxPlayers);
-    	if(ConfigSnooper.send_IP)
-    	{
-    		if(ModuleSnooper.overrideIP) ServerData.put("hostport", "" + ModuleSnooper.overrideIPValue);
-    		else ServerData.put("hostport", "" + this.serverPort);
-        	ServerData.put("hostip", this.queryHostname);
-    	}
     }
 
     /**
@@ -192,6 +154,7 @@ public class RConQueryThread implements Runnable
             
             switch (var2[2])
             {
+            	//ServerInfo
                 case 0:
                     if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
                     {
@@ -200,10 +163,11 @@ public class RConQueryThread implements Runnable
                     }
                     else
                     {
-                        this.sendResponsePacket(this.createQueryResponseCase0(par1DatagramPacket), par1DatagramPacket);
+                        this.sendResponsePacket(new ServerInfo(par1DatagramPacket).getResponce(this.getRequestId(par1DatagramPacket.getSocketAddress())), par1DatagramPacket);
                         this.logDebug("Case 0 [" + var4 + "]");
                     }
                     return true;
+                //Player List
                 case 1:
                     if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
                     {
@@ -212,30 +176,18 @@ public class RConQueryThread implements Runnable
                     }
                     else
                     {
-                        this.sendResponsePacket(this.createQueryResponseCase1(par1DatagramPacket), par1DatagramPacket);
+                    	this.sendResponsePacket(new PlayerList(par1DatagramPacket).getResponce(this.getRequestId(par1DatagramPacket.getSocketAddress())), par1DatagramPacket);
                         this.logDebug("Case 1 [" + var4 + "]");
                     }
                     return true;
                 case 2:
-                    if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
-                    {
-                        this.logDebug("Invalid challenge [" + var4 + "]");
-                        return false;
-                    }
-                    else if(var3 > 11)
-                    {
-                    	byte[] nameArray = Arrays.copyOfRange(var2, 11, var3);
-                    	String name = new String(nameArray);
-                        this.sendResponsePacket(this.createQueryResponseCase2(par1DatagramPacket, name.trim()), par1DatagramPacket);
-                        this.logDebug("Case 2 [" + var4 + "] " + name);
-                    }
-                    else
-                    {
-                    	this.sendResponsePacket(this.createQueryResponseCase2(par1DatagramPacket, null), par1DatagramPacket);
-                        this.logDebug("Case 2 [" + var4 + "] NO USERNAME");
-                    }
-                    return true;
+                	return true;
                 case 3:
+                	return true;
+                case 4:
+                	return true;
+                //Player info
+                case 5:
                     if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
                     {
                         this.logDebug("Invalid challenge [" + var4 + "]");
@@ -243,17 +195,38 @@ public class RConQueryThread implements Runnable
                     }
                     else if(var3 > 11)
                     {
-                    	byte[] nameArray = Arrays.copyOfRange(var2, 11, var3);
-                    	String name = new String(nameArray);
-                        this.sendResponsePacket(this.createQueryResponseCase3(par1DatagramPacket, name.trim()), par1DatagramPacket);
-                        this.logDebug("Case 3 [" + var4 + "] " + name);
-                    }
-                    else
-                    {
-                    	this.sendResponsePacket(this.createQueryResponseCase3(par1DatagramPacket, null), par1DatagramPacket);
-                        this.logDebug("Case 3 [" + var4 + "] NO USERNAME");
+                    	this.sendResponsePacket(new PlayerInfoResonce(par1DatagramPacket).getResponce(this.getRequestId(par1DatagramPacket.getSocketAddress())), par1DatagramPacket);
+                        this.logDebug("Case 5 [" + var4 + "] ");
                     }
                     return true;
+                //Player armor
+                case 6:
+                    if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
+                    {
+                        this.logDebug("Invalid challenge [" + var4 + "]");
+                        return false;
+                    }
+                    else if(var3 > 11)
+                    {
+                    	this.sendResponsePacket(new PlayerArmor(par1DatagramPacket).getResponce(this.getRequestId(par1DatagramPacket.getSocketAddress())), par1DatagramPacket);
+                        this.logDebug("Case 6 [" + var4 + "] ");
+                    }
+                    return true;
+                //Player inv
+                case 7:
+                	if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
+                    {
+                        this.logDebug("Invalid challenge [" + var4 + "]");
+                        return false;
+                    }
+                    else if(var3 > 11)
+                    {
+                    	this.sendResponsePacket(new PlayerInv(par1DatagramPacket).getResponce(this.getRequestId(par1DatagramPacket.getSocketAddress())), par1DatagramPacket);
+                        this.logDebug("Case 7 [" + var4 + "] ");
+                    }
+                	return true;
+                case 8:
+                	return true;
                 case 9:
                     this.sendAuthChallenge(par1DatagramPacket);
                     this.logDebug("Challenge [" + var4 + "]");
@@ -268,139 +241,7 @@ public class RConQueryThread implements Runnable
             return false;
         }
     }
-
-    /**
-     * Creates a query response for Case0
-     * Server info
-     */
-    private byte[] createQueryResponseCase0(DatagramPacket par1DatagramPacket) throws IOException
-    {
-        long var2 = System.currentTimeMillis();
-        
-        // Needs to get update every time
-        ServerData.put("numplayers", "" + this.server.getCurrentPlayerCount());
-        if(ConfigSnooper.send_Motd)ServerData.put("motd", this.server.getServerMOTD());
-        ServerData.put("tps", TextFormatter.toJSON(ModuleSnooper.getTPS()));
-        
-        String uptime = "";
-        RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-        int secsIn = (int) (rb.getUptime() / 1000);
-        int hours = secsIn / 3600, remainder = secsIn % 3600, minutes = remainder / 60,	seconds = remainder % 60;
-        
-        uptime += ( (hours < 10 ? "0" : "") + hours + " h " + (minutes < 10 ? "0" : "") + minutes + " min " + (seconds< 10 ? "0" : "") + seconds + " sec.");
-        
-        ServerData.put("uptime", uptime);
-        
-        this.lastQueryResponseTime = var2;
-        this.output.reset();
-        this.output.writeInt(0);
-        this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
-            
-        this.output.writeString(TextFormatter.toJSON(ServerData));
-        
-        return this.output.toByteArray();
-    }
     
-    /**
-     * Creates a query response for Case1
-     * All online players
-     */
-    private byte[] createQueryResponseCase1(DatagramPacket par1DatagramPacket) throws IOException
-    {
-        long var2 = System.currentTimeMillis();
-        
-        this.lastQueryResponseTime = var2;
-        this.output.reset();
-        this.output.writeInt(0);
-        this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
-        
-        if(!ConfigSnooper.send_Players)
-        {
-        	this.output.writeString("_NOT_ALLOWED_");
-        	return this.output.toByteArray();
-        }
-        
-        this.output.writeString(TextFormatter.toJSON(server.getConfigurationManager().getAllUsernames()));
-        
-        return this.output.toByteArray();
-    }
-    
-    /**
-     * Creates a query response for Case2
-     * Player info
-     */
-    private byte[] createQueryResponseCase2(DatagramPacket par1DatagramPacket, String username) throws IOException
-    {
-        long var2 = System.currentTimeMillis();
-       
-        this.lastQueryResponseTime = var2;
-        this.output.reset();
-        this.output.writeInt(0);
-        this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
-        
-        //No player given            
-        if(username == null)
-        {
-        	HashMap<String, String> temp = new HashMap();
-        	temp.put("", TextFormatter.toJSON(new String[0]));
-        	this.output.writeString(TextFormatter.toJSON(temp));
-        	return this.output.toByteArray();
-        }
-        
-        EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
-        //Player is not online
-        if(player == null)
-        {
-        	HashMap<String, String> temp = new HashMap();
-        	temp.put("", TextFormatter.toJSON(new String[0]));
-        	this.output.writeString(TextFormatter.toJSON(temp));
-        	return this.output.toByteArray();
-        }
-        if(!ConfigSnooper.send_Player_info) this.output.writeString("_NOT_ALLOWED_");
-        else this.output.writeString(TextFormatter.toJSON(ModuleSnooper.getUserData(player)));
-        this.output.writeString("#");
-        if(!ConfigSnooper.send_Player_armor) this.output.writeString("_NOT_ALLOWED_");
-        else this.output.writeString(TextFormatter.toJSON(ModuleSnooper.getArmorData(player)));
-        
-        return this.output.toByteArray();
-    }
-    
-    /**
-     * Creates a query response for Case3
-     * Inv info
-     */
-    private byte[] createQueryResponseCase3(DatagramPacket par1DatagramPacket, String username) throws IOException
-    {
-        long var2 = System.currentTimeMillis();
-    
-        this.lastQueryResponseTime = var2;
-        this.output.reset();
-        this.output.writeInt(0);
-        this.output.writeByteArray(this.getRequestId(par1DatagramPacket.getSocketAddress()));
-        //No player given            
-        if(username == null)
-        {
-        	HashMap<String, String> temp = new HashMap();
-        	temp.put(null, TextFormatter.toJSON(new String[0]));
-        	this.output.writeString(TextFormatter.toJSON(temp));
-        	return this.output.toByteArray();
-        }
-        
-        EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
-        //Player is not online
-        if(player == null)
-        {
-        	HashMap<String, String> temp = new HashMap();
-        	temp.put(null, TextFormatter.toJSON(new String[0]));
-        	this.output.writeString(TextFormatter.toJSON(temp));
-        	return this.output.toByteArray();
-        }
-        if(!ConfigSnooper.send_Player_inv) this.output.writeString("_NOT_ALLOWED_");
-        else this.output.writeString(TextFormatter.toJSON(ModuleSnooper.getInvData(player)));
-        
-        return this.output.toByteArray();
-    }
-
     /**
      * Returns the request ID provided by the authorized client
      */
@@ -581,7 +422,7 @@ public class RConQueryThread implements Runnable
      */
     protected void logDebug(String par1Str)
     {
-        this.server.logInfo(par1Str);
+        this.server.logDebug(par1Str);
     }
 
     /**
@@ -606,14 +447,6 @@ public class RConQueryThread implements Runnable
     protected void logSevere(String par1Str)
     {
         this.server.logSevere(par1Str);
-    }
-
-    /**
-     * Returns the number of players on the server
-     */
-    protected int getNumberOfPlayers()
-    {
-        return this.server.getCurrentPlayerCount();
     }
 
     /**
@@ -744,6 +577,11 @@ public class RConQueryThread implements Runnable
         if (par1 && 0 < var2)
         {
             this.logWarning("Force closed " + var2 + " sockets");
+        }
+        
+        if(ModuleSnooper.autoReboot)
+        {
+        	ModuleSnooper.startQuery();
         }
     }
 }

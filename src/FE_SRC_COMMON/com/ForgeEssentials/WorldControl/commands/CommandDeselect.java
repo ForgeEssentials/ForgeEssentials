@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandDeselect extends WorldControlCommandBase
 {
@@ -26,7 +27,7 @@ public class CommandDeselect extends WorldControlCommandBase
 		info.setPoint1(null);
 		info.setPoint2(null);
 		
-		sender.sendChatToPlayer(Localization.COMMAND_DESELECT);
+		OutputHandler.chatConfirmation(sender, Localization.get(Localization.COMMAND_DESELECT));
 	}
 
 	@Override

@@ -234,6 +234,9 @@ public class PlayerInfo
 
 	public BackupArea getNextUndo()
 	{
+		if (undos.empty())
+			return null;
+		
 		BackupArea back = undos.pop();
 		redos.push(back);
 		return back;
@@ -241,6 +244,9 @@ public class PlayerInfo
 
 	public BackupArea getNextRedo()
 	{
+		if (redos.empty())
+			return null;
+		
 		BackupArea back = redos.pop();
 		undos.push(back);
 		return back;

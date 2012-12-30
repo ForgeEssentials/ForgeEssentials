@@ -5,9 +5,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskReplaceSelection;
+import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
@@ -28,78 +34,75 @@ public class CommandReplace extends WorldControlCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		if (args.length >= 2)
+		if (args.length == 2)
 		{
+			int[] temp;
 			int firstID = -1;
 			int firstMeta = -1;
 			int secondID = -1;
 			int secondMeta = -1;
-			
+
 			// Begin parsing 1st argument pair
-			
-			String[] first = args[0].split(":");			
+
 			try
 			{
-				firstID = Integer.parseInt(first[0]);
-				if (first.length > 1)
-				{
-					firstMeta = Integer.parseInt(first[1]);
-				}
+				temp = FunctionHelper.parseIdAndMetaFromString(args[0]);
+				firstID = temp[0];
+				firstMeta = temp[1];
 			}
 			catch (Exception e)
 			{
-				error(player);
-				firstID = -1;
+				OutputHandler.chatError(player, e.getMessage());
+				return;
 			}
-			
-			// Begin parsing 2nd argument pair if 1st was good.
-			if (firstID != -1)
-			{
-				String[] second = args[1].split(":");
-				
-				try
-				{
-					secondID = Integer.parseInt(second[0]);
-					if (second.length > 1)
-					{
-						secondMeta = Integer.parseInt(second[1]);
-					}
-				}
-				catch (Exception e)
-				{
-					error(player);
-					secondID = -1;						
-				}
-			}
-			
-			// Execute command if both arguments are okay.
-			if (firstID != -1 && secondID != -1)
-			{
-				if (firstID >= Block.blocksList.length || secondID >= Block.blocksList.length)
-				{
-					error(player, Localization.format("message.wc.blockIdOutOfRange", Block.blocksList.length));
-				}
-				else if (firstID != 0 && Block.blocksList[firstID] == null)
-				{
-					error(player, Localization.format("message.wc.invalidBlockId", firstID));
-				}
-				else if (secondID != 0 && Block.blocksList[secondID] == null)
-				{
-					error(player, Localization.format("message.wc.invalidBlockId", secondID));
-				}
-				else
-				{
-					PlayerInfo info = PlayerInfo.getPlayerInfo(player);
-					World world = player.worldObj;
-					Selection sel = info.getSelection();
-					BackupArea back = new BackupArea();
 
-					TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
-				}
+			// Begin parsing 2nd argument pair if 1st was good.
+			try
+			{
+				temp = FunctionHelper.parseIdAndMetaFromString(args[2]);
+				secondID = temp[0];
+				secondMeta = temp[1];
+			}
+			catch (Exception e)
+			{
+				OutputHandler.chatError(player, e.getMessage());
+				return;
+			}
+
+			if (firstID >= Block.blocksList.length || secondID >= Block.blocksList.length)
+			{
+				error(player, Localization.format("message.wc.blockIdOutOfRange", Block.blocksList.length));
+			}
+			else if (firstID != 0 && Block.blocksList[firstID] == null)
+			{
+				error(player, Localization.format("message.wc.invalidBlockId", firstID));
+			}
+			else if (secondID != 0 && Block.blocksList[secondID] == null)
+			{
+				error(player, Localization.format("message.wc.invalidBlockId", secondID));
 			}
 			else
 			{
-				error(player);
+				PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+				World world = player.worldObj;
+				Selection sel = info.getSelection();
+				BackupArea back = new BackupArea();
+
+				PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
+				PermResult result = PermissionsAPI.checkPermResult(query);
+
+				switch (result)
+					{
+						case ALLOW:
+							TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
+							return;
+						case PARTIAL:
+							TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel, query.applicable));
+						default:
+							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+							return;
+					}
+
 			}
 		}
 		else

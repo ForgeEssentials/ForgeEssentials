@@ -14,6 +14,7 @@ import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLiteDataDriver;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.util.DataStorage;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -67,9 +68,9 @@ public class ForgeEssentials
 	public static boolean				preload;
 
 	public static String				modlistLocation;
-	public static String				fedirloc	= "./ForgeEssentials/";
+	public static String				fedirloc	= "ForgeEssentials/";
 
-	public static final File			FEDIR		= new File(fedirloc);
+	public static final File			FEDIR		= new File(FunctionHelper.getBaseDir(), fedirloc);
 
 	public static DataStorageManager	dataManager;
 	public BannedItems					bannedItems;

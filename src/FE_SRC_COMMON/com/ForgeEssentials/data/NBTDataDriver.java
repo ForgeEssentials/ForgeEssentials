@@ -20,6 +20,7 @@ import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.TaggedClass.SavedField;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -44,9 +45,9 @@ public class NBTDataDriver extends DataDriver
 		}
 		else
 		{
-			File parent = new File("./saves/");
-			if (FMLCommonHandler.instance().getSide().isServer())
-				parent = new File(".");
+			File parent = FunctionHelper.getBaseDir();
+			if (FMLCommonHandler.instance().getSide().isClient())
+				parent = new File(FunctionHelper.getBaseDir(), "saves/");
 			
 			this.baseFile = new File(parent, worldName + "/FEData/NBT/");
 		}

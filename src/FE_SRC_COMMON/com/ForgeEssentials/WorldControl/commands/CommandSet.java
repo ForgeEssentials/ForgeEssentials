@@ -7,8 +7,13 @@ import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
@@ -34,7 +39,7 @@ public class CommandSet extends WorldControlCommandBase
 
 		if (args.length == 1)
 		{
-			int[] data = this.interpretIDAndMetaFromString(args[0]);
+			int[] data = FunctionHelper.parseIdAndMetaFromString(args[0]);
 			ID = data[0];
 			metadata = data[1];
 			
@@ -52,14 +57,32 @@ public class CommandSet extends WorldControlCommandBase
 				World world = player.worldObj;
 				Selection sel = info.getSelection();
 				BackupArea back = new BackupArea();
-
-				TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
+				
+				PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
+				PermResult result = PermissionsAPI.checkPermResult(query); 
+				
+				switch(result)
+				{
+					case ALLOW:
+						TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
+						return;
+					case PARTIAL:
+						TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel, query.applicable));
+					default:
+						OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+						return;
+				}
 			}
 		}
 		else
 		{
 			error(player);
 		}
-
+	}
+	
+	@Override
+	public boolean canPlayerUseCommand(EntityPlayer player)
+	{
+		return true;
 	}
 }

@@ -54,6 +54,8 @@ public class ModuleSnooper implements IFEModule
 
 	public static boolean overrideIP;
 	public static String overrideIPValue;
+
+	public static boolean autoReboot;
 	
 	public ModuleSnooper()
 	{
@@ -68,9 +70,8 @@ public class ModuleSnooper implements IFEModule
 		if(enable)
 		{
 			e.registerServerCommand(new CommandReloadQuery());
-			theThread = new RConQueryThread((IServer) e.getServer());
-			theThread.startThread();
 			server = e.getServer();
+			startQuery();
 		}
 	}
 	
@@ -82,96 +83,6 @@ public class ModuleSnooper implements IFEModule
 		
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.commands.reloadquery", true);
 	}
-	
-    /**
-     * Get all of the info!
-     * @param username
-     * @return All of the date!
-     */
-    public static HashMap<String, String> getUserData(EntityPlayerMP player) 
-	{
-    	HashMap<String, String> PlayerData = new HashMap();
-    	HashMap<String, String> tempMap = new HashMap();
-    	ArrayList<String> tempArgs = new ArrayList();
-    	String username = player.username;
-		
-    	PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-		if(pi != null)
-		{
-			if(pi.home != null) PlayerData.put("home", TextFormatter.toJSON(pi.home));
-			if(pi.lastDeath != null) PlayerData.put("lastDeath", TextFormatter.toJSON(pi.lastDeath));
-		}
-		
-		PlayerData.put("armor", "" + player.inventory.getTotalArmorValue());
-		PlayerData.put("wallet", "" + Wallet.getWallet(player));
-		PlayerData.put("health", "" + player.getHealth());
-		PlayerData.put("pos", TextFormatter.toJSON(new WorldPoint(player)));
-		PlayerData.put("ping", "" + player.ping);
-		PlayerData.put("gm", player.theItemInWorldManager.getGameType().getName());
-		
-		if(!player.getActivePotionEffects().isEmpty())
-		{
-			PlayerData.put("potion", TextFormatter.toJSON(player.getActivePotionEffects()));
-		}
-		
-		{
-			tempMap.clear();
-			tempMap.put("lvl", "" + player.experienceLevel);
-			tempMap.put("bar", "" + player.experience);
-		}
-		PlayerData.put("xp", TextFormatter.toJSON(tempMap));
-		
-		{
-			tempMap.clear();
-			tempMap.put("food", "" + player.getFoodStats().getFoodLevel());
-			tempMap.put("saturation", "" + player.getFoodStats().getSaturationLevel());
-		}
-		PlayerData.put("foodStats", TextFormatter.toJSON(tempMap));
-		
-		{
-			tempMap.clear();
-			tempMap.put("edit", "" + player.capabilities.allowEdit);
-			tempMap.put("allowFly", "" + player.capabilities.allowFlying);
-			tempMap.put("isFly", "" + player.capabilities.isFlying);
-			tempMap.put("noDamage", "" + player.capabilities.disableDamage);
-		}
-		PlayerData.put("capabilities", TextFormatter.toJSON(tempMap));
-		
-		return PlayerData;
-	}
-    
-    /**
-     * Get all of the armor data
-     * @param player
-     * @return
-     */
-    public static HashMap<String, String> getArmorData(EntityPlayerMP player) 
-	{
-    	HashMap<String, String> PlayerData = new HashMap();
-    	String username = player.username;
-
-    	for(int i = 0; i < 3; i++)
-    	{
-    		System.out.println(i);
-    		ItemStack stack = player.inventory.armorInventory[i];
-        	if(stack != null)
-        	{
-        		PlayerData.put("" + i, TextFormatter.toJSON(stack, true));
-        	}
-    	}
-    	
-		return PlayerData;
-	}
-    
-    public static HashMap<String, String> getTPS()
-    {
-    	HashMap<String, String> data = new HashMap();
-    	for (Integer id : DimensionManager.getIDs())
-    	{
-    		data.put("dim " + id, "" + getTPSFromData(server.worldTickTimes.get(id)));
-    	}
-    	return data;
-    }
     
     /**
      * Get all of the inv data
@@ -193,44 +104,17 @@ public class ModuleSnooper implements IFEModule
 		return tempArgs;
 	}
     
-    /*
-     * TPS needed functions
-     */
-	
-	private static final DecimalFormat DF = new DecimalFormat("########0.000");
-	/**
-	 * 
-	 * @param par1ArrayOfLong
-	 * @return amount of time for 1 tick in ms
-	 */
-	private static double func_79015_a(long[] par1ArrayOfLong)
+    public static void startQuery()
     {
-        long var2 = 0L;
-        long[] var4 = par1ArrayOfLong;
-        int var5 = par1ArrayOfLong.length;
-
-        for (int var6 = 0; var6 < var5; ++var6)
-        {
-            long var7 = var4[var6];
-            var2 += var7;
-        }
-
-        return (((double)var2 / (double)par1ArrayOfLong.length) * 1.0E-6D);
+    	if(theThread != null)
+    	{
+    		ModuleSnooper.theThread.closeAllSockets_do(true);
+    		ModuleSnooper.theThread.running = false;
+    	}
+    	theThread = new RConQueryThread((IServer) server);
+		theThread.startThread();
     }
-    
-	public static String getTPSFromData(long[] par1ArrayOfLong)
-	{
-		double tps = (func_79015_a(par1ArrayOfLong)); 
-		if(tps < 50)
-		{
-			return "20";
-		}
-		else
-		{
-			return DF.format((1000/tps));
-		}
-	}
-	
+
 	/*
 	 * Not needed
 	 */
