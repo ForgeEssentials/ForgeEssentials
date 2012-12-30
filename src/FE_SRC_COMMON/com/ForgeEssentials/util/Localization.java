@@ -174,6 +174,7 @@ public class Localization
 			catch (Exception e)
 			{
 				OutputHandler.SOP("Could not load language file " + langFile);
+				e.printStackTrace();
 			}
 	}
 

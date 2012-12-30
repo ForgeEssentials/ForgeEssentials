@@ -193,19 +193,19 @@
     
     <!-- Some localization for WorldControl -->
     <entry key="command./replace.info.player">Replaces blocks of the first ID with blocks of the second</entry>
-    <entry key="command./replace.syntax.player"><blockID[:metadata]> <blockID[:metadata]></entry>
+    <entry key="command./replace.syntax.player">&lt;blockID[:metadata]> &lt;blockID[:metadata]></entry>
     <entry key="command./set.info.player">Sets all blocks in selection to given ID/metadata</entry>
-    <entry key="command./set.syntax.player"><blockID[:metadata]></entry>
+    <entry key="command./set.syntax.player">&lt;blockID[:metadata]></entry>
     <entry key="command.freeze.info.player">Freezes exposed (open to the sky) water to ice.</entry>
-    <entry key="command.freeze.syntax.player"><radius of effect> [<x> <z>]</entry>
+    <entry key="command.freeze.syntax.player">&lt;radius of effect> [&lt;x> &lt;z>]</entry>
     <entry key="command.snow.info.player">Adds a dusting of snow to blocks open to the sky.</entry>
-    <entry key="command.snow.syntax.player"><radius of effect> [<x> <z>]</entry>
+    <entry key="command.snow.syntax.player">&lt;radius of effect> [&lt;x> &lt;z>]</entry>
     <entry key="command.thaw.info.player">Removes snow and ice from the exposed blocks, starting from the player's position or specified X and Z.</entry>
-    <entry key="command.thaw.syntax.player"><radius of effect> [<x> <z>]</entry>
+    <entry key="command.thaw.syntax.player">&lt;radius of effect> [&lt;x> &lt;z>]</entry>
     <entry key="command.till.info.player">Tills exposed grass and dirt for planting crops.</entry>
-    <entry key="command.till.syntax.player"><radius of effect> [<x> <y>]</entry>
+    <entry key="command.till.syntax.player">&lt;radius of effect> [&lt;x> &lt;y>]</entry>
     <entry key="command.untill.info.player">Replaces farmland open to the sky with dirt.</entry>
-    <entry key="command.untill.syntax.player"><radius of effect> [<x> <y>]</entry>
+    <entry key="command.untill.syntax.player">&lt;radius of effect> [&lt;x> &lt;y>]</entry>
     
     <entry key="message.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
     <entry key="message.wc.deselection">Selection cleared</entry>

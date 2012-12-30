@@ -8,10 +8,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
 
+import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -36,6 +38,7 @@ public class CommandTpSpawn extends ForgeEssentialsCommandBase
 			if (player != null)
 			{
 				ChunkCoordinates spawn = player.getBedLocation();
+				PlayerInfo.getPlayerInfo((EntityPlayer) player).back = new WorldPoint(player);
 				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			} else
@@ -45,6 +48,7 @@ public class CommandTpSpawn extends ForgeEssentialsCommandBase
 			ChunkCoordinates spawn = sender.getBedLocation();
 			if (spawn != null)
 			{
+				PlayerInfo.getPlayerInfo((EntityPlayer) sender).back = new WorldPoint(sender);
 				((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
 				sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			}
@@ -59,6 +63,7 @@ public class CommandTpSpawn extends ForgeEssentialsCommandBase
 			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			if (player != null)
 			{
+				PlayerInfo.getPlayerInfo((EntityPlayer) player).back = new WorldPoint(player);
 				ChunkCoordinates spawn = player.getBedLocation();
 				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
