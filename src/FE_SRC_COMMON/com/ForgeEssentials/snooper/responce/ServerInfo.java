@@ -22,11 +22,14 @@ import cpw.mods.fml.common.ModContainer;
 
 public class ServerInfo extends Response
 {
+	public static Integer ServerID;
+	public static String serverHash;
+	
 	public ServerInfo(DatagramPacket packet)
 	{
 		super(packet);
 		LinkedHashMap<String, String> data = new LinkedHashMap();
-		// ModList
+		
 		if(ConfigSnooper.send_Mods)
 		{
 			ArrayList<String> temp = new ArrayList<String>();
@@ -41,32 +44,23 @@ public class ServerInfo extends Response
 			data.put("mods", TextFormatter.toJSON(temp));
 		}
 		
-		// IP & Port
 		if(ConfigSnooper.send_IP)
 		{
 			if(ModuleSnooper.overrideIP) data.put("hostip", "" + ModuleSnooper.overrideIPValue);
 			else data.put("hostip", getIP());
 			data.put("hostport", "" + server.getPort());
 		}
-		// MC version
 		data.put("version", server.getMinecraftVersion());
-		// WorldName
 		data.put("map", server.getFolderName());
-		// Player slots
 		data.put("maxplayers", "" + server.getMaxPlayers());
-		// Gamemode
 		data.put("gm", server.getGameType().getName());
-		// Difficulty
 		data.put("diff", "" + server.getDifficulty());
-		// Players online
 		data.put("numplayers", "" + server.getCurrentPlayerCount());
-		// MOTD (Server list info)
 		if(ConfigSnooper.send_Motd) data.put("motd", server.getServerMOTD());
-		// Uptime
+		
 		data.put("uptime", getUptime());
-		// TPS
 		data.put("tps", getTPS());
-		//WorldBorder
+		
 		try
 		{
 			if(ConfigSnooper.send_WB && ModuleWorldBorder.WBenabled && ModuleWorldBorder.borderData.getBoolean("set"))
@@ -78,7 +72,10 @@ public class ServerInfo extends Response
 				data.put("wb", TextFormatter.toJSON(temp));
 			}
 		}catch(Exception e){}
-			
+		
+		if(ServerID != 0) data.put("serverID", ServerID + "");
+		if(!serverHash.equals("")) data.put("serverHash", serverHash + "");
+		
 		dataString = TextFormatter.toJSON(data);
 	}
 	

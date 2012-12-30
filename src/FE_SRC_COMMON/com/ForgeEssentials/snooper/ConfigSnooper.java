@@ -5,6 +5,7 @@ import java.io.File;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.snooper.responce.ServerInfo;
 
 public class ConfigSnooper 
 {
@@ -35,6 +36,9 @@ public class ConfigSnooper
 		ModuleSnooper.overrideIPValue = config.get(cat, "overrideIPValue", "", "Value to send if overrideIP = true").value;
 		
 		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automaticly reload the query system if a fatal error occures").getBoolean(true);
+		
+		ServerInfo.ServerID = config.get(cat, "serverID", 0, "This is here to make it easy for other sites (server lists) to authenticate the server").getInt();
+		ServerInfo.serverHash = config.get(cat, "serverHash", "", "This is here to make it easy for other sites (server lists) to authenticate the server").value;
 		
 		send_Mods = config.get(cat, "send_Mods", true, "Send mod info").getBoolean(true);
 		send_IP = config.get(cat, "send_IP", true, "Send ip & port").getBoolean(true);
