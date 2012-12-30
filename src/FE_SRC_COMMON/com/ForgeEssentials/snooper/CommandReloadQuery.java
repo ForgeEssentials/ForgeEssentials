@@ -42,12 +42,6 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player) 
-	{
-		return true;
-	}
-
-	@Override
 	public String getCommandPerm() 
 	{
 		return "ForgeEssentials.Snooper.commands." + getCommandName();

@@ -146,7 +146,11 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		return false;
 	}
 
-	public abstract boolean canPlayerUseCommand(EntityPlayer player);
+	public boolean canPlayerUseCommand(EntityPlayer player)
+	{
+		// This will make the /help menu only display allowed commands.
+		return checkCommandPerm(player);
+	}
 
 	/**
 	 * Simply prints a usage message to the sender of the command.

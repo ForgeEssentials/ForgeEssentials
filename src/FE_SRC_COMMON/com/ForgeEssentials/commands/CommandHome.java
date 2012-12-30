@@ -97,18 +97,6 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canConsoleUseCommand()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
@@ -125,5 +113,11 @@ public class CommandHome extends ForgeEssentialsCommandBase
 		{
 			return null;
 		}
+	}
+
+	@Override
+	public boolean canConsoleUseCommand() 
+	{
+		return false;
 	}
 }

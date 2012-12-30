@@ -53,6 +53,12 @@
 	<entry key="command.virtualchest.info.console"></entry>
 	<entry key="command.virtualchest.info.player">Open your virtual chest.</entry>
 	
+	<entry key="command.setspawn.syntax.console">[X Y Z]</entry>
+	<entry key="command.setspawn.syntax.player">[X Y Z]</entry>
+	<entry key="command.setspawn.info.console">Set the server spawn.</entry>
+	<entry key="command.setspawn.info.player">Set the server spawn.</entry>
+	<entry key="message.spawnset">Server spawn set.</entry>
+	
 	<entry key="command.capabilities.syntax.console">[player] [capability] [value|default]</entry>
 	<entry key="command.capabilities.syntax.player">[player] [capability] [value|default]</entry>
 	<entry key="command.capabilities.info.console">Allows you to modify a bunch of interesting stuff related to the player.</entry>

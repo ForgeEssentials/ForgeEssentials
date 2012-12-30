@@ -43,13 +43,7 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	{
 		return true;
 	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return checkCommandPerm(player);
-	}
-
+	
 	@Override
 	public String getInfoConsole()
 	{

@@ -20,6 +20,7 @@ public class Localization
 	public static final String	BURN_PLAYER						= "message.burn.player";
 	public static final String	HEALED							= "message.healed";
 	public static final String	SPAWNED							= "message.spawned";
+	public static final String	SPAWNSET						= "message.spawnset";
 	public static final String	POTIONEFFECTNOTFOUND			= "command.potion.effectnotfound";
 
 	/*

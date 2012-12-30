@@ -316,17 +316,11 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	{
 		return true;
 	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
-
+	
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.worldborder.admin";
+		return "ForgeEssentials.worldborder.command";
 	}
 	
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)

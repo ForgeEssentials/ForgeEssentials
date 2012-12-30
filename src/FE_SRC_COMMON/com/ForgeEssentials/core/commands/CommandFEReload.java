@@ -40,12 +40,6 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return checkCommandPerm(player);
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.CoreCommands." + getCommandName();

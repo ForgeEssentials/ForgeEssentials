@@ -37,10 +37,4 @@ public class CommandUndo extends WorldControlCommandBase
 		
 		TickTaskHandler.addTask(new TickTaskSetBackup(player, back, false));
 	}
-	
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return checkCommandPerm(player);
-	}
 }

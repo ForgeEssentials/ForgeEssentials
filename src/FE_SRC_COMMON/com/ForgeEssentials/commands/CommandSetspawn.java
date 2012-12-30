@@ -58,12 +58,29 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 				return;
 			}
 			Point point = new Point(x, y, z);
-			setSpawn(point, sender);
+			NBTTagCompound spawn = new NBTTagCompound();
+			spawn.setInteger("x", point.x);
+			spawn.setInteger("y", point.y);
+			spawn.setInteger("z", point.z);
+			spawn.setInteger("dim", 0);
+			DataStorage.setData("spawn", spawn);
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.x, point.y, point.z);
+			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		}
 		else
 		{
 			WarpPoint point = new WarpPoint(sender);
-			setSpawn(point, sender);
+			NBTTagCompound spawn = new NBTTagCompound();
+			spawn.setInteger("x", point.x);
+			spawn.setInteger("y", point.y);
+			spawn.setInteger("z", point.z);
+			spawn.setInteger("dim", 0);
+			spawn.setFloat("pich", ((WarpPoint) point).pitch);
+			spawn.setFloat("yaw", ((WarpPoint) point).yaw);
+			DataStorage.setData("spawn", spawn);
+			DataStorage.save();
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.x, point.y, point.z);
+			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		}
 	}
 
@@ -100,7 +117,15 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 				return;
 			}
 			Point point = new Point(x, y, z);
-			setSpawn(point, sender);
+			NBTTagCompound spawn = new NBTTagCompound();
+			spawn.setInteger("x", point.x);
+			spawn.setInteger("y", point.y);
+			spawn.setInteger("z", point.z);
+			spawn.setInteger("dim", 0);
+			DataStorage.setData("spawn", spawn);
+			DataStorage.save();
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.x, point.y, point.z);
+			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		} 
 		else
 		{
@@ -108,29 +133,8 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 		}
 	}
 
-	private void setSpawn(Point point, ICommandSender sender) 
-	{
-		NBTTagCompound spawn = new NBTTagCompound();
-		spawn.setInteger("x", point.x);
-		spawn.setInteger("x", point.x);
-		spawn.setInteger("x", point.x);
-		spawn.setInteger("dim", 0);
-		if(point instanceof WarpPoint)
-		{
-			spawn.setFloat("pich", ((WarpPoint) point).pitch);
-			spawn.setFloat("yaw", ((WarpPoint) point).yaw);
-		}
-		DataStorage.setData("spawn", spawn);
-	}
-
 	@Override
 	public boolean canConsoleUseCommand()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		return true;
 	}
@@ -145,28 +149,5 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
-	}
-	
-	public static void sendToSpawn(EntityPlayer player)
-	{
-		System.out.println("CALLED 1");
-		if (DataStorage.getData("spawn").hasKey("dim"))
-		{
-			System.out.println("CALLED 2");
-			ChunkCoordinates var4 = ((EntityPlayerMP) player).getBedLocation();
-			if (var4 == null)
-			{
-				System.out.println("CALLED 3");
-				NBTTagCompound spawn = DataStorage.getData("spawn");
-				Integer X = spawn.getInteger("x");
-				Integer Y = spawn.getInteger("y");
-				Integer Z = spawn.getInteger("z");
-				Float yaw = spawn.getFloat("yaw");
-				Float pitch = spawn.getFloat("pitch");
-				Integer dim = spawn.getInteger("Dim");
-				if (player.dimension!=dim) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().transferPlayerToDimension(((EntityPlayerMP) player), dim);
-				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(X, Y, Z, yaw, pitch);
-			}
-		}
 	}
 }

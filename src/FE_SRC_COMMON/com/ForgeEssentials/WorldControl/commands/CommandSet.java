@@ -79,10 +79,4 @@ public class CommandSet extends WorldControlCommandBase
 			error(player);
 		}
 	}
-	
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
 }

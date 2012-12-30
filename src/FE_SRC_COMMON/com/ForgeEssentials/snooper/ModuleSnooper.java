@@ -88,13 +88,17 @@ public class ModuleSnooper implements IFEModule
     
     public static void startQuery()
     {
-    	if(theThread != null)
+    	try
     	{
-    		ModuleSnooper.theThread.closeAllSockets_do(true);
-    		ModuleSnooper.theThread.running = false;
+    		if(theThread != null)
+    		{
+    			ModuleSnooper.theThread.closeAllSockets_do(true);
+    			ModuleSnooper.theThread.running = false;
+    		}
+    		theThread = new RConQueryThread((IServer) server);
+    		theThread.startThread();
     	}
-    	theThread = new RConQueryThread((IServer) server);
-		theThread.startThread();
+    	catch(Exception e){} 
     }
 
 	/*

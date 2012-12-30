@@ -48,12 +48,6 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return checkCommandPerm(player);
-	}
-
-	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		// Does nothing on the console.

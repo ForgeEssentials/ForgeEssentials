@@ -74,13 +74,7 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 	{
 		return true;
 	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
-
+	
 	@Override
 	public String getCommandPerm()
 	{

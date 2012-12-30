@@ -6,6 +6,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,13 +29,16 @@ public class ServerInfo extends Response
 		// ModList
 		if(ConfigSnooper.send_Mods)
 		{
+			ArrayList<String> temp = new ArrayList<String>();
 			List<ModContainer> modlist = Loader.instance().getActiveModList();
-			String[] ModData = new String[modlist.size()];
 			for(int i = 0; i < modlist.size(); i++)
 			{
-				ModData[i] = modlist.get(i).getName();
+				ArrayList<String> ModData = new ArrayList<String>();
+				ModData.add(modlist.get(i).getName());
+				ModData.add(modlist.get(i).getDisplayVersion());
+				temp.add(TextFormatter.toJSON(ModData));
 			}
-			data.put("mods", TextFormatter.toJSON(ModData));
+			data.put("mods", TextFormatter.toJSON(temp));
 		}
 		
 		// IP & Port

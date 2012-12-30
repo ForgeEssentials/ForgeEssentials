@@ -76,10 +76,4 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	{
 		return "WorldControl.commands."+getName();
 	}
-	
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
 }

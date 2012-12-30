@@ -121,13 +121,7 @@ public class CommandPermSet extends CommandFEPermBase
 		else
 			return Result.DEFAULT;
 	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
-
+	
 	@Override
 	public String getCommandPerm()
 	{

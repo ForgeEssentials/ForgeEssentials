@@ -110,6 +110,7 @@ public class ModuleCommands implements IFEModule
 		event.registerPermissionDefault("ForgeEssentials.commands.potion", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.enderchest", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.virtualchest", false);
+		event.registerPermissionDefault("ForgeEssentials.commands.setspawn", false);
 		
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.commands", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.commands.compass", true);

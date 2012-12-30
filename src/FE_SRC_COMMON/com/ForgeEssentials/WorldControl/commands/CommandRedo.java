@@ -37,10 +37,4 @@ public class CommandRedo extends WorldControlCommandBase
 		
 		TickTaskHandler.addTask(new TickTaskSetBackup(player, back, true));
 	}
-	
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return checkCommandPerm(player);
-	}
 }
