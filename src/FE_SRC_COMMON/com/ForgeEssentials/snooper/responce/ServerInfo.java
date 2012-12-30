@@ -1,6 +1,5 @@
 package com.ForgeEssentials.snooper.responce;
 
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.DatagramPacket;
@@ -9,8 +8,6 @@ import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
-
-import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.snooper.ConfigSnooper;

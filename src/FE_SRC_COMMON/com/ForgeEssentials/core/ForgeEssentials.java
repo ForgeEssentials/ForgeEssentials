@@ -1,12 +1,17 @@
 package com.ForgeEssentials.core;
 
-import com.ForgeEssentials.core.network.PacketHandler;
+import java.io.File;
+
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.WorldEvent;
+
 import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.ModListFile;
+import com.ForgeEssentials.core.network.PacketHandler;
 import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.MySQLDataDriver;
@@ -22,11 +27,6 @@ import com.ForgeEssentials.util.Version;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.WorldEvent;
-
-import java.io.File;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;

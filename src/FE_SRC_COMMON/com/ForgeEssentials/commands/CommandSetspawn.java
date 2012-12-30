@@ -1,26 +1,18 @@
 package com.ForgeEssentials.commands;
 
-import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.World;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.DataStorage;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

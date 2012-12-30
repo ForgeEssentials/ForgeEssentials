@@ -1,7 +1,6 @@
 package com.ForgeEssentials.commands.util;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandSetspawn;

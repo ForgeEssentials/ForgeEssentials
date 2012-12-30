@@ -5,7 +5,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
@@ -13,9 +12,6 @@ import net.minecraft.world.WorldServer;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketSelectionUpdate implements IForgeEssentialsPacket
 {

@@ -5,11 +5,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskReplaceSelection;
-import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.PermissionsAPI;
-import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;

@@ -1,17 +1,15 @@
 package com.ForgeEssentials.client.network;
 
-import com.ForgeEssentials.client.ForgeEssentialsClient;
-import com.ForgeEssentials.client.util.Point;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.ForgeEssentials.client.ForgeEssentialsClient;
+import com.ForgeEssentials.client.util.Point;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

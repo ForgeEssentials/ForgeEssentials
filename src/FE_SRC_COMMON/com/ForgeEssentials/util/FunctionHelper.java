@@ -1,8 +1,7 @@
 package com.ForgeEssentials.util;
 
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import java.io.File;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,7 +11,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import java.io.File;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;

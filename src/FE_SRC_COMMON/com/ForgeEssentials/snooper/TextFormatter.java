@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;

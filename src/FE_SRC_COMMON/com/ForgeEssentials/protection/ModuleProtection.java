@@ -5,15 +5,9 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
-import com.ForgeEssentials.permission.Zone;
-import com.ForgeEssentials.permission.ZoneManager;
-import com.ForgeEssentials.permission.query.PermQuery;
-import com.ForgeEssentials.permission.query.PermQueryPlayerZone;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;

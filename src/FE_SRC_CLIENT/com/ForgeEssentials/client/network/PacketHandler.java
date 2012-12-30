@@ -1,13 +1,12 @@
 package com.ForgeEssentials.client.network;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;

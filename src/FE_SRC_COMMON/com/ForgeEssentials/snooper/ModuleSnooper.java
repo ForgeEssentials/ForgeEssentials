@@ -1,37 +1,19 @@
 package com.ForgeEssentials.snooper;
 
-import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.rcon.IServer;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Property;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import com.ForgeEssentials.WorldBorder.ConfigWorldBorder;
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.economy.Wallet;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

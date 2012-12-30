@@ -4,7 +4,6 @@ import java.io.File;
 
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.backup.CommandBackup;
 import com.ForgeEssentials.commands.CommandEnderchest;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
