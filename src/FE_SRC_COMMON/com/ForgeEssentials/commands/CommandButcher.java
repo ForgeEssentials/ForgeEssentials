@@ -3,22 +3,15 @@ package com.ForgeEssentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 
 import com.ForgeEssentials.commands.util.CommandButcherTickTask;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CommandButcher extends ForgeEssentialsCommandBase
 {

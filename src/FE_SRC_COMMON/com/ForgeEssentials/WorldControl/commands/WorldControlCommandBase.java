@@ -2,7 +2,6 @@ package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;

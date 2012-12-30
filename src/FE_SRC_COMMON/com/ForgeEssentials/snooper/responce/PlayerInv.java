@@ -3,7 +3,7 @@ package com.ForgeEssentials.snooper.responce;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -23,7 +23,7 @@ public class PlayerInv extends Response
     	EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
     	if(player == null) return;
     	
-    	HashMap<String, String> PlayerData = new HashMap();
+    	LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
     	ArrayList<String> tempArgs = new ArrayList();
     	for(ItemStack stack : player.inventory.mainInventory)
     	{

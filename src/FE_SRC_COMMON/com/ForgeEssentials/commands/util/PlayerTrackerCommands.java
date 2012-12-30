@@ -6,7 +6,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 
 import com.ForgeEssentials.commands.CommandMotd;
-import com.ForgeEssentials.commands.CommandSetspawn;
 import com.ForgeEssentials.util.DataStorage;
 
 import cpw.mods.fml.common.FMLCommonHandler;

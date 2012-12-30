@@ -3,7 +3,7 @@ package com.ForgeEssentials.snooper.responce;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -23,8 +23,8 @@ public class PlayerInfoResonce extends Response
 		this.allowed = ConfigSnooper.send_Player_info;
 		if(!this.allowed) return;
 		
-		HashMap<String, String> PlayerData = new HashMap();
-    	HashMap<String, String> tempMap = new HashMap();
+		LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
+    	LinkedHashMap<String, String> tempMap = new LinkedHashMap();
     	ArrayList<String> tempArgs = new ArrayList();
     	
     	String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));

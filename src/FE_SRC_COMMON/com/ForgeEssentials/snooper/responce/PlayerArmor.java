@@ -2,7 +2,7 @@ package com.ForgeEssentials.snooper.responce;
 
 import java.net.DatagramPacket;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -18,7 +18,7 @@ public class PlayerArmor extends Response
 		this.allowed = ConfigSnooper.send_Player_armor;
 		if(!this.allowed) return;
 		
-		HashMap<String, String> PlayerData = new HashMap();
+		LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
 		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
     	EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
     	if(player == null) return;

@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
@@ -25,7 +25,7 @@ public class ServerInfo extends Response
 	public ServerInfo(DatagramPacket packet)
 	{
 		super(packet);
-		HashMap<String, String> data = new HashMap();
+		LinkedHashMap<String, String> data = new LinkedHashMap();
 		// ModList
 		if(ConfigSnooper.send_Mods)
 		{
@@ -71,7 +71,7 @@ public class ServerInfo extends Response
 		{
 			if(ConfigSnooper.send_WB && ModuleWorldBorder.WBenabled && ModuleWorldBorder.borderData.getBoolean("set"))
 			{
-				HashMap<String, String> temp = new HashMap();
+				LinkedHashMap<String, String> temp = new LinkedHashMap();
 				temp.put("Shape", ModuleWorldBorder.shape.name());
 				Point center = new Point(ModuleWorldBorder.borderData.getInteger("centerX"), 64, ModuleWorldBorder.borderData.getInteger("centerZ"));
 				temp.put("Center", TextFormatter.toJSON(center));
@@ -96,7 +96,7 @@ public class ServerInfo extends Response
 	
     public String getTPS()
     {
-    	HashMap<String, String> data = new HashMap();
+    	LinkedHashMap<String, String> data = new LinkedHashMap();
     	for (int id : ConfigSnooper.TPSList)
     	{
     		if(server.worldTickTimes.containsKey(id))
