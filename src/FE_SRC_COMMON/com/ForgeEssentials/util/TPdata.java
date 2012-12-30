@@ -50,6 +50,7 @@ public class TPdata
 	
 	public void doTP()
 	{
+		PlayerInfo.getPlayerInfo((EntityPlayer) player).back = new WorldPoint(player);
 		ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
 		if(player.dimension != point.dim)
 		{

@@ -13,8 +13,6 @@ import java.util.List;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
-import com.ForgeEssentials.snooper.ConfigSnooper;
-import com.ForgeEssentials.snooper.ModuleSnooper;
 import com.ForgeEssentials.snooper.API.Response;
 import com.ForgeEssentials.snooper.API.TextFormatter;
 import com.ForgeEssentials.util.AreaSelector.Point;

@@ -6,7 +6,6 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.snooper.API.Response;
-import com.ForgeEssentials.snooper.response.ServerInfo;
 
 public class ConfigSnooper 
 {

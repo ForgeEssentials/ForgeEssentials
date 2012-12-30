@@ -22,9 +22,9 @@ public class CommandBack extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
-		if (info.lastDeath != null)
+		if (info.back != null)
 		{
-			WorldPoint death = info.lastDeath;
+			WorldPoint death = info.back;
 			EntityPlayerMP player = ((EntityPlayerMP) sender);
 			if (player.dimension != death.dim)
 			{

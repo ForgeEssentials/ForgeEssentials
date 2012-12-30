@@ -15,6 +15,6 @@ public class EventHandler
 	public void onPlayerDeath(LivingDeathEvent e)
 	{
 		if (e.entity instanceof EntityPlayer)
-			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).lastDeath = FunctionHelper.getEntityPoint(e.entity);
+			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).back = FunctionHelper.getEntityPoint(e.entity);
 	}
 }

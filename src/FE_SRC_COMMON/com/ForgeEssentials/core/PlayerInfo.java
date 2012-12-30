@@ -69,7 +69,7 @@ public class PlayerInfo
 		info.setPoint2((Point) tag.getFieldValue("sel2"));
 		
 		info.home = (WorldPoint) tag.getFieldValue("home");
-		info.lastDeath = (WorldPoint) tag.getFieldValue("lastDeath");
+		info.back = (WorldPoint) tag.getFieldValue("back");
 		
 		info.spawnType = (Integer) tag.getFieldValue("spawnType");
 		
@@ -101,7 +101,7 @@ public class PlayerInfo
 	public WorldPoint home;
 	
 	@SaveableField(nullableField = true)
-	public WorldPoint lastDeath;
+	public WorldPoint back;
 	
 	// 0: Normal 1: World spawn 2: Bed 3: Home
 	@SaveableField

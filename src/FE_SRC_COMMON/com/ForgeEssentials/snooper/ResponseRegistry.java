@@ -1,11 +1,9 @@
 package com.ForgeEssentials.snooper;
 
-import java.net.DatagramPacket;
 import java.util.Collection;
 import java.util.HashMap;
 
 import com.ForgeEssentials.snooper.API.Response;
-import com.ForgeEssentials.snooper.response.ServerInfo;
 
 public class ResponseRegistry 
 {

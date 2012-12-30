@@ -2,10 +2,7 @@ package com.ForgeEssentials.snooper;
 
 import java.util.ArrayList;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.rcon.IServer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -13,7 +10,11 @@ import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.snooper.API.API;
-import com.ForgeEssentials.snooper.response.*;
+import com.ForgeEssentials.snooper.response.PlayerArmor;
+import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
+import com.ForgeEssentials.snooper.response.PlayerInv;
+import com.ForgeEssentials.snooper.response.PlayerList;
+import com.ForgeEssentials.snooper.response.ServerInfo;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;

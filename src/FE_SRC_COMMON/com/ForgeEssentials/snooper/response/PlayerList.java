@@ -4,7 +4,6 @@ import java.net.DatagramPacket;
 
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.snooper.ConfigSnooper;
 import com.ForgeEssentials.snooper.API.Response;
 import com.ForgeEssentials.snooper.API.TextFormatter;
 

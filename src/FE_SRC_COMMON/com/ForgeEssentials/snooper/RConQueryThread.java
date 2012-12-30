@@ -22,11 +22,6 @@ import net.minecraft.network.rcon.IServer;
 import net.minecraft.network.rcon.RConUtils;
 
 import com.ForgeEssentials.snooper.API.Response;
-import com.ForgeEssentials.snooper.response.PlayerArmor;
-import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
-import com.ForgeEssentials.snooper.response.PlayerInv;
-import com.ForgeEssentials.snooper.response.PlayerList;
-import com.ForgeEssentials.snooper.response.ServerInfo;
 
 public class RConQueryThread implements Runnable
 {
