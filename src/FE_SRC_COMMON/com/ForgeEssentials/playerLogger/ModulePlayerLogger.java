@@ -1,7 +1,6 @@
 package com.ForgeEssentials.playerLogger;
 
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;

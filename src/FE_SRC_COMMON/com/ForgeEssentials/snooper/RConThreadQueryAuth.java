@@ -4,8 +4,6 @@ import java.net.DatagramPacket;
 import java.util.Date;
 import java.util.Random;
 
-import net.minecraft.network.rcon.RConThreadQuery;
-
 class RConThreadQueryAuth
 {
     /** The creation timestamp for this auth */

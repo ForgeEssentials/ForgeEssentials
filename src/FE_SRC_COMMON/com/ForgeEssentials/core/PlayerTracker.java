@@ -1,8 +1,9 @@
 package com.ForgeEssentials.core;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.ForgeEssentials.util.OutputHandler;
 
-import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.IPlayerTracker;
 
 public class PlayerTracker implements IPlayerTracker

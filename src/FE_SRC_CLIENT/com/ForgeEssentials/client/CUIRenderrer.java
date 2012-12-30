@@ -1,17 +1,16 @@
 package com.ForgeEssentials.client;
 
-import com.ForgeEssentials.client.util.Point;
-import com.ForgeEssentials.client.util.Selection;
-
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
-
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import com.ForgeEssentials.client.util.Point;
+import com.ForgeEssentials.client.util.Selection;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;

@@ -1,14 +1,6 @@
 package com.ForgeEssentials.backup;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,9 +12,6 @@ import net.minecraft.world.WorldServer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
-import com.ForgeEssentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLLog;
 
 public class CommandBackup extends ForgeEssentialsCommandBase
 {

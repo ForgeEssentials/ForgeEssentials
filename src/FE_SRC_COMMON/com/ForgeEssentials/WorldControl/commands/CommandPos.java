@@ -6,13 +6,11 @@ import net.minecraft.util.MovingObjectPosition;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.PermissionsAPI;
-import com.ForgeEssentials.permission.query.PermQuery;
 import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class CommandPos extends WorldControlCommandBase
 {

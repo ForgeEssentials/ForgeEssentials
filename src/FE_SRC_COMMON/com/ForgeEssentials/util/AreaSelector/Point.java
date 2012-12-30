@@ -3,7 +3,6 @@ package com.ForgeEssentials.util.AreaSelector;
 import java.io.Serializable;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;

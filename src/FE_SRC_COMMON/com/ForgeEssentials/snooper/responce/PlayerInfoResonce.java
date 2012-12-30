@@ -1,13 +1,9 @@
 package com.ForgeEssentials.snooper.responce;
 
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -16,12 +12,8 @@ import com.ForgeEssentials.economy.Wallet;
 import com.ForgeEssentials.permission.Group;
 import com.ForgeEssentials.permission.GroupManager;
 import com.ForgeEssentials.snooper.ConfigSnooper;
-import com.ForgeEssentials.snooper.ModuleSnooper;
 import com.ForgeEssentials.snooper.TextFormatter;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 
 public class PlayerInfoResonce extends Response
 {

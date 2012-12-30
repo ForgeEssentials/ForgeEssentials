@@ -2,14 +2,10 @@ package com.ForgeEssentials.snooper.responce;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.util.HashMap;
-
-import com.ForgeEssentials.snooper.TextFormatter;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 import net.minecraft.network.rcon.RConOutputStream;
 import net.minecraft.server.MinecraftServer;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class Response 
 {

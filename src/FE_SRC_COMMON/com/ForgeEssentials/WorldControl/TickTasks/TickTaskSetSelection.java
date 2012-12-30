@@ -1,10 +1,10 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
 //Depreciated
+import java.util.ArrayList;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
 
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;

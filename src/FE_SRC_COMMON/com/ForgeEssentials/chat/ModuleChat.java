@@ -3,7 +3,6 @@ package com.ForgeEssentials.chat;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;

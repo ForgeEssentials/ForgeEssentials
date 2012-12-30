@@ -1,8 +1,6 @@
 package com.ForgeEssentials.snooper;
 
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -13,7 +11,6 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,16 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.ForgeEssentials.snooper.responce.*;
+import net.minecraft.network.rcon.IServer;
+import net.minecraft.network.rcon.RConUtils;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.rcon.*;
-import net.minecraft.server.MinecraftServer;
+import com.ForgeEssentials.snooper.responce.PlayerArmor;
+import com.ForgeEssentials.snooper.responce.PlayerInfoResonce;
+import com.ForgeEssentials.snooper.responce.PlayerInv;
+import com.ForgeEssentials.snooper.responce.PlayerList;
+import com.ForgeEssentials.snooper.responce.ServerInfo;
 
 public class RConQueryThread implements Runnable
 {

@@ -1,13 +1,10 @@
 package com.ForgeEssentials.snooper;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import com.ForgeEssentials.core.ForgeEssentials;
 
 import net.minecraftforge.common.Configuration;
+
+import com.ForgeEssentials.core.ForgeEssentials;
 
 public class ConfigSnooper 
 {

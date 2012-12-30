@@ -1,13 +1,12 @@
 package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-import com.ForgeEssentials.util.FunctionHelper;
-
 import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.util.FunctionHelper;
 
 public class GroupManager
 {
