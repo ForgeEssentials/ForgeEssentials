@@ -1,5 +1,7 @@
 package com.ForgeEssentials.core;
 
+import net.minecraft.command.ICommandSender;
+
 import com.ForgeEssentials.WorldBorder.ConfigWorldBorder;
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
@@ -47,16 +49,16 @@ public class ModuleLauncher
 	/*
 	 * I put this here so we won't forget to add new modules.
 	 */
-	public static void ReloadConfigs()
+	public static void ReloadConfigs(ICommandSender sender)
 	{
-		ModuleCommands.conf = new ConfigCmd();
-		ModuleChat.conf = new ConfigChat();
-		ForgeEssentials.config = new CoreConfig();
-		ModulePlayerLogger.config = new ConfigPlayerLogger();
-		ModuleWorldBorder.config = new ConfigWorldBorder();
-		ModuleWorldControl.doConfig();
-		ModuleProtection.config = new ConfigProtection();
-		ModuleSnooper.configSnooper = new ConfigSnooper();
+		try{ModuleCommands.conf = new ConfigCmd();} catch (Exception e) {}
+		try{ModuleChat.conf = new ConfigChat();} catch (Exception e) {}
+		try{ForgeEssentials.config = new CoreConfig();} catch (Exception e) {}
+		try{ModulePlayerLogger.config = new ConfigPlayerLogger();} catch (Exception e) {}
+		try{ModuleWorldBorder.config = new ConfigWorldBorder();} catch (Exception e) {}
+		try{ModuleWorldControl.doConfig();} catch (Exception e) {}
+		try{ModuleProtection.config = new ConfigProtection();} catch (Exception e) {}
+		try{ModuleSnooper.configSnooper = new ConfigSnooper();} catch (Exception e) {}
 		/*
 		 * TODO: @AbarSyed Can the permissions be reloaded from file after launch? if so, you can add that here.
 		 * AbrarSyed: depends on the module.

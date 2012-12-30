@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.enchantment.Enchantment;
@@ -149,7 +150,7 @@ public class TextFormatter
         return name;
     }
 
-	public static String toJSON(ArrayList<String> data) 
+	public static String toJSON(List<String> data) 
 	{
 		if(data.size() == 0)
 		{

@@ -20,7 +20,7 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	{
 		sender.sendChatToPlayer("Reloading ForgeEssentials configs. May not work for all settings!");
 		sender.sendChatToPlayer(FEChatFormatCodes.RED + "This is experimental!");
-		ModuleLauncher.ReloadConfigs();
+		ModuleLauncher.ReloadConfigs(sender);
 		sender.sendChatToPlayer("Done!");
 	}
 
@@ -29,7 +29,7 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	{
 		sender.sendChatToPlayer("Reloading ForgeEssentials configs. May not work for all settings!");
 		sender.sendChatToPlayer(FEChatFormatCodes.RED + "This is experimental!");
-		ModuleLauncher.ReloadConfigs();
+		ModuleLauncher.ReloadConfigs(sender);
 		sender.sendChatToPlayer("Done!");
 	}
 
