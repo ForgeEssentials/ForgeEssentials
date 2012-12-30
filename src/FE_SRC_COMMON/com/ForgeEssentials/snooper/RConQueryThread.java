@@ -21,11 +21,12 @@ import java.util.Map.Entry;
 import net.minecraft.network.rcon.IServer;
 import net.minecraft.network.rcon.RConUtils;
 
-import com.ForgeEssentials.snooper.responce.PlayerArmor;
-import com.ForgeEssentials.snooper.responce.PlayerInfoResonce;
-import com.ForgeEssentials.snooper.responce.PlayerInv;
-import com.ForgeEssentials.snooper.responce.PlayerList;
-import com.ForgeEssentials.snooper.responce.ServerInfo;
+import com.ForgeEssentials.snooper.API.Response;
+import com.ForgeEssentials.snooper.response.PlayerArmor;
+import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
+import com.ForgeEssentials.snooper.response.PlayerInv;
+import com.ForgeEssentials.snooper.response.PlayerList;
+import com.ForgeEssentials.snooper.response.ServerInfo;
 
 public class RConQueryThread implements Runnable
 {
@@ -147,87 +148,29 @@ public class RConQueryThread implements Runnable
         {
             this.logDebug("Packet \'" + RConUtils.getByteAsHexString(var2[2]) + "\' [" + var4 + "]");
             
-            switch (var2[2])
+            if(var2[2] == 9)
             {
-            	//ServerInfo
-                case 0:
-                    if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
-                    {
-                        this.logDebug("Invalid challenge [" + var4 + "]");
-                        return false;
-                    }
-                    else
-                    {
-                        this.sendResponsePacket(new ServerInfo(par1DatagramPacket).getResponce(this.getRequestId(par1DatagramPacket.getSocketAddress())), par1DatagramPacket);
-                        this.logDebug("Case 0 [" + var4 + "]");
-                    }
-                    return true;
-                //Player List
-                case 1:
-                    if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
-                    {
-                        this.logDebug("Invalid challenge [" + var4 + "]");
-                        return false;
-                    }
-                    else
-                    {
-                    	this.sendResponsePacket(new PlayerList(par1DatagramPacket).getResponce(this.getRequestId(par1DatagramPacket.getSocketAddress())), par1DatagramPacket);
-                        this.logDebug("Case 1 [" + var4 + "]");
-                    }
-                    return true;
-                case 2:
-                	return true;
-                case 3:
-                	return true;
-                case 4:
-                	return true;
-                //Player info
-                case 5:
-                    if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
-                    {
-                        this.logDebug("Invalid challenge [" + var4 + "]");
-                        return false;
-                    }
-                    else if(var3 > 11)
-                    {
-                    	this.sendResponsePacket(new PlayerInfoResonce(par1DatagramPacket).getResponce(this.getRequestId(par1DatagramPacket.getSocketAddress())), par1DatagramPacket);
-                        this.logDebug("Case 5 [" + var4 + "] ");
-                    }
-                    return true;
-                //Player armor
-                case 6:
-                    if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
-                    {
-                        this.logDebug("Invalid challenge [" + var4 + "]");
-                        return false;
-                    }
-                    else if(var3 > 11)
-                    {
-                    	this.sendResponsePacket(new PlayerArmor(par1DatagramPacket).getResponce(this.getRequestId(par1DatagramPacket.getSocketAddress())), par1DatagramPacket);
-                        this.logDebug("Case 6 [" + var4 + "] ");
-                    }
-                    return true;
-                //Player inv
-                case 7:
-                	if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
-                    {
-                        this.logDebug("Invalid challenge [" + var4 + "]");
-                        return false;
-                    }
-                    else if(var3 > 11)
-                    {
-                    	this.sendResponsePacket(new PlayerInv(par1DatagramPacket).getResponce(this.getRequestId(par1DatagramPacket.getSocketAddress())), par1DatagramPacket);
-                        this.logDebug("Case 7 [" + var4 + "] ");
-                    }
-                	return true;
-                case 8:
-                	return true;
-                case 9:
-                    this.sendAuthChallenge(par1DatagramPacket);
-                    this.logDebug("Challenge [" + var4 + "]");
-                    return true;
-                default:
-                    return true;
+            	this.sendAuthChallenge(par1DatagramPacket);
+                this.logDebug("Challenge [" + var4 + "]");
+                return true;
+            }
+            else
+            {
+            	if (!this.verifyClientAuth(par1DatagramPacket).booleanValue())
+                {
+                    this.logDebug("Invalid challenge [" + var4 + "]");
+                    return false;
+                }
+            	else
+            	{
+            		Response response = ResponseRegistry.getResponse(var2[2]);
+            		if(response == null) return false;
+            		byte[] bt = response.getResponceByte(this.getRequestId(par1DatagramPacket.getSocketAddress()), par1DatagramPacket);
+            		this.logDebug(new String(bt));
+            		this.sendResponsePacket(bt, par1DatagramPacket);
+            		this.logDebug("Case " + var2[2] + " [" + var4 + "] ");
+            		return true;
+            	}
             }
         }
         else

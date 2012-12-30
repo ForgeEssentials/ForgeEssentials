@@ -1,4 +1,4 @@
-package com.ForgeEssentials.snooper.responce;
+package com.ForgeEssentials.snooper.response;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -10,10 +10,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import net.minecraftforge.common.Configuration;
+
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.snooper.ConfigSnooper;
 import com.ForgeEssentials.snooper.ModuleSnooper;
-import com.ForgeEssentials.snooper.TextFormatter;
+import com.ForgeEssentials.snooper.API.Response;
+import com.ForgeEssentials.snooper.API.TextFormatter;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLLog;
@@ -22,15 +25,21 @@ import cpw.mods.fml.common.ModContainer;
 
 public class ServerInfo extends Response
 {
+	LinkedHashMap<String, String> data = new LinkedHashMap();
+	private boolean sendWB;
+	private boolean sendMotd;
+	private boolean sendIP;
+	private String overrideIPValue;
+	private boolean sendMods;
+	private int[] TPSList;
+	private boolean overrideIP;
 	public static Integer ServerID;
 	public static String serverHash;
 	
-	public ServerInfo(DatagramPacket packet)
+	@Override
+	public String getResponceString(DatagramPacket packet)
 	{
-		super(packet);
-		LinkedHashMap<String, String> data = new LinkedHashMap();
-		
-		if(ConfigSnooper.send_Mods)
+		if(sendMods)
 		{
 			ArrayList<String> temp = new ArrayList<String>();
 			List<ModContainer> modlist = Loader.instance().getActiveModList();
@@ -44,26 +53,30 @@ public class ServerInfo extends Response
 			data.put("mods", TextFormatter.toJSON(temp));
 		}
 		
-		if(ConfigSnooper.send_IP)
+		if(sendIP)
 		{
-			if(ModuleSnooper.overrideIP) data.put("hostip", "" + ModuleSnooper.overrideIPValue);
+			if(overrideIP) data.put("hostip", "" + overrideIPValue);
 			else data.put("hostip", getIP());
 			data.put("hostport", "" + server.getPort());
 		}
 		data.put("version", server.getMinecraftVersion());
 		data.put("map", server.getFolderName());
 		data.put("maxplayers", "" + server.getMaxPlayers());
+		
+		if(ServerID != 0) data.put("serverID", ServerID + "");
+		if(!serverHash.equals("")) data.put("serverHash", serverHash + "");
+		
 		data.put("gm", server.getGameType().getName());
 		data.put("diff", "" + server.getDifficulty());
 		data.put("numplayers", "" + server.getCurrentPlayerCount());
-		if(ConfigSnooper.send_Motd) data.put("motd", server.getServerMOTD());
+		if(sendMotd) data.put("motd", server.getServerMOTD());
 		
 		data.put("uptime", getUptime());
 		data.put("tps", getTPS());
 		
 		try
 		{
-			if(ConfigSnooper.send_WB && ModuleWorldBorder.WBenabled && ModuleWorldBorder.borderData.getBoolean("set"))
+			if(sendWB && ModuleWorldBorder.WBenabled && ModuleWorldBorder.borderData.getBoolean("set"))
 			{
 				LinkedHashMap<String, String> temp = new LinkedHashMap();
 				temp.put("Shape", ModuleWorldBorder.shape.name());
@@ -73,10 +86,27 @@ public class ServerInfo extends Response
 			}
 		}catch(Exception e){}
 		
-		if(ServerID != 0) data.put("serverID", ServerID + "");
-		if(!serverHash.equals("")) data.put("serverHash", serverHash + "");
-		
-		dataString = TextFormatter.toJSON(data);
+		return dataString = TextFormatter.toJSON(data);
+	}
+	
+	@Override
+	public String getName() 
+	{
+		return "ServerInfo";
+	}
+
+	@Override
+	public void setupConfig(String category, Configuration config)
+	{
+		sendWB = config.get(category, "sendWB", true).getBoolean(true);
+		sendMotd = config.get(category, "sendMotd", true).getBoolean(true);
+		sendIP = config.get(category, "sendIP", true).getBoolean(true);
+		overrideIP = config.get(category, "overrideIP", true).getBoolean(true);
+		overrideIPValue = config.get(category, "overrideIPValue", "").value;
+		sendMods = config.get(category, "sendMods", true).getBoolean(true);
+		TPSList = config.get(category, "TPS_dim", new int[]{-1 ,0 ,1}, "Dimentions to send TPS of").getIntList();
+		ServerID = config.get(category, "ServerID", 0, "This is here to make it easy for other sites (server lists) to help authenticate the server.").getInt();
+		serverHash = config.get(category, "serverHash", "", "This is here to make it easy for other sites (server lists) to help authenticate the server.").value;
 	}
 	
 	public String getUptime()
@@ -94,7 +124,7 @@ public class ServerInfo extends Response
     public String getTPS()
     {
     	LinkedHashMap<String, String> data = new LinkedHashMap();
-    	for (int id : ConfigSnooper.TPSList)
+    	for (int id : TPSList)
     	{
     		if(server.worldTickTimes.containsKey(id))
     		{
@@ -155,5 +185,4 @@ public class ServerInfo extends Response
             return null;
         }
 	}
-	
 }

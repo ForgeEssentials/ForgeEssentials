@@ -12,8 +12,11 @@ import net.minecraftforge.event.ForgeSubscribe;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.snooper.API.API;
+import com.ForgeEssentials.snooper.response.*;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -32,29 +35,27 @@ public class ModuleSnooper implements IFEModule
 	public static RConQueryThread theThread;
 	private static ArrayList<String> names;
 
-	private static MinecraftServer server;
-
-	public static boolean overrideIP;
-	public static String overrideIPValue;
-
 	public static boolean autoReboot;
 	
 	public ModuleSnooper()
 	{
 		OutputHandler.SOP("Snooper module is enabled. Loading...");
-		configSnooper = new ConfigSnooper();
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
 	public void serverStarting(FMLServerStartingEvent e) 
 	{
-		if(enable)
-		{
-			e.registerServerCommand(new CommandReloadQuery());
-			server = e.getServer();
-			startQuery();
-		}
+		API.registerResponce(0, new ServerInfo());
+		API.registerResponce(1, new PlayerList());
+		
+		API.registerResponce(5, new PlayerInfoResonce());
+		API.registerResponce(6, new PlayerArmor());
+		API.registerResponce(7, new PlayerInv());
+		
+		e.registerServerCommand(new CommandReloadQuery());
+		
+		configSnooper = new ConfigSnooper();
 	}
 	
 	@ForgeSubscribe
@@ -66,26 +67,6 @@ public class ModuleSnooper implements IFEModule
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.commands.reloadquery", true);
 	}
     
-    /**
-     * Get all of the inv data
-     * @param player
-     * @return
-     */
-    public static ArrayList<String> getInvData(EntityPlayerMP player) 
-	{
-    	ArrayList<String> tempArgs = new ArrayList();
-    	String username = player.username;
-
-    	for(ItemStack stack : player.inventory.mainInventory)
-    	{
-    		if(stack != null)
-        	{
-    			tempArgs.add(TextFormatter.toJSON(stack, false));
-        	}
-    	}
-		return tempArgs;
-	}
-    
     public static void startQuery()
     {
     	try
@@ -95,8 +76,11 @@ public class ModuleSnooper implements IFEModule
     			ModuleSnooper.theThread.closeAllSockets_do(true);
     			ModuleSnooper.theThread.running = false;
     		}
-    		theThread = new RConQueryThread((IServer) server);
-    		theThread.startThread();
+    		if(enable)
+    		{
+    			theThread = new RConQueryThread((IServer) FMLCommonHandler.instance().getMinecraftServerInstance());
+    			theThread.startThread();
+    		}
     	}
     	catch(Exception e){} 
     }

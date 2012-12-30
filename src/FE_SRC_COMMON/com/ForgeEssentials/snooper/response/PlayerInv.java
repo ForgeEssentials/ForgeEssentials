@@ -1,4 +1,4 @@
-package com.ForgeEssentials.snooper.responce;
+package com.ForgeEssentials.snooper.response;
 
 import java.net.DatagramPacket;
 import java.util.ArrayList;
@@ -7,21 +7,20 @@ import java.util.LinkedHashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.snooper.ConfigSnooper;
-import com.ForgeEssentials.snooper.TextFormatter;
+import com.ForgeEssentials.snooper.API.Response;
+import com.ForgeEssentials.snooper.API.TextFormatter;
 
 public class PlayerInv extends Response
 {
-	public PlayerInv(DatagramPacket packet)
+	@Override
+	public String getResponceString(DatagramPacket packet)
 	{
-		super(packet);
-		this.allowed = ConfigSnooper.send_Player_armor;
-		if(!this.allowed) return;
-		
 		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
     	EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
-    	if(player == null) return;
+    	if(player == null) return "";
     	
     	LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
     	ArrayList<String> tempArgs = new ArrayList();
@@ -51,7 +50,18 @@ public class PlayerInv extends Response
         	PlayerData.put("ench", "false");
         	dataString = TextFormatter.toJSON(PlayerData);
     	}
-		
-		System.out.println("Length: " + dataString.length());
+    	return dataString;
+	}
+
+	@Override
+	public String getName() 
+	{
+		return "PlayerInv";
+	}
+
+	@Override
+	public void setupConfig(String category, Configuration config)
+	{
+		//Don't need that here
 	}
 }

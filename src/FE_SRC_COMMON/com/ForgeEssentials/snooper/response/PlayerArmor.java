@@ -1,4 +1,4 @@
-package com.ForgeEssentials.snooper.responce;
+package com.ForgeEssentials.snooper.response;
 
 import java.net.DatagramPacket;
 import java.util.Arrays;
@@ -6,22 +6,21 @@ import java.util.LinkedHashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.snooper.ConfigSnooper;
-import com.ForgeEssentials.snooper.TextFormatter;
+import com.ForgeEssentials.snooper.API.Response;
+import com.ForgeEssentials.snooper.API.TextFormatter;
 
 public class PlayerArmor extends Response
 {
-	public PlayerArmor(DatagramPacket packet)
+	@Override
+	public String getResponceString(DatagramPacket packet)
 	{
-		super(packet);
-		this.allowed = ConfigSnooper.send_Player_armor;
-		if(!this.allowed) return;
-		
 		LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
 		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
     	EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
-    	if(player == null) return;
+    	if(player == null) return "";
     	
     	for(int i = 0; i < 3; i++)
     	{
@@ -32,6 +31,18 @@ public class PlayerArmor extends Response
         	}
     	}
 		
-		dataString = TextFormatter.toJSON(PlayerData);
+		return dataString = TextFormatter.toJSON(PlayerData);
+	}
+
+	@Override
+	public String getName() 
+	{
+		return "PlayerArmor";
+	}
+
+	@Override
+	public void setupConfig(String category, Configuration config)
+	{
+		//Don't need that here
 	}
 }

@@ -1,4 +1,4 @@
-package com.ForgeEssentials.snooper;
+package com.ForgeEssentials.snooper.API;
 
 import java.util.ArrayList;
 import java.util.Collection;
