@@ -15,7 +15,7 @@ public class API
 	{
 		try
 		{
-			if (ResponseRegistry_regsisterResponce == null) ResponseRegistry_regsisterResponce = Class.forName("com.ForgeEssentials.snooper.ResponseRegistry").getMethod("registerResponce", Integer.class, Response.class);
+			if (ResponseRegistry_regsisterResponce == null) ResponseRegistry_regsisterResponce = Class.forName("com.ForgeEssentials.snooper.ResponseRegistry").getMethod("registerResponse", Integer.class, Response.class);
 			ResponseRegistry_regsisterResponce.invoke(null, ID, response);
 		}
 		catch(Exception e)

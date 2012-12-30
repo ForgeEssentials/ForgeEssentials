@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import com.ForgeEssentials.snooper.API.Response;
 
+import cpw.mods.fml.common.FMLLog;
+
 public class ResponseRegistry 
 {
 	private static HashMap<Integer, Response> map = new HashMap<Integer, Response>();
@@ -14,7 +16,7 @@ public class ResponseRegistry
 	 * @param ID
 	 * @param response
 	 */
-	public static void registerresponse(Integer ID, Response response)
+	public static void registerResponse(Integer ID, Response response)
 	{
 		if(ID == 9) return;
 		if(map.containsKey(ID))
@@ -23,7 +25,7 @@ public class ResponseRegistry
 		}
 		else
 		{
-			System.out.println("### ID: " + ID + " Registerd!");
+			FMLLog.fine("Response " + response.getName() + " ID: " + ID + " Registerd!");
 			map.put(ID, response);
 		}
 	}
