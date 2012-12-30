@@ -12,7 +12,6 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.economy.Wallet;
 import com.ForgeEssentials.permission.Group;
 import com.ForgeEssentials.permission.GroupManager;
-import com.ForgeEssentials.snooper.ConfigSnooper;
 import com.ForgeEssentials.snooper.API.Response;
 import com.ForgeEssentials.snooper.API.TextFormatter;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -41,7 +40,7 @@ public class PlayerInfoResonce extends Response
 		if(pi != null && sendhome)
 		{
 			if(pi.home != null) PlayerData.put("home", TextFormatter.toJSON(pi.home));
-			if(pi.lastDeath != null) PlayerData.put("lastDeath", TextFormatter.toJSON(pi.lastDeath));
+			if(pi.back != null) PlayerData.put("back", TextFormatter.toJSON(pi.back));
 		}
 		
 		if(sendArmorAndHealth)
