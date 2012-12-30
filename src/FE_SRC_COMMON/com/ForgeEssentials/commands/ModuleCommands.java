@@ -6,6 +6,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import com.ForgeEssentials.backup.CommandBackup;
 import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
+import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.ModuleLauncher;
@@ -19,6 +20,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -41,6 +43,7 @@ public class ModuleCommands implements IFEModule
 	{
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		MinecraftForge.EVENT_BUS.register(this); // for the permissions.
+		GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
 	}
 
 	@Override
@@ -65,6 +68,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandEnderchest());
 		e.registerServerCommand(new CommandVirtualchest());
 		e.registerServerCommand(new CommandCapabilities());
+		e.registerServerCommand(new CommandSetspawn());
 		//op
 		e.registerServerCommand(new CommandServerDo());
 		//fun

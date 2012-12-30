@@ -98,7 +98,7 @@ public class TextFormatter
 		if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display") && stack.stackTagCompound.getCompoundTag("display").hasKey("Name")) data.put("item", stack.getItemName().replaceAll("item.", "").replaceAll("tile.", "")); 
 		if(stack.stackSize != 1) data.put("amount", "" + stack.stackSize);
 		data.put("id", "" + stack.itemID);
-		data.put("dam", "" + stack.getItemDamage());
+		if(stack.getItemDamage() != 0) data.put("dam", "" + stack.getItemDamage());
 		data.put("name", stack.getDisplayName());
 		
 		if(listEnch)

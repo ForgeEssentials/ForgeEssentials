@@ -1,5 +1,7 @@
 package com.ForgeEssentials.util.AreaSelector;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
@@ -31,6 +33,13 @@ public class WarpPoint extends WorldPoint
 		this(p.dim, p.x, p.y, p.z, playerPitch, playerYaw);
 	}
 	
+	public WarpPoint(EntityPlayer sender) 
+	{
+		super(sender);
+		this.pitch = sender.cameraPitch;
+		this.yaw = sender.cameraYaw;
+	}
+
 	@Reconstructor()
 	private static WarpPoint reconstruct(TaggedClass tag)
 	{
