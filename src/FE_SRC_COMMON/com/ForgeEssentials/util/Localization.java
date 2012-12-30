@@ -162,12 +162,12 @@ public class Localization
 	public void load()
 	{
 		OutputHandler.SOP("Loading languages");
-		String langDir = "com/ForgeEssentials/util/lang/";
+		String langDir = "/com/ForgeEssentials/util/lang/";
 
 		for (String langFile : langFiles)
 			try
 			{
-				LanguageRegistry.instance().loadLocalization(ClassLoader.getSystemResource(langDir + langFile), langFile.substring(langFile.lastIndexOf('/') + 1, langFile.lastIndexOf('.')), true);
+				LanguageRegistry.instance().loadLocalization(langDir + langFile, langFile.substring(langFile.lastIndexOf('/') + 1, langFile.lastIndexOf('.')), true);
 				OutputHandler.SOP("Loaded language file " + langFile);
 			}
 			catch (Exception e)
