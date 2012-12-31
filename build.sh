@@ -14,6 +14,10 @@ rm minecraftforge-src-*.zip
 rm "For later.zip"
 cd forge
 
+echo "Copying FE AccessTransformer..."
+mkdir accesstransformers
+cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg ${WORKSPACE}/forge/accesstransformers/
+
 echo "Installing Forge..."
 bash ./install.sh
 cd mcp
@@ -45,6 +49,7 @@ echo "Copying in extra files"
 cd reobf/minecraft
 cp -rf ${WORKSPACE}/A1-zipStuff/* .
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/com/ForgeEssentials/util/lang/* ./com/ForgeEssentials/util/lang/
+cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg .
 rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
 echo "Creating distribution packages"
