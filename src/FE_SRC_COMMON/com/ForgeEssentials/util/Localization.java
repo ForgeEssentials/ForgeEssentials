@@ -68,7 +68,7 @@ public class Localization
 	/*
 	 * Permissions stuff
 	 */
-
+	public static final String	ERROR_NOPERMISSION				= "message.error.nopermission";
 	public static final String	ERROR_ZONE_NOZONE				= "message.error.nozone";
 	public static final String	ERROR_ZONE_YESZONE				= "message.error.yeszone";
 	public static final String	CONFIRM_ZONE_REMOVE				= "message.confirm.zone.remove";

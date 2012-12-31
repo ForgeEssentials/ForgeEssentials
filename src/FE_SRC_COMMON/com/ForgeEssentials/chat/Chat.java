@@ -28,15 +28,27 @@ public class Chat implements IChatListener
 	public void chatEvent(ServerChatEvent event)
 	{
 		String message = event.message;
+		String nickname = event.username;
+		
+		/*
+		 * Nickname
+		 */
+		
+		if(event.player.getEntityData().getCompoundTag(event.player.PERSISTED_NBT_TAG).hasKey("nickname"))
+		{
+			nickname = event.player.getEntityData().getCompoundTag(event.player.PERSISTED_NBT_TAG).getString("nickname");
+		}
 		
 		/*
 		 * Colorize!
 		 */
 		
-		if(event.message.contains("&") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
+		if(event.message.contains("&"))
 		{
-			System.out.println("COLOR CODE");
-			message = event.message.replaceAll("&", FEChatFormatCodes.CODE.toString());
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
+			{
+				message = event.message.replaceAll("&", FEChatFormatCodes.CODE.toString());				
+			}
 		}
 		
 		String prefix = "";
@@ -81,7 +93,7 @@ public class Chat implements IChatListener
 		String format = ModuleChat.conf.chatFormat;
 		format = ModuleChat.conf.chatFormat == null || ModuleChat.conf.chatFormat == "" ? "<%username>%message" : ModuleChat.conf.chatFormat;
 		
-		event.line = format.replaceAll("%health", "" + event.player.getHealth()).replaceAll("%reset", FEChatFormatCodes.RESET + "").replaceAll("%red", FEChatFormatCodes.RED + "").replaceAll("%yellow", FEChatFormatCodes.YELLOW + "").replaceAll("%black", FEChatFormatCodes.BLACK + "").replaceAll("%darkblue", FEChatFormatCodes.DARKBLUE + "").replaceAll("%darkgreen", FEChatFormatCodes.DARKGREEN + "").replaceAll("%darkaqua", FEChatFormatCodes.DARKAQUA + "").replaceAll("%darkred", FEChatFormatCodes.DARKRED + "").replaceAll("%purple", FEChatFormatCodes.PURPLE + "").replaceAll("%gold", FEChatFormatCodes.GOLD + "").replaceAll("%grey", FEChatFormatCodes.GREY + "").replaceAll("%darkgrey", FEChatFormatCodes.DARKGREY + "").replaceAll("%indigo", FEChatFormatCodes.INDIGO + "").replaceAll("%green", FEChatFormatCodes.GREEN + "").replaceAll("%aqua", FEChatFormatCodes.AQUA + "").replaceAll("%pink", FEChatFormatCodes.PINK + "").replaceAll("%white", FEChatFormatCodes.WHITE + "").replaceAll("%random", FEChatFormatCodes.RANDOM + "").replaceAll("%bold", FEChatFormatCodes.BOLD + "").replaceAll("%strike", FEChatFormatCodes.STRIKE + "").replaceAll("%underline", FEChatFormatCodes.UNDERLINE + "").replaceAll("%italics", FEChatFormatCodes.ITALICS + "").replaceAll("%message", message).replaceAll("%username", event.username).replaceAll("%rank", rank).replaceAll("%zone", zoneID).replace("%prefix", prefix).replaceAll("%suffix", suffix);
+		event.line = format.replaceAll("%health", "" + event.player.getHealth()).replaceAll("%reset", FEChatFormatCodes.RESET + "").replaceAll("%red", FEChatFormatCodes.RED + "").replaceAll("%yellow", FEChatFormatCodes.YELLOW + "").replaceAll("%black", FEChatFormatCodes.BLACK + "").replaceAll("%darkblue", FEChatFormatCodes.DARKBLUE + "").replaceAll("%darkgreen", FEChatFormatCodes.DARKGREEN + "").replaceAll("%darkaqua", FEChatFormatCodes.DARKAQUA + "").replaceAll("%darkred", FEChatFormatCodes.DARKRED + "").replaceAll("%purple", FEChatFormatCodes.PURPLE + "").replaceAll("%gold", FEChatFormatCodes.GOLD + "").replaceAll("%grey", FEChatFormatCodes.GREY + "").replaceAll("%darkgrey", FEChatFormatCodes.DARKGREY + "").replaceAll("%indigo", FEChatFormatCodes.INDIGO + "").replaceAll("%green", FEChatFormatCodes.GREEN + "").replaceAll("%aqua", FEChatFormatCodes.AQUA + "").replaceAll("%pink", FEChatFormatCodes.PINK + "").replaceAll("%white", FEChatFormatCodes.WHITE + "").replaceAll("%random", FEChatFormatCodes.RANDOM + "").replaceAll("%bold", FEChatFormatCodes.BOLD + "").replaceAll("%strike", FEChatFormatCodes.STRIKE + "").replaceAll("%underline", FEChatFormatCodes.UNDERLINE + "").replaceAll("%italics", FEChatFormatCodes.ITALICS + "").replaceAll("%message", message).replaceAll("%username", nickname).replaceAll("%rank", rank).replaceAll("%zone", zoneID).replace("%prefix", prefix).replaceAll("%suffix", suffix);
 	}
 
 	@Override
