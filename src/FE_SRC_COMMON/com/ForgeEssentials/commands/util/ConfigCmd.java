@@ -8,6 +8,7 @@ import com.ForgeEssentials.commands.CommandEnderchest;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.CommandVirtualchest;
+import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
 
 public class ConfigCmd
@@ -21,6 +22,7 @@ public class ConfigCmd
 		config = new Configuration(cmdconfig, true);
 
 		config.addCustomCategoryComment("general", "General Commands configuration.");
+		ModuleCommands.removeDuplicateCommands = config.get("general", "removeDuplicateCommands", true, "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
 		CommandMotd.motd = config.get("general", "motd", "Welcome to a server running ForgeEssentials", "Specify the message that greets players when they log in to your server.").value;
 		CommandRules.rulesFile = new File(cmddir, config.get("general", "RulesFile", "rules.txt", "Specify the file where the rules will read from and written to. This path is relative to this folder.").value);
 		CommandEnderchest.useAlias = config.get("general", "useEnderChestAlias", true, "Use the alisa '/echest' for the command '/enderchest'.").getBoolean(true);

@@ -1,5 +1,14 @@
 package com.ForgeEssentials.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -12,6 +21,7 @@ import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -25,7 +35,8 @@ import cpw.mods.fml.relauncher.Side;
 public class ModuleCommands implements IFEModule
 {
 	public static ConfigCmd conf;
-
+	public static boolean removeDuplicateCommands;
+	
 	public ModuleCommands()
 	{
 		
@@ -87,8 +98,52 @@ public class ModuleCommands implements IFEModule
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
+		if(removeDuplicateCommands) removeDuplicateCommands(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
 
+
+	private void removeDuplicateCommands(MinecraftServer server) 
+	{
+		if(server.getCommandManager() instanceof CommandHandler)
+		{
+			try
+			{
+				Set<String> commandNames = new HashSet<String>();
+				Set<String> toRemoveNames = new HashSet<String>();
+				CommandHandler cmdMng = (CommandHandler) server.getCommandManager();
+				
+				for(Object cmdObj : cmdMng.commandSet)
+				{
+					ICommand cmd = (ICommand) cmdObj;
+					if(!commandNames.add(cmd.getCommandName()))
+					{
+						System.out.println("Duplicate command found! Name:" + cmd.getCommandName());
+						toRemoveNames.add(cmd.getCommandName());
+					}
+				}
+				Set toRemove = new HashSet();
+				for(Object cmdObj : cmdMng.commandSet)
+				{
+					ICommand cmd = (ICommand) cmdObj;
+					if(toRemoveNames.contains(cmd.getCommandName()))
+					{
+						Class<?> cmdClass = cmd.getClass();
+						if(!cmdClass.getPackage().getName().contains("ForgeEssentials"))
+						{
+							System.out.println("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
+							toRemove.add(cmd.getCommandName());
+						}
+					}
+				}
+				cmdMng.commandSet.removeAll(toRemove);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
