@@ -97,7 +97,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 		}
 		if(args.length > 0)
 		{
-			String target = CommandMsg.getPlayerReply(sender.getCommandSenderName());
+			String target = CommandMsg.getPlayerReply("server");
 			if(target == null)
 			{
 				sender.sendChatToPlayer(Localization.get("message.error.r.noPrevious"));
@@ -123,6 +123,8 @@ public class CommandR extends ForgeEssentialsCommandBase
 						senderMessage += " ";
 					}
 				}
+				sender.sendChatToPlayer(senderMessage);
+				receiver.sendChatToPlayer(receiverMessage);
 			}
 		}
 	}

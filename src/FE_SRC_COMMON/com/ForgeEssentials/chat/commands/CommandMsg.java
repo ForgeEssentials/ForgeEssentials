@@ -142,6 +142,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 						senderMessage += " ";
 					}
 				}
+				sender.sendChatToPlayer(senderMessage);
+				receiver.sendChatToPlayer(receiverMessage);
 			}
 		}
 	}
