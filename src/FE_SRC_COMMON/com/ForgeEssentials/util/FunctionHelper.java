@@ -58,9 +58,20 @@ public final class FunctionHelper
 		return new WorldPoint(entity.worldObj, (int) Math.round(entity.posX), (int) Math.round(entity.posY), (int) Math.round(entity.posZ));
 	}
 
-	public static EntityPlayer getPlayerFromUsername(String username)
+	public static EntityPlayerMP getPlayerFromUsername(String username)
 	{
-		return FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+//		return FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+		EntityPlayerMP target;
+		for(Object player : FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
+		{
+			if(player instanceof EntityPlayerMP)
+			{
+				target = (EntityPlayerMP)player;
+				if(target.getCommandSenderName().equalsIgnoreCase(username))
+					return target;
+			}
+		}
+		return null;
 	}
 
 	/**
