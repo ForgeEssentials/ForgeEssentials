@@ -1,6 +1,8 @@
 package com.ForgeEssentials.chat.commands;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
@@ -19,16 +21,27 @@ import com.ForgeEssentials.util.OutputHandler;
 public class CommandMsg extends ForgeEssentialsCommandBase
 {
 	private static Map<String, String> playerReply;
+	private List<String> aliasList;
 	
 	public CommandMsg()
 	{
 		super();
 		playerReply = new HashMap<String, String>();
+		aliasList = new LinkedList<String>();
+		aliasList.add("tell");
+		aliasList.add("whipser");
 	}
+	
 	@Override
 	public String getCommandName()
 	{
 		return "msg";
+	}
+	
+	@Override
+	public List getCommandAliases()
+	{
+		return aliasList;
 	}
 
 	@Override
