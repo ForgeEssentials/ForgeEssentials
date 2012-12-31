@@ -44,6 +44,16 @@
     <entry key="command.motd.info.console">Get/set the message of the day</entry>
     <entry key="command.motd.info.player">Get/set the message of the day</entry>
     
+	<entry key="command.nickname.syntax.console">&lt;player> &lt;nickname|del></entry>
+    <entry key="command.nickname.syntax.player">[player] &lt;nickname|del></entry>
+    <entry key="command.nickname.info.console">Set or remove a nickname</entry>
+    <entry key="command.nickname.info.player">Set or remove a nickname</entry>
+	
+	<entry key="message.chat.nick.self.remove">Nickname removed</entry>
+	<entry key="message.chat.nick.self.set">Nickname set to %n</entry>
+	<entry key="message.chat.nick.others.remove">Nickname of player %p removed</entry>
+	<entry key="message.chat.nick.others.set">Nickname of player %p set to %n</entry>
+	
     <entry key="command.msg.syntax.console">&lt;player> &lt;message></entry>
     <entry key="command.msg.syntax.player">&lt;player> &lt;message></entry>
     <entry key="command.msg.info.console">Send a private message to someone</entry>
@@ -297,6 +307,8 @@
     
     <entry key="message.error.nogroup">No group of name %s exists!</entry>
     <entry key="message.error.yesgroup">A group of name %s already exists!</entry>
+	
+	<entry key="message.error.nopermission">You don't have permission for that.</entry>
     
     <!-- Some localization for Zones -->
     <entry key="command.permissions.zone.list.header">--- Showing the zonelist page %1$d of %2$d ---</entry>

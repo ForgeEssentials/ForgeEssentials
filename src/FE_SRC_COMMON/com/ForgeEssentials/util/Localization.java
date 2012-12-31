@@ -102,7 +102,16 @@ public class Localization
 	public static final String	TC_WARMUP						= "message.tc.warmup";
 	public static final String	TC_ABORTED						= "message.tc.aborted";
 	public static final String	TC_DONE							= "message.tc.done";
+	
+	/*
+	 * Chat 
+	 */
 
+	public static final String	CHAT_NICK_SELF_REMOVE			= "message.chat.nick.self.remove";
+	public static final String	CHAT_NICK_SELF_SET				= "message.chat.nick.self.set";
+	public static final String	CHAT_NICK_OTHERS_REMOVE			= "message.chat.nick.others.remove";
+	public static final String	CHAT_NICK_OTHERS_SET			= "message.chat.nick.others.set";
+	
 	/*
 	 * WorldBorder
 	 */

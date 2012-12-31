@@ -48,14 +48,14 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 					NBTTagCompound tag = sender.getEntityData().getCompoundTag(sender.PERSISTED_NBT_TAG);
 					tag.removeTag("nickname");
 					sender.getEntityData().setCompoundTag(sender.PERSISTED_NBT_TAG, tag);
-					sender.sendChatToPlayer("Nickname removed");	
+					sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_SELF_REMOVE));
 				}
 				else 
 				{
 					NBTTagCompound tag = sender.getEntityData().getCompoundTag(sender.PERSISTED_NBT_TAG);
 					tag.setString("nickname", args[0]);
 					sender.getEntityData().setCompoundTag(sender.PERSISTED_NBT_TAG, tag);
-					sender.sendChatToPlayer("Nickname set to " + args[0]);
+					sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_SELF_SET).replace("%n", args[0]));
 				}
 			}
 			else
@@ -71,12 +71,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 				if(args[1].equalsIgnoreCase("del"))
 				{
 					player.getEntityData().getCompoundTag(player.PERSISTED_NBT_TAG).removeTag("nickname");
-					sender.sendChatToPlayer("Nickname of player " + player.username + " removed");
+					sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_OTHERS_REMOVE).replace("%p", args[0]));
 				}
 				else
 				{
 					player.getEntityData().getCompoundTag(player.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-					sender.sendChatToPlayer("Nickname of player " + player.username + " set to " + args[1]);
+					sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_OTHERS_SET).replace("%p", args[0]).replace("%n", args[1]));
 				}
 			}
 			else
