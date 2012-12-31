@@ -239,13 +239,12 @@ public class CommandKit extends ForgeEssentialsCommandBase
     		list.add(buffer.getName());
     	}
     	
+    	list.add("set");
+    	list.add("del");
+    	
     	if(args.length == 1)
     	{
     		return getListOfStringsFromIterableMatchingLastWord(args, list);
-    	}
-    	else if(args.length == 2)
-    	{
-    		return getListOfStringsMatchingLastWord(args, "set", "del");
     	}
     	else
     	{
