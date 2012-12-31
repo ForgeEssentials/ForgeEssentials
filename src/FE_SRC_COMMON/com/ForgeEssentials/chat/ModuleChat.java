@@ -1,8 +1,12 @@
 package com.ForgeEssentials.chat;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.chat.commands.CommandMsg;
+import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -15,7 +19,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 
 public class ModuleChat implements IFEModule
 {
-	public static ConfigChat	conf;
+	public static ConfigChat conf;
 
 	public ModuleChat()
 	{
@@ -36,6 +40,7 @@ public class ModuleChat implements IFEModule
 	{
 		Chat chat = new Chat();
 		MinecraftForge.EVENT_BUS.register(chat);
+		MinecraftForge.EVENT_BUS.register(this); // for the permissions.
 		NetworkRegistry.instance().registerChatListener(chat);
 
 	}
@@ -50,8 +55,8 @@ public class ModuleChat implements IFEModule
 	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-		// TODO Auto-generated method stub
-
+		e.registerServerCommand(new CommandMsg());
+		e.registerServerCommand(new CommandR());
 	}
 
 	@Override
@@ -66,6 +71,13 @@ public class ModuleChat implements IFEModule
 	{
 		// TODO Auto-generated method stub
 
+	}
+	
+	@ForgeSubscribe
+	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	{
+		event.registerPermissionDefault("ForgeEssentials.chat.commands.msg", true);
+		event.registerPermissionDefault("ForgeEssentials.chat.commands.r", true);
 	}
 
 }
