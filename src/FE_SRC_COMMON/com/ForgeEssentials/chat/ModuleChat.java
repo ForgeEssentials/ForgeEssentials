@@ -4,8 +4,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.chat.commands.CommandMsg;
+import com.ForgeEssentials.chat.commands.CommandMute;
 import com.ForgeEssentials.chat.commands.CommandNickname;
 import com.ForgeEssentials.chat.commands.CommandR;
+import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
@@ -58,6 +60,8 @@ public class ModuleChat implements IFEModule
 		e.registerServerCommand(new CommandMsg());
 		e.registerServerCommand(new CommandR());
 		e.registerServerCommand(new CommandNickname());
+		e.registerServerCommand(new CommandMute());
+		e.registerServerCommand(new CommandUnmute());
 	}
 
 	@Override
@@ -80,6 +84,8 @@ public class ModuleChat implements IFEModule
 		event.registerPermissionDefault("ForgeEssentials.chat.commands.msg", true);
 		event.registerPermissionDefault("ForgeEssentials.chat.commands.r", true);
 		event.registerPermissionDefault("ForgeEssentials.chat.usecolor", false);
+		event.registerPermissionDefault("ForgeEssentials.chat.mute", false);
+		event.registerPermissionDefault("ForgeEssentials.chat.unmutemu", false);
 		event.registerPermissionDefault("ForgeEssentials.chat.nickname.self", false);
 		event.registerPermissionDefault("ForgeEssentials.chat.nickname.others", false);
 	}

@@ -27,6 +27,17 @@ public class Chat implements IChatListener
 	@ForgeSubscribe
 	public void chatEvent(ServerChatEvent event)
 	{
+		/*
+		 * Mute?
+		 */
+		
+		if(event.player.getEntityData().getCompoundTag(event.player.PERSISTED_NBT_TAG).getBoolean("mute"))
+		{
+			event.setCanceled(true);
+			event.player.sendChatToPlayer("You are muted.");
+			return;
+		}
+		
 		String message = event.message;
 		String nickname = event.username;
 		
