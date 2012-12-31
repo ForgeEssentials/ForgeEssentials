@@ -43,12 +43,22 @@
     <entry key="command.motd.syntax.player">[new motd]</entry>
     <entry key="command.motd.info.console">Get/set the message of the day</entry>
     <entry key="command.motd.info.player">Get/set the message of the day</entry>
+    
+    <entry key="command.msg.syntax.console">&lt;player> &lt;message></entry>
+    <entry key="command.msg.syntax.player">&lt;player> &lt;message></entry>
+    <entry key="command.msg.info.console">Send a private message to someone</entry>
+    <entry key="command.msg.info.player">Send a private message to someone</entry>
 
     <entry key="command.potion.effectnotfound">That potion effect is not found.</entry>
     <entry key="command.potion.syntax.console">&lt;player> &lt;effect> &lt;duration> [ampl]</entry>
     <entry key="command.potion.syntax.player">&lt;player> &lt;effect> &lt;duration> [ampl]</entry>
     <entry key="command.potion.info.console">Give someone a potion effect.</entry>
     <entry key="command.potion.info.player">Give someone a potion effect.</entry>
+    
+    <entry key="command.r.syntax.console">&lt;message></entry>
+    <entry key="command.r.syntax.player">&lt;message></entry>
+    <entry key="command.r.info.console">Respond to the last person you messaged or who messaged you</entry>
+    <entry key="command.r.info.player">Respond to the last person you messaged or who messaged you</entry>
     
     <entry key="command.remove.syntax.console">&lt;radius> %lt;x, y, z> [dimension]</entry>
     <entry key="command.remove.info.console">Remove all item entities within the radius around the specified point</entry>
