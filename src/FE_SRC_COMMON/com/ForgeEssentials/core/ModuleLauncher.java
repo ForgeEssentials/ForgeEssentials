@@ -1,7 +1,5 @@
 package com.ForgeEssentials.core;
 
-import net.minecraft.command.ICommandSender;
-
 import com.ForgeEssentials.WorldBorder.ConfigWorldBorder;
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
@@ -20,6 +18,10 @@ import com.ForgeEssentials.snooper.ConfigSnooper;
 import com.ForgeEssentials.snooper.ModuleSnooper;
 import com.ForgeEssentials.util.OutputHandler;
 
+import net.minecraft.command.ICommandSender;
+
+import java.util.ArrayList;
+
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -33,17 +35,8 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleLauncher
 {
-	public ModuleCommands		commands;
-	public ModuleBackup			backup;
-	public ModulePermissions	permission;
-	public ModuleWorldControl	worldcontrol;
-	public ModuleWorldBorder	worldborder;
-	public ModulePlayerLogger	playerLogger;
-	public ModuleEconomy		economy;
-	public ModuleChat			chat;
-	public ModuleProtection		protection;
-	public ModuleSnooper 		snooper;
-	
+	public ArrayList<IFEModule>	modules;
+
 	// note to self: if possible, make this classload.
 
 	/*
@@ -51,36 +44,33 @@ public class ModuleLauncher
 	 */
 	public static void ReloadConfigs(ICommandSender sender)
 	{
-		try{ModuleCommands.conf = new ConfigCmd();} catch (Exception e) {}
-		try{ModuleChat.conf = new ConfigChat();} catch (Exception e) {}
-		try{ForgeEssentials.config = new CoreConfig();} catch (Exception e) {}
-		try{ModulePlayerLogger.config = new ConfigPlayerLogger();} catch (Exception e) {}
-		try{ModuleWorldBorder.config = new ConfigWorldBorder();} catch (Exception e) {}
-		try{ModuleWorldControl.doConfig();} catch (Exception e) {}
-		try{ModuleProtection.config = new ConfigProtection();} catch (Exception e) {}
-		try{ModuleSnooper.configSnooper = new ConfigSnooper();} catch (Exception e) {}
-		/*
-		 * TODO: @AbarSyed Can the permissions be reloaded from file after launch? if so, you can add that here.
-		 * AbrarSyed: depends on the module.
-		 */
+		// requires new method in iFEModule.
 	}
-	
+
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Discovering and loading modules...");
 		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/core.cfg.");
+
+		modules = new ArrayList<IFEModule>();
+		IFEModule instance;
+
+		/*
+		 * commands = new ModuleCommands();
+		 * permission = new ModulePermissions();
+		 * worldborder = new ModuleWorldBorder();
+		 * playerLogger = new ModulePlayerLogger();
+		 * economy = new ModuleEconomy();
+		 * chat = new ModuleChat();
+		 * protection = new ModuleProtection();
+		 * snooper = new ModuleSnooper();
+		 */
+
 		try
 		{
-			worldcontrol = new ModuleWorldControl();
-			backup = new ModuleBackup();
-			commands = new ModuleCommands();
-			permission = new ModulePermissions();
-			worldborder = new ModuleWorldBorder();
-			playerLogger = new ModulePlayerLogger();
-			economy = new ModuleEconomy();
-			chat = new ModuleChat();
-			protection = new ModuleProtection();
-			snooper = new ModuleSnooper();
+			instance = new ModuleWorldControl();
+			modules.add(instance);
+			OutputHandler.SOP("discoverred " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -88,265 +78,132 @@ public class ModuleLauncher
 		}
 
 		try
-		{worldcontrol.preLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{backup.preLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{commands.preLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{permission.preLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{worldborder.preLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{playerLogger.preLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{economy.preLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{chat.preLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{protection.preLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{snooper.preLoad(e);
-		}
-		catch (NoClassDefFoundError e2)
 		{
-			OutputHandler.SOP("One or more modules could not be found.");
+			instance = new ModuleBackup();
+			modules.add(instance);
+			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+		}
+		catch (NoClassDefFoundError e1)
+		{
+			// Nothing to see here, carry on, carry on
+		}
+
+		try
+		{
+			instance = new ModuleCommands();
+			modules.add(instance);
+			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+		}
+		catch (NoClassDefFoundError e1)
+		{
+			// Nothing to see here, carry on, carry on
+		}
+
+		try
+		{
+			instance = new ModulePermissions();
+			modules.add(instance);
+			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+		}
+		catch (NoClassDefFoundError e1)
+		{
+			// Nothing to see here, carry on, carry on
+		}
+
+		try
+		{
+			instance = new ModuleWorldBorder();
+			modules.add(instance);
+			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+		}
+		catch (NoClassDefFoundError e1)
+		{
+			// Nothing to see here, carry on, carry on
+		}
+
+		try
+		{
+			instance = new ModulePlayerLogger();
+			modules.add(instance);
+			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+		}
+		catch (NoClassDefFoundError e1)
+		{
+			// Nothing to see here, carry on, carry on
+		}
+
+		try
+		{
+			instance = new ModuleEconomy();
+			modules.add(instance);
+			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+		}
+		catch (NoClassDefFoundError e1)
+		{
+			// Nothing to see here, carry on, carry on
+		}
+
+		try
+		{
+			instance = new ModuleChat();
+			modules.add(instance);
+			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+		}
+		catch (NoClassDefFoundError e1)
+		{
+			// Nothing to see here, carry on, carry on
+		}
+
+		try
+		{
+			instance = new ModuleProtection();
+			modules.add(instance);
+			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+		}
+		catch (NoClassDefFoundError e1)
+		{
+			// Nothing to see here, carry on, carry on
+		}
+
+		try
+		{
+			instance = new ModuleSnooper();
+			modules.add(instance);
+			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+		}
+		catch (NoClassDefFoundError e1)
+		{
+			// Nothing to see here, carry on, carry on
 		}
 	}
 
 	public void load(FMLInitializationEvent e)
 	{
-
-		try
-		{
-			worldcontrol.load(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{backup.load(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{commands.load(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{permission.load(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{worldborder.load(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{playerLogger.load(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{economy.load(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{chat.load(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{protection.load(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{snooper.load(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		
+		for (IFEModule module : modules)
+			module.load(e);
 	}
-	
+
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		try
-		{worldcontrol.postLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{backup.postLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{commands.postLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{permission.postLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{worldborder.postLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{playerLogger.postLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{chat.postLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{protection.postLoad(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{snooper.postLoad(e);
-		}
-		catch (NoClassDefFoundError e7)
-		{}
-
+		for (IFEModule module : modules)
+			module.postLoad(e);
 	}
 
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-
-		try
-		{worldcontrol.serverStarting(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{backup.serverStarting(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{commands.serverStarting(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{permission.serverStarting(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{worldborder.serverStarting(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{playerLogger.serverStarting(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{economy.serverStarting(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{chat.serverStarting(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{protection.serverStarting(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{snooper.serverStarting(e);
-		}
-		catch (NoClassDefFoundError e4)
-		{}
+		for (IFEModule module : modules)
+			module.serverStarting(e);
 	}
 
 	public void serverStarted(FMLServerStartedEvent e)
 	{
-		try
-		{worldcontrol.serverStarted(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{backup.serverStarted(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{commands.serverStarted(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{permission.serverStarted(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{worldborder.serverStarted(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{playerLogger.serverStarted(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{chat.serverStarted(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{protection.serverStarted(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{snooper.serverStarted(e);
-		}
-		catch (NoClassDefFoundError e5)
-		{}
+		for (IFEModule module : modules)
+			module.serverStarted(e);
 	}
 
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		
-		try{worldcontrol.serverStopping(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{backup.serverStopping(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{commands.serverStopping(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{permission.serverStopping(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{worldborder.serverStopping(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{playerLogger.serverStopping(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{chat.serverStopping(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{protection.serverStopping(e);
-		}
-		catch (NoClassDefFoundError e3)
-		{}
-		try{snooper.serverStopping(e);
-		}
-		catch (NoClassDefFoundError e6)
-		{}
+		for (IFEModule module : modules)
+			module.serverStopping(e);
 	}
 }
