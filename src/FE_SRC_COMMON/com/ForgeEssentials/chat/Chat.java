@@ -33,7 +33,7 @@ public class Chat implements IChatListener
 		 * Colorize!
 		 */
 		
-		if(event.message.contains("&") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor.chat")))
+		if(event.message.contains("&") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
 		{
 			System.out.println("COLOR CODE");
 			message = event.message.replaceAll("&", FEChatFormatCodes.CODE.toString());

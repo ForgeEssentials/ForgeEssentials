@@ -78,8 +78,7 @@ public class ModuleChat implements IFEModule
 	{
 		event.registerPermissionDefault("ForgeEssentials.chat.commands.msg", true);
 		event.registerPermissionDefault("ForgeEssentials.chat.commands.r", true);
-		event.registerPermissionDefault("ForgeEssentials.chat.usecolor.chat", false);
-		event.registerPermissionDefault("ForgeEssentials.chat.usecolor.sign", false);
+		event.registerPermissionDefault("ForgeEssentials.chat.usecolor", false);
 	}
 
 }
