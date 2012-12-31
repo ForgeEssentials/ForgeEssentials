@@ -3,6 +3,7 @@ package com.ForgeEssentials.client;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -18,12 +19,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ForgeEssentialsClient
 {
 
+	@SideOnly(Side.CLIENT)
 	private static PlayerInfoClient	info;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		assert FMLCommonHandler.instance().getSide().isClient() : new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
+		if (FMLCommonHandler.instance().getSide().isServer() && ObfuscationReflectionHelper.obfuscation)
+			throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
 	}
 	
 	@SideOnly(Side.CLIENT)
