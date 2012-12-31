@@ -59,7 +59,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.ERROR_BADSYNTAX + "all, golem, hostile, passive, tamed, or villager");
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "all, golem, hostile, passive, tamed, or villager");
 				return;
 			}
 		}
@@ -68,7 +68,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 			String[] split = args[2].split(",");
 			if(split.length != 3)
 			{
-				OutputHandler.chatError(sender, Localization.ERROR_BADSYNTAX + "x,y,z");
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "x,y,z");
 				return;
 			}
 		}
@@ -90,7 +90,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		
 		if(args.length != 4)
 		{
-			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX + "/butcher <radius> <type> <x,y,z> <worldID>");
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX)+ "/butcher <radius> <type> <x,y,z> <worldID>");
 			return;
 		}
 		
@@ -110,13 +110,13 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX + "all, golem, hostile, passive, tamed, or villager");
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "all, golem, hostile, passive, tamed, or villager");
 			return;
 		}
 		String[] split = args[2].split(",");
 		if(split.length != 3)
 		{
-			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX + "x,y,z");
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "x,y,z");
 			return;
 		}
 		try
