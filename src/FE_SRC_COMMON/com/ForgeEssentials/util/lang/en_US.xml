@@ -123,7 +123,7 @@
     
     <!-- Some localization for Errors -->
     <entry key="message.error.badsyntax">That won't work. Try this: </entry>
-    <entry key="message.error.nan">#%d param is not a number. Try again, you can do it.</entry>
+    <entry key="message.error.nan">"%s" param is not a number. Try again, you can do it.</entry>
     <entry key="message.error.noItemPlayer">You must be holding a valid item.</entry>
     <entry key="message.error.noItemTarget">The specified player is not holding a valid item.</entry>
     <entry key="message.error.noMobX">Mob %s does not exist.</entry>
