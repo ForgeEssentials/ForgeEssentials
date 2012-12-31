@@ -111,6 +111,12 @@ public enum FEChatFormatCodes {
 			return "\u00a7l";
 		}
 	},
+	CODE {
+		@Override
+		public String toString() {
+			return "\u00a7";
+		}
+	},
 	STRIKE {
 		@Override
 		public String toString() {
