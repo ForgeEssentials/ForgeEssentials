@@ -25,6 +25,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 		if (info.back != null)
 		{
 			WorldPoint death = info.back;
+			info.back = new WorldPoint(sender);
 			EntityPlayerMP player = ((EntityPlayerMP) sender);
 			if (player.dimension != death.dim)
 			{
