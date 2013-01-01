@@ -34,7 +34,7 @@ public class ConfigChat {
 		
 		chatFormat = prop.value;
 		
-		
+		Chat.censor = config.get("Chat", "censor", true, "Censor words in the 'bannedwords.txt' file").getBoolean(true);
 		
 		// Finish init and save.
 		config.save();

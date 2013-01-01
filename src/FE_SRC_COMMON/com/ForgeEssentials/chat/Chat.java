@@ -1,6 +1,7 @@
 package com.ForgeEssentials.chat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.network.packet.NetHandler;
 import net.minecraft.network.packet.Packet3Chat;
@@ -23,7 +24,9 @@ import cpw.mods.fml.common.network.IChatListener;
 
 public class Chat implements IChatListener
 {
-
+	public static List<String> bannedWords = new ArrayList<String>();
+	public static boolean censor;
+	
 	@ForgeSubscribe
 	public void chatEvent(ServerChatEvent event)
 	{
@@ -40,6 +43,11 @@ public class Chat implements IChatListener
 		
 		String message = event.message;
 		String nickname = event.username;
+		
+		if(censor)
+		{
+			for(String word : bannedWords) message = replaceAllIgnoreCase(message, word, "###");
+		}
 		
 		/*
 		 * Nickname
@@ -58,7 +66,7 @@ public class Chat implements IChatListener
 		{
 			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
 			{
-				message = event.message.replaceAll("&", FEChatFormatCodes.CODE.toString());				
+				message = event.message.replaceAll("&", FEChatFormatCodes.CODE.toString());
 			}
 		}
 		
@@ -118,5 +126,19 @@ public class Chat implements IChatListener
 	{
 		return message;
 	}
-
+	
+	private String replaceAllIgnoreCase(String text, String search, String replacement)
+	{
+        if(search.equals(replacement)) return text;
+        StringBuffer buffer = new StringBuffer(text);
+        String lowerSearch = search.toLowerCase();
+        int i = 0;
+        int prev = 0;
+        while((i = buffer.toString().toLowerCase().indexOf(lowerSearch, prev)) > -1)
+        {
+            buffer.replace(i, i+search.length(), replacement);
+            prev = i+replacement.length();
+        }
+        return buffer.toString();
+	}
 }

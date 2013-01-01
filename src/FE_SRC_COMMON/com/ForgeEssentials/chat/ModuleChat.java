@@ -1,5 +1,10 @@
 package com.ForgeEssentials.chat;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -8,6 +13,7 @@ import com.ForgeEssentials.chat.commands.CommandMute;
 import com.ForgeEssentials.chat.commands.CommandNickname;
 import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.chat.commands.CommandUnmute;
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
@@ -26,9 +32,7 @@ public class ModuleChat implements IFEModule
 
 	public ModuleChat()
 	{
-
 		conf = new ConfigChat();
-
 	}
 
 	@Override
@@ -50,8 +54,25 @@ public class ModuleChat implements IFEModule
 	@Override
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		// TODO Auto-generated method stub
-
+		
+		File banedFile = new File(ForgeEssentials.FEDIR, "bannedwords.txt");
+		try 
+		{
+			if(!banedFile.exists()) banedFile.createNewFile();
+			BufferedReader br = new BufferedReader(new FileReader(banedFile));
+			String line;
+			while ((line = br.readLine()) != null) 
+			{
+				System.out.println(line.trim());
+				Chat.bannedWords.add(line.trim());
+			}
+			br.close();
+		}
+		catch (IOException e1) 
+		{
+			e1.printStackTrace();
+		}
+		
 	}
 
 	@Override
