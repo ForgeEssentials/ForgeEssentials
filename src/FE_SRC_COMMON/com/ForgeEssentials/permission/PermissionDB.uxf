@@ -108,7 +108,7 @@ INDEX: none
     </coordinates>
     <panel_attributes>Permissions
 --
-player/group ID | int
+target | int
 isGroup | boolean
 perm | String
 zoneID | int

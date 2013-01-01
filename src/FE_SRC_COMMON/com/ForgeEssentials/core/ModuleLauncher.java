@@ -175,6 +175,9 @@ public class ModuleLauncher
 		{
 			// Nothing to see here, carry on, carry on
 		}
+		
+		for (IFEModule module : modules)
+			module.preLoad(e);
 	}
 
 	public void load(FMLInitializationEvent e)
