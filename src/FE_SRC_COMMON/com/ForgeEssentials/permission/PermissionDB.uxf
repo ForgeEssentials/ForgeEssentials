@@ -4,8 +4,8 @@
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>0</x>
-      <y>200</y>
+      <x>10</x>
+      <y>260</y>
       <w>180</w>
       <h>120</h>
     </coordinates>
@@ -14,7 +14,7 @@
 LadderID | int
 GroupID | int
 ZoneID | int
-spotOnLadder | int
+rank | int
 --
 INDEX: none
 </panel_attributes>
@@ -23,8 +23,8 @@ INDEX: none
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>340</x>
-      <y>0</y>
+      <x>350</x>
+      <y>60</y>
       <w>160</w>
       <h>180</h>
     </coordinates>
@@ -45,8 +45,8 @@ INDEX: GroupID
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>330</y>
+      <x>600</x>
+      <y>390</y>
       <w>140</w>
       <h>80</h>
     </coordinates>
@@ -61,8 +61,8 @@ INDEX: PlayerID</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>540</x>
-      <y>20</y>
+      <x>550</x>
+      <y>80</y>
       <w>210</w>
       <h>170</h>
     </coordinates>
@@ -82,8 +82,8 @@ WorldZones will be registerred.
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>400</y>
+      <x>60</x>
+      <y>460</y>
       <w>150</w>
       <h>100</h>
     </coordinates>
@@ -101,8 +101,8 @@ INDEX: none
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>310</x>
-      <y>450</y>
+      <x>320</x>
+      <y>510</y>
       <w>150</w>
       <h>130</h>
     </coordinates>
@@ -120,8 +120,8 @@ INDEX: none</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>150</x>
-      <y>40</y>
+      <x>160</x>
+      <y>100</y>
       <w>210</w>
       <h>240</h>
     </coordinates>
@@ -133,8 +133,8 @@ Demote</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>170</x>
-      <y>310</y>
+      <x>180</x>
+      <y>370</y>
       <w>440</w>
       <h>150</h>
     </coordinates>
@@ -145,8 +145,8 @@ getGroup</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>300</x>
-      <y>150</y>
+      <x>310</x>
+      <y>210</y>
       <w>174</w>
       <h>320</h>
     </coordinates>
@@ -157,8 +157,8 @@ GetPermForGroup</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>430</x>
-      <y>360</y>
+      <x>440</x>
+      <y>420</y>
       <w>180</w>
       <h>120</h>
     </coordinates>
@@ -169,8 +169,8 @@ GetPermForPlayer</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>150</x>
-      <y>150</y>
+      <x>160</x>
+      <y>210</y>
       <w>230</w>
       <h>270</h>
     </coordinates>
@@ -181,8 +181,8 @@ get PlayersInGroup</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>10</y>
+      <x>60</x>
+      <y>70</y>
       <w>180</w>
       <h>80</h>
     </coordinates>
@@ -198,8 +198,8 @@ INDEX: LadderID
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>50</x>
-      <y>60</y>
+      <x>60</x>
+      <y>120</y>
       <w>196</w>
       <h>160</h>
     </coordinates>

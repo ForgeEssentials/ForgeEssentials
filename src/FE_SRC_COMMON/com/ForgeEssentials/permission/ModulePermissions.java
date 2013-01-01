@@ -24,6 +24,7 @@ public class ModulePermissions implements IFEModule
 	public static ZoneManager							zManager;
 	public static GroupManager							gManager;
 	public static PlayerManager							pManager;
+	public static SqlLiteHelper							sql; 
 
 	public static File									permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
 
@@ -39,6 +40,9 @@ public class ModulePermissions implements IFEModule
 		pManager = new PlayerManager();
 		
 		MinecraftForge.EVENT_BUS.register(zManager);
+		
+		// testing DB.
+		sql = new SqlLiteHelper();
 	}
 
 	@Override
