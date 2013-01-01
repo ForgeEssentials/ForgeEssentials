@@ -16,6 +16,10 @@ import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
+import com.ForgeEssentials.commands.vanilla.CommandClearInventory;
+import com.ForgeEssentials.commands.vanilla.CommandGameMode;
+import com.ForgeEssentials.commands.vanilla.CommandGive;
+import com.ForgeEssentials.commands.vanilla.CommandKill;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
@@ -70,7 +74,6 @@ public class ModuleCommands implements IFEModule
 		//utility
 		e.registerServerCommand(new CommandButcher());
 		e.registerServerCommand(new CommandRemove());
-		e.registerServerCommand(new CommandKill());
 		e.registerServerCommand(new CommandSpawn());
 		e.registerServerCommand(new CommandTPS());
 		e.registerServerCommand(new CommandKit());
@@ -78,7 +81,6 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandVirtualchest());
 		e.registerServerCommand(new CommandCapabilities());
 		e.registerServerCommand(new CommandSetspawn());
-		e.registerServerCommand(new CommandGive());
 		//op
 		e.registerServerCommand(new CommandServerDo());
 		//fun
@@ -94,6 +96,11 @@ public class ModuleCommands implements IFEModule
 		//cheat
 		e.registerServerCommand(new CommandRepair());
 		e.registerServerCommand(new CommandHeal());
+		//Vanilla Override
+		e.registerServerCommand(new CommandKill());
+		e.registerServerCommand(new CommandGive());
+		e.registerServerCommand(new CommandClearInventory());
+		e.registerServerCommand(new CommandGameMode());
 		}
 
 	@Override
@@ -168,6 +175,11 @@ public class ModuleCommands implements IFEModule
 		event.registerPermissionDefault("ForgeEssentials.commands.enderchest", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.virtualchest", false);
 		event.registerPermissionDefault("ForgeEssentials.commands.setspawn", false);
+		event.registerPermissionDefault("ForgeEssentials.commands.give", false);
+		event.registerPermissionDefault("ForgeEssentials.commands.clear.self", false);
+		event.registerPermissionDefault("ForgeEssentials.commands.clear.others", false);
+		event.registerPermissionDefault("ForgeEssentials.commands.gamemode.self", false);
+		event.registerPermissionDefault("ForgeEssentials.commands.gamemode.others", false);
 		
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.commands", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.commands.compass", true);
