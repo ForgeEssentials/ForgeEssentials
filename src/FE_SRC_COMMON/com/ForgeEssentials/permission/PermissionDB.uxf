@@ -4,7 +4,7 @@
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>20</x>
+      <x>0</x>
       <y>200</y>
       <w>180</w>
       <h>120</h>
@@ -23,7 +23,7 @@ INDEX: none
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>360</x>
+      <x>340</x>
       <y>0</y>
       <w>160</w>
       <h>180</h>
@@ -45,7 +45,7 @@ INDEX: GroupID
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>610</x>
+      <x>590</x>
       <y>330</y>
       <w>140</w>
       <h>80</h>
@@ -61,7 +61,7 @@ INDEX: PlayerID</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>560</x>
+      <x>540</x>
       <y>20</y>
       <w>210</w>
       <h>170</h>
@@ -82,7 +82,7 @@ WorldZones will be registerred.
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>70</x>
+      <x>50</x>
       <y>400</y>
       <w>150</w>
       <h>100</h>
@@ -101,27 +101,26 @@ INDEX: none
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>330</x>
+      <x>310</x>
       <y>450</y>
       <w>150</w>
-      <h>150</h>
+      <h>130</h>
     </coordinates>
     <panel_attributes>Permissions
 --
-permID | int
 player/group ID | int
+isGroup | boolean
 perm | String
 zoneID | int
 isAlowed | boolean
-isGroup | boolean
 --
-INDEX: permID ????</panel_attributes>
+INDEX: none</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>170</x>
+      <x>150</x>
       <y>40</y>
       <w>210</w>
       <h>240</h>
@@ -134,7 +133,7 @@ Demote</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>190</x>
+      <x>170</x>
       <y>310</y>
       <w>440</w>
       <h>150</h>
@@ -146,7 +145,7 @@ getGroup</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>320</x>
+      <x>300</x>
       <y>150</y>
       <w>174</w>
       <h>320</h>
@@ -158,7 +157,7 @@ GetPermForGroup</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>450</x>
+      <x>430</x>
       <y>360</y>
       <w>180</w>
       <h>120</h>
@@ -170,7 +169,7 @@ GetPermForPlayer</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>170</x>
+      <x>150</x>
       <y>150</y>
       <w>230</w>
       <h>270</h>
@@ -182,7 +181,7 @@ get PlayersInGroup</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>70</x>
+      <x>50</x>
       <y>10</y>
       <w>180</w>
       <h>80</h>
@@ -199,7 +198,7 @@ INDEX: LadderID
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>70</x>
+      <x>50</x>
       <y>60</y>
       <w>196</w>
       <h>160</h>
