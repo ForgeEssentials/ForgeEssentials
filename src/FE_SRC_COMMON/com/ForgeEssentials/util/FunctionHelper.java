@@ -2,15 +2,18 @@ package com.ForgeEssentials.util;
 
 import java.io.File;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
+import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -79,7 +82,7 @@ public final class FunctionHelper
 	 * @return never NULL. always {0, -1}. Meta by default is -1.
 	 * @throws RuntimeException the message is a formatted chat string.
 	 */
-	public static int[] parseIdAndMetaFromString(String msg) throws RuntimeException
+	public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly) throws RuntimeException
 	{
 		int ID;
 		int meta = -1;
@@ -95,7 +98,7 @@ public final class FunctionHelper
 			}
 			catch (NumberFormatException e)
 			{
-				throw new RuntimeException(Localization.format(Localization.ERROR_NAN, pair[0]));
+				ID = getItemIDFromName(pair[0], blocksOnly);
 			}
 			
 			try
@@ -106,26 +109,42 @@ public final class FunctionHelper
 			{
 				throw new RuntimeException(Localization.format(Localization.ERROR_NAN, pair[1]));
 			}
-			
-			return new int[] { ID, meta };
 		}
-		
-		// TODO: add name checking.
+		else
+		{
+			try
+			{
+				ID = Integer.parseInt(msg);
+				meta = -1;
+			}
+			catch (NumberFormatException e)
+			{
+				ID = getItemIDFromName(msg, blocksOnly);
+			}
+		}
 		
 		// try checking if its just an ID
-		try
-		{
-			ID = Integer.parseInt(msg);
-			meta = -1;
-		}
-		catch (NumberFormatException e)
-		{
-			throw new RuntimeException(Localization.format(Localization.ERROR_NAN, msg));
-		}
+		
 
-		return new int[] { 0, -1 };
+		return new int[] { ID, meta };
 	}
 
+	public static int getItemIDFromName(String name, boolean blockOnly)
+	{
+		if(blockOnly)
+		{
+			Block block = ItemList.instance().getBlockForName(name);
+			if(block == null) return 0;
+			else return block.blockID;
+		}
+		else
+		{
+			Item item = ItemList.instance().getItemForName(name);
+			if(item == null) return 0;
+			else return item.itemID;
+		}
+	}
+	
 	public static File getBaseDir()
 	{
 		if (FMLCommonHandler.instance().getSide().isClient())

@@ -45,7 +45,7 @@ public class CommandReplace extends WorldControlCommandBase
 
 			try
 			{
-				temp = FunctionHelper.parseIdAndMetaFromString(args[0]);
+				temp = FunctionHelper.parseIdAndMetaFromString(args[0], true);
 				firstID = temp[0];
 				firstMeta = temp[1];
 			}
@@ -58,7 +58,7 @@ public class CommandReplace extends WorldControlCommandBase
 			// Begin parsing 2nd argument pair if 1st was good.
 			try
 			{
-				temp = FunctionHelper.parseIdAndMetaFromString(args[2]);
+				temp = FunctionHelper.parseIdAndMetaFromString(args[2], true);
 				secondID = temp[0];
 				secondMeta = temp[1];
 			}

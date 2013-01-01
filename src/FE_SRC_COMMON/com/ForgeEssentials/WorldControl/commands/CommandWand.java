@@ -68,7 +68,7 @@ public class CommandWand extends WorldControlCommandBase
 			{
 				if (allowed)
 				{
-					int[] parsed = FunctionHelper.parseIdAndMetaFromString(args[0]);
+					int[] parsed = FunctionHelper.parseIdAndMetaFromString(args[0], false);
 					currentID = parsed[0];
 					currentDmg = parsed[1];
 					info.wandEnabled = true;
