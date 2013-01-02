@@ -79,6 +79,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandCapabilities());
 		e.registerServerCommand(new CommandSetspawn());
 		e.registerServerCommand(new CommandJump());
+		e.registerServerCommand(new CommandCraft());
 		//op
 		e.registerServerCommand(new CommandServerDo());
 		//fun
