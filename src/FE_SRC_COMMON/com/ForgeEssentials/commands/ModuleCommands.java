@@ -90,9 +90,8 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandPotion());
 		e.registerServerCommand(new CommandColorize());
 		//teleport
-		e.registerServerCommand(new CommandHome());
-		e.registerServerCommand(new CommandTpSpawn());
 		e.registerServerCommand(new CommandBack());
+		e.registerServerCommand(new CommandHome());
 		e.registerServerCommand(new CommandWarp());
 		//cheat
 		e.registerServerCommand(new CommandRepair());
@@ -157,38 +156,38 @@ public class ModuleCommands implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		event.registerPermissionDefault("ForgeEssentials.commands", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.remove", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.restart", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.rules", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.serverdo", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.smite", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.kill", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.modlist", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.motd", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.burn", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.list", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.compass", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.repair", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.heal", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.tps", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.potion", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.enderchest", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.virtualchest", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.setspawn", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.give", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.clear.self", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.clear.others", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.gamemode.self", false);
-		event.registerPermissionDefault("ForgeEssentials.commands.gamemode.others", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.remove", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.restart", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.rules", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.serverdo", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.smite", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.kill", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.modlist", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.motd", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.burn", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.list", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.compass", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.repair", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.heal", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.tps", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.potion", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.enderchest", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.virtualchest", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.setspawn", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.give", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.clear.self", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.clear.others", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.gamemode.self", false);
+		event.registerPermissionDefault("ForgeEssentials.BasicCommands.gamemode.others", false);
 		
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.commands", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.commands.compass", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.list", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.rules", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.motd", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.tps", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.commands.modlist", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.BasicCommands", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.list", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.rules", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.motd", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.tps", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.modlist", true);
 	}
 
 	@Override
