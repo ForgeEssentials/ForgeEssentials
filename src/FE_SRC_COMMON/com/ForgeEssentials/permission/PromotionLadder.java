@@ -9,12 +9,30 @@ public class PromotionLadder
 	public final String				zoneID;
 	private final ArrayList<String>	groupsList;
 
+	/**
+	 * @param name
+	 * @param zoneID
+	 * @param list  this list must be in order. 0 bieng the top.
+	 */
 	public PromotionLadder(String name, String zoneID, String[] list)
 	{
 		this.name = name;
 		this.zoneID = zoneID;
 		groupsList = new ArrayList<String>();
 		groupsList.addAll(Arrays.asList(list));
+	}
+	
+	/**
+	 * @param name
+	 * @param zoneID
+	 * @param list  this list must be in order. 0 bieng the top.
+	 */
+	public PromotionLadder(String name, String zoneID, ArrayList<String> list)
+	{
+		this.name = name;
+		this.zoneID = zoneID;
+		groupsList = new ArrayList<String>();
+		groupsList.addAll(list);
 	}
 
 	public boolean containsGroup(String group)

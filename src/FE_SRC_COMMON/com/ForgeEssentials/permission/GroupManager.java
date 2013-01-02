@@ -12,8 +12,6 @@ public class GroupManager
 {
 	public static Group						DEFAULT;
 
-	protected static HashMap<String, Group>	groups	= new HashMap<String, Group>();
-
 	private Group							loginGroup;
 	public ConfigGroup						config;
 
