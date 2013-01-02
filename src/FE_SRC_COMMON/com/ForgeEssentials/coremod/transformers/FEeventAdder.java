@@ -41,7 +41,28 @@ public class FEeventAdder implements IClassTransformer
 	{
 		if(ObfuscationReflectionHelper.obfuscation)
 		{
+			iiwmHM = new HashMap();
 			
+			iiwmHM.put("className", "ir");
+			iiwmHM.put("javaClassName", "ir");
+			iiwmHM.put("targetMethodName", "d");
+			iiwmHM.put("worldFieldName", "a");
+			iiwmHM.put("entityPlayerFieldName", "b");
+			iiwmHM.put("worldJavaClassName", "yc");
+			iiwmHM.put("getBlockMetadataMethodName", "h");
+			iiwmHM.put("blockJavaClassName", "amq");
+			iiwmHM.put("blocksListFieldName", "p");
+			iiwmHM.put("entityPlayerJavaClassName", "qx");
+			iiwmHM.put("entityPlayerMPJavaClassName", "iq");
+			
+			isHM = new HashMap<String, String>();
+			
+			isHM.put("className", "ur");
+			isHM.put("javaClassName", "ur");
+			isHM.put("targetMethodName", "a");
+			isHM.put("itemstackJavaClassName", "ur");
+			isHM.put("entityPlayerJavaClassName", "qx");	
+			isHM.put("worldJavaClassName", "yc");	
 		}
 		else
 		{	
