@@ -74,10 +74,12 @@ public class SqlLiteHelper
 	// zones
 	private final PreparedStatement statementGetZoneIDFromName; // zoneName >> zoneID
 	private final PreparedStatement statementGetZoneNameFromID; // zoneID >> zoneName
+	private final PreparedStatement statementPutZone; // ZoneName
 	
 	// players
 	private final PreparedStatement statementGetPlayerIDFromName; // playerName >> playerID
 	private final PreparedStatement statementGetPlayerNameFromID; // playerID >> playerName
+	private final PreparedStatement statementPutPlayer; // ZoneName
 	
 	// groups
 	private final PreparedStatement statementGetGroupIDFromName; // groupName >> groupID
@@ -90,6 +92,7 @@ public class SqlLiteHelper
 	private final PreparedStatement statementGetLadderNameFromID; // LadderID >> ladderName
 	private final PreparedStatement statementGetLadderIDFromGroup; // groupID, zoneID  >> ladderID
 	private final PreparedStatement statementGetLadderList; // LadderID, ZoneID >> groupName, rank
+	private final PreparedStatement statementPutLadder; // ZoneName
 
 	public SqlLiteHelper()
 	{
@@ -142,7 +145,7 @@ public class SqlLiteHelper
 			
 			
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
-			// Helper Statements
+			// Helper Get Statements
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
 			
 			// statementGetLadderFromID
@@ -205,6 +208,28 @@ public class SqlLiteHelper
 					.append(" FROM ").append(TABLE_PLAYER)
 					.append(" WHERE ").append(COLUMN_PLAYER_USERNAME).append("=").append("'?'");
 			statementGetPlayerIDFromName = db.prepareStatement(query.toString());
+			
+			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
+			// Helper Put Statements
+			// <<<<<<<<<<<<<<<<<<<<<<<<<<
+			
+			// statementPutZone
+			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE)
+					.append(" (").append(COLUMN_ZONE_NAME).append(") ")
+					.append(" VALUES ").append(" ('?') ");
+			statementPutZone = db.prepareStatement(query.toString());
+			
+			// statementPutPlayer
+			query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER)
+					.append(" (").append(COLUMN_PLAYER_USERNAME).append(") ")
+					.append(" VALUES ").append(" ('?') ");
+			statementPutPlayer = db.prepareStatement(query.toString());
+			
+			// statementPutLadder
+			query = new StringBuilder("INSERT INTO ").append(TABLE_LADDER_NAME)
+					.append(" (").append(COLUMN_LADDER_NAME_NAME).append(") ")
+					.append(" VALUES ").append(" ('?') ");
+			statementPutLadder = db.prepareStatement(query.toString());
 		}
 		catch (Exception e)
 		{
@@ -378,6 +403,62 @@ public class SqlLiteHelper
 		return null;
 	}
 	
+	/**
+	 * @param groupName
+	 * @return NULL if no group in existence. or an SQL error hapenned.
+	 */
+	public static synchronized Group getGroupForName(String group)
+	{
+		try
+		{
+			// setup query for List
+			instance.statementGetGroupFromName.setString(1, group);
+			ResultSet set = instance.statementGetGroupFromName.executeQuery();
+			instance.statementGetGroupFromName.clearParameters();
+			
+			if (!set.next())
+				return null;
+			
+			Group g = createGroupFromRow(set, group);
+			return g;
+		}
+		catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	/**
+	 * @param groupID
+	 * @return NULL if no group in existence, or an SQL erorr happenend.
+	 */
+	public static synchronized Group getGroupForID(int group)
+	{
+		try
+		{
+			// setup query for List
+			instance.statementGetGroupFromID.setInt(1, group);
+			ResultSet set = instance.statementGetGroupFromID.executeQuery();
+			instance.statementGetGroupFromID.clearParameters();
+			
+			if (!set.next())
+				return null;
+			
+			Group g = createGroupFromRow(set);
+			return g;
+		}
+		catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 	// --------------------------PRIVATE ---- CREATION ---- METHODS --------------------------------------
@@ -402,6 +483,7 @@ public class SqlLiteHelper
 	
 	/**
 	 * The set must be joined with the Zone table for converting the ZoneID to name.
+	 * This method does not move the cursor, and only looks at the row the cursos is on.
 	 * @return a created group
 	 * @throws SQLException
 	 */

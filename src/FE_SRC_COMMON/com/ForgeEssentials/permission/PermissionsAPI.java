@@ -1,7 +1,9 @@
 package com.ForgeEssentials.permission;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -10,7 +12,10 @@ import com.ForgeEssentials.permission.events.PermissionSetEvent;
 import com.ForgeEssentials.permission.query.PermQuery;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.permission.query.PermissionQueryBus;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
+
+import net.minecraft.entity.player.EntityPlayer;
 
 public class PermissionsAPI
 {
@@ -45,6 +50,8 @@ public class PermissionsAPI
 	public static final String				GROUP_DEFAULT		= "_DEFAULT_";
 
 	public static final PermissionQueryBus	QUERY_BUS			= new PermissionQueryBus();
+	
+	public static Group						DEFAULT;
 
 	/**
 	 * Use this to check AllOrNothing Area queries, Player Queries, or Point Queries.
@@ -178,5 +185,83 @@ public class PermissionsAPI
 		}
 
 		return null;
+	}
+	
+	/**
+	 * Gets all the groups that were explicitly created in the given zone. these groups will only apply
+	 * to the given Zone and all of its children.
+	 * @param zoneID zone to check.
+	 * @return List of Groups. may be an empty list, but never null.
+	 */
+	protected static ArrayList<Group> getAllGroupsCreatedForZone(String zoneID)
+	{
+		ArrayList<Group> gs = new ArrayList<Group>();
+		for (Group g : groups.values())
+			if (g.zoneID.equals(zoneID))
+				gs.add(g);
+
+		return gs;
+	}
+
+	/**
+	 * Returns the list of all the groups the player is in at a given time. It is in order of priority the first bieng the highest.
+	 * NEVER includes the default group.
+	 * @param player
+	 */
+	public static ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
+	{
+		TreeSet<Group> list = new TreeSet<Group>();
+		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
+		PlayerPermData playerData;
+
+		while (zone != null)
+		{
+			playerData = PlayerManager.getPlayerData(zone.getZoneID(), player.username);
+			for (String group : playerData.getGroupList())
+			{
+				if (!includeDefaults && group.equals(DEFAULT.name))
+					continue;
+				list.add(GroupManager.getGroupName(group));
+			}
+			
+			
+			zone = ZoneManager.getZone(zone.parent);
+		}
+		
+		if (includeDefaults)
+			list.add(DEFAULT);
+		
+		ArrayList<Group> returnable = new ArrayList<Group>();
+		returnable.addAll(list);
+		return returnable;
+	}
+	
+	public static Group getHighestGroup(EntityPlayer player)
+	{
+		Group high;
+		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
+		PlayerPermData playerData;
+		TreeSet<Group> list = new TreeSet<Group>();
+
+		while (zone != null && list.size() <= 0)
+		{
+			playerData = PlayerManager.getPlayerData(zone.getZoneID(), player.username);
+			
+			if (playerData.getGroupList().isEmpty())
+			{
+				zone = ZoneManager.getZone(zone.parent);
+				continue;
+			}
+			
+			for (String group : playerData.getGroupList())
+				list.add(GroupManager.getGroupName(group));
+			
+			zone = ZoneManager.getZone(zone.parent);
+		}
+		
+		if (list.size() == 0)
+			return DEFAULT;
+		else
+			return list.pollFirst();
 	}
 }
