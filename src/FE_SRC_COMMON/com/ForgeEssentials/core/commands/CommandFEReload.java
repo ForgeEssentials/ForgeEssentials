@@ -12,7 +12,7 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName()
 	{
-		return "reload";
+		return "fereload";
 	}
 
 	@Override

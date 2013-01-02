@@ -155,31 +155,6 @@ public class ModuleCommands implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.remove", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.restart", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.rules", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.serverdo", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.smite", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.kill", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.modlist", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.motd", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.burn", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.list", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.compass", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.repair", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.heal", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.tps", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.potion", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.enderchest", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.virtualchest", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.setspawn", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.give", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.clear.self", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.clear.others", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.gamemode.self", false);
-		event.registerPermissionDefault("ForgeEssentials.BasicCommands.gamemode.others", false);
-		
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.BasicCommands", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.list", true);

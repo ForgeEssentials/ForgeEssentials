@@ -55,9 +55,7 @@ public class ModuleBackup implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		OutputHandler.SOP("Registering Backup permission: ForgeEssentials.backup:false");
-		event.registerPermissionDefault("ForgeEssentials.backup", false);
-//		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.backup", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.backup", true);
 	}
 
 	@Override

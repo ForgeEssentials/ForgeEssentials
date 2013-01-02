@@ -152,4 +152,9 @@ public final class FunctionHelper
 		else
 			return new File(".");
 	}
+
+	public static boolean isPlayerOp(String player)
+	{
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getOps().contains(player);
+	}
 }

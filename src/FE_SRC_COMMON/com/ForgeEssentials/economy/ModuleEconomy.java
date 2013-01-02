@@ -13,6 +13,7 @@ import com.ForgeEssentials.economy.commands.CommandGetWallet;
 import com.ForgeEssentials.economy.commands.CommandRemoveWallet;
 import com.ForgeEssentials.economy.commands.CommandSetWallet;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.permission.PermissionsAPI;
 
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -114,10 +115,10 @@ public class ModuleEconomy implements IFEModule, IPlayerTracker
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		event.registerPermissionDefault("ForgeEssentials.Economy.walletremove", true);
-		event.registerPermissionDefault("ForgeEssentials.Economy.walletget", true);
-		event.registerPermissionDefault("ForgeEssentials.Economy.walletadd", true);
-		event.registerPermissionDefault("ForgeEssentials.Economy.walletset", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.Economy.walletremove", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.Economy.walletget", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.Economy.walletadd", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.Economy.walletset", true);
 	}
 
 	@Override

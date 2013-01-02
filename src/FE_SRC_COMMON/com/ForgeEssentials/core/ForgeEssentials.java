@@ -163,7 +163,7 @@ public class ForgeEssentials
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		event.registerPermissionDefault("ForgeEssentials.commands.reload", false);
+		
 	}
 
 	@ServerStarted

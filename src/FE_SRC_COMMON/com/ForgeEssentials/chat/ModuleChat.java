@@ -16,6 +16,7 @@ import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -102,13 +103,8 @@ public class ModuleChat implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		event.registerPermissionDefault("ForgeEssentials.chat.commands.msg", true);
-		event.registerPermissionDefault("ForgeEssentials.chat.commands.r", true);
-		event.registerPermissionDefault("ForgeEssentials.chat.usecolor", false);
-		event.registerPermissionDefault("ForgeEssentials.chat.mute", false);
-		event.registerPermissionDefault("ForgeEssentials.chat.unmutemu", false);
-		event.registerPermissionDefault("ForgeEssentials.chat.nickname.self", false);
-		event.registerPermissionDefault("ForgeEssentials.chat.nickname.others", false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.chat.commands.msg", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.chat.commands.r", true);
 	}
 
 }

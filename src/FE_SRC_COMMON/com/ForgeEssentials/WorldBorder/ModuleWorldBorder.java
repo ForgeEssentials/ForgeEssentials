@@ -90,8 +90,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		event.registerPermissionDefault("ForgeEssentials.worldborder", false);
-		event.registerPermissionDefault("ForgeEssentials.worldborder.command", false);
+		
 	}
 
 	/*

@@ -16,13 +16,7 @@ public class Permission extends PermissionChecker
 
 	public static PermResult getPermissionDefault(String name)
 	{
-		Permission perm = defaults.get(name);
-		if (perm != null)
-			return perm.allowed;
-		else if (name.isEmpty())
-			return PermResult.ALLOW;
-		else
-			return getPermissionDefault(new PermissionChecker(name).getImmediateParent());
+		return PermResult.DENY;
 	}
 
 	/**
