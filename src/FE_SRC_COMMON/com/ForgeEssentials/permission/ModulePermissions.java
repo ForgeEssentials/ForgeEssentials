@@ -70,8 +70,7 @@ public class ModulePermissions implements IFEModule
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandZone());
-		e.registerServerCommand(new CommandPermSet());
-
+		//e.registerServerCommand(new CommandPermSet());
 	}
 
 	@Override
