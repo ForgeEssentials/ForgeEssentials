@@ -151,9 +151,35 @@ public class SqlLiteHelper
 		try
 		{
 			// table creation statements.
-			String zoneTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_ZONE).append("(").append(this.COLUMN_ZONE_ZONEID).append(" INTEGER PRIMARY KEY AUTOINCREMENT, ").append(this.COLUMN_ZONE_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ").append(this.COLUMN_ZONE_DIM).append(" SMALLINT NOT NULL, ").append(this.COLUMN_ZONE_PARENT).append(" INT NOT NULL").append(")").toString();
-			String groupTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP).append("(").append(this.COLUMN_GROUP_GROUPID).append("  INTEGER PRIMARY KEY AUTOINCREMENT, ").append(this.COLUMN_GROUP_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ").append(this.COLUMN_GROUP_PARENT).append(" INTEGER NOT NULL, ").append(this.COLUMN_GROUP_PRIORITY).append(" SMALLINT NOT NULL, ").append(this.COLUMN_GROUP_ZONE).append(" INTEGER FOREIGN KEY REFERENCES ").append(TABLE_ZONE).append("(").append(COLUMN_ZONE_ZONEID).append("), ").append(this.COLUMN_GROUP_PREFIX).append(" VARCHAR(20) DEFAULT \"\", ").append(this.COLUMN_GROUP_SUFFIX).append(" VARCHAR(20) DEFAULT \"\" ").toString();
-			String ladderTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_LADDER).append("(").append(this.COLUMN_LADDER_LADDERID).append(" INTEGER FOREIGN KEY (").append(this.COLUMN_LADDER_LADDERID).append(") REFERENCES ").append(TABLE_LADDER_NAME).append("(").append(COLUMN_LADDER_NAME_LADDERID).append("), ").append(this.COLUMN_LADDER_GROUPID).append(" INTEGER FOREIGN KEY REFERENCES ").append(TABLE_GROUP).append("(").append(COLUMN_GROUP_GROUPID).append("), ").append(this.COLUMN_LADDER_ZONEID).append(" INTEGER FOREIGN KEY REFERENCES ").append(TABLE_ZONE).append("(").append(COLUMN_ZONE_ZONEID).append("), ").append(this.COLUMN_LADDER_RANK).append(" SMALLINT ").toString();
+			String zoneTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_ZONE).append("(")
+					.append(this.COLUMN_ZONE_ZONEID).append(" INTEGER PRIMARY KEY AUTOINCREMENT, ")
+					.append(this.COLUMN_ZONE_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
+					.append(this.COLUMN_ZONE_DIM).append(" SMALLINT NOT NULL, ")
+					.append(this.COLUMN_ZONE_PARENT).append(" INT NOT NULL")
+					.append(")").toString();
+			
+			String groupTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP).append("(")
+					.append(this.COLUMN_GROUP_GROUPID).append("  INTEGER PRIMARY KEY AUTOINCREMENT, ")
+					.append(this.COLUMN_GROUP_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
+					.append(this.COLUMN_GROUP_PARENT).append(" INTEGER NOT NULL, ")
+					.append(this.COLUMN_GROUP_PRIORITY).append(" SMALLINT NOT NULL, ")
+					.append(this.COLUMN_GROUP_ZONE).append(" INTEGER FOREIGN KEY ")
+					.append(TABLE_ZONE).append("(").append(COLUMN_ZONE_ZONEID).append("), ")
+					.append(this.COLUMN_GROUP_PREFIX).append(" VARCHAR(20) DEFAULT \"\", ")
+					.append(this.COLUMN_GROUP_SUFFIX).append(" VARCHAR(20) DEFAULT \"\" ")
+					.toString();
+			
+			String ladderTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_LADDER).append("(")
+					.append(this.COLUMN_LADDER_LADDERID).append(" INTEGER FOREIGN KEY (")
+					.append(this.COLUMN_LADDER_LADDERID).append(") REFERENCES ")
+					.append(TABLE_LADDER_NAME).append("(").append(COLUMN_LADDER_NAME_LADDERID)
+					.append("), ").append(this.COLUMN_LADDER_GROUPID).append(" INTEGER FOREIGN KEY REFERENCES ")
+					.append(TABLE_GROUP).append("(").append(COLUMN_GROUP_GROUPID).append("), ")
+					.append(this.COLUMN_LADDER_ZONEID).append(" INTEGER FOREIGN KEY REFERENCES ")
+					.append(TABLE_ZONE).append("(").append(COLUMN_ZONE_ZONEID).append("), ")
+					.append(this.COLUMN_LADDER_RANK).append(" SMALLINT ")
+					.toString();
+			
 			String ladderNameTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_LADDER_NAME).append("(").append(this.COLUMN_LADDER_NAME_LADDERID).append(" INTEGER PRIMARY KEY AUTOINCREMENT, ").append(this.COLUMN_LADDER_NAME_NAME).append(" VARCHAR(40) NOT NULL UNIQUE").append(")").toString();
 			String playerTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP).append("(").append(this.COLUMN_PLAYER_PLAYERID).append(" INTEGER PRIMARY KEY AUTOINCREMENT, ").append(this.COLUMN_PLAYER_USERNAME).append(" VARCHAR(20) NOT NULL UNIQUE").append(")").toString();
 			String groupConnectorTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP_CONNECTOR).append("(").append(this.COLUMN_GROUP_CONNECTOR_GROUPID).append(" INTEGER FOREIGN KEY (").append(this.COLUMN_GROUP_CONNECTOR_GROUPID).append(") REFERENCES ").append(TABLE_GROUP).append("(").append(COLUMN_GROUP_GROUPID).append("), ").append(this.COLUMN_GROUP_CONNECTOR_PLAYERID).append(" INTEGER FOREIGN KEY REFERENCES ").append(TABLE_PLAYER).append("(").append(COLUMN_PLAYER_PLAYERID).append("), ").append(this.COLUMN_GROUP_CONNECTOR_ZONEID).append(" INTEGER FOREIGN KEY REFERENCES ").append(TABLE_ZONE).append("(").append(COLUMN_ZONE_ZONEID).append(") )").toString();

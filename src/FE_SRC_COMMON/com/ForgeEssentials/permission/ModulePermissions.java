@@ -42,7 +42,7 @@ public class ModulePermissions implements IFEModule
 		MinecraftForge.EVENT_BUS.register(zManager);
 		
 		// testing DB.
-		sql = new SqlLiteHelper();
+		//sql = new SqlLiteHelper();
 	}
 
 	@Override
