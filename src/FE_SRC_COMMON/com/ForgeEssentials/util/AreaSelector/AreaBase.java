@@ -1,10 +1,15 @@
 package com.ForgeEssentials.util.AreaSelector;
 
+import com.ForgeEssentials.data.SaveableObject;
+import com.ForgeEssentials.data.SaveableObject.SaveableField;
 
+@SaveableObject
 public abstract class AreaBase
 {
 	// used for pretty much everything else.
+	@SaveableField
 	private Point				high;
+	@SaveableField
 	private Point				low;
 
 	/**

@@ -35,8 +35,6 @@ public class SqlLiteHelper
 	// columns for the zone table
 	private static final String		COLUMN_ZONE_ZONEID				= "zoneID";
 	private static final String		COLUMN_ZONE_NAME				= "name";
-	private static final String		COLUMN_ZONE_PARENT				= "parent";
-	private static final String		COLUMN_ZONE_DIM					= "dimension";
 
 	// columns for the group table
 	private static final String		COLUMN_GROUP_GROUPID			= "groupID";
@@ -165,8 +163,6 @@ public class SqlLiteHelper
 			String zoneTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_ZONE).append("(")
 					.append(this.COLUMN_ZONE_ZONEID).append(" INTEGER AUTOINCREMENT, ")
 					.append(this.COLUMN_ZONE_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
-					.append(this.COLUMN_ZONE_DIM).append(" SMALLINT NOT NULL, ")
-					.append(this.COLUMN_ZONE_PARENT).append(" INT NOT NULL, ")
 					.append("PRIMARY KEY (").append(COLUMN_ZONE_ZONEID).append(") ")
 					.append(")").toString();
 			
