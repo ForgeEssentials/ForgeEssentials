@@ -15,52 +15,28 @@ public class ConfigPlayerLogger {
 	{
 		config = new Configuration(plconfig, true);
 		
-		//DB settings
-		config.addCustomCategoryComment("DB", "Database settings. Look here if something broke.");
+		String cat = "playerLogger";
+		String subcat = cat;
+		
+		ModulePlayerLogger.enable = config.get(subcat, "enable", false).getBoolean(false);
+		
+		subcat = cat + ".DB";
+		config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
+		
+		ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").value;
+		ModulePlayerLogger.username = config.get(subcat, "username", "root").value;
+		ModulePlayerLogger.password = config.get(subcat, "password", "root").value;
+		ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
+		ModulePlayerLogger.interval = config.get(subcat, "interval", 300, "Amount of time (in sec.) imbetween database saves.").getInt();
 
-		Property prop = config.get("DB", "DB_url", "jdbc:mysql://localhost:3306/testdb");
-		prop.comment = "URL of the database";
-		ModulePlayerLogger.url = prop.value;
-		
-		prop = config.get("DB", "DB_username", "root");
-		prop.comment = "Username used to log in to the database";
-		ModulePlayerLogger.username = prop.value;
-		
-		prop = config.get("DB", "DB_password", "root");
-		prop.comment = "Password used to log in to the database";
-		ModulePlayerLogger.password = prop.value;
-		
-		prop = config.get("DB", "stopServerIfFail", false);
-		prop.comment = "Stop the server when the logging fails";
-		ModulePlayerLogger.ragequitOn = prop.getBoolean(false);
-		
-		prop = config.get("DB", "interval", 300);
-		prop.comment = "Interval in sec. for saving logs to DB";
-		ModulePlayerLogger.interval = prop.getInt(300);
-		
-		
-		// Event settings
+		subcat = cat + ".events";
 		config.addCustomCategoryComment("events", "Toggle events to log here.");
 		
-		prop = config.get("events", "logPlayerLogin", true);
-		prop.comment = "Log player logins?";
-		EventLogger.logPlayerLogin = prop.getBoolean(true);
-		
-		prop = config.get("events", "logPlayerChangedDimension", true);
-		prop.comment = "Log player dimension changes?";
-		EventLogger.logPlayerChangedDimension = prop.getBoolean(true);
-		
-		prop = config.get("events", "logPlayerLogout", true);
-		prop.comment = "Log player logouts?";
-		EventLogger.logPlayerLogout = prop.getBoolean(true);
-		
-		prop = config.get("events", "logPlayerRespawn", true);
-		prop.comment = "Log player respawning?";
-		EventLogger.logPlayerRespawn = prop.getBoolean(true);
-		
-		prop = config.get("events", "logCommands", true);
-		prop.comment = "Log commands?";
-		EventLogger.logCommands = prop.getBoolean(true);
+		EventLogger.logBlockChanges = config.get(subcat, "blockchages", true).getBoolean(true);
+		EventLogger.logCommands = config.get(subcat, "commands", true).getBoolean(true);
+		EventLogger.logPlayerLoginLogout = config.get(subcat, "playerLoginLogout", true).getBoolean(true);
+		EventLogger.logPlayerChangedDimension = config.get(subcat, "playerChangeDimention", true).getBoolean(true);
+		EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
 		
 		config.save();
 	}
