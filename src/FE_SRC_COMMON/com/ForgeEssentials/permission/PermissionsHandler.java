@@ -32,6 +32,11 @@ public final class PermissionsHandler
 	public void handlerQuery(PermQueryPlayer event)
 	{
 		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(event.doer), event.doer.worldObj);
+		if(FunctionHelper.isPlayerOp(event.doer.getCommandSenderName().toLowerCase()))
+		{
+			event.setResult(PermResult.ALLOW);
+			return;
+		}
 		PermResult result = getResultFromZone(zone, event.checker, event.doer);
 		event.setResult(result);
 	}
@@ -39,6 +44,11 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.NORMAL)
 	public void handlerQuery(PermQueryPlayerZone event)
 	{
+		if(FunctionHelper.isPlayerOp(event.doer.getCommandSenderName().toLowerCase()))
+		{
+			event.setResult(PermResult.ALLOW);
+			return;
+		}
 		PermResult result = getResultFromZone(event.toCheck, event.checker, event.doer);
 		event.setResult(result);
 	}
@@ -46,6 +56,11 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.NORMAL)
 	public void handlerQuery(PermQueryPlayerArea event)
 	{
+		if(FunctionHelper.isPlayerOp(event.doer.getCommandSenderName().toLowerCase()))
+		{
+			event.setResult(PermResult.ALLOW);
+			return;
+		}
 		if (event.allOrNothing)
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo, event.doer.worldObj);
