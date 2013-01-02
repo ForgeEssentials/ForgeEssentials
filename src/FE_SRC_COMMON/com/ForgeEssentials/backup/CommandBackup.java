@@ -10,6 +10,8 @@ import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
 public class CommandBackup extends ForgeEssentialsCommandBase
 {
@@ -95,6 +97,12 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	public boolean canConsoleUseCommand()
 	{
 		return true;
+	}
+	
+	@Override
+	public boolean canPlayerUseCommand(EntityPlayer sender)
+	{
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()));
 	}
 
 	@Override
