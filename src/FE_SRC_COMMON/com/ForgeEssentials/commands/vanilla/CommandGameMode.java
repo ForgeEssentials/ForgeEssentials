@@ -35,12 +35,11 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args) 
 	{
-		if(args.length < 3)
+		if(args.length < 2)
 		{
-			int var6 = sender.inventory.clearInventory(-1, -1);
 			if(args.length == 1)
 			{
-				sender.setGameType(getGameTypeFromString(sender, args[1]));
+				sender.setGameType(getGameTypeFromString(sender, args[0]));
 			}
 			else
 			{
@@ -77,7 +76,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args) 
 	{
-		if(args.length < 3)
+		if(args.length < 2)
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 			if(args.length == 2)
