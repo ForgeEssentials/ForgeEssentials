@@ -1,9 +1,6 @@
 package com.ForgeEssentials.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import net.minecraft.command.CommandHandler;
@@ -92,6 +89,7 @@ public class ModuleCommands implements IFEModule
 		//teleport
 		e.registerServerCommand(new CommandBack());
 		e.registerServerCommand(new CommandHome());
+		e.registerServerCommand(new CommandTpSpawn());
 		e.registerServerCommand(new CommandWarp());
 		//cheat
 		e.registerServerCommand(new CommandRepair());
