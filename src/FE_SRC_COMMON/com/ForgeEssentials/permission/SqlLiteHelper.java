@@ -116,7 +116,7 @@ public class SqlLiteHelper
 					.append(" ORDER BY ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_RANK);
 			statementGetLadderList = instance.db.prepareStatement(query.toString());
 			
-			// statementGetGroup
+			// statementGetGroupFromName
 			query = new StringBuilder("SELECT ")
 					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ")
 					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ")
@@ -129,7 +129,7 @@ public class SqlLiteHelper
 					.append(" ON ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ZONE).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME);
 			statementGetGroupFromName = instance.db.prepareStatement(query.toString());
 
-			// statementGetGroup
+			// statementGetGroupFromID
 			query = new StringBuilder("SELECT ")
 					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
 					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ")
@@ -142,7 +142,6 @@ public class SqlLiteHelper
 					.append(" INNER JOIN ").append(TABLE_ZONE)
 					.append(" ON ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ZONE).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME);
 			statementGetGroupFromID = instance.db.prepareStatement(query.toString());
-			
 			
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Get Statements
@@ -509,7 +508,7 @@ public class SqlLiteHelper
 	 * @return -5 if the Zone does not exist.
 	 * @throws SQLException
 	 */
-	public static synchronized int getZoneIDFromZoneName(String zone) throws SQLException
+	private static synchronized int getZoneIDFromZoneName(String zone) throws SQLException
 	{
 		instance.statementGetZoneIDFromName.setString(1, zone);
 		ResultSet set = instance.statementGetZoneIDFromName.executeQuery();
@@ -526,7 +525,7 @@ public class SqlLiteHelper
 	 * @return null if the Zone does not exist.
 	 * @throws SQLException
 	 */
-	public static synchronized String getZoneNameFromZoneID(int zoneID) throws SQLException
+	private static synchronized String getZoneNameFromZoneID(int zoneID) throws SQLException
 	{
 		instance.statementGetZoneNameFromID.setInt(1, zoneID);
 		ResultSet set = instance.statementGetZoneNameFromID.executeQuery();
@@ -543,7 +542,7 @@ public class SqlLiteHelper
 	 * @return -5 if the Ladder does not exist.
 	 * @throws SQLException
 	 */
-	public static synchronized int getLadderIDFromLadderName(String ladder) throws SQLException
+	private static synchronized int getLadderIDFromLadderName(String ladder) throws SQLException
 	{
 		instance.statementGetLadderIDFromName.setString(1, ladder);
 		ResultSet set = instance.statementGetLadderIDFromName.executeQuery();
@@ -560,7 +559,7 @@ public class SqlLiteHelper
 	 * @return null if the Ladder does not exist.
 	 * @throws SQLException
 	 */
-	public static synchronized String getLadderNameFromLadderID(int ladderID) throws SQLException
+	private static synchronized String getLadderNameFromLadderID(int ladderID) throws SQLException
 	{
 		instance.statementGetLadderNameFromID.setInt(1, ladderID);
 		ResultSet set = instance.statementGetLadderNameFromID.executeQuery();
@@ -577,7 +576,7 @@ public class SqlLiteHelper
 	 * @return null if the Ladder does not exist.
 	 * @throws SQLException
 	 */
-	public static synchronized int getLadderIdFromGroup(int groupID, int zoneID) throws SQLException
+	private static synchronized int getLadderIdFromGroup(int groupID, int zoneID) throws SQLException
 	{
 		instance.statementGetLadderIDFromGroup.setInt(1, groupID);
 		instance.statementGetLadderIDFromGroup.setInt(2, zoneID);
@@ -595,7 +594,7 @@ public class SqlLiteHelper
 	 * @return -5 if the Group does not exist.
 	 * @throws SQLException
 	 */
-	public static synchronized int getGroupIDFromGroupName(String group) throws SQLException
+	private static synchronized int getGroupIDFromGroupName(String group) throws SQLException
 	{
 		instance.statementGetGroupIDFromName.setString(1, group);
 		ResultSet set = instance.statementGetGroupIDFromName.executeQuery();
@@ -612,7 +611,7 @@ public class SqlLiteHelper
 	 * @return null if the Group does not exist.
 	 * @throws SQLException
 	 */
-	public static synchronized String getGroupNameFromGroupID(int groupID) throws SQLException
+	private static synchronized String getGroupNameFromGroupID(int groupID) throws SQLException
 	{
 		instance.statementGetGroupNameFromID.setInt(1, groupID);
 		ResultSet set = instance.statementGetGroupNameFromID.executeQuery();
@@ -629,7 +628,7 @@ public class SqlLiteHelper
 	 * @return -5 if the Player does not exist.
 	 * @throws SQLException
 	 */
-	public static synchronized int getPlayerIDFromPlayerName(String player) throws SQLException
+	private static synchronized int getPlayerIDFromPlayerName(String player) throws SQLException
 	{
 		instance.statementGetPlayerIDFromName.setString(1, player);
 		ResultSet set = instance.statementGetPlayerIDFromName.executeQuery();
@@ -646,7 +645,7 @@ public class SqlLiteHelper
 	 * @return null if the Player does not exist.
 	 * @throws SQLException
 	 */
-	public static synchronized String getPlayerNameFromPlayerID(int playerID) throws SQLException
+	private static synchronized String getPlayerNameFromPlayerID(int playerID) throws SQLException
 	{
 		instance.statementGetPlayerNameFromID.setInt(1, playerID);
 		ResultSet set = instance.statementGetPlayerNameFromID.executeQuery();
