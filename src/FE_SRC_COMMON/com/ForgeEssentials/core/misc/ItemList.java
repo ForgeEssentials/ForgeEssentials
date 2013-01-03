@@ -40,7 +40,7 @@ public class ItemList
 				}
 				catch(Exception e)
 				{
-					System.out.println("Not added to list: " + item.getClass().getName());
+					OutputHandler.debug("Not added to list: " + item.getClass().getName());
 				}
 			}
 		}
@@ -56,7 +56,7 @@ public class ItemList
 				}
 				catch(Exception e)
 				{
-					System.out.println("Not added to list: " + block.getClass().getName());
+					OutputHandler.debug("Not added to list: " + block.getClass().getName());
 				}
 			}
 		}

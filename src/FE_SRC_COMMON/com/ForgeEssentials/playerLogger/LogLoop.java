@@ -62,7 +62,7 @@ public class LogLoop implements Runnable
 			}
 			buffer.removeAll(delBuffer);
 			
-			OutputHandler.SOP("Made " + delBuffer.size() + " logs");
+			OutputHandler.SOP("Made " + delBuffer.size() + " logs.");
 			
 			s.close();
 			connection.close();

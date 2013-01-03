@@ -71,8 +71,9 @@ public final class OutputHandler
 
 	}
 	//At Dries' request
-	public static void debug(Object msg){
-		if (verbose)
+	public static void debug(Object msg)
+	{
+		if (verbose || !ObfuscationReflectionHelper.obfuscation)
 			SOP(msg);
 	}
 
