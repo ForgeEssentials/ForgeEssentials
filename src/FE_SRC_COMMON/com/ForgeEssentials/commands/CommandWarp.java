@@ -8,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
@@ -16,6 +17,7 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 /**
  * Now uses TeleportCenter.
@@ -56,6 +58,8 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 				if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					NBTTagCompound warp = warpdata.getCompoundTag(args[0].toLowerCase());
+					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender);
+					playerInfo.back = new WorldPoint(sender);
 					TeleportCenter.addToTpQue(new WarpPoint(warp.getInteger("dim"), (int)warp.getDouble("X"), (int)warp.getDouble("Y"), (int)warp.getDouble("Z"), warp.getFloat("Yaw"), warp.getFloat("Pitch")), sender);
 				}
 				else

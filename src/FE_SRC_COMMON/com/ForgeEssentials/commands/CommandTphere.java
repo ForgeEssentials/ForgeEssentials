@@ -39,12 +39,12 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 			if (player != null)
 			{
 				EntityPlayerMP target = (EntityPlayerMP)sender;
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+				playerInfo.back = new WorldPoint(player);
 				if(player.dimension != target.dimension)
 				{
 					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, target.dimension);
 				}
-				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
-				playerInfo.back = new WorldPoint(player);
 				player.setPositionAndRotation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
 				player.sendChatToPlayer("Poof!");
 			}

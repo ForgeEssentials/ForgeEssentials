@@ -36,6 +36,8 @@ public class CommandHome extends ForgeEssentialsCommandBase
 			else
 			{
 				EntityPlayerMP player = ((EntityPlayerMP) sender);
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+				playerInfo.back = new WorldPoint(player);
 				if (player.dimension != home.dim)
 				{
 					// Home is not in this dimension. Move the player.

@@ -39,12 +39,12 @@ public class CommandTp extends ForgeEssentialsCommandBase
 			if (target != null)
 			{
 				EntityPlayerMP player = (EntityPlayerMP)sender;
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+				playerInfo.back = new WorldPoint(player);
 				if(player.dimension != target.dimension)
 				{
 					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, target.dimension);
 				}
-				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
-				playerInfo.back = new WorldPoint(player);
 				player.setPositionAndRotation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
 				player.sendChatToPlayer("Poof!");
 			}
@@ -57,12 +57,12 @@ public class CommandTp extends ForgeEssentialsCommandBase
 			EntityPlayer target = FunctionHelper.getPlayerFromUsername(args[1]);
 			if (player != null && target != null)
 			{
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+				playerInfo.back = new WorldPoint(player);
 				if(player.dimension != target.dimension)
 				{
 					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, target.dimension);
 				}
-				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
-				playerInfo.back = new WorldPoint(player);
 				player.setPositionAndRotation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
 				player.sendChatToPlayer("Poof!");
 			}
@@ -90,12 +90,12 @@ public class CommandTp extends ForgeEssentialsCommandBase
 			EntityPlayer target = FunctionHelper.getPlayerFromUsername(args[1]);
 			if (player != null && target != null)
 			{
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+				playerInfo.back = new WorldPoint(player);
 				if(player.dimension != target.dimension)
 				{
 					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, target.dimension);
 				}
-				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
-				playerInfo.back = new WorldPoint(player);
 				player.setPositionAndRotation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
 				player.sendChatToPlayer("Poof!");
 			}
