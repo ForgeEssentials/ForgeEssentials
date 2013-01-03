@@ -33,6 +33,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 				player.mcServer.getConfigurationManager().transferPlayerToDimension(player, death.dim);
 			}
 			player.playerNetServerHandler.setPlayerLocation(death.x+0.5, death.y + 1, death.z+0.5, player.rotationYaw, player.rotationPitch);
+			player.sendChatToPlayer("Poof!");
 		} else
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NODEATHPOINT));
 	}

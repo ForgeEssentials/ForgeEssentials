@@ -113,6 +113,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandColorize());
 		//teleport
 		e.registerServerCommand(new CommandBack());
+		e.registerServerCommand(new CommandBed());
 		e.registerServerCommand(new CommandHome());
 		e.registerServerCommand(new CommandSpawn());
 		e.registerServerCommand(new CommandTp());
