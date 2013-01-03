@@ -14,13 +14,13 @@ public class Permission extends PermissionChecker
 
 	private static HashMap<String, Permission>	defaults	= new HashMap<String, Permission>();
 
-	public static PermResult getPermissionDefault(String name)
+	public static boolean getPermissionDefault(String name)
 	{
 		Permission perm = defaults.get(name);
 		if (perm != null)
 			return perm.allowed;
 		else if (name.isEmpty())
-			return PermResult.ALLOW;
+			return true;
 		else
 			return getPermissionDefault(new PermissionChecker(name).getImmediateParent());
 	}
@@ -36,12 +36,12 @@ public class Permission extends PermissionChecker
 		OutputHandler.debug("Permission Registered: " + perm);
 	}
 
-	public PermResult	allowed;
+	public boolean	allowed;
 
 	public Permission(String qualifiedName, Boolean allowed)
 	{
 		super(qualifiedName);
-		this.allowed = allowed ? PermResult.ALLOW : PermResult.DENY;
+		this.allowed = allowed;
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class Permission extends PermissionChecker
 		if (object instanceof Permission)
 		{
 			Permission perm = (Permission) object;
-			return name.equals(perm.name) && allowed.equals(perm.allowed);
+			return name.equals(perm.name) && allowed == perm.allowed;
 		}
 		else if (object instanceof String)
 			return object.equals(name);

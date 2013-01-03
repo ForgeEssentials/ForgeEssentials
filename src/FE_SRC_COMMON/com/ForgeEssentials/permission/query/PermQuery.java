@@ -16,10 +16,12 @@ public class PermQuery
     private static FEListenerList listeners = new FEListenerList();
     
     public PermissionChecker checker;
+    public boolean checkForward;
 	
 	public PermQuery()
 	{
 		setup();
+		checkForward = false;
 	}
 	
     /**

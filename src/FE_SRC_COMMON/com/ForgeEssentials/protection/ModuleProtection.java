@@ -96,8 +96,8 @@ public class ModuleProtection implements IFEModule
 		event.registerPermissionDefault("ForgeEssentials.allowedit.leftclick", false);
 		event.registerPermissionDefault("ForgeEssentials.allowedit.rightclick", false);
 		
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.allowedit.leftclick", false);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.allowedit.rightclick", false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, "ForgeEssentials.allowedit.leftclick", false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, "ForgeEssentials.allowedit.rightclick", false);
 		
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.allowedit.leftclick", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.allowedit.rightclick", true);

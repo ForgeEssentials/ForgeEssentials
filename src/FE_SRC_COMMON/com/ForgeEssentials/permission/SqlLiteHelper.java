@@ -1,5 +1,6 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.OutputHandler;
 
 import java.io.File;
@@ -9,9 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.TreeSet;
 
 public class SqlLiteHelper
@@ -66,11 +65,11 @@ public class SqlLiteHelper
 	private static final String		COLUMN_PLAYER_USERNAME			= "username";
 
 	// permissions table
-	private static final String		COLUMN_PERMISSIONS_TARGET		= "target";
-	private static final String		COLUMN_PERMISSIONS_ISGROUP		= "isGroup";
-	private static final String		COLUMN_PERMISSIONS_PERM			= "perm";
-	private static final String		COLUMN_PERMISSIONS_ALLOWED		= "allowed";
-	private static final String		COLUMN_PERMISSIONS_ZONEID		= "zoneID";
+	private static final String		COLUMN_PERMISSION_TARGET		= "target";
+	private static final String		COLUMN_PERMISSION_ISGROUP		= "isGroup";
+	private static final String		COLUMN_PERMISSION_PERM			= "perm";
+	private static final String		COLUMN_PERMISSION_ALLOWED		= "allowed";
+	private static final String		COLUMN_PERMISSION_ZONEID		= "zoneID";
 	
 	// zones
 	private final PreparedStatement statementGetZoneIDFromName; // zoneName >> zoneID
@@ -80,7 +79,7 @@ public class SqlLiteHelper
 	// players
 	private final PreparedStatement statementGetPlayerIDFromName; // playerName >> playerID
 	private final PreparedStatement statementGetPlayerNameFromID; // playerID >> playerName
-	private final PreparedStatement statementPutPlayer; // $ ZoneName
+	private final PreparedStatement statementPutPlayer; // $ usernName
 	
 	// groups
 	private final PreparedStatement statementGetGroupIDFromName; // groupName >> groupID
@@ -96,7 +95,12 @@ public class SqlLiteHelper
 	private final PreparedStatement statementGetLadderNameFromID; // LadderID >> ladderName
 	private final PreparedStatement statementGetLadderIDFromGroup; // groupID, zoneID  >> ladderID
 	private final PreparedStatement statementGetLadderList; // LadderID, ZoneID >> groupName, rank
-	private final PreparedStatement statementPutLadder; // $ ZoneName
+	private final PreparedStatement statementPutLadder; // $ LadderName
+	
+	//permissions
+	private final PreparedStatement statementGetPermissionAllowed; // target, isgroup, perm, zone >> allowed
+	private final PreparedStatement statementPutPermission; // $ , allowed, target, isgroup, perm, zone
+	private final PreparedStatement statementUpdatePermission; // $ allowed, target, isgroup, perm, zone
 
 	public SqlLiteHelper()
 	{
@@ -173,6 +177,26 @@ public class SqlLiteHelper
 					.append(" WHERE ")
 					.append(COLUMN_GROUP_NAME).append("=").append("'?'");
 			statementUpdateGroup = db.prepareStatement(query.toString());
+			
+			// statementGetPermissionAllowed
+			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED)
+					.append(" FROM ").append(TABLE_PERMISSION)
+					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("'?'")
+					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			statementGetPermissionAllowed = db.prepareStatement(query.toString());
+
+			// statementUpdatePermission
+			query = new StringBuilder("UPDATE ").append(TABLE_PERMISSION)
+					.append(" SET ")
+					.append(COLUMN_PERMISSION_ALLOWED).append("=").append("?")
+					.append(" WHERE ")
+					.append(COLUMN_PERMISSION_TARGET).append("=").append("?")
+					.append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
+					.append(COLUMN_PERMISSION_PERM).append("=").append("'?'")
+					.append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			statementUpdatePermission = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Get Statements
@@ -269,6 +293,15 @@ public class SqlLiteHelper
 					.append(") ")
 					.append(" VALUES ").append(" ('?', '?', ?, '?', '?', '?') ");
 			statementPutGroup = db.prepareStatement(query.toString());
+			
+			// statementPutPermission
+			query = new StringBuilder("INSERT INTO ").append(TABLE_PERMISSION)
+					.append(" (")
+					.append(COLUMN_PERMISSION_ALLOWED).append(COLUMN_PERMISSION_TARGET)
+					.append(COLUMN_PERMISSION_ISGROUP).append(COLUMN_PERMISSION_PERM).append(COLUMN_PERMISSION_ZONEID)
+					.append(") ")
+					.append(" VALUES ").append(" (?, ?, ?, '?', ?) ");
+			statementPutPermission = db.prepareStatement(query.toString());
 		}
 		catch (Exception e)
 		{
@@ -372,11 +405,11 @@ public class SqlLiteHelper
 					.append(" )").toString();
 
 			String permissionTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_PERMISSION).append("(")
-					.append(this.COLUMN_PERMISSIONS_TARGET).append(" INTEGER NOT NULL, ")
-					.append(this.COLUMN_PERMISSIONS_ISGROUP).append(" TINYINT(1) NOT NULL, ")
-					.append(this.COLUMN_PERMISSIONS_PERM).append(" TEXT NOT NULL, ")
-					.append(this.COLUMN_PERMISSIONS_ALLOWED).append(" TINYINT(1) NOT NULL, ")
-					.append(this.COLUMN_PERMISSIONS_ZONEID).append(" INTEGER NOT NULL, ")
+					.append(this.COLUMN_PERMISSION_TARGET).append(" INTEGER NOT NULL, ")
+					.append(this.COLUMN_PERMISSION_ISGROUP).append(" TINYINT(1) NOT NULL, ")
+					.append(this.COLUMN_PERMISSION_PERM).append(" TEXT NOT NULL, ")
+					.append(this.COLUMN_PERMISSION_ALLOWED).append(" TINYINT(1) NOT NULL, ")
+					.append(this.COLUMN_PERMISSION_ZONEID).append(" INTEGER NOT NULL, ")
 					.append(")").toString();
 
 			// create the tables.
@@ -474,6 +507,7 @@ public class SqlLiteHelper
 	/**
 	 * @param groupID
 	 * @return NULL if no group in existence, or an SQL erorr happenend.
+	 * TDOD: remove?? its unused...
 	 */
 	protected static synchronized Group getGroupForID(int group)
 	{
@@ -509,7 +543,7 @@ public class SqlLiteHelper
 	 * @param zone
 	 * @return NULL if SQL exception. Empty if in no groups.
 	 */
-	protected static ArrayList<Group> getGroupForPlayer(String username, String zone)
+	protected static ArrayList<Group> getGroupsForPlayer(String username, String zone)
 	{
 		try
 		{
@@ -586,7 +620,7 @@ public class SqlLiteHelper
 			
 			instance.statementPutGroup.setInt(5, g.priority);
 			instance.statementPutGroup.setInt(6, zone);
-			instance.statementPutGroup.execute();
+			instance.statementPutGroup.executeUpdate();
 			instance.statementPutGroup.clearParameters();
 			
 			return true;
@@ -633,7 +667,7 @@ public class SqlLiteHelper
 				instance.statementPutGroup.setInt(4, parent);
 			instance.statementUpdateGroup.setInt(5, g.priority);
 			instance.statementUpdateGroup.setInt(6, zone);
-			instance.statementUpdateGroup.execute();
+			instance.statementUpdateGroup.executeUpdate();
 			instance.statementUpdateGroup.clearParameters();
 			
 			return true;
@@ -645,9 +679,118 @@ public class SqlLiteHelper
 		}
 	}
 	
-	protected static boolean getPermission()
+	/**
+	 * @param target (username or groupname)
+	 * @param isGroup
+	 * @param perm
+	 * @return ALLOW/DENY if the permission or a parent is allowed/denied. UNKNOWN if nor it or any parents were not found.
+	 * UNKNOWN also if the target or the zone do not exist.
+	 */
+	protected static PermResult getPermissionResult(String target, boolean isGroup, PermissionChecker perm, String zone)
 	{
-		return false;
+		try
+		{
+			int tID;
+			int zID = getZoneIDFromZoneName(zone);
+			int isG = isGroup ? 1 : 0;
+			int allowed = -1;
+			
+			if (isGroup)
+				tID = getGroupIDFromGroupName(target);
+			else
+				tID = getPlayerIDFromPlayerName(target);
+			
+			if (zID < -14 || tID < -4)
+				return PermResult.UNKNOWN;
+			
+			while (perm != null)
+			{
+				// target, isgroup, perm, zone >> allowed
+				instance.statementGetPermissionAllowed.setInt(1, tID);
+				instance.statementGetPermissionAllowed.setInt(2, isG);
+				instance.statementGetPermissionAllowed.setString(3, perm.name);
+				instance.statementGetPermissionAllowed.setInt(4, zID);
+				ResultSet set = instance.statementGetPermissionAllowed.executeQuery();
+				instance.statementGetPermissionAllowed.clearParameters();
+				
+				if (set.next())
+				{
+					allowed = set.getInt(1); // allowed.. only 1 column.
+					return allowed > 0 ? PermResult.ALLOW : PermResult.DENY; 
+				}
+				
+				if (!perm.hasParent())
+					perm = null;
+				else
+					perm = new PermissionChecker(perm.getImmediateParent());
+			}
+			
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+			
+		}
+		return PermResult.UNKNOWN;
+	}
+	
+	/**
+	 * Creates the permission if it doesn't exist.. updates it if it does.
+	 * @param target
+	 * @param isGroup
+	 * @param perm
+	 * @param zone
+	 * @return FALSE if the group, or zone do not exist.
+	 */
+	protected static boolean setPermission(String target, boolean isGroup, Permission perm, String zone)
+	{
+		try
+		{
+			int tID;
+			int zID = getZoneIDFromZoneName(zone);
+			int isG = isGroup ? 1 : 0;
+			int allowed = perm.allowed ? 1 : 0;
+			
+			if (isGroup)
+				tID = getGroupIDFromGroupName(target);
+			else
+				tID = getPlayerIDFromPlayerName(target);
+			
+			if (zID < -4 || tID < -4)
+				return false;
+			
+			PreparedStatement use;
+			
+			// check permission existence...
+			instance.statementGetPermissionAllowed.setInt(1, tID);
+			instance.statementGetPermissionAllowed.setInt(2, isG);
+			instance.statementGetPermissionAllowed.setString(3, perm.name);
+			instance.statementGetPermissionAllowed.setInt(4, zID);
+			ResultSet set = instance.statementGetPermissionAllowed.executeQuery();
+			instance.statementGetPermissionAllowed.clearParameters();
+			
+			// allowed, target, isgroup, perm, zone
+			if (set.next())
+				use = instance.statementUpdatePermission; // exists
+			else
+				use = instance.statementPutPermission; // does not exist.
+			
+			use.setInt(1, allowed);
+			use.setInt(2, tID);
+			use.setInt(3, isG);
+			use.setString(4, perm.name);
+			use.setInt(5, zID);
+			use.executeUpdate();
+			use.clearParameters();
+			
+			return true;
+			
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	// ---------------------------------------------------------------------------------------------------
@@ -778,17 +921,25 @@ public class SqlLiteHelper
 	
 	/**
 	 * @param player
-	 * @return -5 if the Player does not exist.
+	 * @return Creates the player if it does not exist.
 	 * @throws SQLException
 	 */
 	private static synchronized int getPlayerIDFromPlayerName(String player) throws SQLException
 	{
 		instance.statementGetPlayerIDFromName.setString(1, player);
 		ResultSet set = instance.statementGetPlayerIDFromName.executeQuery();
-		instance.statementGetPlayerIDFromName.clearParameters();
 
 		if (!set.next())
-			return -5;
+		{
+			// doesn't exist.. create the player...
+			instance.statementPutPlayer.setString(1, player);
+			instance.statementPutPlayer.executeUpdate();
+			instance.statementPutPlayer.clearParameters();
+			
+			set = instance.statementGetPlayerIDFromName.executeQuery();
+		}
+		
+		instance.statementGetPlayerIDFromName.clearParameters();
 
 		return set.getInt(1);
 	}

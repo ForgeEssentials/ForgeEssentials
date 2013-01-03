@@ -101,7 +101,7 @@ public class PermissionsAPI
 		{
 			Zone zone = ZoneManager.getZone(zoneID);
 			if (zone == null)
-				return Localization.format("message.error.nozone", zoneID);
+				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
 
 			Permission perm = new Permission(permission, allow);
 			
@@ -110,25 +110,14 @@ public class PermissionsAPI
 			if (MinecraftForge.EVENT_BUS.post(event))
 				return event.getCancelReason();
 			
-			Set<Permission> perms = zone.playerOverrides.get(username);
-
-			if (perms == null)
-			{
-				perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
-				perms.add(perm);
-				zone.playerOverrides.put(username, perms);
-			}
-			else
-			{
-				PermissionChecker checker = new PermissionChecker(permission);
-				if (perms.contains(checker))
-					perms.remove(checker);
-				perms.add(perm);
-			}
+			boolean worked = SqlLiteHelper.setPermission(username, false, perm, zoneID);
+			
+			if (!worked)
+				return Localization.get(Localization.ERROR_PERM_SQL);
 		}
 		catch (Throwable t)
 		{
-			return t.getMessage();
+			return t.getLocalizedMessage();
 		}
 
 		return null;
@@ -148,9 +137,10 @@ public class PermissionsAPI
 			Zone zone = ZoneManager.getZone(zoneID);
 			
 			if (zone == null)
-				return Localization.format("message.error.nozone", zoneID);
+				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
 			
-			if (!GroupManager.groups.containsKey(group) || zone == null)
+			Group g = SqlLiteHelper.getGroupForName(group);
+			if (g == null)
 				return Localization.format("message.error.nogroup", group);
 
 			Permission perm = new Permission(permission, allow);
@@ -159,22 +149,11 @@ public class PermissionsAPI
 			PermissionSetEvent event = new PermissionSetEvent(perm, zone, "g:" + group);
 			if (MinecraftForge.EVENT_BUS.post(event))
 				return event.getCancelReason();
-
-			Set<Permission> perms = zone.groupOverrides.get(group);
-
-			if (perms == null)
-			{
-				perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
-				perms.add(perm);
-				zone.groupOverrides.put(group, perms);
-			}
-			else
-			{
-				PermissionChecker checker = new PermissionChecker(permission);
-				if (perms.contains(checker))
-					perms.remove(checker);
-				perms.add(perm);
-			}
+			
+			boolean worked = SqlLiteHelper.setPermission(group, true, perm, zoneID);
+			
+			if (!worked)
+				return Localization.get(Localization.ERROR_PERM_SQL);
 		}
 		catch (Throwable t)
 		{
@@ -215,7 +194,7 @@ public class PermissionsAPI
 		ArrayList<Group> temp;
 		while (zone != null)
 		{
-			temp = SqlLiteHelper.getGroupForPlayer(player.username, zone.getZoneID());
+			temp = SqlLiteHelper.getGroupsForPlayer(player.username, zone.getZoneID());
 			list.addAll(temp);
 		}
 		
@@ -234,7 +213,7 @@ public class PermissionsAPI
 		ArrayList<Group> temp;
 		while (zone != null && list.size() <= 0)
 		{
-			temp = SqlLiteHelper.getGroupForPlayer(player.username, zone.getZoneID());
+			temp = SqlLiteHelper.getGroupsForPlayer(player.username, zone.getZoneID());
 			
 			if (!temp.isEmpty())
 				list.addAll(temp);
@@ -246,5 +225,10 @@ public class PermissionsAPI
 			return DEFAULT;
 		else
 			return list.pollFirst();
+	}
+	
+	public static Group getGroupForName(String name)
+	{
+		return SqlLiteHelper.getGroupForName(name);
 	}
 }

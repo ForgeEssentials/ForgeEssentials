@@ -62,6 +62,7 @@ public class Localization
 	public static final String	ERROR_NOITEMPLAYER				= "message.error.noItemPlayer";
 	public static final String	ERROR_NOITEMTARGET				= "message.error.noItemTarget";
 	public static final String	ERROR_NOMOB						= "message.error.noMobX";
+	public static final String	ERROR_PERM_SQL					= "message.error.permission.sql";
 
 	public static final String	DONE							= "message.done";
 

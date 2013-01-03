@@ -28,12 +28,15 @@ import com.ForgeEssentials.util.AreaSelector.AreaBase;
  */
 public final class PermissionsHandler
 {
-	@PermSubscribe(priority = EventPriority.NORMAL)
+	@PermSubscribe(priority = EventPriority.LOW)
 	public void handlerQuery(PermQueryPlayer event)
 	{
-		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(event.doer), event.doer.worldObj);
-		PermResult result = getResultFromZone(zone, event.checker, event.doer);
-		event.setResult(result);
+		if (event.getClass().getSimpleName().equals(PermQueryPlayer.class.getSimpleName()))
+		{
+			Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(event.doer), event.doer.worldObj);
+			PermResult result = getResultFromZone(zone, event.checker, event.doer);
+			event.setResult(result);
+		}
 	}
 
 	@PermSubscribe(priority = EventPriority.NORMAL)
@@ -73,21 +76,37 @@ public final class PermissionsHandler
 	 */
 	private PermResult getResultFromZone(Zone zone, PermissionChecker perm, EntityPlayer player)
 	{
+		ArrayList<Group> groups;
 		PermResult result = PermResult.UNKNOWN;
 		Zone tempZone = zone;
+		Group group;
 		while (result.equals(PermResult.UNKNOWN))
 		{
-			String group = "_DEFAULT_";
-			result = tempZone.getPlayerOverride(player, perm);
+			// checks all parents as well.
+			result = SqlLiteHelper.getPermissionResult(player.username, false, perm, zone.getZoneID());
 
-			if (result.equals(PermResult.UNKNOWN)) // or group blankets
-				result = tempZone.getGroupOverride(group, perm);
-
+			if (result.equals(PermResult.UNKNOWN)) // check group permissions
+			{
+				groups = SqlLiteHelper.getGroupsForPlayer(player.username, zone.getZoneID());
+				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
+				{
+					group = groups.get(i);
+					result = SqlLiteHelper.getPermissionResult(group.name, true, perm, zone.getZoneID());
+				}
+			}
+			
+			// still?? check defaults.
+			if (result.equals(PermResult.UNKNOWN)) //&& !dOverride)
+			{
+				result = SqlLiteHelper.getPermissionResult(PermissionsAPI.DEFAULT.name, true, perm, zone.getZoneID());
+			}
+			
+			//	check parent.
 			if (result.equals(PermResult.UNKNOWN))
 				if (tempZone == ZoneManager.GLOBAL)
-					result = Permission.getPermissionDefault(perm.name);
+					result = PermResult.DENY;  // defaut deny...
 				else
-					tempZone = ZoneManager.getZone(tempZone.parent);
+					tempZone = ZoneManager.getZone(tempZone.parent);  // get parent.
 		}
 		return result;
 	}

@@ -17,6 +17,13 @@ public class PermQueryBlanketArea extends PermQuery
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = doneTo;
 		this.allOrNothing = allOrNothing;
+		checkForward = false;
+	}
+	
+	public PermQueryBlanketArea(String permission, AreaBase doneTo, World world, boolean allOrNothing, boolean checkForward)
+	{
+		this(permission, doneTo, world, allOrNothing);
+		this.checkForward = checkForward;
 	}
 
 	/**

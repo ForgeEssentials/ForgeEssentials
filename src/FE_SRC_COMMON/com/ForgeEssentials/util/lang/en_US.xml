@@ -309,6 +309,8 @@
     <entry key="message.error.yesgroup">A group of name %s already exists!</entry>
 	
 	<entry key="message.error.nopermission">You don't have permission for that.</entry>
+	
+	<entry key="message.error.permission.sql">An error has occurred processing your action. Tell an admin.</entry>
     
     <!-- Some localization for Zones -->
     <entry key="command.permissions.zone.list.header">--- Showing the zonelist page %1$d of %2$d ---</entry>

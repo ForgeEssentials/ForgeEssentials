@@ -12,11 +12,25 @@ public class PermQueryBlanketZone extends PermQuery
 	public PermQueryBlanketZone(String permission, String zoneID)
 	{
 		toCheck = ZoneManager.getZone(zoneID);
+		this.checkForward = false;
+	}
+	
+	public PermQueryBlanketZone(String permission, String zoneID, boolean checkForward)
+	{
+		toCheck = ZoneManager.getZone(zoneID);
+		this.checkForward = checkForward;
 	}
 	
 	public PermQueryBlanketZone(String permission, Zone zone)
 	{
 		toCheck = zone;
+		this.checkForward = false;
+	}
+	
+	public PermQueryBlanketZone(String permission, Zone zone, boolean checkForward)
+	{
+		toCheck = zone;
+		this.checkForward = checkForward;
 	}
 	
 	/**

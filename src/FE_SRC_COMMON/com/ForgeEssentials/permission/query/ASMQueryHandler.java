@@ -11,6 +11,8 @@ import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_6;
 
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+
 import java.lang.reflect.Method;
 
 import net.minecraftforge.event.EventPriority;
