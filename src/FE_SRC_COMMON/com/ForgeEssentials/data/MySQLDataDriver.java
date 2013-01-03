@@ -35,7 +35,7 @@ public class MySQLDataDriver extends DataDriver
 
 		// Set up the MySQL connection.
 		Property prop;
-		prop = config.get("Data.SQL", "server", "localhost");
+		prop = config.get("Data.SQL", "server", "server.example.com");
 		prop.comment = "Server name/IP that hosts the database.";
 		String server = prop.value;
 
@@ -55,23 +55,27 @@ public class MySQLDataDriver extends DataDriver
 		prop.comment = "Password to log into DB with";
 		String password = prop.value;
 		
-		connectionString = "jdbc:mysql://" + server + ":" + port + "/" + database;;
-
-		try
+		
+		if (!server.equalsIgnoreCase("server.example.com"))
 		{
-			Class driverClass = Class.forName(DriverClass);
-
-			this.dbConnection = DriverManager.getConnection(connectionString, username, password);
-		}
-		catch (SQLException e)
-		{
-			OutputHandler.SOP("Unable to connect to the database!");
-			throw e;
-		}
-		catch (ClassNotFoundException e)
-		{
-			OutputHandler.SOP("Could not load the MySQL JDBC Driver! Does it exist in the lib directory?");
-			throw e;
+			connectionString = "jdbc:mysql://" + server + ":" + port + "/" + database;;
+	
+			try
+			{
+				Class driverClass = Class.forName(DriverClass);
+	
+				this.dbConnection = DriverManager.getConnection(connectionString, username, password);
+			}
+			catch (SQLException e)
+			{
+				OutputHandler.SOP("Unable to connect to the database. Check your connection info.");
+				throw e;
+			}
+			catch (ClassNotFoundException e)
+			{
+				OutputHandler.SOP("Could not load the MySQL JDBC Driver! Does it exist in the lib directory?");
+				throw e;
+			}
 		}
 	}
 
