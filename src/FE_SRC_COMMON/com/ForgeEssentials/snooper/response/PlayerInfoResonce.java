@@ -1,20 +1,21 @@
 package com.ForgeEssentials.snooper.response;
 
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.permission.Group;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.snooper.API.Response;
+import com.ForgeEssentials.snooper.API.TextFormatter;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+
+import net.minecraftforge.common.Configuration;
+
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.Configuration;
-
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.economy.Wallet;
-import com.ForgeEssentials.permission.Group;
-import com.ForgeEssentials.permission.GroupManager;
-import com.ForgeEssentials.snooper.API.Response;
-import com.ForgeEssentials.snooper.API.TextFormatter;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class PlayerInfoResonce extends Response
 {
@@ -87,7 +88,7 @@ public class PlayerInfoResonce extends Response
 		
 		try
 		{
-			Group group = GroupManager.getHighestGroup(player);
+			Group group = PermissionsAPI.getHighestGroup(player);
 			PlayerData.put("group", group.name);
 		}catch(Exception e){}
 		

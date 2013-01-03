@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.TreeSet;
 
 public class SqlLiteHelper
 {
@@ -74,25 +75,28 @@ public class SqlLiteHelper
 	// zones
 	private final PreparedStatement statementGetZoneIDFromName; // zoneName >> zoneID
 	private final PreparedStatement statementGetZoneNameFromID; // zoneID >> zoneName
-	private final PreparedStatement statementPutZone; // ZoneName
+	private final PreparedStatement statementPutZone; // $ ZoneName
 	
 	// players
 	private final PreparedStatement statementGetPlayerIDFromName; // playerName >> playerID
 	private final PreparedStatement statementGetPlayerNameFromID; // playerID >> playerName
-	private final PreparedStatement statementPutPlayer; // ZoneName
+	private final PreparedStatement statementPutPlayer; // $ ZoneName
 	
 	// groups
 	private final PreparedStatement statementGetGroupIDFromName; // groupName >> groupID
 	private final PreparedStatement statementGetGroupNameFromID; // groupID >> groupName
 	private final PreparedStatement statementGetGroupFromName; // groupName >> Group
 	private final PreparedStatement statementGetGroupFromID; // groupID >> Group
+	private final PreparedStatement statementGetGroupsForPlayer; // PlayerID, ZoneID >> Groups
+	private final PreparedStatement statementPutGroup; // $ name, prefix, suffix, parent, priority, zone
+	private final PreparedStatement statementUpdateGroup; // $ name, prefix, suffix, parent, priority, zone
 	
 	// ladders
 	private final PreparedStatement statementGetLadderIDFromName; // ladderName  >> ladderID
 	private final PreparedStatement statementGetLadderNameFromID; // LadderID >> ladderName
 	private final PreparedStatement statementGetLadderIDFromGroup; // groupID, zoneID  >> ladderID
 	private final PreparedStatement statementGetLadderList; // LadderID, ZoneID >> groupName, rank
-	private final PreparedStatement statementPutLadder; // ZoneName
+	private final PreparedStatement statementPutLadder; // $ ZoneName
 
 	public SqlLiteHelper()
 	{
@@ -143,6 +147,33 @@ public class SqlLiteHelper
 					.append(" ON ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ZONE).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME);
 			statementGetGroupFromID = instance.db.prepareStatement(query.toString());
 			
+			// statementGetGroupsForPlayer
+			query = new StringBuilder("SELECT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PARENT).append(", ")
+					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
+					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?")
+					.append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?")
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID);
+			statementGetGroupsForPlayer = instance.db.prepareStatement(query.toString());
+			
+			// statementUpdateGroup
+			query = new StringBuilder("UPDATE ").append(TABLE_GROUP)
+					.append(" SET ")
+					.append(COLUMN_GROUP_NAME).append("=").append("'?', ")
+					.append(COLUMN_GROUP_PREFIX).append("=").append("'?', ")
+					.append(COLUMN_GROUP_SUFFIX).append("=").append("'?', ")
+					.append(COLUMN_GROUP_PARENT).append("=").append("?, ")
+					.append(COLUMN_GROUP_PRIORITY).append("=").append("?, ")
+					.append(COLUMN_GROUP_ZONE).append("=").append("?, ")
+					.append(" WHERE ")
+					.append(COLUMN_GROUP_NAME).append("=").append("'?'");
+			statementUpdateGroup = db.prepareStatement(query.toString());
+
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Get Statements
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -229,6 +260,15 @@ public class SqlLiteHelper
 					.append(" (").append(COLUMN_LADDER_NAME_NAME).append(") ")
 					.append(" VALUES ").append(" ('?') ");
 			statementPutLadder = db.prepareStatement(query.toString());
+			
+			// statementPutGroup
+			query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP)
+					.append(" (")
+					.append(COLUMN_GROUP_NAME).append(COLUMN_GROUP_PREFIX).append(COLUMN_GROUP_SUFFIX)
+					.append(COLUMN_GROUP_PARENT).append(COLUMN_GROUP_PRIORITY).append(COLUMN_GROUP_ZONE)
+					.append(") ")
+					.append(" VALUES ").append(" ('?', '?', ?, '?', '?', '?') ");
+			statementPutGroup = db.prepareStatement(query.toString());
 		}
 		catch (Exception e)
 		{
@@ -245,7 +285,7 @@ public class SqlLiteHelper
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 
-	protected void connect()
+	private void connect()
 	{
 		try
 		{
@@ -279,27 +319,26 @@ public class SqlLiteHelper
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			throw new RuntimeException(e.getMessage());
 		}
 	}
 
 	// create tables.
-	protected void generate()
+	private void generate()
 	{
 		try
 		{
 			// table creation statements.
 			String zoneTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_ZONE).append("(")
-					.append(this.COLUMN_ZONE_ZONEID).append(" INTEGER AUTOINCREMENT, ")
+					.append(this.COLUMN_ZONE_ZONEID).append(" INTEGER AUTO_INCREMENT, ")
 					.append(this.COLUMN_ZONE_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
 					.append("PRIMARY KEY (").append(COLUMN_ZONE_ZONEID).append(") ")
 					.append(")").toString();
 
 			String groupTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP).append("(")
-					.append(this.COLUMN_GROUP_GROUPID).append("  INTEGER AUTOINCREMENT, ")
+					.append(this.COLUMN_GROUP_GROUPID).append("  INTEGER AUTO_INCREMENT, ")
 					.append(this.COLUMN_GROUP_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
-					.append(this.COLUMN_GROUP_PARENT).append(" INTEGER NOT NULL, ")
+					.append(this.COLUMN_GROUP_PARENT).append(" INTEGER, ")
 					.append(this.COLUMN_GROUP_PRIORITY).append(" SMALLINT NOT NULL, ")
 					.append(this.COLUMN_GROUP_ZONE).append(" INTEGER NOT NULL")
 					.append(this.COLUMN_GROUP_PREFIX).append(" VARCHAR(20) DEFAULT \"\", ")
@@ -308,36 +347,36 @@ public class SqlLiteHelper
 					.append(") ").toString();
 
 			String ladderTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_LADDER).append("(")
-					.append(this.COLUMN_LADDER_LADDERID).append(" INTEGER, ")
-					.append(this.COLUMN_LADDER_GROUPID).append(" INTEGER ,")
-					.append(this.COLUMN_LADDER_ZONEID).append(" INTEGER, ")
-					.append(this.COLUMN_LADDER_RANK).append(" SMALLINT, ")
+					.append(this.COLUMN_LADDER_LADDERID).append(" INTEGER NOT NULL, ")
+					.append(this.COLUMN_LADDER_GROUPID).append(" INTEGER NOT NULL,")
+					.append(this.COLUMN_LADDER_ZONEID).append(" INTEGER NOT NULL, ")
+					.append(this.COLUMN_LADDER_RANK).append(" SMALLINT NOT NULL, ")
 					.append(") ").toString();
 
 			String ladderNameTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_LADDER_NAME).append("(")
-					.append(this.COLUMN_LADDER_NAME_LADDERID).append(" INTEGER AUTOINCREMENT, ")
+					.append(this.COLUMN_LADDER_NAME_LADDERID).append(" INTEGER AUTO_INCREMENT, ")
 					.append(this.COLUMN_LADDER_NAME_NAME).append(" VARCHAR(40) NOT NULL UNIQUE")
 					.append("PRIMARY KEY (").append(COLUMN_LADDER_NAME_LADDERID).append(") ")
 					.append(")").toString();
 
 			String playerTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP).append("(")
-					.append(this.COLUMN_PLAYER_PLAYERID).append(" INTEGER AUTOINCREMENT, ")
+					.append(this.COLUMN_PLAYER_PLAYERID).append(" INTEGER AUTO_INCREMENT, ")
 					.append(this.COLUMN_PLAYER_USERNAME).append(" VARCHAR(20) NOT NULL UNIQUE")
 					.append("PRIMARY KEY (").append(COLUMN_PLAYER_PLAYERID).append(") ")
 					.append(")").toString();
 
 			String groupConnectorTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP_CONNECTOR).append("(")
-					.append(this.COLUMN_GROUP_CONNECTOR_GROUPID).append(" INTEGER, ")
-					.append(this.COLUMN_GROUP_CONNECTOR_PLAYERID).append(" INTEGER, ")
-					.append(this.COLUMN_GROUP_CONNECTOR_ZONEID).append(" INTEGER, ")
+					.append(this.COLUMN_GROUP_CONNECTOR_GROUPID).append(" INTEGER NOT NULL, ")
+					.append(this.COLUMN_GROUP_CONNECTOR_PLAYERID).append(" INTEGER NOT NULL, ")
+					.append(this.COLUMN_GROUP_CONNECTOR_ZONEID).append(" INTEGER NOT NULL, ")
 					.append(" )").toString();
 
 			String permissionTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_PERMISSION).append("(")
-					.append(this.COLUMN_PERMISSIONS_TARGET).append(" INTEGER, ")
-					.append(this.COLUMN_PERMISSIONS_ISGROUP).append(" TINYINT(1), ")
-					.append(this.COLUMN_PERMISSIONS_PERM).append(" TEXT, ")
-					.append(this.COLUMN_PERMISSIONS_ALLOWED).append(" TINYINT(1), ")
-					.append(this.COLUMN_PERMISSIONS_ZONEID).append(" INTEGER, ")
+					.append(this.COLUMN_PERMISSIONS_TARGET).append(" INTEGER NOT NULL, ")
+					.append(this.COLUMN_PERMISSIONS_ISGROUP).append(" TINYINT(1) NOT NULL, ")
+					.append(this.COLUMN_PERMISSIONS_PERM).append(" TEXT NOT NULL, ")
+					.append(this.COLUMN_PERMISSIONS_ALLOWED).append(" TINYINT(1) NOT NULL, ")
+					.append(this.COLUMN_PERMISSIONS_ZONEID).append(" INTEGER NOT NULL, ")
 					.append(")").toString();
 
 			// create the tables.
@@ -367,7 +406,7 @@ public class SqlLiteHelper
 	 * @param zoneName
 	 * @return NULL if no ladder in existence.
 	 */
-	public static synchronized PromotionLadder getLadderForGroup(String group, String zone)
+	protected static synchronized PromotionLadder getLadderForGroup(String group, String zone)
 	{
 		try
 		{
@@ -395,7 +434,6 @@ public class SqlLiteHelper
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -406,7 +444,7 @@ public class SqlLiteHelper
 	 * @param groupName
 	 * @return NULL if no group in existence. or an SQL error hapenned.
 	 */
-	public static synchronized Group getGroupForName(String group)
+	protected static synchronized Group getGroupForName(String group)
 	{
 		try
 		{
@@ -418,12 +456,15 @@ public class SqlLiteHelper
 			if (!set.next())
 				return null;
 			
-			Group g = createGroupFromRow(set, group);
-			return g;
+			int priority = set.getInt(COLUMN_GROUP_PRIORITY);
+			String parent = set.getString(COLUMN_GROUP_PARENT);
+			String prefix = set.getString(COLUMN_GROUP_PREFIX);
+			String suffix = set.getString(COLUMN_GROUP_SUFFIX);
+			String zone = set.getString(COLUMN_ZONE_NAME);
+			return new Group(group, prefix, suffix, parent, zone, priority);
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -434,7 +475,7 @@ public class SqlLiteHelper
 	 * @param groupID
 	 * @return NULL if no group in existence, or an SQL erorr happenend.
 	 */
-	public static synchronized Group getGroupForID(int group)
+	protected static synchronized Group getGroupForID(int group)
 	{
 		try
 		{
@@ -446,55 +487,167 @@ public class SqlLiteHelper
 			if (!set.next())
 				return null;
 			
-			Group g = createGroupFromRow(set);
-			return g;
+			int priority = set.getInt(COLUMN_GROUP_PRIORITY);
+			String name = set.getString(COLUMN_GROUP_NAME);
+			String parent = set.getString(COLUMN_GROUP_PARENT);
+			String prefix = set.getString(COLUMN_GROUP_PREFIX);
+			String suffix = set.getString(COLUMN_GROUP_SUFFIX);
+			String zone = set.getString(COLUMN_ZONE_NAME);
+			return new Group(name, prefix, suffix, parent, zone, priority);
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return null;
 	}
 	
-	// ---------------------------------------------------------------------------------------------------
-	// ---------------------------------------------------------------------------------------------------
-	// --------------------------PRIVATE ---- CREATION ---- METHODS --------------------------------------
-	// ---------------------------------------------------------------------------------------------------
-	// ---------------------------------------------------------------------------------------------------
-
 	/**
-	 * The set must be joined with the Zone table for converting the ZoneID to name.
-	 * This method is used when you want to get the Group from the 
-	 * @return a created group
-	 * @throws SQLException
+	 * groups are in order of priority.
+	 * @param username
+	 * @param zone
+	 * @return NULL if SQL exception. Empty if in no groups.
 	 */
-	private static synchronized Group createGroupFromRow(ResultSet set, String groupName) throws SQLException
+	protected static ArrayList<Group> getGroupForPlayer(String username, String zone)
 	{
-		int priority = set.getInt(COLUMN_GROUP_PRIORITY);
-		String parent = set.getString(COLUMN_GROUP_PARENT);
-		String prefix = set.getString(COLUMN_GROUP_PREFIX);
-		String suffix = set.getString(COLUMN_GROUP_SUFFIX);
-		String zone = set.getString(COLUMN_ZONE_NAME);
-		return new Group(groupName, prefix, suffix, parent, zone, priority);
+		try
+		{
+			TreeSet<Group> set = new TreeSet<Group>();
+			int pID = getPlayerIDFromPlayerName(username);
+			int zID = getZoneIDFromZoneName(zone);
+
+			instance.statementGetGroupsForPlayer.setInt(1, pID);
+			instance.statementGetGroupsForPlayer.setInt(2, zID);
+			ResultSet result = instance.statementGetGroupsForPlayer.executeQuery();
+			instance.statementGetGroupsForPlayer.clearParameters();
+
+			int priority;
+			String name, parent, prefix, suffix;
+			Group g;
+
+			while (result.next())
+			{
+				priority = result.getInt(COLUMN_GROUP_PRIORITY);
+				name = result.getString(COLUMN_GROUP_NAME);
+				parent = result.getString(COLUMN_GROUP_PARENT);
+				prefix = result.getString(COLUMN_GROUP_PREFIX);
+				suffix = result.getString(COLUMN_GROUP_SUFFIX);
+				g = new Group(name, prefix, suffix, parent, zone, priority);
+				set.add(g);
+			}
+
+			ArrayList<Group> list = new ArrayList<Group>();
+			list.addAll(set);
+			return list;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 	
 	/**
-	 * The set must be joined with the Zone table for converting the ZoneID to name.
-	 * This method does not move the cursor, and only looks at the row the cursos is on.
-	 * @return a created group
-	 * @throws SQLException
+	 * @param g
+	 * @return FALSE if the group already exists, parent doesn't exist, zone doesn't exist, or if the INSERT failed.
 	 */
-	private static synchronized Group createGroupFromRow(ResultSet set) throws SQLException
+	protected static boolean createGroup(Group g)
 	{
-		int priority = set.getInt(COLUMN_GROUP_PRIORITY);
-		String name = set.getString(COLUMN_GROUP_NAME);
-		String parent = set.getString(COLUMN_GROUP_PARENT);
-		String prefix = set.getString(COLUMN_GROUP_PREFIX);
-		String suffix = set.getString(COLUMN_GROUP_SUFFIX);
-		String zone = set.getString(COLUMN_ZONE_NAME);
-		return new Group(name, prefix, suffix, parent, zone, priority);
+		try
+		{
+			//check if group exists?
+			if (getGroupIDFromGroupName(g.name) >= -4)
+				return false;  // group exists
+			
+			int parent = -5;
+			int zone = getZoneIDFromZoneName(g.zoneID);
+			
+			if (g.parent != null)
+			{
+				parent = getGroupIDFromGroupName(g.parent);
+				if (parent == -5)
+					return false;
+			}
+			
+			if (zone < -4)
+				return false;
+			
+			// my query
+			// $ name, prefix, suffix, parent, priority, zone
+			instance.statementPutGroup.setString(1, g.name);
+			instance.statementPutGroup.setString(2, g.prefix);
+			instance.statementPutGroup.setString(3, g.suffix);
+			if (parent == -5)
+				instance.statementPutGroup.setString(4, "NULL");
+			else
+				instance.statementPutGroup.setInt(4, parent);
+			
+			instance.statementPutGroup.setInt(5, g.priority);
+			instance.statementPutGroup.setInt(6, zone);
+			instance.statementPutGroup.execute();
+			instance.statementPutGroup.clearParameters();
+			
+			return true;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * @param g
+	 * @return FALSE if the group already exists, parent doesn't exist, zone doesn't exist, or if the UPDATE failed.
+	 */
+	protected static boolean updateGroup(Group g)
+	{
+		try
+		{
+			//check if group exists?
+			if (getGroupIDFromGroupName(g.name) < 0)
+				return false;  // group doesn't exist
+			
+			int parent = -5;
+			int zone = getZoneIDFromZoneName(g.zoneID);
+			
+			if (g.parent != null)
+			{
+				parent = getGroupIDFromGroupName(g.parent);
+				if (parent == -5)
+					return false;
+			}
+			
+			if (zone < -4)
+				return false;
+			
+			// my query
+			instance.statementUpdateGroup.setString(1, g.name);
+			instance.statementUpdateGroup.setString(2, g.prefix);
+			instance.statementUpdateGroup.setString(3, g.suffix);
+			if (parent == -5)
+				instance.statementPutGroup.setString(4, "NULL");
+			else
+				instance.statementPutGroup.setInt(4, parent);
+			instance.statementUpdateGroup.setInt(5, g.priority);
+			instance.statementUpdateGroup.setInt(6, zone);
+			instance.statementUpdateGroup.execute();
+			instance.statementUpdateGroup.clearParameters();
+			
+			return true;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	protected static boolean getPermission()
+	{
+		return false;
 	}
 	
 	// ---------------------------------------------------------------------------------------------------

@@ -86,7 +86,7 @@ public class Chat implements IChatListener
 
 			if (groups.isEmpty())
 			{
-				rank = PermissionsAPI.GROUP_DEFAULT;
+				rank = PermissionsAPI.DEFAULT.name;
 				prefix = PermissionsAPI.DEFAULT.prefix + prefix;
 				suffix = suffix + PermissionsAPI.DEFAULT.suffix;
 			}

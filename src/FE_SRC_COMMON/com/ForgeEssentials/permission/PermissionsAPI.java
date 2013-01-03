@@ -47,7 +47,7 @@ public class PermissionsAPI
 	 * The players in this group are usually denied commands and breaking blocks before they are promoted to members.
 	 * This group is guaranteed existence
 	 */
-	public static final String				GROUP_DEFAULT		= "_DEFAULT_";
+	public static final String				GROUP_GUEST		= "Guest";
 
 	public static final PermissionQueryBus	QUERY_BUS			= new PermissionQueryBus();
 	
@@ -81,14 +81,11 @@ public class PermissionsAPI
 	 * @param ZoneID
 	 * @return NULL if the construction or registration fails.
 	 */
-	public static Group createGroupInZone(String groupName, String ZoneID)
+	public static Group createGroupInZone(String groupName, String zoneID)
 	{
-		if (GroupManager.groups.containsKey(groupName))
-			return null;
-
-		Group newG = new Group(groupName, ZoneID);
-		GroupManager.groups.put(groupName, newG);
-		return newG;
+		Group g = new Group(groupName, "", "", null, zoneID, 0);
+		SqlLiteHelper.createGroup(g);
+		return g;
 	}
 
 	/**
@@ -186,22 +183,24 @@ public class PermissionsAPI
 
 		return null;
 	}
-	
-	/**
-	 * Gets all the groups that were explicitly created in the given zone. these groups will only apply
-	 * to the given Zone and all of its children.
-	 * @param zoneID zone to check.
-	 * @return List of Groups. may be an empty list, but never null.
-	 */
-	protected static ArrayList<Group> getAllGroupsCreatedForZone(String zoneID)
-	{
-		ArrayList<Group> gs = new ArrayList<Group>();
-		for (Group g : groups.values())
-			if (g.zoneID.equals(zoneID))
-				gs.add(g);
 
-		return gs;
-	}
+	
+// ill recreate it when I need it...
+//	/**
+//	 * Gets all the groups that were explicitly created in the given zone. these groups will only apply
+//	 * to the given Zone and all of its children.
+//	 * @param zoneID zone to check.
+//	 * @return List of Groups. may be an empty list, but never null.
+//	 */
+//	protected static ArrayList<Group> getAllGroupsCreatedForZone(String zoneID)
+//	{
+//		ArrayList<Group> gs = new ArrayList<Group>();
+//		for (Group g : groups.values())
+//			if (g.zoneID.equals(zoneID))
+//				gs.add(g);
+//
+//		return gs;
+//	}
 
 	/**
 	 * Returns the list of all the groups the player is in at a given time. It is in order of priority the first bieng the highest.
@@ -210,51 +209,35 @@ public class PermissionsAPI
 	 */
 	public static ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
-		TreeSet<Group> list = new TreeSet<Group>();
+		ArrayList<Group> list = new ArrayList<Group>();
 		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
-		PlayerPermData playerData;
 
+		ArrayList<Group> temp;
 		while (zone != null)
 		{
-			playerData = PlayerManager.getPlayerData(zone.getZoneID(), player.username);
-			for (String group : playerData.getGroupList())
-			{
-				if (!includeDefaults && group.equals(DEFAULT.name))
-					continue;
-				list.add(GroupManager.getGroupName(group));
-			}
-			
-			
-			zone = ZoneManager.getZone(zone.parent);
+			temp = SqlLiteHelper.getGroupForPlayer(player.username, zone.getZoneID());
+			list.addAll(temp);
 		}
 		
 		if (includeDefaults)
 			list.add(DEFAULT);
 		
-		ArrayList<Group> returnable = new ArrayList<Group>();
-		returnable.addAll(list);
-		return returnable;
+		return list;
 	}
 	
 	public static Group getHighestGroup(EntityPlayer player)
 	{
 		Group high;
 		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
-		PlayerPermData playerData;
 		TreeSet<Group> list = new TreeSet<Group>();
 
+		ArrayList<Group> temp;
 		while (zone != null && list.size() <= 0)
 		{
-			playerData = PlayerManager.getPlayerData(zone.getZoneID(), player.username);
+			temp = SqlLiteHelper.getGroupForPlayer(player.username, zone.getZoneID());
 			
-			if (playerData.getGroupList().isEmpty())
-			{
-				zone = ZoneManager.getZone(zone.parent);
-				continue;
-			}
-			
-			for (String group : playerData.getGroupList())
-				list.add(GroupManager.getGroupName(group));
+			if (!temp.isEmpty())
+				list.addAll(temp);
 			
 			zone = ZoneManager.getZone(zone.parent);
 		}
