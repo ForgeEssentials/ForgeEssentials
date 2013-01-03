@@ -1,4 +1,4 @@
-package com.ForgeEssentials.commands.vanilla;
+package com.ForgeEssentials.commands;
 
 import java.util.Arrays;
 import java.util.List;

@@ -13,10 +13,34 @@ import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
-import com.ForgeEssentials.commands.vanilla.CommandClearInventory;
-import com.ForgeEssentials.commands.vanilla.CommandGameMode;
-import com.ForgeEssentials.commands.vanilla.CommandGive;
-import com.ForgeEssentials.commands.vanilla.CommandKill;
+import com.ForgeEssentials.commands.vanilla.CommandBan;
+import com.ForgeEssentials.commands.vanilla.CommandBanIp;
+import com.ForgeEssentials.commands.vanilla.CommandBanlist;
+import com.ForgeEssentials.commands.vanilla.CommandDebug;
+import com.ForgeEssentials.commands.vanilla.CommandDefaultGameMode;
+import com.ForgeEssentials.commands.vanilla.CommandDeop;
+import com.ForgeEssentials.commands.vanilla.CommandDifficulty;
+import com.ForgeEssentials.commands.vanilla.CommandEnchant;
+import com.ForgeEssentials.commands.vanilla.CommandGameRule;
+import com.ForgeEssentials.commands.vanilla.CommandHelp;
+import com.ForgeEssentials.commands.vanilla.CommandKick;
+import com.ForgeEssentials.commands.vanilla.CommandMe;
+import com.ForgeEssentials.commands.vanilla.CommandOp;
+import com.ForgeEssentials.commands.vanilla.CommandPardon;
+import com.ForgeEssentials.commands.vanilla.CommandPardonIp;
+import com.ForgeEssentials.commands.vanilla.CommandPublish;
+import com.ForgeEssentials.commands.vanilla.CommandSaveAll;
+import com.ForgeEssentials.commands.vanilla.CommandSaveOff;
+import com.ForgeEssentials.commands.vanilla.CommandSaveOn;
+import com.ForgeEssentials.commands.vanilla.CommandSay;
+import com.ForgeEssentials.commands.vanilla.CommandSeed;
+import com.ForgeEssentials.commands.vanilla.CommandStop;
+import com.ForgeEssentials.commands.vanilla.CommandTell;
+import com.ForgeEssentials.commands.vanilla.CommandTime;
+import com.ForgeEssentials.commands.vanilla.CommandToggleDownfall;
+import com.ForgeEssentials.commands.vanilla.CommandWeather;
+import com.ForgeEssentials.commands.vanilla.CommandWhitelist;
+import com.ForgeEssentials.commands.vanilla.CommandXP;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
@@ -90,17 +114,47 @@ public class ModuleCommands implements IFEModule
 		//teleport
 		e.registerServerCommand(new CommandBack());
 		e.registerServerCommand(new CommandHome());
+		e.registerServerCommand(new CommandTp());
+		e.registerServerCommand(new CommandTphere());
 		e.registerServerCommand(new CommandTpSpawn());
 		e.registerServerCommand(new CommandWarp());
 		//cheat
 		e.registerServerCommand(new CommandRepair());
 		e.registerServerCommand(new CommandHeal());
 		//Vanilla Override
+		e.registerServerCommand(new CommandBan());
+		e.registerServerCommand(new CommandBanIp());
+		e.registerServerCommand(new CommandBanlist());
+		e.registerServerCommand(new CommandDebug());
+		e.registerServerCommand(new CommandDefaultGameMode());
+		e.registerServerCommand(new CommandDeop());
+		e.registerServerCommand(new CommandDifficulty());
+		e.registerServerCommand(new CommandEnchant());
+		e.registerServerCommand(new CommandGameRule());
+//		e.registerServerCommand(new CommandHelp());
+		e.registerServerCommand(new CommandKick());
+		e.registerServerCommand(new CommandMe());
+		e.registerServerCommand(new CommandOp());
+		e.registerServerCommand(new CommandPardon());
+		e.registerServerCommand(new CommandPardonIp());
+		e.registerServerCommand(new CommandPublish());
+		e.registerServerCommand(new CommandSaveAll());
+		e.registerServerCommand(new CommandSaveOff());
+		e.registerServerCommand(new CommandSaveOn());
+		e.registerServerCommand(new CommandSay());
+		e.registerServerCommand(new CommandSeed());
+		e.registerServerCommand(new CommandStop());
+		e.registerServerCommand(new CommandTell());
+		e.registerServerCommand(new CommandTime());
+		e.registerServerCommand(new CommandToggleDownfall());
+		e.registerServerCommand(new CommandWeather());
+		e.registerServerCommand(new CommandWhitelist());
+		e.registerServerCommand(new CommandXP());
 		e.registerServerCommand(new CommandKill());
 		e.registerServerCommand(new CommandGive());
 		e.registerServerCommand(new CommandClearInventory());
 		e.registerServerCommand(new CommandGameMode());
-		}
+	}
 
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
@@ -155,13 +209,7 @@ public class ModuleCommands implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
 	{
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.BasicCommands", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.list", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.rules", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.motd", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.tps", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.modlist", true);
+		
 	}
 
 	@Override
