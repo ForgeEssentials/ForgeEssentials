@@ -95,7 +95,7 @@ public class ModuleCommands implements IFEModule
 		//utility
 		e.registerServerCommand(new CommandButcher());
 		e.registerServerCommand(new CommandRemove());
-		e.registerServerCommand(new CommandSpawn());
+		e.registerServerCommand(new CommandSpawnMob());
 		e.registerServerCommand(new CommandTPS());
 		e.registerServerCommand(new CommandKit());
 		e.registerServerCommand(new CommandEnderchest());
@@ -114,9 +114,9 @@ public class ModuleCommands implements IFEModule
 		//teleport
 		e.registerServerCommand(new CommandBack());
 		e.registerServerCommand(new CommandHome());
+		e.registerServerCommand(new CommandSpawn());
 		e.registerServerCommand(new CommandTp());
 		e.registerServerCommand(new CommandTphere());
-		e.registerServerCommand(new CommandTpSpawn());
 		e.registerServerCommand(new CommandWarp());
 		//cheat
 		e.registerServerCommand(new CommandRepair());
