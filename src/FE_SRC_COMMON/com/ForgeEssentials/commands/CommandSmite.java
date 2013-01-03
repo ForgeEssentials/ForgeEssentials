@@ -34,10 +34,10 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get(Localization.SMITE_SELF));
 			} else
 			{
-				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+				EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 				if (victim != null)
 				{
-					victim.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
+					victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
 					sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
 				} else
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
