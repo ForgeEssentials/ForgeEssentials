@@ -28,36 +28,44 @@ import com.ForgeEssentials.util.AreaSelector.AreaBase;
  */
 public final class PermissionsHandler
 {
-	@PermSubscribe(priority = EventPriority.LOW)
-	public void handlerQuery(PermQueryPlayer event)
+	@PermSubscribe(priority = EventPriority.HIGHEST)
+	public void doOpCheck(PermQueryPlayer event)
 	{
+		// TODO: opcheck.
+	}
+	
+	@PermSubscribe(priority = EventPriority.NORMAL)
+	public void handleQuery(PermQueryPlayer event)
+	{
+		
+		// ensures its a permPlayerQuery before checking...
 		if (event.getClass().getSimpleName().equals(PermQueryPlayer.class.getSimpleName()))
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(event.doer), event.doer.worldObj);
-			PermResult result = getResultFromZone(zone, event.checker, event.doer);
+			PermResult result = getResultFromZone(zone, event.checker, event.doer, event.checkForward);
 			event.setResult(result);
 		}
 	}
 
 	@PermSubscribe(priority = EventPriority.NORMAL)
-	public void handlerQuery(PermQueryPlayerZone event)
+	public void handleQuery(PermQueryPlayerZone event)
 	{
-		PermResult result = getResultFromZone(event.toCheck, event.checker, event.doer);
+		PermResult result = getResultFromZone(event.toCheck, event.checker, event.doer, event.checkForward);
 		event.setResult(result);
 	}
 
 	@PermSubscribe(priority = EventPriority.NORMAL)
-	public void handlerQuery(PermQueryPlayerArea event)
+	public void handleQuery(PermQueryPlayerArea event)
 	{
 		if (event.allOrNothing)
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo, event.doer.worldObj);
-			PermResult result = getResultFromZone(zone, event.checker, event.doer);
+			PermResult result = getResultFromZone(zone, event.checker, event.doer, event.checkForward);
 			event.setResult(result);
 		}
 		else
 		{
-			event.applicable = getApplicableZones(event.checker, event.doer, event.doneTo);
+			event.applicable = getApplicableZones(event.checker, event.doer, event.doneTo, event.checkForward);
 			if (event.applicable == null)
 				event.setResult(PermResult.DENY);
 			else if (event.applicable.isEmpty())
@@ -74,7 +82,7 @@ public final class PermissionsHandler
 	 * @param player Player to check/
 	 * @return the result for the perm.
 	 */
-	private PermResult getResultFromZone(Zone zone, PermissionChecker perm, EntityPlayer player)
+	private PermResult getResultFromZone(Zone zone, PermissionChecker perm, EntityPlayer player, boolean checkForward)
 	{
 		ArrayList<Group> groups;
 		PermResult result = PermResult.UNKNOWN;
@@ -83,22 +91,22 @@ public final class PermissionsHandler
 		while (result.equals(PermResult.UNKNOWN))
 		{
 			// checks all parents as well.
-			result = SqlLiteHelper.getPermissionResult(player.username, false, perm, zone.getZoneID());
+			result = SqlHelper.getPermissionResult(player.username, false, perm, zone.getZoneID(), checkForward);
 
 			if (result.equals(PermResult.UNKNOWN)) // check group permissions
 			{
-				groups = SqlLiteHelper.getGroupsForPlayer(player.username, zone.getZoneID());
+				groups = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneID());
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
 				{
 					group = groups.get(i);
-					result = SqlLiteHelper.getPermissionResult(group.name, true, perm, zone.getZoneID());
+					result = SqlHelper.getPermissionResult(group.name, true, perm, zone.getZoneID(), checkForward);
 				}
 			}
 			
 			// still?? check defaults.
 			if (result.equals(PermResult.UNKNOWN)) //&& !dOverride)
 			{
-				result = SqlLiteHelper.getPermissionResult(PermissionsAPI.DEFAULT.name, true, perm, zone.getZoneID());
+				result = SqlHelper.getPermissionResult(PermissionsAPI.DEFAULT.name, true, perm, zone.getZoneID(), checkForward);
 			}
 			
 			//	check parent.
@@ -111,7 +119,7 @@ public final class PermissionsHandler
 		return result;
 	}
 
-	private ArrayList<AreaBase> getApplicableZones(PermissionChecker perm, EntityPlayer player, AreaBase doneTo)
+	private ArrayList<AreaBase> getApplicableZones(PermissionChecker perm, EntityPlayer player, AreaBase doneTo, boolean checkForward)
 	{
 		PlayerInfo.getPlayerInfo(player);
 		ArrayList<AreaBase> applicable = new ArrayList<AreaBase>();
@@ -129,7 +137,7 @@ public final class PermissionsHandler
 			// no children of the world? return the worldZone
 				case 0:
 					{
-						PermResult result = getResultFromZone(worldZone, perm, player);
+						PermResult result = getResultFromZone(worldZone, perm, player, checkForward);
 						if (result.equals(PermResult.ALLOW))
 							return applicable;
 						else
@@ -138,7 +146,7 @@ public final class PermissionsHandler
 				// only 1 usable Zone? use it.
 				case 1:
 					{
-						PermResult result = getResultFromZone(zones.get(0), perm, player);
+						PermResult result = getResultFromZone(zones.get(0), perm, player, checkForward);
 						if (result.equals(PermResult.ALLOW))
 							return applicable;
 						else
@@ -148,7 +156,7 @@ public final class PermissionsHandler
 				default:
 					{
 						for (Zone zone : zones)
-							if (getResultFromZone(zone, perm, player).equals(PermResult.ALLOW))
+							if (getResultFromZone(zone, perm, player, checkForward).equals(PermResult.ALLOW))
 								applicable.add(doneTo.getIntersection(zone));
 					}
 			}

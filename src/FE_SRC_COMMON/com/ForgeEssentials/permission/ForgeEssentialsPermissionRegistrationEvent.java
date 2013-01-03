@@ -13,10 +13,9 @@ public class ForgeEssentialsPermissionRegistrationEvent extends Event
 	 * @param permName. Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
 	 * @param allow. True if the permission is allowed by default
 	 */
+	@Deprecated
 	public void registerPermissionDefault(String permName, boolean allow)
 	{
-		Permission perm = new Permission(permName, allow);
-		Permission.addDefaultPermission(perm);
 	}
 
 	/**

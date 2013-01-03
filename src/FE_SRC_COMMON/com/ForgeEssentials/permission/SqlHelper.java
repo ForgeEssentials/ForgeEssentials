@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-public class SqlLiteHelper
+public class SqlHelper
 {
 	// TODO: make configureable.
 	private static File				file							= new File(ModulePermissions.permsFolder, "permissions.db");
@@ -21,7 +21,7 @@ public class SqlLiteHelper
 	private String					DriverClass						= "org.sqlite.JDBC";
 	private Connection				db;
 	private boolean					generate						= false;
-	private static SqlLiteHelper	instance;
+	private static SqlHelper	instance;
 
 	// tables
 	private static final String		TABLE_ZONE						= "zones";
@@ -98,11 +98,12 @@ public class SqlLiteHelper
 	private final PreparedStatement statementPutLadder; // $ LadderName
 	
 	//permissions
-	private final PreparedStatement statementGetPermissionAllowed; // target, isgroup, perm, zone >> allowed
+	private final PreparedStatement statementGetPermission; // target, isgroup, perm, zone >> allowed
+	private final PreparedStatement statementGetPermissionForward; // target, isgroup, perm, zone >> allowed
 	private final PreparedStatement statementPutPermission; // $ , allowed, target, isgroup, perm, zone
 	private final PreparedStatement statementUpdatePermission; // $ allowed, target, isgroup, perm, zone
 
-	public SqlLiteHelper()
+	public SqlHelper()
 	{
 		instance = this;
 		connect();
@@ -178,14 +179,22 @@ public class SqlLiteHelper
 					.append(COLUMN_GROUP_NAME).append("=").append("'?'");
 			statementUpdateGroup = db.prepareStatement(query.toString());
 			
-			// statementGetPermissionAllowed
+			// statementGetPermission
 			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED)
 					.append(" FROM ").append(TABLE_PERMISSION)
 					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
 					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
 					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("'?'")
 					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
-			statementGetPermissionAllowed = db.prepareStatement(query.toString());
+			statementGetPermission = db.prepareStatement(query.toString());
+			
+			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED)
+					.append(" FROM ").append(TABLE_PERMISSION)
+					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_PERM).append(" LIKE ").append("'?.%'")
+					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			statementGetPermissionForward = db.prepareStatement(query.toString());
 
 			// statementUpdatePermission
 			query = new StringBuilder("UPDATE ").append(TABLE_PERMISSION)
@@ -288,18 +297,23 @@ public class SqlLiteHelper
 			// statementPutGroup
 			query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP)
 					.append(" (")
-					.append(COLUMN_GROUP_NAME).append(COLUMN_GROUP_PREFIX).append(COLUMN_GROUP_SUFFIX)
-					.append(COLUMN_GROUP_PARENT).append(COLUMN_GROUP_PRIORITY).append(COLUMN_GROUP_ZONE)
-					.append(") ")
-					.append(" VALUES ").append(" ('?', '?', ?, '?', '?', '?') ");
+					.append(COLUMN_GROUP_NAME).append(", ")
+					.append(COLUMN_GROUP_PREFIX).append(", ")
+					.append(COLUMN_GROUP_SUFFIX).append(", ")
+					.append(COLUMN_GROUP_PARENT).append(", ")
+					.append(COLUMN_GROUP_PRIORITY).append(", ")
+					.append(COLUMN_GROUP_ZONE).append(") ")
+					.append(" VALUES ").append(" ('?', '?', '?', ?, ?, ?) ");
 			statementPutGroup = db.prepareStatement(query.toString());
 			
 			// statementPutPermission
 			query = new StringBuilder("INSERT INTO ").append(TABLE_PERMISSION)
 					.append(" (")
-					.append(COLUMN_PERMISSION_ALLOWED).append(COLUMN_PERMISSION_TARGET)
-					.append(COLUMN_PERMISSION_ISGROUP).append(COLUMN_PERMISSION_PERM).append(COLUMN_PERMISSION_ZONEID)
-					.append(") ")
+					.append(COLUMN_PERMISSION_ALLOWED).append(", ")
+					.append(COLUMN_PERMISSION_TARGET).append(", ")
+					.append(COLUMN_PERMISSION_ISGROUP).append(", ")
+					.append(COLUMN_PERMISSION_PERM).append(", ")
+					.append(COLUMN_PERMISSION_ZONEID).append(") ")
 					.append(" VALUES ").append(" (?, ?, ?, '?', ?) ");
 			statementPutPermission = db.prepareStatement(query.toString());
 		}
@@ -420,6 +434,35 @@ public class SqlLiteHelper
 			db.createStatement().execute(playerTable);
 			db.createStatement().execute(groupConnectorTable);
 			db.createStatement().execute(permissionTable);
+			
+			// DEFAULT group
+			StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP)
+					.append(" (")
+					.append(COLUMN_GROUP_NAME).append(", ")
+					.append(COLUMN_GROUP_PREFIX).append(", ")
+					.append(COLUMN_GROUP_SUFFIX).append(", ")
+					.append(COLUMN_GROUP_PARENT).append(", ")
+					.append(COLUMN_GROUP_PRIORITY).append(", ")
+					.append(COLUMN_GROUP_ZONE).append(") ")
+					.append(" VALUES ").append(" (")
+					.append(PermissionsAPI.DEFAULT.name).append(", ")
+					.append(PermissionsAPI.DEFAULT.prefix).append(", ")
+					.append(PermissionsAPI.DEFAULT.suffix).append(", ")
+					.append("NULL, ").append("0, ").append("0 ) ");
+			db.createStatement().executeUpdate(query.toString());
+			
+			// GLOBAL zone
+			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE)
+					.append(" (").append(COLUMN_ZONE_NAME).append(", ").append(COLUMN_ZONE_ZONEID).append(") ")
+					.append(" VALUES ").append(" ( ").append(ZoneManager.GLOBAL.getZoneID()).append(", 0) ");
+			db.createStatement().executeUpdate(query.toString());
+			
+			// SUPER zone
+			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE)
+					.append(" (").append(COLUMN_ZONE_NAME).append(", ").append(COLUMN_ZONE_ZONEID).append(") ")
+					.append(" VALUES ").append(" ( ").append(ZoneManager.SUPER).append(", -1) ");
+			db.createStatement().executeUpdate(query.toString());
+			
 		}
 		catch (Exception e)
 		{
@@ -686,7 +729,7 @@ public class SqlLiteHelper
 	 * @return ALLOW/DENY if the permission or a parent is allowed/denied. UNKNOWN if nor it or any parents were not found.
 	 * UNKNOWN also if the target or the zone do not exist.
 	 */
-	protected static PermResult getPermissionResult(String target, boolean isGroup, PermissionChecker perm, String zone)
+	protected static PermResult getPermissionResult(String target, boolean isGroup, PermissionChecker perm, String zone, boolean checkForward)
 	{
 		try
 		{
@@ -694,24 +737,28 @@ public class SqlLiteHelper
 			int zID = getZoneIDFromZoneName(zone);
 			int isG = isGroup ? 1 : 0;
 			int allowed = -1;
+			PreparedStatement statement = instance.statementGetPermission;
 			
 			if (isGroup)
 				tID = getGroupIDFromGroupName(target);
 			else
 				tID = getPlayerIDFromPlayerName(target);
 			
-			if (zID < -14 || tID < -4)
+			if (zID < -4 || tID < -4)
 				return PermResult.UNKNOWN;
+			
+			if (checkForward)
+				statement = instance.statementGetPermissionForward;
 			
 			while (perm != null)
 			{
 				// target, isgroup, perm, zone >> allowed
-				instance.statementGetPermissionAllowed.setInt(1, tID);
-				instance.statementGetPermissionAllowed.setInt(2, isG);
-				instance.statementGetPermissionAllowed.setString(3, perm.name);
-				instance.statementGetPermissionAllowed.setInt(4, zID);
-				ResultSet set = instance.statementGetPermissionAllowed.executeQuery();
-				instance.statementGetPermissionAllowed.clearParameters();
+				statement.setInt(1, tID);
+				statement.setInt(2, isG);
+				statement.setString(3, perm.name);
+				statement.setInt(4, zID);
+				ResultSet set = statement.executeQuery();
+				statement.clearParameters();
 				
 				if (set.next())
 				{
@@ -762,12 +809,12 @@ public class SqlLiteHelper
 			PreparedStatement use;
 			
 			// check permission existence...
-			instance.statementGetPermissionAllowed.setInt(1, tID);
-			instance.statementGetPermissionAllowed.setInt(2, isG);
-			instance.statementGetPermissionAllowed.setString(3, perm.name);
-			instance.statementGetPermissionAllowed.setInt(4, zID);
-			ResultSet set = instance.statementGetPermissionAllowed.executeQuery();
-			instance.statementGetPermissionAllowed.clearParameters();
+			instance.statementGetPermission.setInt(1, tID);
+			instance.statementGetPermission.setInt(2, isG);
+			instance.statementGetPermission.setString(3, perm.name);
+			instance.statementGetPermission.setInt(4, zID);
+			ResultSet set = instance.statementGetPermission.executeQuery();
+			instance.statementGetPermission.clearParameters();
 			
 			// allowed, target, isgroup, perm, zone
 			if (set.next())
@@ -806,6 +853,11 @@ public class SqlLiteHelper
 	 */
 	private static synchronized int getZoneIDFromZoneName(String zone) throws SQLException
 	{
+		if (zone.equals(ZoneManager.GLOBAL.getZoneID()))
+			return 0;
+		else if (zone.equals(ZoneManager.SUPER))
+			return -1;
+		
 		instance.statementGetZoneIDFromName.setString(1, zone);
 		ResultSet set = instance.statementGetZoneIDFromName.executeQuery();
 		instance.statementGetZoneIDFromName.clearParameters();
@@ -892,6 +944,9 @@ public class SqlLiteHelper
 	 */
 	private static synchronized int getGroupIDFromGroupName(String group) throws SQLException
 	{
+		if (group.equals(PermissionsAPI.DEFAULT.name))
+			return 0;
+		
 		instance.statementGetGroupIDFromName.setString(1, group);
 		ResultSet set = instance.statementGetGroupIDFromName.executeQuery();
 		instance.statementGetGroupIDFromName.clearParameters();

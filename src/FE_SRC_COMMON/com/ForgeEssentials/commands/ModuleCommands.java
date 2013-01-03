@@ -183,11 +183,11 @@ public class ModuleCommands implements IFEModule
 		
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.BasicCommands", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.list", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.rules", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.motd", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.tps", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.BasicCommands.modlist", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, "ForgeEssentials.BasicCommands.list", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, "ForgeEssentials.BasicCommands.rules", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, "ForgeEssentials.BasicCommands.motd", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, "ForgeEssentials.BasicCommands.tps", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, "ForgeEssentials.BasicCommands.modlist", true);
 	}
 
 	@Override

@@ -20,7 +20,8 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 public class ZoneManager
 {
 	// GLOBAL and WORLD zones.
-	public static Zone	GLOBAL;
+	public static Zone		GLOBAL;
+	public static String	SUPER	= "_SUPER_";
 
 	public ZoneManager()
 	{
@@ -149,7 +150,7 @@ public class ZoneManager
 					}
 			}
 	}
-	
+
 	public static Zone getWhichZoneIn(WorldPoint point)
 	{
 		Zone worldZone = getWorldZone(FunctionHelper.getDimension(point.dim));
@@ -183,7 +184,6 @@ public class ZoneManager
 					}
 			}
 	}
-
 
 	/**
 	 * used for AllorNothing areas..

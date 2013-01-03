@@ -22,7 +22,7 @@ public class ModulePermissions implements IFEModule
 	public static ConfigPermissions						config;
 	public static PermissionsHandler					pHandler;
 	public static ZoneManager							zManager;
-	public static SqlLiteHelper							sql; 
+	public static SqlHelper							sql; 
 
 	public static File									permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
 

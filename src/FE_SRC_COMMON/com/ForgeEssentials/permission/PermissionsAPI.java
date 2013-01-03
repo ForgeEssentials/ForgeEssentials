@@ -84,7 +84,7 @@ public class PermissionsAPI
 	public static Group createGroupInZone(String groupName, String zoneID)
 	{
 		Group g = new Group(groupName, "", "", null, zoneID, 0);
-		SqlLiteHelper.createGroup(g);
+		SqlHelper.createGroup(g);
 		return g;
 	}
 
@@ -110,7 +110,7 @@ public class PermissionsAPI
 			if (MinecraftForge.EVENT_BUS.post(event))
 				return event.getCancelReason();
 			
-			boolean worked = SqlLiteHelper.setPermission(username, false, perm, zoneID);
+			boolean worked = SqlHelper.setPermission(username, false, perm, zoneID);
 			
 			if (!worked)
 				return Localization.get(Localization.ERROR_PERM_SQL);
@@ -139,7 +139,7 @@ public class PermissionsAPI
 			if (zone == null)
 				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
 			
-			Group g = SqlLiteHelper.getGroupForName(group);
+			Group g = SqlHelper.getGroupForName(group);
 			if (g == null)
 				return Localization.format("message.error.nogroup", group);
 
@@ -150,7 +150,7 @@ public class PermissionsAPI
 			if (MinecraftForge.EVENT_BUS.post(event))
 				return event.getCancelReason();
 			
-			boolean worked = SqlLiteHelper.setPermission(group, true, perm, zoneID);
+			boolean worked = SqlHelper.setPermission(group, true, perm, zoneID);
 			
 			if (!worked)
 				return Localization.get(Localization.ERROR_PERM_SQL);
@@ -194,7 +194,7 @@ public class PermissionsAPI
 		ArrayList<Group> temp;
 		while (zone != null)
 		{
-			temp = SqlLiteHelper.getGroupsForPlayer(player.username, zone.getZoneID());
+			temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneID());
 			list.addAll(temp);
 		}
 		
@@ -213,7 +213,7 @@ public class PermissionsAPI
 		ArrayList<Group> temp;
 		while (zone != null && list.size() <= 0)
 		{
-			temp = SqlLiteHelper.getGroupsForPlayer(player.username, zone.getZoneID());
+			temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneID());
 			
 			if (!temp.isEmpty())
 				list.addAll(temp);
@@ -229,6 +229,6 @@ public class PermissionsAPI
 	
 	public static Group getGroupForName(String name)
 	{
-		return SqlLiteHelper.getGroupForName(name);
+		return SqlHelper.getGroupForName(name);
 	}
 }
