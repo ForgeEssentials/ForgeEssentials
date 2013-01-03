@@ -1,6 +1,8 @@
 package com.ForgeEssentials.util;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -63,17 +65,22 @@ public final class FunctionHelper
 
 	public static EntityPlayerMP getPlayerFromUsername(String username)
 	{
-//		return FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
 		EntityPlayerMP target;
+		List possibles = new LinkedList<EntityPlayer>();
 		for(Object player : FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
 		{
 			if(player instanceof EntityPlayerMP)
 			{
+				OutputHandler.SOP(((EntityPlayerMP) player).getCommandSenderName().toLowerCase() + "" + username.toLowerCase());
+				if(((EntityPlayerMP) player).getCommandSenderName().toLowerCase().contains(username.toLowerCase()))
+					possibles.add((EntityPlayerMP)player);
 				target = (EntityPlayerMP)player;
 				if(target.getCommandSenderName().equalsIgnoreCase(username))
 					return target;
 			}
 		}
+		if(possibles.size() == 1)
+			return (EntityPlayerMP) possibles.toArray()[0];
 		return null;
 	}
 
