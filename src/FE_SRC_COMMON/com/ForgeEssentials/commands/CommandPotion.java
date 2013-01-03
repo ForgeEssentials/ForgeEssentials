@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -70,7 +71,10 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 			return;
 		}
 		
-		target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+		if(args[0].equalsIgnoreCase("me"))
+			target = (EntityPlayerMP)sender;
+		else
+			target = FunctionHelper.getPlayerFromUsername(args[0]);
 		
 		if(names.containsKey(args[1]))
 		{
