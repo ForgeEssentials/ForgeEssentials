@@ -78,7 +78,8 @@ public class ModulePermissions implements IFEModule
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.permissions", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.perm", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.zone", true);
 
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, TeleportCenter.BYPASS_WARMUP, true);
