@@ -180,7 +180,7 @@ public class ModuleCommands implements IFEModule
 					ICommand cmd = (ICommand) cmdObj;
 					if(!commandNames.add(cmd.getCommandName()))
 					{
-						System.out.println("Duplicate command found! Name:" + cmd.getCommandName());
+						OutputHandler.debug("Duplicate command found! Name:" + cmd.getCommandName());
 						toRemoveNames.add(cmd.getCommandName());
 					}
 				}
@@ -193,7 +193,7 @@ public class ModuleCommands implements IFEModule
 						Class<?> cmdClass = cmd.getClass();
 						if(!cmdClass.getPackage().getName().contains("ForgeEssentials"))
 						{
-							System.out.println("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
+							OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
 							toRemove.add(cmd.getCommandName());
 						}
 					}

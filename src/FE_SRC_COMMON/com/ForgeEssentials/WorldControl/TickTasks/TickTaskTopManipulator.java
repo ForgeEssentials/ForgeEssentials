@@ -3,6 +3,7 @@ package com.ForgeEssentials.WorldControl.TickTasks;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
@@ -112,7 +113,7 @@ public class TickTaskTopManipulator implements ITickTask
 						}
 						break;
 					case SNOW:
-						if (Block.isNormalCube(world.getBlockId(x, y, z)))
+						if (Block.blocksList[blockID].isBlockSolidOnSide(world, x, y, z, ForgeDirection.UP	))
 						{
 							// Add snow covering to the block above.
 							backup.before.add(new BlockSaveable(world, x, y + 1, z));

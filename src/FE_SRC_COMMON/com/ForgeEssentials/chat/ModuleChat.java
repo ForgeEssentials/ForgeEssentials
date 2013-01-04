@@ -64,7 +64,7 @@ public class ModuleChat implements IFEModule
 			String line;
 			while ((line = br.readLine()) != null) 
 			{
-				System.out.println(line.trim());
+				OutputHandler.debug(line.trim());
 				Chat.bannedWords.add(line.trim());
 			}
 			br.close();
