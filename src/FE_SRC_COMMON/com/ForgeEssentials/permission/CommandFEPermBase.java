@@ -26,7 +26,9 @@ public abstract class CommandFEPermBase extends ForgeEssentialsCommandBase
 	public List getCommandAliases()
 	{
 		ArrayList<String> list = new ArrayList<String>();
+		list.add("perm " + getCommand());
 		list.add("fep " + getCommand());
+		list.add("p " + getCommand());
 		return list;
 	}
 
