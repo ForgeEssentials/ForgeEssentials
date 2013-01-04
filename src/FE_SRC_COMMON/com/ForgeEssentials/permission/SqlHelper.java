@@ -75,6 +75,7 @@ public class SqlHelper
 	private final PreparedStatement statementGetZoneIDFromName; // zoneName >> zoneID
 	private final PreparedStatement statementGetZoneNameFromID; // zoneID >> zoneName
 	private final PreparedStatement statementPutZone; // $ ZoneName
+	private final PreparedStatement statementDelZone; // X ZoneName
 	
 	// players
 	private final PreparedStatement statementGetPlayerIDFromName; // playerName >> playerID
@@ -316,6 +317,15 @@ public class SqlHelper
 					.append(COLUMN_PERMISSION_ZONEID).append(") ")
 					.append(" VALUES ").append(" (?, ?, ?, '?', ?) ");
 			statementPutPermission = db.prepareStatement(query.toString());
+			
+			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
+			// Helper Delete Statements
+			// <<<<<<<<<<<<<<<<<<<<<<<<<<
+			
+			// statementPutZone
+			query = new StringBuilder("DELETE FROM ").append(TABLE_ZONE)
+					.append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("'?'");
+			statementDelZone = db.prepareStatement(query.toString());
 		}
 		catch (Exception e)
 		{
