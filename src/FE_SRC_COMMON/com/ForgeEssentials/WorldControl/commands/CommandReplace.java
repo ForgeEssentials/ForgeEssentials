@@ -35,6 +35,12 @@ public class CommandReplace extends WorldControlCommandBase
 	{
 		if (args.length == 2)
 		{
+			PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+			if(info.getSelection() == null)
+			{
+				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
+				return;
+			}
 			int[] temp;
 			int firstID = -1;
 			int firstMeta = -1;
@@ -82,7 +88,6 @@ public class CommandReplace extends WorldControlCommandBase
 			}
 			else
 			{
-				PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 				World world = player.worldObj;
 				Selection sel = info.getSelection();
 				BackupArea back = new BackupArea();

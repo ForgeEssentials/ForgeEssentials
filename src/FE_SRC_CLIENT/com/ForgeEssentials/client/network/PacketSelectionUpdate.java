@@ -44,6 +44,10 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 
 			ForgeEssentialsClient.getInfo().setPoint1(new Point(x, y, z));
 		}
+		else
+		{
+			ForgeEssentialsClient.getInfo().setPoint1(null);
+		}
 
 		// point 2 available
 		if (stream.readBoolean())
@@ -53,6 +57,10 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 			int z = stream.readInt();
 
 			ForgeEssentialsClient.getInfo().setPoint2(new Point(x, y, z));
+		}
+		else
+		{
+			ForgeEssentialsClient.getInfo().setPoint2(null);
 		}
 	}
 

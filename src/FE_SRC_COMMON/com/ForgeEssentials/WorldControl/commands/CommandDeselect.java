@@ -24,8 +24,7 @@ public class CommandDeselect extends WorldControlCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
-		info.setPoint1(null);
-		info.setPoint2(null);
+		info.clearSelection();
 		
 		OutputHandler.chatConfirmation(sender, Localization.get(Localization.COMMAND_DESELECT));
 	}

@@ -262,4 +262,13 @@ public class PlayerInfo
 		undos.push(back);
 		return back;
 	}
+	
+	public void clearSelection()
+	{
+		this.selection = null;
+		this.sel1 = null;
+		this.sel2 = null;
+		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(this)).getPayload(), (Player)player);
+	}
 }
