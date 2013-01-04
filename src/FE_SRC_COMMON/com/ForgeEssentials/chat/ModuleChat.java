@@ -104,8 +104,8 @@ public class ModuleChat implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.chat.commands.msg", true);
-		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.chat.commands.r", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.chat.commands.msg", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.chat.commands.r", true);
 	}
 
 }

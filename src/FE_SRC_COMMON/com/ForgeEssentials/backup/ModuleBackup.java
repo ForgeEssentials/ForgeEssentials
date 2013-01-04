@@ -57,7 +57,7 @@ public class ModuleBackup implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(ForgeEssentials.instance, RegGroup.OWNERS, "ForgeEssentials.backup", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.backup", true);
 	}
 
 	@Override

@@ -19,13 +19,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class PermissionsAPI
 {
-	
-	/**
-	 * Used for blankets permissions tied to no particular player or group in a zone.
-	 * All players are part of this group 
-	 * This group is guaranteed existence
-	 */
-	public static final String				GROUP_DEFAULT			= "_DEFAULT_";
 
 	public static final PermissionQueryBus	QUERY_BUS			= new PermissionQueryBus();
 

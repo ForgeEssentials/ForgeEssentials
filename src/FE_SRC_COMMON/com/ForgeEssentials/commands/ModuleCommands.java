@@ -212,14 +212,13 @@ public class ModuleCommands implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		// TODO:needs changing.
-		event.registerPerm(ForgeEssentials.instance, RegGroup.OWNERS, "ForgeEssentials.BasicCommands", true);
-		event.registerPerm(ForgeEssentials.instance, RegGroup.MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
-		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.list", true);
-		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.rules", true);
-		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.motd", true);
-		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.tps", true);
-		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.modlist", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.BasicCommands", true);
+		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.list", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.rules", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.motd", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.tps", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.modlist", true);
 	}
 
 	@Override

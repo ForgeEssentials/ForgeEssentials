@@ -37,16 +37,6 @@ public class ModuleLauncher
 {
 	public ArrayList<IFEModule>	modules;
 
-	// note to self: if possible, make this classload.
-
-	/*
-	 * I put this here so we won't forget to add new modules.
-	 */
-	public static void ReloadConfigs(ICommandSender sender)
-	{
-		// requires new method in iFEModule.
-	}
-
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Discovering and loading modules...");
@@ -178,6 +168,9 @@ public class ModuleLauncher
 		
 		for (IFEModule module : modules)
 			module.preLoad(e);
+		
+		for (IFEModule module : modules)
+			module.getConfig().init();
 	}
 
 	public void load(FMLInitializationEvent e)
@@ -208,5 +201,11 @@ public class ModuleLauncher
 	{
 		for (IFEModule module : modules)
 			module.serverStopping(e);
+	}
+	
+	public void reloadConfigs(ICommandSender sender)
+	{
+		for (IFEModule module : modules)
+			module.getConfig().forceLoad(sender);
 	}
 }

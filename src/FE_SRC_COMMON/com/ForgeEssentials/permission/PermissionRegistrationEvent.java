@@ -1,5 +1,6 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.util.OutputHandler;
 
 import java.util.Collections;
@@ -49,12 +50,22 @@ public class PermissionRegistrationEvent extends Event
 	
 	private void handleMod(Object mod)
 	{
+		String modid;
+		
+		if (mod instanceof IFEModule)
+		{
+			modid = mod.getClass().getSimpleName();
+			if (mods.add(modid))
+				OutputHandler.SOP("[PermReg] "+modid+" has registerred permissions.");
+			
+			return;
+		}
+		
 		Class c = mod.getClass();
 		assert c.isAnnotationPresent(Mod.class) : new IllegalArgumentException("Don't trick me! THIS! > "+mod+" < ISNT A MOD!");
 		
 		Mod info = (Mod) c.getAnnotation(Mod.class);
-		String modid = info.modid();
-		
+		modid = info.modid();
 		if (mods.add(modid))
 			OutputHandler.SOP("[PermReg] "+modid+" has registerred permissions.");
 	}

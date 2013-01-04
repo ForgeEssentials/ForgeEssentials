@@ -13,6 +13,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.permission.query.PermQuery;
@@ -43,19 +44,19 @@ public class ModuleProtection implements IFEModule
 	public static ConfigProtection config;
 	public static boolean enable = false;
 	
-	public static HashMap<String, HashMap<String, Boolean>> permissions = new HashMap<String, HashMap<String, Boolean>>();
+	public static HashMap<String, HashMap<RegGroup, Boolean>> permissions = new HashMap<String, HashMap<RegGroup, Boolean>>();
 	
 	public ModuleProtection()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 		
-		HashMap<String, Boolean> map = new HashMap<String, Boolean>();
-		map.put(PermissionsAPI.GROUP_DEFAULT, false); map.put(PermissionsAPI.GROUP_MEMBERS, true); map.put(PermissionsAPI.GROUP_ZONE_ADMINS, true); map.put(PermissionsAPI.GROUP_OWNERS, true); 
+		HashMap<RegGroup, Boolean> map = new HashMap<RegGroup, Boolean>();
+		map.put(RegGroup.GUESTS, false); map.put(RegGroup.MEMBERS, true); map.put(RegGroup.ZONE_ADMINS, true); map.put(RegGroup.OWNERS, true); 
 		permissions.put(PERM_EDITS, map);
 		permissions.put(PERM_INTERACT_BLOCK, map);
 		permissions.put(PERM_INTERACT_ENTITY, map);
 		
-		map.put(PermissionsAPI.GROUP_MEMBERS, false);
+		map.put(RegGroup.MEMBERS, false);
 		permissions.put(PERM_OVERRIDE, map);
 	}
 
@@ -97,10 +98,10 @@ public class ModuleProtection implements IFEModule
 		//event.registerPermissionDefault(PERM, false);
 		for(String perm : permissions.keySet())
 		{
-			event.registerPerm(PermissionsAPI.GROUP_GUESTS, 		perm, permissions.get(perm).get(PermissionsAPI.GROUP_DEFAULT));
-			event.registerPerm(PermissionsAPI.GROUP_MEMBERS, 		perm, permissions.get(perm).get(PermissionsAPI.GROUP_MEMBERS));
-			event.registerPerm(PermissionsAPI.GROUP_ZONE_ADMINS, 	perm, permissions.get(perm).get(PermissionsAPI.GROUP_ZONE_ADMINS));
-			event.registerPerm(PermissionsAPI.GROUP_OWNERS, 		perm, permissions.get(perm).get(PermissionsAPI.GROUP_DEFAULT));
+			event.registerPerm(this, RegGroup.GUESTS, 		perm, permissions.get(perm).get(RegGroup.GUESTS));
+			event.registerPerm(this, RegGroup.MEMBERS, 		perm, permissions.get(perm).get(RegGroup.MEMBERS));
+			event.registerPerm(this, RegGroup.ZONE_ADMINS, 	perm, permissions.get(perm).get(RegGroup.ZONE_ADMINS));
+			event.registerPerm(this, RegGroup.OWNERS, 		perm, permissions.get(perm).get(RegGroup.OWNERS));
 		}
 	}
 }
