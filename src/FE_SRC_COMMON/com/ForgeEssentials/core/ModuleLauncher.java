@@ -36,6 +36,9 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleLauncher
 {
+	public ModuleLauncher () {instance = this;}
+	public static ModuleLauncher instance;
+	
 	public ArrayList<IFEModule>	modules;
 
 	public void preLoad(FMLPreInitializationEvent e)
@@ -174,19 +177,23 @@ public class ModuleLauncher
 		for (IFEModule module : modules)
 		{
 			IModuleConfig cfg = module.getConfig();
-			File file = cfg.getFile();
 			
-			if (!file.getParentFile().exists())
+			if(cfg != null)
 			{
-				generate = true;
-				file.getParentFile().mkdirs();
+				File file = cfg.getFile();
+			
+				if (!file.getParentFile().exists())
+				{
+					generate = true;
+					file.getParentFile().mkdirs();
+				}
+			
+				if (!generate && (!file.exists() || !file.isFile()))
+					generate = true;
+				
+				cfg.setGenerate(generate);
+				cfg.init();
 			}
-			
-			if (!generate && (!file.exists() || !file.isFile()))
-				generate = true;
-			
-			cfg.setGenerate(generate);
-			cfg.init();
 		}
 	}
 

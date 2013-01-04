@@ -13,7 +13,7 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigPlayer
 {
-	public static File			playersFile	= new File(ModulePermissions.permsFolder, "players.cfg");
+	public static File playersFile	= new File(ModulePermissions.permsFolder, "players.cfg");
 
 	private static final String	PREFIX		= "chatPrefix";
 	private static final String	SUFFIX		= "chatSuffix";

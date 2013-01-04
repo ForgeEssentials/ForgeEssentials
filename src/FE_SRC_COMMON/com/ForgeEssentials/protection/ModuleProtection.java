@@ -11,6 +11,7 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.RegGroup;
@@ -103,5 +104,11 @@ public class ModuleProtection implements IFEModule
 			event.registerPerm(this, RegGroup.ZONE_ADMINS, 	perm, permissions.get(perm).get(RegGroup.ZONE_ADMINS));
 			event.registerPerm(this, RegGroup.OWNERS, 		perm, permissions.get(perm).get(RegGroup.OWNERS));
 		}
+	}
+
+	@Override
+	public IModuleConfig getConfig() 
+	{
+		return config;
 	}
 }

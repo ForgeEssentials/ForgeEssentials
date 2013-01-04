@@ -27,33 +27,9 @@ public class ConfigWorldBorder implements IModuleConfig
 	
 	private Configuration config;
 	
-	/**
-	 * This list makes sure the effect is in the example file.
-	 * Not used for parsing the list from the config.
-	 */
-	public static final List<String> PossibleEffects = Arrays.asList("knockback", "message", "potion", "damage", "smite", "serverkick", "executecommand");
-	
 	public ConfigWorldBorder()
 	{
-	}
-	
-	/**
-	 * Does all the rest of the config
-	 * @param config
-	 */
-	public static void commonConfig(Configuration config)
-	{
-		String category = "Settings";
-		config.addCustomCategoryComment(category, "Common settings.");
 		
-		ModuleWorldBorder.logToConsole = config.get(category, "LogToConsole", true, "Enable logging to the server console & the log file").getBoolean(true);
-		Property prop = config.get(category, "overGenerate", 345);
-			prop.comment = "The amount of blocks that will be generated outside the radius of the border. This is important!" +
-					" \nIf you set this high, you will need exponentially more time while generating, but you won't get extra land if a player does pass the border." +
-					" \nIf you use something like Dynmap you should put this number higher, if the border is not there for aesthetic purposes, then you don't need that." +
-					" \nThe default value (345) is calcultated like this: (20 chuncks for vieuw distance * 16 blocks per chunck) + 25 as backup" +
-					" \nThis allows players to pass the border 25 blocks before generating new land.";
-		ModuleWorldBorder.overGenerate = prop.getInt(345);
 	}
 	
 	/**
@@ -62,6 +38,8 @@ public class ConfigWorldBorder implements IModuleConfig
 	 */
 	public static void penaltiesConfig(Configuration config)
 	{
+		ModuleWorldBorder.effectsList.clear();
+		
 		String penaltyBasePackage = "com.ForgeEssentials.WorldBorder.Effects.";
 		config.addCustomCategoryComment("Penalties", "This is what will happen to the player if he passes the world boder.");
 		
@@ -105,13 +83,24 @@ public class ConfigWorldBorder implements IModuleConfig
 			ModuleWorldBorder.registerEffects(dist, effctList);
 		}
 	}
-
-	@Override
-	public void setGenerate(boolean generate)
+	
+	/**
+	 * Does all the rest of the config
+	 * @param config
+	 */
+	public static void commonConfig(Configuration config)
 	{
-		// TODO Auto-generated method stub
-		// nothing here apperantly...
+		String category = "Settings";
+		config.addCustomCategoryComment(category, "Common settings.");
 		
+		ModuleWorldBorder.logToConsole = config.get(category, "LogToConsole", true, "Enable logging to the server console & the log file").getBoolean(true);
+		Property prop = config.get(category, "overGenerate", 345);
+			prop.comment = "The amount of blocks that will be generated outside the radius of the border. This is important!" +
+					" \nIf you set this high, you will need exponentially more time while generating, but you won't get extra land if a player does pass the border." +
+					" \nIf you use something like Dynmap you should put this number higher, if the border is not there for aesthetic purposes, then you don't need that." +
+					" \nThe default value (345) is calcultated like this: (20 chuncks for vieuw distance * 16 blocks per chunck) + 25 as backup" +
+					" \nThis allows players to pass the border 25 blocks before generating new land.";
+		ModuleWorldBorder.overGenerate = prop.getInt(345);
 	}
 
 	@Override
@@ -123,23 +112,14 @@ public class ConfigWorldBorder implements IModuleConfig
 		config.save();
 	}
 	
-	/*
-	 * 	// now just to generate an error for future reference..
-	
-	@Override
-	public void forceSave()
-	{
-		// TODO Auto-generated method stub
-		// ??????
-	}
-
 	@Override
 	public void forceLoad(ICommandSender sender)
 	{
-		// TODO Auto-generated method stub
-		// ??????
+		config = new Configuration(wbconfig, true);
+		penaltiesConfig(config);
+		commonConfig(config);
+		config.save();
 	}
-	*/
 
 	@Override
 	public File getFile()
@@ -147,5 +127,10 @@ public class ConfigWorldBorder implements IModuleConfig
 		return wbconfig;
 	}
 	
-
+	@Override
+	public void forceSave() {}
+	
+	@Override
+	public void setGenerate(boolean generate) {}
+	
 }

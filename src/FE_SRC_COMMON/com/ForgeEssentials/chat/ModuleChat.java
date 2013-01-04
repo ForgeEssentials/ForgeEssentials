@@ -7,6 +7,7 @@ import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.RegGroup;
@@ -106,6 +107,12 @@ public class ModuleChat implements IFEModule
 	{
 		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.chat.commands.msg", true);
 		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.chat.commands.r", true);
+	}
+
+	@Override
+	public IModuleConfig getConfig() 
+	{
+		return conf;
 	}
 
 }

@@ -8,6 +8,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.economy.commands.CommandAddToWallet;
 import com.ForgeEssentials.economy.commands.CommandGetWallet;
 import com.ForgeEssentials.economy.commands.CommandRemoveWallet;
@@ -139,5 +140,11 @@ public class ModuleEconomy implements IFEModule, IPlayerTracker
 	public void onPlayerRespawn(EntityPlayer player)
 	{
 		loadData(player);
+	}
+
+	@Override
+	public IModuleConfig getConfig() 
+	{
+		return null;
 	}
 }

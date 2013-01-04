@@ -5,6 +5,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.RegGroup;
@@ -19,7 +20,7 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleBackup implements IFEModule
 {
-	public static BackupConfig	config;
+	public static BackupConfig config;
 	public static BackupThread thread;
 
 	public ModuleBackup()
@@ -63,7 +64,12 @@ public class ModuleBackup implements IFEModule
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public IModuleConfig getConfig() 
+	{
+		return config;
 	}
 }

@@ -41,6 +41,7 @@ import com.ForgeEssentials.commands.vanilla.CommandWeather;
 import com.ForgeEssentials.commands.vanilla.CommandWhitelist;
 import com.ForgeEssentials.commands.vanilla.CommandXP;
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
@@ -224,5 +225,11 @@ public class ModuleCommands implements IFEModule
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public IModuleConfig getConfig() 
+	{
+		return conf;
 	}
 }

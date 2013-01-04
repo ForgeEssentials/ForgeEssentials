@@ -10,6 +10,7 @@ import java.util.List;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.logEntry;
@@ -138,5 +139,11 @@ public class ModulePlayerLogger implements IFEModule
 	{
 		if(ragequitOn)
 			FMLCommonHandler.instance().raiseException(new RuntimeException(), "Database connection lost.", true);
+	}
+
+	@Override
+	public IModuleConfig getConfig() 
+	{
+		return config;
 	}
 }
