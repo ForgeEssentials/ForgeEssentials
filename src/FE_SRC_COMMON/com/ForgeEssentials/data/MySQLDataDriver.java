@@ -22,6 +22,7 @@ public class MySQLDataDriver extends DataDriver
 {
 	private static String separationString = "__";
 	private String DriverClass = "com.mysql.jdbc.Driver";
+	private boolean isConfigured = false;
 	private Connection dbConnection;
 	private HashMap<Class, Boolean> classTableChecked = new HashMap<Class, Boolean>();
 	
@@ -65,6 +66,7 @@ public class MySQLDataDriver extends DataDriver
 				Class driverClass = Class.forName(DriverClass);
 	
 				this.dbConnection = DriverManager.getConnection(connectionString, username, password);
+				this.isConfigured = true;
 			}
 			catch (SQLException e)
 			{
@@ -86,7 +88,12 @@ public class MySQLDataDriver extends DataDriver
 		// If this is the first time registering a class that is NOT saved inline,
 		//  attempt to create a table.
 		if (!(tagger.inLine || this.classTableChecked.containsKey(tagger.forType)))
-			this.createTable(tagger.forType);
+		{
+			if (this.isConfigured)
+			{
+				this.createTable(tagger.forType);
+			}
+		}
 	}
 
 	@Override
@@ -94,18 +101,21 @@ public class MySQLDataDriver extends DataDriver
 	{
 		boolean isSuccess = false;
 
-		try
+		if (this.isConfigured)
 		{
-			Statement s;
-			s = this.dbConnection.createStatement();
-			int count = s.executeUpdate(createInsertStatement(type, fieldList));
-			
-			isSuccess = true;
-		}
-		catch (SQLException e)
-		{
-			OutputHandler.SOP("Couldn't save object of type " + type.getSimpleName() + " to MySQL DB. Server will continue running.");
-			e.printStackTrace();
+			try
+			{
+				Statement s;
+				s = this.dbConnection.createStatement();
+				int count = s.executeUpdate(createInsertStatement(type, fieldList));
+				
+				isSuccess = true;
+			}
+			catch (SQLException e)
+			{
+				OutputHandler.SOP("Couldn't save object of type " + type.getSimpleName() + " to MySQL DB. Server will continue running.");
+				e.printStackTrace();
+			}
 		}
 
 		return isSuccess;
@@ -116,21 +126,24 @@ public class MySQLDataDriver extends DataDriver
 	{
 		TaggedClass reconstructed = null;
 		
-		try
+		if (isConfigured)
 		{
-			Statement s = this.dbConnection.createStatement();
-			ResultSet result = s.executeQuery(this.createSelectStatement(type, uniqueKey));
-			
-			// ResultSet initially sits just before first result.
-			if (result.next())
+			try
 			{
-				// Should only be one item in this set.
-				reconstructed = this.createTaggedClassFromResult(type, this.resultRowToMap(result));
+				Statement s = this.dbConnection.createStatement();
+				ResultSet result = s.executeQuery(this.createSelectStatement(type, uniqueKey));
+				
+				// ResultSet initially sits just before first result.
+				if (result.next())
+				{
+					// Should only be one item in this set.
+					reconstructed = this.createTaggedClassFromResult(type, this.resultRowToMap(result));
+				}
 			}
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		return reconstructed;
@@ -141,20 +154,23 @@ public class MySQLDataDriver extends DataDriver
 	{
 		ArrayList<TaggedClass> values = new ArrayList<TaggedClass>();
 		
-		try
+		if (this.isConfigured)
 		{
-			Statement s = this.dbConnection.createStatement();
-			ResultSet result = s.executeQuery(this.createSelectAllStatement(type));
-			
-			while (result.next())
+			try
 			{
-				// Continue reading rows as they exist.
-				values.add(this.createTaggedClassFromResult(type, this.resultRowToMap(result)));
-			}			
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
+				Statement s = this.dbConnection.createStatement();
+				ResultSet result = s.executeQuery(this.createSelectAllStatement(type));
+				
+				while (result.next())
+				{
+					// Continue reading rows as they exist.
+					values.add(this.createTaggedClassFromResult(type, this.resultRowToMap(result)));
+				}			
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		return values.toArray(new TaggedClass[values.size()]);
@@ -165,17 +181,20 @@ public class MySQLDataDriver extends DataDriver
 	{
 		boolean isSuccess = false;
 
-		try
+		if (this.isConfigured)
 		{
-			Statement s = this.dbConnection.createStatement();
-			s.execute(this.createDeleteStatement(type, uniqueObjectKey));
-			
-			isSuccess = true;
-		}
-		catch (SQLException e)
-		{
-			OutputHandler.SOP("Problem deleting data from MySQL DB (May not actually be a critical error):");
-			e.printStackTrace();
+			try
+			{
+				Statement s = this.dbConnection.createStatement();
+				s.execute(this.createDeleteStatement(type, uniqueObjectKey));
+				
+				isSuccess = true;
+			}
+			catch (SQLException e)
+			{
+				OutputHandler.SOP("Problem deleting data from MySQL DB (May not actually be a critical error):");
+				e.printStackTrace();
+			}
 		}
 		
 		return isSuccess;

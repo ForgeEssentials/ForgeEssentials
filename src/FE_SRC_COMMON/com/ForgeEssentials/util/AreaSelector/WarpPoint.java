@@ -41,7 +41,7 @@ public class WarpPoint extends WorldPoint
 	}
 
 	@Reconstructor()
-	private static WarpPoint reconstruct(TaggedClass tag)
+	public static WarpPoint reconstruct(TaggedClass tag)
 	{
 		int x = (Integer) tag.getFieldValue("x");
 		int y = (Integer) tag.getFieldValue("y");

@@ -199,7 +199,7 @@ public class TypeTagger
 	{
 		try
 		{
-			Method reconstructor = data.type.getMethod(reconstructorMethod, TaggedClass.class);
+			Method reconstructor = this.forType.getDeclaredMethod(reconstructorMethod, TaggedClass.class);
 			reconstructor.setAccessible(true);
 			Object obj = reconstructor.invoke(null, data);
 		}

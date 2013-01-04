@@ -88,7 +88,10 @@ public class ForgeConfigDataDriver extends DataDriver
 		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
 		TypeTagger tag = DataStorageManager.getTaggerForType(type);
 		
-		return readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), tag);
+		TaggedClass data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), tag);
+		data.addField(data.new SavedField(tag.uniqueKey, uniqueKey));
+		
+		return data;
 	}
 
 	@Override

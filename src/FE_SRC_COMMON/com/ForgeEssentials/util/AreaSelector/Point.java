@@ -140,7 +140,7 @@ public class Point implements Serializable, Comparable<Point>
 	}
 	
 	@Reconstructor()
-	private static Point reconstruct(TaggedClass tag)
+	public static Point reconstruct(TaggedClass tag)
 	{
 		int x = (Integer) tag.getFieldValue("x");
 		int y = (Integer) tag.getFieldValue("y");

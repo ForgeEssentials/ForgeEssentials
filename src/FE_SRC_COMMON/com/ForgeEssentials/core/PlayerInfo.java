@@ -59,7 +59,7 @@ public class PlayerInfo
 	}
 	
 	@Reconstructor()
-	private static PlayerInfo reconstruct(TaggedClass tag)
+	public static PlayerInfo reconstruct(TaggedClass tag)
 	{
 		String username = (String) tag.getFieldValue("username");
 		
