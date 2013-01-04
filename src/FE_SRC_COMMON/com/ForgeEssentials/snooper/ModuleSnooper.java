@@ -65,7 +65,7 @@ public class ModuleSnooper implements IFEModule
 		event.registerPermissionDefault("ForgeEssentials.Snooper.commands", false);
 		event.registerPermissionDefault("ForgeEssentials.Snooper.commands.reloadquery", false);
 		
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.commands.reloadquery", true);
+		event.registerPerm(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.commands.reloadquery", true);
 	}
     
     public static void startQuery()

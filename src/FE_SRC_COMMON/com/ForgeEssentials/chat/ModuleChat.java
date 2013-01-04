@@ -9,6 +9,7 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -103,8 +104,8 @@ public class ModuleChat implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.chat.commands.msg", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.chat.commands.r", true);
+		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.chat.commands.msg", true);
+		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.chat.commands.r", true);
 	}
 
 }

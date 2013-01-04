@@ -41,9 +41,11 @@ import com.ForgeEssentials.commands.vanilla.CommandToggleDownfall;
 import com.ForgeEssentials.commands.vanilla.CommandWeather;
 import com.ForgeEssentials.commands.vanilla.CommandWhitelist;
 import com.ForgeEssentials.commands.vanilla.CommandXP;
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -211,13 +213,13 @@ public class ModuleCommands implements IFEModule
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		// TODO:needs changing.
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.BasicCommands", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.BasicCommands.list", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.BasicCommands.rules", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.BasicCommands.motd", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.BasicCommands.tps", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.BasicCommands.modlist", true);
+		event.registerPerm(ForgeEssentials.instance, RegGroup.OWNERS, "ForgeEssentials.BasicCommands", true);
+		event.registerPerm(ForgeEssentials.instance, RegGroup.MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
+		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.list", true);
+		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.rules", true);
+		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.motd", true);
+		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.tps", true);
+		event.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.modlist", true);
 	}
 
 	@Override

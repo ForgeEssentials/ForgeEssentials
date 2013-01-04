@@ -1,39 +1,31 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.util.OutputHandler;
+
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import cpw.mods.fml.common.Mod;
 
 import net.minecraftforge.event.Event;
 
 public class PermissionRegistrationEvent extends Event
 {
-	/**
-	 * Parents are not automatically registered
-	 * @param permName. Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
-	 * @param allow. True if the permission is allowed by default
-	 */
-	@Deprecated
-	public void registerPermissionDefault(String permName, boolean allow)
-	{
-	}
-
+	protected HashSet<String> mods = new HashSet<String>();
+	
 	/**
 	 * This is to define the level the permission should be used for by defualt..
 	 * see @see com.ForgeEssentials.permissions.PermissionsAPI for the default groups
 	 * If you want.. you can also set specific group permissions with this.. though they may or may not exist...
-	 * @param username player to apply the permission to.
+	 * @param level to apply permission to.
 	 * @param permission Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
-	 * @param allow
+	 * @param allow or deny.  If unset, all permissions default to deny. See the wiki for more info.
 	 */
-	public void registerGlobalGroupPermissions(String group, String permission, boolean allow)
+	public void registerPerm(Object mod, RegGroup group, String permission, boolean allow)
 	{
-		if (!group.equals(PermissionsAPI.GROUP_OWNERS) &&
-				!group.equals(PermissionsAPI.GROUP_ZONE_ADMINS) &&
-				!group.equals(PermissionsAPI.GROUP_GUESTS) &&
-				!group.equals(PermissionsAPI.GROUP_MEMBERS)
-				)
-			throw new IllegalArgumentException("You can't register a permission for \""+group+"\"! use the PermissionsAPI!");
+		handleMod(mod);
 
 //		Permission perm = new Permission(permission, allow);
 //		Set<Permission> perms = ZoneManager.GLOBAL.groupOverrides.get(group);
@@ -53,5 +45,17 @@ public class PermissionRegistrationEvent extends Event
 //		}
 		
 		// store defaults... for later...
+	}
+	
+	private void handleMod(Object mod)
+	{
+		Class c = mod.getClass();
+		assert c.isAnnotationPresent(Mod.class) : new IllegalArgumentException("Don't trick me! THIS! > "+mod+" < ISNT A MOD!");
+		
+		Mod info = (Mod) c.getAnnotation(Mod.class);
+		String modid = info.modid();
+		
+		if (mods.add(modid))
+			OutputHandler.SOP("[PermReg] "+modid+" has registerred permissions.");
 	}
 }

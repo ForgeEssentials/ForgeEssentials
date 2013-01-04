@@ -19,29 +19,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class PermissionsAPI
 {
-	/**
-	 * This is automatically assigned to the server owner when they make a world available to the LAN.
-	 * This is also best kep for layers that have direct access to the server console.
-	 */
-	public static final String				GROUP_OWNERS		= "Owners";
-
-	/**
-	 * This is usually for players that are actually members of the server.
-	 * They will most likely be able to use basic commands as well as break blocks and stuff in the world.
-	 */
-	public static final String				GROUP_MEMBERS		= "Members";
-
-	/**
-	 * This is usually for players that are admins or owners of a given zone
-	 * They will most likely have WorldEdit access, as well as the power to edit permissions in the zone.
-	 */
-	public static final String				GROUP_ZONE_ADMINS	= "ZoneAdmins";
-
-	/**
-	 * This is the group, b default, that all players are assigned to when they first log in.
-	 * The players in this group are usually denied commands and breaking blocks before they are promoted to members.
-	 */
-	public static final String				GROUP_GUESTS			= "Guest";
 	
 	/**
 	 * Used for blankets permissions tied to no particular player or group in a zone.
