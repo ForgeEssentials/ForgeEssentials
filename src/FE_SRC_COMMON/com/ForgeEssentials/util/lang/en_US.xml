@@ -178,8 +178,8 @@
     <entry key="command.warp.info.player">Teleport you to a warp point.</entry>
     
     <!-- Some localization for WorldBorder -->
-    <entry key="command.worldborder.syntax.console">[fill|turbo] OR [set] &lt;round|square> &lt;Radius> &lt;X> &lt;Z></entry>
-    <entry key="command.worldborder.syntax.player">[fill|turbo] OR [set] &lt;round|square> &lt;Radius> [X] [Z]</entry>
+    <entry key="command.worldborder.syntax.console">[fill|turbo|autopilot] OR [set] &lt;round|square> &lt;Radius> &lt;X> &lt;Z></entry>
+    <entry key="command.worldborder.syntax.player">[fill|turbo|autopilot] OR [set] &lt;round|square> &lt;Radius> [X] [Z]</entry>
     <entry key="command.worldborder.info.console">Set the worldborder.</entry>
     <entry key="command.worldborder.info.player">Set the worldborder.</entry>
     
@@ -200,15 +200,18 @@
     <entry key="message.wb.fill.info">This command will fill all chuncks within the worldborder.</entry>
     <entry key="message.wb.fill.onlyonce">You can't run this more then once at the same time!</entry>
     <entry key="message.wb.fill.start">Starting filling of world, expect huge lag!</entry>
-    <entry key="message.wb.fill.stillgoing">Still filling the world. ETA: %eta</entry>
+    <entry key="message.wb.fill.stillgoing">Still filling the world. ETA: %eta. Current gen rate: %ctp chuncks per tick.</entry>
     
     <entry key="message.wb.saving.failed">Error saving the world!</entry>
     
-    <entry key="message.wb.turbo.info">Speed x10, lag x10.</entry>
-    <entry key="message.wb.turbo.confirm">To execute, do "/worldborder turbo on" use off to turn turbo mode off.</entry>
+    <entry key="message.wb.turbo.info">Set the amount of chuncks generated per tick. Use autopilot if you want to be safe!</entry>
+    <entry key="message.wb.turbo.confirm">To execute, do "/worldborder turbo &lt;cpt>" use off to turn turbo mode off.</entry>
     <entry key="message.wb.turbo.nothingtodo">You need a running filler command to (dis)engage the turbo!</entry>
     <entry key="message.wb.turbo.on">Turbo mode engaged! Prepare for more lag!</entry>
     <entry key="message.wb.turbo.off">Turbo mode disengaged! Lag should lower.</entry>
+    
+    <entry key="message.wb.auto.info">This mode automatically adjusts the amount of chuncks/sec generated.</entry>
+    <entry key="message.wb.auto.confirm">To execute, do "/worldborder autopilot &lt;TargetTPS>" use off to turn autopilot mode off.</entry>
     
     <entry key="message.wb.set">WorldBorder set with radius %r  at point X:%x Z:%z</entry>
     

@@ -15,10 +15,9 @@ import com.ForgeEssentials.util.Localization;
 
 public class TickTaskFillSquare extends TickTaskFill
 {
-	public TickTaskFillSquare(boolean canNotSaveBefore, WorldServer world)
+	public TickTaskFillSquare(WorldServer world)
 	{
 		this.isComplete = false;
-		this.canNotSaveBefore = canNotSaveBefore;
 		this.world = world;
 		this.X = this.minX = ModuleWorldBorder.borderData.getInteger("minX") - ModuleWorldBorder.overGenerate;
 		this.Z = this.minZ = ModuleWorldBorder.borderData.getInteger("minZ") - ModuleWorldBorder.overGenerate;
@@ -40,11 +39,7 @@ public class TickTaskFillSquare extends TickTaskFill
 	@Override
 	public void tick()
 	{
-		ticks ++;
-		if(ticks % (20 * 10) == 0)
-		{
-			warnEveryone(Localization.get(Localization.WB_FILL_STILLGOING).replaceAll("%eta", getETA()));
-		}
+		super.tick();
 		
 		int i = 0;
 		while (i < chunksAtick)

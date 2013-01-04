@@ -140,10 +140,13 @@ public class Localization
 
 	public static final String	WB_TURBO_INFO					= "message.wb.turbo.info";
 	public static final String	WB_TURBO_CONFIRM				= "message.wb.turbo.confirm";
-	public static final String	WB_TURBO_NOTHINGTODO			= "message.wb.turbo.nothingtodo";
+	public static final String	WB_NOTHINGTODO					= "message.wb.nothingtodo";
 	public static final String	WB_TURBO_ON						= "message.wb.turbo.on";
 	public static final String	WB_TURBO_OFF					= "message.wb.turbo.off";
 
+	public static final String	WB_AUTO_INFO					= "message.wb.auto.info";
+	public static final String	WB_AUTO_CONFIRM					= "message.wb.auto.confirm";
+	
 	public static final String	WB_SET							= "message.wb.set";
 
 	public static final String	UNIT_SECONDS					= "unit.seconds";

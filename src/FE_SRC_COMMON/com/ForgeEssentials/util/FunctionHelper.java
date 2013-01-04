@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -165,5 +166,31 @@ public final class FunctionHelper
 			return true;
 		else
 			return FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getOps().contains(player);
+	}
+	
+	public static double getTPS(int dimID)
+	{
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance(); 
+		
+		long var2 = 0L;
+        long[] var4 = server.worldTickTimes.get(dimID);
+        int var5 = var4.length;
+
+        for (int var6 = 0; var6 < var5; ++var6)
+        {
+            long var7 = var4[var6];
+            var2 += var7;
+        }
+
+        double tps =  (((double)var2 / (double)var5) * 1.0E-6D);
+        
+		if(tps < 50)
+		{
+			return 20;
+		}
+		else
+		{
+			return (double) (1000/tps);
+		}
 	}
 }
