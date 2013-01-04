@@ -31,10 +31,17 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.HIGHEST)
 	public void doOpCheck(PermQueryPlayer event)
 	{
-		// TODO: opcheck.
+		// TODO: opcheck.  AFTER MERGE
 	}
 	
-	@PermSubscribe(priority = EventPriority.NORMAL)
+	@PermSubscribe(priority = EventPriority.HIGH, handleResult = {PermResult.UNKNOWN})
+	public void checkPlayerSupers(PermQueryPlayer event)
+	{
+		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.SUPER, event.checkForward);
+		event.setResult(result);
+	}
+	
+	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = {PermResult.UNKNOWN})
 	public void handleQuery(PermQueryPlayer event)
 	{
 		
@@ -47,14 +54,14 @@ public final class PermissionsHandler
 		}
 	}
 
-	@PermSubscribe(priority = EventPriority.NORMAL)
+	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = {PermResult.UNKNOWN})
 	public void handleQuery(PermQueryPlayerZone event)
 	{
 		PermResult result = getResultFromZone(event.toCheck, event.checker, event.doer, event.checkForward);
 		event.setResult(result);
 	}
 
-	@PermSubscribe(priority = EventPriority.NORMAL)
+	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = {PermResult.UNKNOWN})
 	public void handleQuery(PermQueryPlayerArea event)
 	{
 		if (event.allOrNothing)

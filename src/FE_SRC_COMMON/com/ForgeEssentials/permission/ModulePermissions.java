@@ -48,7 +48,7 @@ public class ModulePermissions implements IFEModule
 
 		MinecraftForge.EVENT_BUS.register(this);
 
-		MinecraftForge.EVENT_BUS.post(new ForgeEssentialsPermissionRegistrationEvent());
+		MinecraftForge.EVENT_BUS.post(new PermissionRegistrationEvent());
 		
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
@@ -75,7 +75,7 @@ public class ModulePermissions implements IFEModule
 	}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		event.registerPermissionDefault("ForgeEssentials.permissions.zone", true);
 		event.registerPermissionDefault("ForgeEssentials.permissions.zone.list", true);
@@ -92,12 +92,12 @@ public class ModulePermissions implements IFEModule
 		event.registerPermissionDefault("ForgeEssentials.permissions.player.setsuperperm", true);
 
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, "ForgeEssentials.permissions.zone", false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.permissions.zone", false);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.permissions.zone", false);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.permissions", true);
 
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, TeleportCenter.BYPASS_COOLDOWN, false);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, TeleportCenter.BYPASS_WARMUP, false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, TeleportCenter.BYPASS_COOLDOWN, false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, TeleportCenter.BYPASS_WARMUP, false);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, TeleportCenter.BYPASS_WARMUP, true);
 	}

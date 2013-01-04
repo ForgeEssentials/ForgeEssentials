@@ -22,35 +22,41 @@ public class PermissionsAPI
 	/**
 	 * This is automatically assigned to the server owner when they make a world available to the LAN.
 	 * This is also best kep for layers that have direct access to the server console.
-	 * **CAUTION! MAY OR MAYNOT EXIST**
 	 */
 	public static final String				GROUP_OWNERS		= "Owners";
 
 	/**
 	 * This is usually for players that are actually members of the server.
 	 * They will most likely be able to use basic commands as well as break blocks and stuff in the world.
-	 * **CAUTION MAY OR MAY NOT EXIST**
 	 */
 	public static final String				GROUP_MEMBERS		= "Members";
 
 	/**
 	 * This is usually for players that are admins or owners of a given zone
 	 * They will most likely have WorldEdit access, as well as the power to edit permissions in the zone.
-	 * **CAUTION MAY OR MAY NOT EXIST**
 	 */
 	public static final String				GROUP_ZONE_ADMINS	= "ZoneAdmins";
 
 	/**
-	 * Used for blankets permissions tied to no particular layer or group in a zone.
-	 * This is the also the group all players are assigned to if they are members of no other groups.
-	 * This includes new players when they first log in.
+	 * This is the group, b default, that all players are assigned to when they first log in.
 	 * The players in this group are usually denied commands and breaking blocks before they are promoted to members.
+	 */
+	public static final String				GROUP_GUESTS			= "Guest";
+	
+	/**
+	 * Used for blankets permissions tied to no particular player or group in a zone.
+	 * All players are part of this group 
 	 * This group is guaranteed existence
 	 */
-	public static final String				GROUP_GUEST		= "Guest";
+	public static final String				GROUP_DEFAULT			= "_DEFAULT_";
 
 	public static final PermissionQueryBus	QUERY_BUS			= new PermissionQueryBus();
-	
+
+	/**
+	 * Used for blankets permissions tied to no particular layer or group in a zone.
+	 * This is the the group all players are assigned to if they are members of no other groups.
+	 * This group is guaranteed existence
+	 */
 	public static Group						DEFAULT;
 
 	/**
@@ -104,14 +110,14 @@ public class PermissionsAPI
 				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
 
 			Permission perm = new Permission(permission, allow);
-			
+
 			// send out permission string.
 			PermissionSetEvent event = new PermissionSetEvent(perm, zone, "p:" + username);
 			if (MinecraftForge.EVENT_BUS.post(event))
 				return event.getCancelReason();
-			
+
 			boolean worked = SqlHelper.setPermission(username, false, perm, zoneID);
-			
+
 			if (!worked)
 				return Localization.get(Localization.ERROR_PERM_SQL);
 		}
@@ -135,10 +141,10 @@ public class PermissionsAPI
 		try
 		{
 			Zone zone = ZoneManager.getZone(zoneID);
-			
+
 			if (zone == null)
 				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
-			
+
 			Group g = SqlHelper.getGroupForName(group);
 			if (g == null)
 				return Localization.format("message.error.nogroup", group);
@@ -149,9 +155,9 @@ public class PermissionsAPI
 			PermissionSetEvent event = new PermissionSetEvent(perm, zone, "g:" + group);
 			if (MinecraftForge.EVENT_BUS.post(event))
 				return event.getCancelReason();
-			
+
 			boolean worked = SqlHelper.setPermission(group, true, perm, zoneID);
-			
+
 			if (!worked)
 				return Localization.get(Localization.ERROR_PERM_SQL);
 		}
@@ -163,23 +169,22 @@ public class PermissionsAPI
 		return null;
 	}
 
-	
-// ill recreate it when I need it...
-//	/**
-//	 * Gets all the groups that were explicitly created in the given zone. these groups will only apply
-//	 * to the given Zone and all of its children.
-//	 * @param zoneID zone to check.
-//	 * @return List of Groups. may be an empty list, but never null.
-//	 */
-//	protected static ArrayList<Group> getAllGroupsCreatedForZone(String zoneID)
-//	{
-//		ArrayList<Group> gs = new ArrayList<Group>();
-//		for (Group g : groups.values())
-//			if (g.zoneID.equals(zoneID))
-//				gs.add(g);
-//
-//		return gs;
-//	}
+	// ill recreate it when I need it...
+	// /**
+	// * Gets all the groups that were explicitly created in the given zone. these groups will only apply
+	// * to the given Zone and all of its children.
+	// * @param zoneID zone to check.
+	// * @return List of Groups. may be an empty list, but never null.
+	// */
+	// protected static ArrayList<Group> getAllGroupsCreatedForZone(String zoneID)
+	// {
+	// ArrayList<Group> gs = new ArrayList<Group>();
+	// for (Group g : groups.values())
+	// if (g.zoneID.equals(zoneID))
+	// gs.add(g);
+	//
+	// return gs;
+	// }
 
 	/**
 	 * Returns the list of all the groups the player is in at a given time. It is in order of priority the first bieng the highest.
@@ -197,13 +202,13 @@ public class PermissionsAPI
 			temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneID());
 			list.addAll(temp);
 		}
-		
+
 		if (includeDefaults)
 			list.add(DEFAULT);
-		
+
 		return list;
 	}
-	
+
 	public static Group getHighestGroup(EntityPlayer player)
 	{
 		Group high;
@@ -214,19 +219,19 @@ public class PermissionsAPI
 		while (zone != null && list.size() <= 0)
 		{
 			temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneID());
-			
+
 			if (!temp.isEmpty())
 				list.addAll(temp);
-			
+
 			zone = ZoneManager.getZone(zone.parent);
 		}
-		
+
 		if (list.size() == 0)
 			return DEFAULT;
 		else
 			return list.pollFirst();
 	}
-	
+
 	public static Group getGroupForName(String name)
 	{
 		return SqlHelper.getGroupForName(name);

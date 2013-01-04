@@ -635,7 +635,7 @@ public class SqlHelper
 		try
 		{
 			//check if group exists?
-			if (getGroupIDFromGroupName(g.name) >= -4)
+			if (getGroupIDFromGroupName(g.name) >= 0)
 				return false;  // group exists
 			
 			int parent = -5;

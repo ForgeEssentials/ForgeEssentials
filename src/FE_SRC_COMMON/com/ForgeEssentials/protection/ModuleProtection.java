@@ -5,7 +5,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -89,15 +89,15 @@ public class ModuleProtection implements IFEModule
 	public void serverStarted(FMLServerStartedEvent e){}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{	
 		event.registerPermissionDefault("ForgeEssentials.allowedit", false);
 		
 		event.registerPermissionDefault("ForgeEssentials.allowedit.leftclick", false);
 		event.registerPermissionDefault("ForgeEssentials.allowedit.rightclick", false);
 		
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, "ForgeEssentials.allowedit.leftclick", false);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUEST, "ForgeEssentials.allowedit.rightclick", false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.allowedit.leftclick", false);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.allowedit.rightclick", false);
 		
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.allowedit.leftclick", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.allowedit.rightclick", true);
