@@ -1,13 +1,5 @@
 package com.ForgeEssentials.chat;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
 import com.ForgeEssentials.chat.commands.CommandMsg;
 import com.ForgeEssentials.chat.commands.CommandMute;
 import com.ForgeEssentials.chat.commands.CommandNickname;
@@ -15,9 +7,17 @@ import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -101,7 +101,7 @@ public class ModuleChat implements IFEModule
 	}
 	
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.chat.commands.msg", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.chat.commands.r", true);

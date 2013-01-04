@@ -27,6 +27,7 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = doneTo;
 		this.allOrNothing = allOrNothing;
+		this.checkForward = false;
 	}
 
 	public PermQueryPlayerArea(EntityPlayer player, String permission, Point doneTo)
@@ -35,6 +36,25 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = new Selection(doneTo, doneTo);
 		allOrNothing = true;
+		this.checkForward = false;
+	}
+	
+	public PermQueryPlayerArea(EntityPlayer player, String permission, AreaBase doneTo, boolean allOrNothing, boolean checkForward)
+	{
+		super(player, permission);
+		applicable = new ArrayList<AreaBase>();
+		this.doneTo = doneTo;
+		this.allOrNothing = allOrNothing;
+		this.checkForward = checkForward;
+	}
+
+	public PermQueryPlayerArea(EntityPlayer player, String permission, Point doneTo, boolean checkForward)
+	{
+		super(player, permission);
+		applicable = new ArrayList<AreaBase>();
+		this.doneTo = new Selection(doneTo, doneTo);
+		allOrNothing = true;
+		this.checkForward = checkForward;
 	}
 
 	/**

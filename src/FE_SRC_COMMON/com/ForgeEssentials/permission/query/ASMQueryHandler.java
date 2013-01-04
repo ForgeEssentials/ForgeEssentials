@@ -11,9 +11,11 @@ import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_6;
 
-import java.lang.reflect.Method;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 
 import net.minecraftforge.event.EventPriority;
+
+import java.lang.reflect.Method;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
@@ -21,13 +23,13 @@ import org.objectweb.asm.Type;
 
 public class ASMQueryHandler implements IQueryListener
 {
-	private static int					IDs					= 0;
-	private static final String			HANDLER_DESC		= Type.getInternalName(IQueryListener.class);
-	private static final String			HANDLER_FUNC_DESC	= Type.getMethodDescriptor(IQueryListener.class.getDeclaredMethods()[0]);
+	private static int						IDs					= 0;
+	private static final String				HANDLER_DESC		= Type.getInternalName(IQueryListener.class);
+	private static final String				HANDLER_FUNC_DESC	= Type.getMethodDescriptor(IQueryListener.class.getDeclaredMethods()[0]);
 	private static final FEASMClassLoader	LOADER				= new FEASMClassLoader();
 
-	private final IQueryListener		handler;
-	private final PermSubscribe			subInfo;
+	private final IQueryListener			handler;
+	private final PermSubscribe				subInfo;
 
 	public ASMQueryHandler(Object target, Method method) throws Exception
 	{
@@ -39,7 +41,22 @@ public class ASMQueryHandler implements IQueryListener
 	public void invoke(PermQuery query)
 	{
 		if (handler != null)
+		{
+			if (handlesResult(query.getResult()))
+			{
 				handler.invoke(query);
+			}
+		}
+	}
+
+	private boolean handlesResult(PermResult result)
+	{
+		for (PermResult r : subInfo.handleResult())
+		{
+			if (r.equals(result))
+				return true;
+		}
+		return false;
 	}
 
 	public EventPriority getPriority()

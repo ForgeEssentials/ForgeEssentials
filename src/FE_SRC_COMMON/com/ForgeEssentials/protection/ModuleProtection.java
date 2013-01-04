@@ -11,9 +11,7 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.core.customEvents.PlayerBlockBreak;
-import com.ForgeEssentials.core.customEvents.PlayerBlockPlace;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.permission.ZoneManager;
@@ -94,12 +92,12 @@ public class ModuleProtection implements IFEModule
 	public void serverStarted(FMLServerStartedEvent e){}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		//event.registerPermissionDefault(PERM, false);
 		for(String perm : permissions.keySet())
 		{
-			event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, 		perm, permissions.get(perm).get(PermissionsAPI.GROUP_DEFAULT));
+			event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, 		perm, permissions.get(perm).get(PermissionsAPI.GROUP_DEFAULT));
 			event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, 		perm, permissions.get(perm).get(PermissionsAPI.GROUP_MEMBERS));
 			event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, 	perm, permissions.get(perm).get(PermissionsAPI.GROUP_ZONE_ADMINS));
 			event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, 		perm, permissions.get(perm).get(PermissionsAPI.GROUP_DEFAULT));

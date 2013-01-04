@@ -18,7 +18,7 @@ import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.MySQLDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLiteDataDriver;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -161,7 +161,7 @@ public class ForgeEssentials
 	}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		
 	}

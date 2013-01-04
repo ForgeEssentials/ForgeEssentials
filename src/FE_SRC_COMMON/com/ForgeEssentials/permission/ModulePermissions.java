@@ -22,9 +22,7 @@ public class ModulePermissions implements IFEModule
 	public static ConfigPermissions						config;
 	public static PermissionsHandler					pHandler;
 	public static ZoneManager							zManager;
-	public static GroupManager							gManager;
-	public static PlayerManager							pManager;
-	public static SqlLiteHelper							sql; 
+	public static SqlHelper							sql; 
 
 	public static File									permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
 
@@ -36,8 +34,6 @@ public class ModulePermissions implements IFEModule
 
 		OutputHandler.SOP("Permissions module is enabled. Loading...");
 		zManager = new ZoneManager();
-		gManager = new GroupManager();
-		pManager = new PlayerManager();
 		
 		MinecraftForge.EVENT_BUS.register(zManager);
 		
@@ -52,7 +48,7 @@ public class ModulePermissions implements IFEModule
 
 		MinecraftForge.EVENT_BUS.register(this);
 
-		MinecraftForge.EVENT_BUS.post(new ForgeEssentialsPermissionRegistrationEvent());
+		MinecraftForge.EVENT_BUS.post(new PermissionRegistrationEvent());
 		
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
@@ -79,7 +75,7 @@ public class ModulePermissions implements IFEModule
 	}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
 		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.permissions", true);

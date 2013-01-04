@@ -9,7 +9,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.vector.Vector2;
@@ -88,7 +88,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		
 	}

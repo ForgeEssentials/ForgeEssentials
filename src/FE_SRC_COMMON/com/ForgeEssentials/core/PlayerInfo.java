@@ -73,6 +73,8 @@ public class PlayerInfo
 		
 		info.spawnType = (Integer) tag.getFieldValue("spawnType");
 		
+		info.prefix = (String) tag.getFieldValue("prefix");
+		info.suffix = (String) tag.getFieldValue("suffix");
 		return info;
 	}
 
@@ -103,6 +105,12 @@ public class PlayerInfo
 	@SaveableField(nullableField = true)
 	public WorldPoint back;
 	
+	@SaveableField()
+	public String prefix;
+	
+	@SaveableField()
+	public String suffix;
+	
 	// 0: Normal 1: World spawn 2: Bed 3: Home
 	@SaveableField
 	public int spawnType;
@@ -123,6 +131,9 @@ public class PlayerInfo
 
 		undos = new Stack<BackupArea>();
 		redos = new Stack<BackupArea>();
+		
+		prefix = "";
+		suffix = "";
 	}
 	
 	/**

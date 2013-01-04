@@ -42,7 +42,7 @@ import com.ForgeEssentials.commands.vanilla.CommandWeather;
 import com.ForgeEssentials.commands.vanilla.CommandWhitelist;
 import com.ForgeEssentials.commands.vanilla.CommandXP;
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -208,9 +208,16 @@ public class ModuleCommands implements IFEModule
 	}
 	
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		
+		// TODO:needs changing.
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.BasicCommands", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.BasicCommands.list", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.BasicCommands.rules", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.BasicCommands.motd", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.BasicCommands.tps", true);
+		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_GUESTS, "ForgeEssentials.BasicCommands.modlist", true);
 	}
 
 	@Override
