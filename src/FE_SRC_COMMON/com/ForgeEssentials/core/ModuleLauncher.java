@@ -20,6 +20,7 @@ import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -169,8 +170,24 @@ public class ModuleLauncher
 		for (IFEModule module : modules)
 			module.preLoad(e);
 		
+		boolean generate = false;
 		for (IFEModule module : modules)
-			module.getConfig().init();
+		{
+			IModuleConfig cfg = module.getConfig();
+			File file = cfg.getFile();
+			
+			if (!file.getParentFile().exists())
+			{
+				generate = true;
+				file.getParentFile().mkdirs();
+			}
+			
+			if (!generate && (!file.exists() || !file.isFile()))
+				generate = true;
+			
+			cfg.setGenerate(generate);
+			cfg.init();
+		}
 	}
 
 	public void load(FMLInitializationEvent e)
