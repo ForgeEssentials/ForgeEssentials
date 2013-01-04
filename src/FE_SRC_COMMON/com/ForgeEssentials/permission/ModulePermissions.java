@@ -19,12 +19,12 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModulePermissions implements IFEModule
 {
-	public static ConfigPermissions						config;
-	public static PermissionsHandler					pHandler;
-	public static ZoneManager							zManager;
-	public static SqlHelper							sql; 
+	// public static ConfigPermissions config;
+	public static PermissionsHandler	pHandler;
+	public static ZoneManager			zManager;
+	public static SqlHelper				sql;
 
-	public static File									permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
+	public static File					permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
 
 	@Override
 	public void preLoad(FMLPreInitializationEvent e)
@@ -34,11 +34,11 @@ public class ModulePermissions implements IFEModule
 
 		OutputHandler.SOP("Permissions module is enabled. Loading...");
 		zManager = new ZoneManager();
-		
+
 		MinecraftForge.EVENT_BUS.register(zManager);
-		
+
 		// testing DB.
-		//sql = new SqlLiteHelper();
+		// sql = new SqlLiteHelper();
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class ModulePermissions implements IFEModule
 		MinecraftForge.EVENT_BUS.register(this);
 
 		MinecraftForge.EVENT_BUS.post(new PermissionRegistrationEvent());
-		
+
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
 	}
@@ -59,14 +59,14 @@ public class ModulePermissions implements IFEModule
 	{
 		OutputHandler.SOP("Ending permissions registration period.");
 
-		config = new ConfigPermissions();
+		// config = new ConfigPermissions();
 	}
 
 	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandZone());
-		//e.registerServerCommand(new CommandPermSet());
+		e.registerServerCommand(new CommandFEPerm());
 	}
 
 	@Override
@@ -88,9 +88,9 @@ public class ModulePermissions implements IFEModule
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		/*
-		for (Zone zone : ZoneManager.zoneMap.values())
-			DataDriver.saveObject(zone);
-			*/
+		 * for (Zone zone : ZoneManager.zoneMap.values())
+		 * DataDriver.saveObject(zone);
+		 */
 	}
 
 }

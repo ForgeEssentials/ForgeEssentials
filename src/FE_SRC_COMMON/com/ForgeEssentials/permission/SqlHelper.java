@@ -739,6 +739,7 @@ public class SqlHelper
 	 * @return ALLOW/DENY if the permission or a parent is allowed/denied. UNKNOWN if nor it or any parents were not found.
 	 * UNKNOWN also if the target or the zone do not exist.
 	 */
+	@SuppressWarnings("incomplete-switch")
 	protected static PermResult getPermissionResult(String target, boolean isGroup, PermissionChecker perm, String zone, boolean checkForward)
 	{
 		try
@@ -748,6 +749,7 @@ public class SqlHelper
 			int isG = isGroup ? 1 : 0;
 			int allowed = -1;
 			PreparedStatement statement = instance.statementGetPermission;
+			ResultSet set;
 			
 			if (isGroup)
 				tID = getGroupIDFromGroupName(target);
@@ -757,25 +759,89 @@ public class SqlHelper
 			if (zID < -4 || tID < -4)
 				return PermResult.UNKNOWN;
 			
-			if (checkForward)
-				statement = instance.statementGetPermissionForward;
+			// initial check.
+			statement.setInt(1, tID);
+			statement.setInt(2, isG);
+			statement.setString(3, perm.name);
+			statement.setInt(4, zID);
+			set = statement.executeQuery();
+			statement.clearParameters();
 			
-			while (perm != null)
-			{
+			PermResult initial = PermResult.UNKNOWN;
+			if (set.next())
+				return set.getInt(1) > 0 ? PermResult.ALLOW : PermResult.DENY;
+			
+				
+				// if the stuff is FORWARD!
+			if (checkForward)
+			{	
+				statement = instance.statementGetPermissionForward;
+				
 				// target, isgroup, perm, zone >> allowed
 				statement.setInt(1, tID);
 				statement.setInt(2, isG);
 				statement.setString(3, perm.name);
 				statement.setInt(4, zID);
-				ResultSet set = statement.executeQuery();
+				set = statement.executeQuery();
 				statement.clearParameters();
 				
+				boolean allow = false;
+				boolean deny = false;
+				
+				switch(initial)
+				{
+					case ALLOW: allow = true;
+						break;
+					case DENY: deny = true;
+						break;
+				}
+				
+				while(set.next())
+				{
+					allowed = set.getInt(1); // allowed.. only 1 column.
+					
+					if (allowed == 0) // deny.  1 or 0
+						deny= true;
+					else
+						allow = true;
+					
+					if (allow && deny)
+					{
+						instance.statementGetPermission.clearParameters();
+						return PermResult.PARTIAL;
+					}
+				}
+				
+				if (allowed > -1)
+				{
+					instance.statementGetPermission.clearParameters();
+					if (allow && !deny)
+					return PermResult.DENY;
+				}
+				
+				statement = instance.statementGetPermission;
+			}
+			
+			
+			if (!initial.equals(PermResult.UNKNOWN))
+			{
+				instance.statementGetPermission.clearParameters();
+				return initial;
+			}
+			
+			// normal checking of the parents now
+			while (perm != null)
+			{
+				// params still set from initial
+				statement.setString(3, perm.name);
+				set = statement.executeQuery();
+
 				if (set.next())
 				{
 					allowed = set.getInt(1); // allowed.. only 1 column.
-					return allowed > 0 ? PermResult.ALLOW : PermResult.DENY; 
+					return allowed > 0 ? PermResult.ALLOW : PermResult.DENY;
 				}
-				
+
 				if (!perm.hasParent())
 					perm = null;
 				else

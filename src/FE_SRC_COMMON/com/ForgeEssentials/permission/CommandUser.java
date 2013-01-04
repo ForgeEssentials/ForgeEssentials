@@ -8,17 +8,12 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandUser extends CommandFEPermBase {
-
-	@Override
-	public String getCommand()
+public class CommandUser
+{
+	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		return "user";
-	}
-
-	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
+		sender.sendChatToPlayer("TEST!!!!");
+		
 		if(args.length == 0)
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
@@ -106,16 +101,9 @@ public class CommandUser extends CommandFEPermBase {
 		}
 	}
 
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
+	public static void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		
-	}
-
-	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.Permissions." + getCommand();
 	}
 
 }
