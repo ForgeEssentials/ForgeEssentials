@@ -7,6 +7,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
@@ -92,6 +93,12 @@ public class ModulePermissions implements IFEModule
 		 * for (Zone zone : ZoneManager.zoneMap.values())
 		 * DataDriver.saveObject(zone);
 		 */
+	}
+
+	@Override
+	public IModuleConfig getConfig() 
+	{
+		return null;
 	}
 
 }

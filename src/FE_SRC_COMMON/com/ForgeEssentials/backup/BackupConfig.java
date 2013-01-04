@@ -19,7 +19,7 @@ public class BackupConfig implements IModuleConfig
 	@Override
 	public void init() 
 	{
-		config = new Configuration();
+		config = new Configuration(file);
 		config.addCustomCategoryComment("Backups", "Configure the backup system.");
 		BackupThread.backupName = config.get("Backups", "name", "%world-%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world").value;
 		String backupdir = ForgeEssentials.fedirloc + config.get("Backups", "folder", "backups/", "The path to the backup folder. This is relative to the ForgeEssentials folder").value;
