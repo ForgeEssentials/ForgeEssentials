@@ -74,9 +74,9 @@ public class PlayerInfo
 		info.spawnType = (Integer) tag.getFieldValue("spawnType");
 		
 		info.prefix = (String) tag.getFieldValue("prefix");
-		info.prefix = (String) tag.getFieldValue("suffix");
+		info.suffix = (String) tag.getFieldValue("suffix");
 		
-		return null;
+		return info;
 	}
 
 	// -------------------------------------------------------------------------------------------

@@ -850,6 +850,57 @@ public class SqlHelper
 		}
 	}
 	
+	protected static boolean delZone(String name)
+	{
+		try
+		{
+			instance.statementDelZone.setString(1, name);
+			instance.statementDelZone.executeUpdate();
+			instance.statementDelZone.clearParameters();
+			
+			return true;
+			
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	protected static boolean createZone(String name)
+	{
+		try
+		{
+			instance.statementPutZone.setString(1, name);
+			instance.statementPutZone.executeUpdate();
+			instance.statementPutZone.clearParameters();
+			
+			return true;
+			
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	protected static boolean doesZoneExist(String name)
+	{
+		try
+		{
+			int ID = getZoneIDFromZoneName(name);
+			
+			return ID > 0;
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 	// -------------------------------ID <<>> NAME  METHODS ----------------------------------------------

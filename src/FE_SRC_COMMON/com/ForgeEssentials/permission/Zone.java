@@ -18,9 +18,10 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.WorldArea;
 
 @SaveableObject
-public class Zone extends AreaBase implements Comparable
+public class Zone extends WorldArea implements Comparable
 {
 	@SaveableField
 	public int		priority;	// lowest priority is 0
@@ -32,45 +33,39 @@ public class Zone extends AreaBase implements Comparable
 	@SaveableField
 	public String	parent;	// the unique name of the parent.
 
-	@SaveableField
-	private int		dimension;	// the WorldString of world this zone exists in.
-
 	public Zone(String name, Selection sel, Zone parent)
 	{
-		super(sel.getLowPoint(), sel.getHighPoint());
+		super(parent.dim, sel);
 		this.zoneID = name;
 		this.parent = parent.zoneID;
-		dimension = parent.dimension;
 	}
 
 	public Zone(String name, Selection sel, World world)
 	{
-		super(sel.getLowPoint(), sel.getHighPoint());
+		super(world, sel);
 		this.zoneID = name;
 		parent = FunctionHelper.getZoneWorldString(world);
-		dimension = world.provider.dimensionId;
 	}
 
 	/**
 	 * used to construct Global and World zones.
 	 * @param name
 	 */
-	public Zone(String name, World world)
+	public Zone(String name, int dimension)
 	{
-		super(new Point(0, 0, 0), new Point(0, 0, 0));
+		super(dimension, new Point(0, 0, 0), new Point(0, 0, 0));
 		this.zoneID = name;
 
 		if (!name.equals("_GLOBAL_"))
 		{
 			parent = ZoneManager.GLOBAL.zoneID;
-			dimension = world.provider.dimensionId;
 		}
 	}
 
 	// used for reconstruct method only.
-	private Zone(Selection sel)
+	private Zone(Selection sel, int dim)
 	{
-		super(sel.getLowPoint(), sel.getHighPoint());
+		super(dim, sel.getLowPoint(), sel.getHighPoint());
 	}
 
 	public boolean isParentOf(Zone zone)
@@ -95,7 +90,7 @@ public class Zone extends AreaBase implements Comparable
 		if (zone.parent == null)
 			return true;
 		else if (zone.parent.equals(ZoneManager.GLOBAL.zoneID))
-			return dimension == zone.dimension;
+			return dim == zone.dim;
 		else if (zone.zoneID.equals(parent))
 			return true;
 		else
@@ -133,17 +128,18 @@ public class Zone extends AreaBase implements Comparable
 	}
 
 	@Reconstructor
-	private static void reconstruct(TaggedClass tag)
+	private static Zone reconstruct(TaggedClass tag)
 	{
 		Selection sel = new Selection((Point) tag.getFieldValue("high"), (Point) tag.getFieldValue("low"));
-
-		Zone zone = new Zone(sel);
+		int dim = (Integer) tag.getFieldValue("dimension");
+		
+		Zone zone = new Zone(sel, dim);
 
 		zone.zoneID = (String) tag.getFieldValue("name");
 		zone.parent = (String) tag.getFieldValue("parent");
-		zone.dimension = (Integer) tag.getFieldValue("dimension");
+		zone.dim = (Integer) tag.getFieldValue("dimension");
 		zone.priority = (Integer) tag.getFieldValue("priority");
 
-		ZoneManager.zoneMap.put(zone.zoneID, zone);
+		return zone;
 	}
 }
