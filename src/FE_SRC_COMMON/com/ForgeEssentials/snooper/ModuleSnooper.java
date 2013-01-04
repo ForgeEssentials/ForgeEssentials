@@ -9,6 +9,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.snooper.API.API;
 import com.ForgeEssentials.snooper.response.PlayerArmor;
 import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
@@ -62,10 +63,7 @@ public class ModuleSnooper implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPermissionDefault("ForgeEssentials.Snooper.commands", false);
-		event.registerPermissionDefault("ForgeEssentials.Snooper.commands.reloadquery", false);
-		
-		event.registerPerm(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.commands.reloadquery", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.commands", true);
 	}
     
     public static void startQuery()
