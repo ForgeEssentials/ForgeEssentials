@@ -606,17 +606,17 @@ public class MySQLDataDriver extends DataDriver
 	private Object valueToField(Class targetType, Object dbValue)
 	{
 		Object value = null;
-		if (targetType.equals(Integer.class))
+		if (targetType.equals(int.class))
 		{
 			// DB Value is an integer
 			value = (Integer)dbValue;
 		}
-		else if (targetType.equals(Double.class))
+		else if (targetType.equals(double.class))
 		{
 			// DB Value is a double
 			value = (Double)dbValue;
 		}
-		else if (targetType.equals(Float.class))
+		else if (targetType.equals(float.class))
 		{
 			// DB value is a Double.
 			value = (Float)((Double)dbValue).floatValue();
@@ -626,7 +626,7 @@ public class MySQLDataDriver extends DataDriver
 			// DB Value is a string
 			value = (String)dbValue;
 		}
-		else if (targetType.equals(Boolean.class))
+		else if (targetType.equals(boolean.class))
 		{
 			// DB Value is an integer (1=true, 0=false)
 			value = ((Integer)dbValue).equals(1);
