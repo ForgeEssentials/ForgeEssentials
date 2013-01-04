@@ -20,6 +20,7 @@ import com.ForgeEssentials.WorldControl.commands.CommandWand;
 import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 
@@ -110,5 +111,12 @@ public class ModuleWorldControl implements IFEModule
 	public void serverStopping(FMLServerStoppingEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public IModuleConfig getConfig()
+	{
+		// TODO:!!!!
+		return null;
 	}
 }

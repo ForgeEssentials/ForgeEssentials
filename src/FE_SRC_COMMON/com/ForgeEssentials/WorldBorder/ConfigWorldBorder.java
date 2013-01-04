@@ -9,7 +9,10 @@ import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.command.ICommandSender;
 
 /**
  * This generates the configuration structure
@@ -18,11 +21,11 @@ import com.ForgeEssentials.util.OutputHandler;
  *
  */
 
-public class ConfigWorldBorder 
+public class ConfigWorldBorder implements IModuleConfig
 {
 	public static final File wbconfig = new File(ForgeEssentials.FEDIR, "WorldBorder.cfg");
 	
-	public final Configuration config;
+	private Configuration config;
 	
 	/**
 	 * This list makes sure the effect is in the example file.
@@ -32,12 +35,6 @@ public class ConfigWorldBorder
 	
 	public ConfigWorldBorder()
 	{
-		config = new Configuration(wbconfig, true);
-		
-		penaltiesConfig(config);
-		commonConfig(config);
-		
-		config.save();
 	}
 	
 	/**
@@ -107,6 +104,47 @@ public class ConfigWorldBorder
 			
 			ModuleWorldBorder.registerEffects(dist, effctList);
 		}
+	}
+
+	@Override
+	public void setGenerate(boolean generate)
+	{
+		// TODO Auto-generated method stub
+		// nothing here apperantly...
+		
+	}
+
+	@Override
+	public void init()
+	{
+		config = new Configuration(wbconfig, true);
+		penaltiesConfig(config);
+		commonConfig(config);
+		config.save();
+	}
+	
+	/*
+	 * 	// now just to generate an error for future reference..
+	
+	@Override
+	public void forceSave()
+	{
+		// TODO Auto-generated method stub
+		// ??????
+	}
+
+	@Override
+	public void forceLoad(ICommandSender sender)
+	{
+		// TODO Auto-generated method stub
+		// ??????
+	}
+	*/
+
+	@Override
+	public File getFile()
+	{
+		return wbconfig;
 	}
 	
 

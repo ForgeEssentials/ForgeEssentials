@@ -9,6 +9,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.OutputHandler;
@@ -296,5 +297,11 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		
 		
 		DataStorage.setData("WorldBorder", borderData);
+	}
+
+	@Override
+	public IModuleConfig getConfig()
+	{
+		return config;
 	}
 }

@@ -7,6 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.RegGroup;
@@ -103,4 +104,10 @@ public class ModuleSnooper implements IFEModule
 	@Override
 	public void preLoad(FMLPreInitializationEvent e) 
 	{}
+
+	@Override
+	public IModuleConfig getConfig()
+	{
+		return configSnooper;
+	}
 }
