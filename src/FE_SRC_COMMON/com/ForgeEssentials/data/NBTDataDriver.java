@@ -261,7 +261,7 @@ public class NBTDataDriver extends DataDriver
 		{
 			return null;
 		}
-		else if (field.type.equals(Integer.class))
+		else if (field.type.equals(int.class))
 		{
 			return tag.getInteger(field.name);
 		}
@@ -269,11 +269,11 @@ public class NBTDataDriver extends DataDriver
 		{
 			return tag.getIntArray(field.name);
 		}
-		else if (field.type.equals(Float.class))
+		else if (field.type.equals(float.class))
 		{
 			return tag.getFloat(field.name);
 		}
-		else if (field.type.equals(Double.class))
+		else if (field.type.equals(double.class))
 		{
 			return tag.getDouble(field.name);
 		}
@@ -286,7 +286,7 @@ public class NBTDataDriver extends DataDriver
 			
 			return array;
 		}
-		else if (field.type.equals(Boolean.class))
+		else if (field.type.equals(boolean.class))
 		{
 			return tag.getBoolean(field.name);
 		}

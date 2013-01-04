@@ -67,7 +67,7 @@ public class WorldPoint extends Point
 	}
 	
 	@Reconstructor()
-	private static WorldPoint reconstruct(TaggedClass tag)
+	public static WorldPoint reconstruct(TaggedClass tag)
 	{
 		int x = (Integer) tag.getFieldValue("x");
 		int y = (Integer) tag.getFieldValue("y");

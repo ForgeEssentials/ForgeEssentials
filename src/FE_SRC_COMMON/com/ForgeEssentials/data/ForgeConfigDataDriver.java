@@ -88,7 +88,10 @@ public class ForgeConfigDataDriver extends DataDriver
 		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
 		TypeTagger tag = DataStorageManager.getTaggerForType(type);
 		
-		return readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), tag);
+		TaggedClass data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), tag);
+		data.addField(data.new SavedField(tag.uniqueKey, uniqueKey));
+		
+		return data;
 	}
 
 	@Override
@@ -173,7 +176,7 @@ public class ForgeConfigDataDriver extends DataDriver
 	
 	private Object readFieldFromProperty(Configuration cfg, String category, SavedField field)
 	{
-		if (field.type.equals(Integer.class))
+		if (field.type.equals(int.class))
 		{
 			return cfg.get(category, field.name, 0).getInt();
 		}
@@ -181,7 +184,7 @@ public class ForgeConfigDataDriver extends DataDriver
 		{
 			return cfg.get(category, field.name, new int[] {}).getIntList();
 		}
-		else if (field.type.equals(Float.class) || field.type.equals(Double.class))
+		else if (field.type.equals(float.class) || field.type.equals(Double.class))
 		{
 			return cfg.get(category, field.name, 0d).getDouble(0);
 		}
@@ -189,7 +192,7 @@ public class ForgeConfigDataDriver extends DataDriver
 		{
 			return cfg.get(category, field.name, new double[] {}).getDoubleList();
 		}
-		else if (field.type.equals(Boolean.class))
+		else if (field.type.equals(boolean.class))
 		{
 			return cfg.get(category, field.name, false).getBoolean(false);
 		}

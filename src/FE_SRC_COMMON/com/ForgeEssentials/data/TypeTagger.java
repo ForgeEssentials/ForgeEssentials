@@ -197,18 +197,27 @@ public class TypeTagger
 	 */
 	public Object createFromFields(TaggedClass data)
 	{
+		Object value = null;
+		for (TaggedClass.SavedField field : data.TaggedMembers.values())
+		{
+			if (field.value instanceof TaggedClass)
+			{
+				field.value = DataStorageManager.getTaggerForType(this.getTypeOfField(field.name)).createFromFields((TaggedClass)field.value);
+			}
+		}
+		
 		try
 		{
-			Method reconstructor = data.type.getMethod(reconstructorMethod, TaggedClass.class);
+			Method reconstructor = this.forType.getDeclaredMethod(reconstructorMethod, TaggedClass.class);
 			reconstructor.setAccessible(true);
-			Object obj = reconstructor.invoke(null, data);
+			value = reconstructor.invoke(null, data);
 		}
 		catch (Throwable thrown)
 		{
 			OutputHandler.felog.log(Level.SEVERE, "Error loading " + data.type + " with name " + data.uniqueKey, thrown);
 		}
 		
-		return null;
+		return value;
 	}
 	
 	private Object savedFieldToObject(TaggedClass.SavedField field)
