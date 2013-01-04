@@ -22,7 +22,6 @@ import com.ForgeEssentials.commands.vanilla.CommandDeop;
 import com.ForgeEssentials.commands.vanilla.CommandDifficulty;
 import com.ForgeEssentials.commands.vanilla.CommandEnchant;
 import com.ForgeEssentials.commands.vanilla.CommandGameRule;
-import com.ForgeEssentials.commands.vanilla.CommandHelp;
 import com.ForgeEssentials.commands.vanilla.CommandKick;
 import com.ForgeEssentials.commands.vanilla.CommandMe;
 import com.ForgeEssentials.commands.vanilla.CommandOp;
@@ -41,10 +40,8 @@ import com.ForgeEssentials.commands.vanilla.CommandToggleDownfall;
 import com.ForgeEssentials.commands.vanilla.CommandWeather;
 import com.ForgeEssentials.commands.vanilla.CommandWhitelist;
 import com.ForgeEssentials.commands.vanilla.CommandXP;
-import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
-import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -120,6 +117,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandSpawn());
 		e.registerServerCommand(new CommandTp());
 		e.registerServerCommand(new CommandTphere());
+		e.registerServerCommand(new CommandTppos());
 		e.registerServerCommand(new CommandWarp());
 		//cheat
 		e.registerServerCommand(new CommandRepair());

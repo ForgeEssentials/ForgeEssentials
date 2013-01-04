@@ -79,6 +79,99 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				return;
 			}
 		}
+		else if(args.length >= 3)
+		{
+			if (args.length == 3)
+			{
+				int x = 0, y = 0, z = 0;
+				try
+				{
+					x = new Integer(args[0]);
+				}
+				catch (NumberFormatException e)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
+					return;
+				}
+				try
+				{
+					y = new Integer(args[1]);
+				}
+				catch (NumberFormatException e)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+					return;
+				}
+				try
+				{
+					z = new Integer(args[2]);
+				}
+				catch (NumberFormatException e)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
+					return;
+				}
+				EntityPlayerMP player = (EntityPlayerMP)sender;
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+				playerInfo.back = new WorldPoint(player);
+				player.playerNetServerHandler.setPlayerLocation(x, y, z, player.cameraYaw, player.cameraPitch);
+				player.sendChatToPlayer("Poof!");
+			}
+			else if(args.length == 4)
+			{
+
+				int x = 0, y = 0, z = 0;
+				try
+				{
+					x = new Integer(args[1]);
+				}
+				catch (NumberFormatException e)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+					return;
+				}
+				try
+				{
+					y = new Integer(args[2]);
+				}
+				catch (NumberFormatException e)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
+					return;
+				}
+				try
+				{
+					z = new Integer(args[3]);
+				}
+				catch (NumberFormatException e)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[3]));
+					return;
+				}
+				EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+				if (player != null)
+				{
+					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+					playerInfo.back = new WorldPoint(player);
+//					if(player.dimension != target.dimension)
+//					{
+//						player.mcServer.getConfigurationManager().transferPlayerToDimension(player, target.dimension);
+//					}
+					player.playerNetServerHandler.setPlayerLocation(x, y, z, player.cameraYaw, player.cameraPitch);
+					player.sendChatToPlayer("Poof!");
+				}
+				else
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+			else
+			{
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+			}
+		}
+		else
+		{
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+		}
 	}
 
 	@Override
