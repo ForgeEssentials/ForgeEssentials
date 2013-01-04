@@ -45,7 +45,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 				{
 					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, target.dimension);
 				}
-				player.setPositionAndRotation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
+				player.playerNetServerHandler.setPlayerLocation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
 				player.sendChatToPlayer("Poof!");
 			}
 			else
@@ -58,24 +58,13 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length >= 1)
-		{
-			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			if (player != null)
-			{
-				PlayerInfo.getPlayerInfo((EntityPlayer) player).back = new WorldPoint(player);
-				ChunkCoordinates spawn = player.getBedLocation();
-				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
-				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
-			} else
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-		}
+		
 	}
 
 	@Override
 	public boolean canConsoleUseCommand()
 	{
-		return true;
+		return false;
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				{
 					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, target.dimension);
 				}
-				player.setPositionAndRotation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
+				player.playerNetServerHandler.setPlayerLocation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
 				player.sendChatToPlayer("Poof!");
 			}
 			else
@@ -63,7 +63,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				{
 					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, target.dimension);
 				}
-				player.setPositionAndRotation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
+				player.playerNetServerHandler.setPlayerLocation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
 				player.sendChatToPlayer("Poof!");
 			}
 			else
@@ -96,7 +96,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				{
 					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, target.dimension);
 				}
-				player.setPositionAndRotation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
+				player.playerNetServerHandler.setPlayerLocation(target.posX, target.posY, target.posZ, target.cameraYaw, target.cameraPitch);
 				player.sendChatToPlayer("Poof!");
 			}
 			else

@@ -71,7 +71,6 @@ public final class FunctionHelper
 		{
 			if(player instanceof EntityPlayerMP)
 			{
-				OutputHandler.SOP(((EntityPlayerMP) player).getCommandSenderName().toLowerCase() + "" + username.toLowerCase());
 				if(((EntityPlayerMP) player).getCommandSenderName().toLowerCase().contains(username.toLowerCase()))
 					possibles.add((EntityPlayerMP)player);
 				target = (EntityPlayerMP)player;
