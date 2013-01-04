@@ -107,7 +107,7 @@ public class ModuleProtection implements IFEModule
 	}
 
 	@Override
-	public IModuleConfig getConfig() 
+	public IModuleConfig getConfig()
 	{
 		return config;
 	}

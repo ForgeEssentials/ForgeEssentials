@@ -3,6 +3,7 @@ package com.ForgeEssentials.core.commands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 

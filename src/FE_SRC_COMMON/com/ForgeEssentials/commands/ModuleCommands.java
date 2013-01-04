@@ -224,7 +224,6 @@ public class ModuleCommands implements IFEModule
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

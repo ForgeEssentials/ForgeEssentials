@@ -102,7 +102,7 @@ public class PlayerInfoResonce extends Response
 	}
 	
 	@Override
-	public void setupConfig(String category, Configuration config)
+	public void readConfig(String category, Configuration config)
 	{
 		sendhome = config.get(category, "sendHome", true).getBoolean(true);
 		sendpotions = config.get(category, "sendpotions", true).getBoolean(true);
@@ -110,5 +110,16 @@ public class PlayerInfoResonce extends Response
 		sendArmorAndHealth = config.get(category, "sendArmorAndHealth", true).getBoolean(true);
 		sendFood = config.get(category, "sendFood", true).getBoolean(true);
 		sendCapabilities = config.get(category, "sendCapabilities", true).getBoolean(true);
+	}
+	
+	@Override
+	public void writeConfig(String category, Configuration config)
+	{
+		config.get(category, "sendHome", true).value = ""+sendhome;
+		config.get(category, "sendpotions", true).value = ""+sendpotions;
+		config.get(category, "sendXP", true).value = ""+sendXP;
+		config.get(category, "sendArmorAndHealth", true).value = ""+sendArmorAndHealth;
+		config.get(category, "sendFood", true).value = ""+sendFood;
+		config.get(category, "sendCapabilities", true).value = ""+sendCapabilities;
 	}
 }

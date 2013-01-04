@@ -94,7 +94,7 @@ public class ServerInfo extends Response
 	}
 
 	@Override
-	public void setupConfig(String category, Configuration config)
+	public void readConfig(String category, Configuration config)
 	{
 		sendWB = config.get(category, "sendWB", true).getBoolean(true);
 		sendMotd = config.get(category, "sendMotd", true).getBoolean(true);
@@ -105,6 +105,24 @@ public class ServerInfo extends Response
 		TPSList = config.get(category, "TPS_dim", new int[]{-1 ,0 ,1}, "Dimentions to send TPS of").getIntList();
 		ServerID = config.get(category, "ServerID", 0, "This is here to make it easy for other sites (server lists) to help authenticate the server.").getInt();
 		serverHash = config.get(category, "serverHash", "", "This is here to make it easy for other sites (server lists) to help authenticate the server.").value;
+	}
+	
+	@Override
+	public void writeConfig(String category, Configuration config)
+	{
+		config.get(category, "sendWB", true).value = ""+sendWB;
+		config.get(category, "sendMotd", true).value = ""+sendMotd;
+		config.get(category, "sendIP", true).value = ""+sendIP;
+		config.get(category, "overrideIP", true).value = ""+overrideIP;
+		config.get(category, "overrideIPValue", "").value = overrideIPValue;
+		config.get(category, "sendMods", true).value = ""+sendMods;
+		config.get(category, "ServerID", 0, "This is here to make it easy for other sites (server lists) to help authenticate the server.").value = ""+ServerID;
+		config.get(category, "serverHash", "", "This is here to make it easy for other sites (server lists) to help authenticate the server.").value = serverHash;
+		
+		String[] list = new String[TPSList.length];
+		for (int i = 0; i < list.length; i++)
+			list[i] = ""+TPSList[i];
+		config.get(category, "TPS_dim", new int[]{-1 ,0 ,1}, "Dimentions to send TPS of").valueList = list;
 	}
 	
 	public String getUptime()

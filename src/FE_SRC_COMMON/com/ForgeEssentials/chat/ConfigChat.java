@@ -1,34 +1,41 @@
 package com.ForgeEssentials.chat;
 
-import java.io.File;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class ConfigChat implements IModuleConfig {
-	public static final File chatConfig	= new File(ForgeEssentials.FEDIR, "chat.cfg");
-	public static String chatFormat;
-	public Configuration config;
-	
+import net.minecraft.command.ICommandSender;
+
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
+
+import java.io.File;
+
+public class ConfigChat implements IModuleConfig
+{
+	public static final File	chatConfig	= new File(ForgeEssentials.FEDIR, "chat.cfg");
+	public static String		chatFormat;
+	public Configuration		config;
+
 	// this is designed so it will work for any class.
 	public ConfigChat()
 	{
-		
 	}
 
 	@Override
-	public void setGenerate(boolean generate) {}
+	public void setGenerate(boolean generate)
+	{
+	}
 
 	@Override
-	public void init() 
+	public void init()
 	{
+		OutputHandler.debug("Loading chatconfigs");
 		config = new Configuration(chatConfig, true);
+
+		// config.load -- Configurations are loaded on Construction.
 		config.addCustomCategoryComment("Chat", "Chatconfigs");
+
 		Property prop = config.get("Chat", "chatformat", "%prefix<%username>%suffix %white%message");
 		prop.comment = "This String formats the Chat.";
 		prop.comment += "\nIf you want a red color and special formatcodes, the color needs to be first before the special code";
@@ -40,22 +47,20 @@ public class ConfigChat implements IModuleConfig {
 		prop.comment += "\nSpecial formatcodes: %random,%bold,%strike,%underline,%italics";
 		prop.comment += "\nTo reset all formatcodes, you can use %reset";
 		prop.comment += "\nUse %rank to display a users rank, %zone to spcify there current zone";
-		
+
 		chatFormat = prop.value;
-		
+
 		Chat.censor = config.get("Chat", "censor", true, "Censor words in the 'bannedwords.txt' file").getBoolean(true);
-		
-		config.save();	
+
+		config.save();
 	}
 
 	@Override
-	public void forceSave() {}
-
-	@Override
-	public void forceLoad(ICommandSender sender) 
+	public void forceSave()
 	{
-		config = new Configuration(chatConfig, true);
+		// config.load -- Configurations are loaded on Construction.
 		config.addCustomCategoryComment("Chat", "Chatconfigs");
+
 		Property prop = config.get("Chat", "chatformat", "%prefix<%username>%suffix %white%message");
 		prop.comment = "This String formats the Chat.";
 		prop.comment += "\nIf you want a red color and special formatcodes, the color needs to be first before the special code";
@@ -67,16 +72,27 @@ public class ConfigChat implements IModuleConfig {
 		prop.comment += "\nSpecial formatcodes: %random,%bold,%strike,%underline,%italics";
 		prop.comment += "\nTo reset all formatcodes, you can use %reset";
 		prop.comment += "\nUse %rank to display a users rank, %zone to spcify there current zone";
-		
-		chatFormat = prop.value;
-		
-		Chat.censor = config.get("Chat", "censor", true, "Censor words in the 'bannedwords.txt' file").getBoolean(true);
-		
-		config.save();		
+
+		prop.value = chatFormat;
+
+		config.get("Chat", "censor", true, "Censor words in the 'bannedwords.txt' file").value = "" + Chat.censor;
+
+		config.save();
 	}
 
 	@Override
-	public File getFile() 
+	public void forceLoad(ICommandSender sender)
+	{
+		OutputHandler.debug("Loading chatconfigs");
+		config.load();
+
+		chatFormat = config.get("Chat", "chatformat", "%prefix<%username>%suffix %white%message").value;
+
+		Chat.censor = config.get("Chat", "censor", true).getBoolean(true);
+	}
+
+	@Override
+	public File getFile()
 	{
 		return chatConfig;
 	}

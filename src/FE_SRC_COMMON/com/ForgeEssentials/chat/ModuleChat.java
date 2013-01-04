@@ -9,7 +9,6 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
-import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -31,7 +30,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 
 public class ModuleChat implements IFEModule
 {
-	public static ConfigChat conf;
+	public static ConfigChat	conf;
 
 	public ModuleChat()
 	{
@@ -57,25 +56,28 @@ public class ModuleChat implements IFEModule
 	@Override
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		
+
 		File banedFile = new File(ForgeEssentials.FEDIR, "bannedwords.txt");
-		try 
+		try
 		{
-			if(!banedFile.exists()) banedFile.createNewFile();
+			if (!banedFile.exists())
+			{
+				banedFile.createNewFile();
+			}
 			BufferedReader br = new BufferedReader(new FileReader(banedFile));
 			String line;
-			while ((line = br.readLine()) != null) 
+			while ((line = br.readLine()) != null)
 			{
 				OutputHandler.debug(line.trim());
 				Chat.bannedWords.add(line.trim());
 			}
 			br.close();
 		}
-		catch (IOException e1) 
+		catch (IOException e1)
 		{
 			e1.printStackTrace();
 		}
-		
+
 	}
 
 	@Override
@@ -101,7 +103,7 @@ public class ModuleChat implements IFEModule
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
@@ -110,7 +112,7 @@ public class ModuleChat implements IFEModule
 	}
 
 	@Override
-	public IModuleConfig getConfig() 
+	public IModuleConfig getConfig()
 	{
 		return conf;
 	}

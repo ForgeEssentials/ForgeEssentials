@@ -143,8 +143,9 @@ public class ModuleEconomy implements IFEModule, IPlayerTracker
 	}
 
 	@Override
-	public IModuleConfig getConfig() 
+	public IModuleConfig getConfig()
 	{
+		// TODO no economy configs?? really???
 		return null;
 	}
 }

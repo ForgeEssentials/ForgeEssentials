@@ -35,5 +35,7 @@ public abstract class Response
 
 	public abstract String getName();
 
-	public abstract void setupConfig(String category, Configuration config);
+	public abstract void readConfig(String category, Configuration config);
+	
+	public abstract void writeConfig(String category, Configuration config);
 }
