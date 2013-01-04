@@ -161,7 +161,7 @@ public final class FunctionHelper
 
 	public static boolean isPlayerOp(String player)
 	{
-		if(FMLCommonHandler.instance().getSidedDelegate().getServer().isSinglePlayer())
+		if(FMLCommonHandler.instance().getSidedDelegate().getServer().getServerOwner().equals(player))
 			return true;
 		else
 			return FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getOps().contains(player);
