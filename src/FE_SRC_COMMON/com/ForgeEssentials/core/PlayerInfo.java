@@ -73,7 +73,7 @@ public class PlayerInfo
 		
 		info.spawnType = (Integer) tag.getFieldValue("spawnType");
 		
-		return null;
+		return info;
 	}
 
 	// -------------------------------------------------------------------------------------------
