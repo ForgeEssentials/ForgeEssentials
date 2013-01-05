@@ -30,12 +30,12 @@ public class TPdata
 		this.point = point;
 		this.player = player;
 		this.waittime = TeleportCenter.tpWarmup;
-		lastPos = new WorldPoint(player.dimension, (int) player.posX, (int) player.posY, (int) player.posZ);
+		lastPos = new WarpPoint(player.dimension, player.posX, player.posY, player.posZ, player.cameraPitch, player.cameraYaw);
 	}
 	
 	public void count()
 	{
-		currentPos = new WorldPoint(player.dimension, (int) player.posX, (int) player.posY, (int) player.posZ);
+		currentPos = new WarpPoint(player.dimension, player.posX, player.posY, player.posZ, player.cameraPitch, player.cameraYaw);
 		if(!lastPos.equals(currentPos))
 		{
 			TeleportCenter.abort(this);
@@ -50,13 +50,13 @@ public class TPdata
 	
 	public void doTP()
 	{
-		PlayerInfo.getPlayerInfo((EntityPlayer) player).back = new WorldPoint(player);
+		PlayerInfo.getPlayerInfo((EntityPlayer) player).back = new WarpPoint(player);
 		ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
 		if(player.dimension != point.dim)
 		{
 			server.transferPlayerToDimension((EntityPlayerMP) player, point.dim);
 		}
-		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y, point.z, point.yaw, point.pitch);
+		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y, point.z, point.pitch, point.yaw);
 		PlayerInfo.getPlayerInfo((EntityPlayer) player).TPcooldown = TeleportCenter.tpCooldown;
 		TeleportCenter.TPdone(this);
 	}
