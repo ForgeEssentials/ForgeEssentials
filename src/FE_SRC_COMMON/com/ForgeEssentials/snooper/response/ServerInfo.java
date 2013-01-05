@@ -74,11 +74,11 @@ public class ServerInfo extends Response
 		
 		try
 		{
-			if(sendWB && ModuleWorldBorder.WBenabled && ModuleWorldBorder.borderData.getBoolean("set"))
+			if(sendWB && ModuleWorldBorder.WBenabled && ModuleWorldBorder.set)
 			{
 				LinkedHashMap<String, String> temp = new LinkedHashMap();
 				temp.put("Shape", ModuleWorldBorder.shape.name());
-				Point center = new Point(ModuleWorldBorder.borderData.getInteger("centerX"), 64, ModuleWorldBorder.borderData.getInteger("centerZ"));
+				Point center = new Point(ModuleWorldBorder.X, 64, ModuleWorldBorder.Z);
 				temp.put("Center", TextFormatter.toJSON(center));
 				data.put("wb", TextFormatter.toJSON(temp));
 			}

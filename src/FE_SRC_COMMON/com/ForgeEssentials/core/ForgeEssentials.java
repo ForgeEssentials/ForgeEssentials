@@ -19,7 +19,6 @@ import com.ForgeEssentials.data.MySQLDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLiteDataDriver;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
-import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -151,7 +150,6 @@ public class ForgeEssentials
 		// Central TP system
 		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
 
-		DataStorage.load();
 		e.registerServerCommand(new CommandFEVersion());
 		e.registerServerCommand(new CommandFEUpdate());
 		e.registerServerCommand(new CommandFECredits());
@@ -180,13 +178,11 @@ public class ForgeEssentials
 
 		if (FMLCommonHandler.instance().getSide().isServer())
 			dataManager.clearDrivers();
-
-		DataStorage.save();
 	}
 
 	@ForgeSubscribe
 	public void chuckSave(WorldEvent.Save event)
 	{
-		DataStorage.save();
+		
 	}
 }

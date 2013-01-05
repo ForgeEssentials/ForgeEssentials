@@ -12,10 +12,10 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
-import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
+import com.ForgeEssentials.util.Warp;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
@@ -38,29 +38,26 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		NBTTagCompound warpdata = DataStorage.getData("warpdata");
 		if(args.length == 0)
 		{
 			sender.sendChatToPlayer(Localization.get("command.warp.list"));
 			String msg = "";
-			for(Object temp : warpdata.getTags())
+			for(String warp : TeleportCenter.warps.keySet())
 			{
-				NBTTagCompound warp = (NBTTagCompound) temp;
-				msg = warp.getName() + ", " + msg;
+				msg = warp + ", " + msg;
 			}
 			sender.sendChatToPlayer(msg);
 		}
 		else if(args.length == 1)
 		{
-			if(warpdata.hasKey(args[0].toLowerCase()))
+			if(TeleportCenter.warps.containsKey(args[0].toLowerCase()))
 			{
-				if(true)
 				if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
-					NBTTagCompound warp = warpdata.getCompoundTag(args[0].toLowerCase());
+					Warp warp = TeleportCenter.warps.get(args[0].toLowerCase());
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender);
 					playerInfo.back = new WarpPoint(sender);
-					TeleportCenter.addToTpQue(new WarpPoint(warp.getInteger("dim"), warp.getDouble("X"), warp.getDouble("Y"), warp.getDouble("Z"), warp.getFloat("Yaw"), warp.getFloat("Pitch")), sender);
+					TeleportCenter.addToTpQue(warp.getPoint(), sender);
 				}
 				else
 				{
@@ -79,29 +76,22 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 			{
 				if(args[0].equalsIgnoreCase("set"))
 				{
-					if(warpdata.hasKey(args[1].toLowerCase()))
+					if(TeleportCenter.warps.containsKey(args[1].toLowerCase()))
 					{
 						OutputHandler.chatError(sender, Localization.get("command.warp.alreadyexists"));
 					}
 					else
 					{
-						NBTTagCompound warp = new NBTTagCompound();
-							warp.setDouble("X", sender.posX);
-							warp.setDouble("Y", sender.posY);
-							warp.setDouble("Z", sender.posZ);
-							warp.setFloat("Yaw", sender.rotationYaw);
-							warp.setFloat("Pitch", sender.rotationPitch);
-							warp.setInteger("dim", sender.dimension);
-						warpdata.setCompoundTag(args[1].toLowerCase(), warp);
+						TeleportCenter.warps.put(args[1].toLowerCase(), new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
 						
 						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
 					}
 				}
 				else if(args[0].equalsIgnoreCase("del"))
 				{
-					if(warpdata.hasKey(args[1].toLowerCase()))
+					if(TeleportCenter.warps.containsKey(args[1].toLowerCase()))
 					{
-						warpdata.removeTag(args[1].toLowerCase());
+						TeleportCenter.warps.remove(args[1].toLowerCase());
 						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
 					}
 					else
@@ -118,7 +108,6 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 			}
-			DataStorage.setData("warpdata", warpdata);
 		}
 	}
 
@@ -142,17 +131,9 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-		NBTTagCompound warps = DataStorage.getData("warpdata");
-    	Iterator warpsIt = warps.getTags().iterator();
-    	List<String> list = new ArrayList<String>();
-    	while(warpsIt.hasNext()) {
-    		NBTTagCompound buffer = (NBTTagCompound) warpsIt.next();
-    		list.add(buffer.getName());
-    	}
-    	
     	if(args.length == 1)
     	{
-    		return getListOfStringsFromIterableMatchingLastWord(args, list);
+    		return getListOfStringsFromIterableMatchingLastWord(args, TeleportCenter.warps.keySet());
     	}
     	else if(args.length == 2)
     	{

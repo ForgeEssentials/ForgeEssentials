@@ -43,7 +43,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		boolean set = ModuleWorldBorder.borderData.getBoolean("set");
+		boolean set = ModuleWorldBorder.set;
 		//Info
 		if (args.length == 0)
 		{
@@ -54,15 +54,15 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer("Coordinates :");
 				if(ModuleWorldBorder.shape.equals(BorderShape.square))
 				{
-					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.borderData.getInteger("centerX") + "  centerZ:" + ModuleWorldBorder.borderData.getInteger("centerZ"));
-					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.borderData.getInteger("rad") + " Shape: Square");
-					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.borderData.getInteger("minX") + "  maxX:" + ModuleWorldBorder.borderData.getInteger("maxX"));
-					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.borderData.getInteger("minZ") + "  maxZ:" + ModuleWorldBorder.borderData.getInteger("maxZ"));
+					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.X + "  centerZ:" + ModuleWorldBorder.Z);
+					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.rad + " Shape: Square");
+					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.minX + "  maxX:" + ModuleWorldBorder.maxX);
+					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.minZ + "  maxZ:" + ModuleWorldBorder.maxZ);
 				}
 				if(ModuleWorldBorder.shape.equals(BorderShape.round))
 				{
-					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.borderData.getInteger("centerX") + "  centerZ:" + ModuleWorldBorder.borderData.getInteger("centerZ"));
-					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.borderData.getInteger("rad") + " Shape: Round");
+					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.X + "  centerZ:" + ModuleWorldBorder.Z);
+					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.rad + " Shape: Round");
 				}
 			}
 			else
@@ -179,7 +179,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			
 			if(args.length == 3)
 			{
-				ModuleWorldBorder.setCenter(rad, (int) sender.posX, (int) sender.posZ, shape);
+				ModuleWorldBorder.setCenter(rad, (int) sender.posX, (int) sender.posZ, shape, true);
 				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + (int) sender.posX).replaceAll("%z", "" + (int) sender.posZ));
 				return;
 			}
@@ -188,7 +188,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				int X = parseInt(sender, args[3]);
 				int Z = parseInt(sender, args[4]);
 				
-				ModuleWorldBorder.setCenter(rad, X, Z, shape);
+				ModuleWorldBorder.setCenter(rad, X, Z, shape, true);
 				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + X).replaceAll("%z", "" + Z));
 				return;
 			}
@@ -201,7 +201,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		boolean set = ModuleWorldBorder.borderData.getBoolean("set");
+		boolean set = ModuleWorldBorder.set;
 		//Info
 		if (args.length == 0)
 		{
@@ -212,13 +212,13 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer("Coordinates :");
 				if(ModuleWorldBorder.shape.equals(BorderShape.square))
 				{
-					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.borderData.getInteger("minX") + "  maxX:" + ModuleWorldBorder.borderData.getInteger("maxX"));
-					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.borderData.getInteger("minZ") + "  maxZ:" + ModuleWorldBorder.borderData.getInteger("maxZ"));
+					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.minX + "  maxX:" + ModuleWorldBorder.maxX);
+					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.minZ + "  maxZ:" + ModuleWorldBorder.maxZ);
 				}
 				if(ModuleWorldBorder.shape.equals(BorderShape.round))
 				{
-					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.borderData.getInteger("centerX") + "  centerZ:" + ModuleWorldBorder.borderData.getInteger("centerZ"));
-					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.borderData.getInteger("rad"));
+					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.X + "  centerZ:" + ModuleWorldBorder.Z);
+					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.rad);
 				}
 			}
 			else
@@ -351,7 +351,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				int X = parseInt(sender, args[3]);
 				int Z = parseInt(sender, args[4]);
 				
-				ModuleWorldBorder.setCenter(rad, X, Z, shape);
+				ModuleWorldBorder.setCenter(rad, X, Z, shape, true);
 				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + X).replaceAll("%z", "" + Z));
 				return;
 			}

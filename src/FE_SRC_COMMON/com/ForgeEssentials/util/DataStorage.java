@@ -15,7 +15,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * This needs replacing!
- * TODO Someone who understands the persistence data system, please tell me how or diy ;)
  * 
  * @author Dries007
  *

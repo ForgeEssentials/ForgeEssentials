@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IModuleConfig;
@@ -101,6 +102,17 @@ public class ConfigWorldBorder implements IModuleConfig
 					" \nThe default value (345) is calcultated like this: (20 chuncks for vieuw distance * 16 blocks per chunck) + 25 as backup" +
 					" \nThis allows players to pass the border 25 blocks before generating new land.";
 		ModuleWorldBorder.overGenerate = prop.getInt(345);
+		
+		category = "Point";
+		config.addCustomCategoryComment(category, "Location. In all worlds the same!");
+		
+		int X = config.get(category, "X", 0).getInt();
+		int Z = config.get(category, "Z", 0).getInt();
+		int rad = config.get(category, "rad", 0).getInt();
+		BorderShape shape = ModuleWorldBorder.shape.valueOf(config.get(category, "shape", "square").value);
+		boolean set = config.get(category, "set", false, "True if the value is actually set.").getBoolean(false);
+		
+		ModuleWorldBorder.setCenter(rad, X, Z, shape, set);
 	}
 
 	@Override
@@ -120,7 +132,7 @@ public class ConfigWorldBorder implements IModuleConfig
 		commonConfig(config);
 		config.save();
 	}
-
+	
 	@Override
 	public File getFile()
 	{
@@ -128,7 +140,15 @@ public class ConfigWorldBorder implements IModuleConfig
 	}
 	
 	@Override
-	public void forceSave() {}
+	public void forceSave()
+	{
+		String category = "Point";
+		config.get(category, "X", 0).value = "" + ModuleWorldBorder.X;
+		config.get(category, "Z", 0).value = "" + ModuleWorldBorder.Z;
+		config.get(category, "rad", 0).value = "" + ModuleWorldBorder.rad;
+		config.get(category, "set", false, "True if the value is actually set.").value = "" + ModuleWorldBorder.set;
+		config.get(category, "shape", "square").value = ModuleWorldBorder.shape.toString();
+	}
 	
 	@Override
 	public void setGenerate(boolean generate) {}

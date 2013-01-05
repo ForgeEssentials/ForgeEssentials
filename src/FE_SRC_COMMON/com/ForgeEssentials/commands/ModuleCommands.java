@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,9 +43,14 @@ import com.ForgeEssentials.commands.vanilla.CommandWhitelist;
 import com.ForgeEssentials.commands.vanilla.CommandXP;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.RegGroup;
+import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
+import com.ForgeEssentials.util.Warp;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -61,6 +67,7 @@ public class ModuleCommands implements IFEModule
 {
 	public static ConfigCmd conf;
 	public static boolean removeDuplicateCommands;
+	public DataDriver data;
 	
 	public ModuleCommands()
 	{
@@ -88,6 +95,10 @@ public class ModuleCommands implements IFEModule
 	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
+		DataStorage.load();
+		
+		data = DataStorageManager.getDriverOfName("ForgeConfig");
+		
 		//general
 		e.registerServerCommand(new CommandMotd());
 		e.registerServerCommand(new CommandRules());
@@ -161,11 +172,11 @@ public class ModuleCommands implements IFEModule
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
 	{
+		loadWarps();
 		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
 		if(removeDuplicateCommands) removeDuplicateCommands(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
-
-
+	
 	private void removeDuplicateCommands(MinecraftServer server) 
 	{
 		if(server.getCommandManager() instanceof CommandHandler)
@@ -232,9 +243,27 @@ public class ModuleCommands implements IFEModule
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		// TODO Auto-generated method stub
+		saveWarps();
 	}
 
+	private void saveWarps() 
+	{
+		for(Warp warp : TeleportCenter.warps.values())
+		{
+			data.saveObject(warp);
+		}
+	}
+	
+	private void loadWarps() 
+	{
+		Object[] objs = data.loadAllObjects(Warp.class);
+		for(Object obj : objs)
+		{
+			Warp warp = ((Warp) obj);
+			TeleportCenter.warps.put(warp.getName(), warp);
+		}
+	}
+	
 	@Override
 	public IModuleConfig getConfig() 
 	{

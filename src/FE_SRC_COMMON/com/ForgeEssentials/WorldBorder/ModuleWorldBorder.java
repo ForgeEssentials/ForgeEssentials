@@ -11,7 +11,6 @@ import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
-import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.vector.Vector2;
 
@@ -38,12 +37,21 @@ import cpw.mods.fml.relauncher.Side;
 public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 {
 	public static boolean WBenabled = false;
-	public static NBTTagCompound borderData;
 	public static boolean logToConsole = true;
 	public static ConfigWorldBorder config;
 	public static BorderShape shape;
 	public static HashMap<Integer, IEffect[]> effectsList = new HashMap();
 	public static int overGenerate = 345;
+	public static boolean set = false;
+	
+	public static int X;
+	public static int Z;
+	public static int rad;
+	
+	public static int maxX;
+	public static int maxZ;
+	public static int minX;
+	public static int minZ;
 	
 	private int ticks = 0;
 	private int players = 1;
@@ -81,11 +89,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
 	{
-		OutputHandler.SOP("WorldBorder data loaded.");
-		DataStorage.load();
-		borderData = DataStorage.getData("WorldBorder");
 		
-		shape =	BorderShape.getFromByte(borderData.getByte("shape"));
 	}
 
 	@ForgeSubscribe
@@ -106,7 +110,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 			if(this.ticks >= Integer.MAX_VALUE) this.ticks = 1;
 			this.ticks ++;    	
 			if(!WBenabled) return;
-			if(!borderData.getBoolean("set")) return;
+			if(!set) return;
 		
 			if(ticks % players == 0)
 			{
@@ -136,7 +140,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	}
 
 	@Override
-	public String getLabel() 
+	public String getLabel()
 	{
 		return "WorldBorder";
 	}
@@ -196,29 +200,29 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		{
 			if(this.equals(round))
 			{
-				int dist = (int) getDistanceRound(borderData.getInteger("centerX"), borderData.getInteger("centerZ"), (int) player.posX, (int) player.posZ);
-				if(dist > borderData.getInteger("rad"))
+				int dist = (int) getDistanceRound(X, Z, (int) player.posX, (int) player.posZ);
+				if(dist > rad)
 				{
-					executeClosestEffects(dist - ModuleWorldBorder.borderData.getInteger("rad"), player);
+					executeClosestEffects(dist - ModuleWorldBorder.rad, player);
 				}
 			}
 			if(this.equals(square))
 			{
-				if(player.posX < borderData.getInteger("minX"))
+				if(player.posX < minX)
 				{
-					executeClosestEffects((int) player.posX - borderData.getInteger("minX"), player);
+					executeClosestEffects((int) player.posX - minX, player);
 				}
-				if(player.posX > borderData.getInteger("maxX"))
+				if(player.posX > maxX)
 				{
-					executeClosestEffects((int) player.posX - borderData.getInteger("maxX"), player);
+					executeClosestEffects((int) player.posX - maxX, player);
 				}
-				if(player.posZ < borderData.getInteger("minZ"))
+				if(player.posZ < minZ)
 				{
-					executeClosestEffects((int) player.posZ - borderData.getInteger("minZ"), player);
+					executeClosestEffects((int) player.posZ - minZ, player);
 				}
-				if(player.posZ > borderData.getInteger("maxZ"))
+				if(player.posZ > maxZ)
 				{
-					executeClosestEffects((int) player.posZ - borderData.getInteger("maxZ"), player);
+					executeClosestEffects((int) player.posZ - maxZ, player);
 				}
 			}
 		}
@@ -264,7 +268,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	
 	public static Vector2 getDirectionVector(EntityPlayerMP player)
 	{
-		Vector2 vecp = new Vector2(borderData.getInteger("centerX") - player.posX, borderData.getInteger("centerZ") - player.posZ);
+		Vector2 vecp = new Vector2(X - player.posX, Z - player.posZ);
 		vecp.normalize();
 		vecp.multiply(-1);
 		return vecp;
@@ -276,27 +280,20 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 			OutputHandler.SOP(player.username + " passed the worldborder by " + dist + " blocks.");
 	}
 	
-	public static void setCenter(int rad, int posX, int posZ, BorderShape shapeToSet) 
-	{
-		if(borderData == null) borderData = new NBTTagCompound();
-		
+	public static void setCenter(int rad, int posX, int posZ, BorderShape shapeToSet, boolean set) 
+	{	
 		shape = shapeToSet;
+		ModuleWorldBorder.set = set;
 		
-		borderData.setBoolean("set", true);
+		X = posX;
+		Z = posZ;
+		ModuleWorldBorder.rad = rad;
 		
-		borderData.setInteger("centerX", posX);
-		borderData.setInteger("centerZ", posZ);
-		borderData.setInteger("rad", rad);
-		borderData.setByte("shape", shape.getByte());
+		maxX = posX + rad;
+		maxZ = posZ + rad;
 		
-		borderData.setInteger("minX", posX - rad);
-		borderData.setInteger("minZ", posZ - rad);
-			
-		borderData.setInteger("maxX", posX + rad);
-		borderData.setInteger("maxZ", posZ + rad);
-		
-		
-		DataStorage.setData("WorldBorder", borderData);
+		minX = posX - rad;
+		minZ = posZ - rad;
 	}
 
 	@Override

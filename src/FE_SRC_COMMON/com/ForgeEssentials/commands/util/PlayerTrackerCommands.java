@@ -6,7 +6,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 
 import com.ForgeEssentials.commands.CommandMotd;
-import com.ForgeEssentials.util.DataStorage;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;
@@ -34,6 +33,7 @@ public class PlayerTrackerCommands implements IPlayerTracker
 	@Override
 	public void onPlayerRespawn(EntityPlayer player) 
 	{
+		/*
 		if (DataStorage.getData("spawn").hasKey("dim"))
 		{
 			ChunkCoordinates var4 = ((EntityPlayerMP) player).getBedLocation();
@@ -50,5 +50,6 @@ public class PlayerTrackerCommands implements IPlayerTracker
 				player.setPositionAndRotation(X, Y, Z, yaw, pitch);
 			}
 		}
+		*/
 	}
 }

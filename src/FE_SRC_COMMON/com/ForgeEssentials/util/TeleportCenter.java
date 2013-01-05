@@ -2,10 +2,12 @@ package com.ForgeEssentials.util;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
@@ -23,6 +25,8 @@ import cpw.mods.fml.common.TickType;
 
 public class TeleportCenter implements IScheduledTickHandler
 {
+	public static HashMap<String, Warp> warps = new HashMap<String, Warp>();
+	
 	private static ArrayList<TPdata> que = new ArrayList();
 	private static ArrayList<TPdata> removeQue = new ArrayList();
 	
@@ -104,4 +108,5 @@ public class TeleportCenter implements IScheduledTickHandler
 	{
 		return 20;
 	}
+	
 }

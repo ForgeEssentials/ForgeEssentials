@@ -19,13 +19,13 @@ public class TickTaskFillSquare extends TickTaskFill
 	{
 		this.isComplete = false;
 		this.world = world;
-		this.X = this.minX = ModuleWorldBorder.borderData.getInteger("minX") - ModuleWorldBorder.overGenerate;
-		this.Z = this.minZ = ModuleWorldBorder.borderData.getInteger("minZ") - ModuleWorldBorder.overGenerate;
-		this.maxX = ModuleWorldBorder.borderData.getInteger("maxX") + ModuleWorldBorder.overGenerate;
-		this.maxZ = ModuleWorldBorder.borderData.getInteger("maxZ") + ModuleWorldBorder.overGenerate;
-		this.centerX = ModuleWorldBorder.borderData.getInteger("centerX");
-		this.centerZ = ModuleWorldBorder.borderData.getInteger("centerZ");
-		this.rad = ModuleWorldBorder.borderData.getInteger("rad");
+		this.X = this.minX = ModuleWorldBorder.minX - ModuleWorldBorder.overGenerate;
+		this.Z = this.minZ = ModuleWorldBorder.minZ - ModuleWorldBorder.overGenerate;
+		this.maxX = ModuleWorldBorder.maxX + ModuleWorldBorder.overGenerate;
+		this.maxZ = ModuleWorldBorder.maxZ + ModuleWorldBorder.overGenerate;
+		this.centerX = ModuleWorldBorder.X;
+		this.centerZ = ModuleWorldBorder.Z;
+		this.rad = ModuleWorldBorder.rad;
 		
 		this.eta = (int) (((MathHelper.abs_int((this.maxX - this.minX)/16) * MathHelper.abs_int((this.minZ - this.maxZ)/16))));
 		
