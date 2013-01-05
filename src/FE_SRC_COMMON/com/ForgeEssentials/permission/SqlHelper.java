@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeSet;
 
 public class SqlHelper
@@ -537,11 +538,6 @@ public class SqlHelper
 		}
 	}
 
-	public void tryConnectMySQL()
-	{
-
-	}
-
 	// create tables.
 	private void generate()
 	{
@@ -758,7 +754,7 @@ public class SqlHelper
 	 * @param zone
 	 * @return NULL if SQL exception. Empty if in no groups.
 	 */
-	protected static ArrayList<Group> getGroupsForPlayer(String username, String zone)
+	protected static synchronized ArrayList<Group> getGroupsForPlayer(String username, String zone)
 	{
 		try
 		{
@@ -802,7 +798,7 @@ public class SqlHelper
 	 * @param g
 	 * @return FALSE if the group already exists, parent doesn't exist, zone doesn't exist, or if the INSERT failed.
 	 */
-	protected static boolean createGroup(Group g)
+	protected static synchronized boolean createGroup(Group g)
 	{
 		try
 		{
@@ -851,7 +847,7 @@ public class SqlHelper
 	 * @param g
 	 * @return FALSE if the group already exists, parent doesn't exist, zone doesn't exist, or if the UPDATE failed.
 	 */
-	protected static boolean updateGroup(Group g)
+	protected static synchronized boolean updateGroup(Group g)
 	{
 		try
 		{
@@ -902,7 +898,7 @@ public class SqlHelper
 	 * UNKNOWN also if the target or the zone do not exist.
 	 */
 	@SuppressWarnings("incomplete-switch")
-	protected static PermResult getPermissionResult(String target, boolean isGroup, PermissionChecker perm, String zone, boolean checkForward)
+	protected static synchronized PermResult getPermissionResult(String target, boolean isGroup, PermissionChecker perm, String zone, boolean checkForward)
 	{
 		try
 		{
@@ -1027,7 +1023,7 @@ public class SqlHelper
 	 * @param zone
 	 * @return FALSE if the group, or zone do not exist.
 	 */
-	protected static boolean setPermission(String target, boolean isGroup, Permission perm, String zone)
+	protected static synchronized boolean setPermission(String target, boolean isGroup, Permission perm, String zone)
 	{
 		try
 		{
@@ -1078,7 +1074,7 @@ public class SqlHelper
 		}
 	}
 
-	protected static boolean delZone(String name)
+	protected static synchronized boolean delZone(String name)
 	{
 		try
 		{
@@ -1096,7 +1092,7 @@ public class SqlHelper
 		}
 	}
 
-	protected static boolean createZone(String name)
+	protected static synchronized boolean createZone(String name)
 	{
 		try
 		{
@@ -1114,7 +1110,7 @@ public class SqlHelper
 		}
 	}
 
-	protected static boolean doesZoneExist(String name)
+	protected static synchronized boolean doesZoneExist(String name)
 	{
 		try
 		{
@@ -1130,10 +1126,87 @@ public class SqlHelper
 	}
 	
 	// void??
-	protected static void dump()
+	protected HashMap<String, ArrayList<Object>> dump()
 	{
+		HashMap<String, ArrayList<Object>>map= new HashMap<String, ArrayList<Object>>();
+		
+		ResultSet set;
+		ArrayList list;
+		
+		// DUMP PLAYERS! ---------------------------------
+		try
+		{
+			set = instance.statementDumpPlayers.executeQuery();
+
+			list = new ArrayList<String>();
+			
+			while(set.next())
+				list.add(set.getInt(1));
+			
+			map.put("players", list);
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.SOP("[PermSQL] Player dump for export failed!");
+			e.printStackTrace();
+			list = null;
+		}
+		
+		// DUMP GROUPS!  -------------------------------------
+		try
+		{
+			set = instance.statementDumpGroups.executeQuery();
+
+			list = new ArrayList<Group>();
+			
+			int priority;
+			String parent, prefix, suffix, zone, name;
+			Group g;
+			while(set.next())
+			{
+				priority = set.getInt(COLUMN_GROUP_PRIORITY);
+				name = set.getString(COLUMN_GROUP_NAME);
+				parent = set.getString(COLUMN_GROUP_PARENT);
+				prefix = set.getString(COLUMN_GROUP_PREFIX);
+				suffix = set.getString(COLUMN_GROUP_SUFFIX);
+				zone = set.getString(COLUMN_ZONE_NAME);
+				g  = new Group(name, prefix, suffix, parent, zone, priority);
+				list.add(g);
+			}
+			
+			map.put("groups", list);
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.SOP("[PermSQL] Group dump for export failed!");
+			e.printStackTrace();
+			list = null;
+		}
+		
+		// DUMP PLAYER PERMISSIONS! ------------------------------
+		try
+		{
+			set = instance.statementDumpPlayerPermissions.executeQuery();
+
+			list = new ArrayList<PermissionHolder>();
+			
+			while(set.next())
+				list.add(set.getInt(1));
+			
+			map.put("players", list);
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.SOP("[PermSQL] Player dump for export failed!");
+			e.printStackTrace();
+			list = null;
+		}
+		
+		
 		// ALL usernames..
 		//FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getAllUsernames()
+		
+		return map;
 	}
 
 	// ---------------------------------------------------------------------------------------------------

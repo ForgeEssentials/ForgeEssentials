@@ -14,7 +14,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLLog;
 
-public class BackupThread implements Runnable
+public class BackupThread extends Thread
 {
 	private final File		backupDir;
 	public static String	backupName;
