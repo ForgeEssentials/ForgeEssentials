@@ -1,20 +1,21 @@
 package com.ForgeEssentials.snooper.response;
 
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.permission.Group;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.snooper.API.Response;
+import com.ForgeEssentials.snooper.API.TextFormatter;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+
+import net.minecraftforge.common.Configuration;
+
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.Configuration;
-
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.economy.Wallet;
-import com.ForgeEssentials.permission.Group;
-import com.ForgeEssentials.permission.GroupManager;
-import com.ForgeEssentials.snooper.API.Response;
-import com.ForgeEssentials.snooper.API.TextFormatter;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class PlayerInfoResonce extends Response
 {
@@ -87,7 +88,7 @@ public class PlayerInfoResonce extends Response
 		
 		try
 		{
-			Group group = GroupManager.getHighestGroup(player);
+			Group group = PermissionsAPI.getHighestGroup(player);
 			PlayerData.put("group", group.name);
 		}catch(Exception e){}
 		
@@ -101,7 +102,7 @@ public class PlayerInfoResonce extends Response
 	}
 	
 	@Override
-	public void setupConfig(String category, Configuration config)
+	public void readConfig(String category, Configuration config)
 	{
 		sendhome = config.get(category, "sendHome", true).getBoolean(true);
 		sendpotions = config.get(category, "sendpotions", true).getBoolean(true);
@@ -109,5 +110,16 @@ public class PlayerInfoResonce extends Response
 		sendArmorAndHealth = config.get(category, "sendArmorAndHealth", true).getBoolean(true);
 		sendFood = config.get(category, "sendFood", true).getBoolean(true);
 		sendCapabilities = config.get(category, "sendCapabilities", true).getBoolean(true);
+	}
+	
+	@Override
+	public void writeConfig(String category, Configuration config)
+	{
+		config.get(category, "sendHome", true).value = ""+sendhome;
+		config.get(category, "sendpotions", true).value = ""+sendpotions;
+		config.get(category, "sendXP", true).value = ""+sendXP;
+		config.get(category, "sendArmorAndHealth", true).value = ""+sendArmorAndHealth;
+		config.get(category, "sendFood", true).value = ""+sendFood;
+		config.get(category, "sendCapabilities", true).value = ""+sendCapabilities;
 	}
 }

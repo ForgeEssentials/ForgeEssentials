@@ -59,7 +59,13 @@ public class PlayerInv extends Response
 	}
 
 	@Override
-	public void setupConfig(String category, Configuration config)
+	public void readConfig(String category, Configuration config)
+	{
+		//Don't need that here
+	}
+	
+	@Override
+	public void writeConfig(String category, Configuration config)
 	{
 		//Don't need that here
 	}

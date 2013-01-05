@@ -35,24 +35,32 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 	@SideOnly(Side.CLIENT)
 	public static void readClient(DataInputStream stream, WorldClient world, EntityPlayer player) throws IOException
 	{
-		// point 1 available.
+		// podouble 1 available.
 		if (stream.readBoolean())
 		{
-			int x = stream.readInt();
-			int y = stream.readInt();
-			int z = stream.readInt();
+			double x = stream.readDouble();
+			double y = stream.readDouble();
+			double z = stream.readDouble();
 
 			ForgeEssentialsClient.getInfo().setPoint1(new Point(x, y, z));
 		}
+		else
+		{
+			ForgeEssentialsClient.getInfo().setPoint1(null);
+		}
 
-		// point 2 available
+		// podouble 2 available
 		if (stream.readBoolean())
 		{
-			int x = stream.readInt();
-			int y = stream.readInt();
-			int z = stream.readInt();
+			double x = stream.readDouble();
+			double y = stream.readDouble();
+			double z = stream.readDouble();
 
 			ForgeEssentialsClient.getInfo().setPoint2(new Point(x, y, z));
+		}
+		else
+		{
+			ForgeEssentialsClient.getInfo().setPoint2(null);
 		}
 	}
 

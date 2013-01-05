@@ -14,7 +14,7 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -39,7 +39,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			if (player != null)
 			{
 				ChunkCoordinates spawn = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
-				PlayerInfo.getPlayerInfo((EntityPlayer) player).back = new WorldPoint(player);
+				PlayerInfo.getPlayerInfo((EntityPlayer) player).back = new WarpPoint(player);
 				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			} else
@@ -49,7 +49,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			ChunkCoordinates spawn = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
 			if (spawn != null)
 			{
-				PlayerInfo.getPlayerInfo((EntityPlayer) sender).back = new WorldPoint(sender);
+				PlayerInfo.getPlayerInfo((EntityPlayer) sender).back = new WarpPoint(sender);
 				((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
 				sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			}
@@ -64,7 +64,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			if (player != null)
 			{
-				PlayerInfo.getPlayerInfo((EntityPlayer) player).back = new WorldPoint(player);
+				PlayerInfo.getPlayerInfo((EntityPlayer) player).back = new WarpPoint(player);
 				ChunkCoordinates spawn = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
 				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));

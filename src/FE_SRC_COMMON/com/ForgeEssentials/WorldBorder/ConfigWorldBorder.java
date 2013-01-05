@@ -9,7 +9,10 @@ import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.command.ICommandSender;
 
 /**
  * This generates the configuration structure
@@ -18,45 +21,15 @@ import com.ForgeEssentials.util.OutputHandler;
  *
  */
 
-public class ConfigWorldBorder 
+public class ConfigWorldBorder implements IModuleConfig
 {
 	public static final File wbconfig = new File(ForgeEssentials.FEDIR, "WorldBorder.cfg");
 	
-	public final Configuration config;
-	
-	/**
-	 * This list makes sure the effect is in the example file.
-	 * Not used for parsing the list from the config.
-	 */
-	public static final List<String> PossibleEffects = Arrays.asList("knockback", "message", "potion", "damage", "smite", "serverkick", "executecommand");
+	private Configuration config;
 	
 	public ConfigWorldBorder()
 	{
-		config = new Configuration(wbconfig, true);
 		
-		penaltiesConfig(config);
-		commonConfig(config);
-		
-		config.save();
-	}
-	
-	/**
-	 * Does all the rest of the config
-	 * @param config
-	 */
-	public static void commonConfig(Configuration config)
-	{
-		String category = "Settings";
-		config.addCustomCategoryComment(category, "Common settings.");
-		
-		ModuleWorldBorder.logToConsole = config.get(category, "LogToConsole", true, "Enable logging to the server console & the log file").getBoolean(true);
-		Property prop = config.get(category, "overGenerate", 345);
-			prop.comment = "The amount of blocks that will be generated outside the radius of the border. This is important!" +
-					" \nIf you set this high, you will need exponentially more time while generating, but you won't get extra land if a player does pass the border." +
-					" \nIf you use something like Dynmap you should put this number higher, if the border is not there for aesthetic purposes, then you don't need that." +
-					" \nThe default value (345) is calcultated like this: (20 chuncks for vieuw distance * 16 blocks per chunck) + 25 as backup" +
-					" \nThis allows players to pass the border 25 blocks before generating new land.";
-		ModuleWorldBorder.overGenerate = prop.getInt(345);
 	}
 	
 	/**
@@ -65,6 +38,8 @@ public class ConfigWorldBorder
 	 */
 	public static void penaltiesConfig(Configuration config)
 	{
+		ModuleWorldBorder.effectsList.clear();
+		
 		String penaltyBasePackage = "com.ForgeEssentials.WorldBorder.Effects.";
 		config.addCustomCategoryComment("Penalties", "This is what will happen to the player if he passes the world boder.");
 		
@@ -109,5 +84,53 @@ public class ConfigWorldBorder
 		}
 	}
 	
+	/**
+	 * Does all the rest of the config
+	 * @param config
+	 */
+	public static void commonConfig(Configuration config)
+	{
+		String category = "Settings";
+		config.addCustomCategoryComment(category, "Common settings.");
+		
+		ModuleWorldBorder.logToConsole = config.get(category, "LogToConsole", true, "Enable logging to the server console & the log file").getBoolean(true);
+		Property prop = config.get(category, "overGenerate", 345);
+			prop.comment = "The amount of blocks that will be generated outside the radius of the border. This is important!" +
+					" \nIf you set this high, you will need exponentially more time while generating, but you won't get extra land if a player does pass the border." +
+					" \nIf you use something like Dynmap you should put this number higher, if the border is not there for aesthetic purposes, then you don't need that." +
+					" \nThe default value (345) is calcultated like this: (20 chuncks for vieuw distance * 16 blocks per chunck) + 25 as backup" +
+					" \nThis allows players to pass the border 25 blocks before generating new land.";
+		ModuleWorldBorder.overGenerate = prop.getInt(345);
+	}
 
+	@Override
+	public void init()
+	{
+		config = new Configuration(wbconfig, true);
+		penaltiesConfig(config);
+		commonConfig(config);
+		config.save();
+	}
+	
+	@Override
+	public void forceLoad(ICommandSender sender)
+	{
+		config = new Configuration(wbconfig, true);
+		penaltiesConfig(config);
+		commonConfig(config);
+		config.save();
+	}
+
+	@Override
+	public File getFile()
+	{
+		return wbconfig;
+	}
+	
+	@Override
+	public void forceSave() {}
+	
+	@Override
+	public void setGenerate(boolean generate) {}
+	
 }

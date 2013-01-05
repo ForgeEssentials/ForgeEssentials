@@ -22,7 +22,6 @@ import com.ForgeEssentials.commands.vanilla.CommandDeop;
 import com.ForgeEssentials.commands.vanilla.CommandDifficulty;
 import com.ForgeEssentials.commands.vanilla.CommandEnchant;
 import com.ForgeEssentials.commands.vanilla.CommandGameRule;
-import com.ForgeEssentials.commands.vanilla.CommandHelp;
 import com.ForgeEssentials.commands.vanilla.CommandKick;
 import com.ForgeEssentials.commands.vanilla.CommandMe;
 import com.ForgeEssentials.commands.vanilla.CommandOp;
@@ -42,8 +41,9 @@ import com.ForgeEssentials.commands.vanilla.CommandWeather;
 import com.ForgeEssentials.commands.vanilla.CommandWhitelist;
 import com.ForgeEssentials.commands.vanilla.CommandXP;
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
-import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
+import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -118,6 +118,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandSpawn());
 		e.registerServerCommand(new CommandTp());
 		e.registerServerCommand(new CommandTphere());
+		e.registerServerCommand(new CommandTppos());
 		e.registerServerCommand(new CommandWarp());
 		//cheat
 		e.registerServerCommand(new CommandRepair());
@@ -190,11 +191,20 @@ public class ModuleCommands implements IFEModule
 					ICommand cmd = (ICommand) cmdObj;
 					if(toRemoveNames.contains(cmd.getCommandName()))
 					{
-						Class<?> cmdClass = cmd.getClass();
-						if(!cmdClass.getPackage().getName().contains("ForgeEssentials"))
+						try
 						{
-							OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
-							toRemove.add(cmd.getCommandName());
+							Class<?> cmdClass = cmd.getClass();
+							Package pkg = cmdClass.getPackage();
+							if(pkg == null || !pkg.getName().contains("ForgeEssentials"))
+							{
+								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
+								toRemove.add(cmd.getCommandName());
+							}
+						}
+						catch(Exception e)
+						{
+							OutputHandler.debug("dafug? Got exception:" + e.getLocalizedMessage());
+							e.printStackTrace();
 						}
 					}
 				}
@@ -208,15 +218,26 @@ public class ModuleCommands implements IFEModule
 	}
 	
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.BasicCommands", true);
+		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.list", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.rules", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.motd", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.tps", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.modlist", true);
 	}
 
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		// TODO Auto-generated method stub
+	}
 
+	@Override
+	public IModuleConfig getConfig() 
+	{
+		return conf;
 	}
 }

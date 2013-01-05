@@ -85,7 +85,6 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			{
 				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 				WorldServer world = server.worldServers[sender.dimension];
-				boolean canNotSaveBefore = world.canNotSave;
 				
 				if(taskGooing != null)
 				{
@@ -93,14 +92,13 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					world.canNotSave = true;
 					if(ModuleWorldBorder.shape == BorderShape.round)
 					{
-						taskGooing = new TickTaskFillRound(canNotSaveBefore, world);
+						taskGooing = new TickTaskFillRound(world);
 					}
 					if(ModuleWorldBorder.shape == BorderShape.square)
 					{
-						taskGooing = new TickTaskFillSquare(canNotSaveBefore, world);
+						taskGooing = new TickTaskFillSquare(world);
 					}
 					TickTaskHandler.addTask(taskGooing);
 				}
@@ -109,6 +107,34 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			if(args[1].equalsIgnoreCase("cancel"))
 			{
 				taskGooing.stop();
+				return;
+			}
+		}
+		//Autopilot
+		if(args[0].equalsIgnoreCase("autopilot"))
+		{
+			if(args.length == 1)
+			{
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_AUTO_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_AUTO_CONFIRM));
+				return;
+			}
+			if(args[1].equalsIgnoreCase("off"))
+			{
+				if(taskGooing != null)
+				{
+					taskGooing.disengageAutopilot();
+				}
+				else
+				{
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
+				}
+				return;
+			}
+			if(args.length == 2)
+			{
+				int speed = this.parseIntBounded(sender, args[1], 1, 20);
+				taskGooing.engageAutopilot(speed);
 				return;
 			}
 		}
@@ -122,29 +148,27 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get(Localization.WB_TURBO_CONFIRM));
 				return;
 			}
-			if(args[1].equalsIgnoreCase("on"))
-			{
-				if(taskGooing != null)
-				{
-					taskGooing.engageTurbo();
-				}
-				else
-				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_TURBO_NOTHINGTODO));
-				}
-				return;
-			}
 			if(args[1].equalsIgnoreCase("off"))
 			{
 				if(taskGooing != null)
 				{
-					taskGooing.disEngageTurbo();
+					taskGooing.disengageTurbo();
 				}
 				else
 				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_TURBO_NOTHINGTODO));
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
 				}
 				return;
+			}
+			try
+			{
+				int speed = Integer.parseInt(args[1]);
+				taskGooing.engageTurbo(speed);
+				return;
+			}
+			catch(Exception e)
+			{
+				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_NAN)));
 			}
 		}
 		//Set
@@ -229,7 +253,6 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 				int dim = this.parseInt(sender, args[2]);
 				WorldServer world = server.worldServers[dim];
-				boolean canNotSaveBefore = world.canNotSave;
 				
 				if(taskGooing != null)
 				{
@@ -240,11 +263,11 @@ public class CommandWB extends ForgeEssentialsCommandBase
 					world.canNotSave = true;
 					if(ModuleWorldBorder.shape == BorderShape.round)
 					{
-						taskGooing = new TickTaskFillRound(canNotSaveBefore, world);
+						taskGooing = new TickTaskFillRound(world);
 					}
 					if(ModuleWorldBorder.shape == BorderShape.square)
 					{
-						taskGooing = new TickTaskFillSquare(canNotSaveBefore, world);
+						taskGooing = new TickTaskFillSquare(world);
 					}
 					TickTaskHandler.addTask(taskGooing);
 				}
@@ -253,6 +276,34 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			if(args[1].equalsIgnoreCase("cancel"))
 			{
 				taskGooing.stop();
+				return;
+			}
+		}
+		//Autopilot
+		if(args[0].equalsIgnoreCase("autopilot"))
+		{
+			if(args.length == 1)
+			{
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_AUTO_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_AUTO_CONFIRM));
+				return;
+			}
+			if(args[1].equalsIgnoreCase("off"))
+			{
+				if(taskGooing != null)
+				{
+					taskGooing.disengageAutopilot();
+				}
+				else
+				{
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
+				}
+				return;
+			}
+			if(args.length == 2)
+			{
+				int speed = this.parseIntBounded(sender, args[1], 1, 20);
+				taskGooing.engageAutopilot(speed);
 				return;
 			}
 		}
@@ -266,29 +317,27 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get(Localization.WB_TURBO_CONFIRM));
 				return;
 			}
-			if(args[1].equalsIgnoreCase("on"))
-			{
-				if(taskGooing != null)
-				{
-					taskGooing.engageTurbo();
-				}
-				else
-				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_TURBO_NOTHINGTODO));
-				}
-				return;
-			}
 			if(args[1].equalsIgnoreCase("off"))
 			{
 				if(taskGooing != null)
 				{
-					taskGooing.disEngageTurbo();
+					taskGooing.disengageTurbo();
 				}
 				else
 				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_TURBO_NOTHINGTODO));
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
 				}
 				return;
+			}
+			try
+			{
+				int speed = Integer.parseInt(args[1]);
+				taskGooing.engageTurbo(speed);
+				return;
+			}
+			catch(Exception e)
+			{
+				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NAN));
 			}
 		}
 		//Set
@@ -327,7 +376,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
     {
     	if(args.length==1)
     	{
-    		return getListOfStringsMatchingLastWord(args, "set", "fill", "turbo");
+    		return getListOfStringsMatchingLastWord(args, "set", "fill", "turbo", "autopilot");
     	}
     	if(args.length==2 && args[0].equalsIgnoreCase("set"))
     	{
@@ -339,9 +388,12 @@ public class CommandWB extends ForgeEssentialsCommandBase
     	}
     	if(args.length==2 && args[0].equalsIgnoreCase("turbo"))
     	{
-    		return getListOfStringsMatchingLastWord(args, "on", "off");
+    		return getListOfStringsMatchingLastWord(args, "off");
     	}
-    	
+    	if(args.length==2 && args[0].equalsIgnoreCase("autopilot"))
+    	{
+    		return getListOfStringsMatchingLastWord(args, "off");
+    	}
     	return null;
     }
 

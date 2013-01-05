@@ -14,15 +14,15 @@ import com.ForgeEssentials.data.TaggedClass;
 public class Point implements Serializable, Comparable<Point>
 {
 	@SaveableField
-	public int x;
+	public double x;
 	
 	@SaveableField
-	public int y;
+	public double y;
 	
 	@SaveableField
-	public int z;
+	public double z;
 
-	public Point(int x, int y, int z)
+	public Point(double x, double y, double z)
 	{
 		this.x = x;
 		this.y = y;
@@ -31,24 +31,24 @@ public class Point implements Serializable, Comparable<Point>
 
 	public Point(EntityPlayer player) 
 	{
-		this.x = (int)player.posX;
-		this.y = (int)player.posY;
-		this.z = (int)player.posZ;
+		this.x = player.posX;
+		this.y = player.posY;
+		this.z = player.posZ;
 	}
 
 	public int getX()
 	{
-		return x;
+		return (int)Math.floor(x);
 	}
 
 	public int getY()
 	{
-		return y;
+		return (int)Math.floor(y);
 	}
 
 	public int getZ()
 	{
-		return z;
+		return (int)Math.floor(z);
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class Point implements Serializable, Comparable<Point>
 		else if (negatives > positives)
 			return -1;
 		else
-			return (x - point.x) + (y - point.y) + (z - point.z);
+			return (int)((x - point.x) + (y - point.y) + (z - point.z));
 	}
 
 	@Override
@@ -109,11 +109,11 @@ public class Point implements Serializable, Comparable<Point>
 	/**
 	 * 
 	 * @param p
-	 * @return TRUE if the points have the same coordinate on atleast one axis.
+	 * @return TRUE if the points have the same coordinate on at least one axis.
 	 */
 	public boolean alignsWith(Point p)
 	{
-		return this.x == p.x || this.y == p.y || this.z == p.z;
+		return this.getX() == p.getX() || this.getY() == p.getY() || this.getZ() == p.getZ();
 	}
 
 	/**
@@ -140,11 +140,11 @@ public class Point implements Serializable, Comparable<Point>
 	}
 	
 	@Reconstructor()
-	private static Point reconstruct(TaggedClass tag)
+	public static Point reconstruct(TaggedClass tag)
 	{
-		int x = (Integer) tag.getFieldValue("x");
-		int y = (Integer) tag.getFieldValue("y");
-		int z = (Integer) tag.getFieldValue("z");
+		float x = (Float)tag.getFieldValue("x");
+		float y = (Float)tag.getFieldValue("y");
+		float z = (Float)tag.getFieldValue("z");
 		return new Point(x, y, z);
 	}
 	

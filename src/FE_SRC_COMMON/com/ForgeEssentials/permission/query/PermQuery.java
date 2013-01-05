@@ -16,10 +16,13 @@ public class PermQuery
     private static FEListenerList listeners = new FEListenerList();
     
     public PermissionChecker checker;
+    public boolean checkForward = false;
+    public boolean dOverride = false;
 	
 	public PermQuery()
 	{
 		setup();
+		checkForward = false;
 	}
 	
     /**
@@ -48,8 +51,6 @@ public class PermQuery
 	
 	public void setResult(PermResult result)
 	{
-		if (result.equals(result.UNKNOWN))
-			throw new RuntimeException("PermQueries should never be set to UNKNOWN");
 		this.result = result;
 	}
 	

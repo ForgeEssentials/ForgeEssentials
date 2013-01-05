@@ -1,24 +1,23 @@
 package com.ForgeEssentials.chat;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.network.packet.NetHandler;
-import net.minecraft.network.packet.Packet3Chat;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.ServerChatEvent;
-
+import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.Group;
-import com.ForgeEssentials.permission.GroupManager;
 import com.ForgeEssentials.permission.PermissionsAPI;
-import com.ForgeEssentials.permission.PlayerManager;
-import com.ForgeEssentials.permission.PlayerPermData;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
+
+import net.minecraft.network.packet.NetHandler;
+import net.minecraft.network.packet.Packet3Chat;
+
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.ServerChatEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import cpw.mods.fml.common.network.IChatListener;
 
@@ -78,18 +77,18 @@ public class Chat implements IChatListener
 		try
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player), event.player.worldObj);
-			PlayerPermData playerData = PlayerManager.getPlayerData(zone.getZoneID(), event.username);
+			PlayerInfo info = PlayerInfo.getPlayerInfo(event.player);
 
-			prefix = playerData.prefix;
-			suffix = playerData.suffix;
+			prefix = info.prefix;
+			suffix = info.suffix;
 
-			ArrayList<Group> groups = GroupManager.getApplicableGroups(event.player, false);
+			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(event.player, false);
 
 			if (groups.isEmpty())
 			{
-				rank = GroupManager.DEFAULT.name;
-				prefix = GroupManager.DEFAULT.prefix + prefix;
-				suffix = suffix + GroupManager.DEFAULT.suffix;
+				rank = PermissionsAPI.DEFAULT.name;
+				prefix = PermissionsAPI.DEFAULT.prefix + prefix;
+				suffix = suffix + PermissionsAPI.DEFAULT.suffix;
 			}
 			else
 			{

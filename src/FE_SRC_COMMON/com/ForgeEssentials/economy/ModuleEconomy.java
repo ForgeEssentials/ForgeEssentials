@@ -8,12 +8,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.economy.commands.CommandAddToWallet;
 import com.ForgeEssentials.economy.commands.CommandGetWallet;
 import com.ForgeEssentials.economy.commands.CommandRemoveWallet;
 import com.ForgeEssentials.economy.commands.CommandSetWallet;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
-import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -113,7 +113,7 @@ public class ModuleEconomy implements IFEModule, IPlayerTracker
 	public void serverStopping(FMLServerStoppingEvent e) {}
 	
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		
 	}
@@ -140,5 +140,12 @@ public class ModuleEconomy implements IFEModule, IPlayerTracker
 	public void onPlayerRespawn(EntityPlayer player)
 	{
 		loadData(player);
+	}
+
+	@Override
+	public IModuleConfig getConfig()
+	{
+		// TODO no economy configs?? really???
+		return null;
 	}
 }

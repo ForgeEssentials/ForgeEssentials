@@ -7,6 +7,9 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
@@ -19,14 +22,14 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModulePermissions implements IFEModule
 {
-	public static ConfigPermissions						config;
-	public static PermissionsHandler					pHandler;
-	public static ZoneManager							zManager;
-	public static GroupManager							gManager;
-	public static PlayerManager							pManager;
-	public static SqlLiteHelper							sql; 
+	// public static ConfigPermissions config;
+	public static PermissionsHandler	pHandler;
+	public static ZoneManager			zManager;
+	public static SqlHelper				sql;
+	public static ConfigPermissions		config;
 
-	public static File									permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
+	public static File					permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
+	protected static DataDriver			data;
 
 	@Override
 	public void preLoad(FMLPreInitializationEvent e)
@@ -36,13 +39,11 @@ public class ModulePermissions implements IFEModule
 
 		OutputHandler.SOP("Permissions module is enabled. Loading...");
 		zManager = new ZoneManager();
-		gManager = new GroupManager();
-		pManager = new PlayerManager();
-		
+
 		MinecraftForge.EVENT_BUS.register(zManager);
-		
+
 		// testing DB.
-		//sql = new SqlLiteHelper();
+		config = new ConfigPermissions();
 	}
 
 	@Override
@@ -52,8 +53,8 @@ public class ModulePermissions implements IFEModule
 
 		MinecraftForge.EVENT_BUS.register(this);
 
-		MinecraftForge.EVENT_BUS.post(new ForgeEssentialsPermissionRegistrationEvent());
-		
+		MinecraftForge.EVENT_BUS.post(new PermissionRegistrationEvent());
+
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
 	}
@@ -63,14 +64,21 @@ public class ModulePermissions implements IFEModule
 	{
 		OutputHandler.SOP("Ending permissions registration period.");
 
-		config = new ConfigPermissions();
+		// config = new ConfigPermissions();
 	}
 
 	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
+		// setup SQL
+		sql = new SqlHelper(config);
+		
+		// load zones...
+		data = DataStorageManager.getDriverOfName("ForgeConfig");
+		//zManager.loadZones();
+		
 		e.registerServerCommand(new CommandZone());
-		//e.registerServerCommand(new CommandPermSet());
+		e.registerServerCommand(new CommandFEPerm());
 	}
 
 	@Override
@@ -79,22 +87,27 @@ public class ModulePermissions implements IFEModule
 	}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.permissions", true);
+		event.registerPerm(this, RegGroup.ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.perm", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.zone", true);
 
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, TeleportCenter.BYPASS_WARMUP, true);
+		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
+		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_WARMUP, true);
 	}
 
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		/*
 		for (Zone zone : ZoneManager.zoneMap.values())
-			DataDriver.saveObject(zone);
-			*/
+			data.saveObject(zone);
+	}
+
+	@Override
+	public IModuleConfig getConfig()
+	{
+		return config;
 	}
 
 }

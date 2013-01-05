@@ -20,6 +20,7 @@ import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -35,17 +36,10 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleLauncher
 {
+	public ModuleLauncher () {instance = this;}
+	public static ModuleLauncher instance;
+	
 	public ArrayList<IFEModule>	modules;
-
-	// note to self: if possible, make this classload.
-
-	/*
-	 * I put this here so we won't forget to add new modules.
-	 */
-	public static void ReloadConfigs(ICommandSender sender)
-	{
-		// requires new method in iFEModule.
-	}
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
@@ -178,6 +172,29 @@ public class ModuleLauncher
 		
 		for (IFEModule module : modules)
 			module.preLoad(e);
+		
+		boolean generate = false;
+		for (IFEModule module : modules)
+		{
+			IModuleConfig cfg = module.getConfig();
+			
+			if(cfg != null)
+			{
+				File file = cfg.getFile();
+			
+				if (!file.getParentFile().exists())
+				{
+					generate = true;
+					file.getParentFile().mkdirs();
+				}
+			
+				if (!generate && (!file.exists() || !file.isFile()))
+					generate = true;
+				
+				cfg.setGenerate(generate);
+				cfg.init();
+			}
+		}
 	}
 
 	public void load(FMLInitializationEvent e)
@@ -208,5 +225,11 @@ public class ModuleLauncher
 	{
 		for (IFEModule module : modules)
 			module.serverStopping(e);
+	}
+	
+	public void reloadConfigs(ICommandSender sender)
+	{
+		for (IFEModule module : modules)
+			module.getConfig().forceLoad(sender);
 	}
 }

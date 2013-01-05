@@ -4,7 +4,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator;
+import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
@@ -32,6 +35,12 @@ public class CommandTopManipulate extends WorldControlCommandBase
 	{
 		if (args.length == 1 || args.length == 3)
 		{
+			PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+			if(info.getSelection() == null)
+			{
+				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
+				return;
+			}
 			int radius = -1;
 			Point effectPosition = null;
 			

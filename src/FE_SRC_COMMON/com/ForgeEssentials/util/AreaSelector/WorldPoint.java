@@ -22,13 +22,13 @@ public class WorldPoint extends Point
 	@SaveableField
 	public int dim;
 
-	public WorldPoint(int dimension, int x, int y, int z)
+	public WorldPoint(int dimension, double x, double y, double z)
 	{
 		super(x, y, z);
 		this.dim = dimension;
 	}
 	
-	public WorldPoint(World world, int x, int y, int z)
+	public WorldPoint(World world, double x, double y, double z)
 	{
 		super(x, y, z);
 		this.dim = world.getWorldInfo().getDimension();
@@ -69,9 +69,9 @@ public class WorldPoint extends Point
 	@Reconstructor()
 	public static WorldPoint reconstruct(TaggedClass tag)
 	{
-		int x = (Integer) tag.getFieldValue("x");
-		int y = (Integer) tag.getFieldValue("y");
-		int z = (Integer) tag.getFieldValue("z");
+		float x = (Float) tag.getFieldValue("x");
+		float y = (Float) tag.getFieldValue("y");
+		float z = (Float) tag.getFieldValue("z");
 		int dim = (Integer) tag.getFieldValue("dim");
 		return new WorldPoint(dim, x, y, z);
 	}

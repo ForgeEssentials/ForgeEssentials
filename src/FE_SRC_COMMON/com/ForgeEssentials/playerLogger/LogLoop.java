@@ -2,6 +2,7 @@ package com.ForgeEssentials.playerLogger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -13,7 +14,6 @@ import com.ForgeEssentials.util.OutputHandler;
 public class LogLoop implements Runnable
 {
 	private boolean run = true;
-	public ArrayList<logEntry> buffer = new ArrayList<logEntry>();
 	
 	@Override
 	public void run() 
@@ -31,40 +31,21 @@ public class LogLoop implements Runnable
 				catch (final InterruptedException e){e.printStackTrace();}
 				i++;
 			}
-			
-			if(buffer.isEmpty())
-			{
-				OutputHandler.debug("No logs to make");
-			}
-			else
-			{
-				OutputHandler.debug("Making logs");
-				makeLogs();
-				OutputHandler.debug("Done making logs");
-			}
+			OutputHandler.debug("Making logs");
+			sendLogs();
+			OutputHandler.debug("Done.");
 		}
 	}
-
-	public void makeLogs() 
+	
+	public void sendLogs()
 	{
 		try 
 		{
 			Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
-			Statement s = connection.createStatement();
-			
-			ArrayList<logEntry> delBuffer = new ArrayList<logEntry>();
-			Iterator<logEntry> i = buffer.iterator();
-			while(i.hasNext())
+			for(logEntry type : ModulePlayerLogger.logTypes)
 			{
-				logEntry log = i.next();
-				s.execute(log.getSQL());
-				delBuffer.add(log);
+				type.makeEntries(connection);
 			}
-			buffer.removeAll(delBuffer);
-			
-			OutputHandler.SOP("Made " + delBuffer.size() + " logs.");
-			
-			s.close();
 			connection.close();
 		}
 		catch (SQLException e1) 
@@ -74,7 +55,7 @@ public class LogLoop implements Runnable
 			e1.printStackTrace();
 		}
 	}
-
+	
 	public void end() 
 	{
 		run  = false;

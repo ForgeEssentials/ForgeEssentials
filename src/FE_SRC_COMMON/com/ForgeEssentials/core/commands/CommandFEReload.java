@@ -3,6 +3,7 @@ package com.ForgeEssentials.core.commands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.ModuleLauncher;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
@@ -20,7 +21,7 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	{
 		sender.sendChatToPlayer("Reloading ForgeEssentials configs. May not work for all settings!");
 		sender.sendChatToPlayer(FEChatFormatCodes.RED + "This is experimental!");
-		ModuleLauncher.ReloadConfigs(sender);
+		ModuleLauncher.instance.reloadConfigs(sender);
 		sender.sendChatToPlayer("Done!");
 	}
 
@@ -29,7 +30,7 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	{
 		sender.sendChatToPlayer("Reloading ForgeEssentials configs. May not work for all settings!");
 		sender.sendChatToPlayer(FEChatFormatCodes.RED + "This is experimental!");
-		ModuleLauncher.ReloadConfigs(sender);
+		ModuleLauncher.instance.reloadConfigs(sender);
 		sender.sendChatToPlayer("Done!");
 	}
 

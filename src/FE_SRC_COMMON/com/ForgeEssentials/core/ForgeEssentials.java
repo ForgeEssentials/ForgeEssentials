@@ -18,7 +18,7 @@ import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.MySQLDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLiteDataDriver;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -95,10 +95,6 @@ public class ForgeEssentials
 			Version.checkVersion();
 		}
 
-		bannedItems = new BannedItems();
-		mdlaunch = new ModuleLauncher();
-		mdlaunch.preLoad(e);
-
 		// Data API stuff
 		{
 			// setup
@@ -116,6 +112,11 @@ public class ForgeEssentials
 			DataStorageManager.registerSaveableClass(WorldPoint.class);
 			DataStorageManager.registerSaveableClass(WarpPoint.class);
 		}
+		
+		// setup modules AFTER data stuff...
+		bannedItems = new BannedItems();
+		mdlaunch = new ModuleLauncher();
+		mdlaunch.preLoad(e);
 
 		localization = new Localization();
 	}
@@ -161,7 +162,7 @@ public class ForgeEssentials
 	}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		
 	}

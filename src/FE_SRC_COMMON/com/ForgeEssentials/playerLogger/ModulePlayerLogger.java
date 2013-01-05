@@ -10,6 +10,7 @@ import java.util.List;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.logEntry;
@@ -36,23 +37,29 @@ public class ModulePlayerLogger implements IFEModule
 	public static String password;
 	public static boolean ragequitOn;
 	public static Integer interval;
-	public static boolean enable;
+	public static boolean enable = false;
 	
 	private Connection connection;
-	public EventLogger eLogger;
+	public static EventLogger eLogger;
 	
-	public List<logEntry> logTypes = new ArrayList();
-	
-	public ModulePlayerLogger()
+	public static List<logEntry> logTypes = new ArrayList();
+	static
 	{
 		logTypes.add(new playerTrackerLog());
 		logTypes.add(new commandLog());
 		logTypes.add(new blockChangeLog());
 	}
-
+	
+	public ModulePlayerLogger()
+	{
+		if(!FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
+		MinecraftForge.EVENT_BUS.register(new EventHandler());
+	}
+	
 	@Override
 	public void preLoad(FMLPreInitializationEvent e) 
 	{
+		if(!FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
 		config = new ConfigPlayerLogger();
 		if(!enable) return;
 		OutputHandler.SOP("PlayerLogger module is enabled. Loading...");
@@ -82,17 +89,17 @@ public class ModulePlayerLogger implements IFEModule
 	public void serverStarting(FMLServerStartingEvent e) 
 	{
 		if(!enable) return;
-		
+		e.registerServerCommand(new CommandPl());
 		try 
 		{
 			connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
 			Statement s = connection.createStatement();
 			
-			if(DEBUG && true)
+			if(DEBUG && false)
 			{
 				for(logEntry type : this.logTypes)
 				{
-					s.execute("DROP TABLE IF EXISTS " + type.getTableName());
+					s.execute("DROP TABLE IF EXISTS " + type.getName());
 				}
 			}
 			
@@ -125,7 +132,7 @@ public class ModulePlayerLogger implements IFEModule
 		if(!enable) return;
 		try
 		{
-			eLogger.logLoop.makeLogs();
+			eLogger.logLoop.sendLogs();
 			eLogger.logLoop.end();
 		}
 		catch (Exception ex)
@@ -138,5 +145,11 @@ public class ModulePlayerLogger implements IFEModule
 	{
 		if(ragequitOn)
 			FMLCommonHandler.instance().raiseException(new RuntimeException(), "Database connection lost.", true);
+	}
+
+	@Override
+	public IModuleConfig getConfig() 
+	{
+		return config;
 	}
 }

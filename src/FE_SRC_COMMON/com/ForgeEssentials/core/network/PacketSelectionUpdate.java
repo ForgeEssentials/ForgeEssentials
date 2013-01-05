@@ -34,9 +34,9 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 			{
 				Point p1 = info.getPoint1();
 				stream.writeBoolean(true);
-				stream.writeInt(p1.x);
-				stream.writeInt(p1.y);
-				stream.writeInt(p1.z);
+				stream.writeDouble(p1.x);
+				stream.writeDouble(p1.y);
+				stream.writeDouble(p1.z);
 			}
 			else
 				stream.writeBoolean(false);
@@ -45,9 +45,9 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 			{
 				Point p2 = info.getPoint2();
 				stream.writeBoolean(true);
-				stream.writeInt(p2.x);
-				stream.writeInt(p2.y);
-				stream.writeInt(p2.z);
+				stream.writeDouble(p2.x);
+				stream.writeDouble(p2.y);
+				stream.writeDouble(p2.z);
 			}
 			else
 				stream.writeBoolean(false);

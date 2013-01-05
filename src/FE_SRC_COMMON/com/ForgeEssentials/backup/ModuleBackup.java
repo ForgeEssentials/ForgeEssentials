@@ -3,9 +3,12 @@ package com.ForgeEssentials.backup;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
+import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -17,7 +20,7 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleBackup implements IFEModule
 {
-	public static BackupConfig	config;
+	public static BackupConfig config;
 	public static BackupThread thread;
 
 	public ModuleBackup()
@@ -53,15 +56,20 @@ public class ModuleBackup implements IFEModule
 	}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.backup", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.backup", true);
 	}
 
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public IModuleConfig getConfig() 
+	{
+		return config;
 	}
 }

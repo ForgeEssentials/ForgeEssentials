@@ -10,7 +10,7 @@ import net.minecraftforge.common.Property;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class ConfigGroup
+public class ExportGroups
 {
 	public static File			groupsFile		= new File(ModulePermissions.permsFolder, "groups.cfg");
 
@@ -22,7 +22,7 @@ public class ConfigGroup
 	private static final String	PARENT			= "parent";
 	private static final String	PROM_LADDERS	= "_PROMOTION_LADDERS_";
 
-	public ConfigGroup()
+	public ExportGroups()
 	{
 		OutputHandler.debug("ConfigGroups initlializing...");
 

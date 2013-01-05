@@ -9,6 +9,9 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public interface IFEModule
 {
+	/**
+	 * After this point, the config should have been initialized and saved for the getConfig method.
+	 */
 	public void preLoad(FMLPreInitializationEvent e);
 	
 	public void load(FMLInitializationEvent e);
@@ -20,4 +23,6 @@ public interface IFEModule
 	public void serverStarted(FMLServerStartedEvent e);
 
 	public void serverStopping(FMLServerStoppingEvent e);
+	
+	public IModuleConfig getConfig();
 }

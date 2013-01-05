@@ -10,9 +10,10 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class CommandHome extends ForgeEssentialsCommandBase
@@ -30,29 +31,24 @@ public class CommandHome extends ForgeEssentialsCommandBase
 		if (args.length == 0)
 		{
 			// homes aren't saving...
-			WorldPoint home = PlayerInfo.getPlayerInfo(sender).home;
+			WarpPoint home = PlayerInfo.getPlayerInfo(sender).home;
 			if (home == null)
 				OutputHandler.chatError(sender, Localization.get("message.error.nohome") + getSyntaxPlayer(sender));
 			else
 			{
 				EntityPlayerMP player = ((EntityPlayerMP) sender);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
-				playerInfo.back = new WorldPoint(player);
-				if (player.dimension != home.dim)
-				{
-					// Home is not in this dimension. Move the player.
-					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, home.dim);
-				}
-				player.playerNetServerHandler.setPlayerLocation(home.x + 0.5, home.y + 1, home.z + 0.5, player.rotationYaw, player.rotationPitch);
+				playerInfo.back = new WarpPoint(player);
+				TeleportCenter.addToTpQue(new WarpPoint(home.dim, home.x, home.y, home.z, home.pitch, home.yaw), player);
 			}
 		}
 		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+".set")))
 		{
 			if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
 			{
-				WorldPoint p = FunctionHelper.getEntityPoint(sender);
+				WarpPoint p = new WarpPoint(sender);
 				PlayerInfo.getPlayerInfo(sender).home = p;
-				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
+				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.getX(), p.getY(), p.getZ()));
 			}
 			else if (args.length >= 3)
 			{
@@ -86,9 +82,9 @@ public class CommandHome extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
 					return;
 				}
-				WorldPoint p = new WorldPoint(sender.worldObj.getWorldInfo().getDimension(), x, y, z);
+				WarpPoint p = new WarpPoint(sender.worldObj.getWorldInfo().getDimension(), x, y, z, sender.cameraPitch, sender.cameraYaw);
 				PlayerInfo.getPlayerInfo(sender).home = p;
-				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
+				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.getX(), p.getY(), p.getZ()));
 			}
 		}
 	}

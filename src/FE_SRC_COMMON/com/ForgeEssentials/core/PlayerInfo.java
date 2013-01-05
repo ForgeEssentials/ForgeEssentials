@@ -16,7 +16,7 @@ import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -68,11 +68,13 @@ public class PlayerInfo
 		info.setPoint1((Point) tag.getFieldValue("sel1"));
 		info.setPoint2((Point) tag.getFieldValue("sel2"));
 		
-		info.home = (WorldPoint) tag.getFieldValue("home");
-		info.back = (WorldPoint) tag.getFieldValue("back");
+		info.home = (WarpPoint) tag.getFieldValue("home");
+		info.back = (WarpPoint) tag.getFieldValue("back");
 		
 		info.spawnType = (Integer) tag.getFieldValue("spawnType");
 		
+		info.prefix = (String) tag.getFieldValue("prefix");
+		info.suffix = (String) tag.getFieldValue("suffix");
 		return info;
 	}
 
@@ -98,10 +100,16 @@ public class PlayerInfo
 	private Selection selection;
 
 	@SaveableField(nullableField = true)
-	public WorldPoint home;
+	public WarpPoint home;
 	
 	@SaveableField(nullableField = true)
-	public WorldPoint back;
+	public WarpPoint back;
+	
+	@SaveableField()
+	public String prefix;
+	
+	@SaveableField()
+	public String suffix;
 	
 	// 0: Normal 1: World spawn 2: Bed 3: Home
 	@SaveableField
@@ -123,6 +131,9 @@ public class PlayerInfo
 
 		undos = new Stack<BackupArea>();
 		redos = new Stack<BackupArea>();
+		
+		prefix = "";
+		suffix = "";
 	}
 	
 	/**
@@ -250,5 +261,14 @@ public class PlayerInfo
 		BackupArea back = redos.pop();
 		undos.push(back);
 		return back;
+	}
+	
+	public void clearSelection()
+	{
+		this.selection = null;
+		this.sel1 = null;
+		this.sel2 = null;
+		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(this)).getPayload(), (Player)player);
 	}
 }

@@ -8,15 +8,8 @@ import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandPermSet extends CommandFEPermBase
+public class CommandPermSet extends CommandFEPerm
 {
-
-	@Override
-	public String getCommand()
-	{
-		// TODO Auto-generated method stub
-		return "set";
-	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)

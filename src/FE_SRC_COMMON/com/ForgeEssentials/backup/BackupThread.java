@@ -14,9 +14,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLLog;
 
-public class BackupThread implements Runnable
+public class BackupThread extends Thread
 {
-	public static File		backupDir;
+	private final File		backupDir;
 	public static String	backupName;
 
 	String					source;
@@ -27,6 +27,7 @@ public class BackupThread implements Runnable
 
 	public BackupThread(ICommandSender user, MinecraftServer server)
 	{
+		backupDir = new File(BackupConfig.backupDir.getAbsolutePath());
 		this.server = server;
 		this.user = user;
 	}
@@ -86,7 +87,7 @@ public class BackupThread implements Runnable
 		{
 			FMLLog.severe(ex.getMessage());
 		}
-		
+
 		ModuleBackup.thread = null;
 	}
 
