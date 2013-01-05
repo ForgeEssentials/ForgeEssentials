@@ -1125,10 +1125,9 @@ public class SqlHelper
 		}
 	}
 	
-	// void??
-	protected HashMap<String, ArrayList<Object>> dump()
+	protected HashMap<String, Object> dump()
 	{
-		HashMap<String, ArrayList<Object>>map= new HashMap<String, ArrayList<Object>>();
+		HashMap<String, Object>map= new HashMap<String, Object>();
 		
 		ResultSet set;
 		ArrayList list;
@@ -1190,14 +1189,82 @@ public class SqlHelper
 
 			list = new ArrayList<PermissionHolder>();
 			
+			boolean allowed;
+			String target, zone, perm;
+			PermissionHolder holder;
 			while(set.next())
-				list.add(set.getInt(1));
+			{
+				target = set.getString(COLUMN_PLAYER_USERNAME);
+				zone = set.getString(COLUMN_ZONE_NAME);
+				perm = set.getString(COLUMN_PERMISSION_PERM);
+				allowed = set.getBoolean(COLUMN_PERMISSION_ALLOWED);
+				holder = new PermissionHolder(target, perm, allowed, zone);
+				list.add(holder);
+			}
 			
-			map.put("players", list);
+			map.put("playerPerms", list);
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("[PermSQL] Player dump for export failed!");
+			OutputHandler.SOP("[PermSQL] Player Permission dump for export failed!");
+			e.printStackTrace();
+			list = null;
+		}
+		
+		// DUMP GROUP PERMISSIONS! ------------------------------
+		try
+		{
+			set = instance.statementDumpGroupPermissions.executeQuery();
+
+			list = new ArrayList<PermissionHolder>();
+			
+			boolean allowed;
+			String target, zone, perm;
+			PermissionHolder holder;
+			while(set.next())
+			{
+				target = set.getString(COLUMN_GROUP_NAME);
+				zone = set.getString(COLUMN_ZONE_NAME);
+				perm = set.getString(COLUMN_PERMISSION_PERM);
+				allowed = set.getBoolean(COLUMN_PERMISSION_ALLOWED);
+				holder = new PermissionHolder(target, perm, allowed, zone);
+				list.add(holder);
+			}
+			
+			map.put("groupPerms", list);
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.SOP("[PermSQL] Group Permission dump for export failed!");
+			e.printStackTrace();
+			list = null;
+		}
+		
+		// DUMP GROUP CONNECTORS! ------------------------------
+		try
+		{
+			set = instance.statementDumpGroupPermissions.executeQuery();
+
+			list = new ArrayList<PermissionHolder>();
+			
+			boolean allowed;
+			String target, zone, perm;
+			PermissionHolder holder;
+			while(set.next())
+			{
+				target = set.getString(COLUMN_GROUP_NAME);
+				zone = set.getString(COLUMN_ZONE_NAME);
+				perm = set.getString(COLUMN_PERMISSION_PERM);
+				allowed = set.getBoolean(COLUMN_PERMISSION_ALLOWED);
+				holder = new PermissionHolder(target, perm, allowed, zone);
+				list.add(holder);
+			}
+			
+			map.put("groupPerms", list);
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.SOP("[PermSQL] Group Permission dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}

@@ -4,7 +4,7 @@
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
+      <x>0</x>
       <y>270</y>
       <w>180</w>
       <h>120</h>
@@ -23,7 +23,7 @@ INDEX: none
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
+      <x>340</x>
       <y>70</y>
       <w>160</w>
       <h>180</h>
@@ -45,7 +45,7 @@ INDEX: GroupID
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>640</x>
+      <x>590</x>
       <y>400</y>
       <w>140</w>
       <h>80</h>
@@ -61,7 +61,7 @@ INDEX: PlayerID</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>100</x>
+      <x>50</x>
       <y>470</y>
       <w>150</w>
       <h>100</h>
@@ -80,7 +80,7 @@ INDEX: none
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>360</x>
+      <x>310</x>
       <y>520</y>
       <w>150</w>
       <h>140</h>
@@ -99,7 +99,7 @@ INDEX: none</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>200</x>
+      <x>150</x>
       <y>110</y>
       <w>210</w>
       <h>240</h>
@@ -112,7 +112,7 @@ Demote</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>220</x>
+      <x>170</x>
       <y>380</y>
       <w>440</w>
       <h>150</h>
@@ -124,7 +124,7 @@ getGroup</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>350</x>
+      <x>300</x>
       <y>220</y>
       <w>174</w>
       <h>320</h>
@@ -136,7 +136,7 @@ GetPermForGroup</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>480</x>
+      <x>430</x>
       <y>430</y>
       <w>180</w>
       <h>120</h>
@@ -148,7 +148,7 @@ GetPermForPlayer</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>200</x>
+      <x>150</x>
       <y>220</y>
       <w>230</w>
       <h>270</h>
@@ -160,7 +160,7 @@ get PlayersInGroup</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>100</x>
+      <x>50</x>
       <y>80</y>
       <w>180</w>
       <h>80</h>
@@ -177,7 +177,7 @@ INDEX: LadderID
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>100</x>
+      <x>50</x>
       <y>130</y>
       <w>196</w>
       <h>160</h>
@@ -190,7 +190,7 @@ getLaddderFromname</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
+      <x>540</x>
       <y>90</y>
       <w>210</w>
       <h>120</h>
