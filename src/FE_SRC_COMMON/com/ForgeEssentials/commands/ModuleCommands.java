@@ -191,11 +191,20 @@ public class ModuleCommands implements IFEModule
 					ICommand cmd = (ICommand) cmdObj;
 					if(toRemoveNames.contains(cmd.getCommandName()))
 					{
-						Class<?> cmdClass = cmd.getClass();
-						if(!cmdClass.getPackage().getName().contains("ForgeEssentials"))
+						try
 						{
-							OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
-							toRemove.add(cmd.getCommandName());
+							Class<?> cmdClass = cmd.getClass();
+							Package pkg = cmdClass.getPackage();
+							if(pkg == null || !pkg.getName().contains("ForgeEssentials"))
+							{
+								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
+								toRemove.add(cmd.getCommandName());
+							}
+						}
+						catch(Exception e)
+						{
+							OutputHandler.debug("dafug? Got exception:" + e.getLocalizedMessage());
+							e.printStackTrace();
 						}
 					}
 				}

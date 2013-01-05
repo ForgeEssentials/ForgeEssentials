@@ -16,18 +16,18 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
  *
  */
 
-public class CommandLb extends ForgeEssentialsCommandBase 
+public class CommandPl extends ForgeEssentialsCommandBase 
 {
 	@Override
 	public String getCommandName() 
 	{
-		return "logblock";
+		return "playerlogger";
 	}
 	
 	@Override
 	public List getCommandAliases()
     {
-        return Arrays.asList(new String[]{"lb"});
+        return Arrays.asList(new String[]{"pl"});
     }
 
 	@Override

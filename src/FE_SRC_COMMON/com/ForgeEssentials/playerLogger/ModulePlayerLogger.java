@@ -89,7 +89,7 @@ public class ModulePlayerLogger implements IFEModule
 	public void serverStarting(FMLServerStartingEvent e) 
 	{
 		if(!enable) return;
-		e.registerServerCommand(new CommandLb());
+		e.registerServerCommand(new CommandPl());
 		try 
 		{
 			connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
