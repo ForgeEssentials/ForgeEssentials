@@ -11,7 +11,7 @@ import net.minecraftforge.common.Property;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class ConfigPlayer
+public class ExportPlayers
 {
 	public static File playersFile	= new File(ModulePermissions.permsFolder, "players.cfg");
 
@@ -21,7 +21,7 @@ public class ConfigPlayer
 
 	public Configuration		config;
 
-	public ConfigPlayer()
+	public ExportPlayers()
 	{
 		OutputHandler.debug("ConfigGroups initlializing...");
 

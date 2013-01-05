@@ -104,8 +104,10 @@ public class SqlHelper
 	private final PreparedStatement statementPutPermission; // $ , allowed, target, isgroup, perm, zone
 	private final PreparedStatement statementUpdatePermission; // $ allowed, target, isgroup, perm, zone
 
-	public SqlHelper()
+	public SqlHelper(ConfigPermissions config)
 	{
+		// TODO: change connection string...
+		
 		instance = this;
 		connect();
 

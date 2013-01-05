@@ -1,340 +1,86 @@
 package com.ForgeEssentials.permission;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 
-import net.minecraftforge.common.ConfigCategory;
+import net.minecraft.command.ICommandSender;
+
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-import net.minecraftforge.event.Event.Result;
 
-import com.ForgeEssentials.util.OutputHandler;
+import java.io.File;
 
-public class ConfigPermissions
+public class ConfigPermissions implements IModuleConfig
 {
-	public static File			permissionsFile	= new File(ModulePermissions.permsFolder, "permissions.cfg");
-
-	private static final String	SUPERS			= "_PLAYER_SUPERS_";
-
-	public Configuration		config;
-
-	private String				global;
-
+	private Configuration config;
+	private File file;
+	
+	private static boolean permDefault = false;
+	
 	public ConfigPermissions()
 	{
-		OutputHandler.debug("ConfigPermissions initlializing...");
-		config = new Configuration(permissionsFile, true);
-
-		global = ZoneManager.GLOBAL.getZoneID();
-
-		// Supers properties
-		if (config.categories.containsKey(SUPERS))
-		{
-			config.addCustomCategoryComment(SUPERS, "the last stop where permissions get checked before their defaults");
-			readPlayerSupers(config.categories.get(SUPERS));
-		}
-		writePlayerSupers(SUPERS);
-
-		// GLOBAL properties
-		if (config.categories.containsKey(global))
-		{
-			config.addCustomCategoryComment(global, "the last stop where permissions get checked before their defaults");
-
-			if (config.categories.containsKey(global + ".groups"))
-				readGroupPerms(ZoneManager.GLOBAL, config.categories.get(global + ".groups"));
-
-			if (config.categories.containsKey(global + ".players"))
-				readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(global + ".players"));
-		}
-		writeGroupPerms(ZoneManager.GLOBAL, global);
-		writePlayerPerms(ZoneManager.GLOBAL, global);
-
-		// WorldZones
-		for (Zone worldZone : ZoneManager.worldZoneMap.values())
-		{
-			if (config.categories.containsKey(worldZone.getZoneID()))
-			{
-				if (config.categories.containsKey(worldZone.getZoneID() + ".groups"))
-					readGroupPerms(worldZone, config.categories.get(worldZone.getZoneID() + ".groups"));
-
-				if (config.categories.containsKey(worldZone.getZoneID() + ".players"))
-					readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(worldZone.getZoneID() + ".players"));
-			}
-			writeGroupPerms(worldZone, worldZone.getZoneID());
-			writePlayerPerms(worldZone, worldZone.getZoneID());
-		}
-
-		// all the other zones.
-		for (Zone zone : ZoneManager.zoneMap.values())
-		{
-			if (config.categories.containsKey(zone.getZoneID()))
-			{
-				if (config.categories.containsKey(zone.getZoneID() + ".groups"))
-					readGroupPerms(zone, config.categories.get(zone.getZoneID() + ".groups"));
-
-				if (config.categories.containsKey(zone.getZoneID() + ".players"))
-					readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(zone.getZoneID() + ".players"));
-			}
-			writeGroupPerms(zone, zone.getZoneID());
-			writePlayerPerms(zone, zone.getZoneID());
-		}
-
-		config.save();
-		OutputHandler.debug("ConfigPermissions initlialization complete");
+		file = new File(ModulePermissions.permsFolder, "config.cfg");
 	}
 
-	/**
-	 * 
-	 * @param zone who's permissions to load from the file.
-	 */
-	public void forceLoadZone(Zone zone)
+	@Override
+	public void setGenerate(boolean generate)
 	{
-		config.load();
-		if (config.categories.containsKey(zone.getZoneID()))
-		{
-			if (config.categories.containsKey(zone.getZoneID() + ".groups"))
-				readGroupPerms(zone, config.categories.get(zone.getZoneID() + ".groups"));
-
-			if (config.categories.containsKey(zone.getZoneID() + ".players"))
-				readPlayerPerms(zone, config.categories.get(zone.getZoneID() + ".players"));
-		}
+		// idc....
 	}
 
-	/**
-	 * 
-	 * @param zone who's permissions to save to the file.
-	 */
-	public void forceSaveZone(Zone zone)
+	@Override
+	public void init()
 	{
-		writeGroupPerms(zone, zone.getZoneID());
-		writePlayerPerms(zone, zone.getZoneID());
-		config.save();
+		config = new Configuration(file);
+		
+		permDefault = config.get("stuff", "permissionDefault", false, "if a permission is not set anywhere.. it will be return this. True = allow  False == deny").getBoolean(false);
+		config.get("stuff", "databaseType", "SqLite", " MySQL and SqLite are the only ones supported atm.");
+		
+		config.addCustomCategoryComment("MySQL", "For everything MySQL");
+		config.get("MySQL", "host", "localhost");
+		config.get("MySQL", "port", 3306);
+		config.get("MySQL", "database", "FE_Permissions", "If it doesn't exist.. the user will need permisisons to make it.");
+		config.get("MySQL", "username", "FEUser");
+		config.get("MySQL", "password", "blahblah");
+		config.get("MySQL", "StealConfigFromCore", false, "if this is true.. all the mySQL db stuff here will be ignored.. and the stuff from the CORE config will be used instead.");
+		
+		config.addCustomCategoryComment("SqLite", "For everything SqLite");
+		config.get("SqLite", "file", "permissions.db");
+		config.get("SqLite", "absolutePath", false, "if this is true, the below path will be parsed as an absolute path. otherwise it is relative to this dir.");
 	}
 
-	public void forceLoadSupers()
+	@Override
+	public void forceSave()
 	{
-		config.load();
-		// Supers properties
-		if (config.categories.containsKey(SUPERS))
-		{
-			config.addCustomCategoryComment(SUPERS, "the last stop where permissions get checked before their defaults");
-			readPlayerSupers(config.categories.get(SUPERS));
-		}
+		// TODO Auto-generated method stub
+
 	}
 
-	public void forceSaveSupers()
+	@Override
+	public void forceLoad(ICommandSender sender)
 	{
-		writePlayerSupers(SUPERS);
-		config.save();
+		// TODO Auto-generated method stub
+
 	}
 
-	public void loadAll()
+	@Override
+	public File getFile()
 	{
-		config.load();
-
-		// GLOBAL properties
-		if (config.categories.containsKey(global))
-		{
-			config.addCustomCategoryComment(global, "the last stop where permissions get checked before their defaults");
-
-			if (config.categories.containsKey(global + ".groups"))
-				readGroupPerms(ZoneManager.GLOBAL, config.categories.get(global + ".groups"));
-
-			if (config.categories.containsKey(global + ".players"))
-				readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(global + ".players"));
-		}
-
-		// WorldZones
-		for (Zone worldZone : ZoneManager.worldZoneMap.values())
-			if (config.categories.containsKey(worldZone.getZoneID()))
-			{
-				if (config.categories.containsKey(worldZone.getZoneID() + ".groups"))
-					readGroupPerms(worldZone, config.categories.get(worldZone.getZoneID() + ".groups"));
-
-				if (config.categories.containsKey(worldZone.getZoneID() + ".players"))
-					readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(worldZone.getZoneID() + ".players"));
-			}
-
-		// all the other zones.
-		for (Zone zone : ZoneManager.zoneMap.values())
-			if (config.categories.containsKey(zone.getZoneID()))
-			{
-				if (config.categories.containsKey(zone.getZoneID() + ".groups"))
-					readGroupPerms(zone, config.categories.get(zone.getZoneID() + ".groups"));
-
-				if (config.categories.containsKey(zone.getZoneID() + ".players"))
-					readPlayerPerms(ZoneManager.GLOBAL, config.categories.get(zone.getZoneID() + ".players"));
-			}
+		// TODO Auto-generated method stub
+		return null;
 	}
-
-	public void saveAll()
+	
+	public PermResult getPermDefault()
 	{
-		// GLOBAL properties
-		writeGroupPerms(ZoneManager.GLOBAL, global);
-		writePlayerPerms(ZoneManager.GLOBAL, global);
-
-		// WorldZones
-		for (Zone worldZone : ZoneManager.worldZoneMap.values())
-		{
-			writeGroupPerms(worldZone, worldZone.getZoneID());
-			writePlayerPerms(worldZone, worldZone.getZoneID());
-		}
-
-		// all the other zones.
-		for (Zone zone : ZoneManager.zoneMap.values())
-		{
-			writeGroupPerms(zone, zone.getZoneID());
-			writePlayerPerms(zone, zone.getZoneID());
-		}
-
-		config.save();
+		return permDefault ? PermResult.ALLOW : PermResult.DENY;
 	}
-
-	private void readGroupPerms(Zone zone, ConfigCategory cat)
+	
+	public String getConnectionString()
 	{
-		ArrayList<String> children = getCategoryChildren(cat);
-
-		for (String child : children)
-		{
-			// read permissions
-			ConfigCategory groupCat = config.categories.get(child);
-
-			Set<Permission> perms = zone.groupOverrides.get(getPlayerNameFromCategory(child));
-			if (perms == null)
-			{
-				perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
-				zone.groupOverrides.put(getPlayerNameFromCategory(child), perms);
-			}
-
-			for (Property prop : groupCat.values())
-			{
-				Permission newPerm = new Permission(prop.getName(), prop.getBoolean(true));
-				PermissionChecker check = new Permission(prop.getName(), prop.getBoolean(true));
-
-				if (perms.contains(check) && !perms.contains(newPerm))
-					perms.remove(check);
-
-				perms.add(newPerm);
-			}
-		}
-	}
-
-	private void readPlayerSupers(ConfigCategory cat)
-	{
-		ArrayList<String> children = getCategoryChildren(cat);
-
-		for (String child : children)
-		{
-			// read permissions
-			ConfigCategory groupCat = config.categories.get(child);
-
-			Set<Permission> perms = PlayerManager.playerSupers.get(getPlayerNameFromCategory(child));
-			if (perms == null)
-			{
-				perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
-				PlayerManager.playerSupers.put(getPlayerNameFromCategory(child), perms);
-			}
-
-			for (Property prop : groupCat.values())
-			{
-				Permission newPerm = new Permission(prop.getName(), prop.getBoolean(true));
-				PermissionChecker check = new Permission(prop.getName(), prop.getBoolean(true));
-
-				if (perms.contains(check) && !perms.contains(newPerm))
-					perms.remove(check);
-
-				perms.add(newPerm);
-			}
-		}
-	}
-
-	private void readPlayerPerms(Zone zone, ConfigCategory cat)
-	{
-		ArrayList<String> children = getCategoryChildren(cat);
-
-		for (String child : children)
-		{
-			// read permissions
-			ConfigCategory groupCat = config.categories.get(child);
-
-			Set<Permission> perms = zone.playerOverrides.get(getPlayerNameFromCategory(child));
-			
-			if (perms == null)
-			{
-				perms = Collections.newSetFromMap(new ConcurrentHashMap<Permission, Boolean>());
-				zone.playerOverrides.put(getPlayerNameFromCategory(child), perms);
-			}
-
-			for (Property prop : groupCat.values())
-			{
-				Permission newPerm = new Permission(prop.getName(), prop.getBoolean(true));
-				PermissionChecker check = new Permission(prop.getName(), prop.getBoolean(true));
-
-				if (perms.contains(check) && !perms.contains(newPerm))
-					perms.remove(check);
-
-				perms.add(newPerm);
-			}
-		}
-	}
-
-	private void writePlayerSupers(String parentCat)
-	{
-		for (String player : PlayerManager.playerSupers.keySet())
-		{
-			Set<Permission> list = PlayerManager.playerSupers.get(player);
-			for (Permission perm : list)
-				config.get(parentCat + "." + player, perm.name, perm.allowed.equals(Result.ALLOW));
-		}
-	}
-
-	private void writePlayerPerms(Zone zone, String parentCat)
-	{
-		for (String player : zone.getPlayersOverriden())
-		{
-			Set<Permission> list = zone.playerOverrides.get(player);
-			for (Permission perm : list)
-				config.get(parentCat + ".players." + player, perm.name, perm.allowed.equals(Result.ALLOW));
-		}
-	}
-
-	private void writeGroupPerms(Zone zone, String parentCat)
-	{
-		for (String group : zone.getGroupsOverriden())
-		{
-			Set<Permission> list = zone.groupOverrides.get(group);
-			for (Permission perm : list)
-				config.get(parentCat + ".groups." + group, perm.name, perm.allowed.equals(Result.ALLOW));
-		}
-	}
-
-	private ArrayList<String> getCategoryChildren(ConfigCategory category)
-	{
-		ArrayList<String> categories = new ArrayList<String>();
-
-		for (ConfigCategory cat : config.categories.values())
-		{
-			if (!cat.isChild())
-				continue;
-
-			if (cat.getQualifiedName().startsWith(category.getQualifiedName()))
-				categories.add(cat.getQualifiedName());
-		}
-
-		return categories;
-	}
-
-	private String getPlayerNameFromCategory(String qualifiedName)
-	{
-		String[] names = qualifiedName.split("\\" + Configuration.CATEGORY_SPLITTER);
-
-		if (names.length == 0)
-			return qualifiedName;
-		else
-			return names[names.length - 1];
+		String type = config.get("stuff", "databaseType", "SqLite").value;
+		
+		StringBuilder connect = new StringBuilder("jdbc:");
+		
+		return null;
 	}
 
 }

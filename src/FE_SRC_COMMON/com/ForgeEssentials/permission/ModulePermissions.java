@@ -8,6 +8,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
@@ -24,8 +25,10 @@ public class ModulePermissions implements IFEModule
 	public static PermissionsHandler	pHandler;
 	public static ZoneManager			zManager;
 	public static SqlHelper				sql;
+	public static ConfigPermissions		config;
 
 	public static File					permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
+	protected static DataDriver			data;
 
 	@Override
 	public void preLoad(FMLPreInitializationEvent e)
@@ -39,7 +42,7 @@ public class ModulePermissions implements IFEModule
 		MinecraftForge.EVENT_BUS.register(zManager);
 
 		// testing DB.
-		// sql = new SqlLiteHelper();
+		sql = new SqlHelper(config);
 	}
 
 	@Override
@@ -89,16 +92,14 @@ public class ModulePermissions implements IFEModule
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		/*
-		 * for (Zone zone : ZoneManager.zoneMap.values())
-		 * DataDriver.saveObject(zone);
-		 */
+		for (Zone zone : ZoneManager.zoneMap.values())
+			data.saveObject(zone);
 	}
 
 	@Override
-	public IModuleConfig getConfig() 
+	public IModuleConfig getConfig()
 	{
-		return null;
+		return config;
 	}
 
 }
