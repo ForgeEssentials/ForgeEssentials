@@ -119,9 +119,28 @@ public class TickTaskSetSelection implements ITickTask
 	public void onComplete()
 	{
 		PlayerInfo.getPlayerInfo(player).addUndoAction(back);
+		String blockName = blockID + ":" + metadata;
+		
+		if (blockID == 0)
+		{
+			blockName = Localization.get("tile.air.name");
+		}
+		else
+		{
+			try
+			{
+				blockName = new ItemStack(blockID, 1, metadata).getDisplayName();
+			}
+			catch (Exception e)
+			{
+				blockName = blockID + ":" + metadata;
+				OutputHandler.SOP("Could not retrieve the name of the block represented by ID " + blockID 
+						+ " with meta " + metadata + ". This is a problem in the mod that provides the block not supporting getDisplayName for their block.");
+			}
+		}
+		
 		OutputHandler.chatConfirmation(player, Localization.format("message.wc.setConfirmBlocksChanged",
-				changed, 
-				(blockID == 0) ? Localization.get("tile.air.name") : new ItemStack(blockID, 1, metadata).getDisplayName()));
+				changed, blockName));
 	}
 
 	@Override
