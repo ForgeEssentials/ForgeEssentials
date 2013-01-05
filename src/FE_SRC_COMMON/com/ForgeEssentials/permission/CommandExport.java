@@ -14,20 +14,25 @@ public class CommandExport
 	{
 		if(args.length > 0)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export");
 			return;
 		}
-		
 	}
 
 	public static void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		if(args.length > 0)
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "");
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export");
 			return;
 		}
 		
+	}
+	
+	private void startThread()
+	{
+		ExportThread t = new ExportThread();
+		t.run();
 	}
 
 }

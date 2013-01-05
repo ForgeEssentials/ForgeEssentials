@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.TreeSet;
 
 public class SqlHelper
@@ -386,7 +387,7 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_PLAYER);
 			statementDumpPlayers = instance.db.prepareStatement(query.toString());
 
-			query = new StringBuilder("SELECT ")
+			query = new StringBuilder("SELECT DISTINCT ")
 					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
 					.append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME).append(", ")
 					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME)
@@ -464,6 +465,7 @@ public class SqlHelper
 						DatabaseMetaData dbm = db.getMetaData();
 						set = dbm.getTables(null, null, TABLE_PERMISSION, null);
 						generate = !set.next();
+						return;
 					}
 					else
 						OutputHandler.SOP("Core SQL configuration is invalid.. defaulting to in-house configurations");
@@ -484,6 +486,7 @@ public class SqlHelper
 					DatabaseMetaData dbm = db.getMetaData();
 					set = dbm.getTables(null, null, TABLE_PERMISSION, null);
 					generate = !set.next();
+					return;
 				}
 				else
 					OutputHandler.SOP("SQL configuration is invalid.. defaulting to SqLite");
@@ -1120,6 +1123,16 @@ public class SqlHelper
 		}
 	}
 
+	/**
+	 * queries the entire DB and make it into nonDB format..
+	 * @return
+	 * "players" >> arraylist<String>
+	 * "groups" >> arrayList<Group>
+	 *  "playerPerms" >> arrayList<permHolder>
+	 *  "groupPerms" >> arrayList<permHolder>
+	 *  "groupConnectors" >> HashMap<String, HashMap<String, ArrayList<String>>>
+	 *  "ladders" >> arraylist<PromotionLadder>
+	 */
 	protected HashMap<String, Object> dump()
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -1208,7 +1221,7 @@ public class SqlHelper
 
 		// DUMP GROUP PERMISSIONS! ------------------------------
 		try
-		{
+		{		
 			set = instance.statementDumpGroupPermissions.executeQuery();
 
 			list = new ArrayList<PermissionHolder>();
@@ -1238,28 +1251,95 @@ public class SqlHelper
 		// DUMP GROUP CONNECTORS! ------------------------------
 		try
 		{
-			set = instance.statementDumpGroupPermissions.executeQuery();
+			set = instance.statementDumpGroupConnector.executeQuery();
 
-			list = new ArrayList<PermissionHolder>();
+			HashMap<String, HashMap<String, ArrayList<String>>> uberMap = new HashMap<String, HashMap<String, ArrayList<String>>>(); 
 
-			boolean allowed;
-			String target, zone, perm;
-			PermissionHolder holder;
+			String group, zone, player;
+			HashMap<String, ArrayList<String>> gMap;
 			while (set.next())
 			{
-				target = set.getString(COLUMN_GROUP_NAME);
+				group = set.getString(COLUMN_GROUP_NAME);
 				zone = set.getString(COLUMN_ZONE_NAME);
-				perm = set.getString(COLUMN_PERMISSION_PERM);
-				allowed = set.getBoolean(COLUMN_PERMISSION_ALLOWED);
-				holder = new PermissionHolder(target, perm, allowed, zone);
-				list.add(holder);
+				player = set.getString(COLUMN_PLAYER_USERNAME);
+				
+				gMap = uberMap.get(zone);
+				if (gMap == null)
+				{
+					gMap = new HashMap<String, ArrayList<String>>();
+					uberMap.put(zone, gMap);
+				}
+				
+				list = gMap.get(group);
+				if (list == null)
+				{
+					list = new ArrayList<String>();
+					gMap.put(group, list);
+				}
+				
+				list.add(player);					
 			}
-
-			map.put("groupPerms", list);
+			
+			map.put("groupConnectors", uberMap);
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("[PermSQL] Group Permission dump for export failed!");
+			OutputHandler.SOP("[PermSQL] Group Connection dump for export failed!");
+			e.printStackTrace();
+			list = null;
+		}
+		
+		// DUMP LADDERS! ------------------------------
+		try
+		{
+			set = instance.statementDumpLadders.executeQuery();
+
+			// zone, ladder, groupnames
+			HashMap<String, HashMap<String, ArrayList<String>>> uberMap = new HashMap<String, HashMap<String, ArrayList<String>>>(); 
+
+			String ladder, zone, group;
+			HashMap<String, ArrayList<String>> gMap;
+			while (set.next())
+			{
+				ladder = set.getString(COLUMN_LADDER_NAME_NAME);
+				zone = set.getString(COLUMN_ZONE_NAME);
+				group = set.getString(COLUMN_GROUP_NAME);
+				
+				gMap = uberMap.get(zone);
+				if (gMap == null)
+				{
+					gMap = new HashMap<String, ArrayList<String>>();
+					uberMap.put(zone, gMap);
+				}
+				
+				list = gMap.get(ladder);
+				if (list == null)
+				{
+					list = new ArrayList<String>();
+					gMap.put(ladder, list);
+				}
+				
+				list.add(group);		
+			}
+			
+			list = new ArrayList<PromotionLadder>();
+			
+			PromotionLadder lad;
+			String[] holder = new String[] {};
+			for (Entry<String, HashMap<String, ArrayList<String>>>  entry1 : uberMap.entrySet())
+				for (Entry<String, ArrayList<String>> entry2 : entry1.getValue().entrySet())
+				{
+					if (entry2.getValue().isEmpty())
+						continue;
+					
+					lad = new PromotionLadder(entry2.getKey(), entry1.getKey(), entry2.getValue().toArray(holder));
+				}
+			
+			map.put("ladders", list);
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.SOP("[PermSQL] Ladder dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
