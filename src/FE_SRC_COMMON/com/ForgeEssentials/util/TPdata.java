@@ -30,12 +30,12 @@ public class TPdata
 		this.point = point;
 		this.player = player;
 		this.waittime = TeleportCenter.tpWarmup;
-		lastPos = new WarpPoint(player.dimension, player.posX, player.posY, player.posZ, player.cameraPitch, player.cameraYaw);
+		lastPos = new WarpPoint(player);
 	}
 	
 	public void count()
 	{
-		currentPos = new WarpPoint(player.dimension, player.posX, player.posY, player.posZ, player.cameraPitch, player.cameraYaw);
+		currentPos = new WarpPoint(player);
 		if(!lastPos.equals(currentPos))
 		{
 			TeleportCenter.abort(this);
@@ -56,7 +56,7 @@ public class TPdata
 		{
 			server.transferPlayerToDimension((EntityPlayerMP) player, point.dim);
 		}
-		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y, point.z, point.pitch, point.yaw);
+		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y, point.z, point.yaw, point.pitch);
 		PlayerInfo.getPlayerInfo((EntityPlayer) player).TPcooldown = TeleportCenter.tpCooldown;
 		TeleportCenter.TPdone(this);
 	}
