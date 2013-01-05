@@ -31,7 +31,7 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.HIGHEST)
 	public void doOpCheck(PermQueryPlayer event)
 	{
-		boolean isOp = FunctionHelper.isPlayerOp(event.doer.username);
+		boolean isOp = FunctionHelper.isPlayerOp(event.doer.username.toLowerCase());
 		event.setResult(isOp ? PermResult.ALLOW : PermResult.DENY);
 	}
 	
