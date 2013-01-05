@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
@@ -631,6 +632,58 @@ public class SqlHelper
 
 		}
 		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	/**
+	 * If generation is enabled, puts the provided Registered permissions into the DB.
+	 * @param map
+	 */
+	protected void putRegistrationperms(HashMap<RegGroup, HashSet<Permission>> map)
+	{
+		if (!generate)
+			return;
+		try
+		{
+			OutputHandler.SOP(" Inserting registration permissions into Permissions DB");
+			
+			// create default groups...
+			StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_PERMISSION)
+					.append(" (")
+					.append(COLUMN_PERMISSION_TARGET).append(", ")
+					.append(COLUMN_PERMISSION_ALLOWED).append(", ")
+					.append(COLUMN_PERMISSION_PERM).append(", ")
+					.append(COLUMN_PERMISSION_ISGROUP).append(", ")
+					.append(COLUMN_PERMISSION_ZONEID).append(") ")
+					.append(" VALUES ").append(" ('?', '?', ?, 1, 0) ");
+			PreparedStatement statement = db.prepareStatement(query.toString());
+			
+			// create groups...
+			HashMap<RegGroup, Integer> groups = new HashMap<RegGroup, Integer>();
+			for (RegGroup group : map.keySet())
+			{
+				createGroup(group.getGroup());
+				groups.put(group, new Integer(getGroupIDFromGroupName(group.toString())));
+			}
+			
+			// register permissions
+			for (Entry<RegGroup, HashSet<Permission>> entry : map.entrySet())
+			{
+				statement.setInt(1, groups.get(entry.getKey()));
+				for (Permission perm : entry.getValue())
+				{
+					statement.setInt(2, perm.allowed ? 1 : 0);
+					statement.setString(3, perm.name);
+					statement.executeUpdate();
+				}
+			}
+			
+			OutputHandler.SOP(" Registration permissions Seccesfully inserted");
+		}
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());

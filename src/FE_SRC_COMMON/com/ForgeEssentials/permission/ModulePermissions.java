@@ -44,16 +44,20 @@ public class ModulePermissions implements IFEModule
 
 		// testing DB.
 		config = new ConfigPermissions();
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
 	public void load(FMLInitializationEvent e)
 	{
 		OutputHandler.SOP("Starting permissions registration period.");
+		PermissionRegistrationEvent permreg = new PermissionRegistrationEvent();
+		MinecraftForge.EVENT_BUS.post(permreg);
+		OutputHandler.SOP("Ending permissions registration period.");
 
-		MinecraftForge.EVENT_BUS.register(this);
-
-		MinecraftForge.EVENT_BUS.post(new PermissionRegistrationEvent());
+		// setup SQL
+		sql = new SqlHelper(config);
+		sql.putRegistrationperms(permreg.registerred);
 
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
@@ -62,20 +66,14 @@ public class ModulePermissions implements IFEModule
 	@Override
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		OutputHandler.SOP("Ending permissions registration period.");
-
-		// config = new ConfigPermissions();
 	}
 
 	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-		// setup SQL
-		sql = new SqlHelper(config);
-		
 		// load zones...
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
-		//zManager.loadZones();
+		zManager.loadZones();
 		
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());

@@ -54,12 +54,15 @@ rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
 echo "Creating distribution packages"
 mkdir ${WORKSPACE}/output
-jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/commands/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/WorldControl/*
+# build and delete teh client stuff...
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-client-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/*
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-snooper-${MC}-${VERSION}.zip" ./com/ForgeEssentials/snooper/*
+rm -rf ./com/ForgeEssentials/client;
+jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg
+jar cvfm "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF *
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/commands/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/WorldControl/*
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-Snooper-${MC}-${VERSION}.zip" ./com/ForgeEssentials/snooper/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldBorder-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldBorder/*
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-playerLogger-${MC}-${VERSION}.zip" ./com/ForgeEssentials/playerLogger/*
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-backup-${MC}-${VERSION}.zip" ./com/ForgeEssentials/backup/*
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-PlayerLogger-${MC}-${VERSION}.zip" ./com/ForgeEssentials/playerLogger/*
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-Backup-${MC}-${VERSION}.zip" ./com/ForgeEssentials/backup/*
 cd ${WORKSPACE}/output
 #upload
