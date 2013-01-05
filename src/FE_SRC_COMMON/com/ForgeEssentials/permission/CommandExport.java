@@ -17,6 +17,9 @@ public class CommandExport
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export");
 			return;
 		}
+		
+		OutputHandler.chatConfirmation(sender, " {PermSQL} Starting permission export...");
+		startThread(sender);
 	}
 
 	public static void processCommandConsole(ICommandSender sender, String[] args)
@@ -27,11 +30,14 @@ public class CommandExport
 			return;
 		}
 		
+		sender.sendChatToPlayer(" {PermSQL} Starting permission export...");
+		startThread(sender);
 	}
 	
-	private void startThread()
+	private static void startThread(ICommandSender sender)
 	{
-		ExportThread t = new ExportThread();
+		// TODO: make configureable.
+		ExportThread t = new ExportThread("export", sender);
 		t.run();
 	}
 
