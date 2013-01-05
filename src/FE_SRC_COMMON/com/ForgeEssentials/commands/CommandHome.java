@@ -39,7 +39,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 				EntityPlayerMP player = ((EntityPlayerMP) sender);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
 				playerInfo.back = new WarpPoint(player);
-				TeleportCenter.addToTpQue(new WarpPoint(home.dim, home.x, home.y, home.z, home.yaw, home.pitch), player);
+				TeleportCenter.addToTpQue(new WarpPoint(home.dim, home.x, home.y, home.z, home.pitch, home.yaw), player);
 			}
 		}
 		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+".set")))
