@@ -177,8 +177,9 @@ public final class FunctionHelper
 		MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
 
 		// SP and LAN
-		if (server instanceof IntegratedServer && server.getServerOwner().equalsIgnoreCase(player))
-			return true;
+		if(server.isSinglePlayer())
+			if (server instanceof IntegratedServer && server.getServerOwner().equalsIgnoreCase(player))
+				return true;
 
 		// SMP
 		return server.getConfigurationManager().getOps().contains(player);
