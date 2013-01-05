@@ -55,6 +55,7 @@ public class TickTaskFill implements ITickTask
 	public double getTPS()
 	{
 		double tps = FunctionHelper.getTPS(dim);
+		if((int) tps == 0) tps = 1; 
 		this.tps = (int) tps;
         return tps;
 	}
