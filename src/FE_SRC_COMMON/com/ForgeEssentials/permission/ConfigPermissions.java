@@ -47,27 +47,26 @@ public class ConfigPermissions implements IModuleConfig
 		config.addCustomCategoryComment("SqLite", "For everything SqLite");
 		config.get("SqLite", "file", "permissions.db");
 		config.get("SqLite", "absolutePath", false, "if this is true, the below path will be parsed as an absolute path. otherwise it is relative to this dir.");
+		
+		config.save();
 	}
 
 	@Override
 	public void forceSave()
 	{
-		// TODO Auto-generated method stub
-
+		config.save();
 	}
 
 	@Override
 	public void forceLoad(ICommandSender sender)
 	{
-		// TODO Auto-generated method stub
-
+		config.load();
 	}
 
 	@Override
 	public File getFile()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return file;
 	}
 	
 	public PermResult getPermDefault()
