@@ -1,11 +1,16 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,13 +20,10 @@ import java.util.TreeSet;
 
 public class SqlHelper
 {
-	// TODO: make configureable.
-	private static File				file							= new File(ModulePermissions.permsFolder, "permissions.db");
-
-	private String					DriverClass						= "org.sqlite.JDBC";
 	private Connection				db;
 	private boolean					generate						= false;
-	private static SqlHelper	instance;
+	private static SqlHelper		instance;
+	private Configuration			config;
 
 	// tables
 	private static final String		TABLE_ZONE						= "zones";
@@ -70,44 +72,45 @@ public class SqlHelper
 	private static final String		COLUMN_PERMISSION_PERM			= "perm";
 	private static final String		COLUMN_PERMISSION_ALLOWED		= "allowed";
 	private static final String		COLUMN_PERMISSION_ZONEID		= "zoneID";
-	
+
 	// zones
-	private final PreparedStatement statementGetZoneIDFromName; // zoneName >> zoneID
-	private final PreparedStatement statementGetZoneNameFromID; // zoneID >> zoneName
-	private final PreparedStatement statementPutZone; // $ ZoneName
-	private final PreparedStatement statementDelZone; // X ZoneName
-	
+	private final PreparedStatement	statementGetZoneIDFromName;																		// zoneName >> zoneID
+	private final PreparedStatement	statementGetZoneNameFromID;																		// zoneID >> zoneName
+	private final PreparedStatement	statementPutZone;																				// $ ZoneName
+	private final PreparedStatement	statementDelZone;																				// X ZoneName
+
 	// players
-	private final PreparedStatement statementGetPlayerIDFromName; // playerName >> playerID
-	private final PreparedStatement statementGetPlayerNameFromID; // playerID >> playerName
-	private final PreparedStatement statementPutPlayer; // $ usernName
-	
+	private final PreparedStatement	statementGetPlayerIDFromName;																	// playerName >> playerID
+	private final PreparedStatement	statementGetPlayerNameFromID;																	// playerID >> playerName
+	private final PreparedStatement	statementPutPlayer;																				// $ usernName
+
 	// groups
-	private final PreparedStatement statementGetGroupIDFromName; // groupName >> groupID
-	private final PreparedStatement statementGetGroupNameFromID; // groupID >> groupName
-	private final PreparedStatement statementGetGroupFromName; // groupName >> Group
-	private final PreparedStatement statementGetGroupFromID; // groupID >> Group
-	private final PreparedStatement statementGetGroupsForPlayer; // PlayerID, ZoneID >> Groups
-	private final PreparedStatement statementPutGroup; // $ name, prefix, suffix, parent, priority, zone
-	private final PreparedStatement statementUpdateGroup; // $ name, prefix, suffix, parent, priority, zone
-	
+	private final PreparedStatement	statementGetGroupIDFromName;																	// groupName >> groupID
+	private final PreparedStatement	statementGetGroupNameFromID;																	// groupID >> groupName
+	private final PreparedStatement	statementGetGroupFromName;																		// groupName >> Group
+	private final PreparedStatement	statementGetGroupFromID;																		// groupID >> Group
+	private final PreparedStatement	statementGetGroupsForPlayer;																	// PlayerID, ZoneID >> Groups
+	private final PreparedStatement	statementPutGroup;																				// $ name, prefix, suffix, parent, priority, zone
+	private final PreparedStatement	statementUpdateGroup;																			// $ name, prefix, suffix, parent, priority, zone
+
 	// ladders
-	private final PreparedStatement statementGetLadderIDFromName; // ladderName  >> ladderID
-	private final PreparedStatement statementGetLadderNameFromID; // LadderID >> ladderName
-	private final PreparedStatement statementGetLadderIDFromGroup; // groupID, zoneID  >> ladderID
-	private final PreparedStatement statementGetLadderList; // LadderID, ZoneID >> groupName, rank
-	private final PreparedStatement statementPutLadder; // $ LadderName
-	
-	//permissions
-	private final PreparedStatement statementGetPermission; // target, isgroup, perm, zone >> allowed
-	private final PreparedStatement statementGetPermissionForward; // target, isgroup, perm, zone >> allowed
-	private final PreparedStatement statementPutPermission; // $ , allowed, target, isgroup, perm, zone
-	private final PreparedStatement statementUpdatePermission; // $ allowed, target, isgroup, perm, zone
+	private final PreparedStatement	statementGetLadderIDFromName;																	// ladderName >> ladderID
+	private final PreparedStatement	statementGetLadderNameFromID;																	// LadderID >> ladderName
+	private final PreparedStatement	statementGetLadderIDFromGroup;																	// groupID, zoneID >> ladderID
+	private final PreparedStatement	statementGetLadderList;																			// LadderID, ZoneID >> groupName, rank
+	private final PreparedStatement	statementPutLadder;																				// $ LadderName
+
+	// permissions
+	private final PreparedStatement	statementGetPermission;																			// target, isgroup, perm, zone >> allowed
+	private final PreparedStatement	statementGetPermissionForward;																	// target, isgroup, perm, zone >> allowed
+	private final PreparedStatement	statementPutPermission;																			// $ , allowed, target, isgroup, perm, zone
+	private final PreparedStatement	statementUpdatePermission;																		// $ allowed, target, isgroup, perm, zone
 
 	public SqlHelper(ConfigPermissions config)
 	{
-		// TODO: change connection string...
-		
+		// set config.
+		this.config = config.config;
+
 		instance = this;
 		connect();
 
@@ -127,7 +130,7 @@ public class SqlHelper
 					.append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
 					.append(" ORDER BY ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_RANK);
 			statementGetLadderList = instance.db.prepareStatement(query.toString());
-			
+
 			// statementGetGroupFromName
 			query = new StringBuilder("SELECT ")
 					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ")
@@ -154,7 +157,7 @@ public class SqlHelper
 					.append(" INNER JOIN ").append(TABLE_ZONE)
 					.append(" ON ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ZONE).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME);
 			statementGetGroupFromID = instance.db.prepareStatement(query.toString());
-			
+
 			// statementGetGroupsForPlayer
 			query = new StringBuilder("SELECT ")
 					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
@@ -168,7 +171,7 @@ public class SqlHelper
 					.append(" INNER JOIN ").append(TABLE_GROUP)
 					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID);
 			statementGetGroupsForPlayer = instance.db.prepareStatement(query.toString());
-			
+
 			// statementUpdateGroup
 			query = new StringBuilder("UPDATE ").append(TABLE_GROUP)
 					.append(" SET ")
@@ -181,7 +184,7 @@ public class SqlHelper
 					.append(" WHERE ")
 					.append(COLUMN_GROUP_NAME).append("=").append("'?'");
 			statementUpdateGroup = db.prepareStatement(query.toString());
-			
+
 			// statementGetPermission
 			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED)
 					.append(" FROM ").append(TABLE_PERMISSION)
@@ -190,7 +193,7 @@ public class SqlHelper
 					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("'?'")
 					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
 			statementGetPermission = db.prepareStatement(query.toString());
-			
+
 			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED)
 					.append(" FROM ").append(TABLE_PERMISSION)
 					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
@@ -213,7 +216,7 @@ public class SqlHelper
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Get Statements
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
-			
+
 			// statementGetLadderFromID
 			query = new StringBuilder("SELECT ").append(COLUMN_LADDER_NAME_NAME)
 					.append(" FROM ").append(TABLE_LADDER_NAME)
@@ -246,7 +249,7 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_ZONE)
 					.append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("'?'");
 			statementGetZoneIDFromName = db.prepareStatement(query.toString());
-			
+
 			// statementGetGroupFromID
 			query = new StringBuilder("SELECT ")
 					.append(COLUMN_GROUP_NAME)
@@ -260,7 +263,7 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_GROUP)
 					.append(" WHERE ").append(COLUMN_GROUP_NAME).append("=").append("'?'");
 			statementGetGroupIDFromName = db.prepareStatement(query.toString());
-			
+
 			// statementGetPlayerFromID
 			query = new StringBuilder("SELECT ")
 					.append(COLUMN_PLAYER_USERNAME)
@@ -274,29 +277,29 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_PLAYER)
 					.append(" WHERE ").append(COLUMN_PLAYER_USERNAME).append("=").append("'?'");
 			statementGetPlayerIDFromName = db.prepareStatement(query.toString());
-			
+
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Put Statements
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
-			
+
 			// statementPutZone
 			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE)
 					.append(" (").append(COLUMN_ZONE_NAME).append(") ")
 					.append(" VALUES ").append(" ('?') ");
 			statementPutZone = db.prepareStatement(query.toString());
-			
+
 			// statementPutPlayer
 			query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER)
 					.append(" (").append(COLUMN_PLAYER_USERNAME).append(") ")
 					.append(" VALUES ").append(" ('?') ");
 			statementPutPlayer = db.prepareStatement(query.toString());
-			
+
 			// statementPutLadder
 			query = new StringBuilder("INSERT INTO ").append(TABLE_LADDER_NAME)
 					.append(" (").append(COLUMN_LADDER_NAME_NAME).append(") ")
 					.append(" VALUES ").append(" ('?') ");
 			statementPutLadder = db.prepareStatement(query.toString());
-			
+
 			// statementPutGroup
 			query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP)
 					.append(" (")
@@ -308,7 +311,7 @@ public class SqlHelper
 					.append(COLUMN_GROUP_ZONE).append(") ")
 					.append(" VALUES ").append(" ('?', '?', '?', ?, ?, ?) ");
 			statementPutGroup = db.prepareStatement(query.toString());
-			
+
 			// statementPutPermission
 			query = new StringBuilder("INSERT INTO ").append(TABLE_PERMISSION)
 					.append(" (")
@@ -319,11 +322,11 @@ public class SqlHelper
 					.append(COLUMN_PERMISSION_ZONEID).append(") ")
 					.append(" VALUES ").append(" (?, ?, ?, '?', ?) ");
 			statementPutPermission = db.prepareStatement(query.toString());
-			
+
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Delete Statements
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
-			
+
 			// statementPutZone
 			query = new StringBuilder("DELETE FROM ").append(TABLE_ZONE)
 					.append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("'?'");
@@ -337,7 +340,7 @@ public class SqlHelper
 
 		OutputHandler.SOP("Statement preperation succesfull");
 	}
-	
+
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------INIT ---- METHODS ------------------------------------------
@@ -348,11 +351,85 @@ public class SqlHelper
 	{
 		try
 		{
+			//"org.sqlite.JDBC";
+			// DriverClass = "com.mysql.jdbc.Driver";
+			
+			
+			String type = config.get("stuff", "databaseType", "SqLite").value;
+			if (type.equalsIgnoreCase("mysql"))
+			{
+				// ------------------
+				// MYSQL
+				// ------------------
+				String server, port, database, user, pass, connect;
+				ResultSet set;
+				
+				database = config.get("MySQL", "database", "FE_Permissions").value;
+				
+				
+				if (config.get("MySQL", "stealConfigFromCore", false).getBoolean(false))
+				{
+					Configuration fconfig = ForgeEssentials.config.config;
+					server = fconfig.get("MySQL", "server", "server.example.com").value;
+					
+					if (!server.equalsIgnoreCase("server.example.com"))
+					{
+						port = fconfig.get("Data.SQL", "port", 3306).value;
+						user = fconfig.get("Data.SQL", "username", " ").value;
+						pass = fconfig.get("Data.SQL", "password", " ").value;
+						
+						Class driverClass = Class.forName("com.mysql.jdbc.Driver");
+						connect= "jdbc:mysql://" + server + ":" + port + "/" + database;
+						this.db = DriverManager.getConnection(connect, user, pass);
+						
+						// check table...
+						DatabaseMetaData dbm = db.getMetaData();
+						set = dbm.getTables(null, null, TABLE_PERMISSION, null);
+						generate = !set.next();
+					}
+					else
+						OutputHandler.SOP("Core SQL configuration is invalid.. defaulting to in-house configurations");
+				}
+				
+				server = config.get("MySQL", "host", "server.example.com").value;
+				port = config.get("MySQL", "port", 3306).value;
+				user = config.get("MySQL", "username", "FEUser").value;
+				pass = config.get("MySQL", "password", "@we$0mePa$$w0rd").value;
+				
+				if (!server.equalsIgnoreCase("server.example.com"))
+				{
+					Class driverClass = Class.forName("com.mysql.jdbc.Driver");
+					connect = "jdbc:mysql://" + server + ":" + port + "/" + database;
+					db = DriverManager.getConnection(connect, user, pass);
+
+					// check table...
+					DatabaseMetaData dbm = db.getMetaData();
+					set = dbm.getTables(null, null, TABLE_PERMISSION, null);
+					generate = !set.next();
+				}
+				else
+					OutputHandler.SOP("SQL configuration is invalid.. defaulting to SqLite");
+			}
+			else if (!type.equalsIgnoreCase("sqlite"))
+				OutputHandler.SOP("Permissions Database set to unknown type! defaulting to sqLite");
+
+			// ------------------
+			// SQLITE
+			// ------------------
+			
+			String path = config.get("SqLite", "file", "permissions.db").value;
+			boolean absolute = config.get("SqLite", "absolutePath", false).getBoolean(false);
+			File file;
+			if (absolute)
+				file = new File(path);
+			else
+				file = new File(ModulePermissions.permsFolder, path);
+
 			if (!file.exists())
 			{
 				file.getParentFile().mkdirs();
 				file.createNewFile();
-				OutputHandler.SOP("Permissions db file not found, creating.");
+				OutputHandler.SOP("Permissions SqLite db file not found, creating.");
 				generate = true;
 			}
 
@@ -362,7 +439,7 @@ public class SqlHelper
 				db = null;
 			}
 
-			Class driverClass = Class.forName(DriverClass);
+			Class driverClass = Class.forName("org.sqlite.JDBC");
 
 			this.db = DriverManager.getConnection("jdbc:sqlite:" + file.getPath());
 		}
@@ -373,13 +450,18 @@ public class SqlHelper
 		}
 		catch (ClassNotFoundException e)
 		{
-			OutputHandler.SOP("Could not load the SQLite JDBC Driver! Does it exist in the lib directory?");
+			OutputHandler.SOP("Could not load the Database Driver! Does it exist in the lib directory?");
 			throw new RuntimeException(e.getMessage());
 		}
 		catch (IOException e)
 		{
 			throw new RuntimeException(e.getMessage());
 		}
+	}
+	
+	public void tryConnectMySQL()
+	{
+		
 	}
 
 	// create tables.
@@ -446,7 +528,7 @@ public class SqlHelper
 			db.createStatement().execute(playerTable);
 			db.createStatement().execute(groupConnectorTable);
 			db.createStatement().execute(permissionTable);
-			
+
 			// DEFAULT group
 			StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP)
 					.append(" (")
@@ -462,19 +544,19 @@ public class SqlHelper
 					.append(PermissionsAPI.DEFAULT.suffix).append(", ")
 					.append("NULL, ").append("0, ").append("0 ) ");
 			db.createStatement().executeUpdate(query.toString());
-			
+
 			// GLOBAL zone
 			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE)
 					.append(" (").append(COLUMN_ZONE_NAME).append(", ").append(COLUMN_ZONE_ZONEID).append(") ")
 					.append(" VALUES ").append(" ( ").append(ZoneManager.GLOBAL.getZoneID()).append(", 0) ");
 			db.createStatement().executeUpdate(query.toString());
-			
+
 			// SUPER zone
 			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE)
 					.append(" (").append(COLUMN_ZONE_NAME).append(", ").append(COLUMN_ZONE_ZONEID).append(") ")
 					.append(" VALUES ").append(" ( ").append(ZoneManager.SUPER).append(", -1) ");
 			db.createStatement().executeUpdate(query.toString());
-			
+
 		}
 		catch (Exception e)
 		{
@@ -482,7 +564,7 @@ public class SqlHelper
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	
+
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 	// -------------------------------MAJOR ---- USAGE ---- METHODS --------------------------------------
@@ -499,7 +581,7 @@ public class SqlHelper
 		try
 		{
 			// get other vars
-			int groupID = getGroupIDFromGroupName(group); 
+			int groupID = getGroupIDFromGroupName(group);
 			int zoneID = getZoneIDFromZoneName(zone);
 			int ladderID = getLadderIdFromGroup(groupID, zoneID);
 			String ladderName = getLadderNameFromLadderID(ladderID);
@@ -509,14 +591,14 @@ public class SqlHelper
 			instance.statementGetLadderList.setInt(2, zoneID);
 			ResultSet set = instance.statementGetLadderList.executeQuery();
 			instance.statementGetLadderList.clearParameters();
-			
+
 			ArrayList<String> list = new ArrayList<String>();
 
 			while (set.next())
 			{
 				list.add(set.getString(0));
 			}
-			
+
 			PromotionLadder ladder = new PromotionLadder(ladderName, zone, list);
 			return ladder;
 		}
@@ -527,7 +609,7 @@ public class SqlHelper
 
 		return null;
 	}
-	
+
 	/**
 	 * @param groupName
 	 * @return NULL if no group in existence. or an SQL error hapenned.
@@ -540,10 +622,10 @@ public class SqlHelper
 			instance.statementGetGroupFromName.setString(1, group);
 			ResultSet set = instance.statementGetGroupFromName.executeQuery();
 			instance.statementGetGroupFromName.clearParameters();
-			
+
 			if (!set.next())
 				return null;
-			
+
 			int priority = set.getInt(COLUMN_GROUP_PRIORITY);
 			String parent = set.getString(COLUMN_GROUP_PARENT);
 			String prefix = set.getString(COLUMN_GROUP_PREFIX);
@@ -558,7 +640,7 @@ public class SqlHelper
 
 		return null;
 	}
-	
+
 	/**
 	 * @param groupID
 	 * @return NULL if no group in existence, or an SQL erorr happenend.
@@ -572,10 +654,10 @@ public class SqlHelper
 			instance.statementGetGroupFromID.setInt(1, group);
 			ResultSet set = instance.statementGetGroupFromID.executeQuery();
 			instance.statementGetGroupFromID.clearParameters();
-			
+
 			if (!set.next())
 				return null;
-			
+
 			int priority = set.getInt(COLUMN_GROUP_PRIORITY);
 			String name = set.getString(COLUMN_GROUP_NAME);
 			String parent = set.getString(COLUMN_GROUP_PARENT);
@@ -591,7 +673,7 @@ public class SqlHelper
 
 		return null;
 	}
-	
+
 	/**
 	 * groups are in order of priority.
 	 * @param username
@@ -637,7 +719,7 @@ public class SqlHelper
 
 		return null;
 	}
-	
+
 	/**
 	 * @param g
 	 * @return FALSE if the group already exists, parent doesn't exist, zone doesn't exist, or if the INSERT failed.
@@ -646,23 +728,23 @@ public class SqlHelper
 	{
 		try
 		{
-			//check if group exists?
+			// check if group exists?
 			if (getGroupIDFromGroupName(g.name) >= 0)
 				return false;  // group exists
-			
+
 			int parent = -5;
 			int zone = getZoneIDFromZoneName(g.zoneID);
-			
+
 			if (g.parent != null)
 			{
 				parent = getGroupIDFromGroupName(g.parent);
 				if (parent == -5)
 					return false;
 			}
-			
+
 			if (zone < -4)
 				return false;
-			
+
 			// my query
 			// $ name, prefix, suffix, parent, priority, zone
 			instance.statementPutGroup.setString(1, g.name);
@@ -672,12 +754,12 @@ public class SqlHelper
 				instance.statementPutGroup.setString(4, "NULL");
 			else
 				instance.statementPutGroup.setInt(4, parent);
-			
+
 			instance.statementPutGroup.setInt(5, g.priority);
 			instance.statementPutGroup.setInt(6, zone);
 			instance.statementPutGroup.executeUpdate();
 			instance.statementPutGroup.clearParameters();
-			
+
 			return true;
 		}
 		catch (SQLException e)
@@ -686,7 +768,7 @@ public class SqlHelper
 			return false;
 		}
 	}
-	
+
 	/**
 	 * @param g
 	 * @return FALSE if the group already exists, parent doesn't exist, zone doesn't exist, or if the UPDATE failed.
@@ -695,23 +777,23 @@ public class SqlHelper
 	{
 		try
 		{
-			//check if group exists?
+			// check if group exists?
 			if (getGroupIDFromGroupName(g.name) < 0)
 				return false;  // group doesn't exist
-			
+
 			int parent = -5;
 			int zone = getZoneIDFromZoneName(g.zoneID);
-			
+
 			if (g.parent != null)
 			{
 				parent = getGroupIDFromGroupName(g.parent);
 				if (parent == -5)
 					return false;
 			}
-			
+
 			if (zone < -4)
 				return false;
-			
+
 			// my query
 			instance.statementUpdateGroup.setString(1, g.name);
 			instance.statementUpdateGroup.setString(2, g.prefix);
@@ -724,7 +806,7 @@ public class SqlHelper
 			instance.statementUpdateGroup.setInt(6, zone);
 			instance.statementUpdateGroup.executeUpdate();
 			instance.statementUpdateGroup.clearParameters();
-			
+
 			return true;
 		}
 		catch (SQLException e)
@@ -733,7 +815,7 @@ public class SqlHelper
 			return false;
 		}
 	}
-	
+
 	/**
 	 * @param target (username or groupname)
 	 * @param isGroup
@@ -752,15 +834,15 @@ public class SqlHelper
 			int allowed = -1;
 			PreparedStatement statement = instance.statementGetPermission;
 			ResultSet set;
-			
+
 			if (isGroup)
 				tID = getGroupIDFromGroupName(target);
 			else
 				tID = getPlayerIDFromPlayerName(target);
-			
+
 			if (zID < -4 || tID < -4)
 				return PermResult.UNKNOWN;
-			
+
 			// initial check.
 			statement.setInt(1, tID);
 			statement.setInt(2, isG);
@@ -768,17 +850,16 @@ public class SqlHelper
 			statement.setInt(4, zID);
 			set = statement.executeQuery();
 			statement.clearParameters();
-			
+
 			PermResult initial = PermResult.UNKNOWN;
 			if (set.next())
 				return set.getInt(1) > 0 ? PermResult.ALLOW : PermResult.DENY;
-			
-				
-				// if the stuff is FORWARD!
+
+			// if the stuff is FORWARD!
 			if (checkForward)
-			{	
+			{
 				statement = instance.statementGetPermissionForward;
-				
+
 				// target, isgroup, perm, zone >> allowed
 				statement.setInt(1, tID);
 				statement.setInt(2, isG);
@@ -786,51 +867,52 @@ public class SqlHelper
 				statement.setInt(4, zID);
 				set = statement.executeQuery();
 				statement.clearParameters();
-				
+
 				boolean allow = false;
 				boolean deny = false;
-				
-				switch(initial)
-				{
-					case ALLOW: allow = true;
-						break;
-					case DENY: deny = true;
-						break;
-				}
-				
-				while(set.next())
+
+				switch (initial)
+					{
+						case ALLOW:
+							allow = true;
+							break;
+						case DENY:
+							deny = true;
+							break;
+					}
+
+				while (set.next())
 				{
 					allowed = set.getInt(1); // allowed.. only 1 column.
-					
-					if (allowed == 0) // deny.  1 or 0
-						deny= true;
+
+					if (allowed == 0) // deny. 1 or 0
+						deny = true;
 					else
 						allow = true;
-					
+
 					if (allow && deny)
 					{
 						instance.statementGetPermission.clearParameters();
 						return PermResult.PARTIAL;
 					}
 				}
-				
+
 				if (allowed > -1)
 				{
 					instance.statementGetPermission.clearParameters();
 					if (allow && !deny)
-					return PermResult.DENY;
+						return PermResult.DENY;
 				}
-				
+
 				statement = instance.statementGetPermission;
 			}
-			
-			
+
 			if (!initial.equals(PermResult.UNKNOWN))
 			{
 				instance.statementGetPermission.clearParameters();
 				return initial;
 			}
-			
+
 			// normal checking of the parents now
 			while (perm != null)
 			{
@@ -849,16 +931,16 @@ public class SqlHelper
 				else
 					perm = new PermissionChecker(perm.getImmediateParent());
 			}
-			
+
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
-			
+
 		}
 		return PermResult.UNKNOWN;
 	}
-	
+
 	/**
 	 * Creates the permission if it doesn't exist.. updates it if it does.
 	 * @param target
@@ -875,17 +957,17 @@ public class SqlHelper
 			int zID = getZoneIDFromZoneName(zone);
 			int isG = isGroup ? 1 : 0;
 			int allowed = perm.allowed ? 1 : 0;
-			
+
 			if (isGroup)
 				tID = getGroupIDFromGroupName(target);
 			else
 				tID = getPlayerIDFromPlayerName(target);
-			
+
 			if (zID < -4 || tID < -4)
 				return false;
-			
+
 			PreparedStatement use;
-			
+
 			// check permission existence...
 			instance.statementGetPermission.setInt(1, tID);
 			instance.statementGetPermission.setInt(2, isG);
@@ -893,13 +975,13 @@ public class SqlHelper
 			instance.statementGetPermission.setInt(4, zID);
 			ResultSet set = instance.statementGetPermission.executeQuery();
 			instance.statementGetPermission.clearParameters();
-			
+
 			// allowed, target, isgroup, perm, zone
 			if (set.next())
 				use = instance.statementUpdatePermission; // exists
 			else
 				use = instance.statementPutPermission; // does not exist.
-			
+
 			use.setInt(1, allowed);
 			use.setInt(2, tID);
 			use.setInt(3, isG);
@@ -907,17 +989,17 @@ public class SqlHelper
 			use.setInt(5, zID);
 			use.executeUpdate();
 			use.clearParameters();
-			
+
 			return true;
-			
+
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
+
 	protected static boolean delZone(String name)
 	{
 		try
@@ -925,17 +1007,17 @@ public class SqlHelper
 			instance.statementDelZone.setString(1, name);
 			instance.statementDelZone.executeUpdate();
 			instance.statementDelZone.clearParameters();
-			
+
 			return true;
-			
+
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
+
 	protected static boolean createZone(String name)
 	{
 		try
@@ -943,35 +1025,35 @@ public class SqlHelper
 			instance.statementPutZone.setString(1, name);
 			instance.statementPutZone.executeUpdate();
 			instance.statementPutZone.clearParameters();
-			
+
 			return true;
-			
+
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
+
 	protected static boolean doesZoneExist(String name)
 	{
 		try
 		{
 			int ID = getZoneIDFromZoneName(name);
-			
+
 			return ID > 0;
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
+
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
-	// -------------------------------ID <<>> NAME  METHODS ----------------------------------------------
+	// -------------------------------ID <<>> NAME METHODS ----------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 
@@ -986,7 +1068,7 @@ public class SqlHelper
 			return 0;
 		else if (zone.equals(ZoneManager.SUPER))
 			return -1;
-		
+
 		instance.statementGetZoneIDFromName.setString(1, zone);
 		ResultSet set = instance.statementGetZoneIDFromName.executeQuery();
 		instance.statementGetZoneIDFromName.clearParameters();
@@ -1047,7 +1129,7 @@ public class SqlHelper
 
 		return set.getString(1);
 	}
-	
+
 	/**
 	 * @param ladderID
 	 * @return null if the Ladder does not exist.
@@ -1075,7 +1157,7 @@ public class SqlHelper
 	{
 		if (group.equals(PermissionsAPI.DEFAULT.name))
 			return 0;
-		
+
 		instance.statementGetGroupIDFromName.setString(1, group);
 		ResultSet set = instance.statementGetGroupIDFromName.executeQuery();
 		instance.statementGetGroupIDFromName.clearParameters();
@@ -1102,7 +1184,7 @@ public class SqlHelper
 
 		return set.getString(1);
 	}
-	
+
 	/**
 	 * @param player
 	 * @return Creates the player if it does not exist.
@@ -1119,10 +1201,10 @@ public class SqlHelper
 			instance.statementPutPlayer.setString(1, player);
 			instance.statementPutPlayer.executeUpdate();
 			instance.statementPutPlayer.clearParameters();
-			
+
 			set = instance.statementGetPlayerIDFromName.executeQuery();
 		}
-		
+
 		instance.statementGetPlayerIDFromName.clearParameters();
 
 		return set.getInt(1);

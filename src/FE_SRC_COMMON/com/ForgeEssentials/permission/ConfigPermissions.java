@@ -2,6 +2,7 @@ package com.ForgeEssentials.permission;
 
 import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
 
@@ -11,7 +12,7 @@ import java.io.File;
 
 public class ConfigPermissions implements IModuleConfig
 {
-	private Configuration config;
+	protected Configuration config;
 	private File file;
 	
 	private static boolean permDefault = false;
@@ -36,12 +37,12 @@ public class ConfigPermissions implements IModuleConfig
 		config.get("stuff", "databaseType", "SqLite", " MySQL and SqLite are the only ones supported atm.");
 		
 		config.addCustomCategoryComment("MySQL", "For everything MySQL");
-		config.get("MySQL", "host", "localhost");
+		config.get("MySQL", "host", "server.example.com");
 		config.get("MySQL", "port", 3306);
-		config.get("MySQL", "database", "FE_Permissions", "If it doesn't exist.. the user will need permisisons to make it.");
+		config.get("MySQL", "database", "FE_Permissions", "WILL CRASH IF IT DOESN'T EXIST!  This will still be used even if StealConfigFromCore is enabled.");
 		config.get("MySQL", "username", "FEUser");
-		config.get("MySQL", "password", "blahblah");
-		config.get("MySQL", "StealConfigFromCore", false, "if this is true.. all the mySQL db stuff here will be ignored.. and the stuff from the CORE config will be used instead.");
+		config.get("MySQL", "password", "@we$0mePa$$w0rd");
+		config.get("MySQL", "stealConfigFromCore", false, "if this is true, the mysql details from ForgeEssentials/main.cfg will be used. The database specified here wills till be used.");
 		
 		config.addCustomCategoryComment("SqLite", "For everything SqLite");
 		config.get("SqLite", "file", "permissions.db");
@@ -72,15 +73,6 @@ public class ConfigPermissions implements IModuleConfig
 	public PermResult getPermDefault()
 	{
 		return permDefault ? PermResult.ALLOW : PermResult.DENY;
-	}
-	
-	public String getConnectionString()
-	{
-		String type = config.get("stuff", "databaseType", "SqLite").value;
-		
-		StringBuilder connect = new StringBuilder("jdbc:");
-		
-		return null;
 	}
 
 }
