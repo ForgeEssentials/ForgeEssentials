@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
@@ -51,8 +52,10 @@ public class playerTrackerLog extends logEntry
 	{
 		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
 		List<playerTrackerLog> toremove = new ArrayList();
-		for(playerTrackerLog log : buffer)
+		Iterator<playerTrackerLog> i = buffer.iterator();
+		while(i.hasNext())
 		{
+			playerTrackerLog log = i.next();
 			ps.setString(1, log.username);
 			ps.setString(2, log.cat.toString());
 			ps.setString(3, log.extra);

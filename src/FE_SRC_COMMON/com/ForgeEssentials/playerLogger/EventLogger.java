@@ -13,6 +13,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import com.ForgeEssentials.core.customEvents.PlayerBlockBreak;
 import com.ForgeEssentials.core.customEvents.PlayerBlockPlace;
 import com.ForgeEssentials.playerLogger.types.*;
+import com.ForgeEssentials.playerLogger.types.blockChangeLog.blockChangeLogCategory;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
@@ -78,7 +79,7 @@ public class EventLogger implements IPlayerTracker
 		if(logBlockChanges && !e.isCanceled())
 		{
 			String block = e.world.getBlockId(e.blockX, e.blockY, e.blockZ) + ":" + e.world.getBlockMetadata(e.blockX, e.blockY, e.blockZ);
-			new blockChangeLog(blockChangeLog.blockChangeLogCategory.Break, e.player, block, e.blockX, e.blockY, e.blockZ);
+			new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ);
 		}
 	}
 	
@@ -89,7 +90,7 @@ public class EventLogger implements IPlayerTracker
 		{
 			String block = "";
 			if(e.player.inventory.getCurrentItem() != null) block = e.player.inventory.getCurrentItem().itemID + ":" + e.player.inventory.getCurrentItem().getItemDamage();
-			new blockChangeLog(blockChangeLog.blockChangeLogCategory.Place, e.player, block, e.blockX, e.blockY, e.blockZ);
+			new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, e.blockX, e.blockY, e.blockZ);
 		}
 	}
 	

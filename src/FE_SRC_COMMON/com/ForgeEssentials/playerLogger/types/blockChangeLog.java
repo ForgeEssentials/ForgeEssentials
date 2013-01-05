@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
@@ -53,14 +54,6 @@ public class blockChangeLog extends logEntry
 		return "CREATE TABLE IF NOT EXISTS " + getName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), block CHAR(16), Dim INT, X INT, Y INT, Z INT, time DATETIME)";
 	}
 	
-	/*
-	@Override
-	public static void makeEntries(Connection connection)
-	{
-		return "INSERT INTO " + getName() + " (id, player, category, block, Dim, X, Y, Z, time) VALUES (NULL, '" + username + "', '" + cat.toString() + "', '" + block + "', '" + dim + "', '" + x + "', '" + y + "', '" + z + "', '" + time + "');";
-	}
-	*/
-
 	@Override
 	public String getprepareStatementSQL() 
 	{
@@ -71,16 +64,18 @@ public class blockChangeLog extends logEntry
 	public void makeEntries(Connection connection) throws SQLException 
 	{
 		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
+		Iterator<blockChangeLog> i = buffer.iterator();
 		List<blockChangeLog> toremove = new ArrayList();
-		for(blockChangeLog log : buffer)
+		while(i.hasNext())
 		{
+			blockChangeLog log = i.next();
 			ps.setString(1, log.username);
 			ps.setString(2, log.cat.toString());
 			ps.setString(3, log.block);
 			ps.setInt(4, log.dim);
 			ps.setInt(5, log.x);
 			ps.setInt(6, log.y);
-			ps.setInt(7, log.y);
+			ps.setInt(7, log.z);
 			ps.setTimestamp(8, log.time);
 			ps.execute();
 			ps.clearParameters();
@@ -92,6 +87,6 @@ public class blockChangeLog extends logEntry
 	
 	public enum blockChangeLogCategory
 	{
-		Break, Place
+		broke, placed
 	}
 }

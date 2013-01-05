@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
@@ -49,9 +50,11 @@ public class commandLog extends logEntry
 	public void makeEntries(Connection connection) throws SQLException 
 	{
 		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
+		Iterator<commandLog> i = buffer.iterator();
 		List<commandLog> toremove = new ArrayList();
-		for(commandLog log : buffer)
+		while(i.hasNext())
 		{
+			commandLog log = i.next();
 			ps.setString(1, log.username);
 			ps.setString(2, log.command);
 			ps.setTimestamp(3, log.time);

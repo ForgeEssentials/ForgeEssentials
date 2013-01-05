@@ -37,7 +37,7 @@ public class ModulePlayerLogger implements IFEModule
 	public static String password;
 	public static boolean ragequitOn;
 	public static Integer interval;
-	public static boolean enable;
+	public static boolean enable = false;
 	
 	private Connection connection;
 	public static EventLogger eLogger;
@@ -46,6 +46,7 @@ public class ModulePlayerLogger implements IFEModule
 	
 	public ModulePlayerLogger()
 	{
+		if(!FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		
 		logTypes.add(new playerTrackerLog());
@@ -56,6 +57,7 @@ public class ModulePlayerLogger implements IFEModule
 	@Override
 	public void preLoad(FMLPreInitializationEvent e) 
 	{
+		if(!FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
 		config = new ConfigPlayerLogger();
 		if(!enable) return;
 		OutputHandler.SOP("PlayerLogger module is enabled. Loading...");

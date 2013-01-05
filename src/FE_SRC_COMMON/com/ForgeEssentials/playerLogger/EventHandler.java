@@ -39,7 +39,6 @@ public class EventHandler
 		if(e.entityPlayer.getEntityData().getBoolean("lb"))
 		{
 			e.setCanceled(true);
-			e.entityPlayer.sendChatToPlayer("Results:");
 			try 
 			{
 				Date date = new Date();
@@ -50,8 +49,11 @@ public class EventHandler
 						" `blockchange` WHERE  " +
 						"`Dim` = " + e.entityPlayer.dimension + 
 						" AND  `X` = " + e.x + " AND  `Y` = " + e.y + 
-						" AND  `Z` = " + e.z + " AND  `time` >  '2013-01-01 00:00:00' LIMIT 0 , 30");
+						" AND  `Z` = " + e.z);
 				ResultSet res = st.getResultSet();
+				
+				e.entityPlayer.sendChatToPlayer("Results " + e.x + ", " + e.y + ", " + e.z);
+				
 				while (res.next()) 
 				{
 			        e.entityPlayer.sendChatToPlayer(res.getString("player"));
