@@ -46,6 +46,8 @@ public class ModulePlayerLogger implements IFEModule
 	
 	public ModulePlayerLogger()
 	{
+		MinecraftForge.EVENT_BUS.register(new EventHandler());
+		
 		logTypes.add(new playerTrackerLog());
 		logTypes.add(new commandLog());
 		logTypes.add(new blockChangeLog());
@@ -83,13 +85,13 @@ public class ModulePlayerLogger implements IFEModule
 	public void serverStarting(FMLServerStartingEvent e) 
 	{
 		if(!enable) return;
-		
+		e.registerServerCommand(new CommandLb());
 		try 
 		{
 			connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
 			Statement s = connection.createStatement();
 			
-			if(DEBUG && true)
+			if(DEBUG && false)
 			{
 				for(logEntry type : this.logTypes)
 				{

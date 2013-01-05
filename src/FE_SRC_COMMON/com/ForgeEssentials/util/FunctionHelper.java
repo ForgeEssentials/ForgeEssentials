@@ -174,6 +174,8 @@ public final class FunctionHelper
 
 	public static boolean isPlayerOp(String player)
 	{
+		return true;
+		/*
 		MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
 
 		// SP and LAN
@@ -182,6 +184,7 @@ public final class FunctionHelper
 
 		// SMP
 		return server.getConfigurationManager().getOps().contains(player);
+		*/
 	}
 
 	public static double getTPS(int dimID)
