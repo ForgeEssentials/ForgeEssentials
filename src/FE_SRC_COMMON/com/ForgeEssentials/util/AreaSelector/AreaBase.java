@@ -26,17 +26,17 @@ public abstract class AreaBase
 
 	public int getXLength()
 	{
-		return high.x - low.x + 1;
+		return high.getX() - low.getX() + 1;
 	}
 
 	public int getYLength()
 	{
-		return high.y - low.y + 1;
+		return high.getY() - low.getY() + 1;
 	}
 
 	public int getZLength()
 	{
-		return high.z - low.z + 1;
+		return high.getZ() - low.getZ() + 1;
 	}
 
 	public Point getHighPoint()
@@ -54,33 +54,33 @@ public abstract class AreaBase
 	 */
 	public static Point[] getAlignedPoints(Point p1, Point p2)
 	{
-		int diffx = p1.x - p2.x;
-		int diffy = p1.y - p2.y;
-		int diffz = p1.z - p2.z;
+		int diffx = p1.getX() - p2.getX();
+		int diffy = p1.getY() - p2.getY();
+		int diffz = p1.getZ() - p2.getZ();
 
-		int newX1 = p2.x;
-		int newX2 = p1.x;
-		int newY1 = p2.y;
-		int newY2 = p1.y;
-		int newZ1 = p2.z;
-		int newZ2 = p1.z;
+		int newX1 = p2.getX();
+		int newX2 = p1.getX();
+		int newY1 = p2.getY();
+		int newY2 = p1.getY();
+		int newZ1 = p2.getZ();
+		int newZ2 = p1.getZ();
 
 		if (diffx < 0)
 		{
-			newX1 = p1.x;
-			newX2 = p2.x;
+			newX1 = p1.getX();
+			newX2 = p2.getX();
 		}
 
 		if (diffy < 0)
 		{
-			newY1 = p1.y;
-			newY2 = p2.y;
+			newY1 = p1.getY();
+			newY2 = p2.getY();
 		}
 
 		if (diffz < 0)
 		{
-			newZ1 = p1.z;
-			newZ2 = p2.z;
+			newZ1 = p1.getZ();
+			newZ2 = p2.getZ();
 		}
 		return new Point[] { new Point(newX1, newY1, newZ1), new Point(newX2, newY2, newZ2) };
 	}

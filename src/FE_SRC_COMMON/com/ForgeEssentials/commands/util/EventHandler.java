@@ -16,6 +16,7 @@ import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -89,6 +90,6 @@ public class EventHandler
 	public void onPlayerDeath(LivingDeathEvent e)
 	{
 		if (e.entity instanceof EntityPlayer)
-			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).back = FunctionHelper.getEntityPoint(e.entity);
+			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).back = new WarpPoint((EntityPlayer)e.entity);
 	}
 }

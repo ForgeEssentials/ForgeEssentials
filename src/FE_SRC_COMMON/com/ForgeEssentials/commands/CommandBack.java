@@ -8,6 +8,8 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class CommandBack extends ForgeEssentialsCommandBase
@@ -24,16 +26,10 @@ public class CommandBack extends ForgeEssentialsCommandBase
 		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
 		if (info.back != null)
 		{
-			WorldPoint death = info.back;
-			info.back = new WorldPoint(sender);
+			WarpPoint death = info.back;
+			info.back = new WarpPoint(sender);
 			EntityPlayerMP player = ((EntityPlayerMP) sender);
-			if (player.dimension != death.dim)
-			{
-				// Home is not in this dimension. Move the player.
-				player.mcServer.getConfigurationManager().transferPlayerToDimension(player, death.dim);
-			}
-			player.playerNetServerHandler.setPlayerLocation(death.x+0.5, death.y + 1, death.z+0.5, player.rotationYaw, player.rotationPitch);
-			player.sendChatToPlayer("Poof!");
+			TeleportCenter.addToTpQue(death, player);
 		} else
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NODEATHPOINT));
 	}

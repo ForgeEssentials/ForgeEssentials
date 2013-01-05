@@ -65,7 +65,7 @@ public final class FunctionHelper
 
 	public static WorldPoint getEntityPoint(Entity entity)
 	{
-		return new WorldPoint(entity.worldObj, (int) Math.round(entity.posX), (int) Math.round(entity.posY), (int) Math.round(entity.posZ));
+		return new WorldPoint(entity.worldObj, entity.posX, entity.posY, entity.posZ);
 	}
 
 	public static EntityPlayerMP getPlayerFromUsername(String username)
@@ -174,8 +174,6 @@ public final class FunctionHelper
 
 	public static boolean isPlayerOp(String player)
 	{
-		return true;
-		/*
 		MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
 
 		// SP and LAN
@@ -184,7 +182,6 @@ public final class FunctionHelper
 
 		// SMP
 		return server.getConfigurationManager().getOps().contains(player);
-		*/
 	}
 
 	public static double getTPS(int dimID)

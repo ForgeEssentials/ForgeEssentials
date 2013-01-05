@@ -59,8 +59,8 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 				{
 					NBTTagCompound warp = warpdata.getCompoundTag(args[0].toLowerCase());
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender);
-					playerInfo.back = new WorldPoint(sender);
-					TeleportCenter.addToTpQue(new WarpPoint(warp.getInteger("dim"), (int)warp.getDouble("X"), (int)warp.getDouble("Y"), (int)warp.getDouble("Z"), warp.getFloat("Yaw"), warp.getFloat("Pitch")), sender);
+					playerInfo.back = new WarpPoint(sender);
+					TeleportCenter.addToTpQue(new WarpPoint(warp.getInteger("dim"), warp.getDouble("X"), warp.getDouble("Y"), warp.getDouble("Z"), warp.getFloat("Yaw"), warp.getFloat("Pitch")), sender);
 				}
 				else
 				{

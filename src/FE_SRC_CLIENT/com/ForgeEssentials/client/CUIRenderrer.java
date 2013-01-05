@@ -61,9 +61,9 @@ public class CUIRenderrer
 
 			if (render1)
 			{
-				float x = p2.x - p1.x;
-				float y = (float) (p1.y - p2.y) + 1;
-				float z = (float) (p1.z - p2.z) - 1;
+				float x = p2.getX() - p1.getX();
+				float y = (float) (p1.getY() - p2.getY()) + 1;
+				float z = (float) (p1.getZ() - p2.getZ()) - 1;
 
 				GL11.glTranslated(x, y, z);
 			}
@@ -79,9 +79,9 @@ public class CUIRenderrer
 		{
 			Selection sel = info.getSelection();
 
-			float x = sel.getLowPoint().x - sel.getEnd().x;
-			float y = sel.getLowPoint().y - sel.getEnd().y;
-			float z = (float) (sel.getLowPoint().z - sel.getEnd().z) - 1;
+			float x = sel.getLowPoint().getX() - sel.getEnd().getX();
+			float y = sel.getLowPoint().getY() - sel.getEnd().getY();
+			float z = (float) (sel.getLowPoint().getZ() - sel.getEnd().getZ()) - 1;
 
 			// translate to the low point..
 			GL11.glTranslated(x, y, z);

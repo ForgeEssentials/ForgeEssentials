@@ -16,7 +16,7 @@ import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -68,8 +68,8 @@ public class PlayerInfo
 		info.setPoint1((Point) tag.getFieldValue("sel1"));
 		info.setPoint2((Point) tag.getFieldValue("sel2"));
 		
-		info.home = (WorldPoint) tag.getFieldValue("home");
-		info.back = (WorldPoint) tag.getFieldValue("back");
+		info.home = (WarpPoint) tag.getFieldValue("home");
+		info.back = (WarpPoint) tag.getFieldValue("back");
 		
 		info.spawnType = (Integer) tag.getFieldValue("spawnType");
 		
@@ -100,10 +100,10 @@ public class PlayerInfo
 	private Selection selection;
 
 	@SaveableField(nullableField = true)
-	public WorldPoint home;
+	public WarpPoint home;
 	
 	@SaveableField(nullableField = true)
-	public WorldPoint back;
+	public WarpPoint back;
 	
 	@SaveableField()
 	public String prefix;

@@ -57,27 +57,27 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 			}
 			Point point = new Point(x, y, z);
 			NBTTagCompound spawn = new NBTTagCompound();
-			spawn.setInteger("x", point.x);
-			spawn.setInteger("y", point.y);
-			spawn.setInteger("z", point.z);
+			spawn.setDouble("x", point.x);
+			spawn.setDouble("y", point.y);
+			spawn.setDouble("z", point.z);
 			spawn.setInteger("dim", 0);
 			DataStorage.setData("spawn", spawn);
-			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.x, point.y, point.z);
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.getX(), point.getY(), point.getZ());
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		}
 		else
 		{
 			WarpPoint point = new WarpPoint(sender);
 			NBTTagCompound spawn = new NBTTagCompound();
-			spawn.setInteger("x", point.x);
-			spawn.setInteger("y", point.y);
-			spawn.setInteger("z", point.z);
+			spawn.setDouble("x", point.x);
+			spawn.setDouble("y", point.y);
+			spawn.setDouble("z", point.z);
 			spawn.setInteger("dim", 0);
 			spawn.setFloat("pich", ((WarpPoint) point).pitch);
 			spawn.setFloat("yaw", ((WarpPoint) point).yaw);
 			DataStorage.setData("spawn", spawn);
 			DataStorage.save();
-			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.x, point.y, point.z);
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.getX(), point.getY(), point.getZ());
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		}
 	}
@@ -116,13 +116,13 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 			}
 			Point point = new Point(x, y, z);
 			NBTTagCompound spawn = new NBTTagCompound();
-			spawn.setInteger("x", point.x);
-			spawn.setInteger("y", point.y);
-			spawn.setInteger("z", point.z);
+			spawn.setDouble("x", point.x);
+			spawn.setDouble("y", point.y);
+			spawn.setDouble("z", point.z);
 			spawn.setInteger("dim", 0);
 			DataStorage.setData("spawn", spawn);
 			DataStorage.save();
-			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.x, point.y, point.z);
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.getX(), point.getY(), point.getZ());
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		} 
 		else

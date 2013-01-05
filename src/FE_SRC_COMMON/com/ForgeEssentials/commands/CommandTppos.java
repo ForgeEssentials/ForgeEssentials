@@ -6,15 +6,14 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChunkCoordinates;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -65,13 +64,8 @@ public class CommandTppos extends ForgeEssentialsCommandBase
 			}
 			EntityPlayerMP player = (EntityPlayerMP)sender;
 			PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
-			playerInfo.back = new WorldPoint(player);
-//			if(player.dimension != target.dimension)
-//			{
-//				player.mcServer.getConfigurationManager().transferPlayerToDimension(player, target.dimension);
-//			}
-			player.playerNetServerHandler.setPlayerLocation(x, y, z, player.cameraYaw, player.cameraPitch);
-			player.sendChatToPlayer("Poof!");
+			playerInfo.back = new WarpPoint(player);
+			TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.cameraPitch, player.cameraYaw), player);
 		}
 		else
 		{

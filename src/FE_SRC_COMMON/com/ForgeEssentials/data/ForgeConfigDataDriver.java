@@ -139,7 +139,11 @@ public class ForgeConfigDataDriver extends DataDriver
 		{
 			cfg.get(category, field.name, (int[])field.value);
 		}
-		else if (field.type.equals(Float.class) || field.type.equals(Double.class))
+		else if (field.type.equals(Float.class))
+		{
+			cfg.get(category, field.name, ((Float)field.value).floatValue());
+		}
+		else if (field.type.equals(Double.class))
 		{
 			cfg.get(category, field.name, ((Double)field.value).doubleValue());
 		}
