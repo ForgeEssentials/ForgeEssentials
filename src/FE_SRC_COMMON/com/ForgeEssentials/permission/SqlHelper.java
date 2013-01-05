@@ -1133,7 +1133,7 @@ public class SqlHelper
 	 *  "groupConnectors" >> HashMap<String, HashMap<String, ArrayList<String>>>
 	 *  "ladders" >> arraylist<PromotionLadder>
 	 */
-	protected HashMap<String, Object> dump()
+	protected static HashMap<String, Object> dump()
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 

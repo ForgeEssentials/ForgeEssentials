@@ -84,8 +84,15 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
+		String first = args[0];
+		String[] newArgs = new String[args.length-1];
+		for (int i = 0; i < newArgs.length; i++)
+			newArgs[i] = args[i+1];
 		
+		if (first.equalsIgnoreCase("user") || first.equalsIgnoreCase("player"))
+			CommandUser.processCommandConsole(sender, newArgs);
+		else if (first.equalsIgnoreCase("export"))
+			CommandExport.processCommandConsole(sender, newArgs);
 	}
 
 	@Override
