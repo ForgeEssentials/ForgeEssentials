@@ -100,9 +100,12 @@ public class ForgeConfigDataDriver extends DataDriver
 		File[] files = getTypePath(type).listFiles();
 		ArrayList<TaggedClass> data = new ArrayList<TaggedClass>();
 		
+		if (files != null)
+		{
 		for (File file : files)
 			if (!file.isDirectory() && file.getName().endsWith(".cfg"))
 				data.add(loadData(type, file.getName().replace(".cfg", "")));
+		}
 		
 		return data.toArray(new TaggedClass[] {});
 	}

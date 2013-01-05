@@ -71,7 +71,7 @@ public class ModulePermissions implements IFEModule
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		// setup SQL
-		//sql = new SqlHelper(config);
+		sql = new SqlHelper(config);
 		
 		// load zones...
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
