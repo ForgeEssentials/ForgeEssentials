@@ -40,9 +40,9 @@ public class ModulePlayerLogger implements IFEModule
 	public static boolean enable;
 	
 	private Connection connection;
-	public EventLogger eLogger;
+	public static EventLogger eLogger;
 	
-	public List<logEntry> logTypes = new ArrayList();
+	public static List<logEntry> logTypes = new ArrayList();
 	
 	public ModulePlayerLogger()
 	{
@@ -93,7 +93,7 @@ public class ModulePlayerLogger implements IFEModule
 			{
 				for(logEntry type : this.logTypes)
 				{
-					s.execute("DROP TABLE IF EXISTS " + type.getTableName());
+					s.execute("DROP TABLE IF EXISTS " + type.getName());
 				}
 			}
 			
@@ -142,7 +142,7 @@ public class ModulePlayerLogger implements IFEModule
 	}
 
 	@Override
-	public IModuleConfig getConfig()
+	public IModuleConfig getConfig() 
 	{
 		return config;
 	}

@@ -1,9 +1,19 @@
 package com.ForgeEssentials.playerLogger.types;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
+
 import net.minecraft.entity.player.EntityPlayer;
 
 public class playerTrackerLog extends logEntry 
 {
+	public static ArrayList<playerTrackerLog> buffer;
+	
 	public playerTrackerLogCategory cat;
 	public String username;
 	public String extra;
@@ -13,12 +23,13 @@ public class playerTrackerLog extends logEntry
 		super();
 		this.cat = cat;
 		this.username = player.username;
+		buffer.add(this);
 	}
-	
-	public playerTrackerLog() {}
+
+	public playerTrackerLog() {buffer = new ArrayList();}
 
 	@Override
-	public String getTableName() 
+	public String getName() 
 	{
 		return "playerTracker";
 	}
@@ -26,14 +37,32 @@ public class playerTrackerLog extends logEntry
 	@Override
 	public String getTableCreateSQL() 
 	{
-		return "CREATE TABLE IF NOT EXISTS " + getTableName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(64), category CHAR(16), disciption CHAR(128), time DATETIME)";
+		return "CREATE TABLE IF NOT EXISTS " + getName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), disciption CHAR(128), time DATETIME)";
 	}
-
+	
 	@Override
-	public String getSQL() 
+	public String getprepareStatementSQL() 
 	{
-		if(extra == null)return "INSERT INTO " + getTableName() + " (id, player, category, disciption, time) VALUES (NULL, '" + username + "', '" + cat.toString() + ", NULL, '" + time + "');";
-		else return "INSERT INTO " + getTableName() + " (id, player, category, disciption, time) VALUES (NULL, '" + username + "', '" + cat.toString() + "', '" + extra + "', '" + time + "');";
+		return "INSERT INTO " + getName() + " (player, category, disciption, time) VALUES (?,?,?,?);";
+	}
+	
+	@Override
+	public void makeEntries(Connection connection) throws SQLException 
+	{
+		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
+		List<playerTrackerLog> toremove = new ArrayList();
+		for(playerTrackerLog log : buffer)
+		{
+			ps.setString(1, log.username);
+			ps.setString(2, log.cat.toString());
+			ps.setString(3, log.extra);
+			ps.setTimestamp(4, log.time);
+			ps.execute();
+			ps.clearParameters();
+			toremove.add(log);
+		}
+		ps.close();
+		buffer.removeAll(toremove);
 	}
 	
 	public enum playerTrackerLogCategory

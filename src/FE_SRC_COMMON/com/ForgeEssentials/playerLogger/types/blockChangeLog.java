@@ -1,13 +1,23 @@
 package com.ForgeEssentials.playerLogger.types;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 
 import net.minecraft.entity.player.EntityPlayer;
 
 public class blockChangeLog extends logEntry 
 {
+	public static ArrayList<blockChangeLog> buffer;
+	
 	public blockChangeLogCategory cat;
 	public String username;
 	public int dim;
@@ -15,7 +25,6 @@ public class blockChangeLog extends logEntry
 	public int y;
 	public int z;
 	public String block;
-	
 	
 	public blockChangeLog(blockChangeLogCategory cat, EntityPlayer player, String block, int X, int Y, int Z)
 	{
@@ -27,12 +36,13 @@ public class blockChangeLog extends logEntry
 		this.x = X;
 		this.y = Y;
 		this.z = Z;
+		buffer.add(this);
 	}
-
-	public blockChangeLog() {}
-
+	
+	public blockChangeLog() {buffer = new ArrayList();}
+	
 	@Override
-	public String getTableName() 
+	public String getName() 
 	{
 		return "blockChange";
 	}
@@ -40,13 +50,44 @@ public class blockChangeLog extends logEntry
 	@Override
 	public String getTableCreateSQL() 
 	{
-		return "CREATE TABLE IF NOT EXISTS " + getTableName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), block CHAR(16), Dim INT, X INT, Y INT, Z INT, time DATETIME)";
+		return "CREATE TABLE IF NOT EXISTS " + getName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), block CHAR(16), Dim INT, X INT, Y INT, Z INT, time DATETIME)";
+	}
+	
+	/*
+	@Override
+	public static void makeEntries(Connection connection)
+	{
+		return "INSERT INTO " + getName() + " (id, player, category, block, Dim, X, Y, Z, time) VALUES (NULL, '" + username + "', '" + cat.toString() + "', '" + block + "', '" + dim + "', '" + x + "', '" + y + "', '" + z + "', '" + time + "');";
+	}
+	*/
+
+	@Override
+	public String getprepareStatementSQL() 
+	{
+		return "INSERT INTO " + getName() + " (player, category, block, Dim, X, Y, Z, time) VALUES (?,?,?,?,?,?,?,?);";
 	}
 
 	@Override
-	public String getSQL() 
+	public void makeEntries(Connection connection) throws SQLException 
 	{
-		return "INSERT INTO " + getTableName() + " (id, player, category, block, Dim, X, Y, Z, time) VALUES (NULL, '" + username + "', '" + cat.toString() + "', '" + block + "', '" + dim + "', '" + x + "', '" + y + "', '" + z + "', '" + time + "');";
+		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
+		List<blockChangeLog> toremove = new ArrayList();
+		for(blockChangeLog log : buffer)
+		{
+			ps.setString(1, log.username);
+			ps.setString(2, log.cat.toString());
+			ps.setString(3, log.block);
+			ps.setInt(4, log.dim);
+			ps.setInt(5, log.x);
+			ps.setInt(6, log.y);
+			ps.setInt(7, log.y);
+			ps.setTimestamp(8, log.time);
+			ps.execute();
+			ps.clearParameters();
+			toremove.add(log);
+		}
+		ps.close();
+		buffer.removeAll(toremove);
 	}
 	
 	public enum blockChangeLogCategory
