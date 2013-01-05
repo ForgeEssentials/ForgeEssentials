@@ -9,6 +9,7 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
@@ -42,7 +43,6 @@ public class ModulePermissions implements IFEModule
 		MinecraftForge.EVENT_BUS.register(zManager);
 
 		// testing DB.
-		sql = new SqlHelper(config);
 		config = new ConfigPermissions();
 	}
 
@@ -70,6 +70,13 @@ public class ModulePermissions implements IFEModule
 	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
+		// setup SQL
+		sql = new SqlHelper(config);
+		
+		// load zones...
+		data = DataStorageManager.getDriverOfName("ForgeConfig");
+		zManager.loadZones();
+		
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
 	}

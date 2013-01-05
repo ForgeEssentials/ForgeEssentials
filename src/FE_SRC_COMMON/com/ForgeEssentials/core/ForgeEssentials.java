@@ -95,10 +95,6 @@ public class ForgeEssentials
 			Version.checkVersion();
 		}
 
-		bannedItems = new BannedItems();
-		mdlaunch = new ModuleLauncher();
-		mdlaunch.preLoad(e);
-
 		// Data API stuff
 		{
 			// setup
@@ -116,6 +112,11 @@ public class ForgeEssentials
 			DataStorageManager.registerSaveableClass(WorldPoint.class);
 			DataStorageManager.registerSaveableClass(WarpPoint.class);
 		}
+		
+		// setup modules AFTER data stuff...
+		bannedItems = new BannedItems();
+		mdlaunch = new ModuleLauncher();
+		mdlaunch.preLoad(e);
 
 		localization = new Localization();
 	}

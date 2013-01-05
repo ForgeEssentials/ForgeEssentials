@@ -31,7 +31,10 @@ public class ZoneManager
 		GLOBAL = new Zone("_GLOBAL_", Integer.MIN_VALUE);
 		worldZoneMap = new ConcurrentHashMap<String, Zone>();
 		zoneMap = Collections.synchronizedSortedMap(new TreeMap<String, Zone>());
-		
+	}
+	
+	protected void loadZones()
+	{
 		Object[] objs = ModulePermissions.data.loadAllObjects(Zone.class);
 		Zone temp;
 		for (Object obj: objs)
