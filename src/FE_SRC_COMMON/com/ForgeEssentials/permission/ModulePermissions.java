@@ -75,7 +75,7 @@ public class ModulePermissions implements IFEModule
 		
 		// load zones...
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
-		zManager.loadZones();
+		//zManager.loadZones();
 		
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());

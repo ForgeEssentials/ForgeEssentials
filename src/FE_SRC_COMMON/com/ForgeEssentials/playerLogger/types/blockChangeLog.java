@@ -64,7 +64,7 @@ public class blockChangeLog extends logEntry
 	public void makeEntries(Connection connection) throws SQLException 
 	{
 		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
-		Iterator<blockChangeLog> i = buffer.iterator();
+		Iterator<blockChangeLog> i = ((List<blockChangeLog>)buffer.clone()).iterator();
 		List<blockChangeLog> toremove = new ArrayList();
 		while(i.hasNext())
 		{

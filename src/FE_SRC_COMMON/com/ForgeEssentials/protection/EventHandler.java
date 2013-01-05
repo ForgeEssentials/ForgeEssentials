@@ -31,8 +31,6 @@ public class EventHandler
 			result = PermissionsAPI.checkPermAllowed(query);
 		}
 		
-		OutputHandler.debug("breakEvent in zone: " + zone.getZoneID() + " result: " + result);
-		
 		e.setCanceled(!result);
 	}
 	
@@ -49,8 +47,6 @@ public class EventHandler
 			query = new PermQueryPlayerZone(e.player, ModuleProtection.PERM_EDITS, zone);
 			result = PermissionsAPI.checkPermAllowed(query);
 		}
-		
-		OutputHandler.debug("placeEvent in zone: " + zone.getZoneID() + " result: " + result);
 		
 		e.setCanceled(!result);
 	}
@@ -70,8 +66,6 @@ public class EventHandler
 				query = new PermQueryPlayerZone(e.entityPlayer, ModuleProtection.PERM_INTERACT_BLOCK, zone);
 				result = PermissionsAPI.checkPermAllowed(query);
 			}
-		
-			OutputHandler.debug("playerInteractEvent in zone: " + zone.getZoneID() + " result: " + result);
 		
 			e.setCanceled(!result);
 		}

@@ -8,9 +8,16 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
+/**
+ * Main logblock command.
+ * Still WIP
+ * 
+ * @author Dries007
+ *
+ */
+
 public class CommandLb extends ForgeEssentialsCommandBase 
 {
-
 	@Override
 	public String getCommandName() 
 	{
@@ -26,7 +33,23 @@ public class CommandLb extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args) 
 	{
-		sender.getEntityData().setBoolean("lb", true);
+		if(args.length == 0)
+		{
+			//TODO INFO
+			return;
+		}
+		if(args[0].equalsIgnoreCase("get"))
+		{
+			int limit = 5;
+			if(args.length == 2)
+			{
+				limit = this.parseIntWithMin(sender, args[1], 0);
+			}
+			sender.getEntityData().setBoolean("lb", true);
+			sender.getEntityData().setInteger("lb_limit", limit);
+			sender.sendChatToPlayer("Click a block and you will get the last " + limit + " changes.");
+		}
+		//TODO add further stuff.
 	}
 
 	@Override
@@ -38,13 +61,12 @@ public class CommandLb extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canConsoleUseCommand() 
 	{
-		return true;
+		return false;
 	}
 
 	@Override
 	public String getCommandPerm() 
 	{
-		return null;
+		return "";
 	}
-
 }

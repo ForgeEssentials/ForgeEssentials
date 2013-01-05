@@ -43,17 +43,19 @@ public class ModulePlayerLogger implements IFEModule
 	public static EventLogger eLogger;
 	
 	public static List<logEntry> logTypes = new ArrayList();
+	static
+	{
+		logTypes.add(new playerTrackerLog());
+		logTypes.add(new commandLog());
+		logTypes.add(new blockChangeLog());
+	}
 	
 	public ModulePlayerLogger()
 	{
 		if(!FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
-		
-		logTypes.add(new playerTrackerLog());
-		logTypes.add(new commandLog());
-		logTypes.add(new blockChangeLog());
 	}
-
+	
 	@Override
 	public void preLoad(FMLPreInitializationEvent e) 
 	{
@@ -130,7 +132,7 @@ public class ModulePlayerLogger implements IFEModule
 		if(!enable) return;
 		try
 		{
-			eLogger.logLoop.makeLogs();
+			eLogger.logLoop.sendLogs();
 			eLogger.logLoop.end();
 		}
 		catch (Exception ex)

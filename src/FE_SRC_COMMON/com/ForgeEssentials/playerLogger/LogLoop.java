@@ -32,12 +32,12 @@ public class LogLoop implements Runnable
 				i++;
 			}
 			OutputHandler.debug("Making logs");
-			makeLogs();
+			sendLogs();
 			OutputHandler.debug("Done.");
 		}
 	}
-
-	public void makeLogs() 
+	
+	public void sendLogs()
 	{
 		try 
 		{
@@ -55,7 +55,7 @@ public class LogLoop implements Runnable
 			e1.printStackTrace();
 		}
 	}
-
+	
 	public void end() 
 	{
 		run  = false;
