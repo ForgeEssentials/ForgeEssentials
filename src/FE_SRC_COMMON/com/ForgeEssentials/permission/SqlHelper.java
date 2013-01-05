@@ -74,37 +74,45 @@ public class SqlHelper
 	private static final String		COLUMN_PERMISSION_ZONEID		= "zoneID";
 
 	// zones
-	private final PreparedStatement	statementGetZoneIDFromName;																		// zoneName >> zoneID
-	private final PreparedStatement	statementGetZoneNameFromID;																		// zoneID >> zoneName
-	private final PreparedStatement	statementPutZone;																				// $ ZoneName
-	private final PreparedStatement	statementDelZone;																				// X ZoneName
+	private final PreparedStatement	statementGetZoneIDFromName;							// zoneName >> zoneID
+	private final PreparedStatement	statementGetZoneNameFromID;							// zoneID >> zoneName
+	private final PreparedStatement	statementPutZone;										// $ ZoneName
+	private final PreparedStatement	statementDelZone;										// X ZoneName
 
 	// players
-	private final PreparedStatement	statementGetPlayerIDFromName;																	// playerName >> playerID
-	private final PreparedStatement	statementGetPlayerNameFromID;																	// playerID >> playerName
-	private final PreparedStatement	statementPutPlayer;																				// $ usernName
+	private final PreparedStatement	statementGetPlayerIDFromName;							// playerName >> playerID
+	private final PreparedStatement	statementGetPlayerNameFromID;							// playerID >> playerName
+	private final PreparedStatement	statementPutPlayer;									// $ usernName
 
 	// groups
-	private final PreparedStatement	statementGetGroupIDFromName;																	// groupName >> groupID
-	private final PreparedStatement	statementGetGroupNameFromID;																	// groupID >> groupName
-	private final PreparedStatement	statementGetGroupFromName;																		// groupName >> Group
-	private final PreparedStatement	statementGetGroupFromID;																		// groupID >> Group
-	private final PreparedStatement	statementGetGroupsForPlayer;																	// PlayerID, ZoneID >> Groups
-	private final PreparedStatement	statementPutGroup;																				// $ name, prefix, suffix, parent, priority, zone
-	private final PreparedStatement	statementUpdateGroup;																			// $ name, prefix, suffix, parent, priority, zone
+	private final PreparedStatement	statementGetGroupIDFromName;							// groupName >> groupID
+	private final PreparedStatement	statementGetGroupNameFromID;							// groupID >> groupName
+	private final PreparedStatement	statementGetGroupFromName;								// groupName >> Group
+	private final PreparedStatement	statementGetGroupFromID;								// groupID >> Group
+	private final PreparedStatement	statementGetGroupsForPlayer;							// PlayerID, ZoneID >> Groups
+	private final PreparedStatement	statementPutGroup;										// $ name, prefix, suffix, parent, priority, zone
+	private final PreparedStatement	statementUpdateGroup;									// $ name, prefix, suffix, parent, priority, zone
 
 	// ladders
-	private final PreparedStatement	statementGetLadderIDFromName;																	// ladderName >> ladderID
-	private final PreparedStatement	statementGetLadderNameFromID;																	// LadderID >> ladderName
-	private final PreparedStatement	statementGetLadderIDFromGroup;																	// groupID, zoneID >> ladderID
-	private final PreparedStatement	statementGetLadderList;																			// LadderID, ZoneID >> groupName, rank
-	private final PreparedStatement	statementPutLadder;																				// $ LadderName
+	private final PreparedStatement	statementGetLadderIDFromName;							// ladderName >> ladderID
+	private final PreparedStatement	statementGetLadderNameFromID;							// LadderID >> ladderName
+	private final PreparedStatement	statementGetLadderIDFromGroup;							// groupID, zoneID >> ladderID
+	private final PreparedStatement	statementGetLadderList;								// LadderID, ZoneID >> groupName, rank
+	private final PreparedStatement	statementPutLadder;									// $ LadderName
 
 	// permissions
-	private final PreparedStatement	statementGetPermission;																			// target, isgroup, perm, zone >> allowed
-	private final PreparedStatement	statementGetPermissionForward;																	// target, isgroup, perm, zone >> allowed
-	private final PreparedStatement	statementPutPermission;																			// $ , allowed, target, isgroup, perm, zone
-	private final PreparedStatement	statementUpdatePermission;																		// $ allowed, target, isgroup, perm, zone
+	private final PreparedStatement	statementGetPermission;								// target, isgroup, perm, zone >> allowed
+	private final PreparedStatement	statementGetPermissionForward;							// target, isgroup, perm, zone >> allowed
+	private final PreparedStatement	statementPutPermission;								// $ , allowed, target, isgroup, perm, zone
+	private final PreparedStatement	statementUpdatePermission;								// $ allowed, target, isgroup, perm, zone
+	
+	// dump statements...  replace ALL ids with names...
+	private final PreparedStatement statementDumpGroups;
+	private final PreparedStatement statementDumpPlayers;
+	private final PreparedStatement statementDumpGroupPermissions;
+	private final PreparedStatement statementDumpPlayerPermissions;
+	private final PreparedStatement statementDumpGroupConnector;
+	private final PreparedStatement statementDumpLadders;
 
 	public SqlHelper(ConfigPermissions config)
 	{
@@ -331,6 +339,78 @@ public class SqlHelper
 			query = new StringBuilder("DELETE FROM ").append(TABLE_ZONE)
 					.append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("'?'");
 			statementDelZone = db.prepareStatement(query.toString());
+
+			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
+			// Dump Statements
+			// <<<<<<<<<<<<<<<<<<<<<<<<<<
+			
+			// statementGetGroupFromID
+			query = new StringBuilder("SELECT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PARENT).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME)
+					.append(" FROM ").append(TABLE_GROUP)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ZONE).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME);
+			statementDumpGroups = instance.db.prepareStatement(query.toString());
+
+			query = new StringBuilder("SELECT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_PERM).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ALLOWED)
+					.append(" FROM ").append(TABLE_PERMISSION)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_TARGET).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME);
+			statementDumpGroupPermissions = instance.db.prepareStatement(query.toString());
+
+			query = new StringBuilder("SELECT ")
+					.append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_PERM).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ALLOWED)
+					.append(" FROM ").append(TABLE_PERMISSION)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_TARGET).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME);
+			statementDumpPlayerPermissions = instance.db.prepareStatement(query.toString());
+
+			query = new StringBuilder("SELECT ")
+					.append(COLUMN_PLAYER_USERNAME)
+					.append(" FROM ").append(TABLE_PLAYER);
+			statementDumpPlayers = instance.db.prepareStatement(query.toString());
+			
+			query = new StringBuilder("SELECT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME)
+					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
+					.append(" INNER JOIN ").append(TABLE_PLAYER)
+					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_PLAYERID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID);
+			statementDumpGroupConnector = instance.db.prepareStatement(query.toString());
+			
+			query = new StringBuilder("SELECT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_LADDER_NAME).append(".").append(COLUMN_LADDER_NAME_NAME).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME)
+					.append(" FROM ").append(TABLE_LADDER)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
+					.append(" INNER JOIN ").append(TABLE_LADDER_NAME)
+					.append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=").append(TABLE_LADDER_NAME).append(".").append(COLUMN_LADDER_NAME_LADDERID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID);
+			statementDumpLadders = instance.db.prepareStatement(query.toString());
 		}
 		catch (Exception e)
 		{
@@ -351,10 +431,9 @@ public class SqlHelper
 	{
 		try
 		{
-			//"org.sqlite.JDBC";
+			// "org.sqlite.JDBC";
 			// DriverClass = "com.mysql.jdbc.Driver";
-			
-			
+
 			String type = config.get("stuff", "databaseType", "SqLite").value;
 			if (type.equalsIgnoreCase("mysql"))
 			{
@@ -363,25 +442,24 @@ public class SqlHelper
 				// ------------------
 				String server, port, database, user, pass, connect;
 				ResultSet set;
-				
+
 				database = config.get("MySQL", "database", "FE_Permissions").value;
-				
-				
+
 				if (config.get("MySQL", "stealConfigFromCore", false).getBoolean(false))
 				{
 					Configuration fconfig = ForgeEssentials.config.config;
 					server = fconfig.get("MySQL", "server", "server.example.com").value;
-					
+
 					if (!server.equalsIgnoreCase("server.example.com"))
 					{
 						port = fconfig.get("Data.SQL", "port", 3306).value;
 						user = fconfig.get("Data.SQL", "username", " ").value;
 						pass = fconfig.get("Data.SQL", "password", " ").value;
-						
+
 						Class driverClass = Class.forName("com.mysql.jdbc.Driver");
-						connect= "jdbc:mysql://" + server + ":" + port + "/" + database;
+						connect = "jdbc:mysql://" + server + ":" + port + "/" + database;
 						this.db = DriverManager.getConnection(connect, user, pass);
-						
+
 						// check table...
 						DatabaseMetaData dbm = db.getMetaData();
 						set = dbm.getTables(null, null, TABLE_PERMISSION, null);
@@ -390,12 +468,12 @@ public class SqlHelper
 					else
 						OutputHandler.SOP("Core SQL configuration is invalid.. defaulting to in-house configurations");
 				}
-				
+
 				server = config.get("MySQL", "host", "server.example.com").value;
 				port = config.get("MySQL", "port", 3306).value;
 				user = config.get("MySQL", "username", "FEUser").value;
 				pass = config.get("MySQL", "password", "@we$0mePa$$w0rd").value;
-				
+
 				if (!server.equalsIgnoreCase("server.example.com"))
 				{
 					Class driverClass = Class.forName("com.mysql.jdbc.Driver");
@@ -416,7 +494,7 @@ public class SqlHelper
 			// ------------------
 			// SQLITE
 			// ------------------
-			
+
 			String path = config.get("SqLite", "file", "permissions.db").value;
 			boolean absolute = config.get("SqLite", "absolutePath", false).getBoolean(false);
 			File file;
@@ -458,10 +536,10 @@ public class SqlHelper
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	
+
 	public void tryConnectMySQL()
 	{
-		
+
 	}
 
 	// create tables.
@@ -1049,6 +1127,13 @@ public class SqlHelper
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	// void??
+	protected static void dump()
+	{
+		// ALL usernames..
+		//FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getAllUsernames()
 	}
 
 	// ---------------------------------------------------------------------------------------------------

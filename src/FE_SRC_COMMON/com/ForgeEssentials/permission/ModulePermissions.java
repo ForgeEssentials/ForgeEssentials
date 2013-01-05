@@ -43,6 +43,7 @@ public class ModulePermissions implements IFEModule
 
 		// testing DB.
 		sql = new SqlHelper(config);
+		config = new ConfigPermissions();
 	}
 
 	@Override

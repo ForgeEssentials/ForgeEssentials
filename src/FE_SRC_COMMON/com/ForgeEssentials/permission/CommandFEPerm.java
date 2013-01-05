@@ -75,8 +75,10 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		for (int i = 0; i < newArgs.length; i++)
 			newArgs[i] = args[i+1];
 		
-		if (first.equals("user") || first.equals("player"))
+		if (first.equalsIgnoreCase("user") || first.equalsIgnoreCase("player"))
 			CommandUser.processCommandPlayer(sender, newArgs);
+		else if (first.equalsIgnoreCase("export"))
+			CommandExport.processCommandPlayer(sender, newArgs);
 	}
 
 	@Override
