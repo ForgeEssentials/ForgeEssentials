@@ -14,6 +14,7 @@ import static org.objectweb.asm.Opcodes.FLOAD;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -29,6 +30,8 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import com.ForgeEssentials.util.OutputHandler;
+
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.IClassTransformer;
 
@@ -36,6 +39,11 @@ public class FEeventAdder implements IClassTransformer
 {
 	private HashMap<String, String> iiwmHM;
 	private HashMap<String, String> isHM;
+	
+	public static void msg(String msg)
+	{
+		System.out.println(msg);
+	}
 	
 	public FEeventAdder()
 	{
@@ -112,7 +120,7 @@ public class FEeventAdder implements IClassTransformer
 	
 	private byte[] transformItemStack(byte[] bytes)
 	{
-		System.out.println("Patching ItemStack...");
+		msg("[FE coremod] Patching ItemStack...");
         HashMap<String, String> hm = isHM;
         
         ClassNode classNode = new ClassNode();
@@ -127,16 +135,13 @@ public class FEeventAdder implements IClassTransformer
             
             if (m.name.equals(hm.get("targetMethodName")) && m.desc.equals("(L" + hm.get("entityPlayerJavaClassName") + ";L" + hm.get("worldJavaClassName") + ";IIIIFFF)Z"))
             {
-                System.out.println("Found target method " + m.name + m.desc + "!");
-                
+                msg("[FE coremod] Found target method " + m.name + m.desc + "!");
                 
                 int offset = 0;
                 while (m.instructions.get(offset).getOpcode() != ALOAD)
                 {
                 	offset++;
                 }
-                
-                System.out.println(offset);
                 
                 LabelNode lmm1Node = new LabelNode(new Label());
                 LabelNode lmm2Node = new LabelNode(new Label());
@@ -162,7 +167,7 @@ public class FEeventAdder implements IClassTransformer
                 
                 m.instructions.insertBefore(m.instructions.get(offset), toInject);
                  
-                System.out.println("Patching ItemInWorldManager Complete!");
+                msg("[FE coremod] Patching ItemInWorldManager Complete!");
                 break;
             }
         }
@@ -175,7 +180,7 @@ public class FEeventAdder implements IClassTransformer
 	
     private byte[] transformItemInWorldManager(byte[] bytes)
     {    	
-        System.out.println("Patching ItemInWorldManager...");
+        msg("[FE coremod] Patching ItemInWorldManager...");
         HashMap<String, String> hm = iiwmHM;
         
         ClassNode classNode = new ClassNode();
@@ -252,7 +257,7 @@ public class FEeventAdder implements IClassTransformer
                         
                         m.instructions.insertBefore(m.instructions.get(index + offset), toInject);
                          
-                        System.out.println("Patching ItemInWorldManager Complete!");
+                        msg("[FE coremod] Patching ItemInWorldManager Complete!");
                         break;
                     }
                 }
