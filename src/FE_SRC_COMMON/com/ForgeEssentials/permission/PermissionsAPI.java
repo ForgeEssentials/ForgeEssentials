@@ -27,7 +27,7 @@ public class PermissionsAPI
 	 * This is the the group all players are assigned to if they are members of no other groups.
 	 * This group is guaranteed existence
 	 */
-	public static Group						DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, ZoneManager.GLOBAL.getZoneID(), 0);
+	public static Group	DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, ZoneManager.GLOBAL.getZoneID(), 0);
 
 	/**
 	 * Use this to check AllOrNothing Area queries, Player Queries, or Point Queries.
@@ -167,11 +167,11 @@ public class PermissionsAPI
 		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
 
 		ArrayList<Group> temp;
-		while (zone != null)
-		{
+//		while (zone != null)
+//		{
 			temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneID());
 			list.addAll(temp);
-		}
+//		}
 
 		if (includeDefaults)
 			list.add(DEFAULT);
