@@ -74,8 +74,13 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/For
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" ./com/ForgeEssentials/commands/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl/* 
 echo "Creating API package"
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-src-${MC}-${VERSION}.zip" ${WORKSPACE}/src/FE_SRC_COMMON/com/ForgeEssentials/api/*  
 cd ${WORKSPACE}/output
+mkdir api
+cd api
+cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/com/ForgeEssentials/api/*  ./com/ForgeEssentials/api/
+cd ..
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-src-${MC}-${VERSION}.zip" ./api/*  
+
 echo "Creating ServerComplete package"
 mkdir mods
 mkdir coremods
