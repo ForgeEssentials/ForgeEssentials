@@ -83,17 +83,19 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./co
 
 echo "Creating ServerComplete package"
 cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
+cp -rf ${WORKSPACE}/A1-zipStuff/HowToGetFEsupport.txt .
 mkdir mods
 mkdir coremods
-cp -rf "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./coremods/
-cp -rf "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./mods/
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt
+cp -rf "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./coremods/ HowToGetFEsupport.txt
+cp -rf "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./mods/ HowToGetFEsupport.txt
+cp -rf "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" ./mods/ HowToGetFEsupport.txt
+cp -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./mods/ HowToGetFEsupport.txt
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt
 
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
 cp -rf ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt .
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-src-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/*  FEAPIReadme.txt
+cp -rf ${WORKSPACE}/A1-zipStuff/HowToGetFEsupport.txt .
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-src-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/*  FEAPIReadme.txt HowToGetFEsupport.txt
 
 #upload

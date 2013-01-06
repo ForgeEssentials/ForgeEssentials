@@ -1,0 +1,56 @@
+  ______ ______                                  _   
+ |  ____|  ____|                                | |  
+ | |__  | |__   ___ _   _ _ __  _ __   ___  _ __| |_ 
+ |  __| |  __| / __| | | | '_ \| '_ \ / _ \| '__| __|
+ | |    | |____\__ | |_| | |_) | |_) | (_) | |  | |_ 
+ |_|    |______|___/\__,_| .__/| .__/ \___/|_|   \__|
+                         | |   | |                   
+                         |_|   |_|                   
+Forge Essentials Support
+=====================================================
+Written by Dries007.
+A guide to getting your issues resolved by the FE dev team.
+
+If you don't follow this guide, YOU WILL BE IGNORED.
+
+Make shure you follow all of these steps:
+
+	1) Make shure your ForgeEssentials is up to date, Link: http://www.minecraftforum.net/topic/1592223-
+		a) Every time you mention your issue, mention what version of FE you are using. If you use beta, TELL US!
+	
+	2) Make a debug log.
+		a) Open "main.cfg".
+		b) Make "verbose=true"
+		c) Run the server.
+		d) Make the error happen.
+		e) Put the error on pastebin.
+	
+	2) Look at the Issue List on github, Link: https://github.com/ForgeEssentials/ForgeEssentialsMain/issues
+		=> If your problem is on github already:
+			a) Feel free to add your experiance to the existing issue.
+			b) Make shure to incude the link to Pastebin
+			c) Write a little explanation. Just "My server crashes!" is not a error report.
+			d) Feel free to join the IRC channel "#forgeessentials".		
+		=> If your problem is not yet on the github:
+			a) Have you looked through all of the open issues?
+			- If not: Go to step 2.
+			- Otherwise: Got to step 3.
+			
+	3) Open an IRC client and join the "#forgeessentials" channel on Esper.net
+		a) Wait 30 sec.
+		b) If your issue is mentioned, join the discussion.
+		c) Ask about your problem.
+		d) If told "Make an issue on github.". Go to step 4.
+		e) If someone seems intrested. Give them the link to pastebin.
+		f) If you get no responce. Ping (say the full name of) an OP (DO NOT PING LUACS)
+		g) If you still get no responce, Wait at least 5 minutes, while you are waiting, think about how to expain what errors.
+		h) Still no responce? Go to step 4.
+	
+	4) Make a github issue
+		a) Make a clear title.
+		b) Make a clear explanation.
+		c) Make shure to inclue the link to pastbin.
+		d) Submit the issue.
+		e) Wait for a responce. (You might want to enable email notifications.)
+		f) Respond to questions asked.
+			- If you get asked for the configs, put them on github.
