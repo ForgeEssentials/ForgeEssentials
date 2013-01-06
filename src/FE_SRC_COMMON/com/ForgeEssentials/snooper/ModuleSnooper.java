@@ -43,6 +43,7 @@ public class ModuleSnooper implements IFEModule
 	{
 		OutputHandler.SOP("Snooper module is enabled. Loading...");
 		MinecraftForge.EVENT_BUS.register(this);
+		configSnooper = new ConfigSnooper();
 	}
 
 	@Override
@@ -56,8 +57,6 @@ public class ModuleSnooper implements IFEModule
 		API.registerResponce(7, new PlayerInv());
 
 		e.registerServerCommand(new CommandReloadQuery());
-
-		configSnooper = new ConfigSnooper();
 	}
 
 	@ForgeSubscribe
