@@ -4,9 +4,9 @@ import java.io.File;
 
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IModuleConfig;
-import com.ForgeEssentials.snooper.API.Response;
 
 import net.minecraft.command.ICommandSender;
 

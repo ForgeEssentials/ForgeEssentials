@@ -3,7 +3,7 @@ package com.ForgeEssentials.snooper;
 import java.util.Collection;
 import java.util.HashMap;
 
-import com.ForgeEssentials.snooper.API.Response;
+import com.ForgeEssentials.api.snooper.Response;
 
 import cpw.mods.fml.common.FMLLog;
 

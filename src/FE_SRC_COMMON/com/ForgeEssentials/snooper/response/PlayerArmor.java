@@ -8,8 +8,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.snooper.API.Response;
-import com.ForgeEssentials.snooper.API.TextFormatter;
+import com.ForgeEssentials.api.snooper.Response;
+import com.ForgeEssentials.api.snooper.TextFormatter;
 
 public class PlayerArmor extends Response
 {

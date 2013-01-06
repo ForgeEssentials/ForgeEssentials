@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 import net.minecraft.network.rcon.IServer;
 import net.minecraft.network.rcon.RConUtils;
 
-import com.ForgeEssentials.snooper.API.Response;
+import com.ForgeEssentials.api.snooper.Response;
 
 public class RConQueryThread implements Runnable
 {

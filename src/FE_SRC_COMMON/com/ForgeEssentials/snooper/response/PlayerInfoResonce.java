@@ -1,11 +1,11 @@
 package com.ForgeEssentials.snooper.response;
 
+import com.ForgeEssentials.api.snooper.Response;
+import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.economy.Wallet;
 import com.ForgeEssentials.permission.Group;
 import com.ForgeEssentials.permission.PermissionsAPI;
-import com.ForgeEssentials.snooper.API.Response;
-import com.ForgeEssentials.snooper.API.TextFormatter;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import net.minecraft.entity.player.EntityPlayerMP;

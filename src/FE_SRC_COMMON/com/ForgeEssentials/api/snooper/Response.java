@@ -1,4 +1,4 @@
-package com.ForgeEssentials.snooper.API;
+package com.ForgeEssentials.api.snooper;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
