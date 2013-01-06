@@ -5,7 +5,7 @@ import java.io.File;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.util.MiskEventHandler;
+import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
@@ -36,17 +36,17 @@ public class CoreConfig
 		prop.comment = "Specify if Verbose mode is enabled. Only useful in debugging.";
 		OutputHandler.verbose = prop.getBoolean(false);
 
-		prop = config.get("Core.Misk", "tpWarmup", 5);
+		prop = config.get("Core.Misc", "tpWarmup", 5);
 		prop.comment = "The amount of time you need to keep still to tp.";
 		TeleportCenter.tpWarmup = prop.getInt(5);
 
-		prop = config.get("Core.Misk", "tpCooldown", 5);
+		prop = config.get("Core.Misc", "tpCooldown", 5);
 		prop.comment = "The amount of time you need to wait to TP again.";
 		TeleportCenter.tpCooldown = prop.getInt(5);
 
-		prop = config.get("Core.Misk", "MajoritySleep", true);
+		prop = config.get("Core.Misc", "MajoritySleep", true);
 		prop.comment = "If +50% op players sleep, make day.";
-		MiskEventHandler.MajoritySleep = prop.getBoolean(true);
+		MiscEventHandler.MajoritySleep = prop.getBoolean(true);
 		
 		config.save();
 	}
