@@ -160,15 +160,22 @@ public class ServerInfo extends Response
 
 	public String getTPS()
 	{
-		LinkedHashMap<String, String> data = new LinkedHashMap();
-		for (int id : TPSList)
+		try
 		{
-			if (server.worldTickTimes.containsKey(id))
+			LinkedHashMap<String, String> data = new LinkedHashMap();
+			for (int id : TPSList)
 			{
-				data.put("dim " + id, "" + getTPSFromData(server.worldTickTimes.get(id)));
+				if (server.worldTickTimes.containsKey(id))
+				{
+					data.put("dim " + id, "" + getTPSFromData(server.worldTickTimes.get(id)));
+				}
 			}
+			return TextFormatter.toJSON(data);
 		}
-		return TextFormatter.toJSON(data);
+		catch (Exception e)
+		{
+			return TextFormatter.toJSON(new String[] {""});
+		}
 	}
 
 	/*
