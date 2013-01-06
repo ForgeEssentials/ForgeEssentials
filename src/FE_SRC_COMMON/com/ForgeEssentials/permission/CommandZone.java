@@ -19,7 +19,6 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName()
 	{
-		// TODO Auto-generated method stub
 		return "zone";
 	}
 

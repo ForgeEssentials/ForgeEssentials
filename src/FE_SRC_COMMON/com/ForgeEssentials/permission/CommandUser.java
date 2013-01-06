@@ -39,15 +39,23 @@ public class CommandUser
 			}
 			else if (args.length >= 3) // changing super perms
 			{
-				if (args.length == 4) // zone is set
+				Zone zone = ZoneManager.GLOBAL;
+				if (args.length == 5) // zone is set
 				{
-
+					if(ZoneManager.doesZoneExist(args[4]))
+					{
+						zone = ZoneManager.getZone(args[4]);
+					}
+					else
+					{
+						sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					}
 				}
 				
-				if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("allow")) // allowing super
-																							// perm
+				if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("allow"))
 				{
-					
+					PermissionsAPI.setPlayerPermission(player.username, args[3], true, zone.getZoneID());
+					sender.sendChatToPlayer(player.username + " has been allowed " + args[3]);
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove")) // remove super
@@ -58,7 +66,8 @@ public class CommandUser
 				}
 				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny")) // deny super perm
 				{
-					
+					PermissionsAPI.setPlayerPermission(player.username, args[3], false, zone.getZoneID());
+					sender.sendChatToPlayer(player.username + " has been denied " + args[3]);
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("get"))
@@ -73,23 +82,23 @@ public class CommandUser
 		{
 			if (args.length == 5) // zone is set
 			{
-
+				
 			}
 			
 			if (args[2].equalsIgnoreCase("add")) // add player to group
 			{
-
+				
 				return;
 			}
 			else if (args[2].equalsIgnoreCase("remove")) // remove player from
 															// group
 			{
-
+				
 				return;
 			}
 			else if (args[2].equalsIgnoreCase("set")) // set player's group
 			{
-
+				
 				return;
 			}
 		}
