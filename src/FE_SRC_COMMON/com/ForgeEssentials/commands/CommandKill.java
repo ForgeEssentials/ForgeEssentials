@@ -25,13 +25,18 @@ public class CommandKill extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayer victim = FMLCommonHandler.instance()
+					.getSidedDelegate().getServer().getConfigurationManager()
+					.getPlayerForUsername(args[0]);
 			if (victim != null)
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
 				victim.sendChatToPlayer(Localization.get(Localization.KILLED));
 			} else
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			{
+				sender.sendChatToPlayer(Localization.format(
+						Localization.ERROR_NOPLAYER, args[0]));
+			}
 		} else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
@@ -44,15 +49,23 @@ public class CommandKill extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayer victim = FMLCommonHandler.instance()
+					.getSidedDelegate().getServer().getConfigurationManager()
+					.getPlayerForUsername(args[0]);
 			if (victim != null)
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
 				victim.sendChatToPlayer(Localization.get(Localization.KILLED));
 			} else
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			{
+				sender.sendChatToPlayer(Localization.format(
+						Localization.ERROR_NOPLAYER, args[0]));
+			}
 		} else
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+		{
+			sender.sendChatToPlayer(Localization
+					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+		}
 	}
 
 	@Override
@@ -66,18 +79,18 @@ public class CommandKill extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-    	if(args.length == 1)
-    	{
-    		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    }
+	{
+		if (args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
+					.instance().getMinecraftServerInstance().getAllUsernames());
+		} else
+		{
+			return null;
+		}
+	}
 
 }

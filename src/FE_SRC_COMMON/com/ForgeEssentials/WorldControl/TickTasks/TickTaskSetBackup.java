@@ -14,20 +14,22 @@ import com.ForgeEssentials.util.OutputHandler;
 public class TickTaskSetBackup implements ITickTask
 {
 	// stuff needed
-	private final EntityPlayer			player;
-	private final boolean				redo;		// true = redo. // false = undo
+	private final EntityPlayer player;
+	private final boolean redo; // true = redo. // false = undo
 
 	// actually used
-	private final int					last;
-	private int							current;
-	private int							changed;
-	private ArrayList<BlockSaveable>	list;
+	private final int last;
+	private int current;
+	private int changed;
+	private ArrayList<BlockSaveable> list;
 
 	/**
 	 * 
 	 * @param player
-	 * @param back BackupArea
-	 * @param before true = redo -- false = undo
+	 * @param back
+	 *            BackupArea
+	 * @param before
+	 *            true = redo -- false = undo
 	 */
 	public TickTaskSetBackup(EntityPlayer player, BackupArea back, boolean redo)
 	{
@@ -35,34 +37,42 @@ public class TickTaskSetBackup implements ITickTask
 		this.redo = redo;
 
 		if (redo)
+		{
 			list = back.after;
-		else
+		} else
+		{
 			list = back.before;
+		}
 
-		last = list.size()-1;
+		last = list.size() - 1;
 	}
 
 	@Override
 	public void tick()
 	{
 		int lastChanged = changed;
-		
-		for (int i = current; i <= last; i++ )
+
+		for (int i = current; i <= last; i++)
 		{
 			current = i;
-			
+
 			if (list.get(i).setinWorld(player.worldObj))
+			{
 				changed++;
-			
+			}
+
 			if (lastChanged >= ModuleWorldControl.WCblocksPerTick)
+			{
 				return;
+			}
 		}
 	}
 
 	@Override
 	public void onComplete()
 	{
-		OutputHandler.chatConfirmation(player, "" + changed + " blocks changed");
+		OutputHandler
+				.chatConfirmation(player, "" + changed + " blocks changed");
 	}
 
 	@Override

@@ -2,11 +2,7 @@ package com.ForgeEssentials.playerLogger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.ForgeEssentials.playerLogger.types.logEntry;
 import com.ForgeEssentials.util.OutputHandler;
@@ -14,21 +10,23 @@ import com.ForgeEssentials.util.OutputHandler;
 public class LogLoop implements Runnable
 {
 	private boolean run = true;
-	
+
 	@Override
-	public void run() 
+	public void run()
 	{
 		OutputHandler.debug("Started running the logger " + run);
 		while (run)
 		{
 			int i = 0;
-			while(i < ModulePlayerLogger.interval)
+			while (i < ModulePlayerLogger.interval)
 			{
-				try 
+				try
 				{
 					Thread.sleep(1000);
+				} catch (final InterruptedException e)
+				{
+					e.printStackTrace();
 				}
-				catch (final InterruptedException e){e.printStackTrace();}
 				i++;
 			}
 			OutputHandler.debug("Making logs");
@@ -36,28 +34,29 @@ public class LogLoop implements Runnable
 			OutputHandler.debug("Done.");
 		}
 	}
-	
+
 	public void sendLogs()
 	{
-		try 
+		try
 		{
-			Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
-			for(logEntry type : ModulePlayerLogger.logTypes)
+			Connection connection = DriverManager.getConnection(
+					ModulePlayerLogger.url, ModulePlayerLogger.username,
+					ModulePlayerLogger.password);
+			for (logEntry type : ModulePlayerLogger.logTypes)
 			{
 				type.makeEntries(connection);
 			}
 			connection.close();
-		}
-		catch (SQLException e1) 
+		} catch (SQLException e1)
 		{
 			OutputHandler.SOP("Could not connect to database!");
 			OutputHandler.SOP(e1.getMessage());
 			e1.printStackTrace();
 		}
 	}
-	
-	public void end() 
+
+	public void end()
 	{
-		run  = false;
+		run = false;
 	}
 }

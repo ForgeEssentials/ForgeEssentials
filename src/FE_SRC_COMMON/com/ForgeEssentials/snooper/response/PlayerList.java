@@ -16,7 +16,7 @@ public class PlayerList extends Response
 	}
 
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "PlayerList";
 	}
@@ -24,12 +24,12 @@ public class PlayerList extends Response
 	@Override
 	public void readConfig(String category, Configuration config)
 	{
-		//Don't need that here
+		// Don't need that here
 	}
-	
+
 	@Override
 	public void writeConfig(String category, Configuration config)
 	{
-		//Don't need that here
+		// Don't need that here
 	}
 }

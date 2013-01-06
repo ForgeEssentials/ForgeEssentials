@@ -19,97 +19,105 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class TickTaskReplaceSelection implements ITickTask
 {
-	private BackupArea		backup;
-	private EntityPlayer	player;
+	private BackupArea backup;
+	private EntityPlayer player;
 	private int changed;
 	private int ticks;
 	private ArrayList<AreaBase> applicable;
-	
+
 	// Stores our actual task.
 	private int targetId;
 	private int targetMeta;
 	private int newId;
 	private int newMeta;
-	
+
 	// Defines our bounds and current position
 	private Point high;
 	private Point current;
 	private Point first;
 	private boolean isComplete;
 
-	public TickTaskReplaceSelection(EntityPlayer player, int firstID, int firstMeta, int secondID, int secondMeta, BackupArea backupArea, Selection selection)
+	public TickTaskReplaceSelection(EntityPlayer player, int firstID,
+			int firstMeta, int secondID, int secondMeta, BackupArea backupArea,
+			Selection selection)
 	{
-		this.targetId = firstID;
-		this.targetMeta = firstMeta;
-		this.newId = secondID;
-		this.newMeta = secondMeta;
-		
+		targetId = firstID;
+		targetMeta = firstMeta;
+		newId = secondID;
+		newMeta = secondMeta;
+
 		changed = 0;
 		high = selection.getHighPoint();
 		first = current = selection.getLowPoint();
-		
-		this.backup = backupArea;
+
+		backup = backupArea;
 		this.player = player;
 	}
-	
-	public TickTaskReplaceSelection(EntityPlayer player, int firstID, int firstMeta, int secondID, int secondMeta, BackupArea backupArea, Selection selection, ArrayList<AreaBase> applicable)
+
+	public TickTaskReplaceSelection(EntityPlayer player, int firstID,
+			int firstMeta, int secondID, int secondMeta, BackupArea backupArea,
+			Selection selection, ArrayList<AreaBase> applicable)
 	{
-		this(player, firstID, firstMeta, secondID, secondMeta, backupArea, selection);
+		this(player, firstID, firstMeta, secondID, secondMeta, backupArea,
+				selection);
 		this.applicable = applicable;
 	}
 
 	@Override
 	public void tick()
 	{
-		this.ticks++;
+		ticks++;
 		int currentTickChanged = 0;
 		boolean continueFlag = true;
-		
+
 		int x = current.getX();
 		int y = current.getY();
 		int z = current.getZ();
-		
+
 		while (continueFlag)
 		{
 			if (targetMeta == -1)
 			{
-				if (targetId == player.worldObj.getBlockId(x, y, z) && isApplicable(x, y, z))
+				if (targetId == player.worldObj.getBlockId(x, y, z)
+						&& isApplicable(x, y, z))
 				{
 					doReplace(x, y, z);
-					currentTickChanged++; 
+					currentTickChanged++;
 				}
-			}
-			else
+			} else
 			{
-				if (targetId == player.worldObj.getBlockId(x, y, z) && targetMeta == player.worldObj.getBlockMetadata(x, y, z) && isApplicable(x, y, z))
+				if (targetId == player.worldObj.getBlockId(x, y, z)
+						&& targetMeta == player.worldObj.getBlockMetadata(x, y,
+								z) && isApplicable(x, y, z))
 				{
 					doReplace(x, y, z);
 					currentTickChanged++;
 				}
 			}
-			
+
 			y++;
 			if (y > high.getY())
 			{
 				// Reset y, increment z.
 				y = first.getY();
 				z++;
-				
+
 				if (z > high.getZ())
 				{
 					// Reset z, increment x.
 					z = first.getZ();
 					x++;
-					
+
 					// Check stop condition
 					if (x > high.getX())
 					{
-						this.isComplete = true;
+						isComplete = true;
 					}
 				}
 			}
-			
-			if (isComplete || currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
+
+			if (isComplete
+					|| currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
 			{
 				// Stop running this tick.
 				changed += currentTickChanged;
@@ -135,16 +143,16 @@ public class TickTaskReplaceSelection implements ITickTask
 		if (targetId == 0)
 		{
 			targetName = Localization.get("tile.air.name");
-		}
-		else
+		} else
 		{
 			if (targetMeta == -1)
 			{
-				targetName = new ItemStack(Block.blocksList[targetId]).getDisplayName();
-			}
-			else
+				targetName = new ItemStack(Block.blocksList[targetId])
+						.getDisplayName();
+			} else
 			{
-				targetName = new ItemStack(targetId, 1, targetMeta).getDisplayName();
+				targetName = new ItemStack(targetId, 1, targetMeta)
+						.getDisplayName();
 			}
 		}
 		String newName;
@@ -152,26 +160,26 @@ public class TickTaskReplaceSelection implements ITickTask
 		if (newId == 0)
 		{
 			newName = Localization.get("tile.air.name");
-		}
-		else
+		} else
 		{
 			if (newMeta == -1)
 			{
-				newName = new ItemStack(Block.blocksList[newId]).getDisplayName();
-			}
-			else
+				newName = new ItemStack(Block.blocksList[newId])
+						.getDisplayName();
+			} else
 			{
 				newName = new ItemStack(newId, 1, newMeta).getDisplayName();
 			}
-		}		
-		OutputHandler.chatConfirmation(player, Localization.format("message.wc.replaceConfirmBlocksChanged",
-				changed, targetName, newName));
+		}
+		OutputHandler.chatConfirmation(player, Localization.format(
+				"message.wc.replaceConfirmBlocksChanged", changed, targetName,
+				newName));
 	}
 
 	@Override
 	public boolean isComplete()
 	{
-		return this.isComplete;
+		return isComplete;
 	}
 
 	@Override
@@ -179,22 +187,26 @@ public class TickTaskReplaceSelection implements ITickTask
 	{
 		return true;
 	}
-	
+
 	private boolean isApplicable(int x, int y, int z)
 	{
 		Point p = new Point(x, y, z);
 		if (applicable == null)
+		{
 			return true;
-		
+		}
+
 		boolean contains = false;
-		
+
 		for (AreaBase area : applicable)
 		{
 			contains = area.contains(p);
 			if (contains)
+			{
 				return true;
+			}
 		}
-		
+
 		return contains;
 	}
 

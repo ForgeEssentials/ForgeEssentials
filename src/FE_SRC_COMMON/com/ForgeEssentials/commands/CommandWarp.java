@@ -1,12 +1,9 @@
 package com.ForgeEssentials.commands;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
@@ -17,14 +14,12 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Warp;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 /**
- * Now uses TeleportCenter.
- * TODO get rid of DataStorage
+ * Now uses TeleportCenter. TODO get rid of DataStorage
  * 
  * @author Dries007
- *
+ * 
  */
 
 public class CommandWarp extends ForgeEssentialsCommandBase
@@ -38,75 +33,83 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(args.length == 0)
+		if (args.length == 0)
 		{
 			sender.sendChatToPlayer(Localization.get("command.warp.list"));
 			String msg = "";
-			for(String warp : TeleportCenter.warps.keySet())
+			for (String warp : TeleportCenter.warps.keySet())
 			{
 				msg = warp + ", " + msg;
 			}
 			sender.sendChatToPlayer(msg);
-		}
-		else if(args.length == 1)
+		} else if (args.length == 1)
 		{
-			if(TeleportCenter.warps.containsKey(args[0].toLowerCase()))
+			if (TeleportCenter.warps.containsKey(args[0].toLowerCase()))
 			{
-				if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
+						getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					Warp warp = TeleportCenter.warps.get(args[0].toLowerCase());
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender);
 					playerInfo.back = new WarpPoint(sender);
 					TeleportCenter.addToTpQue(warp.getPoint(), sender);
-				}
-				else
+				} else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender,
+							Localization.get(Localization.ERROR_PERMDENIED));
 				}
-			}
-			else
+			} else
 			{
-				OutputHandler.chatError(sender, Localization.get("command.warp.notfound"));
+				OutputHandler.chatError(sender,
+						Localization.get("command.warp.notfound"));
 			}
-		}
-		else if(args.length == 2)
+		} else if (args.length == 2)
 		{
-			if(true)
-			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
+			if (true)
 			{
-				if(args[0].equalsIgnoreCase("set"))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
+						getCommandPerm() + "admin")))
 				{
-					if(TeleportCenter.warps.containsKey(args[1].toLowerCase()))
+					if (args[0].equalsIgnoreCase("set"))
 					{
-						OutputHandler.chatError(sender, Localization.get("command.warp.alreadyexists"));
-					}
-					else
+						if (TeleportCenter.warps.containsKey(args[1]
+								.toLowerCase()))
+						{
+							OutputHandler.chatError(sender, Localization
+									.get("command.warp.alreadyexists"));
+						} else
+						{
+							TeleportCenter.warps.put(args[1].toLowerCase(),
+									new Warp(args[1].toLowerCase(),
+											new WarpPoint(sender)));
+
+							OutputHandler.chatConfirmation(sender,
+									Localization.get(Localization.DONE));
+						}
+					} else if (args[0].equalsIgnoreCase("del"))
 					{
-						TeleportCenter.warps.put(args[1].toLowerCase(), new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
-						
-						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
+						if (TeleportCenter.warps.containsKey(args[1]
+								.toLowerCase()))
+						{
+							TeleportCenter.warps.remove(args[1].toLowerCase());
+							OutputHandler.chatConfirmation(sender,
+									Localization.get(Localization.DONE));
+						} else
+						{
+							OutputHandler.chatError(sender,
+									Localization.get("command.warp.notfound"));
+						}
+					} else
+					{
+						OutputHandler.chatError(sender,
+								Localization.get(Localization.ERROR_BADSYNTAX)
+										+ getSyntaxPlayer(sender));
 					}
-				}
-				else if(args[0].equalsIgnoreCase("del"))
+				} else
 				{
-					if(TeleportCenter.warps.containsKey(args[1].toLowerCase()))
-					{
-						TeleportCenter.warps.remove(args[1].toLowerCase());
-						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
-					}
-					else
-					{
-						OutputHandler.chatError(sender, Localization.get("command.warp.notfound"));
-					}
+					OutputHandler.chatError(sender,
+							Localization.get(Localization.ERROR_PERMDENIED));
 				}
-				else
-				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
-				}
-			}
-			else
-			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 			}
 		}
 	}
@@ -127,22 +130,21 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-    	if(args.length == 1)
-    	{
-    		return getListOfStringsFromIterableMatchingLastWord(args, TeleportCenter.warps.keySet());
-    	}
-    	else if(args.length == 2)
-    	{
-    		return getListOfStringsMatchingLastWord(args, "set", "del");
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    }
+	{
+		if (args.length == 1)
+		{
+			return getListOfStringsFromIterableMatchingLastWord(args,
+					TeleportCenter.warps.keySet());
+		} else if (args.length == 2)
+		{
+			return getListOfStringsMatchingLastWord(args, "set", "del");
+		} else
+		{
+			return null;
+		}
+	}
 
 }

@@ -14,8 +14,9 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 /**
  * Opens your enderchest.
+ * 
  * @author Dries007
- *
+ * 
  */
 public class CommandEnderchest extends ForgeEssentialsCommandBase
 {
@@ -26,30 +27,35 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
 	{
 		return "enderchest";
 	}
-	
+
 	@Override
 	public List getCommandAliases()
-    {
-		if(useAlias)
-			return Arrays.asList(new String[] {"echest"});
+	{
+		if (useAlias)
+		{
+			return Arrays.asList(new String[] { "echest" });
+		}
 		return null;
-    }
+	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		EntityPlayerMP player = (EntityPlayerMP) sender;
 		if (player.openContainer != player.inventoryContainer)
-    	{
-    		player.closeScreen();
-    	}
+		{
+			player.closeScreen();
+		}
 		player.incrementWindowID();
-    	
-    	InventoryEnderChest chest = player.getInventoryEnderChest();
-		player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, chest.getInvName(), chest.getSizeInventory()));
-    	player.openContainer = new ContainerChest(player.inventory, chest);
-    	player.openContainer.windowId = player.currentWindowId;
-    	player.openContainer.addCraftingToCrafters(player);
+
+		InventoryEnderChest chest = player.getInventoryEnderChest();
+		player.playerNetServerHandler
+				.sendPacketToPlayer(new Packet100OpenWindow(
+						player.currentWindowId, 0, chest.getInvName(), chest
+								.getSizeInventory()));
+		player.openContainer = new ContainerChest(player.inventory, chest);
+		player.openContainer.windowId = player.currentWindowId;
+		player.openContainer.addCraftingToCrafters(player);
 	}
 
 	@Override
@@ -62,7 +68,7 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
 	{
 		return false;
 	}
-	
+
 	@Override
 	public String getCommandPerm()
 	{

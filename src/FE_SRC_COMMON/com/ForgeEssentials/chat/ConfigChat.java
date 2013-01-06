@@ -1,21 +1,21 @@
 package com.ForgeEssentials.chat;
 
+import java.io.File;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
+
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.util.OutputHandler;
 
-import net.minecraft.command.ICommandSender;
-
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
-import java.io.File;
-
 public class ConfigChat implements IModuleConfig
 {
-	public static final File	chatConfig	= new File(ForgeEssentials.FEDIR, "chat.cfg");
-	public static String		chatFormat;
-	public Configuration		config;
+	public static final File chatConfig = new File(ForgeEssentials.FEDIR,
+			"chat.cfg");
+	public static String chatFormat;
+	public Configuration config;
 
 	// this is designed so it will work for any class.
 	public ConfigChat()
@@ -36,7 +36,8 @@ public class ConfigChat implements IModuleConfig
 		// config.load -- Configurations are loaded on Construction.
 		config.addCustomCategoryComment("Chat", "Chatconfigs");
 
-		Property prop = config.get("Chat", "chatformat", "%prefix<%username>%suffix %white%message");
+		Property prop = config.get("Chat", "chatformat",
+				"%prefix<%username>%suffix %white%message");
 		prop.comment = "This String formats the Chat.";
 		prop.comment += "\nIf you want a red color and special formatcodes, the color needs to be first before the special code";
 		prop.comment += "\nExamples: '%red%username' '%red%bold%username'\nNot OK:'%bold%gold%underline%username' In this example you would get the username in gold and underline but without bold";
@@ -50,7 +51,8 @@ public class ConfigChat implements IModuleConfig
 
 		chatFormat = prop.value;
 
-		Chat.censor = config.get("Chat", "censor", true, "Censor words in the 'bannedwords.txt' file").getBoolean(true);
+		Chat.censor = config.get("Chat", "censor", true,
+				"Censor words in the 'bannedwords.txt' file").getBoolean(true);
 
 		config.save();
 	}
@@ -61,7 +63,8 @@ public class ConfigChat implements IModuleConfig
 		// config.load -- Configurations are loaded on Construction.
 		config.addCustomCategoryComment("Chat", "Chatconfigs");
 
-		Property prop = config.get("Chat", "chatformat", "%prefix<%username>%suffix %white%message");
+		Property prop = config.get("Chat", "chatformat",
+				"%prefix<%username>%suffix %white%message");
 		prop.comment = "This String formats the Chat.";
 		prop.comment += "\nIf you want a red color and special formatcodes, the color needs to be first before the special code";
 		prop.comment += "\nExamples: '%red%username' '%red%bold%username'\nNot OK:'%bold%gold%underline%username' In this example you would get the username in gold and underline but without bold";
@@ -75,7 +78,9 @@ public class ConfigChat implements IModuleConfig
 
 		prop.value = chatFormat;
 
-		config.get("Chat", "censor", true, "Censor words in the 'bannedwords.txt' file").value = "" + Chat.censor;
+		config.get("Chat", "censor", true,
+				"Censor words in the 'bannedwords.txt' file").value = ""
+				+ Chat.censor;
 
 		config.save();
 	}
@@ -86,7 +91,8 @@ public class ConfigChat implements IModuleConfig
 		OutputHandler.debug("Loading chatconfigs");
 		config.load();
 
-		chatFormat = config.get("Chat", "chatformat", "%prefix<%username>%suffix %white%message").value;
+		chatFormat = config.get("Chat", "chatformat",
+				"%prefix<%username>%suffix %white%message").value;
 
 		Chat.censor = config.get("Chat", "censor", true).getBoolean(true);
 	}

@@ -1,6 +1,5 @@
 package com.ForgeEssentials.commands;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,18 +67,20 @@ public class ModuleCommands implements IFEModule
 	public static ConfigCmd conf;
 	public static boolean removeDuplicateCommands;
 	public DataDriver data;
-	
+
 	public ModuleCommands()
 	{
-		
+
 	}
 
+	@Override
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Commands module is enabled. Loading...");
 		conf = new ConfigCmd();
 	}
 
+	@Override
 	public void load(FMLInitializationEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
@@ -96,14 +97,14 @@ public class ModuleCommands implements IFEModule
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		DataStorage.load();
-		
+
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
-		
-		//general
+
+		// general
 		e.registerServerCommand(new CommandMotd());
 		e.registerServerCommand(new CommandRules());
 		e.registerServerCommand(new CommandModlist());
-		//utility
+		// utility
 		e.registerServerCommand(new CommandButcher());
 		e.registerServerCommand(new CommandRemove());
 		e.registerServerCommand(new CommandSpawnMob());
@@ -115,14 +116,14 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandSetspawn());
 		e.registerServerCommand(new CommandJump());
 		e.registerServerCommand(new CommandCraft());
-		//op
+		// op
 		e.registerServerCommand(new CommandServerDo());
-		//fun
+		// fun
 		e.registerServerCommand(new CommandSmite());
 		e.registerServerCommand(new CommandBurn());
 		e.registerServerCommand(new CommandPotion());
 		e.registerServerCommand(new CommandColorize());
-		//teleport
+		// teleport
 		e.registerServerCommand(new CommandBack());
 		e.registerServerCommand(new CommandBed());
 		e.registerServerCommand(new CommandHome());
@@ -131,10 +132,10 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandTphere());
 		e.registerServerCommand(new CommandTppos());
 		e.registerServerCommand(new CommandWarp());
-		//cheat
+		// cheat
 		e.registerServerCommand(new CommandRepair());
 		e.registerServerCommand(new CommandHeal());
-		//Vanilla Override
+		// Vanilla Override
 		e.registerServerCommand(new CommandBan());
 		e.registerServerCommand(new CommandBanIp());
 		e.registerServerCommand(new CommandBanlist());
@@ -144,7 +145,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandDifficulty());
 		e.registerServerCommand(new CommandEnchant());
 		e.registerServerCommand(new CommandGameRule());
-//		e.registerServerCommand(new CommandHelp());
+		// e.registerServerCommand(new CommandHelp());
 		e.registerServerCommand(new CommandKick());
 		e.registerServerCommand(new CommandMe());
 		e.registerServerCommand(new CommandOp());
@@ -173,71 +174,90 @@ public class ModuleCommands implements IFEModule
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		loadWarps();
-		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
-		if(removeDuplicateCommands) removeDuplicateCommands(FMLCommonHandler.instance().getMinecraftServerInstance());
+		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(),
+				Side.SERVER);
+		if (removeDuplicateCommands)
+		{
+			removeDuplicateCommands(FMLCommonHandler.instance()
+					.getMinecraftServerInstance());
+		}
 	}
-	
-	private void removeDuplicateCommands(MinecraftServer server) 
+
+	private void removeDuplicateCommands(MinecraftServer server)
 	{
-		if(server.getCommandManager() instanceof CommandHandler)
+		if (server.getCommandManager() instanceof CommandHandler)
 		{
 			try
 			{
 				Set<String> commandNames = new HashSet<String>();
 				Set<String> toRemoveNames = new HashSet<String>();
-				CommandHandler cmdMng = (CommandHandler) server.getCommandManager();
-				
-				for(Object cmdObj : cmdMng.commandSet)
+				CommandHandler cmdMng = (CommandHandler) server
+						.getCommandManager();
+
+				for (Object cmdObj : cmdMng.commandSet)
 				{
 					ICommand cmd = (ICommand) cmdObj;
-					if(!commandNames.add(cmd.getCommandName()))
+					if (!commandNames.add(cmd.getCommandName()))
 					{
-						OutputHandler.debug("Duplicate command found! Name:" + cmd.getCommandName());
+						OutputHandler.debug("Duplicate command found! Name:"
+								+ cmd.getCommandName());
 						toRemoveNames.add(cmd.getCommandName());
 					}
 				}
 				Set toRemove = new HashSet();
-				for(Object cmdObj : cmdMng.commandSet)
+				for (Object cmdObj : cmdMng.commandSet)
 				{
 					ICommand cmd = (ICommand) cmdObj;
-					if(toRemoveNames.contains(cmd.getCommandName()))
+					if (toRemoveNames.contains(cmd.getCommandName()))
 					{
 						try
 						{
 							Class<?> cmdClass = cmd.getClass();
 							Package pkg = cmdClass.getPackage();
-							if(pkg == null || !pkg.getName().contains("ForgeEssentials"))
+							if (pkg == null
+									|| !pkg.getName().contains(
+											"ForgeEssentials"))
 							{
-								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
+								OutputHandler
+										.debug("Removing command '"
+												+ cmd.getCommandName()
+												+ "' from class: "
+												+ cmdClass.getName());
 								toRemove.add(cmd.getCommandName());
 							}
-						}
-						catch(Exception e)
+						} catch (Exception e)
 						{
-							OutputHandler.debug("dafug? Got exception:" + e.getLocalizedMessage());
+							OutputHandler.debug("dafug? Got exception:"
+									+ e.getLocalizedMessage());
 							e.printStackTrace();
 						}
 					}
 				}
 				cmdMng.commandSet.removeAll(toRemove);
-			}
-			catch(Exception e)
+			} catch (Exception e)
 			{
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.BasicCommands", true);
-		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
-		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.list", true);
-		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.rules", true);
-		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.motd", true);
-		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.tps", true);
-		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.modlist", true);
+		event.registerPerm(this, RegGroup.OWNERS,
+				"ForgeEssentials.BasicCommands", true);
+		event.registerPerm(this, RegGroup.MEMBERS,
+				"ForgeEssentials.BasicCommands.compass", true);
+		event.registerPerm(this, RegGroup.GUESTS,
+				"ForgeEssentials.BasicCommands.list", true);
+		event.registerPerm(this, RegGroup.GUESTS,
+				"ForgeEssentials.BasicCommands.rules", true);
+		event.registerPerm(this, RegGroup.GUESTS,
+				"ForgeEssentials.BasicCommands.motd", true);
+		event.registerPerm(this, RegGroup.GUESTS,
+				"ForgeEssentials.BasicCommands.tps", true);
+		event.registerPerm(this, RegGroup.GUESTS,
+				"ForgeEssentials.BasicCommands.modlist", true);
 	}
 
 	@Override
@@ -246,26 +266,26 @@ public class ModuleCommands implements IFEModule
 		saveWarps();
 	}
 
-	private void saveWarps() 
+	private void saveWarps()
 	{
-		for(Warp warp : TeleportCenter.warps.values())
+		for (Warp warp : TeleportCenter.warps.values())
 		{
 			data.saveObject(warp);
 		}
 	}
-	
-	private void loadWarps() 
+
+	private void loadWarps()
 	{
 		Object[] objs = data.loadAllObjects(Warp.class);
-		for(Object obj : objs)
+		for (Object obj : objs)
 		{
 			Warp warp = ((Warp) obj);
 			TeleportCenter.warps.put(warp.getName(), warp);
 		}
 	}
-	
+
 	@Override
-	public IModuleConfig getConfig() 
+	public IModuleConfig getConfig()
 	{
 		return conf;
 	}

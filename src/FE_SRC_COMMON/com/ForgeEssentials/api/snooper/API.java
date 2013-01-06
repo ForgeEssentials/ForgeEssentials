@@ -4,10 +4,12 @@ import java.lang.reflect.Method;
 
 import cpw.mods.fml.common.FMLLog;
 
-public class API 
+public class API
 {
 	/**
-	 * Use this method to register your responses. DON'T ID 9. That is used for challenge.
+	 * Use this method to register your responses. DON'T ID 9. That is used for
+	 * challenge.
+	 * 
 	 * @param ID
 	 * @param response
 	 */
@@ -15,15 +17,21 @@ public class API
 	{
 		try
 		{
-			if (ResponseRegistry_regsisterResponce == null) ResponseRegistry_regsisterResponce = Class.forName("com.ForgeEssentials.snooper.ResponseRegistry").getMethod("registerResponse", Integer.class, Response.class);
+			if (ResponseRegistry_regsisterResponce == null)
+			{
+				ResponseRegistry_regsisterResponce = Class.forName(
+						"com.ForgeEssentials.snooper.ResponseRegistry")
+						.getMethod("registerResponse", Integer.class,
+								Response.class);
+			}
 			ResponseRegistry_regsisterResponce.invoke(null, ID, response);
-		}
-		catch(Exception e)
+		} catch (Exception e)
 		{
-			FMLLog.warning("Unable to register " + response.getName() + " with ID: " + ID);
+			FMLLog.warning("Unable to register " + response.getName()
+					+ " with ID: " + ID);
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static Method ResponseRegistry_regsisterResponce;
 }

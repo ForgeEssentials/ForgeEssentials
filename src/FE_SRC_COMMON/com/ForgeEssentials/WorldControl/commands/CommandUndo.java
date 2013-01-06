@@ -28,13 +28,14 @@ public class CommandUndo extends WorldControlCommandBase
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
 		BackupArea back = PlayerInfo.getPlayerInfo(player).getNextUndo();
-		
+
 		if (back == null)
 		{
-			OutputHandler.chatError(player, Localization.get(Localization.WC_NOUNDO));
+			OutputHandler.chatError(player,
+					Localization.get(Localization.WC_NOUNDO));
 			return;
 		}
-		
+
 		TickTaskHandler.addTask(new TickTaskSetBackup(player, back, false));
 	}
 }

@@ -9,56 +9,57 @@ import com.ForgeEssentials.util.Localization;
  * Does the actual filling, with limited chuncks per tick.
  * 
  * @author Dries007
- *
+ * 
  */
 
 public class TickTaskFillRound extends TickTaskFill
 {
 	public TickTaskFillRound(WorldServer world)
 	{
-		this.isComplete = false;
+		isComplete = false;
 		this.world = world;
-		this.X = this.minX = ModuleWorldBorder.minX - ModuleWorldBorder.overGenerate;
-		this.Z = this.minZ = ModuleWorldBorder.minZ - ModuleWorldBorder.overGenerate;
-		this.maxX = ModuleWorldBorder.maxX + ModuleWorldBorder.overGenerate;
-		this.maxZ = ModuleWorldBorder.maxZ + ModuleWorldBorder.overGenerate;
-		this.centerX = ModuleWorldBorder.X;
-		this.centerZ = ModuleWorldBorder.Z;
-		this.rad = ModuleWorldBorder.rad;
-		
-		this.eta = (int) ((MathHelper.abs_int((this.maxX - this.minX)/16) * MathHelper.abs_int((this.minZ - this.maxZ)/16)));
-		
+		X = minX = ModuleWorldBorder.minX - ModuleWorldBorder.overGenerate;
+		Z = minZ = ModuleWorldBorder.minZ - ModuleWorldBorder.overGenerate;
+		maxX = ModuleWorldBorder.maxX + ModuleWorldBorder.overGenerate;
+		maxZ = ModuleWorldBorder.maxZ + ModuleWorldBorder.overGenerate;
+		centerX = ModuleWorldBorder.X;
+		centerZ = ModuleWorldBorder.Z;
+		rad = ModuleWorldBorder.rad;
+
+		eta = ((MathHelper.abs_int((maxX - minX) / 16) * MathHelper
+				.abs_int((minZ - maxZ) / 16)));
+
 		warnEveryone(Localization.get(Localization.WB_FILL_START));
-		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
+		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll(
+				"%eta", getETA()));
 	}
 
 	@Override
 	public void tick()
 	{
 		super.tick();
-		
+
 		int i = 0;
 		while (i < chunksAtick)
 		{
-			if((rad + ModuleWorldBorder.overGenerate) < ModuleWorldBorder.getDistanceRound(centerX, centerZ, X, Z))
+			if ((rad + ModuleWorldBorder.overGenerate) < ModuleWorldBorder
+					.getDistanceRound(centerX, centerZ, X, Z))
 			{
 				i++;
-				world.theChunkProviderServer.provideChunk((X >> 4), (Z >> 4));	
-				if(X <= maxX)
+				world.theChunkProviderServer.provideChunk((X >> 4), (Z >> 4));
+				if (X <= maxX)
 				{
 					X += 16;
-				}
-				else
+				} else
 				{
-					//New row!
-					if(Z <= maxZ)
+					// New row!
+					if (Z <= maxZ)
 					{
 						Z += 16;
 						X = minX;
-					}	
-					else
+					} else
 					{
-						//Done!
+						// Done!
 						isComplete = true;
 					}
 				}

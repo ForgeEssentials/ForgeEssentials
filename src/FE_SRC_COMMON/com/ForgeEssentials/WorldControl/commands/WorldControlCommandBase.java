@@ -6,27 +6,31 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
-public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
+public abstract class WorldControlCommandBase extends
+		ForgeEssentialsCommandBase
 {
-	
+
 	protected boolean usesExtraSlash;
-	
+
 	/**
 	 * 
 	 * @param doubleSlashCommand
 	 */
 	WorldControlCommandBase(boolean doubleSlashCommand)
 	{
-		this.usesExtraSlash = doubleSlashCommand;
+		usesExtraSlash = doubleSlashCommand;
 	}
 
 	@Override
 	public final String getCommandName()
 	{
-		if (this.usesExtraSlash)
+		if (usesExtraSlash)
+		{
 			return "/" + getName();
-		else
+		} else
+		{
 			return getName();
+		}
 	}
 
 	public abstract String getName();
@@ -61,7 +65,8 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		sender.sendChatToPlayer("You cannot use the \"" + getCommandName() + "\" command from the console");
+		sender.sendChatToPlayer("You cannot use the \"" + getCommandName()
+				+ "\" command from the console");
 	}
 
 	@Override
@@ -69,10 +74,10 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	{
 		return false;
 	}
-	
+
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.commands."+getName();
+		return "ForgeEssentials.WorldControl.commands." + getName();
 	}
 }

@@ -13,14 +13,19 @@ public class CommandTell extends CommandServerMessage
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
-		if(sender instanceof EntityPlayer)
-			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer)sender, getCommandPerm()));
-		else
+		if (sender instanceof EntityPlayer)
+		{
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
+					(EntityPlayer) sender, getCommandPerm()));
+		} else
+		{
 			return true;
+		}
 	}
-	
+
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.thiswillneverseethelightofday." + getCommandName();
+		return "ForgeEssentials.thiswillneverseethelightofday."
+				+ getCommandName();
 	}
 }

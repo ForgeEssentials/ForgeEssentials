@@ -23,27 +23,37 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayer player = FMLCommonHandler.instance()
+					.getSidedDelegate().getServer().getConfigurationManager()
+					.getPlayerForUsername(args[0]);
 			int amountToSubtract = Integer.parseInt(args[1]);
-			
+
 			if (player == null)
 			{
-				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_NOPLAYER)));
-			}
-			else
+				OutputHandler.chatError(sender,
+						(Localization.get(Localization.ERROR_NOPLAYER)));
+			} else
 			{
 				Wallet.removeFromWallet(amountToSubtract, player);
-			
+
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(amountToSubtract + " " + Wallet.currency(amountToSubtract) + Localization.get(Localization.WALLET_REMOVE_TARGET));
+					sender.sendChatToPlayer(amountToSubtract
+							+ " "
+							+ Wallet.currency(amountToSubtract)
+							+ Localization
+									.get(Localization.WALLET_REMOVE_TARGET));
 				}
-				player.sendChatToPlayer(amountToSubtract + " " + Wallet.currency(amountToSubtract) + Localization.get(Localization.WALLET_REMOVE_SELF));
+				player.sendChatToPlayer(amountToSubtract + " "
+						+ Wallet.currency(amountToSubtract)
+						+ Localization.get(Localization.WALLET_REMOVE_SELF));
 			}
-		} 
-		else
+		} else
 		{
-			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+			OutputHandler
+					.chatError(
+							sender,
+							(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 		}
 	}
 
@@ -52,24 +62,30 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayer player = FMLCommonHandler.instance()
+					.getSidedDelegate().getServer().getConfigurationManager()
+					.getPlayerForUsername(args[0]);
 			int amountToSubtract = Integer.parseInt(args[1]);
-			
+
 			if (player == null)
 			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOPLAYER));
-			}
-			else
+				sender.sendChatToPlayer(Localization
+						.get(Localization.ERROR_NOPLAYER));
+			} else
 			{
 				Wallet.removeFromWallet(amountToSubtract, player);
-			
-				sender.sendChatToPlayer(amountToSubtract + " " + Wallet.currency(amountToSubtract) + Localization.get(Localization.WALLET_REMOVE_TARGET));
-				player.sendChatToPlayer(amountToSubtract + " " + Wallet.currency(amountToSubtract) + Localization.get(Localization.WALLET_REMOVE_SELF));
+
+				sender.sendChatToPlayer(amountToSubtract + " "
+						+ Wallet.currency(amountToSubtract)
+						+ Localization.get(Localization.WALLET_REMOVE_TARGET));
+				player.sendChatToPlayer(amountToSubtract + " "
+						+ Wallet.currency(amountToSubtract)
+						+ Localization.get(Localization.WALLET_REMOVE_SELF));
 			}
-		} 
-		else
+		} else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization
+					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

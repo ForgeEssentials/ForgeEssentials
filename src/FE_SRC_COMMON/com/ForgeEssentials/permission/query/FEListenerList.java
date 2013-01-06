@@ -6,11 +6,11 @@ import net.minecraftforge.event.EventPriority;
 
 public class FEListenerList
 {
-	private static ArrayList<FEListenerList>	allLists	= new ArrayList<FEListenerList>();
-	private static int							maxSize		= 0;
+	private static ArrayList<FEListenerList> allLists = new ArrayList<FEListenerList>();
+	private static int maxSize = 0;
 
-	private FEListenerList						parent;
-	private FEListenerListInst[]				lists		= new FEListenerListInst[0];
+	private FEListenerList parent;
+	private FEListenerListInst[] lists = new FEListenerListInst[0];
 
 	public FEListenerList()
 	{
@@ -28,36 +28,53 @@ public class FEListenerList
 	public static void resize(int max)
 	{
 		if (max <= maxSize)
+		{
 			return;
+		}
 		for (FEListenerList list : allLists)
+		{
 			list.resizeLists(max);
+		}
 		maxSize = max;
 	}
 
 	public void resizeLists(int max)
 	{
 		if (parent != null)
+		{
 			parent.resizeLists(max);
+		}
 
 		if (lists.length >= max)
+		{
 			return;
+		}
 
 		FEListenerListInst[] newList = new FEListenerListInst[max];
 		int x = 0;
 		for (; x < lists.length; x++)
+		{
 			newList[x] = lists[x];
+		}
 		for (; x < max; x++)
+		{
 			if (parent != null)
+			{
 				newList[x] = new FEListenerListInst(parent.getInstance(x));
-			else
+			} else
+			{
 				newList[x] = new FEListenerListInst();
+			}
+		}
 		lists = newList;
 	}
 
 	public static void clearBusID(int id)
 	{
 		for (FEListenerList list : allLists)
+		{
 			list.lists[id].dispose();
+		}
 	}
 
 	protected FEListenerListInst getInstance(int id)
@@ -83,15 +100,17 @@ public class FEListenerList
 	public static void unregiterAll(int id, IQueryListener listener)
 	{
 		for (FEListenerList list : allLists)
+		{
 			list.unregister(id, listener);
+		}
 	}
 
 	private class FEListenerListInst
 	{
-		private boolean									rebuild	= true;
-		private IQueryListener[]						listeners;
-		private ArrayList<ArrayList<IQueryListener>>	priorities;
-		private FEListenerListInst						parent;
+		private boolean rebuild = true;
+		private IQueryListener[] listeners;
+		private ArrayList<ArrayList<IQueryListener>> priorities;
+		private FEListenerListInst parent;
 
 		private FEListenerListInst()
 		{
@@ -99,13 +118,17 @@ public class FEListenerList
 			priorities = new ArrayList<ArrayList<IQueryListener>>(count);
 
 			for (int x = 0; x < count; x++)
+			{
 				priorities.add(new ArrayList<IQueryListener>());
+			}
 		}
 
 		public void dispose()
 		{
 			for (ArrayList<IQueryListener> listeners : priorities)
+			{
 				listeners.clear();
+			}
 			priorities.clear();
 			parent = null;
 			listeners = null;
@@ -118,19 +141,24 @@ public class FEListenerList
 		}
 
 		/**
-		 * Returns a ArrayList containing all listeners for this event,
-		 * and all parent events for the specified priority.
+		 * Returns a ArrayList containing all listeners for this event, and all
+		 * parent events for the specified priority.
 		 * 
-		 * The list is returned with the listeners for the children events first.
+		 * The list is returned with the listeners for the children events
+		 * first.
 		 * 
-		 * @param priority The Priority to get
+		 * @param priority
+		 *            The Priority to get
 		 * @return ArrayList containing listeners
 		 */
 		public ArrayList<IQueryListener> getListeners(EventPriority priority)
 		{
-			ArrayList<IQueryListener> ret = new ArrayList<IQueryListener>(priorities.get(priority.ordinal()));
+			ArrayList<IQueryListener> ret = new ArrayList<IQueryListener>(
+					priorities.get(priority.ordinal()));
 			if (parent != null)
+			{
 				ret.addAll(parent.getListeners(priority));
+			}
 			return ret;
 		}
 
@@ -140,14 +168,17 @@ public class FEListenerList
 		 * 
 		 * List is returned in proper priority order.
 		 * 
-		 * Automatically rebuilds the internal Array cache if its information is out of date.
+		 * Automatically rebuilds the internal Array cache if its information is
+		 * out of date.
 		 * 
 		 * @return Array containing listeners
 		 */
 		public IQueryListener[] getListeners()
 		{
 			if (shouldRebuild())
+			{
 				buildCache();
+			}
 			return listeners;
 		}
 
@@ -157,13 +188,16 @@ public class FEListenerList
 		}
 
 		/**
-		 * Rebuild the local Array of listeners, returns early if there is no work to do.
+		 * Rebuild the local Array of listeners, returns early if there is no
+		 * work to do.
 		 */
 		private void buildCache()
 		{
 			ArrayList<IQueryListener> ret = new ArrayList<IQueryListener>();
 			for (EventPriority value : EventPriority.values())
+			{
 				ret.addAll(getListeners(value));
+			}
 			listeners = ret.toArray(new IQueryListener[0]);
 			rebuild = false;
 		}
@@ -177,7 +211,9 @@ public class FEListenerList
 		public void unregister(IQueryListener listener)
 		{
 			for (ArrayList<IQueryListener> list : priorities)
+			{
 				list.remove(listener);
+			}
 		}
 	}
 }

@@ -14,11 +14,13 @@ public class PacketHandler implements IPacketHandler
 {
 
 	@Override
-	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player playerFake)
+	public void onPacketData(INetworkManager manager,
+			Packet250CustomPayload packet, Player playerFake)
 	{
 		try
 		{
-			ByteArrayInputStream streambyte = new ByteArrayInputStream(packet.data);
+			ByteArrayInputStream streambyte = new ByteArrayInputStream(
+					packet.data);
 			DataInputStream stream = new DataInputStream(streambyte);
 
 			EntityPlayer player = (EntityPlayer) playerFake;
@@ -27,14 +29,14 @@ public class PacketHandler implements IPacketHandler
 			int ID = stream.read();
 
 			switch (ID)
-				{
-				// cast to the correct instance of ForgeEssentialsPacketbase and use the read methods.
-					case 0:
-						PacketSelectionUpdate.readServer(stream, world, player);
-						break;
-				}
-		}
-		catch (Exception e)
+			{
+			// cast to the correct instance of ForgeEssentialsPacketbase and use
+			// the read methods.
+			case 0:
+				PacketSelectionUpdate.readServer(stream, world, player);
+				break;
+			}
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}

@@ -1,24 +1,18 @@
 package com.ForgeEssentials.playerLogger.types;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
-
 import net.minecraft.entity.player.EntityPlayer;
 
-public class blockChangeLog extends logEntry 
+public class blockChangeLog extends logEntry
 {
 	public static ArrayList<blockChangeLog> buffer;
-	
+
 	public blockChangeLogCategory cat;
 	public String username;
 	public int dim;
@@ -26,47 +20,57 @@ public class blockChangeLog extends logEntry
 	public int y;
 	public int z;
 	public String block;
-	
-	public blockChangeLog(blockChangeLogCategory cat, EntityPlayer player, String block, int X, int Y, int Z)
+
+	public blockChangeLog(blockChangeLogCategory cat, EntityPlayer player,
+			String block, int X, int Y, int Z)
 	{
 		super();
 		this.cat = cat;
-		this.username = player.username;
-		this.dim = player.dimension;
+		username = player.username;
+		dim = player.dimension;
 		this.block = block;
-		this.x = X;
-		this.y = Y;
-		this.z = Z;
+		x = X;
+		y = Y;
+		z = Z;
 		buffer.add(this);
 	}
-	
-	public blockChangeLog() {buffer = new ArrayList();}
-	
+
+	public blockChangeLog()
+	{
+		buffer = new ArrayList();
+	}
+
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "blockChange";
 	}
 
 	@Override
-	public String getTableCreateSQL() 
+	public String getTableCreateSQL()
 	{
-		return "CREATE TABLE IF NOT EXISTS " + getName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), block CHAR(16), Dim INT, X INT, Y INT, Z INT, time DATETIME)";
-	}
-	
-	@Override
-	public String getprepareStatementSQL() 
-	{
-		return "INSERT INTO " + getName() + " (player, category, block, Dim, X, Y, Z, time) VALUES (?,?,?,?,?,?,?,?);";
+		return "CREATE TABLE IF NOT EXISTS "
+				+ getName()
+				+ "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), block CHAR(16), Dim INT, X INT, Y INT, Z INT, time DATETIME)";
 	}
 
 	@Override
-	public void makeEntries(Connection connection) throws SQLException 
+	public String getprepareStatementSQL()
 	{
-		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
-		Iterator<blockChangeLog> i = ((List<blockChangeLog>)buffer.clone()).iterator();
+		return "INSERT INTO "
+				+ getName()
+				+ " (player, category, block, Dim, X, Y, Z, time) VALUES (?,?,?,?,?,?,?,?);";
+	}
+
+	@Override
+	public void makeEntries(Connection connection) throws SQLException
+	{
+		PreparedStatement ps = connection
+				.prepareStatement(getprepareStatementSQL());
+		Iterator<blockChangeLog> i = ((List<blockChangeLog>) buffer.clone())
+				.iterator();
 		List<blockChangeLog> toremove = new ArrayList();
-		while(i.hasNext())
+		while (i.hasNext())
 		{
 			blockChangeLog log = i.next();
 			ps.setString(1, log.username);
@@ -84,7 +88,7 @@ public class blockChangeLog extends logEntry
 		ps.close();
 		buffer.removeAll(toremove);
 	}
-	
+
 	public enum blockChangeLogCategory
 	{
 		broke, placed

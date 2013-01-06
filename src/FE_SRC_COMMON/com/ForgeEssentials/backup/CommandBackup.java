@@ -16,9 +16,9 @@ import com.ForgeEssentials.permission.query.PermQueryPlayer;
 public class CommandBackup extends ForgeEssentialsCommandBase
 {
 
-	static String			source;
-	static String			output;
-	static List<String>		fileList;
+	static String source;
+	static String output;
+	static List<String> fileList;
 
 	@Override
 	public String getCommandName()
@@ -38,19 +38,18 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 		}
 		try
 		{
-			for (int var4 = 0; var4 < server.worldServers.length; ++var4)
+			for (WorldServer worldServer : server.worldServers)
 			{
-				if (server.worldServers[var4] != null)
+				if (worldServer != null)
 				{
-					WorldServer var5 = server.worldServers[var4];
+					WorldServer var5 = worldServer;
 					boolean var6 = var5.canNotSave;
 					var5.canNotSave = false;
 					var5.saveAllChunks(true, (IProgressUpdate) null);
 					var5.canNotSave = var6;
 				}
 			}
-		}
-		catch (MinecraftException var7)
+		} catch (MinecraftException var7)
 		{
 			sender.sendChatToPlayer("Could not save world.");
 		}
@@ -72,19 +71,18 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 		}
 		try
 		{
-			for (int var4 = 0; var4 < server.worldServers.length; ++var4)
+			for (WorldServer worldServer : server.worldServers)
 			{
-				if (server.worldServers[var4] != null)
+				if (worldServer != null)
 				{
-					WorldServer var5 = server.worldServers[var4];
+					WorldServer var5 = worldServer;
 					boolean var6 = var5.canNotSave;
 					var5.canNotSave = false;
 					var5.saveAllChunks(true, (IProgressUpdate) null);
 					var5.canNotSave = var6;
 				}
 			}
-		}
-		catch (MinecraftException var7)
+		} catch (MinecraftException var7)
 		{
 			sender.sendChatToPlayer("Could not save world.");
 		}
@@ -98,11 +96,12 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	{
 		return true;
 	}
-	
+
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer sender)
 	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
+				getCommandPerm()));
 	}
 
 	@Override

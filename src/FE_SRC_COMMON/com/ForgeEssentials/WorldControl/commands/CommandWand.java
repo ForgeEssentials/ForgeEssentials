@@ -29,16 +29,23 @@ public class CommandWand extends WorldControlCommandBase
 		boolean allowed = checkCommandPerm(sender);
 
 		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
-		int currentID = sender.getCurrentEquippedItem() == null ? 0 : sender.getCurrentEquippedItem().itemID;
+		int currentID = sender.getCurrentEquippedItem() == null ? 0 : sender
+				.getCurrentEquippedItem().itemID;
 		int currentDmg = 0;
 
 		if (currentID != 0 && sender.getCurrentEquippedItem().getHasSubtypes())
+		{
 			currentDmg = sender.getCurrentEquippedItem().getItemDamage();
+		}
 
-		String currentName = currentID == 0 ? "your fists" : sender.getCurrentEquippedItem().getDisplayName();
+		String currentName = currentID == 0 ? "your fists" : sender
+				.getCurrentEquippedItem().getDisplayName();
 		String wandName = "";
 		if (info.wandEnabled)
-			wandName = info.wandID == 0 ? "your fists" : sender.getCurrentEquippedItem().getDisplayName();
+		{
+			wandName = info.wandID == 0 ? "your fists" : sender
+					.getCurrentEquippedItem().getDisplayName();
+		}
 
 		if (args.length > 0)
 		{
@@ -49,61 +56,63 @@ public class CommandWand extends WorldControlCommandBase
 					info.wandEnabled = true;
 					info.wandID = currentID;
 					info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
-					OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
+					OutputHandler.chatConfirmation(sender, "Wand bound to "
+							+ currentName);
 					return;
-				}
-				else
+				} else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender,
+							Localization.get(Localization.ERROR_PERMDENIED));
 					return;
 				}
-			}
-			else if (args[0].equalsIgnoreCase("unbind"))
+			} else if (args[0].equalsIgnoreCase("unbind"))
 			{
 				info.wandEnabled = false;
-				sender.sendChatToPlayer(FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
+				sender.sendChatToPlayer(FEChatFormatCodes.PINK
+						+ "Wand unbound from " + wandName);
 				return;
-			}
-			else
+			} else
 			{
 				if (allowed)
 				{
-					int[] parsed = FunctionHelper.parseIdAndMetaFromString(args[0], false);
+					int[] parsed = FunctionHelper.parseIdAndMetaFromString(
+							args[0], false);
 					currentID = parsed[0];
 					currentDmg = parsed[1];
 					info.wandEnabled = true;
 					info.wandID = currentID;
 					info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
-					OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
-				}
-				else
+					OutputHandler.chatConfirmation(sender, "Wand bound to "
+							+ currentName);
+				} else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender,
+							Localization.get(Localization.ERROR_PERMDENIED));
 					return;
 				}
 			}
-		}
-		else
+		} else
 		{
 			if (info.wandEnabled)
 			{
 				info.wandEnabled = false;
-				sender.sendChatToPlayer(FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
+				sender.sendChatToPlayer(FEChatFormatCodes.PINK
+						+ "Wand unbound from " + wandName);
 				return;
-			}
-			else
+			} else
 			{
 				if (allowed)
 				{
 					info.wandEnabled = true;
 					info.wandID = currentID;
 					info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
-					OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
+					OutputHandler.chatConfirmation(sender, "Wand bound to "
+							+ currentName);
 					return;
-				}
-				else
+				} else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender,
+							Localization.get(Localization.ERROR_PERMDENIED));
 					return;
 				}
 			}
@@ -121,14 +130,17 @@ public class CommandWand extends WorldControlCommandBase
 	{
 		return "Toggle the wand";
 	}
-	
+
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 		if (info.wandEnabled)
+		{
 			return true;
-		else
+		} else
+		{
 			return checkCommandPerm(player);
+		}
 	}
 }

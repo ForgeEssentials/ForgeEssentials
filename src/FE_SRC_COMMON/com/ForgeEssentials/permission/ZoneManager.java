@@ -8,7 +8,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent.Load;
@@ -23,21 +22,22 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 public class ZoneManager
 {
 	// GLOBAL and WORLD zones.
-	public static Zone		GLOBAL;
-	public static String	SUPER	= "_SUPER_";
+	public static Zone GLOBAL;
+	public static String SUPER = "_SUPER_";
 
 	public ZoneManager()
 	{
 		GLOBAL = new Zone("_GLOBAL_", Integer.MIN_VALUE);
 		worldZoneMap = new ConcurrentHashMap<String, Zone>();
-		zoneMap = Collections.synchronizedSortedMap(new TreeMap<String, Zone>());
+		zoneMap = Collections
+				.synchronizedSortedMap(new TreeMap<String, Zone>());
 	}
-	
+
 	protected void loadZones()
 	{
 		Object[] objs = ModulePermissions.data.loadAllObjects(Zone.class);
 		Zone temp;
-		for (Object obj: objs)
+		for (Object obj : objs)
 		{
 			temp = (Zone) obj;
 			zoneMap.put(temp.getZoneID(), temp);
@@ -48,7 +48,7 @@ public class ZoneManager
 	// ------------ WorldZone stuff -----------------
 	// ----------------------------------------------
 
-	protected static ConcurrentHashMap<String, Zone>	worldZoneMap;
+	protected static ConcurrentHashMap<String, Zone> worldZoneMap;
 
 	// to load WorldZones
 	@ForgeSubscribe
@@ -58,7 +58,8 @@ public class ZoneManager
 
 		if (!worldZoneMap.containsKey(worldString))
 		{
-			Zone zone = new Zone(worldString, e.world.getWorldInfo().getDimension());
+			Zone zone = new Zone(worldString, e.world.getWorldInfo()
+					.getDimension());
 			worldZoneMap.put(worldString, zone);
 		}
 	}
@@ -83,7 +84,7 @@ public class ZoneManager
 	// ----------------------------------------------
 
 	// normal zone map. WorldZones and Globals are not included.
-	protected static SortedMap<String, Zone>	zoneMap;
+	protected static SortedMap<String, Zone> zoneMap;
 
 	/**
 	 * WorldZones are not included here.
@@ -98,23 +99,32 @@ public class ZoneManager
 	public static boolean doesZoneExist(String zoneID)
 	{
 		if (zoneID.equals(GLOBAL.getZoneID()))
+		{
 			return true;
-		else if (zoneID.equals(SUPER))
+		} else if (zoneID.equals(SUPER))
+		{
 			return true;
-		else
+		} else
+		{
 			return SqlHelper.doesZoneExist(zoneID);
+		}
 	}
 
 	public static Zone getZone(String zoneID)
 	{
 		if (zoneID == null)
+		{
 			return null;
-		else if (zoneID.equals(GLOBAL.getZoneID()))
+		} else if (zoneID.equals(GLOBAL.getZoneID()))
+		{
 			return GLOBAL;
-		else if (zoneID.startsWith("WORLD_"))
+		} else if (zoneID.startsWith("WORLD_"))
+		{
 			return worldZoneMap.get(zoneID);
-		else
+		} else
+		{
 			return zoneMap.get(zoneID);
+		}
 	}
 
 	/**
@@ -123,8 +133,10 @@ public class ZoneManager
 	public static boolean createZone(String zoneID, Selection sel, World world)
 	{
 		if (zoneMap.containsKey(zoneID))
+		{
 			return false;
-		
+		}
+
 		Zone created = new Zone(zoneID, sel, world);
 		zoneMap.put(zoneID, created);
 		SqlHelper.createZone(zoneID);
@@ -142,43 +154,53 @@ public class ZoneManager
 		// check cache..
 		Zone end = getFromCache(new WorldPoint(world, p1.x, p1.y, p1.z));
 		if (end != null)
+		{
 			return end;
-		
+		}
+
 		Zone worldZone = getWorldZone(world);
 		ArrayList<Zone> zones = new ArrayList<Zone>();
 
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
+		{
 			if (zone.contains(p1) && worldZone.isParentOf(zone))
+			{
 				zones.add(zone);
+			}
+		}
 
 		switch (zones.size())
+		{
+		// no children of the world? return the worldZone
+		case 0:
+			end = worldZone;
+			break;
+		// only 1 usable Zone? use it.
+		case 1:
+			end = zones.get(0);
+			break;
+
+		// else.. narrow it down
+		default:
+		{
+			// get the one with the highest priority
+			Zone priority = null;
+
+			for (Zone zone : zones)
 			{
-			// no children of the world? return the worldZone
-				case 0:
-					end = worldZone;
-					break;
-					// only 1 usable Zone? use it.
-				case 1:
-					end = zones.get(0);
-					break;
-
-					// else.. narrow it down
-				default:
-					{
-						// get the one with the highest priority
-						Zone priority = null;
-
-						for (Zone zone : zones)
-							if (priority == null || priority.compareTo(zone) < 0)
-								priority = zone;
-
-						end = priority;
-						break;
-					}
+				if (priority == null || priority.compareTo(zone) < 0)
+				{
+					priority = zone;
+				}
 			}
-		
-		putCache(new WorldPoint(world, p1.x, p1.y, p1.z), end.getZoneID());	
+
+			end = priority;
+			break;
+		}
+		}
+
+		putCache(new WorldPoint(world, p1.x, p1.y, p1.z), end.getZoneID());
 		return end;
 	}
 
@@ -190,6 +212,7 @@ public class ZoneManager
 
 	/**
 	 * used for AllorNothing areas..
+	 * 
 	 * @param area
 	 * @param world
 	 * @return
@@ -199,105 +222,131 @@ public class ZoneManager
 		// check cache..
 		Zone end = getFromCache(new WorldArea(world, area));
 		if (end != null)
+		{
 			return end;
-		
+		}
+
 		Zone worldZone = getWorldZone(world);
 		ArrayList<Zone> zones = new ArrayList<Zone>();
 
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
+		{
 			if (zone.contains(area) && worldZone.isParentOf(zone))
+			{
 				zones.add(zone);
+			}
+		}
 
 		switch (zones.size())
+		{
+		// no children of the world? return the worldZone
+		case 0:
+			end = worldZone;
+			break;
+		// only 1 usable Zone? use it.
+		case 1:
+			end = zones.get(0);
+			break;
+
+		// else.. narrow it down
+		default:
+		{
+			// get the one with the highest priority
+			Zone priority = null;
+
+			for (Zone zone : zones)
 			{
-			// no children of the world? return the worldZone
-				case 0:
-					end = worldZone;
-					break;
-					// only 1 usable Zone? use it.
-				case 1:
-					end = zones.get(0);
-					break;
-
-					// else.. narrow it down
-				default:
-					{
-						// get the one with the highest priority
-						Zone priority = null;
-
-						for (Zone zone : zones)
-							if (priority == null || priority.compareTo(zone) < 0)
-								priority = zone;
-
-						end = priority;
-						break;
-					}
+				if (priority == null || priority.compareTo(zone) < 0)
+				{
+					priority = zone;
+				}
 			}
-		
+
+			end = priority;
+			break;
+		}
+		}
+
 		return end;
 	}
-	
+
 	// ----------------------------------------------
 	// ------------ Cache ---------------------------
 	// ----------------------------------------------
-	
+
 	private static ConcurrentHashMap<WorldPoint, String> pointCache = new ConcurrentHashMap<WorldPoint, String>();
 	private static ConcurrentHashMap<WorldArea, String> areaCache = new ConcurrentHashMap<WorldArea, String>();
-	
+
 	private static void putCache(WorldPoint p, String zoneID)
 	{
 		pointCache.put(p, zoneID);
 	}
-	
+
 	private static void putCache(WorldArea a, String zoneID)
 	{
 		areaCache.put(a, zoneID);
 	}
-	
+
 	private static Zone getFromCache(WorldPoint p)
 	{
 		String zoneID = pointCache.get(p);
 		if (zoneID == null)
+		{
 			return null;
-		else return getZone(zoneID);
+		} else
+		{
+			return getZone(zoneID);
+		}
 	}
-	
+
 	private static Zone getFromCache(WorldArea a)
 	{
 		String zoneID = areaCache.get(a);
 		if (zoneID == null)
+		{
 			return null;
-		else return getZone(zoneID);
+		} else
+		{
+			return getZone(zoneID);
+		}
 	}
-	
+
 	private static void onZoneCreated(Zone created)
 	{
 		for (WorldPoint p : pointCache.keySet())
 		{
 			if (created.contains(p))
+			{
 				pointCache.remove(p);
+			}
 		}
-		
+
 		for (WorldArea a : areaCache.keySet())
 		{
 			if (created.contains(a))
+			{
 				areaCache.remove(a);
+			}
 		}
 	}
-	
+
 	private static void onZoneDeleted(Zone deleted)
 	{
-		for (Entry<WorldPoint, String> entry: pointCache.entrySet())
+		for (Entry<WorldPoint, String> entry : pointCache.entrySet())
 		{
 			if (deleted.getZoneID().equals(entry.getValue()))
+			{
 				pointCache.remove(entry.getKey());
+			}
 		}
-		
-		for (Entry<WorldArea, String> entry: areaCache.entrySet())
+
+		for (Entry<WorldArea, String> entry : areaCache.entrySet())
 		{
 			if (deleted.getZoneID().equals(entry.getValue()))
+			{
 				areaCache.remove(entry.getKey());
+			}
 		}
 	}
 }

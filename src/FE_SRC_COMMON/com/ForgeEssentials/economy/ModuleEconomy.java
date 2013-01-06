@@ -33,7 +33,9 @@ public class ModuleEconomy implements IFEModule, IPlayerTracker
 
 	/**
 	 * Returns the player's economy instance
-	 * @param player target player
+	 * 
+	 * @param player
+	 *            target player
 	 * @return the player's economy instance
 	 */
 	public static ModuleEconomy getPlayerInfo(EntityPlayer player)
@@ -43,79 +45,93 @@ public class ModuleEconomy implements IFEModule, IPlayerTracker
 		if (info == null)
 		{
 			info = new ModuleEconomy(player);
-			
+
 			playerEconomyMap.put(player.username, info);
 		}
 
 		return info;
 	}
-	
+
 	/**
 	 * Returns the player's economy instance
-	 * @param username target's username
+	 * 
+	 * @param username
+	 *            target's username
 	 * @return the player's economy instance
 	 */
 	public static ModuleEconomy getPlayerInfo(String username)
 	{
 		ModuleEconomy info = playerEconomyMap.get(username);
-		
+
 		return info;
 	}
 
 	public int wallet;
 
-	private ModuleEconomy(EntityPlayer player) {}
-	
-	public ModuleEconomy() {}
-	
+	private ModuleEconomy(EntityPlayer player)
+	{
+	}
+
+	public ModuleEconomy()
+	{
+	}
+
 	public static void saveData(EntityPlayer player)
 	{
 		NBTTagCompound economyNBT = player.getEntityData();
-		economyNBT.setInteger("Economy-" + player.username, ModuleEconomy.getPlayerInfo(player).wallet);
-		
+		economyNBT.setInteger("Economy-" + player.username,
+				ModuleEconomy.getPlayerInfo(player).wallet);
+
 	}
-	
+
 	public static void loadData(EntityPlayer player)
 	{
 		NBTTagCompound economyNBT = player.getEntityData();
-		ModuleEconomy.getPlayerInfo(player).wallet = economyNBT.getInteger("Economy-" + player.username);
+		ModuleEconomy.getPlayerInfo(player).wallet = economyNBT
+				.getInteger("Economy-" + player.username);
 		Wallet.doesWalletExist(player);
 	}
 
 	@Override
-	public void preLoad(FMLPreInitializationEvent e) 
+	public void preLoad(FMLPreInitializationEvent e)
 	{
-		MinecraftForge.EVENT_BUS.register(this);		
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
-	public void load(FMLInitializationEvent e) 
+	public void load(FMLInitializationEvent e)
 	{
 		GameRegistry.registerPlayerTracker(this);
 	}
 
 	@Override
-	public void postLoad(FMLPostInitializationEvent e) {}
+	public void postLoad(FMLPostInitializationEvent e)
+	{
+	}
 
 	@Override
-	public void serverStarting(FMLServerStartingEvent e) 
+	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandAddToWallet());
 		e.registerServerCommand(new CommandRemoveWallet());
 		e.registerServerCommand(new CommandGetWallet());
-		e.registerServerCommand(new CommandSetWallet());		
+		e.registerServerCommand(new CommandSetWallet());
 	}
 
 	@Override
-	public void serverStarted(FMLServerStartedEvent e) {}
+	public void serverStarted(FMLServerStartedEvent e)
+	{
+	}
 
 	@Override
-	public void serverStopping(FMLServerStoppingEvent e) {}
-	
+	public void serverStopping(FMLServerStoppingEvent e)
+	{
+	}
+
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		
+
 	}
 
 	@Override

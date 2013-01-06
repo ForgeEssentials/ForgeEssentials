@@ -38,48 +38,56 @@ public class CommandButcherTickTask implements ITickTask
 	int var4, var5, var6, var7;
 	int var9temp, var10temp;
 	World world;
-	
-	public CommandButcherTickTask(EntityPlayer sender, String mobType, AxisAlignedBB aabb, int radius)
+
+	public CommandButcherTickTask(EntityPlayer sender, String mobType,
+			AxisAlignedBB aabb, int radius)
 	{
-		this.player = sender;
+		player = sender;
 		this.sender = sender;
 		this.mobType = mobType;
 		this.radius = radius;
-		if(radius == -1)
+		if (radius == -1)
 		{
-			
-		}
-		else
+
+		} else
 		{
 			this.aabb = aabb;
-			var4 = MathHelper.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
-	        var5 = MathHelper.floor_double((aabb.maxX + MAX_ENTITY_RADIUS) / 16.0D);
-	        var6 = MathHelper.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
-	        var7 = MathHelper.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
+			var4 = MathHelper
+					.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
+			var5 = MathHelper
+					.floor_double((aabb.maxX + MAX_ENTITY_RADIUS) / 16.0D);
+			var6 = MathHelper
+					.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
+			var7 = MathHelper
+					.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
 		}
 		world = sender.worldObj;
 		counter = 0;
 		playerCommand = true;
 		tempCount = 0;
-		MAX_ENTITY_RADIUS = sender.worldObj.MAX_ENTITY_RADIUS;
+		MAX_ENTITY_RADIUS = World.MAX_ENTITY_RADIUS;
 	}
-	
-	public CommandButcherTickTask(ICommandSender sender, String mobType, AxisAlignedBB aabb, int radius, int worldID)
+
+	public CommandButcherTickTask(ICommandSender sender, String mobType,
+			AxisAlignedBB aabb, int radius, int worldID)
 	{
 		this.sender = sender;
 		this.mobType = mobType;
 		this.radius = radius;
-		if(radius == -1)
+		if (radius == -1)
 		{
-			
-		}
-		else
+
+		} else
 		{
 			this.aabb = aabb;
-			var4 = MathHelper.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
-	        var5 = MathHelper.floor_double((aabb.maxX + MAX_ENTITY_RADIUS) / 16.0D);
-	        var6 = MathHelper.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
-	        var7 = MathHelper.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
+			var4 = MathHelper
+					.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
+			var5 = MathHelper
+					.floor_double((aabb.maxX + MAX_ENTITY_RADIUS) / 16.0D);
+			var6 = MathHelper
+					.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
+			var7 = MathHelper
+					.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
 		}
 		world = FunctionHelper.getDimension(worldID);
 		counter = 0;
@@ -90,149 +98,179 @@ public class CommandButcherTickTask implements ITickTask
 	@Override
 	public void tick()
 	{
-		if(radius == -1)
+		if (radius == -1)
 		{
-			for(Object entity : world.loadedEntityList)
+			for (Object entity : world.loadedEntityList)
 			{
-				if(entity instanceof EntityLiving && !(entity instanceof EntityPlayer))
+				if (entity instanceof EntityLiving
+						&& !(entity instanceof EntityPlayer))
 				{
-            		if(mobType.equalsIgnoreCase("hostile") || mobType.equalsIgnoreCase("all"))
-                	{
-                		if(entity instanceof EntityMob || entity instanceof EntitySlime ||
-        					entity instanceof EntityGhast)
-            			{
-            				((EntityLiving)entity).setDead();
-            				counter++;
-            				tempCount++;
-            			}
-        			}
-            		if(mobType.equalsIgnoreCase("passive") || mobType.equalsIgnoreCase("all"))
-                	{
-                		if(entity instanceof EntityAnimal || entity instanceof EntityAmbientCreature ||
-                				entity instanceof EntitySquid)
-            			{
-                			if(entity instanceof EntityTameable && ((EntityTameable)entity).isTamed())
-                				continue;
-            				((EntityLiving)entity).setDead();
-            				counter++;
-            				tempCount++;
-            			}
-        			}
-            		if(mobType.equalsIgnoreCase("villager") || mobType.equalsIgnoreCase("all"))
-                	{
-                		if(entity instanceof EntityVillager)
-            			{
-            				((EntityLiving)entity).setDead();
-            				counter++;
-            				tempCount++;
-            			}
-        			}
-            		if(mobType.equalsIgnoreCase("golem") || mobType.equalsIgnoreCase("all"))
-                	{
-                		if(entity instanceof EntityGolem)
-            			{
-            				((EntityLiving)entity).setDead();
-            				counter++;
-            				tempCount++;
-            			}
-        			}
-            		if(mobType.equalsIgnoreCase("tamed") || mobType.equalsIgnoreCase("all"))
-                	{
-                		if(entity instanceof EntityTameable && ((EntityTameable)entity).isTamed())
-            			{
-            				((EntityLiving)entity).setDead();
-            				counter++;
-            				tempCount++;
-            			}
-        			}
-            		if(tempCount == 29)
-            		{
-            			tempCount = 0;
-            			return;
-            		}
+					if (mobType.equalsIgnoreCase("hostile")
+							|| mobType.equalsIgnoreCase("all"))
+					{
+						if (entity instanceof EntityMob
+								|| entity instanceof EntitySlime
+								|| entity instanceof EntityGhast)
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+					}
+					if (mobType.equalsIgnoreCase("passive")
+							|| mobType.equalsIgnoreCase("all"))
+					{
+						if (entity instanceof EntityAnimal
+								|| entity instanceof EntityAmbientCreature
+								|| entity instanceof EntitySquid)
+						{
+							if (entity instanceof EntityTameable
+									&& ((EntityTameable) entity).isTamed())
+							{
+								continue;
+							}
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+					}
+					if (mobType.equalsIgnoreCase("villager")
+							|| mobType.equalsIgnoreCase("all"))
+					{
+						if (entity instanceof EntityVillager)
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+					}
+					if (mobType.equalsIgnoreCase("golem")
+							|| mobType.equalsIgnoreCase("all"))
+					{
+						if (entity instanceof EntityGolem)
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+					}
+					if (mobType.equalsIgnoreCase("tamed")
+							|| mobType.equalsIgnoreCase("all"))
+					{
+						if (entity instanceof EntityTameable
+								&& ((EntityTameable) entity).isTamed())
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+					}
+					if (tempCount == 29)
+					{
+						tempCount = 0;
+						return;
+					}
 				}
 			}
-        	isComplete = true;
+			isComplete = true;
 		}
-        for(int var9 = var9temp; var9 <= var5; ++var9)
-        {
-            for(int var10 = var10temp; var10 <= var7; ++var10)
-            {
-                if(world.getChunkProvider().chunkExists(var9, var10))
-                {
-                	List<EntityLiving> list = new LinkedList<EntityLiving>();
-        			world.getChunkFromChunkCoords(var9, var10).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, (IEntitySelector)null);
-                	for(EntityLiving entity : list)
-            		{
-                		if(mobType.equalsIgnoreCase("hostile") || mobType.equalsIgnoreCase("all"))
-                    	{
-                    		if(entity instanceof EntityMob || entity instanceof EntitySlime ||
-            					entity instanceof EntityGhast)
-	            			{
-	            				entity.setDead();
-	            				counter++;
-	            				tempCount++;
-	            			}
-            			}
-                		if(mobType.equalsIgnoreCase("passive") || mobType.equalsIgnoreCase("all"))
-                    	{
-                    		if(entity instanceof EntityAnimal || entity instanceof EntityAmbientCreature)
-	            			{
-                    			if(entity instanceof EntityTameable && ((EntityTameable)entity).isTamed())
-                    				continue;
-	            				entity.setDead();
-	            				counter++;
-	            				tempCount++;
-	            			}
-            			}
-                		if(mobType.equalsIgnoreCase("villager") || mobType.equalsIgnoreCase("all"))
-                    	{
-                    		if(entity instanceof EntityVillager)
-	            			{
-	            				entity.setDead();
-	            				counter++;
-	            				tempCount++;
-	            			}
-            			}
-                		if(mobType.equalsIgnoreCase("golem") || mobType.equalsIgnoreCase("all"))
-                    	{
-                    		if(entity instanceof EntityGolem)
-	            			{
-	            				entity.setDead();
-	            				counter++;
-	            				tempCount++;
-	            			}
-            			}
-                		if(mobType.equalsIgnoreCase("tamed") || mobType.equalsIgnoreCase("all"))
-                    	{
-                    		if(entity instanceof EntityTameable && ((EntityTameable)entity).isTamed())
-	            			{
-	            				entity.setDead();
-	            				counter++;
-	            				tempCount++;
-	            			}
-            			}
-                		if(tempCount == 29)
-                		{
-                			tempCount = 0;
-                			var9temp = var9;
-                			var10temp = var10;
-                			return;
-                		}
-            		}
-                }
-            }
-        }
-    	isComplete = true;
+		for (int var9 = var9temp; var9 <= var5; ++var9)
+		{
+			for (int var10 = var10temp; var10 <= var7; ++var10)
+			{
+				if (world.getChunkProvider().chunkExists(var9, var10))
+				{
+					List<EntityLiving> list = new LinkedList<EntityLiving>();
+					world.getChunkFromChunkCoords(var9, var10)
+							.getEntitiesOfTypeWithinAAAB(EntityLiving.class,
+									aabb, list, (IEntitySelector) null);
+					for (EntityLiving entity : list)
+					{
+						if (mobType.equalsIgnoreCase("hostile")
+								|| mobType.equalsIgnoreCase("all"))
+						{
+							if (entity instanceof EntityMob
+									|| entity instanceof EntitySlime
+									|| entity instanceof EntityGhast)
+							{
+								entity.setDead();
+								counter++;
+								tempCount++;
+							}
+						}
+						if (mobType.equalsIgnoreCase("passive")
+								|| mobType.equalsIgnoreCase("all"))
+						{
+							if (entity instanceof EntityAnimal
+									|| entity instanceof EntityAmbientCreature)
+							{
+								if (entity instanceof EntityTameable
+										&& ((EntityTameable) entity).isTamed())
+								{
+									continue;
+								}
+								entity.setDead();
+								counter++;
+								tempCount++;
+							}
+						}
+						if (mobType.equalsIgnoreCase("villager")
+								|| mobType.equalsIgnoreCase("all"))
+						{
+							if (entity instanceof EntityVillager)
+							{
+								entity.setDead();
+								counter++;
+								tempCount++;
+							}
+						}
+						if (mobType.equalsIgnoreCase("golem")
+								|| mobType.equalsIgnoreCase("all"))
+						{
+							if (entity instanceof EntityGolem)
+							{
+								entity.setDead();
+								counter++;
+								tempCount++;
+							}
+						}
+						if (mobType.equalsIgnoreCase("tamed")
+								|| mobType.equalsIgnoreCase("all"))
+						{
+							if (entity instanceof EntityTameable
+									&& ((EntityTameable) entity).isTamed())
+							{
+								entity.setDead();
+								counter++;
+								tempCount++;
+							}
+						}
+						if (tempCount == 29)
+						{
+							tempCount = 0;
+							var9temp = var9;
+							var10temp = var10;
+							return;
+						}
+					}
+				}
+			}
+		}
+		isComplete = true;
 	}
 
 	@Override
 	public void onComplete()
 	{
-		if(playerCommand)
-			OutputHandler.chatConfirmation(player, Localization.format(Localization.BUTCHERED, counter));
-		else
-			sender.sendChatToPlayer(Localization.format(Localization.BUTCHERED, counter));
+		if (playerCommand)
+		{
+			OutputHandler.chatConfirmation(player,
+					Localization.format(Localization.BUTCHERED, counter));
+		} else
+		{
+			sender.sendChatToPlayer(Localization.format(Localization.BUTCHERED,
+					counter));
+		}
 	}
 
 	@Override

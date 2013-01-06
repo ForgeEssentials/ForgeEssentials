@@ -13,14 +13,15 @@ import cpw.mods.fml.common.ModMetadata;
 public class FEModContainer extends DummyModContainer
 {
 
-	public boolean	mod;
+	public boolean mod;
 
 	public FEModContainer()
 	{
 		super(new ModMetadata());
 		/* ModMetadata is the same as mcmod.info */
 		ModMetadata myMeta = super.getMetadata();
-		myMeta.authorList = Arrays.asList(new String[] { "See the ForgeEssentials author list." });
+		myMeta.authorList = Arrays
+				.asList(new String[] { "See the ForgeEssentials author list." });
 		myMeta.description = "The preloader for Forge Essentials.";
 		myMeta.modId = "FEPreLoader";
 		myMeta.version = "0.1.0";
@@ -28,6 +29,7 @@ public class FEModContainer extends DummyModContainer
 		myMeta.url = "";
 	}
 
+	@Override
 	public boolean registerBus(EventBus bus, LoadController controller)
 	{
 		bus.register(this);

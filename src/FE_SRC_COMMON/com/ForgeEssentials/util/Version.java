@@ -8,13 +8,13 @@ import cpw.mods.fml.common.Loader;
 
 public class Version
 {
-	private static final String	latest		= "https://raw.github.com/ForgeEssentials/ForgeEssentialsMain/master/VERSION.TXT";
+	private static final String latest = "https://raw.github.com/ForgeEssentials/ForgeEssentialsMain/master/VERSION.TXT";
 	// Only change me when updating versions
-	public static int			major		= 0;
-	public static int			minor		= 1;
-	public static int			revision	= 0;
+	public static int major = 0;
+	public static int minor = 1;
+	public static int revision = 0;
 	// Should always be 0
-	public static int			jenkins		= 0;
+	public static int jenkins = 0;
 
 	public static String getVersion()
 	{
@@ -36,19 +36,23 @@ public class Version
 			String line = null;
 
 			while ((line = reader.readLine()) != null)
+			{
 				if (line.startsWith(Loader.instance().getMCVersionString()))
 				{
 					if (line.endsWith(getVersion()))
-						OutputHandler.SOP("You are running the latest version of ForgeEssentials.");
+					{
+						OutputHandler
+								.SOP("You are running the latest version of ForgeEssentials.");
+					}
 					reader.close();
 					read.close();
 					return;
 				}
+			}
 			OutputHandler.SOP("Please update ForgeEssentials.");
 			reader.close();
 			read.close();
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace(System.err);
 			OutputHandler.SOP("Unable to connect to version checker");

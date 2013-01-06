@@ -6,6 +6,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.core.commands.CommandFECredits;
+import com.ForgeEssentials.core.commands.CommandFEDebug;
 import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
@@ -59,36 +60,38 @@ public class ForgeEssentials
 {
 
 	@Instance(value = "ForgeEssentials")
-	public static ForgeEssentials		instance;
+	public static ForgeEssentials instance;
 
-	public static CoreConfig			config;
-	public ModuleLauncher				mdlaunch;
-	public Localization					localization;
-	public static boolean				verCheck	= true;
-	public static boolean				preload;
+	public static CoreConfig config;
+	public ModuleLauncher mdlaunch;
+	public Localization localization;
+	public static boolean verCheck = true;
+	public static boolean preload;
 
-	public static String				modlistLocation;
-	public static String				fedirloc	= "ForgeEssentials/";
+	public static String modlistLocation;
+	public static String fedirloc = "ForgeEssentials/";
 
-	public static final File			FEDIR		= new File(FunctionHelper.getBaseDir(), fedirloc);
+	public static final File FEDIR = new File(FunctionHelper.getBaseDir(),
+			fedirloc);
 
-	public static DataStorageManager	dataManager;
-	public BannedItems					bannedItems;
-	private ItemList 					itemList;
+	public static DataStorageManager dataManager;
+	public BannedItems bannedItems;
+	private ItemList itemList;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		OutputHandler.SOP("Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
+		OutputHandler
+				.SOP("Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
 		config = new CoreConfig();
 
 		if (verCheck)
 		{
 			try
 			{
-				Version.jenkins = Integer.parseInt(e.getModMetadata().version.split(":")[1]);
-			}
-			catch (Exception ex)
+				Version.jenkins = Integer.parseInt(e.getModMetadata().version
+						.split(":")[1]);
+			} catch (Exception ex)
 			{
 			}
 			Version.checkVersion();
@@ -100,7 +103,8 @@ public class ForgeEssentials
 			dataManager = new DataStorageManager(config.config);
 
 			// register DataDrivers
-			DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
+			DataStorageManager.registerDriver("ForgeConfig",
+					ForgeConfigDataDriver.class);
 			DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
 			DataStorageManager.registerDriver("MySQL", MySQLDataDriver.class);
 			DataStorageManager.registerDriver("SQLite", SQLiteDataDriver.class);
@@ -111,7 +115,7 @@ public class ForgeEssentials
 			DataStorageManager.registerSaveableClass(WorldPoint.class);
 			DataStorageManager.registerSaveableClass(WarpPoint.class);
 		}
-		
+
 		// setup modules AFTER data stuff...
 		bannedItems = new BannedItems();
 		mdlaunch = new ModuleLauncher();
@@ -133,7 +137,7 @@ public class ForgeEssentials
 	{
 		mdlaunch.postLoad(e);
 		bannedItems.postLoad(e);
-		
+
 		itemList = new ItemList();
 	}
 
@@ -144,16 +148,21 @@ public class ForgeEssentials
 
 		// Data API stuff
 		if (FMLCommonHandler.instance().getSide().isClient())
-			dataManager.clearDrivers(); // clear before fuilling up.. if its the client...
+		{
+			dataManager.clearDrivers(); // clear before fuilling up.. if its the
+		}
+		// client...
 		dataManager.setupManager(e);
 
 		// Central TP system
-		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
+		TickRegistry.registerScheduledTickHandler(new TeleportCenter(),
+				Side.SERVER);
 
 		e.registerServerCommand(new CommandFEVersion());
 		e.registerServerCommand(new CommandFEUpdate());
 		e.registerServerCommand(new CommandFECredits());
 		e.registerServerCommand(new CommandFEReload());
+		e.registerServerCommand(new CommandFEDebug());
 
 		// do modules last... just in case...
 		mdlaunch.serverStarting(e);
@@ -162,7 +171,7 @@ public class ForgeEssentials
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		
+
 	}
 
 	@ServerStarted
@@ -177,12 +186,14 @@ public class ForgeEssentials
 		mdlaunch.serverStopping(e);
 
 		if (FMLCommonHandler.instance().getSide().isServer())
+		{
 			dataManager.clearDrivers();
+		}
 	}
 
 	@ForgeSubscribe
 	public void chuckSave(WorldEvent.Save event)
 	{
-		
+
 	}
 }

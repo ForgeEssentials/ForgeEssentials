@@ -16,7 +16,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandSetspawn extends ForgeEssentialsCommandBase
 {
-	
+
 	@Override
 	public String getCommandName()
 	{
@@ -36,7 +36,8 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 				x = new Integer(args[0]);
 			} catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
+				sender.sendChatToPlayer(Localization.format(
+						Localization.ERROR_NAN, args[2]));
 				return;
 			}
 			try
@@ -44,7 +45,8 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 				y = new Integer(args[1]);
 			} catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
+				sender.sendChatToPlayer(Localization.format(
+						Localization.ERROR_NAN, args[3]));
 				return;
 			}
 			try
@@ -52,7 +54,8 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 				z = new Integer(args[2]);
 			} catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[4]));
+				sender.sendChatToPlayer(Localization.format(
+						Localization.ERROR_NAN, args[4]));
 				return;
 			}
 			Point point = new Point(x, y, z);
@@ -62,10 +65,10 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 			spawn.setDouble("z", point.z);
 			spawn.setInteger("dim", 0);
 			DataStorage.setData("spawn", spawn);
-			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.getX(), point.getY(), point.getZ());
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider
+					.setSpawnPoint(point.getX(), point.getY(), point.getZ());
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
-		}
-		else
+		} else
 		{
 			WarpPoint point = new WarpPoint(sender);
 			NBTTagCompound spawn = new NBTTagCompound();
@@ -73,11 +76,12 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 			spawn.setDouble("y", point.y);
 			spawn.setDouble("z", point.z);
 			spawn.setInteger("dim", 0);
-			spawn.setFloat("pich", ((WarpPoint) point).pitch);
-			spawn.setFloat("yaw", ((WarpPoint) point).yaw);
+			spawn.setFloat("pich", point.pitch);
+			spawn.setFloat("yaw", point.yaw);
 			DataStorage.setData("spawn", spawn);
 			DataStorage.save();
-			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.getX(), point.getY(), point.getZ());
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider
+					.setSpawnPoint(point.getX(), point.getY(), point.getZ());
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		}
 	}
@@ -95,7 +99,8 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 				x = new Integer(args[0]);
 			} catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
+				sender.sendChatToPlayer(Localization.format(
+						Localization.ERROR_NAN, args[2]));
 				return;
 			}
 			try
@@ -103,7 +108,8 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 				y = new Integer(args[1]);
 			} catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
+				sender.sendChatToPlayer(Localization.format(
+						Localization.ERROR_NAN, args[3]));
 				return;
 			}
 			try
@@ -111,7 +117,8 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 				z = new Integer(args[2]);
 			} catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[4]));
+				sender.sendChatToPlayer(Localization.format(
+						Localization.ERROR_NAN, args[4]));
 				return;
 			}
 			Point point = new Point(x, y, z);
@@ -122,12 +129,13 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 			spawn.setInteger("dim", 0);
 			DataStorage.setData("spawn", spawn);
 			DataStorage.save();
-			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.getX(), point.getY(), point.getZ());
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider
+					.setSpawnPoint(point.getX(), point.getY(), point.getZ());
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
-		} 
-		else
+		} else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
+			sender.sendChatToPlayer(Localization
+					.get(Localization.ERROR_BADSYNTAX));
 		}
 	}
 

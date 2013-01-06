@@ -9,9 +9,9 @@ import com.ForgeEssentials.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.data.TaggedClass;
 
-
 /**
- * Almost exactly like a Point, except with an additional dimension member so we can tell things apart. (So we can get back to The End or Nether using /back)
+ * Almost exactly like a Point, except with an additional dimension member so we
+ * can tell things apart. (So we can get back to The End or Nether using /back)
  * 
  * @author MysteriousAges
  * 
@@ -25,24 +25,24 @@ public class WorldPoint extends Point
 	public WorldPoint(int dimension, double x, double y, double z)
 	{
 		super(x, y, z);
-		this.dim = dimension;
+		dim = dimension;
 	}
-	
+
 	public WorldPoint(World world, double x, double y, double z)
 	{
 		super(x, y, z);
-		this.dim = world.getWorldInfo().getDimension();
+		dim = world.getWorldInfo().getDimension();
 	}
 
-	public WorldPoint(EntityPlayer player) 
+	public WorldPoint(EntityPlayer player)
 	{
 		super(player);
-		this.dim = player.dimension;
+		dim = player.dimension;
 	}
 
 	public int compareTo(WorldPoint p)
 	{
-		int diff = this.dim - p.dim;
+		int diff = dim - p.dim;
 
 		if (diff == 0)
 		{
@@ -51,6 +51,7 @@ public class WorldPoint extends Point
 		return diff;
 	}
 
+	@Override
 	public int compareTo(Point p)
 	{
 		return super.compareTo(p);
@@ -58,14 +59,14 @@ public class WorldPoint extends Point
 
 	public boolean equals(WorldPoint p)
 	{
-		return this.dim == p.dim && super.equals(p);
+		return dim == p.dim && super.equals(p);
 	}
 
 	public WorldPoint copy(WorldPoint p)
 	{
 		return new WorldPoint(p.dim, p.x, p.y, p.z);
 	}
-	
+
 	@Reconstructor()
 	public static WorldPoint reconstruct(TaggedClass tag)
 	{
@@ -75,13 +76,13 @@ public class WorldPoint extends Point
 		int dim = (Integer) tag.getFieldValue("dim");
 		return new WorldPoint(dim, x, y, z);
 	}
-	
+
 	@UniqueLoadingKey()
 	private String getLoadingField()
 	{
-		return "worldpoint_"+dim+"_"+x+"_"+y+"_"+z;
+		return "worldpoint_" + dim + "_" + x + "_" + y + "_" + z;
 	}
-	
+
 	@Override
 	public String toString()
 	{

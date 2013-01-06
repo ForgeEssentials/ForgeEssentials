@@ -63,7 +63,10 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
 	{
-		PermResult result =  PermissionsAPI.checkPermResult(new PermQueryBlanketSpot(new WorldPoint(block.worldObj, block.xCoord, block.yCoord, block.zCoord), getCommandPerm(), true));
+		PermResult result = PermissionsAPI
+				.checkPermResult(new PermQueryBlanketSpot(new WorldPoint(
+						block.worldObj, block.xCoord, block.yCoord,
+						block.zCoord), getCommandPerm(), true));
 		return result.equals(PermResult.DENY) ? false : true;
 	}
 
@@ -71,28 +74,38 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		String first = args[0];
-		String[] newArgs = new String[args.length-1];
+		String[] newArgs = new String[args.length - 1];
 		for (int i = 0; i < newArgs.length; i++)
-			newArgs[i] = args[i+1];
-		
+		{
+			newArgs[i] = args[i + 1];
+		}
+
 		if (first.equalsIgnoreCase("user") || first.equalsIgnoreCase("player"))
+		{
 			CommandUser.processCommandPlayer(sender, newArgs);
-		else if (first.equalsIgnoreCase("export"))
+		} else if (first.equalsIgnoreCase("export"))
+		{
 			CommandExport.processCommandPlayer(sender, newArgs);
+		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		String first = args[0];
-		String[] newArgs = new String[args.length-1];
+		String[] newArgs = new String[args.length - 1];
 		for (int i = 0; i < newArgs.length; i++)
-			newArgs[i] = args[i+1];
-		
+		{
+			newArgs[i] = args[i + 1];
+		}
+
 		if (first.equalsIgnoreCase("user") || first.equalsIgnoreCase("player"))
+		{
 			CommandUser.processCommandConsole(sender, newArgs);
-		else if (first.equalsIgnoreCase("export"))
+		} else if (first.equalsIgnoreCase("export"))
+		{
 			CommandExport.processCommandConsole(sender, newArgs);
+		}
 	}
 
 	@Override
@@ -100,10 +113,12 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.perm";
 	}
-	
+
+	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		PermResult result =  PermissionsAPI.checkPermResult(new PermQueryPlayer(player, getCommandPerm(), true));
+		PermResult result = PermissionsAPI.checkPermResult(new PermQueryPlayer(
+				player, getCommandPerm(), true));
 		return result.equals(PermResult.DENY) ? false : true;
 	}
 

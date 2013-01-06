@@ -49,7 +49,9 @@ public final class OutputHandler
 	public static void devdebug(Object msg)
 	{
 		if (!ObfuscationReflectionHelper.obfuscation)
+		{
 			System.out.println("DEBUG: >>>> " + msg);
+		}
 	}
 
 	/**
@@ -60,26 +62,33 @@ public final class OutputHandler
 	 */
 	public static void SOP(Object msg)
 	{
-		if (FMLCommonHandler.instance().getSide().isServer()){
-			MinecraftServer.getServer().sendChatToPlayer("{Forge Essentials} " + msg);
-		    felog.info("" + msg);
-		}
-		else{
+		if (FMLCommonHandler.instance().getSide().isServer())
+		{
+			MinecraftServer.getServer().sendChatToPlayer(
+					"{Forge Essentials} " + msg);
+			felog.info("" + msg);
+		} else
+		{
 			System.out.println("{Forge Essentials} " + msg);
-		    felog.info("" + msg);
+			felog.info("" + msg);
 		}
 
 	}
-	//At Dries' request
+
+	// At Dries' request
 	public static void debug(Object msg)
 	{
 		if (verbose || !ObfuscationReflectionHelper.obfuscation)
+		{
 			SOP(msg);
+		}
 	}
 
-	public static void logConfigChange(String category, String prop, String oldVal, String newVal)
+	public static void logConfigChange(String category, String prop,
+			String oldVal, String newVal)
 	{
-		SOP("Config Changed: " + prop + " under " + "category" + " changed from " + oldVal + " to " + newVal);
+		SOP("Config Changed: " + prop + " under " + "category"
+				+ " changed from " + oldVal + " to " + newVal);
 	}
 
 }

@@ -27,12 +27,12 @@ public class Vector2 implements Cloneable
 	// Returns the values as an int
 	public int intX()
 	{
-		return (int) Math.floor(this.x);
+		return (int) Math.floor(x);
 	}
 
 	public int intY()
 	{
-		return (int) Math.floor(this.y);
+		return (int) Math.floor(y);
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class Vector2 implements Cloneable
 	@Override
 	public Vector2 clone()
 	{
-		return new Vector2(this.x, this.y);
+		return new Vector2(x, y);
 	}
 
 	public static double distance(Vector2 par1, Vector2 par2)
@@ -60,65 +60,65 @@ public class Vector2 implements Cloneable
 
 	public void add(Vector2 par1)
 	{
-		this.x += par1.x;
-		this.y += par1.y;
+		x += par1.x;
+		y += par1.y;
 	}
 
 	public void add(double par1)
 	{
-		this.x += par1;
-		this.y += par1;
+		x += par1;
+		y += par1;
 	}
 
 	public void substract(Vector2 par1)
 	{
-		this.x -= par1.x;
-		this.y -= par1.y;
+		x -= par1.x;
+		y -= par1.y;
 	}
 
 	public void substract(double par1)
 	{
-		this.x -= par1;
-		this.y -= par1;
+		x -= par1;
+		y -= par1;
 	}
-	
+
 	public void multiply(Vector2 par1)
 	{
-		this.x *= par1.x;
-		this.y *= par1.y;
+		x *= par1.x;
+		y *= par1.y;
 	}
 
 	public void multiply(double par1)
 	{
-		this.x *= par1;
-		this.y *= par1;
+		x *= par1;
+		y *= par1;
 	}
-	
+
 	public void normalize()
 	{
-		double dist = Math.sqrt((this.x * this.x) + (this.y * this.y));
-		this.x = this.x / dist;
-		this.y = this.y / dist;
+		double dist = Math.sqrt((x * x) + (y * y));
+		x = x / dist;
+		y = y / dist;
 	}
 
 	public Vector2 round()
 	{
-		return new Vector2(Math.round(this.x), Math.round(this.y));
+		return new Vector2(Math.round(x), Math.round(y));
 	}
 
 	public Vector2 floor()
 	{
-		return new Vector2(Math.floor(this.x), Math.floor(this.y));
+		return new Vector2(Math.floor(x), Math.floor(y));
 	}
 
 	public boolean isEquals(Vector2 vector)
 	{
-		return this.x == vector.x && this.y == vector.y;
+		return x == vector.x && y == vector.y;
 	}
 
 	@Override
 	public String toString()
 	{
-		return "Vector2 [" + this.x + "," + this.y + "]";
+		return "Vector2 [" + x + "," + y + "]";
 	}
 }

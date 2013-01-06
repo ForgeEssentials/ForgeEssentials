@@ -9,15 +9,16 @@ import net.minecraft.world.World;
 
 public class BlockSaveable implements Serializable
 {
-	private int				x;
-	private int				y;
-	private int				z;
-	private short			blockID;
-	private byte			metadata;
-	private NBTTagCompound	tile;
+	private int x;
+	private int y;
+	private int z;
+	private short blockID;
+	private byte metadata;
+	private NBTTagCompound tile;
 
 	/**
 	 * generates the block from the world.
+	 * 
 	 * @param world
 	 * @param x
 	 * @param y
@@ -39,34 +40,41 @@ public class BlockSaveable implements Serializable
 			tile = compound;
 		}
 	}
-	
+
+	@Override
 	public boolean equals(Object object)
 	{
 		if (object instanceof BlockSaveable)
 		{
 			BlockSaveable block = (BlockSaveable) object;
-			return x == block.x && y == block.y && z == block.z && blockID == block.blockID && metadata == block.metadata && tile.equals(block.tile);
+			return x == block.x && y == block.y && z == block.z
+					&& blockID == block.blockID && metadata == block.metadata
+					&& tile.equals(block.tile);
 		}
 		return false;
 	}
-	
+
 	/**
 	 * @param world
 	 * @return if the block was actually set.
 	 */
 	public boolean setinWorld(World world)
 	{
-		if (this.equals(new BlockSaveable(world, x, y, z)))
+		if (equals(new BlockSaveable(world, x, y, z)))
+		{
 			return false;
-		
+		}
+
 		world.setBlockAndMetadata(x, y, z, blockID, metadata);
 		TileEntity entity = world.getBlockTileEntity(x, y, z);
 		if (entity != null && tile != null)
+		{
 			entity.readFromNBT(tile);
-		
+		}
+
 		return true;
 	}
-	
+
 	public boolean isAir()
 	{
 		return blockID == 0;

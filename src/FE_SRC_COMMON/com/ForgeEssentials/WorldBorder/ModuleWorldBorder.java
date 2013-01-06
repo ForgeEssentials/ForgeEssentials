@@ -4,7 +4,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
@@ -27,11 +26,11 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 /**
- * Bounces players back into the border if they pass it.
- * No bypass permissions available, If needed, tell me on github.
+ * Bounces players back into the border if they pass it. No bypass permissions
+ * available, If needed, tell me on github.
  * 
  * @author Dries007
- *
+ * 
  */
 
 public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
@@ -43,19 +42,19 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	public static HashMap<Integer, IEffect[]> effectsList = new HashMap();
 	public static int overGenerate = 345;
 	public static boolean set = false;
-	
+
 	public static int X;
 	public static int Z;
 	public static int rad;
-	
+
 	public static int maxX;
 	public static int maxZ;
 	public static int minX;
 	public static int minZ;
-	
+
 	private int ticks = 0;
 	private int players = 1;
-	
+
 	public ModuleWorldBorder()
 	{
 		WBenabled = true;
@@ -66,19 +65,27 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	/*
 	 * Module part
 	 */
-	
-	@Override
-	public void preLoad(FMLPreInitializationEvent e){}
 
 	@Override
-	public void load(FMLInitializationEvent e){}
+	public void preLoad(FMLPreInitializationEvent e)
+	{
+	}
 
 	@Override
-	public void postLoad(FMLPostInitializationEvent e){}
+	public void load(FMLInitializationEvent e)
+	{
+	}
 
 	@Override
-	public void serverStopping(FMLServerStoppingEvent e) {}
-	
+	public void postLoad(FMLPostInitializationEvent e)
+	{
+	}
+
+	@Override
+	public void serverStopping(FMLServerStoppingEvent e)
+	{
+	}
+
 	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
@@ -89,52 +96,64 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
 	{
-		
+
 	}
 
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		
+
 	}
 
 	/*
 	 * Tickhandler part
 	 */
-	
+
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) 
+	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
 		try
 		{
-			if(this.ticks >= Integer.MAX_VALUE) this.ticks = 1;
-			this.ticks ++;    	
-			if(!WBenabled) return;
-			if(!set) return;
-		
-			if(ticks % players == 0)
+			if (ticks >= Integer.MAX_VALUE)
 			{
-				players = FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames().length + 1;
+				ticks = 1;
 			}
-			else
+			ticks++;
+			if (!WBenabled)
 			{
-				EntityPlayerMP player = ((EntityPlayerMP)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get((int) (ticks % players - 1)));
+				return;
+			}
+			if (!set)
+			{
+				return;
+			}
+
+			if (ticks % players == 0)
+			{
+				players = FMLCommonHandler.instance()
+						.getMinecraftServerInstance().getAllUsernames().length + 1;
+			} else
+			{
+				EntityPlayerMP player = ((EntityPlayerMP) FMLCommonHandler
+						.instance().getMinecraftServerInstance()
+						.getConfigurationManager().playerEntityList.get(ticks
+						% players - 1));
 				shape.doCheck(player);
 			}
-		}
-		catch(Exception e) 
+		} catch (Exception e)
 		{
 			OutputHandler.SOP("Failed to tick WorldBorder");
 			OutputHandler.SOP("" + e.getLocalizedMessage());
 		}
 	}
 
+	@Override
+	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	{
+	}
 
 	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData) {}
-
-	@Override
-	public EnumSet<TickType> ticks() 
+	public EnumSet<TickType> ticks()
 	{
 		return EnumSet.of(TickType.SERVER);
 	}
@@ -146,81 +165,79 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	}
 
 	@Override
-	public int nextTickSpacing() 
+	public int nextTickSpacing()
 	{
-		if(players < 10)
+		if (players < 10)
 		{
 			return 10;
-		}
-		else if (players < 20)
+		} else if (players < 20)
 		{
 			return 5;
-		}
-		else
+		} else
 		{
 			return 0;
 		}
 	}
-	
+
 	/*
 	 * Used to get determen shapes & execute the actual check.
 	 */
-	
+
 	public enum BorderShape
 	{
 		round, square;
-		
+
 		public byte getByte()
 		{
-			if(this.equals(round))
+			if (equals(round))
 			{
 				return 1;
 			}
-			if(this.equals(square))
+			if (equals(square))
 			{
 				return 2;
 			}
 			return 0;
 		}
 
-		public static BorderShape getFromByte(byte byte1) 
+		public static BorderShape getFromByte(byte byte1)
 		{
-			if(byte1 == 1)
+			if (byte1 == 1)
 			{
 				return BorderShape.round;
-			}
-			else if(byte1 == 2)
+			} else if (byte1 == 2)
 			{
 				return BorderShape.square;
 			}
 			return null;
 		}
-		
+
 		public void doCheck(EntityPlayerMP player)
 		{
-			if(this.equals(round))
+			if (equals(round))
 			{
-				int dist = (int) getDistanceRound(X, Z, (int) player.posX, (int) player.posZ);
-				if(dist > rad)
+				int dist = (int) getDistanceRound(X, Z, (int) player.posX,
+						(int) player.posZ);
+				if (dist > rad)
 				{
 					executeClosestEffects(dist - ModuleWorldBorder.rad, player);
 				}
 			}
-			if(this.equals(square))
+			if (equals(square))
 			{
-				if(player.posX < minX)
+				if (player.posX < minX)
 				{
 					executeClosestEffects((int) player.posX - minX, player);
 				}
-				if(player.posX > maxX)
+				if (player.posX > maxX)
 				{
 					executeClosestEffects((int) player.posX - maxX, player);
 				}
-				if(player.posZ < minZ)
+				if (player.posZ < minZ)
 				{
 					executeClosestEffects((int) player.posZ - minZ, player);
 				}
-				if(player.posZ > maxZ)
+				if (player.posZ > maxZ)
 				{
 					executeClosestEffects((int) player.posZ - maxZ, player);
 				}
@@ -228,44 +245,43 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		}
 	}
 
-	
 	/*
 	 * Penalty part
 	 */
-	
-	public static void registerEffects(int dist, IEffect[] effects) 
+
+	public static void registerEffects(int dist, IEffect[] effects)
 	{
 		effectsList.put(dist, effects);
 	}
-	
+
 	public static void executeClosestEffects(int dist, EntityPlayerMP player)
 	{
 		dist = Math.abs(dist);
 		log(player, dist);
-		for(int i = dist; i >= 0; i--)
+		for (int i = dist; i >= 0; i--)
 		{
-			if(effectsList.containsKey(i))
+			if (effectsList.containsKey(i))
 			{
-				for(IEffect effect : effectsList.get(i))
+				for (IEffect effect : effectsList.get(i))
 				{
 					effect.execute(player);
 				}
 			}
 		}
 	}
-	
+
 	/*
 	 * Static Helper Methods
 	 */
-	
+
 	public static double getDistanceRound(int centerX, int centerZ, int X, int Z)
 	{
 		int difX = centerX - X;
 		int difZ = centerZ - Z;
-		
+
 		return Math.sqrt(((difX * difX) + (difZ * difZ)));
 	}
-	
+
 	public static Vector2 getDirectionVector(EntityPlayerMP player)
 	{
 		Vector2 vecp = new Vector2(X - player.posX, Z - player.posZ);
@@ -273,25 +289,29 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		vecp.multiply(-1);
 		return vecp;
 	}
-	
+
 	public static void log(EntityPlayerMP player, int dist)
 	{
-		if(logToConsole)
-			OutputHandler.SOP(player.username + " passed the worldborder by " + dist + " blocks.");
+		if (logToConsole)
+		{
+			OutputHandler.SOP(player.username + " passed the worldborder by "
+					+ dist + " blocks.");
+		}
 	}
-	
-	public static void setCenter(int rad, int posX, int posZ, BorderShape shapeToSet, boolean set) 
-	{	
+
+	public static void setCenter(int rad, int posX, int posZ,
+			BorderShape shapeToSet, boolean set)
+	{
 		shape = shapeToSet;
 		ModuleWorldBorder.set = set;
-		
+
 		X = posX;
 		Z = posZ;
 		ModuleWorldBorder.rad = rad;
-		
+
 		maxX = posX + rad;
 		maxZ = posZ + rad;
-		
+
 		minX = posX - rad;
 		minZ = posZ - rad;
 	}

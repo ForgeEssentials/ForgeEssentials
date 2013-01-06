@@ -23,19 +23,22 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 public class ModulePermissions implements IFEModule
 {
 	// public static ConfigPermissions config;
-	public static PermissionsHandler	pHandler;
-	public static ZoneManager			zManager;
-	public static SqlHelper				sql;
-	public static ConfigPermissions		config;
+	public static PermissionsHandler pHandler;
+	public static ZoneManager zManager;
+	public static SqlHelper sql;
+	public static ConfigPermissions config;
 
-	public static File					permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
-	protected static DataDriver			data;
+	public static File permsFolder = new File(ForgeEssentials.FEDIR,
+			"/permissions/");
+	protected static DataDriver data;
 
 	@Override
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		if (!permsFolder.exists() || !permsFolder.isDirectory())
+		{
 			permsFolder.mkdirs();
+		}
 
 		OutputHandler.SOP("Permissions module is enabled. Loading...");
 		zManager = new ZoneManager();
@@ -74,7 +77,7 @@ public class ModulePermissions implements IFEModule
 		// load zones...
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
 		zManager.loadZones();
-		
+
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
 	}
@@ -87,19 +90,24 @@ public class ModulePermissions implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(this, RegGroup.ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
+		event.registerPerm(this, RegGroup.ZONE_ADMINS,
+				"ForgeEssentials.permissions.zone.setparent", true);
 		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.perm", true);
 		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.zone", true);
 
-		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
-		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_WARMUP, true);
+		event.registerPerm(this, RegGroup.OWNERS,
+				TeleportCenter.BYPASS_COOLDOWN, true);
+		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_WARMUP,
+				true);
 	}
 
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		for (Zone zone : ZoneManager.zoneMap.values())
+		{
 			data.saveObject(zone);
+		}
 	}
 
 	@Override

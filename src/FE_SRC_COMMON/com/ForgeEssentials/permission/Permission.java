@@ -1,18 +1,13 @@
 package com.ForgeEssentials.permission;
 
-import java.util.HashMap;
-
-import com.ForgeEssentials.permission.query.PermQuery.PermResult;
-import com.ForgeEssentials.util.OutputHandler;
-
 /**
  * @author AbrarSyed
  */
 public class Permission extends PermissionChecker
 {
-	public static final String	ALL	= "_ALL_";
+	public static final String ALL = "_ALL_";
 
-	public boolean				allowed;
+	public boolean allowed;
 
 	public Permission(String qualifiedName, Boolean allowed)
 	{
@@ -27,9 +22,10 @@ public class Permission extends PermissionChecker
 		{
 			Permission perm = (Permission) object;
 			return name.equals(perm.name) && allowed == perm.allowed;
-		}
-		else if (object instanceof String)
+		} else if (object instanceof String)
+		{
 			return object.equals(name);
+		}
 		return false;
 	}
 

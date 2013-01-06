@@ -1,21 +1,17 @@
 package com.ForgeEssentials.permission;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraftforge.common.Property;
-
 public class Group implements Comparable
 {
 
-	public final String	name;
-	public final String	parent;
-	public final String	prefix;
-	public final String	suffix;
-	public final String	zoneID;
-	public final int	priority;	// lowest priority is 0
+	public final String name;
+	public final String parent;
+	public final String prefix;
+	public final String suffix;
+	public final String zoneID;
+	public final int priority; // lowest priority is 0
 
-	public Group(String name, String prefix, String suffix, String parent, String zoneID, int priority)
+	public Group(String name, String prefix, String suffix, String parent,
+			String zoneID, int priority)
 	{
 		super();
 		this.parent = parent;
@@ -30,12 +26,16 @@ public class Group implements Comparable
 	public int compareTo(Object obj)
 	{
 		if (!(obj instanceof Group))
+		{
 			return Integer.MIN_VALUE;
+		}
 
 		Group g = (Group) obj;
 
-		if (this.equals(g))
+		if (equals(g))
+		{
 			return 0;
+		}
 
 		Zone my = ZoneManager.getZone(zoneID);
 		Zone their = ZoneManager.getZone(g.zoneID);
@@ -43,7 +43,9 @@ public class Group implements Comparable
 		int end = my.compareTo(their);
 
 		if (end == 0)
+		{
 			return priority - their.priority;
+		}
 
 		return end;
 	}

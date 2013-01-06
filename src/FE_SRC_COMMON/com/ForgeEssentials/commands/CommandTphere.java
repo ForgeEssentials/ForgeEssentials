@@ -35,25 +35,32 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayerMP player = FunctionHelper
+					.getPlayerFromUsername(args[0]);
 			if (player != null)
 			{
-				EntityPlayerMP target = (EntityPlayerMP)sender;
+				EntityPlayerMP target = (EntityPlayerMP) sender;
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(target), player);
+			} else
+			{
+				OutputHandler.chatError(sender, Localization.format(
+						Localization.ERROR_NOPLAYER, args[0]));
 			}
-			else
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+		} else
+		{
+			OutputHandler.chatError(
+					sender,
+					Localization.get(Localization.ERROR_BADSYNTAX + " "
+							+ getCommandUsage(sender)));
 		}
-		else
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX + " " + getCommandUsage(sender)));
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		
+
 	}
 
 	@Override
@@ -67,17 +74,17 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-    	if(args.length == 1)
-    	{
-    		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    }
+	{
+		if (args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
+					.instance().getMinecraftServerInstance().getAllUsernames());
+		} else
+		{
+			return null;
+		}
+	}
 }

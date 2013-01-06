@@ -2,7 +2,7 @@ package com.ForgeEssentials.commands;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.PermissionsAPI;
@@ -23,14 +23,15 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER && args.length >= 1)
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER
+				&& args.length >= 1)
 		{
 			String cmd = args[0];
 			for (int i = 1; i < args.length; ++i)
 			{
 				cmd = cmd + " " + args[i];
 			}
-			String result = DedicatedServer.getServer().executeCommand(cmd);
+			String result = MinecraftServer.getServer().executeCommand(cmd);
 			player.sendChatToPlayer(result);
 		}
 	}
@@ -42,8 +43,11 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	}
 
 	/**
-	 * Restricts the usage of this command to ops so random jerkbags can't op themselves. Once our permissions system gets working, we can use canPlayerUseCommand instead.
+	 * Restricts the usage of this command to ops so random jerkbags can't op
+	 * themselves. Once our permissions system gets working, we can use
+	 * canPlayerUseCommand instead.
 	 */
+	@Override
 	public int getRequiredPermissionLevel()
 	{
 		return 3;
@@ -54,11 +58,12 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	{
 		// Does nothing on the console.
 	}
-	
+
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player,
+				getCommandPerm()));
 	}
 
 	@Override

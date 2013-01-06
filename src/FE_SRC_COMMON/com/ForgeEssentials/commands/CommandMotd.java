@@ -25,11 +25,17 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 		{
 			motd = "";
 			for (String arg : args)
+			{
 				motd = motd + arg + " ";
-			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
-			OutputHandler.chatConfirmation(sender, "MOTD successfully changed.");
+			}
+			ForgeEssentials.config
+					.changeProperty("Miscellaneous", "motd", motd);
+			OutputHandler
+					.chatConfirmation(sender, "MOTD successfully changed.");
 		} else
+		{
 			sender.sendChatToPlayer(motd);
+		}
 	}
 
 	@Override
@@ -39,11 +45,16 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 		{
 			motd = "";
 			for (String arg : args)
+			{
 				motd = motd + arg + " ";
-			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
+			}
+			ForgeEssentials.config
+					.changeProperty("Miscellaneous", "motd", motd);
 			OutputHandler.SOP("MOTD successfully changed");
 		} else
+		{
 			sender.sendChatToPlayer(motd);
+		}
 	}
 
 	@Override

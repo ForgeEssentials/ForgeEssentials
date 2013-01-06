@@ -10,10 +10,10 @@ public abstract class DataDriver
 	public DataDriver()
 	{
 	}
-	
+
 	public void onClassRegisterred(TypeTagger tagger)
 	{
-		
+
 	}
 
 	public boolean saveObject(Object o)
@@ -36,7 +36,10 @@ public abstract class DataDriver
 		TaggedClass data = loadData(type, loadingKey);
 
 		if (data != null)
-			newObject = DataStorageManager.taggerList.get(type).createFromFields(data);
+		{
+			newObject = DataStorageManager.taggerList.get(type)
+					.createFromFields(data);
+		}
 
 		return newObject;
 	}
@@ -46,10 +49,15 @@ public abstract class DataDriver
 		ArrayList<Object> list = new ArrayList<Object>();
 		TaggedClass[] objectData = loadAll(type);
 
-		// Each element of the field array represents an object, stored as an array of fields.
+		// Each element of the field array represents an object, stored as an
+		// array of fields.
 		if (objectData != null && objectData.length > 0)
-			for (TaggedClass tag: objectData)
+		{
+			for (TaggedClass tag : objectData)
+			{
 				list.add(loadObject(type, tag.uniqueKey));
+			}
+		}
 
 		return list.toArray(new Object[] {});
 	}
@@ -59,7 +67,8 @@ public abstract class DataDriver
 		return deleteData(type, loadingKey);
 	}
 
-	abstract public void parseConfigs(Configuration config, String worldName) throws Exception;
+	abstract public void parseConfigs(Configuration config, String worldName)
+			throws Exception;
 
 	abstract protected boolean saveData(Class type, TaggedClass fieldList);
 

@@ -3,11 +3,9 @@ package com.ForgeEssentials.backup;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
-import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -28,12 +26,14 @@ public class ModuleBackup implements IFEModule
 
 	}
 
+	@Override
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Backups module is enabled. Loading...");
 		config = new BackupConfig();
 	}
 
+	@Override
 	public void load(FMLInitializationEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
@@ -58,17 +58,18 @@ public class ModuleBackup implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.backup", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.backup",
+				true);
 	}
 
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		
+
 	}
 
 	@Override
-	public IModuleConfig getConfig() 
+	public IModuleConfig getConfig()
 	{
 		return config;
 	}

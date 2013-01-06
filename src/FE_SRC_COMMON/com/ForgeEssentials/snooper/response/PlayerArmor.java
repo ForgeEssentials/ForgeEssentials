@@ -17,24 +17,29 @@ public class PlayerArmor extends Response
 	public String getResponceString(DatagramPacket packet)
 	{
 		LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
-		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
-    	EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
-    	if(player == null) return "";
-    	
-    	for(int i = 0; i < 3; i++)
-    	{
-    		ItemStack stack = player.inventory.armorInventory[i];
-        	if(stack != null)
-        	{
-        		PlayerData.put("" + i, TextFormatter.toJSON(stack, true));
-        	}
-    	}
-		
+		String username = new String(Arrays.copyOfRange(packet.getData(), 11,
+				packet.getLength()));
+		EntityPlayerMP player = server.getConfigurationManager()
+				.getPlayerForUsername(username.trim());
+		if (player == null)
+		{
+			return "";
+		}
+
+		for (int i = 0; i < 3; i++)
+		{
+			ItemStack stack = player.inventory.armorInventory[i];
+			if (stack != null)
+			{
+				PlayerData.put("" + i, TextFormatter.toJSON(stack, true));
+			}
+		}
+
 		return dataString = TextFormatter.toJSON(PlayerData);
 	}
 
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "PlayerArmor";
 	}
@@ -42,12 +47,12 @@ public class PlayerArmor extends Response
 	@Override
 	public void readConfig(String category, Configuration config)
 	{
-		//Don't need that here
+		// Don't need that here
 	}
-	
+
 	@Override
 	public void writeConfig(String category, Configuration config)
 	{
-		//Don't need that here
+		// Don't need that here
 	}
 }

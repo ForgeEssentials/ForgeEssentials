@@ -10,7 +10,6 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class CommandBack extends ForgeEssentialsCommandBase
 {
@@ -31,7 +30,10 @@ public class CommandBack extends ForgeEssentialsCommandBase
 			EntityPlayerMP player = ((EntityPlayerMP) sender);
 			TeleportCenter.addToTpQue(death, player);
 		} else
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NODEATHPOINT));
+		{
+			OutputHandler.chatError(sender,
+					Localization.get(Localization.ERROR_NODEATHPOINT));
+		}
 	}
 
 	@Override

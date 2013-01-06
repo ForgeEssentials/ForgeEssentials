@@ -39,50 +39,55 @@ public class ModuleWorldControl implements IFEModule
 	// implicit constructor WorldControl()
 	public static int defaultWandID;
 	public static ArrayList<WorldControlCommandBase> needsCompleteCommands = new ArrayList<WorldControlCommandBase>();
-	
+
 	// Some static fields for WorldControl config.
 	public static int WCblocksPerTick;
 
-	public static final File wcconf = new File(ForgeEssentials.FEDIR, "WorldControl.cfg");
-	
+	public static final File wcconf = new File(ForgeEssentials.FEDIR,
+			"WorldControl.cfg");
+
 	// preload.
+	@Override
 	public void preLoad(FMLPreInitializationEvent event)
 	{
 		OutputHandler.SOP("WorldControl module is enabled. Loading...");
 		doConfig();
 	}
-	
+
 	public static void doConfig()
 	{
 		Configuration conf = new Configuration(wcconf, true);
-		
+
 		conf.load();
-		conf.addCustomCategoryComment("WorldControl", "Properties used by WorldControl");
-		
+		conf.addCustomCategoryComment("WorldControl",
+				"Properties used by WorldControl");
+
 		Property prop = conf.get("WorldControl", "BlocksPerTick", 20);
 		prop.comment = "Specifies the maximum blocks/tick that can be changed via the WorldControl functions. Powerful computers may set higher, servers may want to keep it lower.";
 		WCblocksPerTick = prop.getInt();
 		OutputHandler.SOP("Setting blocks/tick to: " + WCblocksPerTick);
-		
+
 		conf.save();
 	}
 
 	// load.
+	@Override
 	public void load(FMLInitializationEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(new WandController());
 		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
-		
+
 	}
-	
+
 	@Override
 	public void postLoad(FMLPostInitializationEvent e)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	// serverStart.
+	@Override
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandWand());
@@ -104,13 +109,14 @@ public class ModuleWorldControl implements IFEModule
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void serverStopping(FMLServerStoppingEvent e) {
+	public void serverStopping(FMLServerStoppingEvent e)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

@@ -9,19 +9,19 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase
 {
 
 	@Override
-	public String getCommandName() 
+	public String getCommandName()
 	{
 		return "queryreload";
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args) 
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		reload(sender);
 	}
 
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args) 
+	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		reload(sender);
 	}
@@ -34,15 +34,15 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase
 		sender.sendChatToPlayer("Making new one....");
 		ModuleSnooper.startQuery();
 	}
-	
+
 	@Override
-	public boolean canConsoleUseCommand() 
+	public boolean canConsoleUseCommand()
 	{
 		return true;
 	}
 
 	@Override
-	public String getCommandPerm() 
+	public String getCommandPerm()
 	{
 		return "ForgeEssentials.Snooper.commands." + getCommandName();
 	}

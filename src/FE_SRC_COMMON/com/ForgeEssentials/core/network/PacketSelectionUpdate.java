@@ -15,21 +15,21 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class PacketSelectionUpdate implements IForgeEssentialsPacket
 {
-	public static final byte	packetID	= 0;
-	
+	public static final byte packetID = 0;
+
 	private Packet250CustomPayload packet;
-	
+
 	public PacketSelectionUpdate(PlayerInfo info)
 	{
 		packet = new Packet250CustomPayload();
-		
+
 		ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
 		DataOutputStream stream = new DataOutputStream(streambyte);
 
 		try
 		{
 			stream.write(packetID);
-			
+
 			if (info != null && info.getPoint1() != null)
 			{
 				Point p1 = info.getPoint1();
@@ -37,9 +37,10 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 				stream.writeDouble(p1.x);
 				stream.writeDouble(p1.y);
 				stream.writeDouble(p1.z);
-			}
-			else
+			} else
+			{
 				stream.writeBoolean(false);
+			}
 
 			if (info != null && info.getPoint2() != null)
 			{
@@ -48,13 +49,14 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 				stream.writeDouble(p2.x);
 				stream.writeDouble(p2.y);
 				stream.writeDouble(p2.z);
-			}
-			else
+			} else
+			{
 				stream.writeBoolean(false);
-			
+			}
+
 			stream.close();
 			streambyte.close();
-			
+
 			packet.channel = FECHANNEL;
 			packet.data = streambyte.toByteArray();
 			packet.length = packet.data.length;
@@ -62,11 +64,12 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error creating packet >> "+this.getClass());
+			OutputHandler.SOP("Error creating packet >> " + this.getClass());
 		}
 	}
 
-	public static void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException
+	public static void readServer(DataInputStream stream, WorldServer world,
+			EntityPlayer player) throws IOException
 	{
 		// should never be received here.
 	}

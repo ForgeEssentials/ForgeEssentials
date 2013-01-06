@@ -38,60 +38,62 @@ public class Vector3 extends Vector2 implements Cloneable
 
 	public Vector3(Entity par1)
 	{
-		this.x = par1.posX;
-		this.y = par1.posY;
-		this.z = par1.posZ;
+		x = par1.posX;
+		y = par1.posY;
+		z = par1.posZ;
 	}
 
 	public Vector3(TileEntity par1)
 	{
-		this.x = par1.xCoord;
-		this.y = par1.yCoord;
-		this.z = par1.zCoord;
+		x = par1.xCoord;
+		y = par1.yCoord;
+		z = par1.zCoord;
 	}
 
 	public Vector3(Vec3 par1)
 	{
-		this.x = par1.xCoord;
-		this.y = par1.yCoord;
-		this.z = par1.zCoord;
+		x = par1.xCoord;
+		y = par1.yCoord;
+		z = par1.zCoord;
 	}
 
 	public Vector3(MovingObjectPosition par1)
 	{
-		this.x = par1.blockX;
-		this.y = par1.blockY;
-		this.z = par1.blockZ;
+		x = par1.blockX;
+		y = par1.blockY;
+		z = par1.blockZ;
 	}
 
 	public Vector3(ChunkCoordinates par1)
 	{
-		this.x = par1.posX;
-		this.y = par1.posY;
-		this.z = par1.posZ;
+		x = par1.posX;
+		y = par1.posY;
+		z = par1.posZ;
 	}
 
 	/**
 	 * Returns the coordinates as integers
 	 */
+	@Override
 	public int intX()
 	{
-		return (int) Math.floor(this.x);
+		return (int) Math.floor(x);
 	}
 
+	@Override
 	public int intY()
 	{
-		return (int) Math.floor(this.y);
+		return (int) Math.floor(y);
 	}
 
 	public int intZ()
 	{
-		return (int) Math.floor(this.z);
+		return (int) Math.floor(z);
 	}
 
 	public boolean isEquals(Vector3 vector)
 	{
-		return this.x == vector.x && this.y == vector.y && this.z == vector.z;
+		return x == vector.x && y == vector.y && z == vector.z;
 	}
 
 	/**
@@ -100,7 +102,7 @@ public class Vector3 extends Vector2 implements Cloneable
 	@Override
 	public Vector3 clone()
 	{
-		return new Vector3(this.x, this.y, this.z);
+		return new Vector3(x, y, z);
 	}
 
 	@Deprecated
@@ -135,37 +137,38 @@ public class Vector3 extends Vector2 implements Cloneable
 
 	public int getBlockID(IBlockAccess world)
 	{
-		return world.getBlockId(this.intX(), this.intY(), this.intZ());
+		return world.getBlockId(intX(), intY(), intZ());
 	}
 
 	public int getBlockMetadata(IBlockAccess world)
 	{
-		return world.getBlockMetadata(this.intX(), this.intY(), this.intZ());
+		return world.getBlockMetadata(intX(), intY(), intZ());
 	}
 
 	public TileEntity getTileEntity(IBlockAccess world)
 	{
-		return world.getBlockTileEntity(this.intX(), this.intY(), this.intZ());
+		return world.getBlockTileEntity(intX(), intY(), intZ());
 	}
 
 	public void setBlock(World world, int id, int metadata)
 	{
-		world.setBlockAndMetadata(this.intX(), this.intY(), this.intZ(), id, metadata);
+		world.setBlockAndMetadata(intX(), intY(), intZ(), id, metadata);
 	}
 
 	public void setBlock(World world, int id)
 	{
-		world.setBlock(this.intX(), this.intY(), this.intZ(), id);
+		world.setBlock(intX(), intY(), intZ(), id);
 	}
 
 	public void setBlockWithNotify(World world, int id, int metadata)
 	{
-		world.setBlockAndMetadataWithNotify(this.intX(), this.intY(), this.intZ(), id, metadata);
+		world.setBlockAndMetadataWithNotify(intX(), intY(), intZ(), id,
+				metadata);
 	}
 
 	public void setBlockWithNotify(World world, int id)
 	{
-		world.setBlockWithNotify(this.intX(), this.intY(), this.intZ(), id);
+		world.setBlockWithNotify(intX(), intY(), intZ(), id);
 	}
 
 	/**
@@ -173,7 +176,7 @@ public class Vector3 extends Vector2 implements Cloneable
 	 */
 	public Vector2 toVector2()
 	{
-		return new Vector2(this.x, this.z);
+		return new Vector2(x, z);
 	}
 
 	/**
@@ -181,7 +184,7 @@ public class Vector3 extends Vector2 implements Cloneable
 	 */
 	public Vec3 toVec3()
 	{
-		return Vec3.createVectorHelper(this.x, this.y, this.z);
+		return Vec3.createVectorHelper(x, y, z);
 	}
 
 	/**
@@ -189,7 +192,7 @@ public class Vector3 extends Vector2 implements Cloneable
 	 */
 	public boolean isEqual(Vector3 vector3)
 	{
-		return (this.x == vector3.x && this.y == vector3.y && this.z == vector3.z);
+		return (x == vector3.x && y == vector3.y && z == vector3.z);
 	}
 
 	/**
@@ -207,9 +210,9 @@ public class Vector3 extends Vector2 implements Cloneable
 
 	public double distanceTo(Vector3 vector3)
 	{
-		double var2 = vector3.x - this.x;
-		double var4 = vector3.y - this.y;
-		double var6 = vector3.z - this.z;
+		double var2 = vector3.x - x;
+		double var4 = vector3.y - y;
+		double var6 = vector3.z - z;
 		return MathHelper.sqrt_double(var2 * var2 + var4 * var4 + var6 * var6);
 	}
 
@@ -230,38 +233,39 @@ public class Vector3 extends Vector2 implements Cloneable
 
 	public void add(Vector3 par1)
 	{
-		this.x += par1.x;
-		this.y += par1.y;
-		this.z += par1.z;
+		x += par1.x;
+		y += par1.y;
+		z += par1.z;
 	}
 
 	@Override
 	public void add(double par1)
 	{
-		this.x += par1;
-		this.y += par1;
-		this.z += par1;
+		x += par1;
+		y += par1;
+		z += par1;
 	}
 
 	public void subtract(Vector3 amount)
 	{
-		this.x -= amount.x;
-		this.y -= amount.y;
-		this.z -= amount.z;
+		x -= amount.x;
+		y -= amount.y;
+		z -= amount.z;
 	}
 
+	@Override
 	public void multiply(double amount)
 	{
-		this.x *= amount;
-		this.y *= amount;
-		this.z *= amount;
+		x *= amount;
+		y *= amount;
+		z *= amount;
 	}
 
 	public void multiply(Vector3 vec)
 	{
-		this.x *= vec.x;
-		this.y *= vec.y;
-		this.z *= vec.z;
+		x *= vec.x;
+		y *= vec.y;
+		z *= vec.z;
 	}
 
 	public static Vector3 multiply(Vector3 vec1, Vector3 vec2)
@@ -274,7 +278,8 @@ public class Vector3 extends Vector2 implements Cloneable
 		return new Vector3(vec1.x * vec2, vec1.y * vec2, vec1.z * vec2);
 	}
 
-	public static Vector3 readFromNBT(String prefix, NBTTagCompound par1NBTTagCompound)
+	public static Vector3 readFromNBT(String prefix,
+			NBTTagCompound par1NBTTagCompound)
 	{
 		Vector3 tempVector = new Vector3();
 		tempVector.x = par1NBTTagCompound.getDouble(prefix + "X");
@@ -286,39 +291,44 @@ public class Vector3 extends Vector2 implements Cloneable
 	/**
 	 * Saves this Vector3 to disk
 	 * 
-	 * @param prefix - The prefix of this save. Use some unique string.
-	 * @param par1NBTTagCompound - The NBT compound object to save the data in
+	 * @param prefix
+	 *            - The prefix of this save. Use some unique string.
+	 * @param par1NBTTagCompound
+	 *            - The NBT compound object to save the data in
 	 */
 	public void writeToNBT(String prefix, NBTTagCompound par1NBTTagCompound)
 	{
-		par1NBTTagCompound.setDouble(prefix + "X", this.x);
-		par1NBTTagCompound.setDouble(prefix + "Y", this.y);
-		par1NBTTagCompound.setDouble(prefix + "Z", this.z);
+		par1NBTTagCompound.setDouble(prefix + "X", x);
+		par1NBTTagCompound.setDouble(prefix + "Y", y);
+		par1NBTTagCompound.setDouble(prefix + "Z", z);
 	}
 
 	@Override
 	public Vector3 round()
 	{
-		return new Vector3(Math.round(this.x), Math.round(this.y), Math.round(this.z));
+		return new Vector3(Math.round(x), Math.round(y), Math.round(z));
 	}
 
 	@Override
 	public Vector3 floor()
 	{
-		return new Vector3(Math.floor(this.x), Math.floor(this.y), Math.floor(this.z));
+		return new Vector3(Math.floor(x), Math.floor(y), Math.floor(z));
 	}
 
 	/**
 	 * Gets all entities inside of this position in block space.
 	 */
-	public List<Entity> getEntitiesWithin(World worldObj, Class<? extends Entity> par1Class)
+	public List<Entity> getEntitiesWithin(World worldObj,
+			Class<? extends Entity> par1Class)
 	{
-		return (List<Entity>) worldObj.getEntitiesWithinAABB(par1Class, AxisAlignedBB.getBoundingBox(this.intX(), this.intY(), this.intZ(), this.intX() + 1, this.intY() + 1, this.intZ() + 1));
+		return worldObj.getEntitiesWithinAABB(par1Class, AxisAlignedBB
+				.getBoundingBox(intX(), intY(), intZ(), intX() + 1, intY() + 1,
+						intZ() + 1));
 	}
 
 	@Override
 	public String toString()
 	{
-		return "Vector3 [" + this.x + "," + this.y + "," + this.z + "]";
+		return "Vector3 [" + x + "," + y + "," + z + "]";
 	}
 }

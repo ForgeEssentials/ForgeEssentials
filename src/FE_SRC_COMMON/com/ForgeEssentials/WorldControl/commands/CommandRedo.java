@@ -28,13 +28,14 @@ public class CommandRedo extends WorldControlCommandBase
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
 		BackupArea back = PlayerInfo.getPlayerInfo(player).getNextRedo();
-		
+
 		if (back == null)
 		{
-			OutputHandler.chatError(player, Localization.get(Localization.WC_NOREDO));
+			OutputHandler.chatError(player,
+					Localization.get(Localization.WC_NOREDO));
 			return;
 		}
-		
+
 		TickTaskHandler.addTask(new TickTaskSetBackup(player, back, true));
 	}
 }

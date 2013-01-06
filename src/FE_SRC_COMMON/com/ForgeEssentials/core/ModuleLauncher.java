@@ -1,27 +1,21 @@
 package com.ForgeEssentials.core;
 
-import com.ForgeEssentials.WorldBorder.ConfigWorldBorder;
-import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
-import com.ForgeEssentials.WorldControl.ModuleWorldControl;
-import com.ForgeEssentials.backup.ModuleBackup;
-import com.ForgeEssentials.chat.ConfigChat;
-import com.ForgeEssentials.chat.ModuleChat;
-import com.ForgeEssentials.commands.ModuleCommands;
-import com.ForgeEssentials.commands.util.ConfigCmd;
-import com.ForgeEssentials.economy.ModuleEconomy;
-import com.ForgeEssentials.permission.ModulePermissions;
-import com.ForgeEssentials.playerLogger.ConfigPlayerLogger;
-import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
-import com.ForgeEssentials.protection.ConfigProtection;
-import com.ForgeEssentials.protection.ModuleProtection;
-import com.ForgeEssentials.snooper.ConfigSnooper;
-import com.ForgeEssentials.snooper.ModuleSnooper;
-import com.ForgeEssentials.util.OutputHandler;
+import java.io.File;
+import java.util.ArrayList;
 
 import net.minecraft.command.ICommandSender;
 
-import java.io.File;
-import java.util.ArrayList;
+import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
+import com.ForgeEssentials.WorldControl.ModuleWorldControl;
+import com.ForgeEssentials.backup.ModuleBackup;
+import com.ForgeEssentials.chat.ModuleChat;
+import com.ForgeEssentials.commands.ModuleCommands;
+import com.ForgeEssentials.economy.ModuleEconomy;
+import com.ForgeEssentials.permission.ModulePermissions;
+import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
+import com.ForgeEssentials.protection.ModuleProtection;
+import com.ForgeEssentials.snooper.ModuleSnooper;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -31,33 +25,36 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 /**
- * Initialize modules here. Yes. HERE. NOT ForgeEssentials.java! This is the springboard...
+ * Initialize modules here. Yes. HERE. NOT ForgeEssentials.java! This is the
+ * springboard...
  */
 
 public class ModuleLauncher
 {
-	public ModuleLauncher () {instance = this;}
+	public ModuleLauncher()
+	{
+		instance = this;
+	}
+
 	public static ModuleLauncher instance;
-	
-	public ArrayList<IFEModule>	modules;
+
+	public ArrayList<IFEModule> modules;
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Discovering and loading modules...");
-		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/core.cfg.");
+		OutputHandler
+				.SOP("If you would like to disable a module, please look in ForgeEssentials/core.cfg.");
 
 		modules = new ArrayList<IFEModule>();
 		IFEModule instance;
 
 		/*
-		 * commands = new ModuleCommands();
-		 * permission = new ModulePermissions();
-		 * worldborder = new ModuleWorldBorder();
-		 * playerLogger = new ModulePlayerLogger();
-		 * economy = new ModuleEconomy();
-		 * chat = new ModuleChat();
-		 * protection = new ModuleProtection();
-		 * snooper = new ModuleSnooper();
+		 * commands = new ModuleCommands(); permission = new
+		 * ModulePermissions(); worldborder = new ModuleWorldBorder();
+		 * playerLogger = new ModulePlayerLogger(); economy = new
+		 * ModuleEconomy(); chat = new ModuleChat(); protection = new
+		 * ModuleProtection(); snooper = new ModuleSnooper();
 		 */
 
 		try
@@ -65,8 +62,7 @@ public class ModuleLauncher
 			instance = new ModuleWorldControl();
 			modules.add(instance);
 			OutputHandler.SOP("discoverred " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
+		} catch (NoClassDefFoundError e1)
 		{
 			// Nothing to see here, carry on, carry on
 		}
@@ -76,8 +72,7 @@ public class ModuleLauncher
 			instance = new ModuleBackup();
 			modules.add(instance);
 			OutputHandler.SOP("discoverred " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
+		} catch (NoClassDefFoundError e1)
 		{
 			// Nothing to see here, carry on, carry on
 		}
@@ -87,8 +82,7 @@ public class ModuleLauncher
 			instance = new ModuleCommands();
 			modules.add(instance);
 			OutputHandler.SOP("discoverred " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
+		} catch (NoClassDefFoundError e1)
 		{
 			// Nothing to see here, carry on, carry on
 		}
@@ -98,8 +92,7 @@ public class ModuleLauncher
 			instance = new ModulePermissions();
 			modules.add(instance);
 			OutputHandler.SOP("discoverred " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
+		} catch (NoClassDefFoundError e1)
 		{
 			// Nothing to see here, carry on, carry on
 		}
@@ -109,8 +102,7 @@ public class ModuleLauncher
 			instance = new ModuleWorldBorder();
 			modules.add(instance);
 			OutputHandler.SOP("discoverred " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
+		} catch (NoClassDefFoundError e1)
 		{
 			// Nothing to see here, carry on, carry on
 		}
@@ -120,8 +112,7 @@ public class ModuleLauncher
 			instance = new ModulePlayerLogger();
 			modules.add(instance);
 			OutputHandler.SOP("discoverred " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
+		} catch (NoClassDefFoundError e1)
 		{
 			// Nothing to see here, carry on, carry on
 		}
@@ -131,8 +122,7 @@ public class ModuleLauncher
 			instance = new ModuleEconomy();
 			modules.add(instance);
 			OutputHandler.SOP("discoverred " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
+		} catch (NoClassDefFoundError e1)
 		{
 			// Nothing to see here, carry on, carry on
 		}
@@ -142,8 +132,7 @@ public class ModuleLauncher
 			instance = new ModuleChat();
 			modules.add(instance);
 			OutputHandler.SOP("discoverred " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
+		} catch (NoClassDefFoundError e1)
 		{
 			// Nothing to see here, carry on, carry on
 		}
@@ -153,8 +142,7 @@ public class ModuleLauncher
 			instance = new ModuleProtection();
 			modules.add(instance);
 			OutputHandler.SOP("discoverred " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
+		} catch (NoClassDefFoundError e1)
 		{
 			// Nothing to see here, carry on, carry on
 		}
@@ -164,33 +152,36 @@ public class ModuleLauncher
 			instance = new ModuleSnooper();
 			modules.add(instance);
 			OutputHandler.SOP("discoverred " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
+		} catch (NoClassDefFoundError e1)
 		{
 			// Nothing to see here, carry on, carry on
 		}
-		
+
 		for (IFEModule module : modules)
+		{
 			module.preLoad(e);
-		
+		}
+
 		boolean generate = false;
 		for (IFEModule module : modules)
 		{
 			IModuleConfig cfg = module.getConfig();
-			
-			if(cfg != null)
+
+			if (cfg != null)
 			{
 				File file = cfg.getFile();
-			
+
 				if (!file.getParentFile().exists())
 				{
 					generate = true;
 					file.getParentFile().mkdirs();
 				}
-			
+
 				if (!generate && (!file.exists() || !file.isFile()))
+				{
 					generate = true;
-				
+				}
+
 				cfg.setGenerate(generate);
 				cfg.init();
 			}
@@ -200,36 +191,48 @@ public class ModuleLauncher
 	public void load(FMLInitializationEvent e)
 	{
 		for (IFEModule module : modules)
+		{
 			module.load(e);
+		}
 	}
 
 	public void postLoad(FMLPostInitializationEvent e)
 	{
 		for (IFEModule module : modules)
+		{
 			module.postLoad(e);
+		}
 	}
 
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		for (IFEModule module : modules)
+		{
 			module.serverStarting(e);
+		}
 	}
 
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		for (IFEModule module : modules)
+		{
 			module.serverStarted(e);
+		}
 	}
 
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		for (IFEModule module : modules)
+		{
 			module.serverStopping(e);
+		}
 	}
-	
+
 	public void reloadConfigs(ICommandSender sender)
 	{
 		for (IFEModule module : modules)
+		{
 			module.getConfig().forceLoad(sender);
+		}
 	}
 }

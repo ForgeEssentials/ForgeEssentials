@@ -21,12 +21,13 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 	{
 		return "butcher";
 	}
-	
+
 	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr)
+	public List addTabCompletionOptions(ICommandSender par1ICommandSender,
+			String[] par2ArrayOfStr)
 	{
-		return getListOfStringsMatchingLastWord(par2ArrayOfStr, "passive", "villager",
-				"hostile", "tamed", "all", "golem", "world");
+		return getListOfStringsMatchingLastWord(par2ArrayOfStr, "passive",
+				"villager", "hostile", "tamed", "all", "golem", "world");
 	}
 
 	@Override
@@ -38,45 +39,59 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		double centerZ = sender.posZ;
 		String mobType = "hostile";
 
-		if(args.length > 0)
+		if (args.length > 0)
 		{
 			try
 			{
-				radius = args[0].equalsIgnoreCase("world") ? -1 : Integer.parseInt(args[0]);
-			} catch(NumberFormatException e)
+				radius = args[0].equalsIgnoreCase("world") ? -1 : Integer
+						.parseInt(args[0]);
+			} catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
+				OutputHandler.chatError(sender,
+						Localization.format(Localization.ERROR_NAN, args[0]));
 				return;
 			}
 		}
-		if(args.length > 1)
+		if (args.length > 1)
 		{
-			if(args[1].equalsIgnoreCase("golem") || args[1].equalsIgnoreCase("passive") ||
-				args[1].equalsIgnoreCase("all") || args[1].equalsIgnoreCase("villager") ||
-				args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile"))
+			if (args[1].equalsIgnoreCase("golem")
+					|| args[1].equalsIgnoreCase("passive")
+					|| args[1].equalsIgnoreCase("all")
+					|| args[1].equalsIgnoreCase("villager")
+					|| args[1].equalsIgnoreCase("tamed")
+					|| args[1].equalsIgnoreCase("hostile"))
 			{
 				mobType = args[1];
-			}
-			else
+			} else
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "all, golem, hostile, passive, tamed, or villager");
+				OutputHandler
+						.chatError(
+								sender,
+								Localization.get(Localization.ERROR_BADSYNTAX)
+										+ "all, golem, hostile, passive, tamed, or villager");
 				return;
 			}
 		}
-		if(args.length > 2)
+		if (args.length > 2)
 		{
 			String[] split = args[2].split(",");
-			if(split.length != 3)
+			if (split.length != 3)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "x,y,z");
+				OutputHandler.chatError(sender,
+						Localization.get(Localization.ERROR_BADSYNTAX)
+								+ "x,y,z");
 				return;
 			}
 		}
-		if(args.length > 3)
+		if (args.length > 3)
 		{
-			
+
 		}
-		TickTaskHandler.addTask(new CommandButcherTickTask(sender, mobType, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1), radius));
+		TickTaskHandler.addTask(new CommandButcherTickTask(sender, mobType,
+				AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(
+						centerX - radius, centerY - radius, centerZ - radius,
+						centerX + radius + 1, centerY + radius + 1,
+						centerZ + radius + 1), radius));
 	}
 
 	@Override
@@ -87,47 +102,62 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		WorldPoint center = new WorldPoint(0, 0, 0, 0);
 
 		String mobType = "hostile";
-		
-		if(args.length != 4)
+
+		if (args.length != 4)
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX)+ "/butcher <radius> <type> <x,y,z> <worldID>");
+			sender.sendChatToPlayer(Localization
+					.get(Localization.ERROR_BADSYNTAX)
+					+ "/butcher <radius> <type> <x,y,z> <worldID>");
 			return;
 		}
-		
+
 		try
 		{
-			radius = args[0].equalsIgnoreCase("world") ? -1 : Integer.parseInt(args[0]);
-		} catch(NumberFormatException e)
+			radius = args[0].equalsIgnoreCase("world") ? -1 : Integer
+					.parseInt(args[0]);
+		} catch (NumberFormatException e)
 		{
-			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
+			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN,
+					args[0]));
 			return;
 		}
-		if(args[1].equalsIgnoreCase("golem") || args[1].equalsIgnoreCase("passive") ||
-			args[1].equalsIgnoreCase("all") || args[1].equalsIgnoreCase("villager") ||
-			args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile"))
+		if (args[1].equalsIgnoreCase("golem")
+				|| args[1].equalsIgnoreCase("passive")
+				|| args[1].equalsIgnoreCase("all")
+				|| args[1].equalsIgnoreCase("villager")
+				|| args[1].equalsIgnoreCase("tamed")
+				|| args[1].equalsIgnoreCase("hostile"))
 		{
 			mobType = args[1];
-		}
-		else
+		} else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "all, golem, hostile, passive, tamed, or villager");
+			sender.sendChatToPlayer(Localization
+					.get(Localization.ERROR_BADSYNTAX)
+					+ "all, golem, hostile, passive, tamed, or villager");
 			return;
 		}
 		String[] split = args[2].split(",");
-		if(split.length != 3)
+		if (split.length != 3)
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "x,y,z");
+			sender.sendChatToPlayer(Localization
+					.get(Localization.ERROR_BADSYNTAX) + "x,y,z");
 			return;
 		}
 		try
 		{
 			worldID = Integer.parseInt(args[3]);
-		} catch(NumberFormatException e)
+		} catch (NumberFormatException e)
 		{
-			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
+			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN,
+					args[0]));
 			return;
 		}
-		TickTaskHandler.addTask(new CommandButcherTickTask(sender, mobType, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1, center.z + radius + 1), radius, worldID));
+		TickTaskHandler.addTask(new CommandButcherTickTask(sender, mobType,
+				AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(
+						center.x - radius, center.y - radius,
+						center.z - radius, center.x + radius + 1,
+						center.y + radius + 1, center.z + radius + 1), radius,
+				worldID));
 	}
 
 	@Override

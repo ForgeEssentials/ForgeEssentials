@@ -36,9 +36,10 @@ public class CommandReplace extends WorldControlCommandBase
 		if (args.length == 2)
 		{
 			PlayerInfo info = PlayerInfo.getPlayerInfo(player);
-			if(info.getSelection() == null)
+			if (info.getSelection() == null)
 			{
-				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
+				OutputHandler.chatError(player,
+						Localization.get(Localization.ERROR_NOSELECTION));
 				return;
 			}
 			int[] temp;
@@ -54,8 +55,7 @@ public class CommandReplace extends WorldControlCommandBase
 				temp = FunctionHelper.parseIdAndMetaFromString(args[0], true);
 				firstID = temp[0];
 				firstMeta = temp[1];
-			}
-			catch (Exception e)
+			} catch (Exception e)
 			{
 				OutputHandler.chatError(player, e.getMessage());
 				return;
@@ -67,49 +67,55 @@ public class CommandReplace extends WorldControlCommandBase
 				temp = FunctionHelper.parseIdAndMetaFromString(args[1], true);
 				secondID = temp[0];
 				secondMeta = temp[1];
-			}
-			catch (Exception e)
+			} catch (Exception e)
 			{
 				OutputHandler.chatError(player, e.getMessage());
 				return;
 			}
 
-			if (firstID >= Block.blocksList.length || secondID >= Block.blocksList.length)
+			if (firstID >= Block.blocksList.length
+					|| secondID >= Block.blocksList.length)
 			{
-				error(player, Localization.format("message.wc.blockIdOutOfRange", Block.blocksList.length));
-			}
-			else if (firstID != 0 && Block.blocksList[firstID] == null)
+				error(player,
+						Localization.format("message.wc.blockIdOutOfRange",
+								Block.blocksList.length));
+			} else if (firstID != 0 && Block.blocksList[firstID] == null)
 			{
-				error(player, Localization.format("message.wc.invalidBlockId", firstID));
-			}
-			else if (secondID != 0 && Block.blocksList[secondID] == null)
+				error(player, Localization.format("message.wc.invalidBlockId",
+						firstID));
+			} else if (secondID != 0 && Block.blocksList[secondID] == null)
 			{
-				error(player, Localization.format("message.wc.invalidBlockId", secondID));
-			}
-			else
+				error(player, Localization.format("message.wc.invalidBlockId",
+						secondID));
+			} else
 			{
 				World world = player.worldObj;
 				Selection sel = info.getSelection();
 				BackupArea back = new BackupArea();
 
-				PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
+				PermQueryPlayerArea query = new PermQueryPlayerArea(player,
+						getCommandPerm(), sel, false);
 				PermResult result = PermissionsAPI.checkPermResult(query);
 
 				switch (result)
-					{
-						case ALLOW:
-							TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
-							return;
-						case PARTIAL:
-							TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel, query.applicable));
-						default:
-							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
-							return;
-					}
+				{
+				case ALLOW:
+					TickTaskHandler.addTask(new TickTaskReplaceSelection(
+							player, firstID, firstMeta, secondID, secondMeta,
+							back, sel));
+					return;
+				case PARTIAL:
+					TickTaskHandler.addTask(new TickTaskReplaceSelection(
+							player, firstID, firstMeta, secondID, secondMeta,
+							back, sel, query.applicable));
+				default:
+					OutputHandler.chatError(player,
+							Localization.get(Localization.ERROR_PERMDENIED));
+					return;
+				}
 
 			}
-		}
-		else
+		} else
 		{
 			// The syntax of the command is not correct.
 			error(player);
