@@ -29,93 +29,105 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class FEeventAdder implements IClassTransformer
 {
-	public static HashMap<String, String> iiwmHM;
-	public static HashMap<String, String> isHM;
+	public static HashMap<String, String> iiwmHMob;
+	public static HashMap<String, String> isHMob;
+	public static HashMap<String, String> iiwmHMdev;
+	public static HashMap<String, String> isHMdev;
 
 	public static boolean addedBreak = false;
 	public static boolean addedPlace = false;
 
 	static
 	{
-		if (ObfuscationReflectionHelper.obfuscation)
-		{
-			iiwmHM = new HashMap();
+		iiwmHMob = new HashMap();
 
-			iiwmHM.put("className", "ir");
-			iiwmHM.put("javaClassName", "ir");
-			iiwmHM.put("targetMethodName", "d");
-			iiwmHM.put("worldFieldName", "a");
-			iiwmHM.put("entityPlayerFieldName", "b");
-			iiwmHM.put("worldJavaClassName", "yc");
-			iiwmHM.put("getBlockMetadataMethodName", "h");
-			iiwmHM.put("blockJavaClassName", "amq");
-			iiwmHM.put("blocksListFieldName", "p");
-			iiwmHM.put("entityPlayerJavaClassName", "qx");
-			iiwmHM.put("entityPlayerMPJavaClassName", "iq");
+		iiwmHMob.put("className", "ir");
+		iiwmHMob.put("javaClassName", "ir");
+		iiwmHMob.put("targetMethodName", "d");
+		iiwmHMob.put("worldFieldName", "a");
+		iiwmHMob.put("entityPlayerFieldName", "b");
+		iiwmHMob.put("worldJavaClassName", "yc");
+		iiwmHMob.put("getBlockMetadataMethodName", "h");
+		iiwmHMob.put("blockJavaClassName", "amq");
+		iiwmHMob.put("blocksListFieldName", "p");
+		iiwmHMob.put("entityPlayerJavaClassName", "qx");
+		iiwmHMob.put("entityPlayerMPJavaClassName", "iq");
 
-			isHM = new HashMap<String, String>();
+		isHMob = new HashMap<String, String>();
 
-			isHM.put("className", "ur");
-			isHM.put("javaClassName", "ur");
-			isHM.put("targetMethodName", "a");
-			isHM.put("itemstackJavaClassName", "ur");
-			isHM.put("entityPlayerJavaClassName", "qx");
-			isHM.put("worldJavaClassName", "yc");
-		} else
-		{
-			iiwmHM = new HashMap<String, String>();
+		isHMob.put("className", "ur");
+		isHMob.put("javaClassName", "ur");
+		isHMob.put("targetMethodName", "a");
+		isHMob.put("itemstackJavaClassName", "ur");
+		isHMob.put("entityPlayerJavaClassName", "qx");
+		isHMob.put("worldJavaClassName", "yc");
 
-			iiwmHM.put("className", "net.minecraft.item.ItemInWorldManager");
-			iiwmHM.put("javaClassName", "net/minecraft/item/ItemInWorldManager");
-			iiwmHM.put("targetMethodName", "removeBlock");
-			iiwmHM.put("worldFieldName", "theWorld");
-			iiwmHM.put("entityPlayerFieldName", "thisPlayerMP");
-			iiwmHM.put("worldJavaClassName", "net/minecraft/world/World");
-			iiwmHM.put("getBlockMetaiiwmHMMethodName", "getBlockMetaiiwmHM");
-			iiwmHM.put("blockJavaClassName", "net/minecraft/block/Block");
-			iiwmHM.put("blocksListFieldName", "blocksList");
-			iiwmHM.put("entityPlayerJavaClassName",
-					"net/minecraft/entity/player/EntityPlayer");
-			iiwmHM.put("entityPlayerMPJavaClassName",
-					"net/minecraft/entity/player/EntityPlayerMP");
+		iiwmHMdev = new HashMap<String, String>();
 
-			isHM = new HashMap<String, String>();
+		iiwmHMdev.put("className", "net.minecraft.item.ItemInWorldManager");
+		iiwmHMdev.put("javaClassName", "net/minecraft/item/ItemInWorldManager");
+		iiwmHMdev.put("targetMethodName", "removeBlock");
+		iiwmHMdev.put("worldFieldName", "theWorld");
+		iiwmHMdev.put("entityPlayerFieldName", "thisPlayerMP");
+		iiwmHMdev.put("worldJavaClassName", "net/minecraft/world/World");
+		iiwmHMdev.put("getBlockMetaiiwmHMdevMethodName",
+				"getBlockMetaiiwmHMdev");
+		iiwmHMdev.put("blockJavaClassName", "net/minecraft/block/Block");
+		iiwmHMdev.put("blocksListFieldName", "blocksList");
+		iiwmHMdev.put("entityPlayerJavaClassName",
+				"net/minecraft/entity/player/EntityPlayer");
+		iiwmHMdev.put("entityPlayerMPJavaClassName",
+				"net/minecraft/entity/player/EntityPlayerMP");
 
-			isHM.put("className", "net.minecraft.item.ItemStack");
-			isHM.put("javaClassName", "net/minecraft/item/ItemStack");
-			isHM.put("targetMethodName", "tryPlaceItemIntoWorld");
+		isHMdev = new HashMap<String, String>();
 
-			isHM.put("itemstackJavaClassName", "net/minecraft/item/ItemStack");
-			isHM.put("entityPlayerJavaClassName",
-					"net/minecraft/entity/player/EntityPlayer");
-			isHM.put("worldJavaClassName", "net/minecraft/world/World");
-		}
+		isHMdev.put("className", "net.minecraft.item.ItemStack");
+		isHMdev.put("javaClassName", "net/minecraft/item/ItemStack");
+		isHMdev.put("targetMethodName", "tryPlaceItemIntoWorld");
+
+		isHMdev.put("itemstackJavaClassName", "net/minecraft/item/ItemStack");
+		isHMdev.put("entityPlayerJavaClassName",
+				"net/minecraft/entity/player/EntityPlayer");
+		isHMdev.put("worldJavaClassName", "net/minecraft/world/World");
 	}
 
 	@Override
 	public byte[] transform(String name, byte[] bytes)
 	{
-		if (name.equals(iiwmHM.get("className")))
+		if (name.equals(iiwmHMob.get("className")))
 		{
-			return transformItemInWorldManager(bytes);
-		} else if (name.equals(isHM.get("className")))
-		{
-			return transformItemStack(bytes);
-		} else
-		{
-			return bytes;
+			// ItemInWorldManager, Obfuscated
+			return transformItemInWorldManager(bytes, iiwmHMob);
 		}
+
+		if (name.equals(iiwmHMdev.get("className")))
+		{
+			// ItemInWorldManager, NOT Obfuscated
+			return transformItemInWorldManager(bytes, iiwmHMdev);
+		}
+
+		if (name.equals(isHMob.get("className")))
+		{
+			// ItemStack, Obfuscated
+			return transformItemStack(bytes, isHMob);
+		}
+
+		if (name.equals(isHMdev.get("className")))
+		{
+			// ItemStack, NOT Obfuscated
+			return transformItemStack(bytes, isHMdev);
+		}
+
+		return bytes;
 	}
 
-	private byte[] transformItemStack(byte[] bytes)
+	private byte[] transformItemStack(byte[] bytes, HashMap<String, String> hm)
 	{
 		msg("[FE coremod] Patching ItemStack...");
-		HashMap<String, String> hm = isHM;
 
 		ClassNode classNode = new ClassNode();
 		ClassReader classReader = new ClassReader(bytes);
@@ -180,10 +192,10 @@ public class FEeventAdder implements IClassTransformer
 		return writer.toByteArray();
 	}
 
-	private byte[] transformItemInWorldManager(byte[] bytes)
+	private byte[] transformItemInWorldManager(byte[] bytes,
+			HashMap<String, String> hm)
 	{
 		msg("[FE coremod] Patching ItemInWorldManager...");
-		HashMap<String, String> hm = iiwmHM;
 
 		ClassNode classNode = new ClassNode();
 		ClassReader classReader = new ClassReader(bytes);
