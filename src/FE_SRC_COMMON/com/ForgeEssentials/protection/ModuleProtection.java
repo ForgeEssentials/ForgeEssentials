@@ -50,15 +50,6 @@ public class ModuleProtection implements IFEModule
 	public ModuleProtection()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
-		
-		HashMap<RegGroup, Boolean> map = new HashMap<RegGroup, Boolean>();
-		map.put(RegGroup.GUESTS, false); map.put(RegGroup.MEMBERS, true); map.put(RegGroup.ZONE_ADMINS, true); map.put(RegGroup.OWNERS, true); 
-		permissions.put(PERM_EDITS, map);
-		permissions.put(PERM_INTERACT_BLOCK, map);
-		permissions.put(PERM_INTERACT_ENTITY, map);
-		
-		map.put(RegGroup.MEMBERS, false);
-		permissions.put(PERM_OVERRIDE, map);
 	}
 
 	/*
@@ -68,6 +59,14 @@ public class ModuleProtection implements IFEModule
 	@Override
 	public void preLoad(FMLPreInitializationEvent e)
 	{
+		HashMap<RegGroup, Boolean> map = new HashMap<RegGroup, Boolean>();
+		map.put(RegGroup.GUESTS, false); map.put(RegGroup.MEMBERS, true); map.put(RegGroup.ZONE_ADMINS, true); map.put(RegGroup.OWNERS, true); 
+		permissions.put(PERM_EDITS, map);
+		permissions.put(PERM_INTERACT_BLOCK, map);
+		permissions.put(PERM_INTERACT_ENTITY, map);
+		
+		map.put(RegGroup.MEMBERS, false);
+		permissions.put(PERM_OVERRIDE, map);
 		if(!FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
 		config = new ConfigProtection();
 		if(!enable) return;
