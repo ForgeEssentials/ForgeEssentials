@@ -49,46 +49,41 @@ public class CommandSet extends WorldControlCommandBase
 
 			if (ID >= Block.blocksList.length)
 			{
-				error(player,
-						Localization.format("message.wc.blockIdOutOfRange",
-								Block.blocksList.length));
-			} else if (ID != 0 && Block.blocksList[ID] == null)
+				error(player, Localization.format("message.wc.blockIdOutOfRange", Block.blocksList.length));
+			}
+			else if (ID != 0 && Block.blocksList[ID] == null)
 			{
-				error(player,
-						Localization.format("message.wc.invalidBlockId", ID));
-			} else
+				error(player, Localization.format("message.wc.invalidBlockId", ID));
+			}
+			else
 			{
 				PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 				if (info.getSelection() == null)
 				{
-					OutputHandler.chatError(player,
-							Localization.get(Localization.ERROR_NOSELECTION));
+					OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
 					return;
 				}
 				World world = player.worldObj;
 				Selection sel = info.getSelection();
 				BackupArea back = new BackupArea();
 
-				PermQueryPlayerArea query = new PermQueryPlayerArea(player,
-						getCommandPerm(), sel, false);
+				PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
 				PermResult result = PermissionsAPI.checkPermResult(query);
 
 				switch (result)
 				{
 				case ALLOW:
-					TickTaskHandler.addTask(new TickTaskSetSelection(player,
-							ID, metadata, back, sel));
+					TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
 					return;
 				case PARTIAL:
-					TickTaskHandler.addTask(new TickTaskSetSelection(player,
-							ID, metadata, back, sel, query.applicable));
+					TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel, query.applicable));
 				default:
-					OutputHandler.chatError(player,
-							Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 					return;
 				}
 			}
-		} else
+		}
+		else
 		{
 			error(player);
 		}
@@ -99,8 +94,7 @@ public class CommandSet extends WorldControlCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsFromIterableMatchingLastWord(args, ItemList
-					.instance().getBlockList());
+			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getBlockList());
 		}
 		return null;
 	}

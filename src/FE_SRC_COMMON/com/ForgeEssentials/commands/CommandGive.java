@@ -50,13 +50,13 @@ public class CommandGive extends ForgeEssentialsCommandBase
 
 		if (args.length < 4)
 		{
-			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[0],
-					false);
+			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[0], false);
 			id = idAndMeta[0];
 			if (idAndMeta[1] == -1)
 			{
 				dam = 0;
-			} else
+			}
+			else
 			{
 				dam = idAndMeta[1];
 			}
@@ -67,10 +67,10 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			{
 				sender.sendChatToPlayer("Giving you " + stack.toString());
 				receiver.inventory.addItemStackToInventory(stack);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ "The server couldn't find the block you where looking for.");
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + "The server couldn't find the block you where looking for.");
 			}
 		}
 	}
@@ -89,13 +89,13 @@ public class CommandGive extends ForgeEssentialsCommandBase
 
 			amount = parseIntBounded(sender, args[1], 0, 64);
 
-			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[0],
-					false);
+			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[0], false);
 			id = idAndMeta[0];
 			if (idAndMeta[1] == -1)
 			{
 				dam = 0;
-			} else
+			}
+			else
 			{
 				dam = idAndMeta[1];
 			}
@@ -106,14 +106,15 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			{
 				sender.sendChatToPlayer("Giving you " + stack.toString());
 				receiver.inventory.addItemStackToInventory(stack);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				sender.sendChatToPlayer("The server couldn't find the block you where looking for.");
 			}
-		} else
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
@@ -134,13 +135,13 @@ public class CommandGive extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsFromIterableMatchingLastWord(args, ItemList
-					.instance().getItemList());
-		} else if (args.length == 3)
+			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getItemList());
+		}
+		else if (args.length == 3)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
 		{
 			return null;
 		}

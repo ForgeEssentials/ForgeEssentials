@@ -6,8 +6,7 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
-public abstract class WorldControlCommandBase extends
-		ForgeEssentialsCommandBase
+public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 {
 
 	protected boolean usesExtraSlash;
@@ -27,7 +26,8 @@ public abstract class WorldControlCommandBase extends
 		if (usesExtraSlash)
 		{
 			return "/" + getName();
-		} else
+		}
+		else
 		{
 			return getName();
 		}
@@ -65,8 +65,7 @@ public abstract class WorldControlCommandBase extends
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		sender.sendChatToPlayer("You cannot use the \"" + getCommandName()
-				+ "\" command from the console");
+		sender.sendChatToPlayer("You cannot use the \"" + getCommandName() + "\" command from the console");
 	}
 
 	@Override

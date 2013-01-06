@@ -36,23 +36,20 @@ public class commandLog extends logEntry
 	@Override
 	public String getTableCreateSQL()
 	{
-		return "CREATE TABLE IF NOT EXISTS "
-				+ getName()
+		return "CREATE TABLE IF NOT EXISTS " + getName()
 				+ "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), sender CHAR(64), command CHAR(128), time DATETIME)";
 	}
 
 	@Override
 	public String getprepareStatementSQL()
 	{
-		return "INSERT INTO " + getName()
-				+ " (sender, command, time) VALUES (?,?,?);";
+		return "INSERT INTO " + getName() + " (sender, command, time) VALUES (?,?,?);";
 	}
 
 	@Override
 	public void makeEntries(Connection connection) throws SQLException
 	{
-		PreparedStatement ps = connection
-				.prepareStatement(getprepareStatementSQL());
+		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
 		Iterator<commandLog> i = buffer.iterator();
 		List<commandLog> toremove = new ArrayList();
 		while (i.hasNext())

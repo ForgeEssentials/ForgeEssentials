@@ -35,25 +35,22 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayerMP player = FunctionHelper
-					.getPlayerFromUsername(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
 			if (player != null)
 			{
 				EntityPlayerMP target = (EntityPlayerMP) sender;
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(target), player);
-			} else
-			{
-				OutputHandler.chatError(sender, Localization.format(
-						Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} else
+			else
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else
 		{
-			OutputHandler.chatError(
-					sender,
-					Localization.get(Localization.ERROR_BADSYNTAX + " "
-							+ getCommandUsage(sender)));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX + " " + getCommandUsage(sender)));
 		}
 	}
 
@@ -80,9 +77,9 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
 		{
 			return null;
 		}

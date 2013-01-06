@@ -47,9 +47,7 @@ public class BlockSaveable implements Serializable
 		if (object instanceof BlockSaveable)
 		{
 			BlockSaveable block = (BlockSaveable) object;
-			return x == block.x && y == block.y && z == block.z
-					&& blockID == block.blockID && metadata == block.metadata
-					&& tile.equals(block.tile);
+			return x == block.x && y == block.y && z == block.z && blockID == block.blockID && metadata == block.metadata && tile.equals(block.tile);
 		}
 		return false;
 	}

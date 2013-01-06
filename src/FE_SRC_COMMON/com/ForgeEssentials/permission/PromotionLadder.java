@@ -57,7 +57,8 @@ public class PromotionLadder
 		if (index == 0)
 		{
 			return null;
-		} else
+		}
+		else
 		{
 			return groupsList.get(index - 1);
 		}
@@ -78,7 +79,8 @@ public class PromotionLadder
 		if (index == groupsList.size() - 1)
 		{
 			return null;
-		} else
+		}
+		else
 		{
 			return groupsList.get(index - 1);
 		}

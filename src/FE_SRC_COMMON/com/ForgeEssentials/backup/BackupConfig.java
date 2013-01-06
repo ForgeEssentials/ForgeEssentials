@@ -31,16 +31,10 @@ public class BackupConfig implements IModuleConfig
 	{
 		config = new Configuration(file);
 
-		config.addCustomCategoryComment("Backups",
-				"Configure the backup system.");
-		BackupThread.backupName = config
-				.get("Backups",
-						"name",
-						"%world-%year-%month-%day_%hour-%min",
-						"The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world").value;
-		String backupdir = config
-				.get("Backups", "folder", "backups/",
-						"The path to the backup folder. This is relative to the ForgeEssentials folder").value;
+		config.addCustomCategoryComment("Backups", "Configure the backup system.");
+		BackupThread.backupName = config.get("Backups", "name", "%world-%year-%month-%day_%hour-%min",
+				"The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world").value;
+		String backupdir = config.get("Backups", "folder", "backups/", "The path to the backup folder. This is relative to the ForgeEssentials folder").value;
 
 		File dir = new File(ForgeEssentials.FEDIR, backupdir);
 		if (!dir.exists())
@@ -56,19 +50,14 @@ public class BackupConfig implements IModuleConfig
 	@Override
 	public void forceSave()
 	{
-		config.addCustomCategoryComment("Backups",
-				"Configure the backup system.");
-		config.get(
-				"Backups",
-				"name",
-				"%world-%year-%month-%day_%hour-%min",
+		config.addCustomCategoryComment("Backups", "Configure the backup system.");
+		config.get("Backups", "name", "%world-%year-%month-%day_%hour-%min",
 				"The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world").value = BackupThread.backupName;
 
 		// TDOD: may be bad....
 		String dir = backupDir.getPath();
 		dir = dir.replace(ForgeEssentials.FEDIR.getPath(), "");
-		config.get("Backups", "folder", "backups/",
-				"The path to the backup folder. This is relative to the ForgeEssentials folder").value = dir;
+		config.get("Backups", "folder", "backups/", "The path to the backup folder. This is relative to the ForgeEssentials folder").value = dir;
 
 		config.save();
 	}
@@ -78,8 +67,7 @@ public class BackupConfig implements IModuleConfig
 	{
 		config.load();
 
-		BackupThread.backupName = config.get("Backups", "name",
-				"%world-%year-%month-%day_%hour-%min").value;
+		BackupThread.backupName = config.get("Backups", "name", "%world-%year-%month-%day_%hour-%min").value;
 		String backupdir = config.get("Backups", "folder", "backups/").value;
 
 		File dir = new File(ForgeEssentials.FEDIR, backupdir);

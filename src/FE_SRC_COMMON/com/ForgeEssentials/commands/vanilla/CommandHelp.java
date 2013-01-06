@@ -14,9 +14,9 @@ public class CommandHelp extends net.minecraft.command.CommandHelp
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-					(EntityPlayer) sender, getCommandPerm()));
-		} else
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
+		}
+		else
 		{
 			return true;
 		}

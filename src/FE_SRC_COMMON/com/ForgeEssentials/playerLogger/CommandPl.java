@@ -46,8 +46,7 @@ public class CommandPl extends ForgeEssentialsCommandBase
 			}
 			sender.getEntityData().setBoolean("lb", true);
 			sender.getEntityData().setInteger("lb_limit", limit);
-			sender.sendChatToPlayer("Click a block and you will get the last "
-					+ limit + " changes.");
+			sender.sendChatToPlayer("Click a block and you will get the last " + limit + " changes.");
 		}
 		// TODO add further stuff.
 	}

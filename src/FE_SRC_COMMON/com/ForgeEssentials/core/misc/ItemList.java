@@ -20,8 +20,7 @@ public class ItemList
 	{
 		instance = this;
 		makeList();
-		OutputHandler.SOP("Item & blockList made. Added " + itemMap.size()
-				+ " items and " + blockMap.size() + " blocks.");
+		OutputHandler.SOP("Item & blockList made. Added " + itemMap.size() + " items and " + blockMap.size() + " blocks.");
 	}
 
 	public static ItemList instance()
@@ -37,14 +36,11 @@ public class ItemList
 			{
 				try
 				{
-					itemMap.put(
-							item.getItemName().toLowerCase()
-									.replaceAll("tile.", "")
-									.replaceAll("item.", ""), item);
-				} catch (Exception e)
+					itemMap.put(item.getItemName().toLowerCase().replaceAll("tile.", "").replaceAll("item.", ""), item);
+				}
+				catch (Exception e)
 				{
-					OutputHandler.debug("Not added to list: "
-							+ item.getClass().getName());
+					OutputHandler.debug("Not added to list: " + item.getClass().getName());
 				}
 			}
 		}
@@ -56,14 +52,11 @@ public class ItemList
 				try
 				{
 
-					blockMap.put(
-							block.getBlockName().toLowerCase()
-									.replaceAll("item.", "")
-									.replaceAll("tile.", ""), block);
-				} catch (Exception e)
+					blockMap.put(block.getBlockName().toLowerCase().replaceAll("item.", "").replaceAll("tile.", ""), block);
+				}
+				catch (Exception e)
 				{
-					OutputHandler.debug("Not added to list: "
-							+ block.getClass().getName());
+					OutputHandler.debug("Not added to list: " + block.getClass().getName());
 				}
 			}
 		}

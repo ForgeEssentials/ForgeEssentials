@@ -39,8 +39,7 @@ public class CommandButcherTickTask implements ITickTask
 	int var9temp, var10temp;
 	World world;
 
-	public CommandButcherTickTask(EntityPlayer sender, String mobType,
-			AxisAlignedBB aabb, int radius)
+	public CommandButcherTickTask(EntityPlayer sender, String mobType, AxisAlignedBB aabb, int radius)
 	{
 		player = sender;
 		this.sender = sender;
@@ -49,17 +48,14 @@ public class CommandButcherTickTask implements ITickTask
 		if (radius == -1)
 		{
 
-		} else
+		}
+		else
 		{
 			this.aabb = aabb;
-			var4 = MathHelper
-					.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
-			var5 = MathHelper
-					.floor_double((aabb.maxX + MAX_ENTITY_RADIUS) / 16.0D);
-			var6 = MathHelper
-					.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
-			var7 = MathHelper
-					.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
+			var4 = MathHelper.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
+			var5 = MathHelper.floor_double((aabb.maxX + MAX_ENTITY_RADIUS) / 16.0D);
+			var6 = MathHelper.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
+			var7 = MathHelper.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
 		}
 		world = sender.worldObj;
 		counter = 0;
@@ -68,8 +64,7 @@ public class CommandButcherTickTask implements ITickTask
 		MAX_ENTITY_RADIUS = World.MAX_ENTITY_RADIUS;
 	}
 
-	public CommandButcherTickTask(ICommandSender sender, String mobType,
-			AxisAlignedBB aabb, int radius, int worldID)
+	public CommandButcherTickTask(ICommandSender sender, String mobType, AxisAlignedBB aabb, int radius, int worldID)
 	{
 		this.sender = sender;
 		this.mobType = mobType;
@@ -77,17 +72,14 @@ public class CommandButcherTickTask implements ITickTask
 		if (radius == -1)
 		{
 
-		} else
+		}
+		else
 		{
 			this.aabb = aabb;
-			var4 = MathHelper
-					.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
-			var5 = MathHelper
-					.floor_double((aabb.maxX + MAX_ENTITY_RADIUS) / 16.0D);
-			var6 = MathHelper
-					.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
-			var7 = MathHelper
-					.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
+			var4 = MathHelper.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
+			var5 = MathHelper.floor_double((aabb.maxX + MAX_ENTITY_RADIUS) / 16.0D);
+			var6 = MathHelper.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
+			var7 = MathHelper.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
 		}
 		world = FunctionHelper.getDimension(worldID);
 		counter = 0;
@@ -102,30 +94,22 @@ public class CommandButcherTickTask implements ITickTask
 		{
 			for (Object entity : world.loadedEntityList)
 			{
-				if (entity instanceof EntityLiving
-						&& !(entity instanceof EntityPlayer))
+				if (entity instanceof EntityLiving && !(entity instanceof EntityPlayer))
 				{
-					if (mobType.equalsIgnoreCase("hostile")
-							|| mobType.equalsIgnoreCase("all"))
+					if (mobType.equalsIgnoreCase("hostile") || mobType.equalsIgnoreCase("all"))
 					{
-						if (entity instanceof EntityMob
-								|| entity instanceof EntitySlime
-								|| entity instanceof EntityGhast)
+						if (entity instanceof EntityMob || entity instanceof EntitySlime || entity instanceof EntityGhast)
 						{
 							((EntityLiving) entity).setDead();
 							counter++;
 							tempCount++;
 						}
 					}
-					if (mobType.equalsIgnoreCase("passive")
-							|| mobType.equalsIgnoreCase("all"))
+					if (mobType.equalsIgnoreCase("passive") || mobType.equalsIgnoreCase("all"))
 					{
-						if (entity instanceof EntityAnimal
-								|| entity instanceof EntityAmbientCreature
-								|| entity instanceof EntitySquid)
+						if (entity instanceof EntityAnimal || entity instanceof EntityAmbientCreature || entity instanceof EntitySquid)
 						{
-							if (entity instanceof EntityTameable
-									&& ((EntityTameable) entity).isTamed())
+							if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
 							{
 								continue;
 							}
@@ -134,8 +118,7 @@ public class CommandButcherTickTask implements ITickTask
 							tempCount++;
 						}
 					}
-					if (mobType.equalsIgnoreCase("villager")
-							|| mobType.equalsIgnoreCase("all"))
+					if (mobType.equalsIgnoreCase("villager") || mobType.equalsIgnoreCase("all"))
 					{
 						if (entity instanceof EntityVillager)
 						{
@@ -144,8 +127,7 @@ public class CommandButcherTickTask implements ITickTask
 							tempCount++;
 						}
 					}
-					if (mobType.equalsIgnoreCase("golem")
-							|| mobType.equalsIgnoreCase("all"))
+					if (mobType.equalsIgnoreCase("golem") || mobType.equalsIgnoreCase("all"))
 					{
 						if (entity instanceof EntityGolem)
 						{
@@ -154,11 +136,9 @@ public class CommandButcherTickTask implements ITickTask
 							tempCount++;
 						}
 					}
-					if (mobType.equalsIgnoreCase("tamed")
-							|| mobType.equalsIgnoreCase("all"))
+					if (mobType.equalsIgnoreCase("tamed") || mobType.equalsIgnoreCase("all"))
 					{
-						if (entity instanceof EntityTameable
-								&& ((EntityTameable) entity).isTamed())
+						if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
 						{
 							((EntityLiving) entity).setDead();
 							counter++;
@@ -181,31 +161,23 @@ public class CommandButcherTickTask implements ITickTask
 				if (world.getChunkProvider().chunkExists(var9, var10))
 				{
 					List<EntityLiving> list = new LinkedList<EntityLiving>();
-					world.getChunkFromChunkCoords(var9, var10)
-							.getEntitiesOfTypeWithinAAAB(EntityLiving.class,
-									aabb, list, (IEntitySelector) null);
+					world.getChunkFromChunkCoords(var9, var10).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, (IEntitySelector) null);
 					for (EntityLiving entity : list)
 					{
-						if (mobType.equalsIgnoreCase("hostile")
-								|| mobType.equalsIgnoreCase("all"))
+						if (mobType.equalsIgnoreCase("hostile") || mobType.equalsIgnoreCase("all"))
 						{
-							if (entity instanceof EntityMob
-									|| entity instanceof EntitySlime
-									|| entity instanceof EntityGhast)
+							if (entity instanceof EntityMob || entity instanceof EntitySlime || entity instanceof EntityGhast)
 							{
 								entity.setDead();
 								counter++;
 								tempCount++;
 							}
 						}
-						if (mobType.equalsIgnoreCase("passive")
-								|| mobType.equalsIgnoreCase("all"))
+						if (mobType.equalsIgnoreCase("passive") || mobType.equalsIgnoreCase("all"))
 						{
-							if (entity instanceof EntityAnimal
-									|| entity instanceof EntityAmbientCreature)
+							if (entity instanceof EntityAnimal || entity instanceof EntityAmbientCreature)
 							{
-								if (entity instanceof EntityTameable
-										&& ((EntityTameable) entity).isTamed())
+								if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
 								{
 									continue;
 								}
@@ -214,8 +186,7 @@ public class CommandButcherTickTask implements ITickTask
 								tempCount++;
 							}
 						}
-						if (mobType.equalsIgnoreCase("villager")
-								|| mobType.equalsIgnoreCase("all"))
+						if (mobType.equalsIgnoreCase("villager") || mobType.equalsIgnoreCase("all"))
 						{
 							if (entity instanceof EntityVillager)
 							{
@@ -224,8 +195,7 @@ public class CommandButcherTickTask implements ITickTask
 								tempCount++;
 							}
 						}
-						if (mobType.equalsIgnoreCase("golem")
-								|| mobType.equalsIgnoreCase("all"))
+						if (mobType.equalsIgnoreCase("golem") || mobType.equalsIgnoreCase("all"))
 						{
 							if (entity instanceof EntityGolem)
 							{
@@ -234,11 +204,9 @@ public class CommandButcherTickTask implements ITickTask
 								tempCount++;
 							}
 						}
-						if (mobType.equalsIgnoreCase("tamed")
-								|| mobType.equalsIgnoreCase("all"))
+						if (mobType.equalsIgnoreCase("tamed") || mobType.equalsIgnoreCase("all"))
 						{
-							if (entity instanceof EntityTameable
-									&& ((EntityTameable) entity).isTamed())
+							if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
 							{
 								entity.setDead();
 								counter++;
@@ -264,12 +232,11 @@ public class CommandButcherTickTask implements ITickTask
 	{
 		if (playerCommand)
 		{
-			OutputHandler.chatConfirmation(player,
-					Localization.format(Localization.BUTCHERED, counter));
-		} else
+			OutputHandler.chatConfirmation(player, Localization.format(Localization.BUTCHERED, counter));
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization.format(Localization.BUTCHERED,
-					counter));
+			sender.sendChatToPlayer(Localization.format(Localization.BUTCHERED, counter));
 		}
 	}
 

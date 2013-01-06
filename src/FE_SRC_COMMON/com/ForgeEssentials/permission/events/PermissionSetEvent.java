@@ -57,7 +57,8 @@ public class PermissionSetEvent extends Event
 		if (!isCanceled())
 		{
 			return "";
-		} else
+		}
+		else
 		{
 			return reason;
 		}

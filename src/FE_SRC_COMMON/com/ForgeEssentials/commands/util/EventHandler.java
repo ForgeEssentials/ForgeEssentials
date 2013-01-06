@@ -33,8 +33,7 @@ public class EventHandler
 		if (e.entityPlayer.getEntityData().getBoolean("colorize"))
 		{
 			e.setCanceled(true);
-			TileEntity te = e.entityPlayer.worldObj.getBlockTileEntity(e.x,
-					e.y, e.z);
+			TileEntity te = e.entityPlayer.worldObj.getBlockTileEntity(e.x, e.y, e.z);
 			if (te != null)
 			{
 				if (te instanceof TileEntitySign)
@@ -47,14 +46,15 @@ public class EventHandler
 					signText[3] = colorize(signText[3]);
 
 					((TileEntitySign) te).signText = signText;
-					e.entityPlayer.worldObj.setBlockTileEntity(e.x, e.y, e.z,
-							te);
+					e.entityPlayer.worldObj.setBlockTileEntity(e.x, e.y, e.z, te);
 					e.entityPlayer.worldObj.markBlockForUpdate(e.x, e.y, e.z);
-				} else
+				}
+				else
 				{
 					e.entityPlayer.sendChatToPlayer("That is no sign!");
 				}
-			} else
+			}
+			else
 			{
 				e.entityPlayer.sendChatToPlayer("That is no sign!");
 			}
@@ -66,26 +66,17 @@ public class EventHandler
 		 * Jump with compass
 		 */
 
-		if (e.action == Action.RIGHT_CLICK_AIR
-				|| e.action == Action.RIGHT_CLICK_BLOCK)
+		if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK)
 		{
-			if (e.entityPlayer.getCurrentEquippedItem() != null
-					&& FMLCommonHandler.instance().getEffectiveSide()
-							.isServer())
+			if (e.entityPlayer.getCurrentEquippedItem() != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
 			{
 				if (e.entityPlayer.getCurrentEquippedItem().itemID == Item.compass.itemID)
 				{
-					if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-							e.entityPlayer,
-							"ForgeEssentials.BasicCommands.jump")))
+					if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, "ForgeEssentials.BasicCommands.jump")))
 					{
-						MovingObjectPosition mo = FunctionHelper
-								.getPlayerLookingSpot(e.entityPlayer, false);
-						((EntityPlayerMP) e.entityPlayer).playerNetServerHandler
-								.setPlayerLocation(mo.blockX, mo.blockY,
-										mo.blockZ,
-										e.entityPlayer.rotationPitch,
-										e.entityPlayer.rotationYaw);
+						MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, false);
+						((EntityPlayerMP) e.entityPlayer).playerNetServerHandler.setPlayerLocation(mo.blockX, mo.blockY, mo.blockZ,
+								e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw);
 					}
 				}
 			}
@@ -102,8 +93,7 @@ public class EventHandler
 	{
 		if (e.entity instanceof EntityPlayer)
 		{
-			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).back = new WarpPoint(
-					(EntityPlayer) e.entity);
+			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).back = new WarpPoint((EntityPlayer) e.entity);
 		}
 	}
 }

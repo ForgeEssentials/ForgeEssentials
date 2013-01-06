@@ -26,8 +26,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 /**
- * Bounces players back into the border if they pass it. No bypass permissions
- * available, If needed, tell me on github.
+ * Bounces players back into the border if they pass it. No bypass permissions available, If needed, tell me on github.
  * 
  * @author Dries007
  * 
@@ -130,17 +129,16 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 
 			if (ticks % players == 0)
 			{
-				players = FMLCommonHandler.instance()
-						.getMinecraftServerInstance().getAllUsernames().length + 1;
-			} else
+				players = FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames().length + 1;
+			}
+			else
 			{
-				EntityPlayerMP player = ((EntityPlayerMP) FMLCommonHandler
-						.instance().getMinecraftServerInstance()
-						.getConfigurationManager().playerEntityList.get(ticks
-						% players - 1));
+				EntityPlayerMP player = ((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList
+						.get(ticks % players - 1));
 				shape.doCheck(player);
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			OutputHandler.SOP("Failed to tick WorldBorder");
 			OutputHandler.SOP("" + e.getLocalizedMessage());
@@ -170,10 +168,12 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		if (players < 10)
 		{
 			return 10;
-		} else if (players < 20)
+		}
+		else if (players < 20)
 		{
 			return 5;
-		} else
+		}
+		else
 		{
 			return 0;
 		}
@@ -205,7 +205,8 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 			if (byte1 == 1)
 			{
 				return BorderShape.round;
-			} else if (byte1 == 2)
+			}
+			else if (byte1 == 2)
 			{
 				return BorderShape.square;
 			}
@@ -216,8 +217,7 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		{
 			if (equals(round))
 			{
-				int dist = (int) getDistanceRound(X, Z, (int) player.posX,
-						(int) player.posZ);
+				int dist = (int) getDistanceRound(X, Z, (int) player.posX, (int) player.posZ);
 				if (dist > rad)
 				{
 					executeClosestEffects(dist - ModuleWorldBorder.rad, player);
@@ -294,13 +294,11 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	{
 		if (logToConsole)
 		{
-			OutputHandler.SOP(player.username + " passed the worldborder by "
-					+ dist + " blocks.");
+			OutputHandler.SOP(player.username + " passed the worldborder by " + dist + " blocks.");
 		}
 	}
 
-	public static void setCenter(int rad, int posX, int posZ,
-			BorderShape shapeToSet, boolean set)
+	public static void setCenter(int rad, int posX, int posZ, BorderShape shapeToSet, boolean set)
 	{
 		shape = shapeToSet;
 		ModuleWorldBorder.set = set;

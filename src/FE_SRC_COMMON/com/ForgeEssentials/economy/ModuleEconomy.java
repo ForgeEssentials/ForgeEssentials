@@ -79,16 +79,14 @@ public class ModuleEconomy implements IFEModule, IPlayerTracker
 	public static void saveData(EntityPlayer player)
 	{
 		NBTTagCompound economyNBT = player.getEntityData();
-		economyNBT.setInteger("Economy-" + player.username,
-				ModuleEconomy.getPlayerInfo(player).wallet);
+		economyNBT.setInteger("Economy-" + player.username, ModuleEconomy.getPlayerInfo(player).wallet);
 
 	}
 
 	public static void loadData(EntityPlayer player)
 	{
 		NBTTagCompound economyNBT = player.getEntityData();
-		ModuleEconomy.getPlayerInfo(player).wallet = economyNBT
-				.getInteger("Economy-" + player.username);
+		ModuleEconomy.getPlayerInfo(player).wallet = economyNBT.getInteger("Economy-" + player.username);
 		Wallet.doesWalletExist(player);
 	}
 

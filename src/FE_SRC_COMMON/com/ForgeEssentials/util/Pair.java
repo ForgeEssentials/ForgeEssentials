@@ -60,8 +60,7 @@ public class Pair<A, B>
 		boolean flag = false;
 		if (o instanceof Pair)
 		{
-			flag = (left.equals(((Pair) o).getFirst()) && right
-					.equals(((Pair) o).getSecond()));
+			flag = (left.equals(((Pair) o).getFirst()) && right.equals(((Pair) o).getSecond()));
 		}
 		return flag;
 	}

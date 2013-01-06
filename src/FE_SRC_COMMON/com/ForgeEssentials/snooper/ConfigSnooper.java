@@ -11,8 +11,7 @@ import com.ForgeEssentials.core.IModuleConfig;
 
 public class ConfigSnooper implements IModuleConfig
 {
-	private static final File file = new File(ForgeEssentials.FEDIR,
-			"Snooper.cfg");
+	private static final File file = new File(ForgeEssentials.FEDIR, "Snooper.cfg");
 	private Configuration config;
 
 	public ConfigSnooper()
@@ -33,23 +32,16 @@ public class ConfigSnooper implements IModuleConfig
 
 		String cat = "Snooper";
 
-		ModuleSnooper.port = config.get(cat, "port", 25565, "The query port")
-				.getInt();
-		ModuleSnooper.hostname = config.get(cat, "hostname", "",
-				"The query hostname/IP").value;
+		ModuleSnooper.port = config.get(cat, "port", 25565, "The query port").getInt();
+		ModuleSnooper.hostname = config.get(cat, "hostname", "", "The query hostname/IP").value;
 
-		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true,
-				"Automaticly reload the query system if a fatal error occures")
-				.getBoolean(true);
-		ModuleSnooper.enable = config.get(cat, "enable", false,
-				"This one is obvious don't you think?").getBoolean(false);
+		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automaticly reload the query system if a fatal error occures").getBoolean(true);
+		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious don't you think?").getBoolean(false);
 
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
 			String subCat = cat + "." + response.getName();
-			response.allowed = config.get(subCat, "enable", true,
-					"If false, this response won't be allowed on this server.")
-					.getBoolean(true);
+			response.allowed = config.get(subCat, "enable", true, "If false, this response won't be allowed on this server.").getBoolean(true);
 			response.readConfig(subCat, config);
 		}
 		config.save();
@@ -64,18 +56,13 @@ public class ConfigSnooper implements IModuleConfig
 		config.get(cat, "port", 25565, "").value = "" + ModuleSnooper.port;
 		config.get(cat, "hostname", "", "The query hostname/IP").value = ModuleSnooper.hostname;
 
-		config.get(cat, "autoReload", true,
-				"Automaticly reload the query system if a fatal error occures").value = ""
-				+ ModuleSnooper.autoReboot;
-		config.get(cat, "enable", false, "This one is obvious don't you think?").value = ""
-				+ ModuleSnooper.enable;
+		config.get(cat, "autoReload", true, "Automaticly reload the query system if a fatal error occures").value = "" + ModuleSnooper.autoReboot;
+		config.get(cat, "enable", false, "This one is obvious don't you think?").value = "" + ModuleSnooper.enable;
 
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
 			String subCat = cat + "." + response.getName();
-			config.get(subCat, "enable", true,
-					"If false, this response won't be allowed on this server.").value = ""
-					+ response.allowed;
+			config.get(subCat, "enable", true, "If false, this response won't be allowed on this server.").value = "" + response.allowed;
 			response.writeConfig(subCat, config);
 		}
 		config.save();
@@ -88,23 +75,16 @@ public class ConfigSnooper implements IModuleConfig
 
 		String cat = "Snooper";
 
-		ModuleSnooper.port = config.get(cat, "port", 25565, "The query port")
-				.getInt();
-		ModuleSnooper.hostname = config.get(cat, "hostname", "",
-				"The query hostname/IP").value;
+		ModuleSnooper.port = config.get(cat, "port", 25565, "The query port").getInt();
+		ModuleSnooper.hostname = config.get(cat, "hostname", "", "The query hostname/IP").value;
 
-		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true,
-				"Automaticly reload the query system if a fatal error occures")
-				.getBoolean(true);
-		ModuleSnooper.enable = config.get(cat, "enable", false,
-				"This one is obvious don't you think?").getBoolean(false);
+		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automaticly reload the query system if a fatal error occures").getBoolean(true);
+		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious don't you think?").getBoolean(false);
 
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
 			String subCat = cat + "." + response.getName();
-			response.allowed = config.get(subCat, "enable", true,
-					"If false, this response won't be allowed on this server.")
-					.getBoolean(true);
+			response.allowed = config.get(subCat, "enable", true, "If false, this response won't be allowed on this server.").getBoolean(true);
 			response.readConfig(subCat, config);
 		}
 		ModuleSnooper.startQuery();

@@ -48,8 +48,7 @@ public class TickTaskFill implements ITickTask
 	public boolean autoPilot = false;
 	public int targetTPS = 20;
 
-	protected MinecraftServer server = FMLCommonHandler.instance()
-			.getMinecraftServerInstance();
+	protected MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
 	public double getTPS()
 	{
@@ -64,20 +63,16 @@ public class TickTaskFill implements ITickTask
 
 	public String getETA()
 	{
-		return (int) (((eta - ticks) / getTPS()))
-				+ Localization.get(Localization.UNIT_SECONDS);
+		return (int) (((eta - ticks) / getTPS())) + Localization.get(Localization.UNIT_SECONDS);
 	}
 
 	public void warnEveryone(String msg)
 	{
 		OutputHandler.SOP("#### " + msg);
-		for (int var2 = 0; var2 < FMLCommonHandler.instance()
-				.getMinecraftServerInstance().getConfigurationManager().playerEntityList
-				.size(); ++var2)
+		for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
 		{
-			((EntityPlayerMP) FMLCommonHandler.instance()
-					.getMinecraftServerInstance().getConfigurationManager().playerEntityList
-					.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
+			((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2))
+					.sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
 		}
 	}
 
@@ -111,9 +106,7 @@ public class TickTaskFill implements ITickTask
 		ticks++;
 		if (ticks % (tps * 10) == 0)
 		{
-			warnEveryone(Localization.get(Localization.WB_FILL_STILLGOING)
-					.replaceAll("%eta", getETA())
-					.replaceAll("%ctp", chunksAtick + ""));
+			warnEveryone(Localization.get(Localization.WB_FILL_STILLGOING).replaceAll("%eta", getETA()).replaceAll("%ctp", chunksAtick + ""));
 		}
 
 		getTPS();
@@ -126,18 +119,17 @@ public class TickTaskFill implements ITickTask
 				{
 					--chunksAtick;
 				}
-				OutputHandler.debug("WB Autopilot: Less CPT:" + chunksAtick
-						+ " TPS:" + tps + " < " + targetTPS);
-			} else if (tps - 2 > targetTPS)
+				OutputHandler.debug("WB Autopilot: Less CPT:" + chunksAtick + " TPS:" + tps + " < " + targetTPS);
+			}
+			else if (tps - 2 > targetTPS)
 			{
 				// We can handle more!
 				++chunksAtick;
-				OutputHandler.debug("WB Autopilot: More CPT:" + chunksAtick
-						+ " TPS:" + tps + " > " + targetTPS);
-			} else
+				OutputHandler.debug("WB Autopilot: More CPT:" + chunksAtick + " TPS:" + tps + " > " + targetTPS);
+			}
+			else
 			{
-				OutputHandler.debug("WB Autopilot: Good CPT:" + chunksAtick
-						+ " TPS:" + tps + " ~~ " + targetTPS);
+				OutputHandler.debug("WB Autopilot: Good CPT:" + chunksAtick + " TPS:" + tps + " ~~ " + targetTPS);
 			}
 		}
 	}
@@ -146,9 +138,7 @@ public class TickTaskFill implements ITickTask
 	public void onComplete()
 	{
 		warnEveryone(Localization.get(Localization.WB_FILL_DONE));
-		warnEveryone(Localization.get(Localization.WB_FILL_FINISHED)
-				.replaceAll("%ticks", "" + ticks)
-				.replaceAll("%sec", "" + (int) (ticks / tps)));
+		warnEveryone(Localization.get(Localization.WB_FILL_FINISHED).replaceAll("%ticks", "" + ticks).replaceAll("%sec", "" + (int) (ticks / tps)));
 		CommandWB.taskGooing = null;
 	}
 

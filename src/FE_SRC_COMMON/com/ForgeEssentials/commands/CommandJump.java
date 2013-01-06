@@ -29,11 +29,8 @@ public class CommandJump extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(sender,
-				false);
-		((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(
-				mo.blockX, mo.blockY, mo.blockZ, sender.rotationPitch,
-				sender.rotationYaw);
+		MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(sender, false);
+		((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(mo.blockX, mo.blockY, mo.blockZ, sender.rotationPitch, sender.rotationYaw);
 	}
 
 	@Override

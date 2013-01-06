@@ -28,8 +28,7 @@ public class ModulePermissions implements IFEModule
 	public static SqlHelper sql;
 	public static ConfigPermissions config;
 
-	public static File permsFolder = new File(ForgeEssentials.FEDIR,
-			"/permissions/");
+	public static File permsFolder = new File(ForgeEssentials.FEDIR, "/permissions/");
 	protected static DataDriver data;
 
 	@Override
@@ -90,15 +89,12 @@ public class ModulePermissions implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(this, RegGroup.ZONE_ADMINS,
-				"ForgeEssentials.permissions.zone.setparent", true);
+		event.registerPerm(this, RegGroup.ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
 		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.perm", true);
 		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.zone", true);
 
-		event.registerPerm(this, RegGroup.OWNERS,
-				TeleportCenter.BYPASS_COOLDOWN, true);
-		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_WARMUP,
-				true);
+		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
+		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_WARMUP, true);
 	}
 
 	@Override

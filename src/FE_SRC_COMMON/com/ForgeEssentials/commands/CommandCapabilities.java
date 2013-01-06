@@ -48,10 +48,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 	{
 		if (args.length > 3)
 		{
-			OutputHandler
-					.chatError(
-							sender,
-							(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 			return;
 		}
 		execute(sender, args);
@@ -62,8 +59,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 	{
 		if (args.length > 3)
 		{
-			sender.sendChatToPlayer((Localization
-					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
+			sender.sendChatToPlayer((Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
 			return;
 		}
 		execute(sender, args);
@@ -78,82 +74,72 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 			{
 				sender.sendChatToPlayer(cap);
 			}
-		} else if (args.length == 1)
+		}
+		else if (args.length == 1)
 		{
-			EntityPlayerMP target = FMLCommonHandler.instance()
-					.getSidedDelegate().getServer().getConfigurationManager()
-					.getPlayerForUsername(args[0]);
-			sender.sendChatToPlayer(names.get(0) + " = "
-					+ target.capabilities.disableDamage);
-			sender.sendChatToPlayer(names.get(1) + " = "
-					+ target.capabilities.isFlying);
-			sender.sendChatToPlayer(names.get(2) + " = "
-					+ target.capabilities.allowFlying);
-			sender.sendChatToPlayer(names.get(3) + " = "
-					+ target.capabilities.isCreativeMode);
-			sender.sendChatToPlayer(names.get(4) + " = "
-					+ target.capabilities.allowEdit);
-		} else if (args.length == 2)
+			EntityPlayerMP target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
+			sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
+			sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
+			sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
+			sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
+		}
+		else if (args.length == 2)
 		{
-			EntityPlayerMP target = FMLCommonHandler.instance()
-					.getSidedDelegate().getServer().getConfigurationManager()
-					.getPlayerForUsername(args[0]);
+			EntityPlayerMP target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			if (args[1].equalsIgnoreCase(names.get(0)))
 			{
-				sender.sendChatToPlayer(names.get(0) + " = "
-						+ target.capabilities.disableDamage);
-			} else if (args[1].equalsIgnoreCase(names.get(1)))
-			{
-				sender.sendChatToPlayer(names.get(1) + " = "
-						+ target.capabilities.isFlying);
-			} else if (args[1].equalsIgnoreCase(names.get(2)))
-			{
-				sender.sendChatToPlayer(names.get(2) + " = "
-						+ target.capabilities.allowFlying);
-			} else if (args[1].equalsIgnoreCase(names.get(3)))
-			{
-				sender.sendChatToPlayer(names.get(3) + " = "
-						+ target.capabilities.isCreativeMode);
-			} else if (args[1].equalsIgnoreCase(names.get(4)))
-			{
-				sender.sendChatToPlayer(names.get(4) + " = "
-						+ target.capabilities.allowEdit);
+				sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
 			}
-		} else if (args.length == 3)
+			else if (args[1].equalsIgnoreCase(names.get(1)))
+			{
+				sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
+			}
+			else if (args[1].equalsIgnoreCase(names.get(2)))
+			{
+				sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
+			}
+			else if (args[1].equalsIgnoreCase(names.get(3)))
+			{
+				sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
+			}
+			else if (args[1].equalsIgnoreCase(names.get(4)))
+			{
+				sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
+			}
+		}
+		else if (args.length == 3)
 		{
-			EntityPlayerMP target = FMLCommonHandler.instance()
-					.getSidedDelegate().getServer().getConfigurationManager()
-					.getPlayerForUsername(args[0]);
+			EntityPlayerMP target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			if (args[1].equalsIgnoreCase(names.get(0)))
 			{
 				boolean bln = Boolean.parseBoolean(args[2]);
 				target.capabilities.disableDamage = bln;
-				sender.sendChatToPlayer(names.get(0) + " = "
-						+ target.capabilities.disableDamage);
-			} else if (args[1].equalsIgnoreCase(names.get(1)))
+				sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
+			}
+			else if (args[1].equalsIgnoreCase(names.get(1)))
 			{
 				boolean bln = Boolean.parseBoolean(args[2]);
 				target.capabilities.isFlying = bln;
-				sender.sendChatToPlayer(names.get(1) + " = "
-						+ target.capabilities.isFlying);
-			} else if (args[1].equalsIgnoreCase(names.get(2)))
+				sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
+			}
+			else if (args[1].equalsIgnoreCase(names.get(2)))
 			{
 				boolean bln = Boolean.parseBoolean(args[2]);
 				target.capabilities.allowFlying = bln;
-				sender.sendChatToPlayer(names.get(2) + " = "
-						+ target.capabilities.allowFlying);
-			} else if (args[1].equalsIgnoreCase(names.get(3)))
+				sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
+			}
+			else if (args[1].equalsIgnoreCase(names.get(3)))
 			{
 				boolean bln = Boolean.parseBoolean(args[2]);
 				target.capabilities.isCreativeMode = bln;
-				sender.sendChatToPlayer(names.get(3) + " = "
-						+ target.capabilities.isCreativeMode);
-			} else if (args[1].equalsIgnoreCase(names.get(4)))
+				sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
+			}
+			else if (args[1].equalsIgnoreCase(names.get(4)))
 			{
 				boolean bln = Boolean.parseBoolean(args[2]);
 				target.capabilities.allowEdit = bln;
-				sender.sendChatToPlayer(names.get(4) + " = "
-						+ target.capabilities.allowEdit);
+				sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
 			}
 
 			// important!
@@ -178,15 +164,17 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else if (args.length == 2)
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else if (args.length == 2)
 		{
 			return getListOfStringsFromIterableMatchingLastWord(args, names);
-		} else if (args.length == 3)
+		}
+		else if (args.length == 3)
 		{
 			return getListOfStringsMatchingLastWord(args, "true", "false");
-		} else
+		}
+		else
 		{
 			return null;
 		}

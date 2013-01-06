@@ -22,8 +22,7 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 	public final AreaBase doneTo;
 	public final boolean allOrNothing;
 
-	public PermQueryPlayerArea(EntityPlayer player, String permission,
-			AreaBase doneTo, boolean allOrNothing)
+	public PermQueryPlayerArea(EntityPlayer player, String permission, AreaBase doneTo, boolean allOrNothing)
 	{
 		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
@@ -32,8 +31,7 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 		checkForward = false;
 	}
 
-	public PermQueryPlayerArea(EntityPlayer player, String permission,
-			Point doneTo)
+	public PermQueryPlayerArea(EntityPlayer player, String permission, Point doneTo)
 	{
 		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
@@ -42,8 +40,7 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 		checkForward = false;
 	}
 
-	public PermQueryPlayerArea(EntityPlayer player, String permission,
-			AreaBase doneTo, boolean allOrNothing, boolean checkForward)
+	public PermQueryPlayerArea(EntityPlayer player, String permission, AreaBase doneTo, boolean allOrNothing, boolean checkForward)
 	{
 		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
@@ -52,8 +49,7 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 		this.checkForward = checkForward;
 	}
 
-	public PermQueryPlayerArea(EntityPlayer player, String permission,
-			Point doneTo, boolean checkForward)
+	public PermQueryPlayerArea(EntityPlayer player, String permission, Point doneTo, boolean checkForward)
 	{
 		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
@@ -63,9 +59,8 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 	}
 
 	/**
-	 * set DEFAULT if the applicable regions list is to be used. set DENY if the
-	 * permissions is completely denied throughout the requested area. set ALLOW
-	 * if the permission is completely allowed throughout the requested area.
+	 * set DEFAULT if the applicable regions list is to be used. set DENY if the permissions is completely denied throughout the requested area. set ALLOW if
+	 * the permission is completely allowed throughout the requested area.
 	 * 
 	 * @param value
 	 *            The new result
@@ -77,7 +72,8 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 		{
 			applicable.clear();
 			applicable.add(doneTo);
-		} else if (value.equals(PermResult.DENY))
+		}
+		else if (value.equals(PermResult.DENY))
 		{
 			applicable.clear();
 		}

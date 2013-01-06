@@ -21,8 +21,7 @@ public class blockChangeLog extends logEntry
 	public int z;
 	public String block;
 
-	public blockChangeLog(blockChangeLogCategory cat, EntityPlayer player,
-			String block, int X, int Y, int Z)
+	public blockChangeLog(blockChangeLogCategory cat, EntityPlayer player, String block, int X, int Y, int Z)
 	{
 		super();
 		this.cat = cat;
@@ -57,18 +56,14 @@ public class blockChangeLog extends logEntry
 	@Override
 	public String getprepareStatementSQL()
 	{
-		return "INSERT INTO "
-				+ getName()
-				+ " (player, category, block, Dim, X, Y, Z, time) VALUES (?,?,?,?,?,?,?,?);";
+		return "INSERT INTO " + getName() + " (player, category, block, Dim, X, Y, Z, time) VALUES (?,?,?,?,?,?,?,?);";
 	}
 
 	@Override
 	public void makeEntries(Connection connection) throws SQLException
 	{
-		PreparedStatement ps = connection
-				.prepareStatement(getprepareStatementSQL());
-		Iterator<blockChangeLog> i = ((List<blockChangeLog>) buffer.clone())
-				.iterator();
+		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
+		Iterator<blockChangeLog> i = ((List<blockChangeLog>) buffer.clone()).iterator();
 		List<blockChangeLog> toremove = new ArrayList();
 		while (i.hasNext())
 		{

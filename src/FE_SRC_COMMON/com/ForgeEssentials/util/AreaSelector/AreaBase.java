@@ -83,8 +83,7 @@ public abstract class AreaBase
 			newZ1 = p1.getZ();
 			newZ2 = p2.getZ();
 		}
-		return new Point[] { new Point(newX1, newY1, newZ1),
-				new Point(newX2, newY2, newZ2) };
+		return new Point[] { new Point(newX1, newY1, newZ1), new Point(newX2, newY2, newZ2) };
 	}
 
 	/**
@@ -135,18 +134,19 @@ public abstract class AreaBase
 	 * 
 	 * @param area
 	 *            The area to be checked.
-	 * @return NULL if the areas to do not intersect. Argument if this area
-	 *         completely contains the argument.
+	 * @return NULL if the areas to do not intersect. Argument if this area completely contains the argument.
 	 */
 	public AreaBase getIntersection(AreaBase area)
 	{
 		if (intersectsWith(area))
 		{
 			return null;
-		} else if (this.contains(area))
+		}
+		else if (this.contains(area))
 		{
 			return area;
-		} else
+		}
+		else
 		{
 			// highest low-point.
 			Point iLow = getAlignedPoints(low, area.low)[1];
@@ -176,7 +176,8 @@ public abstract class AreaBase
 		if (!makesCuboidWith(area))
 		{
 			return null;
-		} else
+		}
+		else
 		{
 			// lowest low-point.
 			Point iLow = getAlignedPoints(low, area.low)[0];

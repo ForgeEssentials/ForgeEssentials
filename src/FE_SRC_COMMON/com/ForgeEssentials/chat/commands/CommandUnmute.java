@@ -25,18 +25,15 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer receiver = FunctionHelper
-					.getPlayerFromUsername(args[0]);
+			EntityPlayer receiver = FunctionHelper.getPlayerFromUsername(args[0]);
 			if (receiver == null)
 			{
 				sender.sendChatToPlayer(args[0] + " is not a valid username");
 				return;
 			}
-			NBTTagCompound tag = receiver.getEntityData().getCompoundTag(
-					EntityPlayer.PERSISTED_NBT_TAG);
+			NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 			tag.setBoolean("mute", false);
-			receiver.getEntityData().setCompoundTag(
-					EntityPlayer.PERSISTED_NBT_TAG, tag);
+			receiver.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
 			sender.sendChatToPlayer(args[0] + " unmuted.");
 		}
 	}
@@ -46,18 +43,15 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer receiver = FunctionHelper
-					.getPlayerFromUsername(args[0]);
+			EntityPlayer receiver = FunctionHelper.getPlayerFromUsername(args[0]);
 			if (receiver == null)
 			{
 				sender.sendChatToPlayer(args[0] + " is not a valid username");
 				return;
 			}
-			NBTTagCompound tag = receiver.getEntityData().getCompoundTag(
-					EntityPlayer.PERSISTED_NBT_TAG);
+			NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 			tag.setBoolean("mute", false);
-			receiver.getEntityData().setCompoundTag(
-					EntityPlayer.PERSISTED_NBT_TAG, tag);
+			receiver.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
 			sender.sendChatToPlayer(args[0] + " unmuted.");
 		}
 	}
@@ -79,9 +73,9 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
 		{
 			return null;
 		}

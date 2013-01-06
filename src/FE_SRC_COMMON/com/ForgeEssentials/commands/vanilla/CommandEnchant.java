@@ -14,9 +14,9 @@ public class CommandEnchant extends net.minecraft.command.CommandEnchant
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-					(EntityPlayer) sender, getCommandPerm()));
-		} else
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
+		}
+		else
 		{
 			return true;
 		}

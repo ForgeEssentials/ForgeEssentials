@@ -16,8 +16,7 @@ public class WarpPoint extends WorldPoint
 	@SaveableField
 	public float yaw;
 
-	public WarpPoint(int dimension, double x, double y, double z,
-			float playerPitch, float playerYaw)
+	public WarpPoint(int dimension, double x, double y, double z, float playerPitch, float playerYaw)
 	{
 		super(dimension, x, y, z);
 		pitch = playerPitch;
@@ -56,8 +55,7 @@ public class WarpPoint extends WorldPoint
 	@UniqueLoadingKey()
 	private String getLoadingField()
 	{
-		return "warppoint_" + dim + "_" + x + "_" + y + "_" + z + "_" + pitch
-				+ "_" + yaw;
+		return "warppoint_" + dim + "_" + x + "_" + y + "_" + z + "_" + pitch + "_" + yaw;
 	}
 
 }

@@ -25,13 +25,11 @@ public class ResponseRegistry
 		}
 		if (map.containsKey(ID))
 		{
-			throw new RuntimeException(
-					"You are attemting to register a response on a used ID: "
-							+ ID);
-		} else
+			throw new RuntimeException("You are attemting to register a response on a used ID: " + ID);
+		}
+		else
 		{
-			FMLLog.fine("Response " + response.getName() + " ID: " + ID
-					+ " Registerd!");
+			FMLLog.fine("Response " + response.getName() + " ID: " + ID + " Registerd!");
 			map.put(ID, response);
 		}
 	}
@@ -47,7 +45,8 @@ public class ResponseRegistry
 		if (map.containsKey((int) ID))
 		{
 			return map.get((int) ID);
-		} else
+		}
+		else
 		{
 			return null;
 		}

@@ -20,8 +20,7 @@ public class Wallet
 	public static void addToWallet(int amountToAdd, EntityPlayer player)
 	{
 		doesWalletExist(player);
-		ModuleEconomy.getPlayerInfo(player).wallet = ModuleEconomy
-				.getPlayerInfo(player).wallet + amountToAdd;
+		ModuleEconomy.getPlayerInfo(player).wallet = ModuleEconomy.getPlayerInfo(player).wallet + amountToAdd;
 		ModuleEconomy.saveData(player);
 	}
 
@@ -46,26 +45,22 @@ public class Wallet
 	 * @param player
 	 *            target player
 	 */
-	public static void removeFromWallet(int amountToSubtract,
-			EntityPlayer player)
+	public static void removeFromWallet(int amountToSubtract, EntityPlayer player)
 	{
 		doesWalletExist(player);
-		ModuleEconomy.getPlayerInfo(player).wallet = ModuleEconomy
-				.getPlayerInfo(player).wallet - amountToSubtract;
+		ModuleEconomy.getPlayerInfo(player).wallet = ModuleEconomy.getPlayerInfo(player).wallet - amountToSubtract;
 		ModuleEconomy.saveData(player);
 	}
 
 	/**
-	 * Checks if the player's wallet exists, if not set it to 0. Should only be
-	 * called under special circumstances, FEE should do everything needed.
+	 * Checks if the player's wallet exists, if not set it to 0. Should only be called under special circumstances, FEE should do everything needed.
 	 * 
 	 * @param player
 	 *            target player
 	 */
 	public static void doesWalletExist(EntityPlayer player)
 	{
-		if (!(ModuleEconomy.getPlayerInfo(player).wallet <= 0 || ModuleEconomy
-				.getPlayerInfo(player).wallet >= 0))
+		if (!(ModuleEconomy.getPlayerInfo(player).wallet <= 0 || ModuleEconomy.getPlayerInfo(player).wallet >= 0))
 		{
 			ModuleEconomy.getPlayerInfo(player).wallet = 0;
 			ModuleEconomy.saveData(player);
@@ -101,7 +96,8 @@ public class Wallet
 		if (amount == 1)
 		{
 			return Localization.get(Localization.WALLET_CURRENCY_SINGULAR);
-		} else
+		}
+		else
 		{
 			return Localization.get(Localization.WALLET_CURRENCY_PLURAL);
 		}

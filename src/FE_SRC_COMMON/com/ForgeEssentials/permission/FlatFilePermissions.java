@@ -29,28 +29,24 @@ public class FlatFilePermissions
 		return null;
 	}
 
-	public void save(ArrayList<PermissionHolder> players,
-			ArrayList<PermissionHolder> groups)
+	public void save(ArrayList<PermissionHolder> players, ArrayList<PermissionHolder> groups)
 	{
 		Configuration config = new Configuration(file);
 
 		for (PermissionHolder holder : players)
 		{
-			config.get(holder.zone + ".group." + holder.target, holder.name,
-					holder.allowed);
+			config.get(holder.zone + ".group." + holder.target, holder.name, holder.allowed);
 		}
 
 		for (PermissionHolder holder : groups)
 		{
-			config.get(holder.zone + ".group." + holder.target, holder.name,
-					holder.allowed);
+			config.get(holder.zone + ".group." + holder.target, holder.name, holder.allowed);
 		}
 
 		config.save();
 	}
 
-	private ArrayList<String> getCategoryChildren(Configuration config,
-			ConfigCategory category)
+	private ArrayList<String> getCategoryChildren(Configuration config, ConfigCategory category)
 	{
 		ArrayList<String> categories = new ArrayList<String>();
 
@@ -72,13 +68,13 @@ public class FlatFilePermissions
 
 	private String getPlayerNameFromCategory(String qualifiedName)
 	{
-		String[] names = qualifiedName.split("\\"
-				+ Configuration.CATEGORY_SPLITTER);
+		String[] names = qualifiedName.split("\\" + Configuration.CATEGORY_SPLITTER);
 
 		if (names.length == 0)
 		{
 			return qualifiedName;
-		} else
+		}
+		else
 		{
 			return names[names.length - 1];
 		}

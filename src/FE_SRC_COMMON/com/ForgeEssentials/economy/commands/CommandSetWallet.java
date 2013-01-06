@@ -23,39 +23,29 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayer player = FMLCommonHandler.instance()
-					.getSidedDelegate().getServer().getConfigurationManager()
-					.getPlayerForUsername(args[0]);
+			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			int amountToSet = Integer.parseInt(args[1]);
 
 			if (player == null)
 			{
-				OutputHandler.chatError(sender,
-						(Localization.get(Localization.ERROR_NOPLAYER)));
-			} else
+				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_NOPLAYER)));
+			}
+			else
 			{
 				Wallet.setWallet(amountToSet, player);
 
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(Localization
-							.get(Localization.WALLET_SET_TARGET)
-							+ Wallet.getWallet(player)
-							+ " "
+					sender.sendChatToPlayer(Localization.get(Localization.WALLET_SET_TARGET) + Wallet.getWallet(player) + " "
 							+ Wallet.currency(Wallet.getWallet(player)));
 				}
-				player.sendChatToPlayer(Localization
-						.get(Localization.WALLET_SET_SELF)
-						+ Wallet.getWallet(player)
-						+ " "
+				player.sendChatToPlayer(Localization.get(Localization.WALLET_SET_SELF) + Wallet.getWallet(player) + " "
 						+ Wallet.currency(Wallet.getWallet(player)));
 			}
-		} else
+		}
+		else
 		{
-			OutputHandler
-					.chatError(
-							sender,
-							(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 		}
 
 	}
@@ -65,34 +55,26 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayer player = FMLCommonHandler.instance()
-					.getSidedDelegate().getServer().getConfigurationManager()
-					.getPlayerForUsername(args[0]);
+			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			int amountToSet = Integer.parseInt(args[1]);
 
 			if (player == null)
 			{
-				sender.sendChatToPlayer(Localization
-						.get(Localization.ERROR_NOPLAYER));
-			} else
+				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOPLAYER));
+			}
+			else
 			{
 				Wallet.setWallet(amountToSet, player);
 
-				sender.sendChatToPlayer(Localization
-						.get(Localization.WALLET_SET_TARGET)
-						+ Wallet.getWallet(player)
-						+ " "
+				sender.sendChatToPlayer(Localization.get(Localization.WALLET_SET_TARGET) + Wallet.getWallet(player) + " "
 						+ Wallet.currency(Wallet.getWallet(player)));
-				player.sendChatToPlayer(Localization
-						.get(Localization.WALLET_SET_SELF)
-						+ Wallet.getWallet(player)
-						+ " "
+				player.sendChatToPlayer(Localization.get(Localization.WALLET_SET_SELF) + Wallet.getWallet(player) + " "
 						+ Wallet.currency(Wallet.getWallet(player)));
 			}
-		} else
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

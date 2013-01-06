@@ -19,20 +19,16 @@ public class PermissionsAPI
 	public static final PermissionQueryBus QUERY_BUS = new PermissionQueryBus();
 
 	/**
-	 * Used for blankets permissions tied to no particular layer or group in a
-	 * zone. This is the the group all players are assigned to if they are
-	 * members of no other groups. This group is guaranteed existence
+	 * Used for blankets permissions tied to no particular layer or group in a zone. This is the the group all players are assigned to if they are members of no
+	 * other groups. This group is guaranteed existence
 	 */
-	public static Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ",
-			null, ZoneManager.GLOBAL.getZoneID(), 0);
+	public static Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, ZoneManager.GLOBAL.getZoneID(), 0);
 
 	/**
-	 * Use this to check AllOrNothing Area queries, Player Queries, or Point
-	 * Queries.
+	 * Use this to check AllOrNothing Area queries, Player Queries, or Point Queries.
 	 * 
 	 * @param query
-	 * @return TRUE if the permission is allowed. FALSE if the permission is
-	 *         denied or partially allowed.
+	 * @return TRUE if the permission is allowed. FALSE if the permission is denied or partially allowed.
 	 */
 	public static boolean checkPermAllowed(PermQuery query)
 	{
@@ -41,8 +37,7 @@ public class PermissionsAPI
 	}
 
 	/**
-	 * Use this with Area Queries, so you can know if the Permission is
-	 * partially allowed.
+	 * Use this with Area Queries, so you can know if the Permission is partially allowed.
 	 * 
 	 * @param query
 	 * @return the Result of the query
@@ -73,42 +68,37 @@ public class PermissionsAPI
 	 * @param username
 	 *            player to apply the permission to.
 	 * @param permission
-	 *            Permission to be added. Best in form
-	 *            "ModName.parent1.parent2.parentN.name"
+	 *            Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
 	 * @param allow
-	 * @return Reason for set cancellation NULL if the set succeeds. EMpty
-	 *         String if it fails but has no reason.
+	 * @return Reason for set cancellation NULL if the set succeeds. EMpty String if it fails but has no reason.
 	 */
-	public static String setPlayerPermission(String username,
-			String permission, boolean allow, String zoneID)
+	public static String setPlayerPermission(String username, String permission, boolean allow, String zoneID)
 	{
 		try
 		{
 			Zone zone = ZoneManager.getZone(zoneID);
 			if (zone == null)
 			{
-				return Localization.format(Localization.ERROR_ZONE_NOZONE,
-						zoneID);
+				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
 			}
 
 			Permission perm = new Permission(permission, allow);
 
 			// send out permission string.
-			PermissionSetEvent event = new PermissionSetEvent(perm, zone, "p:"
-					+ username);
+			PermissionSetEvent event = new PermissionSetEvent(perm, zone, "p:" + username);
 			if (MinecraftForge.EVENT_BUS.post(event))
 			{
 				return event.getCancelReason();
 			}
 
-			boolean worked = SqlHelper.setPermission(username, false, perm,
-					zoneID);
+			boolean worked = SqlHelper.setPermission(username, false, perm, zoneID);
 
 			if (!worked)
 			{
 				return Localization.get(Localization.ERROR_PERM_SQL);
 			}
-		} catch (Throwable t)
+		}
+		catch (Throwable t)
 		{
 			return t.getLocalizedMessage();
 		}
@@ -122,14 +112,11 @@ public class PermissionsAPI
 	 * @param username
 	 *            player to apply the permission to.
 	 * @param permission
-	 *            Permission to be added. Best in form
-	 *            "ModName.parent1.parent2.parentN.name"
+	 *            Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
 	 * @param allow
-	 * @return Reason for set cancellation NULL if the set succeeds. EMpty
-	 *         String if it fails but has no reason.
+	 * @return Reason for set cancellation NULL if the set succeeds. EMpty String if it fails but has no reason.
 	 */
-	public static String setGroupPermission(String group, String permission,
-			boolean allow, String zoneID)
+	public static String setGroupPermission(String group, String permission, boolean allow, String zoneID)
 	{
 		try
 		{
@@ -137,8 +124,7 @@ public class PermissionsAPI
 
 			if (zone == null)
 			{
-				return Localization.format(Localization.ERROR_ZONE_NOZONE,
-						zoneID);
+				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
 			}
 
 			Group g = SqlHelper.getGroupForName(group);
@@ -150,8 +136,7 @@ public class PermissionsAPI
 			Permission perm = new Permission(permission, allow);
 
 			// send out permission string.
-			PermissionSetEvent event = new PermissionSetEvent(perm, zone, "g:"
-					+ group);
+			PermissionSetEvent event = new PermissionSetEvent(perm, zone, "g:" + group);
 			if (MinecraftForge.EVENT_BUS.post(event))
 			{
 				return event.getCancelReason();
@@ -163,7 +148,8 @@ public class PermissionsAPI
 			{
 				return Localization.get(Localization.ERROR_PERM_SQL);
 			}
-		} catch (Throwable t)
+		}
+		catch (Throwable t)
 		{
 			return t.getMessage();
 		}
@@ -191,18 +177,15 @@ public class PermissionsAPI
 	// }
 
 	/**
-	 * Returns the list of all the groups the player is in at a given time. It
-	 * is in order of priority the first bieng the highest. NEVER includes the
-	 * default group.
+	 * Returns the list of all the groups the player is in at a given time. It is in order of priority the first bieng the highest. NEVER includes the default
+	 * group.
 	 * 
 	 * @param player
 	 */
-	public static ArrayList<Group> getApplicableGroups(EntityPlayer player,
-			boolean includeDefaults)
+	public static ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
 		ArrayList<Group> list = new ArrayList<Group>();
-		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper
-				.getEntityPoint(player));
+		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
 
 		ArrayList<Group> temp;
 		// while (zone != null)
@@ -222,15 +205,13 @@ public class PermissionsAPI
 	public static Group getHighestGroup(EntityPlayer player)
 	{
 		Group high;
-		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper
-				.getEntityPoint(player));
+		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
 		TreeSet<Group> list = new TreeSet<Group>();
 
 		ArrayList<Group> temp;
 		while (zone != null && list.size() <= 0)
 		{
-			temp = SqlHelper.getGroupsForPlayer(player.username,
-					zone.getZoneID());
+			temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneID());
 
 			if (!temp.isEmpty())
 			{
@@ -243,7 +224,8 @@ public class PermissionsAPI
 		if (list.size() == 0)
 		{
 			return DEFAULT;
-		} else
+		}
+		else
 		{
 			return list.pollFirst();
 		}

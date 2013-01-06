@@ -64,19 +64,18 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		if (args.length == 4)
 		{
 			ampl = parseIntWithMin(sender, args[3], 0);
-		} else if (args.length != 3)
+		}
+		else if (args.length != 3)
 		{
-			OutputHandler
-					.chatError(
-							sender,
-							(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 			return;
 		}
 
 		if (args[0].equalsIgnoreCase("me"))
 		{
 			target = (EntityPlayerMP) sender;
-		} else
+		}
+		else
 		{
 			target = FunctionHelper.getPlayerFromUsername(args[0]);
 		}
@@ -84,10 +83,10 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		if (names.containsKey(args[1]))
 		{
 			ID = names.get(args[1]);
-		} else
+		}
+		else
 		{
-			OutputHandler.chatError(sender,
-					Localization.get(Localization.POTIONEFFECTNOTFOUND));
+			OutputHandler.chatError(sender, Localization.get(Localization.POTIONEFFECTNOTFOUND));
 			return;
 		}
 
@@ -108,23 +107,22 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		if (args.length == 4)
 		{
 			ampl = parseIntWithMin(sender, args[3], 0);
-		} else if (args.length != 3)
+		}
+		else if (args.length != 3)
 		{
-			sender.sendChatToPlayer((Localization
-					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
+			sender.sendChatToPlayer((Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
 			return;
 		}
 
-		target = FMLCommonHandler.instance().getSidedDelegate().getServer()
-				.getConfigurationManager().getPlayerForUsername(args[0]);
+		target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 
 		if (names.containsKey(args[1]))
 		{
 			ID = names.get(args[1]);
-		} else
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.POTIONEFFECTNOTFOUND));
+			sender.sendChatToPlayer(Localization.get(Localization.POTIONEFFECTNOTFOUND));
 			return;
 		}
 
@@ -151,13 +149,13 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else if (args.length == 2)
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else if (args.length == 2)
 		{
-			return getListOfStringsFromIterableMatchingLastWord(args,
-					names.keySet());
-		} else
+			return getListOfStringsFromIterableMatchingLastWord(args, names.keySet());
+		}
+		else
 		{
 			return null;
 		}

@@ -27,15 +27,13 @@ public class TickTaskFillSquare extends TickTaskFill
 		centerZ = ModuleWorldBorder.Z;
 		rad = ModuleWorldBorder.rad;
 
-		eta = (((MathHelper.abs_int((maxX - minX) / 16) * MathHelper
-				.abs_int((minZ - maxZ) / 16))));
+		eta = (((MathHelper.abs_int((maxX - minX) / 16) * MathHelper.abs_int((minZ - maxZ) / 16))));
 
 		warnEveryone(Localization.get(Localization.WB_FILL_START));
 		warnEveryone(FEChatFormatCodes.AQUA + "minX:" + minX + "  maxX:" + maxX);
 		warnEveryone(FEChatFormatCodes.AQUA + "minZ:" + minZ + "  maxZ:" + maxZ);
 
-		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll(
-				"%eta", getETA()));
+		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
 	}
 
 	@Override
@@ -51,14 +49,16 @@ public class TickTaskFillSquare extends TickTaskFill
 			if (X <= maxX)
 			{
 				X += 16;
-			} else
+			}
+			else
 			{
 				// New row!
 				if (Z <= maxZ)
 				{
 					Z += 16;
 					X = minX;
-				} else
+				}
+				else
 				{
 					// Done!
 					isComplete = true;

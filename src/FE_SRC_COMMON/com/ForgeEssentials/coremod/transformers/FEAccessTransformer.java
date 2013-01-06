@@ -33,7 +33,8 @@ public class FEAccessTransformer extends AccessTransformer
 		if (instance == null)
 		{
 			mapFiles.add(mapFileName);
-		} else
+		}
+		else
 		{
 			instance.readMapFile(mapFileName);
 		}
@@ -45,13 +46,13 @@ public class FEAccessTransformer extends AccessTransformer
 		try
 		{
 			// get a method from AccessTransformer
-			Method e = AccessTransformer.class.getDeclaredMethod("readMapFile",
-					new Class[] { String.class });
+			Method e = AccessTransformer.class.getDeclaredMethod("readMapFile", new Class[] { String.class });
 			e.setAccessible(true);
 			// run it with the file given.
 			e.invoke(this, new Object[] { name });
 
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			throw new RuntimeException(ex);
 		}

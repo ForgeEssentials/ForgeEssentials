@@ -63,8 +63,7 @@ public class ModuleSnooper implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.commands",
-				true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.commands", true);
 	}
 
 	public static void startQuery()
@@ -78,11 +77,11 @@ public class ModuleSnooper implements IFEModule
 			}
 			if (enable)
 			{
-				theThread = new RConQueryThread((IServer) FMLCommonHandler
-						.instance().getMinecraftServerInstance());
+				theThread = new RConQueryThread((IServer) FMLCommonHandler.instance().getMinecraftServerInstance());
 				theThread.startThread();
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 		}
 	}

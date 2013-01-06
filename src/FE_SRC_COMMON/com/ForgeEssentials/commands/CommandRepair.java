@@ -30,17 +30,15 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 
 			if (item == null)
 			{
-				OutputHandler.chatError(sender,
-						Localization.get(Localization.ERROR_NOITEMPLAYER));
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
 			}
 
 			item.setItemDamage(0);
 
-		} else if (args.length == 1)
+		}
+		else if (args.length == 1)
 		{
-			EntityPlayer target = FMLCommonHandler.instance()
-					.getSidedDelegate().getServer().getConfigurationManager()
-					.getPlayerForUsername(args[0]);
+			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 
 			if (target != null)
 			{
@@ -49,22 +47,20 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 				if (item != null)
 				{
 					item.setItemDamage(0);
-				} else
-				{
-					OutputHandler.chatError(sender,
-							Localization.get(Localization.ERROR_NOITEMTARGET));
 				}
-			} else
-			{
-				OutputHandler.chatError(sender, Localization.format(
-						Localization.ERROR_NOPLAYER, args[0]));
+				else
+				{
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMTARGET));
+				}
 			}
-		} else
+			else
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else
 		{
-			OutputHandler
-					.chatError(
-							sender,
-							(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 		}
 	}
 
@@ -73,9 +69,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer target = FMLCommonHandler.instance()
-					.getSidedDelegate().getServer().getConfigurationManager()
-					.getPlayerForUsername(args[0]);
+			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 
 			if (target != null)
 			{
@@ -84,20 +78,20 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 				if (item != null)
 				{
 					item.setItemDamage(0);
-				} else
-				{
-					sender.sendChatToPlayer(Localization
-							.get(Localization.ERROR_NOITEMTARGET));
 				}
-			} else
-			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_NOPLAYER, args[0]));
+				else
+				{
+					sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOITEMTARGET));
+				}
 			}
-		} else
+			else
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
@@ -118,9 +112,9 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
 		{
 			return null;
 		}

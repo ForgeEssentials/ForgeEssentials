@@ -39,7 +39,8 @@ public class TickTaskSetBackup implements ITickTask
 		if (redo)
 		{
 			list = back.after;
-		} else
+		}
+		else
 		{
 			list = back.before;
 		}
@@ -71,8 +72,7 @@ public class TickTaskSetBackup implements ITickTask
 	@Override
 	public void onComplete()
 	{
-		OutputHandler
-				.chatConfirmation(player, "" + changed + " blocks changed");
+		OutputHandler.chatConfirmation(player, "" + changed + " blocks changed");
 	}
 
 	@Override

@@ -14,9 +14,9 @@ public class CommandDebug extends net.minecraft.command.CommandDebug
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-					(EntityPlayer) sender, getCommandPerm()));
-		} else
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
+		}
+		else
 		{
 			return true;
 		}

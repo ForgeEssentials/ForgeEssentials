@@ -6,8 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
-public class CommandToggleDownfall extends
-		net.minecraft.command.CommandToggleDownfall
+public class CommandToggleDownfall extends net.minecraft.command.CommandToggleDownfall
 {
 
 	@Override
@@ -15,9 +14,9 @@ public class CommandToggleDownfall extends
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-					(EntityPlayer) sender, getCommandPerm()));
-		} else
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
+		}
+		else
 		{
 			return true;
 		}

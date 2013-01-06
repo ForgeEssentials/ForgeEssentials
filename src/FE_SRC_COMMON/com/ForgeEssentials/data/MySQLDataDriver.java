@@ -29,8 +29,7 @@ public class MySQLDataDriver extends DataDriver
 	// Default constructor is good enough for us.
 
 	@Override
-	public void parseConfigs(Configuration config, String worldName)
-			throws SQLException, ClassNotFoundException
+	public void parseConfigs(Configuration config, String worldName) throws SQLException, ClassNotFoundException
 	{
 		String type;
 		String connectionString = "";
@@ -59,26 +58,24 @@ public class MySQLDataDriver extends DataDriver
 
 		if (!server.equalsIgnoreCase("server.example.com"))
 		{
-			connectionString = "jdbc:mysql://" + server + ":" + port + "/"
-					+ database;
+			connectionString = "jdbc:mysql://" + server + ":" + port + "/" + database;
 			;
 
 			try
 			{
 				Class driverClass = Class.forName(DriverClass);
 
-				dbConnection = DriverManager.getConnection(connectionString,
-						username, password);
+				dbConnection = DriverManager.getConnection(connectionString, username, password);
 				isConfigured = true;
-			} catch (SQLException e)
+			}
+			catch (SQLException e)
 			{
-				OutputHandler
-						.SOP("Unable to connect to the database. Check your connection info.");
+				OutputHandler.SOP("Unable to connect to the database. Check your connection info.");
 				throw e;
-			} catch (ClassNotFoundException e)
+			}
+			catch (ClassNotFoundException e)
 			{
-				OutputHandler
-						.SOP("Could not load the MySQL JDBC Driver! Does it exist in the lib directory?");
+				OutputHandler.SOP("Could not load the MySQL JDBC Driver! Does it exist in the lib directory?");
 				throw e;
 			}
 		}
@@ -110,15 +107,13 @@ public class MySQLDataDriver extends DataDriver
 			{
 				Statement s;
 				s = dbConnection.createStatement();
-				int count = s.executeUpdate(createInsertStatement(type,
-						fieldList));
+				int count = s.executeUpdate(createInsertStatement(type, fieldList));
 
 				isSuccess = true;
-			} catch (SQLException e)
+			}
+			catch (SQLException e)
 			{
-				OutputHandler.SOP("Couldn't save object of type "
-						+ type.getSimpleName()
-						+ " to MySQL DB. Server will continue running.");
+				OutputHandler.SOP("Couldn't save object of type " + type.getSimpleName() + " to MySQL DB. Server will continue running.");
 				e.printStackTrace();
 			}
 		}
@@ -136,17 +131,16 @@ public class MySQLDataDriver extends DataDriver
 			try
 			{
 				Statement s = dbConnection.createStatement();
-				ResultSet result = s.executeQuery(createSelectStatement(type,
-						uniqueKey));
+				ResultSet result = s.executeQuery(createSelectStatement(type, uniqueKey));
 
 				// ResultSet initially sits just before first result.
 				if (result.next())
 				{
 					// Should only be one item in this set.
-					reconstructed = createTaggedClassFromResult(type,
-							resultRowToMap(result));
+					reconstructed = createTaggedClassFromResult(type, resultRowToMap(result));
 				}
-			} catch (SQLException e)
+			}
+			catch (SQLException e)
 			{
 				e.printStackTrace();
 			}
@@ -165,16 +159,15 @@ public class MySQLDataDriver extends DataDriver
 			try
 			{
 				Statement s = dbConnection.createStatement();
-				ResultSet result = s
-						.executeQuery(createSelectAllStatement(type));
+				ResultSet result = s.executeQuery(createSelectAllStatement(type));
 
 				while (result.next())
 				{
 					// Continue reading rows as they exist.
-					values.add(createTaggedClassFromResult(type,
-							resultRowToMap(result)));
+					values.add(createTaggedClassFromResult(type, resultRowToMap(result)));
 				}
-			} catch (SQLException e)
+			}
+			catch (SQLException e)
 			{
 				e.printStackTrace();
 			}
@@ -196,10 +189,10 @@ public class MySQLDataDriver extends DataDriver
 				s.execute(createDeleteStatement(type, uniqueObjectKey));
 
 				isSuccess = true;
-			} catch (SQLException e)
+			}
+			catch (SQLException e)
 			{
-				OutputHandler
-						.SOP("Problem deleting data from MySQL DB (May not actually be a critical error):");
+				OutputHandler.SOP("Problem deleting data from MySQL DB (May not actually be a critical error):");
 				e.printStackTrace();
 			}
 		}
@@ -237,7 +230,8 @@ public class MySQLDataDriver extends DataDriver
 				}
 			}
 
-		} catch (SQLException e)
+		}
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
@@ -245,8 +239,7 @@ public class MySQLDataDriver extends DataDriver
 		return map;
 	}
 
-	private TaggedClass createTaggedClassFromResult(Class type,
-			HashMap<String, Object> result)
+	private TaggedClass createTaggedClassFromResult(Class type, HashMap<String, Object> result)
 	{
 		TypeTagger rootTagger = DataStorageManager.getTaggerForType(type);
 		TypeTagger taggerCursor;
@@ -282,18 +275,14 @@ public class MySQLDataDriver extends DataDriver
 					{
 						// An object lives here.
 						tmpField.value = cursor = new TaggedClass();
-						tmpField.type = taggerCursor
-								.getTypeOfField(fieldHeiarchy[i]);
-						taggerCursor = DataStorageManager
-								.getTaggerForType(tmpField.type);
-					} else
+						tmpField.type = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
+						taggerCursor = DataStorageManager.getTaggerForType(tmpField.type);
+					}
+					else
 					{
 						// Primitive type.
-						Class fieldType = taggerCursor
-								.getTypeOfField(fieldHeiarchy[i]);
-						tmpField.value = valueToField(
-								taggerCursor.getTypeOfField(fieldHeiarchy[i]),
-								result.get(fieldHeiarchy[i]));
+						Class fieldType = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
+						tmpField.value = valueToField(taggerCursor.getTypeOfField(fieldHeiarchy[i]), result.get(fieldHeiarchy[i]));
 						tmpField.type = fieldType;
 					}
 				}
@@ -311,7 +300,8 @@ public class MySQLDataDriver extends DataDriver
 		if (tagger.isUniqueKeyField)
 		{
 			builder.append(tagger.uniqueKey + " = ");
-		} else
+		}
+		else
 		{
 			builder.append("uniqueIdentifier = ");
 		}
@@ -339,7 +329,8 @@ public class MySQLDataDriver extends DataDriver
 			if (tagger.isUniqueKeyField)
 			{
 				builder.append(tagger.uniqueKey);
-			} else
+			}
+			else
 			{
 				builder.append("uniqueIdentifier");
 			}
@@ -347,9 +338,9 @@ public class MySQLDataDriver extends DataDriver
 
 			if (uniqueObjectKey instanceof String)
 			{
-				builder.append("'").append((String) uniqueObjectKey)
-						.append("'");
-			} else
+				builder.append("'").append((String) uniqueObjectKey).append("'");
+			}
+			else
 			{
 				builder.append(uniqueObjectKey.toString());
 			}
@@ -364,8 +355,7 @@ public class MySQLDataDriver extends DataDriver
 		// Iterate through fields and build up name=>value pair list.
 		for (SavedField field : fieldList.TaggedMembers.values())
 		{
-			fieldValueMap.addAll(fieldToValues(field.name, field.type,
-					field.value));
+			fieldValueMap.addAll(fieldToValues(field.name, field.type, field.value));
 		}
 
 		// Build up update statement.
@@ -382,14 +372,16 @@ public class MySQLDataDriver extends DataDriver
 		if (tagger.isUniqueKeyField)
 		{
 			fields.append(fieldList.uniqueKey.name);
-		} else
+		}
+		else
 		{
 			fields.append("uniqueIdentifier");
 		}
 		if (fieldList.uniqueKey.type.equals(String.class))
 		{
 			values.append("'" + fieldList.uniqueKey.value + "'");
-		} else
+		}
+		else
 		{
 			values.append(fieldList.uniqueKey.value);
 		}
@@ -404,7 +396,8 @@ public class MySQLDataDriver extends DataDriver
 			if (pair.getSecond().getClass().equals(String.class))
 			{
 				values.append("'" + pair.getSecond() + "'");
-			} else
+			}
+			else
 			{
 				values.append(pair.getSecond());
 			}
@@ -418,10 +411,8 @@ public class MySQLDataDriver extends DataDriver
 	}
 
 	/**
-	 * Attempts to create a table to store the type passed to it. These should
-	 * only be top-level types that need to be stored, such as PlayerInfo and
-	 * Zones. Points, WorldPoints and other "simple" types that are contained
-	 * within the top-level types will be unrolled automatically.
+	 * Attempts to create a table to store the type passed to it. These should only be top-level types that need to be stored, such as PlayerInfo and Zones.
+	 * Points, WorldPoints and other "simple" types that are contained within the top-level types will be unrolled automatically.
 	 * 
 	 * @param type
 	 * @return
@@ -437,24 +428,22 @@ public class MySQLDataDriver extends DataDriver
 
 		for (Entry<String, Class> entry : fields.entrySet())
 		{
-			tableFields
-					.addAll(fieldToColumns(entry.getKey(), entry.getValue()));
+			tableFields.addAll(fieldToColumns(entry.getKey(), entry.getValue()));
 		}
 
 		if (tagger.isUniqueKeyField)
 		{
 			keyClause = "PRIMARY KEY (" + tagger.uniqueKey + ")";
-		} else
+		}
+		else
 		{
 			// Is a method. Extra field required.
-			tableFields
-					.add(new Pair<String, String>("uniqueIdentifier", "TEXT"));
+			tableFields.add(new Pair<String, String>("uniqueIdentifier", "TEXT"));
 			keyClause = "PRIMARY KEY (uniqueIdentifier)";
 		}
 
 		// Build up the create statement
-		StringBuilder tableCreate = new StringBuilder(
-				"CREATE TABLE IF NOT EXISTS " + type.getSimpleName() + " (");
+		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + type.getSimpleName() + " (");
 		for (Pair<String, String> pair : tableFields)
 		{
 			tableCreate.append(pair.getFirst() + " " + pair.getSecond() + ", ");
@@ -469,7 +458,8 @@ public class MySQLDataDriver extends DataDriver
 			s.execute(tableCreate.toString());
 
 			isSuccess = true;
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -478,10 +468,8 @@ public class MySQLDataDriver extends DataDriver
 	}
 
 	/**
-	 * Examines the provided type and produces an array of field => SQLite Type
-	 * pairs, ideal for creating new tables with. Complex type fields are broken
-	 * down into constituent primitives in the form of:
-	 * "parentField_childFieldName"
+	 * Examines the provided type and produces an array of field => SQLite Type pairs, ideal for creating new tables with. Complex type fields are broken down
+	 * into constituent primitives in the form of: "parentField_childFieldName"
 	 * 
 	 * @param fieldName
 	 *            Name of saved field
@@ -489,49 +477,47 @@ public class MySQLDataDriver extends DataDriver
 	 *            Type of saved field
 	 * @return Array of field => SQLite type names.
 	 */
-	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName,
-			Class type)
+	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, Class type)
 	{
 		ArrayList<Pair<String, String>> fields = new ArrayList<Pair<String, String>>();
 
 		if (!TypeTagger.isTypeComplex(type))
 		{
-			if (type.equals(int.class) || type.equals(Integer.class)
-					|| type.equals(boolean.class) || type.equals(Boolean.class))
+			if (type.equals(int.class) || type.equals(Integer.class) || type.equals(boolean.class) || type.equals(Boolean.class))
 			{
 				fields.add(new Pair<String, String>(fieldName, "INT"));
-			} else if (type.equals(float.class) || type.equals(Float.class)
-					|| type.equals(double.class) || type.equals(Double.class))
+			}
+			else if (type.equals(float.class) || type.equals(Float.class) || type.equals(double.class) || type.equals(Double.class))
 			{
 				fields.add(new Pair<String, String>(fieldName, "DOUBLE"));
-			} else if (type.equals(String.class))
+			}
+			else if (type.equals(String.class))
 			{
 				fields.add(new Pair<String, String>(fieldName, "VARCHAR(700)"));
-			} else if (type.equals(double[].class) || type.equals(int[].class)
-					|| type.equals(boolean[].class)
-					|| type.equals(String[].class))
+			}
+			else if (type.equals(double[].class) || type.equals(int[].class) || type.equals(boolean[].class) || type.equals(String[].class))
 			{
 				// We are going to roll arrays up into arbitrary long text
 				// fields.
 				fields.add(new Pair<String, String>(fieldName, "TEXT"));
-			} else
+			}
+			else
 			{
 				// Unsupported. This will probably be crazy.
 				fields.add(new Pair<String, String>(fieldName, "BLOB"));
 			}
-		} else
+		}
+		else
 		{
 			// Complex type we can't handle.
 			TypeTagger tagger = DataStorageManager.getTaggerForType(type);
-			Iterator<Entry<String, Class>> iterator = tagger.fieldToTypeMap
-					.entrySet().iterator();
+			Iterator<Entry<String, Class>> iterator = tagger.fieldToTypeMap.entrySet().iterator();
 
 			// Iterate over the stored fields. Recurse if nessecary.
 			while (iterator.hasNext())
 			{
 				Entry<String, Class> entry = iterator.next();
-				fields.addAll(fieldToColumns(fieldName + separationString
-						+ entry.getKey(), entry.getValue()));
+				fields.addAll(fieldToColumns(fieldName + separationString + entry.getKey(), entry.getValue()));
 			}
 		}
 
@@ -539,8 +525,7 @@ public class MySQLDataDriver extends DataDriver
 	}
 
 	/**
-	 * Generates an array of fieldname => String(Value) pairs, useful for
-	 * Inserts, Updates, or Deletes.
+	 * Generates an array of fieldname => String(Value) pairs, useful for Inserts, Updates, or Deletes.
 	 * 
 	 * @param fieldName
 	 *            Name of the field in the SQLite DB
@@ -549,17 +534,15 @@ public class MySQLDataDriver extends DataDriver
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */
-	private ArrayList<Pair<String, String>> fieldToValues(String fieldName,
-			Class type, Object value)
+	private ArrayList<Pair<String, String>> fieldToValues(String fieldName, Class type, Object value)
 	{
 		ArrayList<Pair<String, String>> data = new ArrayList<Pair<String, String>>();
 
-		if (type.equals(Integer.class) || type.equals(Boolean.class)
-				|| type.equals(Float.class) || type.equals(Double.class)
-				|| type.equals(String.class))
+		if (type.equals(Integer.class) || type.equals(Boolean.class) || type.equals(Float.class) || type.equals(Double.class) || type.equals(String.class))
 		{
 			data.add(new Pair(fieldName, value.toString()));
-		} else if (type.equals(double[].class) && ((double[]) value).length > 0)
+		}
+		else if (type.equals(double[].class) && ((double[]) value).length > 0)
 		{
 			double[] arr = (double[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -569,7 +552,8 @@ public class MySQLDataDriver extends DataDriver
 				tempStr.append("," + String.valueOf(arr[i]));
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
-		} else if (type.equals(int[].class) && ((int[]) value).length > 0)
+		}
+		else if (type.equals(int[].class) && ((int[]) value).length > 0)
 		{
 			int[] arr = (int[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -579,8 +563,8 @@ public class MySQLDataDriver extends DataDriver
 				tempStr.append("," + String.valueOf(arr[i]));
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
-		} else if (type.equals(boolean[].class)
-				&& ((boolean[]) value).length > 0)
+		}
+		else if (type.equals(boolean[].class) && ((boolean[]) value).length > 0)
 		{
 			boolean[] arr = (boolean[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -590,29 +574,29 @@ public class MySQLDataDriver extends DataDriver
 				tempStr.append("," + String.valueOf(arr[i]));
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
-		} else if (type.equals(String[].class) && ((String[]) value).length > 0)
+		}
+		else if (type.equals(String[].class) && ((String[]) value).length > 0)
 		{
 			String[] arr = (String[]) value;
 			StringBuilder tempStr = new StringBuilder();
-			tempStr.append("'").append(
-					String.valueOf(arr[0]).replace("'", "\"\""));
+			tempStr.append("'").append(String.valueOf(arr[0]).replace("'", "\"\""));
 			for (int i = 1; i < arr.length; ++i)
 			{
-				tempStr.append("!??!"
-						+ String.valueOf(arr[i]).replace("'", "\"\""));
+				tempStr.append("!??!" + String.valueOf(arr[i]).replace("'", "\"\""));
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
-		} else if (type.equals(TaggedClass.class))
+		}
+		else if (type.equals(TaggedClass.class))
 		{
 			// Tricky business involving recursion.
 			TaggedClass tc = (TaggedClass) value;
 
 			for (SavedField f : tc.TaggedMembers.values())
 			{
-				data.addAll(fieldToValues(
-						fieldName + separationString + f.name, f.type, f.value));
+				data.addAll(fieldToValues(fieldName + separationString + f.name, f.type, f.value));
 			}
-		} else
+		}
+		else
 		// What the fuck? This will be unpredictable.
 		{
 			data.add(new Pair(fieldName, value.toString()));
@@ -628,23 +612,28 @@ public class MySQLDataDriver extends DataDriver
 		{
 			// DB Value is an integer
 			value = dbValue;
-		} else if (targetType.equals(double.class))
+		}
+		else if (targetType.equals(double.class))
 		{
 			// DB Value is a double
 			value = dbValue;
-		} else if (targetType.equals(float.class))
+		}
+		else if (targetType.equals(float.class))
 		{
 			// DB value is a Double.
 			value = ((Double) dbValue).floatValue();
-		} else if (targetType.equals(String.class))
+		}
+		else if (targetType.equals(String.class))
 		{
 			// DB Value is a string
 			value = dbValue;
-		} else if (targetType.equals(boolean.class))
+		}
+		else if (targetType.equals(boolean.class))
 		{
 			// DB Value is an integer (1=true, 0=false)
 			value = ((Integer) dbValue).equals(1);
-		} else if (targetType.equals(double[].class))
+		}
+		else if (targetType.equals(double[].class))
 		{
 			// DB value is a string representing an array of doubles, separated
 			// by ','
@@ -656,7 +645,8 @@ public class MySQLDataDriver extends DataDriver
 				result[i] = Double.valueOf(values[i]).doubleValue();
 			}
 			value = result;
-		} else if (targetType.equals(int[].class))
+		}
+		else if (targetType.equals(int[].class))
 		{
 			// DB value is a string representing an array of integers, separated
 			// by ','
@@ -668,7 +658,8 @@ public class MySQLDataDriver extends DataDriver
 				result[i] = Integer.valueOf(values[i]).intValue();
 			}
 			value = result;
-		} else if (targetType.equals(boolean[].class))
+		}
+		else if (targetType.equals(boolean[].class))
 		{
 			// DB value is a string representing an array of booleans, separated
 			// by ','
@@ -680,7 +671,8 @@ public class MySQLDataDriver extends DataDriver
 				result[i] = Boolean.valueOf(values[i]).booleanValue();
 			}
 			value = result;
-		} else if (targetType.equals(String[].class))
+		}
+		else if (targetType.equals(String[].class))
 		{
 			// DB value is a string representing an array of strings, separated
 			// by '!??!'

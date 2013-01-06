@@ -13,8 +13,7 @@ public class executecommand implements IEffect
 	@Override
 	public void registerConfig(Configuration config, String category)
 	{
-		command = config.get(category, "Command", command,
-				"%p gets replaced with the players username").value;
+		command = config.get(category, "Command", command, "%p gets replaced with the players username").value;
 	}
 
 	@Override
@@ -22,8 +21,7 @@ public class executecommand implements IEffect
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
-			MinecraftServer.getServer().executeCommand(
-					command.replaceAll("%p", player.username));
+			MinecraftServer.getServer().executeCommand(command.replaceAll("%p", player.username));
 		}
 	}
 }

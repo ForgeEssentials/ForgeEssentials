@@ -19,11 +19,9 @@ public class BannedItems
 
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		Configuration config = new Configuration(new File(
-				ForgeEssentials.fedirloc, "banneditems.cfg"));
+		Configuration config = new Configuration(new File(ForgeEssentials.fedirloc, "banneditems.cfg"));
 
-		config.addCustomCategoryComment("BannedItems",
-				"Configuration options to remove an item's crafting recipe.");
+		config.addCustomCategoryComment("BannedItems", "Configuration options to remove an item's crafting recipe.");
 		Property p = config.get("BannedItems", "itemList", "");
 		p.comment = "List of items that are banned, in the format \"id[:meta];id[:meta]\" Use a meta value of -1 to ban ALL variants of an item/block.";
 
@@ -48,12 +46,14 @@ public class BannedItems
 						try
 						{
 							meta = Integer.parseInt(tmp[1]);
-						} catch (Exception ex)
+						}
+						catch (Exception ex)
 						{
 							meta = 0;
 						}
 					}
-				} catch (Exception ex)
+				}
+				catch (Exception ex)
 				{
 					id = 0;
 				}
@@ -67,8 +67,7 @@ public class BannedItems
 
 		// Iterate over recipe list, and remove a recipe when its output matches
 		// one of our ItemStacks.
-		List<IRecipe> minecraftRecipes = CraftingManager.getInstance()
-				.getRecipeList();
+		List<IRecipe> minecraftRecipes = CraftingManager.getInstance().getRecipeList();
 		ItemStack result;
 		for (int i = 0; i < minecraftRecipes.size(); ++i)
 		{
@@ -81,10 +80,7 @@ public class BannedItems
 				{
 					// Remove the item if the ID & meta match, OR if the IDs
 					// match, and banned meta is -1.
-					if (result.itemID == bannedItem.itemID
-							&& (bannedItem.getItemDamage() == -1 || result
-									.getItemDamage() == bannedItem
-									.getItemDamage()))
+					if (result.itemID == bannedItem.itemID && (bannedItem.getItemDamage() == -1 || result.getItemDamage() == bannedItem.getItemDamage()))
 					{
 						minecraftRecipes.remove(i);
 						--i;

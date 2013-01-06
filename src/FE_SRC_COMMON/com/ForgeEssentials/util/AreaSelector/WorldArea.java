@@ -38,7 +38,8 @@ public class WorldArea extends AreaBase
 		if (p.dim == dim)
 		{
 			return super.contains(p);
-		} else
+		}
+		else
 		{
 			return false;
 		}
@@ -49,7 +50,8 @@ public class WorldArea extends AreaBase
 		if (area.dim == dim)
 		{
 			return super.contains(area);
-		} else
+		}
+		else
 		{
 			return false;
 		}
@@ -60,7 +62,8 @@ public class WorldArea extends AreaBase
 		if (area.dim == dim)
 		{
 			return super.intersectsWith(area);
-		} else
+		}
+		else
 		{
 			return false;
 		}
@@ -71,7 +74,8 @@ public class WorldArea extends AreaBase
 		if (area.dim == dim)
 		{
 			return super.getIntersection(area);
-		} else
+		}
+		else
 		{
 			return null;
 		}
@@ -82,7 +86,8 @@ public class WorldArea extends AreaBase
 		if (area.dim == dim)
 		{
 			return super.makesCuboidWith(area);
-		} else
+		}
+		else
 		{
 			return false;
 		}

@@ -12,8 +12,7 @@ public class PermQueryBlanketArea extends PermQuery
 	public final AreaBase doneTo;
 	public final boolean allOrNothing;
 
-	public PermQueryBlanketArea(String permission, AreaBase doneTo,
-			World world, boolean allOrNothing)
+	public PermQueryBlanketArea(String permission, AreaBase doneTo, World world, boolean allOrNothing)
 	{
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = doneTo;
@@ -21,17 +20,15 @@ public class PermQueryBlanketArea extends PermQuery
 		checkForward = false;
 	}
 
-	public PermQueryBlanketArea(String permission, AreaBase doneTo,
-			World world, boolean allOrNothing, boolean checkForward)
+	public PermQueryBlanketArea(String permission, AreaBase doneTo, World world, boolean allOrNothing, boolean checkForward)
 	{
 		this(permission, doneTo, world, allOrNothing);
 		this.checkForward = checkForward;
 	}
 
 	/**
-	 * set DEFAULT if the applicable regions list is to be used. set DENY if the
-	 * permissions is completely denied throughout the requested area. set ALLOW
-	 * if the permission is completely allowed throughout the requested area.
+	 * set DEFAULT if the applicable regions list is to be used. set DENY if the permissions is completely denied throughout the requested area. set ALLOW if
+	 * the permission is completely allowed throughout the requested area.
 	 * 
 	 * @param value
 	 *            The new result
@@ -43,7 +40,8 @@ public class PermQueryBlanketArea extends PermQuery
 		{
 			applicable.clear();
 			applicable.add(doneTo);
-		} else if (value.equals(PermResult.DENY))
+		}
+		else if (value.equals(PermResult.DENY))
 		{
 			applicable.clear();
 		}

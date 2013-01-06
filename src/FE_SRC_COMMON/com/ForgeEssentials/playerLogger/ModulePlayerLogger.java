@@ -84,7 +84,8 @@ public class ModulePlayerLogger implements IFEModule
 		try
 		{
 			Class mySQLclass = Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException error)
+		}
+		catch (ClassNotFoundException error)
 		{
 			throw new RuntimeException("Could not find MySQL JDBC Driver.");
 		}
@@ -106,8 +107,7 @@ public class ModulePlayerLogger implements IFEModule
 		e.registerServerCommand(new CommandPl());
 		try
 		{
-			connection = DriverManager.getConnection(ModulePlayerLogger.url,
-					ModulePlayerLogger.username, ModulePlayerLogger.password);
+			connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
 			Statement s = connection.createStatement();
 
 			if (DEBUG && false)
@@ -126,10 +126,10 @@ public class ModulePlayerLogger implements IFEModule
 			s.close();
 			connection.close();
 			eLogger = new EventLogger();
-		} catch (SQLException e1)
+		}
+		catch (SQLException e1)
 		{
-			OutputHandler
-					.SOP("Could not connect to database! Wrong credentials?");
+			OutputHandler.SOP("Could not connect to database! Wrong credentials?");
 			OutputHandler.SOP(e1.getMessage());
 			e1.printStackTrace();
 		}
@@ -152,10 +152,10 @@ public class ModulePlayerLogger implements IFEModule
 		{
 			eLogger.logLoop.sendLogs();
 			eLogger.logLoop.end();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
-			OutputHandler
-					.SOP("WARNING! MySQLConnector for playerLogger failed!");
+			OutputHandler.SOP("WARNING! MySQLConnector for playerLogger failed!");
 		}
 	}
 
@@ -163,8 +163,7 @@ public class ModulePlayerLogger implements IFEModule
 	{
 		if (ragequitOn)
 		{
-			FMLCommonHandler.instance().raiseException(new RuntimeException(),
-					"Database connection lost.", true);
+			FMLCommonHandler.instance().raiseException(new RuntimeException(), "Database connection lost.", true);
 		}
 	}
 

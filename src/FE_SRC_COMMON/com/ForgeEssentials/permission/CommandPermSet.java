@@ -21,8 +21,7 @@ public class CommandPermSet extends CommandFEPerm
 		case 4:
 			if (!ZoneManager.doesZoneExist(args[2]))
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_ZONE_NOZONE, args[3]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[3]));
 				return;
 			}
 			zone = ZoneManager.getZone(args[3]);
@@ -33,8 +32,7 @@ public class CommandPermSet extends CommandFEPerm
 			Result result = parseAllow(args[1]);
 			if (result.equals(Result.DEFAULT))
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_ILLEGAL_STATE, args[1]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_ILLEGAL_STATE, args[1]));
 				return;
 			}
 
@@ -42,40 +40,34 @@ public class CommandPermSet extends CommandFEPerm
 			String[] entities = args[2].split(":");
 			if (entities.length != 2)
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_ILLEGAL_ENTITY, args[2]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_ILLEGAL_ENTITY, args[2]));
 			}
 
 			if (entities[0].equalsIgnoreCase("g"))
 			{
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-						getCommandPerm() + ".group." + entities[2] + "."
-								+ args[1])))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".group." + entities[2] + "." + args[1])))
 				{
-					PermissionsAPI.setGroupPermission(entities[2], args[1],
-							result.equals(Result.ALLOW), zone.getZoneID());
-				} else
-				{
-					OutputHandler.chatError(sender,
-							Localization.get(Localization.ERROR_PERMDENIED));
+					PermissionsAPI.setGroupPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
 				}
-			} else if (entities[0].equalsIgnoreCase("p"))
-			{
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-						getCommandPerm() + ".player." + entities[2] + "."
-								+ args[1])))
+				else
 				{
-					PermissionsAPI.setPlayerPermission(entities[2], args[1],
-							result.equals(Result.ALLOW), zone.getZoneID());
-				} else
-				{
-					OutputHandler.chatError(sender,
-							Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}
-			} else
+			}
+			else if (entities[0].equalsIgnoreCase("p"))
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_ILLEGAL_ENTITY, args[2]));
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".player." + entities[2] + "." + args[1])))
+				{
+					PermissionsAPI.setPlayerPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
+				}
+				else
+				{
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+				}
+			}
+			else
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_ILLEGAL_ENTITY, args[2]));
 			}
 		default:
 			this.error(sender);
@@ -93,8 +85,7 @@ public class CommandPermSet extends CommandFEPerm
 		case 4:
 			if (!ZoneManager.doesZoneExist(args[2]))
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_ZONE_NOZONE, args[3]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[3]));
 				return;
 			}
 			zone = ZoneManager.getZone(args[3]);
@@ -105,8 +96,7 @@ public class CommandPermSet extends CommandFEPerm
 			Result result = parseAllow(args[1]);
 			if (result.equals(Result.DEFAULT))
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_ILLEGAL_STATE, args[1]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_ILLEGAL_STATE, args[1]));
 				return;
 			}
 
@@ -114,22 +104,20 @@ public class CommandPermSet extends CommandFEPerm
 			String[] entities = args[2].split(":");
 			if (entities.length != 2)
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_ILLEGAL_ENTITY, args[2]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_ILLEGAL_ENTITY, args[2]));
 			}
 
 			if (entities[0].equalsIgnoreCase("g"))
 			{
-				PermissionsAPI.setGroupPermission(entities[2], args[1],
-						result.equals(Result.ALLOW), zone.getZoneID());
-			} else if (entities[0].equalsIgnoreCase("p"))
+				PermissionsAPI.setGroupPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
+			}
+			else if (entities[0].equalsIgnoreCase("p"))
 			{
-				PermissionsAPI.setPlayerPermission(entities[2], args[1],
-						result.equals(Result.ALLOW), zone.getZoneID());
-			} else
+				PermissionsAPI.setPlayerPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
+			}
+			else
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_ILLEGAL_ENTITY, args[2]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_ILLEGAL_ENTITY, args[2]));
 			}
 		default:
 			this.error(sender);
@@ -139,17 +127,15 @@ public class CommandPermSet extends CommandFEPerm
 
 	private Result parseAllow(String value)
 	{
-		if (value.equalsIgnoreCase("allow")
-				|| value.equalsIgnoreCase("allowed")
-				|| value.equalsIgnoreCase("true"))
+		if (value.equalsIgnoreCase("allow") || value.equalsIgnoreCase("allowed") || value.equalsIgnoreCase("true"))
 		{
 			return Result.ALLOW;
-		} else if (value.equalsIgnoreCase("deny")
-				|| value.equalsIgnoreCase("denied")
-				|| value.equalsIgnoreCase("false"))
+		}
+		else if (value.equalsIgnoreCase("deny") || value.equalsIgnoreCase("denied") || value.equalsIgnoreCase("false"))
 		{
 			return Result.DENY;
-		} else
+		}
+		else
 		{
 			return Result.DEFAULT;
 		}

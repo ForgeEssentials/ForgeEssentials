@@ -14,9 +14,8 @@ import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
- * Responsible for transforming a particular type (class) into a TaggedClass for
- * easier storage via DataDrivers, and eventually converts a TaggedClass into
- * the original Object (More or less.)
+ * Responsible for transforming a particular type (class) into a TaggedClass for easier storage via DataDrivers, and eventually converts a TaggedClass into the
+ * original Object (More or less.)
  * 
  * @author MysteriousAges
  * 
@@ -33,8 +32,7 @@ public class TypeTagger
 
 	public TypeTagger(Class type)
 	{
-		SaveableObject AObj = (SaveableObject) type
-				.getAnnotation(SaveableObject.class);
+		SaveableObject AObj = (SaveableObject) type.getAnnotation(SaveableObject.class);
 		inLine = AObj.SaveInline();
 
 		forType = type;
@@ -54,54 +52,46 @@ public class TypeTagger
 				{
 					if (f.isAnnotationPresent(UniqueLoadingKey.class))
 					{
-						assert uniqueKey == null : new RuntimeException(
-								"Each class may only have 1 UniqueLoadingKey");
-						assert f.getType().isPrimitive()
-								|| f.getType().equals(String.class) : new RuntimeException(
+						assert uniqueKey == null : new RuntimeException("Each class may only have 1 UniqueLoadingKey");
+						assert f.getType().isPrimitive() || f.getType().equals(String.class) : new RuntimeException(
 								"The UniqueLoadingKey must be a primitive or a string");
 						isUniqueKeyField = true;
 						uniqueKey = f.getName();
-					} else
+					}
+					else
 					{
 						tempList.add(f.getName());
 					}
 
 					fieldToTypeMap.put(f.getName(), f.getType());
-				} else if (f.isAnnotationPresent(UniqueLoadingKey.class))
+				}
+				else if (f.isAnnotationPresent(UniqueLoadingKey.class))
 				{
-					throw new RuntimeException(
-							"if the UniqueLoadingKey is to be a field, it must be a SaveableField as well");
+					throw new RuntimeException("if the UniqueLoadingKey is to be a field, it must be a SaveableField as well");
 				}
 			}
-		} while ((currentType = currentType.getSuperclass()) != null);
+		}
+		while ((currentType = currentType.getSuperclass()) != null);
 
 		// find reconstructor method
 		for (Method m : type.getDeclaredMethods())
 		{
 			if (m.isAnnotationPresent(Reconstructor.class))
 			{
-				assert reconstructorMethod == null : new RuntimeException(
-						"Each class may only have 1 reconstructor method");
-				assert Modifier.isStatic(m.getModifiers()) : new RuntimeException(
-						"The reconstructor method must be static!");
-				assert m.getReturnType().equals(type) : new RuntimeException(
-						"The reconstructor method must return " + type);
-				assert m.getParameterTypes().length == 1 : new RuntimeException(
-						"The reconstructor method must have exactly 1 paremeter/argument");
-				assert m.getParameterTypes()[0].equals(TaggedClass.class) : new RuntimeException(
-						"The reconstructor method must have a "
-								+ TaggedClass.class + " parameter");
+				assert reconstructorMethod == null : new RuntimeException("Each class may only have 1 reconstructor method");
+				assert Modifier.isStatic(m.getModifiers()) : new RuntimeException("The reconstructor method must be static!");
+				assert m.getReturnType().equals(type) : new RuntimeException("The reconstructor method must return " + type);
+				assert m.getParameterTypes().length == 1 : new RuntimeException("The reconstructor method must have exactly 1 paremeter/argument");
+				assert m.getParameterTypes()[0].equals(TaggedClass.class) : new RuntimeException("The reconstructor method must have a " + TaggedClass.class
+						+ " parameter");
 
 				reconstructorMethod = m.getName();
-			} else if (m.isAnnotationPresent(UniqueLoadingKey.class))
+			}
+			else if (m.isAnnotationPresent(UniqueLoadingKey.class))
 			{
-				assert uniqueKey == null : new RuntimeException(
-						"Each class may only have 1 UniqueLoadingKey");
-				assert m.getParameterTypes().length == 0 : new RuntimeException(
-						"The reconstructor method must have no paremeters");
-				assert (m.getReturnType().isPrimitive() && m.getReturnType()
-						.equals(Void.class))
-						|| m.getReturnType().equals(String.class) : new RuntimeException(
+				assert uniqueKey == null : new RuntimeException("Each class may only have 1 UniqueLoadingKey");
+				assert m.getParameterTypes().length == 0 : new RuntimeException("The reconstructor method must have no paremeters");
+				assert (m.getReturnType().isPrimitive() && m.getReturnType().equals(Void.class)) || m.getReturnType().equals(String.class) : new RuntimeException(
 						"The UniqueLoadingKey method must return a primitive or a string");
 
 				uniqueKey = m.getName();
@@ -144,7 +134,8 @@ public class TypeTagger
 				data.uniqueKey.name = f.getName();
 				data.uniqueKey.type = f.getType();
 				data.uniqueKey.value = f.get(objectSaved);
-			} else
+			}
+			else
 			{
 				Method m;
 				m = c.getDeclaredMethod(uniqueKey, new Class[] {});
@@ -154,12 +145,10 @@ public class TypeTagger
 				data.uniqueKey.type = m.getReturnType();
 				data.uniqueKey.value = m.invoke(objectSaved, new Object[] {});
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
-			OutputHandler
-					.SOP("Reflection error trying to get UniqueLoadingKey from "
-							+ objectSaved.getClass()
-							+ ". FE will continue without saving this.");
+			OutputHandler.SOP("Reflection error trying to get UniqueLoadingKey from " + objectSaved.getClass() + ". FE will continue without saving this.");
 			e.printStackTrace();
 		}
 
@@ -179,33 +168,30 @@ public class TypeTagger
 					{
 						// This object is not a primitive. Call this function on
 						// the appropriate TypeTagger.
-						obj = DataStorageManager.getTaggerForType(
-								obj.getClass()).getTaggedClassFromObject(obj);
+						obj = DataStorageManager.getTaggerForType(obj.getClass()).getTaggedClassFromObject(obj);
 					}
 					data.addField(data.new SavedField(savedFields[i], obj));
 				}
 				// Ensure we reset the currentClass after trying this. It may
 				// have been altered by a previous attempt.
 				currentClass = c;
-			} catch (NoSuchFieldException e)
+			}
+			catch (NoSuchFieldException e)
 			{
 				// Try again with a parent class.
 				currentClass = currentClass.getSuperclass();
 				if (currentClass == null)
 				{
 					// Unless this happens. (Note: This shouldn't happen.)
-					OutputHandler.SOP("Reflection error trying to save "
-							+ objectSaved.getClass()
-							+ ". FE will continue without saving this.");
+					OutputHandler.SOP("Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.");
 					e.printStackTrace();
 				}
 				--i;
-			} catch (Throwable e)
+			}
+			catch (Throwable e)
 			{
 				// This... Should not happen. Unless something stupid.
-				OutputHandler.SOP("Reflection error trying to save "
-						+ objectSaved.getClass()
-						+ ". FE will continue without saving this.");
+				OutputHandler.SOP("Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.");
 				e.printStackTrace();
 			}
 		}
@@ -226,22 +212,19 @@ public class TypeTagger
 		{
 			if (field.value instanceof TaggedClass)
 			{
-				field.value = DataStorageManager.getTaggerForType(
-						getTypeOfField(field.name)).createFromFields(
-						(TaggedClass) field.value);
+				field.value = DataStorageManager.getTaggerForType(getTypeOfField(field.name)).createFromFields((TaggedClass) field.value);
 			}
 		}
 
 		try
 		{
-			Method reconstructor = forType.getDeclaredMethod(
-					reconstructorMethod, TaggedClass.class);
+			Method reconstructor = forType.getDeclaredMethod(reconstructorMethod, TaggedClass.class);
 			reconstructor.setAccessible(true);
 			value = reconstructor.invoke(null, data);
-		} catch (Throwable thrown)
+		}
+		catch (Throwable thrown)
 		{
-			OutputHandler.felog.log(Level.SEVERE, "Error loading " + data.type
-					+ " with name " + data.uniqueKey, thrown);
+			OutputHandler.felog.log(Level.SEVERE, "Error loading " + data.type + " with name " + data.uniqueKey, thrown);
 		}
 
 		return value;
@@ -254,9 +237,9 @@ public class TypeTagger
 		// to recreate the original object.
 		if (field.value instanceof TaggedClass)
 		{
-			obj = DataStorageManager.getTaggerForType(field.type)
-					.createFromFields((TaggedClass) field.value);
-		} else
+			obj = DataStorageManager.getTaggerForType(field.type).createFromFields((TaggedClass) field.value);
+		}
+		else
 		{
 			// Simple case.
 			obj = field.value;
@@ -267,18 +250,14 @@ public class TypeTagger
 	/**
 	 * @param t
 	 *            Type of object to check
-	 * @return True if TypeTagger must create a nested TaggedClass to allow
-	 *         DataDrivers to correctly save the object.
+	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save the object.
 	 */
 	public static boolean isTypeComplex(Object obj)
 	{
 		boolean flag = true;
 
-		if (obj instanceof Integer || obj instanceof int[]
-				|| obj instanceof Float || obj instanceof Double
-				|| obj instanceof double[] || obj instanceof Boolean
-				|| obj instanceof boolean[] || obj instanceof String
-				|| obj instanceof String[])
+		if (obj instanceof Integer || obj instanceof int[] || obj instanceof Float || obj instanceof Double || obj instanceof double[]
+				|| obj instanceof Boolean || obj instanceof boolean[] || obj instanceof String || obj instanceof String[])
 		{
 			flag = false;
 		}
@@ -289,17 +268,14 @@ public class TypeTagger
 	/**
 	 * @param t
 	 *            class check
-	 * @return True if TypeTagger must create a nested TaggedClass to allow
-	 *         DataDrivers to correctly save this type of object.
+	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.
 	 */
 	public static boolean isTypeComplex(Class obj)
 	{
 		boolean flag = true;
-		if (obj.isPrimitive() || obj.equals(Integer.class)
-				|| obj.equals(int[].class) || obj.equals(Float.class)
-				|| obj.equals(Double.class) || obj.equals(double[].class)
-				|| obj.equals(Boolean.class) || obj.equals(boolean[].class)
-				|| obj.equals(String.class) || obj.equals(String[].class))
+		if (obj.isPrimitive() || obj.equals(Integer.class) || obj.equals(int[].class) || obj.equals(Float.class) || obj.equals(Double.class)
+				|| obj.equals(double[].class) || obj.equals(Boolean.class) || obj.equals(boolean[].class) || obj.equals(String.class)
+				|| obj.equals(String[].class))
 		{
 			flag = false;
 		}

@@ -41,12 +41,11 @@ public class BackupThread extends Thread
 		// get sources...
 		if (server.isDedicatedServer())
 		{
-			source = new File(server.getFolderName()).getAbsolutePath()
-					+ File.separator;
-		} else
+			source = new File(server.getFolderName()).getAbsolutePath() + File.separator;
+		}
+		else
 		{
-			source = new File("saves" + File.separator + server.getFolderName())
-					.getAbsolutePath() + File.separator;
+			source = new File("saves" + File.separator + server.getFolderName()).getAbsolutePath() + File.separator;
 		}
 
 		user.sendChatToPlayer("Generating backup from world " + source);
@@ -62,18 +61,13 @@ public class BackupThread extends Thread
 		Integer year = cal.get(Calendar.YEAR);
 		Integer hour = cal.get(Calendar.HOUR_OF_DAY);
 		Integer min = cal.get(Calendar.MINUTE);
-		String output = backupName.replaceAll("%day", day.toString())
-				.replaceAll("%month", month.toString())
-				.replaceAll("%year", year.toString())
-				.replaceAll("%hour", hour.toString())
-				.replaceAll("%min", min.toString())
-				.replaceAll("%world", server.getFolderName());
+		String output = backupName.replaceAll("%day", day.toString()).replaceAll("%month", month.toString()).replaceAll("%year", year.toString())
+				.replaceAll("%hour", hour.toString()).replaceAll("%min", min.toString()).replaceAll("%world", server.getFolderName());
 
 		byte[] buffer = new byte[1024];
 		try
 		{
-			FileOutputStream fos = new FileOutputStream(new File(backupDir,
-					output + ".zip"));
+			FileOutputStream fos = new FileOutputStream(new File(backupDir, output + ".zip"));
 			ZipOutputStream zos = new ZipOutputStream(fos);
 			for (String file : fileList)
 			{
@@ -94,9 +88,9 @@ public class BackupThread extends Thread
 
 			zos.closeEntry();
 			zos.close();
-			user.sendChatToPlayer("Backup successfully completed and saved in "
-					+ backupDir.getAbsolutePath());
-		} catch (IOException ex)
+			user.sendChatToPlayer("Backup successfully completed and saved in " + backupDir.getAbsolutePath());
+		}
+		catch (IOException ex)
 		{
 			FMLLog.severe(ex.getMessage());
 		}

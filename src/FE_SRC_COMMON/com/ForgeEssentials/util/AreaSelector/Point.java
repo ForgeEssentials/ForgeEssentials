@@ -54,8 +54,7 @@ public class Point implements Serializable, Comparable<Point>
 	/**
 	 * This is calculated by the whichever has higher coords.
 	 * 
-	 * @return Posotive number if this Point is larger. 0 if they are equal.
-	 *         Negative if the provided point is larger.
+	 * @return Posotive number if this Point is larger. 0 if they are equal. Negative if the provided point is larger.
 	 */
 	@Override
 	public int compareTo(Point point)
@@ -71,7 +70,8 @@ public class Point implements Serializable, Comparable<Point>
 		if (x > point.x)
 		{
 			positives++;
-		} else
+		}
+		else
 		{
 			negatives++;
 		}
@@ -79,7 +79,8 @@ public class Point implements Serializable, Comparable<Point>
 		if (y > point.y)
 		{
 			positives++;
-		} else
+		}
+		else
 		{
 			negatives++;
 		}
@@ -87,7 +88,8 @@ public class Point implements Serializable, Comparable<Point>
 		if (z > point.z)
 		{
 			positives++;
-		} else
+		}
+		else
 		{
 			negatives++;
 		}
@@ -95,10 +97,12 @@ public class Point implements Serializable, Comparable<Point>
 		if (positives > negatives)
 		{
 			return +1;
-		} else if (negatives > positives)
+		}
+		else if (negatives > positives)
 		{
 			return -1;
-		} else
+		}
+		else
 		{
 			return (int) ((x - point.x) + (y - point.y) + (z - point.z));
 		}
@@ -107,8 +111,7 @@ public class Point implements Serializable, Comparable<Point>
 	@Override
 	public boolean equals(Object object)
 	{
-		if (object instanceof Point && x == ((Point) object).x
-				&& y == ((Point) object).y && z == ((Point) object).z)
+		if (object instanceof Point && x == ((Point) object).x && y == ((Point) object).y && z == ((Point) object).z)
 		{
 			return true;
 		}
@@ -122,9 +125,7 @@ public class Point implements Serializable, Comparable<Point>
 	 */
 	public double getDistanceTo(Point point)
 	{
-		return Math.sqrt(((x - point.x) * (x - point.x))
-				+ ((y - point.y) * (y - point.y))
-				+ ((z - point.z) * (z - point.z)));
+		return Math.sqrt(((x - point.x) * (x - point.x)) + ((y - point.y) * (y - point.y)) + ((z - point.z) * (z - point.z)));
 	}
 
 	/**
@@ -149,15 +150,15 @@ public class Point implements Serializable, Comparable<Point>
 	}
 
 	/**
-	 * ensures the Point is valid. Just floors the Y axis to 0. Y can't be
-	 * negative.
+	 * ensures the Point is valid. Just floors the Y axis to 0. Y can't be negative.
 	 */
 	public static Point validate(Point point)
 	{
 		if (point.y < 0)
 		{
 			return new Point(point.x, 0, point.z);
-		} else
+		}
+		else
 		{
 			return point;
 		}

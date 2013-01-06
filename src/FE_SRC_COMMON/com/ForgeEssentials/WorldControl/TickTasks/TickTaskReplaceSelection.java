@@ -37,9 +37,7 @@ public class TickTaskReplaceSelection implements ITickTask
 	private Point first;
 	private boolean isComplete;
 
-	public TickTaskReplaceSelection(EntityPlayer player, int firstID,
-			int firstMeta, int secondID, int secondMeta, BackupArea backupArea,
-			Selection selection)
+	public TickTaskReplaceSelection(EntityPlayer player, int firstID, int firstMeta, int secondID, int secondMeta, BackupArea backupArea, Selection selection)
 	{
 		targetId = firstID;
 		targetMeta = firstMeta;
@@ -54,12 +52,10 @@ public class TickTaskReplaceSelection implements ITickTask
 		this.player = player;
 	}
 
-	public TickTaskReplaceSelection(EntityPlayer player, int firstID,
-			int firstMeta, int secondID, int secondMeta, BackupArea backupArea,
-			Selection selection, ArrayList<AreaBase> applicable)
+	public TickTaskReplaceSelection(EntityPlayer player, int firstID, int firstMeta, int secondID, int secondMeta, BackupArea backupArea, Selection selection,
+			ArrayList<AreaBase> applicable)
 	{
-		this(player, firstID, firstMeta, secondID, secondMeta, backupArea,
-				selection);
+		this(player, firstID, firstMeta, secondID, secondMeta, backupArea, selection);
 		this.applicable = applicable;
 	}
 
@@ -78,17 +74,15 @@ public class TickTaskReplaceSelection implements ITickTask
 		{
 			if (targetMeta == -1)
 			{
-				if (targetId == player.worldObj.getBlockId(x, y, z)
-						&& isApplicable(x, y, z))
+				if (targetId == player.worldObj.getBlockId(x, y, z) && isApplicable(x, y, z))
 				{
 					doReplace(x, y, z);
 					currentTickChanged++;
 				}
-			} else
+			}
+			else
 			{
-				if (targetId == player.worldObj.getBlockId(x, y, z)
-						&& targetMeta == player.worldObj.getBlockMetadata(x, y,
-								z) && isApplicable(x, y, z))
+				if (targetId == player.worldObj.getBlockId(x, y, z) && targetMeta == player.worldObj.getBlockMetadata(x, y, z) && isApplicable(x, y, z))
 				{
 					doReplace(x, y, z);
 					currentTickChanged++;
@@ -116,8 +110,7 @@ public class TickTaskReplaceSelection implements ITickTask
 				}
 			}
 
-			if (isComplete
-					|| currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
+			if (isComplete || currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
 			{
 				// Stop running this tick.
 				changed += currentTickChanged;
@@ -143,16 +136,16 @@ public class TickTaskReplaceSelection implements ITickTask
 		if (targetId == 0)
 		{
 			targetName = Localization.get("tile.air.name");
-		} else
+		}
+		else
 		{
 			if (targetMeta == -1)
 			{
-				targetName = new ItemStack(Block.blocksList[targetId])
-						.getDisplayName();
-			} else
+				targetName = new ItemStack(Block.blocksList[targetId]).getDisplayName();
+			}
+			else
 			{
-				targetName = new ItemStack(targetId, 1, targetMeta)
-						.getDisplayName();
+				targetName = new ItemStack(targetId, 1, targetMeta).getDisplayName();
 			}
 		}
 		String newName;
@@ -160,20 +153,19 @@ public class TickTaskReplaceSelection implements ITickTask
 		if (newId == 0)
 		{
 			newName = Localization.get("tile.air.name");
-		} else
+		}
+		else
 		{
 			if (newMeta == -1)
 			{
-				newName = new ItemStack(Block.blocksList[newId])
-						.getDisplayName();
-			} else
+				newName = new ItemStack(Block.blocksList[newId]).getDisplayName();
+			}
+			else
 			{
 				newName = new ItemStack(newId, 1, newMeta).getDisplayName();
 			}
 		}
-		OutputHandler.chatConfirmation(player, Localization.format(
-				"message.wc.replaceConfirmBlocksChanged", changed, targetName,
-				newName));
+		OutputHandler.chatConfirmation(player, Localization.format("message.wc.replaceConfirmBlocksChanged", changed, targetName, newName));
 	}
 
 	@Override

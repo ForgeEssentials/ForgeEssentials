@@ -182,12 +182,11 @@ public class Localization
 		{
 			try
 			{
-				LanguageRegistry.instance().loadLocalization(
-						langDir + langFile,
-						langFile.substring(langFile.lastIndexOf('/') + 1,
-								langFile.lastIndexOf('.')), true);
+				LanguageRegistry.instance().loadLocalization(langDir + langFile, langFile.substring(langFile.lastIndexOf('/') + 1, langFile.lastIndexOf('.')),
+						true);
 				OutputHandler.SOP("Loaded language file " + langFile);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				OutputHandler.SOP("Could not load language file " + langFile);
 				e.printStackTrace();
@@ -201,13 +200,11 @@ public class Localization
 	}
 
 	/**
-	 * Fetches a localized format string, and inserts any provided arguments
-	 * into it. A wrapper for all the
-	 * "String.format(Localization.get(key), ...)" calls in commands.
+	 * Fetches a localized format string, and inserts any provided arguments into it. A wrapper for all the "String.format(Localization.get(key), ...)" calls in
+	 * commands.
 	 * 
 	 * @param localizationKey
-	 *            Key to get the appropriate entry in the current localization
-	 *            file.
+	 *            Key to get the appropriate entry in the current localization file.
 	 * @param args
 	 *            Arguments required to populate the localized string
 	 * @return String String containing the localized, formatted string.

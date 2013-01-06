@@ -31,14 +31,13 @@ public class TextFormatter
 
 		for (Entry<String, String> set : data.entrySet())
 		{
-			if (set.getValue().startsWith("{")
-					|| set.getValue().startsWith("["))
+			if (set.getValue().startsWith("{") || set.getValue().startsWith("["))
 			{
 				toSend += "\"" + set.getKey() + "\": " + set.getValue() + ", ";
-			} else
+			}
+			else
 			{
-				toSend += "\"" + set.getKey() + "\": \"" + set.getValue()
-						+ "\", ";
+				toSend += "\"" + set.getKey() + "\": \"" + set.getValue() + "\", ";
 			}
 		}
 
@@ -61,7 +60,8 @@ public class TextFormatter
 			if (value.startsWith("{") || value.startsWith("["))
 			{
 				toSend += value + ",";
-			} else
+			}
+			else
 			{
 				toSend += "\"" + value + "\",";
 			}
@@ -95,13 +95,9 @@ public class TextFormatter
 	public static String toJSON(ItemStack stack, Boolean listEnch)
 	{
 		HashMap<String, String> data = new HashMap();
-		if (stack.stackTagCompound != null
-				&& stack.stackTagCompound.hasKey("display")
-				&& stack.stackTagCompound.getCompoundTag("display").hasKey(
-						"Name"))
+		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display") && stack.stackTagCompound.getCompoundTag("display").hasKey("Name"))
 		{
-			data.put("item", stack.getItemName().replaceAll("item.", "")
-					.replaceAll("tile.", ""));
+			data.put("item", stack.getItemName().replaceAll("item.", "").replaceAll("tile.", ""));
 		}
 		if (stack.stackSize != 1)
 		{
@@ -122,15 +118,12 @@ public class TextFormatter
 			{
 				for (int var7 = 0; var7 < var10.tagCount(); ++var7)
 				{
-					short var8 = ((NBTTagCompound) var10.tagAt(var7))
-							.getShort("id");
-					short var9 = ((NBTTagCompound) var10.tagAt(var7))
-							.getShort("lvl");
+					short var8 = ((NBTTagCompound) var10.tagAt(var7)).getShort("id");
+					short var9 = ((NBTTagCompound) var10.tagAt(var7)).getShort("lvl");
 
 					if (Enchantment.enchantmentsList[var8] != null)
 					{
-						tempArgs.add(Enchantment.enchantmentsList[var8]
-								.getTranslatedName(var9));
+						tempArgs.add(Enchantment.enchantmentsList[var8].getTranslatedName(var9));
 					}
 				}
 				data.put("ench", toJSON(tempArgs));
@@ -163,10 +156,12 @@ public class TextFormatter
 		if (effect.getAmplifier() == 1)
 		{
 			name = name + " II";
-		} else if (effect.getAmplifier() == 2)
+		}
+		else if (effect.getAmplifier() == 2)
 		{
 			name = name + " III";
-		} else if (effect.getAmplifier() == 3)
+		}
+		else if (effect.getAmplifier() == 3)
 		{
 			name = name + " IV";
 		}
@@ -186,7 +181,8 @@ public class TextFormatter
 			if (value.startsWith("{") || value.startsWith("["))
 			{
 				toSend += value + ",";
-			} else
+			}
+			else
 			{
 				toSend += "\"" + value + "\",";
 			}

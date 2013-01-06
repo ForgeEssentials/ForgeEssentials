@@ -24,8 +24,7 @@ class RConThreadQueryAuth
 	/** The RConThreadQuery that this is probably an inner class of */
 	final RConQueryThread queryThread;
 
-	public RConThreadQueryAuth(RConQueryThread rConQueryThread,
-			DatagramPacket par2DatagramPacket)
+	public RConThreadQueryAuth(RConQueryThread rConQueryThread, DatagramPacket par2DatagramPacket)
 	{
 		queryThread = rConQueryThread;
 		timestamp = (new Date()).getTime();
@@ -37,15 +36,11 @@ class RConThreadQueryAuth
 		requestId[3] = var3[6];
 		requestIdAsString = new String(requestId);
 		randomChallenge = (new Random()).nextInt(16777216);
-		challengeValue = String.format(
-				"\t%s%d\u0000",
-				new Object[] { requestIdAsString,
-						Integer.valueOf(randomChallenge) }).getBytes();
+		challengeValue = String.format("\t%s%d\u0000", new Object[] { requestIdAsString, Integer.valueOf(randomChallenge) }).getBytes();
 	}
 
 	/**
-	 * Returns true if the auth's creation timestamp is less than the given
-	 * time, otherwise false
+	 * Returns true if the auth's creation timestamp is less than the given time, otherwise false
 	 */
 	public Boolean hasExpired(long par1)
 	{

@@ -63,10 +63,8 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
 	{
-		PermResult result = PermissionsAPI
-				.checkPermResult(new PermQueryBlanketSpot(new WorldPoint(
-						block.worldObj, block.xCoord, block.yCoord,
-						block.zCoord), getCommandPerm(), true));
+		PermResult result = PermissionsAPI.checkPermResult(new PermQueryBlanketSpot(new WorldPoint(block.worldObj, block.xCoord, block.yCoord, block.zCoord),
+				getCommandPerm(), true));
 		return result.equals(PermResult.DENY) ? false : true;
 	}
 
@@ -83,7 +81,8 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		if (first.equalsIgnoreCase("user") || first.equalsIgnoreCase("player"))
 		{
 			CommandUser.processCommandPlayer(sender, newArgs);
-		} else if (first.equalsIgnoreCase("export"))
+		}
+		else if (first.equalsIgnoreCase("export"))
 		{
 			CommandExport.processCommandPlayer(sender, newArgs);
 		}
@@ -102,7 +101,8 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		if (first.equalsIgnoreCase("user") || first.equalsIgnoreCase("player"))
 		{
 			CommandUser.processCommandConsole(sender, newArgs);
-		} else if (first.equalsIgnoreCase("export"))
+		}
+		else if (first.equalsIgnoreCase("export"))
 		{
 			CommandExport.processCommandConsole(sender, newArgs);
 		}
@@ -117,8 +117,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		PermResult result = PermissionsAPI.checkPermResult(new PermQueryPlayer(
-				player, getCommandPerm(), true));
+		PermResult result = PermissionsAPI.checkPermResult(new PermQueryPlayer(player, getCommandPerm(), true));
 		return result.equals(PermResult.DENY) ? false : true;
 	}
 

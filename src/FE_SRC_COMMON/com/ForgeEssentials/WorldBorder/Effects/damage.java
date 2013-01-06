@@ -11,8 +11,7 @@ public class damage implements IEffect
 	@Override
 	public void registerConfig(Configuration config, String category)
 	{
-		damage = config.get(category, "damage", damage,
-				"Amount of damage in 1/2 harts.").getInt();
+		damage = config.get(category, "damage", damage, "Amount of damage in 1/2 harts.").getInt();
 	}
 
 	@Override

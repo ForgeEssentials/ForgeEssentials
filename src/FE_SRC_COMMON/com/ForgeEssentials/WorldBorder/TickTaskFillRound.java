@@ -26,12 +26,10 @@ public class TickTaskFillRound extends TickTaskFill
 		centerZ = ModuleWorldBorder.Z;
 		rad = ModuleWorldBorder.rad;
 
-		eta = ((MathHelper.abs_int((maxX - minX) / 16) * MathHelper
-				.abs_int((minZ - maxZ) / 16)));
+		eta = ((MathHelper.abs_int((maxX - minX) / 16) * MathHelper.abs_int((minZ - maxZ) / 16)));
 
 		warnEveryone(Localization.get(Localization.WB_FILL_START));
-		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll(
-				"%eta", getETA()));
+		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
 	}
 
 	@Override
@@ -42,22 +40,23 @@ public class TickTaskFillRound extends TickTaskFill
 		int i = 0;
 		while (i < chunksAtick)
 		{
-			if ((rad + ModuleWorldBorder.overGenerate) < ModuleWorldBorder
-					.getDistanceRound(centerX, centerZ, X, Z))
+			if ((rad + ModuleWorldBorder.overGenerate) < ModuleWorldBorder.getDistanceRound(centerX, centerZ, X, Z))
 			{
 				i++;
 				world.theChunkProviderServer.provideChunk((X >> 4), (Z >> 4));
 				if (X <= maxX)
 				{
 					X += 16;
-				} else
+				}
+				else
 				{
 					// New row!
 					if (Z <= maxZ)
 					{
 						Z += 16;
 						X = minX;
-					} else
+					}
+					else
 					{
 						// Done!
 						isComplete = true;

@@ -36,11 +36,9 @@ public class PermQueryPlayer extends PermQuery
 	 * @param player
 	 * @param permission
 	 * @param checkForward
-	 *            Specifies to only return allow if all the children of the
-	 *            permission are allowed.
+	 *            Specifies to only return allow if all the children of the permission are allowed.
 	 */
-	public PermQueryPlayer(EntityPlayer player, String permission,
-			boolean checkForward)
+	public PermQueryPlayer(EntityPlayer player, String permission, boolean checkForward)
 	{
 		doer = player;
 		checker = new PermissionChecker(permission);

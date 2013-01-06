@@ -13,8 +13,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
 {
 	private World worldObj;
 
-	public ContainerCheatyWorkbench(InventoryPlayer par1InventoryPlayer,
-			World par2World)
+	public ContainerCheatyWorkbench(InventoryPlayer par1InventoryPlayer, World par2World)
 	{
 		super(par1InventoryPlayer, par2World, 0, 0, 0);
 		worldObj = par2World;
@@ -26,8 +25,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
 	@Override
 	public void onCraftMatrixChanged(IInventory par1IInventory)
 	{
-		craftResult.setInventorySlotContents(0, CraftingManager.getInstance()
-				.findMatchingRecipe(craftMatrix, worldObj));
+		craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
 	}
 
 	/**
@@ -59,8 +57,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
 	}
 
 	/**
-	 * Called when a player shift-clicks on a slot. You must override this or
-	 * you will crash when someone does that.
+	 * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
 	 */
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
@@ -81,19 +78,22 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
 				}
 
 				var4.onSlotChange(var5, var3);
-			} else if (par2 >= 10 && par2 < 37)
+			}
+			else if (par2 >= 10 && par2 < 37)
 			{
 				if (!mergeItemStack(var5, 37, 46, false))
 				{
 					return null;
 				}
-			} else if (par2 >= 37 && par2 < 46)
+			}
+			else if (par2 >= 37 && par2 < 46)
 			{
 				if (!mergeItemStack(var5, 10, 37, false))
 				{
 					return null;
 				}
-			} else if (!mergeItemStack(var5, 10, 46, false))
+			}
+			else if (!mergeItemStack(var5, 10, 46, false))
 			{
 				return null;
 			}
@@ -101,7 +101,8 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
 			if (var5.stackSize == 0)
 			{
 				var4.putStack((ItemStack) null);
-			} else
+			}
+			else
 			{
 				var4.onSlotChanged();
 			}

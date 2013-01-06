@@ -15,9 +15,9 @@ public class CommandSay extends CommandServerSay
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-					(EntityPlayer) sender, getCommandPerm()));
-		} else
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
+		}
+		else
 		{
 			return true;
 		}

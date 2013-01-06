@@ -23,7 +23,8 @@ public class LogLoop implements Runnable
 				try
 				{
 					Thread.sleep(1000);
-				} catch (final InterruptedException e)
+				}
+				catch (final InterruptedException e)
 				{
 					e.printStackTrace();
 				}
@@ -39,15 +40,14 @@ public class LogLoop implements Runnable
 	{
 		try
 		{
-			Connection connection = DriverManager.getConnection(
-					ModulePlayerLogger.url, ModulePlayerLogger.username,
-					ModulePlayerLogger.password);
+			Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
 			for (logEntry type : ModulePlayerLogger.logTypes)
 			{
 				type.makeEntries(connection);
 			}
 			connection.close();
-		} catch (SQLException e1)
+		}
+		catch (SQLException e1)
 		{
 			OutputHandler.SOP("Could not connect to database!");
 			OutputHandler.SOP(e1.getMessage());

@@ -42,36 +42,36 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(target), player);
-			} else
-			{
-				OutputHandler.chatError(sender, Localization.format(
-						Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} else if (args.length == 2)
+			else
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else if (args.length == 2)
 		{
-			EntityPlayerMP player = FunctionHelper
-					.getPlayerFromUsername(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
 			EntityPlayer target = FunctionHelper.getPlayerFromUsername(args[1]);
 			if (player != null && target != null)
 			{
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(target), player);
-			} else
+			}
+			else
 			{
 				if (player == null)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				}
 				if (target == null)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NOPLAYER, args[1]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[1]));
 				}
 				return;
 			}
-		} else if (args.length >= 3)
+		}
+		else if (args.length >= 3)
 		{
 			if (args.length == 3)
 			{
@@ -79,89 +79,86 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				try
 				{
 					x = new Integer(args[0]);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NAN, args[0]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
 					return;
 				}
 				try
 				{
 					y = new Integer(args[1]);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NAN, args[1]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
 					return;
 				}
 				try
 				{
 					z = new Integer(args[2]);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NAN, args[2]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
 					return;
 				}
 				EntityPlayerMP player = (EntityPlayerMP) sender;
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
 				playerInfo.back = new WarpPoint(player);
-				TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y,
-						z, player.rotationPitch, player.rotationYaw), player);
-			} else if (args.length == 4)
+				TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
+			}
+			else if (args.length == 4)
 			{
 
 				int x = 0, y = 0, z = 0;
 				try
 				{
 					x = new Integer(args[1]);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NAN, args[1]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
 					return;
 				}
 				try
 				{
 					y = new Integer(args[2]);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NAN, args[2]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
 					return;
 				}
 				try
 				{
 					z = new Integer(args[3]);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NAN, args[3]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[3]));
 					return;
 				}
-				EntityPlayerMP player = FunctionHelper
-						.getPlayerFromUsername(args[0]);
+				EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
 				if (player != null)
 				{
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
 					playerInfo.back = new WarpPoint(player);
-					TeleportCenter.addToTpQue(new WarpPoint(player.dimension,
-							x, y, z, player.rotationPitch, player.rotationYaw),
-							player);
-				} else
-				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NOPLAYER, args[0]));
+					TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
 				}
-			} else
-			{
-				OutputHandler.chatError(sender,
-						Localization.get(Localization.ERROR_BADSYNTAX));
+				else
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				}
 			}
-		} else
+			else
+			{
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+			}
+		}
+		else
 		{
-			OutputHandler.chatError(sender,
-					Localization.get(Localization.ERROR_BADSYNTAX));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
 		}
 	}
 
@@ -170,25 +167,23 @@ public class CommandTp extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayerMP player = FunctionHelper
-					.getPlayerFromUsername(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
 			EntityPlayer target = FunctionHelper.getPlayerFromUsername(args[1]);
 			if (player != null && target != null)
 			{
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(target), player);
-			} else
+			}
+			else
 			{
 				if (player == null)
 				{
-					sender.sendChatToPlayer(Localization.format(
-							Localization.ERROR_NOPLAYER, args[0]));
+					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				}
 				if (target == null)
 				{
-					sender.sendChatToPlayer(Localization.format(
-							Localization.ERROR_NOPLAYER, args[1]));
+					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[1]));
 				}
 				return;
 			}
@@ -212,9 +207,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1 || args.length == 2)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
 		{
 			return null;
 		}

@@ -66,16 +66,20 @@ public class Zone extends WorldArea implements Comparable
 		if (parent == null)
 		{
 			return true;
-		} else if (zoneID.equals(zone.parent))
+		}
+		else if (zoneID.equals(zone.parent))
 		{
 			return true;
-		} else if (zone.parent == null)
+		}
+		else if (zone.parent == null)
 		{
 			return false;
-		} else if (zone.parent.equals(ZoneManager.GLOBAL.zoneID))
+		}
+		else if (zone.parent.equals(ZoneManager.GLOBAL.zoneID))
 		{
 			return false;
-		} else
+		}
+		else
 		{
 			return isParentOf(ZoneManager.getZone(zone.parent));
 		}
@@ -89,13 +93,16 @@ public class Zone extends WorldArea implements Comparable
 		if (zone.parent == null)
 		{
 			return true;
-		} else if (zone.parent.equals(ZoneManager.GLOBAL.zoneID))
+		}
+		else if (zone.parent.equals(ZoneManager.GLOBAL.zoneID))
 		{
 			return dim == zone.dim;
-		} else if (zone.zoneID.equals(parent))
+		}
+		else if (zone.zoneID.equals(parent))
 		{
 			return true;
-		} else
+		}
+		else
 		{
 			return ZoneManager.getZone(parent).isChildOf(zone);
 		}
@@ -116,10 +123,12 @@ public class Zone extends WorldArea implements Comparable
 		if (zone.isParentOf(this))
 		{
 			return -100;
-		} else if (isParentOf(zone))
+		}
+		else if (isParentOf(zone))
 		{
 			return 100;
-		} else
+		}
+		else
 		{
 			return priority - zone.priority;
 		}
@@ -138,8 +147,7 @@ public class Zone extends WorldArea implements Comparable
 	@Reconstructor
 	private static Zone reconstruct(TaggedClass tag)
 	{
-		Selection sel = new Selection((Point) tag.getFieldValue("high"),
-				(Point) tag.getFieldValue("low"));
+		Selection sel = new Selection((Point) tag.getFieldValue("high"), (Point) tag.getFieldValue("low"));
 		int dim = (Integer) tag.getFieldValue("dimension");
 
 		Zone zone = new Zone(sel, dim);

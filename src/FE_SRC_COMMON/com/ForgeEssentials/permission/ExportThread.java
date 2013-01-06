@@ -26,8 +26,7 @@ public class ExportThread extends Thread
 
 		user.sendChatToPlayer(" {PermSQL} Savin permissions");
 		FlatFilePermissions permissions = new FlatFilePermissions(exportDir);
-		permissions.save((ArrayList<PermissionHolder>) map.get("playerPerms"),
-				(ArrayList<PermissionHolder>) map.get("groupPerms"));
+		permissions.save((ArrayList<PermissionHolder>) map.get("playerPerms"), (ArrayList<PermissionHolder>) map.get("groupPerms"));
 
 		user.sendChatToPlayer(" {PermSQL} Export COmplete");
 	}

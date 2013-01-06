@@ -47,8 +47,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 			for (Object temp : kitData.getTags())
 			{
 				NBTTagCompound kit = (NBTTagCompound) temp;
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-						getCommandPerm() + "." + kit.getName())))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + kit.getName())))
 				{
 					msg = kit.getName() + ", " + msg;
 				}
@@ -63,29 +62,25 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		{
 			if (kitData.hasKey(args[0].toLowerCase()))
 			{
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-						getCommandPerm() + "." + args[0].toLowerCase())))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
-					giveKit(sender,
-							kitData.getCompoundTag(args[0].toLowerCase()));
-				} else
-				{
-					OutputHandler.chatError(sender,
-							Localization.get(Localization.ERROR_PERMDENIED));
+					giveKit(sender, kitData.getCompoundTag(args[0].toLowerCase()));
 				}
-			} else
+				else
+				{
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+				}
+			}
+			else
 			{
-				OutputHandler.chatError(sender,
-						Localization.get(Localization.KIT_NOTEXISTS));
+				OutputHandler.chatError(sender, Localization.get(Localization.KIT_NOTEXISTS));
 			}
 			return;
 		}
 		/*
 		 * Make kit
 		 */
-		if (args[1].equalsIgnoreCase("set")
-				&& PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-						getCommandPerm() + "admin")))
+		if (args[1].equalsIgnoreCase("set") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
 		{
 			if (args.length == 3)
 			{
@@ -93,13 +88,11 @@ public class CommandKit extends ForgeEssentialsCommandBase
 				{
 					int cooldown = parseIntWithMin(sender, args[2], 0);
 					makeKit(sender, args[0].toLowerCase(), cooldown);
-					sender.sendChatToPlayer(Localization.get(
-							Localization.KIT_MADE).replaceAll("%c",
-							"" + cooldown));
-				} else
+					sender.sendChatToPlayer(Localization.get(Localization.KIT_MADE).replaceAll("%c", "" + cooldown));
+				}
+				else
 				{
-					OutputHandler.chatError(sender,
-							Localization.get(Localization.KIT_ALREADYEXISTS));
+					OutputHandler.chatError(sender, Localization.get(Localization.KIT_ALREADYEXISTS));
 				}
 				return;
 			}
@@ -108,21 +101,18 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		/*
 		 * Delete kit
 		 */
-		if (args[1].equalsIgnoreCase("del")
-				&& PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-						getCommandPerm() + "admin")))
+		if (args[1].equalsIgnoreCase("del") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
 		{
 			if (args.length == 2)
 			{
 				if (kitData.hasKey(args[0].toLowerCase()))
 				{
 					kitData.removeTag(args[0].toLowerCase());
-					sender.sendChatToPlayer(Localization
-							.get(Localization.KIT_REMOVED));
-				} else
+					sender.sendChatToPlayer(Localization.get(Localization.KIT_REMOVED));
+				}
+				else
 				{
-					OutputHandler.chatError(sender,
-							Localization.get(Localization.KIT_NOTEXISTS));
+					OutputHandler.chatError(sender, Localization.get(Localization.KIT_NOTEXISTS));
 				}
 				return;
 			}
@@ -131,9 +121,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		/*
 		 * You're doing it wrong!
 		 */
-		OutputHandler.chatError(sender,
-				Localization.get(Localization.ERROR_BADSYNTAX)
-						+ getSyntaxPlayer(sender));
+		OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 	}
 
 	public void makeKit(EntityPlayer player, String name, int cooldown)
@@ -180,21 +168,16 @@ public class CommandKit extends ForgeEssentialsCommandBase
 	{
 		if (PlayerInfo.getPlayerInfo(player).kitCooldown.get(kit.getName()) != null)
 		{
-			player.sendChatToPlayer(Localization.get(
-					Localization.KIT_STILLINCOOLDOWN).replaceAll(
-					"%c",
-					""
-							+ PlayerInfo.getPlayerInfo(player).kitCooldown
-									.get(kit.getName())));
-		} else
+			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c",
+					"" + PlayerInfo.getPlayerInfo(player).kitCooldown.get(kit.getName())));
+		}
+		else
 		{
 			player.sendChatToPlayer(Localization.get(Localization.KIT_DONE));
 
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player,
-					TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
 			{
-				PlayerInfo.getPlayerInfo(player).kitCooldown.put(kit.getName(),
-						kit.getInteger("cooldown"));
+				PlayerInfo.getPlayerInfo(player).kitCooldown.put(kit.getName(), kit.getInteger("cooldown"));
 			}
 
 			/*
@@ -203,8 +186,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 			for (int i = 0; kit.getTagList("items").tagCount() > i; i++)
 			{
 				ItemStack stack = new ItemStack(0, 0, 0);
-				stack.readFromNBT((NBTTagCompound) kit.getTagList("items")
-						.tagAt(i));
+				stack.readFromNBT((NBTTagCompound) kit.getTagList("items").tagAt(i));
 				player.inventory.addItemStackToInventory(stack);
 			}
 
@@ -220,7 +202,8 @@ public class CommandKit extends ForgeEssentialsCommandBase
 					if (player.inventory.armorInventory[i] == null)
 					{
 						player.inventory.armorInventory[i] = stack;
-					} else
+					}
+					else
 					{
 						player.inventory.addItemStackToInventory(stack);
 					}
@@ -264,7 +247,8 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			return getListOfStringsFromIterableMatchingLastWord(args, list);
-		} else
+		}
+		else
 		{
 			return null;
 		}

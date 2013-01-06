@@ -36,9 +36,7 @@ public class PlayerInfo
 		{
 			// Attempt to populate this info with some data from our storage.
 			// TODO: get the actual config-given choice...
-			info = (PlayerInfo) DataStorageManager.getDriverOfName(
-					"ForgeConfig")
-					.loadObject(PlayerInfo.class, player.username);
+			info = (PlayerInfo) DataStorageManager.getDriverOfName("ForgeConfig").loadObject(PlayerInfo.class, player.username);
 
 			if (info == null)
 			{
@@ -68,8 +66,7 @@ public class PlayerInfo
 	{
 		String username = (String) tag.getFieldValue("username");
 
-		PlayerInfo info = new PlayerInfo(
-				FunctionHelper.getPlayerFromUsername(username));
+		PlayerInfo info = new PlayerInfo(FunctionHelper.getPlayerFromUsername(username));
 
 		info.setPoint1((Point) tag.getFieldValue("sel1"));
 		info.setPoint2((Point) tag.getFieldValue("sel2"));
@@ -175,7 +172,8 @@ public class PlayerInfo
 			if (kitCooldown.get(key) == 0)
 			{
 				kitCooldown.remove(key);
-			} else
+			}
+			else
 			{
 				kitCooldown.put(key, kitCooldown.get(key) - 1);
 			}
@@ -203,20 +201,16 @@ public class PlayerInfo
 				{
 					selection = new Selection(sel1, sel2);
 				}
-			} else
+			}
+			else
 			{
 				selection.setStart(sel1);
 			}
 		}
 
 		// send packets.
-		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate()
-				.getServer().getConfigurationManager()
-				.getPlayerForUsername(username);
-		PacketDispatcher
-				.sendPacketToPlayer(
-						(new PacketSelectionUpdate(this)).getPayload(),
-						(Player) player);
+		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(this)).getPayload(), (Player) player);
 	}
 
 	public Point getPoint2()
@@ -236,20 +230,16 @@ public class PlayerInfo
 				{
 					selection = new Selection(sel1, sel2);
 				}
-			} else
+			}
+			else
 			{
 				selection.setEnd(sel2);
 			}
 		}
 
 		// send packets.
-		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate()
-				.getServer().getConfigurationManager()
-				.getPlayerForUsername(username);
-		PacketDispatcher
-				.sendPacketToPlayer(
-						(new PacketSelectionUpdate(this)).getPayload(),
-						(Player) player);
+		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(this)).getPayload(), (Player) player);
 	}
 
 	public Selection getSelection()
@@ -296,12 +286,7 @@ public class PlayerInfo
 		selection = null;
 		sel1 = null;
 		sel2 = null;
-		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate()
-				.getServer().getConfigurationManager()
-				.getPlayerForUsername(username);
-		PacketDispatcher
-				.sendPacketToPlayer(
-						(new PacketSelectionUpdate(this)).getPayload(),
-						(Player) player);
+		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(this)).getPayload(), (Player) player);
 	}
 }

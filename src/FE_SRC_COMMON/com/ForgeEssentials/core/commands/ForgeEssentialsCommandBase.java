@@ -22,10 +22,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		if (var1 instanceof EntityPlayer)
 		{
 			processCommandPlayer((EntityPlayer) var1, var2);
-		} else if (var1 instanceof TileEntityCommandBlock)
+		}
+		else if (var1 instanceof TileEntityCommandBlock)
 		{
 			processCommandBlock((TileEntityCommandBlock) var1, var2);
-		} else
+		}
+		else
 		{
 			processCommandConsole(var1, var2);
 		}
@@ -41,8 +43,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		// do nothing.
 	}
 
-	public abstract void processCommandConsole(ICommandSender sender,
-			String[] args);
+	public abstract void processCommandConsole(ICommandSender sender, String[] args);
 
 	// ---------------------------
 	// command usage
@@ -56,23 +57,26 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 			String usage;
 			try
 			{
-				usage = "/" + getCommandName() + " " + getCommandSyntax(sender)
-						+ " " + getCommandInfo(sender);
-			} catch (NullPointerException e)
+				usage = "/" + getCommandName() + " " + getCommandSyntax(sender) + " " + getCommandInfo(sender);
+			}
+			catch (NullPointerException e)
 			{
 				usage = "Not usable by player";
 			}
 			return usage;
-		} else if (sender instanceof TileEntityCommandBlock)
+		}
+		else if (sender instanceof TileEntityCommandBlock)
 		{
 			return getSyntaxCommandBlock((TileEntityCommandBlock) sender);
-		} else
+		}
+		else
 		{
 			String usage;
 			try
 			{
 				usage = getCommandSyntax(sender) + " " + getCommandInfo(sender);
-			} catch (NullPointerException e)
+			}
+			catch (NullPointerException e)
 			{
 				usage = "Not usable by console";
 			}
@@ -85,7 +89,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		if (sender instanceof EntityPlayer)
 		{
 			return getInfoPlayer((EntityPlayer) sender);
-		} else
+		}
+		else
 		{
 			return getInfoConsole();
 		}
@@ -96,7 +101,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		if (sender instanceof EntityPlayer)
 		{
 			return getSyntaxPlayer((EntityPlayer) sender);
-		} else
+		}
+		else
 		{
 			return getSyntaxConsole();
 		}
@@ -106,8 +112,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	{
 		if (canConsoleUseCommand())
 		{
-			return Localization.get("command." + getCommandName()
-					+ ".syntax.console");
+			return Localization.get("command." + getCommandName() + ".syntax.console");
 		}
 		return null;
 	}
@@ -121,8 +126,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	{
 		if (canPlayerUseCommand(player))
 		{
-			return Localization.get("command." + getCommandName()
-					+ ".syntax.player");
+			return Localization.get("command." + getCommandName() + ".syntax.player");
 		}
 		return null;
 	}
@@ -131,8 +135,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	{
 		if (canConsoleUseCommand())
 		{
-			return Localization.get("command." + getCommandName()
-					+ ".info.console");
+			return Localization.get("command." + getCommandName() + ".info.console");
 		}
 		return null;
 	}
@@ -141,8 +144,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	{
 		if (canPlayerUseCommand(player))
 		{
-			return Localization.get("command." + getCommandName()
-					+ ".info.player");
+			return Localization.get("command." + getCommandName() + ".info.player");
 		}
 		return null;
 	}
@@ -157,10 +159,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		if (sender instanceof EntityPlayer)
 		{
 			return canPlayerUseCommand((EntityPlayer) sender);
-		} else if (sender instanceof TileEntityCommandBlock)
+		}
+		else if (sender instanceof TileEntityCommandBlock)
 		{
 			return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
-		} else
+		}
+		else
 		{
 			return canConsoleUseCommand();
 		}
@@ -206,7 +210,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		if (sender instanceof EntityPlayer)
 		{
 			OutputHandler.chatError((EntityPlayer) sender, message);
-		} else
+		}
+		else
 		{
 			sender.sendChatToPlayer(message);
 		}
@@ -214,8 +219,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player,
-				getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
 	public abstract String getCommandPerm();

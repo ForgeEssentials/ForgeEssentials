@@ -22,7 +22,8 @@ public class Permission extends PermissionChecker
 		{
 			Permission perm = (Permission) object;
 			return name.equals(perm.name) && allowed == perm.allowed;
-		} else if (object instanceof String)
+		}
+		else if (object instanceof String)
 		{
 			return object.equals(name);
 		}

@@ -11,8 +11,7 @@ import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 
 /**
- * Use for all commands that need a cooldown, except for warp systems, see
- * TeleportCenter.
+ * Use for all commands that need a cooldown, except for warp systems, see TeleportCenter.
  * 
  * @author Dries007
  * 
@@ -28,8 +27,7 @@ public class TickHandlerCommands implements IScheduledTickHandler
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		for (Object player : FMLCommonHandler.instance()
-				.getMinecraftServerInstance().getConfigurationManager().playerEntityList)
+		for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
 		{
 			PlayerInfo.getPlayerInfo((EntityPlayer) player).KitCooldownTick();
 		}

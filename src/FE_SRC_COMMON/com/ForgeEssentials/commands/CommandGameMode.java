@@ -39,36 +39,37 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 			if (args.length == 1)
 			{
 				sender.setGameType(getGameTypeFromString(sender, args[0]));
-			} else
+			}
+			else
 			{
 				EnumGameType gm;
-				if (((EntityPlayerMP) sender).theItemInWorldManager
-						.getGameType().isCreative())
+				if (((EntityPlayerMP) sender).theItemInWorldManager.getGameType().isCreative())
 				{
 					gm = EnumGameType.SURVIVAL;
-				} else
+				}
+				else
 				{
 					gm = EnumGameType.CREATIVE;
 				}
 
 				sender.setGameType(gm);
 			}
-		} else if (args.length == 2
-				&& PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-						getCommandPerm() + ".others")))
+		}
+		else if (args.length == 2 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 			if (args.length == 2)
 			{
 				victim.setGameType(getGameTypeFromString(sender, args[1]));
-			} else
+			}
+			else
 			{
 				EnumGameType gm;
-				if (((EntityPlayerMP) victim).theItemInWorldManager
-						.getGameType().isSurvivalOrAdventure())
+				if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType().isSurvivalOrAdventure())
 				{
 					gm = EnumGameType.CREATIVE;
-				} else
+				}
+				else
 				{
 					gm = EnumGameType.SURVIVAL;
 				}
@@ -76,11 +77,10 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				victim.setGameType(gm);
 			}
 			sender.sendChatToPlayer("Gamemode changed of " + victim.username);
-		} else
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX)
-					+ getSyntaxPlayer(sender));
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 	}
 
@@ -93,14 +93,15 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 			if (args.length == 2)
 			{
 				victim.setGameType(getGameTypeFromString(sender, args[1]));
-			} else
+			}
+			else
 			{
 				EnumGameType gm;
-				if (((EntityPlayerMP) victim).theItemInWorldManager
-						.getGameType().isSurvivalOrAdventure())
+				if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType().isSurvivalOrAdventure())
 				{
 					gm = EnumGameType.CREATIVE;
-				} else
+				}
+				else
 				{
 					gm = EnumGameType.SURVIVAL;
 				}
@@ -108,24 +109,19 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				victim.setGameType(gm);
 			}
 			sender.sendChatToPlayer("Gamemode changed of " + victim.username);
-		} else
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
-	public EnumGameType getGameTypeFromString(ICommandSender sender,
-			String string)
+	public EnumGameType getGameTypeFromString(ICommandSender sender, String string)
 	{
-		return !string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName())
-				&& !string.equalsIgnoreCase("s") ? (!string
-				.equalsIgnoreCase(EnumGameType.CREATIVE.getName())
-				&& !string.equalsIgnoreCase("c") ? (!string
-				.equalsIgnoreCase(EnumGameType.ADVENTURE.getName())
-				&& !string.equalsIgnoreCase("a") ? WorldSettings
-				.getGameTypeById(parseIntBounded(sender, string, 0, 2))
-				: EnumGameType.ADVENTURE) : EnumGameType.CREATIVE)
+		return !string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) && !string.equalsIgnoreCase("s") ? (!string.equalsIgnoreCase(EnumGameType.CREATIVE
+				.getName()) && !string.equalsIgnoreCase("c") ? (!string.equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) && !string.equalsIgnoreCase("a") ? WorldSettings
+				.getGameTypeById(parseIntBounded(sender, string, 0, 2)) : EnumGameType.ADVENTURE)
+				: EnumGameType.CREATIVE)
 				: EnumGameType.SURVIVAL;
 	}
 
@@ -146,20 +142,18 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			return getListOfStringsMatchingLastWord(args, new String[] {
-					"survival", "creative", "adventure" });
-		} else if (args.length == 1)
+			return getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure" });
+		}
+		else if (args.length == 1)
 		{
-			List match = getListOfStringsMatchingLastWord(args,
-					FMLCommonHandler.instance().getMinecraftServerInstance()
-							.getAllUsernames());
+			List match = getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 			if (match == null)
 			{
-				match = getListOfStringsMatchingLastWord(args, new String[] {
-						"survival", "creative", "adventure" });
+				match = getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure" });
 			}
 			return match;
-		} else
+		}
+		else
 		{
 			return null;
 		}

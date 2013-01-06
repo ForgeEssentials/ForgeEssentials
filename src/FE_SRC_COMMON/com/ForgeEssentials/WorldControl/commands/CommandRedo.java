@@ -31,8 +31,7 @@ public class CommandRedo extends WorldControlCommandBase
 
 		if (back == null)
 		{
-			OutputHandler.chatError(player,
-					Localization.get(Localization.WC_NOREDO));
+			OutputHandler.chatError(player, Localization.get(Localization.WC_NOREDO));
 			return;
 		}
 

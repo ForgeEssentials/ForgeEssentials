@@ -6,8 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks an object as saveable by the Data API. In order to be useful, it should
- * contain at least one field marked with the @SavedField annotation.
+ * Marks an object as saveable by the Data API. In order to be useful, it should contain at least one field marked with the @SavedField annotation.
  * 
  * @author MysteriousAges
  * 
@@ -17,8 +16,7 @@ import java.lang.annotation.Target;
 public @interface SaveableObject
 {
 	/**
-	 * Set to True if the object has data that can be included directly in a
-	 * containing class's data file.
+	 * Set to True if the object has data that can be included directly in a containing class's data file.
 	 */
 	boolean SaveInline() default false;
 
@@ -36,10 +34,8 @@ public @interface SaveableObject
 	}
 
 	/**
-	 * Marks a field or method as the UniqueLoadingKey. There must be 1, and
-	 * only 1 of these in each class. They are not inherited. this must
-	 * be/return some piece of data that identifies the object uniquely from
-	 * others of its type.
+	 * Marks a field or method as the UniqueLoadingKey. There must be 1, and only 1 of these in each class. They are not inherited. this must be/return some
+	 * piece of data that identifies the object uniquely from others of its type.
 	 * 
 	 * @author AbrarSyed
 	 * 
@@ -51,10 +47,8 @@ public @interface SaveableObject
 	}
 
 	/**
-	 * This method must have exactly 1 argument, a TaggedClass. When an object
-	 * is loaded, this method will be called with a TaggedClass populated with
-	 * all the read data. In this method, the object should be constructed and
-	 * registered as necessary. This method may NOT be inherited
+	 * This method must have exactly 1 argument, a TaggedClass. When an object is loaded, this method will be called with a TaggedClass populated with all the
+	 * read data. In this method, the object should be constructed and registered as necessary. This method may NOT be inherited
 	 * 
 	 * @author AbrarSyed
 	 */

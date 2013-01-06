@@ -23,8 +23,7 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER
-				&& args.length >= 1)
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER && args.length >= 1)
 		{
 			String cmd = args[0];
 			for (int i = 1; i < args.length; ++i)
@@ -43,8 +42,7 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	}
 
 	/**
-	 * Restricts the usage of this command to ops so random jerkbags can't op
-	 * themselves. Once our permissions system gets working, we can use
+	 * Restricts the usage of this command to ops so random jerkbags can't op themselves. Once our permissions system gets working, we can use
 	 * canPlayerUseCommand instead.
 	 */
 	@Override
@@ -62,8 +60,7 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player,
-				getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
 	@Override

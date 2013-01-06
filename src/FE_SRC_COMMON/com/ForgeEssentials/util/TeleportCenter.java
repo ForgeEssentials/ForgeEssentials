@@ -16,8 +16,7 @@ import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 
 /**
- * Use this for all TPs. This system does it all for you: warmup, cooldown,
- * bypass for both, going between dimensions.
+ * Use this for all TPs. This system does it all for you: warmup, cooldown, bypass for both, going between dimensions.
  * 
  * @author Dries007
  * 
@@ -38,27 +37,21 @@ public class TeleportCenter implements IScheduledTickHandler
 
 	public static void addToTpQue(WarpPoint point, EntityPlayer player)
 	{
-		if (PlayerInfo.getPlayerInfo(player).TPcooldown == 0
-				|| PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player,
-						BYPASS_COOLDOWN)))
+		if (PlayerInfo.getPlayerInfo(player).TPcooldown == 0 || PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
 		{
-			player.sendChatToPlayer(Localization.get(Localization.TC_COOLDOWN)
-					.replaceAll("%c",
-							"" + PlayerInfo.getPlayerInfo(player).TPcooldown));
-		} else
+			player.sendChatToPlayer(Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", "" + PlayerInfo.getPlayerInfo(player).TPcooldown));
+		}
+		else
 		{
 			PlayerInfo.getPlayerInfo(player).TPcooldown = tpCooldown;
 			TPdata data = new TPdata(point, player);
-			if (tpWarmup == 0
-					|| PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-							player, BYPASS_WARMUP)))
+			if (tpWarmup == 0 || PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_WARMUP)))
 			{
 				data.doTP();
-			} else
+			}
+			else
 			{
-				player.sendChatToPlayer(Localization
-						.get(Localization.TC_WARMUP).replaceAll("%w",
-								"" + tpWarmup));
+				player.sendChatToPlayer(Localization.get(Localization.TC_WARMUP).replaceAll("%w", "" + tpWarmup));
 				que.add(data);
 			}
 		}
@@ -67,15 +60,13 @@ public class TeleportCenter implements IScheduledTickHandler
 	public static void abort(TPdata tpData)
 	{
 		removeQue.add(tpData);
-		tpData.getPlayer().sendChatToPlayer(
-				Localization.get(Localization.TC_ABORTED));
+		tpData.getPlayer().sendChatToPlayer(Localization.get(Localization.TC_ABORTED));
 	}
 
 	public static void TPdone(TPdata tpData)
 	{
 		removeQue.add(tpData);
-		tpData.getPlayer().sendChatToPlayer(
-				Localization.get(Localization.TC_DONE));
+		tpData.getPlayer().sendChatToPlayer(Localization.get(Localization.TC_DONE));
 	}
 
 	@Override
@@ -87,8 +78,7 @@ public class TeleportCenter implements IScheduledTickHandler
 		}
 		que.removeAll(removeQue);
 		removeQue.clear();
-		for (Object player : FMLCommonHandler.instance()
-				.getMinecraftServerInstance().getConfigurationManager().playerEntityList)
+		for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
 		{
 			PlayerInfo.getPlayerInfo((EntityPlayer) player).TPcooldownTick();
 		}

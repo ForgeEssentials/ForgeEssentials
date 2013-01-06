@@ -31,38 +31,22 @@ public class ConfigPermissions implements IModuleConfig
 	{
 		config = new Configuration(file);
 
-		permDefault = config
-				.get("stuff",
-						"permissionDefault",
-						false,
-						"if a permission is not set anywhere.. it will be return this. True = allow  False == deny")
-				.getBoolean(false);
-		config.get("stuff", "databaseType", "SqLite",
-				" MySQL and SqLite are the only ones supported atm.");
+		permDefault = config.get("stuff", "permissionDefault", false,
+				"if a permission is not set anywhere.. it will be return this. True = allow  False == deny").getBoolean(false);
+		config.get("stuff", "databaseType", "SqLite", " MySQL and SqLite are the only ones supported atm.");
 
 		config.addCustomCategoryComment("MySQL", "For everything MySQL");
 		config.get("MySQL", "host", "server.example.com");
 		config.get("MySQL", "port", 3306);
-		config.get(
-				"MySQL",
-				"database",
-				"FE_Permissions",
-				"WILL CRASH IF IT DOESN'T EXIST!  This will still be used even if StealConfigFromCore is enabled.");
+		config.get("MySQL", "database", "FE_Permissions", "WILL CRASH IF IT DOESN'T EXIST!  This will still be used even if StealConfigFromCore is enabled.");
 		config.get("MySQL", "username", "FEUser");
 		config.get("MySQL", "password", "@we$0mePa$$w0rd");
-		config.get(
-				"MySQL",
-				"stealConfigFromCore",
-				false,
+		config.get("MySQL", "stealConfigFromCore", false,
 				"if this is true, the mysql details from ForgeEssentials/main.cfg will be used. The database specified here wills till be used.");
 
 		config.addCustomCategoryComment("SqLite", "For everything SqLite");
 		config.get("SqLite", "file", "permissions.db");
-		config.get(
-				"SqLite",
-				"absolutePath",
-				false,
-				"if this is true, the below path will be parsed as an absolute path. otherwise it is relative to this dir.");
+		config.get("SqLite", "absolutePath", false, "if this is true, the below path will be parsed as an absolute path. otherwise it is relative to this dir.");
 
 		config.save();
 	}

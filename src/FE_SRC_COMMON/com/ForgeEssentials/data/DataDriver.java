@@ -37,8 +37,7 @@ public abstract class DataDriver
 
 		if (data != null)
 		{
-			newObject = DataStorageManager.taggerList.get(type)
-					.createFromFields(data);
+			newObject = DataStorageManager.taggerList.get(type).createFromFields(data);
 		}
 
 		return newObject;
@@ -67,8 +66,7 @@ public abstract class DataDriver
 		return deleteData(type, loadingKey);
 	}
 
-	abstract public void parseConfigs(Configuration config, String worldName)
-			throws Exception;
+	abstract public void parseConfigs(Configuration config, String worldName) throws Exception;
 
 	abstract protected boolean saveData(Class type, TaggedClass fieldList);
 

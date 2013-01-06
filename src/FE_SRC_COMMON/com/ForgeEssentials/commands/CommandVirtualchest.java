@@ -51,9 +51,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase
 		player.incrementWindowID();
 
 		VirtualChest chest = new VirtualChest(player);
-		player.playerNetServerHandler
-				.sendPacketToPlayer(new Packet100OpenWindow(
-						player.currentWindowId, 0, name, size));
+		player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, name, size));
 		player.openContainer = new ContainerChest(player.inventory, chest);
 		player.openContainer.windowId = player.currentWindowId;
 		player.openContainer.addCraftingToCrafters(player);

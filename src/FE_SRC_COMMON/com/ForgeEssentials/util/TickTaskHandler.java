@@ -38,7 +38,8 @@ public final class TickTaskHandler implements ITickHandler
 			{
 				task.tick();
 				blockCounter++;
-			} else
+			}
+			else
 			{
 				task.tick();
 			}

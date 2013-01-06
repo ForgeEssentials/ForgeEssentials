@@ -49,7 +49,8 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 					var5.canNotSave = var6;
 				}
 			}
-		} catch (MinecraftException var7)
+		}
+		catch (MinecraftException var7)
 		{
 			sender.sendChatToPlayer("Could not save world.");
 		}
@@ -82,7 +83,8 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 					var5.canNotSave = var6;
 				}
 			}
-		} catch (MinecraftException var7)
+		}
+		catch (MinecraftException var7)
 		{
 			sender.sendChatToPlayer("Could not save world.");
 		}
@@ -100,8 +102,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer sender)
 	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-				getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()));
 	}
 
 	@Override

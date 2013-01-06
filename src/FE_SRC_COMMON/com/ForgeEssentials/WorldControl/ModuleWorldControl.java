@@ -43,8 +43,7 @@ public class ModuleWorldControl implements IFEModule
 	// Some static fields for WorldControl config.
 	public static int WCblocksPerTick;
 
-	public static final File wcconf = new File(ForgeEssentials.FEDIR,
-			"WorldControl.cfg");
+	public static final File wcconf = new File(ForgeEssentials.FEDIR, "WorldControl.cfg");
 
 	// preload.
 	@Override
@@ -59,8 +58,7 @@ public class ModuleWorldControl implements IFEModule
 		Configuration conf = new Configuration(wcconf, true);
 
 		conf.load();
-		conf.addCustomCategoryComment("WorldControl",
-				"Properties used by WorldControl");
+		conf.addCustomCategoryComment("WorldControl", "Properties used by WorldControl");
 
 		Property prop = conf.get("WorldControl", "BlocksPerTick", 20);
 		prop.comment = "Specifies the maximum blocks/tick that can be changed via the WorldControl functions. Powerful computers may set higher, servers may want to keep it lower.";

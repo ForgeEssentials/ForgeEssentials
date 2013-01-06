@@ -31,8 +31,7 @@ public class WandController
 		EntityPlayer player = event.entityPlayer;
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 
-		int id = player.getCurrentEquippedItem() == null ? 0 : player
-				.getCurrentEquippedItem().itemID;
+		int id = player.getCurrentEquippedItem() == null ? 0 : player.getCurrentEquippedItem().itemID;
 		int damage = 0;
 		if (id != 0 && player.getCurrentEquippedItem().getHasSubtypes())
 		{
@@ -46,11 +45,9 @@ public class WandController
 
 		Point point = new Point(event.x, event.y, event.z);
 
-		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player,
-				"WorldControl.commands.pos", point)))
+		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, "WorldControl.commands.pos", point)))
 		{
-			OutputHandler.chatError(player,
-					Localization.get(Localization.ERROR_PERMDENIED));
+			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 			return;
 		}
 
@@ -58,17 +55,14 @@ public class WandController
 		if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
 		{
 			info.setPoint1(point);
-			player.addChatMessage(FEChatFormatCodes.PURPLE + "Pos1 set to "
-					+ event.x + ", " + event.y + ", " + event.z);
+			player.addChatMessage(FEChatFormatCodes.PURPLE + "Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
 			event.setCanceled(true);
 		}
 		// right Click
-		else if (event.action
-				.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
+		else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
 		{
 			info.setPoint2(point);
-			player.addChatMessage(FEChatFormatCodes.PURPLE + "Pos2 set to "
-					+ event.x + ", " + event.y + ", " + event.z);
+			player.addChatMessage(FEChatFormatCodes.PURPLE + "Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
 			event.setCanceled(true);
 		}
 	}

@@ -10,8 +10,7 @@ public class message implements IEffect
 	@Override
 	public void registerConfig(Configuration config, String category)
 	{
-		message = config.get(category, "Message", message,
-				"Message to send to the player. You can use color codes.").value;
+		message = config.get(category, "Message", message, "Message to send to the player. You can use color codes.").value;
 	}
 
 	@Override

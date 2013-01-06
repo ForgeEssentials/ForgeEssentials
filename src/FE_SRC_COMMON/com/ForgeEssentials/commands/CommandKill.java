@@ -25,19 +25,18 @@ public class CommandKill extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer victim = FMLCommonHandler.instance()
-					.getSidedDelegate().getServer().getConfigurationManager()
-					.getPlayerForUsername(args[0]);
+			EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			if (victim != null)
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
 				victim.sendChatToPlayer(Localization.get(Localization.KILLED));
-			} else
-			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} else
+			else
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
 			sender.sendChatToPlayer(Localization.get(Localization.KILLED));
@@ -49,22 +48,20 @@ public class CommandKill extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer victim = FMLCommonHandler.instance()
-					.getSidedDelegate().getServer().getConfigurationManager()
-					.getPlayerForUsername(args[0]);
+			EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			if (victim != null)
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
 				victim.sendChatToPlayer(Localization.get(Localization.KILLED));
-			} else
-			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} else
+			else
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
@@ -85,9 +82,9 @@ public class CommandKill extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
 		{
 			return null;
 		}

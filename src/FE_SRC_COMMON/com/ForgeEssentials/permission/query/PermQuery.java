@@ -23,8 +23,7 @@ public class PermQuery
 	}
 
 	/**
-	 * Returns a FEListenerList object that contains all listeners that are
-	 * registered to this event.
+	 * Returns a FEListenerList object that contains all listeners that are registered to this event.
 	 * 
 	 * @return Listener List
 	 */
@@ -39,8 +38,7 @@ public class PermQuery
 	}
 
 	/**
-	 * Called by the base constructor, this is used by ASM generated event
-	 * classes to setup various functionality such as the listener's list.
+	 * Called by the base constructor, this is used by ASM generated event classes to setup various functionality such as the listener's list.
 	 */
 	protected void setup()
 	{

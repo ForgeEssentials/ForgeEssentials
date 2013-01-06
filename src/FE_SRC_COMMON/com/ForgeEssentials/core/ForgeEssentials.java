@@ -71,8 +71,7 @@ public class ForgeEssentials
 	public static String modlistLocation;
 	public static String fedirloc = "ForgeEssentials/";
 
-	public static final File FEDIR = new File(FunctionHelper.getBaseDir(),
-			fedirloc);
+	public static final File FEDIR = new File(FunctionHelper.getBaseDir(), fedirloc);
 
 	public static DataStorageManager dataManager;
 	public BannedItems bannedItems;
@@ -81,17 +80,16 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		OutputHandler
-				.SOP("Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
+		OutputHandler.SOP("Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
 		config = new CoreConfig();
 
 		if (verCheck)
 		{
 			try
 			{
-				Version.jenkins = Integer.parseInt(e.getModMetadata().version
-						.split(":")[1]);
-			} catch (Exception ex)
+				Version.jenkins = Integer.parseInt(e.getModMetadata().version.split(":")[1]);
+			}
+			catch (Exception ex)
 			{
 			}
 			Version.checkVersion();
@@ -103,8 +101,7 @@ public class ForgeEssentials
 			dataManager = new DataStorageManager(config.config);
 
 			// register DataDrivers
-			DataStorageManager.registerDriver("ForgeConfig",
-					ForgeConfigDataDriver.class);
+			DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
 			DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
 			DataStorageManager.registerDriver("MySQL", MySQLDataDriver.class);
 			DataStorageManager.registerDriver("SQLite", SQLiteDataDriver.class);
@@ -155,8 +152,7 @@ public class ForgeEssentials
 		dataManager.setupManager(e);
 
 		// Central TP system
-		TickRegistry.registerScheduledTickHandler(new TeleportCenter(),
-				Side.SERVER);
+		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
 
 		e.registerServerCommand(new CommandFEVersion());
 		e.registerServerCommand(new CommandFEUpdate());

@@ -29,10 +29,10 @@ public class CommandBack extends ForgeEssentialsCommandBase
 			info.back = new WarpPoint(sender);
 			EntityPlayerMP player = ((EntityPlayerMP) sender);
 			TeleportCenter.addToTpQue(death, player);
-		} else
+		}
+		else
 		{
-			OutputHandler.chatError(sender,
-					Localization.get(Localization.ERROR_NODEATHPOINT));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NODEATHPOINT));
 		}
 	}
 

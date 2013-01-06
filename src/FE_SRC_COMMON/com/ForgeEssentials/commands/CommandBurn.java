@@ -27,79 +27,63 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			if (args[0].toLowerCase().equals("me")
-					&& PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-							sender, getCommandPerm() + ".me")))
+			if (args[0].toLowerCase().equals("me") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".me")))
 			{
 				sender.setFire(15);
-				OutputHandler.chatError(sender,
-						Localization.get(Localization.BURN_SELF));
-			} else
+				OutputHandler.chatError(sender, Localization.get(Localization.BURN_SELF));
+			}
+			else
 			{
-				EntityPlayer victim = FMLCommonHandler.instance()
-						.getSidedDelegate().getServer()
-						.getConfigurationManager()
-						.getPlayerForUsername(args[0]);
-				if (victim != null
-						&& PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-								sender, getCommandPerm() + "." + args[0])))
+				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
 				{
 					victim.setFire(15);
-					OutputHandler.chatConfirmation(sender,
-							Localization.get(Localization.BURN_PLAYER));
-				} else
+					OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
+				}
+				else
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				}
 			}
-		} else if (args.length == 2)
+		}
+		else if (args.length == 2)
 		{
-			if (args[0].toLowerCase().equals("me")
-					&& PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-							sender, getCommandPerm() + ".me")))
+			if (args[0].toLowerCase().equals("me") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".me")))
 			{
 				try
 				{
 					sender.setFire(Integer.parseInt(args[1]));
-					OutputHandler.chatError(sender,
-							Localization.get(Localization.BURN_SELF));
-				} catch (NumberFormatException e)
-				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NAN, args[1]));
+					OutputHandler.chatError(sender, Localization.get(Localization.BURN_SELF));
 				}
-			} else
+				catch (NumberFormatException e)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+				}
+			}
+			else
 			{
-				EntityPlayer victim = FMLCommonHandler.instance()
-						.getSidedDelegate().getServer()
-						.getConfigurationManager()
-						.getPlayerForUsername(args[0]);
-				if (victim != null
-						&& PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-								sender, getCommandPerm() + "." + args[0])))
+				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
 				{
 					try
 					{
 						victim.setFire(Integer.parseInt(args[1]));
-						OutputHandler.chatConfirmation(sender,
-								Localization.get(Localization.BURN_PLAYER));
-					} catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(
-								Localization.ERROR_NAN, args[1]));
+						OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
 					}
-				} else
+					catch (NumberFormatException e)
+					{
+						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+					}
+				}
+				else
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				}
 			}
-		} else
+		}
+		else
 		{
-			OutputHandler.chatError(sender,
-					Localization.get(Localization.ERROR_BADSYNTAX)
-							+ getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 	}
 
@@ -108,23 +92,20 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer victim = FMLCommonHandler.instance()
-					.getSidedDelegate().getServer().getConfigurationManager()
-					.getPlayerForUsername(args[0]);
+			EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			if (victim != null)
 			{
 				victim.setFire(Integer.parseInt(args[1]));
-				sender.sendChatToPlayer(Localization
-						.get(Localization.BURN_PLAYER));
-			} else
-			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_NOPLAYER, args[0]));
+				sender.sendChatToPlayer(Localization.get(Localization.BURN_PLAYER));
 			}
-		} else
+			else
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
@@ -145,9 +126,9 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
 		{
 			return null;
 		}

@@ -14,8 +14,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**
- * Manages the DataDrivers and selects the correct one based on configuration
- * settings. Once the DataDriver has been initialized, this class's job is done
+ * Manages the DataDrivers and selects the correct one based on configuration settings. Once the DataDriver has been initialized, this class's job is done
  * forever. (Well, until next load, I suppose.)
  * 
  * @author MysteriousAges
@@ -44,33 +43,27 @@ public class DataStorageManager
 
 		this.config = config;
 
-		config.addCustomCategoryComment(
-				"Data",
-				"Configuration options for how ForgeEssentials will save its data for persistence between sessions.");
+		config.addCustomCategoryComment("Data", "Configuration options for how ForgeEssentials will save its data for persistence between sessions.");
 
 		String temp = ForgeConfigDataDriver.class.getSimpleName();
-		Property prop = config.get("Data", "storageType",
-				temp.substring(0, temp.indexOf("DataDriver")));
+		Property prop = config.get("Data", "storageType", temp.substring(0, temp.indexOf("DataDriver")));
 		prop.comment = "Specifies the variety of data storage FE will use. Options: ForgeConfig, SQLite, NBT";
 	}
 
 	/**
-	 * Parses the ForgeEssentials config file and determines which Driver to
-	 * use.
+	 * Parses the ForgeEssentials config file and determines which Driver to use.
 	 * 
 	 * @param config
 	 */
 	public void setupManager(FMLServerStartingEvent event)
 	{
 		// verify default driver...
-		assert classMap.get(defaultDriver) != null : new RuntimeException(
-				"{ForgeEssentials} Default DataDriver is invalid! Valid types: "
-						+ Arrays.toString(classMap.values().toArray()));
+		assert classMap.get(defaultDriver) != null : new RuntimeException("{ForgeEssentials} Default DataDriver is invalid! Valid types: "
+				+ Arrays.toString(classMap.values().toArray()));
 
 		DataDriver driver;
 
-		for (Entry<String, Class<? extends DataDriver>> entry : classMap
-				.entrySet())
+		for (Entry<String, Class<? extends DataDriver>> entry : classMap.entrySet())
 		{
 			try
 			{
@@ -91,12 +84,11 @@ public class DataStorageManager
 				}
 
 				instanceMap.put(entry.getKey(), driver);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
-				OutputHandler.SOP("Problem initializing DataDriver "
-						+ entry.getKey());
-				OutputHandler
-						.SOP("ForgeEssentials will not be able to save any data through this driver");
+				OutputHandler.SOP("Problem initializing DataDriver " + entry.getKey());
+				OutputHandler.SOP("ForgeEssentials will not be able to save any data through this driver");
 				e.printStackTrace();
 			}
 		}
@@ -108,8 +100,7 @@ public class DataStorageManager
 	}
 
 	/**
-	 * Should only be done before the server starts. May override existing
-	 * Driver types.
+	 * Should only be done before the server starts. May override existing Driver types.
 	 * 
 	 * @param name
 	 *            Name to be used in configs
@@ -135,8 +126,7 @@ public class DataStorageManager
 	}
 
 	/**
-	 * This method returns a DataDriver that is not internally tracked and can
-	 * be used at your discretion.
+	 * This method returns a DataDriver that is not internally tracked and can be used at your discretion.
 	 * 
 	 * @param config
 	 * @param type
@@ -148,12 +138,10 @@ public class DataStorageManager
 		{
 			// If there is a problem constructing the driver, this line will
 			// fail and we will enter the catch block.
-			DataDriver driver = ForgeEssentials.dataManager.classMap.get(type)
-					.newInstance();
+			DataDriver driver = ForgeEssentials.dataManager.classMap.get(type).newInstance();
 
 			// tried and tested method of getting the worldName
-			String worldName = FMLCommonHandler.instance()
-					.getMinecraftServerInstance().getFolderName();
+			String worldName = FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName();
 
 			// things MAY error here as well...
 			driver.parseConfigs(config, worldName);
@@ -165,11 +153,11 @@ public class DataStorageManager
 			}
 
 			return driver;
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			OutputHandler.SOP("Problem initializing DataDriver " + type);
-			OutputHandler
-					.SOP("ForgeEssentials will not be able to save any data through this driver");
+			OutputHandler.SOP("ForgeEssentials will not be able to save any data through this driver");
 			e.printStackTrace();
 			return null;
 		}

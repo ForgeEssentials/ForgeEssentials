@@ -106,14 +106,10 @@ public class ModuleProtection implements IFEModule
 		// event.registerPermissionDefault(PERM, false);
 		for (String perm : permissions.keySet())
 		{
-			event.registerPerm(this, RegGroup.GUESTS, perm,
-					permissions.get(perm).get(RegGroup.GUESTS));
-			event.registerPerm(this, RegGroup.MEMBERS, perm,
-					permissions.get(perm).get(RegGroup.MEMBERS));
-			event.registerPerm(this, RegGroup.ZONE_ADMINS, perm, permissions
-					.get(perm).get(RegGroup.ZONE_ADMINS));
-			event.registerPerm(this, RegGroup.OWNERS, perm,
-					permissions.get(perm).get(RegGroup.OWNERS));
+			event.registerPerm(this, RegGroup.GUESTS, perm, permissions.get(perm).get(RegGroup.GUESTS));
+			event.registerPerm(this, RegGroup.MEMBERS, perm, permissions.get(perm).get(RegGroup.MEMBERS));
+			event.registerPerm(this, RegGroup.ZONE_ADMINS, perm, permissions.get(perm).get(RegGroup.ZONE_ADMINS));
+			event.registerPerm(this, RegGroup.OWNERS, perm, permissions.get(perm).get(RegGroup.OWNERS));
 		}
 	}
 

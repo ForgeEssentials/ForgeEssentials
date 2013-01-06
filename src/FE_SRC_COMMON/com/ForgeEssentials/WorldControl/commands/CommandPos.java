@@ -46,7 +46,8 @@ public class CommandPos extends WorldControlCommandBase
 				x = Integer.parseInt(args[0]);
 				y = Integer.parseInt(args[1]);
 				z = Integer.parseInt(args[2]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
 				error(player);
 				return;
@@ -55,18 +56,17 @@ public class CommandPos extends WorldControlCommandBase
 			if (type == 1)
 			{
 				PlayerInfo.getPlayerInfo(player).setPoint1(new Point(x, y, z));
-			} else
+			}
+			else
 			{
 				PlayerInfo.getPlayerInfo(player).setPoint2(new Point(x, y, z));
 			}
 
-			OutputHandler.chatConfirmation(player, "Pos" + type + " set to "
-					+ x + ", " + y + ", " + z);
+			OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
 			return;
 		}
 
-		MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player,
-				true);
+		MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player, true);
 
 		if (mop == null)
 		{
@@ -79,24 +79,22 @@ public class CommandPos extends WorldControlCommandBase
 		z = mop.blockZ;
 
 		Point point = new Point(x, y, z);
-		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player,
-				getCommandPerm(), point)))
+		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, getCommandPerm(), point)))
 		{
-			OutputHandler.chatError(player,
-					Localization.get(Localization.ERROR_PERMDENIED));
+			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 			return;
 		}
 
 		if (type == 1)
 		{
 			PlayerInfo.getPlayerInfo(player).setPoint1(point);
-		} else
+		}
+		else
 		{
 			PlayerInfo.getPlayerInfo(player).setPoint2(point);
 		}
 
-		OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x
-				+ ", " + y + ", " + z);
+		OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
 		return;
 	}
 

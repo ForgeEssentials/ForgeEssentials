@@ -19,9 +19,7 @@ public class PlayerBlockPlace extends Event
 	public final float hity;
 	public final float hitz;
 
-	public PlayerBlockPlace(ItemStack itemStack, EntityPlayer player,
-			World world, int x, int y, int z, int side, float hitx, float hity,
-			float hitz)
+	public PlayerBlockPlace(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitx, float hity, float hitz)
 	{
 		super();
 		this.world = world;

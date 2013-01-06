@@ -38,8 +38,7 @@ public class CommandTopManipulate extends WorldControlCommandBase
 			PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 			if (info.getSelection() == null)
 			{
-				OutputHandler.chatError(player,
-						Localization.get(Localization.ERROR_NOSELECTION));
+				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
 				return;
 			}
 			int radius = -1;
@@ -48,7 +47,8 @@ public class CommandTopManipulate extends WorldControlCommandBase
 			try
 			{
 				radius = Integer.parseInt(args[0]);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				error(player);
 				radius = -1;
@@ -56,9 +56,9 @@ public class CommandTopManipulate extends WorldControlCommandBase
 
 			if (args.length == 1)
 			{
-				effectPosition = new Point((int) player.posX - 1,
-						(int) player.posY, (int) player.posZ);
-			} else
+				effectPosition = new Point((int) player.posX - 1, (int) player.posY, (int) player.posZ);
+			}
+			else
 			{
 				int x;
 				int z;
@@ -69,7 +69,8 @@ public class CommandTopManipulate extends WorldControlCommandBase
 					z = Integer.parseInt(args[2]);
 
 					effectPosition = new Point(x, 0, z);
-				} catch (Exception e)
+				}
+				catch (Exception e)
 				{
 					error(player);
 				}
@@ -81,10 +82,10 @@ public class CommandTopManipulate extends WorldControlCommandBase
 				BackupArea back = new BackupArea();
 				// For some reason, player.posX is out.
 
-				TickTaskHandler.addTask(new TickTaskTopManipulator(player,
-						back, effectPosition, radius, manipulateMode));
+				TickTaskHandler.addTask(new TickTaskTopManipulator(player, back, effectPosition, radius, manipulateMode));
 			}
-		} else
+		}
+		else
 		{
 			error(player);
 		}

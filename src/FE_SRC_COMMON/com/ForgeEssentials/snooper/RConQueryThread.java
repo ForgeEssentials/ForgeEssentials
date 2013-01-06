@@ -63,8 +63,7 @@ public class RConQueryThread implements Runnable
 	private Map queryClients;
 
 	/**
-	 * The time that this RConThreadQuery was constructed, from (new
-	 * Date()).getTime()
+	 * The time that this RConThreadQuery was constructed, from (new Date()).getTime()
 	 */
 	private long time;
 
@@ -91,11 +90,11 @@ public class RConQueryThread implements Runnable
 		queryHostname = "0.0.0.0";
 		server = par1IServer;
 
-		if (0 != serverHostname.length()
-				&& !queryHostname.equals(serverHostname))
+		if (0 != serverHostname.length() && !queryHostname.equals(serverHostname))
 		{
 			queryHostname = serverHostname;
-		} else
+		}
+		else
 		{
 			serverHostname = "0.0.0.0";
 
@@ -103,10 +102,10 @@ public class RConQueryThread implements Runnable
 			{
 				InetAddress var2 = InetAddress.getLocalHost();
 				queryHostname = var2.getHostAddress();
-			} catch (UnknownHostException var3)
+			}
+			catch (UnknownHostException var3)
 			{
-				logWarning("Unable to determine local host IP, please set server-ip/hostname in the snooper config : "
-						+ var3.getMessage());
+				logWarning("Unable to determine local host IP, please set server-ip/hostname in the snooper config : " + var3.getMessage());
 			}
 		}
 
@@ -123,21 +122,17 @@ public class RConQueryThread implements Runnable
 	}
 
 	/**
-	 * Sends a byte array as a DatagramPacket response to the client who sent
-	 * the given DatagramPacket
+	 * Sends a byte array as a DatagramPacket response to the client who sent the given DatagramPacket
 	 */
-	private void sendResponsePacket(byte[] par1ArrayOfByte,
-			DatagramPacket par2DatagramPacket) throws IOException
+	private void sendResponsePacket(byte[] par1ArrayOfByte, DatagramPacket par2DatagramPacket) throws IOException
 	{
-		querySocket.send(new DatagramPacket(par1ArrayOfByte,
-				par1ArrayOfByte.length, par2DatagramPacket.getSocketAddress()));
+		querySocket.send(new DatagramPacket(par1ArrayOfByte, par1ArrayOfByte.length, par2DatagramPacket.getSocketAddress()));
 	}
 
 	/**
 	 * Parses an incoming DatagramPacket, returning true if the packet was valid
 	 */
-	private boolean parseIncomingPacket(DatagramPacket par1DatagramPacket)
-			throws IOException
+	private boolean parseIncomingPacket(DatagramPacket par1DatagramPacket) throws IOException
 	{
 		byte[] var2 = par1DatagramPacket.getData();
 		int var3 = par1DatagramPacket.getLength();
@@ -146,37 +141,37 @@ public class RConQueryThread implements Runnable
 
 		if (3 <= var3 && -2 == var2[0] && -3 == var2[1])
 		{
-			logDebug("Packet \'" + RConUtils.getByteAsHexString(var2[2])
-					+ "\' [" + var4 + "]");
+			logDebug("Packet \'" + RConUtils.getByteAsHexString(var2[2]) + "\' [" + var4 + "]");
 
 			if (var2[2] == 9)
 			{
 				sendAuthChallenge(par1DatagramPacket);
 				logDebug("Challenge [" + var4 + "]");
 				return true;
-			} else
+			}
+			else
 			{
 				if (!verifyClientAuth(par1DatagramPacket).booleanValue())
 				{
 					logDebug("Invalid challenge [" + var4 + "]");
 					return false;
-				} else
+				}
+				else
 				{
 					Response response = ResponseRegistry.getResponse(var2[2]);
 					if (response == null)
 					{
 						return false;
 					}
-					byte[] bt = response
-							.getResponceByte(getRequestId(par1DatagramPacket
-									.getSocketAddress()), par1DatagramPacket);
+					byte[] bt = response.getResponceByte(getRequestId(par1DatagramPacket.getSocketAddress()), par1DatagramPacket);
 					logDebug(new String(bt));
 					sendResponsePacket(bt, par1DatagramPacket);
 					logDebug("Case " + var2[2] + " [" + var4 + "] ");
 					return true;
 				}
 			}
-		} else
+		}
+		else
 		{
 			logDebug("Invalid packet [" + var4 + "]");
 			return false;
@@ -188,8 +183,7 @@ public class RConQueryThread implements Runnable
 	 */
 	private byte[] getRequestId(SocketAddress par1SocketAddress)
 	{
-		return ((RConThreadQueryAuth) queryClients.get(par1SocketAddress))
-				.getRequestId();
+		return ((RConThreadQueryAuth) queryClients.get(par1SocketAddress)).getRequestId();
 	}
 
 	/**
@@ -202,25 +196,21 @@ public class RConQueryThread implements Runnable
 		if (!queryClients.containsKey(var2))
 		{
 			return Boolean.valueOf(false);
-		} else
+		}
+		else
 		{
 			byte[] var3 = par1DatagramPacket.getData();
-			return ((RConThreadQueryAuth) queryClients.get(var2))
-					.getRandomChallenge() != RConUtils.getBytesAsBEint(var3, 7,
-					par1DatagramPacket.getLength()) ? Boolean.valueOf(false)
-					: Boolean.valueOf(true);
+			return ((RConThreadQueryAuth) queryClients.get(var2)).getRandomChallenge() != RConUtils.getBytesAsBEint(var3, 7, par1DatagramPacket.getLength()) ? Boolean
+					.valueOf(false) : Boolean.valueOf(true);
 		}
 	}
 
 	/**
-	 * Sends an auth challenge DatagramPacket to the client and adds the client
-	 * to the queryClients map
+	 * Sends an auth challenge DatagramPacket to the client and adds the client to the queryClients map
 	 */
-	private void sendAuthChallenge(DatagramPacket par1DatagramPacket)
-			throws IOException
+	private void sendAuthChallenge(DatagramPacket par1DatagramPacket) throws IOException
 	{
-		RConThreadQueryAuth var2 = new RConThreadQueryAuth(this,
-				par1DatagramPacket);
+		RConThreadQueryAuth var2 = new RConThreadQueryAuth(this, par1DatagramPacket);
 		queryClients.put(par1DatagramPacket.getSocketAddress(), var2);
 		sendResponsePacket(var2.getChallengeValue(), par1DatagramPacket);
 	}
@@ -243,8 +233,7 @@ public class RConQueryThread implements Runnable
 				{
 					Entry var4 = (Entry) var3.next();
 
-					if (((RConThreadQueryAuth) var4.getValue())
-							.hasExpired(var1).booleanValue())
+					if (((RConThreadQueryAuth) var4.getValue()).hasExpired(var1).booleanValue())
 					{
 						var3.remove();
 					}
@@ -269,18 +258,22 @@ public class RConQueryThread implements Runnable
 					querySocket.receive(incomingPacket);
 					cleanQueryClientsMap();
 					parseIncomingPacket(incomingPacket);
-				} catch (SocketTimeoutException var7)
+				}
+				catch (SocketTimeoutException var7)
 				{
 					cleanQueryClientsMap();
-				} catch (PortUnreachableException var8)
+				}
+				catch (PortUnreachableException var8)
 				{
 					;
-				} catch (IOException var9)
+				}
+				catch (IOException var9)
 				{
 					stopWithException(var9);
 				}
 			}
-		} finally
+		}
+		finally
 		{
 			closeAllSockets();
 		}
@@ -293,8 +286,7 @@ public class RConQueryThread implements Runnable
 	{
 		if (running)
 		{
-			logWarning("Unexpected exception, buggy JRE? ("
-					+ par1Exception.toString() + ")");
+			logWarning("Unexpected exception, buggy JRE? (" + par1Exception.toString() + ")");
 
 			if (!initQuerySystem())
 			{
@@ -311,23 +303,22 @@ public class RConQueryThread implements Runnable
 	{
 		try
 		{
-			querySocket = new DatagramSocket(queryPort,
-					InetAddress.getByName(serverHostname));
+			querySocket = new DatagramSocket(queryPort, InetAddress.getByName(serverHostname));
 			registerSocket(querySocket);
 			querySocket.setSoTimeout(500);
 			return true;
-		} catch (SocketException var2)
+		}
+		catch (SocketException var2)
 		{
-			logWarning("Unable to initialise query system on " + serverHostname
-					+ ":" + queryPort + " (Socket): " + var2.getMessage());
-		} catch (UnknownHostException var3)
+			logWarning("Unable to initialise query system on " + serverHostname + ":" + queryPort + " (Socket): " + var2.getMessage());
+		}
+		catch (UnknownHostException var3)
 		{
-			logWarning("Unable to initialise query system on " + serverHostname
-					+ ":" + queryPort + " (Unknown Host): " + var3.getMessage());
-		} catch (Exception var4)
+			logWarning("Unable to initialise query system on " + serverHostname + ":" + queryPort + " (Unknown Host): " + var3.getMessage());
+		}
+		catch (Exception var4)
 		{
-			logWarning("Unable to initialise query system on " + serverHostname
-					+ ":" + queryPort + " (E): " + var4.getMessage());
+			logWarning("Unable to initialise query system on " + serverHostname + ":" + queryPort + " (E): " + var4.getMessage());
 		}
 
 		return false;
@@ -348,10 +339,10 @@ public class RConQueryThread implements Runnable
 					rconThread.start();
 					running = true;
 				}
-			} else
+			}
+			else
 			{
-				logWarning("Invalid query port " + queryPort
-						+ " found in the Snooper configs! (queries disabled)");
+				logWarning("Invalid query port " + queryPort + " found in the Snooper configs! (queries disabled)");
 			}
 		}
 	}
@@ -408,15 +399,15 @@ public class RConQueryThread implements Runnable
 	/**
 	 * Closes the specified DatagramSocket
 	 */
-	protected boolean closeSocket(DatagramSocket par1DatagramSocket,
-			boolean par2)
+	protected boolean closeSocket(DatagramSocket par1DatagramSocket, boolean par2)
 	{
 		logDebug("closeSocket: " + par1DatagramSocket);
 
 		if (null == par1DatagramSocket)
 		{
 			return false;
-		} else
+		}
+		else
 		{
 			boolean var3 = false;
 
@@ -446,15 +437,15 @@ public class RConQueryThread implements Runnable
 	/**
 	 * Closes the specified ServerSocket
 	 */
-	protected boolean closeServerSocket_do(ServerSocket par1ServerSocket,
-			boolean par2)
+	protected boolean closeServerSocket_do(ServerSocket par1ServerSocket, boolean par2)
 	{
 		logDebug("closeSocket: " + par1ServerSocket);
 
 		if (null == par1ServerSocket)
 		{
 			return false;
-		} else
+		}
+		else
 		{
 			boolean var3 = false;
 
@@ -465,7 +456,8 @@ public class RConQueryThread implements Runnable
 					par1ServerSocket.close();
 					var3 = true;
 				}
-			} catch (IOException var5)
+			}
+			catch (IOException var5)
 			{
 				logWarning("IO: " + var5.getMessage());
 			}

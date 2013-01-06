@@ -39,12 +39,11 @@ public class TaggedClass
 	public Object getFieldValue(String name)
 	{
 		Object value = null;
-		if (uniqueKey != null
-				&& (!uniqueKey.name.endsWith("()") && uniqueKey.name
-						.equals(name)))
+		if (uniqueKey != null && (!uniqueKey.name.endsWith("()") && uniqueKey.name.equals(name)))
 		{
 			value = uniqueKey.value;
-		} else
+		}
+		else
 		{
 			if (TaggedMembers.containsKey(name))
 			{

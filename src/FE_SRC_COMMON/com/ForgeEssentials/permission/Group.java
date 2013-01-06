@@ -10,8 +10,7 @@ public class Group implements Comparable
 	public final String zoneID;
 	public final int priority; // lowest priority is 0
 
-	public Group(String name, String prefix, String suffix, String parent,
-			String zoneID, int priority)
+	public Group(String name, String prefix, String suffix, String parent, String zoneID, int priority)
 	{
 		super();
 		this.parent = parent;

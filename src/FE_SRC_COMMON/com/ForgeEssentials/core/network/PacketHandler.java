@@ -14,13 +14,11 @@ public class PacketHandler implements IPacketHandler
 {
 
 	@Override
-	public void onPacketData(INetworkManager manager,
-			Packet250CustomPayload packet, Player playerFake)
+	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player playerFake)
 	{
 		try
 		{
-			ByteArrayInputStream streambyte = new ByteArrayInputStream(
-					packet.data);
+			ByteArrayInputStream streambyte = new ByteArrayInputStream(packet.data);
 			DataInputStream stream = new DataInputStream(streambyte);
 
 			EntityPlayer player = (EntityPlayer) playerFake;
@@ -36,7 +34,8 @@ public class PacketHandler implements IPacketHandler
 				PacketSelectionUpdate.readServer(stream, world, player);
 				break;
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}

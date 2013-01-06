@@ -38,39 +38,38 @@ public class CommandTppos extends ForgeEssentialsCommandBase
 			try
 			{
 				x = new Integer(args[0]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender,
-						Localization.format(Localization.ERROR_NAN, args[0]));
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
 				return;
 			}
 			try
 			{
 				y = new Integer(args[1]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender,
-						Localization.format(Localization.ERROR_NAN, args[1]));
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
 				return;
 			}
 			try
 			{
 				z = new Integer(args[2]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
-				OutputHandler.chatError(sender,
-						Localization.format(Localization.ERROR_NAN, args[2]));
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
 				return;
 			}
 			EntityPlayerMP player = (EntityPlayerMP) sender;
 			PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
 			playerInfo.back = new WarpPoint(player);
-			TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z,
-					player.cameraPitch, player.cameraYaw), player);
-		} else
+			TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.cameraPitch, player.cameraYaw), player);
+		}
+		else
 		{
-			OutputHandler.chatError(sender,
-					Localization.get(Localization.ERROR_BADSYNTAX));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
 		}
 	}
 
@@ -97,9 +96,9 @@ public class CommandTppos extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1 || args.length == 2)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
 		{
 			return null;
 		}

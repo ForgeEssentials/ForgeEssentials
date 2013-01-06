@@ -31,8 +31,7 @@ public class CommandUndo extends WorldControlCommandBase
 
 		if (back == null)
 		{
-			OutputHandler.chatError(player,
-					Localization.get(Localization.WC_NOUNDO));
+			OutputHandler.chatError(player, Localization.get(Localization.WC_NOUNDO));
 			return;
 		}
 

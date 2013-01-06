@@ -32,10 +32,8 @@ public class PlayerInfoResonce extends Response
 		LinkedHashMap<String, String> tempMap = new LinkedHashMap();
 		ArrayList<String> tempArgs = new ArrayList();
 
-		String username = new String(Arrays.copyOfRange(packet.getData(), 11,
-				packet.getLength()));
-		EntityPlayerMP player = server.getConfigurationManager()
-				.getPlayerForUsername(username.trim());
+		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
+		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
 		if (player == null)
 		{
 			return "";
@@ -63,13 +61,11 @@ public class PlayerInfoResonce extends Response
 		PlayerData.put("wallet", "" + Wallet.getWallet(player));
 		PlayerData.put("pos", TextFormatter.toJSON(new WorldPoint(player)));
 		PlayerData.put("ping", "" + player.ping);
-		PlayerData.put("gm", player.theItemInWorldManager.getGameType()
-				.getName());
+		PlayerData.put("gm", player.theItemInWorldManager.getGameType().getName());
 
 		if (!player.getActivePotionEffects().isEmpty() && sendpotions)
 		{
-			PlayerData.put("potion",
-					TextFormatter.toJSON(player.getActivePotionEffects()));
+			PlayerData.put("potion", TextFormatter.toJSON(player.getActivePotionEffects()));
 		}
 
 		if (sendXP)
@@ -84,8 +80,7 @@ public class PlayerInfoResonce extends Response
 		{
 			tempMap.clear();
 			tempMap.put("food", "" + player.getFoodStats().getFoodLevel());
-			tempMap.put("saturation", ""
-					+ player.getFoodStats().getSaturationLevel());
+			tempMap.put("saturation", "" + player.getFoodStats().getSaturationLevel());
 			PlayerData.put("foodStats", TextFormatter.toJSON(tempMap));
 		}
 
@@ -103,7 +98,8 @@ public class PlayerInfoResonce extends Response
 		{
 			Group group = PermissionsAPI.getHighestGroup(player);
 			PlayerData.put("group", group.name);
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 		}
 
@@ -120,14 +116,11 @@ public class PlayerInfoResonce extends Response
 	public void readConfig(String category, Configuration config)
 	{
 		sendhome = config.get(category, "sendHome", true).getBoolean(true);
-		sendpotions = config.get(category, "sendpotions", true)
-				.getBoolean(true);
+		sendpotions = config.get(category, "sendpotions", true).getBoolean(true);
 		sendXP = config.get(category, "sendXP", true).getBoolean(true);
-		sendArmorAndHealth = config.get(category, "sendArmorAndHealth", true)
-				.getBoolean(true);
+		sendArmorAndHealth = config.get(category, "sendArmorAndHealth", true).getBoolean(true);
 		sendFood = config.get(category, "sendFood", true).getBoolean(true);
-		sendCapabilities = config.get(category, "sendCapabilities", true)
-				.getBoolean(true);
+		sendCapabilities = config.get(category, "sendCapabilities", true).getBoolean(true);
 	}
 
 	@Override
@@ -136,10 +129,8 @@ public class PlayerInfoResonce extends Response
 		config.get(category, "sendHome", true).value = "" + sendhome;
 		config.get(category, "sendpotions", true).value = "" + sendpotions;
 		config.get(category, "sendXP", true).value = "" + sendXP;
-		config.get(category, "sendArmorAndHealth", true).value = ""
-				+ sendArmorAndHealth;
+		config.get(category, "sendArmorAndHealth", true).value = "" + sendArmorAndHealth;
 		config.get(category, "sendFood", true).value = "" + sendFood;
-		config.get(category, "sendCapabilities", true).value = ""
-				+ sendCapabilities;
+		config.get(category, "sendCapabilities", true).value = "" + sendCapabilities;
 	}
 }

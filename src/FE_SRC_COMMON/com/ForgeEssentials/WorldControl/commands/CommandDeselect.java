@@ -26,8 +26,7 @@ public class CommandDeselect extends WorldControlCommandBase
 		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
 		info.clearSelection();
 
-		OutputHandler.chatConfirmation(sender,
-				Localization.get(Localization.COMMAND_DESELECT));
+		OutputHandler.chatConfirmation(sender, Localization.get(Localization.COMMAND_DESELECT));
 	}
 
 	@Override

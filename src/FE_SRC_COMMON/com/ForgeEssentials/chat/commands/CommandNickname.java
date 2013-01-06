@@ -36,67 +36,52 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-					"ForgeEssentials.chat.nickname.self")))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.chat.nickname.self")))
 			{
 				if (args[0].equalsIgnoreCase("del"))
 				{
-					NBTTagCompound tag = sender.getEntityData().getCompoundTag(
-							EntityPlayer.PERSISTED_NBT_TAG);
+					NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 					tag.removeTag("nickname");
-					sender.getEntityData().setCompoundTag(
-							EntityPlayer.PERSISTED_NBT_TAG, tag);
-					sender.sendChatToPlayer(Localization
-							.get(Localization.CHAT_NICK_SELF_REMOVE));
-				} else
-				{
-					NBTTagCompound tag = sender.getEntityData().getCompoundTag(
-							EntityPlayer.PERSISTED_NBT_TAG);
-					tag.setString("nickname", args[0]);
-					sender.getEntityData().setCompoundTag(
-							EntityPlayer.PERSISTED_NBT_TAG, tag);
-					sender.sendChatToPlayer(Localization.get(
-							Localization.CHAT_NICK_SELF_SET).replace("%n",
-							args[0]));
+					sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+					sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_SELF_REMOVE));
 				}
-			} else
-			{
-				OutputHandler.chatError(sender,
-						Localization.get(Localization.ERROR_NOPERMISSION));
+				else
+				{
+					NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+					tag.setString("nickname", args[0]);
+					sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+					sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_SELF_SET).replace("%n", args[0]));
+				}
 			}
-		} else if (args.length == 2)
+			else
+			{
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+			}
+		}
+		else if (args.length == 2)
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-					"ForgeEssentials.chat.nickname.others")))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.chat.nickname.others")))
 			{
 				EntityPlayerMP player = func_82359_c(sender, args[0]);
 				if (args[1].equalsIgnoreCase("del"))
 				{
-					player.getEntityData()
-							.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG)
-							.removeTag("nickname");
-					sender.sendChatToPlayer(Localization.get(
-							Localization.CHAT_NICK_OTHERS_REMOVE).replace("%p",
-							args[0]));
-				} else
-				{
-					player.getEntityData()
-							.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG)
-							.setString("nickname", args[1]);
-					sender.sendChatToPlayer(Localization
-							.get(Localization.CHAT_NICK_OTHERS_SET)
-							.replace("%p", args[0]).replace("%n", args[1]));
+					player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
+					sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_OTHERS_REMOVE).replace("%p", args[0]));
 				}
-			} else
-			{
-				OutputHandler.chatError(sender,
-						Localization.get(Localization.ERROR_NOPERMISSION));
+				else
+				{
+					player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
+					sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_OTHERS_SET).replace("%p", args[0]).replace("%n", args[1]));
+				}
 			}
-		} else
+			else
+			{
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+			}
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX)
-					+ getSyntaxPlayer(sender));
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 	}
 
@@ -109,27 +94,22 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 			EntityPlayerMP player = func_82359_c(sender, args[0]);
 			if (args.length == 2)
 			{
-				player.getEntityData()
-						.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG)
-						.setString("nickname", args[1]);
-				sender.sendChatToPlayer("Nickname of player " + player.username
-						+ " set to " + args[1]);
-			} else if (args.length == 1)
-			{
-				player.getEntityData()
-						.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG)
-						.removeTag("nickname");
-				sender.sendChatToPlayer("Nickname of player " + player.username
-						+ " removed");
-			} else
-			{
-				sender.sendChatToPlayer(Localization
-						.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+				player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
+				sender.sendChatToPlayer("Nickname of player " + player.username + " set to " + args[1]);
 			}
-		} else
+			else if (args.length == 1)
+			{
+				player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
+				sender.sendChatToPlayer("Nickname of player " + player.username + " removed");
+			}
+			else
+			{
+				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			}
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

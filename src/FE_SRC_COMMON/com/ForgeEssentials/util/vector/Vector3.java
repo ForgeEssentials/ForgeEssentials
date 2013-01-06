@@ -162,8 +162,7 @@ public class Vector3 extends Vector2 implements Cloneable
 
 	public void setBlockWithNotify(World world, int id, int metadata)
 	{
-		world.setBlockAndMetadataWithNotify(intX(), intY(), intZ(), id,
-				metadata);
+		world.setBlockAndMetadataWithNotify(intX(), intY(), intZ(), id, metadata);
 	}
 
 	public void setBlockWithNotify(World world, int id)
@@ -278,8 +277,7 @@ public class Vector3 extends Vector2 implements Cloneable
 		return new Vector3(vec1.x * vec2, vec1.y * vec2, vec1.z * vec2);
 	}
 
-	public static Vector3 readFromNBT(String prefix,
-			NBTTagCompound par1NBTTagCompound)
+	public static Vector3 readFromNBT(String prefix, NBTTagCompound par1NBTTagCompound)
 	{
 		Vector3 tempVector = new Vector3();
 		tempVector.x = par1NBTTagCompound.getDouble(prefix + "X");
@@ -318,12 +316,9 @@ public class Vector3 extends Vector2 implements Cloneable
 	/**
 	 * Gets all entities inside of this position in block space.
 	 */
-	public List<Entity> getEntitiesWithin(World worldObj,
-			Class<? extends Entity> par1Class)
+	public List<Entity> getEntitiesWithin(World worldObj, Class<? extends Entity> par1Class)
 	{
-		return worldObj.getEntitiesWithinAABB(par1Class, AxisAlignedBB
-				.getBoundingBox(intX(), intY(), intZ(), intX() + 1, intY() + 1,
-						intZ() + 1));
+		return worldObj.getEntitiesWithinAABB(par1Class, AxisAlignedBB.getBoundingBox(intX(), intY(), intZ(), intX() + 1, intY() + 1, intZ() + 1));
 	}
 
 	@Override

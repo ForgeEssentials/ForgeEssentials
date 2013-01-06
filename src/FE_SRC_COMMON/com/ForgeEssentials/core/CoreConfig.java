@@ -10,8 +10,7 @@ import com.ForgeEssentials.util.TeleportCenter;
 
 public class CoreConfig
 {
-	public static final File mainconfig = new File(ForgeEssentials.FEDIR,
-			"main.cfg");
+	public static final File mainconfig = new File(ForgeEssentials.FEDIR, "main.cfg");
 
 	public final Configuration config;
 
@@ -22,8 +21,7 @@ public class CoreConfig
 
 		config = new Configuration(mainconfig, true);
 
-		config.addCustomCategoryComment("Core",
-				"Configure ForgeEssentials Core.");
+		config.addCustomCategoryComment("Core", "Configure ForgeEssentials Core.");
 
 		Property prop = config.get("Core", "versionCheck", true);
 		prop.comment = "Check for newer versions of ForgeEssentials on load?";
@@ -58,8 +56,7 @@ public class CoreConfig
 
 	/**
 	 * @param name
-	 *            : ie WorldControl, Commands, Permissions, WorldEditCompat,
-	 *            WorldGuardCompat, etc... whatever comes after Module
+	 *            : ie WorldControl, Commands, Permissions, WorldEditCompat, WorldGuardCompat, etc... whatever comes after Module
 	 * @return boolean
 	 */
 	public boolean isModuleEnabled(String name)

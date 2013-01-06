@@ -25,31 +25,25 @@ public class EventHandler
 			e.setCanceled(true);
 			try
 			{
-				int limit = e.entityPlayer.getEntityData().getInteger(
-						"lb_limit");
+				int limit = e.entityPlayer.getEntityData().getInteger("lb_limit");
 				Date date = new Date();
 				Timestamp time = new Timestamp(date.getTime());
-				Connection connection = DriverManager.getConnection(
-						ModulePlayerLogger.url, ModulePlayerLogger.username,
-						ModulePlayerLogger.password);
+				Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
 				Statement st = connection.createStatement();
-				st.execute("SELECT * FROM  `blockchange` WHERE  `Dim` = "
-						+ e.entityPlayer.dimension + " AND  `X` = " + e.x
-						+ " AND  `Y` = " + e.y + " AND  `Z` = " + e.z
-						+ " ORDER BY id DESC LIMIT " + limit);
+				st.execute("SELECT * FROM  `blockchange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + e.x + " AND  `Y` = " + e.y
+						+ " AND  `Z` = " + e.z + " ORDER BY id DESC LIMIT " + limit);
 				ResultSet res = st.getResultSet();
 
 				e.entityPlayer.sendChatToPlayer("Results, Last edits 1th./");
 
 				while (res.next())
 				{
-					e.entityPlayer.sendChatToPlayer(res.getString("player")
-							+ " " + res.getString("category") + " block "
-							+ res.getString("block") + " at "
+					e.entityPlayer.sendChatToPlayer(res.getString("player") + " " + res.getString("category") + " block " + res.getString("block") + " at "
 							+ res.getTimestamp("time"));
 				}
 
-			} catch (SQLException e1)
+			}
+			catch (SQLException e1)
 			{
 				e.entityPlayer.sendChatToPlayer("Connection error!");
 				e1.printStackTrace();

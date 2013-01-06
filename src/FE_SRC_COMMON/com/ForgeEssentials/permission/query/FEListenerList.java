@@ -61,7 +61,8 @@ public class FEListenerList
 			if (parent != null)
 			{
 				newList[x] = new FEListenerListInst(parent.getInstance(x));
-			} else
+			}
+			else
 			{
 				newList[x] = new FEListenerListInst();
 			}
@@ -141,11 +142,9 @@ public class FEListenerList
 		}
 
 		/**
-		 * Returns a ArrayList containing all listeners for this event, and all
-		 * parent events for the specified priority.
+		 * Returns a ArrayList containing all listeners for this event, and all parent events for the specified priority.
 		 * 
-		 * The list is returned with the listeners for the children events
-		 * first.
+		 * The list is returned with the listeners for the children events first.
 		 * 
 		 * @param priority
 		 *            The Priority to get
@@ -153,8 +152,7 @@ public class FEListenerList
 		 */
 		public ArrayList<IQueryListener> getListeners(EventPriority priority)
 		{
-			ArrayList<IQueryListener> ret = new ArrayList<IQueryListener>(
-					priorities.get(priority.ordinal()));
+			ArrayList<IQueryListener> ret = new ArrayList<IQueryListener>(priorities.get(priority.ordinal()));
 			if (parent != null)
 			{
 				ret.addAll(parent.getListeners(priority));
@@ -163,13 +161,11 @@ public class FEListenerList
 		}
 
 		/**
-		 * Returns a full list of all listeners for all priority levels.
-		 * Including all parent listeners.
+		 * Returns a full list of all listeners for all priority levels. Including all parent listeners.
 		 * 
 		 * List is returned in proper priority order.
 		 * 
-		 * Automatically rebuilds the internal Array cache if its information is
-		 * out of date.
+		 * Automatically rebuilds the internal Array cache if its information is out of date.
 		 * 
 		 * @return Array containing listeners
 		 */
@@ -188,8 +184,7 @@ public class FEListenerList
 		}
 
 		/**
-		 * Rebuild the local Array of listeners, returns early if there is no
-		 * work to do.
+		 * Rebuild the local Array of listeners, returns early if there is no work to do.
 		 */
 		private void buildCache()
 		{

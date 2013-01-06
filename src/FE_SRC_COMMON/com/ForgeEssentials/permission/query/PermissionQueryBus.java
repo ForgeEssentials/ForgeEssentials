@@ -22,44 +22,36 @@ public class PermissionQueryBus
 
 	public void register(Object target)
 	{
-		Set<? extends Class<?>> supers = TypeToken.of(target.getClass())
-				.getTypes().rawTypes();
+		Set<? extends Class<?>> supers = TypeToken.of(target.getClass()).getTypes().rawTypes();
 		for (Method method : target.getClass().getMethods())
 		{
 			for (Class<?> cls : supers)
 			{
 				try
 				{
-					Method real = cls.getDeclaredMethod(method.getName(),
-							method.getParameterTypes());
+					Method real = cls.getDeclaredMethod(method.getName(), method.getParameterTypes());
 					if (real.isAnnotationPresent(PermSubscribe.class))
 					{
 						Class<?>[] parameterTypes = method.getParameterTypes();
 						if (parameterTypes.length != 1)
 						{
-							throw new IllegalArgumentException(
-									"Method "
-											+ method
-											+ " has @PermSubscribe annotation, but requires "
-											+ parameterTypes.length
-											+ " arguments.  PermQuery handler methods must require a single argument.");
+							throw new IllegalArgumentException("Method " + method + " has @PermSubscribe annotation, but requires " + parameterTypes.length
+									+ " arguments.  PermQuery handler methods must require a single argument.");
 						}
 
 						Class<?> eventType = parameterTypes[0];
 
 						if (!PermQuery.class.isAssignableFrom(eventType))
 						{
-							throw new IllegalArgumentException(
-									"Method "
-											+ method
-											+ " has @PermSubscribe annotation, but takes a argument that is not a PermQuery "
-											+ eventType);
+							throw new IllegalArgumentException("Method " + method
+									+ " has @PermSubscribe annotation, but takes a argument that is not a PermQuery " + eventType);
 						}
 
 						register(eventType, target, method);
 						break;
 					}
-				} catch (NoSuchMethodException e)
+				}
+				catch (NoSuchMethodException e)
 				{
 					;
 				}
@@ -75,8 +67,7 @@ public class PermissionQueryBus
 			ctr.setAccessible(true);
 			PermQuery query = (PermQuery) ctr.newInstance();
 			ASMQueryHandler listener = new ASMQueryHandler(target, method);
-			query.getListenerList().register(busID, listener.getPriority(),
-					listener);
+			query.getListenerList().register(busID, listener.getPriority(), listener);
 
 			ArrayList<IQueryListener> others = listeners.get(target);
 			if (others == null)
@@ -85,7 +76,8 @@ public class PermissionQueryBus
 				listeners.put(target, others);
 			}
 			others.add(listener);
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -102,8 +94,7 @@ public class PermissionQueryBus
 
 	public boolean post(PermQuery query)
 	{
-		IQueryListener[] listeners = query.getListenerList()
-				.getListeners(busID);
+		IQueryListener[] listeners = query.getListenerList().getListeners(busID);
 		for (IQueryListener listener : listeners)
 		{
 			listener.invoke(query);

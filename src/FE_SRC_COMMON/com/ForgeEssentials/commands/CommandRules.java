@@ -43,8 +43,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		{
 			try
 			{
-				OutputHandler
-						.SOP("No rules file found. Generating with default rules..");
+				OutputHandler.SOP("No rules file found. Generating with default rules..");
 
 				rulesFile.createNewFile();
 
@@ -53,8 +52,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
 				BufferedWriter writer = new BufferedWriter(streamWriter);
 
-				writer.write("# " + rulesFile.getName()
-						+ " | numbers are automatically added");
+				writer.write("# " + rulesFile.getName() + " | numbers are automatically added");
 				writer.newLine();
 
 				writer.write("Obey the Admins");
@@ -70,14 +68,14 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				stream.close();
 
 				OutputHandler.SOP("Completed generating rules file.");
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				Logger lof = OutputHandler.felog;
-				lof.logp(Level.SEVERE, "FEConfig", "Generating Rules",
-						"Error writing the Rules file: " + rulesFile.getName(),
-						e);
+				lof.logp(Level.SEVERE, "FEConfig", "Generating Rules", "Error writing the Rules file: " + rulesFile.getName(), e);
 			}
-		} else
+		}
+		else
 		{
 			try
 			{
@@ -113,17 +111,12 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				streamReader.close();
 				stream.close();
 
-				OutputHandler.SOP("Completed reading rules file. " + counter
-						+ " rules read.");
-			} catch (Exception e)
+				OutputHandler.SOP("Completed reading rules file. " + counter + " rules read.");
+			}
+			catch (Exception e)
 			{
 				Logger lof = OutputHandler.felog;
-				lof.logp(
-						Level.SEVERE,
-						"FEConfig",
-						"Constructor-Rules",
-						"Error reading or writing the Rules file: "
-								+ rulesFile.getName(), e);
+				lof.logp(Level.SEVERE, "FEConfig", "Constructor-Rules", "Error reading or writing the Rules file: " + rulesFile.getName(), e);
 			}
 		}
 
@@ -146,8 +139,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
 			BufferedWriter writer = new BufferedWriter(streamWriter);
 
-			writer.write("# " + rulesFile.getName()
-					+ " | numbers are automatically added");
+			writer.write("# " + rulesFile.getName() + " | numbers are automatically added");
 			writer.newLine();
 
 			for (String rule : rules)
@@ -161,11 +153,11 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			stream.close();
 
 			OutputHandler.SOP("Completed saving rules file.");
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			Logger lof = OutputHandler.felog;
-			lof.logp(Level.SEVERE, "FEConfig", "Saving Rules",
-					"Error writing the Rules file: " + rulesFile.getName(), e);
+			lof.logp(Level.SEVERE, "FEConfig", "Saving Rules", "Error writing the Rules file: " + rulesFile.getName(), e);
 		}
 	}
 
@@ -185,15 +177,17 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				try
 				{
 					rules.remove(new Integer(args[0]) - 1);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NAN, args[0]));
-				} catch (IndexOutOfBoundsException e)
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
+				}
+				catch (IndexOutOfBoundsException e)
 				{
 					sender.sendChatToPlayer("That rule does not exist.");
 				}
-			} else
+			}
+			else
 			{
 				try
 				{
@@ -203,14 +197,15 @@ public class CommandRules extends ForgeEssentialsCommandBase
 						newRule = newRule + args[i] + " ";
 					}
 					rules.add(new Integer(args[0]) - 1, newRule);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					sender.sendChatToPlayer("Not a number. Try "
-							+ getSyntaxConsole());
+					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
 				}
 			}
 			saveRules();
-		} else
+		}
+		else
 		{
 			for (String rule : rules)
 			{
@@ -229,16 +224,18 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				try
 				{
 					rules.remove(new Integer(args[0]) - 1);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					sender.sendChatToPlayer(Localization.format(
-							Localization.ERROR_NAN, args[0]));
+					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
 					error(sender);
-				} catch (IndexOutOfBoundsException e)
+				}
+				catch (IndexOutOfBoundsException e)
 				{
 					sender.sendChatToPlayer("That rule does not exist.");
 				}
-			} else
+			}
+			else
 			{
 				try
 				{
@@ -248,15 +245,16 @@ public class CommandRules extends ForgeEssentialsCommandBase
 						newRule = newRule + args[i] + " ";
 					}
 					rules.add(new Integer(args[0]) - 1, newRule);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					sender.sendChatToPlayer(Localization.format(
-							Localization.ERROR_NAN, args[0]));
+					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
 					error(sender);
 				}
 			}
 			saveRules();
-		} else
+		}
+		else
 		{
 			for (String rule : rules)
 			{
@@ -283,7 +281,8 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			return getListOfStringsMatchingLastWord(args, "remove");
-		} else
+		}
+		else
 		{
 			return null;
 		}

@@ -9,8 +9,7 @@ import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
- * If you want your own query response, extend this file and override
- * getResponceString(DatagramPacket packet)
+ * If you want your own query response, extend this file and override getResponceString(DatagramPacket packet)
  * 
  * @author Dries007
  * 
@@ -19,15 +18,13 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public abstract class Response
 {
 	protected RConOutputStream output = new RConOutputStream(1460);
-	protected MinecraftServer server = FMLCommonHandler.instance()
-			.getMinecraftServerInstance();
+	protected MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 	protected String dataString = "";
 	public boolean allowed = true;
 
 	public abstract String getResponceString(DatagramPacket packet);
 
-	public byte[] getResponceByte(byte[] bs, DatagramPacket packet)
-			throws IOException
+	public byte[] getResponceByte(byte[] bs, DatagramPacket packet) throws IOException
 	{
 		output.reset();
 		output.writeInt(0);
@@ -35,7 +32,8 @@ public abstract class Response
 		if (allowed)
 		{
 			output.writeString(getResponceString(packet));
-		} else
+		}
+		else
 		{
 			output.writeString("_NOT_ALLOWED_");
 		}

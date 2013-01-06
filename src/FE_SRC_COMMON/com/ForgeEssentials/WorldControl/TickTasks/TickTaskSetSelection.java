@@ -32,8 +32,7 @@ public class TickTaskSetSelection implements ITickTask
 	private int changed;
 	private boolean isComplete;
 
-	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata,
-			BackupArea back, AreaBase area)
+	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata, BackupArea back, AreaBase area)
 	{
 		this.player = player;
 		this.blockID = blockID;
@@ -45,8 +44,7 @@ public class TickTaskSetSelection implements ITickTask
 		isComplete = false;
 	}
 
-	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata,
-			BackupArea back, AreaBase area, ArrayList<AreaBase> appliccable)
+	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata, BackupArea back, AreaBase area, ArrayList<AreaBase> appliccable)
 	{
 		this(player, blockID, metadata, back, area);
 		applicable = appliccable;
@@ -66,24 +64,20 @@ public class TickTaskSetSelection implements ITickTask
 		{
 			if (metadata == -1)
 			{
-				if (blockID != player.worldObj.getBlockId(x, y, z)
-						&& isApplicable(x, y, z))
+				if (blockID != player.worldObj.getBlockId(x, y, z) && isApplicable(x, y, z))
 				{
-					back.before
-							.add(new BlockSaveable(player.worldObj, x, y, z));
+					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
 					player.worldObj.setBlock(x, y, z, blockID);
 					back.after.add(new BlockSaveable(player.worldObj, x, y, z));
 					currentTickChanged++;
 				}
-			} else
+			}
+			else
 			{
-				if ((!(blockID == player.worldObj.getBlockId(x, y, z) || metadata != player.worldObj
-						.getBlockMetadata(x, y, z)) && isApplicable(x, y, z)))
+				if ((!(blockID == player.worldObj.getBlockId(x, y, z) || metadata != player.worldObj.getBlockMetadata(x, y, z)) && isApplicable(x, y, z)))
 				{
-					back.before
-							.add(new BlockSaveable(player.worldObj, x, y, z));
-					player.worldObj.setBlockAndMetadata(x, y, z, blockID,
-							metadata);
+					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
+					player.worldObj.setBlockAndMetadata(x, y, z, blockID, metadata);
 					back.after.add(new BlockSaveable(player.worldObj, x, y, z));
 					currentTickChanged++;
 				}
@@ -111,8 +105,7 @@ public class TickTaskSetSelection implements ITickTask
 				}
 			}
 
-			if (isComplete
-					|| currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
+			if (isComplete || currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
 			{
 				// Stop running this tick.
 				changed += currentTickChanged;
@@ -131,26 +124,22 @@ public class TickTaskSetSelection implements ITickTask
 		if (blockID == 0)
 		{
 			blockName = Localization.get("tile.air.name");
-		} else
+		}
+		else
 		{
 			try
 			{
-				blockName = new ItemStack(blockID, 1, metadata)
-						.getDisplayName();
-			} catch (Exception e)
+				blockName = new ItemStack(blockID, 1, metadata).getDisplayName();
+			}
+			catch (Exception e)
 			{
 				blockName = blockID + ":" + metadata;
-				OutputHandler
-						.SOP("Could not retrieve the name of the block represented by ID "
-								+ blockID
-								+ " with meta "
-								+ metadata
-								+ ". This is a problem in the mod that provides the block not supporting getDisplayName for their block.");
+				OutputHandler.SOP("Could not retrieve the name of the block represented by ID " + blockID + " with meta " + metadata
+						+ ". This is a problem in the mod that provides the block not supporting getDisplayName for their block.");
 			}
 		}
 
-		OutputHandler.chatConfirmation(player, Localization.format(
-				"message.wc.setConfirmBlocksChanged", changed, blockName));
+		OutputHandler.chatConfirmation(player, Localization.format("message.wc.setConfirmBlocksChanged", changed, blockName));
 	}
 
 	@Override

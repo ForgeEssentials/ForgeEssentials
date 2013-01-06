@@ -18,8 +18,7 @@ public class PermQueryPlayerZone extends PermQueryPlayer
 {
 	public final Zone toCheck;
 
-	public PermQueryPlayerZone(EntityPlayer player, String permission,
-			String zoneID)
+	public PermQueryPlayerZone(EntityPlayer player, String permission, String zoneID)
 	{
 		this(player, permission, ZoneManager.getZone(zoneID));
 	}
@@ -36,8 +35,7 @@ public class PermQueryPlayerZone extends PermQueryPlayer
 	 * 
 	 * @param world
 	 */
-	public PermQueryPlayerZone(EntityPlayer player, String permission,
-			World world)
+	public PermQueryPlayerZone(EntityPlayer player, String permission, World world)
 	{
 		super(player, permission);
 		toCheck = ZoneManager.getWorldZone(world);
@@ -52,29 +50,25 @@ public class PermQueryPlayerZone extends PermQueryPlayer
 		toCheck = ZoneManager.GLOBAL;
 	}
 
-	public PermQueryPlayerZone(EntityPlayer player, String permission,
-			String zoneID, boolean checkForward)
+	public PermQueryPlayerZone(EntityPlayer player, String permission, String zoneID, boolean checkForward)
 	{
 		this(player, permission, ZoneManager.getZone(zoneID));
 		this.checkForward = checkForward;
 	}
 
-	public PermQueryPlayerZone(EntityPlayer player, String permission,
-			Zone zone, boolean checkForward)
+	public PermQueryPlayerZone(EntityPlayer player, String permission, Zone zone, boolean checkForward)
 	{
 		this(player, permission, zone);
 		this.checkForward = checkForward;
 	}
 
-	public PermQueryPlayerZone(EntityPlayer player, String permission,
-			World world, boolean checkForward)
+	public PermQueryPlayerZone(EntityPlayer player, String permission, World world, boolean checkForward)
 	{
 		this(player, permission, ZoneManager.getWorldZone(world));
 		this.checkForward = checkForward;
 	}
 
-	public PermQueryPlayerZone(EntityPlayer player, String permission,
-			boolean checkForward)
+	public PermQueryPlayerZone(EntityPlayer player, String permission, boolean checkForward)
 	{
 		this(player, permission, ZoneManager.GLOBAL);
 		this.checkForward = checkForward;

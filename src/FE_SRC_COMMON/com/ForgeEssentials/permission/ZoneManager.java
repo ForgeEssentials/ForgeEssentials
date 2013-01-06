@@ -29,8 +29,7 @@ public class ZoneManager
 	{
 		GLOBAL = new Zone("_GLOBAL_", Integer.MIN_VALUE);
 		worldZoneMap = new ConcurrentHashMap<String, Zone>();
-		zoneMap = Collections
-				.synchronizedSortedMap(new TreeMap<String, Zone>());
+		zoneMap = Collections.synchronizedSortedMap(new TreeMap<String, Zone>());
 	}
 
 	protected void loadZones()
@@ -58,8 +57,7 @@ public class ZoneManager
 
 		if (!worldZoneMap.containsKey(worldString))
 		{
-			Zone zone = new Zone(worldString, e.world.getWorldInfo()
-					.getDimension());
+			Zone zone = new Zone(worldString, e.world.getWorldInfo().getDimension());
 			worldZoneMap.put(worldString, zone);
 		}
 	}
@@ -101,10 +99,12 @@ public class ZoneManager
 		if (zoneID.equals(GLOBAL.getZoneID()))
 		{
 			return true;
-		} else if (zoneID.equals(SUPER))
+		}
+		else if (zoneID.equals(SUPER))
 		{
 			return true;
-		} else
+		}
+		else
 		{
 			return SqlHelper.doesZoneExist(zoneID);
 		}
@@ -115,13 +115,16 @@ public class ZoneManager
 		if (zoneID == null)
 		{
 			return null;
-		} else if (zoneID.equals(GLOBAL.getZoneID()))
+		}
+		else if (zoneID.equals(GLOBAL.getZoneID()))
 		{
 			return GLOBAL;
-		} else if (zoneID.startsWith("WORLD_"))
+		}
+		else if (zoneID.startsWith("WORLD_"))
 		{
 			return worldZoneMap.get(zoneID);
-		} else
+		}
+		else
 		{
 			return zoneMap.get(zoneID);
 		}
@@ -294,7 +297,8 @@ public class ZoneManager
 		if (zoneID == null)
 		{
 			return null;
-		} else
+		}
+		else
 		{
 			return getZone(zoneID);
 		}
@@ -306,7 +310,8 @@ public class ZoneManager
 		if (zoneID == null)
 		{
 			return null;
-		} else
+		}
+		else
 		{
 			return getZone(zoneID);
 		}

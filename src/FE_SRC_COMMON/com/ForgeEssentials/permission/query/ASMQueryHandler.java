@@ -24,10 +24,8 @@ import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 public class ASMQueryHandler implements IQueryListener
 {
 	private static int IDs = 0;
-	private static final String HANDLER_DESC = Type
-			.getInternalName(IQueryListener.class);
-	private static final String HANDLER_FUNC_DESC = Type
-			.getMethodDescriptor(IQueryListener.class.getDeclaredMethods()[0]);
+	private static final String HANDLER_DESC = Type.getInternalName(IQueryListener.class);
+	private static final String HANDLER_FUNC_DESC = Type.getMethodDescriptor(IQueryListener.class.getDeclaredMethods()[0]);
 	private static final FEASMClassLoader LOADER = new FEASMClassLoader();
 
 	private final IQueryListener handler;
@@ -35,8 +33,7 @@ public class ASMQueryHandler implements IQueryListener
 
 	public ASMQueryHandler(Object target, Method method) throws Exception
 	{
-		handler = (IQueryListener) createWrapper(method).getConstructor(
-				Object.class).newInstance(target);
+		handler = (IQueryListener) createWrapper(method).getConstructor(Object.class).newInstance(target);
 		subInfo = method.getAnnotation(PermSubscribe.class);
 	}
 
@@ -77,24 +74,19 @@ public class ASMQueryHandler implements IQueryListener
 		String name = getUniqueName(callback);
 		String desc = name.replace('.', '/');
 		String instType = Type.getInternalName(callback.getDeclaringClass());
-		String eventType = Type
-				.getInternalName(callback.getParameterTypes()[0]);
+		String eventType = Type.getInternalName(callback.getParameterTypes()[0]);
 
-		cw.visit(V1_6, ACC_PUBLIC | ACC_SUPER, desc, null, "java/lang/Object",
-				new String[] { HANDLER_DESC });
+		cw.visit(V1_6, ACC_PUBLIC | ACC_SUPER, desc, null, "java/lang/Object", new String[] { HANDLER_DESC });
 
 		cw.visitSource(".dynamic", null);
 		{
-			cw.visitField(ACC_PUBLIC, "instance", "Ljava/lang/Object;", null,
-					null).visitEnd();
+			cw.visitField(ACC_PUBLIC, "instance", "Ljava/lang/Object;", null, null).visitEnd();
 		}
 		{
-			mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/Object;)V",
-					null, null);
+			mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/Object;)V", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>",
-					"()V");
+			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 1);
 			mv.visitFieldInsn(PUTFIELD, desc, "instance", "Ljava/lang/Object;");
@@ -103,16 +95,14 @@ public class ASMQueryHandler implements IQueryListener
 			mv.visitEnd();
 		}
 		{
-			mv = cw.visitMethod(ACC_PUBLIC, "invoke", HANDLER_FUNC_DESC, null,
-					null);
+			mv = cw.visitMethod(ACC_PUBLIC, "invoke", HANDLER_FUNC_DESC, null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, desc, "instance", "Ljava/lang/Object;");
 			mv.visitTypeInsn(CHECKCAST, instType);
 			mv.visitVarInsn(ALOAD, 1);
 			mv.visitTypeInsn(CHECKCAST, eventType);
-			mv.visitMethodInsn(INVOKEVIRTUAL, instType, callback.getName(),
-					Type.getMethodDescriptor(callback));
+			mv.visitMethodInsn(INVOKEVIRTUAL, instType, callback.getName(), Type.getMethodDescriptor(callback));
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(2, 2);
 			mv.visitEnd();
@@ -123,9 +113,7 @@ public class ASMQueryHandler implements IQueryListener
 
 	private String getUniqueName(Method callback)
 	{
-		return String.format("%s_%d_%s_%s_%s", getClass().getName(), IDs++,
-				callback.getDeclaringClass().getSimpleName(),
-				callback.getName(),
+		return String.format("%s_%d_%s_%s_%s", getClass().getName(), IDs++, callback.getDeclaringClass().getSimpleName(), callback.getName(),
 				callback.getParameterTypes()[0].getSimpleName());
 	}
 

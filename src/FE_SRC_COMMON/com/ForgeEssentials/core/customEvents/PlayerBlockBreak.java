@@ -14,8 +14,7 @@ public class PlayerBlockBreak extends Event
 	public final int blockZ;
 	public final EntityPlayer player;
 
-	public PlayerBlockBreak(World world, int x, int y, int z,
-			EntityPlayer entityPlayer)
+	public PlayerBlockBreak(World world, int x, int y, int z, EntityPlayer entityPlayer)
 	{
 		super();
 		this.world = world;

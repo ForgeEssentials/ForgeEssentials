@@ -174,12 +174,10 @@ public class ModuleCommands implements IFEModule
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		loadWarps();
-		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(),
-				Side.SERVER);
+		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
 		if (removeDuplicateCommands)
 		{
-			removeDuplicateCommands(FMLCommonHandler.instance()
-					.getMinecraftServerInstance());
+			removeDuplicateCommands(FMLCommonHandler.instance().getMinecraftServerInstance());
 		}
 	}
 
@@ -191,16 +189,14 @@ public class ModuleCommands implements IFEModule
 			{
 				Set<String> commandNames = new HashSet<String>();
 				Set<String> toRemoveNames = new HashSet<String>();
-				CommandHandler cmdMng = (CommandHandler) server
-						.getCommandManager();
+				CommandHandler cmdMng = (CommandHandler) server.getCommandManager();
 
 				for (Object cmdObj : cmdMng.commandSet)
 				{
 					ICommand cmd = (ICommand) cmdObj;
 					if (!commandNames.add(cmd.getCommandName()))
 					{
-						OutputHandler.debug("Duplicate command found! Name:"
-								+ cmd.getCommandName());
+						OutputHandler.debug("Duplicate command found! Name:" + cmd.getCommandName());
 						toRemoveNames.add(cmd.getCommandName());
 					}
 				}
@@ -214,27 +210,22 @@ public class ModuleCommands implements IFEModule
 						{
 							Class<?> cmdClass = cmd.getClass();
 							Package pkg = cmdClass.getPackage();
-							if (pkg == null
-									|| !pkg.getName().contains(
-											"ForgeEssentials"))
+							if (pkg == null || !pkg.getName().contains("ForgeEssentials"))
 							{
-								OutputHandler
-										.debug("Removing command '"
-												+ cmd.getCommandName()
-												+ "' from class: "
-												+ cmdClass.getName());
+								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
 								toRemove.add(cmd.getCommandName());
 							}
-						} catch (Exception e)
+						}
+						catch (Exception e)
 						{
-							OutputHandler.debug("dafug? Got exception:"
-									+ e.getLocalizedMessage());
+							OutputHandler.debug("dafug? Got exception:" + e.getLocalizedMessage());
 							e.printStackTrace();
 						}
 					}
 				}
 				cmdMng.commandSet.removeAll(toRemove);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
@@ -244,20 +235,13 @@ public class ModuleCommands implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(this, RegGroup.OWNERS,
-				"ForgeEssentials.BasicCommands", true);
-		event.registerPerm(this, RegGroup.MEMBERS,
-				"ForgeEssentials.BasicCommands.compass", true);
-		event.registerPerm(this, RegGroup.GUESTS,
-				"ForgeEssentials.BasicCommands.list", true);
-		event.registerPerm(this, RegGroup.GUESTS,
-				"ForgeEssentials.BasicCommands.rules", true);
-		event.registerPerm(this, RegGroup.GUESTS,
-				"ForgeEssentials.BasicCommands.motd", true);
-		event.registerPerm(this, RegGroup.GUESTS,
-				"ForgeEssentials.BasicCommands.tps", true);
-		event.registerPerm(this, RegGroup.GUESTS,
-				"ForgeEssentials.BasicCommands.modlist", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.BasicCommands", true);
+		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.list", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.rules", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.motd", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.tps", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.modlist", true);
 	}
 
 	@Override

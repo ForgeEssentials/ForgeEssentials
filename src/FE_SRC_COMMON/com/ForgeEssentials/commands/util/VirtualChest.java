@@ -22,20 +22,16 @@ public class VirtualChest extends InventoryBasic
 	@Override
 	public void openChest()
 	{
-		loadInventoryFromNBT(owner.getEntityData()
-				.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG)
-				.getTagList("VirtualChestItems"));
+		loadInventoryFromNBT(owner.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getTagList("VirtualChestItems"));
 		super.openChest();
 	}
 
 	@Override
 	public void closeChest()
 	{
-		NBTTagCompound temp = owner.getEntityData().getCompoundTag(
-				EntityPlayer.PERSISTED_NBT_TAG);
+		NBTTagCompound temp = owner.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 		temp.setTag("VirtualChestItems", saveInventoryToNBT());
-		owner.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG,
-				temp);
+		owner.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, temp);
 		super.closeChest();
 	}
 
@@ -55,8 +51,7 @@ public class VirtualChest extends InventoryBasic
 
 			if (var4 >= 0 && var4 < getSizeInventory())
 			{
-				setInventorySlotContents(var4,
-						ItemStack.loadItemStackFromNBT(var3));
+				setInventorySlotContents(var4, ItemStack.loadItemStackFromNBT(var3));
 			}
 		}
 	}

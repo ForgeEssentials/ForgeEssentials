@@ -56,7 +56,8 @@ public class ServerInfo extends Response
 			if (overrideIP)
 			{
 				data.put("hostip", "" + overrideIPValue);
-			} else
+			}
+			else
 			{
 				data.put("hostip", getIP());
 			}
@@ -92,12 +93,12 @@ public class ServerInfo extends Response
 			{
 				LinkedHashMap<String, String> temp = new LinkedHashMap();
 				temp.put("Shape", ModuleWorldBorder.shape.name());
-				Point center = new Point(ModuleWorldBorder.X, 64,
-						ModuleWorldBorder.Z);
+				Point center = new Point(ModuleWorldBorder.X, 64, ModuleWorldBorder.Z);
 				temp.put("Center", TextFormatter.toJSON(center));
 				data.put("wb", TextFormatter.toJSON(temp));
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 		}
 
@@ -119,19 +120,9 @@ public class ServerInfo extends Response
 		overrideIP = config.get(category, "overrideIP", true).getBoolean(true);
 		overrideIPValue = config.get(category, "overrideIPValue", "").value;
 		sendMods = config.get(category, "sendMods", true).getBoolean(true);
-		TPSList = config.get(category, "TPS_dim", new int[] { -1, 0, 1 },
-				"Dimentions to send TPS of").getIntList();
-		ServerID = config
-				.get(category,
-						"ServerID",
-						0,
-						"This is here to make it easy for other sites (server lists) to help authenticate the server.")
-				.getInt();
-		serverHash = config
-				.get(category,
-						"serverHash",
-						"",
-						"This is here to make it easy for other sites (server lists) to help authenticate the server.").value;
+		TPSList = config.get(category, "TPS_dim", new int[] { -1, 0, 1 }, "Dimentions to send TPS of").getIntList();
+		ServerID = config.get(category, "ServerID", 0, "This is here to make it easy for other sites (server lists) to help authenticate the server.").getInt();
+		serverHash = config.get(category, "serverHash", "", "This is here to make it easy for other sites (server lists) to help authenticate the server.").value;
 	}
 
 	@Override
@@ -143,25 +134,16 @@ public class ServerInfo extends Response
 		config.get(category, "overrideIP", true).value = "" + overrideIP;
 		config.get(category, "overrideIPValue", "").value = overrideIPValue;
 		config.get(category, "sendMods", true).value = "" + sendMods;
-		config.get(
-				category,
-				"ServerID",
-				0,
-				"This is here to make it easy for other sites (server lists) to help authenticate the server.").value = ""
+		config.get(category, "ServerID", 0, "This is here to make it easy for other sites (server lists) to help authenticate the server.").value = ""
 				+ ServerID;
-		config.get(
-				category,
-				"serverHash",
-				"",
-				"This is here to make it easy for other sites (server lists) to help authenticate the server.").value = serverHash;
+		config.get(category, "serverHash", "", "This is here to make it easy for other sites (server lists) to help authenticate the server.").value = serverHash;
 
 		String[] list = new String[TPSList.length];
 		for (int i = 0; i < list.length; i++)
 		{
 			list[i] = "" + TPSList[i];
 		}
-		config.get(category, "TPS_dim", new int[] { -1, 0, 1 },
-				"Dimentions to send TPS of").valueList = list;
+		config.get(category, "TPS_dim", new int[] { -1, 0, 1 }, "Dimentions to send TPS of").valueList = list;
 	}
 
 	public String getUptime()
@@ -171,9 +153,7 @@ public class ServerInfo extends Response
 		int secsIn = (int) (rb.getUptime() / 1000);
 		int hours = secsIn / 3600, remainder = secsIn % 3600, minutes = remainder / 60, seconds = remainder % 60;
 
-		uptime += ((hours < 10 ? "0" : "") + hours + " h "
-				+ (minutes < 10 ? "0" : "") + minutes + " min "
-				+ (seconds < 10 ? "0" : "") + seconds + " sec.");
+		uptime += ((hours < 10 ? "0" : "") + hours + " h " + (minutes < 10 ? "0" : "") + minutes + " min " + (seconds < 10 ? "0" : "") + seconds + " sec.");
 
 		return uptime;
 	}
@@ -185,8 +165,7 @@ public class ServerInfo extends Response
 		{
 			if (server.worldTickTimes.containsKey(id))
 			{
-				data.put("dim " + id,
-						"" + getTPSFromData(server.worldTickTimes.get(id)));
+				data.put("dim " + id, "" + getTPSFromData(server.worldTickTimes.get(id)));
 			}
 		}
 		return TextFormatter.toJSON(data);
@@ -224,7 +203,8 @@ public class ServerInfo extends Response
 		if (tps < 50)
 		{
 			return "20";
-		} else
+		}
+		else
 		{
 			return DF.format((1000 / tps));
 		}
@@ -236,10 +216,10 @@ public class ServerInfo extends Response
 		{
 			InetAddress var2 = InetAddress.getLocalHost();
 			return var2.getHostAddress();
-		} catch (UnknownHostException var3)
+		}
+		catch (UnknownHostException var3)
 		{
-			FMLLog.warning("Unable to determine local host IP, please set server-ip/hostname in the snooper config : "
-					+ var3.getMessage());
+			FMLLog.warning("Unable to determine local host IP, please set server-ip/hostname in the snooper config : " + var3.getMessage());
 			return null;
 		}
 	}

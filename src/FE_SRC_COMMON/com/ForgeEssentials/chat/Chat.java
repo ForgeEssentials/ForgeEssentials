@@ -33,9 +33,7 @@ public class Chat implements IChatListener
 		 * Mute?
 		 */
 
-		if (event.player.getEntityData()
-				.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG)
-				.getBoolean("mute"))
+		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
 		{
 			event.setCanceled(true);
 			event.player.sendChatToPlayer("You are muted.");
@@ -57,13 +55,9 @@ public class Chat implements IChatListener
 		 * Nickname
 		 */
 
-		if (event.player.getEntityData()
-				.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG)
-				.hasKey("nickname"))
+		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).hasKey("nickname"))
 		{
-			nickname = event.player.getEntityData()
-					.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG)
-					.getString("nickname");
+			nickname = event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
 		}
 
 		/*
@@ -72,11 +66,9 @@ public class Chat implements IChatListener
 
 		if (event.message.contains("&"))
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-					event.player, "ForgeEssentials.chat.usecolor")))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
 			{
-				message = event.message.replaceAll("&",
-						FEChatFormatCodes.CODE.toString());
+				message = event.message.replaceAll("&", FEChatFormatCodes.CODE.toString());
 			}
 		}
 
@@ -87,22 +79,21 @@ public class Chat implements IChatListener
 
 		try
 		{
-			Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player),
-					event.player.worldObj);
+			Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player), event.player.worldObj);
 			PlayerInfo info = PlayerInfo.getPlayerInfo(event.player);
 
 			prefix = info.prefix;
 			suffix = info.suffix;
 
-			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(
-					event.player, false);
+			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(event.player, false);
 
 			if (groups.isEmpty())
 			{
 				rank = PermissionsAPI.DEFAULT.name;
 				prefix = PermissionsAPI.DEFAULT.prefix + prefix;
 				suffix = suffix + PermissionsAPI.DEFAULT.suffix;
-			} else
+			}
+			else
 			{
 				rank = groups.get(groups.size() - 1).name;
 
@@ -112,45 +103,30 @@ public class Chat implements IChatListener
 					suffix = suffix + group.suffix;
 				}
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 
-		OutputHandler.debug("TESTING!!!!!   prefix: " + prefix + "    suffix: "
-				+ suffix);
+		OutputHandler.debug("TESTING!!!!!   prefix: " + prefix + "    suffix: " + suffix);
 
 		String format = ConfigChat.chatFormat;
-		format = ConfigChat.chatFormat == null || ConfigChat.chatFormat == "" ? "<%username>%message"
-				: ConfigChat.chatFormat;
+		format = ConfigChat.chatFormat == null || ConfigChat.chatFormat == "" ? "<%username>%message" : ConfigChat.chatFormat;
 
-		event.line = format
-				.replaceAll("%health", "" + event.player.getHealth())
-				.replaceAll("%reset", FEChatFormatCodes.RESET + "")
-				.replaceAll("%red", FEChatFormatCodes.RED + "")
-				.replaceAll("%yellow", FEChatFormatCodes.YELLOW + "")
-				.replaceAll("%black", FEChatFormatCodes.BLACK + "")
-				.replaceAll("%darkblue", FEChatFormatCodes.DARKBLUE + "")
-				.replaceAll("%darkgreen", FEChatFormatCodes.DARKGREEN + "")
-				.replaceAll("%darkaqua", FEChatFormatCodes.DARKAQUA + "")
-				.replaceAll("%darkred", FEChatFormatCodes.DARKRED + "")
-				.replaceAll("%purple", FEChatFormatCodes.PURPLE + "")
-				.replaceAll("%gold", FEChatFormatCodes.GOLD + "")
-				.replaceAll("%grey", FEChatFormatCodes.GREY + "")
-				.replaceAll("%darkgrey", FEChatFormatCodes.DARKGREY + "")
-				.replaceAll("%indigo", FEChatFormatCodes.INDIGO + "")
-				.replaceAll("%green", FEChatFormatCodes.GREEN + "")
-				.replaceAll("%aqua", FEChatFormatCodes.AQUA + "")
-				.replaceAll("%pink", FEChatFormatCodes.PINK + "")
-				.replaceAll("%white", FEChatFormatCodes.WHITE + "")
-				.replaceAll("%random", FEChatFormatCodes.RANDOM + "")
-				.replaceAll("%bold", FEChatFormatCodes.BOLD + "")
-				.replaceAll("%strike", FEChatFormatCodes.STRIKE + "")
-				.replaceAll("%underline", FEChatFormatCodes.UNDERLINE + "")
-				.replaceAll("%italics", FEChatFormatCodes.ITALICS + "")
-				.replace("%message", message).replaceAll("%username", nickname)
-				.replaceAll("%rank", rank).replaceAll("%zone", zoneID)
-				.replace("%prefix", prefix).replaceAll("%suffix", suffix);
+		event.line = format.replaceAll("%health", "" + event.player.getHealth()).replaceAll("%reset", FEChatFormatCodes.RESET + "")
+				.replaceAll("%red", FEChatFormatCodes.RED + "").replaceAll("%yellow", FEChatFormatCodes.YELLOW + "")
+				.replaceAll("%black", FEChatFormatCodes.BLACK + "").replaceAll("%darkblue", FEChatFormatCodes.DARKBLUE + "")
+				.replaceAll("%darkgreen", FEChatFormatCodes.DARKGREEN + "").replaceAll("%darkaqua", FEChatFormatCodes.DARKAQUA + "")
+				.replaceAll("%darkred", FEChatFormatCodes.DARKRED + "").replaceAll("%purple", FEChatFormatCodes.PURPLE + "")
+				.replaceAll("%gold", FEChatFormatCodes.GOLD + "").replaceAll("%grey", FEChatFormatCodes.GREY + "")
+				.replaceAll("%darkgrey", FEChatFormatCodes.DARKGREY + "").replaceAll("%indigo", FEChatFormatCodes.INDIGO + "")
+				.replaceAll("%green", FEChatFormatCodes.GREEN + "").replaceAll("%aqua", FEChatFormatCodes.AQUA + "")
+				.replaceAll("%pink", FEChatFormatCodes.PINK + "").replaceAll("%white", FEChatFormatCodes.WHITE + "")
+				.replaceAll("%random", FEChatFormatCodes.RANDOM + "").replaceAll("%bold", FEChatFormatCodes.BOLD + "")
+				.replaceAll("%strike", FEChatFormatCodes.STRIKE + "").replaceAll("%underline", FEChatFormatCodes.UNDERLINE + "")
+				.replaceAll("%italics", FEChatFormatCodes.ITALICS + "").replace("%message", message).replaceAll("%username", nickname)
+				.replaceAll("%rank", rank).replaceAll("%zone", zoneID).replace("%prefix", prefix).replaceAll("%suffix", suffix);
 	}
 
 	@Override
@@ -165,8 +141,7 @@ public class Chat implements IChatListener
 		return message;
 	}
 
-	private String replaceAllIgnoreCase(String text, String search,
-			String replacement)
+	private String replaceAllIgnoreCase(String text, String search, String replacement)
 	{
 		if (search.equals(replacement))
 		{

@@ -72,7 +72,8 @@ public class ModuleChat implements IFEModule
 				Chat.bannedWords.add(line.trim());
 			}
 			br.close();
-		} catch (IOException e1)
+		}
+		catch (IOException e1)
 		{
 			e1.printStackTrace();
 		}
@@ -106,10 +107,8 @@ public class ModuleChat implements IFEModule
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(this, RegGroup.GUESTS,
-				"ForgeEssentials.chat.commands.msg", true);
-		event.registerPerm(this, RegGroup.GUESTS,
-				"ForgeEssentials.chat.commands.r", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.chat.commands.msg", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.chat.commands.r", true);
 	}
 
 	@Override

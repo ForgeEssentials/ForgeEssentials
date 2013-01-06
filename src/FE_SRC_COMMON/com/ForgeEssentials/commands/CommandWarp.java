@@ -42,73 +42,67 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 				msg = warp + ", " + msg;
 			}
 			sender.sendChatToPlayer(msg);
-		} else if (args.length == 1)
+		}
+		else if (args.length == 1)
 		{
 			if (TeleportCenter.warps.containsKey(args[0].toLowerCase()))
 			{
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-						getCommandPerm() + "." + args[0].toLowerCase())))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					Warp warp = TeleportCenter.warps.get(args[0].toLowerCase());
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender);
 					playerInfo.back = new WarpPoint(sender);
 					TeleportCenter.addToTpQue(warp.getPoint(), sender);
-				} else
-				{
-					OutputHandler.chatError(sender,
-							Localization.get(Localization.ERROR_PERMDENIED));
 				}
-			} else
-			{
-				OutputHandler.chatError(sender,
-						Localization.get("command.warp.notfound"));
+				else
+				{
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+				}
 			}
-		} else if (args.length == 2)
+			else
+			{
+				OutputHandler.chatError(sender, Localization.get("command.warp.notfound"));
+			}
+		}
+		else if (args.length == 2)
 		{
 			if (true)
 			{
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-						getCommandPerm() + "admin")))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
 				{
 					if (args[0].equalsIgnoreCase("set"))
 					{
-						if (TeleportCenter.warps.containsKey(args[1]
-								.toLowerCase()))
+						if (TeleportCenter.warps.containsKey(args[1].toLowerCase()))
 						{
-							OutputHandler.chatError(sender, Localization
-									.get("command.warp.alreadyexists"));
-						} else
-						{
-							TeleportCenter.warps.put(args[1].toLowerCase(),
-									new Warp(args[1].toLowerCase(),
-											new WarpPoint(sender)));
-
-							OutputHandler.chatConfirmation(sender,
-									Localization.get(Localization.DONE));
+							OutputHandler.chatError(sender, Localization.get("command.warp.alreadyexists"));
 						}
-					} else if (args[0].equalsIgnoreCase("del"))
+						else
+						{
+							TeleportCenter.warps.put(args[1].toLowerCase(), new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
+
+							OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
+						}
+					}
+					else if (args[0].equalsIgnoreCase("del"))
 					{
-						if (TeleportCenter.warps.containsKey(args[1]
-								.toLowerCase()))
+						if (TeleportCenter.warps.containsKey(args[1].toLowerCase()))
 						{
 							TeleportCenter.warps.remove(args[1].toLowerCase());
-							OutputHandler.chatConfirmation(sender,
-									Localization.get(Localization.DONE));
-						} else
-						{
-							OutputHandler.chatError(sender,
-									Localization.get("command.warp.notfound"));
+							OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
 						}
-					} else
-					{
-						OutputHandler.chatError(sender,
-								Localization.get(Localization.ERROR_BADSYNTAX)
-										+ getSyntaxPlayer(sender));
+						else
+						{
+							OutputHandler.chatError(sender, Localization.get("command.warp.notfound"));
+						}
 					}
-				} else
+					else
+					{
+						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+					}
+				}
+				else
 				{
-					OutputHandler.chatError(sender,
-							Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}
 			}
 		}
@@ -136,12 +130,13 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsFromIterableMatchingLastWord(args,
-					TeleportCenter.warps.keySet());
-		} else if (args.length == 2)
+			return getListOfStringsFromIterableMatchingLastWord(args, TeleportCenter.warps.keySet());
+		}
+		else if (args.length == 2)
 		{
 			return getListOfStringsMatchingLastWord(args, "set", "del");
-		} else
+		}
+		else
 		{
 			return null;
 		}

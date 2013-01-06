@@ -37,8 +37,7 @@ public class TickTaskTopManipulator implements ITickTask
 	private boolean isComplete;
 	private Point currentPos;
 
-	public TickTaskTopManipulator(EntityPlayer play, BackupArea back,
-			Point origin, int radius, Mode mode)
+	public TickTaskTopManipulator(EntityPlayer play, BackupArea back, Point origin, int radius, Mode mode)
 	{
 		player = play;
 		backup = back;
@@ -50,8 +49,7 @@ public class TickTaskTopManipulator implements ITickTask
 		changed = 0;
 		isComplete = false;
 
-		currentPos = new Point(effectOrigin.x - effectRadius, 0, effectOrigin.z
-				- effectRadius);
+		currentPos = new Point(effectOrigin.x - effectRadius, 0, effectOrigin.z - effectRadius);
 	}
 
 	@Override
@@ -93,7 +91,8 @@ public class TickTaskTopManipulator implements ITickTask
 						world.setBlock(x, y, z, Block.waterMoving.blockID);
 						backup.after.add(new BlockSaveable(world, x, y, z));
 						currentBlocksChanged++;
-					} else if (blockID == Block.snow.blockID)
+					}
+					else if (blockID == Block.snow.blockID)
 					{
 						// Remove snow.
 						backup.before.add(new BlockSaveable(world, x, y, z));
@@ -103,8 +102,7 @@ public class TickTaskTopManipulator implements ITickTask
 					}
 					break;
 				case FREEZE:
-					if (blockID == Block.waterMoving.blockID
-							|| blockID == Block.waterStill.blockID)
+					if (blockID == Block.waterMoving.blockID || blockID == Block.waterStill.blockID)
 					{
 						// Both water types become ice.
 						backup.before.add(new BlockSaveable(world, x, y, z));
@@ -114,21 +112,17 @@ public class TickTaskTopManipulator implements ITickTask
 					}
 					break;
 				case SNOW:
-					if (Block.isNormalCube(world.getBlockId(x, y, z))
-							|| Block.blocksList[blockID].isLeaves(world, x, y,
-									z))
+					if (Block.isNormalCube(world.getBlockId(x, y, z)) || Block.blocksList[blockID].isLeaves(world, x, y, z))
 					{
 						// Add snow covering to the block above.
-						backup.before
-								.add(new BlockSaveable(world, x, y + 1, z));
+						backup.before.add(new BlockSaveable(world, x, y + 1, z));
 						world.setBlock(x, y + 1, z, Block.snow.blockID);
 						backup.after.add(new BlockSaveable(world, x, y + 1, z));
 						currentBlocksChanged++;
 					}
 					break;
 				case TILL:
-					if (blockID == Block.dirt.blockID
-							|| blockID == Block.grass.blockID)
+					if (blockID == Block.dirt.blockID || blockID == Block.grass.blockID)
 					{
 						backup.before.add(new BlockSaveable(world, x, y, z));
 						world.setBlock(x, y, z, Block.tilledField.blockID);
@@ -160,8 +154,7 @@ public class TickTaskTopManipulator implements ITickTask
 				}
 			}
 
-			if (isComplete
-					|| currentBlocksChanged >= ModuleWorldControl.WCblocksPerTick)
+			if (isComplete || currentBlocksChanged >= ModuleWorldControl.WCblocksPerTick)
 			{
 				changed += currentBlocksChanged;
 				currentPos = new Point(x, 0, z);
@@ -194,8 +187,7 @@ public class TickTaskTopManipulator implements ITickTask
 			confirmMessage = "untill";
 			break;
 		}
-		OutputHandler.chatConfirmation(player, Localization.format(
-				"message.wc." + confirmMessage + "Confirm", changed));
+		OutputHandler.chatConfirmation(player, Localization.format("message.wc." + confirmMessage + "Confirm", changed));
 	}
 
 	@Override

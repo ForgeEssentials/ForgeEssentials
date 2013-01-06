@@ -49,10 +49,7 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
 		player.incrementWindowID();
 
 		InventoryEnderChest chest = player.getInventoryEnderChest();
-		player.playerNetServerHandler
-				.sendPacketToPlayer(new Packet100OpenWindow(
-						player.currentWindowId, 0, chest.getInvName(), chest
-								.getSizeInventory()));
+		player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, chest.getInvName(), chest.getSizeInventory()));
 		player.openContainer = new ContainerChest(player.inventory, chest);
 		player.openContainer.windowId = player.currentWindowId;
 		player.openContainer.addCraftingToCrafters(player);

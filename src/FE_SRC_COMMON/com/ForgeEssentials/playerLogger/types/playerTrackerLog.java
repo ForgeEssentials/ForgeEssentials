@@ -39,23 +39,20 @@ public class playerTrackerLog extends logEntry
 	@Override
 	public String getTableCreateSQL()
 	{
-		return "CREATE TABLE IF NOT EXISTS "
-				+ getName()
+		return "CREATE TABLE IF NOT EXISTS " + getName()
 				+ "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), disciption CHAR(128), time DATETIME)";
 	}
 
 	@Override
 	public String getprepareStatementSQL()
 	{
-		return "INSERT INTO " + getName()
-				+ " (player, category, disciption, time) VALUES (?,?,?,?);";
+		return "INSERT INTO " + getName() + " (player, category, disciption, time) VALUES (?,?,?,?);";
 	}
 
 	@Override
 	public void makeEntries(Connection connection) throws SQLException
 	{
-		PreparedStatement ps = connection
-				.prepareStatement(getprepareStatementSQL());
+		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
 		List<playerTrackerLog> toremove = new ArrayList();
 		Iterator<playerTrackerLog> i = buffer.iterator();
 		while (i.hasNext())

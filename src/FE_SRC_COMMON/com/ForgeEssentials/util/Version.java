@@ -41,8 +41,7 @@ public class Version
 				{
 					if (line.endsWith(getVersion()))
 					{
-						OutputHandler
-								.SOP("You are running the latest version of ForgeEssentials.");
+						OutputHandler.SOP("You are running the latest version of ForgeEssentials.");
 					}
 					reader.close();
 					read.close();
@@ -52,7 +51,8 @@ public class Version
 			OutputHandler.SOP("Please update ForgeEssentials.");
 			reader.close();
 			read.close();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace(System.err);
 			OutputHandler.SOP("Unable to connect to version checker");

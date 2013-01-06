@@ -37,20 +37,18 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 			int var6 = sender.inventory.clearInventory(-1, -1);
 			sender.inventoryContainer.detectAndSendChanges();
 			sender.sendChatToPlayer("Cleared inventory.");
-		} else if (args.length == 1
-				&& PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender,
-						getCommandPerm() + ".others")))
+		}
+		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 			int var6 = victim.inventory.clearInventory(-1, -1);
 			victim.inventoryContainer.detectAndSendChanges();
 			victim.sendChatToPlayer("Inventory cleared by " + sender.username);
 			sender.sendChatToPlayer("Cleared inventory of " + victim.username);
-		} else
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX)
-					+ getSyntaxPlayer(sender));
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 	}
 
@@ -62,13 +60,12 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 			int var6 = victim.inventory.clearInventory(-1, -1);
 			victim.inventoryContainer.detectAndSendChanges();
-			victim.sendChatToPlayer("Inventory cleared by "
-					+ sender.getCommandSenderName());
+			victim.sendChatToPlayer("Inventory cleared by " + sender.getCommandSenderName());
 			sender.sendChatToPlayer("Cleared inventory of " + victim.username);
-		} else
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
@@ -89,13 +86,13 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsFromIterableMatchingLastWord(args, ItemList
-					.instance().getItemList());
-		} else if (args.length == 3)
+			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getItemList());
+		}
+		else if (args.length == 3)
 		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler
-					.instance().getMinecraftServerInstance().getAllUsernames());
-		} else
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
 		{
 			return null;
 		}

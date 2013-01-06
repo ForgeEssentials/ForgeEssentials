@@ -18,8 +18,7 @@ import com.ForgeEssentials.util.TickTaskHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
- * Used to check, set and fill the border. You need to activate the module
- * before this command is usable.
+ * Used to check, set and fill the border. You need to activate the module before this command is usable.
  * 
  * @author Dries007
  * 
@@ -48,35 +47,27 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		// Info
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.WB_STATUS_HEADER));
+			sender.sendChatToPlayer(Localization.get(Localization.WB_STATUS_HEADER));
 			if (set)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.GREEN
-						+ Localization.get(Localization.WB_STATUS_BORDERSET));
+				sender.sendChatToPlayer(FEChatFormatCodes.GREEN + Localization.get(Localization.WB_STATUS_BORDERSET));
 				sender.sendChatToPlayer("Coordinates :");
 				if (ModuleWorldBorder.shape.equals(BorderShape.square))
 				{
-					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.X
-							+ "  centerZ:" + ModuleWorldBorder.Z);
-					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.rad
-							+ " Shape: Square");
-					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.minX
-							+ "  maxX:" + ModuleWorldBorder.maxX);
-					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.minZ
-							+ "  maxZ:" + ModuleWorldBorder.maxZ);
+					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.X + "  centerZ:" + ModuleWorldBorder.Z);
+					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.rad + " Shape: Square");
+					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.minX + "  maxX:" + ModuleWorldBorder.maxX);
+					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.minZ + "  maxZ:" + ModuleWorldBorder.maxZ);
 				}
 				if (ModuleWorldBorder.shape.equals(BorderShape.round))
 				{
-					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.X
-							+ "  centerZ:" + ModuleWorldBorder.Z);
-					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.rad
-							+ " Shape: Round");
+					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.X + "  centerZ:" + ModuleWorldBorder.Z);
+					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.rad + " Shape: Round");
 				}
-			} else
+			}
+			else
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_STATUS_BORDERNOTSET));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_STATUS_BORDERNOTSET));
 			}
 			return;
 		}
@@ -85,25 +76,21 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 1)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_LAGWARING));
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_FILL_INFO));
-				sender.sendChatToPlayer(Localization
-						.get(Localization.WB_FILL_CONFIRM));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_LAGWARING));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_FILL_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_CONFIRM));
 				return;
 			}
 			if (args[1].equalsIgnoreCase("ok"))
 			{
-				MinecraftServer server = FMLCommonHandler.instance()
-						.getMinecraftServerInstance();
+				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 				WorldServer world = server.worldServers[sender.dimension];
 
 				if (taskGooing != null)
 				{
-					sender.sendChatToPlayer(Localization
-							.get(Localization.WB_FILL_ONLYONCE));
-				} else
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_ONLYONCE));
+				}
+				else
 				{
 					if (ModuleWorldBorder.shape == BorderShape.round)
 					{
@@ -128,10 +115,8 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 1)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_AUTO_INFO));
-				sender.sendChatToPlayer(Localization
-						.get(Localization.WB_AUTO_CONFIRM));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_AUTO_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_AUTO_CONFIRM));
 				return;
 			}
 			if (args[1].equalsIgnoreCase("off"))
@@ -139,10 +124,10 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				if (taskGooing != null)
 				{
 					taskGooing.disengageAutopilot();
-				} else
+				}
+				else
 				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED
-							+ Localization.get(Localization.WB_NOTHINGTODO));
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
 				}
 				return;
 			}
@@ -158,12 +143,9 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 1)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_LAGWARING));
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_TURBO_INFO));
-				sender.sendChatToPlayer(Localization
-						.get(Localization.WB_TURBO_CONFIRM));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_LAGWARING));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_TURBO_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_TURBO_CONFIRM));
 				return;
 			}
 			if (args[1].equalsIgnoreCase("off"))
@@ -171,10 +153,10 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				if (taskGooing != null)
 				{
 					taskGooing.disengageTurbo();
-				} else
+				}
+				else
 				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED
-							+ Localization.get(Localization.WB_NOTHINGTODO));
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
 				}
 				return;
 			}
@@ -183,10 +165,10 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				int speed = Integer.parseInt(args[1]);
 				taskGooing.engageTurbo(speed);
 				return;
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
-				OutputHandler.chatError(sender,
-						(Localization.get(Localization.ERROR_NAN)));
+				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_NAN)));
 			}
 		}
 		// Set
@@ -197,11 +179,8 @@ public class CommandWB extends ForgeEssentialsCommandBase
 
 			if (args.length == 3)
 			{
-				ModuleWorldBorder.setCenter(rad, (int) sender.posX,
-						(int) sender.posZ, shape, true);
-				sender.sendChatToPlayer(Localization.get(Localization.WB_SET)
-						.replaceAll("%r", "" + rad)
-						.replaceAll("%x", "" + (int) sender.posX)
+				ModuleWorldBorder.setCenter(rad, (int) sender.posX, (int) sender.posZ, shape, true);
+				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + (int) sender.posX)
 						.replaceAll("%z", "" + (int) sender.posZ));
 				return;
 			}
@@ -211,17 +190,12 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				int Z = parseInt(sender, args[4]);
 
 				ModuleWorldBorder.setCenter(rad, X, Z, shape, true);
-				sender.sendChatToPlayer(Localization.get(Localization.WB_SET)
-						.replaceAll("%r", "" + rad).replaceAll("%x", "" + X)
-						.replaceAll("%z", "" + Z));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + X).replaceAll("%z", "" + Z));
 				return;
 			}
 		}
 		// Command unknown
-		OutputHandler
-				.chatError(
-						sender,
-						(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+		OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 	}
 
 	@Override
@@ -231,30 +205,25 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		// Info
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.WB_STATUS_HEADER));
+			sender.sendChatToPlayer(Localization.get(Localization.WB_STATUS_HEADER));
 			if (set)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.GREEN
-						+ Localization.get(Localization.WB_STATUS_BORDERSET));
+				sender.sendChatToPlayer(FEChatFormatCodes.GREEN + Localization.get(Localization.WB_STATUS_BORDERSET));
 				sender.sendChatToPlayer("Coordinates :");
 				if (ModuleWorldBorder.shape.equals(BorderShape.square))
 				{
-					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.minX
-							+ "  maxX:" + ModuleWorldBorder.maxX);
-					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.minZ
-							+ "  maxZ:" + ModuleWorldBorder.maxZ);
+					sender.sendChatToPlayer("minX:" + ModuleWorldBorder.minX + "  maxX:" + ModuleWorldBorder.maxX);
+					sender.sendChatToPlayer("minZ:" + ModuleWorldBorder.minZ + "  maxZ:" + ModuleWorldBorder.maxZ);
 				}
 				if (ModuleWorldBorder.shape.equals(BorderShape.round))
 				{
-					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.X
-							+ "  centerZ:" + ModuleWorldBorder.Z);
+					sender.sendChatToPlayer("centerX:" + ModuleWorldBorder.X + "  centerZ:" + ModuleWorldBorder.Z);
 					sender.sendChatToPlayer("rad:" + ModuleWorldBorder.rad);
 				}
-			} else
+			}
+			else
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_STATUS_BORDERNOTSET));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_STATUS_BORDERNOTSET));
 			}
 			return;
 		}
@@ -269,32 +238,27 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			}
 			if (args.length == 1)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_LAGWARING));
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_FILL_INFO));
-				sender.sendChatToPlayer(Localization
-						.get(Localization.WB_FILL_CONFIRM));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_LAGWARING));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_FILL_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_CONFIRM));
 				return;
 			}
 			if (args[1].equalsIgnoreCase("ok"))
 			{
 				if (args.length != 3)
 				{
-					sender.sendChatToPlayer(Localization
-							.get(Localization.WB_FILL_CONSOLENEEDSDIM));
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_CONSOLENEEDSDIM));
 					return;
 				}
-				MinecraftServer server = FMLCommonHandler.instance()
-						.getMinecraftServerInstance();
+				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 				int dim = parseInt(sender, args[2]);
 				WorldServer world = server.worldServers[dim];
 
 				if (taskGooing != null)
 				{
-					sender.sendChatToPlayer(Localization
-							.get(Localization.WB_FILL_ONLYONCE));
-				} else
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_ONLYONCE));
+				}
+				else
 				{
 					world.canNotSave = true;
 					if (ModuleWorldBorder.shape == BorderShape.round)
@@ -320,10 +284,8 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 1)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_AUTO_INFO));
-				sender.sendChatToPlayer(Localization
-						.get(Localization.WB_AUTO_CONFIRM));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_AUTO_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_AUTO_CONFIRM));
 				return;
 			}
 			if (args[1].equalsIgnoreCase("off"))
@@ -331,10 +293,10 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				if (taskGooing != null)
 				{
 					taskGooing.disengageAutopilot();
-				} else
+				}
+				else
 				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED
-							+ Localization.get(Localization.WB_NOTHINGTODO));
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
 				}
 				return;
 			}
@@ -350,12 +312,9 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 1)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_LAGWARING));
-				sender.sendChatToPlayer(FEChatFormatCodes.RED
-						+ Localization.get(Localization.WB_TURBO_INFO));
-				sender.sendChatToPlayer(Localization
-						.get(Localization.WB_TURBO_CONFIRM));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_LAGWARING));
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_TURBO_INFO));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_TURBO_CONFIRM));
 				return;
 			}
 			if (args[1].equalsIgnoreCase("off"))
@@ -363,10 +322,10 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				if (taskGooing != null)
 				{
 					taskGooing.disengageTurbo();
-				} else
+				}
+				else
 				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED
-							+ Localization.get(Localization.WB_NOTHINGTODO));
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
 				}
 				return;
 			}
@@ -375,10 +334,10 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				int speed = Integer.parseInt(args[1]);
 				taskGooing.engageTurbo(speed);
 				return;
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
-				sender.sendChatToPlayer(Localization
-						.get(Localization.ERROR_NAN));
+				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NAN));
 			}
 		}
 		// Set
@@ -393,9 +352,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				int Z = parseInt(sender, args[4]);
 
 				ModuleWorldBorder.setCenter(rad, X, Z, shape, true);
-				sender.sendChatToPlayer(Localization.get(Localization.WB_SET)
-						.replaceAll("%r", "" + rad).replaceAll("%x", "" + X)
-						.replaceAll("%z", "" + Z));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + X).replaceAll("%z", "" + Z));
 				return;
 			}
 		}
@@ -420,8 +377,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, "set", "fill",
-					"turbo", "autopilot");
+			return getListOfStringsMatchingLastWord(args, "set", "fill", "turbo", "autopilot");
 		}
 		if (args.length == 2 && args[0].equalsIgnoreCase("set"))
 		{

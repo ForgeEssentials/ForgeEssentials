@@ -6,8 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
-public class CommandDefaultGameMode extends
-		net.minecraft.command.CommandDefaultGameMode
+public class CommandDefaultGameMode extends net.minecraft.command.CommandDefaultGameMode
 {
 
 	@Override
@@ -15,9 +14,9 @@ public class CommandDefaultGameMode extends
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(
-					(EntityPlayer) sender, getCommandPerm()));
-		} else
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
+		}
+		else
 		{
 			return true;
 		}

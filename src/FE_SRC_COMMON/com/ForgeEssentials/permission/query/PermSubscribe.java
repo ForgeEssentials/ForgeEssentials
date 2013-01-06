@@ -16,6 +16,5 @@ public @interface PermSubscribe
 {
 	public EventPriority priority() default EventPriority.NORMAL;
 
-	public PermResult[] handleResult() default { PermResult.ALLOW,
-			PermResult.DENY, PermResult.PARTIAL, PermResult.UNKNOWN };
+	public PermResult[] handleResult() default { PermResult.ALLOW, PermResult.DENY, PermResult.PARTIAL, PermResult.UNKNOWN };
 }

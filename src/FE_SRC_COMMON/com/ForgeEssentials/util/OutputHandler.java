@@ -64,10 +64,10 @@ public final class OutputHandler
 	{
 		if (FMLCommonHandler.instance().getSide().isServer())
 		{
-			MinecraftServer.getServer().sendChatToPlayer(
-					"{Forge Essentials} " + msg);
+			MinecraftServer.getServer().sendChatToPlayer("{Forge Essentials} " + msg);
 			felog.info("" + msg);
-		} else
+		}
+		else
 		{
 			System.out.println("{Forge Essentials} " + msg);
 			felog.info("" + msg);
@@ -84,11 +84,9 @@ public final class OutputHandler
 		}
 	}
 
-	public static void logConfigChange(String category, String prop,
-			String oldVal, String newVal)
+	public static void logConfigChange(String category, String prop, String oldVal, String newVal)
 	{
-		SOP("Config Changed: " + prop + " under " + "category"
-				+ " changed from " + oldVal + " to " + newVal);
+		SOP("Config Changed: " + prop + " under " + "category" + " changed from " + oldVal + " to " + newVal);
 	}
 
 }

@@ -29,20 +29,15 @@ public final class FunctionHelper
 	/**
 	 * stolen from Item class
 	 */
-	public static MovingObjectPosition getPlayerLookingSpot(
-			EntityPlayer player, boolean restrict)
+	public static MovingObjectPosition getPlayerLookingSpot(EntityPlayer player, boolean restrict)
 	{
 		float var4 = 1.0F;
-		float var5 = player.prevRotationPitch
-				+ (player.rotationPitch - player.prevRotationPitch) * var4;
-		float var6 = player.prevRotationYaw
-				+ (player.rotationYaw - player.prevRotationYaw) * var4;
+		float var5 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * var4;
+		float var6 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * var4;
 		double var7 = player.prevPosX + (player.posX - player.prevPosX) * var4;
-		double var9 = player.prevPosY + (player.posY - player.prevPosY) * var4
-				+ 1.62D - player.yOffset;
+		double var9 = player.prevPosY + (player.posY - player.prevPosY) * var4 + 1.62D - player.yOffset;
 		double var11 = player.prevPosZ + (player.posZ - player.prevPosZ) * var4;
-		Vec3 var13 = player.worldObj.getWorldVec3Pool().getVecFromPool(var7,
-				var9, var11);
+		Vec3 var13 = player.worldObj.getWorldVec3Pool().getVecFromPool(var7, var9, var11);
 		float var14 = MathHelper.cos(-var6 * 0.017453292F - (float) Math.PI);
 		float var15 = MathHelper.sin(-var6 * 0.017453292F - (float) Math.PI);
 		float var16 = -MathHelper.cos(-var5 * 0.017453292F);
@@ -52,43 +47,36 @@ public final class FunctionHelper
 		double var21 = 500D;
 		if (player instanceof EntityPlayerMP && restrict)
 		{
-			var21 = ((EntityPlayerMP) player).theItemInWorldManager
-					.getBlockReachDistance();
+			var21 = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
 		}
-		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20
-				* var21);
+		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
 
 	public static String getZoneWorldString(World world)
 	{
-		return "WORLD_" + world.provider.getDimensionName() + "_"
-				+ world.provider.dimensionId;
+		return "WORLD_" + world.provider.getDimensionName() + "_" + world.provider.dimensionId;
 	}
 
 	public static WorldServer getDimension(int dimension)
 	{
-		return FMLCommonHandler.instance().getMinecraftServerInstance()
-				.worldServerForDimension(dimension);
+		return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension);
 	}
 
 	public static WorldPoint getEntityPoint(Entity entity)
 	{
-		return new WorldPoint(entity.worldObj, entity.posX, entity.posY,
-				entity.posZ);
+		return new WorldPoint(entity.worldObj, entity.posX, entity.posY, entity.posZ);
 	}
 
 	public static EntityPlayerMP getPlayerFromUsername(String username)
 	{
 		EntityPlayerMP target;
 		List possibles = new LinkedList<EntityPlayer>();
-		for (Object player : FMLCommonHandler.instance().getSidedDelegate()
-				.getServer().getConfigurationManager().playerEntityList)
+		for (Object player : FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
 		{
 			if (player instanceof EntityPlayerMP)
 			{
-				if (((EntityPlayerMP) player).getCommandSenderName()
-						.toLowerCase().contains(username.toLowerCase()))
+				if (((EntityPlayerMP) player).getCommandSenderName().toLowerCase().contains(username.toLowerCase()))
 				{
 					possibles.add(player);
 				}
@@ -107,15 +95,13 @@ public final class FunctionHelper
 	}
 
 	/**
-	 * does NOT check if its a valid BlockID and stuff.. this may be used for
-	 * items.
+	 * does NOT check if its a valid BlockID and stuff.. this may be used for items.
 	 * 
 	 * @return never NULL. always {0, -1}. Meta by default is -1.
 	 * @throws RuntimeException
 	 *             the message is a formatted chat string.
 	 */
-	public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly)
-			throws RuntimeException
+	public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly) throws RuntimeException
 	{
 		int ID;
 		int meta = -1;
@@ -128,7 +114,8 @@ public final class FunctionHelper
 			try
 			{
 				ID = Integer.parseInt(pair[0]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
 				ID = getItemIDFromName(pair[0], blocksOnly);
 			}
@@ -136,18 +123,20 @@ public final class FunctionHelper
 			try
 			{
 				meta = Integer.parseInt(pair[1]);
-			} catch (NumberFormatException e)
-			{
-				throw new RuntimeException(Localization.format(
-						Localization.ERROR_NAN, pair[1]));
 			}
-		} else
+			catch (NumberFormatException e)
+			{
+				throw new RuntimeException(Localization.format(Localization.ERROR_NAN, pair[1]));
+			}
+		}
+		else
 		{
 			try
 			{
 				ID = Integer.parseInt(msg);
 				meta = -1;
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
 				ID = getItemIDFromName(msg, blocksOnly);
 			}
@@ -166,17 +155,20 @@ public final class FunctionHelper
 			if (block == null)
 			{
 				return 0;
-			} else
+			}
+			else
 			{
 				return block.blockID;
 			}
-		} else
+		}
+		else
 		{
 			Item item = ItemList.instance().getItemForName(name);
 			if (item == null)
 			{
 				return 0;
-			} else
+			}
+			else
 			{
 				return item.itemID;
 			}
@@ -189,7 +181,8 @@ public final class FunctionHelper
 		{
 			FMLClientHandler.instance().getClient();
 			return Minecraft.getMinecraftDir();
-		} else
+		}
+		else
 		{
 			return new File(".");
 		}
@@ -197,14 +190,12 @@ public final class FunctionHelper
 
 	public static boolean isPlayerOp(String player)
 	{
-		MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate()
-				.getServer();
+		MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
 
 		// SP and LAN
 		if (server.isSinglePlayer())
 		{
-			if (server instanceof IntegratedServer
-					&& server.getServerOwner().equalsIgnoreCase(player))
+			if (server instanceof IntegratedServer && server.getServerOwner().equalsIgnoreCase(player))
 			{
 				return true;
 			}
@@ -216,8 +207,7 @@ public final class FunctionHelper
 
 	public static double getTPS(int dimID)
 	{
-		MinecraftServer server = FMLCommonHandler.instance()
-				.getMinecraftServerInstance();
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
 		long var2 = 0L;
 		long[] var4 = server.worldTickTimes.get(dimID);
@@ -234,7 +224,8 @@ public final class FunctionHelper
 		if (tps < 50)
 		{
 			return 20;
-		} else
+		}
+		else
 		{
 			return 1000 / tps;
 		}

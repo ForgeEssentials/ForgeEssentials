@@ -71,12 +71,10 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(
-					sender, false);
+			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
 			if (mop == null)
 			{
-				OutputHandler.chatError(sender,
-						Localization.get(Localization.ERROR_TARGET));
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_TARGET));
 				return;
 			}
 			int amount = 1;
@@ -88,10 +86,10 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 				try
 				{
 					amount = new Integer(args[1]);
-				} catch (NumberFormatException e)
+				}
+				catch (NumberFormatException e)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NAN, args[1]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
 					return;
 				}
 				if (args.length >= 5)
@@ -99,51 +97,47 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 					try
 					{
 						x = new Integer(args[2]);
-					} catch (NumberFormatException e)
+					}
+					catch (NumberFormatException e)
 					{
-						OutputHandler.chatError(sender, Localization.format(
-								Localization.ERROR_NAN, args[2]));
+						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
 						return;
 					}
 					try
 					{
 						y = new Integer(args[3]);
-					} catch (NumberFormatException e)
+					}
+					catch (NumberFormatException e)
 					{
-						OutputHandler.chatError(sender, Localization.format(
-								Localization.ERROR_NAN, args[3]));
+						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[3]));
 						return;
 					}
 					try
 					{
 						z = new Integer(args[4]);
-					} catch (NumberFormatException e)
+					}
+					catch (NumberFormatException e)
 					{
-						OutputHandler.chatError(sender, Localization.format(
-								Localization.ERROR_NAN, args[4]));
+						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[4]));
 						return;
 					}
 				}
 			}
 			for (int i = 0; i < amount; i++)
 			{
-				EntityCreature mob = (EntityCreature) EntityList
-						.createEntityByName(
-								mobNames.get(args[0].toLowerCase()),
-								sender.worldObj);
+				EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), sender.worldObj);
 				if (mob == null)
 				{
-					OutputHandler.chatError(sender, Localization.format(
-							Localization.ERROR_NOMOB, args[0]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOMOB, args[0]));
 					return;
 				}
 				mob.setPosition(x, y, z);
 				sender.worldObj.spawnEntityInWorld(mob);
 			}
-		} else
+		}
+		else
 		{
-			OutputHandler.chatError(sender,
-					Localization.get(Localization.ERROR_BADSYNTAX));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
 		}
 	}
 
@@ -160,66 +154,63 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 			try
 			{
 				amount = new Integer(args[1]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_NAN, args[1]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
 				return;
 			}
 			try
 			{
 				x = new Integer(args[2]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_NAN, args[2]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
 				return;
 			}
 			try
 			{
 				y = new Integer(args[3]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_NAN, args[3]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
 				return;
 			}
 			try
 			{
 				z = new Integer(args[4]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_NAN, args[4]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[4]));
 				return;
 			}
 			try
 			{
 				dimension = new Integer(args[5]);
-			} catch (NumberFormatException e)
+			}
+			catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(
-						Localization.ERROR_NAN, args[5]));
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[5]));
 			}
 			for (int i = 0; i < amount; i++)
 			{
 				World world = FunctionHelper.getDimension(dimension);
-				EntityCreature mob = (EntityCreature) EntityList
-						.createEntityByName(
-								mobNames.get(args[0].toLowerCase()), world);
+				EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), world);
 				if (mob == null)
 				{
-					sender.sendChatToPlayer(Localization.format(
-							Localization.ERROR_NOMOB, args[0]));
+					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOMOB, args[0]));
 					return;
 				}
 				mob.setPosition(x, y, z);
 				world.spawnEntityInWorld(mob);
 			}
-		} else
+		}
+		else
 		{
-			sender.sendChatToPlayer(Localization
-					.get(Localization.ERROR_BADSYNTAX));
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
 		}
 	}
 
@@ -240,9 +231,9 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsFromIterableMatchingLastWord(args,
-					mobNames.keySet());
-		} else
+			return getListOfStringsFromIterableMatchingLastWord(args, mobNames.keySet());
+		}
+		else
 		{
 			return null;
 		}

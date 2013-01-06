@@ -19,18 +19,15 @@ public class PermissionChecker
 	}
 
 	/**
-	 * @return the qualified full name of the parent of this permission's
-	 *         parent. returns "" if there is no parent.
+	 * @return the qualified full name of the parent of this permission's parent. returns "" if there is no parent.
 	 */
 	public String getImmediateParent()
 	{
-		return name.substring(0,
-				name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0);
+		return name.substring(0, name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0);
 	}
 
 	/**
-	 * @return the modID of the mod that added this permission. returns "" if
-	 *         there is none.
+	 * @return the modID of the mod that added this permission. returns "" if there is none.
 	 */
 	public String getMod()
 	{
@@ -81,7 +78,8 @@ public class PermissionChecker
 		if (object instanceof PermissionChecker)
 		{
 			return name.equals(((PermissionChecker) object).name);
-		} else if (object instanceof String)
+		}
+		else if (object instanceof String)
 		{
 			return object.equals(name);
 		}
@@ -89,8 +87,7 @@ public class PermissionChecker
 	}
 
 	/**
-	 * checks if this Permission can determine the result of the given
-	 * Permission AKA: checks this permission AND parents.
+	 * checks if this Permission can determine the result of the given Permission AKA: checks this permission AND parents.
 	 * 
 	 * @param perm
 	 * @return True if THIS can determine the result of the given permission
@@ -100,7 +97,8 @@ public class PermissionChecker
 		if (equals(perm))
 		{
 			return true;
-		} else if (perm.isChildOf(this))
+		}
+		else if (perm.isChildOf(this))
 		{
 			return true;
 		}

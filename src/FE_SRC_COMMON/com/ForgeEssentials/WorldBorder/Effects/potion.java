@@ -16,19 +16,13 @@ public class potion implements IEffect
 	{
 		String[] potionEffects = { "9:5:0" };
 
-		config.addCustomCategoryComment(
-				category,
-				"For more information, go to http://www.minecraftwiki.net/wiki/Potion_effects#Parameters");
-		potionEffects = config.get(category, "potionEffects", potionEffects,
-				"Format like this: 'ID:duration:amplifire'").valueList;
+		config.addCustomCategoryComment(category, "For more information, go to http://www.minecraftwiki.net/wiki/Potion_effects#Parameters");
+		potionEffects = config.get(category, "potionEffects", potionEffects, "Format like this: 'ID:duration:amplifire'").valueList;
 
 		for (String poisonEffect : potionEffects)
 		{
 			String[] split = poisonEffect.split(":");
-			potionEffectsList
-					.add(new PotionEffect(Integer.parseInt(split[0]), Integer
-							.parseInt(split[1]) * 20, Integer
-							.parseInt(split[2])));
+			potionEffectsList.add(new PotionEffect(Integer.parseInt(split[0]), Integer.parseInt(split[1]) * 20, Integer.parseInt(split[2])));
 		}
 
 	}

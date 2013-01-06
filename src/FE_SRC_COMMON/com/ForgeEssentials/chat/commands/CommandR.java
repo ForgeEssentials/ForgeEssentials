@@ -31,29 +31,22 @@ public class CommandR extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			OutputHandler.chatError(sender,
-					Localization.get(Localization.ERROR_BADSYNTAX)
-							+ "/r <message>");
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "/r <message>");
 			return;
 		}
 		if (args.length > 0)
 		{
-			String target = CommandMsg.getPlayerReply(sender
-					.getCommandSenderName());
+			String target = CommandMsg.getPlayerReply(sender.getCommandSenderName());
 			if (target == null)
 			{
-				OutputHandler.chatError(sender,
-						Localization.get("message.error.r.noPrevious"));
+				OutputHandler.chatError(sender, Localization.get("message.error.r.noPrevious"));
 				return;
 			}
 			if (target.equalsIgnoreCase("server"))
 			{
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> "
-						+ FEChatFormatCodes.PURPLE + "Server"
-						+ FEChatFormatCodes.GOLD + "] "
+				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] "
 						+ FEChatFormatCodes.GREY;
-				String receiverMessage = "[" + sender.getCommandSenderName()
-						+ " -> me ] ";
+				String receiverMessage = "[" + sender.getCommandSenderName() + " -> me ] ";
 				for (int i = 0; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -66,26 +59,19 @@ public class CommandR extends ForgeEssentialsCommandBase
 				}
 				MinecraftServer.getServer().sendChatToPlayer(receiverMessage);
 				sender.sendChatToPlayer(senderMessage);
-			} else
+			}
+			else
 			{
-				EntityPlayerMP receiver = FunctionHelper
-						.getPlayerFromUsername(target);
+				EntityPlayerMP receiver = FunctionHelper.getPlayerFromUsername(target);
 				if (receiver == null)
 				{
-					OutputHandler.chatError(sender, target
-							+ " is not a valid username");
+					OutputHandler.chatError(sender, target + " is not a valid username");
 					return;
 				}
-				String receiverMessage = FEChatFormatCodes.GOLD + "[ me -> "
-						+ FEChatFormatCodes.GREY
-						+ sender.getCommandSenderName()
-						+ FEChatFormatCodes.GOLD + "] "
-						+ FEChatFormatCodes.GREY;
-				String senderMessage = FEChatFormatCodes.GOLD + "["
-						+ FEChatFormatCodes.GREY
-						+ sender.getCommandSenderName()
-						+ FEChatFormatCodes.GOLD + " -> me ] "
-						+ FEChatFormatCodes.GREY;
+				String receiverMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD
+						+ "] " + FEChatFormatCodes.GREY;
+				String senderMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD
+						+ " -> me ] " + FEChatFormatCodes.GREY;
 				for (int i = 0; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -107,8 +93,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX
-					+ "/msg <player> <message>");
+			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX + "/msg <player> <message>");
 			return;
 		}
 		if (args.length > 0)
@@ -116,23 +101,19 @@ public class CommandR extends ForgeEssentialsCommandBase
 			String target = CommandMsg.getPlayerReply("server");
 			if (target == null)
 			{
-				sender.sendChatToPlayer(Localization
-						.get("message.error.r.noPrevious"));
+				sender.sendChatToPlayer(Localization.get("message.error.r.noPrevious"));
 				return;
 			}
-			EntityPlayer receiver = FunctionHelper
-					.getPlayerFromUsername(target);
+			EntityPlayer receiver = FunctionHelper.getPlayerFromUsername(target);
 			if (receiver == null)
 			{
 				sender.sendChatToPlayer(target + " is not a valid username");
 				return;
-			} else
+			}
+			else
 			{
-				String senderMessage = "[ me -> "
-						+ receiver.getCommandSenderName() + "] ";
-				String receiverMessage = FEChatFormatCodes.GOLD + "["
-						+ FEChatFormatCodes.PURPLE + "Server"
-						+ FEChatFormatCodes.GOLD + " -> me ] "
+				String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] "
 						+ FEChatFormatCodes.GREY;
 				for (int i = 0; i < args.length; i++)
 				{
@@ -159,8 +140,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player,
-				getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
 	@Override
