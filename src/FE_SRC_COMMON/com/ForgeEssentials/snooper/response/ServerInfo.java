@@ -31,8 +31,8 @@ public class ServerInfo extends Response
 	private boolean sendMods;
 	private int[] TPSList;
 	private boolean overrideIP;
-	public static Integer ServerID;
-	public static String serverHash;
+	public static Integer ServerID = 0;
+	public static String serverHash = "";
 
 	@Override
 	public String getResponceString(DatagramPacket packet)
