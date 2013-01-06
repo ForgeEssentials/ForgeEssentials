@@ -21,16 +21,20 @@ public class FlatFilePermissions
 		ArrayList<PermissionHolder> group = new ArrayList<PermissionHolder>();
 		ArrayList<PermissionHolder> player = new ArrayList<PermissionHolder>();
 
-		// TODO: save;
+		// TODO: load
 
 		HashMap<String, ArrayList<PermissionHolder>> map = new HashMap<String, ArrayList<PermissionHolder>>();
 		map.put("player", player);
 		map.put("group", group);
-		return null;
+		return map;
 	}
 
 	public void save(ArrayList<PermissionHolder> players, ArrayList<PermissionHolder> groups)
 	{
+		// clear it.
+		if (file.exists())
+			file.delete();
+		
 		Configuration config = new Configuration(file);
 
 		for (PermissionHolder holder : players)
