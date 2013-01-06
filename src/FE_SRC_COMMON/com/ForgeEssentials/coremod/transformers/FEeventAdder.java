@@ -37,15 +37,10 @@ import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class FEeventAdder implements IClassTransformer 
 {
-	private HashMap<String, String> iiwmHM;
-	private HashMap<String, String> isHM;
+	private static HashMap<String, String> iiwmHM;
+	private static HashMap<String, String> isHM;
 	
-	public static void msg(String msg)
-	{
-		System.out.println(msg);
-	}
-	
-	public FEeventAdder()
+	static
 	{
 		if(ObfuscationReflectionHelper.obfuscation)
 		{
@@ -268,4 +263,10 @@ public class FEeventAdder implements IClassTransformer
         classNode.accept(writer);
         return writer.toByteArray();
     }
+    
+	public static void msg(String msg)
+	{
+		System.out.println(msg);
+	}
+	
 }
