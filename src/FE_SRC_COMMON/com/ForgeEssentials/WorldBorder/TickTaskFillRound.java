@@ -42,8 +42,14 @@ public class TickTaskFillRound extends TickTaskFill
 		{
 			if ((rad + ModuleWorldBorder.overGenerate) < ModuleWorldBorder.getDistanceRound(centerX, centerZ, X, Z))
 			{
-				i++;
-				world.theChunkProviderServer.provideChunk((X >> 4), (Z >> 4));
+				if(!world.theChunkProviderServer.chunkExists((X >> 4), (Z >> 4)))
+				{
+					i++;
+					world.theChunkProviderServer.provideChunk((X >> 4), (Z >> 4));
+				}
+				world.theChunkProviderServer.unloadChunksIfNotNearSpawn((X >> 4), (Z >> 4));
+				world.theChunkProviderServer.unload100OldestChunks();
+				
 				if (X <= maxX)
 				{
 					X += 16;
