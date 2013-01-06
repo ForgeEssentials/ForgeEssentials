@@ -70,16 +70,9 @@ rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
 echo "Creating server packages"
 jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/snooper/* ./com/ForgeEssentials/WorldBorder/* ./com/ForgeEssentials/playerLogger/*
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/snooper/* ./com/ForgeEssentials/WorldBorder/* ./com/ForgeEssentials/playerLogger/* ./com/ForgeEssentials/api/snooper/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" ./com/ForgeEssentials/commands/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl/* 
-echo "Creating API package"
-cd ${WORKSPACE}/output
-mkdir api
-cd api
-cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/com/ForgeEssentials/api/*  ./com/ForgeEssentials/api/
-cd ..
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-src-${MC}-${VERSION}.zip" ./api/*  
 
 echo "Creating ServerComplete package"
 mkdir mods
@@ -89,4 +82,9 @@ cp -rf "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./mods/
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/*
+
+echo "Creating API package"
+cd ${WORKSPACE}/src/FE_SRC_COMMON
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-src-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/*  
+
 #upload
