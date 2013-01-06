@@ -12,105 +12,121 @@ public class CommandUser
 {
 	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		sender.sendChatToPlayer("TEST!!!!");
+		sender.sendChatToPlayer("TEST! User parsing");
 
-		if (args.length == 0)
+		if (args.length == 0) // display syntax & possible options for this level
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
+			//OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
+			return;
 		}
+		
 		EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
 		if (player == null)
 		{
 			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			return;
 		}
-		if (args.length == 1) // display user-specific settings
+		if (args.length == 1) // display user-specific settings & there values for this player
 		{
-
+			
+			return;
 		}
 		else if (args[1].equalsIgnoreCase("supers")) // super perms management
 		{
 			if (args.length == 2) // display user super perms
 			{
-
+				return;
 			}
 			else if (args.length >= 3) // changing super perms
 			{
+				if (args.length == 4) // zone is set
+				{
+
+				}
+				
 				if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("allow")) // allowing super
 																							// perm
 				{
-
+					
+					return;
 				}
 				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove")) // remove super
 																									// perm settings
 				{
-
+					
+					return;
 				}
 				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny")) // deny super perm
 				{
-
+					
+					return;
 				}
-				if (args.length == 4) // zone portion
+				else if (args[2].equalsIgnoreCase("get"))
 				{
-
+					//Get current state.
+					return;
 				}
-			}
-			else
-			// improper amount of arguments
-			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
+				
 			}
 		}
 		else if (args[1].equalsIgnoreCase("group")) // group management
 		{
+			if (args.length == 5) // zone is set
+			{
+
+			}
+			
 			if (args[2].equalsIgnoreCase("add")) // add player to group
 			{
 
+				return;
 			}
 			else if (args[2].equalsIgnoreCase("remove")) // remove player from
 															// group
 			{
 
+				return;
 			}
 			else if (args[2].equalsIgnoreCase("set")) // set player's group
 			{
 
-			}
-			if (args.length == 5) // zone portion
-			{
-
+				return;
 			}
 		}
 		else if (args.length >= 3) // player management
 		{
+			if (args.length == 4) // zone is set
+			{
+
+			}
+			
 			if (args[1].equalsIgnoreCase("prefix") || args[1].equalsIgnoreCase("suffix")) // prefix/suffix
 																							// changes
 			{
-
+				return;
 			}
 			else if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allowing player
 																							// perm
 			{
-
+				return;
 			}
 			else if (args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove")) // remove perm
 																								// settings
 			{
-
+				return;
 			}
 			else if (args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("deny")) // deny player perm
 			{
-
-			}
-			if (args.length == 4) // zone portion
-			{
-
+				return;
 			}
 		}
+		
+		OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
 	}
 
 	public static void processCommandConsole(ICommandSender sender, String[] args)
 	{
-
+		// Copy paste :p
 	}
 
 }

@@ -86,6 +86,14 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		{
 			CommandExport.processCommandPlayer(sender, newArgs);
 		}
+		else if (first.equalsIgnoreCase("group"))
+		{
+			CommandGroup.processCommandPlayer(sender, newArgs);
+		}
+		else if (first.equalsIgnoreCase("promote"))
+		{
+			CommandPromote.processCommandPlayer(sender, newArgs);
+		}
 	}
 
 	@Override
@@ -105,6 +113,14 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		else if (first.equalsIgnoreCase("export"))
 		{
 			CommandExport.processCommandConsole(sender, newArgs);
+		}
+		else if (first.equalsIgnoreCase("group"))
+		{
+			CommandGroup.processCommandConsole(sender, newArgs);
+		}
+		else if (first.equalsIgnoreCase("promote"))
+		{
+			CommandPromote.processCommandConsole(sender, newArgs);
 		}
 	}
 
