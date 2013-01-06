@@ -22,7 +22,7 @@ import com.ForgeEssentials.data.SQLiteDataDriver;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.MiskEventHandler;
+import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Version;
@@ -78,7 +78,7 @@ public class ForgeEssentials
 	public BannedItems bannedItems;
 	private ItemList itemList;
 
-	private MiskEventHandler miskEventHandler;
+	private MiscEventHandler miscEventHandler;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -117,7 +117,7 @@ public class ForgeEssentials
 		}
 
 		// setup modules AFTER data stuff...
-		miskEventHandler = new MiskEventHandler();
+		miscEventHandler = new MiscEventHandler();
 		bannedItems = new BannedItems();
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);

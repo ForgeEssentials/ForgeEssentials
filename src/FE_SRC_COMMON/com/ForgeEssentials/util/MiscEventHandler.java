@@ -10,17 +10,17 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 
-public class MiskEventHandler
+public class MiscEventHandler
 {
-	private static MiskEventHandler instance;
+	private static MiscEventHandler instance;
 	
-	public MiskEventHandler()
+	public MiscEventHandler()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 		instance = this;
 	}
 	
-	public static MiskEventHandler instance()
+	public static MiscEventHandler instance()
 	{
 		return instance;
 	}
