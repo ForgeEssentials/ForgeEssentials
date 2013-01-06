@@ -35,10 +35,16 @@ cd ..
 
 echo "injecting version into places"
 sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/mcmod.info
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/mcmodCLIENT.info
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/FEReadme.txt
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/mcmodCLIENT.info
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/FEReadme.txt
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/ForgeEssentials.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/client/ForgeEssentialsClient.java
+
 
 echo "Recompiling..."
 bash ./recompile.sh
@@ -64,27 +70,30 @@ rm ./mcmod.info
 
 echo "Copying in extra files"
 cp -rf ${WORKSPACE}/A1-zipStuff/mcmod.info .
+
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/com/ForgeEssentials/util/lang/* ./com/ForgeEssentials/util/lang/
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg .
 rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
 echo "Creating server packages"
-jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg
+jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/snooper/* ./com/ForgeEssentials/WorldBorder/* ./com/ForgeEssentials/playerLogger/* ./com/ForgeEssentials/api/snooper/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" ./com/ForgeEssentials/commands/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl/* 
 
 echo "Creating ServerComplete package"
+cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
 mkdir mods
 mkdir coremods
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./coremods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./mods/
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/*
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt
 
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-src-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/*  
+cp -rf ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt .
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-src-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/*  FEAPIReadme.txt
 
 #upload
