@@ -27,8 +27,8 @@ Make shure you follow all of these steps:
 	
 	2) Look at the Issue List on github, Link: https://github.com/ForgeEssentials/ForgeEssentialsMain/issues
 		=> If your problem is on github already:
-			a) Feel free to add your experiance to the existing issue.
-			b) Make shure to incude the link to Pastebin
+			a) Feel free to add your experience to the existing issue.
+			b) Make shure to include the link to Pastebin
 			c) Write a little explanation. Just "My server crashes!" is not a error report.
 			d) Feel free to join the IRC channel "#forgeessentials".		
 		=> If your problem is not yet on the github:
@@ -41,16 +41,16 @@ Make shure you follow all of these steps:
 		b) If your issue is mentioned, join the discussion.
 		c) Ask about your problem.
 		d) If told "Make an issue on github.". Go to step 4.
-		e) If someone seems intrested. Give them the link to pastebin.
-		f) If you get no responce. Ping (say the full name of) an OP (DO NOT PING LUACS)
-		g) If you still get no responce, Wait at least 5 minutes, while you are waiting, think about how to expain what errors.
-		h) Still no responce? Go to step 4.
+		e) If someone seems interested. Give them the link to pastebin.
+		f) If you get no response. Ping (say the full name of) an OP (DO NOT PING LUACS)
+		g) If you still get no response, Wait at least 5 minutes, while you are waiting, think about how to explain what errors.
+		h) Still no response? Go to step 4.
 	
 	4) Make a github issue
 		a) Make a clear title.
 		b) Make a clear explanation.
-		c) Make shure to inclue the link to pastbin.
+		c) Make shure to include the link to pastebin.
 		d) Submit the issue.
-		e) Wait for a responce. (You might want to enable email notifications.)
+		e) Wait for a response. (You might want to enable email notifications.)
 		f) Respond to questions asked.
 			- If you get asked for the configs, put them on github.
