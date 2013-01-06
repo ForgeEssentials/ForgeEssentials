@@ -152,7 +152,7 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_GROUP)
 					.append(" INNER JOIN ").append(TABLE_ZONE)
 					.append(" ON ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ZONE).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME)
-					.append(" WHERE ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append("=").append("'?'");
+					.append(" WHERE ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append("=").append("?");
 			statementGetGroupFromName = instance.db.prepareStatement(query.toString());
 
 			// statementGetGroupFromID
@@ -186,14 +186,14 @@ public class SqlHelper
 			// statementUpdateGroup
 			query = new StringBuilder("UPDATE ").append(TABLE_GROUP)
 					.append(" SET ")
-					.append(COLUMN_GROUP_NAME).append("=").append("'?', ")
-					.append(COLUMN_GROUP_PREFIX).append("=").append("'?', ")
-					.append(COLUMN_GROUP_SUFFIX).append("=").append("'?', ")
+					.append(COLUMN_GROUP_NAME).append("=").append("?, ")
+					.append(COLUMN_GROUP_PREFIX).append("=").append("?, ")
+					.append(COLUMN_GROUP_SUFFIX).append("=").append("?, ")
 					.append(COLUMN_GROUP_PARENT).append("=").append("?, ")
 					.append(COLUMN_GROUP_PRIORITY).append("=").append("?, ")
 					.append(COLUMN_GROUP_ZONE).append("=").append("?")
 					.append(" WHERE ")
-					.append(COLUMN_GROUP_NAME).append("=").append("'?'");
+					.append(COLUMN_GROUP_NAME).append("=").append("?");
 			statementUpdateGroup = db.prepareStatement(query.toString());
 
 			// statementGetPermission
@@ -201,7 +201,7 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_PERMISSION)
 					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
 					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
-					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("'?'")
+					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("?")
 					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
 			statementGetPermission = db.prepareStatement(query.toString());
 
@@ -219,7 +219,7 @@ public class SqlHelper
 					.append(COLUMN_PERMISSION_ALLOWED).append("=").append("?")
 					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
 					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
-					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("'?'")
+					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("?")
 					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
 			statementUpdatePermission = db.prepareStatement(query.toString());
 
@@ -236,13 +236,13 @@ public class SqlHelper
 			// statementGetLadderFromName
 			query = new StringBuilder("SELECT ").append(COLUMN_LADDER_NAME_LADDERID)
 					.append(" FROM ").append(TABLE_LADDER_NAME)
-					.append(" WHERE ").append(COLUMN_LADDER_NAME_NAME).append("=").append("'?'");
+					.append(" WHERE ").append(COLUMN_LADDER_NAME_NAME).append("=").append("?");
 			statementGetLadderIDFromName = db.prepareStatement(query.toString());
 
 			// statementGetLadderFromGroup
 			query = new StringBuilder("SELECT ").append(COLUMN_LADDER_LADDERID)
 					.append(" FROM ").append(TABLE_LADDER)
-					.append(" WHERE ").append(COLUMN_LADDER_GROUPID).append("=").append("'?'")
+					.append(" WHERE ").append(COLUMN_LADDER_GROUPID).append("=").append("?")
 					.append(" AND ").append(COLUMN_LADDER_ZONEID).append("=").append("?");
 			statementGetLadderIDFromGroup = db.prepareStatement(query.toString());
 
@@ -257,7 +257,7 @@ public class SqlHelper
 			query = new StringBuilder("SELECT ")
 					.append(COLUMN_ZONE_ZONEID)
 					.append(" FROM ").append(TABLE_ZONE)
-					.append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("'?'");
+					.append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("?");
 			statementGetZoneIDFromName = db.prepareStatement(query.toString());
 
 			// statementGetGroupFromID
@@ -271,7 +271,7 @@ public class SqlHelper
 			query = new StringBuilder("SELECT ")
 					.append(COLUMN_GROUP_GROUPID)
 					.append(" FROM ").append(TABLE_GROUP)
-					.append(" WHERE ").append(COLUMN_GROUP_NAME).append("=").append("'?'");
+					.append(" WHERE ").append(COLUMN_GROUP_NAME).append("=").append("?");
 			statementGetGroupIDFromName = db.prepareStatement(query.toString());
 
 			// statementGetPlayerFromID
@@ -285,7 +285,7 @@ public class SqlHelper
 			query = new StringBuilder("SELECT ")
 					.append(COLUMN_PLAYER_PLAYERID)
 					.append(" FROM ").append(TABLE_PLAYER)
-					.append(" WHERE ").append(COLUMN_PLAYER_USERNAME).append("=").append("'?'");
+					.append(" WHERE ").append(COLUMN_PLAYER_USERNAME).append("=").append("?");
 			statementGetPlayerIDFromName = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -295,19 +295,19 @@ public class SqlHelper
 			// statementPutZone
 			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE)
 					.append(" (").append(COLUMN_ZONE_NAME).append(") ")
-					.append(" VALUES ").append(" ('?') ");
+					.append(" VALUES ").append(" (?) ");
 			statementPutZone = db.prepareStatement(query.toString());
 
 			// statementPutPlayer
 			query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER)
 					.append(" (").append(COLUMN_PLAYER_USERNAME).append(") ")
-					.append(" VALUES ").append(" ('?') ");
+					.append(" VALUES ").append(" (?) ");
 			statementPutPlayer = db.prepareStatement(query.toString());
 
 			// statementPutLadder
 			query = new StringBuilder("INSERT INTO ").append(TABLE_LADDER_NAME)
 					.append(" (").append(COLUMN_LADDER_NAME_NAME).append(") ")
-					.append(" VALUES ").append(" ('?') ");
+					.append(" VALUES ").append(" (?) ");
 			statementPutLadder = db.prepareStatement(query.toString());
 
 			// statementPutGroup
@@ -319,7 +319,7 @@ public class SqlHelper
 					.append(COLUMN_GROUP_PARENT).append(", ")
 					.append(COLUMN_GROUP_PRIORITY).append(", ")
 					.append(COLUMN_GROUP_ZONE).append(") ")
-					.append(" VALUES ").append(" ('?', '?', '?', ?, ?, ?) ");
+					.append(" VALUES ").append(" (?, ?, ?, ?, ?, ?) ");
 			statementPutGroup = db.prepareStatement(query.toString());
 
 			// statementPutPermission
@@ -330,7 +330,7 @@ public class SqlHelper
 					.append(COLUMN_PERMISSION_ISGROUP).append(", ")
 					.append(COLUMN_PERMISSION_PERM).append(", ")
 					.append(COLUMN_PERMISSION_ZONEID).append(") ")
-					.append(" VALUES ").append(" (?, ?, ?, '?', ?) ");
+					.append(" VALUES ").append(" (?, ?, ?, ?, ?) ");
 			statementPutPermission = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -339,7 +339,7 @@ public class SqlHelper
 
 			// statementPutZone
 			query = new StringBuilder("DELETE FROM ").append(TABLE_ZONE)
-					.append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("'?'");
+					.append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("?");
 			statementDelZone = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -658,7 +658,7 @@ public class SqlHelper
 					.append(COLUMN_PERMISSION_PERM).append(", ")
 					.append(COLUMN_PERMISSION_ISGROUP).append(", ")
 					.append(COLUMN_PERMISSION_ZONEID).append(") ")
-					.append(" VALUES ").append(" ('?', '?', ?, 1, 0) ");
+					.append(" VALUES ").append(" (?, ?, ?, 1, 0) ");
 			PreparedStatement statement = db.prepareStatement(query.toString());
 			
 			// create groups...
