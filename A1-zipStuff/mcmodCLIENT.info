@@ -1,8 +1,8 @@
 [
 {
-  "modid": "ForgeEssentials",
-  "name": "Forge Essentials",
-  "description": "WorldEdit, Worldguard, Essentials, and Permissions all in one Forge mod",
+  "modid": "ForgeEssentialsClient",
+  "name": "Forge Essentials Client Addon",
+  "description": "The client addon for the popular ForgeEssentials server-side mod. This addon will provide some nice client-side perks such as Selection Highlighting and MUCH MORE!!!!",
   "version": "@VERSION@",
   "mcversion": "@MC@",
   "url": "https://github.com/ForgeEssentials/ForgeEssentialsMain",
@@ -13,7 +13,7 @@
 	"luacs1998",
 	"bspkrs",
 	"MysteriousAges",
-	"dries007"
+	"dries007",
 	"Malkierian"
   ],
   "credits": "Thanks to Route66Craft for hosting the Test Server, and all our Testers.",

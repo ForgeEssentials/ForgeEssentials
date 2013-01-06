@@ -36,6 +36,7 @@ cd ..
 echo "injecting version into places"
 sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/mcmod.info
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/mcmodCLIENT.info
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/ForgeEssentials.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/client/ForgeEssentialsClient.java
 
@@ -45,18 +46,30 @@ bash ./recompile.sh
 echo "Reobfuscating..."
 bash ./reobfuscate.sh
 
-echo "Copying in extra files"
+# create this ahead of time...
+mkdir ${WORKSPACE}/output
 cd reobf/minecraft
+
+echo "Copying in extra Client files"
 cp -rf ${WORKSPACE}/A1-zipStuff/* .
+rm ./com/ForgeEssentials/util/lang/dummyForGithub
+rm ./mcmod.info
+mv mcmodCLIENT.info mcmod.info
+
+echo "Creating Client package"
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-client-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/*
+rm -rf ./com/ForgeEssentials/client;
+rm ./mcmod.info
+# ^ get it out of the way...
+
+echo "Copying in extra files"
+cp -rf ${WORKSPACE}/A1-zipStuff/mcmod.info .
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/com/ForgeEssentials/util/lang/* ./com/ForgeEssentials/util/lang/
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg .
 rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
-echo "Creating distribution packages"
+echo "Creating server packages"
 mkdir ${WORKSPACE}/output
-# build and delete teh client stuff...
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-client-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/*
-rm -rf ./com/ForgeEssentials/client;
 jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg
 jar cvfm "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF *
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/commands/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/WorldControl/*
