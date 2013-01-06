@@ -36,5 +36,7 @@ public class CommandUndo extends WorldControlCommandBase
 		}
 
 		TickTaskHandler.addTask(new TickTaskSetBackup(player, back, false));
+		
+		player.sendChatToPlayer("Working on undo.");
 	}
 }

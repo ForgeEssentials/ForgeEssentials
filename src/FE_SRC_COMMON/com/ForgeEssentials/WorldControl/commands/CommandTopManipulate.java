@@ -84,6 +84,7 @@ public class CommandTopManipulate extends WorldControlCommandBase
 
 				TickTaskHandler.addTask(new TickTaskTopManipulator(player, back, effectPosition, radius, manipulateMode));
 			}
+			player.sendChatToPlayer("Working on " + name + ".");
 		}
 		else
 		{

@@ -82,6 +82,7 @@ public class CommandSet extends WorldControlCommandBase
 					return;
 				}
 			}
+			player.sendChatToPlayer("Working on set.");
 		}
 		else
 		{
