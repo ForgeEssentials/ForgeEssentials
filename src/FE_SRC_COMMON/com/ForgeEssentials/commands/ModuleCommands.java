@@ -166,6 +166,7 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandXP());
 		e.registerServerCommand(new CommandKill());
 		e.registerServerCommand(new CommandGive());
+		e.registerServerCommand(new CommandI());
 		e.registerServerCommand(new CommandClearInventory());
 		e.registerServerCommand(new CommandGameMode());
 	}

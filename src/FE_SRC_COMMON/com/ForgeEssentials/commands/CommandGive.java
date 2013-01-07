@@ -12,6 +12,7 @@ import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -25,12 +26,6 @@ public class CommandGive extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
-	{
-		return Arrays.asList(new String[] { "i", "item" });
-	}
-
-	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		int id = 1;
@@ -38,19 +33,27 @@ public class CommandGive extends ForgeEssentialsCommandBase
 		int dam = 0;
 		EntityPlayer receiver = sender;
 
+		if (args.length == 4)
+		{
+			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
+			id = idAndMeta[0];
+			try
+			{
+				dam = Integer.parseInt(args[3]);
+			}
+			catch(NumberFormatException e)
+			{
+				OutputHandler.chatError(sender, "Damage value is not a number: " + args[4]);
+			}
+		}
 		if (args.length == 3)
 		{
-			receiver = FunctionHelper.getPlayerFromUsername(args[2]);
+			amount = parseIntBounded(sender, args[2], 0, 64);
 		}
 
 		if (args.length > 1)
 		{
-			amount = parseIntBounded(sender, args[1], 0, 64);
-		}
-
-		if (args.length < 4)
-		{
-			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[0], false);
+			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
 			id = idAndMeta[0];
 			if (idAndMeta[1] == -1)
 			{
@@ -60,18 +63,28 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			{
 				dam = idAndMeta[1];
 			}
+			receiver = FunctionHelper.getPlayerFromUsername(args[0]);
 
 			ItemStack stack = new ItemStack(id, amount, dam);
 
 			try
 			{
-				sender.sendChatToPlayer("Giving you " + stack.toString());
+				String name = stack.getItem().getItemName();
+				if(stack.getItem().getItemName().contains("."))
+				{
+					name = stack.getItem().getItemName().substring(stack.getItem().getItemName().lastIndexOf(".") + 1);
+				}
+				sender.sendChatToPlayer("Giving you " + amount + " " + name);
 				receiver.inventory.addItemStackToInventory(stack);
 			}
 			catch (Exception e)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED + "The server couldn't find the block you where looking for.");
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + "The server couldn't find the block you were looking for.");
 			}
+		}
+		else
+		{
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
@@ -83,13 +96,22 @@ public class CommandGive extends ForgeEssentialsCommandBase
 		int dam = 0;
 		EntityPlayer receiver;
 
+		if (args.length == 4)
+		{
+			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
+			id = idAndMeta[0];
+			try
+			{
+				dam = Integer.parseInt(args[4]);
+			}
+			catch(NumberFormatException e)
+			{
+				sender.sendChatToPlayer("Damage value is not a number: " + args[4]);
+			}
+		}
 		if (args.length == 3)
 		{
-			receiver = FunctionHelper.getPlayerFromUsername(args[2]);
-
-			amount = parseIntBounded(sender, args[1], 0, 64);
-
-			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[0], false);
+			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
 			id = idAndMeta[0];
 			if (idAndMeta[1] == -1)
 			{
@@ -99,12 +121,23 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			{
 				dam = idAndMeta[1];
 			}
-
+		}
+		if (args.length > 1)
+		{
+			receiver = FunctionHelper.getPlayerFromUsername(args[0]);
+	
+			amount = parseIntBounded(sender, args[2], 0, 64);
+	
 			ItemStack stack = new ItemStack(id, amount, dam);
-
+	
 			try
 			{
-				sender.sendChatToPlayer("Giving you " + stack.toString());
+				String name = stack.getItem().getItemName();
+				if(stack.getItem().getItemName().contains("."))
+				{
+					name = stack.getItem().getItemName().substring(stack.getItem().getItemName().lastIndexOf(".") + 1);
+				}
+				sender.sendChatToPlayer("Giving you " + amount + " " + name);
 				receiver.inventory.addItemStackToInventory(stack);
 			}
 			catch (Exception e)
