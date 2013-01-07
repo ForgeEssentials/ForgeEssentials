@@ -1,9 +1,13 @@
 package com.ForgeEssentials.commands.util;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.commands.CommandAFK;
 import com.ForgeEssentials.core.PlayerInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -20,6 +24,14 @@ import cpw.mods.fml.common.TickType;
 public class TickHandlerCommands implements IScheduledTickHandler
 {
 	/*
+	 * For AFK system
+	 */
+	
+	public static List<AFKdata> afkList = new ArrayList<AFKdata>();
+	public static List<AFKdata> afkListToAdd = new ArrayList<AFKdata>();
+	public static List<AFKdata> afkListToRemove = new ArrayList<AFKdata>();
+	
+	/*
 	 * For kit command
 	 */
 	public static final String BYPASS_KIT_COOLDOWN = "ForgeEssentials.TickHandlerCommands.BypassKitCooldown";
@@ -31,6 +43,15 @@ public class TickHandlerCommands implements IScheduledTickHandler
 		{
 			PlayerInfo.getPlayerInfo((EntityPlayer) player).KitCooldownTick();
 		}
+		
+		afkList.addAll(afkListToAdd);
+		afkListToAdd.clear();
+		for(AFKdata data : afkList)
+		{
+			data.count();
+		}
+		afkList.removeAll(afkListToRemove);
+		afkListToRemove.clear();
 	}
 
 	@Override
@@ -48,7 +69,7 @@ public class TickHandlerCommands implements IScheduledTickHandler
 	@Override
 	public String getLabel()
 	{
-		return "TickHandlerCommands";
+		return "FE_TickHandlerCommands";
 	}
 
 	@Override

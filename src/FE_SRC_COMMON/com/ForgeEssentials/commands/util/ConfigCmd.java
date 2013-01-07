@@ -5,6 +5,7 @@ import java.io.File;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.commands.CommandAFK;
 import com.ForgeEssentials.commands.CommandEnderchest;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
@@ -43,6 +44,8 @@ public class ConfigCmd implements IModuleConfig
 				.getBoolean(true);
 		CommandVirtualchest.size = config.get("general", "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").getInt(6) * 9;
 		CommandVirtualchest.name = config.get("general", "VirtualChestName", "Vault 13", "Don't use special stuff....").value;
+		
+		CommandAFK.warmup = config.get("general", "AFKwarmup", 5, "Amount of seconds you need to stand still in order to activate invulnerability.").getInt();
 		config.save();
 	}
 
@@ -63,6 +66,8 @@ public class ConfigCmd implements IModuleConfig
 				+ CommandVirtualchest.useAlias;
 		config.get("general", "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").value = "" + CommandVirtualchest.size / 9;
 		config.get("general", "VirtualChestName", "Vault 13", "Don't use special stuff....").value = CommandVirtualchest.name;
+		
+		config.get("general", "AFKwarmup", 5, "Amount of seconds you need to stand still in order to activate invulnerability.").value = "" + CommandAFK.warmup;
 		config.save();
 	}
 
@@ -77,6 +82,7 @@ public class ConfigCmd implements IModuleConfig
 		CommandVirtualchest.useAlias = config.get("general", "useVirtualChestAlias", true).getBoolean(true);
 		CommandVirtualchest.size = config.get("general", "VirtualChestRows", 6).getInt(6) * 9;
 		CommandVirtualchest.name = config.get("general", "VirtualChestName", "Vault 13").value;
+		CommandAFK.warmup = config.get("general", "AFKwarmup", 5).getInt();
 	}
 
 	@Override
