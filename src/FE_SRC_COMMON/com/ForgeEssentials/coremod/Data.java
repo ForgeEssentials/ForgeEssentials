@@ -8,8 +8,8 @@ package com.ForgeEssentials.coremod;
 public class Data
 {
 
-	public static String[] libraries = { "mysql-connector-java-bin.jar", "sqlite-jdbc.jar" };
-	public static String[] checksums = { "3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15", "52314f3ac527c643444f529fe9ee00c25aa16d91" };
+	public static String[] libraries = { "mysql-connector-java-bin.jar", "sqlite-jdbc.jar", "h2-1.3.170.jar" };
+	public static String[] checksums = { "3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15", "52314f3ac527c643444f529fe9ee00c25aa16d91", "32f12e53b4dab80b721525c01d766b95d22129bb" };
 	protected static String[] transformers = { "com.ForgeEssentials.coremod.transformers.FEPermissionsTransformer",
 			"com.ForgeEssentials.coremod.transformers.FEAccessTransformer", "com.ForgeEssentials.coremod.transformers.FEeventAdder" };
 	protected static String[] downloaders = { "com.ForgeEssentials.coremod.libget.SQLDownloader", "com.ForgeEssentials.coremod.libget.WEDownloader" };
