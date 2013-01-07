@@ -13,9 +13,9 @@ A guide to getting your issues resolved by the FE dev team.
 
 If you don't follow this guide, YOU WILL BE IGNORED.
 
-Make shure you follow all of these steps:
+Make sure you follow all of these steps:
 
-	1) Make shure your ForgeEssentials is up to date, Link: http://www.minecraftforum.net/topic/1592223-
+	1) Make sure your ForgeEssentials is up to date, Link: http://files.minecraftforge.net/ForgeEssentials/
 		a) Every time you mention your issue, mention what version of FE you are using. If you use beta, TELL US!
 	
 	2) Make a debug log.
@@ -28,28 +28,23 @@ Make shure you follow all of these steps:
 	2) Look at the Issue List on github, Link: https://github.com/ForgeEssentials/ForgeEssentialsMain/issues
 		=> If your problem is on github already:
 			a) Feel free to add your experience to the existing issue.
-			b) Make shure to include the link to Pastebin
-			c) Write a little explanation. Just "My server crashes!" is not a error report.
-			d) Feel free to join the IRC channel "#forgeessentials".		
+			b) Make sure to include the link to Pastebin
+			c) Write a little explanation. Just "My server crashes!" is not a error report. And it doesn't help us to help you either.	
 		=> If your problem is not yet on the github:
 			a) Have you looked through all of the open issues?
 			- If not: Go to step 2.
 			- Otherwise: Got to step 3.
 			
-	3) Open an IRC client and join the "#forgeessentials" channel on Esper.net
-		a) Wait 30 sec.
-		b) If your issue is mentioned, join the discussion.
-		c) Ask about your problem.
-		d) If told "Make an issue on github.". Go to step 4.
-		e) If someone seems interested. Give them the link to pastebin.
-		f) If you get no response. Ping (say the full name of) an OP (DO NOT PING LUACS)
-		g) If you still get no response, Wait at least 5 minutes, while you are waiting, think about how to explain what errors.
-		h) Still no response? Go to step 4.
+	3) Open an IRC client and join the "#forgeessentials" channel on Esper.net. Webchat: http://webchat.esper.net/?nick=FEUser...&channels=forgeessentials&prompt=1
+		a) Ask about your problem.
+		b) If told to "Make an issue on github.". Go to step 4.
+		c) If someone seems interested, give them the link to your pastebin.
+		d) There is always an op around. Likely someone will take note of you within 15 minutes. Please do not ping (say the full nick) or PM ops, yuo will be ignored.
 	
 	4) Make a github issue
 		a) Make a clear title.
 		b) Make a clear explanation.
-		c) Make shure to include the link to pastebin.
+		c) Make sure to include the link to your pastebin.
 		d) Submit the issue.
 		e) Wait for a response. (You might want to enable email notifications.)
 		f) Respond to questions asked.

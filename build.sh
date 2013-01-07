@@ -77,9 +77,9 @@ rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
 echo "Creating server packages"
 jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg HowToGetFEsupport.txt
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/snooper/* ./com/ForgeEssentials/WorldBorder/* ./com/ForgeEssentials/playerLogger/* ./com/ForgeEssentials/api/snooper/* HowToGetFEsupport.txt
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" ./com/ForgeEssentials/commands/* HowToGetFEsupport.txt
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl/* HowToGetFEsupport.txt
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-modules-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* ./com/ForgeEssentials/economy/* ./com/ForgeEssentials/protection/* ./com/ForgeEssentials/snooper/* ./com/ForgeEssentials/WorldBorder/* ./com/ForgeEssentials/playerLogger/* ./com/ForgeEssentials/api/snooper/* 
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" ./com/ForgeEssentials/commands/*
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl/*
 
 echo "Creating ServerComplete package"
 cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
@@ -95,7 +95,6 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
 cp -rf ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt .
-cp -rf ${WORKSPACE}/A1-zipStuff/HowToGetFEsupport.txt .
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-src-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/*  FEAPIReadme.txt HowToGetFEsupport.txt
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API_src-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/*  FEAPIReadme.txt
 
 #upload
