@@ -585,7 +585,7 @@ public class SqlHelper
 					.append(COLUMN_GROUP_PRIORITY).append(", ")
 					.append(COLUMN_GROUP_ZONE).append(") ")
 					.append(" VALUES ").append(" (")
-					.append("0, ") // groupID
+					.append("-1, ") // groupID
 					.append("'").append(PermissionsAPI.DEFAULT.name).append("', ")
 					.append("0, 0)"); // priority, zone
 			db.createStatement().executeUpdate(query.toString());
@@ -639,7 +639,7 @@ public class SqlHelper
 			{
 				if (group.equals(RegGroup.ZONE))
 				{
-					groups.put(group, 1);
+					groups.put(group, -1);
 					continue;
 				}
 
@@ -1561,18 +1561,18 @@ public class SqlHelper
 	private static int getGroupIDFromGroupName(String group) throws SQLException
 	{
 		if (group.equals(PermissionsAPI.DEFAULT.name))
-			return 0;
+			return -1;
 		
 		instance.statementGetGroupIDFromName.setString(1, group);
 		ResultSet set = instance.statementGetGroupIDFromName.executeQuery();
 		instance.statementGetGroupIDFromName.clearParameters();
 
-		if (set.next())
+		if (!set.next())
 		{
-			return set.getInt(1);
-		}
-		else
 			return -5;
+		}
+
+		return set.getInt(1);
 	}
 
 	/**
