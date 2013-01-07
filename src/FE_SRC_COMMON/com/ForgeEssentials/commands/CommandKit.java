@@ -166,7 +166,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 
 	public void giveKit(EntityPlayer player, NBTTagCompound kit)
 	{
-		if (PlayerInfo.getPlayerInfo(player).kitCooldown.get(kit.getName()) != null)
+		if (PlayerInfo.getPlayerInfo(player).kitCooldown.containsKey(kit.getName()))
 		{
 			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c",
 					"" + PlayerInfo.getPlayerInfo(player).kitCooldown.get(kit.getName())));
@@ -189,7 +189,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 				stack.readFromNBT((NBTTagCompound) kit.getTagList("items").tagAt(i));
 				player.inventory.addItemStackToInventory(stack);
 			}
-
+			
 			/*
 			 * Armor
 			 */
