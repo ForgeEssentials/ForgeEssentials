@@ -34,7 +34,7 @@ public class CommandPing extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		sender.sendChatToPlayer("Pong! ng" + ((EntityPlayerMP) sender).ping + "ms.");
+		sender.sendChatToPlayer("Pong! " + ((EntityPlayerMP) sender).ping + "ms.");
 	}
 
 	@Override
