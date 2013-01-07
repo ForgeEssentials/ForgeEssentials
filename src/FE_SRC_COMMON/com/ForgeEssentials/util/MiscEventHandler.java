@@ -36,7 +36,6 @@ public class MiscEventHandler
 	{
 		if(MajoritySleep && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			e.entityPlayer.sendChatToPlayer("Sleep attempt: " + e.x + ", " + e.y + ", " + e.z);
 			int playersT = FMLCommonHandler.instance().getMinecraftServerInstance().getCurrentPlayerCount();
 			int playersS = 1;
 			for(Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
@@ -47,6 +46,7 @@ public class MiscEventHandler
 					playersS ++;
 				}
 			}
+			
 			float percent = (playersS * 100.0f) / playersT;
 			OutputHandler.debug("Players sleeping: " + percent + "%");
 			if(percent > 50)
