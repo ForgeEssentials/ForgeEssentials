@@ -59,7 +59,7 @@ public class ModulePermissions implements IFEModule
 
 		// setup SQL
 		sql = new SqlHelper(config);
-		sql.putRegistrationperms(permreg.registerred);
+		sql.putRegistrationperms(permreg.registered);
 
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
