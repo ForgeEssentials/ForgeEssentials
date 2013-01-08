@@ -22,7 +22,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
  * @author Dries007
  * 
  */
-public class CommandSeeInvenroty extends ForgeEssentialsCommandBase
+public class CommandSeeInventory extends ForgeEssentialsCommandBase
 {
 	@Override
 	public String getCommandName()
@@ -53,6 +53,7 @@ public class CommandSeeInvenroty extends ForgeEssentialsCommandBase
 		player.openContainer = new ContainerChest(player.inventory, chest);
 		player.openContainer.windowId = player.currentWindowId;
 		player.openContainer.addCraftingToCrafters(player);
+                //Is victim's inventory editable? Is it saved?
 	}
 
 	@Override
