@@ -110,6 +110,7 @@ public class SqlHelper
 	private final PreparedStatement	statementGetPermissionForward;							// target, isgroup, perm, zone >> allowed
 	private final PreparedStatement	statementPutPermission;									// $ , allowed, target, isgroup, perm, zone
 	private final PreparedStatement	statementUpdatePermission;								// $ allowed, target, isgroup, perm, zone
+	private final PreparedStatement statementDeletePermission;
 
 	// dump statements... replace ALL ids with names...
 	private final PreparedStatement	statementDumpGroups;
@@ -305,14 +306,24 @@ public class SqlHelper
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Delete Statements
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
+			
+			// statementDeletePermission
+			query = new StringBuilder("DELETE FROM ").append(TABLE_PERMISSION).append(" WHERE ")
+					.append(COLUMN_PERMISSION_TARGET).append("=").append("?").append(" AND ")
+					.append(COLUMN_PERMISSION_ISGROUP).append("=").append("?").append(" AND ")
+					.append(COLUMN_PERMISSION_PERM).append("=").append("?").append(" AND ")
+					.append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			statementDeletePermission = db.prepareStatement(query.toString());
 
 			// statementPutZone
-			query = new StringBuilder("DELETE FROM ").append(TABLE_ZONE).append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("?");
+			query = new StringBuilder("DELETE FROM ").append(TABLE_ZONE).append(" WHERE ")
+			.append(COLUMN_ZONE_NAME).append("=").append("?");
 			statementDelZone = db.prepareStatement(query.toString());
 			
 			// remove player from all groups in specified zone.  used in /p user <player> group set
-			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".")
-					.append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?").append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".")
+			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID)
+					.append("=").append("?").append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".")
 					.append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
 			statementRemovePlayerGroups = instance.db.prepareStatement(query.toString());
 			
@@ -1730,6 +1741,35 @@ public class SqlHelper
 			return "Player not removed from group.";
 		}
 		
+		return null;
+	}
+
+	public static String removePermission(String player, boolean isGroup,
+			String node, String zone)
+	{
+		try
+		{
+			int playerID = instance.getPlayerIDFromPlayerName(player);
+			int zoneID = instance.getZoneIDFromZoneName(zone);
+			
+			return removePermission(playerID, isGroup, node, zoneID);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return "Player group not set.";
+	}
+	
+	public static String removePermission(int playerID, boolean isGroup,
+			String node, int zoneID) throws SQLException
+	{
+		instance.statementDeletePermission.setInt(1, playerID);
+		instance.statementDeletePermission.setBoolean(2, isGroup);
+		instance.statementDeletePermission.setString(3, node);
+		instance.statementDeletePermission.setInt(4, zoneID);
+		instance.statementDeletePermission.executeUpdate();
+		instance.statementDeletePermission.clearParameters();
 		return null;
 	}
 }

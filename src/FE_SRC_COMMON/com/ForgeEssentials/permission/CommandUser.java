@@ -81,7 +81,7 @@ public class CommandUser
 		}
 		else if (args[1].equalsIgnoreCase("group")) // group management
 		{
-			String zoneName = ZoneManager.getWorldZone(sender.worldObj).getZoneID();
+			String zoneName = ZoneManager.GLOBAL.getZoneID();
 			if (args.length == 5) // zone is set
 			{
 				if(ZoneManager.getZone(args[4]) != null)
@@ -150,7 +150,7 @@ public class CommandUser
 		}
 		else if (args.length >= 3) // player management
 		{
-			String zoneName = ZoneManager.getWorldZone(sender.worldObj).getZoneID();
+			String zoneName = ZoneManager.GLOBAL.getZoneID();
 			if (args.length == 4) // zone is set
 			{
 				if(ZoneManager.getZone(args[3]) != null)
@@ -187,33 +187,33 @@ public class CommandUser
 				}
 				else
 				{
-					OutputHandler.chatConfirmation(sender, "Player perm successfully updated!");
+					OutputHandler.chatConfirmation(sender, "Player perm successfully allowed!");
 				}
 				return;
 			}
 			else if (args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove")) // remove perm settings
 			{
-				String result = PermissionsAPI.setPlayerPermission(player.getCommandSenderName(), args[2], true, zoneName);
+				String result = PermissionsAPI.removePlayerPermission(player.getCommandSenderName(), args[2], zoneName);
 				if(result != null)
 				{
 					OutputHandler.chatError(sender, result);
 				}
 				else
 				{
-					OutputHandler.chatConfirmation(sender, "Player perm successfully updated!");
+					OutputHandler.chatConfirmation(sender, "Player perm successfully removed!");
 				}
 				return;
 			}
 			else if (args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("deny")) // deny player perm
 			{
-				String result = PermissionsAPI.setPlayerPermission(player.getCommandSenderName(), args[2], true, zoneName);
+				String result = PermissionsAPI.setPlayerPermission(player.getCommandSenderName(), args[2], false, zoneName);
 				if(result != null)
 				{
 					OutputHandler.chatError(sender, result);
 				}
 				else
 				{
-					OutputHandler.chatConfirmation(sender, "Player perm successfully updated!");
+					OutputHandler.chatConfirmation(sender, "Player perm successfully denied!");
 				}
 				return;
 			}

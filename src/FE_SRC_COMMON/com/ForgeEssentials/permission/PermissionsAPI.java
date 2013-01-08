@@ -250,4 +250,9 @@ public class PermissionsAPI
 	{
 		return SqlHelper.removePlayerGroup(group, player, zone);
 	}
+
+	public static String removePlayerPermission(String player, String node, String zone)
+	{
+		return SqlHelper.removePermission(player, false, node, zone);
+	}
 }
