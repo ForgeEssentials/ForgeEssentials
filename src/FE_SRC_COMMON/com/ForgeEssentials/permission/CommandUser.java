@@ -4,6 +4,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -149,28 +150,71 @@ public class CommandUser
 		}
 		else if (args.length >= 3) // player management
 		{
+			String zoneName = ZoneManager.getWorldZone(sender.worldObj).getZoneID();
 			if (args.length == 4) // zone is set
 			{
-
+				if(ZoneManager.getZone(args[3]) != null)
+				{
+					zoneName = args[3];
+				}
+				else
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					return;
+				}
 			}
 			
-			if (args[1].equalsIgnoreCase("prefix") || args[1].equalsIgnoreCase("suffix")) // prefix/suffix
+			if (args[1].equalsIgnoreCase("prefix")) // prefix
 																							// changes
 			{
+				PlayerInfo.getPlayerInfo(player.username).prefix = args[2];
+				OutputHandler.chatConfirmation(sender, player.username + "'s prefix is now " + args[2]);
 				return;
 			}
-			else if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allowing player
-																							// perm
+			else if (args[1].equalsIgnoreCase("suffix")) // suffix
+																							// changes
 			{
+				PlayerInfo.getPlayerInfo(player.username).suffix = args[2];
+				OutputHandler.chatConfirmation(sender, player.username + "'s suffix is now " + args[2]);
 				return;
 			}
-			else if (args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove")) // remove perm
-																								// settings
+			else if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allow player perm
 			{
+				String result = PermissionsAPI.setPlayerPermission(player.getCommandSenderName(), args[2], true, zoneName);
+				if(result != null)
+				{
+					OutputHandler.chatError(sender, result);
+				}
+				else
+				{
+					OutputHandler.chatConfirmation(sender, "Player perm successfully updated!");
+				}
+				return;
+			}
+			else if (args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove")) // remove perm settings
+			{
+				String result = PermissionsAPI.setPlayerPermission(player.getCommandSenderName(), args[2], true, zoneName);
+				if(result != null)
+				{
+					OutputHandler.chatError(sender, result);
+				}
+				else
+				{
+					OutputHandler.chatConfirmation(sender, "Player perm successfully updated!");
+				}
 				return;
 			}
 			else if (args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("deny")) // deny player perm
 			{
+				String result = PermissionsAPI.setPlayerPermission(player.getCommandSenderName(), args[2], true, zoneName);
+				if(result != null)
+				{
+					OutputHandler.chatError(sender, result);
+				}
+				else
+				{
+					OutputHandler.chatConfirmation(sender, "Player perm successfully updated!");
+				}
 				return;
 			}
 		}
