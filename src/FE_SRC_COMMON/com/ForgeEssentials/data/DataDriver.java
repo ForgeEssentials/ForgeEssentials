@@ -50,15 +50,17 @@ public abstract class DataDriver
 
 		// Each element of the field array represents an object, stored as an
 		// array of fields.
+		Object tmp;
 		if (objectData != null && objectData.length > 0)
 		{
 			for (TaggedClass tag : objectData)
 			{
-				list.add(loadObject(type, tag.uniqueKey));
+				tmp = DataStorageManager.taggerList.get(type).createFromFields(tag);
+				list.add(tmp);
 			}
 		}
 
-		return list.toArray(new Object[] {});
+		return list.toArray(new Object[list.size()]);
 	}
 
 	public boolean deleteObject(Class type, Object loadingKey)

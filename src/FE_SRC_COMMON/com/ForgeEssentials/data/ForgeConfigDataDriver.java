@@ -58,7 +58,7 @@ public class ForgeConfigDataDriver extends DataDriver
 
 	private File getFilePath(Class type, Object uniqueKey)
 	{
-		return new File(getTypePath(type), uniqueKey.toString() + ".cfg");
+		return new File(getTypePath(type).getPath() + "/" + uniqueKey.toString() + ".cfg");
 	}
 
 	@Override
@@ -90,6 +90,7 @@ public class ForgeConfigDataDriver extends DataDriver
 	protected TaggedClass loadData(Class type, Object uniqueKey)
 	{
 		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
+		cfg.load();
 		TypeTagger tag = DataStorageManager.getTaggerForType(type);
 
 		TaggedClass data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), tag);
@@ -201,7 +202,11 @@ public class ForgeConfigDataDriver extends DataDriver
 		{
 			return cfg.get(category, field.name, new int[] {}).getIntList();
 		}
-		else if (field.type.equals(float.class) || field.type.equals(Double.class))
+		else if (field.type.equals(float.class))
+		{
+			return (float) cfg.get(category, field.name, 0d).getDouble(0);
+		}
+		else if (field.type.equals(double.class))
 		{
 			return cfg.get(category, field.name, 0d).getDouble(0);
 		}

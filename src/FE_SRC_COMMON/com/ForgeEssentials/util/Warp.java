@@ -34,10 +34,8 @@ public class Warp
 	}
 
 	@Reconstructor
-	private void reconstruct(TaggedClass tag)
+	private static Warp reconstruct(TaggedClass tag)
 	{
-		System.out.println("Called");
-		name = (String) tag.getFieldValue("name");
-		point = (WarpPoint) tag.getFieldValue("point");
+		return new Warp((String) tag.getFieldValue("name"), (WarpPoint) tag.getFieldValue("point"));
 	}
 }

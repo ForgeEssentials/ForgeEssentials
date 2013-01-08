@@ -52,10 +52,4 @@ public class WarpPoint extends WorldPoint
 		return new WarpPoint(dim, x, y, z, pitch, yaw);
 	}
 
-	@UniqueLoadingKey()
-	private String getLoadingField()
-	{
-		return "warppoint_" + dim + "_" + x + "_" + y + "_" + z + "_" + pitch + "_" + yaw;
-	}
-
 }
