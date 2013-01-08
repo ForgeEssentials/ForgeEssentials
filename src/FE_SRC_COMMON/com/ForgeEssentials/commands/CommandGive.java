@@ -142,7 +142,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			}
 			catch (Exception e)
 			{
-				sender.sendChatToPlayer("The server couldn't find the block you where looking for.");
+				sender.sendChatToPlayer("The server couldn't find the block you were looking for.");
 			}
 		}
 		else
