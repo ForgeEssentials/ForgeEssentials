@@ -1,13 +1,13 @@
-package com.ForgeEssentials.commands.vanilla;
+package com.ForgeEssentials.permission.mcoverride;
 
-import net.minecraft.command.CommandServerSaveOff;
+import net.minecraft.command.CommandServerWhitelist;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
-public class CommandSaveOff extends CommandServerSaveOff
+public class CommandWhitelist extends CommandServerWhitelist
 {
 
 	@Override

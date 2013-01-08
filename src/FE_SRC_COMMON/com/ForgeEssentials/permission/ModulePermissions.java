@@ -10,6 +10,7 @@ import com.ForgeEssentials.core.IFEModule;
 import com.ForgeEssentials.core.IModuleConfig;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.DataStorageManager;
+import com.ForgeEssentials.permission.mcoverride.OverrideManager;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
@@ -79,6 +80,7 @@ public class ModulePermissions implements IFEModule
 
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
+		OverrideManager.regOverrides(e);
 	}
 
 	@Override

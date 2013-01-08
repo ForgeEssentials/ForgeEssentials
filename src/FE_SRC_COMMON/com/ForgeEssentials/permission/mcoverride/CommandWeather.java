@@ -1,4 +1,4 @@
-package com.ForgeEssentials.commands.vanilla;
+package com.ForgeEssentials.permission.mcoverride;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
-public class CommandDebug extends net.minecraft.command.CommandDebug
+public class CommandWeather extends net.minecraft.command.CommandWeather
 {
 
 	@Override

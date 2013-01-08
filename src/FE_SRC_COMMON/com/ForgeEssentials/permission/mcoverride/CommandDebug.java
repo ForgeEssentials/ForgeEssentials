@@ -1,14 +1,14 @@
-package com.ForgeEssentials.commands.vanilla;
+package com.ForgeEssentials.permission.mcoverride;
 
-import net.minecraft.command.CommandServerBan;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
-public class CommandBan extends CommandServerBan
+public class CommandDebug extends net.minecraft.command.CommandDebug
 {
+
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{

@@ -1,4 +1,4 @@
-package com.ForgeEssentials.commands.vanilla;
+package com.ForgeEssentials.permission.mcoverride;
 
 import net.minecraft.command.CommandServerBanlist;
 import net.minecraft.command.ICommandSender;
