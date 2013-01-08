@@ -235,4 +235,19 @@ public class PermissionsAPI
 	{
 		return SqlHelper.getGroupForName(name);
 	}
+	
+	public static String setPlayerGroup(String group, String player, String zone)
+	{
+		return SqlHelper.setPlayerGroup(group, player, zone);
+	}
+
+	public static String addPlayerGroup(String group, String player, String zone)
+	{
+		return SqlHelper.addPlayerGroup(group, player, zone);
+	}
+
+	public static String removePlayerGroup(String group, String player, String zone)
+	{
+		return SqlHelper.removePlayerGroup(group, player, zone);
+	}
 }

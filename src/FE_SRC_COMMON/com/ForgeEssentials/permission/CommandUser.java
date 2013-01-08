@@ -80,25 +80,70 @@ public class CommandUser
 		}
 		else if (args[1].equalsIgnoreCase("group")) // group management
 		{
+			String zoneName = ZoneManager.getWorldZone(sender.worldObj).getZoneID();
 			if (args.length == 5) // zone is set
 			{
-				
+				if(ZoneManager.getZone(args[4]) != null)
+				{
+					zoneName = args[4];
+				}
+				else
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					return;
+				}
 			}
 			
 			if (args[2].equalsIgnoreCase("add")) // add player to group
 			{
-				
+				if(args.length > 3)
+				{
+					String result = PermissionsAPI.addPlayerGroup(args[3], player.getCommandSenderName(), zoneName);
+					if(result != null)
+					{
+						OutputHandler.chatError(sender, result);
+					}
+					else
+					{
+						OutputHandler.chatConfirmation(sender, "Player " + player.getCommandSenderName() + " successfully added to group " + args[3]);
+					}
+				}
+				else
+				{
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+				}
 				return;
 			}
-			else if (args[2].equalsIgnoreCase("remove")) // remove player from
-															// group
+			else if (args[2].equalsIgnoreCase("remove")) // remove player from group
 			{
-				
+				if(args.length > 3)
+				{
+					String result = PermissionsAPI.removePlayerGroup(args[3], player.getCommandSenderName(), zoneName);
+					if(result != null)
+					{
+						OutputHandler.chatError(sender, result);
+					}
+					else
+					{
+						OutputHandler.chatConfirmation(sender, "Player " + player.getCommandSenderName() + " successfully removed from group " + args[3]);
+					}
+				}
 				return;
 			}
 			else if (args[2].equalsIgnoreCase("set")) // set player's group
 			{
-				
+				if(args.length > 3)
+				{
+					String result = PermissionsAPI.setPlayerGroup(args[3], player.getCommandSenderName(), zoneName);
+					if(result != null)
+					{
+						OutputHandler.chatError(sender, result);
+					}
+					else
+					{
+						OutputHandler.chatConfirmation(sender, "Player " + player.getCommandSenderName() + "'s group successfully set to " + args[3]);
+					}
+				}
 				return;
 			}
 		}

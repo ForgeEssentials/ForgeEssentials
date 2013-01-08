@@ -77,8 +77,8 @@ public class SqlHelper
 	private static final String		COLUMN_PERMISSION_ZONEID		= "zoneID";
 
 	// zones
-	private final PreparedStatement	statementGetZoneIDFromName;							// zoneName >> zoneID
-	private final PreparedStatement	statementGetZoneNameFromID;							// zoneID >> zoneName
+	private final PreparedStatement	statementGetZoneIDFromName;								// zoneName >> zoneID
+	private final PreparedStatement	statementGetZoneNameFromID;								// zoneID >> zoneName
 	private final PreparedStatement	statementPutZone;										// $ ZoneName
 	private final PreparedStatement	statementDelZone;										// X ZoneName
 
@@ -86,7 +86,10 @@ public class SqlHelper
 	private final PreparedStatement	statementGetPlayerIDFromName;							// playerName >> playerID
 	private final PreparedStatement	statementGetPlayerNameFromID;							// playerID >>
 																							// playerName
-	private final PreparedStatement	statementPutPlayer;									// $ usernName
+	private final PreparedStatement	statementPutPlayer;										// $ usernName
+	private final PreparedStatement statementRemovePlayerGroups;
+	private final PreparedStatement statementPutPlayerInGroup;
+	private final PreparedStatement statementRemovePlayerGroup;
 
 	// groups
 	private final PreparedStatement	statementGetGroupIDFromName;							// groupName >> groupID
@@ -100,12 +103,12 @@ public class SqlHelper
 	private final PreparedStatement	statementGetLadderIDFromName;							// ladderName >> ladderID
 	private final PreparedStatement	statementGetLadderNameFromID;							// LadderID >> ladderName
 	private final PreparedStatement	statementGetLadderIDFromGroup;							// groupID, zoneID >> ladderID
-	private final PreparedStatement	statementGetLadderList;								// LadderID, ZoneID >> groupName, rank
-	private final PreparedStatement	statementPutLadder;									// $ LadderName
+	private final PreparedStatement	statementGetLadderList;									// LadderID, ZoneID >> groupName, rank
+	private final PreparedStatement	statementPutLadder;										// $ LadderName
 	// permissions
-	private final PreparedStatement	statementGetPermission;								// target, isgroup, perm, zone >> allowed
+	private final PreparedStatement	statementGetPermission;									// target, isgroup, perm, zone >> allowed
 	private final PreparedStatement	statementGetPermissionForward;							// target, isgroup, perm, zone >> allowed
-	private final PreparedStatement	statementPutPermission;								// $ , allowed, target, isgroup, perm, zone
+	private final PreparedStatement	statementPutPermission;									// $ , allowed, target, isgroup, perm, zone
 	private final PreparedStatement	statementUpdatePermission;								// $ allowed, target, isgroup, perm, zone
 
 	// dump statements... replace ALL ids with names...
@@ -290,6 +293,14 @@ public class SqlHelper
 					.append(COLUMN_PERMISSION_TARGET).append(", ").append(COLUMN_PERMISSION_ISGROUP).append(", ").append(COLUMN_PERMISSION_PERM).append(", ")
 					.append(COLUMN_PERMISSION_ZONEID).append(") ").append(" VALUES ").append(" (?, ?, ?, ?, ?) ");
 			statementPutPermission = db.prepareStatement(query.toString());
+			
+			// statementPutPlayerInGroup
+			query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP_CONNECTOR).append(" (")
+					.append(COLUMN_GROUP_CONNECTOR_GROUPID).append(", ")
+					.append(COLUMN_GROUP_CONNECTOR_PLAYERID).append(", ")
+					.append(COLUMN_GROUP_CONNECTOR_ZONEID).append(") ")
+					.append(" VALUES ").append(" (?, ?, ?)");
+			statementPutPlayerInGroup = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Delete Statements
@@ -298,6 +309,19 @@ public class SqlHelper
 			// statementPutZone
 			query = new StringBuilder("DELETE FROM ").append(TABLE_ZONE).append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("?");
 			statementDelZone = db.prepareStatement(query.toString());
+			
+			// remove player from all groups in specified zone.  used in /p user <player> group set
+			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".")
+					.append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?").append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".")
+					.append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
+			statementRemovePlayerGroups = instance.db.prepareStatement(query.toString());
+			
+			// remove player from specified group in specified zone.  used in /p user <player> group add
+			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR)
+					.append(" WHERE ").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?")
+					.append(" AND ").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?")
+					.append(" AND ").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append("?");
+			statementRemovePlayerGroup = instance.db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Dump Statements
@@ -348,6 +372,9 @@ public class SqlHelper
 					.append(COLUMN_LADDER_NAME_LADDERID).append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_LADDER).append(".")
 					.append(COLUMN_LADDER_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID);
 			statementDumpLadders = instance.db.prepareStatement(query.toString());
+			
+			// remove specified group
+			query = new StringBuilder("");
 		}
 		catch (Exception e)
 		{
@@ -482,10 +509,6 @@ public class SqlHelper
 			OutputHandler.SOP("Could not load the Database Driver! Does it exist in the lib directory?");
 			throw new RuntimeException(e.getMessage());
 		}
-		// catch (IOException e)
-		// {
-		// throw new RuntimeException(e.getMessage());
-		// }
 	}
 
 	// create tables.
@@ -1618,5 +1641,95 @@ public class SqlHelper
 		}
 
 		return set.getString(1);
+	}
+	
+	private static void clearPlayerGroupsInZone(int playerID, int zoneID) throws SQLException
+	{
+		instance.statementRemovePlayerGroups.setInt(1, playerID);
+		instance.statementRemovePlayerGroups.setInt(2, zoneID);
+		instance.statementRemovePlayerGroups.executeUpdate();
+		instance.statementRemovePlayerGroups.clearParameters();
+	}
+
+	public static String setPlayerGroup(String group, String player, String zone)
+	{
+		try
+		{
+			int playerID = instance.getPlayerIDFromPlayerName(player);
+			int groupID = instance.getGroupIDFromGroupName(group);
+			int zoneID = instance.getZoneIDFromZoneName(zone);
+			
+			clearPlayerGroupsInZone(playerID, zoneID);
+			return addPlayerGroup(groupID, playerID, zoneID);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return "Player group not set.";
+	}
+	
+	public static String addPlayerGroup(String group, String player, String zone)
+	{
+		try
+		{
+			int playerID = getPlayerIDFromPlayerName(player);
+			int groupID = getGroupIDFromGroupName(group);
+			int zoneID = getZoneIDFromZoneName(zone);
+			return addPlayerGroup(groupID, playerID, zoneID);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return "Player not added to group";
+	}
+	
+	private static String addPlayerGroup(int groupID, int playerID, int zoneID) throws SQLException
+	{
+		instance.statementPutPlayerInGroup.setInt(1, groupID);
+		instance.statementPutPlayerInGroup.setInt(2, playerID);
+		instance.statementPutPlayerInGroup.setInt(3, zoneID);
+		int result = instance.statementPutPlayerInGroup.executeUpdate();
+		instance.statementPutPlayerInGroup.clearParameters();
+		
+		if(result == 0)
+		{
+			return "Row not inserted.";
+		}
+		
+		return null;
+	}
+	
+	public static String removePlayerGroup(String group, String player, String zone)
+	{
+		try
+		{
+			int playerID = getPlayerIDFromPlayerName(player);
+			int groupID = getGroupIDFromGroupName(group);
+			int zoneID = getZoneIDFromZoneName(zone);
+			return removePlayerGroup(groupID, playerID, zoneID);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return "Player not added to group";
+	}
+	
+	private static String removePlayerGroup(int groupID, int playerID, int zoneID) throws SQLException
+	{
+		instance.statementRemovePlayerGroup.setInt(1, playerID);
+		instance.statementRemovePlayerGroup.setInt(2, zoneID);
+		instance.statementRemovePlayerGroup.setInt(3, groupID);
+		int result = instance.statementRemovePlayerGroup.executeUpdate();
+		instance.statementRemovePlayerGroup.clearParameters();
+		
+		if(result == 0)
+		{
+			return "Player not removed from group.";
+		}
+		
+		return null;
 	}
 }
