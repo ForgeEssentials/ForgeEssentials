@@ -18,10 +18,10 @@ import com.ForgeEssentials.data.TaggedClass.SavedField;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.Pair;
 
-public class SQLiteDataDriver extends DataDriver
+public class H2DataDriver extends DataDriver
 {
 	private static String separationString = "__";
-	private String DriverClass = "org.sqlite.JDBC";
+	private String DriverClass = "org.h2.jdbc.JdbcConnection";
 	private Connection dbConnection;
 	private HashMap<Class, Boolean> classTableChecked = new HashMap<Class, Boolean>();
 
@@ -33,8 +33,8 @@ public class SQLiteDataDriver extends DataDriver
 		String type;
 
 		// Set up the SQLite connection.
-		Property prop = config.get("Data.SQLite", "dataFile", "ForgeEssentials/sqlite.db");
-		prop.comment = "Path to the SQLite database file (only use leading slashes for an absolute path)";
+		Property prop = config.get("Data.H2", "dataFile", "ForgeEssentials/H2-Data");
+		prop.comment = "Path to the H2 database file (only use leading slashes for an absolute path. File extension is automatically added)";
 		String path = prop.value;
 
 		// Save any additional categories we may have created.
@@ -44,7 +44,7 @@ public class SQLiteDataDriver extends DataDriver
 		{
 			Class driverClass = Class.forName(DriverClass);
 
-			dbConnection = DriverManager.getConnection("jdbc:sqlite:" + path);
+			dbConnection = DriverManager.getConnection("jdbc:h2:file:" + path);
 		}
 		catch (SQLException e)
 		{
@@ -53,7 +53,7 @@ public class SQLiteDataDriver extends DataDriver
 		}
 		catch (ClassNotFoundException e)
 		{
-			OutputHandler.SOP("Could not load the SQLite JDBC Driver! Does it exist in the lib directory?");
+			OutputHandler.SOP("Could not load the H2 JDBC Driver! Does it exist in the lib directory?");
 			throw e;
 		}
 	}
@@ -447,14 +447,17 @@ public class SQLiteDataDriver extends DataDriver
 		{
 			if (type.equals(int.class) || type.equals(Integer.class) || type.equals(boolean.class) || type.equals(Boolean.class))
 			{
-				fields.add(new Pair<String, String>(fieldName, "INTEGER"));
+				fields.add(new Pair<String, String>(fieldName, "INT"));
 			}
 			else if (type.equals(float.class) || type.equals(Float.class) || type.equals(double.class) || type.equals(Double.class))
 			{
-				fields.add(new Pair<String, String>(fieldName, "REAL"));
+				fields.add(new Pair<String, String>(fieldName, "DOUBLE"));
 			}
-			else if (type.equals(String.class) || type.equals(double[].class) || type.equals(int[].class) || type.equals(boolean[].class)
-					|| type.equals(String[].class))
+			else if (type.equals(String.class))
+			{
+				fields.add(new Pair<String, String>(fieldName, "VARCHAR(700)"));
+			}
+			else if (type.equals(double[].class) || type.equals(int[].class) || type.equals(boolean[].class) || type.equals(String[].class))
 			{
 				// We are going to roll arrays up into arbitrary long text
 				// fields.

@@ -18,7 +18,7 @@ import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.MySQLDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
-import com.ForgeEssentials.data.SQLiteDataDriver;
+import com.ForgeEssentials.data.H2DataDriver;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -107,7 +107,7 @@ public class ForgeEssentials
 			DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
 			DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
 			DataStorageManager.registerDriver("MySQL", MySQLDataDriver.class);
-			DataStorageManager.registerDriver("SQLite", SQLiteDataDriver.class);
+			DataStorageManager.registerDriver("H2", H2DataDriver.class);
 
 			// Register saveables..
 			DataStorageManager.registerSaveableClass(PlayerInfo.class);
