@@ -26,7 +26,7 @@ public class SqlHelper
 	private boolean					generate						= false;
 	private static SqlHelper		instance;
 	private Configuration			config;
-	private String dbType;
+	private String					dbType;
 
 	// tables
 	private static final String		TABLE_ZONE						= "zones";
@@ -130,21 +130,28 @@ public class SqlHelper
 		try
 		{
 			// statementGetLadderList
-			StringBuilder query = new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ").append(TABLE_LADDER)
-					.append(".").append(COLUMN_LADDER_RANK).append(" FROM ").append(TABLE_LADDER).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
-					.append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
-					.append(" WHERE ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=").append("?").append(" AND ")
-					.append(TABLE_LADDER).append(".").append(COLUMN_LADDER_ZONEID).append("=").append("?").append(" ORDER BY ").append(TABLE_LADDER)
-					.append(".").append(COLUMN_LADDER_RANK);
+			StringBuilder query = new StringBuilder("SELECT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_LADDER).append(".").append(COLUMN_LADDER_RANK)
+					.append(" FROM ").append(TABLE_LADDER)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
+					.append(" WHERE ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=").append("?")
+					.append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_ZONEID).append("=").append("?")
+					.append(" ORDER BY ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_RANK);
 			statementGetLadderList = instance.db.prepareStatement(query.toString());
 
 			// statementGetGroupFromName
-			query = new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ").append(TABLE_GROUP).append(".")
-					.append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_GROUP)
-					.append(".").append(COLUMN_GROUP_PARENT).append(", ").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(" FROM ")
-					.append(TABLE_GROUP).append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ZONE)
-					.append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID).append(" WHERE ").append(TABLE_GROUP).append(".")
-					.append(COLUMN_GROUP_NAME).append("=").append("?");
+			query = new StringBuilder("SELECT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PARENT).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME)
+					.append(" FROM ").append(TABLE_GROUP)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ZONE).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
+					.append(" WHERE ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append("=").append("?");
 			statementGetGroupFromName = instance.db.prepareStatement(query.toString());
 
 			// statementGetGroupFromID
@@ -424,7 +431,7 @@ public class SqlHelper
 				}
 				else
 				{
-					OutputHandler.SOP("SQL configuration is invalid.. defaulting to SqLite");
+					OutputHandler.SOP("SQL configuration is invalid.. defaulting to H2");
 				}
 			}
 			else if (!type.equalsIgnoreCase("h2"))
@@ -436,35 +443,25 @@ public class SqlHelper
 			// H2
 			// ------------------
 
-			String path = config.get("H2", "file", "permissions").value + ".h2.db";
+			String path = config.get("H2", "file", "permissions").value;
 			boolean absolute = config.get("H2", "absolutePath", false).getBoolean(false);
 			dbType = "h2";
 			File file;
 			if (absolute)
-			{
-				file = new File(path);
-			}
+				file = new File(path+".h2.db");
 			else
-			{
-				file = new File(ModulePermissions.permsFolder, path);
-			}
+				file = new File(ModulePermissions.permsFolder, path+".h2.db");
 
 			if (!file.exists())
 			{
-//				file.getParentFile().mkdirs();
-//				file.createNewFile();
 				OutputHandler.SOP("Permissions H2 db file not found, creating.");
 				generate = true;
 			}
-			path = config.get("H2", "file", "permissions").value;
+			
 			if (absolute)
-			{
 				file = new File(path);
-			}
 			else
-			{
 				file = new File(ModulePermissions.permsFolder, path);
-			}
 
 			if (db != null)
 			{
@@ -486,10 +483,10 @@ public class SqlHelper
 			OutputHandler.SOP("Could not load the Database Driver! Does it exist in the lib directory?");
 			throw new RuntimeException(e.getMessage());
 		}
-//		catch (IOException e)
-//		{
-//			throw new RuntimeException(e.getMessage());
-//		}
+		// catch (IOException e)
+		// {
+		// throw new RuntimeException(e.getMessage());
+		// }
 	}
 
 	// create tables.
@@ -498,114 +495,60 @@ public class SqlHelper
 		try
 		{
 			String zoneTable, groupTable, ladderTable, ladderNameTable, playerTable, groupConnectorTable, permissionTable;
-			
+
 			// ------------------
-			// SQLITE
+			// H2 & MYSQL
 			// ------------------
-			
-			// table creation statements.
+
 			zoneTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_ZONE).append("(")
-					.append(COLUMN_ZONE_ZONEID).append(" INT PRIMARY KEY AUTO_INCREMENT, ")
+					.append(COLUMN_ZONE_ZONEID).append(" INTEGER AUTO_INCREMENT, ")
 					.append(COLUMN_ZONE_NAME).append(" VARCHAR(40) NOT NULL UNIQUE")
+					.append("PRIMARY KEY (").append(COLUMN_ZONE_ZONEID).append(") ")
 					.append(")").toString();
 
 			groupTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP).append("(")
-					.append(COLUMN_GROUP_GROUPID).append(" INT PRIMARY KEY AUTO_INCREMENT, ")
+					.append(COLUMN_GROUP_GROUPID).append(" INTEGER AUTO_INCREMENT, ")
 					.append(COLUMN_GROUP_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
 					.append(COLUMN_GROUP_PARENT).append(" INTEGER, ")
 					.append(COLUMN_GROUP_PRIORITY).append(" SMALLINT NOT NULL, ")
 					.append(COLUMN_GROUP_ZONE).append(" INTEGER NOT NULL, ")
 					.append(COLUMN_GROUP_PREFIX).append(" VARCHAR(20) DEFAULT '', ")
-					.append(COLUMN_GROUP_SUFFIX).append(" VARCHAR(20) DEFAULT ''")
+					.append(COLUMN_GROUP_SUFFIX).append(" VARCHAR(20) DEFAULT '', ")
+					.append("PRIMARY KEY (").append(COLUMN_GROUP_GROUPID).append(") ")
 					.append(") ").toString();
 
 			ladderTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_LADDER).append("(")
-					.append(COLUMN_LADDER_LADDERID).append(" INT NOT NULL, ")
-					.append(COLUMN_LADDER_GROUPID).append(" INT NOT NULL, ")
-					.append(COLUMN_LADDER_ZONEID).append(" INT NOT NULL, ")
+					.append(COLUMN_LADDER_LADDERID).append(" INTEGER NOT NULL, ")
+					.append(COLUMN_LADDER_GROUPID).append(" INTEGER NOT NULL, ")
+					.append(COLUMN_LADDER_ZONEID).append(" INTEGER NOT NULL, ")
 					.append(COLUMN_LADDER_RANK).append(" SMALLINT NOT NULL")
 					.append(") ").toString();
 
 			ladderNameTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_LADDER_NAME).append("(")
-					.append(COLUMN_LADDER_NAME_LADDERID).append(" INT PRIMARY KEY AUTO_INCREMENT, ")
-					.append(COLUMN_LADDER_NAME_NAME).append(" VARCHAR(40) NOT NULL UNIQUE")
+					.append(COLUMN_LADDER_NAME_LADDERID).append(" INTEGER AUTO_INCREMENT, ")
+					.append(COLUMN_LADDER_NAME_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
+					.append("PRIMARY KEY (").append(COLUMN_LADDER_NAME_LADDERID).append(") ")
 					.append(")").toString();
 
 			playerTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_PLAYER).append("(")
-					.append(COLUMN_PLAYER_PLAYERID).append(" INT PRIMARY KEY AUTO_INCREMENT, ")
-					.append(COLUMN_PLAYER_USERNAME).append(" VARCHAR(20) NOT NULL UNIQUE")
+					.append(COLUMN_PLAYER_PLAYERID).append(" INTEGER AUTO_INCREMENT, ")
+					.append(COLUMN_PLAYER_USERNAME).append(" VARCHAR(20) NOT NULL UNIQUE, ")
+					.append("PRIMARY KEY (").append(COLUMN_PLAYER_PLAYERID).append(") ")
 					.append(")").toString();
 
 			groupConnectorTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP_CONNECTOR).append("(")
-					.append(COLUMN_GROUP_CONNECTOR_GROUPID).append(" INT NOT NULL, ")
-					.append(COLUMN_GROUP_CONNECTOR_PLAYERID).append(" INT NOT NULL, ")
-					.append(COLUMN_GROUP_CONNECTOR_ZONEID).append(" INT NOT NULL")
+					.append(COLUMN_GROUP_CONNECTOR_GROUPID).append(" INTEGER NOT NULL, ")
+					.append(COLUMN_GROUP_CONNECTOR_PLAYERID).append(" INTEGER NOT NULL, ")
+					.append(COLUMN_GROUP_CONNECTOR_ZONEID).append(" INTEGER NOT NULL")
 					.append(")").toString();
 
 			permissionTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_PERMISSION).append("(")
-					.append(COLUMN_PERMISSION_TARGET).append(" INT NOT NULL, ")
+					.append(COLUMN_PERMISSION_TARGET).append(" INTEGER NOT NULL, ")
 					.append(COLUMN_PERMISSION_ISGROUP).append(" TINYINT(1) NOT NULL, ")
 					.append(COLUMN_PERMISSION_PERM).append(" TEXT NOT NULL, ")
 					.append(COLUMN_PERMISSION_ALLOWED).append(" TINYINT(1) NOT NULL, ")
-					.append(COLUMN_PERMISSION_ZONEID).append(" INT NOT NULL")
+					.append(COLUMN_PERMISSION_ZONEID).append(" INTEGER NOT NULL")
 					.append(")").toString();
-			
-			// ------------------
-			// MYSQL
-			// ------------------
-			
-			if (dbType.equalsIgnoreCase("mysql"))
-			{
-				zoneTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_ZONE).append("(")
-						.append(COLUMN_ZONE_ZONEID).append(" INTEGER AUTO_INCREMENT, ")
-						.append(COLUMN_ZONE_NAME).append(" VARCHAR(40) NOT NULL UNIQUE")
-						.append("PRIMARY KEY (").append(COLUMN_ZONE_ZONEID).append(") ")
-						.append(")").toString();
-
-				groupTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP).append("(")
-						.append(COLUMN_GROUP_GROUPID).append(" INTEGER AUTO_INCREMENT, ")
-						.append(COLUMN_GROUP_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
-						.append(COLUMN_GROUP_PARENT).append(" INTEGER, ")
-						.append(COLUMN_GROUP_PRIORITY).append(" SMALLINT NOT NULL, ")
-						.append(COLUMN_GROUP_ZONE).append(" INTEGER NOT NULL, ")
-						.append(COLUMN_GROUP_PREFIX).append(" VARCHAR(20) DEFAULT '', ")
-						.append(COLUMN_GROUP_SUFFIX).append(" VARCHAR(20) DEFAULT '', ")
-						.append("PRIMARY KEY (").append(COLUMN_GROUP_GROUPID).append(") ")
-						.append(") ").toString();
-
-				ladderTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_LADDER).append("(")
-						.append(COLUMN_LADDER_LADDERID).append(" INTEGER NOT NULL, ")
-						.append(COLUMN_LADDER_GROUPID).append(" INTEGER NOT NULL, ")
-						.append(COLUMN_LADDER_ZONEID).append(" INTEGER NOT NULL, ")
-						.append(COLUMN_LADDER_RANK).append(" SMALLINT NOT NULL")
-						.append(") ").toString();
-
-				ladderNameTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_LADDER_NAME).append("(")
-						.append(COLUMN_LADDER_NAME_LADDERID).append(" INTEGER AUTO_INCREMENT, ")
-						.append(COLUMN_LADDER_NAME_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
-						.append("PRIMARY KEY (").append(COLUMN_LADDER_NAME_LADDERID).append(") ")
-						.append(")").toString();
-
-				playerTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_PLAYER).append("(")
-						.append(COLUMN_PLAYER_PLAYERID).append(" INTEGER AUTO_INCREMENT, ")
-						.append(COLUMN_PLAYER_USERNAME).append(" VARCHAR(20) NOT NULL UNIQUE, ")
-						.append("PRIMARY KEY (").append(COLUMN_PLAYER_PLAYERID).append(") ")
-						.append(")").toString();
-
-				groupConnectorTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP_CONNECTOR).append("(")
-						.append(COLUMN_GROUP_CONNECTOR_GROUPID).append(" INTEGER NOT NULL, ")
-						.append(COLUMN_GROUP_CONNECTOR_PLAYERID).append(" INTEGER NOT NULL, ")
-						.append(COLUMN_GROUP_CONNECTOR_ZONEID).append(" INTEGER NOT NULL")
-						.append(")").toString();
-
-				permissionTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_PERMISSION).append("(")
-						.append(COLUMN_PERMISSION_TARGET).append(" INTEGER NOT NULL, ")
-						.append(COLUMN_PERMISSION_ISGROUP).append(" TINYINT(1) NOT NULL, ")
-						.append(COLUMN_PERMISSION_PERM).append(" TEXT NOT NULL, ")
-						.append(COLUMN_PERMISSION_ALLOWED).append(" TINYINT(1) NOT NULL, ")
-						.append(COLUMN_PERMISSION_ZONEID).append(" INTEGER NOT NULL")
-						.append(")").toString();
-			}
 
 			// create the tables.
 			db.createStatement().executeUpdate(zoneTable);
