@@ -82,7 +82,7 @@ public class MySQLDataDriver extends DataDriver
 	}
 
 	@Override
-	public void onClassRegisterred(TypeTagger tagger)
+	public void onClassRegistered(TypeTagger tagger)
 	{
 		// If this is the first time registering a class that is NOT saved
 		// inline,

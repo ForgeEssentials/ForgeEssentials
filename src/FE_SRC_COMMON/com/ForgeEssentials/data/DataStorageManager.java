@@ -28,7 +28,7 @@ public class DataStorageManager
 	// just keeps an instance of the config for future use.
 	private Configuration config;
 
-	private ConcurrentHashMap<String, Class<? extends DataDriver>> classMap; // registerred
+	private ConcurrentHashMap<String, Class<? extends DataDriver>> classMap; // registered
 																				// ones...
 
 	private ConcurrentHashMap<String, DataDriver> instanceMap; // instantiated
@@ -80,7 +80,7 @@ public class DataStorageManager
 				// register tagged classes...
 				for (TypeTagger tag : taggerList.values())
 				{
-					driver.onClassRegisterred(tag);
+					driver.onClassRegistered(tag);
 				}
 
 				instanceMap.put(entry.getKey(), driver);
@@ -149,7 +149,7 @@ public class DataStorageManager
 			// register tagged classes...
 			for (TypeTagger tag : taggerList.values())
 			{
-				driver.onClassRegisterred(tag);
+				driver.onClassRegistered(tag);
 			}
 
 			return driver;
@@ -166,7 +166,7 @@ public class DataStorageManager
 	public static void registerSaveableClass(Class type)
 	{
 		assert type.isAnnotationPresent(SaveableObject.class) : new IllegalArgumentException(
-				"Only classes that have the @SaveableObject annotation may be registerred!");
+				"Only classes that have the @SaveableObject annotation may be registered!");
 		taggerList.put(type, new TypeTagger(type));
 	}
 

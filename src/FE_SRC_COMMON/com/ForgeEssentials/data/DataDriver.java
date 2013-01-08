@@ -11,7 +11,7 @@ public abstract class DataDriver
 	{
 	}
 
-	public void onClassRegisterred(TypeTagger tagger)
+	public void onClassRegistered(TypeTagger tagger)
 	{
 
 	}

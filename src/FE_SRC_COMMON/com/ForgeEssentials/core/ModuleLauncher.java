@@ -42,7 +42,7 @@ public class ModuleLauncher
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Discovering and loading modules...");
-		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/core.cfg.");
+		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
 
 		modules = new ArrayList<IFEModule>();
 		IFEModule instance;
@@ -56,7 +56,7 @@ public class ModuleLauncher
 		{
 			instance = new ModuleWorldControl();
 			modules.add(instance);
-			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+			OutputHandler.SOP("Discovered " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -67,7 +67,7 @@ public class ModuleLauncher
 		{
 			instance = new ModuleBackup();
 			modules.add(instance);
-			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+			OutputHandler.SOP("Discovered " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -78,7 +78,7 @@ public class ModuleLauncher
 		{
 			instance = new ModuleCommands();
 			modules.add(instance);
-			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+			OutputHandler.SOP("Discovered " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -89,7 +89,7 @@ public class ModuleLauncher
 		{
 			instance = new ModulePermissions();
 			modules.add(instance);
-			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+			OutputHandler.SOP("Discovered " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -100,7 +100,7 @@ public class ModuleLauncher
 		{
 			instance = new ModuleWorldBorder();
 			modules.add(instance);
-			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+			OutputHandler.SOP("Discovered " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -111,7 +111,7 @@ public class ModuleLauncher
 		{
 			instance = new ModulePlayerLogger();
 			modules.add(instance);
-			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+			OutputHandler.SOP("Discovered " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -122,7 +122,7 @@ public class ModuleLauncher
 		{
 			instance = new ModuleEconomy();
 			modules.add(instance);
-			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+			OutputHandler.SOP("Discovered " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -133,7 +133,7 @@ public class ModuleLauncher
 		{
 			instance = new ModuleChat();
 			modules.add(instance);
-			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+			OutputHandler.SOP("Discovered " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -144,7 +144,7 @@ public class ModuleLauncher
 		{
 			instance = new ModuleProtection();
 			modules.add(instance);
-			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+			OutputHandler.SOP("Discovered " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -155,7 +155,7 @@ public class ModuleLauncher
 		{
 			instance = new ModuleSnooper();
 			modules.add(instance);
-			OutputHandler.SOP("discoverred " + instance.getClass().toString());
+			OutputHandler.SOP("Discovered " + instance.getClass().toString());
 		}
 		catch (NoClassDefFoundError e1)
 		{
