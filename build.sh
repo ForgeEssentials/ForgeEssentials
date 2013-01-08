@@ -95,6 +95,6 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
 cp -rf ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt .
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API_src-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/*  FEAPIReadme.txt
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt
 
 #upload
