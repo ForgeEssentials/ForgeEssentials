@@ -16,6 +16,7 @@ import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
@@ -68,7 +69,7 @@ public class Chat implements IChatListener
 		{
 			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
 			{
-				message = event.message.replaceAll("&", FEChatFormatCodes.CODE.toString());
+				message = FunctionHelper.formatColors(event.message);
 			}
 		}
 
@@ -99,8 +100,8 @@ public class Chat implements IChatListener
 
 				for (Group group : groups)
 				{
-					prefix = group.prefix + prefix;
-					suffix = suffix + group.suffix;
+					prefix = FunctionHelper.formatColors(group.prefix + prefix);
+					suffix = FunctionHelper.formatColors(suffix + group.suffix);
 				}
 			}
 		}
