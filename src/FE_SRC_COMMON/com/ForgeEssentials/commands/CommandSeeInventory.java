@@ -22,7 +22,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
  * @author Dries007
  * 
  */
-public class CommandSeeInvenroty extends ForgeEssentialsCommandBase
+public class CommandSeeInventory extends ForgeEssentialsCommandBase
 {
 	@Override
 	public String getCommandName()

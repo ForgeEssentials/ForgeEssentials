@@ -78,6 +78,7 @@ public class ModulePermissions implements IFEModule
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
 		zManager.loadZones();
 
+		//init perms and vMC command overrides
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
 		OverrideManager.regOverrides(e);
