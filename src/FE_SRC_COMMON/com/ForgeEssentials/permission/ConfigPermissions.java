@@ -45,7 +45,7 @@ public class ConfigPermissions implements IModuleConfig
 				"if this is true, the mysql details from ForgeEssentials/main.cfg will be used. The database specified here wills till be used.");
 
 		config.addCustomCategoryComment("H2", "For everything H2 (flatfile DB)");
-		config.get("H2", "file", "permissions.db", "DO NOT put .db on the end of this file name!");
+		config.get("H2", "file", "permissions", "DO NOT put .db on the end of this file name!");
 		config.get("H2", "absolutePath", false, "if this is true, the below path will be parsed as an absolute path. otherwise it is relative to this dir.");
 
 		config.save();
