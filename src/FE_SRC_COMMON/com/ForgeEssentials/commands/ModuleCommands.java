@@ -106,7 +106,7 @@ public class ModuleCommands implements IFEModule
 				Set<String> commandNames = new HashSet<String>();
 				Set<String> toRemoveNames = new HashSet<String>();
 				
-				Set cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet");
+				Set cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet", "b");
 				
 				for (Object cmdObj : cmds)
 				{
@@ -142,7 +142,7 @@ public class ModuleCommands implements IFEModule
 					}
 				}
 				cmds.removeAll(toRemove);
-				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmds, "commandSet");
+				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmds, "commandSet", "b");
 			}
 			catch (Exception e)
 			{
