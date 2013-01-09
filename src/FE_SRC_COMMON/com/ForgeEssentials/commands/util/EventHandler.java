@@ -74,9 +74,14 @@ public class EventHandler
 				{
 					if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, "ForgeEssentials.BasicCommands.jump")))
 					{
-						MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, false);
-						((EntityPlayerMP) e.entityPlayer).playerNetServerHandler.setPlayerLocation(mo.blockX, mo.blockY, mo.blockZ,
+						try
+						{
+							MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, false);
+						
+							((EntityPlayerMP) e.entityPlayer).playerNetServerHandler.setPlayerLocation(mo.blockX, mo.blockY, mo.blockZ,
 								e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw);
+						}
+						catch(Exception ex) {}
 					}
 				}
 			}
