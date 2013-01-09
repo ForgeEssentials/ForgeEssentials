@@ -32,7 +32,7 @@ public class H2DataDriver extends DataDriver
 	{
 		String type;
 
-		// Set up the SQLite connection.
+		// Set up the H2 connection.
 		Property prop = config.get("Data.H2", "dataFile", "ForgeEssentials/H2-Data");
 		prop.comment = "Path to the H2 database file (only use leading slashes for an absolute path. File extension is automatically added)";
 		String path = prop.value;
@@ -85,7 +85,7 @@ public class H2DataDriver extends DataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("Couldn't save object of type " + type.getSimpleName() + " to SQLite DB. Server will continue running.");
+			OutputHandler.SOP("Couldn't save object of type " + type.getSimpleName() + " to H2 DB. Server will continue running.");
 			e.printStackTrace();
 		}
 
@@ -155,7 +155,7 @@ public class H2DataDriver extends DataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("Problem deleting data from SQLite DB (May not actually be a critical error):");
+			OutputHandler.SOP("Problem deleting data from H2 DB (May not actually be a critical error):");
 			e.printStackTrace();
 		}
 
@@ -430,14 +430,14 @@ public class H2DataDriver extends DataDriver
 	}
 
 	/**
-	 * Examines the provided type and produces an array of field => SQLite Type pairs, ideal for creating new tables with. Complex type fields are broken down
+	 * Examines the provided type and produces an array of field => H2 Type pairs, ideal for creating new tables with. Complex type fields are broken down
 	 * into constituent primitives in the form of: "parentField_childFieldName"
 	 * 
 	 * @param fieldName
 	 *            Name of saved field
 	 * @param type
 	 *            Type of saved field
-	 * @return Array of field => SQLite type names.
+	 * @return Array of field => H2 type names.
 	 */
 	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, Class type)
 	{
@@ -490,7 +490,7 @@ public class H2DataDriver extends DataDriver
 	 * Generates an array of fieldname => String(Value) pairs, useful for Inserts, Updates, or Deletes.
 	 * 
 	 * @param fieldName
-	 *            Name of the field in the SQLite DB
+	 *            Name of the field in the H2 DB
 	 * @param type
 	 *            Type of field (Java)
 	 * @param value

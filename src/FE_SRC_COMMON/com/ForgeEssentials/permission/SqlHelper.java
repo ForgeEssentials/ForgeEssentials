@@ -407,7 +407,7 @@ public class SqlHelper
 	{
 		try
 		{
-			// "org.sqlite.JDBC";
+			// "org.h2.JDBC";
 			// DriverClass = "com.mysql.jdbc.Driver";
 
 			String type = config.get("stuff", "databaseType", "H2").value;

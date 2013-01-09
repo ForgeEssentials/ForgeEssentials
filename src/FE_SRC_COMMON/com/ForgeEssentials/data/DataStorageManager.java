@@ -47,7 +47,7 @@ public class DataStorageManager
 
 		String temp = ForgeConfigDataDriver.class.getSimpleName();
 		Property prop = config.get("Data", "storageType", temp.substring(0, temp.indexOf("DataDriver")));
-		prop.comment = "Specifies the variety of data storage FE will use. Options: ForgeConfig, SQLite, NBT";
+		prop.comment = "Specifies the variety of data storage FE will use. Options: ForgeConfig, H2, NBT";
 	}
 
 	/**

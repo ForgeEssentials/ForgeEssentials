@@ -33,7 +33,7 @@ public class ConfigPermissions implements IModuleConfig
 
 		permDefault = config.get("stuff", "permissionDefault", false,
 				"if a permission is not set anywhere.. it will be return this. True = allow  False == deny").getBoolean(false);
-		config.get("stuff", "databaseType", "H2", " MySQL and SqLite are the only ones supported atm.");
+		config.get("stuff", "databaseType", "H2", " MySQL and H2 are the only ones supported atm.");
 
 		config.addCustomCategoryComment("MySQL", "For everything MySQL");
 		config.get("MySQL", "host", "server.example.com");
