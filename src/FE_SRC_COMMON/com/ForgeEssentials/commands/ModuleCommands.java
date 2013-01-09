@@ -106,9 +106,10 @@ public class ModuleCommands implements IFEModule
 				Set<String> commandNames = new HashSet<String>();
 				Set<String> toRemoveNames = new HashSet<String>();
 				
-				Set cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet", "b");
+				Set cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet", "b");
+				OutputHandler.debug("commandSet size: " + cmdList.size());
 				
-				for (Object cmdObj : cmds)
+				for (Object cmdObj : cmdList)
 				{
 					ICommand cmd = (ICommand) cmdObj;
 					if (!commandNames.add(cmd.getCommandName()))
@@ -118,7 +119,7 @@ public class ModuleCommands implements IFEModule
 					}
 				}
 				Set toRemove = new HashSet();
-				for (Object cmdObj : cmds)
+				for (Object cmdObj : cmdList)
 				{
 					ICommand cmd = (ICommand) cmdObj;
 					if (toRemoveNames.contains(cmd.getCommandName()))
@@ -130,7 +131,7 @@ public class ModuleCommands implements IFEModule
 							if (pkg == null || !pkg.getName().contains("ForgeEssentials"))
 							{
 								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
-								toRemove.add(cmd.getCommandName());
+								toRemove.add(cmd);
 							}
 						}
 						catch (Exception e)
@@ -141,8 +142,10 @@ public class ModuleCommands implements IFEModule
 						}
 					}
 				}
-				cmds.removeAll(toRemove);
-				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmds, "commandSet", "b");
+				cmdList.removeAll(toRemove);
+				OutputHandler.debug("commandSet size: " + cmdList.size());
+				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmdList, "commandSet", "b");
+				
 			}
 			catch (Exception e)
 			{
