@@ -40,7 +40,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	 */
 	public void processCommandBlock(TileEntityCommandBlock block, String[] args)
 	{
-		// do nothing.
+		processCommandConsole(block, args);
 	}
 
 	public abstract void processCommandConsole(ICommandSender sender, String[] args);
