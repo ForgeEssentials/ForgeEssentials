@@ -127,7 +127,7 @@ public class ModuleChat implements IFEModule
 		{
 			try
 			{
-				Set cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet", "field_71561_b");
+				Set cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet", "b");
 				
 				for (Object cmdObj : cmds)
 				{
@@ -151,7 +151,7 @@ public class ModuleChat implements IFEModule
 						}
 					}
 				}
-				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmds, "commandSet", "field_71561_b");
+				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmds, "commandSet", "b");
 			}
 			catch (Exception e)
 			{
