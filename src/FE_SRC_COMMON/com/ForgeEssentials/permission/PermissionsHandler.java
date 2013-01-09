@@ -36,13 +36,13 @@ public final class PermissionsHandler
 	public void checkPlayerSupers(PermQueryPlayer event)
 	{
 		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.SUPER, event.checkForward);
-		event.setResult(result);
+		if (!result.equals(PermResult.UNKNOWN))
+			event.setResult(result);
 	}
 
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayer event)
 	{
-
 		// ensures its a permPlayerQuery before checking...
 		if (event.getClass().getSimpleName().equals(PermQueryPlayer.class.getSimpleName()))
 		{
@@ -56,7 +56,7 @@ public final class PermissionsHandler
 	public void handleQuery(PermQueryPlayerZone event)
 	{
 		PermResult result = getResultFromZone(event.toCheck, event);
-		event.setResult(result);
+			event.setResult(result);
 	}
 
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })

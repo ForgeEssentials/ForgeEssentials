@@ -1251,7 +1251,7 @@ public class SqlHelper
 
 			while (set.next())
 			{
-				list.add(set.getInt(1));
+				list.add(set.getString(1));
 			}
 
 			map.put("players", list);
