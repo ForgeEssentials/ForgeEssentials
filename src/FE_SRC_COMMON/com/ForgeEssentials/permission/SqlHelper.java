@@ -1235,7 +1235,7 @@ public class SqlHelper
 	 * "groupConnectors" >> HashMap<String, HashMap<String, ArrayList<String>>> DONE
 	 * "ladders" >> arraylist<PromotionLadder> DONE
 	 */
-	protected static HashMap<String, Object> dump()
+	protected static synchronized HashMap<String, Object> dump()
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
