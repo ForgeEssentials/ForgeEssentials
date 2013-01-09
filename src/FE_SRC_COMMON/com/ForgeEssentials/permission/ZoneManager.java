@@ -38,6 +38,9 @@ public class ZoneManager
 		Zone temp;
 		for (Object obj : objs)
 		{
+			if (obj == null)
+				continue;
+			
 			temp = (Zone) obj;
 			zoneMap.put(temp.getZoneID(), temp);
 		}
