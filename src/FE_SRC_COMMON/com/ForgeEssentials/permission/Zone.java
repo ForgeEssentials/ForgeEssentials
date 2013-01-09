@@ -148,13 +148,12 @@ public class Zone extends WorldArea implements Comparable
 	private static Zone reconstruct(TaggedClass tag)
 	{
 		Selection sel = new Selection((Point) tag.getFieldValue("high"), (Point) tag.getFieldValue("low"));
-		int dim = (Integer) tag.getFieldValue("dimension");
+		int dim = (Integer) tag.getFieldValue("dim");
 
 		Zone zone = new Zone(sel, dim);
 
 		zone.zoneID = (String) tag.getFieldValue("name");
 		zone.parent = (String) tag.getFieldValue("parent");
-		zone.dim = (Integer) tag.getFieldValue("dimension");
 		zone.priority = (Integer) tag.getFieldValue("priority");
 
 		return zone;
