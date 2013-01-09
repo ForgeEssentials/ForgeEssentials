@@ -12,6 +12,7 @@ import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
@@ -120,6 +121,7 @@ public class ForgeEssentials
 		// setup modules AFTER data stuff...
 		miscEventHandler = new MiscEventHandler();
 		bannedItems = new BannedItems();
+		LoginMessage.loadFile();
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
 
