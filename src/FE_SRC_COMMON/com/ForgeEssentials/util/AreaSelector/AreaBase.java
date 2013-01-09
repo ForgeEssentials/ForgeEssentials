@@ -198,4 +198,10 @@ public abstract class AreaBase
 	{
 		return new Selection(low, high);
 	}
+	
+	@Override
+	public String toString()
+	{
+		return " {"+high.toString() + " , "+low.toString()+" }";
+	}
 }

@@ -3,6 +3,7 @@ package com.ForgeEssentials.util.AreaSelector;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 
 public class WorldArea extends AreaBase
 {
@@ -91,6 +92,18 @@ public class WorldArea extends AreaBase
 		{
 			return false;
 		}
+	}
+	
+	@UniqueLoadingKey()
+	private String getLoadingField()
+	{
+		return "WorldArea"+this;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return " { "+dim+" , "+this.getHighPoint().toString() + " , "+this.getLowPoint().toString()+" }";
 	}
 
 }

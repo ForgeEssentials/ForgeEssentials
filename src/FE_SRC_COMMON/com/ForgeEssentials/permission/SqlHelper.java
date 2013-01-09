@@ -1628,6 +1628,7 @@ public class SqlHelper
 			instance.statementPutPlayer.clearParameters();
 
 			set = instance.statementGetPlayerIDFromName.executeQuery();
+			set.next();
 		}
 
 		instance.statementGetPlayerIDFromName.clearParameters();

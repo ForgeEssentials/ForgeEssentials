@@ -79,7 +79,7 @@ public class WorldPoint extends Point
 	@UniqueLoadingKey()
 	private String getLoadingField()
 	{
-		return "worldpoint_" + dim + "_" + x + "_" + y + "_" + z;
+		return "WorldPoint"+this;
 	}
 
 	@Override

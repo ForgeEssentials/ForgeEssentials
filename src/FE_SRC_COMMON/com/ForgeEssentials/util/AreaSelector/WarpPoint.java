@@ -51,5 +51,17 @@ public class WarpPoint extends WorldPoint
 		float yaw = (Float) tag.getFieldValue("yaw");
 		return new WarpPoint(dim, x, y, z, pitch, yaw);
 	}
+	
+	@UniqueLoadingKey()
+	private String getLoadingField()
+	{
+		return "WarpPoint"+this;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "[" + dim + ";" + x + ";" + y + ";" + z + ";" + pitch + ";" + yaw + "]";
+	}
 
 }
