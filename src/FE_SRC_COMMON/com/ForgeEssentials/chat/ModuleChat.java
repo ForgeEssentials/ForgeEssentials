@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -20,6 +23,7 @@ import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -93,14 +97,12 @@ public class ModuleChat implements IFEModule
 	@Override
 	public void serverStarted(FMLServerStartedEvent e)
 	{
-		// TODO Auto-generated method stub
-
+		removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
 
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -116,5 +118,42 @@ public class ModuleChat implements IFEModule
 	{
 		return conf;
 	}
+	
+	private void removeTell(MinecraftServer server)
+	{
+		if (server.getCommandManager() instanceof CommandHandler)
+		{
+			try
+			{
+				CommandHandler cmdMng = (CommandHandler) server.getCommandManager();
 
+				for (Object cmdObj : cmdMng.commandSet)
+				{
+					ICommand cmd = (ICommand) cmdObj;
+					if (cmd.getCommandName().equalsIgnoreCase("tell"))
+					{
+						try
+						{
+							Class<?> cmdClass = cmd.getClass();
+							Package pkg = cmdClass.getPackage();
+							if (pkg == null || !pkg.getName().contains("ForgeEssentials"))
+							{
+								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
+								cmdMng.commandSet.remove(cmd.getCommandName());
+							}
+						}
+						catch (Exception e)
+						{
+							OutputHandler.debug("dafug? Got exception:" + e.getLocalizedMessage());
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 }
