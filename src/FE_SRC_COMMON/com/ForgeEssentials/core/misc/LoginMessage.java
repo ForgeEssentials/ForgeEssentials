@@ -68,7 +68,7 @@ public class LoginMessage
 				pw.println("# This file contains the message sent to the player on login.");
 				pw.println("# Lines starting with # are not read.");
 				pw.println("# There are several codes that can be used to format the text.");
-				pw.println("# If you want to use color, use this symbol § (ALT code 21) to indicate a color.");
+				pw.println("# If you want to use color, use this symbol & (ALT code 21) to indicate a color.");
 				pw.println("# Handy link: http://www.minecraftwiki.net/wiki/Formatting_codes");
 				pw.println("# Other codes:");
 				pw.println("# %players% => Amount of players online.");
@@ -107,7 +107,7 @@ public class LoginMessage
 	{
 		Date now = new Date();
 		return line
-				.replaceAll("§", FEChatFormatCodes.CODE.toString())
+				.replaceAll("&", FEChatFormatCodes.CODE.toString())
 				.replaceAll("%players%", online() + "")
 				.replaceAll("%uptime%", getUptime())
 				.replaceAll("%uniqueplayers%",  uniqueplayers())
