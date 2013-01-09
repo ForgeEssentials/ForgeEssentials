@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.commands.util.CommandRegistrar;
 import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
@@ -73,48 +74,9 @@ public class ModuleCommands implements IFEModule
 
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
 
-		// general
-		e.registerServerCommand(new CommandMotd());
-		e.registerServerCommand(new CommandRules());
-		e.registerServerCommand(new CommandModlist());
-		// utility
-		e.registerServerCommand(new CommandButcher());
-		e.registerServerCommand(new CommandRemove());
-		e.registerServerCommand(new CommandSpawnMob());
-		e.registerServerCommand(new CommandTPS());
-		e.registerServerCommand(new CommandAFK());
-		e.registerServerCommand(new CommandKit());
-		e.registerServerCommand(new CommandEnderchest());
-		e.registerServerCommand(new CommandVirtualchest());
-		e.registerServerCommand(new CommandCapabilities());
-		e.registerServerCommand(new CommandSetspawn());
-		e.registerServerCommand(new CommandJump());
-		e.registerServerCommand(new CommandCraft());
-		e.registerServerCommand(new CommandSeeInventory());
-		e.registerServerCommand(new CommandPing());
-		// op
-		e.registerServerCommand(new CommandServerDo());
-		// fun
-		e.registerServerCommand(new CommandSmite());
-		e.registerServerCommand(new CommandBurn());
-		e.registerServerCommand(new CommandPotion());
-		e.registerServerCommand(new CommandColorize());
-		// teleport
-		e.registerServerCommand(new CommandBack());
-		e.registerServerCommand(new CommandBed());
-		e.registerServerCommand(new CommandHome());
-		e.registerServerCommand(new CommandSpawn());
-		e.registerServerCommand(new CommandTp());
-		e.registerServerCommand(new CommandTphere());
-		e.registerServerCommand(new CommandTppos());
-		e.registerServerCommand(new CommandWarp());
-		// cheat
-		e.registerServerCommand(new CommandRepair());
-		e.registerServerCommand(new CommandHeal());
+		CommandRegistrar.load(e);
+		
 		// Vanilla Override
-		
-		// e.registerServerCommand(new CommandHelp());
-		
 		e.registerServerCommand(new CommandKill());
 		e.registerServerCommand(new CommandGive());
 		e.registerServerCommand(new CommandI());
@@ -170,7 +132,7 @@ public class ModuleCommands implements IFEModule
 						}
 						catch (Exception e)
 						{
-							OutputHandler.debug("dafug? Got exception:" + e.getLocalizedMessage());
+							OutputHandler.debug("Something broke: " + e.getLocalizedMessage());
 							e.printStackTrace();
 						}
 					}
