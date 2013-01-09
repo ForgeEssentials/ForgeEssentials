@@ -1467,7 +1467,7 @@ public class SqlHelper
 	 * @return -5 if the Zone does not exist.
 	 * @throws SQLException
 	 */
-	private static int getZoneIDFromZoneName(String zone) throws SQLException
+	private static synchronized int getZoneIDFromZoneName(String zone) throws SQLException
 	{
 		/*
 		 * if (zone.equals(ZoneManager.GLOBAL.getZoneID()))
@@ -1497,7 +1497,7 @@ public class SqlHelper
 	 * @return null if the Zone does not exist.
 	 * @throws SQLException
 	 */
-	private static String getZoneNameFromZoneID(int zoneID) throws SQLException
+	private static synchronized String getZoneNameFromZoneID(int zoneID) throws SQLException
 	{
 		instance.statementGetZoneNameFromID.setInt(1, zoneID);
 		ResultSet set = instance.statementGetZoneNameFromID.executeQuery();
@@ -1516,7 +1516,7 @@ public class SqlHelper
 	 * @return -5 if the Ladder does not exist.
 	 * @throws SQLException
 	 */
-	private static int getLadderIDFromLadderName(String ladder) throws SQLException
+	private static synchronized int getLadderIDFromLadderName(String ladder) throws SQLException
 	{
 		instance.statementGetLadderIDFromName.setString(1, ladder);
 		ResultSet set = instance.statementGetLadderIDFromName.executeQuery();
@@ -1535,7 +1535,7 @@ public class SqlHelper
 	 * @return null if the Ladder does not exist.
 	 * @throws SQLException
 	 */
-	private static String getLadderNameFromLadderID(int ladderID) throws SQLException
+	private static synchronized String getLadderNameFromLadderID(int ladderID) throws SQLException
 	{
 		instance.statementGetLadderNameFromID.setInt(1, ladderID);
 		ResultSet set = instance.statementGetLadderNameFromID.executeQuery();
@@ -1554,7 +1554,7 @@ public class SqlHelper
 	 * @return null if the Ladder does not exist.
 	 * @throws SQLException
 	 */
-	private static int getLadderIdFromGroup(int groupID, int zoneID) throws SQLException
+	private static synchronized int getLadderIdFromGroup(int groupID, int zoneID) throws SQLException
 	{
 		instance.statementGetLadderIDFromGroup.setInt(1, groupID);
 		instance.statementGetLadderIDFromGroup.setInt(2, zoneID);
@@ -1574,7 +1574,7 @@ public class SqlHelper
 	 * @return -5 if the Group does not exist.
 	 * @throws SQLException
 	 */
-	private static int getGroupIDFromGroupName(String group) throws SQLException
+	private static synchronized int getGroupIDFromGroupName(String group) throws SQLException
 	{
 		if (group.equals(PermissionsAPI.DEFAULT.name))
 			return -1;
@@ -1596,7 +1596,7 @@ public class SqlHelper
 	 * @return null if the Group does not exist.
 	 * @throws SQLException
 	 */
-	private static String getGroupNameFromGroupID(int groupID) throws SQLException
+	private static synchronized String getGroupNameFromGroupID(int groupID) throws SQLException
 	{
 		instance.statementGetGroupNameFromID.setInt(1, groupID);
 		ResultSet set = instance.statementGetGroupNameFromID.executeQuery();
@@ -1615,7 +1615,7 @@ public class SqlHelper
 	 * @return Creates the player if it does not exist.
 	 * @throws SQLException
 	 */
-	private static int getPlayerIDFromPlayerName(String player) throws SQLException
+	private static synchronized int getPlayerIDFromPlayerName(String player) throws SQLException
 	{
 		instance.statementGetPlayerIDFromName.setString(1, player);
 		ResultSet set = instance.statementGetPlayerIDFromName.executeQuery();
@@ -1640,7 +1640,7 @@ public class SqlHelper
 	 * @return null if the Player does not exist.
 	 * @throws SQLException
 	 */
-	private static String getPlayerNameFromPlayerID(int playerID) throws SQLException
+	private static synchronized String getPlayerNameFromPlayerID(int playerID) throws SQLException
 	{
 		instance.statementGetPlayerNameFromID.setInt(1, playerID);
 		ResultSet set = instance.statementGetPlayerNameFromID.executeQuery();
@@ -1654,7 +1654,7 @@ public class SqlHelper
 		return set.getString(1);
 	}
 	
-	private static void clearPlayerGroupsInZone(int playerID, int zoneID) throws SQLException
+	private static synchronized void clearPlayerGroupsInZone(int playerID, int zoneID) throws SQLException
 	{
 		instance.statementRemovePlayerGroups.setInt(1, playerID);
 		instance.statementRemovePlayerGroups.setInt(2, zoneID);
@@ -1662,7 +1662,7 @@ public class SqlHelper
 		instance.statementRemovePlayerGroups.clearParameters();
 	}
 
-	public static String setPlayerGroup(String group, String player, String zone)
+	public static synchronized String setPlayerGroup(String group, String player, String zone)
 	{
 		try
 		{
@@ -1680,7 +1680,7 @@ public class SqlHelper
 		return "Player group not set.";
 	}
 	
-	public static String addPlayerGroup(String group, String player, String zone)
+	public static synchronized String addPlayerGroup(String group, String player, String zone)
 	{
 		try
 		{
@@ -1696,7 +1696,7 @@ public class SqlHelper
 		return "Player not added to group";
 	}
 	
-	private static String addPlayerGroup(int groupID, int playerID, int zoneID) throws SQLException
+	private static synchronized String addPlayerGroup(int groupID, int playerID, int zoneID) throws SQLException
 	{
 		instance.statementPutPlayerInGroup.setInt(1, groupID);
 		instance.statementPutPlayerInGroup.setInt(2, playerID);
@@ -1712,7 +1712,7 @@ public class SqlHelper
 		return null;
 	}
 	
-	public static String removePlayerGroup(String group, String player, String zone)
+	public static synchronized String removePlayerGroup(String group, String player, String zone)
 	{
 		try
 		{
@@ -1728,7 +1728,7 @@ public class SqlHelper
 		return "Player not added to group";
 	}
 	
-	private static String removePlayerGroup(int groupID, int playerID, int zoneID) throws SQLException
+	private static synchronized String removePlayerGroup(int groupID, int playerID, int zoneID) throws SQLException
 	{
 		instance.statementRemovePlayerGroup.setInt(1, playerID);
 		instance.statementRemovePlayerGroup.setInt(2, zoneID);
@@ -1744,7 +1744,7 @@ public class SqlHelper
 		return null;
 	}
 
-	public static String removePermission(String player, boolean isGroup,
+	public static synchronized String removePermission(String player, boolean isGroup,
 			String node, String zone)
 	{
 		try
@@ -1761,7 +1761,7 @@ public class SqlHelper
 		return "Player group not set.";
 	}
 	
-	public static String removePermission(int playerID, boolean isGroup,
+	public static synchronized String removePermission(int playerID, boolean isGroup,
 			String node, int zoneID) throws SQLException
 	{
 		instance.statementDeletePermission.setInt(1, playerID);
