@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Set;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
@@ -31,6 +32,7 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class ModuleChat implements IFEModule
 {
@@ -125,9 +127,9 @@ public class ModuleChat implements IFEModule
 		{
 			try
 			{
-				CommandHandler cmdMng = (CommandHandler) server.getCommandManager();
-
-				for (Object cmdObj : cmdMng.commandSet)
+				Set cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet", "field_71561_b");
+				
+				for (Object cmdObj : cmds)
 				{
 					ICommand cmd = (ICommand) cmdObj;
 					if (cmd.getCommandName().equalsIgnoreCase("tell"))
@@ -139,7 +141,7 @@ public class ModuleChat implements IFEModule
 							if (pkg == null || !pkg.getName().contains("ForgeEssentials"))
 							{
 								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
-								cmdMng.commandSet.remove(cmd.getCommandName());
+								cmds.remove(cmd.getCommandName());
 							}
 						}
 						catch (Exception e)
@@ -149,6 +151,7 @@ public class ModuleChat implements IFEModule
 						}
 					}
 				}
+				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmds, "commandSet", "field_71561_b");
 			}
 			catch (Exception e)
 			{
