@@ -141,7 +141,7 @@ public class ModuleChat implements IFEModule
 							if (pkg == null || !pkg.getName().contains("ForgeEssentials"))
 							{
 								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
-								cmds.remove(cmd.getCommandName());
+								cmds.remove(cmd);
 							}
 						}
 						catch (Exception e)
