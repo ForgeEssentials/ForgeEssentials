@@ -6,7 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 
 /**
  * This generates the configuration structure + an example file.

@@ -7,7 +7,7 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 
 public class ConfigSnooper implements IModuleConfig
 {

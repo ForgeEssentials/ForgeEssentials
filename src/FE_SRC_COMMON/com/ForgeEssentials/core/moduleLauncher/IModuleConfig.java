@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core;
+package com.ForgeEssentials.core.moduleLauncher;
 
 import java.io.File;
 

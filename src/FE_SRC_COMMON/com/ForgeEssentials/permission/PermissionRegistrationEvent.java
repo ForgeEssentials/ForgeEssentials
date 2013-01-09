@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 import net.minecraftforge.event.Event;
 
-import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.IFEModule;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Mod;

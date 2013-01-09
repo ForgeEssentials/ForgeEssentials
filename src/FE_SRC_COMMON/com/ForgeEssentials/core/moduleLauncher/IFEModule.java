@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core;
+package com.ForgeEssentials.core.moduleLauncher;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;

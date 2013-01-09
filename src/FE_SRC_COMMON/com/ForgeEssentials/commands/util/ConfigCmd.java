@@ -12,7 +12,7 @@ import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.CommandVirtualchest;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 
 public class ConfigCmd implements IModuleConfig
 {
