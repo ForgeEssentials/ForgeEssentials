@@ -312,6 +312,8 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 
 		minX = posX - rad;
 		minZ = posZ - rad;
+		
+		config.forceSave();
 	}
 
 	@Override

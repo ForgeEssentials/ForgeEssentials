@@ -149,6 +149,7 @@ public class ConfigWorldBorder implements IModuleConfig
 		config.get(category, "rad", 0).value = "" + ModuleWorldBorder.rad;
 		config.get(category, "set", false, "True if the value is actually set.").value = "" + ModuleWorldBorder.set;
 		config.get(category, "shape", "square").value = ModuleWorldBorder.shape.toString();
+		config.save();
 	}
 
 	@Override
