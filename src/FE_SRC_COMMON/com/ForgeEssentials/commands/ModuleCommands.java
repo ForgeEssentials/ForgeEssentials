@@ -5,10 +5,12 @@ import java.util.Set;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.commands.util.CommandRegistrar;
 import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
@@ -33,6 +35,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
 public class ModuleCommands implements IFEModule
@@ -73,48 +76,9 @@ public class ModuleCommands implements IFEModule
 
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
 
-		// general
-		e.registerServerCommand(new CommandMotd());
-		e.registerServerCommand(new CommandRules());
-		e.registerServerCommand(new CommandModlist());
-		// utility
-		e.registerServerCommand(new CommandButcher());
-		e.registerServerCommand(new CommandRemove());
-		e.registerServerCommand(new CommandSpawnMob());
-		e.registerServerCommand(new CommandTPS());
-		e.registerServerCommand(new CommandAFK());
-		e.registerServerCommand(new CommandKit());
-		e.registerServerCommand(new CommandEnderchest());
-		e.registerServerCommand(new CommandVirtualchest());
-		e.registerServerCommand(new CommandCapabilities());
-		e.registerServerCommand(new CommandSetspawn());
-		e.registerServerCommand(new CommandJump());
-		e.registerServerCommand(new CommandCraft());
-		e.registerServerCommand(new CommandSeeInventory());
-		e.registerServerCommand(new CommandPing());
-		// op
-		e.registerServerCommand(new CommandServerDo());
-		// fun
-		e.registerServerCommand(new CommandSmite());
-		e.registerServerCommand(new CommandBurn());
-		e.registerServerCommand(new CommandPotion());
-		e.registerServerCommand(new CommandColorize());
-		// teleport
-		e.registerServerCommand(new CommandBack());
-		e.registerServerCommand(new CommandBed());
-		e.registerServerCommand(new CommandHome());
-		e.registerServerCommand(new CommandSpawn());
-		e.registerServerCommand(new CommandTp());
-		e.registerServerCommand(new CommandTphere());
-		e.registerServerCommand(new CommandTppos());
-		e.registerServerCommand(new CommandWarp());
-		// cheat
-		e.registerServerCommand(new CommandRepair());
-		e.registerServerCommand(new CommandHeal());
+		CommandRegistrar.load(e);
+		
 		// Vanilla Override
-		
-		// e.registerServerCommand(new CommandHelp());
-		
 		e.registerServerCommand(new CommandKill());
 		e.registerServerCommand(new CommandGive());
 		e.registerServerCommand(new CommandI());
@@ -141,9 +105,10 @@ public class ModuleCommands implements IFEModule
 			{
 				Set<String> commandNames = new HashSet<String>();
 				Set<String> toRemoveNames = new HashSet<String>();
-				CommandHandler cmdMng = (CommandHandler) server.getCommandManager();
-
-				for (Object cmdObj : cmdMng.commandSet)
+				
+				Set cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet");
+				
+				for (Object cmdObj : cmds)
 				{
 					ICommand cmd = (ICommand) cmdObj;
 					if (!commandNames.add(cmd.getCommandName()))
@@ -153,7 +118,7 @@ public class ModuleCommands implements IFEModule
 					}
 				}
 				Set toRemove = new HashSet();
-				for (Object cmdObj : cmdMng.commandSet)
+				for (Object cmdObj : cmds)
 				{
 					ICommand cmd = (ICommand) cmdObj;
 					if (toRemoveNames.contains(cmd.getCommandName()))
@@ -170,15 +135,18 @@ public class ModuleCommands implements IFEModule
 						}
 						catch (Exception e)
 						{
-							OutputHandler.debug("dafug? Got exception:" + e.getLocalizedMessage());
+							OutputHandler.debug("Can't remove " + cmd.getCommandName());
+							OutputHandler.debug(""+e.getLocalizedMessage());
 							e.printStackTrace();
 						}
 					}
 				}
-				cmdMng.commandSet.removeAll(toRemove);
+				cmds.removeAll(toRemove);
+				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmds, "commandSet");
 			}
 			catch (Exception e)
 			{
+				OutputHandler.debug("Something broke: " + e.getLocalizedMessage());
 				e.printStackTrace();
 			}
 		}
