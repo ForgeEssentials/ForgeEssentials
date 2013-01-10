@@ -50,11 +50,11 @@ public @interface FEModule
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD })
-	public @interface ServerStart {}
+	public @interface ServerInit {}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD })
-	public @interface ServerStarted {}
+	public @interface ServerPostInit {}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD })

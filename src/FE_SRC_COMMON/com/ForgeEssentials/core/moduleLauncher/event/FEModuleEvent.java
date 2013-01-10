@@ -1,6 +1,7 @@
-package com.ForgeEssentials.core.moduleLauncher;
+package com.ForgeEssentials.core.moduleLauncher.event;
 
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
 
 import java.io.File;
 
