@@ -16,8 +16,11 @@ public @interface FEModule
 	 * "Module" is not automatically
 	 * ie: "WorldControlModule" "SnooperModule" etc..
 	 * this is what will show up in logs, especially about errors.
+	 * This is similair to the ModuleID, it is the identifying mark.. and shouldn't have spaces.
 	 */
 	String name();
+	
+	String version() default "";
 	
 	/**
 	 * Marks it as core. Core modules are loaded first. 
