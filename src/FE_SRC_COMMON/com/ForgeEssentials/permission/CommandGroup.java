@@ -23,23 +23,28 @@ public class CommandGroup
 		
 		/*
 		 * Create / remove part
+		 *\ /p group create <group> [prefix] [suffix] [parent] [priority] [zone]
 		 */
 		if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("make"))
 		{
 			Zone zone = ZoneManager.GLOBAL;
-			if(args.length == 3)
+			if(args.length > 3)
 			{
 				if(ZoneManager.doesZoneExist(args[2]))
 				{
 					zone = ZoneManager.getZone(args[2]);
+				}
+				else if(args[3].equalsIgnoreCase("here"))
+				{
+					
 				}
 				else
 				{
 					sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
-			PermissionsAPI.createGroupInZone(args[1], zone.getZoneID());
-			sender.sendChatToPlayer("Group " + args[1] + " made in zone " + zone.getZoneID());
+			PermissionsAPI.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
+			sender.sendChatToPlayer("Group " + args[1] + " made in zone " + zone.getZoneName());
 			return;
 		}
 		if (args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("remove"))
@@ -62,7 +67,8 @@ public class CommandGroup
 				}
 			}
 			//Remove zone
-			sender.sendChatToPlayer("Group " + args[1] + " removed in zone " + zone.getZoneID());
+			PermissionsAPI.deleteGroupInZone(args[1], zone.getZoneName());
+			sender.sendChatToPlayer("Group " + args[1] + " removed in zone " + zone.getZoneName());
 			return;
 		}
 		
@@ -193,12 +199,12 @@ public class CommandGroup
 		}
 		if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow"))
 		{
-			PermissionsAPI.setGroupPermission(group.name, args[2], true, zone.getZoneID());
+			PermissionsAPI.setGroupPermission(group.name, args[2], true, zone.getZoneName());
 			return;
 		}
 		if(args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("deny"))
 		{
-			PermissionsAPI.setGroupPermission(group.name, args[2], false, zone.getZoneID());
+			PermissionsAPI.setGroupPermission(group.name, args[2], false, zone.getZoneName());
 			return;
 		}
 		if(args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove"))
