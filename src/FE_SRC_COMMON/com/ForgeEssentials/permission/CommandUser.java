@@ -49,26 +49,27 @@ public class CommandUser
 					}
 					else
 					{
-						sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
 					}
 				}
 				
 				if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("allow"))
 				{
 					PermissionsAPI.setPlayerPermission(player.username, args[3], true, zone.getZoneName());
-					sender.sendChatToPlayer(player.username + " has been allowed " + args[3]);
+					OutputHandler.chatConfirmation(sender, player.username + " has been allowed " + args[3]);
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove")) // remove super
 																									// perm settings
 				{
 					PermissionsAPI.clearPlayerPermission(player.username, args[3], zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, player.username + "'s access to " + args[2] + " cleared");
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny")) // deny super perm
 				{
 					PermissionsAPI.setPlayerPermission(player.username, args[3], false, zone.getZoneName());
-					sender.sendChatToPlayer(player.username + " has been denied " + args[3]);
+					OutputHandler.chatConfirmation(sender, player.username + " has been denied " + args[3]);
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("get"))
@@ -106,7 +107,7 @@ public class CommandUser
 					}
 					else
 					{
-						OutputHandler.chatConfirmation(sender, "Player " + player.getCommandSenderName() + " successfully added to group " + args[3]);
+						OutputHandler.chatConfirmation(sender, player.getCommandSenderName() + " added to group " + args[3]);
 					}
 				}
 				else
@@ -126,7 +127,7 @@ public class CommandUser
 					}
 					else
 					{
-						OutputHandler.chatConfirmation(sender, "Player " + player.getCommandSenderName() + " successfully removed from group " + args[3]);
+						OutputHandler.chatConfirmation(sender, player.getCommandSenderName() + " removed from group " + args[3]);
 					}
 				}
 				return;
@@ -142,7 +143,7 @@ public class CommandUser
 					}
 					else
 					{
-						OutputHandler.chatConfirmation(sender, "Player " + player.getCommandSenderName() + "'s group successfully set to " + args[3]);
+						OutputHandler.chatConfirmation(sender, player.getCommandSenderName() + "'s group set to " + args[3]);
 					}
 				}
 				return;
@@ -187,7 +188,7 @@ public class CommandUser
 				}
 				else
 				{
-					OutputHandler.chatConfirmation(sender, "Player perm successfully allowed!");
+					OutputHandler.chatConfirmation(sender, player.username + "  allowed access to " + args[2] + ".");
 				}
 				return;
 			}
@@ -200,7 +201,7 @@ public class CommandUser
 				}
 				else
 				{
-					OutputHandler.chatConfirmation(sender, "Player perm successfully removed!");
+					OutputHandler.chatConfirmation(sender, player.username + " denied access to " + args[2] + ".");
 				}
 				return;
 			}
@@ -213,7 +214,7 @@ public class CommandUser
 				}
 				else
 				{
-					OutputHandler.chatConfirmation(sender, "Player perm successfully denied!");
+					OutputHandler.chatConfirmation(sender, player.username + "'s  access to " + args[2] + "cleared.");
 				}
 				return;
 			}

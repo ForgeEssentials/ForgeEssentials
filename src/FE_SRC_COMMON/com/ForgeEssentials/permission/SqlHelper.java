@@ -1748,12 +1748,12 @@ public class SqlHelper
 		return null;
 	}
 
-	public static synchronized String removePermission(String player, boolean isGroup,
+	public static synchronized String removePermission(String target, boolean isGroup,
 			String node, String zone)
 	{
 		try
 		{
-			int playerID = instance.getPlayerIDFromPlayerName(player);
+			int playerID = instance.getPlayerIDFromPlayerName(target);
 			int zoneID = instance.getZoneIDFromZoneName(zone);
 			
 			return removePermission(playerID, isGroup, node, zoneID);

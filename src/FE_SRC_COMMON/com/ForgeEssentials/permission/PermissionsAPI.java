@@ -261,4 +261,14 @@ public class PermissionsAPI
 	{
 		SqlHelper.deleteGroupInZone(group, zone);
 	}
+
+	public static void updateGroup(Group group)
+	{
+		SqlHelper.updateGroup(group);
+	}
+
+	public static void clearGroupPermission(String name, String node, String zone)
+	{
+		SqlHelper.removePermission(name, true, node, zone);
+	}
 }
