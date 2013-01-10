@@ -35,7 +35,7 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.HIGH, handleResult = { PermResult.UNKNOWN })
 	public void checkPlayerSupers(PermQueryPlayer event)
 	{
-		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.SUPER.getZoneID(), event.checkForward);
+		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.SUPER.getZoneName(), event.checkForward);
 		if (!result.equals(PermResult.UNKNOWN))
 			event.setResult(result);
 	}
@@ -107,27 +107,27 @@ public final class PermissionsHandler
 		while (result.equals(PermResult.UNKNOWN))
 		{
 			// get the permissions... Tis automatically checks permision parents...
-			result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, zone.getZoneID(), event.checkForward);
+			result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, zone.getZoneName(), event.checkForward);
 
 			// if its unknown still
 			if (result.equals(PermResult.UNKNOWN))
 			{
 				// get all the players groups here.
-				groups = SqlHelper.getGroupsForPlayer(event.doer.username, zone.getZoneID());
+				groups = SqlHelper.getGroupsForPlayer(event.doer.username, zone.getZoneName());
 				
 				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
 				{
 					group = groups.get(i);
 					// checks the permissions for the group.
-					result = SqlHelper.getPermissionResult(group.name, true, event.checker, zone.getZoneID(), event.checkForward);
+					result = SqlHelper.getPermissionResult(group.name, true, event.checker, zone.getZoneName(), event.checkForward);
 				}
 			}
 
 			// check defaults... unless it has the override..
 			if (result.equals(PermResult.UNKNOWN) && !event.dOverride)
 			{
-				result = SqlHelper.getPermissionResult(PermissionsAPI.DEFAULT.name, true, event.checker, zone.getZoneID(), event.checkForward);
+				result = SqlHelper.getPermissionResult(PermissionsAPI.DEFAULT.name, true, event.checker, zone.getZoneName(), event.checkForward);
 			}
 
 			// still unknown? check parent zones.

@@ -111,7 +111,7 @@ public class Zone extends WorldArea implements Comparable
 	/**
 	 * @return The Unique ID of this Zone.
 	 */
-	public String getZoneID()
+	public String getZoneName()
 	{
 		return zoneID;
 	}

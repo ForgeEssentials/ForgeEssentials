@@ -99,12 +99,15 @@ public class SqlHelper
 	private final PreparedStatement	statementGetGroupsForPlayer;							// PlayerID, ZoneID >> Groups
 	private final PreparedStatement	statementPutGroup;										// $ name, prefix, suffix, parent, priority, zone
 	private final PreparedStatement	statementUpdateGroup;									// $ name, prefix, suffix, parent, priority, zone
+	private final PreparedStatement statementDeleteGroupInZone;
+	
 	// ladders
 	private final PreparedStatement	statementGetLadderIDFromName;							// ladderName >> ladderID
 	private final PreparedStatement	statementGetLadderNameFromID;							// LadderID >> ladderName
 	private final PreparedStatement	statementGetLadderIDFromGroup;							// groupID, zoneID >> ladderID
 	private final PreparedStatement	statementGetLadderList;									// LadderID, ZoneID >> groupName, rank
 	private final PreparedStatement	statementPutLadder;										// $ LadderName
+	
 	// permissions
 	private final PreparedStatement	statementGetPermission;									// target, isgroup, perm, zone >> allowed
 	private final PreparedStatement	statementGetPermissionForward;							// target, isgroup, perm, zone >> allowed
@@ -314,8 +317,14 @@ public class SqlHelper
 					.append(COLUMN_PERMISSION_PERM).append("=").append("?").append(" AND ")
 					.append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
 			statementDeletePermission = db.prepareStatement(query.toString());
+			
+			// statementDeleteGroupInZone
+			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP)
+					.append(" WHERE ").append(COLUMN_GROUP_NAME).append("=").append("?").append(" AND ")
+					.append(COLUMN_ZONE_ZONEID).append("=").append("?");
+			statementDeleteGroupInZone = db.prepareStatement(query.toString());
 
-			// statementPutZone
+			// statementDelZone
 			query = new StringBuilder("DELETE FROM ").append(TABLE_ZONE).append(" WHERE ")
 			.append(COLUMN_ZONE_NAME).append("=").append("?");
 			statementDelZone = db.prepareStatement(query.toString());
@@ -609,7 +618,7 @@ public class SqlHelper
 					.append(COLUMN_ZONE_NAME).append(", ")
 					.append(COLUMN_ZONE_ZONEID).append(") ")
 					.append(" VALUES ").append(" ('")
-					.append(ZoneManager.GLOBAL.getZoneID()).append("', 0) ");
+					.append(ZoneManager.GLOBAL.getZoneName()).append("', 0) ");
 			db.createStatement().executeUpdate(query.toString());
 
 			// SUPER zone
@@ -617,7 +626,7 @@ public class SqlHelper
 					.append(COLUMN_ZONE_NAME).append(", ")
 					.append(COLUMN_ZONE_ZONEID)	.append(") ")
 					.append(" VALUES ").append(" ('")
-					.append(ZoneManager.SUPER.getZoneID()).append("', -1) ");
+					.append(ZoneManager.SUPER.getZoneName()).append("', -1) ");
 			db.createStatement().executeUpdate(query.toString());
 
 		}
@@ -1762,5 +1771,20 @@ public class SqlHelper
 		instance.statementDeletePermission.executeUpdate();
 		instance.statementDeletePermission.clearParameters();
 		return null;
+	}
+
+	public static synchronized void deleteGroupInZone(String group, String zone)
+	{
+		try
+		{
+			int zoneID = getZoneIDFromZoneName(zone);
+			instance.statementDeletePermission.setString(1, group);
+			instance.statementDeletePermission.executeUpdate();
+			instance.statementDeletePermission.clearParameters();
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

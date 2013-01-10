@@ -47,7 +47,7 @@ public class CommandPermSet extends CommandFEPerm
 			{
 				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".group." + entities[2] + "." + args[1])))
 				{
-					PermissionsAPI.setGroupPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
+					PermissionsAPI.setGroupPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneName());
 				}
 				else
 				{
@@ -58,7 +58,7 @@ public class CommandPermSet extends CommandFEPerm
 			{
 				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".player." + entities[2] + "." + args[1])))
 				{
-					PermissionsAPI.setPlayerPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
+					PermissionsAPI.setPlayerPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneName());
 				}
 				else
 				{
@@ -109,11 +109,11 @@ public class CommandPermSet extends CommandFEPerm
 
 			if (entities[0].equalsIgnoreCase("g"))
 			{
-				PermissionsAPI.setGroupPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
+				PermissionsAPI.setGroupPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneName());
 			}
 			else if (entities[0].equalsIgnoreCase("p"))
 			{
-				PermissionsAPI.setPlayerPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneID());
+				PermissionsAPI.setPlayerPermission(entities[2], args[1], result.equals(Result.ALLOW), zone.getZoneName());
 			}
 			else
 			{

@@ -55,7 +55,7 @@ public class CommandUser
 				
 				if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("allow"))
 				{
-					PermissionsAPI.setPlayerPermission(player.username, args[3], true, zone.getZoneID());
+					PermissionsAPI.setPlayerPermission(player.username, args[3], true, zone.getZoneName());
 					sender.sendChatToPlayer(player.username + " has been allowed " + args[3]);
 					return;
 				}
@@ -67,7 +67,7 @@ public class CommandUser
 				}
 				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny")) // deny super perm
 				{
-					PermissionsAPI.setPlayerPermission(player.username, args[3], false, zone.getZoneID());
+					PermissionsAPI.setPlayerPermission(player.username, args[3], false, zone.getZoneName());
 					sender.sendChatToPlayer(player.username + " has been denied " + args[3]);
 					return;
 				}
@@ -81,7 +81,7 @@ public class CommandUser
 		}
 		else if (args[1].equalsIgnoreCase("group")) // group management
 		{
-			String zoneName = ZoneManager.GLOBAL.getZoneID();
+			String zoneName = ZoneManager.GLOBAL.getZoneName();
 			if (args.length == 5) // zone is set
 			{
 				if(ZoneManager.getZone(args[4]) != null)
@@ -150,7 +150,7 @@ public class CommandUser
 		}
 		else if (args.length >= 3) // player management
 		{
-			String zoneName = ZoneManager.GLOBAL.getZoneID();
+			String zoneName = ZoneManager.GLOBAL.getZoneName();
 			if (args.length == 4) // zone is set
 			{
 				if(ZoneManager.getZone(args[3]) != null)

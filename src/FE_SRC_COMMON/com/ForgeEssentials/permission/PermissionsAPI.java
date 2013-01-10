@@ -22,7 +22,7 @@ public class PermissionsAPI
 	 * Used for blankets permissions tied to no particular layer or group in a zone. This is the the group all players are assigned to if they are members of no
 	 * other groups. This group is guaranteed existence
 	 */
-	public static Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, ZoneManager.GLOBAL.getZoneID(), 0);
+	public static Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, ZoneManager.GLOBAL.getZoneName(), 0);
 
 	/**
 	 * Use this to check AllOrNothing Area queries, Player Queries, or Point Queries.
@@ -55,9 +55,9 @@ public class PermissionsAPI
 	 * @param ZoneID
 	 * @return NULL if the construction or registration fails.
 	 */
-	public static Group createGroupInZone(String groupName, String zoneID)
+	public static Group createGroupInZone(String groupName, String zoneID, String prefix, String suffix, String parent, int priority)
 	{
-		Group g = new Group(groupName, "", "", null, zoneID, 0);
+		Group g = new Group(groupName, prefix, suffix, parent, zoneID, priority);
 		SqlHelper.createGroup(g);
 		return g;
 	}
@@ -191,7 +191,7 @@ public class PermissionsAPI
 		ArrayList<Group> temp;
 		// while (zone != null)
 		// {
-		temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneID());
+		temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneName());
 		list.addAll(temp);
 		// }
 
@@ -212,7 +212,7 @@ public class PermissionsAPI
 		ArrayList<Group> temp;
 		while (zone != null && list.size() <= 0)
 		{
-			temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneID());
+			temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneName());
 
 			if (!temp.isEmpty())
 			{
@@ -255,5 +255,10 @@ public class PermissionsAPI
 	public static String clearPlayerPermission(String player, String node, String zone)
 	{
 		return SqlHelper.removePermission(player, false, node, zone);
+	}
+
+	public static void deleteGroupInZone(String group, String zone)
+	{
+		SqlHelper.deleteGroupInZone(group, zone);
 	}
 }
