@@ -35,7 +35,7 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.HIGH, handleResult = { PermResult.UNKNOWN })
 	public void checkPlayerSupers(PermQueryPlayer event)
 	{
-		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.SUPER, event.checkForward);
+		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.SUPER.getZoneID(), event.checkForward);
 		if (!result.equals(PermResult.UNKNOWN))
 			event.setResult(result);
 	}
@@ -75,7 +75,7 @@ public final class PermissionsHandler
 		}
 		else
 		{
-			event.applicable = getApplicableZones(event.doneTo, event);
+			event.applicable = getApplicableAreas(event.doneTo, event);
 			if (event.applicable == null)
 			{
 				event.setResult(PermResult.DENY);
@@ -93,12 +93,9 @@ public final class PermissionsHandler
 
 	/**
 	 * 
-	 * @param zone
-	 *            Zone to check permissions in.
-	 * @param perm
-	 *            The permission to check.
-	 * @param player
-	 *            Player to check/
+	 * @param zone Zone to check permissions in.
+	 * @param perm The permission to check.
+	 * @param player Player to check/
 	 * @return the result for the perm.
 	 */
 	private PermResult getResultFromZone(Zone zone, PermQueryPlayer event)
@@ -109,44 +106,49 @@ public final class PermissionsHandler
 		Group group;
 		while (result.equals(PermResult.UNKNOWN))
 		{
-			// checks all parents as well.
+			// get the permissions... Tis automatically checks permision parents...
 			result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, zone.getZoneID(), event.checkForward);
 
-			if (result.equals(PermResult.UNKNOWN)) // check group
-													// event.checkerissions
+			// if its unknown still
+			if (result.equals(PermResult.UNKNOWN))
 			{
+				// get all the players groups here.
 				groups = SqlHelper.getGroupsForPlayer(event.doer.username, zone.getZoneID());
+				
+				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
 				{
 					group = groups.get(i);
+					// checks the permissions for the group.
 					result = SqlHelper.getPermissionResult(group.name, true, event.checker, zone.getZoneID(), event.checkForward);
 				}
 			}
 
-			// check defaults.
+			// check defaults... unless it has the override..
 			if (result.equals(PermResult.UNKNOWN) && !event.dOverride)
 			{
 				result = SqlHelper.getPermissionResult(PermissionsAPI.DEFAULT.name, true, event.checker, zone.getZoneID(), event.checkForward);
 			}
 
-			// check parent.
+			// still unknown? check parent zones.
 			if (result.equals(PermResult.UNKNOWN))
 			{
 				if (tempZone == ZoneManager.GLOBAL)
 				{
-					result = PermResult.DENY; // defaut deny...
+					// default deny.
+					result = PermResult.DENY;
 				}
 				else
 				{
-					tempZone = ZoneManager.getZone(tempZone.parent); // get
-																		// parent.
+					// get the parent of the zone.
+					tempZone = ZoneManager.getZone(tempZone.parent);
 				}
 			}
 		}
 		return result;
 	}
 
-	private ArrayList<AreaBase> getApplicableZones(AreaBase doneTo, PermQueryPlayer event)
+	private ArrayList<AreaBase> getApplicableAreas(AreaBase doneTo, PermQueryPlayer event)
 	{
 		PlayerInfo.getPlayerInfo(event.doer);
 		ArrayList<AreaBase> applicable = new ArrayList<AreaBase>();

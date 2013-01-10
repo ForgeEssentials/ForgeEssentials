@@ -1,5 +1,7 @@
 package com.ForgeEssentials.core.moduleLauncher;
 
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class ModuleContainer
@@ -11,8 +13,24 @@ public class ModuleContainer
 	
 	public ModuleContainer(Class c)
 	{
+		// if this isn't there... il be mad.
 		assert c.isAnnotationPresent(FEModule.class) : new RuntimeException();
+		FEModule annot = (FEModule) c.getAnnotation(FEModule.class);
+		name = annot.name();
+		isCore = annot.isCore();
 		
 		// todo, finish
+		for (Method m : c.getDeclaredMethods())
+		{
+			if (m.isAnnotationPresent(PreInit.class))
+			{
+				
+			}
+		}
+		
+		for (Field f : c.getDeclaredFields())
+		{
+			
+		}
 	}
 }

@@ -103,10 +103,9 @@ public class ModulePermissions implements IFEModule
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
+		// save all the zones
 		for (Zone zone : ZoneManager.zoneMap.values())
-		{
 			data.saveObject(zone);
-		}
 	}
 
 	@Override

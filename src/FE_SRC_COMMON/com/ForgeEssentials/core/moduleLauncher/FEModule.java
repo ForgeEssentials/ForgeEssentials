@@ -20,7 +20,7 @@ public @interface FEModule
 	String name();
 	
 	/**
-	 * Marks it as core. Core modules are laoded first. 
+	 * Marks it as core. Core modules are loaded first. 
 	 * @return
 	 */
 	boolean isCore() default false;
@@ -57,7 +57,25 @@ public @interface FEModule
 	@Target({ ElementType.METHOD })
 	public @interface ServerStop {}
 	
+	/**
+	 * this should be obvious, This is the method that will be called when the /reload command is called.
+	 * Reloading the configs is up to you.	 *
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD })
 	public @interface Reload {}
+	
+	/**
+	 * This field will be populated with an instance of this Module.
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public @interface instance {}
+	
+	/**
+	 * This field will be populated with an instance of this Module's ModuleCOntainer object.
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public @interface container {}
 }

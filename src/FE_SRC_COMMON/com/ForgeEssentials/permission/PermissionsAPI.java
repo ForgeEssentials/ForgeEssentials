@@ -158,6 +158,7 @@ public class PermissionsAPI
 	}
 
 	// ill recreate it when I need it...
+	//
 	// /**
 	// * Gets all the groups that were explicitly created in the given zone.
 	// these groups will only apply
@@ -236,22 +237,22 @@ public class PermissionsAPI
 		return SqlHelper.getGroupForName(name);
 	}
 	
-	public static String setPlayerGroup(String group, String player, String zone)
+	public static String setPlayerToGroup(String group, String player, String zone)
 	{
 		return SqlHelper.setPlayerGroup(group, player, zone);
 	}
 
-	public static String addPlayerGroup(String group, String player, String zone)
+	public static String addPlayerToGroup(String group, String player, String zone)
 	{
 		return SqlHelper.addPlayerGroup(group, player, zone);
 	}
 
-	public static String removePlayerGroup(String group, String player, String zone)
+	public static String clearPlayerGroup(String group, String player, String zone)
 	{
 		return SqlHelper.removePlayerGroup(group, player, zone);
 	}
 
-	public static String removePlayerPermission(String player, String node, String zone)
+	public static String clearPlayerPermission(String player, String node, String zone)
 	{
 		return SqlHelper.removePermission(player, false, node, zone);
 	}

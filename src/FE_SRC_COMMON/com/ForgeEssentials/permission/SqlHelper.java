@@ -613,8 +613,11 @@ public class SqlHelper
 			db.createStatement().executeUpdate(query.toString());
 
 			// SUPER zone
-			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (").append(COLUMN_ZONE_NAME).append(", ").append(COLUMN_ZONE_ZONEID)
-					.append(") ").append(" VALUES ").append(" ('").append(ZoneManager.SUPER).append("', -1) ");
+			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (")
+					.append(COLUMN_ZONE_NAME).append(", ")
+					.append(COLUMN_ZONE_ZONEID)	.append(") ")
+					.append(" VALUES ").append(" ('")
+					.append(ZoneManager.SUPER.getZoneID()).append("', -1) ");
 			db.createStatement().executeUpdate(query.toString());
 
 		}
@@ -685,8 +688,7 @@ public class SqlHelper
 
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
-	// -------------------------------MAJOR ---- USAGE ---- METHODS
-	// --------------------------------------
+	// -------------------------------MAJOR ---- USAGE ---- METHODS --------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 
@@ -1198,9 +1200,7 @@ public class SqlHelper
 			instance.statementPutZone.setString(1, name);
 			instance.statementPutZone.executeUpdate();
 			instance.statementPutZone.clearParameters();
-
 			return true;
-
 		}
 		catch (SQLException e)
 		{
@@ -1469,16 +1469,6 @@ public class SqlHelper
 	 */
 	private static synchronized int getZoneIDFromZoneName(String zone) throws SQLException
 	{
-		/*
-		 * if (zone.equals(ZoneManager.GLOBAL.getZoneID()))
-		 * {
-		 * return 0;
-		 * }
-		 * else if (zone.equals(ZoneManager.SUPER))
-		 * {
-		 * return -1;
-		 * }
-		 */
 
 		instance.statementGetZoneIDFromName.setString(1, zone);
 		ResultSet set = instance.statementGetZoneIDFromName.executeQuery();

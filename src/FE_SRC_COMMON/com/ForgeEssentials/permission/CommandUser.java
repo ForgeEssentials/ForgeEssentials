@@ -99,7 +99,7 @@ public class CommandUser
 			{
 				if(args.length > 3)
 				{
-					String result = PermissionsAPI.addPlayerGroup(args[3], player.getCommandSenderName(), zoneName);
+					String result = PermissionsAPI.addPlayerToGroup(args[3], player.getCommandSenderName(), zoneName);
 					if(result != null)
 					{
 						OutputHandler.chatError(sender, result);
@@ -119,7 +119,7 @@ public class CommandUser
 			{
 				if(args.length > 3)
 				{
-					String result = PermissionsAPI.removePlayerGroup(args[3], player.getCommandSenderName(), zoneName);
+					String result = PermissionsAPI.clearPlayerGroup(args[3], player.getCommandSenderName(), zoneName);
 					if(result != null)
 					{
 						OutputHandler.chatError(sender, result);
@@ -135,7 +135,7 @@ public class CommandUser
 			{
 				if(args.length > 3)
 				{
-					String result = PermissionsAPI.setPlayerGroup(args[3], player.getCommandSenderName(), zoneName);
+					String result = PermissionsAPI.setPlayerToGroup(args[3], player.getCommandSenderName(), zoneName);
 					if(result != null)
 					{
 						OutputHandler.chatError(sender, result);
@@ -193,7 +193,7 @@ public class CommandUser
 			}
 			else if (args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove")) // remove perm settings
 			{
-				String result = PermissionsAPI.removePlayerPermission(player.getCommandSenderName(), args[2], zoneName);
+				String result = PermissionsAPI.clearPlayerPermission(player.getCommandSenderName(), args[2], zoneName);
 				if(result != null)
 				{
 					OutputHandler.chatError(sender, result);
