@@ -30,7 +30,7 @@ public class EventHandler
 				Timestamp time = new Timestamp(date.getTime());
 				Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
 				Statement st = connection.createStatement();
-				st.execute("SELECT * FROM  `blockchange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + e.x + " AND  `Y` = " + e.y
+				st.execute("SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + e.x + " AND  `Y` = " + e.y
 						+ " AND  `Z` = " + e.z + " ORDER BY id DESC LIMIT " + limit);
 				ResultSet res = st.getResultSet();
 
