@@ -101,8 +101,19 @@ cp -rf "${WORKSPACE}/output/${JOB_NAME}-snooper-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-playerlogger-${MC}-${VERSION}.zip" ./mods/
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt
+
+echo "Cleaning up"
 rm -rf ./mods/*
 rm -rf ./coremods/*
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-chat-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-economy-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-protection-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-snooper-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-playerlogger-${MC}-${VERSION}.zip" 
 
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
