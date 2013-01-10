@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
+import com.google.common.base.Throwables;
+
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -321,7 +323,7 @@ public class SqlHelper
 			// statementDeleteGroupInZone
 			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP)
 					.append(" WHERE ").append(COLUMN_GROUP_NAME).append("=").append("?").append(" AND ")
-					.append(COLUMN_ZONE_ZONEID).append("=").append("?");
+					.append(COLUMN_GROUP_ZONE).append("=").append("?");
 			statementDeleteGroupInZone = db.prepareStatement(query.toString());
 
 			// statementDelZone
@@ -399,6 +401,8 @@ public class SqlHelper
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			Throwables.propagateIfPossible(e);
+			// it may not get to this.. hopefully...
 			throw new RuntimeException(e.getMessage());
 		}
 
