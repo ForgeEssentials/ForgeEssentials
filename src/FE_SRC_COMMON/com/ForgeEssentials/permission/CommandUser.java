@@ -62,7 +62,7 @@ public class CommandUser
 				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove")) // remove super
 																									// perm settings
 				{
-					
+					PermissionsAPI.clearPlayerPermission(player.username, args[3], zone.getZoneName());
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny")) // deny super perm
