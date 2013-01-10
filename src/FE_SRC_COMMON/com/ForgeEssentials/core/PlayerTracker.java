@@ -2,6 +2,7 @@ package com.ForgeEssentials.core;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.IPlayerTracker;
@@ -12,8 +13,8 @@ public class PlayerTracker implements IPlayerTracker
 	public void onPlayerLogin(EntityPlayer player)
 	{
 		PlayerInfo.getPlayerInfo(player);
-		OutputHandler.chatConfirmation(player,
-				"Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
+		LoginMessage.sendLoginMessage(player);
+		OutputHandler.chatConfirmation(player, "Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
 	}
 
 	@Override

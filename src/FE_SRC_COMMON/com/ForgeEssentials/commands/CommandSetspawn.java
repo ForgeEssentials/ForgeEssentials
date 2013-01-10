@@ -31,6 +31,19 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 			int x;
 			int y;
 			int z;
+			int dim = sender.dimension;
+			if(args.length == 4)
+			{
+				try
+				{
+					dim = Integer.parseInt(args[3]);
+				}
+				catch (NumberFormatException e)
+				{
+					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
+					return;
+				}
+			}
 			try
 			{
 				x = new Integer(args[0]);
@@ -63,7 +76,7 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 			spawn.setDouble("x", point.x);
 			spawn.setDouble("y", point.y);
 			spawn.setDouble("z", point.z);
-			spawn.setInteger("dim", 0);
+			spawn.setInteger("dim", dim);
 			DataStorage.setData("spawn", spawn);
 			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.getX(), point.getY(), point.getZ());
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
@@ -75,7 +88,7 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 			spawn.setDouble("x", point.x);
 			spawn.setDouble("y", point.y);
 			spawn.setDouble("z", point.z);
-			spawn.setInteger("dim", 0);
+			spawn.setInteger("dim", sender.dimension);
 			spawn.setFloat("pich", point.pitch);
 			spawn.setFloat("yaw", point.yaw);
 			DataStorage.setData("spawn", spawn);

@@ -12,7 +12,7 @@ import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.CommandVirtualchest;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 
 public class ConfigCmd implements IModuleConfig
 {
@@ -46,6 +46,19 @@ public class ConfigCmd implements IModuleConfig
 		CommandVirtualchest.name = config.get("general", "VirtualChestName", "Vault 13", "Don't use special stuff....").value;
 		
 		CommandAFK.warmup = config.get("general", "AFKwarmup", 5, "Amount of seconds you need to stand still in order to activate invulnerability.").getInt();
+		config.addCustomCategoryComment("parts", "Enable/disable command groups here.");
+		CommandRegistrar.general = config.get("parts", "enableGeneral", true,
+				"Setting this to false will disable the following commands: /motd, /rules and /modlist.").getBoolean(true);
+		CommandRegistrar.utility = config.get("parts", "enableUtility", true,
+				"Setting this to false will disable the following commands: /butcher, /remove, /spawnmob, /tps, /afk, /kit, /enderchest, /virtualchest, /capabilities, /setspawn, /jump, /craft, /ping.").getBoolean(true);
+		CommandRegistrar.op = config.get("parts", "enableOp", true,
+				"Setting this to false will disable the following commands: /serverdo, /seeinventory.").getBoolean(true);
+		CommandRegistrar.fun = config.get("parts", "enableFun", true,
+				"Setting this to false will disable the following commands: /smite, /burn, /potion, /colourize.").getBoolean(true);
+		CommandRegistrar.teleport = config.get("parts", "enableTP", true,
+				"Setting this to false will disable the following commands: /back, /bed, /home, /spawn, /tp, /tphere, /tppos, /warp.").getBoolean(true);
+		CommandRegistrar.cheat = config.get("parts", "enableFECheats", true,
+				"Setting this to false will disable the following commands: /repair, /heal.").getBoolean(true);
 		config.save();
 	}
 
@@ -68,6 +81,19 @@ public class ConfigCmd implements IModuleConfig
 		config.get("general", "VirtualChestName", "Vault 13", "Don't use special stuff....").value = CommandVirtualchest.name;
 		
 		config.get("general", "AFKwarmup", 5, "Amount of seconds you need to stand still in order to activate invulnerability.").value = "" + CommandAFK.warmup;
+		config.addCustomCategoryComment("parts", "Enable/disable command groups here.");
+		config.get("parts", "enableGeneral", true,
+				"Setting this to false will disable the following commands: /motd, /rules and /modlist.").value = "" + CommandRegistrar.general;
+		config.get("parts", "enableUtility", true,
+				"Setting this to false will disable the following commands: /butcher, /remove, /spawnmob, /tps, /afk, /kit, /enderchest, /virtualchest, /capabilities, /setspawn, /jump, /craft, /ping.").value = "" + CommandRegistrar.utility;
+		config.get("parts", "enableOp", true,
+				"Setting this to false will disable the following commands: /serverdo, /seeinventory.").value = "" + CommandRegistrar.op;
+		config.get("parts", "enableFun", true,
+				"Setting this to false will disable the following commands: /smite, /burn, /potion, /colourize.").value = "" + CommandRegistrar.fun;
+		config.get("parts", "enableTP", true,
+				"Setting this to false will disable the following commands: /back, /bed, /home, /spawn, /tp, /tphere, /tppos, /warp.").value = "" + CommandRegistrar.teleport;
+		config.get("parts", "enableFECheats", true,
+				"Setting this to false will disable the following commands: /repair, /heal.").value = "" + CommandRegistrar.cheat;
 		config.save();
 	}
 
@@ -83,6 +109,12 @@ public class ConfigCmd implements IModuleConfig
 		CommandVirtualchest.size = config.get("general", "VirtualChestRows", 6).getInt(6) * 9;
 		CommandVirtualchest.name = config.get("general", "VirtualChestName", "Vault 13").value;
 		CommandAFK.warmup = config.get("general", "AFKwarmup", 5).getInt();
+		CommandRegistrar.general = config.get("parts", "enableGeneral", true).getBoolean(true);
+		CommandRegistrar.utility = config.get("parts", "enableUtility", true).getBoolean(true);
+		CommandRegistrar.op = config.get("parts", "enableOp", true).getBoolean(true);
+		CommandRegistrar.fun = config.get("parts", "enableFun", true).getBoolean(true);
+		CommandRegistrar.teleport = config.get("parts", "enableTP", true).getBoolean(true);
+		CommandRegistrar.cheat = config.get("parts", "enableFECheats", true).getBoolean(true);
 	}
 
 	@Override

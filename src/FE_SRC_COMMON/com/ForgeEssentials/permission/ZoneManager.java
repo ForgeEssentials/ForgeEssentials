@@ -23,11 +23,12 @@ public class ZoneManager
 {
 	// GLOBAL and WORLD zones.
 	public static Zone GLOBAL;
-	public static String SUPER = "_SUPER_";
+	public static Zone SUPER;
 
 	public ZoneManager()
 	{
 		GLOBAL = new Zone("_GLOBAL_", Integer.MIN_VALUE);
+		SUPER = new Zone("_SUPER_", Integer.MIN_VALUE);
 		worldZoneMap = new ConcurrentHashMap<String, Zone>();
 		zoneMap = Collections.synchronizedSortedMap(new TreeMap<String, Zone>());
 	}
@@ -36,10 +37,18 @@ public class ZoneManager
 	{
 		Object[] objs = ModulePermissions.data.loadAllObjects(Zone.class);
 		Zone temp;
+		boolean exists;
 		for (Object obj : objs)
 		{
+			if (obj == null)
+				continue;
+			
 			temp = (Zone) obj;
-			zoneMap.put(temp.getZoneID(), temp);
+			zoneMap.put(temp.getZoneName(), temp);
+			
+			exists = SqlHelper.doesZoneExist(temp.getZoneName());
+			if (!exists)
+				SqlHelper.createZone(temp.getZoneName());
 		}
 	}
 
@@ -59,6 +68,10 @@ public class ZoneManager
 		{
 			Zone zone = new Zone(worldString, e.world.getWorldInfo().getDimension());
 			worldZoneMap.put(worldString, zone);
+			
+			boolean exists = SqlHelper.doesZoneExist(zone.getZoneName());
+			if (!exists)
+				SqlHelper.createZone(zone.getZoneName());
 		}
 	}
 
@@ -96,7 +109,7 @@ public class ZoneManager
 
 	public static boolean doesZoneExist(String zoneID)
 	{
-		if (zoneID.equals(GLOBAL.getZoneID()))
+		if (zoneID.equals(GLOBAL.getZoneName()))
 		{
 			return true;
 		}
@@ -116,7 +129,7 @@ public class ZoneManager
 		{
 			return null;
 		}
-		else if (zoneID.equals(GLOBAL.getZoneID()))
+		else if (zoneID.equals(GLOBAL.getZoneName()))
 		{
 			return GLOBAL;
 		}
@@ -203,7 +216,7 @@ public class ZoneManager
 		}
 		}
 
-		putCache(new WorldPoint(world, p1.x, p1.y, p1.z), end.getZoneID());
+		putCache(new WorldPoint(world, p1.x, p1.y, p1.z), end.getZoneName());
 		return end;
 	}
 
@@ -340,7 +353,7 @@ public class ZoneManager
 	{
 		for (Entry<WorldPoint, String> entry : pointCache.entrySet())
 		{
-			if (deleted.getZoneID().equals(entry.getValue()))
+			if (deleted.getZoneName().equals(entry.getValue()))
 			{
 				pointCache.remove(entry.getKey());
 			}
@@ -348,7 +361,7 @@ public class ZoneManager
 
 		for (Entry<WorldArea, String> entry : areaCache.entrySet())
 		{
-			if (deleted.getZoneID().equals(entry.getValue()))
+			if (deleted.getZoneName().equals(entry.getValue()))
 			{
 				areaCache.remove(entry.getKey());
 			}

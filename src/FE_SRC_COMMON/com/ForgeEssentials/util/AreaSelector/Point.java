@@ -176,7 +176,7 @@ public class Point implements Serializable, Comparable<Point>
 	@UniqueLoadingKey()
 	private String getLoadingField()
 	{
-		return "point_" + x + "_" + y + "_" + z;
+		return "Point"+this;
 	}
 
 	@Override

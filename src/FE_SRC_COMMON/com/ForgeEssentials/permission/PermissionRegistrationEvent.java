@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 import net.minecraftforge.event.Event;
 
-import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.IFEModule;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Mod;
@@ -13,7 +13,7 @@ import cpw.mods.fml.common.Mod;
 public class PermissionRegistrationEvent extends Event
 {
 	protected HashSet<String> mods = new HashSet<String>();
-	protected HashMap<RegGroup, HashSet<Permission>> registerred = new HashMap<RegGroup, HashSet<Permission>>();
+	protected HashMap<RegGroup, HashSet<Permission>> registered = new HashMap<RegGroup, HashSet<Permission>>();
 
 	/**
 	 * This is to define the level the permission should be used for by defualt.. see @see com.ForgeEssentials.permissions.PermissionsAPI for the default groups
@@ -32,11 +32,11 @@ public class PermissionRegistrationEvent extends Event
 
 		Permission perm = new Permission(permission, allow);
 
-		HashSet<Permission> set = registerred.get(group);
+		HashSet<Permission> set = registered.get(group);
 		if (set == null)
 		{
 			set = new HashSet<Permission>();
-			registerred.put(group, set);
+			registered.put(group, set);
 		}
 
 		set.add(perm);
@@ -51,7 +51,7 @@ public class PermissionRegistrationEvent extends Event
 			modid = mod.getClass().getSimpleName();
 			if (mods.add(modid))
 			{
-				OutputHandler.SOP("[PermReg] " + modid + " has registerred permissions.");
+				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
 			}
 
 			return;
@@ -64,7 +64,7 @@ public class PermissionRegistrationEvent extends Event
 		modid = info.modid();
 		if (mods.add(modid))
 		{
-			OutputHandler.SOP("[PermReg] " + modid + " has registerred permissions.");
+			OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
 		}
 	}
 }

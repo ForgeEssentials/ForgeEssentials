@@ -146,7 +146,7 @@ public class PlayerInfo
 	public void save()
 	{
 		// TODO: get the actual config-given choice...
-		// /DataStorageManager.getDriverOfName("ForgeConfig").saveObject(this);
+		DataStorageManager.getDriverOfName("ForgeConfig").saveObject(this);
 	}
 
 	// ----------------------------------------------

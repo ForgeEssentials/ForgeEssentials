@@ -6,10 +6,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.DataStorageManager;
+import com.ForgeEssentials.permission.mcoverride.OverrideManager;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
@@ -59,7 +60,7 @@ public class ModulePermissions implements IFEModule
 
 		// setup SQL
 		sql = new SqlHelper(config);
-		sql.putRegistrationperms(permreg.registerred);
+		sql.putRegistrationperms(permreg.registered);
 
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
@@ -77,8 +78,10 @@ public class ModulePermissions implements IFEModule
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
 		zManager.loadZones();
 
+		//init perms and vMC command overrides
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
+		OverrideManager.regOverrides(e);
 	}
 
 	@Override
@@ -100,10 +103,9 @@ public class ModulePermissions implements IFEModule
 	@Override
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
+		// save all the zones
 		for (Zone zone : ZoneManager.zoneMap.values())
-		{
 			data.saveObject(zone);
-		}
 	}
 
 	@Override

@@ -9,8 +9,8 @@ import java.util.List;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.logEntry;

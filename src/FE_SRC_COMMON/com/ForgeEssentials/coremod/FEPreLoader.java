@@ -14,7 +14,7 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 	@Override
 	public String[] getLibraryRequestClass()
 	{
-		return Data.downloaders;
+		return new String[] {"com.ForgeEssentials.coremod.Downloader"};
 	}
 
 	@Override

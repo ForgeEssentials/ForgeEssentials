@@ -138,7 +138,8 @@ public class TypeTagger
 			else
 			{
 				Method m;
-				m = c.getDeclaredMethod(uniqueKey, new Class[] {});
+				String methodName = uniqueKey.replace("()", "");
+				m = c.getDeclaredMethod(methodName, new Class[] {});
 				m.setAccessible(true);
 				data.uniqueKey.name = m.getName() + "()"; // idk.. what should
 															// it be??

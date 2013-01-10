@@ -5,43 +5,18 @@ import java.util.Set;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.commands.util.CommandRegistrar;
 import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
-import com.ForgeEssentials.commands.vanilla.CommandBan;
-import com.ForgeEssentials.commands.vanilla.CommandBanIp;
-import com.ForgeEssentials.commands.vanilla.CommandBanlist;
-import com.ForgeEssentials.commands.vanilla.CommandDebug;
-import com.ForgeEssentials.commands.vanilla.CommandDefaultGameMode;
-import com.ForgeEssentials.commands.vanilla.CommandDeop;
-import com.ForgeEssentials.commands.vanilla.CommandDifficulty;
-import com.ForgeEssentials.commands.vanilla.CommandEnchant;
-import com.ForgeEssentials.commands.vanilla.CommandGameRule;
-import com.ForgeEssentials.commands.vanilla.CommandKick;
-import com.ForgeEssentials.commands.vanilla.CommandMe;
-import com.ForgeEssentials.commands.vanilla.CommandOp;
-import com.ForgeEssentials.commands.vanilla.CommandPardon;
-import com.ForgeEssentials.commands.vanilla.CommandPardonIp;
-import com.ForgeEssentials.commands.vanilla.CommandPublish;
-import com.ForgeEssentials.commands.vanilla.CommandSaveAll;
-import com.ForgeEssentials.commands.vanilla.CommandSaveOff;
-import com.ForgeEssentials.commands.vanilla.CommandSaveOn;
-import com.ForgeEssentials.commands.vanilla.CommandSay;
-import com.ForgeEssentials.commands.vanilla.CommandSeed;
-import com.ForgeEssentials.commands.vanilla.CommandStop;
-import com.ForgeEssentials.commands.vanilla.CommandTell;
-import com.ForgeEssentials.commands.vanilla.CommandTime;
-import com.ForgeEssentials.commands.vanilla.CommandToggleDownfall;
-import com.ForgeEssentials.commands.vanilla.CommandWeather;
-import com.ForgeEssentials.commands.vanilla.CommandWhitelist;
-import com.ForgeEssentials.commands.vanilla.CommandXP;
-import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
@@ -60,6 +35,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
 public class ModuleCommands implements IFEModule
@@ -100,73 +76,9 @@ public class ModuleCommands implements IFEModule
 
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
 
-		// general
-		e.registerServerCommand(new CommandMotd());
-		e.registerServerCommand(new CommandRules());
-		e.registerServerCommand(new CommandModlist());
-		// utility
-		e.registerServerCommand(new CommandButcher());
-		e.registerServerCommand(new CommandRemove());
-		e.registerServerCommand(new CommandSpawnMob());
-		e.registerServerCommand(new CommandTPS());
-		e.registerServerCommand(new CommandAFK());
-		e.registerServerCommand(new CommandKit());
-		e.registerServerCommand(new CommandEnderchest());
-		e.registerServerCommand(new CommandVirtualchest());
-		e.registerServerCommand(new CommandCapabilities());
-		e.registerServerCommand(new CommandSetspawn());
-		e.registerServerCommand(new CommandJump());
-		e.registerServerCommand(new CommandCraft());
-		e.registerServerCommand(new CommandSeeInvenroty());
-		e.registerServerCommand(new CommandPing());
-		// op
-		e.registerServerCommand(new CommandServerDo());
-		// fun
-		e.registerServerCommand(new CommandSmite());
-		e.registerServerCommand(new CommandBurn());
-		e.registerServerCommand(new CommandPotion());
-		e.registerServerCommand(new CommandColorize());
-		// teleport
-		e.registerServerCommand(new CommandBack());
-		e.registerServerCommand(new CommandBed());
-		e.registerServerCommand(new CommandHome());
-		e.registerServerCommand(new CommandSpawn());
-		e.registerServerCommand(new CommandTp());
-		e.registerServerCommand(new CommandTphere());
-		e.registerServerCommand(new CommandTppos());
-		e.registerServerCommand(new CommandWarp());
-		// cheat
-		e.registerServerCommand(new CommandRepair());
-		e.registerServerCommand(new CommandHeal());
+		CommandRegistrar.load(e);
+		
 		// Vanilla Override
-		e.registerServerCommand(new CommandBan());
-		e.registerServerCommand(new CommandBanIp());
-		e.registerServerCommand(new CommandBanlist());
-		e.registerServerCommand(new CommandDebug());
-		e.registerServerCommand(new CommandDefaultGameMode());
-		e.registerServerCommand(new CommandDeop());
-		e.registerServerCommand(new CommandDifficulty());
-		e.registerServerCommand(new CommandEnchant());
-		e.registerServerCommand(new CommandGameRule());
-		// e.registerServerCommand(new CommandHelp());
-		e.registerServerCommand(new CommandKick());
-		e.registerServerCommand(new CommandMe());
-		e.registerServerCommand(new CommandOp());
-		e.registerServerCommand(new CommandPardon());
-		e.registerServerCommand(new CommandPardonIp());
-		e.registerServerCommand(new CommandPublish());
-		e.registerServerCommand(new CommandSaveAll());
-		e.registerServerCommand(new CommandSaveOff());
-		e.registerServerCommand(new CommandSaveOn());
-		e.registerServerCommand(new CommandSay());
-		e.registerServerCommand(new CommandSeed());
-		e.registerServerCommand(new CommandStop());
-		e.registerServerCommand(new CommandTell());
-		e.registerServerCommand(new CommandTime());
-		e.registerServerCommand(new CommandToggleDownfall());
-		e.registerServerCommand(new CommandWeather());
-		e.registerServerCommand(new CommandWhitelist());
-		e.registerServerCommand(new CommandXP());
 		e.registerServerCommand(new CommandKill());
 		e.registerServerCommand(new CommandGive());
 		e.registerServerCommand(new CommandI());
@@ -193,9 +105,11 @@ public class ModuleCommands implements IFEModule
 			{
 				Set<String> commandNames = new HashSet<String>();
 				Set<String> toRemoveNames = new HashSet<String>();
-				CommandHandler cmdMng = (CommandHandler) server.getCommandManager();
-
-				for (Object cmdObj : cmdMng.commandSet)
+				
+				Set cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet", "b");
+				OutputHandler.debug("commandSet size: " + cmdList.size());
+				
+				for (Object cmdObj : cmdList)
 				{
 					ICommand cmd = (ICommand) cmdObj;
 					if (!commandNames.add(cmd.getCommandName()))
@@ -205,7 +119,7 @@ public class ModuleCommands implements IFEModule
 					}
 				}
 				Set toRemove = new HashSet();
-				for (Object cmdObj : cmdMng.commandSet)
+				for (Object cmdObj : cmdList)
 				{
 					ICommand cmd = (ICommand) cmdObj;
 					if (toRemoveNames.contains(cmd.getCommandName()))
@@ -217,20 +131,25 @@ public class ModuleCommands implements IFEModule
 							if (pkg == null || !pkg.getName().contains("ForgeEssentials"))
 							{
 								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
-								toRemove.add(cmd.getCommandName());
+								toRemove.add(cmd);
 							}
 						}
 						catch (Exception e)
 						{
-							OutputHandler.debug("dafug? Got exception:" + e.getLocalizedMessage());
+							OutputHandler.debug("Can't remove " + cmd.getCommandName());
+							OutputHandler.debug(""+e.getLocalizedMessage());
 							e.printStackTrace();
 						}
 					}
 				}
-				cmdMng.commandSet.removeAll(toRemove);
+				cmdList.removeAll(toRemove);
+				OutputHandler.debug("commandSet size: " + cmdList.size());
+				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmdList, "commandSet", "b");
+				
 			}
 			catch (Exception e)
 			{
+				OutputHandler.debug("Something broke: " + e.getLocalizedMessage());
 				e.printStackTrace();
 			}
 		}

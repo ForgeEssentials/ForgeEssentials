@@ -11,7 +11,7 @@ public class PlayerTrackerCommands implements IPlayerTracker
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
-		player.sendChatToPlayer(CommandMotd.motd);
+		//player.sendChatToPlayer(CommandMotd.motd);
 	}
 
 	@Override

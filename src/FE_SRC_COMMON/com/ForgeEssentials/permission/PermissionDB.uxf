@@ -202,7 +202,7 @@ name | String
 --
 INDEX: zoneID
 GLOBAL zone is -1
-WorldZones will be registerred.</panel_attributes>
+WorldZones will be registered.</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>

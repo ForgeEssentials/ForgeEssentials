@@ -5,7 +5,7 @@ import java.io.File;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.core.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 
 public class ConfigPermissions implements IModuleConfig
@@ -33,7 +33,7 @@ public class ConfigPermissions implements IModuleConfig
 
 		permDefault = config.get("stuff", "permissionDefault", false,
 				"if a permission is not set anywhere.. it will be return this. True = allow  False == deny").getBoolean(false);
-		config.get("stuff", "databaseType", "SqLite", " MySQL and SqLite are the only ones supported atm.");
+		config.get("stuff", "databaseType", "H2", " MySQL and H2 are the only ones supported atm.");
 
 		config.addCustomCategoryComment("MySQL", "For everything MySQL");
 		config.get("MySQL", "host", "server.example.com");
@@ -44,9 +44,9 @@ public class ConfigPermissions implements IModuleConfig
 		config.get("MySQL", "stealConfigFromCore", false,
 				"if this is true, the mysql details from ForgeEssentials/main.cfg will be used. The database specified here wills till be used.");
 
-		config.addCustomCategoryComment("SqLite", "For everything SqLite");
-		config.get("SqLite", "file", "permissions.db");
-		config.get("SqLite", "absolutePath", false, "if this is true, the below path will be parsed as an absolute path. otherwise it is relative to this dir.");
+		config.addCustomCategoryComment("H2", "For everything H2 (flatfile DB)");
+		config.get("H2", "file", "permissions", "DO NOT put .db on the end of this file name!");
+		config.get("H2", "absolutePath", false, "if this is true, the below path will be parsed as an absolute path. otherwise it is relative to this dir.");
 
 		config.save();
 	}

@@ -12,13 +12,15 @@ import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
+import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
 import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.MySQLDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
-import com.ForgeEssentials.data.SQLiteDataDriver;
+import com.ForgeEssentials.data.H2DataDriver;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -107,7 +109,7 @@ public class ForgeEssentials
 			DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
 			DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
 			DataStorageManager.registerDriver("MySQL", MySQLDataDriver.class);
-			DataStorageManager.registerDriver("SQLite", SQLiteDataDriver.class);
+			DataStorageManager.registerDriver("H2", H2DataDriver.class);
 
 			// Register saveables..
 			DataStorageManager.registerSaveableClass(PlayerInfo.class);
@@ -119,6 +121,7 @@ public class ForgeEssentials
 		// setup modules AFTER data stuff...
 		miscEventHandler = new MiscEventHandler();
 		bannedItems = new BannedItems();
+		LoginMessage.loadFile();
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
 

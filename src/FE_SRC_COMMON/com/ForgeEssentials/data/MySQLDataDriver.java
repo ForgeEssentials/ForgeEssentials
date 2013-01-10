@@ -82,7 +82,7 @@ public class MySQLDataDriver extends DataDriver
 	}
 
 	@Override
-	public void onClassRegisterred(TypeTagger tagger)
+	public void onClassRegistered(TypeTagger tagger)
 	{
 		// If this is the first time registering a class that is NOT saved
 		// inline,
@@ -468,14 +468,14 @@ public class MySQLDataDriver extends DataDriver
 	}
 
 	/**
-	 * Examines the provided type and produces an array of field => SQLite Type pairs, ideal for creating new tables with. Complex type fields are broken down
+	 * Examines the provided type and produces an array of field => H2 Type pairs, ideal for creating new tables with. Complex type fields are broken down
 	 * into constituent primitives in the form of: "parentField_childFieldName"
 	 * 
 	 * @param fieldName
 	 *            Name of saved field
 	 * @param type
 	 *            Type of saved field
-	 * @return Array of field => SQLite type names.
+	 * @return Array of field => H2 type names.
 	 */
 	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, Class type)
 	{
@@ -528,7 +528,7 @@ public class MySQLDataDriver extends DataDriver
 	 * Generates an array of fieldname => String(Value) pairs, useful for Inserts, Updates, or Deletes.
 	 * 
 	 * @param fieldName
-	 *            Name of the field in the SQLite DB
+	 *            Name of the field in the H2 DB
 	 * @param type
 	 *            Type of field (Java)
 	 * @param value

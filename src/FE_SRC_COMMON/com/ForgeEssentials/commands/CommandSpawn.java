@@ -6,13 +6,16 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
@@ -51,12 +54,24 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			ChunkCoordinates spawn = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
+			NBTTagCompound data = DataStorage.getData("spawn");
+			WarpPoint spawn;
+			if(!(data == null))
+			{
+				spawn = new WarpPoint(data.getInteger("dim"), data.getDouble("x"), data.getDouble("y"),
+						data.getDouble("z"), data.getFloat("pitch"), data.getFloat("yaw"));
+			}
+			else
+			{
+				ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
+				spawn = new WarpPoint(sender.dimension, point.posX, point.posY, point.posZ, sender.rotationPitch, sender.rotationYaw);
+			}
 			if (spawn != null)
 			{
 				PlayerInfo.getPlayerInfo(sender).back = new WarpPoint(sender);
-				((EntityPlayerMP) sender).playerNetServerHandler
-						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
+				TeleportCenter.addToTpQue(spawn, sender);
+//				((EntityPlayerMP) sender).playerNetServerHandler
+//						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
 				sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			}
 		}
