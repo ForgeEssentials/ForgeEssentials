@@ -97,7 +97,8 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 			else
 			{
 				EnumGameType gm;
-				if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType().isSurvivalOrAdventure())
+				if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType() == EnumGameType.SURVIVAL ||
+						((EntityPlayerMP) victim).theItemInWorldManager.getGameType() == EnumGameType.ADVENTURE)
 				{
 					gm = EnumGameType.CREATIVE;
 				}
