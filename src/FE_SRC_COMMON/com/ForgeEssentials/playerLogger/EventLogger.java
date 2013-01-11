@@ -1,6 +1,7 @@
 package com.ForgeEssentials.playerLogger;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.EventPriority;
@@ -32,10 +33,13 @@ public class EventLogger implements IPlayerTracker
 
 	public static boolean logPlayerChangedDimension = true;
 	public static boolean logPlayerRespawn = true;
-	public static boolean logCommands = true;
 	public static boolean logItemUsage = true;
 	public static boolean logBlockChanges = true;
 	public static boolean logPlayerLoginLogout = true;
+	
+	public static boolean logCommands_Player = true;
+	public static boolean logCommands_Block = true;
+	public static boolean logCommands_rest = true;
 
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
@@ -76,13 +80,20 @@ public class EventLogger implements IPlayerTracker
 	@ForgeSubscribe
 	public void command(CommandEvent e)
 	{
-		if (logCommands && !e.isCanceled() && e.sender instanceof EntityPlayer)
+		if (logCommands_Player && !e.isCanceled() && e.sender instanceof EntityPlayer)
 		{
 			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
+			return;
 		}
-		if (logCommands && !e.isCanceled() && !(e.sender instanceof EntityPlayer))
+		if (logCommands_Block && !e.isCanceled() && e.sender instanceof TileEntityCommandBlock)
 		{
 			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
+			return;
+		}
+		if (logCommands_rest && !e.isCanceled())
+		{
+			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
+			return;
 		}
 	}
 
