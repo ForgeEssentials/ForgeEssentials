@@ -2,6 +2,7 @@ package com.ForgeEssentials.core.moduleLauncher;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Set;
 
 import net.minecraft.command.ICommandSender;
 
@@ -17,6 +18,8 @@ import com.ForgeEssentials.protection.ModuleProtection;
 import com.ForgeEssentials.snooper.ModuleSnooper;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.discovery.ASMDataTable;
+import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -41,6 +44,16 @@ public class ModuleLauncher
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
+		/*
+		 * started ASM handling for the module loaidng.
+		Set<ASMData> asm = e.getAsmData().getAll(FEModule.class.getSimpleName());
+		
+		for (ASMData data : asm)
+		{
+			data.getCandidate()
+		}
+		*/
+		
 		OutputHandler.SOP("Discovering and loading modules...");
 		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
 
