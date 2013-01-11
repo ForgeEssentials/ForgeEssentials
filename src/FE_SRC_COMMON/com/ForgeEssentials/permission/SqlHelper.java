@@ -521,7 +521,7 @@ public class SqlHelper
 
 			Class driverClass = Class.forName("org.h2.jdbc.JdbcConnection");
 
-			db = DriverManager.getConnection("jdbc:h2:file:" + file.getPath());
+			db = DriverManager.getConnection("jdbc:h2:file:" + file.getPath() + ";FILE_LOCK=NO");
 		}
 		catch (SQLException e)
 		{
