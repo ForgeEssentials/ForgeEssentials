@@ -53,7 +53,7 @@ public class DataStorageManager
 	/**
 	 * Parses the ForgeEssentials config file and determines which Driver to use.
 	 * 
-	 * @param config
+	 * @param Config
 	 */
 	public void setupManager(FMLServerStartingEvent event)
 	{

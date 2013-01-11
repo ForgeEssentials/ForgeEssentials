@@ -32,7 +32,7 @@ public class FEModulePreInitEvent extends FEModuleEvent
     }
 
 	@Override
-	public FMLStateEvent getFEEvent()
+	public FMLStateEvent getFMLEvent()
 	{
 		return event;
 	}

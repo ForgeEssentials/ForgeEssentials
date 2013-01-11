@@ -15,8 +15,12 @@ import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.IFEModule;
 import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.event.*;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
@@ -27,20 +31,18 @@ import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Warp;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
-public class ModuleCommands implements IFEModule
+@FEModule(configClass = ConfigCmd.class, name = "CommandsModule", parentMod = ForgeEssentials.class)
+public class ModuleCommands
 {
+	@Config
 	public static ConfigCmd conf;
+	
 	public static boolean removeDuplicateCommands;
 	public DataDriver data;
 
@@ -49,34 +51,34 @@ public class ModuleCommands implements IFEModule
 
 	}
 
-	@Override
-	public void preLoad(FMLPreInitializationEvent e)
+	@PreInit
+	public void preLoad(FEModulePreInitEvent e)
 	{
 		OutputHandler.SOP("Commands module is enabled. Loading...");
 		conf = new ConfigCmd();
 	}
 
-	@Override
-	public void load(FMLInitializationEvent e)
+	@Init
+	public void load(FEModuleInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		MinecraftForge.EVENT_BUS.register(this); // for the permissions.
 		GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
 	}
 
-	@Override
-	public void postLoad(FMLPostInitializationEvent e)
+	@PostInit
+	public void postLoad(FEModulePostInitEvent e)
 	{
 	}
 
-	@Override
-	public void serverStarting(FMLServerStartingEvent e)
+	@ServerInit
+	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		DataStorage.load();
 
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
 
-		CommandRegistrar.load(e);
+		CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
 		
 		// Vanilla Override
 		e.registerServerCommand(new CommandKill());
@@ -86,8 +88,8 @@ public class ModuleCommands implements IFEModule
 		e.registerServerCommand(new CommandGameMode());
 	}
 
-	@Override
-	public void serverStarted(FMLServerStartedEvent e)
+	@ServerPostInit
+	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		loadWarps();
 		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
@@ -167,8 +169,8 @@ public class ModuleCommands implements IFEModule
 		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.modlist", true);
 	}
 
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e)
+	@ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		saveWarps();
 	}
@@ -189,11 +191,5 @@ public class ModuleCommands implements IFEModule
 			Warp warp = ((Warp) obj);
 			TeleportCenter.warps.put(warp.getName(), warp);
 		}
-	}
-
-	@Override
-	public IModuleConfig getConfig()
-	{
-		return conf;
 	}
 }

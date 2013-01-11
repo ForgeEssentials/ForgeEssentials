@@ -19,22 +19,24 @@ import com.ForgeEssentials.WorldControl.commands.CommandUndo;
 import com.ForgeEssentials.WorldControl.commands.CommandWand;
 import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModulePostInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerPostInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 // central class for all the WorldControl stuff
-public class ModuleWorldControl implements IFEModule
+@FEModule(name = "WorldControl", parentMod = ForgeEssentials.class)
+public class ModuleWorldControl
 {
 	// implicit constructor WorldControl()
 	public static int defaultWandID;
@@ -46,8 +48,8 @@ public class ModuleWorldControl implements IFEModule
 	public static final File wcconf = new File(ForgeEssentials.FEDIR, "WorldControl.cfg");
 
 	// preload.
-	@Override
-	public void preLoad(FMLPreInitializationEvent event)
+	@PreInit
+	public void preLoad(FEModulePreInitEvent event)
 	{
 		OutputHandler.SOP("WorldControl module is enabled. Loading...");
 		doConfig();
@@ -69,24 +71,24 @@ public class ModuleWorldControl implements IFEModule
 	}
 
 	// load.
-	@Override
-	public void load(FMLInitializationEvent event)
+	@Init
+	public void load(FEModuleInitEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(new WandController());
 		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
 
 	}
 
-	@Override
-	public void postLoad(FMLPostInitializationEvent e)
+	@PostInit
+	public void postLoad(FEModulePostInitEvent e)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	// serverStart.
-	@Override
-	public void serverStarting(FMLServerStartingEvent e)
+	@ServerInit
+	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandWand());
 		e.registerServerCommand(new CommandDeselect());
@@ -103,24 +105,17 @@ public class ModuleWorldControl implements IFEModule
 		e.registerServerCommand(new CommandTopManipulate("untill", Mode.UNTILL));
 	}
 
-	@Override
-	public void serverStarted(FMLServerStartedEvent e)
+	@ServerPostInit
+	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e)
+	@ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public IModuleConfig getConfig()
-	{
-		// TODO:!!!!
-		return null;
 	}
 }

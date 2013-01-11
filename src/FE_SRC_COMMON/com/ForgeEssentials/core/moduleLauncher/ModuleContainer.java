@@ -1,14 +1,7 @@
 package com.ForgeEssentials.core.moduleLauncher;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.PostInit;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.Reload;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerPostInit;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerStop;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.container;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.instance;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModulePostInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
@@ -22,9 +15,14 @@ import net.minecraft.command.ICommandSender;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 
 import com.google.common.base.Throwables;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -34,27 +32,65 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleContainer
 {
-	private Object			module, mod;
+	protected static HashSet<Class>			modClasses	= new HashSet<Class>();
+
+	private Object							module, mod;
+	private IModuleConfig					configObj;
+	private Class<? extends IModuleConfig>	configClass;
 
 	// methods..
-	private Method			preinit, init, postinit, serverinit, serverpostinit, serverstop, reload;
+	private String							preinit, init, postinit, serverinit, serverpostinit, serverstop, reload;
 
 	// fields
-	private Field			instance, container;
+	private String							instance, container, config, parentMod;
 
 	// other vars..
-	public final String		name;
-	public final boolean	isCore;
-	private boolean			isLoadable;
+	public final String						className;
+	public final String						name;
+	public final boolean					isCore;
+	private boolean							isLoadable;
+	protected boolean						isValid		= true;
 
-	public ModuleContainer(Class c)
+	public ModuleContainer(ASMData data)
 	{
+		// get the class....
+		Class c = null;
+		className = data.getClassName();
+
+		try
+		{
+			c = Class.forName(className);
+		}
+		catch (Exception e)
+		{
+			OutputHandler.SOP("Error trying to laod " + data.getClassName() + " as an FEModule!");
+			e.printStackTrace();
+			isValid = false;
+			isCore = false;
+			name = "INVALID-MODULE";
+			return;
+		}
+
 		// checks original FEModule annotation.
 		assert c.isAnnotationPresent(FEModule.class) : new IllegalArgumentException(c.getName() + " doesn't have the @FEModule annotation!");
 		FEModule annot = (FEModule) c.getAnnotation(FEModule.class);
 		name = annot.name();
 		isCore = annot.isCore();
-		mod = annot.parentMod();
+		configClass = annot.configClass();
+
+		// try getting the parent mod.. and register it.
+		{
+			Class modClass = annot.parentMod();
+			Mod atMod = (Mod) annot.parentMod().getAnnotation(Mod.class);
+			assert atMod != null : new RuntimeException(modClass + " isn't an @mod class!");
+			// register
+			if (!modClasses.contains(modClass))
+			{
+				OutputHandler.SOP("Modules from " + atMod.name() + " are bieng loaded");
+				modClasses.add(modClass);
+			}
+			mod = Loader.instance().getIndexedModList().get(atMod.modid());
+		}
 
 		// check method annotations. they are all optional...
 		Class[] params;
@@ -67,7 +103,7 @@ public class ModuleContainer
 				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
 				assert params[0].equals(FEModuleServerStopEvent.class) : new RuntimeException(m + " must take " + FEModuleServerStopEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
-				preinit = m;
+				preinit = m.getName();
 			}
 			else if (m.isAnnotationPresent(Init.class))
 			{
@@ -76,7 +112,7 @@ public class ModuleContainer
 				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
 				assert params[0].equals(FEModuleInitEvent.class) : new RuntimeException(m + " must take " + FEModuleInitEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
-				init = m;
+				init = m.getName();
 			}
 			else if (m.isAnnotationPresent(PostInit.class))
 			{
@@ -85,7 +121,7 @@ public class ModuleContainer
 				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
 				assert params[0].equals(FEModulePostInitEvent.class) : new RuntimeException(m + " must take " + FEModulePostInitEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
-				postinit = m;
+				postinit = m.getName();
 			}
 			else if (m.isAnnotationPresent(ServerInit.class))
 			{
@@ -94,7 +130,7 @@ public class ModuleContainer
 				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
 				assert params[0].equals(FEModuleServerInitEvent.class) : new RuntimeException(m + " must take " + FEModuleServerInitEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
-				serverinit = m;
+				serverinit = m.getName();
 			}
 			else if (m.isAnnotationPresent(ServerPostInit.class))
 			{
@@ -103,7 +139,7 @@ public class ModuleContainer
 				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
 				assert params[0].equals(FEModuleServerPostInitEvent.class) : new RuntimeException(m + " must take " + FEModuleServerPostInitEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
-				serverpostinit = m;
+				serverpostinit = m.getName();
 			}
 			else if (m.isAnnotationPresent(ServerStop.class))
 			{
@@ -112,7 +148,7 @@ public class ModuleContainer
 				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
 				assert params[0].equals(FEModuleServerStopEvent.class) : new RuntimeException(m + " must take " + FEModuleServerStopEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
-				serverstop = m;
+				serverstop = m.getName();
 			}
 			else if (m.isAnnotationPresent(Reload.class))
 			{
@@ -121,7 +157,7 @@ public class ModuleContainer
 				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
 				assert params[0].equals(ICommandSender.class) : new RuntimeException(m + " must take " + ICommandSender.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
-				reload = m;
+				reload = m.getName();
 			}
 		}
 
@@ -130,23 +166,41 @@ public class ModuleContainer
 		{
 			if (f.isAnnotationPresent(instance.class))
 			{
+				assert instance == null : new RuntimeException("Only one field may be marked as Instance");
 				f.setAccessible(true);
-				instance = f;
+				instance = f.getName();
 			}
-			else if (f.isAnnotationPresent(container.class))
+			else if (f.isAnnotationPresent(Container.class))
 			{
+				assert container == null : new RuntimeException("Only one field may be marked as Container");
 				assert f.getType().equals(ModuleContainer.class) : new RuntimeException("This field must have the type ModuleContainer!");
 				f.setAccessible(true);
-				container = f;
+				container = f.getName();
+			}
+			else if (f.isAnnotationPresent(Config.class))
+			{
+				assert config == null : new RuntimeException("Only one field may be marked as Config");
+				assert f.getType().isAssignableFrom(IModuleConfig.class) : new RuntimeException("This field must be the type IModuleConfig!");
+				f.setAccessible(true);
+				config = f.getName();
+			}
+			else if (f.isAnnotationPresent(ParentMod.class))
+			{
+				assert parentMod == null : new RuntimeException("Only one field may be marked as ParentMod");
+				f.setAccessible(true);
+				parentMod = f.getName();
 			}
 		}
 	}
 
-	protected void createAndPopulate(Class c)
+	protected void createAndPopulate()
 	{
+		Field f;
+		Class c;
 		// instantiate.
 		try
 		{
+			c = Class.forName(className);
 			module = c.newInstance();
 		}
 		catch (Exception e)
@@ -160,12 +214,53 @@ public class ModuleContainer
 		// now for the fields...
 		try
 		{
-			instance.set(module, module);
-			container.set(module, this);
+			if (instance != null)
+			{
+				f = c.getDeclaredField(instance);
+				f.setAccessible(true);
+				f.set(module, module);
+			}
+
+			if (container != null)
+			{
+				f = c.getDeclaredField(container);
+				f.setAccessible(true);
+				f.set(module, this);
+			}
+
+			if (parentMod != null)
+			{
+				f = c.getDeclaredField(parentMod);
+				f.setAccessible(true);
+				f.set(module, mod);
+			}
 		}
 		catch (Exception e)
 		{
 			OutputHandler.SOP("Error populating fields of " + name);
+			Throwables.propagate(e);
+		}
+
+		// now for the config..
+		if (configClass.equals(DummyConfig.class))
+		{
+			OutputHandler.SOP("No config specified for " + name);
+			configObj = null;
+			return;
+		}
+
+		try
+		{
+			configObj = configClass.newInstance();
+
+			f = c.getDeclaredField(config);
+			f.setAccessible(true);
+			f.set(module, configObj);
+
+		}
+		catch (Exception e)
+		{
+			OutputHandler.SOP("Error Instantiating or populating config for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -180,7 +275,9 @@ public class ModuleContainer
 		FEModulePreInitEvent event = new FEModulePreInitEvent(this, fmlEvent);
 		try
 		{
-			preinit.invoke(module, event);
+			Class c = Class.forName(className);
+			Method m = c.getDeclaredMethod(preinit, new Class[] { FEModulePreInitEvent.class });
+			m.invoke(module, event);
 		}
 		catch (Exception e)
 		{
@@ -197,7 +294,9 @@ public class ModuleContainer
 		FEModuleInitEvent event = new FEModuleInitEvent(this, fmlEvent);
 		try
 		{
-			init.invoke(module, event);
+			Class c = Class.forName(className);
+			Method m = c.getDeclaredMethod(init, new Class[] { FEModuleInitEvent.class });
+			m.invoke(module, event);
 		}
 		catch (Exception e)
 		{
@@ -214,7 +313,9 @@ public class ModuleContainer
 		FEModulePostInitEvent event = new FEModulePostInitEvent(this, fmlEvent);
 		try
 		{
-			postinit.invoke(module, event);
+			Class c = Class.forName(className);
+			Method m = c.getDeclaredMethod(postinit, new Class[] { FEModulePostInitEvent.class });
+			m.invoke(module, event);
 		}
 		catch (Exception e)
 		{
@@ -231,7 +332,9 @@ public class ModuleContainer
 		FEModuleServerInitEvent event = new FEModuleServerInitEvent(this, fmlEvent);
 		try
 		{
-			serverinit.invoke(module, event);
+			Class c = Class.forName(className);
+			Method m = c.getDeclaredMethod(serverinit, new Class[] { FEModuleServerInitEvent.class });
+			m.invoke(module, event);
 		}
 		catch (Exception e)
 		{
@@ -248,7 +351,9 @@ public class ModuleContainer
 		FEModuleServerPostInitEvent event = new FEModuleServerPostInitEvent(this, fmlEvent);
 		try
 		{
-			serverpostinit.invoke(module, event);
+			Class c = Class.forName(className);
+			Method m = c.getDeclaredMethod(serverpostinit, new Class[] { FEModuleServerPostInitEvent.class });
+			m.invoke(module, event);
 		}
 		catch (Exception e)
 		{
@@ -265,7 +370,9 @@ public class ModuleContainer
 		FEModuleServerStopEvent event = new FEModuleServerStopEvent(this, fmlEvent);
 		try
 		{
-			serverstop.invoke(module, event);
+			Class c = Class.forName(className);
+			Method m = c.getDeclaredMethod(serverstop, new Class[] { FEModuleServerStopEvent.class });
+			m.invoke(module, event);
 		}
 		catch (Exception e)
 		{
@@ -274,8 +381,31 @@ public class ModuleContainer
 		}
 	}
 
+	public void runReload(ICommandSender user)
+	{
+		if (!isLoadable)
+			return;
+
+		try
+		{
+			Class c = Class.forName(className);
+			Method m = c.getDeclaredMethod(reload, new Class[] { ICommandSender.class });
+			m.invoke(module, user);
+		}
+		catch (Exception e)
+		{
+			OutputHandler.SOP("Error with invoking Reload method for " + name);
+			Throwables.propagate(e);
+		}
+	}
+
 	public File getModuleDir()
 	{
 		return new File(ForgeEssentials.FEDIR, name);
+	}
+
+	public IModuleConfig getConfig()
+	{
+		return configObj;
 	}
 }

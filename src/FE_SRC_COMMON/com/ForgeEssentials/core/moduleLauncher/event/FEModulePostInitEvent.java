@@ -19,7 +19,7 @@ public class FEModulePostInitEvent extends FEModuleEvent
 	}
 
 	@Override
-	public FMLStateEvent getFEEvent()
+	public FMLStateEvent getFMLEvent()
 	{
 		return event;
 	}

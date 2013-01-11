@@ -1,5 +1,8 @@
 package com.ForgeEssentials.core.moduleLauncher;
 
+import net.minecraft.command.ICommandSender;
+
+import java.io.File;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,7 +13,7 @@ public @interface FEModule
 	/**
 	 * this may be null
 	 */
-	Class<? extends IModuleConfig> configClass();
+	Class<? extends IModuleConfig> configClass() default DummyConfig.class;
 	
 	/**
 	 * "Module" is not automatically
@@ -35,7 +38,9 @@ public @interface FEModule
 	 */
 	Class parentMod();
 	
-	
+	/**
+	 * Configs are instantiated before this.
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD })
 	public @interface PreInit {}
@@ -62,7 +67,7 @@ public @interface FEModule
 	
 	/**
 	 * this should be obvious, This is the method that will be called when the /reload command is called.
-	 * Reloading the configs is up to you.	 *
+	 * Configs are relaoded just before this method is called.
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD })
@@ -76,9 +81,55 @@ public @interface FEModule
 	public @interface instance {}
 	
 	/**
-	 * This field will be populated with an instance of this Module's ModuleCOntainer object.
+	 * This field will be populated with an instance of this Module's parent mod.
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
-	public @interface container {}
+	public @interface ParentMod {}
+	
+	/**
+	 * This field will be populated with an instance of this Module's ModuleContainer object.
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public @interface Container {}
+	
+	/**
+	 * This field will be populated with an instance of this Module's Config object.
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public @interface Config {}
+	
+	class DummyConfig implements IModuleConfig
+	{
+
+		@Override
+		public void setGenerate(boolean generate)
+		{
+			
+		}
+
+		@Override
+		public void init()
+		{
+		}
+
+		@Override
+		public void forceSave()
+		{
+		}
+
+		@Override
+		public void forceLoad(ICommandSender sender)
+		{
+		}
+
+		@Override
+		public File getFile()
+		{
+			return null;
+		}
+		
+	}
 }

@@ -16,7 +16,7 @@ public class FEModuleServerStopEvent extends FEModuleEvent
 	}
 
 	@Override
-	public FMLStateEvent getFEEvent()
+	public FMLStateEvent getFMLEvent()
 	{
 		return event;
 	}

@@ -27,5 +27,5 @@ public abstract class FEModuleEvent
 		return new File(ForgeEssentials.FEDIR, container.name);
 	}
 	
-	public abstract FMLStateEvent getFEEvent();
+	public abstract FMLStateEvent getFMLEvent();
 }

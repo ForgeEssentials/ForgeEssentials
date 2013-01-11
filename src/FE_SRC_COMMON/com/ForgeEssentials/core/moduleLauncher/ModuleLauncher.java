@@ -3,6 +3,7 @@ package com.ForgeEssentials.core.moduleLauncher;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.TreeMap;
 
 import net.minecraft.command.ICommandSender;
 
@@ -39,149 +40,40 @@ public class ModuleLauncher
 	}
 
 	public static ModuleLauncher instance;
-
-	public ArrayList<IFEModule> modules;
+	private TreeMap<String, ModuleContainer> containerMap;
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-		/*
-		 * started ASM handling for the module loaidng.
-		Set<ASMData> asm = e.getAsmData().getAll(FEModule.class.getSimpleName());
-		
-		for (ASMData data : asm)
-		{
-			data.getCandidate()
-		}
-		*/
-		
 		OutputHandler.SOP("Discovering and loading modules...");
 		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
-
-		modules = new ArrayList<IFEModule>();
-		IFEModule instance;
-
-		/*
-		 * commands = new ModuleCommands(); permission = new ModulePermissions(); worldborder = new ModuleWorldBorder(); playerLogger = new
-		 * ModulePlayerLogger(); economy = new ModuleEconomy(); chat = new ModuleChat(); protection = new ModuleProtection(); snooper = new ModuleSnooper();
-		 */
-
-		try
+		
+		// started ASM handling for the module loaidng.
+		Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
+		
+		TreeMap<String, ModuleContainer> map = new TreeMap<String, ModuleContainer>();
+		ModuleContainer temp;
+		for (ASMData asm : data)
 		{
-			instance = new ModuleWorldControl();
-			modules.add(instance);
-			OutputHandler.SOP("Discovered " + instance.getClass().toString());
+			temp = new ModuleContainer(asm);
+			if (temp.isValid)
+			{
+				map.put(temp.name, temp);
+				temp.createAndPopulate();
+				OutputHandler.SOP("Loaded "+temp.name);
+			}
 		}
-		catch (NoClassDefFoundError e1)
+		
+		Set<ModuleContainer> modules = (Set<ModuleContainer>) containerMap.values();
+		
+		// run the preinits.
+		for (ModuleContainer module : modules)
 		{
-			// Nothing to see here, carry on, carry on
-		}
-
-		try
-		{
-			instance = new ModuleBackup();
-			modules.add(instance);
-			OutputHandler.SOP("Discovered " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
-		{
-			// Nothing to see here, carry on, carry on
+			module.runPreInit(e);
 		}
 
-		try
-		{
-			instance = new ModuleCommands();
-			modules.add(instance);
-			OutputHandler.SOP("Discovered " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
-		{
-			// Nothing to see here, carry on, carry on
-		}
-
-		try
-		{
-			instance = new ModulePermissions();
-			modules.add(instance);
-			OutputHandler.SOP("Discovered " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
-		{
-			// Nothing to see here, carry on, carry on
-		}
-
-		try
-		{
-			instance = new ModuleWorldBorder();
-			modules.add(instance);
-			OutputHandler.SOP("Discovered " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
-		{
-			// Nothing to see here, carry on, carry on
-		}
-
-		try
-		{
-			instance = new ModulePlayerLogger();
-			modules.add(instance);
-			OutputHandler.SOP("Discovered " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
-		{
-			// Nothing to see here, carry on, carry on
-		}
-
-		try
-		{
-			instance = new ModuleEconomy();
-			modules.add(instance);
-			OutputHandler.SOP("Discovered " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
-		{
-			// Nothing to see here, carry on, carry on
-		}
-
-		try
-		{
-			instance = new ModuleChat();
-			modules.add(instance);
-			OutputHandler.SOP("Discovered " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
-		{
-			// Nothing to see here, carry on, carry on
-		}
-
-		try
-		{
-			instance = new ModuleProtection();
-			modules.add(instance);
-			OutputHandler.SOP("Discovered " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
-		{
-			// Nothing to see here, carry on, carry on
-		}
-
-		try
-		{
-			instance = new ModuleSnooper();
-			modules.add(instance);
-			OutputHandler.SOP("Discovered " + instance.getClass().toString());
-		}
-		catch (NoClassDefFoundError e1)
-		{
-			// Nothing to see here, carry on, carry on
-		}
-
-		for (IFEModule module : modules)
-		{
-			module.preLoad(e);
-		}
-
+		// run the config init methods..
 		boolean generate = false;
-		for (IFEModule module : modules)
+		for (ModuleContainer module : modules)
 		{
 			IModuleConfig cfg = module.getConfig();
 
@@ -208,49 +100,50 @@ public class ModuleLauncher
 
 	public void load(FMLInitializationEvent e)
 	{
-		for (IFEModule module : modules)
+		for (ModuleContainer module : containerMap.values())
 		{
-			module.load(e);
+			module.runInit(e);
 		}
 	}
 
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		for (IFEModule module : modules)
+		for (ModuleContainer module : containerMap.values())
 		{
-			module.postLoad(e);
+			module.runPostInit(e);
 		}
 	}
 
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-		for (IFEModule module : modules)
+		for (ModuleContainer module : containerMap.values())
 		{
-			module.serverStarting(e);
+			module.runServerInit(e);
 		}
 	}
 
 	public void serverStarted(FMLServerStartedEvent e)
 	{
-		for (IFEModule module : modules)
+		for (ModuleContainer module : containerMap.values())
 		{
-			module.serverStarted(e);
+			module.runServerPostInit(e);
 		}
 	}
 
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		for (IFEModule module : modules)
+		for (ModuleContainer module : containerMap.values())
 		{
-			module.serverStopping(e);
+			module.runServerStop(e);
 		}
 	}
 
 	public void reloadConfigs(ICommandSender sender)
 	{
-		for (IFEModule module : modules)
+		for (ModuleContainer module : containerMap.values())
 		{
 			module.getConfig().forceLoad(sender);
+			module.runReload(sender);
 		}
 	}
 }
