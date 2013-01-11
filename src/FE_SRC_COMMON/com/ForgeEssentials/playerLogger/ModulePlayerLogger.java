@@ -60,20 +60,12 @@ public class ModulePlayerLogger
 
 	public ModulePlayerLogger()
 	{
-		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			return;
-		}
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			return;
-		}
 		if (!enable)
 		{
 			return;
@@ -162,5 +154,10 @@ public class ModulePlayerLogger
 		{
 			FMLCommonHandler.instance().raiseException(new RuntimeException(), "Database connection lost.", true);
 		}
+	}
+
+	public static void log(logEntry e)
+	{
+		eLogger.logLoop.buffer.add(e);
 	}
 }

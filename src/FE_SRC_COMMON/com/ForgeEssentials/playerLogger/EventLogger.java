@@ -42,7 +42,7 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logPlayerLoginLogout)
 		{
-			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Login, player);
+			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Login, player));
 		}
 	}
 
@@ -51,7 +51,7 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logPlayerLoginLogout)
 		{
-			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Logout, player);
+			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Logout, player));
 		}
 	}
 
@@ -60,7 +60,7 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logPlayerChangedDimension)
 		{
-			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.ChangedDim, player);
+			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.ChangedDim, player));
 		}
 	}
 
@@ -69,7 +69,7 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logPlayerRespawn)
 		{
-			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Respawn, player);
+			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Respawn, player));
 		}
 	}
 
@@ -78,11 +78,11 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logCommands && !e.isCanceled() && e.sender instanceof EntityPlayer)
 		{
-			new commandLog(e.sender.getCommandSenderName(), getCommand(e));
+			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
 		}
 		if (logCommands && !e.isCanceled() && !(e.sender instanceof EntityPlayer))
 		{
-			new commandLog(e.sender.getCommandSenderName(), getCommand(e));
+			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
 		}
 	}
 
@@ -92,7 +92,7 @@ public class EventLogger implements IPlayerTracker
 		if (logBlockChanges && !e.isCanceled())
 		{
 			String block = e.world.getBlockId(e.blockX, e.blockY, e.blockZ) + ":" + e.world.getBlockMetadata(e.blockX, e.blockY, e.blockZ);
-			new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ);
+			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ));
 		}
 	}
 
@@ -106,7 +106,7 @@ public class EventLogger implements IPlayerTracker
 			{
 				block = e.player.inventory.getCurrentItem().itemID + ":" + e.player.inventory.getCurrentItem().getItemDamage();
 			}
-			new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, e.blockX, e.blockY, e.blockZ);
+			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, e.blockX, e.blockY, e.blockZ));
 		}
 	}
 

@@ -3,12 +3,15 @@ package com.ForgeEssentials.playerLogger.types;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public abstract class logEntry
 {
 	public Timestamp time;
-
+	
 	public logEntry()
 	{
 		Date date = new Date();
@@ -21,6 +24,6 @@ public abstract class logEntry
 
 	public abstract String getprepareStatementSQL();
 
-	public abstract void makeEntries(Connection connection) throws SQLException;
+	public abstract void makeEntries(Connection connection, List<logEntry> buffer) throws SQLException;
 
 }
