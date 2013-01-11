@@ -69,7 +69,7 @@ public class SignListener {
 						if (!Cost.equalsIgnoreCase("")) {
 							Cost = Cost.substring(1);
 							int Cost1 = Integer.parseInt(Cost);
-							// Wallet.removeFromWallet(Cost1, player);
+							Wallet.removeFromWallet(Cost1, player);
 							event.entityPlayer.dropPlayerItem(new ItemStack(ID1, Amount1, 0));
 
 						} else {
