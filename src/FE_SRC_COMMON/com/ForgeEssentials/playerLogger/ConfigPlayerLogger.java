@@ -41,11 +41,14 @@ public class ConfigPlayerLogger implements IModuleConfig
 		config.addCustomCategoryComment(subcat, "Toggle events to log here.");
 
 		EventLogger.logBlockChanges = config.get(subcat, "blockchages", true).getBoolean(true);
-		EventLogger.logCommands = config.get(subcat, "commands", true).getBoolean(true);
 		EventLogger.logPlayerLoginLogout = config.get(subcat, "playerLoginLogout", true).getBoolean(true);
 		EventLogger.logPlayerChangedDimension = config.get(subcat, "playerChangeDimention", true).getBoolean(true);
 		EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
 
+		EventLogger.logCommands_Player = config.get(subcat, "Commands_Player", true).getBoolean(true);
+		EventLogger.logCommands_Block = config.get(subcat, "Commands_CmdBlock", true).getBoolean(true);
+		EventLogger.logCommands_rest = config.get(subcat, "Commands_Rest", true).getBoolean(true);
+		
 		config.save();
 	}
 
@@ -77,11 +80,14 @@ public class ConfigPlayerLogger implements IModuleConfig
 		config.addCustomCategoryComment("events", "Toggle events to log here.");
 
 		EventLogger.logBlockChanges = config.get(subcat, "blockchages", true).getBoolean(true);
-		EventLogger.logCommands = config.get(subcat, "commands", true).getBoolean(true);
 		EventLogger.logPlayerLoginLogout = config.get(subcat, "playerLoginLogout", true).getBoolean(true);
 		EventLogger.logPlayerChangedDimension = config.get(subcat, "playerChangeDimention", true).getBoolean(true);
 		EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
 
+		EventLogger.logCommands_Player = config.get(subcat, "Commands_Player", true).getBoolean(true);
+		EventLogger.logCommands_Block = config.get(subcat, "Commands_CmdBlock", true).getBoolean(true);
+		EventLogger.logCommands_rest = config.get(subcat, "Commands_Rest", true).getBoolean(true);
+		
 		config.save();
 	}
 

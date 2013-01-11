@@ -9,8 +9,6 @@ import java.util.List;
 
 public class commandLog extends logEntry
 {
-	public static ArrayList<commandLog> buffer;
-
 	public String username;
 	public String command;
 
@@ -19,12 +17,11 @@ public class commandLog extends logEntry
 		super();
 		username = sender;
 		this.command = command;
-		buffer.add(this);
 	}
 
 	public commandLog()
 	{
-		buffer = new ArrayList();
+		super();
 	}
 
 	@Override
@@ -47,22 +44,23 @@ public class commandLog extends logEntry
 	}
 
 	@Override
-	public void makeEntries(Connection connection) throws SQLException
+	public void makeEntries(Connection connection, List<logEntry> buffer) throws SQLException
 	{
 		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
-		Iterator<commandLog> i = buffer.iterator();
-		List<commandLog> toremove = new ArrayList();
+		Iterator<logEntry> i = buffer.iterator();
 		while (i.hasNext())
 		{
-			commandLog log = i.next();
-			ps.setString(1, log.username);
-			ps.setString(2, log.command);
-			ps.setTimestamp(3, log.time);
-			ps.execute();
-			ps.clearParameters();
-			toremove.add(log);
+			logEntry obj = i.next();
+			if(obj instanceof commandLog)
+			{
+				commandLog log = (commandLog) obj;
+				ps.setString(1, log.username);
+				ps.setString(2, log.command);
+				ps.setTimestamp(3, log.time);
+				ps.execute();
+				ps.clearParameters();
+			}
 		}
 		ps.close();
-		buffer.removeAll(toremove);
 	}
 }

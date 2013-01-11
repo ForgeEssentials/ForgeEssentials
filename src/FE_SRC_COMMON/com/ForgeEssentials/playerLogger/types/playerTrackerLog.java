@@ -11,8 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class playerTrackerLog extends logEntry
 {
-	public static ArrayList<playerTrackerLog> buffer;
-
 	public playerTrackerLogCategory cat;
 	public String username;
 	public String extra;
@@ -22,12 +20,11 @@ public class playerTrackerLog extends logEntry
 		super();
 		this.cat = cat;
 		username = player.username;
-		buffer.add(this);
 	}
 
 	public playerTrackerLog()
 	{
-		buffer = new ArrayList();
+		super();
 	}
 
 	@Override
@@ -50,24 +47,25 @@ public class playerTrackerLog extends logEntry
 	}
 
 	@Override
-	public void makeEntries(Connection connection) throws SQLException
+	public void makeEntries(Connection connection, List<logEntry> buffer) throws SQLException
 	{
 		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
-		List<playerTrackerLog> toremove = new ArrayList();
-		Iterator<playerTrackerLog> i = buffer.iterator();
+		Iterator<logEntry> i = buffer.iterator();
 		while (i.hasNext())
 		{
-			playerTrackerLog log = i.next();
-			ps.setString(1, log.username);
-			ps.setString(2, log.cat.toString());
-			ps.setString(3, log.extra);
-			ps.setTimestamp(4, log.time);
-			ps.execute();
-			ps.clearParameters();
-			toremove.add(log);
+			logEntry obj = i.next();
+			if(obj instanceof playerTrackerLog)
+			{
+				playerTrackerLog log = (playerTrackerLog) obj;
+				ps.setString(1, log.username);
+				ps.setString(2, log.cat.toString());
+				ps.setString(3, log.extra);
+				ps.setTimestamp(4, log.time);
+				ps.execute();
+				ps.clearParameters();	
+			}
 		}
 		ps.close();
-		buffer.removeAll(toremove);
 	}
 
 	public enum playerTrackerLogCategory

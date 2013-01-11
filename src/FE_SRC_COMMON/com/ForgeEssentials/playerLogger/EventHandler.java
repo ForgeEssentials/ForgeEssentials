@@ -34,7 +34,7 @@ public class EventHandler
 						+ " AND  `Z` = " + e.z + " ORDER BY id DESC LIMIT " + limit);
 				ResultSet res = st.getResultSet();
 
-				e.entityPlayer.sendChatToPlayer("Results, Last edits 1th./");
+				e.entityPlayer.sendChatToPlayer("Results:");
 
 				while (res.next())
 				{

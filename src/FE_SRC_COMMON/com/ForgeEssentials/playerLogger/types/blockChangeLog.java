@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,8 +12,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class blockChangeLog extends logEntry
 {
-	public static ArrayList<blockChangeLog> buffer;
-
 	public blockChangeLogCategory cat;
 	public String username;
 	public int dim;
@@ -31,12 +30,11 @@ public class blockChangeLog extends logEntry
 		x = X;
 		y = Y;
 		z = Z;
-		buffer.add(this);
 	}
 
 	public blockChangeLog()
 	{
-		buffer = new ArrayList();
+		super();
 	}
 
 	@Override
@@ -60,28 +58,29 @@ public class blockChangeLog extends logEntry
 	}
 
 	@Override
-	public void makeEntries(Connection connection) throws SQLException
+	public void makeEntries(Connection connection, List<logEntry> buffer) throws SQLException
 	{
 		PreparedStatement ps = connection.prepareStatement(getprepareStatementSQL());
-		Iterator<blockChangeLog> i = ((List<blockChangeLog>) buffer.clone()).iterator();
-		List<blockChangeLog> toremove = new ArrayList();
+		Iterator<logEntry> i = buffer.iterator();
 		while (i.hasNext())
 		{
-			blockChangeLog log = i.next();
-			ps.setString(1, log.username);
-			ps.setString(2, log.cat.toString());
-			ps.setString(3, log.block);
-			ps.setInt(4, log.dim);
-			ps.setInt(5, log.x);
-			ps.setInt(6, log.y);
-			ps.setInt(7, log.z);
-			ps.setTimestamp(8, log.time);
-			ps.execute();
-			ps.clearParameters();
-			toremove.add(log);
+			logEntry obj = i.next();
+			if(obj instanceof blockChangeLog)
+			{
+				blockChangeLog log = (blockChangeLog) obj;
+				ps.setString(1, log.username);
+				ps.setString(2, log.cat.toString());
+				ps.setString(3, log.block);
+				ps.setInt(4, log.dim);
+				ps.setInt(5, log.x);
+				ps.setInt(6, log.y);
+				ps.setInt(7, log.z);
+				ps.setTimestamp(8, log.time);
+				ps.execute();
+				ps.clearParameters();
+			}
 		}
 		ps.close();
-		buffer.removeAll(toremove);
 	}
 
 	public enum blockChangeLogCategory
