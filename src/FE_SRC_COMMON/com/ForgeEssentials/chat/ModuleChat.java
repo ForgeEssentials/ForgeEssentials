@@ -20,20 +20,21 @@ import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.PostInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
-import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerPostInit;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModulePostInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
@@ -48,13 +49,13 @@ public class ModuleChat
 	}
 
 	@PreInit
-	public void preLoad(FMLPreInitializationEvent e)
+	public void preLoad(FEModulePreInitEvent e)
 	{
 		OutputHandler.SOP("Chat module is enabled. Loading...");
 	}
 
 	@Init
-	public void load(FMLInitializationEvent e)
+	public void load(FEModuleInitEvent e)
 	{
 		Chat chat = new Chat();
 		MinecraftForge.EVENT_BUS.register(chat);
@@ -64,7 +65,7 @@ public class ModuleChat
 	}
 
 	@PostInit
-	public void postLoad(FMLPostInitializationEvent e)
+	public void postLoad(FEModulePostInitEvent e)
 	{
 
 		File banedFile = new File(ForgeEssentials.FEDIR, "bannedwords.txt");
@@ -91,7 +92,7 @@ public class ModuleChat
 	}
 
 	@ServerInit
-	public void serverStarting(FMLServerStartingEvent e)
+	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandMsg());
 		e.registerServerCommand(new CommandR());
@@ -101,7 +102,7 @@ public class ModuleChat
 	}
 
 	@ServerPostInit
-	public void serverStarted(FMLServerStartedEvent e)
+	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}

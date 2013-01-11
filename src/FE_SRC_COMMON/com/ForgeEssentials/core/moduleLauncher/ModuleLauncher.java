@@ -1,25 +1,14 @@
 package com.ForgeEssentials.core.moduleLauncher;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 import java.util.TreeMap;
 
 import net.minecraft.command.ICommandSender;
 
-import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
-import com.ForgeEssentials.WorldControl.ModuleWorldControl;
-import com.ForgeEssentials.backup.ModuleBackup;
-import com.ForgeEssentials.chat.ModuleChat;
-import com.ForgeEssentials.commands.ModuleCommands;
-import com.ForgeEssentials.economy.ModuleEconomy;
-import com.ForgeEssentials.permission.ModulePermissions;
-import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
-import com.ForgeEssentials.protection.ModuleProtection;
-import com.ForgeEssentials.snooper.ModuleSnooper;
 import com.ForgeEssentials.util.OutputHandler;
 
-import cpw.mods.fml.common.discovery.ASMDataTable;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -40,7 +29,7 @@ public class ModuleLauncher
 	}
 
 	public static ModuleLauncher				instance;
-	private TreeMap<String, ModuleContainer>	containerMap;
+	private static TreeMap<String, ModuleContainer>	containerMap = new TreeMap<String, ModuleContainer>();
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
@@ -50,20 +39,19 @@ public class ModuleLauncher
 		// started ASM handling for the module loaidng.
 		Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
 
-		TreeMap<String, ModuleContainer> map = new TreeMap<String, ModuleContainer>();
 		ModuleContainer temp;
 		for (ASMData asm : data)
 		{
 			temp = new ModuleContainer(asm);
 			if (temp.isValid)
 			{
-				map.put(temp.name, temp);
+				containerMap.put(temp.name, temp);
 				temp.createAndPopulate();
 				OutputHandler.SOP("Loaded " + temp.name);
 			}
 		}
 
-		Set<ModuleContainer> modules = (Set<ModuleContainer>) containerMap.values();
+		Collection<ModuleContainer> modules = (Collection<ModuleContainer>) containerMap.values();
 
 		// run the preinits.
 		for (ModuleContainer module : modules)

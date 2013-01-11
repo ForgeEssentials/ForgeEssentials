@@ -48,7 +48,7 @@ public class ModuleContainer
 	public final String						className;
 	public final String						name;
 	public final boolean					isCore;
-	private boolean							isLoadable;
+	private boolean							isLoadable = true;
 	protected boolean						isValid		= true;
 
 	public ModuleContainer(ASMData data)
@@ -98,12 +98,12 @@ public class ModuleContainer
 		Class[] params;
 		for (Method m : c.getDeclaredMethods())
 		{
-			if (m.isAnnotationPresent(ServerStop.class))
+			if (m.isAnnotationPresent(PreInit.class))
 			{
-				assert preinit == null : new RuntimeException("Only one class may be marked as ServerStop");
+				assert preinit == null : new RuntimeException("Only one class may be marked as PreInit");
 				params = m.getParameterTypes();
 				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
-				assert params[0].equals(FEModuleServerStopEvent.class) : new RuntimeException(m + " must take " + FEModuleServerStopEvent.class.getSimpleName() + " as a param!");
+				assert params[0].equals(FEModulePreInitEvent.class) : new RuntimeException(m + " must take " + FEModulePreInitEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
 				preinit = m.getName();
 			}
@@ -182,7 +182,7 @@ public class ModuleContainer
 			else if (f.isAnnotationPresent(Config.class))
 			{
 				assert config == null : new RuntimeException("Only one field may be marked as Config");
-				assert f.getType().isAssignableFrom(IModuleConfig.class) : new RuntimeException("This field must be the type IModuleConfig!");
+				assert IModuleConfig.class.isAssignableFrom(f.getType()) : new RuntimeException("This field must be the type IModuleConfig!");
 				f.setAccessible(true);
 				config = f.getName();
 			}
