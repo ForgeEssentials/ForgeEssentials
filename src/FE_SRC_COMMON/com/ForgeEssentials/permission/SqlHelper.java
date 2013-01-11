@@ -1,7 +1,6 @@
 package com.ForgeEssentials.permission;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -14,13 +13,14 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
-import com.google.common.base.Throwables;
-
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.OutputHandler;
+import com.google.common.base.Throwables;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class SqlHelper
 {
@@ -186,7 +186,8 @@ public class SqlHelper
 			query = new StringBuilder("UPDATE ").append(TABLE_GROUP).append(" SET ").append(COLUMN_GROUP_NAME).append("=").append("?, ")
 					.append(COLUMN_GROUP_PREFIX).append("=").append("?, ").append(COLUMN_GROUP_SUFFIX).append("=").append("?, ").append(COLUMN_GROUP_PARENT)
 					.append("=").append("?, ").append(COLUMN_GROUP_PRIORITY).append("=").append("?, ").append(COLUMN_GROUP_ZONE).append("=").append("?")
-					.append(" WHERE ").append(COLUMN_GROUP_NAME).append("=").append("?");
+					.append(" WHERE ").append(COLUMN_GROUP_NAME).append("=").append("?")
+					.append(" AND ").append(COLUMN_GROUP_ZONE).append("=").append("?");
 			statementUpdateGroup = db.prepareStatement(query.toString());
 
 			// statementGetPermission
@@ -494,13 +495,21 @@ public class SqlHelper
 			// ------------------
 
 			String path = config.get("H2", "file", "permissions").value;
+			try
+			{
+				path = config.get("H2", "file", "permissions").value + (FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer() ? "_server" : "");
+			}
+			catch(Exception e)
+			{
+				
+			}
 			boolean absolute = config.get("H2", "absolutePath", false).getBoolean(false);
 			dbType = "h2";
 			File file;
 			if (absolute)
 				file = new File(path+".h2.db");
 			else
-				file = new File(ModulePermissions.permsFolder, path+".h2.db");
+				file = new File(ModulePermissions.permsFolder, path + ".h2.db");
 
 			if (!file.exists())
 			{
@@ -521,7 +530,7 @@ public class SqlHelper
 
 			Class driverClass = Class.forName("org.h2.jdbc.JdbcConnection");
 
-			db = DriverManager.getConnection("jdbc:h2:file:" + file.getPath() + ";FILE_LOCK=NO");
+			db = DriverManager.getConnection("jdbc:h2:file:" + file.getPath() + ";FILE_LOCK=SOCKET");
 		}
 		catch (SQLException e)
 		{
@@ -954,14 +963,16 @@ public class SqlHelper
 			instance.statementUpdateGroup.setString(3, g.suffix);
 			if (parent == -5)
 			{
-				instance.statementPutGroup.setString(4, "NULL");
+				instance.statementUpdateGroup.setNull(4, java.sql.Types.INTEGER);
 			}
 			else
 			{
-				instance.statementPutGroup.setInt(4, parent);
+				instance.statementUpdateGroup.setInt(4, parent);
 			}
 			instance.statementUpdateGroup.setInt(5, g.priority);
 			instance.statementUpdateGroup.setInt(6, zone);
+			instance.statementUpdateGroup.setString(7, g.name);
+			instance.statementUpdateGroup.setInt(8, zone);
 			instance.statementUpdateGroup.executeUpdate();
 			instance.statementUpdateGroup.clearParameters();
 

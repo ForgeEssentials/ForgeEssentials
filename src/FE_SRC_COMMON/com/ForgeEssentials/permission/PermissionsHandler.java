@@ -29,7 +29,7 @@ public final class PermissionsHandler
 	public void doOpCheck(PermQueryPlayer event)
 	{
 		boolean isOp = FunctionHelper.isPlayerOp(event.doer.username.toLowerCase());
-		event.setResult(isOp ? PermResult.ALLOW : PermResult.DENY);
+		event.setResult(isOp ? PermResult.ALLOW : PermResult.UNKNOWN);
 	}
 
 	@PermSubscribe(priority = EventPriority.HIGH, handleResult = { PermResult.UNKNOWN })
