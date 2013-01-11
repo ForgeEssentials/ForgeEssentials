@@ -72,7 +72,8 @@ public class ModuleContainer
 		}
 
 		// checks original FEModule annotation.
-		assert c.isAnnotationPresent(FEModule.class) : new IllegalArgumentException(c.getName() + " doesn't have the @FEModule annotation!");
+		if(!c.isAnnotationPresent(FEModule.class))
+			throw new IllegalArgumentException(c.getName() + " doesn't have the @FEModule annotation!");
 		FEModule annot = (FEModule) c.getAnnotation(FEModule.class);
 		if (annot == null)
 			throw new IllegalArgumentException(c.getName() + " doesn't have the @FEModule annotation!");
@@ -84,7 +85,8 @@ public class ModuleContainer
 		{
 			Class modClass = annot.parentMod();
 			Mod atMod = (Mod) annot.parentMod().getAnnotation(Mod.class);
-			assert atMod != null : new RuntimeException(modClass + " isn't an @mod class!");
+			if(atMod == null)
+				throw new RuntimeException(modClass + " isn't an @mod class!");
 			// register
 			if (!modClasses.contains(modClass))
 			{
@@ -100,64 +102,85 @@ public class ModuleContainer
 		{
 			if (m.isAnnotationPresent(PreInit.class))
 			{
-				assert preinit == null : new RuntimeException("Only one class may be marked as PreInit");
+				if(preinit != null)
+					throw new RuntimeException("Only one class may be marked as PreInit");
 				params = m.getParameterTypes();
-				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
-				assert params[0].equals(FEModulePreInitEvent.class) : new RuntimeException(m + " must take " + FEModulePreInitEvent.class.getSimpleName() + " as a param!");
+				if(params.length != 1)
+					throw new RuntimeException(m + " may only have 1 argument!");
+				if(!params[0].equals(FEModulePreInitEvent.class))
+					throw new RuntimeException(m + " must take " + FEModulePreInitEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
 				preinit = m.getName();
 			}
 			else if (m.isAnnotationPresent(Init.class))
 			{
-				assert init == null : new RuntimeException("Only one class may be marked as Init");
+				if(init != null)
+					throw new RuntimeException("Only one class may be marked as Init");
 				params = m.getParameterTypes();
-				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
-				assert params[0].equals(FEModuleInitEvent.class) : new RuntimeException(m + " must take " + FEModuleInitEvent.class.getSimpleName() + " as a param!");
+				if(params.length != 1)
+					throw new RuntimeException(m + " may only have 1 argument!");
+				if(!params[0].equals(FEModuleInitEvent.class))
+					throw new RuntimeException(m + " must take " + FEModuleInitEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
 				init = m.getName();
 			}
 			else if (m.isAnnotationPresent(PostInit.class))
 			{
-				assert postinit == null : new RuntimeException("Only one class may be marked as PostInit");
+				if(postinit != null)
+					throw new RuntimeException("Only one class may be marked as PostInit");
 				params = m.getParameterTypes();
-				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
-				assert params[0].equals(FEModulePostInitEvent.class) : new RuntimeException(m + " must take " + FEModulePostInitEvent.class.getSimpleName() + " as a param!");
+				if(params.length != 1)
+					throw new RuntimeException(m + " may only have 1 argument!");
+				if(!params[0].equals(FEModulePostInitEvent.class))
+					throw new RuntimeException(m + " must take " + FEModulePostInitEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
 				postinit = m.getName();
 			}
 			else if (m.isAnnotationPresent(ServerInit.class))
 			{
-				assert serverinit == null : new RuntimeException("Only one class may be marked as ServerInit");
+				if(serverinit != null)
+					throw new RuntimeException("Only one class may be marked as ServerInit");
 				params = m.getParameterTypes();
-				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
-				assert params[0].equals(FEModuleServerInitEvent.class) : new RuntimeException(m + " must take " + FEModuleServerInitEvent.class.getSimpleName() + " as a param!");
+				if(params.length != 1)
+					throw new RuntimeException(m + " may only have 1 argument!");
+				if(!params[0].equals(FEModuleServerInitEvent.class))
+					throw new RuntimeException(m + " must take " + FEModuleServerInitEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
 				serverinit = m.getName();
 			}
 			else if (m.isAnnotationPresent(ServerPostInit.class))
 			{
-				assert serverpostinit == null : new RuntimeException("Only one class may be marked as ServerPostInit");
+				if(serverpostinit != null)
+					throw new RuntimeException("Only one class may be marked as ServerPostInit");
 				params = m.getParameterTypes();
-				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
-				assert params[0].equals(FEModuleServerPostInitEvent.class) : new RuntimeException(m + " must take " + FEModuleServerPostInitEvent.class.getSimpleName() + " as a param!");
+				if(params.length != 1)
+					throw new RuntimeException(m + " may only have 1 argument!");
+				if(!params[0].equals(FEModuleServerPostInitEvent.class))
+					throw new RuntimeException(m + " must take " + FEModuleServerPostInitEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
 				serverpostinit = m.getName();
 			}
 			else if (m.isAnnotationPresent(ServerStop.class))
 			{
-				assert serverstop == null : new RuntimeException("Only one class may be marked as ServerStop");
+				if(serverstop != null)
+					throw new RuntimeException("Only one class may be marked as ServerStop");
 				params = m.getParameterTypes();
-				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
-				assert params[0].equals(FEModuleServerStopEvent.class) : new RuntimeException(m + " must take " + FEModuleServerStopEvent.class.getSimpleName() + " as a param!");
+				if(params.length != 1)
+					throw new RuntimeException(m + " may only have 1 argument!");
+				if(!params[0].equals(FEModuleServerStopEvent.class))
+					throw new RuntimeException(m + " must take " + FEModuleServerStopEvent.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
 				serverstop = m.getName();
 			}
 			else if (m.isAnnotationPresent(Reload.class))
 			{
-				assert reload == null : new RuntimeException("Only one class may be marked as Reload");
+				if(reload != null)
+					throw new RuntimeException("Only one class may be marked as Reload");
 				params = m.getParameterTypes();
-				assert params.length == 1 : new RuntimeException(m + " may only have 1 argument!");
-				assert params[0].equals(ICommandSender.class) : new RuntimeException(m + " must take " + ICommandSender.class.getSimpleName() + " as a param!");
+				if(params.length != 1)
+					throw new RuntimeException(m + " may only have 1 argument!");
+				if(!params[0].equals(ICommandSender.class))
+					throw new RuntimeException(m + " must take " + ICommandSender.class.getSimpleName() + " as a param!");
 				m.setAccessible(true);
 				reload = m.getName();
 			}
@@ -168,27 +191,33 @@ public class ModuleContainer
 		{
 			if (f.isAnnotationPresent(instance.class))
 			{
-				assert instance == null : new RuntimeException("Only one field may be marked as Instance");
+				if(instance != null)
+					throw new RuntimeException("Only one field may be marked as Instance");
 				f.setAccessible(true);
 				instance = f.getName();
 			}
 			else if (f.isAnnotationPresent(Container.class))
 			{
-				assert container == null : new RuntimeException("Only one field may be marked as Container");
-				assert f.getType().equals(ModuleContainer.class) : new RuntimeException("This field must have the type ModuleContainer!");
+				if(container != null)
+					throw new RuntimeException("Only one field may be marked as Container");
+				if(f.getType().equals(ModuleContainer.class))
+					throw new RuntimeException("This field must have the type ModuleContainer!");
 				f.setAccessible(true);
 				container = f.getName();
 			}
 			else if (f.isAnnotationPresent(Config.class))
 			{
-				assert config == null : new RuntimeException("Only one field may be marked as Config");
-				assert IModuleConfig.class.isAssignableFrom(f.getType()) : new RuntimeException("This field must be the type IModuleConfig!");
+				if(config != null)
+					throw new RuntimeException("Only one field may be marked as Config");
+				if(!IModuleConfig.class.isAssignableFrom(f.getType()))
+					throw new RuntimeException("This field must be the type IModuleConfig!");
 				f.setAccessible(true);
 				config = f.getName();
 			}
 			else if (f.isAnnotationPresent(ParentMod.class))
 			{
-				assert parentMod == null : new RuntimeException("Only one field may be marked as ParentMod");
+				if(parentMod != null)
+					throw new RuntimeException("Only one field may be marked as ParentMod");
 				f.setAccessible(true);
 				parentMod = f.getName();
 			}
