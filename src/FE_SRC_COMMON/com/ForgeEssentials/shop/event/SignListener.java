@@ -49,7 +49,7 @@ public class SignListener {
 						if (!Amount.equalsIgnoreCase("")) {
 							Amount1 = Integer.parseInt(Amount);
 						} else {
-							sign.signText[0] = "\u00Ad74[Buy]";
+							sign.signText[0] = "\u00A74[Buy]";
 
 						}
 					}
@@ -58,7 +58,10 @@ public class SignListener {
 						ID = sign.signText[2];
 						if (!ID.equalsIgnoreCase("")) {
 							ID1 = Integer.parseInt(ID);
+						} else {
+							sign.signText[0] = "\u00A74[Buy]";
 						}
+
 					}
 					if (sign.signText[3] != null) {
 						Cost = sign.signText[3];
