@@ -7,7 +7,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
-import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
@@ -31,12 +34,15 @@ import cpw.mods.fml.relauncher.Side;
  * @author Dries007
  * 
  */
-
-public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
+@FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class, configClass = ConfigWorldBorder.class)
+public class ModuleWorldBorder implements IScheduledTickHandler
 {
 	public static boolean WBenabled = false;
 	public static boolean logToConsole = true;
+	
+	@Config
 	public static ConfigWorldBorder config;
+	
 	public static BorderShape shape;
 	public static HashMap<Integer, IEffect[]> effectsList = new HashMap();
 	public static int overGenerate = 345;
@@ -58,50 +64,19 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 	{
 		WBenabled = true;
 		OutputHandler.SOP("WorldBorder module is enabled. Loading...");
-		config = new ConfigWorldBorder();
 	}
 
-	/*
-	 * Module part
-	 */
-
-	@Override
-	public void preLoad(FMLPreInitializationEvent e)
-	{
-	}
-
-	@Override
-	public void load(FMLInitializationEvent e)
-	{
-	}
-
-	@Override
-	public void postLoad(FMLPostInitializationEvent e)
-	{
-	}
-
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e)
-	{
-	}
-
-	@Override
-	public void serverStarting(FMLServerStartingEvent e)
+	@ServerInit
+	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandWB());
 		TickRegistry.registerScheduledTickHandler(this, Side.SERVER);
 	}
 
-	@Override
-	public void serverStarted(FMLServerStartedEvent e)
-	{
-
-	}
-
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-
+		// nothing here atm.
 	}
 
 	/*
@@ -314,11 +289,5 @@ public class ModuleWorldBorder implements IFEModule, IScheduledTickHandler
 		minZ = posZ - rad;
 		
 		config.forceSave();
-	}
-
-	@Override
-	public IModuleConfig getConfig()
-	{
-		return config;
 	}
 }

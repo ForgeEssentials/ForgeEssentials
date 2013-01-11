@@ -39,17 +39,17 @@ public class ModuleLauncher
 		instance = this;
 	}
 
-	public static ModuleLauncher instance;
-	private TreeMap<String, ModuleContainer> containerMap;
+	public static ModuleLauncher				instance;
+	private TreeMap<String, ModuleContainer>	containerMap;
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Discovering and loading modules...");
 		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
-		
+
 		// started ASM handling for the module loaidng.
 		Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
-		
+
 		TreeMap<String, ModuleContainer> map = new TreeMap<String, ModuleContainer>();
 		ModuleContainer temp;
 		for (ASMData asm : data)
@@ -59,12 +59,12 @@ public class ModuleLauncher
 			{
 				map.put(temp.name, temp);
 				temp.createAndPopulate();
-				OutputHandler.SOP("Loaded "+temp.name);
+				OutputHandler.SOP("Loaded " + temp.name);
 			}
 		}
-		
+
 		Set<ModuleContainer> modules = (Set<ModuleContainer>) containerMap.values();
-		
+
 		// run the preinits.
 		for (ModuleContainer module : modules)
 		{
@@ -140,9 +140,12 @@ public class ModuleLauncher
 
 	public void reloadConfigs(ICommandSender sender)
 	{
+		IModuleConfig config;
 		for (ModuleContainer module : containerMap.values())
 		{
-			module.getConfig().forceLoad(sender);
+			config = module.getConfig();
+			if (config != null)
+				config.forceLoad(sender);
 			module.runReload(sender);
 		}
 	}

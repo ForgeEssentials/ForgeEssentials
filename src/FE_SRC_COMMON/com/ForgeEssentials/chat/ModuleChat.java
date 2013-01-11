@@ -18,7 +18,10 @@ import com.ForgeEssentials.chat.commands.CommandNickname;
 import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
 import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.RegGroup;
@@ -34,22 +37,23 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
-public class ModuleChat implements IFEModule
+@FEModule(name = "Chat", parentMod = ForgeEssentials.class, configClass=ConfigChat.class)
+public class ModuleChat
 {
+	@Config
 	public static ConfigChat conf;
 
 	public ModuleChat()
 	{
-		conf = new ConfigChat();
 	}
 
-	@Override
+	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Chat module is enabled. Loading...");
 	}
 
-	@Override
+	@Init
 	public void load(FMLInitializationEvent e)
 	{
 		Chat chat = new Chat();
@@ -59,7 +63,7 @@ public class ModuleChat implements IFEModule
 
 	}
 
-	@Override
+	@PostInit
 	public void postLoad(FMLPostInitializationEvent e)
 	{
 
@@ -86,7 +90,7 @@ public class ModuleChat implements IFEModule
 
 	}
 
-	@Override
+	@ServerInit
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandMsg());
@@ -96,16 +100,10 @@ public class ModuleChat implements IFEModule
 		e.registerServerCommand(new CommandUnmute());
 	}
 
-	@Override
+	@ServerPostInit
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
-	}
-
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e)
-	{
-
 	}
 
 	@ForgeSubscribe
@@ -113,12 +111,6 @@ public class ModuleChat implements IFEModule
 	{
 		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.msg", true);
 		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.r", true);
-	}
-
-	@Override
-	public IModuleConfig getConfig()
-	{
-		return conf;
 	}
 	
 	private void removeTell(MinecraftServer server)

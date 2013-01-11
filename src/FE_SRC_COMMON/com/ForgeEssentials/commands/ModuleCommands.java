@@ -18,7 +18,6 @@ import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
-import com.ForgeEssentials.core.moduleLauncher.IFEModule;
 import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.core.moduleLauncher.event.*;
 import com.ForgeEssentials.data.DataDriver;
@@ -45,11 +44,6 @@ public class ModuleCommands
 	
 	public static boolean removeDuplicateCommands;
 	public DataDriver data;
-
-	public ModuleCommands()
-	{
-
-	}
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)

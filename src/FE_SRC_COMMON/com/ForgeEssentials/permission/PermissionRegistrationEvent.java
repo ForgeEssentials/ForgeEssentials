@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 import net.minecraftforge.event.Event;
 
-import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Mod;
@@ -45,26 +45,27 @@ public class PermissionRegistrationEvent extends Event
 	private void handleMod(Object mod)
 	{
 		String modid;
-
-		if (mod instanceof IFEModule)
+		Class c = mod.getClass();
+		
+		if (c.isAnnotationPresent(Mod.class))
 		{
-			modid = mod.getClass().getSimpleName();
+			Mod info = (Mod) c.getAnnotation(Mod.class);
+			modid = info.modid();
 			if (mods.add(modid))
 			{
 				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
 			}
-
-			return;
 		}
-
-		Class c = mod.getClass();
-		assert c.isAnnotationPresent(Mod.class) : new IllegalArgumentException("Don't trick me! THIS! > " + mod + " < ISNT A MOD!");
-
-		Mod info = (Mod) c.getAnnotation(Mod.class);
-		modid = info.modid();
-		if (mods.add(modid))
+		else if (c.isAnnotationPresent(FEModule.class))
 		{
-			OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
+			FEModule info = (FEModule) c.getAnnotation(FEModule.class);
+			modid = info.name();
+			if (mods.add(modid))
+			{
+				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
+			}
 		}
+		else
+			throw new IllegalArgumentException("Don't trick me! THIS! > " + mod + " < ISNT A MOD OR A MODULE!");
 	}
 }

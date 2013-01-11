@@ -5,7 +5,12 @@ import java.util.HashMap;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.RegGroup;
@@ -22,14 +27,15 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 /**
  * @author Dries007
  */
-
-public class ModuleProtection implements IFEModule
+@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true)
+public class ModuleProtection
 {
 	public final static String PERM_EDITS = "ForgeEssentials.Protection.allowEdits";
 	public final static String PERM_INTERACT_BLOCK = "ForgeEssentials.Protection.allowBlockInteractions";
 	public final static String PERM_INTERACT_ENTITY = "ForgeEssentials.Protection.allowEntityInteractions";
 	public final static String PERM_OVERRIDE = "ForgeEssentials.Protection.overrideProtection";
 
+	@Config
 	public static ConfigProtection config;
 	public static boolean enable = false;
 
@@ -44,8 +50,8 @@ public class ModuleProtection implements IFEModule
 	 * Module part
 	 */
 
-	@Override
-	public void preLoad(FMLPreInitializationEvent e)
+	@PreInit
+	public void preLoad(FEModulePreInitEvent e)
 	{
 		HashMap<RegGroup, Boolean> map = new HashMap<RegGroup, Boolean>();
 		map.put(RegGroup.GUESTS, false);
@@ -62,7 +68,6 @@ public class ModuleProtection implements IFEModule
 		{
 			return;
 		}
-		config = new ConfigProtection();
 		if (!enable)
 		{
 			return;
@@ -70,34 +75,14 @@ public class ModuleProtection implements IFEModule
 		OutputHandler.SOP("Protection module is enabled. Loading...");
 	}
 
-	@Override
-	public void load(FMLInitializationEvent e)
+	@Init
+	public void load(FEModuleInitEvent e)
 	{
 		if (!enable)
 		{
 			return;
 		}
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
-	}
-
-	@Override
-	public void postLoad(FMLPostInitializationEvent e)
-	{
-	}
-
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e)
-	{
-	}
-
-	@Override
-	public void serverStarting(FMLServerStartingEvent e)
-	{
-	}
-
-	@Override
-	public void serverStarted(FMLServerStartedEvent e)
-	{
 	}
 
 	@ForgeSubscribe
@@ -111,11 +96,5 @@ public class ModuleProtection implements IFEModule
 			event.registerPerm(this, RegGroup.ZONE_ADMINS, perm, permissions.get(perm).get(RegGroup.ZONE_ADMINS));
 			event.registerPerm(this, RegGroup.OWNERS, perm, permissions.get(perm).get(RegGroup.OWNERS));
 		}
-	}
-
-	@Override
-	public IModuleConfig getConfig()
-	{
-		return config;
 	}
 }

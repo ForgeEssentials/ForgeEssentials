@@ -3,7 +3,7 @@ package com.ForgeEssentials.backup;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
 import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.RegGroup;
@@ -16,60 +16,34 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-public class ModuleBackup implements IFEModule
+public class ModuleBackup
 {
+	@Config
 	public static BackupConfig config;
 	public static BackupThread thread;
 
-	public ModuleBackup()
-	{
-
-	}
-
-	@Override
+	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Backups module is enabled. Loading...");
 		config = new BackupConfig();
 	}
 
-	@Override
+	@Init
 	public void load(FMLInitializationEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@Override
-	public void postLoad(FMLPostInitializationEvent e)
-	{
-	}
-
-	@Override
+	@ServerInit
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandBackup());
-	}
-
-	@Override
-	public void serverStarted(FMLServerStartedEvent e)
-	{
 	}
 
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.backup", true);
-	}
-
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e)
-	{
-
-	}
-
-	@Override
-	public IModuleConfig getConfig()
-	{
-		return config;
 	}
 }

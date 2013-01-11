@@ -6,34 +6,40 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerStopEvent;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerStop;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.permission.mcoverride.OverrideManager;
+import com.ForgeEssentials.playerLogger.ConfigPlayerLogger;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-public class ModulePermissions implements IFEModule
+@FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
+public class ModulePermissions
 {
 	// public static ConfigPermissions config;
 	public static PermissionsHandler pHandler;
 	public static ZoneManager zManager;
 	public static SqlHelper sql;
+	
+	@Config
 	public static ConfigPermissions config;
 
 	public static File permsFolder = new File(ForgeEssentials.FEDIR, "/permissions/");
 	protected static DataDriver data;
 
-	@Override
-	public void preLoad(FMLPreInitializationEvent e)
+	@PreInit
+	public void preLoad(FEModulePreInitEvent e)
 	{
 		if (!permsFolder.exists() || !permsFolder.isDirectory())
 		{
@@ -46,12 +52,11 @@ public class ModulePermissions implements IFEModule
 		MinecraftForge.EVENT_BUS.register(zManager);
 
 		// testing DB.
-		config = new ConfigPermissions();
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@Override
-	public void load(FMLInitializationEvent e)
+	@Init
+	public void load(FEModuleInitEvent e)
 	{
 		OutputHandler.SOP("Starting permissions registration period.");
 		PermissionRegistrationEvent permreg = new PermissionRegistrationEvent();
@@ -66,13 +71,8 @@ public class ModulePermissions implements IFEModule
 		PermissionsAPI.QUERY_BUS.register(pHandler);
 	}
 
-	@Override
-	public void postLoad(FMLPostInitializationEvent e)
-	{
-	}
-
-	@Override
-	public void serverStarting(FMLServerStartingEvent e)
+	@ServerInit
+	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		// load zones...
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
@@ -81,12 +81,7 @@ public class ModulePermissions implements IFEModule
 		//init perms and vMC command overrides
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
-		OverrideManager.regOverrides(e);
-	}
-
-	@Override
-	public void serverStarted(FMLServerStartedEvent e)
-	{
+		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
 	}
 
 	@ForgeSubscribe
@@ -100,18 +95,12 @@ public class ModulePermissions implements IFEModule
 		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_WARMUP, true);
 	}
 
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e)
+	@ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		// save all the zones
 		for (Zone zone : ZoneManager.zoneMap.values())
 			data.saveObject(zone);
-	}
-
-	@Override
-	public IModuleConfig getConfig()
-	{
-		return config;
 	}
 
 }

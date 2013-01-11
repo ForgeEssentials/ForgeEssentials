@@ -74,6 +74,8 @@ public class ModuleContainer
 		// checks original FEModule annotation.
 		assert c.isAnnotationPresent(FEModule.class) : new IllegalArgumentException(c.getName() + " doesn't have the @FEModule annotation!");
 		FEModule annot = (FEModule) c.getAnnotation(FEModule.class);
+		if (annot == null)
+			throw new IllegalArgumentException(c.getName() + " doesn't have the @FEModule annotation!");
 		name = annot.name();
 		isCore = annot.isCore();
 		configClass = annot.configClass();
@@ -269,7 +271,7 @@ public class ModuleContainer
 
 	public void runPreInit(FMLPreInitializationEvent fmlEvent)
 	{
-		if (!isLoadable)
+		if (!isLoadable || preinit == null)
 			return;
 
 		FEModulePreInitEvent event = new FEModulePreInitEvent(this, fmlEvent);
@@ -288,7 +290,7 @@ public class ModuleContainer
 
 	public void runInit(FMLInitializationEvent fmlEvent)
 	{
-		if (!isLoadable)
+		if (!isLoadable || init == null)
 			return;
 
 		FEModuleInitEvent event = new FEModuleInitEvent(this, fmlEvent);
@@ -307,7 +309,7 @@ public class ModuleContainer
 
 	public void runPostInit(FMLPostInitializationEvent fmlEvent)
 	{
-		if (!isLoadable)
+		if (!isLoadable || postinit == null)
 			return;
 
 		FEModulePostInitEvent event = new FEModulePostInitEvent(this, fmlEvent);
@@ -326,7 +328,7 @@ public class ModuleContainer
 
 	public void runServerInit(FMLServerStartingEvent fmlEvent)
 	{
-		if (!isLoadable)
+		if (!isLoadable || serverinit == null)
 			return;
 
 		FEModuleServerInitEvent event = new FEModuleServerInitEvent(this, fmlEvent);
@@ -345,7 +347,7 @@ public class ModuleContainer
 
 	public void runServerPostInit(FMLServerStartedEvent fmlEvent)
 	{
-		if (!isLoadable)
+		if (!isLoadable || serverpostinit == null)
 			return;
 
 		FEModuleServerPostInitEvent event = new FEModuleServerPostInitEvent(this, fmlEvent);
@@ -364,7 +366,7 @@ public class ModuleContainer
 
 	public void runServerStop(FMLServerStoppingEvent fmlEvent)
 	{
-		if (!isLoadable)
+		if (!isLoadable || serverstop == null)
 			return;
 
 		FEModuleServerStopEvent event = new FEModuleServerStopEvent(this, fmlEvent);
@@ -383,7 +385,7 @@ public class ModuleContainer
 
 	public void runReload(ICommandSender user)
 	{
-		if (!isLoadable)
+		if (!isLoadable || reload == null)
 			return;
 
 		try
@@ -404,6 +406,10 @@ public class ModuleContainer
 		return new File(ForgeEssentials.FEDIR, name);
 	}
 
+	/**
+	 * May be null if the module has no config
+	 * @return
+	 */
 	public IModuleConfig getConfig()
 	{
 		return configObj;

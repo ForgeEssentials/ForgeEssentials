@@ -35,7 +35,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 // central class for all the WorldControl stuff
-@FEModule(name = "WorldControl", parentMod = ForgeEssentials.class)
+@FEModule(name = "WorldControl", parentMod = ForgeEssentials.class, isCore = true)
 public class ModuleWorldControl
 {
 	// implicit constructor WorldControl()
@@ -79,13 +79,6 @@ public class ModuleWorldControl
 
 	}
 
-	@PostInit
-	public void postLoad(FEModulePostInitEvent e)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
 	// serverStart.
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
@@ -103,19 +96,5 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandTopManipulate("snow", Mode.SNOW));
 		e.registerServerCommand(new CommandTopManipulate("till", Mode.TILL));
 		e.registerServerCommand(new CommandTopManipulate("untill", Mode.UNTILL));
-	}
-
-	@ServerPostInit
-	public void serverStarted(FEModuleServerPostInitEvent e)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@ServerStop
-	public void serverStopping(FEModuleServerStopEvent e)
-	{
-		// TODO Auto-generated method stub
-
 	}
 }

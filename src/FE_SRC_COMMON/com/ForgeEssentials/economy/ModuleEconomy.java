@@ -7,7 +7,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import com.ForgeEssentials.core.moduleLauncher.IFEModule;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.economy.commands.CommandAddToWallet;
 import com.ForgeEssentials.economy.commands.CommandGetWallet;
@@ -27,7 +29,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 /**
  * Call the Wallet class when working with Economy
  */
-public class ModuleEconomy implements IFEModule, IPlayerTracker
+@FEModule(name = "Economy", parentMod = ForgeEssentials.class)
+public class ModuleEconomy implements IPlayerTracker
 {
 	private static HashMap<String, ModuleEconomy> playerEconomyMap = new HashMap<String, ModuleEconomy>();
 
@@ -90,40 +93,25 @@ public class ModuleEconomy implements IFEModule, IPlayerTracker
 		Wallet.doesWalletExist(player);
 	}
 
-	@Override
+	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@Override
+	@Init
 	public void load(FMLInitializationEvent e)
 	{
 		GameRegistry.registerPlayerTracker(this);
 	}
 
-	@Override
-	public void postLoad(FMLPostInitializationEvent e)
-	{
-	}
-
-	@Override
+	@ServerInit
 	public void serverStarting(FMLServerStartingEvent e)
 	{
 		e.registerServerCommand(new CommandAddToWallet());
 		e.registerServerCommand(new CommandRemoveWallet());
 		e.registerServerCommand(new CommandGetWallet());
 		e.registerServerCommand(new CommandSetWallet());
-	}
-
-	@Override
-	public void serverStarted(FMLServerStartedEvent e)
-	{
-	}
-
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e)
-	{
 	}
 
 	@ForgeSubscribe
@@ -154,12 +142,5 @@ public class ModuleEconomy implements IFEModule, IPlayerTracker
 	public void onPlayerRespawn(EntityPlayer player)
 	{
 		loadData(player);
-	}
-
-	@Override
-	public IModuleConfig getConfig()
-	{
-		// TODO no economy configs?? really???
-		return null;
 	}
 }
