@@ -45,6 +45,7 @@ public class Localization
 	public static final String CREDITS_MYSTERIOUSAGES = "message.credits.MysteriousAges";
 	public static final String CREDITS_LUACS1998 = "message.credits.luacs1998";
 	public static final String CREDITS_DRIES007 = "message.credits.Dries007";
+	public static final String CREDITS_MALKIERIAN = "message.credits.Malkierian";
 
 	/*
 	 * Errors & general messages
