@@ -36,7 +36,7 @@ public class CommandFECredits extends ForgeEssentialsCommandBase
 		sender.sendChatToPlayer("MysteriousAges: " + Localization.get(Localization.CREDITS_MYSTERIOUSAGES));
 		sender.sendChatToPlayer("luacs1998: " + Localization.get(Localization.CREDITS_LUACS1998));
 		sender.sendChatToPlayer("Dries007: " + Localization.get(Localization.CREDITS_DRIES007));
-		sender.sendChatToPlayer("Dries007: " + Localization.get(Localization.CREDITS_MALKIERIAN));
+		sender.sendChatToPlayer("Malkierian: " + Localization.get(Localization.CREDITS_MALKIERIAN));
 	}
 
 	@Override
