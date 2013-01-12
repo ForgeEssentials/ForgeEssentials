@@ -41,10 +41,9 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
 			if (player != null)
 			{
-				ChunkCoordinates spawn = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
+				NBTTagCompound spawn = DataStorage.getData("spawn");
 				PlayerInfo.getPlayerInfo(player).back = new WarpPoint(player);
-				((EntityPlayerMP) player).playerNetServerHandler
-						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
+				TeleportCenter.addToTpQue(new WarpPoint(spawn.getInteger("dim"), spawn.getDouble("x"), spawn.getDouble("y"), spawn.getDouble("z"), spawn.getFloat("pitch"), spawn.getFloat("yaw")), player);
 				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			}
 			else
