@@ -214,11 +214,11 @@ public class CommandGroup
 		zone = ZoneManager.GLOBAL;
 		if(args.length == 4)
 		{
-			if(ZoneManager.doesZoneExist(args[4]))
+			if(ZoneManager.doesZoneExist(args[3]))
 			{
-				zone = ZoneManager.getZone(args[4]);
+				zone = ZoneManager.getZone(args[3]);
 			}
-			else if(args[4].equalsIgnoreCase("here"))
+			else if(args[3].equalsIgnoreCase("here"))
 			{
 				zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
 			}
