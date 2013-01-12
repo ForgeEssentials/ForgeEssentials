@@ -2,6 +2,7 @@ package com.ForgeEssentials.core;
 
 import java.io.File;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
@@ -121,10 +122,11 @@ public class ForgeEssentials
 		// setup modules AFTER data stuff...
 		miscEventHandler = new MiscEventHandler();
 		bannedItems = new BannedItems();
+		MinecraftForge.EVENT_BUS.register(bannedItems);
 		LoginMessage.loadFile();
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
-
+		
 		localization = new Localization();
 	}
 

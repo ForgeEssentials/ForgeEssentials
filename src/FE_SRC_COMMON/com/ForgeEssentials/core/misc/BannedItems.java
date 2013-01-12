@@ -2,6 +2,8 @@ package com.ForgeEssentials.core.misc;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -9,30 +11,92 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
+import net.minecraftforge.event.Event.Result;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
 public class BannedItems
 {
-
+	HashMap<Integer, Integer> noUse = new HashMap<Integer, Integer>();
+	List<String> noCraft = new ArrayList<String>();
+	
+	@ForgeSubscribe
+	public void click(PlayerInteractEvent e)
+	{
+		ItemStack is = e.entityPlayer.inventory.getCurrentItem();
+		if(is != null)
+		{
+			if(noUse.containsKey(is.itemID))
+			{
+				if(noUse.get(is.itemID) == is.getItemDamage())
+				{
+					e.entityPlayer.sendChatToPlayer("That item is banned.");
+					e.setCanceled(true);
+				}
+				else if(noUse.get(is.itemID) == -1)
+				{
+					e.entityPlayer.sendChatToPlayer("That item is banned.");
+					e.setCanceled(true);
+				}
+			}
+		}
+	}
+	
 	public void postLoad(FMLPostInitializationEvent e)
 	{
 		Configuration config = new Configuration(new File(ForgeEssentials.fedirloc, "banneditems.cfg"));
-
-		config.addCustomCategoryComment("BannedItems", "Configuration options to remove an item's crafting recipe.");
-		Property p = config.get("BannedItems", "itemList", "");
-		p.comment = "List of items that are banned, in the format \"id[:meta];id[:meta]\" Use a meta value of -1 to ban ALL variants of an item/block.";
-
+		
+		config.addCustomCategoryComment("NoCraft", "Configuration options to remove an item's crafting recipe.");
+		config.addCustomCategoryComment("NoUse", "Configuration options to make an item unusable.");
+		
+		noCraft = Arrays.asList(config.get("NoCraft", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").valueList);
+		List<String> temp = Arrays.asList(config.get("NoUse", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").valueList);
+		
 		config.save();
-
-		String[] list = p.value.split(";");
-		ArrayList<ItemStack> items = new ArrayList();
 		int id;
 		int meta;
+		
+		for(String s : temp)
+		{
+			id = meta = 0;
+			String[] tmp = s.split(":");
+			if (tmp != null && tmp.length > 0)
+			{
+				try
+				{
+					id = Integer.parseInt(tmp[0]);
+					if (tmp.length > 1)
+					{
+						try
+						{
+							meta = Integer.parseInt(tmp[1]);
+						}
+						catch (Exception ex)
+						{
+							meta = 0;
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					id = 0;
+				}
+			}
+
+			if (id != 0)
+			{
+				noUse.put(id, meta);
+			}
+		}
+		
+		ArrayList<ItemStack> items = new ArrayList();
 		// Decompose list into (item ID, Meta) pairs.
-		for (String s : list)
+		for (String s : noCraft)
 		{
 			id = meta = 0;
 			String[] tmp = s.split(":");
@@ -83,11 +147,11 @@ public class BannedItems
 					if (result.itemID == bannedItem.itemID && (bannedItem.getItemDamage() == -1 || result.getItemDamage() == bannedItem.getItemDamage()))
 					{
 						minecraftRecipes.remove(i);
+						OutputHandler.debug("Recipes removed for item " + bannedItem.itemID);
 						--i;
 					}
 				}
 			}
 		}
 	}
-
 }
