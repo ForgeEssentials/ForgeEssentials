@@ -14,13 +14,16 @@ import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 public class EventLogger implements IPlayerTracker
 {
 	public LogLoop logLoop;
 	public Thread thread;
+	public Side side = FMLCommonHandler.instance().getEffectiveSide();
 
 	public EventLogger()
 	{
@@ -45,7 +48,7 @@ public class EventLogger implements IPlayerTracker
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
-		if (logPlayerLoginLogout)
+		if (logPlayerLoginLogout && side.isServer())
 		{
 			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Login, player));
 		}
@@ -54,7 +57,7 @@ public class EventLogger implements IPlayerTracker
 	@Override
 	public void onPlayerLogout(EntityPlayer player)
 	{
-		if (logPlayerLoginLogout)
+		if (logPlayerLoginLogout && side.isServer())
 		{
 			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Logout, player));
 		}
@@ -63,7 +66,7 @@ public class EventLogger implements IPlayerTracker
 	@Override
 	public void onPlayerChangedDimension(EntityPlayer player)
 	{
-		if (logPlayerChangedDimension)
+		if (logPlayerChangedDimension && side.isServer())
 		{
 			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.ChangedDim, player));
 		}
@@ -72,7 +75,7 @@ public class EventLogger implements IPlayerTracker
 	@Override
 	public void onPlayerRespawn(EntityPlayer player)
 	{
-		if (logPlayerRespawn)
+		if (logPlayerRespawn && side.isServer())
 		{
 			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Respawn, player));
 		}
@@ -81,17 +84,17 @@ public class EventLogger implements IPlayerTracker
 	@ForgeSubscribe
 	public void command(CommandEvent e)
 	{
-		if (logCommands_Player && !e.isCanceled() && e.sender instanceof EntityPlayer)
+		if (logCommands_Player && !e.isCanceled() && e.sender instanceof EntityPlayer && side.isServer())
 		{
 			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
 			return;
 		}
-		if (logCommands_Block && !e.isCanceled() && e.sender instanceof TileEntityCommandBlock)
+		if (logCommands_Block && !e.isCanceled() && e.sender instanceof TileEntityCommandBlock && side.isServer())
 		{
 			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
 			return;
 		}
-		if (logCommands_rest && !e.isCanceled())
+		if (logCommands_rest && !e.isCanceled() && side.isServer())
 		{
 			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
 			return;
@@ -101,7 +104,7 @@ public class EventLogger implements IPlayerTracker
 	@ForgeSubscribe(priority = EventPriority.LOWEST)
 	public void playerBlockBreak(PlayerBlockBreak e)
 	{
-		if (logBlockChanges && !e.isCanceled())
+		if (logBlockChanges && !e.isCanceled() && side.isServer())
 		{
 			String block = e.world.getBlockId(e.blockX, e.blockY, e.blockZ) + ":" + e.world.getBlockMetadata(e.blockX, e.blockY, e.blockZ);
 			TileEntity te = e.world.getBlockTileEntity(e.blockX, e.blockY, e.blockZ);
@@ -112,7 +115,7 @@ public class EventLogger implements IPlayerTracker
 	@ForgeSubscribe(priority = EventPriority.LOWEST)
 	public void playerBlockPlace(PlayerBlockPlace e)
 	{
-		if (logBlockChanges && !e.isCanceled())
+		if (logBlockChanges && !e.isCanceled() && side.isServer())
 		{
 			String block = "";
 			if (e.player.inventory.getCurrentItem() != null)
