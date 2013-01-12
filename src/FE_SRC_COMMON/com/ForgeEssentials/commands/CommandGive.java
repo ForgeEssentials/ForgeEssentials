@@ -43,10 +43,10 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			}
 			catch(NumberFormatException e)
 			{
-				OutputHandler.chatError(sender, "Damage value is not a number: " + args[4]);
+				OutputHandler.chatError(sender, "Damage value is not a number: " + args[3]);
 			}
 		}
-		if (args.length == 3)
+		if (args.length >= 3)
 		{
 			amount = parseIntBounded(sender, args[2], 0, 64);
 		}
@@ -80,6 +80,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			catch (Exception e)
 			{
 				sender.sendChatToPlayer(FEChatFormatCodes.RED + "The server couldn't find the block you were looking for.");
+				e.printStackTrace();
 			}
 		}
 		else
