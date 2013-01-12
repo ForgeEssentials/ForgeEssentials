@@ -103,7 +103,7 @@ public class EventLogger implements IPlayerTracker
 		if (logBlockChanges && !e.isCanceled())
 		{
 			String block = e.world.getBlockId(e.blockX, e.blockY, e.blockZ) + ":" + e.world.getBlockMetadata(e.blockX, e.blockY, e.blockZ);
-			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ));
+			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ, e.world.getBlockTileEntity(e.blockX, e.blockY, e.blockZ)));
 		}
 	}
 
@@ -117,7 +117,7 @@ public class EventLogger implements IPlayerTracker
 			{
 				block = e.player.inventory.getCurrentItem().itemID + ":" + e.player.inventory.getCurrentItem().getItemDamage();
 			}
-			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, e.blockX, e.blockY, e.blockZ));
+			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, e.blockX, e.blockY, e.blockZ, null));
 		}
 	}
 
