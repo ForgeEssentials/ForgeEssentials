@@ -53,17 +53,6 @@ public class ModuleProtection
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		HashMap<RegGroup, Boolean> map = new HashMap<RegGroup, Boolean>();
-		map.put(RegGroup.GUESTS, false);
-		map.put(RegGroup.MEMBERS, true);
-		map.put(RegGroup.ZONE_ADMINS, true);
-		map.put(RegGroup.OWNERS, true);
-		permissions.put(PERM_EDITS, map);
-		permissions.put(PERM_INTERACT_BLOCK, map);
-		permissions.put(PERM_INTERACT_ENTITY, map);
-
-		map.put(RegGroup.MEMBERS, false);
-		permissions.put(PERM_OVERRIDE, map);
 		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			return;
@@ -89,12 +78,9 @@ public class ModuleProtection
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
 		// event.registerPermissionDefault(PERM, false);
-		for (String perm : permissions.keySet())
-		{
-			event.registerPerm(this, RegGroup.GUESTS, perm, permissions.get(perm).get(RegGroup.GUESTS));
-			event.registerPerm(this, RegGroup.MEMBERS, perm, permissions.get(perm).get(RegGroup.MEMBERS));
-			event.registerPerm(this, RegGroup.ZONE_ADMINS, perm, permissions.get(perm).get(RegGroup.ZONE_ADMINS));
-			event.registerPerm(this, RegGroup.OWNERS, perm, permissions.get(perm).get(RegGroup.OWNERS));
-		}
+		event.registerPerm(this, RegGroup.MEMBERS, PERM_EDITS, true);
+		event.registerPerm(this, RegGroup.MEMBERS, PERM_INTERACT_BLOCK, true);
+		event.registerPerm(this, RegGroup.MEMBERS, PERM_INTERACT_ENTITY, true);
+		event.registerPerm(this, RegGroup.OWNERS, PERM_OVERRIDE, true);
 	}
 }
