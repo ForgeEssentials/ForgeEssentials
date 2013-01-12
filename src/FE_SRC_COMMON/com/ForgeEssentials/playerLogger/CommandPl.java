@@ -68,24 +68,7 @@ public class CommandPl extends ForgeEssentialsCommandBase
 			sender.getEntityData().setInteger("lb_limit", limit);
 			sender.sendChatToPlayer("Click a block and you will get the last " + limit + " changes.");
 		}
-		if (args[0].equalsIgnoreCase("rollback") || args[0].equalsIgnoreCase("rb"))
-		{
-			try
-			{
-				String username = FunctionHelper.getPlayerFromUsername(args[1]).username;
-				Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
-				Statement st = connection.createStatement();
-				st.execute("SELECT * FROM  `blockchange` WHERE  `player` LIKE  '" + username + "'");
-				ResultSet res = st.getResultSet();
-				TickTaskHandler.addTask(new TickTaskRollback(sender, res));
-				sender.sendChatToPlayer("Starting rollback.");
-			}
-			catch (Exception e)
-			{
-				sender.sendChatToPlayer("Error.");
-				e.printStackTrace();
-			}
-		}
+		
 		// TODO add further stuff.
 	}
 

@@ -98,6 +98,7 @@ public class ModulePlayerLogger
 			return;
 		}
 		e.registerServerCommand(new CommandPl());
+		e.registerServerCommand(new CommandRollback());
 		try
 		{
 			connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
