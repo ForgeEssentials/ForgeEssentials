@@ -113,14 +113,14 @@ public final class PermissionsHandler
 			if (result.equals(PermResult.UNKNOWN))
 			{
 				// get all the players groups here.
-				groups = SqlHelper.getGroupsForPlayer(event.doer.username, zone.getZoneName());
+				groups = SqlHelper.getGroupsForPlayer(event.doer.username, tempZone.getZoneName());
 				
 				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
 				{
 					group = groups.get(i);
 					// checks the permissions for the group.
-					result = SqlHelper.getPermissionResult(group.name, true, event.checker, zone.getZoneName(), event.checkForward);
+					result = SqlHelper.getPermissionResult(group.name, true, event.checker, tempZone.getZoneName(), event.checkForward);
 				}
 			}
 
