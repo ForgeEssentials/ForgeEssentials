@@ -38,6 +38,11 @@
     <entry key="command.kill.syntax.player">/kill [player]</entry>
     <entry key="command.kill.info.console">Kill the specified player</entry>
     <entry key="command.kill.info.player">Kill yourself or the specified player</entry>
+	
+	<entry key="command.tps.syntax.console">/tps</entry>
+    <entry key="command.tps.syntax.player">/tps</entry>
+    <entry key="command.tps.info.console">Get the lag of the server</entry>
+    <entry key="command.tps.info.player">Get the lag of the server</entry>
 
     <entry key="command.motd.syntax.console">/motd [new motd]</entry>
     <entry key="command.motd.syntax.player">/motd [new motd]</entry>
@@ -85,7 +90,7 @@
     <entry key="command.rules.info.console">Get/set the rules of the server</entry>
     <entry key="command.rules.info.player">Get/set the rules of the server</entry>
     
-    <entry key="command.setspawn.syntax.console">[X Y Z]</entry>
+    <entry key="command.setspawn.syntax.console">/setspawn [X Y Z]</entry>
     <entry key="command.setspawn.syntax.player">[X Y Z]</entry>
     <entry key="command.setspawn.info.console">Set the server spawn.</entry>
     <entry key="command.setspawn.info.player">Set the server spawn.</entry>
@@ -96,9 +101,9 @@
     <entry key="command.smite.info.console">Strike the specified player with lightning</entry>
     <entry key="command.smite.info.player">Strike where you are looking, yourself, or another player with lightning</entry>
     
-    <entry key="command.spawn.syntax.console">&lt;mob type> [number] [x, y, z]</entry>
+    <entry key="command.spawn.syntax.console">/spawn &lt;mob type> [number] [x, y, z]</entry>
     <entry key="command.spawn.info.console">Teleport you/a player to your/their spawnpoint</entry>
-    <entry key="command.spawn.syntax.player">&lt;mob type> &lt;number> &lt;x, y, z> [dimension]</entry>
+    <entry key="command.spawn.syntax.player">/spawn &lt;mob type> &lt;number> &lt;x, y, z> [dimension]</entry>
     <entry key="command.spawn.info.player">Teleport a player to their spawnpoint</entry>
 
     <entry key="command.tps.info.player">Gets the lag on the server.</entry>
