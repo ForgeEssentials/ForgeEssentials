@@ -74,7 +74,9 @@ public class TickTaskSetSelection implements ITickTask
 			}
 			else
 			{
-				if ((!(blockID == player.worldObj.getBlockId(x, y, z) || metadata != player.worldObj.getBlockMetadata(x, y, z)) && isApplicable(x, y, z)))
+				/*if ((!(blockID == player.worldObj.getBlockId(x, y, z) || metadata != player.worldObj.getBlockMetadata(x, y, z)) && isApplicable(x, y, z)))
+ This doesn't look right... perhaps this?==>*/
+                                   if ((!(blockID == player.worldObj.getBlockId(x, y, z) && metadata == player.worldObj.getBlockMetadata(x, y, z)) && isApplicable(x, y, z)))
 				{
 					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
 					player.worldObj.setBlockAndMetadata(x, y, z, blockID, metadata);
