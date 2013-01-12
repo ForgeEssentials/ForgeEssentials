@@ -8,6 +8,7 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class CommandUser
 {
@@ -40,7 +41,7 @@ public class CommandUser
 			}
 			else if (args.length >= 3) // changing super perms
 			{
-				Zone zone = ZoneManager.GLOBAL;
+				Zone zone = ZoneManager.SUPER;
 				if (args.length == 5) // zone is set
 				{
 					if(ZoneManager.doesZoneExist(args[4]))
@@ -82,7 +83,7 @@ public class CommandUser
 		}
 		else if (args[1].equalsIgnoreCase("group")) // group management
 		{
-			String zoneName = ZoneManager.GLOBAL.getZoneName();
+			String zoneName = ZoneManager.getWhichZoneIn(new WorldPoint(sender)).getZoneName();
 			if (args.length == 5) // zone is set
 			{
 				if(ZoneManager.getZone(args[4]) != null)

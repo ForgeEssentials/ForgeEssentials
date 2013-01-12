@@ -55,7 +55,7 @@ public class CommandGroup
 				//Group does not exits.
 				return;
 			}
-			Zone zone = ZoneManager.GLOBAL;
+			Zone zone = ZoneManager.getWorldZone(sender.worldObj);
 			if(args.length == 3)
 			{
 				if(ZoneManager.doesZoneExist(args[2]))
@@ -92,7 +92,7 @@ public class CommandGroup
 		/*
 		 * Settings
 		 */
-		Zone zone = ZoneManager.GLOBAL;
+		Zone zone = ZoneManager.getWorldZone(sender.worldObj);
 		if(args.length == 3 && (args[1].equalsIgnoreCase("prefix") || args[1].equalsIgnoreCase("suffix")
 				|| args[1].equalsIgnoreCase("parent") || args[1].equalsIgnoreCase("priority")))
 		{
@@ -211,12 +211,16 @@ public class CommandGroup
 		/*
 		 * Permissions part
 		 */
-		zone = ZoneManager.GLOBAL;
+		zone = ZoneManager.getWorldZone(sender.worldObj);
 		if(args.length == 4)
 		{
 			if(ZoneManager.doesZoneExist(args[4]))
 			{
 				zone = ZoneManager.getZone(args[4]);
+			}
+			else if(args[4].equalsIgnoreCase("here"))
+			{
+				zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
 			}
 			else
 			{

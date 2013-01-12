@@ -44,12 +44,12 @@ public class FlatFileGroups
 		String[] list;
 		for (Group g : groups)
 		{
-			cat = g.zoneID+"."+g.name;
+			cat = g.zoneName+"."+g.name;
 			config.get(cat, "prefix", g.prefix);
 			config.get(cat, "suffix", g.suffix);
 			config.get(cat, "priority", g.priority);
 			
-			list = getPlayerArray(g.name, g.zoneID, connector);
+			list = getPlayerArray(g.name, g.zoneName, connector);
 			config.get(cat, "playersInGroup", list);
 		}
 		

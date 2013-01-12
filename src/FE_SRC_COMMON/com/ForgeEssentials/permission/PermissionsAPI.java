@@ -55,9 +55,9 @@ public class PermissionsAPI
 	 * @param ZoneID
 	 * @return NULL if the construction or registration fails.
 	 */
-	public static Group createGroupInZone(String groupName, String zoneID, String prefix, String suffix, String parent, int priority)
+	public static Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority)
 	{
-		Group g = new Group(groupName, prefix, suffix, parent, zoneID, priority);
+		Group g = new Group(groupName, prefix, suffix, parent, zoneName, priority);
 		SqlHelper.createGroup(g);
 		return g;
 	}

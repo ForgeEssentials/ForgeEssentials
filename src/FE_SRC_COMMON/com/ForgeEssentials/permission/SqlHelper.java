@@ -199,7 +199,7 @@ public class SqlHelper
 
 			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" WHERE ")
 					.append(COLUMN_PERMISSION_TARGET).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
-					.append(" AND ").append(COLUMN_PERMISSION_PERM).append(" LIKE ").append("'?.%'").append(" AND ").append(COLUMN_PERMISSION_ZONEID)
+					.append(" AND ").append(COLUMN_PERMISSION_PERM).append(" LIKE ").append("?").append(" AND ").append(COLUMN_PERMISSION_ZONEID)
 					.append("=").append("?");
 			statementGetPermissionForward = db.prepareStatement(query.toString());
 
@@ -882,7 +882,7 @@ public class SqlHelper
 			}
 
 			int parent = -5;
-			int zone = getZoneIDFromZoneName(g.zoneID);
+			int zone = getZoneIDFromZoneName(g.zoneName);
 
 			if (g.parent != null)
 			{
@@ -941,7 +941,7 @@ public class SqlHelper
 			}
 
 			int parent = -5;
-			int zone = getZoneIDFromZoneName(g.zoneID);
+			int zone = getZoneIDFromZoneName(g.zoneName);
 
 			if (g.parent != null)
 			{
@@ -1041,7 +1041,7 @@ public class SqlHelper
 				// target, isgroup, perm, zone >> allowed
 				statement.setInt(1, tID);
 				statement.setInt(2, isG);
-				statement.setString(3, perm.name);
+				statement.setString(3, perm.name + ".%");
 				statement.setInt(4, zID);
 				set = statement.executeQuery();
 				statement.clearParameters();
@@ -1101,8 +1101,12 @@ public class SqlHelper
 			while (perm != null)
 			{
 				// params still set from initial
+				statement.setInt(1, tID);
+				statement.setInt(2, isG);
 				statement.setString(3, perm.name);
+				statement.setInt(4, zID);
 				set = statement.executeQuery();
+				statement.clearParameters();
 
 				if (set.next())
 				{
