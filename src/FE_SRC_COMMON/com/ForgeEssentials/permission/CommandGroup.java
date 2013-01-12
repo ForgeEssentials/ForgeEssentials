@@ -28,7 +28,7 @@ public class CommandGroup
 		 */
 		if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("make"))
 		{
-			Zone zone = ZoneManager.getWorldZone(sender.worldObj);
+			Zone zone = ZoneManager.GLOBAL;
 			if(args.length > 3)
 			{
 				if(ZoneManager.doesZoneExist(args[2]))
@@ -92,7 +92,7 @@ public class CommandGroup
 		/*
 		 * Settings
 		 */
-		Zone zone = ZoneManager.getWorldZone(sender.worldObj);
+		Zone zone = ZoneManager.GLOBAL;
 		if(args.length == 3 && (args[1].equalsIgnoreCase("prefix") || args[1].equalsIgnoreCase("suffix")
 				|| args[1].equalsIgnoreCase("parent") || args[1].equalsIgnoreCase("priority")))
 		{
@@ -211,7 +211,7 @@ public class CommandGroup
 		/*
 		 * Permissions part
 		 */
-		zone = ZoneManager.getWorldZone(sender.worldObj);
+		zone = ZoneManager.GLOBAL;
 		if(args.length == 4)
 		{
 			if(ZoneManager.doesZoneExist(args[4]))

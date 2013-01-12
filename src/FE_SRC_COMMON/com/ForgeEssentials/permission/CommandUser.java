@@ -83,7 +83,7 @@ public class CommandUser
 		}
 		else if (args[1].equalsIgnoreCase("group")) // group management
 		{
-			String zoneName = ZoneManager.getWhichZoneIn(new WorldPoint(sender)).getZoneName();
+			String zoneName = ZoneManager.GLOBAL.getZoneName();
 			if (args.length == 5) // zone is set
 			{
 				if(ZoneManager.getZone(args[4]) != null)
