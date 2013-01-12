@@ -1,6 +1,8 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
 //Depreciated
+import java.util.ArrayList;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -21,6 +23,7 @@ public class TickTaskSetSelection implements ITickTask
 	private final int metadata;
 	private BackupArea back;
 	private EntityPlayer player;
+	private ArrayList<AreaBase> applicable;
 
 	// actually used
 	private Point first;
@@ -37,8 +40,14 @@ public class TickTaskSetSelection implements ITickTask
 		this.back = back;
 		last = area.getHighPoint();
 		first = current = area.getLowPoint();
-		
-		this.isComplete = false;
+
+		isComplete = false;
+	}
+
+	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata, BackupArea back, AreaBase area, ArrayList<AreaBase> appliccable)
+	{
+		this(player, blockID, metadata, back, area);
+		applicable = appliccable;
 	}
 
 	@Override
@@ -46,16 +55,16 @@ public class TickTaskSetSelection implements ITickTask
 	{
 		int currentTickChanged = 0;
 		boolean continueFlag = true;
-		
-		int x = current.x;
-		int y = current.y;
-		int z = current.z;
-		
+
+		int x = current.getX();
+		int y = current.getY();
+		int z = current.getZ();
+
 		while (continueFlag)
 		{
 			if (metadata == -1)
 			{
-				if (blockID != player.worldObj.getBlockId(x, y, z))
+				if (blockID != player.worldObj.getBlockId(x, y, z) && isApplicable(x, y, z))
 				{
 					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
 					player.worldObj.setBlock(x, y, z, blockID);
@@ -65,7 +74,7 @@ public class TickTaskSetSelection implements ITickTask
 			}
 			else
 			{
-				if (!(blockID == player.worldObj.getBlockId(x, y, z) && metadata == player.worldObj.getBlockMetadata(x, y, z)))
+				if ((blockID != player.worldObj.getBlockId(x, y, z) || metadata != player.worldObj.getBlockMetadata(x, y, z)) && isApplicable(x, y, z))
 				{
 					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
 					player.worldObj.setBlockAndMetadata(x, y, z, blockID, metadata);
@@ -73,29 +82,29 @@ public class TickTaskSetSelection implements ITickTask
 					currentTickChanged++;
 				}
 			}
-			
+
 			y++;
 			// Bounds checking comes first to avoid fencepost errors.
-			if (y > last.y)
+			if (y > last.getY())
 			{
 				// Reset y, increment z.
-				y = first.y;
+				y = first.getY();
 				z++;
-				
-				if (z > last.z)
+
+				if (z > last.getZ())
 				{
 					// Reset z, increment x.
-					z = first.z;
+					z = first.getZ();
 					x++;
-					
+
 					// Check stop condition
-					if (x > last.x)
+					if (x > last.getX())
 					{
-						this.isComplete = true;
+						isComplete = true;
 					}
 				}
 			}
-			
+
 			if (isComplete || currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
 			{
 				// Stop running this tick.
@@ -110,21 +119,61 @@ public class TickTaskSetSelection implements ITickTask
 	public void onComplete()
 	{
 		PlayerInfo.getPlayerInfo(player).addUndoAction(back);
-		OutputHandler.chatConfirmation(player, Localization.format("message.wc.setConfirmBlocksChanged",
-				changed, 
-				(blockID == 0) ? Localization.get("tile.air.name") : new ItemStack(blockID, 1, metadata).getDisplayName()));
+		String blockName = blockID + ":" + metadata;
+
+		if (blockID == 0)
+		{
+			blockName = Localization.get("tile.air.name");
+		}
+		else
+		{
+			try
+			{
+				blockName = new ItemStack(blockID, 1, metadata).getDisplayName();
+			}
+			catch (Exception e)
+			{
+				blockName = blockID + ":" + metadata;
+				OutputHandler.SOP("Could not retrieve the name of the block represented by ID " + blockID + " with meta " + metadata
+						+ ". This is a problem in the mod that provides the block not supporting getDisplayName for their block.");
+			}
+		}
+
+		OutputHandler.chatConfirmation(player, Localization.format("message.wc.setConfirmBlocksChanged", changed, blockName));
 	}
 
 	@Override
 	public boolean isComplete()
 	{
-		return this.isComplete;
+		return isComplete;
 	}
 
 	@Override
 	public boolean editsBlocks()
 	{
 		return true;
+	}
+
+	private boolean isApplicable(int x, int y, int z)
+	{
+		Point p = new Point(x, y, z);
+		if (applicable == null)
+		{
+			return true;
+		}
+
+		boolean contains = false;
+
+		for (AreaBase area : applicable)
+		{
+			contains = area.contains(p);
+			if (contains)
+			{
+				return true;
+			}
+		}
+
+		return contains;
 	}
 
 }

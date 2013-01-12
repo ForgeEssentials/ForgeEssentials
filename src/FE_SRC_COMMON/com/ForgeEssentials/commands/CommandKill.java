@@ -30,9 +30,13 @@ public class CommandKill extends ForgeEssentialsCommandBase
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
 				victim.sendChatToPlayer(Localization.get(Localization.KILLED));
-			} else
+			}
+			else
+			{
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-		} else
+			}
+		}
+		else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
 			sender.sendChatToPlayer(Localization.get(Localization.KILLED));
@@ -49,10 +53,16 @@ public class CommandKill extends ForgeEssentialsCommandBase
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
 				victim.sendChatToPlayer(Localization.get(Localization.KILLED));
-			} else
+			}
+			else
+			{
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-		} else
+			}
+		}
+		else
+		{
 			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+		}
 	}
 
 	@Override
@@ -62,28 +72,22 @@ public class CommandKill extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-    	if(args.length == 1)
-    	{
-    		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    }
+	{
+		if (args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 }

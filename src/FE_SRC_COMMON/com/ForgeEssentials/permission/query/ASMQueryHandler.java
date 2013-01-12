@@ -19,15 +19,17 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+
 public class ASMQueryHandler implements IQueryListener
 {
-	private static int					IDs					= 0;
-	private static final String			HANDLER_DESC		= Type.getInternalName(IQueryListener.class);
-	private static final String			HANDLER_FUNC_DESC	= Type.getMethodDescriptor(IQueryListener.class.getDeclaredMethods()[0]);
-	private static final FEASMClassLoader	LOADER				= new FEASMClassLoader();
+	private static int IDs = 0;
+	private static final String HANDLER_DESC = Type.getInternalName(IQueryListener.class);
+	private static final String HANDLER_FUNC_DESC = Type.getMethodDescriptor(IQueryListener.class.getDeclaredMethods()[0]);
+	private static final FEASMClassLoader LOADER = new FEASMClassLoader();
 
-	private final IQueryListener		handler;
-	private final PermSubscribe			subInfo;
+	private final IQueryListener handler;
+	private final PermSubscribe subInfo;
 
 	public ASMQueryHandler(Object target, Method method) throws Exception
 	{
@@ -39,7 +41,24 @@ public class ASMQueryHandler implements IQueryListener
 	public void invoke(PermQuery query)
 	{
 		if (handler != null)
+		{
+			if (handlesResult(query.getResult()))
+			{
 				handler.invoke(query);
+			}
+		}
+	}
+
+	private boolean handlesResult(PermResult result)
+	{
+		for (PermResult r : subInfo.handleResult())
+		{
+			if (r.equals(result))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public EventPriority getPriority()
@@ -94,7 +113,8 @@ public class ASMQueryHandler implements IQueryListener
 
 	private String getUniqueName(Method callback)
 	{
-		return String.format("%s_%d_%s_%s_%s", getClass().getName(), IDs++, callback.getDeclaringClass().getSimpleName(), callback.getName(), callback.getParameterTypes()[0].getSimpleName());
+		return String.format("%s_%d_%s_%s_%s", getClass().getName(), IDs++, callback.getDeclaringClass().getSimpleName(), callback.getName(),
+				callback.getParameterTypes()[0].getSimpleName());
 	}
 
 	private static class FEASMClassLoader extends ClassLoader

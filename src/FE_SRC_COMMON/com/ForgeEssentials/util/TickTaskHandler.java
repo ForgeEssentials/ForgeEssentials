@@ -11,41 +11,45 @@ public final class TickTaskHandler implements ITickHandler
 {
 	public static final int MAX_BLOCK_UPDATES = 10;
 	private static ConcurrentLinkedQueue<ITickTask> tasks = new ConcurrentLinkedQueue<ITickTask>();
-	
+
 	public static void addTask(ITickTask task)
 	{
 		if (!tasks.contains(task))
+		{
 			tasks.add(task);
+		}
 	}
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		
+
 		int blockCounter = 0;
-		
-		for (ITickTask task: tasks)
+
+		for (ITickTask task : tasks)
 		{
 			if (task.isComplete())
 			{
 				task.onComplete();
 				tasks.remove(task);
 			}
-			
+
 			else if (task.editsBlocks() && blockCounter <= MAX_BLOCK_UPDATES)
 			{
 				task.tick();
 				blockCounter++;
 			}
 			else
+			{
 				task.tick();
+			}
 		}
 	}
 
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
-		// DO NOTHING!!!!  NOTHING HERE!!!!
+		// DO NOTHING!!!! NOTHING HERE!!!!
 	}
 
 	@Override

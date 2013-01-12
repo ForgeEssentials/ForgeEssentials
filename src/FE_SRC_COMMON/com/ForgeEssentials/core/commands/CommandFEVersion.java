@@ -45,12 +45,6 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return checkCommandPerm(player);
-	}
-
-	@Override
 	public String getInfoConsole()
 	{
 		return "Get the current version of ForgeEssentials";
@@ -65,6 +59,6 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.CoreCommands."+getCommandName();
+		return "ForgeEssentials.CoreCommands." + getCommandName();
 	}
 }

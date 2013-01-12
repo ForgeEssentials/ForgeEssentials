@@ -29,11 +29,14 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 			ItemStack item = sender.getHeldItem();
 
 			if (item == null)
+			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
+			}
 
 			item.setItemDamage(0);
 
-		} else if (args.length == 1)
+		}
+		else if (args.length == 1)
 		{
 			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 
@@ -44,15 +47,18 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 				if (item != null)
 				{
 					item.setItemDamage(0);
-				} else
+				}
+				else
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMTARGET));
 				}
-			} else
+			}
+			else
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} else
+		}
+		else
 		{
 			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 		}
@@ -72,15 +78,18 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 				if (item != null)
 				{
 					item.setItemDamage(0);
-				} else
+				}
+				else
 				{
 					sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOITEMTARGET));
 				}
-			} else
+			}
+			else
 			{
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} else
+		}
+		else
 		{
 			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
@@ -93,28 +102,22 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-    	if(args.length == 1)
-    	{
-    		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    }
+	{
+		if (args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 }

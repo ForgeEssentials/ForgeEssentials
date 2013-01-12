@@ -10,10 +10,10 @@ public abstract class DataDriver
 	public DataDriver()
 	{
 	}
-	
-	public void onClassRegisterred(TypeTagger tagger)
+
+	public void onClassRegistered(TypeTagger tagger)
 	{
-		
+
 	}
 
 	public boolean saveObject(Object o)
@@ -36,7 +36,9 @@ public abstract class DataDriver
 		TaggedClass data = loadData(type, loadingKey);
 
 		if (data != null)
+		{
 			newObject = DataStorageManager.taggerList.get(type).createFromFields(data);
+		}
 
 		return newObject;
 	}
@@ -46,12 +48,19 @@ public abstract class DataDriver
 		ArrayList<Object> list = new ArrayList<Object>();
 		TaggedClass[] objectData = loadAll(type);
 
-		// Each element of the field array represents an object, stored as an array of fields.
+		// Each element of the field array represents an object, stored as an
+		// array of fields.
+		Object tmp;
 		if (objectData != null && objectData.length > 0)
-			for (TaggedClass tag: objectData)
-				list.add(loadObject(type, tag.uniqueKey));
+		{
+			for (TaggedClass tag : objectData)
+			{
+				tmp = DataStorageManager.taggerList.get(type).createFromFields(tag);
+				list.add(tmp);
+			}
+		}
 
-		return list.toArray(new Object[] {});
+		return list.toArray(new Object[list.size()]);
 	}
 
 	public boolean deleteObject(Class type, Object loadingKey)

@@ -8,13 +8,14 @@ public class BackupArea implements Serializable
 {
 	public ArrayList<BlockSaveable> before;
 	public ArrayList<BlockSaveable> after;
-	
+
 	public BackupArea()
 	{
 		before = new ArrayList<BlockSaveable>();
 		after = new ArrayList<BlockSaveable>();
 	}
-	
+
+	@Override
 	public boolean equals(Object obj)
 	{
 		if (obj instanceof BackupArea)

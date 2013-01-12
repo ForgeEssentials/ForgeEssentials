@@ -25,7 +25,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 		{
 			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			int amountToSubtract = Integer.parseInt(args[1]);
-			
+
 			if (player == null)
 			{
 				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_NOPLAYER)));
@@ -33,14 +33,14 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 			else
 			{
 				Wallet.removeFromWallet(amountToSubtract, player);
-			
+
 				if (sender != player)
 				{
 					sender.sendChatToPlayer(amountToSubtract + " " + Wallet.currency(amountToSubtract) + Localization.get(Localization.WALLET_REMOVE_TARGET));
 				}
 				player.sendChatToPlayer(amountToSubtract + " " + Wallet.currency(amountToSubtract) + Localization.get(Localization.WALLET_REMOVE_SELF));
 			}
-		} 
+		}
 		else
 		{
 			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
@@ -54,7 +54,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 		{
 			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			int amountToSubtract = Integer.parseInt(args[1]);
-			
+
 			if (player == null)
 			{
 				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOPLAYER));
@@ -62,11 +62,11 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 			else
 			{
 				Wallet.removeFromWallet(amountToSubtract, player);
-			
+
 				sender.sendChatToPlayer(amountToSubtract + " " + Wallet.currency(amountToSubtract) + Localization.get(Localization.WALLET_REMOVE_TARGET));
 				player.sendChatToPlayer(amountToSubtract + " " + Wallet.currency(amountToSubtract) + Localization.get(Localization.WALLET_REMOVE_SELF));
 			}
-		} 
+		}
 		else
 		{
 			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
@@ -75,12 +75,6 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 
 	@Override
 	public boolean canConsoleUseCommand()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		return true;
 	}

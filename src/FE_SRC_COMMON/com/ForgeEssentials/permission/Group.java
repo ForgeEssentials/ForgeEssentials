@@ -1,79 +1,52 @@
 package com.ForgeEssentials.permission;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraftforge.common.Property;
-
-public class Group
+public class Group implements Comparable
 {
-	private HashMap<String, String>		ladderNames;	// zoneID, ladderName
-	private HashMap<String, Property>	extraData;		// tag based extra data
-	public String						parent;
-	public String						prefix;
-	public String						suffix;
-	public final String					name;
-	public final String					zoneID;
-	public int							priority;		// lowest priority is 0
 
-	public Group(String name)
-	{
-		this(name, ZoneManager.GLOBAL.getZoneID());
-	}
+	public String name;
+	public String parent;
+	public String prefix;
+	public String suffix;
+	public String zoneName;
+	public int priority; // lowest priority is 0
 
-	public Group(String name, String zone)
+	public Group(String name, String prefix, String suffix, String parent, String zoneName, int priority)
 	{
+		super();
+		this.parent = parent;
+		this.prefix = prefix;
+		this.suffix = suffix;
 		this.name = name;
-		zoneID = zone;
-		ladderNames = new HashMap<String, String>();
-		extraData = new HashMap<String, Property>();
+		this.zoneName = zoneName;
+		this.priority = priority;
 	}
 
-	/**
-	 * You really shouldn't use this.. get the ladder somehow and check that...
-	 * @param zoneID when in doubt use GLOBAL
-	 */
-	public String getPromotion(String zoneID)
+	@Override
+	public int compareTo(Object obj)
 	{
-		return ZoneManager.getZone(zoneID).getLadder(ladderNames.get(zoneID)).getPromotion(name);
-	}
+		if (!(obj instanceof Group))
+		{
+			return Integer.MIN_VALUE;
+		}
 
-	/**
-	 * You really shouldn't use this.. get the ladder somehow and check that...
-	 * @param zoneID when in doubt use GLOBAL
-	 */
-	public String getDemotion(String zoneID)
-	{
-		return ZoneManager.getZone(zoneID).getLadder(ladderNames.get(zoneID)).getDemotion(name);
-	}
+		Group g = (Group) obj;
 
-	public boolean hasParent()
-	{
-		return parent == null || parent.isEmpty();
-	}
+		if (equals(g))
+		{
+			return 0;
+		}
 
-	public void addData(Property prop)
-	{
-		extraData.put(prop.getName(), prop);
-	}
+		Zone my = ZoneManager.getZone(zoneName);
+		Zone their = ZoneManager.getZone(g.zoneName);
 
-	public Property getData(String dataKey)
-	{
-		return extraData.get(dataKey);
-	}
+		int end = my.compareTo(their);
 
-	public Map<String, Property> getData()
-	{
-		return extraData;
-	}
+		if (end == 0)
+		{
+			return priority - their.priority;
+		}
 
-	/**
-	 * @param zoneID
-	 * return NULL if this group has no ladder in this zone.
-	 */
-	public String getLadderName(String zoneID)
-	{
-		return ladderNames.get(zoneID);
+		return end;
 	}
 
 }

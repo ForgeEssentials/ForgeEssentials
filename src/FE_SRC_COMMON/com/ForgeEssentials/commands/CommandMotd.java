@@ -1,11 +1,17 @@
 package com.ForgeEssentials.commands;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandMotd extends ForgeEssentialsCommandBase
 {
@@ -21,29 +27,21 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length > 0)
+		LoginMessage.sendLoginMessage(sender);
+		if(args.length > 0 && args[0].equalsIgnoreCase("reload"))
 		{
-			motd = "";
-			for (String arg : args)
-				motd = motd + arg + " ";
-			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
-			OutputHandler.chatConfirmation(sender, "MOTD successfully changed.");
-		} else
-			sender.sendChatToPlayer(motd);
+			LoginMessage.loadFile();
+		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length > 0)
+		LoginMessage.sendLoginMessage(sender);
+		if(args.length > 0 && args[0].equalsIgnoreCase("reload"))
 		{
-			motd = "";
-			for (String arg : args)
-				motd = motd + arg + " ";
-			ForgeEssentials.instance.config.changeProperty("Miscellaneous", "motd", motd);
-			OutputHandler.SOP("MOTD successfully changed");
-		} else
-			sender.sendChatToPlayer(motd);
+			LoginMessage.loadFile();
+		}
 	}
 
 	@Override
@@ -53,14 +51,21 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+	
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, "reload");
+		}
+		else
+		{
+			return null;
+		}
 	}
 }

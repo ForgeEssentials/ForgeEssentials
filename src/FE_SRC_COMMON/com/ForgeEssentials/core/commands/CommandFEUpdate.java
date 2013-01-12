@@ -36,7 +36,6 @@ public class CommandFEUpdate extends ForgeEssentialsCommandBase
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-
 		return null;
 	}
 
@@ -49,7 +48,6 @@ public class CommandFEUpdate extends ForgeEssentialsCommandBase
 	@Override
 	public String getInfoPlayer(EntityPlayer player)
 	{
-
 		return null;
 	}
 
@@ -57,12 +55,6 @@ public class CommandFEUpdate extends ForgeEssentialsCommandBase
 	public boolean canConsoleUseCommand()
 	{
 		return true;
-	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return false;
 	}
 
 	@Override

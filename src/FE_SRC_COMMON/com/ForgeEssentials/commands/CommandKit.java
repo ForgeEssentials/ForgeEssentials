@@ -40,14 +40,14 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		/*
 		 * Print kits
 		 */
-		if(args.length == 0)
+		if (args.length == 0)
 		{
 			sender.sendChatToPlayer(Localization.get(Localization.KIT_LIST));
 			String msg = "";
-			for(Object temp : kitData.getTags())
+			for (Object temp : kitData.getTags())
 			{
 				NBTTagCompound kit = (NBTTagCompound) temp;
-				if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + kit.getName())))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + kit.getName())))
 				{
 					msg = kit.getName() + ", " + msg;
 				}
@@ -58,11 +58,11 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		/*
 		 * Give kit
 		 */
-		if(args.length == 1)
+		if (args.length == 1)
 		{
-			if(kitData.hasKey(args[0].toLowerCase()))
+			if (kitData.hasKey(args[0].toLowerCase()))
 			{
-				if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					giveKit(sender, kitData.getCompoundTag(args[0].toLowerCase()));
 				}
@@ -80,13 +80,13 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		/*
 		 * Make kit
 		 */
-		if(args[1].equalsIgnoreCase("set") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
+		if (args[1].equalsIgnoreCase("set") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
 		{
-			if(args.length == 3)
+			if (args.length == 3)
 			{
-				if(!kitData.hasKey(args[0].toLowerCase()))
+				if (!kitData.hasKey(args[0].toLowerCase()))
 				{
-					int cooldown = this.parseIntWithMin(sender, args[2], 0);
+					int cooldown = parseIntWithMin(sender, args[2], 0);
 					makeKit(sender, args[0].toLowerCase(), cooldown);
 					sender.sendChatToPlayer(Localization.get(Localization.KIT_MADE).replaceAll("%c", "" + cooldown));
 				}
@@ -97,15 +97,15 @@ public class CommandKit extends ForgeEssentialsCommandBase
 				return;
 			}
 		}
-		
+
 		/*
 		 * Delete kit
 		 */
-		if(args[1].equalsIgnoreCase("del") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
+		if (args[1].equalsIgnoreCase("del") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
 		{
-			if(args.length == 2)
+			if (args.length == 2)
 			{
-				if(kitData.hasKey(args[0].toLowerCase()))
+				if (kitData.hasKey(args[0].toLowerCase()))
 				{
 					kitData.removeTag(args[0].toLowerCase());
 					sender.sendChatToPlayer(Localization.get(Localization.KIT_REMOVED));
@@ -117,27 +117,27 @@ public class CommandKit extends ForgeEssentialsCommandBase
 				return;
 			}
 		}
-		
+
 		/*
 		 * You're doing it wrong!
 		 */
 		OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 	}
-	
+
 	public void makeKit(EntityPlayer player, String name, int cooldown)
 	{
 		NBTTagCompound kitData = DataStorage.getData("kitdata");
 		NBTTagCompound kit = new NBTTagCompound(name);
-		
+
 		kit.setInteger("cooldown", cooldown);
-		
+
 		/*
 		 * Main inv.
 		 */
 		NBTTagList items = new NBTTagList();
-		for(ItemStack stack : player.inventory.mainInventory)
+		for (ItemStack stack : player.inventory.mainInventory)
 		{
-			if(stack != null)
+			if (stack != null)
 			{
 				NBTTagCompound item = new NBTTagCompound();
 				stack.writeToNBT(item);
@@ -145,46 +145,47 @@ public class CommandKit extends ForgeEssentialsCommandBase
 			}
 		}
 		kit.setTag("items", items);
-		
+
 		/*
 		 * Armor
 		 */
-		for(int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			ItemStack stack = player.inventory.armorInventory[i];
-			if(stack != null)
+			if (stack != null)
 			{
 				NBTTagCompound item = new NBTTagCompound();
 				stack.writeToNBT(item);
 				kit.setCompoundTag("armor" + i, item);
 			}
 		}
-		
+
 		kitData.setCompoundTag(name, kit);
 		DataStorage.setData("kitdata", kitData);
 	}
-	
+
 	public void giveKit(EntityPlayer player, NBTTagCompound kit)
 	{
-		if(PlayerInfo.getPlayerInfo(player).kitCooldown.get(kit.getName()) != null)
+		if (PlayerInfo.getPlayerInfo(player).kitCooldown.containsKey(kit.getName()))
 		{
-			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c", "" + PlayerInfo.getPlayerInfo(player).kitCooldown.get(kit.getName())));
+			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c",
+					"" + PlayerInfo.getPlayerInfo(player).kitCooldown.get(kit.getName())));
 		}
 		else
 		{
 			player.sendChatToPlayer(Localization.get(Localization.KIT_DONE));
-			
-			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
+
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
 			{
 				PlayerInfo.getPlayerInfo(player).kitCooldown.put(kit.getName(), kit.getInteger("cooldown"));
 			}
-			
+
 			/*
 			 * Main inv.
 			 */
-			for(int i = 0; kit.getTagList("items").tagCount() > i; i++)
+			for (int i = 0; kit.getTagList("items").tagCount() > i; i++)
 			{
-				ItemStack stack = new ItemStack(0,0,0);
+				ItemStack stack = new ItemStack(0, 0, 0);
 				stack.readFromNBT((NBTTagCompound) kit.getTagList("items").tagAt(i));
 				player.inventory.addItemStackToInventory(stack);
 			}
@@ -192,13 +193,13 @@ public class CommandKit extends ForgeEssentialsCommandBase
 			/*
 			 * Armor
 			 */
-			for(int i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 			{
-				if(kit.hasKey("armor" + i))
+				if (kit.hasKey("armor" + i))
 				{
-					ItemStack stack = new ItemStack(0,0,0);
+					ItemStack stack = new ItemStack(0, 0, 0);
 					stack.readFromNBT(kit.getCompoundTag("armor" + i));
-					if(player.inventory.armorInventory[i] == null)
+					if (player.inventory.armorInventory[i] == null)
 					{
 						player.inventory.armorInventory[i] = stack;
 					}
@@ -223,40 +224,34 @@ public class CommandKit extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
+	{
 		NBTTagCompound warps = DataStorage.getData("kitdata");
-    	Iterator warpsIt = warps.getTags().iterator();
-    	List<String> list = new ArrayList<String>();
-    	while(warpsIt.hasNext()) {
-    		NBTTagCompound buffer = (NBTTagCompound) warpsIt.next();
-    		list.add(buffer.getName());
-    	}
-    	
-    	if(args.length == 1)
-    	{
-    		return getListOfStringsFromIterableMatchingLastWord(args, list);
-    	}
-    	else if(args.length == 2)
-    	{
-    		return getListOfStringsMatchingLastWord(args, "set", "del");
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    }
+		Iterator warpsIt = warps.getTags().iterator();
+		List<String> list = new ArrayList<String>();
+		while (warpsIt.hasNext())
+		{
+			NBTTagCompound buffer = (NBTTagCompound) warpsIt.next();
+			list.add(buffer.getName());
+		}
+
+		list.add("set");
+		list.add("del");
+
+		if (args.length == 1)
+		{
+			return getListOfStringsFromIterableMatchingLastWord(args, list);
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 }

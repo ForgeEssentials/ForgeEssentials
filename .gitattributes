@@ -1,0 +1,16 @@
+* text auto
+*.java text eol=lf
+*.sh text eol=lf
+dropbox_uploader text eol=lf
+*.txt eol=lf
+*.xml text
+*.bat text eol=crlf
+*.dat binary
+*.bin binary
+*.png binary
+*.exe binary
+*.dll binary
+*.zip binary
+*.jar binary
+*.7z binary
+*.db binary

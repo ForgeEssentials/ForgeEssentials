@@ -1,7 +1,26 @@
 package com.ForgeEssentials.playerLogger;
 
-import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.core.ModuleLauncher;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraftforge.common.MinecraftForge;
+
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerStopEvent;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.playerLogger.types.blockChangeLog;
+import com.ForgeEssentials.playerLogger.types.commandLog;
+import com.ForgeEssentials.playerLogger.types.logEntry;
+import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -13,83 +32,114 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-public class ModulePlayerLogger implements IFEModule
+@FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, configClass = ConfigPlayerLogger.class)
+public class ModulePlayerLogger
 {
-	static final boolean DEBUG = !ObfuscationReflectionHelper.obfuscation;
-	
-	public static ConfigPlayerLogger config;
-	
-	public static String url;
-	public static String username;
-	public static String password;
-	public static boolean ragequitOn;
-	public static int interval;
-	
-	public EventLogger eLogger;
-	
+	static final boolean				DEBUG		= !ObfuscationReflectionHelper.obfuscation;
+
+	@Config
+	public static ConfigPlayerLogger	config;
+
+	public static String				url;
+	public static String				username;
+	public static String				password;
+	public static boolean				ragequitOn;
+	public static Integer				interval;
+	public static boolean				enable		= false;
+
+	private Connection					connection;
+	public static EventLogger			eLogger;
+
+	public static List<logEntry>		logTypes	= new ArrayList();
+	static
+	{
+		logTypes.add(new playerTrackerLog());
+		logTypes.add(new commandLog());
+		logTypes.add(new blockChangeLog());
+	}
+
 	public ModulePlayerLogger()
 	{
-		eLogger = new EventLogger();
+		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
-	@Override
-	public void preLoad(FMLPreInitializationEvent e) 
+	@PreInit
+	public void preLoad(FEModulePreInitEvent e)
 	{
+		if (!enable)
+		{
+			return;
+		}
 		OutputHandler.SOP("PlayerLogger module is enabled. Loading...");
-		config = new ConfigPlayerLogger();
 	}
 
-	@Override
-	public void load(FMLInitializationEvent e) 
+	@Init
+	public void load(FEModuleInitEvent e)
 	{
-			
-	}
-
-	@Override
-	public void postLoad(FMLPostInitializationEvent e) 
-	{
-		
-	}
-
-	@Override
-	public void serverStarting(FMLServerStartingEvent e) 
-	{
+		if (!enable)
+		{
+			return;
+		}
 		try
 		{
-			MySQLConnector connector = new MySQLConnector();
-		
-			connector.makeTable();
-			connector.close();
-		
-			eLogger.start();
-		
-			if(DEBUG)
+			Class mySQLclass = Class.forName("com.mysql.jdbc.Driver");
+		}
+		catch (ClassNotFoundException error)
+		{
+			throw new RuntimeException("Could not find MySQL JDBC Driver.");
+		}
+	}
+
+	@ServerInit
+	public void serverStarting(FEModuleServerInitEvent e)
+	{
+		if (!enable)
+		{
+			return;
+		}
+		e.registerServerCommand(new CommandPl());
+		try
+		{
+			connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
+			Statement s = connection.createStatement();
+
+			/*
+			 * if (DEBUG && false)
+			 * {
+			 * for (logEntry type : logTypes)
+			 * {
+			 * s.execute("DROP TABLE IF EXISTS " + type.getName());
+			 * }
+			 * }
+			 */
+
+			for (logEntry type : logTypes)
 			{
-				OutputHandler.debug("Debug mode engaged.");
-				for(int i = 0; i < 10; i++)
-				{
-					eLogger.logLoop.buffer.add(new logEntry("Test" + i, LogCatagory.DEBUG, "Disc " + i + ""));
-				}
+				s.execute(type.getTableCreateSQL());
 			}
+
+			s.close();
+			connection.close();
+			eLogger = new EventLogger();
 		}
-		catch (Exception ex)
+		catch (SQLException e1)
 		{
-			OutputHandler.SOP("WARNING! MySQLConnector for playerLogger failed!");
+			OutputHandler.SOP("Could not connect to database! Wrong credentials?");
+			OutputHandler.SOP(e1.getMessage());
+			e1.printStackTrace();
 		}
 	}
 
-	@Override
-	public void serverStarted(FMLServerStartedEvent e) 
+	@ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
 	{
-		
-	}
-	
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e) 
-	{
+		if (!enable)
+		{
+			return;
+		}
 		try
 		{
-			//eLogger.logLoop.makeLogs();
+			eLogger.logLoop.sendLogs();
 			eLogger.logLoop.end();
 		}
 		catch (Exception ex)
@@ -98,9 +148,16 @@ public class ModulePlayerLogger implements IFEModule
 		}
 	}
 
-	public static void ragequit() 
+	public static void ragequit()
 	{
-		if(ragequitOn)
+		if (ragequitOn)
+		{
 			FMLCommonHandler.instance().raiseException(new RuntimeException(), "Database connection lost.", true);
+		}
+	}
+
+	public static void log(logEntry e)
+	{
+		eLogger.logLoop.buffer.add(e);
 	}
 }

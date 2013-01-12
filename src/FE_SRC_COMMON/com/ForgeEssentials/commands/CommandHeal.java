@@ -26,11 +26,11 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 		if (args.length == 0)
 		{
 			heal(sender);
-		} 
+		}
 		else if (args.length == 1)
 		{
 			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			
+
 			if (target != null)
 			{
 				heal(target);
@@ -39,7 +39,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 			{
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} 
+		}
 		else
 		{
 			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
@@ -52,7 +52,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			
+
 			if (target != null)
 			{
 				heal(target);
@@ -61,13 +61,13 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 			{
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} 
+		}
 		else
 		{
 			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
-	
+
 	public void heal(EntityPlayer target)
 	{
 		target.heal(20);
@@ -75,15 +75,9 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 		target.getFoodStats().addStats(20, 1.0F);
 		target.sendChatToPlayer(Localization.get(Localization.HEALED));
 	}
-	
-	@Override
-	public boolean canConsoleUseCommand()
-	{
-		return true;
-	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
+	public boolean canConsoleUseCommand()
 	{
 		return true;
 	}
@@ -93,18 +87,18 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-    	if(args.length == 1)
-    	{
-    		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    }
+	{
+		if (args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 }

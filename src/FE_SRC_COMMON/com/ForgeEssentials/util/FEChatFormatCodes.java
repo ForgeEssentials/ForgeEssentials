@@ -1,137 +1,190 @@
 package com.ForgeEssentials.util;
 
-public enum FEChatFormatCodes {
+public enum FEChatFormatCodes
+{
 
-	BLACK {
+	BLACK
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a70";
 		}
 	},
-	DARKBLUE {
+	DARKBLUE
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a71";
 		}
 	},
-	DARKGREEN {
+	DARKGREEN
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a72";
 		}
 	},
-	DARKAQUA {
+	DARKAQUA
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a73";
 		}
 	},
-	DARKRED {
+	DARKRED
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a74";
 		}
 	},
-	PURPLE {
+	PURPLE
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a75";
 		}
 	},
-	GOLD {
+	GOLD
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a76";
 		}
 	},
-	GREY {
+	GREY
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a77";
 		}
 	},
-	DARKGREY {
+	DARKGREY
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a78";
 		}
 	},
-	INDIGO {
+	INDIGO
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a79";
 		}
 	},
-	GREEN {
+	GREEN
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7a";
 		}
 	},
-	AQUA {
+	AQUA
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7b";
 		}
 	},
-	RED {
+	RED
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7c";
 		}
 	},
-	PINK {
+	PINK
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7d";
 		}
 	},
-	YELLOW {
+	YELLOW
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7e";
 		}
 	},
-	
-	WHITE {
+
+	WHITE
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7f";
 		}
 	},
-	RANDOM {
+	RANDOM
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7k";
 		}
 	},
-	BOLD {
+	BOLD
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7l";
 		}
 	},
-	STRIKE {
+	CODE
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
+			return "\u00a7";
+		}
+	},
+	STRIKE
+	{
+		@Override
+		public String toString()
+		{
 			return "\u00a7m";
 		}
 	},
-	UNDERLINE {
+	UNDERLINE
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7n";
 		}
 	},
-	ITALICS {
+	ITALICS
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7o";
 		}
 	},
-	RESET {
+	RESET
+	{
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "\u00a7r";
 		}
 	};

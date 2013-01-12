@@ -6,9 +6,9 @@ public class TaggedClass
 {
 	public class SavedField
 	{
-		public String	name;
-		public Object	value;
-		public Class	type;
+		public String name;
+		public Object value;
+		public Class type;
 
 		public SavedField()
 		{
@@ -18,29 +18,39 @@ public class TaggedClass
 		{
 			this.name = name;
 			this.value = value;
-			this.type = value.getClass();
+			type = value.getClass();
 		}
 	}
 
-	public Class						type;
-	protected SavedField					uniqueKey;
-	protected HashMap<String, SavedField>	TaggedMembers;
+	public Class type;
+	protected SavedField uniqueKey;
+	protected HashMap<String, SavedField> TaggedMembers;
 
 	public TaggedClass()
 	{
-		this.TaggedMembers = new HashMap<String, SavedField>();
+		TaggedMembers = new HashMap<String, SavedField>();
 	}
 
 	public void addField(SavedField field)
 	{
-		this.TaggedMembers.put(field.name, field);
+		TaggedMembers.put(field.name, field);
 	}
 
 	public Object getFieldValue(String name)
 	{
-		if (!uniqueKey.name.endsWith("()") && uniqueKey.name.equals(name))
-			return uniqueKey.value;
+		Object value = null;
+		if (uniqueKey != null && (!uniqueKey.name.endsWith("()") && uniqueKey.name.equals(name)))
+		{
+			value = uniqueKey.value;
+		}
 		else
-			return TaggedMembers.get(name);
+		{
+			if (TaggedMembers.containsKey(name))
+			{
+				value = TaggedMembers.get(name).value;
+			}
+		}
+
+		return value;
 	}
 }

@@ -1,20 +1,22 @@
 package com.ForgeEssentials.protection;
 
+import java.util.HashMap;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.ForgeEssentials.core.IFEModule;
-import com.ForgeEssentials.core.ModuleLauncher;
-import com.ForgeEssentials.permission.ForgeEssentialsPermissionRegistrationEvent;
-import com.ForgeEssentials.permission.PermissionsAPI;
-import com.ForgeEssentials.permission.Zone;
-import com.ForgeEssentials.permission.ZoneManager;
-import com.ForgeEssentials.permission.query.PermQuery;
-import com.ForgeEssentials.permission.query.PermQueryPlayerZone;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
+import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -25,91 +27,60 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 /**
  * @author Dries007
  */
-
-public class ModuleProtection implements IFEModule
+@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true)
+public class ModuleProtection
 {
+	public final static String PERM_EDITS = "ForgeEssentials.Protection.allowEdits";
+	public final static String PERM_INTERACT_BLOCK = "ForgeEssentials.Protection.allowBlockInteractions";
+	public final static String PERM_INTERACT_ENTITY = "ForgeEssentials.Protection.allowEntityInteractions";
+	public final static String PERM_OVERRIDE = "ForgeEssentials.Protection.overrideProtection";
+
+	@Config
 	public static ConfigProtection config;
-	
+	public static boolean enable = false;
+
+	public static HashMap<String, HashMap<RegGroup, Boolean>> permissions = new HashMap<String, HashMap<RegGroup, Boolean>>();
+
 	public ModuleProtection()
 	{
-		
-		OutputHandler.SOP("Protection module is enabled. Loading...");
-		config = new ConfigProtection();
 		MinecraftForge.EVENT_BUS.register(this);
-	}
-	
-	@ForgeSubscribe
-	public void playerInteractin(PlayerInteractEvent e)
-	{
-		String perm = "ForgeEssentials.allowedit";
-		
-		if(e.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
-		{
-			perm += ".leftclick";
-		}
-		
-		if(e.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) || e.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_AIR))
-		{
-			perm += ".rightclick";
-		}
-		
-		System.out.println("## Perm: " + perm);
-		
-		Point point = new Point(e.x, e.y, e.z);
-		Zone zone = ZoneManager.getWhichZoneIn(point, e.entityPlayer.worldObj);
-		
-		System.out.println("## Zone: " + zone.getZoneID());
-		
-		PermQuery query = new PermQueryPlayerZone(e.entityPlayer, perm, zone);
-		boolean result = PermissionsAPI.checkPermAllowed(query);
-		
-		System.out.println("## Result: " + result);
-		
-		if(!result)
-		{
-			e.setCanceled(true);
-		}
 	}
 
 	/*
 	 * Module part
 	 */
-	
-	@Override
-	public void preLoad(FMLPreInitializationEvent e){}
 
-	@Override
-	public void load(FMLInitializationEvent e){}
+	@PreInit
+	public void preLoad(FEModulePreInitEvent e)
+	{
+		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			return;
+		}
+		if (!enable)
+		{
+			return;
+		}
+		OutputHandler.SOP("Protection module is enabled. Loading...");
+	}
 
-	@Override
-	public void postLoad(FMLPostInitializationEvent e){}
-
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e){}
-	
-	@Override
-	public void serverStarting(FMLServerStartingEvent e){}
-
-	@Override
-	public void serverStarted(FMLServerStartedEvent e){}
+	@Init
+	public void load(FEModuleInitEvent e)
+	{
+		if (!enable)
+		{
+			return;
+		}
+		MinecraftForge.EVENT_BUS.register(new EventHandler());
+	}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		System.out.println("SDSGFDJDGSDKFGDFSGLKGN");
-		
-		event.registerPermissionDefault("ForgeEssentials.allowedit", false);
-		
-		event.registerPermissionDefault("ForgeEssentials.allowedit.leftclick", false);
-		event.registerPermissionDefault("ForgeEssentials.allowedit.rightclick", false);
-		
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.allowedit.leftclick", false);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.allowedit.rightclick", false);
-		
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.allowedit.leftclick", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.allowedit.rightclick", true);
-		
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.allowedit.leftclick", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.allowedit.rightclick", true);
+		// event.registerPermissionDefault(PERM, false);
+		event.registerPerm(this, RegGroup.MEMBERS, PERM_EDITS, true);
+		event.registerPerm(this, RegGroup.MEMBERS, PERM_INTERACT_BLOCK, true);
+		event.registerPerm(this, RegGroup.MEMBERS, PERM_INTERACT_ENTITY, true);
+		event.registerPerm(this, RegGroup.OWNERS, PERM_OVERRIDE, true);
 	}
 }

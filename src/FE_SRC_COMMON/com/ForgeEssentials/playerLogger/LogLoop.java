@@ -1,56 +1,68 @@
 package com.ForgeEssentials.playerLogger;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.List;
 
+import com.ForgeEssentials.playerLogger.types.logEntry;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class LogLoop implements Runnable
 {
 	private boolean run = true;
-	public ArrayList<logEntry> buffer = new ArrayList<logEntry> ();
-	
+	public List<logEntry> buffer = Collections.synchronizedList(new ArrayList<logEntry>());
+
 	@Override
-	public void run() 
+	public void run()
 	{
-		OutputHandler.debug("Started running the logger");
-		while (run) 
+		OutputHandler.debug("Started running the logger " + run);
+		while (run)
 		{
-			try 
+			int i = 0;
+			while (i < ModulePlayerLogger.interval)
 			{
-				Thread.sleep(1000 * ModulePlayerLogger.interval);
+				try
+				{
+					Thread.sleep(1000);
+				}
+				catch (final InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				i++;
 			}
-			catch (final InterruptedException e){}
-			if(buffer.isEmpty())
-			{
-				OutputHandler.SOP("No logs to make");
-			}
-			else
-			{
-				OutputHandler.SOP("Making logs");
-				makeLogs();
-				OutputHandler.SOP("Done making logs");
-			}
+			sendLogs();
 		}
 	}
 
-	public void makeLogs() 
+	public void sendLogs()
 	{
-		MySQLConnector connector = new MySQLConnector();
-		Iterator<logEntry> i = buffer.iterator();
-		ArrayList<logEntry> delBuffer = new ArrayList<logEntry>();
-		while (i.hasNext())
+		try
 		{
-			logEntry log = i.next();
-			delBuffer.add(log);
-			connector.makeLog(log);
+			OutputHandler.debug("Trying to make " + buffer.size() + " logs.");
+			Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
+			List<logEntry> temp = new ArrayList<logEntry>(buffer);
+			for (logEntry type : ModulePlayerLogger.logTypes)
+			{
+				type.makeEntries(connection, temp);
+			}
+			buffer.removeAll(temp);
+			connection.close();
+			OutputHandler.debug("Made " + temp.size() + " logs.");
 		}
-		buffer.removeAll(delBuffer);
-		connector.close();
+		catch (SQLException e1)
+		{
+			OutputHandler.SOP("Could not connect to database!");
+			OutputHandler.SOP(e1.getMessage());
+			e1.printStackTrace();
+		}
 	}
 
-	public void end() 
+	public void end()
 	{
-		run  = false;
+		run = false;
 	}
 }

@@ -5,16 +5,36 @@ import java.util.Arrays;
 
 public class PromotionLadder
 {
-	public final String				name;
-	public final String				zoneID;
-	private final ArrayList<String>	groupsList;
+	public final String name;
+	public final String zoneID;
+	private final ArrayList<String> groupsList;
 
+	/**
+	 * @param name
+	 * @param zoneID
+	 * @param list
+	 *            this list must be in order. 0 bieng the top.
+	 */
 	public PromotionLadder(String name, String zoneID, String[] list)
 	{
 		this.name = name;
 		this.zoneID = zoneID;
 		groupsList = new ArrayList<String>();
 		groupsList.addAll(Arrays.asList(list));
+	}
+
+	/**
+	 * @param name
+	 * @param zoneID
+	 * @param list
+	 *            this list must be in order. 0 bieng the top.
+	 */
+	public PromotionLadder(String name, String zoneID, ArrayList<String> list)
+	{
+		this.name = name;
+		this.zoneID = zoneID;
+		groupsList = new ArrayList<String>();
+		groupsList.addAll(list);
 	}
 
 	public boolean containsGroup(String group)
@@ -29,13 +49,19 @@ public class PromotionLadder
 	public String getPromotion(String group)
 	{
 		if (!groupsList.contains(group))
+		{
 			return null;
+		}
 
 		int index = groupsList.indexOf(group);
 		if (index == 0)
+		{
 			return null;
+		}
 		else
+		{
 			return groupsList.get(index - 1);
+		}
 	}
 
 	/**
@@ -45,13 +71,19 @@ public class PromotionLadder
 	public String getDemotion(String group)
 	{
 		if (!groupsList.contains(group))
+		{
 			return null;
+		}
 
 		int index = groupsList.indexOf(group);
 		if (index == groupsList.size() - 1)
+		{
 			return null;
+		}
 		else
+		{
 			return groupsList.get(index - 1);
+		}
 	}
 
 	/**

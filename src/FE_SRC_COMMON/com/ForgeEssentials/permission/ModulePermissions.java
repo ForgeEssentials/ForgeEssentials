@@ -6,110 +6,101 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.IFEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerStopEvent;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerStop;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.DataStorageManager;
+import com.ForgeEssentials.permission.mcoverride.OverrideManager;
+import com.ForgeEssentials.playerLogger.ConfigPlayerLogger;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-public class ModulePermissions implements IFEModule
+@FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
+public class ModulePermissions
 {
-	public static ConfigPermissions						config;
-	public static PermissionsHandler					pHandler;
-	public static ZoneManager							zManager;
-	public static GroupManager							gManager;
-	public static PlayerManager							pManager;
+	// public static ConfigPermissions config;
+	public static PermissionsHandler pHandler;
+	public static ZoneManager zManager;
+	public static SqlHelper sql;
+	
+	@Config
+	public static ConfigPermissions config;
 
-	public static File									permsFolder	= new File(ForgeEssentials.FEDIR, "/permissions/");
+	public static File permsFolder = new File(ForgeEssentials.FEDIR, "/permissions/");
+	protected static DataDriver data;
 
-	@Override
-	public void preLoad(FMLPreInitializationEvent e)
+	@PreInit
+	public void preLoad(FEModulePreInitEvent e)
 	{
 		if (!permsFolder.exists() || !permsFolder.isDirectory())
+		{
 			permsFolder.mkdirs();
+		}
 
 		OutputHandler.SOP("Permissions module is enabled. Loading...");
 		zManager = new ZoneManager();
-		gManager = new GroupManager();
-		pManager = new PlayerManager();
-		
+
 		MinecraftForge.EVENT_BUS.register(zManager);
+
+		// testing DB.
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@Override
-	public void load(FMLInitializationEvent e)
+	@Init
+	public void load(FEModuleInitEvent e)
 	{
 		OutputHandler.SOP("Starting permissions registration period.");
+		PermissionRegistrationEvent permreg = new PermissionRegistrationEvent();
+		MinecraftForge.EVENT_BUS.post(permreg);
+		OutputHandler.SOP("Ending permissions registration period.");
 
-		MinecraftForge.EVENT_BUS.register(this);
+		// setup SQL
+		sql = new SqlHelper(config);
+		sql.putRegistrationperms(permreg.registered);
 
-		MinecraftForge.EVENT_BUS.post(new ForgeEssentialsPermissionRegistrationEvent());
-		
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
 	}
 
-	@Override
-	public void postLoad(FMLPostInitializationEvent e)
+	@ServerInit
+	public void serverStarting(FEModuleServerInitEvent e)
 	{
-		OutputHandler.SOP("Ending permissions registration period.");
+		// load zones...
+		data = DataStorageManager.getDriverOfName("ForgeConfig");
+		zManager.loadZones();
 
-		config = new ConfigPermissions();
-	}
-
-	@Override
-	public void serverStarting(FMLServerStartingEvent e)
-	{
+		//init perms and vMC command overrides
 		e.registerServerCommand(new CommandZone());
-		e.registerServerCommand(new CommandPermSet());
-
-	}
-
-	@Override
-	public void serverStarted(FMLServerStartedEvent e)
-	{
+		e.registerServerCommand(new CommandFEPerm());
+		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
 	}
 
 	@ForgeSubscribe
-	public void registerPermissions(ForgeEssentialsPermissionRegistrationEvent event)
+	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPermissionDefault("ForgeEssentials.permissions.zone", true);
-		event.registerPermissionDefault("ForgeEssentials.permissions.zone.list", true);
-		event.registerPermissionDefault("ForgeEssentials.permissions.zone.define", true);
-		event.registerPermissionDefault("ForgeEssentials.permissions.zone.remove", true);
-		event.registerPermissionDefault("ForgeEssentials.permissions.zone.redefine", true);
-		event.registerPermissionDefault("ForgeEssentials.permissions.zone.setparent", true);
+		event.registerPerm(this, RegGroup.ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.perm", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.zone", true);
 
-		event.registerPermissionDefault("ForgeEssentials.permissions.permissions.set", true);
-		event.registerPermissionDefault("ForgeEssentials.permissions.groups.create", true);
-		event.registerPermissionDefault("ForgeEssentials.permissions.groups.delete", true);
-		event.registerPermissionDefault("ForgeEssentials.permissions.groups.addplayer", true);
-		event.registerPermissionDefault("ForgeEssentials.permissions.player.setgroup", true);
-		event.registerPermissionDefault("ForgeEssentials.permissions.player.setsuperperm", true);
-
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, "ForgeEssentials.permissions.zone", false);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_MEMBERS, "ForgeEssentials.permissions.zone", false);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, "ForgeEssentials.permissions", true);
-
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, TeleportCenter.BYPASS_COOLDOWN, false);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_DEFAULT, TeleportCenter.BYPASS_WARMUP, false);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
-		event.registerGlobalGroupPermissions(PermissionsAPI.GROUP_OWNERS, TeleportCenter.BYPASS_WARMUP, true);
+		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
+		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_WARMUP, true);
 	}
 
-	@Override
-	public void serverStopping(FMLServerStoppingEvent e)
+	@ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
 	{
-		/*
+		// save all the zones
 		for (Zone zone : ZoneManager.zoneMap.values())
-			DataDriver.saveObject(zone);
-			*/
+			data.saveObject(zone);
 	}
 
 }

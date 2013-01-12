@@ -4,61 +4,28 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.World;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChunkCoordinates;
 
+import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
+import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandSpawn extends ForgeEssentialsCommandBase
 {
 
-	private HashMap<String, String> mobNames = new HashMap<String, String>();
-
-	public CommandSpawn()
-	{
-		mobNames.put("creeper", "Creeper");
-		mobNames.put("skeleton", "Skeleton");
-		mobNames.put("spider", "Spider");
-		mobNames.put("giant", "Giant");
-		mobNames.put("zombie", "Zombie");
-		mobNames.put("slime", "Slime");
-		mobNames.put("ghast", "Ghast");
-		mobNames.put("pigzombie", "PigZombie");
-		mobNames.put("zombiepigman", "PigZombie");
-		mobNames.put("enderman", "Enderman");
-		mobNames.put("cavespider", "CaveSpider");
-		mobNames.put("silverfish", "Silverfish");
-		mobNames.put("blaze", "Blaze");
-		mobNames.put("magmaslime", "LavaSlime");
-		mobNames.put("lavaslime", "LavaSlime");
-		mobNames.put("magmacube", "LavaSlime");
-		mobNames.put("lavacube", "LavaSlime");
-		mobNames.put("enderdragon", "EnderDragon");
-		mobNames.put("dragon", "EnderDragon");
-		mobNames.put("wither", "WitherBoss");
-		mobNames.put("witherboss", "WitherBoss");
-		mobNames.put("bat", "Bat");
-		mobNames.put("witch", "Witch");
-		mobNames.put("pig", "Pig");
-		mobNames.put("sheep", "Sheep");
-		mobNames.put("cow", "Cow");
-		mobNames.put("chicken", "Chicken");
-		mobNames.put("squid", "Squid");
-		mobNames.put("wolf", "Wolf");
-		mobNames.put("dog", "Wolf");
-		mobNames.put("mooshroom", "MushroomCow");
-		mobNames.put("mushroomcow", "MushroomCow");
-		mobNames.put("snowman", "SnowMan");
-		mobNames.put("ocelot", "Ozelot");
-		mobNames.put("golem", "VillagerGolem");
-		mobNames.put("villager", "Villager");
-	}
+	/** Spawn point for each dimension */
+	public static HashMap<Integer, Point> spawnPoints = new HashMap<Integer, Point>();
 
 	@Override
 	public String getCommandName()
@@ -71,142 +38,68 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
-			if (mop == null)
+			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+			if (player != null)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_TARGET));
-				return;
+				ChunkCoordinates spawn = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
+				PlayerInfo.getPlayerInfo(player).back = new WarpPoint(player);
+				((EntityPlayerMP) player).playerNetServerHandler
+						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
+				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			}
-			int amount = 1;
-			double x = mop.blockX + 0.5D;
-			double y = mop.blockY + 1;
-			double z = mop.blockZ + 0.5D;
-			if (args.length >= 2)
+			else
 			{
-				try
-				{
-					amount = new Integer(args[1]);
-				} catch (NumberFormatException e)
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
-					return;
-				}
-				if (args.length >= 5)
-				{
-					try
-					{
-						x = new Integer(args[2]);
-					} catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
-						return;
-					}
-					try
-					{
-						y = new Integer(args[3]);
-					} catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[3]));
-						return;
-					}
-					try
-					{
-						z = new Integer(args[4]);
-					} catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[4]));
-						return;
-					}
-				}
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-			for (int i = 0; i < amount; i++)
+		}
+		else
+		{
+			NBTTagCompound data = DataStorage.getData("spawn");
+			WarpPoint spawn;
+			if(!(data == null))
 			{
-				EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), sender.worldObj);
-				if (mob == null)
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOMOB, args[0]));
-					return;
-				}
-				mob.setPosition(x, y, z);
-				sender.worldObj.spawnEntityInWorld(mob);
+				spawn = new WarpPoint(data.getInteger("dim"), data.getDouble("x"), data.getDouble("y"),
+						data.getDouble("z"), data.getFloat("pitch"), data.getFloat("yaw"));
 			}
-		} else
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+			else
+			{
+				ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
+				spawn = new WarpPoint(sender.dimension, point.posX, point.posY, point.posZ, sender.rotationPitch, sender.rotationYaw);
+			}
+			if (spawn != null)
+			{
+				PlayerInfo.getPlayerInfo(sender).back = new WarpPoint(sender);
+				TeleportCenter.addToTpQue(spawn, sender);
+//				((EntityPlayerMP) sender).playerNetServerHandler
+//						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
+				sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
+			}
+		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length >= 6)
+		if (args.length >= 1)
 		{
-			int amount;
-			int x;
-			int y;
-			int z;
-			int dimension = 0;
-			try
+			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			if (player != null)
 			{
-				amount = new Integer(args[1]);
-			} catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
-				return;
+				PlayerInfo.getPlayerInfo(player).back = new WarpPoint(player);
+				ChunkCoordinates spawn = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
+				((EntityPlayerMP) player).playerNetServerHandler
+						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
+				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			}
-			try
+			else
 			{
-				x = new Integer(args[2]);
-			} catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
-				return;
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-			try
-			{
-				y = new Integer(args[3]);
-			} catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
-				return;
-			}
-			try
-			{
-				z = new Integer(args[4]);
-			} catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[4]));
-				return;
-			}
-			try
-			{
-				dimension = new Integer(args[5]);
-			} catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[5]));
-			}
-			for (int i = 0; i < amount; i++)
-			{
-				World world = FunctionHelper.getDimension(dimension);
-				EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), world);
-				if (mob == null)
-				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOMOB, args[0]));
-					return;
-				}
-				mob.setPosition(x, y, z);
-				world.spawnEntityInWorld(mob);
-			}
-		} else
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
+		}
 	}
 
 	@Override
 	public boolean canConsoleUseCommand()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		return true;
 	}
@@ -222,11 +115,11 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsFromIterableMatchingLastWord(args, mobNames.keySet());
-		} else
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
 		{
 			return null;
 		}
 	}
-
 }

@@ -10,62 +10,63 @@ import com.ForgeEssentials.util.Localization;
  * Does the actual filling, with limited chuncks per tick.
  * 
  * @author Dries007
- *
+ * 
  */
 
 public class TickTaskFillSquare extends TickTaskFill
 {
-	public TickTaskFillSquare(boolean canNotSaveBefore, WorldServer world)
+	public TickTaskFillSquare(WorldServer world)
 	{
-		this.isComplete = false;
-		this.canNotSaveBefore = canNotSaveBefore;
+		isComplete = false;
 		this.world = world;
-		this.X = this.minX = ModuleWorldBorder.borderData.getInteger("minX") - ModuleWorldBorder.overGenerate;
-		this.Z = this.minZ = ModuleWorldBorder.borderData.getInteger("minZ") - ModuleWorldBorder.overGenerate;
-		this.maxX = ModuleWorldBorder.borderData.getInteger("maxX") + ModuleWorldBorder.overGenerate;
-		this.maxZ = ModuleWorldBorder.borderData.getInteger("maxZ") + ModuleWorldBorder.overGenerate;
-		this.centerX = ModuleWorldBorder.borderData.getInteger("centerX");
-		this.centerZ = ModuleWorldBorder.borderData.getInteger("centerZ");
-		this.rad = ModuleWorldBorder.borderData.getInteger("rad");
-		
-		this.eta = (int) (((MathHelper.abs_int((this.maxX - this.minX)/16) * MathHelper.abs_int((this.minZ - this.maxZ)/16))));
-		
+		X = minX = ModuleWorldBorder.minX - ModuleWorldBorder.overGenerate;
+		Z = minZ = ModuleWorldBorder.minZ - ModuleWorldBorder.overGenerate;
+		maxX = ModuleWorldBorder.maxX + ModuleWorldBorder.overGenerate;
+		maxZ = ModuleWorldBorder.maxZ + ModuleWorldBorder.overGenerate;
+		centerX = ModuleWorldBorder.X;
+		centerZ = ModuleWorldBorder.Z;
+		rad = ModuleWorldBorder.rad;
+
+		eta = (((MathHelper.abs_int((maxX - minX) / 16) * MathHelper.abs_int((minZ - maxZ) / 16))));
+
 		warnEveryone(Localization.get(Localization.WB_FILL_START));
-		warnEveryone(FEChatFormatCodes.AQUA + "minX:" + this.minX + "  maxX:" + this.maxX);
-		warnEveryone(FEChatFormatCodes.AQUA + "minZ:" + this.minZ + "  maxZ:" + this.maxZ);
-		
+		warnEveryone(FEChatFormatCodes.AQUA + "minX:" + minX + "  maxX:" + maxX);
+		warnEveryone(FEChatFormatCodes.AQUA + "minZ:" + minZ + "  maxZ:" + maxZ);
+
 		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
 	}
 
 	@Override
 	public void tick()
 	{
-		ticks ++;
-		if(ticks % (20 * 10) == 0)
-		{
-			warnEveryone(Localization.get(Localization.WB_FILL_STILLGOING).replaceAll("%eta", getETA()));
-		}
-		
+		super.tick();
+
 		int i = 0;
 		while (i < chunksAtick)
 		{
-			i++;
-			world.theChunkProviderServer.provideChunk((X >> 4), (Z >> 4));	
-			if(X <= maxX)
+			if(!world.theChunkProviderServer.chunkExists((X >> 4), (Z >> 4)))
+			{
+				i++;
+				world.theChunkProviderServer.provideChunk((X >> 4), (Z >> 4));
+			}
+			world.theChunkProviderServer.unloadChunksIfNotNearSpawn((X >> 4), (Z >> 4));
+			world.theChunkProviderServer.unload100OldestChunks();
+			
+			if (X <= maxX)
 			{
 				X += 16;
 			}
 			else
 			{
-				//New row!
-				if(Z <= maxZ)
+				// New row!
+				if (Z <= maxZ)
 				{
 					Z += 16;
 					X = minX;
-				}	
+				}
 				else
 				{
-					//Done!
+					// Done!
 					isComplete = true;
 				}
 			}

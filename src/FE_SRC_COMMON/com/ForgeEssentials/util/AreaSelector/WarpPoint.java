@@ -1,5 +1,7 @@
 package com.ForgeEssentials.util.AreaSelector;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
@@ -14,29 +16,36 @@ public class WarpPoint extends WorldPoint
 	@SaveableField
 	public float yaw;
 
-	public WarpPoint(int dimension, int x, int y, int z, float playerPitch, float playerYaw)
+	public WarpPoint(int dimension, double x, double y, double z, float playerPitch, float playerYaw)
 	{
 		super(dimension, x, y, z);
-		this.pitch = playerPitch;
-		this.yaw = playerYaw;
+		pitch = playerPitch;
+		yaw = playerYaw;
 	}
-	
+
 	public WarpPoint(Point p, int dimension, float playerPitch, float playerYaw)
 	{
 		this(dimension, p.x, p.y, p.z, playerPitch, playerYaw);
 	}
-	
+
 	public WarpPoint(WorldPoint p, float playerPitch, float playerYaw)
 	{
 		this(p.dim, p.x, p.y, p.z, playerPitch, playerYaw);
 	}
-	
-	@Reconstructor()
-	private static WarpPoint reconstruct(TaggedClass tag)
+
+	public WarpPoint(EntityPlayer sender)
 	{
-		int x = (Integer) tag.getFieldValue("x");
-		int y = (Integer) tag.getFieldValue("y");
-		int z = (Integer) tag.getFieldValue("z");
+		super(sender);
+		pitch = sender.rotationPitch;
+		yaw = sender.rotationYaw;
+	}
+
+	@Reconstructor()
+	public static WarpPoint reconstruct(TaggedClass tag)
+	{
+		double x = (Double) tag.getFieldValue("x");
+		double y = (Double) tag.getFieldValue("y");
+		double z = (Double) tag.getFieldValue("z");
 		int dim = (Integer) tag.getFieldValue("dim");
 		float pitch = (Float) tag.getFieldValue("pitch");
 		float yaw = (Float) tag.getFieldValue("yaw");
@@ -46,7 +55,13 @@ public class WarpPoint extends WorldPoint
 	@UniqueLoadingKey()
 	private String getLoadingField()
 	{
-		return "warppoint_"+dim+"_"+x+"_"+y+"_"+z+"_"+pitch+"_"+yaw;
+		return "WarpPoint"+this;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "[" + dim + ";" + x + ";" + y + ";" + z + ";" + pitch + ";" + yaw + "]";
 	}
 
 }

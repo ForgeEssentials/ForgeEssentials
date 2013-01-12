@@ -5,9 +5,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.Configuration;
 
 public class damage implements IEffect
-{	
+{
 	private int damage = 1;
-	
+
 	@Override
 	public void registerConfig(Configuration config, String category)
 	{
@@ -15,7 +15,7 @@ public class damage implements IEffect
 	}
 
 	@Override
-	public void execute(EntityPlayerMP player) 
+	public void execute(EntityPlayerMP player)
 	{
 		player.attackEntityFrom(DamageSource.generic, damage);
 	}

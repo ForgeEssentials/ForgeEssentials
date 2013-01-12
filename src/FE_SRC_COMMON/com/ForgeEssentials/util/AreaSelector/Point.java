@@ -2,6 +2,8 @@ package com.ForgeEssentials.util.AreaSelector;
 
 import java.io.Serializable;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
@@ -12,34 +14,41 @@ import com.ForgeEssentials.data.TaggedClass;
 public class Point implements Serializable, Comparable<Point>
 {
 	@SaveableField
-	public int x;
-	
-	@SaveableField
-	public int y;
-	
-	@SaveableField
-	public int z;
+	public double x;
 
-	public Point(int x, int y, int z)
+	@SaveableField
+	public double y;
+
+	@SaveableField
+	public double z;
+
+	public Point(double x, double y, double z)
 	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
+	public Point(EntityPlayer player)
+	{
+		x = player.posX;
+		y = player.posY;
+		z = player.posZ;
+	}
+
 	public int getX()
 	{
-		return x;
+		return (int) Math.floor(x);
 	}
 
 	public int getY()
 	{
-		return y;
+		return (int) Math.floor(y);
 	}
 
 	public int getZ()
 	{
-		return z;
+		return (int) Math.floor(z);
 	}
 
 	/**
@@ -51,39 +60,61 @@ public class Point implements Serializable, Comparable<Point>
 	public int compareTo(Point point)
 	{
 		if (equals(point))
+		{
 			return 0;
+		}
 
 		int positives = 0;
 		int negatives = 0;
 
 		if (x > point.x)
+		{
 			positives++;
+		}
 		else
+		{
 			negatives++;
+		}
 
 		if (y > point.y)
+		{
 			positives++;
+		}
 		else
+		{
 			negatives++;
+		}
 
 		if (z > point.z)
+		{
 			positives++;
+		}
 		else
+		{
 			negatives++;
+		}
 
 		if (positives > negatives)
+		{
 			return +1;
+		}
 		else if (negatives > positives)
+		{
 			return -1;
+		}
 		else
-			return (x - point.x) + (y - point.y) + (z - point.z);
+		{
+			return (int) ((x - point.x) + (y - point.y) + (z - point.z));
+		}
 	}
 
 	@Override
 	public boolean equals(Object object)
 	{
 		if (object instanceof Point && x == ((Point) object).x && y == ((Point) object).y && z == ((Point) object).z)
+		{
 			return true;
+		}
 
 		return false;
 	}
@@ -100,11 +131,11 @@ public class Point implements Serializable, Comparable<Point>
 	/**
 	 * 
 	 * @param p
-	 * @return TRUE if the points have the same coordinate on atleast one axis.
+	 * @return TRUE if the points have the same coordinate on at least one axis.
 	 */
 	public boolean alignsWith(Point p)
 	{
-		return this.x == p.x || this.y == p.y || this.z == p.z;
+		return getX() == p.getX() || getY() == p.getY() || getZ() == p.getZ();
 	}
 
 	/**
@@ -126,22 +157,31 @@ public class Point implements Serializable, Comparable<Point>
 		if (point.y < 0)
 		{
 			return new Point(point.x, 0, point.z);
-		} else
+		}
+		else
+		{
 			return point;
+		}
 	}
-	
+
 	@Reconstructor()
-	private static Point reconstruct(TaggedClass tag)
+	public static Point reconstruct(TaggedClass tag)
 	{
-		int x = (Integer) tag.getFieldValue("x");
-		int y = (Integer) tag.getFieldValue("y");
-		int z = (Integer) tag.getFieldValue("z");
+		float x = (Float) tag.getFieldValue("x");
+		float y = (Float) tag.getFieldValue("y");
+		float z = (Float) tag.getFieldValue("z");
 		return new Point(x, y, z);
 	}
-	
+
 	@UniqueLoadingKey()
 	private String getLoadingField()
 	{
-		return "point_"+x+"_"+y+"_"+z;
+		return "Point"+this;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "[" + x + ";" + y + ";" + z + "]";
 	}
 }

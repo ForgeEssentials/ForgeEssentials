@@ -11,15 +11,16 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 
 /**
  * Reuslts are: default, allow, deny.
+ * 
  * @author AbrarSyed
  * 
  */
 @HasResult
 public class PermQueryPlayerArea extends PermQueryPlayer
 {
-	public ArrayList<AreaBase>	applicable;
-	public final AreaBase		doneTo;
-	public final boolean		allOrNothing;
+	public ArrayList<AreaBase> applicable;
+	public final AreaBase doneTo;
+	public final boolean allOrNothing;
 
 	public PermQueryPlayerArea(EntityPlayer player, String permission, AreaBase doneTo, boolean allOrNothing)
 	{
@@ -27,6 +28,7 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = doneTo;
 		this.allOrNothing = allOrNothing;
+		checkForward = false;
 	}
 
 	public PermQueryPlayerArea(EntityPlayer player, String permission, Point doneTo)
@@ -35,14 +37,33 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = new Selection(doneTo, doneTo);
 		allOrNothing = true;
+		checkForward = false;
+	}
+
+	public PermQueryPlayerArea(EntityPlayer player, String permission, AreaBase doneTo, boolean allOrNothing, boolean checkForward)
+	{
+		super(player, permission);
+		applicable = new ArrayList<AreaBase>();
+		this.doneTo = doneTo;
+		this.allOrNothing = allOrNothing;
+		this.checkForward = checkForward;
+	}
+
+	public PermQueryPlayerArea(EntityPlayer player, String permission, Point doneTo, boolean checkForward)
+	{
+		super(player, permission);
+		applicable = new ArrayList<AreaBase>();
+		this.doneTo = new Selection(doneTo, doneTo);
+		allOrNothing = true;
+		this.checkForward = checkForward;
 	}
 
 	/**
-	 * set DEFAULT if the applicable regions list is to be used.
-	 * set DENY if the permissions is completely denied throughout the requested area.
-	 * set ALLOW if the permission is completely allowed throughout the requested area.
+	 * set DEFAULT if the applicable regions list is to be used. set DENY if the permissions is completely denied throughout the requested area. set ALLOW if
+	 * the permission is completely allowed throughout the requested area.
 	 * 
-	 * @param value The new result
+	 * @param value
+	 *            The new result
 	 */
 	@Override
 	public void setResult(PermResult value)

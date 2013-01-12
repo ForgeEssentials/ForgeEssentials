@@ -5,10 +5,11 @@ public class PermissionChecker
 	/**
 	 * fully qualified name in format ModName.parent1.parent2.parentN.name
 	 */
-	public String	name;
+	public String name;
 
 	/**
 	 * should only be used for temporary Perm checking.
+	 * 
 	 * @param qualifiedName
 	 * @param allowed
 	 */
@@ -50,7 +51,9 @@ public class PermissionChecker
 		String[] there = perm.name.split(".");
 
 		if (here.length <= there.length)
+		{
 			return false;
+		}
 
 		boolean worked = true;
 		for (int i = 0; i < there.length; i++)
@@ -58,7 +61,9 @@ public class PermissionChecker
 			worked = here[i].equals(there[i]);
 
 			if (!worked)
+			{
 				break;
+			}
 		}
 
 		return false;
@@ -72,25 +77,31 @@ public class PermissionChecker
 	{
 		if (object instanceof PermissionChecker)
 		{
-			PermissionChecker perm = (PermissionChecker) object;
-			return name.equals(perm.name);
+			return name.equals(((PermissionChecker) object).name);
 		}
 		else if (object instanceof String)
+		{
 			return object.equals(name);
+		}
 		return false;
 	}
 
 	/**
-	 * checks if this Permission can determine the result of the given Permission
+	 * checks if this Permission can determine the result of the given Permission AKA: checks this permission AND parents.
+	 * 
 	 * @param perm
 	 * @return True if THIS can determine the result of the given permission
 	 */
 	public boolean matches(PermissionChecker perm)
 	{
 		if (equals(perm))
+		{
 			return true;
+		}
 		else if (perm.isChildOf(this))
+		{
 			return true;
+		}
 
 		return false;
 	}

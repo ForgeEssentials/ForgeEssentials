@@ -28,7 +28,7 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 		{
 			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			int amountToAdd = Integer.parseInt(args[1]);
-			
+
 			if (player == null)
 			{
 				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_NOPLAYER)));
@@ -36,14 +36,14 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 			else
 			{
 				Wallet.addToWallet(amountToAdd, player);
-			
+
 				if (sender != player)
 				{
 					sender.sendChatToPlayer(amountToAdd + " " + Wallet.currency(amountToAdd) + Localization.get(Localization.WALLET_ADD_TARGET));
 				}
 				player.sendChatToPlayer(amountToAdd + " " + Wallet.currency(amountToAdd) + Localization.get(Localization.WALLET_ADD_SELF));
 			}
-		} 
+		}
 		else
 		{
 			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
@@ -58,7 +58,7 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 		{
 			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			int amountToAdd = Integer.parseInt(args[1]);
-			
+
 			if (player == null)
 			{
 				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOPLAYER));
@@ -66,11 +66,11 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 			else
 			{
 				Wallet.addToWallet(amountToAdd, player);
-			
+
 				sender.sendChatToPlayer(amountToAdd + " " + Wallet.currency(amountToAdd) + Localization.get(Localization.WALLET_ADD_TARGET));
 				player.sendChatToPlayer(amountToAdd + " " + Wallet.currency(amountToAdd) + Localization.get(Localization.WALLET_ADD_SELF));
 			}
-		} 
+		}
 		else
 		{
 			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
@@ -79,12 +79,6 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 
 	@Override
 	public boolean canConsoleUseCommand()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		return true;
 	}

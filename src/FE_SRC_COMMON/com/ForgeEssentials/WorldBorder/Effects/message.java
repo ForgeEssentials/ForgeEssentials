@@ -6,7 +6,7 @@ import net.minecraftforge.common.Configuration;
 public class message implements IEffect
 {
 	private String message = "You passed the world border!";
-	
+
 	@Override
 	public void registerConfig(Configuration config, String category)
 	{
@@ -14,7 +14,7 @@ public class message implements IEffect
 	}
 
 	@Override
-	public void execute(EntityPlayerMP player) 
+	public void execute(EntityPlayerMP player)
 	{
 		player.sendChatToPlayer(message);
 	}

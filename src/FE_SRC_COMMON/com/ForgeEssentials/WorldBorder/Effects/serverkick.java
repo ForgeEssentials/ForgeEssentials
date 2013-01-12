@@ -8,7 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 public class serverkick implements IEffect
 {
 	private String message = "You passed the world border!";
-	
+
 	@Override
 	public void registerConfig(Configuration config, String category)
 	{
@@ -16,7 +16,7 @@ public class serverkick implements IEffect
 	}
 
 	@Override
-	public void execute(EntityPlayerMP player) 
+	public void execute(EntityPlayerMP player)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{

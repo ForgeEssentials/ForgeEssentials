@@ -32,21 +32,28 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
 				sender.sendChatToPlayer(Localization.get(Localization.SMITE_SELF));
-			} else
+			}
+			else
 			{
-				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+				EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 				if (victim != null)
 				{
-					victim.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
+					victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
 					sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
-				} else
+				}
+				else
+				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				}
 			}
-		} else
+		}
+		else
 		{
 			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
 			if (mop == null)
+			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_TARGET));
+			}
 			else
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
@@ -65,10 +72,16 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			{
 				victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
 				sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
-			} else
+			}
+			else
+			{
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-		} else
+			}
+		}
+		else
+		{
 			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+		}
 	}
 
 	@Override
@@ -78,28 +91,22 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-    	if(args.length == 1)
-    	{
-    		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    }
+	{
+		if (args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 }

@@ -3,7 +3,7 @@ package com.ForgeEssentials.core.commands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.core.ModuleLauncher;
+import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
 public class CommandFEReload extends ForgeEssentialsCommandBase
@@ -12,7 +12,7 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName()
 	{
-		return "reload";
+		return "fereload";
 	}
 
 	@Override
@@ -20,7 +20,7 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	{
 		sender.sendChatToPlayer("Reloading ForgeEssentials configs. May not work for all settings!");
 		sender.sendChatToPlayer(FEChatFormatCodes.RED + "This is experimental!");
-		ModuleLauncher.ReloadConfigs();
+		ModuleLauncher.instance.reloadConfigs(sender);
 		sender.sendChatToPlayer("Done!");
 	}
 
@@ -29,7 +29,7 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	{
 		sender.sendChatToPlayer("Reloading ForgeEssentials configs. May not work for all settings!");
 		sender.sendChatToPlayer(FEChatFormatCodes.RED + "This is experimental!");
-		ModuleLauncher.ReloadConfigs();
+		ModuleLauncher.instance.reloadConfigs(sender);
 		sender.sendChatToPlayer("Done!");
 	}
 
@@ -40,15 +40,9 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
-		return null;
+		return "ForgeEssentials.CoreCommands." + getCommandName();
 	}
 
 }

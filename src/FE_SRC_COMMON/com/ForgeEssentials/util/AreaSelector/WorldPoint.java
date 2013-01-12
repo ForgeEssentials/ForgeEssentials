@@ -1,5 +1,6 @@
 package com.ForgeEssentials.util.AreaSelector;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.data.SaveableObject;
@@ -7,7 +8,6 @@ import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.data.TaggedClass;
-
 
 /**
  * Almost exactly like a Point, except with an additional dimension member so we can tell things apart. (So we can get back to The End or Nether using /back)
@@ -21,21 +21,27 @@ public class WorldPoint extends Point
 	@SaveableField
 	public int dim;
 
-	public WorldPoint(int dimension, int x, int y, int z)
+	public WorldPoint(int dimension, double x, double y, double z)
 	{
 		super(x, y, z);
-		this.dim = dimension;
+		dim = dimension;
 	}
-	
-	public WorldPoint(World world, int x, int y, int z)
+
+	public WorldPoint(World world, double x, double y, double z)
 	{
 		super(x, y, z);
-		this.dim = world.getWorldInfo().getDimension();
+		dim = world.getWorldInfo().getDimension();
+	}
+
+	public WorldPoint(EntityPlayer player)
+	{
+		super(player);
+		dim = player.dimension;
 	}
 
 	public int compareTo(WorldPoint p)
 	{
-		int diff = this.dim - p.dim;
+		int diff = dim - p.dim;
 
 		if (diff == 0)
 		{
@@ -44,6 +50,7 @@ public class WorldPoint extends Point
 		return diff;
 	}
 
+	@Override
 	public int compareTo(Point p)
 	{
 		return super.compareTo(p);
@@ -51,27 +58,33 @@ public class WorldPoint extends Point
 
 	public boolean equals(WorldPoint p)
 	{
-		return this.dim == p.dim && super.equals(p);
+		return dim == p.dim && super.equals(p);
 	}
 
 	public WorldPoint copy(WorldPoint p)
 	{
 		return new WorldPoint(p.dim, p.x, p.y, p.z);
 	}
-	
+
 	@Reconstructor()
-	private static WorldPoint reconstruct(TaggedClass tag)
+	public static WorldPoint reconstruct(TaggedClass tag)
 	{
-		int x = (Integer) tag.getFieldValue("x");
-		int y = (Integer) tag.getFieldValue("y");
-		int z = (Integer) tag.getFieldValue("z");
+		float x = (Float) tag.getFieldValue("x");
+		float y = (Float) tag.getFieldValue("y");
+		float z = (Float) tag.getFieldValue("z");
 		int dim = (Integer) tag.getFieldValue("dim");
 		return new WorldPoint(dim, x, y, z);
 	}
-	
+
 	@UniqueLoadingKey()
 	private String getLoadingField()
 	{
-		return "worldpoint_"+dim+"_"+x+"_"+y+"_"+z;
+		return "WorldPoint"+this;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "[" + dim + ";" + x + ";" + y + ";" + z + "]";
 	}
 }

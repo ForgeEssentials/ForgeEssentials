@@ -9,7 +9,7 @@ public class Localization
 	/*
 	 * Command stuff
 	 */
-	
+
 	public static final String BUTCHERED = "message.butchered";
 	public static final String REMOVED = "message.removed";
 	public static final String KILLED = "message.killed";
@@ -20,12 +20,13 @@ public class Localization
 	public static final String BURN_PLAYER = "message.burn.player";
 	public static final String HEALED = "message.healed";
 	public static final String SPAWNED = "message.spawned";
+	public static final String SPAWNSET = "message.spawnset";
 	public static final String POTIONEFFECTNOTFOUND = "command.potion.effectnotfound";
-	
+
 	/*
 	 * Kit command & tickHandler
 	 */
-	
+
 	public static final String KIT_LIST = "command.kit.list";
 	public static final String KIT_NOTEXISTS = "command.kit.noExists";
 	public static final String KIT_MADE = "command.kit.made";
@@ -33,22 +34,23 @@ public class Localization
 	public static final String KIT_REMOVED = "command.kit.removed";
 	public static final String KIT_STILLINCOOLDOWN = "command.kit.stillInCooldown";
 	public static final String KIT_DONE = "command.kit.done";
-	
+
 	/*
 	 * Ego boosts
 	 */
-	
+
 	public static final String CREDITS_ABRARSYED = "message.credits.AbrarSyed";
 	public static final String CREDITS_BOBAREDDINO = "message.credits.Bob_A_Red_Dino";
 	public static final String CREDITS_BSPKRS = "message.credits.bspkrs";
 	public static final String CREDITS_MYSTERIOUSAGES = "message.credits.MysteriousAges";
 	public static final String CREDITS_LUACS1998 = "message.credits.luacs1998";
 	public static final String CREDITS_DRIES007 = "message.credits.Dries007";
+	public static final String CREDITS_MALKIERIAN = "message.credits.Malkierian";
 
 	/*
 	 * Errors & general messages
 	 */
-	
+
 	public static final String ERROR_NOPLAYER = "message.error.noPlayerX";
 	public static final String ERROR_BADSYNTAX = "message.error.badsyntax";
 	public static final String ERROR_NAN = "message.error.nan";
@@ -61,14 +63,14 @@ public class Localization
 	public static final String ERROR_NOITEMPLAYER = "message.error.noItemPlayer";
 	public static final String ERROR_NOITEMTARGET = "message.error.noItemTarget";
 	public static final String ERROR_NOMOB = "message.error.noMobX";
+	public static final String ERROR_PERM_SQL = "message.error.permission.sql";
 
 	public static final String DONE = "message.done";
-	
-	
+
 	/*
 	 * Permissions stuff
 	 */
-	
+	public static final String ERROR_NOPERMISSION = "message.error.nopermission";
 	public static final String ERROR_ZONE_NOZONE = "message.error.nozone";
 	public static final String ERROR_ZONE_YESZONE = "message.error.yeszone";
 	public static final String CONFIRM_ZONE_REMOVE = "message.confirm.zone.remove";
@@ -77,9 +79,7 @@ public class Localization
 	public static final String CONFIRM_ZONE_SETPARENT = "message.confirm.zone.setparent";
 	public static final String ERROR_ILLEGAL_STATE = "message.error.illegalState";
 	public static final String ERROR_ILLEGAL_ENTITY = "message.error.illegalState";
-	
-	
-	
+
 	/*
 	 * WorldControl
 	 */
@@ -93,28 +93,39 @@ public class Localization
 	public static final String WC_UNTILLCONFIRM = "message.wc.untillConfirm";
 	public static final String WC_INVALIDBLOCKID = "message.wc.invalidBlockId";
 	public static final String WC_BLOCKIDOUTOFRANGE = "message.wc.blockIdOutOfRange";
+	public static final String WC_NOUNDO = "message.wc.noUndo";
+	public static final String WC_NOREDO = "message.wc.noRedo";
 
 	/*
 	 * TeleportCenter
 	 */
-	
+
 	public static final String TC_COOLDOWN = "message.tc.cooldown";
 	public static final String TC_WARMUP = "message.tc.warmup";
 	public static final String TC_ABORTED = "message.tc.aborted";
 	public static final String TC_DONE = "message.tc.done";
-	
+
+	/*
+	 * Chat
+	 */
+
+	public static final String CHAT_NICK_SELF_REMOVE = "message.chat.nick.self.remove";
+	public static final String CHAT_NICK_SELF_SET = "message.chat.nick.self.set";
+	public static final String CHAT_NICK_OTHERS_REMOVE = "message.chat.nick.others.remove";
+	public static final String CHAT_NICK_OTHERS_SET = "message.chat.nick.others.set";
+
 	/*
 	 * WorldBorder
 	 */
-	
+
 	public static final String WB_HITBORDER = "message.wb.hitborder";
-	
-	public static final String WB_STATUS_HEADER = "message.wb.status.header";	
+
+	public static final String WB_STATUS_HEADER = "message.wb.status.header";
 	public static final String WB_STATUS_BORDERSET = "message.wb.status.borderset";
 	public static final String WB_STATUS_BORDERNOTSET = "message.wb.status.bordernotset";
-	
+
 	public static final String WB_LAGWARING = "message.wb.lagwarning";
-	
+
 	public static final String WB_FILL_INFO = "message.wb.fill.info";
 	public static final String WB_FILL_CONFIRM = "message.wb.fill.confirm";
 	public static final String WB_FILL_ONLYONCE = "message.wb.fill.onlyonce";
@@ -125,23 +136,26 @@ public class Localization
 	public static final String WB_FILL_ETA = "message.wb.fill.eta";
 	public static final String WB_FILL_ABORTED = "message.wb.fill.aborted";
 	public static final String WB_FILL_FINISHED = "message.wb.fill.finished";
-	
+
 	public static final String WB_SAVING_FAILED = "message.wb.saving.failed";
-	
+
 	public static final String WB_TURBO_INFO = "message.wb.turbo.info";
 	public static final String WB_TURBO_CONFIRM = "message.wb.turbo.confirm";
-	public static final String WB_TURBO_NOTHINGTODO = "message.wb.turbo.nothingtodo";
+	public static final String WB_NOTHINGTODO = "message.wb.nothingtodo";
 	public static final String WB_TURBO_ON = "message.wb.turbo.on";
 	public static final String WB_TURBO_OFF = "message.wb.turbo.off";
-	
+
+	public static final String WB_AUTO_INFO = "message.wb.auto.info";
+	public static final String WB_AUTO_CONFIRM = "message.wb.auto.confirm";
+
 	public static final String WB_SET = "message.wb.set";
-	
+
 	public static final String UNIT_SECONDS = "unit.seconds";
-	
+
 	/*
 	 * Wallet
 	 */
-	
+
 	public static final String WALLET = "message.wallet.walletname";
 	public static final String WALLET_CURRENCY_SINGULAR = "message.wallet.currencysingular";
 	public static final String WALLET_CURRENCY_PLURAL = "message.wallet.currencyplural";
@@ -163,15 +177,20 @@ public class Localization
 	public void load()
 	{
 		OutputHandler.SOP("Loading languages");
+		String langDir = "/com/ForgeEssentials/util/lang/";
+
 		for (String langFile : langFiles)
 		{
 			try
 			{
-				LanguageRegistry.instance().loadLocalization(getClass().getResource("lang/" + langFile), langFile.substring(langFile.lastIndexOf('/') + 1, langFile.lastIndexOf('.')), true);
+				LanguageRegistry.instance().loadLocalization(langDir + langFile, langFile.substring(langFile.lastIndexOf('/') + 1, langFile.lastIndexOf('.')),
+						true);
 				OutputHandler.SOP("Loaded language file " + langFile);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				OutputHandler.SOP("Could not load language file " + langFile);
+				e.printStackTrace();
 			}
 		}
 	}
@@ -182,7 +201,8 @@ public class Localization
 	}
 
 	/**
-	 * Fetches a localized format string, and inserts any provided arguments into it. A wrapper for all the "String.format(Localization.get(key), ...)" calls in commands.
+	 * Fetches a localized format string, and inserts any provided arguments into it. A wrapper for all the "String.format(Localization.get(key), ...)" calls in
+	 * commands.
 	 * 
 	 * @param localizationKey
 	 *            Key to get the appropriate entry in the current localization file.

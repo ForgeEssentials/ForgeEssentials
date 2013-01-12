@@ -13,27 +13,31 @@ import com.ForgeEssentials.permission.Zone;
  */
 public class PermissionSetEvent extends Event
 {
-	public Permission	perm;
-	public Zone			zone;
-	public String		entity; // p:PlayerUsername  or g:GroupName. the prefixes will be there.
-	
+	public Permission perm;
+	public Zone zone;
+	public String entity; // p:PlayerUsername or g:GroupName. the prefixes will
+							// be there.
+
 	private String reason;
-	
+
 	public PermissionSetEvent(Permission perm, Zone zone, String entity)
 	{
 		this.perm = perm;
 		this.zone = zone;
 		this.entity = entity;
 	}
-	
+
 	public void setCanceled(boolean cancel, String reason)
 	{
 		if (cancel)
+		{
 			this.reason = reason;
-		
+		}
+
 		super.setCanceled(cancel);
 	}
-	
+
+	@Override
 	@Deprecated
 	/**
 	 * @see com.ForgeEssentials.permissions.event.PermissionSetEvent.setCancelled(boolean, reason)
@@ -41,16 +45,22 @@ public class PermissionSetEvent extends Event
 	public void setCanceled(boolean cancel)
 	{
 		if (cancel)
-			this.reason = "unspecified reason";
-		
+		{
+			reason = "unspecified reason";
+		}
+
 		super.setCanceled(cancel);
 	}
-	
+
 	public String getCancelReason()
 	{
-		if (!this.isCanceled())
+		if (!isCanceled())
+		{
 			return "";
+		}
 		else
+		{
 			return reason;
+		}
 	}
 }

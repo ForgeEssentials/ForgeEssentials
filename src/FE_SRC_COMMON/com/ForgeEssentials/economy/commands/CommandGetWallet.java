@@ -24,22 +24,22 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			
+
 			if (player == null)
 			{
 				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_NOPLAYER)));
 			}
 			else
-			{			
+			{
 				int wallet = Wallet.getWallet(player);
-				
+
 				if (sender != player)
 				{
 					sender.sendChatToPlayer(player.username + Localization.get(Localization.WALLET_GET_TARGET) + wallet + " " + Wallet.currency(wallet));
 				}
 				player.sendChatToPlayer(Localization.get(Localization.WALLET_GET_SELF) + wallet + " " + Wallet.currency(wallet));
 			}
-		} 
+		}
 		else
 		{
 			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
@@ -52,7 +52,7 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			
+
 			if (player == null)
 			{
 				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOPLAYER));
@@ -62,7 +62,7 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 				int wallet = Wallet.getWallet(player);
 				sender.sendChatToPlayer(player.username + Localization.get(Localization.WALLET_GET_TARGET) + wallet + " " + Wallet.currency(wallet));
 			}
-		} 
+		}
 		else
 		{
 			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
@@ -71,12 +71,6 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 
 	@Override
 	public boolean canConsoleUseCommand()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		return true;
 	}

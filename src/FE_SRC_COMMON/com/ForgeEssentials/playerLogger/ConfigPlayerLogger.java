@@ -2,67 +2,99 @@ package com.ForgeEssentials.playerLogger;
 
 import java.io.File;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 
-public class ConfigPlayerLogger {
+public class ConfigPlayerLogger implements IModuleConfig
+{
 	public static final File plconfig = new File(ForgeEssentials.FEDIR, "playerlogger.cfg");
-	public final Configuration config;
-	
-	public ConfigPlayerLogger()
+	public Configuration config;
+
+	@Override
+	public void setGenerate(boolean generate)
+	{
+	}
+
+	@Override
+	public void init()
 	{
 		config = new Configuration(plconfig, true);
-		
-		//DB settings
-		config.addCustomCategoryComment("DB", "Database settings. Look here if something broke.");
 
-		Property prop = config.get("DB", "DB_url", "jdbc:mysql://localhost:3306/testdb");
-		prop.comment = "URL of the database";
-		ModulePlayerLogger.url = prop.value;
-		
-		prop = config.get("DB", "DB_username", "root");
-		prop.comment = "Username used to log in to the database";
-		ModulePlayerLogger.username = prop.value;
-		
-		prop = config.get("DB", "DB_password", "root");
-		prop.comment = "Password used to log in to the database";
-		ModulePlayerLogger.password = prop.value;
-		
-		prop = config.get("DB", "stopServerIfFail", false);
-		prop.comment = "Stop the server when the logging fails";
-		ModulePlayerLogger.ragequitOn = prop.getBoolean(false);
-		
-		prop = config.get("DB", "interval", 300);
-		prop.comment = "Interval in sec. for saving logs to DB";
-		ModulePlayerLogger.interval = prop.getInt(300);
-		
-		
-		// Event settings
-		config.addCustomCategoryComment("events", "Toggle events to log here.");
-		
-		prop = config.get("events", "logPlayerLogin", true);
-		prop.comment = "Log player logins?";
-		EventLogger.logPlayerLogin = prop.getBoolean(true);
-		
-		prop = config.get("events", "logPlayerChangedDimension", true);
-		prop.comment = "Log player dimension changes?";
-		EventLogger.logPlayerChangedDimension = prop.getBoolean(true);
-		
-		prop = config.get("events", "logPlayerLogout", true);
-		prop.comment = "Log player logouts?";
-		EventLogger.logPlayerLogout = prop.getBoolean(true);
-		
-		prop = config.get("events", "logPlayerRespawn", true);
-		prop.comment = "Log player respawning?";
-		EventLogger.logPlayerRespawn = prop.getBoolean(true);
-		
-		prop = config.get("events", "logCommands", true);
-		prop.comment = "Log commands?";
-		EventLogger.logCommands = prop.getBoolean(true);
+		String cat = "playerLogger";
+		String subcat = cat;
+
+		ModulePlayerLogger.enable = config.get(subcat, "enable", false).getBoolean(false);
+
+		subcat = cat + ".DB";
+		config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
+
+		ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").value;
+		ModulePlayerLogger.username = config.get(subcat, "username", "root").value;
+		ModulePlayerLogger.password = config.get(subcat, "password", "root").value;
+		ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
+		ModulePlayerLogger.interval = config.get(subcat, "interval", 300, "Amount of time (in sec.) imbetween database saves.").getInt();
+
+		subcat = cat + ".events";
+		config.addCustomCategoryComment(subcat, "Toggle events to log here.");
+
+		EventLogger.logBlockChanges = config.get(subcat, "blockchages", true).getBoolean(true);
+		EventLogger.logPlayerLoginLogout = config.get(subcat, "playerLoginLogout", true).getBoolean(true);
+		EventLogger.logPlayerChangedDimension = config.get(subcat, "playerChangeDimention", true).getBoolean(true);
+		EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
+
+		EventLogger.logCommands_Player = config.get(subcat, "Commands_Player", true).getBoolean(true);
+		EventLogger.logCommands_Block = config.get(subcat, "Commands_CmdBlock", true).getBoolean(true);
+		EventLogger.logCommands_rest = config.get(subcat, "Commands_Rest", true).getBoolean(true);
 		
 		config.save();
+	}
+
+	@Override
+	public void forceSave()
+	{
+	}
+
+	@Override
+	public void forceLoad(ICommandSender sender)
+	{
+		config = new Configuration(plconfig, true);
+
+		String cat = "playerLogger";
+		String subcat = cat;
+
+		ModulePlayerLogger.enable = config.get(subcat, "enable", false).getBoolean(false);
+
+		subcat = cat + ".DB";
+		config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
+
+		ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").value;
+		ModulePlayerLogger.username = config.get(subcat, "username", "root").value;
+		ModulePlayerLogger.password = config.get(subcat, "password", "root").value;
+		ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
+		ModulePlayerLogger.interval = config.get(subcat, "interval", 300, "Amount of time (in sec.) imbetween database saves.").getInt();
+
+		subcat = cat + ".events";
+		config.addCustomCategoryComment("events", "Toggle events to log here.");
+
+		EventLogger.logBlockChanges = config.get(subcat, "blockchages", true).getBoolean(true);
+		EventLogger.logPlayerLoginLogout = config.get(subcat, "playerLoginLogout", true).getBoolean(true);
+		EventLogger.logPlayerChangedDimension = config.get(subcat, "playerChangeDimention", true).getBoolean(true);
+		EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
+
+		EventLogger.logCommands_Player = config.get(subcat, "Commands_Player", true).getBoolean(true);
+		EventLogger.logCommands_Block = config.get(subcat, "Commands_CmdBlock", true).getBoolean(true);
+		EventLogger.logCommands_rest = config.get(subcat, "Commands_Rest", true).getBoolean(true);
+		
+		config.save();
+	}
+
+	@Override
+	public File getFile()
+	{
+		return plconfig;
 	}
 
 }

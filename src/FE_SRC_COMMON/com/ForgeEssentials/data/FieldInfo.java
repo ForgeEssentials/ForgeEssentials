@@ -4,7 +4,7 @@ package com.ForgeEssentials.data;
  * Internal class for managing @SaveableField instances within a DataAdapter.
  * 
  * @author MysteriousAges
- *
+ * 
  */
 class FieldInfo
 {
@@ -12,16 +12,18 @@ class FieldInfo
 	public String Name;
 
 	// Default constructor for simples!
-	public FieldInfo() { }
-	
+	public FieldInfo()
+	{
+	}
+
 	public FieldInfo(Class type, String name)
 	{
-		this.Type = type;
-		this.Name = name;
+		Type = type;
+		Name = name;
 	}
-	
+
 	public boolean isPrimitive()
 	{
-		return this.Type.isPrimitive();
+		return Type.isPrimitive();
 	}
 }

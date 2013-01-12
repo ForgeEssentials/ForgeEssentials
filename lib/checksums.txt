@@ -4,9 +4,3 @@ If adding a new library, validate the SHA1Sum of the library, then place the SHA
 mysql-connector-java-bin.jar: 3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15
 
 worldedit-5.4.6-SNAPSHOT.jar: de96549f9c31aa9268f649fc6757e7b68b180549
-
-sqlite-jdbc.jar:
-cea9f7f8e6bcb580d953a8651fb8391640de0f85
-
-sqlite-jdbc-javadoc.jar:
-c02545d6dcfc058adaf606bd7f2087fc11482179

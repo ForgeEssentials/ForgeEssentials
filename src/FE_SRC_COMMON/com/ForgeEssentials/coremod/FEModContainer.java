@@ -13,7 +13,7 @@ import cpw.mods.fml.common.ModMetadata;
 public class FEModContainer extends DummyModContainer
 {
 
-	public boolean	mod;
+	public boolean mod;
 
 	public FEModContainer()
 	{
@@ -28,6 +28,7 @@ public class FEModContainer extends DummyModContainer
 		myMeta.url = "";
 	}
 
+	@Override
 	public boolean registerBus(EventBus bus, LoadController controller)
 	{
 		bus.register(this);
