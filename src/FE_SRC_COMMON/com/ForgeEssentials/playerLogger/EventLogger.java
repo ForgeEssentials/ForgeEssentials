@@ -1,5 +1,8 @@
 package com.ForgeEssentials.playerLogger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -44,6 +47,9 @@ public class EventLogger implements IPlayerTracker
 	public static boolean logCommands_Player = true;
 	public static boolean logCommands_Block = true;
 	public static boolean logCommands_rest = true;
+	public static boolean BlockChange_WhiteList_Use = false;
+	public static ArrayList<Integer> BlockChange_WhiteList = new ArrayList<Integer>();
+	public static ArrayList<Integer> BlockChange_BlackList = new ArrayList<Integer>();
 
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
@@ -117,6 +123,9 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logBlockChanges && !e.isCanceled() && side.isServer())
 		{
+			if(BlockChange_WhiteList_Use && !BlockChange_WhiteList.contains(e.player.dimension)) return;
+			if(BlockChange_BlackList.contains(e.player.dimension) && !BlockChange_WhiteList.contains(e.player.dimension)) return;
+			
 			String block = "";
 			if (e.player.inventory.getCurrentItem() != null)
 			{
