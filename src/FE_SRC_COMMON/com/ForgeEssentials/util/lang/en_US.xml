@@ -38,11 +38,6 @@
     <entry key="command.kill.syntax.player">/kill [player]</entry>
     <entry key="command.kill.info.console">Kill the specified player</entry>
     <entry key="command.kill.info.player">Kill yourself or the specified player</entry>
-	
-	<entry key="command.tps.syntax.console">/tps</entry>
-    <entry key="command.tps.syntax.player">/tps</entry>
-    <entry key="command.tps.info.console">Get the lag of the server</entry>
-    <entry key="command.tps.info.player">Get the lag of the server</entry>
 
     <entry key="command.motd.syntax.console">/motd [new motd]</entry>
     <entry key="command.motd.syntax.player">/motd [new motd]</entry>
@@ -108,8 +103,8 @@
 
     <entry key="command.tps.info.player">Gets the lag on the server.</entry>
     <entry key="command.tps.info.console">Gets the lag on the server.</entry>
-    <entry key="command.tps.syntax.player">[all|dimension id]</entry>
-    <entry key="command.tps.syntax.console">[all|dimension id]</entry>
+    <entry key="command.tps.syntax.player">/tps [all|dimension id]</entry>
+    <entry key="command.tps.syntax.console">/tps [all|dimension id]</entry>
         
     <entry key="command.tpspawn.syntax.console">[player]</entry>
     <entry key="command.tpspawn.info.console">Teleport you/a player to your/their spawnpoint</entry>
