@@ -7,13 +7,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldServer;
 
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -42,9 +48,11 @@ public class CommandPl extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		if(sender.worldObj.isRemote) return;
 		if (args.length == 0)
 		{
 			// TODO INFO
+			
 			return;
 		}
 		if (args[0].equalsIgnoreCase("get"))
@@ -72,14 +80,42 @@ public class CommandPl extends ForgeEssentialsCommandBase
 
 				while (res.next())
 				{
-					String te = res.getBlob("te") == null ? "no" : "yes";
-					sender.sendChatToPlayer(res.getString("player") + " " + res.getString("category") + " block " + res.getString("block") + " at " + res.getTimestamp("time") + " TE: " + te);
+					String teString = res.getBlob("te") == null ? "no" : "yes";
+					sender.sendChatToPlayer(res.getString("player") + " " + res.getString("category") + " block " + res.getString("block") + " at " + res.getTimestamp("time") + " TE: " + teString);
+					
+					WorldServer world = FunctionHelper.getDimension(res.getInt("Dim"));
+					
+					int X = res.getInt("X");
+					int Y = res.getInt("Y");
+					int Z = res.getInt("Z");
+					
+					if(res.getString("category").equalsIgnoreCase(blockChangeLog.blockChangeLogCategory.placed.toString()))
+					{
+						world.removeBlockTileEntity(X, Y, Z);
+						world.setBlock(X, Y, Z, 0);
+					}
+					else if(res.getString("category").equalsIgnoreCase(blockChangeLog.blockChangeLogCategory.broke.toString()))
+					{
+						String[] block = res.getString("block").split(":");
+						world.setBlockAndMetadataWithNotify(X, Y, Z, Integer.parseInt(block[0]), Integer.parseInt(block[1]));
+					}
 					if(res.getBlob("te") != null)
 					{
-						Blob blob = res.getBlob("te");
-						byte[] bdata = blob.getBytes(1, (int) blob.length());
-						TextFormatter.reconstructTE(new String(bdata));
+						try
+						{
+							Blob blob = res.getBlob("te");
+							byte[] bdata = blob.getBytes(1, (int) blob.length());
+							System.out.println(new String(bdata));
+							TileEntity te = TextFormatter.reconstructTE(new String(bdata));
+							world.setBlockTileEntity(X, Y, Z, te);
+						}
+						catch (Exception e)
+						{
+							sender.sendChatToPlayer("Could not restore TE data.");
+							e.printStackTrace();
+						}			
 					}
+					world.markBlockForUpdate(X, Y, Z);
 				}
 			}
 			catch (Exception e)

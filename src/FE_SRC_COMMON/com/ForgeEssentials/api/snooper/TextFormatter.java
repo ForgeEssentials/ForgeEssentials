@@ -55,7 +55,7 @@ public class TextFormatter
 	{
 		if (data.length == 0)
 		{
-			return "[\"\"]";
+			return "[]";
 		}
 		String toSend = "[";
 
@@ -81,7 +81,7 @@ public class TextFormatter
 	{
 		if (data.length == 0)
 		{
-			return "[\"\"]";
+			return "[]";
 		}
 		String toSend = "[";
 
@@ -100,7 +100,7 @@ public class TextFormatter
 	{
 		if (data.length == 0)
 		{
-			return "[\"\"]";
+			return "[]";
 		}
 		String toSend = "[";
 
@@ -288,16 +288,16 @@ public class TextFormatter
 		{
 			JSONObject top = new JSONObject(JSON);
 			String className = top.getNames(top)[0]; 
-			OutputHandler.debug("RECONSTRUCT: " + className);
+			//OutputHandler.debug("RECONSTRUCT: " + className);
 			TileEntity te = (TileEntity) Class.forName(className).newInstance();
 			JSONArray dataArray = top.getJSONArray(className);
 			NBTTagCompound data = new NBTTagCompound();
 			for(int i = 0; i < dataArray.length(); i++)
 			{
-				//OutputHandler.debug("SETTAG: " + reconstructNBTName(dataArray.get(i).toString()) + " DATA: " + reconstructNBT(dataArray.get(i).toString()));
 				data.setTag(reconstructNBTName(dataArray.get(i).toString()), reconstructNBT(dataArray.get(i).toString()));
 			}
-			return null;
+			te.readFromNBT(data);
+			return te;
 		}
 		catch(Exception e)
 		{
@@ -320,6 +320,82 @@ public class TextFormatter
 		}
 	}
 	
+	public static NBTTagCompound reconstructNBTTagCompound(JSONArray dataArray)
+	{
+		try
+		{
+			NBTTagCompound comp = new NBTTagCompound();
+			for(int i = 0; i < dataArray.length(); i++)
+			{
+				comp.setTag(reconstructNBTName(dataArray.get(i).toString()), reconstructNBT(dataArray.get(i).toString()));
+			}
+			return comp;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static NBTTagList reconstructNBTTagList(JSONArray dataArray)
+	{
+		try
+		{
+			NBTTagList list = new NBTTagList();
+			for(int i = 0; i < dataArray.length(); i++)
+			{
+				list.appendTag(reconstructNBT(dataArray.get(i).toString()));
+			}
+			return list;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static NBTTagByteArray reconstructNBTTagByteArray(JSONArray dataArray)
+	{
+		try
+		{
+			NBTTagByteArray list = new NBTTagByteArray(null);
+			list.byteArray = new byte[dataArray.length()];
+			for(int i = 0; i < dataArray.length(); i++)
+			{
+				System.out.println(dataArray.get(i).toString());
+				list.byteArray[i] = (byte) dataArray.getInt(i);
+			}
+			return list;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static NBTTagIntArray reconstructNBTTagIntArray(JSONArray dataArray)
+	{
+		try
+		{
+			NBTTagIntArray list = new NBTTagIntArray(null);
+			list.intArray = new int[dataArray.length()];
+			for(int i = 0; i < dataArray.length(); i++)
+			{
+				System.out.println(dataArray.get(i).toString());
+				list.intArray[i] = Integer.parseInt(dataArray.get(i).toString());
+			}
+			return list;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static NBTBase reconstructNBT(String JSON)
 	{
 		try
@@ -328,13 +404,13 @@ public class TextFormatter
 			Object keyObj = top.keySet().toArray()[0];
 			
 			String key = keyObj.toString();
-				
+			
 			//OutputHandler.debug("KEY: " + key + " DATA: " + top.get(key));
 				
 			String[] split = key.split("~", 2);
 			byte type = new Byte(split[0]);
 			String name = split[1];
-				
+			
 			NBTBase tag = NBTBase.newTag(type, name);
 			switch(type)
 			{
@@ -357,23 +433,23 @@ public class TextFormatter
 				((NBTTagDouble) tag).data = top.getDouble(key);
 				break;
 			case 7:
-				//SPECIAL CASE NBTTagByteArray
-				System.out.println("SPECIAL CASE NBTTagByteArray");
+				tag = reconstructNBTTagByteArray(top.getJSONArray(key));
+				tag.setName(name);
 				break;
 			case 8:
 				((NBTTagString) tag).data = top.getString(key);
 				break;
 			case 9:
-				//SPECIAL CASE NBTTagList
-				System.out.println("SPECIAL CASE NBTTagList");
+				tag = reconstructNBTTagList(top.getJSONArray(key));
+				tag.setName(name);
 				break;
 			case 10:
-				//SPECIAL CASE NBTTagCompound
-				System.out.println("SPECIAL CASE NBTTagCompound");
+				tag = reconstructNBTTagCompound(top.getJSONArray(key));
+				tag.setName(name);
 				break;
 			case 11:
-				//SPECIAL CASE NBTTagIntArray
-				System.out.println("SPECIAL CASE NBTTagIntArray");
+				tag = reconstructNBTTagIntArray(top.getJSONArray(key));
+				tag.setName(name);
 				break;
 			}
 			return tag;

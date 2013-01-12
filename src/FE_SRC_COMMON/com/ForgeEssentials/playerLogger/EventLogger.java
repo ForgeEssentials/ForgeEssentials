@@ -1,6 +1,7 @@
 package com.ForgeEssentials.playerLogger;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
@@ -103,7 +104,8 @@ public class EventLogger implements IPlayerTracker
 		if (logBlockChanges && !e.isCanceled())
 		{
 			String block = e.world.getBlockId(e.blockX, e.blockY, e.blockZ) + ":" + e.world.getBlockMetadata(e.blockX, e.blockY, e.blockZ);
-			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ, e.world.getBlockTileEntity(e.blockX, e.blockY, e.blockZ)));
+			TileEntity te = e.world.getBlockTileEntity(e.blockX, e.blockY, e.blockZ);
+			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ, te));
 		}
 	}
 
@@ -117,7 +119,31 @@ public class EventLogger implements IPlayerTracker
 			{
 				block = e.player.inventory.getCurrentItem().itemID + ":" + e.player.inventory.getCurrentItem().getItemDamage();
 			}
-			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, e.blockX, e.blockY, e.blockZ, null));
+			int x = e.blockX;
+			int y = e.blockY;
+			int z = e.blockZ;
+			switch (e.side)
+			{
+			case 0:
+				y--;
+				break;
+			case 1:
+				y++;
+				break;
+			case 2:
+				z--;
+				break;
+			case 3:
+				z++;
+				break;
+			case 4:
+				x--;
+				break;
+			case 5:
+				x++;
+				break;
+			}
+			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, x, y, z, null));
 		}
 	}
 
