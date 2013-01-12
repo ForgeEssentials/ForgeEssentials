@@ -367,4 +367,15 @@ public class ZoneManager
 			}
 		}
 	}
+	
+	public static ArrayList<Zone> getZoneList()
+	{
+		ArrayList<Zone> zones = new ArrayList<Zone>();
+		
+		zones.add(GLOBAL);
+		zones.addAll(worldZoneMap.values());
+		zones.addAll(zoneMap.values());
+		
+		return zones;
+	}
 }

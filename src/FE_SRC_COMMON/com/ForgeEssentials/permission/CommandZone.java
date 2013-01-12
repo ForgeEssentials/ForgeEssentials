@@ -34,8 +34,8 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
-		Set<String> set = ZoneManager.zoneMap.keySet();
-		int zonePages = set.size() / 15 + 1;
+		ArrayList<Zone> zones = ZoneManager.getZoneList();
+		int zonePages = zones.size() / 15 + 1;
 		switch (args.length)
 		{
 		case 1:
@@ -50,13 +50,17 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				{
 					OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.zone.list.header", 1, zonePages));
 					int itterrator = 0;
-					for (String zone : set)
+					String output;
+					for (Zone zone : zones)
 					{
 						if (itterrator == 15)
 						{
 							break;
 						}
-						OutputHandler.chatConfirmation(sender, " -" + zone);
+						output = " - "+zone.getZoneName();
+						if (zone.isWorldZone())
+							output = output+" --> WorldZone";
+						OutputHandler.chatConfirmation(sender, output);
 					}
 				}
 				return;
@@ -85,10 +89,15 @@ public class CommandZone extends ForgeEssentialsCommandBase
 						else
 						{
 							OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.zone.list.header", page, zonePages));
-							String[] zones = set.toArray(new String[] {});
+							String output;
+							Zone zone;
 							for (int i = (page - 1) * 15; i < page * 15; i++)
 							{
-								OutputHandler.chatConfirmation(sender, " -" + zones[i]);
+								zone = zones.get(i);
+								output = " - "+zone.getZoneName();
+								if (zone.isWorldZone())
+									output = output+" --> WorldZone";
+								OutputHandler.chatConfirmation(sender, output);
 							}
 						}
 					}
