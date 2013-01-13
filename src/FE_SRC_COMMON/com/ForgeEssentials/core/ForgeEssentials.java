@@ -9,7 +9,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEDebug;
 import com.ForgeEssentials.core.commands.CommandFEReload;
-import com.ForgeEssentials.core.commands.CommandFEUpdate;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.ItemList;
@@ -28,7 +27,6 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.Version;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -152,7 +150,6 @@ public class ForgeEssentials
 		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
 
 		e.registerServerCommand(new CommandFEVersion());
-		e.registerServerCommand(new CommandFEUpdate());
 		e.registerServerCommand(new CommandFECredits());
 		e.registerServerCommand(new CommandFEReload());
 		e.registerServerCommand(new CommandFEDebug());

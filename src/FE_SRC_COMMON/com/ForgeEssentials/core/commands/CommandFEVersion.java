@@ -3,8 +3,6 @@ package com.ForgeEssentials.core.commands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.util.Version;
-
 public class CommandFEVersion extends ForgeEssentialsCommandBase
 {
 
