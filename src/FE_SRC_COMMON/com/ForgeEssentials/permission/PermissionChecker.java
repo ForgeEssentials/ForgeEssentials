@@ -16,9 +16,10 @@ public class PermissionChecker
 	 */
 	public PermissionChecker(String qualifiedName)
 	{
-		if (name.endsWith("."+Permission.ALL))
+		if (qualifiedName.endsWith("."+Permission.ALL))
 		{
 			isAll = true;
+			name = qualifiedName;
 			name.replace("."+Permission.ALL, "");
 		}
 		else
