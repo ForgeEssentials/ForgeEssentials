@@ -1,9 +1,14 @@
 package com.ForgeEssentials.commands.util;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 
-import com.ForgeEssentials.commands.CommandMotd;
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.DataStorage;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;
 
 public class PlayerTrackerCommands implements IPlayerTracker
@@ -36,5 +41,16 @@ public class PlayerTrackerCommands implements IPlayerTracker
 		 * (player.dimension!=dim) FMLCommonHandler.instance().getMinecraftServerInstance ().getConfigurationManager
 		 * ().transferPlayerToDimension(((EntityPlayerMP) player), dim); player.setPositionAndRotation(X, Y, Z, yaw, pitch); } }
 		 */
+		NBTTagCompound spawn = DataStorage.getData("spawn");
+		if(spawn != null)
+		{
+			PlayerInfo.getPlayerInfo(player).back = new WarpPoint(player);
+			if(player.dimension != spawn.getInteger("dim"))
+				FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager()
+				.transferPlayerToDimension((EntityPlayerMP) player, spawn.getInteger("dim"));
+			((EntityPlayerMP)player).playerNetServerHandler
+					.setPlayerLocation(spawn.getDouble("x"), spawn.getDouble("y"), spawn.getDouble("z"), spawn.getFloat("pitch"), spawn.getFloat("yaw"));
+			player.isDead = false;
+		}
 	}
 }

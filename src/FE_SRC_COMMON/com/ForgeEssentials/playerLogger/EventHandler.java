@@ -41,7 +41,9 @@ public class EventHandler
 					e.entityPlayer.sendChatToPlayer(res.getString("player") + " " + res.getString("category") + " block " + res.getString("block") + " at "
 							+ res.getTimestamp("time"));
 				}
-
+				res.close();
+				st.close();
+				connection.close();
 			}
 			catch (SQLException e1)
 			{

@@ -1,21 +1,12 @@
 package com.ForgeEssentials.commands;
 
-import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.TcpConnection;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandPing extends ForgeEssentialsCommandBase
 {

@@ -5,9 +5,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.ForgeEssentials.commands.CommandAFK;
 import com.ForgeEssentials.core.PlayerInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;

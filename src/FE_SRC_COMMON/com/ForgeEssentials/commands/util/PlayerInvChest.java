@@ -1,14 +1,7 @@
 package com.ForgeEssentials.commands.util;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-
-import com.ForgeEssentials.commands.CommandVirtualchest;
-import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
 
 public class PlayerInvChest extends InventoryBasic
 {
