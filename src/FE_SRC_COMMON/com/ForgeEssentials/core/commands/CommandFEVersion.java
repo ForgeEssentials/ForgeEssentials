@@ -17,13 +17,13 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		player.addChatMessage("You are currently running ForgeEssentials version " + Version.getVersion());
+		player.addChatMessage("You are currently running ForgeEssentials version @VERSION@");
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		sender.sendChatToPlayer("You are currently running ForgeEssentials version " + Version.getVersion());
+		sender.sendChatToPlayer("You are currently running ForgeEssentials version @VERSION@");
 	}
 
 	@Override

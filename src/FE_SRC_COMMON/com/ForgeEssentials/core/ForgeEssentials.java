@@ -89,18 +89,6 @@ public class ForgeEssentials
 		OutputHandler.SOP("Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
 		config = new CoreConfig();
 
-		if (verCheck)
-		{
-			try
-			{
-				Version.jenkins = Integer.parseInt(e.getModMetadata().version.split(":")[1]);
-			}
-			catch (Exception ex)
-			{
-			}
-			Version.checkVersion();
-		}
-
 		// Data API stuff
 		{
 			// setup
