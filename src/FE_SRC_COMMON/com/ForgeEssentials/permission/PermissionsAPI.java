@@ -17,6 +17,7 @@ public class PermissionsAPI
 {
 
 	public static final PermissionQueryBus QUERY_BUS = new PermissionQueryBus();
+	public static final String EntryPlayer = "_ENTRY_PLAYER_";
 
 	/**
 	 * Used for blankets permissions tied to no particular layer or group in a zone. This is the the group all players are assigned to if they are members of no

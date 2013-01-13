@@ -651,6 +651,14 @@ public class SqlHelper
 					.append(" VALUES ").append(" ('")
 					.append(ZoneManager.SUPER.getZoneName()).append("', -1) ");
 			db.createStatement().executeUpdate(query.toString());
+			
+			// Entry player...
+			query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (")
+					.append(COLUMN_PLAYER_USERNAME).append(", ")
+					.append(COLUMN_PLAYER_PLAYERID).append(") ")
+					.append(" VALUES ").append(" ('")
+					.append(PermissionsAPI.EntryPlayer).append("', 0) ");
+			db.createStatement().executeUpdate(query.toString());
 
 		}
 		catch (Exception e)
@@ -708,6 +716,13 @@ public class SqlHelper
 					statement.executeUpdate();
 				}
 			}
+			
+			// put the EntryPlayer to GUESTS for the GLOBAL zone 
+			this.statementPutPlayerInGroup.setInt(1, groups.get(RegGroup.GUESTS));
+			this.statementPutPlayerInGroup.setInt(1, 0);
+			this.statementPutPlayerInGroup.setInt(1, 0);
+			this.statementPutPlayerInGroup.executeUpdate();
+			this.statementPutPlayerInGroup.clearParameters();
 
 			OutputHandler.SOP(" Registration permissions successfully inserted");
 		}
