@@ -86,8 +86,7 @@ public class SqlHelper
 
 	// players
 	private final PreparedStatement	statementGetPlayerIDFromName;							// playerName >> playerID
-	private final PreparedStatement	statementGetPlayerNameFromID;							// playerID >>
-																							// playerName
+	private final PreparedStatement	statementGetPlayerNameFromID;							// playerID >> playerName
 	private final PreparedStatement	statementPutPlayer;										// $ usernName
 	private final PreparedStatement statementRemovePlayerGroups;
 	private final PreparedStatement statementPutPlayerInGroup;
@@ -126,6 +125,13 @@ public class SqlHelper
 	private final PreparedStatement	statementDumpPlayerPermissions;
 	private final PreparedStatement	statementDumpGroupConnector;
 	private final PreparedStatement	statementDumpLadders;
+	
+	// zone deletion statements
+	private final PreparedStatement statementDelPermFromZone;
+	private final PreparedStatement statementDelLadderFromZone;
+	private final PreparedStatement statementDelGroupFromZone;
+	private final PreparedStatement statementDelGroupConnectorsFromZone;
+	
 
 	public SqlHelper(ConfigPermissions config)
 	{
@@ -364,6 +370,31 @@ public class SqlHelper
 					.append(" AND ").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?")
 					.append(" AND ").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append("?");
 			statementRemovePlayerGroup = instance.db.prepareStatement(query.toString());
+			
+			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
+			// Helper ZONE Delete Statements
+			// <<<<<<<<<<<<<<<<<<<<<<<<<<
+			
+			// delete groups from zone
+			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP)
+					.append(" WHERE ").append(COLUMN_GROUP_ZONE).append("=").append("?");
+			statementDelGroupFromZone = db.prepareStatement(query.toString());
+			
+			// delete ladder from zone
+			query = new StringBuilder("DELETE FROM ").append(TABLE_LADDER)
+					.append(" WHERE ").append(COLUMN_LADDER_ZONEID).append("=").append("?");
+			statementDelLadderFromZone = db.prepareStatement(query.toString());
+			
+			// delete group connectorsw from zone
+			query = new StringBuilder("DELETE FROM ").append(TABLE_LADDER)
+					.append(" WHERE ").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
+			statementDelGroupConnectorsFromZone = db.prepareStatement(query.toString());
+			
+			
+			// statementDeleteGroupInZone
+			query = new StringBuilder("DELETE FROM ").append(TABLE_PERMISSION)
+					.append(" WHERE ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			statementDelPermFromZone = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Dump Statements
@@ -1287,9 +1318,30 @@ public class SqlHelper
 	{
 		try
 		{
+			int zid = getZoneIDFromZoneName(name);
+			
+			if (zid == -5)
+				return false;
+			
 			instance.statementDelZone.setString(1, name);
 			instance.statementDelZone.executeUpdate();
 			instance.statementDelZone.clearParameters();
+			
+			instance.statementDelGroupFromZone.setInt(1, zid);
+			instance.statementDelGroupFromZone.executeUpdate();
+			instance.statementDelGroupFromZone.clearParameters();
+			
+			instance.statementDelGroupConnectorsFromZone.setInt(1, zid);
+			instance.statementDelGroupConnectorsFromZone.executeUpdate();
+			instance.statementDelGroupConnectorsFromZone.clearParameters();
+			
+			instance.statementDelLadderFromZone.setInt(1, zid);
+			instance.statementDelLadderFromZone.executeUpdate();
+			instance.statementDelLadderFromZone.clearParameters();
+			
+			instance.statementDelPermFromZone.setInt(1, zid);
+			instance.statementDelPermFromZone.executeUpdate();
+			instance.statementDelPermFromZone.clearParameters();
 
 			return true;
 
