@@ -90,6 +90,8 @@ public class ModulePermissions
 		event.registerPerm(this, RegGroup.ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
 		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.perm", true);
 		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.zone", true);
+		
+		event.registerPerm(this, RegGroup.OWNERS, Permission.ALL, true);
 
 		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
 		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_WARMUP, true);

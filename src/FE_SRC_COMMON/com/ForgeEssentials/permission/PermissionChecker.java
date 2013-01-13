@@ -6,6 +6,7 @@ public class PermissionChecker
 	 * fully qualified name in format ModName.parent1.parent2.parentN.name
 	 */
 	public String name;
+	public final boolean isAll;
 
 	/**
 	 * should only be used for temporary Perm checking.
@@ -15,15 +16,36 @@ public class PermissionChecker
 	 */
 	public PermissionChecker(String qualifiedName)
 	{
-		name = qualifiedName;
+		if (name.endsWith("."+Permission.ALL))
+		{
+			isAll = true;
+			name.replace("."+Permission.ALL, "");
+		}
+		else
+		{
+			name = qualifiedName;
+			isAll = false;
+		}
 	}
 
 	/**
-	 * @return the qualified full name of the parent of this permission's parent. returns "" if there is no parent.
+	 * @return the qualified full name of the parent of this permission's parent. returns "_ALL_" if there is no parent.
 	 */
 	public String getImmediateParent()
 	{
+		if (!hasParent())
+			return Permission.ALL;
 		return name.substring(0, name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0);
+	}
+	
+	/**
+	 * @return the fully qualified name of the parent + _ALL_. unless this perm has no parent, in which case it returns _ALL_
+	 */
+	public String getAllParent()
+	{
+		if (!hasParent())
+			return Permission.ALL;
+		return name.substring(0, name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0)+"."+Permission.ALL;
 	}
 
 	/**
@@ -43,10 +65,13 @@ public class PermissionChecker
 	}
 
 	/**
-	 * @return if this Permission is a child of the given Permission.
+	 * @return if this Permission is a child of the given Permission. Only works for ALL permisisons.
 	 */
 	public boolean isChildOf(PermissionChecker perm)
 	{
+		if (!perm.isAll)
+			return false;
+		
 		String[] here = name.split(".");
 		String[] there = perm.name.split(".");
 
@@ -109,6 +134,14 @@ public class PermissionChecker
 	@Override
 	public String toString()
 	{
-		return name;
+		if (isAll)
+			return name + "." + Permission.ALL;
+		else
+			return name;
+	}
+	
+	public String getAllVersion()
+	{
+		return name+"."+Permission.ALL;
 	}
 }

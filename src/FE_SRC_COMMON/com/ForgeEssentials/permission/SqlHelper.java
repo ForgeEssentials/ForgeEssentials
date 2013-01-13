@@ -112,6 +112,7 @@ public class SqlHelper
 	
 	// permissions
 	private final PreparedStatement	statementGetPermission;									// target, isgroup, perm, zone >> allowed
+	private final PreparedStatement	statementGetAll;										// target, isgroup, zone >> allowed
 	private final PreparedStatement	statementGetPermissionForward;							// target, isgroup, perm, zone >> allowed
 	private final PreparedStatement	statementPutPermission;									// $ , allowed, target, isgroup, perm, zone
 	private final PreparedStatement	statementUpdatePermission;								// $ allowed, target, isgroup, perm, zone
@@ -196,6 +197,15 @@ public class SqlHelper
 					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=")
 					.append("?");
 			statementGetPermission = db.prepareStatement(query.toString());
+			
+			// statementGetAll
+			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED)
+					.append(" FROM ").append(TABLE_PERMISSION)
+					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("'"+Permission.ALL+"'")
+					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			statementGetAll = db.prepareStatement(query.toString());
 
 			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" WHERE ")
 					.append(COLUMN_PERMISSION_TARGET).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
@@ -986,6 +996,52 @@ public class SqlHelper
 	}
 
 	/**
+	 * @param target (username or groupname)
+	 * @param isGroup
+	 * @param perm
+	 * @return ALLOW/DENY if the permission is allowed/denied. UNKNOWN if its not found.
+	 */
+	protected static synchronized PermResult getAllResult(String target, boolean isGroup, String zone, boolean checkForward)
+	{
+		try
+		{
+			int tID;
+			int zID = getZoneIDFromZoneName(zone);
+			int isG = isGroup ? 1 : 0;
+			int allowed = -1;
+			PreparedStatement statement = instance.statementGetAll;
+			ResultSet set;
+
+			if (isGroup)
+				tID = getGroupIDFromGroupName(target);
+			else
+				tID = getPlayerIDFromPlayerName(target);
+
+			if (zID < -4 || tID < -4)
+				return PermResult.UNKNOWN;
+
+			// initial check.
+			statement.setInt(1, tID);
+			statement.setInt(2, isG);
+			statement.setInt(3, zID);
+			set = statement.executeQuery();
+			statement.clearParameters();
+			
+			if (set.next())
+				return set.getBoolean(1) ? PermResult.ALLOW : PermResult.ALLOW;
+			else
+				return PermResult.UNKNOWN;
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+
+		}
+		return PermResult.UNKNOWN;
+	}
+	
+	/**
 	 * @param target
 	 * (username or groupname)
 	 * @param isGroup
@@ -1120,7 +1176,7 @@ public class SqlHelper
 				}
 				else
 				{
-					perm = new PermissionChecker(perm.getImmediateParent());
+					perm = new PermissionChecker(perm.getAllParent());
 				}
 			}
 
