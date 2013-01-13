@@ -1,28 +1,12 @@
 package com.ForgeEssentials.playerLogger;
 
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.WorldServer;
 
-import com.ForgeEssentials.WorldBorder.TickTaskFillRound;
-import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.playerLogger.types.blockChangeLog;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.TickTaskHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

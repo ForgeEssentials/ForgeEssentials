@@ -20,14 +20,12 @@ import com.ForgeEssentials.WorldControl.commands.CommandWand;
 import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.*;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModulePostInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerPostInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerStopEvent;
-import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 

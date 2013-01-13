@@ -1,18 +1,12 @@
 package com.ForgeEssentials.commands;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.DamageSource;
 
 import com.ForgeEssentials.commands.util.AFKdata;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.Localization;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandAFK extends ForgeEssentialsCommandBase
 {

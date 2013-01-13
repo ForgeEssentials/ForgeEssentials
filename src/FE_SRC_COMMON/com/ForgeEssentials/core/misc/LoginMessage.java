@@ -2,27 +2,21 @@ package com.ForgeEssentials.core.misc;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 
-import com.ForgeEssentials.api.snooper.TextFormatter;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
 
 public class LoginMessage
 {

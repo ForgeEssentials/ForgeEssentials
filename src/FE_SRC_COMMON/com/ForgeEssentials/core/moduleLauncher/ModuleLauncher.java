@@ -17,9 +17,6 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-/**
- * Initialize modules here. Yes. HERE. NOT ForgeEssentials.java! This is the springboard...
- */
 
 public class ModuleLauncher
 {

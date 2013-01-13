@@ -2,18 +2,14 @@ package com.ForgeEssentials.playerLogger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.TickTaskHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;

@@ -1,9 +1,9 @@
 package com.ForgeEssentials.core.moduleLauncher.event;
 
+import java.io.File;
+
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
-
-import java.io.File;
 
 import cpw.mods.fml.common.event.FMLStateEvent;
 

@@ -2,9 +2,6 @@ package com.ForgeEssentials.core.moduleLauncher.event;
 
 import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
 
-import com.google.common.base.Throwables;
-
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLStateEvent;
 

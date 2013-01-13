@@ -1,11 +1,11 @@
 package com.ForgeEssentials.permission;
 
-import net.minecraftforge.common.ConfigCategory;
-import net.minecraftforge.common.Configuration;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import net.minecraftforge.common.ConfigCategory;
+import net.minecraftforge.common.Configuration;
 
 public class FlatFileGroups
 {

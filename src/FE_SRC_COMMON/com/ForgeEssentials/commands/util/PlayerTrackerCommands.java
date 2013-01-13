@@ -3,8 +3,6 @@ package com.ForgeEssentials.commands.util;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.ChunkCoordinates;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.DataStorage;

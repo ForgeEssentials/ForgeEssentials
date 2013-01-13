@@ -1,8 +1,6 @@
 package com.ForgeEssentials.playerLogger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;

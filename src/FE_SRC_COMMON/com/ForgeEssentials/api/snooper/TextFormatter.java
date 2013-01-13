@@ -9,16 +9,25 @@ import java.util.Map.Entry;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByte;
+import net.minecraft.nbt.NBTTagByteArray;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagIntArray;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.nbt.NBTTagShort;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 
 import com.ForgeEssentials.api.json.JSONArray;
-import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.json.JSONObject;
-import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
