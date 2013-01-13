@@ -99,6 +99,7 @@ public class SqlHelper
 	private final PreparedStatement	statementGetGroupFromName;								// groupName >> Group
 	private final PreparedStatement	statementGetGroupFromID;								// groupID >> Group
 	private final PreparedStatement	statementGetGroupsForPlayer;							// PlayerID, ZoneID >> Groups
+	private final PreparedStatement	statementGetGroupIDsForEntryPlayer;						// ZoneID >> GroupIDs
 	private final PreparedStatement	statementPutGroup;										// $ name, prefix, suffix, parent, priority, zone
 	private final PreparedStatement	statementUpdateGroup;									// $ name, prefix, suffix, parent, priority, zone
 	private final PreparedStatement statementDeleteGroupInZone;
@@ -182,6 +183,13 @@ public class SqlHelper
 					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?").append(" AND ")
 					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
 			statementGetGroupsForPlayer = instance.db.prepareStatement(query.toString());
+			
+			// statementGetGroupIDsForEntryPlayer
+			query = new StringBuilder("SELECT ").append(COLUMN_GROUP_CONNECTOR_GROUPID)
+					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
+					.append(" WHERE ").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append(0)
+					.append(" AND ").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
+			statementGetGroupIDsForEntryPlayer = instance.db.prepareStatement(query.toString());
 
 			// statementUpdateGroup
 			query = new StringBuilder("UPDATE ").append(TABLE_GROUP).append(" SET ").append(COLUMN_GROUP_NAME).append("=").append("?, ")
@@ -290,8 +298,9 @@ public class SqlHelper
 			statementPutZone = db.prepareStatement(query.toString());
 
 			// statementPutPlayer
-			query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_USERNAME).append(") ").append(" VALUES ")
-					.append(" (?) ");
+			query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (")
+					.append(COLUMN_PLAYER_USERNAME).append(") ")
+					.append(" VALUES ").append(" (?) ");
 			statementPutPlayer = db.prepareStatement(query.toString());
 
 			// statementPutLadder
@@ -1554,6 +1563,63 @@ public class SqlHelper
 		return map;
 	}
 
+	/**
+	 * @param username
+	 * @return FALSE if player was not generated or SQL error.
+	 */
+	public static synchronized boolean generatePlayer(String username)
+	{
+		try
+		{
+			boolean generate = false;
+			int pid = getPlayerIDFromPlayerName(username);
+			
+			if (pid == -5)
+			{
+				// generate players
+				generate = true;
+				instance.statementPutPlayer.setString(1, username);
+				instance.statementPutPlayer.executeUpdate();
+				instance.statementPutPlayer.clearParameters();
+				
+				pid = getPlayerIDFromPlayerName(username);
+			}
+			
+			if (generate)
+			{
+				
+				// get groups list...
+				ArrayList<Integer> groups = new ArrayList<Integer>();
+				ResultSet set;
+				
+				instance.statementGetGroupIDsForEntryPlayer.setInt(1, 0); // global
+				set = instance.statementGetGroupIDsForEntryPlayer.executeQuery();
+				instance.statementGetGroupIDsForEntryPlayer.clearParameters();
+				
+				while (set.next())
+					groups.add(set.getInt(1));
+				
+				instance.statementPutPlayerInGroup.setInt(2, pid); // player
+				instance.statementPutPlayerInGroup.setInt(3, 0); // zone
+				for (int num : groups)
+				{
+					instance.statementPutPlayerInGroup.setInt(1, num);
+					instance.statementPutPlayerInGroup.executeUpdate();
+				}
+				
+				instance.statementPutPlayerInGroup.clearParameters();
+				
+				return true;
+			}
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
+
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 	// -------------------------------ID <<>> NAME METHODS
@@ -1701,26 +1767,17 @@ public class SqlHelper
 
 	/**
 	 * @param player
-	 * @return Creates the player if it does not exist.
+	 * @return returns -5 if the player doesn't exist.
 	 * @throws SQLException
 	 */
 	private static synchronized int getPlayerIDFromPlayerName(String player) throws SQLException
 	{
 		instance.statementGetPlayerIDFromName.setString(1, player);
 		ResultSet set = instance.statementGetPlayerIDFromName.executeQuery();
-
-		if (!set.next())
-		{
-			// doesn't exist.. create the player...
-			instance.statementPutPlayer.setString(1, player);
-			instance.statementPutPlayer.executeUpdate();
-			instance.statementPutPlayer.clearParameters();
-
-			set = instance.statementGetPlayerIDFromName.executeQuery();
-			set.next();
-		}
-
 		instance.statementGetPlayerIDFromName.clearParameters();
+		
+		if (!set.next())
+			return -5;
 
 		return set.getInt(1);
 	}
