@@ -253,7 +253,8 @@ public class CommandGroup
 
 	public static void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		// Copy paste :p
+                  //even better?
+		processCommandPlayer(sender, args);
 	}
 
 }
