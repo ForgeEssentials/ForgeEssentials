@@ -21,7 +21,7 @@ public class PermissionChecker
 			isAll = true;
 			name = qualifiedName;
 			if (name.contains("."))
-				name.replace("."+Permission.ALL, "");
+				name = name.replace("."+Permission.ALL, "");
 		}
 		else
 		{
@@ -53,7 +53,9 @@ public class PermissionChecker
 	{
 		if (!hasParent())
 			return Permission.ALL;
-		return name.substring(0, name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0)+"."+Permission.ALL;
+		String newName =  name.substring(0, name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0);
+		newName = newName+ "."+Permission.ALL;
+		return newName;
 	}
 
 	/**

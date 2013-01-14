@@ -62,11 +62,6 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayerArea event)
 	{
-		if (FunctionHelper.isPlayerOp(event.doer.getCommandSenderName().toLowerCase()))
-		{
-			event.setResult(PermResult.ALLOW);
-			return;
-		}
 		if (event.allOrNothing)
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo, event.doer.worldObj);
