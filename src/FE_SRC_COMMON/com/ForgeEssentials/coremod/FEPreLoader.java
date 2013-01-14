@@ -9,8 +9,6 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 //In the event we need to mess with ASM and such, this is the place.
 //Kindly do not reference any FE classes outside the coremod package in this class.
 
-@TransformerExclusions("com.ForgeEssentials.coremod.transformers")
-
 public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 {
 
