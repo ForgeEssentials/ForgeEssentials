@@ -87,7 +87,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 			{
 				Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
 				Statement st = connection.createStatement();
-				st.execute("DELETE FROM `blockchange` WHERE `player` LIKE '" + args[0] + "'");
+				st.execute("DELETE FROM `blockChange` WHERE `player` LIKE '" + args[0] + "'");
 				sender.sendChatToPlayer("Done.");
 				st.close();
 				connection.close();
