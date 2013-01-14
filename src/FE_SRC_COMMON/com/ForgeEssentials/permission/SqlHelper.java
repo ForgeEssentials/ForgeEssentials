@@ -759,8 +759,8 @@ public class SqlHelper
 			
 			// put the EntryPlayer to GUESTS for the GLOBAL zone 
 			this.statementPutPlayerInGroup.setInt(1, groups.get(RegGroup.GUESTS));
-			this.statementPutPlayerInGroup.setInt(1, 0);
-			this.statementPutPlayerInGroup.setInt(1, 0);
+			this.statementPutPlayerInGroup.setInt(2, 0);
+			this.statementPutPlayerInGroup.setInt(3, 0);
 			this.statementPutPlayerInGroup.executeUpdate();
 			this.statementPutPlayerInGroup.clearParameters();
 
