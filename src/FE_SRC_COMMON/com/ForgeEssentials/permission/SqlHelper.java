@@ -1104,7 +1104,6 @@ public class SqlHelper
 	 * @return ALLOW/DENY if the permission or a parent is allowed/denied. UNKNOWN if nor it or any parents were not found. UNKNOWN also if the target or the
 	 * zone do not exist.
 	 */
-	@SuppressWarnings("incomplete-switch")
 	protected static synchronized PermResult getPermissionResult(String target, boolean isGroup, PermissionChecker perm, String zone, boolean checkForward)
 	{
 		try
@@ -1145,6 +1144,8 @@ public class SqlHelper
 			}
 
 			// if the stuff is FORWARD!
+			// TODO: fix.
+			/*
 			if (checkForward)
 			{
 				statement = instance.statementGetPermissionForward;
@@ -1201,6 +1202,7 @@ public class SqlHelper
 
 				statement = instance.statementGetPermission;
 			}
+			*/
 
 			if (!initial.equals(PermResult.UNKNOWN))
 			{
