@@ -5,6 +5,8 @@ import java.io.File;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
@@ -82,6 +84,9 @@ public class ModulePermissions
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
+		
+		// setup PlayerTracker
+		GameRegistry.registerPlayerTracker(new PlayerTracker());
 	}
 
 	@ForgeSubscribe
