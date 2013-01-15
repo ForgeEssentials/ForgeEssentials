@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandHandler;
@@ -101,7 +102,7 @@ public class ModuleChat
 		e.registerServerCommand(new CommandUnmute());
 	}
 
-	@ServerPostInit
+	@ServerPostInit()
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
@@ -120,31 +121,48 @@ public class ModuleChat
 		{
 			try
 			{
-				Set cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet", "b");
-				
-				for (Object cmdObj : cmds)
+				Set cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet", "b");
+
+				ICommand toRemove = null;
+				Class<?> cmdClass = null;
+				for (Object cmdObj : cmdList)
 				{
 					ICommand cmd = (ICommand) cmdObj;
 					if (cmd.getCommandName().equalsIgnoreCase("tell"))
 					{
 						try
 						{
-							Class<?> cmdClass = cmd.getClass();
+							cmdClass = cmd.getClass();
 							Package pkg = cmdClass.getPackage();
 							if (pkg == null || !pkg.getName().contains("ForgeEssentials"))
 							{
-								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
-								cmds.remove(cmd);
+								toRemove = cmd;
+								break;
 							}
 						}
 						catch (Exception e)
 						{
-							OutputHandler.debug("dafug? Got exception:" + e.getLocalizedMessage());
+							OutputHandler.debug("Can't remove " + cmd.getCommandName());
+							OutputHandler.debug(""+e.getLocalizedMessage());
 							e.printStackTrace();
 						}
 					}
 				}
-				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmds, "commandSet", "b");
+				if(toRemove != null)
+				{
+					OutputHandler.debug("Removing command '" + toRemove.getCommandName() + "' from class: " + cmdClass.getName());
+					cmdList.remove(toRemove);
+				}
+				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmdList, "commandSet", "b");
+				
+				Map cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandMap", "a");
+				if(cmds.containsKey("tell"))
+				{
+					OutputHandler.debug("Removing command tell from vanilla set.");
+					cmds.remove("tell");
+					cmds.put("tell", new CommandMsg());
+				}
+				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmds, "commandMap", "a");
 			}
 			catch (Exception e)
 			{
