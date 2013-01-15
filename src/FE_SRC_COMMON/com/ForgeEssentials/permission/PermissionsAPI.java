@@ -179,10 +179,9 @@ public class PermissionsAPI
 	// }
 
 	/**
-	 * Returns the list of all the groups the player is in at a given time. It is in order of priority the first bieng the highest. NEVER includes the default
-	 * group.
-	 * 
+	 * Returns the list of all the groups the player is in at a given time. It is in order of priority the first bieng the highest.
 	 * @param player
+	 * @param includeDefaults  if the DEFAULT groups of each zone should be added to the list.
 	 */
 	public static ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
