@@ -13,8 +13,6 @@ public class CommandUser
 {
 	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		sender.sendChatToPlayer("TEST! User parsing");
-
 		if (args.length == 0) // display syntax & possible options for this level
 		{
 			//OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
@@ -136,7 +134,7 @@ public class CommandUser
 			{
 				if(args.length > 3)
 				{
-					String result = PermissionsAPI.setPlayerToGroup(args[3], player.getCommandSenderName(), zoneName);
+					String result = PermissionsAPI.setPlayerGroup(args[3], player.getCommandSenderName(), zoneName);
 					if(result != null)
 					{
 						OutputHandler.chatError(sender, result);

@@ -242,7 +242,7 @@ public class PermissionsAPI
 		return SqlHelper.getGroupForName(name);
 	}
 	
-	public static String setPlayerToGroup(String group, String player, String zone)
+	public static String setPlayerGroup(String group, String player, String zone)
 	{
 		return SqlHelper.setPlayerGroup(group, player, zone);
 	}
@@ -267,13 +267,23 @@ public class PermissionsAPI
 		SqlHelper.deleteGroupInZone(group, zone);
 	}
 
-	public static void updateGroup(Group group)
+	public static boolean updateGroup(Group group)
 	{
-		SqlHelper.updateGroup(group);
+		return SqlHelper.updateGroup(group);
 	}
 
-	public static void clearGroupPermission(String name, String node, String zone)
+	public static String clearGroupPermission(String name, String node, String zone)
 	{
-		SqlHelper.removePermission(name, true, node, zone);
+		return SqlHelper.removePermission(name, true, node, zone);
+	}
+
+	public static ArrayList getGroupsInZone(String zoneName)
+	{
+		return SqlHelper.getGroupsInZone(zoneName);
+	}
+
+	public static String getPermissionForGroup(String target, String zone, String perm)
+	{
+		return SqlHelper.getPermission(target, true, perm, zone);
 	}
 }

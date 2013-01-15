@@ -78,7 +78,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			}
 			catch (Exception e)
 			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED + "The server couldn't find the block you were looking for.");
+				sender.sendChatToPlayer(FEChatFormatCodes.RED + "The server couldn't find the block you were looking for: " + id + ":" + dam);
 				e.printStackTrace();
 			}
 		}

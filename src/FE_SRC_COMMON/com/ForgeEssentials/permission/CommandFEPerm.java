@@ -12,6 +12,7 @@ import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.permission.query.PermQueryBlanketSpot;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class CommandFEPerm extends ForgeEssentialsCommandBase
@@ -71,6 +72,12 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		if(args.length == 0)
+		{
+			OutputHandler.chatConfirmation(sender, "Base usage is /p user|group.");
+			OutputHandler.chatConfirmation(sender, "Type one of these for more information.");
+			return;
+		}
 		String first = args[0];
 		String[] newArgs = new String[args.length - 1];
 		for (int i = 0; i < newArgs.length; i++)

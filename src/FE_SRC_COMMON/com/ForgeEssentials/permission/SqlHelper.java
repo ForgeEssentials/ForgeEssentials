@@ -98,6 +98,7 @@ public class SqlHelper
 	private final PreparedStatement	statementGetGroupFromName;								// groupName >> Group
 	private final PreparedStatement	statementGetGroupFromID;								// groupID >> Group
 	private final PreparedStatement	statementGetGroupsForPlayer;							// PlayerID, ZoneID >> Groups
+	private final PreparedStatement statementGetGroupsInZone;								// ZoneID
 	private final PreparedStatement	statementGetGroupIDsForEntryPlayer;						// ZoneID >> GroupIDs
 	private final PreparedStatement	statementPutGroup;										// $ name, prefix, suffix, parent, priority, zone
 	private final PreparedStatement	statementUpdateGroup;									// $ name, prefix, suffix, parent, priority, zone
@@ -189,6 +190,10 @@ public class SqlHelper
 					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?").append(" AND ")
 					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
 			statementGetGroupsForPlayer = instance.db.prepareStatement(query.toString());
+			
+			// statementGetGroupsInZone
+			query = new StringBuilder("SELECT * FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_ZONE).append("=").append("?");
+			statementGetGroupsInZone = instance.db.prepareStatement(query.toString());
 			
 			// statementGetGroupIDsForEntryPlayer
 			query = new StringBuilder("SELECT ").append(COLUMN_GROUP_CONNECTOR_GROUPID)
@@ -1987,5 +1992,89 @@ public class SqlHelper
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public static synchronized ArrayList getGroupsInZone(String zoneName)
+	{
+		try
+		{
+			TreeSet<Group> set = new TreeSet<Group>();
+			int zID = getZoneIDFromZoneName(zoneName);
+
+			instance.statementGetGroupsInZone.setInt(1, zID);
+			ResultSet result = instance.statementGetGroupsForPlayer.executeQuery();
+			instance.statementGetGroupsForPlayer.clearParameters();
+
+			int priority;
+			String name, parent, prefix, suffix;
+			Group g;
+
+			while (result.next())
+			{
+				priority = result.getInt(COLUMN_GROUP_PRIORITY);
+				name = result.getString(COLUMN_GROUP_NAME);
+				parent = result.getString(COLUMN_GROUP_PARENT);
+				prefix = result.getString(COLUMN_GROUP_PREFIX);
+				suffix = result.getString(COLUMN_GROUP_SUFFIX);
+				g = new Group(name, prefix, suffix, parent, zoneName, priority);
+				set.add(g);
+			}
+
+			ArrayList<Group> list = new ArrayList<Group>();
+			list.addAll(set);
+			return list;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static String getPermission(String target, boolean isGroup, String perm, String zone)
+	{
+		try
+		{
+			int tID;
+			int zID = getZoneIDFromZoneName(zone);
+			int isG = isGroup ? 1 : 0;
+			int allowed = -1;
+			PreparedStatement statement = instance.statementGetPermission;
+			ResultSet set;
+	
+			if (isGroup)
+			{
+				tID = getGroupIDFromGroupName(target);
+			}
+			else
+			{
+				tID = getPlayerIDFromPlayerName(target);
+			}
+	
+			if (zID < -4 || tID < -4)
+			{
+				return "Zone or target invalid";
+			}
+	
+			// initial check.
+			statement.setInt(1, tID);
+			statement.setInt(2, isG);
+			statement.setString(3, perm);
+			statement.setInt(4, zID);
+			set = statement.executeQuery();
+			statement.clearParameters();
+	
+			PermResult initial = PermResult.UNKNOWN;
+			if (set.next())
+			{
+				return set.getInt(COLUMN_PERMISSION_ALLOWED) == 1 ? "allowed" : "denied";
+			}
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
