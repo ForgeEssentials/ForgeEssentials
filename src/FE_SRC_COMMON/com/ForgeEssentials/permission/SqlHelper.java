@@ -963,7 +963,7 @@ public class SqlHelper
 			if (lID < -4 || zID < -4 || pID < -4)
 			{
 				OutputHandler.SOP("Ladder, Player, or Zone does not exist!");
-				return null;
+				return end;
 			}
 			
 			ResultSet set;

@@ -17,7 +17,7 @@ public class ConfigChat implements IModuleConfig
 {
 	public static final File chatConfig = new File(ForgeEssentials.FEDIR, "chat.cfg");
 	public static String chatFormat, groupPrefixFormat, groupSuffixFormat, groupRankFormat;
-	public static Pattern groupRegex = Pattern.compile("\\{[a...zA...Z\\.]+?\\<\\:\\>[a...zA...Z\\.]+?\\}");
+	public static Pattern groupRegex = Pattern.compile("\\{\\w*\\<\\:\\>\\w*\\}");
 	public Configuration config;
 
 	// this is designed so it will work for any class.
@@ -39,17 +39,18 @@ public class ConfigChat implements IModuleConfig
 		// config.load -- Configurations are loaded on Construction.
 		config.addCustomCategoryComment("Chat", "Chat Configs");
 
-		Property prop = config.get("Chat", "chatformat", "%prefix<%username>%suffix %white%message");
+		Property prop = config.get("Chat", "chatformat", "%groupPrefix%playerPrefix<%username>%groupSuffix%playerSuffix %reset%message");
 		prop.comment = "This String formats the Chat.";
 		prop.comment += "\nIf you want a red color and special formatcodes, the color needs to be first before the special code";
 		prop.comment += "\nExamples: '%red%username' '%red%bold%username'\nNot OK:'%bold%gold%underline%username' In this example you would get the username in gold and underline but without bold";
 		prop.comment += "\nList of possible variables:";
 		prop.comment += "\nFor the username: %username The health of the player can be used with %health. The variable, you need for the message:%message ";
-		prop.comment += "\nFor the prefix use %prefix and the suffix use %suffix";
+		prop.comment += "\nFor the player prefix and sufix use %playerPrefix and %playerSuffix";
 		prop.comment += "\nColors:%black,%darkblue,%darkgreen,%darkaqua,%darkred,%purple,%gold,%grey,%darkgrey,%indigo,\n       %green,%aqua,%red,%pink,%yellow,%white";
 		prop.comment += "\nSpecial formatcodes: %random,%bold,%strike,%underline,%italics";
 		prop.comment += "\nTo reset all formatcodes, you can use %reset";
-		prop.comment += "\nUse %rank to display a users rank, %zone to spcify there current zone";
+		prop.comment += "\nUse %rank to display a users rank as specified, %zone to specify there current zone";
+		prop.comment += "\nUse %groupPrefix and %groupSuffix to display the group prefixes and suffixes as specified";
 		chatFormat = prop.value;
 
 		Chat.censor = config.get("Chat", "censor", true, "Censor words in the 'bannedwords.txt' file").getBoolean(true);
