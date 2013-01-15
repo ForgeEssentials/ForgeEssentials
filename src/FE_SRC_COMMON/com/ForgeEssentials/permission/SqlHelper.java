@@ -607,18 +607,18 @@ public class SqlHelper
 
 			zoneTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_ZONE).append("(")
 					.append(COLUMN_ZONE_ZONEID).append(" INTEGER AUTO_INCREMENT, ")
-					.append(COLUMN_ZONE_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
+					.append(COLUMN_ZONE_NAME).append(" VARCHAR_IGNORECASE(40) NOT NULL UNIQUE, ")
 					.append("PRIMARY KEY (").append(COLUMN_ZONE_ZONEID).append(") ")
 					.append(")").toString();
 
 			groupTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_GROUP).append("(")
 					.append(COLUMN_GROUP_GROUPID).append(" INTEGER AUTO_INCREMENT, ")
-					.append(COLUMN_GROUP_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
+					.append(COLUMN_GROUP_NAME).append(" VARCHAR_IGNORECASE(40) NOT NULL UNIQUE, ")
 					.append(COLUMN_GROUP_PARENT).append(" INTEGER, ")
 					.append(COLUMN_GROUP_PRIORITY).append(" SMALLINT NOT NULL, ")
 					.append(COLUMN_GROUP_ZONE).append(" INTEGER NOT NULL, ")
-					.append(COLUMN_GROUP_PREFIX).append(" VARCHAR(20) DEFAULT '', ")
-					.append(COLUMN_GROUP_SUFFIX).append(" VARCHAR(20) DEFAULT '', ")
+					.append(COLUMN_GROUP_PREFIX).append(" VARCHAR_IGNORECASE(20) DEFAULT '', ")
+					.append(COLUMN_GROUP_SUFFIX).append(" VARCHAR_IGNORECASE(20) DEFAULT '', ")
 					.append("PRIMARY KEY (").append(COLUMN_GROUP_GROUPID).append(") ")
 					.append(") ").toString();
 
@@ -631,13 +631,13 @@ public class SqlHelper
 
 			ladderNameTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_LADDER_NAME).append("(")
 					.append(COLUMN_LADDER_NAME_LADDERID).append(" INTEGER AUTO_INCREMENT, ")
-					.append(COLUMN_LADDER_NAME_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ")
+					.append(COLUMN_LADDER_NAME_NAME).append(" VARCHAR_IGNORECASE(40) NOT NULL UNIQUE, ")
 					.append("PRIMARY KEY (").append(COLUMN_LADDER_NAME_LADDERID).append(") ")
 					.append(")").toString();
 
 			playerTable = (new StringBuilder("CREATE TABLE IF NOT EXISTS ")).append(TABLE_PLAYER).append("(")
 					.append(COLUMN_PLAYER_PLAYERID).append(" INTEGER AUTO_INCREMENT, ")
-					.append(COLUMN_PLAYER_USERNAME).append(" VARCHAR(20) NOT NULL UNIQUE, ")
+					.append(COLUMN_PLAYER_USERNAME).append(" VARCHAR_IGNORECASE(20) NOT NULL UNIQUE, ")
 					.append("PRIMARY KEY (").append(COLUMN_PLAYER_PLAYERID).append(") ")
 					.append(")").toString();
 
@@ -837,7 +837,7 @@ public class SqlHelper
 			}
 
 			int priority = set.getInt(COLUMN_GROUP_PRIORITY);
-			String parent = set.getString(COLUMN_GROUP_PARENT);
+			String parent = getGroupNameFromGroupID(set.getInt(COLUMN_GROUP_PARENT));
 			String prefix = set.getString(COLUMN_GROUP_PREFIX);
 			String suffix = set.getString(COLUMN_GROUP_SUFFIX);
 			String zone = set.getString(COLUMN_ZONE_NAME);
