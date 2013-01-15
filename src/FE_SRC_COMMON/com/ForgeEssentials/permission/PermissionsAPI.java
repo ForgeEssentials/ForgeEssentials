@@ -193,6 +193,10 @@ public class PermissionsAPI
 		// while (zone != null)
 		// {
 		temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneName());
+		if(temp.isEmpty())
+		{
+			temp = SqlHelper.getGroupsForPlayer(player.username, ZoneManager.GLOBAL.getZoneName());
+		}
 		list.addAll(temp);
 		// }
 
