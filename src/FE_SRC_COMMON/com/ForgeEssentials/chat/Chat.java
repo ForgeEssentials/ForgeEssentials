@@ -83,8 +83,8 @@ public class Chat implements IChatListener
 		String gSuffix = "";
 		
 		PlayerInfo info = PlayerInfo.getPlayerInfo(event.player);
-		String playerPrefix = info.prefix == null ? "" : info.prefix.trim();
-		String playerSuffix = info.suffix == null ? "" : info.suffix.trim();
+		String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
+		String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
 		
 		Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player), event.player.worldObj);
 		zoneID = zone.getZoneName();
