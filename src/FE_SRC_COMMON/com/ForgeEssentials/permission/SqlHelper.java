@@ -2189,8 +2189,8 @@ public class SqlHelper
 			int zID = getZoneIDFromZoneName(zoneName);
 
 			instance.statementGetGroupsInZone.setInt(1, zID);
-			ResultSet result = instance.statementGetGroupsForPlayer.executeQuery();
-			instance.statementGetGroupsForPlayer.clearParameters();
+			ResultSet result = instance.statementGetGroupsInZone.executeQuery();
+			instance.statementGetGroupsInZone.clearParameters();
 
 			int priority;
 			String name, parent, prefix, suffix;
