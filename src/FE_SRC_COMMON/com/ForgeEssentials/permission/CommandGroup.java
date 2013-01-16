@@ -96,15 +96,14 @@ public class CommandGroup
 		if(args[0].equalsIgnoreCase("list"))
 		{
 			// list the current groups: by zone?  in priority order?
-			ArrayList list = PermissionsAPI.getGroupsInZone(ZoneManager.GLOBAL.getZoneName());
 			Zone zone = ZoneManager.GLOBAL;
 			if(args.length == 2)
 			{
-				if(ZoneManager.doesZoneExist(args[2]))
+				if(ZoneManager.doesZoneExist(args[1]))
 				{
-					zone = ZoneManager.getZone(args[2]);
+					zone = ZoneManager.getZone(args[1]);
 				}
-				else if(args[3].equalsIgnoreCase("here"))
+				else if(args[1].equalsIgnoreCase("here"))
 				{
 					zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
 				}
@@ -113,7 +112,18 @@ public class CommandGroup
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
+			ArrayList list = PermissionsAPI.getGroupsInZone(zone.getZoneName());
+			String groups = "";
+			int i = 0;
+			for(Object groupObj : list)
+			{
+				groups += ((Group)groupObj).name;
+				i++;
+				if(i != list.size())
+					groups += ", ";
+			}
 			OutputHandler.chatConfirmation(sender, "Groups available in zone " + zone.getZoneName() + ":");
+			OutputHandler.chatConfirmation(sender, groups);
 			return;
 		}
 		
