@@ -114,7 +114,6 @@ public class CommandGroup
 				}
 			}
 			OutputHandler.chatConfirmation(sender, "Groups available in zone " + zone.getZoneName() + ":");
-			OutputHandler.chatConfirmation(sender, "Group listing is not yet implemented.");
 			return;
 		}
 		
