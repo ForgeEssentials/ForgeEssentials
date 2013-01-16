@@ -107,7 +107,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				playerReply.put(receiver.getCommandSenderName(), sender.getCommandSenderName());
 				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD
 						+ "] " + FEChatFormatCodes.WHITE;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD
 						+ " -> me ] " + FEChatFormatCodes.WHITE;
 				for (int i = 1; i < args.length; i++)
 				{
