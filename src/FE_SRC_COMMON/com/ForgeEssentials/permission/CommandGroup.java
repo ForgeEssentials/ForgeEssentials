@@ -182,7 +182,7 @@ public class CommandGroup
 		{
 			if(args.length == 2 || !args[2].equalsIgnoreCase("set"))
 			{
-				OutputHandler.chatConfirmation(sender, group.name + "'s prefix is " + group.prefix);
+				OutputHandler.chatConfirmation(sender, group.name + "'s prefix is &f" + group.prefix);
 				return;
 			}
 			else // args[2] must contian "set"
@@ -194,7 +194,7 @@ public class CommandGroup
 				boolean result = PermissionsAPI.updateGroup(group);
 				if(result)
 				{
-					OutputHandler.chatConfirmation(sender, group.name + "'s prefix set to " + group.prefix);
+					OutputHandler.chatConfirmation(sender, group.name + "'s prefix set to &f" + group.prefix);
 				}
 				else
 				{
@@ -207,7 +207,7 @@ public class CommandGroup
 		{
 			if(args.length == 2 || !args[2].equalsIgnoreCase("set"))
 			{
-				OutputHandler.chatConfirmation(sender, group.name + "'s suffix is " + group.suffix);
+				OutputHandler.chatConfirmation(sender, group.name + "'s suffix is &f" + group.suffix);
 				return;
 			}
 			else // args[2] must contian "set"
@@ -219,7 +219,7 @@ public class CommandGroup
 				boolean result = PermissionsAPI.updateGroup(group);
 				if(result)
 				{
-					OutputHandler.chatConfirmation(sender, group.name + "'s suffix set to " + group.suffix);
+					OutputHandler.chatConfirmation(sender, group.name + "'s suffix set to &f" + group.suffix);
 				}
 				else
 				{
