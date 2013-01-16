@@ -17,7 +17,7 @@ public @interface FEModule
 	/**
 	 * this may be null
 	 */
-	Class<? extends IModuleConfig> configClass() default DummyConfig.class;
+	Class<? extends ModuleConfigBase> configClass() default DummyConfig.class;
 	
 	/**
 	 * "Module" is not automatically
@@ -82,7 +82,7 @@ public @interface FEModule
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
-	public @interface instance {}
+	public @interface Instance {}
 	
 	/**
 	 * This field will be populated with an instance of this Module's parent mod.
@@ -105,13 +105,13 @@ public @interface FEModule
 	@Target({ ElementType.FIELD })
 	public @interface Config {}
 	
-	class DummyConfig implements IModuleConfig
+	// dummy for the default config.
+	class DummyConfig extends ModuleConfigBase
 	{
 
-		@Override
-		public void setGenerate(boolean generate)
+		public DummyConfig(File file)
 		{
-			
+			super(file);
 		}
 
 		@Override

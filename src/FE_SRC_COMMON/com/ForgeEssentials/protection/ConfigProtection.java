@@ -6,32 +6,26 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
 /**
  * This generates the configuration structure + an example file.
  * 
  * @author Dries007
  */
-public class ConfigProtection implements IModuleConfig
+public class ConfigProtection extends ModuleConfigBase
 {
-	public static final File pconfig = new File(ForgeEssentials.FEDIR, "Protection.cfg");
 	public Configuration config;
-
-	public ConfigProtection()
+	
+	public ConfigProtection(File file)
 	{
-	}
-
-	@Override
-	public void setGenerate(boolean generate)
-	{
-		// nothing
+		super(file);
 	}
 
 	@Override
 	public void init()
 	{
-		config = new Configuration(pconfig, true);
+		config = new Configuration(file, true);
 		String cat = "Protection";
 
 		config.addCustomCategoryComment(cat, "You can override the default permission values on the permissions config. (or in the database.)");
@@ -54,11 +48,5 @@ public class ConfigProtection implements IModuleConfig
 
 		config.addCustomCategoryComment(cat, "You can override the default permission values on the permissions config. (or in the database.)");
 		ModuleProtection.enable = config.get(cat, "enable", true, "Guess what this does?").getBoolean(true);
-	}
-
-	@Override
-	public File getFile()
-	{
-		return pconfig;
 	}
 }

@@ -8,33 +8,28 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class ConfigChat implements IModuleConfig
+public class ConfigChat extends ModuleConfigBase
 {
-	public static final File chatConfig = new File(ForgeEssentials.FEDIR, "chat.cfg");
 	public static String chatFormat, groupPrefixFormat, groupSuffixFormat, groupRankFormat;
 	public static Pattern groupRegex = Pattern.compile("\\{\\w*\\<\\:\\>\\w*\\}");
 	public Configuration config;
 
 	// this is designed so it will work for any class.
-	public ConfigChat()
+	public ConfigChat(File file)
 	{
-	}
-
-	@Override
-	public void setGenerate(boolean generate)
-	{
+		super(file);
 	}
 
 	@Override
 	public void init()
 	{
 		OutputHandler.debug("Loading chatconfigs");
-		config = new Configuration(chatConfig, true);
+		config = new Configuration(file, true);
 
 		// config.load -- Configurations are loaded on Construction.
 		config.addCustomCategoryComment("Chat", "Chat Configs");
@@ -118,11 +113,5 @@ public class ConfigChat implements IModuleConfig
 		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{"+RegGroup.LADDER+"<:>"+ZoneManager.GLOBAL.getZoneName()+"}").value;
 		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{"+RegGroup.LADDER+"<:>"+ZoneManager.GLOBAL.getZoneName()+"}").value;
 		groupRankFormat = config.get("Chat.groups", "rank", "[{"+RegGroup.LADDER+"<:>"+ZoneManager.GLOBAL.getZoneName()+"}]").value;
-	}
-
-	@Override
-	public File getFile()
-	{
-		return chatConfig;
 	}
 }

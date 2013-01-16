@@ -7,22 +7,15 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
-public class ConfigSnooper implements IModuleConfig
-{
-	private static final File file = new File(ForgeEssentials.FEDIR, "Snooper.cfg");
+public class ConfigSnooper extends ModuleConfigBase
+{	
 	private Configuration config;
-
-	public ConfigSnooper()
+	
+	public ConfigSnooper(File file)
 	{
-		// nothing
-	}
-
-	@Override
-	public void setGenerate(boolean generate)
-	{
-		// nothing
+		super(file);
 	}
 
 	@Override
@@ -88,11 +81,5 @@ public class ConfigSnooper implements IModuleConfig
 			response.readConfig(subCat, config);
 		}
 		ModuleSnooper.startQuery();
-	}
-
-	@Override
-	public File getFile()
-	{
-		return file;
 	}
 }

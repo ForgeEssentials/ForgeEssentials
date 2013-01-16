@@ -9,34 +9,38 @@ import net.minecraft.command.ICommandSender;
  * 
  * @author AbrarSyed
  */
-public interface IModuleConfig
+public abstract class ModuleConfigBase
 {
-	/**
-	 * this is to be set from the outside after checking if the file exists.
-	 * 
-	 * @param generate
-	 */
-	public void setGenerate(boolean generate);
+	protected File file;
+	protected boolean genrate;
+	
+	public ModuleConfigBase(File file)
+	{
+		this.file = file;
+	}
+	
+	public void setGenerate(boolean generate)
+	{
+		this.genrate = generate;
+	}
 
 	/**
 	 * this should check the generate boolean and do stuff accordingly. it should either load, or generate.
 	 */
-	public void init();
+	public abstract void init();
 
 	/**
 	 * this forces a save for anything that may have been set through commands.
 	 */
-	public void forceSave();
+	public abstract void forceSave();
 
 	/**
 	 * This is called on the reload command. Ensure that it sets everything where needed. The sender is provided to spit any errors to if wanted.
 	 */
-	public void forceLoad(ICommandSender sender);
+	public abstract void forceLoad(ICommandSender sender);
 
-	/**
-	 * This method should be able to be called before init()
-	 * 
-	 * @return the absolute path in the file system where this config is saving to or loading from.
-	 */
-	public File getFile();
+	public File getFile()
+	{
+		return file;
+	}
 }

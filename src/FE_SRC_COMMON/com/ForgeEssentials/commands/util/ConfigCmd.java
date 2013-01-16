@@ -12,24 +12,23 @@ import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.CommandVirtualchest;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
-public class ConfigCmd implements IModuleConfig
+public class ConfigCmd extends ModuleConfigBase
 {
+
 	public static final File cmddir = new File(ForgeEssentials.FEDIR, "commands/");
-	public static final File cmdconfig = new File(cmddir, "commands.cfg");
 	public Configuration config;
-
-	@Override
-	public void setGenerate(boolean generate)
+	
+	public ConfigCmd(File file)
 	{
-
+		super(file);
 	}
 
 	@Override
 	public void init()
 	{
-		config = new Configuration(cmdconfig, true);
+		config = new Configuration(file, true);
 
 		config.addCustomCategoryComment("general", "General Commands configuration.");
 		ModuleCommands.removeDuplicateCommands = config.get("general", "removeDuplicateCommands", true,
@@ -116,11 +115,4 @@ public class ConfigCmd implements IModuleConfig
 		CommandRegistrar.teleport = config.get("parts", "enableTP", true).getBoolean(true);
 		CommandRegistrar.cheat = config.get("parts", "enableFECheats", true).getBoolean(true);
 	}
-
-	@Override
-	public File getFile()
-	{
-		return cmdconfig;
-	}
-
 }

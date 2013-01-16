@@ -6,24 +6,16 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
-public class BackupConfig implements IModuleConfig
+public class BackupConfig extends ModuleConfigBase
 {
-	private File file;
 	private Configuration config;
 	public static File backupDir;
 
-	public BackupConfig()
+	public BackupConfig(File file)
 	{
-		file = new File(ForgeEssentials.FEDIR, "backups.cfg");
-	}
-
-	@Override
-	public void setGenerate(boolean generate)
-	{
-		// TODO Auto-generated method stub
-
+		super(file);
 	}
 
 	@Override
@@ -77,11 +69,5 @@ public class BackupConfig implements IModuleConfig
 		}
 
 		backupDir = dir;
-	}
-
-	@Override
-	public File getFile()
-	{
-		return file;
 	}
 }
