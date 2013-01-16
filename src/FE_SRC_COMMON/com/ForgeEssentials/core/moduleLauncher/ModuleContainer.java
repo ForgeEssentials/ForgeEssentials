@@ -12,6 +12,7 @@ import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Container;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.DummyConfig;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ParentMod;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PostInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
@@ -51,7 +52,7 @@ public class ModuleContainer
 	private String								preinit, init, postinit, serverinit, serverpostinit, serverstop, reload;
 
 	// fields
-	private String								instance, container, config, parentMod;
+	private String								instance, container, config, parentMod, moduleDir;
 
 	// other vars..
 	public final String							className;
@@ -230,6 +231,15 @@ public class ModuleContainer
 				f.setAccessible(true);
 				parentMod = f.getName();
 			}
+			else if (f.isAnnotationPresent(ModuleDir.class))
+			{
+				if (moduleDir != null)
+					throw new RuntimeException("Only one field may be marked as ModuleDir");
+				if (!File.class.isAssignableFrom(f.getType()))
+					throw new RuntimeException("This field must be the type File!");
+				f.setAccessible(true);
+				moduleDir = f.getName();
+			}
 		}
 	}
 
@@ -273,6 +283,16 @@ public class ModuleContainer
 				f = c.getDeclaredField(parentMod);
 				f.setAccessible(true);
 				f.set(module, mod);
+			}
+			
+			if (moduleDir != null)
+			{
+				File file = new File(ForgeEssentials.FEDIR, name);
+				file.mkdirs();
+				
+				f = c.getDeclaredField(moduleDir);
+				f.setAccessible(true);
+				f.set(module, file);
 			}
 		}
 		catch (Exception e)

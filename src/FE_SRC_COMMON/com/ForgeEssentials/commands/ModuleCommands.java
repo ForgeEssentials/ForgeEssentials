@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PostInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
@@ -50,6 +52,9 @@ public class ModuleCommands
 {
 	@Config
 	public static ConfigCmd	conf;
+	
+	@ModuleDir
+	public static File cmddir;
 
 	public static boolean	removeDuplicateCommands;
 	public DataDriver		data;

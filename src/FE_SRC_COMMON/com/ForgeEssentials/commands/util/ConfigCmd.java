@@ -16,8 +16,6 @@ import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
 public class ConfigCmd extends ModuleConfigBase
 {
-
-	public static final File cmddir = new File(ForgeEssentials.FEDIR, "commands/");
 	public Configuration config;
 	
 	public ConfigCmd(File file)
@@ -35,7 +33,7 @@ public class ConfigCmd extends ModuleConfigBase
 				"Remove commands from the list if they already exist outside of FE.").getBoolean(true);
 		CommandMotd.motd = config.get("general", "motd", "Welcome to a server running ForgeEssentials",
 				"Specify the message that greets players when they log in to your server.").value;
-		CommandRules.rulesFile = new File(cmddir, config.get("general", "RulesFile", "rules.txt",
+		CommandRules.rulesFile = new File(ModuleCommands.cmddir, config.get("general", "RulesFile", "rules.txt",
 				"Specify the file where the rules will read from and written to. This path is relative to this folder.").value);
 		CommandEnderchest.useAlias = config.get("general", "useEnderChestAlias", true, "Use the alisa '/echest' for the command '/enderchest'.").getBoolean(
 				true);
@@ -66,7 +64,7 @@ public class ConfigCmd extends ModuleConfigBase
 	{
 		// TODO: may have problems..
 		String path = CommandRules.rulesFile.getPath();
-		path = path.replace(cmddir.getPath(), "");
+		path = path.replace(ModuleCommands.cmddir.getPath(), "");
 		config.get("general", "RulesFile", "rules.txt", "Specify the file where the rules will read from and written to. This path is relative to this folder.").value = path;
 
 		config.addCustomCategoryComment("general", "General Commands configuration.");
@@ -102,7 +100,7 @@ public class ConfigCmd extends ModuleConfigBase
 		config.load();
 		ModuleCommands.removeDuplicateCommands = config.get("general", "removeDuplicateCommands", true).getBoolean(true);
 		CommandMotd.motd = config.get("general", "motd", "Welcome to a server running ForgeEssentials").value;
-		CommandRules.rulesFile = new File(cmddir, config.get("general", "RulesFile", "rules.txt").value);
+		CommandRules.rulesFile = new File(ModuleCommands.cmddir, config.get("general", "RulesFile", "rules.txt").value);
 		CommandEnderchest.useAlias = config.get("general", "useEnderChestAlias", true).getBoolean(true);
 		CommandVirtualchest.useAlias = config.get("general", "useVirtualChestAlias", true).getBoolean(true);
 		CommandVirtualchest.size = config.get("general", "VirtualChestRows", 6).getInt(6) * 9;

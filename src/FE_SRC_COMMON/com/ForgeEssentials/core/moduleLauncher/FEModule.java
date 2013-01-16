@@ -105,6 +105,13 @@ public @interface FEModule
 	@Target({ ElementType.FIELD })
 	public @interface Config {}
 	
+	/**
+	 * This field will be populated with a File instance of this Modules directory.
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public @interface ModuleDir {}
+	
 	// dummy for the default config.
 	class DummyConfig extends ModuleConfigBase
 	{
