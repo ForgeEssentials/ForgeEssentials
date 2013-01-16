@@ -20,7 +20,7 @@ public class FELocalPlayer extends LocalPlayer {
 		super(new com.ForgeEssentials.WorldControl.weintegration.FEServerInterface());
 
 		this.player = player;
-		this.world = WorldEdit.instance.getWorld(player.worldObj);
+		this.world = WEIntegration.instance.getWorld(player.worldObj);
 		this.bag = new com.ForgeEssentials.WorldControl.weintegration.FEBlockBag(player);
 	}
 
@@ -69,9 +69,10 @@ public class FELocalPlayer extends LocalPlayer {
 		player.inventory.addItemStackToInventory(new ItemStack(arg0, arg1, 0));
 	}
 
+	// Inject perms system here?
 	@Override
 	public boolean hasPermission(String arg0) {
-		return WorldEdit.instance.settings.getBoolean("enable-whitelist") ? WorldEdit.instance.whitelist.contains(player.username.toLowerCase()) : WorldEdit.instance.server.getConfigurationManager().areCommandsAllowed(player.username);
+		return true; // this is temporary
 	}
 
 	@Override

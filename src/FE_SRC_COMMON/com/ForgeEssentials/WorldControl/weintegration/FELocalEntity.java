@@ -5,14 +5,12 @@ import net.minecraft.entity.Entity;
 import com.sk89q.worldedit.LocalEntity;
 import com.sk89q.worldedit.Location;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEdit;
-
 
 public class FELocalEntity extends LocalEntity {
 	protected final Entity entity;
 
 	public FELocalEntity(Entity entity) {
-		super(new Location(WorldEdit.instance.getWorld(entity.worldObj), new Vector(entity.posX, entity.posY, entity.posZ), entity.rotationYaw, entity.rotationPitch));
+		super(new Location(WEIntegration.instance.getWorld(entity.worldObj), new Vector(entity.posX, entity.posY, entity.posZ), entity.rotationYaw, entity.rotationPitch));
 
 		this.entity = entity;
 	}

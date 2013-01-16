@@ -1,7 +1,8 @@
 package com.ForgeEssentials.WorldControl.weintegration;
 
-import com.sk89q.worldedit.util.PropertiesConfiguration;
 import java.io.File;
+
+import com.sk89q.worldedit.util.PropertiesConfiguration;
 
 public class LocalConfig extends PropertiesConfiguration {
 
