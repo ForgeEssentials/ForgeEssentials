@@ -19,13 +19,13 @@ public class ModuleBackup
 {
 	@Config
 	public static BackupConfig config;
+	
 	public static BackupThread thread;
 
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.SOP("Backups module is enabled. Loading...");
-		config = new BackupConfig();
 	}
 
 	@Init

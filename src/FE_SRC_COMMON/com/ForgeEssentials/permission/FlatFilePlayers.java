@@ -56,8 +56,8 @@ public class FlatFilePlayers
 		for (String name : players)
 		{
 			info = PlayerInfo.getPlayerInfo(name);
-			config.get(name, "prefix", info.prefix);
-			config.get(name, "suffix", info.suffix);
+			config.get(name, "prefix", info.prefix == null ? "" : info.prefix);
+			config.get(name, "suffix", info.suffix == null ? "" : info.suffix);
 			discardInfo(info, allPlayers);
 		}
 

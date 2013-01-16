@@ -31,28 +31,28 @@ import cpw.mods.fml.relauncher.Side;
 @FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class, configClass = ConfigWorldBorder.class)
 public class ModuleWorldBorder implements IScheduledTickHandler
 {
-	public static boolean WBenabled = false;
-	public static boolean logToConsole = true;
-	
+	public static boolean						WBenabled		= false;
+	public static boolean						logToConsole	= true;
+
 	@Config
-	public static ConfigWorldBorder config;
-	
-	public static BorderShape shape;
-	public static HashMap<Integer, IEffect[]> effectsList = new HashMap();
-	public static int overGenerate = 345;
-	public static boolean set = false;
+	public static ConfigWorldBorder				config;
 
-	public static int X;
-	public static int Z;
-	public static int rad;
+	public static BorderShape					shape;
+	public static HashMap<Integer, IEffect[]>	effectsList		= new HashMap();
+	public static int							overGenerate	= 345;
+	public static boolean						set				= false;
 
-	public static int maxX;
-	public static int maxZ;
-	public static int minX;
-	public static int minZ;
+	public static int							X;
+	public static int							Z;
+	public static int							rad;
 
-	private int ticks = 0;
-	private int players = 1;
+	public static int							maxX;
+	public static int							maxZ;
+	public static int							minX;
+	public static int							minZ;
+
+	private int									ticks			= 0;
+	private int									players			= 1;
 
 	public ModuleWorldBorder()
 	{
@@ -281,7 +281,7 @@ public class ModuleWorldBorder implements IScheduledTickHandler
 
 		minX = posX - rad;
 		minZ = posZ - rad;
-		
+
 		config.forceSave();
 	}
 }

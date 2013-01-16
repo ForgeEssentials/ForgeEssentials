@@ -6,22 +6,21 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
-public class ConfigPlayerLogger implements IModuleConfig
+public class ConfigPlayerLogger extends ModuleConfigBase
 {
-	public static final File plconfig = new File(ForgeEssentials.FEDIR, "playerlogger.cfg");
 	public Configuration config;
-
-	@Override
-	public void setGenerate(boolean generate)
+	
+	public ConfigPlayerLogger(File file)
 	{
+		super(file);
 	}
 
 	@Override
 	public void init()
 	{
-		config = new Configuration(plconfig, true);
+		config = new Configuration(file, true);
 
 		String cat = "playerLogger";
 		String subcat = cat;
@@ -72,7 +71,7 @@ public class ConfigPlayerLogger implements IModuleConfig
 	@Override
 	public void forceLoad(ICommandSender sender)
 	{
-		config = new Configuration(plconfig, true);
+		config = new Configuration(file, true);
 
 		String cat = "playerLogger";
 		String subcat = cat;
@@ -113,11 +112,4 @@ public class ConfigPlayerLogger implements IModuleConfig
 		for(int i : intArray2) EventLogger.BlockChange_BlackList.add(i);
 		config.save();
 	}
-
-	@Override
-	public File getFile()
-	{
-		return plconfig;
-	}
-
 }

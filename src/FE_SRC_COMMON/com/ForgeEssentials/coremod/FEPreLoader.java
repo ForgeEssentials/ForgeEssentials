@@ -4,6 +4,7 @@ import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLCallHook;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
 //In the event we need to mess with ASM and such, this is the place.
 //Kindly do not reference any FE classes outside the coremod package in this class.

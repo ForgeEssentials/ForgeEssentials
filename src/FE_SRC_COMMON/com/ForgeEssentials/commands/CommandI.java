@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
@@ -54,20 +55,9 @@ public class CommandI extends ForgeEssentialsCommandBase {
 
 			ItemStack stack = new ItemStack(id, amount, dam);
 
-			try
-			{
-				String name = stack.getItem().getItemName();
-				if(stack.getItem().getItemName().contains("."))
-				{
-					name = stack.getItem().getItemName().substring(stack.getItem().getItemName().lastIndexOf(".") + 1);
-				}
-				sender.sendChatToPlayer("Giving you " + amount + " " + name);
-				receiver.inventory.addItemStackToInventory(stack);
-			}
-			catch (Exception e)
-			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED + "The server couldn't find the block you were looking for.");
-			}
+			String name = Item.itemsList[id].func_77653_i(stack);
+			sender.sendChatToPlayer("Giving you " + amount + " " + name);
+			receiver.inventory.addItemStackToInventory(stack);
 		}
 		else
 		{

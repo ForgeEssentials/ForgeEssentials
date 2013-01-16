@@ -5,10 +5,13 @@ import java.io.File;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerStop;
@@ -35,17 +38,14 @@ public class ModulePermissions
 	@Config
 	public static ConfigPermissions config;
 
-	public static File permsFolder = new File(ForgeEssentials.FEDIR, "/permissions/");
+	@ModuleDir
+	public static File permsFolder;
+	
 	protected static DataDriver data;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		if (!permsFolder.exists() || !permsFolder.isDirectory())
-		{
-			permsFolder.mkdirs();
-		}
-
 		OutputHandler.SOP("Permissions module is enabled. Loading...");
 		zManager = new ZoneManager();
 
@@ -82,6 +82,9 @@ public class ModulePermissions
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
+		
+		// setup PlayerTracker
+		GameRegistry.registerPlayerTracker(new PlayerTracker());
 	}
 
 	@ForgeSubscribe

@@ -39,7 +39,7 @@ public class FlatFilePermissions
 
 		for (PermissionHolder holder : players)
 		{
-			config.get(holder.zone + ".group." + holder.target, holder.name, holder.allowed);
+			config.get(holder.zone + ".player." + holder.target, holder.name, holder.allowed);
 		}
 
 		for (PermissionHolder holder : groups)

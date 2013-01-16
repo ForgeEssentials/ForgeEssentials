@@ -17,7 +17,6 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-
 public class ModuleLauncher
 {
 	public ModuleLauncher()
@@ -25,8 +24,8 @@ public class ModuleLauncher
 		instance = this;
 	}
 
-	public static ModuleLauncher				instance;
-	private static TreeMap<String, ModuleContainer>	containerMap = new TreeMap<String, ModuleContainer>();
+	public static ModuleLauncher					instance;
+	private static TreeMap<String, ModuleContainer>	containerMap	= new TreeMap<String, ModuleContainer>();
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
@@ -60,7 +59,7 @@ public class ModuleLauncher
 		boolean generate = false;
 		for (ModuleContainer module : modules)
 		{
-			IModuleConfig cfg = module.getConfig();
+			ModuleConfigBase cfg = module.getConfig();
 
 			if (cfg != null)
 			{
@@ -125,7 +124,7 @@ public class ModuleLauncher
 
 	public void reloadConfigs(ICommandSender sender)
 	{
-		IModuleConfig config;
+		ModuleConfigBase config;
 		for (ModuleContainer module : containerMap.values())
 		{
 			config = module.getConfig();

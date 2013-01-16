@@ -5,25 +5,18 @@ import java.io.File;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 
-public class ConfigPermissions implements IModuleConfig
+public class ConfigPermissions extends ModuleConfigBase
 {
 	protected Configuration config;
-	private File file;
 
 	private static boolean permDefault = false;
 
-	public ConfigPermissions()
+	public ConfigPermissions(File file)
 	{
-		file = new File(ModulePermissions.permsFolder, "config.cfg");
-	}
-
-	@Override
-	public void setGenerate(boolean generate)
-	{
-		// idc....
+		super(file);
 	}
 
 	@Override
@@ -61,12 +54,6 @@ public class ConfigPermissions implements IModuleConfig
 	public void forceLoad(ICommandSender sender)
 	{
 		config.load();
-	}
-
-	@Override
-	public File getFile()
-	{
-		return file;
 	}
 
 	public PermResult getPermDefault()

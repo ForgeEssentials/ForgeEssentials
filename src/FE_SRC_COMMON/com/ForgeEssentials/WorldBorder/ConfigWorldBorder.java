@@ -9,7 +9,7 @@ import net.minecraftforge.common.Property;
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.IModuleConfig;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
@@ -19,15 +19,13 @@ import com.ForgeEssentials.util.OutputHandler;
  * 
  */
 
-public class ConfigWorldBorder implements IModuleConfig
+public class ConfigWorldBorder extends ModuleConfigBase
 {
-	public static final File wbconfig = new File(ForgeEssentials.FEDIR, "WorldBorder.cfg");
-
 	private Configuration config;
 
-	public ConfigWorldBorder()
+	public ConfigWorldBorder(File file)
 	{
-
+		super(file);
 	}
 
 	/**
@@ -119,7 +117,7 @@ public class ConfigWorldBorder implements IModuleConfig
 	@Override
 	public void init()
 	{
-		config = new Configuration(wbconfig, true);
+		config = new Configuration(file, true);
 		penaltiesConfig(config);
 		commonConfig(config);
 		config.save();
@@ -128,16 +126,10 @@ public class ConfigWorldBorder implements IModuleConfig
 	@Override
 	public void forceLoad(ICommandSender sender)
 	{
-		config = new Configuration(wbconfig, true);
+		config = new Configuration(file, true);
 		penaltiesConfig(config);
 		commonConfig(config);
 		config.save();
-	}
-
-	@Override
-	public File getFile()
-	{
-		return wbconfig;
 	}
 
 	@Override
@@ -151,10 +143,4 @@ public class ConfigWorldBorder implements IModuleConfig
 		config.get(category, "shape", "square").value = ModuleWorldBorder.shape.toString();
 		config.save();
 	}
-
-	@Override
-	public void setGenerate(boolean generate)
-	{
-	}
-
 }

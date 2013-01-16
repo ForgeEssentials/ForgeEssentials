@@ -1,7 +1,10 @@
 package com.ForgeEssentials.chat;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.NetHandler;
@@ -12,6 +15,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.Group;
 import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
@@ -24,8 +28,8 @@ import cpw.mods.fml.common.network.IChatListener;
 
 public class Chat implements IChatListener
 {
-	public static List<String> bannedWords = new ArrayList<String>();
-	public static boolean censor;
+	public static List<String>	bannedWords	= new ArrayList<String>();
+	public static boolean		censor;
 
 	@ForgeSubscribe
 	public void chatEvent(ServerChatEvent event)
@@ -73,61 +77,75 @@ public class Chat implements IChatListener
 			}
 		}
 
-		String prefix = "";
-		String suffix = "";
 		String rank = "";
 		String zoneID = "";
-
-		try
+		String gPrefix = "";
+		String gSuffix = "";
+		
+		PlayerInfo info = PlayerInfo.getPlayerInfo(event.player);
+		String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
+		String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
+		
+		Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player), event.player.worldObj);
+		zoneID = zone.getZoneName();
+		
+		// group stuff!! NO TOUCH!!!
 		{
-			Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player), event.player.worldObj);
-			PlayerInfo info = PlayerInfo.getPlayerInfo(event.player);
-
-			prefix = info.prefix;
-			suffix = info.suffix;
-
-			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(event.player, false);
-
-			if (groups.isEmpty())
-			{
-				rank = PermissionsAPI.DEFAULT.name;
-				prefix = PermissionsAPI.DEFAULT.prefix + prefix;
-				suffix = suffix + PermissionsAPI.DEFAULT.suffix;
-			}
-			else
-			{
-				rank = groups.get(groups.size() - 1).name;
-
-				for (Group group : groups)
-				{
-					prefix = FunctionHelper.formatColors(group.prefix + prefix);
-					suffix = FunctionHelper.formatColors(suffix + group.suffix);
-				}
-			}
+			rank = getGroupRankString(event.username);
+			
+			gPrefix = getGroupPrefixString(event.username);
+			gPrefix = FunctionHelper.formatColors(gPrefix).trim();
+			
+			gSuffix = getGroupSuffixString(event.username);
+			gSuffix = FunctionHelper.formatColors(gSuffix).trim();
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		OutputHandler.debug("TESTING!!!!!   prefix: " + prefix + "    suffix: " + suffix);
 
 		String format = ConfigChat.chatFormat;
-		format = ConfigChat.chatFormat == null || ConfigChat.chatFormat == "" ? "<%username>%message" : ConfigChat.chatFormat;
-
-		event.line = format.replaceAll("%health", "" + event.player.getHealth()).replaceAll("%reset", FEChatFormatCodes.RESET + "")
-				.replaceAll("%red", FEChatFormatCodes.RED + "").replaceAll("%yellow", FEChatFormatCodes.YELLOW + "")
-				.replaceAll("%black", FEChatFormatCodes.BLACK + "").replaceAll("%darkblue", FEChatFormatCodes.DARKBLUE + "")
-				.replaceAll("%darkgreen", FEChatFormatCodes.DARKGREEN + "").replaceAll("%darkaqua", FEChatFormatCodes.DARKAQUA + "")
-				.replaceAll("%darkred", FEChatFormatCodes.DARKRED + "").replaceAll("%purple", FEChatFormatCodes.PURPLE + "")
-				.replaceAll("%gold", FEChatFormatCodes.GOLD + "").replaceAll("%grey", FEChatFormatCodes.GREY + "")
-				.replaceAll("%darkgrey", FEChatFormatCodes.DARKGREY + "").replaceAll("%indigo", FEChatFormatCodes.INDIGO + "")
-				.replaceAll("%green", FEChatFormatCodes.GREEN + "").replaceAll("%aqua", FEChatFormatCodes.AQUA + "")
-				.replaceAll("%pink", FEChatFormatCodes.PINK + "").replaceAll("%white", FEChatFormatCodes.WHITE + "")
-				.replaceAll("%random", FEChatFormatCodes.RANDOM + "").replaceAll("%bold", FEChatFormatCodes.BOLD + "")
-				.replaceAll("%strike", FEChatFormatCodes.STRIKE + "").replaceAll("%underline", FEChatFormatCodes.UNDERLINE + "")
-				.replaceAll("%italics", FEChatFormatCodes.ITALICS + "").replace("%message", message).replaceAll("%username", nickname)
-				.replaceAll("%rank", rank).replaceAll("%zone", zoneID).replace("%prefix", prefix).replaceAll("%suffix", suffix);
+		format = ConfigChat.chatFormat == null || ConfigChat.chatFormat.trim().isEmpty() ? "<%username>%message" : ConfigChat.chatFormat;
+		
+		// replace group, zone, and rank
+		format = format.replaceAll("%rank", rank);
+		format = format.replaceAll("%zone", zoneID);
+		format = format.replaceAll("%groupPrefix", gPrefix);
+		format = format.replaceAll("%groupSuffix", gSuffix);
+		
+		// replace colors
+		format = format.replaceAll("%red", FEChatFormatCodes.RED.toString());
+		format = format.replaceAll("%yellow", FEChatFormatCodes.YELLOW.toString());
+		format = format.replaceAll("%black", FEChatFormatCodes.BLACK.toString());
+		format = format.replaceAll("%darkblue", FEChatFormatCodes.DARKBLUE.toString());
+		format = format.replaceAll("%darkgreen", FEChatFormatCodes.DARKGREEN.toString());
+		format = format.replaceAll("%darkaqua", FEChatFormatCodes.DARKAQUA.toString());
+		format = format.replaceAll("%darkred", FEChatFormatCodes.DARKRED.toString());
+		format = format.replaceAll("%purple", FEChatFormatCodes.PURPLE.toString());
+		format = format.replaceAll("%gold", FEChatFormatCodes.GOLD.toString());
+		format = format.replaceAll("%grey", FEChatFormatCodes.GREY.toString());
+		format = format.replaceAll("%darkgrey", FEChatFormatCodes.DARKGREY.toString());
+		format = format.replaceAll("%indigo", FEChatFormatCodes.INDIGO.toString());
+		format = format.replaceAll("%green", FEChatFormatCodes.GREEN.toString());
+		format = format.replaceAll("%aqua", FEChatFormatCodes.AQUA.toString());
+		format = format.replaceAll("%pink", FEChatFormatCodes.PINK.toString());
+		format = format.replaceAll("%white", FEChatFormatCodes.WHITE.toString());
+		
+		// replace MC formating
+		format = format.replaceAll("%random", FEChatFormatCodes.RANDOM.toString());
+		format = format.replaceAll("%bold", FEChatFormatCodes.BOLD.toString());
+		format = format.replaceAll("%strike", FEChatFormatCodes.STRIKE.toString());
+		format = format.replaceAll("%underline", FEChatFormatCodes.UNDERLINE.toString());
+		format = format.replaceAll("%italics", FEChatFormatCodes.ITALICS.toString());
+		format = format.replaceAll("%reset", FEChatFormatCodes.RESET.toString());
+		
+		// random nice things...
+		format = format.replaceAll("%health", "" + event.player.getHealth());
+		
+		// essentials
+		format = format.replace("%playerPrefix", playerPrefix);
+		format = format.replaceAll("%playerSuffix", playerSuffix);
+		format = format.replaceAll("%username", nickname);
+		format = format.replace("%message", message);
+		
+		// finally make it the chat line.
+		event.line = format;
 	}
 
 	@Override
@@ -158,5 +176,115 @@ public class Chat implements IChatListener
 			prev = i + replacement.length();
 		}
 		return buffer.toString();
+	}
+	
+	private String getGroupRankString(String username)
+	{
+		Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupRankFormat);
+		ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+		
+		String end = "";
+		
+		TreeSet<Group> set;
+		String temp = "";
+		for (int i = 0; i <= match.groupCount(); i++)
+		{
+			set = list.get(i);
+			for (Group g: set)
+				temp = temp+g.name;
+			
+			end = match.replaceFirst(temp);
+			temp = "";
+		}
+		
+		return end;
+	}
+	
+	private String getGroupPrefixString(String username)
+	{
+		Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupPrefixFormat);
+		
+		ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+		
+		String end = "";
+		
+		TreeSet<Group> set;
+		String temp = "";
+		for (int i = 0; i <= match.groupCount(); i++)
+		{
+			set = list.get(i);
+			for (Group g: set)
+				temp = g.prefix+temp;
+			
+			end = match.replaceFirst(temp);
+			temp = "";
+		}
+		
+		return end;
+	}
+	
+	private String getGroupSuffixString(String username)
+	{
+		Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupSuffixFormat);
+		
+		ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+		
+		String end = "";
+		
+		TreeSet<Group> set;
+		String temp = "";
+		for (int i = 0; i <= match.groupCount(); i++)
+		{
+			set = list.get(i);
+			for (Group g: set)
+				temp = temp+g.suffix;
+			
+			end = match.replaceFirst(temp);
+			temp = "";
+		}
+		
+		return end;
+	}
+	
+	private ArrayList<TreeSet<Group>> getGroupsList(Matcher match, String username)
+	{
+		ArrayList<TreeSet<Group>> list = new ArrayList<TreeSet<Group>>();
+		
+		String whole;
+		String[] p;
+		TreeSet<Group> set;
+		while (match.find())
+		{
+			whole = match.group();
+			whole = whole.replaceAll("\\{", "").replaceAll("\\}", "");
+			p = whole.split("\\<\\:\\>", 2);
+			if (p[0].equalsIgnoreCase("..."))
+				p[0] = null;
+			if (p[1].equalsIgnoreCase("..."))
+				p[1] = null;
+			
+			set = SqlHelper.getGroupsForChat(p[0], p[1], username);
+			if (set != null)
+				list.add(set);
+		}
+		
+		list = removeDuplicates(list);
+		return list;
+	}
+	
+	private ArrayList<TreeSet<Group>> removeDuplicates(ArrayList<TreeSet<Group>> list)
+	{
+		HashSet<Group> used = new HashSet<Group>();
+		
+		for (TreeSet set: list)
+		{
+			for (Group g : used)
+				set.remove(g);
+			
+			// add all the remaining...
+			used.addAll(set);
+		}
+		
+		return list;
 	}
 }

@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PostInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
@@ -49,16 +51,18 @@ import cpw.mods.fml.relauncher.Side;
 public class ModuleCommands
 {
 	@Config
-	public static ConfigCmd conf;
+	public static ConfigCmd	conf;
 	
-	public static boolean removeDuplicateCommands;
-	public DataDriver data;
+	@ModuleDir
+	public static File cmddir;
+
+	public static boolean	removeDuplicateCommands;
+	public DataDriver		data;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		OutputHandler.SOP("Commands module is enabled. Loading...");
-		conf = new ConfigCmd();
 	}
 
 	@Init
@@ -69,11 +73,6 @@ public class ModuleCommands
 		GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
 	}
 
-	@PostInit
-	public void postLoad(FEModulePostInitEvent e)
-	{
-	}
-
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
@@ -82,7 +81,7 @@ public class ModuleCommands
 		data = DataStorageManager.getDriverOfName("ForgeConfig");
 
 		CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
-		
+
 		// Vanilla Override
 		e.registerServerCommand(new CommandKill());
 		e.registerServerCommand(new CommandGive());
@@ -110,10 +109,10 @@ public class ModuleCommands
 			{
 				Set<String> commandNames = new HashSet<String>();
 				Set<String> toRemoveNames = new HashSet<String>();
-				
-				Set cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), "commandSet", "b");
+
+				Set cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandSet", "b");
 				OutputHandler.debug("commandSet size: " + cmdList.size());
-				
+
 				for (Object cmdObj : cmdList)
 				{
 					ICommand cmd = (ICommand) cmdObj;
@@ -142,15 +141,15 @@ public class ModuleCommands
 						catch (Exception e)
 						{
 							OutputHandler.debug("Can't remove " + cmd.getCommandName());
-							OutputHandler.debug(""+e.getLocalizedMessage());
+							OutputHandler.debug("" + e.getLocalizedMessage());
 							e.printStackTrace();
 						}
 					}
 				}
 				cmdList.removeAll(toRemove);
 				OutputHandler.debug("commandSet size: " + cmdList.size());
-				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler)server.getCommandManager(), cmdList, "commandSet", "b");
-				
+				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, "commandSet", "b");
+
 			}
 			catch (Exception e)
 			{

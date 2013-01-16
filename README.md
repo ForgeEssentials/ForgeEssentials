@@ -18,7 +18,7 @@ Eclipse cleanup profile: <a href="https://dl.dropbox.com/u/31042110/eclipse%20Fo
 
 Builds: <a href="http://files.minecraftforge.net/ForgeEssentials/">Jenkins Build System</a>
 
-Libraries (extract into /lib) http://www.mediafire.com/download.php?xsd4bn8k37e19b6
+Libraries (extract into /lib) http://www.mediafire.com/download.php?k31dnyye5f62vv8
 
 FE Team Members:
 ================

@@ -67,4 +67,6 @@ public enum RegGroup
 
 	private Group group;
 	private String name;
+	
+	public static final String LADDER = "mainLadder";
 }

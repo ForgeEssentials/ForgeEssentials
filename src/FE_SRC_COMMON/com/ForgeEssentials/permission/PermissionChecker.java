@@ -16,10 +16,12 @@ public class PermissionChecker
 	 */
 	public PermissionChecker(String qualifiedName)
 	{
-		if (name.endsWith("."+Permission.ALL))
+		if (qualifiedName.endsWith(Permission.ALL))
 		{
 			isAll = true;
-			name.replace("."+Permission.ALL, "");
+			name = qualifiedName;
+			if (name.contains("."))
+				name = name.replace("."+Permission.ALL, "");
 		}
 		else
 		{
@@ -30,22 +32,30 @@ public class PermissionChecker
 
 	/**
 	 * @return the qualified full name of the parent of this permission's parent. returns "_ALL_" if there is no parent.
+	 * NULL if this permission is already _ALL_
 	 */
 	public String getImmediateParent()
 	{
 		if (!hasParent())
-			return Permission.ALL;
-		return name.substring(0, name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0);
+			if (isAll)
+				return null;
+			else
+				return Permission.ALL;
+		else
+			return name.substring(0, name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0);
 	}
 	
 	/**
-	 * @return the fully qualified name of the parent + _ALL_. unless this perm has no parent, in which case it returns _ALL_
+	 * @return the fully qualified name of the parent + _ALL_. unless this perm has no parent, in which case it returns _ALL_.
+	 * NULL if this permission is already _ALL_
 	 */
 	public String getAllParent()
 	{
 		if (!hasParent())
 			return Permission.ALL;
-		return name.substring(0, name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0)+"."+Permission.ALL;
+		String newName =  name.substring(0, name.lastIndexOf('.') >= 0 ? name.lastIndexOf('.') : 0);
+		newName = newName+ "."+Permission.ALL;
+		return newName;
 	}
 
 	/**
