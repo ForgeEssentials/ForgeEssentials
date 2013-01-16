@@ -89,7 +89,7 @@ public class Chat implements IChatListener
 		Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player), event.player.worldObj);
 		zoneID = zone.getZoneName();
 		
-		// group stuff!! NO TOCUH!!!
+		// group stuff!! NO TOUCH!!!
 		{
 			rank = getGroupRankString(event.username);
 			
