@@ -24,6 +24,7 @@ public final class OutputHandler
 	 */
 	public static void chatError(EntityPlayer player, String msg)
 	{
+		FunctionHelper.formatColors(msg);
 		player.addChatMessage(FEChatFormatCodes.RED + msg);
 	}
 
@@ -37,6 +38,7 @@ public final class OutputHandler
 	 */
 	public static void chatConfirmation(EntityPlayer player, String msg)
 	{
+		FunctionHelper.formatColors(msg);
 		player.addChatMessage(FEChatFormatCodes.GREEN + msg);
 	}
 
