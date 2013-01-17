@@ -16,7 +16,7 @@ import com.ForgeEssentials.util.OutputHandler;
 public class ConfigChat extends ModuleConfigBase
 {
 	public static String chatFormat, groupPrefixFormat, groupSuffixFormat, groupRankFormat;
-	public static Pattern groupRegex = Pattern.compile("\\{\\w*\\<\\:\\>\\w*\\}");
+	public static Pattern groupRegex = Pattern.compile("\\{[a-zA-Z0-9._]*\\<\\:\\>[a-zA-Z0-9._]*\\}");
 	public Configuration config;
 
 	// this is designed so it will work for any class.
@@ -53,7 +53,7 @@ public class ConfigChat extends ModuleConfigBase
 		config.addCustomCategoryComment("Chat.groups",
 				"You may put enything here that you want displaed as part of the group prefixes, suffixes, or ranks." +
 				"\n {ladderName<:>Zone} will display the data for the highest priority group that the player is in that is part of the specified ladder and specified zone." +
-				"\n {...} will display the data of each group the player is in in order of priority" +
+				"\n {...<:>...} will display the data of each group the player is in in order of priority" +
 				"\n you may put contsraints with ladders or zones with {...<:>zoneName} or {ladderName<:>...}" +
 				"\n you may also use the color and MCFormat codes above.");
 		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{"+RegGroup.LADDER+"<:>"+ZoneManager.GLOBAL.getZoneName()+"}").value;

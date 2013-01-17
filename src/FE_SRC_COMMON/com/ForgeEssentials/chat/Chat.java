@@ -185,11 +185,9 @@ public class Chat implements IChatListener
 		
 		String end = "";
 		
-		TreeSet<Group> set;
 		String temp = "";
-		for (int i = 0; i <= match.groupCount(); i++)
+		for (TreeSet<Group> set : list)
 		{
-			set = list.get(i);
 			for (Group g: set)
 				temp = temp+g.name;
 			
@@ -208,11 +206,9 @@ public class Chat implements IChatListener
 		
 		String end = "";
 		
-		TreeSet<Group> set;
 		String temp = "";
-		for (int i = 0; i <= match.groupCount(); i++)
+		for (TreeSet<Group> set : list)
 		{
-			set = list.get(i);
 			for (Group g: set)
 				temp = g.prefix+temp;
 			
@@ -231,11 +227,9 @@ public class Chat implements IChatListener
 		
 		String end = "";
 		
-		TreeSet<Group> set;
 		String temp = "";
-		for (int i = 0; i <= match.groupCount(); i++)
+		for (TreeSet<Group> set : list)
 		{
-			set = list.get(i);
 			for (Group g: set)
 				temp = temp+g.suffix;
 			

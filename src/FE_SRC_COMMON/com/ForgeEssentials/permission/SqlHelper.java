@@ -112,6 +112,7 @@ public class SqlHelper
 	private final PreparedStatement	statementGetGroupsFromLadder;							// PlayerID, LadderID >> group
 	private final PreparedStatement	statementGetGroupsFromLadderAndZone;					// PlayerID, LadderID, ZoneID >> group
 	private final PreparedStatement	statementGetGroupsFromZone;								// PlayerID, ZoneID >> group
+	private final PreparedStatement	statementGetGroupsFromPlayer;							// PlayerID >> group
 	private final PreparedStatement	statementPutLadderName;									// $ LadderName
 	private final PreparedStatement	statementPutLadder;										// $ groupid, zoneID, rank, ladderID
 	
@@ -217,6 +218,23 @@ public class SqlHelper
 					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?")
 					.append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
 			statementGetGroupsFromZone = instance.db.prepareStatement(query.toString());
+			
+			// statementGetGroupsFromZone
+			query = new StringBuilder("SELECT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY)
+					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
+					.append(" INNER JOIN ").append(TABLE_LADDER)
+					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
+					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?");
+			statementGetGroupsFromPlayer = instance.db.prepareStatement(query.toString());
 
 			// statementGetGroupFromName
 			query = new StringBuilder("SELECT ")
@@ -944,7 +962,11 @@ public class SqlHelper
 			pID = getPlayerIDFromPlayerName(username);
 			
 			// for variations..
-			if (zoneName == null && ladderName != null)
+			if (zoneName == null && ladderName == null)
+			{
+				lID = zID = -3;
+			}
+			else if (zoneName == null && ladderName != null)
 			{
 				lID = getLadderIDFromLadderName(ladderName);
 				zID = -3;
@@ -969,7 +991,9 @@ public class SqlHelper
 			ResultSet set;
 			PreparedStatement s;
 			
-			if (lID == -3)
+			if (lID == zID && lID == -3)
+				s = instance.statementGetGroupsFromPlayer;
+			else if (lID == -3)
 			{
 				s = instance.statementGetGroupsFromZone;
 				s.setInt(2, zID);
