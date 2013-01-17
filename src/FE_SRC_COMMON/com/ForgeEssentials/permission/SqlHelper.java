@@ -211,8 +211,6 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
 					.append(" INNER JOIN ").append(TABLE_GROUP)
 					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
-					.append(" INNER JOIN ").append(TABLE_LADDER)
-					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID)
 					.append(" INNER JOIN ").append(TABLE_ZONE)
 					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
 					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?")
@@ -229,8 +227,6 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
 					.append(" INNER JOIN ").append(TABLE_GROUP)
 					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
-					.append(" INNER JOIN ").append(TABLE_LADDER)
-					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID)
 					.append(" INNER JOIN ").append(TABLE_ZONE)
 					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
 					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?");
