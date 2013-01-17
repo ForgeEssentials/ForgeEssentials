@@ -18,6 +18,7 @@ public class DBConnector
 	private final EnumDBType								dType;
 	private EnumDBType										type;
 	private final String									dbDefault;
+	private final String									dbFileDefault;
 	private boolean											useFallback;
 	private HashMap<EnumDBType, HashMap<String, Property>>	data;
 
@@ -25,15 +26,17 @@ public class DBConnector
 	 * @param name a name for the DB connector. to be used in Logging.
 	 * @param fallback The DBConnector from which to take information for a given type if loading that type from this config fails.
 	 * @param dType the default database type to use
-	 * @param dbDefault the default name for the database
+	 * @param dbDefault the default name for remote databases
+	 * @param dbDefault the default path for file databases
 	 * @paramuseFallbac if the Fallback should be used for remote Databases
 	 */
-	public DBConnector(String name, DBConnector fallback, EnumDBType dType, String dbDefault, boolean useFallback)
+	public DBConnector(String name, DBConnector fallback, EnumDBType dType, String dbDefault, String dbFileDefault, boolean useFallback)
 	{
 		this.name = name;
 		this.fallback = fallback;
 		this.dType = type = dType;
 		this.dbDefault = dbDefault;
+		this.dbFileDefault = dbFileDefault;
 		data = new HashMap<EnumDBType, HashMap<String, Property>>();
 		this.useFallback = useFallback;
 	}
@@ -63,7 +66,7 @@ public class DBConnector
 			}
 			else
 			{
-				config.get(newcat, "database", dbDefault, "this may be a file path as well.");
+				config.get(newcat, "database", dbFileDefault, "this may be a file path as well. Relative to the ForgeEssentials Folder. File Extension is auto-generated.");
 			}
 
 		}
