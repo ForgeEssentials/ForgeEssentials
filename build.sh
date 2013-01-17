@@ -7,8 +7,8 @@ MC = tail -n 1 "VERSION.TXT"
 echo "Version of ${JOB_NAME} is: ${VERSION} for MC ${MC}"
 
 echo "Downloading Forge..."
-#wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip 
-wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
+wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip 
+#wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
 unzip minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
 rm "For later.zip"
