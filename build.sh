@@ -117,7 +117,7 @@ rm -rf ./coremods/*
 
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
-cp -rf ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt .
+cp -rf ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt .
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt
 
 #upload
