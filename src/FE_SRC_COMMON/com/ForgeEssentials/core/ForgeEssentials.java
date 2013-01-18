@@ -175,10 +175,10 @@ public class ForgeEssentials
 	{
 		mdlaunch.serverStopping(e);
 
-		if (FMLCommonHandler.instance().getSide().isServer())
-		{
-			dataManager.clearDrivers();
-		}
+//		if (FMLCommonHandler.instance().getSide().isServer())
+//		{
+//			dataManager.clearDrivers();
+//		}
 	}
 
 	@ForgeSubscribe
