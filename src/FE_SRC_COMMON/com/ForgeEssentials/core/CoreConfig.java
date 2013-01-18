@@ -116,17 +116,17 @@ public class CoreConfig
 		try
 		{
 			String MOTD = FMLCommonHandler.instance().getMinecraftServerInstance().getMOTD();
-			MOTD = "&e&f" + MOTD;
+			MOTD = "§e§f" + MOTD;
 			
-			if(radarOther) MOTD 	= "&7" + MOTD;
-			if(radarSquid) MOTD 	= "&6" + MOTD;
-			if(radarSlime) MOTD 	= "&5" + MOTD;
-			if(radarMod) MOTD 		= "&4" + MOTD;
-			if(radarAnimal) MOTD 	= "&3" + MOTD;
-			if(radarPlayer) MOTD 	= "&2" + MOTD;
-			if(cavemap) MOTD 		= "&1" + MOTD;
+			if(radarOther) MOTD 	= "§7" + MOTD;
+			if(radarSquid) MOTD 	= "§6" + MOTD;
+			if(radarSlime) MOTD 	= "§5" + MOTD;
+			if(radarMod) MOTD 		= "§4" + MOTD;
+			if(radarAnimal) MOTD 	= "§3" + MOTD;
+			if(radarPlayer) MOTD 	= "§2" + MOTD;
+			if(cavemap) MOTD 		= "§1" + MOTD;
 			
-			MOTD = "&0&0" + MOTD;
+			MOTD = "§0§0" + MOTD;
 			
 			OutputHandler.debug("Changed MOTD to: " + MOTD);
 			FMLCommonHandler.instance().getMinecraftServerInstance().setMOTD(MOTD);
