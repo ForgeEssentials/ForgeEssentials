@@ -375,4 +375,10 @@ public class NBTDataDriver extends DataDriver
 
 		return isSuccess;
 	}
+	
+	@Override
+	public EnumDriverType getType()
+	{
+		return EnumDriverType.BINARY;
+	}
 }

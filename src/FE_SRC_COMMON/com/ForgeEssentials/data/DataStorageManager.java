@@ -22,17 +22,16 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
  */
 public class DataStorageManager
 {
-	// Default driver is Flat-file. ALWAYS have this as a fallback plan.
-	private static String defaultDriver = "ForgeConfig";
-
 	// just keeps an instance of the config for future use.
 	private Configuration config;
+	private static final String configCategory = "data";
 
-	private ConcurrentHashMap<String, Class<? extends DataDriver>> classMap; // registered
-																				// ones...
+	public static final EnumDriverType defaultDriver = EnumDriverType.TEXT;
+	private static EnumDriverType chosen = defaultDriver;
 
-	private ConcurrentHashMap<String, DataDriver> instanceMap; // instantiated
-																// ones
+	private ConcurrentHashMap<EnumDriverType, String> typeChosens; // the defaults...
+	private ConcurrentHashMap<String, Class<? extends DataDriver>> classMap; // registered ones...
+	private ConcurrentHashMap<String, DataDriver> instanceMap; // instantiated ones
 
 	protected static ConcurrentHashMap<Class, TypeTagger> taggerList = new ConcurrentHashMap<Class, TypeTagger>();
 
@@ -40,54 +39,61 @@ public class DataStorageManager
 	{
 		classMap = new ConcurrentHashMap<String, Class<? extends DataDriver>>();
 		instanceMap = new ConcurrentHashMap<String, DataDriver>();
+		typeChosens = new ConcurrentHashMap<EnumDriverType, String>();
 
 		this.config = config;
 
 		config.addCustomCategoryComment("Data", "Configuration options for how ForgeEssentials will save its data for persistence between sessions.");
-
-		String temp = ForgeConfigDataDriver.class.getSimpleName();
-		Property prop = config.get("Data", "storageType", temp.substring(0, temp.indexOf("DataDriver")));
-		prop.comment = "Specifies the variety of data storage FE will use. Options: ForgeConfig, H2, NBT";
+		
+		// generates the configs...
+		Property prop = config.get("Data", "storageType", defaultDriver.toString());
+		prop.comment = "Specifies the variety of data storage FE will use. Options: "+EnumDriverType.getAll(" ");
+		
+		typeChosens.put(EnumDriverType.TEXT, "ForgeConfig");
+		typeChosens.put(EnumDriverType.BINARY, "NBT");
+		typeChosens.put(EnumDriverType.SQL, "H2");
+		
+		String cat;
+		for (EnumDriverType type : EnumDriverType.values())
+		{
+			cat = "Data."+type;
+			config.get(cat, "chosenDriver", typeChosens.get(type));
+		}
 	}
 
 	/**
 	 * Parses the ForgeEssentials config file and determines which Driver to use.
-	 * 
+	 * This will be loaded up with the lazy method. only the chosen ones will be loaded...
+	 *  
 	 * @param Config
 	 */
 	public void setupManager(FMLServerStartingEvent event)
 	{
 		// verify default driver...
-		assert classMap.get(defaultDriver) != null : new RuntimeException("{ForgeEssentials} Default DataDriver is invalid! Valid types: "
-				+ Arrays.toString(classMap.values().toArray()));
+		if (classMap.get(typeChosens.get(defaultDriver)) == null)
+			throw new RuntimeException("{ForgeEssentials} Default DataDriver is invalid! Valid types: "+Arrays.toString(classMap.values().toArray()));
 
 		DataDriver driver;
 
-		for (Entry<String, Class<? extends DataDriver>> entry : classMap.entrySet())
+		for (Entry<String, DataDriver> entry : instanceMap.entrySet())
 		{
 			try
 			{
-				// If there is a problem constructing the driver, this line will
-				// fail and we will enter the catch block.
-				driver = entry.getValue().newInstance();
-
 				// tried and tested method of getting the worldName
 				String worldName = event.getServer().getFolderName();
 
 				// things MAY error here as well...
-				driver.parseConfigs(config, worldName);
+				entry.getValue().parseConfigs(config, worldName);
 
 				// register tagged classes...
 				for (TypeTagger tag : taggerList.values())
 				{
-					driver.onClassRegistered(tag);
+					entry.getValue().onClassRegistered(tag);
 				}
-
-				instanceMap.put(entry.getKey(), driver);
 			}
 			catch (Exception e)
 			{
-				OutputHandler.SOP("Problem initializing DataDriver " + entry.getKey());
+				OutputHandler.SOP("Problem loading DataDriver " + entry.getKey());
 				OutputHandler.SOP("ForgeEssentials will not be able to save any data through this driver");
 				e.printStackTrace();
 			}
@@ -102,13 +108,35 @@ public class DataStorageManager
 	/**
 	 * Should only be done before the server starts. May override existing Driver types.
 	 * 
-	 * @param name
-	 *            Name to be used in configs
+	 * @param name Name to be used in configs
 	 * @param c
 	 */
 	public static void registerDriver(String name, Class<? extends DataDriver> c)
 	{
-		ForgeEssentials.dataManager.classMap.put(name, c);
+		try
+		{
+			// If there is a problem constructing the driver, this line will
+			// fail and we will enter the catch block.
+			DataDriver driver = c.newInstance();
+			ForgeEssentials.dataManager.classMap.put(name, c);
+			ForgeEssentials.dataManager.instanceMap.put(name, driver);
+		}
+		catch (Exception e)
+		{
+			OutputHandler.SOP("Problem initializing DataDriver " + name);
+			OutputHandler.SOP("ForgeEssentials will not be able to save any data through this driver");
+			e.printStackTrace();
+		}
+	}
+	
+	public static DataDriver getReccomendedDriver()
+	{
+		return getDriverOfType(defaultDriver);
+	}
+	
+	public static DataDriver getDriverOfType(EnumDriverType type)
+	{
+		return getDriverOfName(ForgeEssentials.dataManager.typeChosens.get(type));
 	}
 
 	/**
@@ -125,54 +153,11 @@ public class DataStorageManager
 		return d;
 	}
 
-	/**
-	 * This method returns a DataDriver that is not internally tracked and can be used at your discretion.
-	 * 
-	 * @param config
-	 * @param type
-	 * @return NULL if something happens regarding the instantiation,
-	 */
-	public static DataDriver getSpecialDriver(Configuration config, String type)
-	{
-		try
-		{
-			// If there is a problem constructing the driver, this line will
-			// fail and we will enter the catch block.
-			DataDriver driver = ForgeEssentials.dataManager.classMap.get(type).newInstance();
-
-			// tried and tested method of getting the worldName
-			String worldName = FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName();
-
-			// things MAY error here as well...
-			driver.parseConfigs(config, worldName);
-
-			// register tagged classes...
-			for (TypeTagger tag : taggerList.values())
-			{
-				driver.onClassRegistered(tag);
-			}
-
-			return driver;
-		}
-		catch (Exception e)
-		{
-			OutputHandler.SOP("Problem initializing DataDriver " + type);
-			OutputHandler.SOP("ForgeEssentials will not be able to save any data through this driver");
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	public static void registerSaveableClass(Class type)
 	{
-		assert type.isAnnotationPresent(SaveableObject.class) : new IllegalArgumentException(
-				"Only classes that have the @SaveableObject annotation may be registered!");
+		if (!type.isAnnotationPresent(SaveableObject.class))
+			throw new IllegalArgumentException("Only classes that have the @SaveableObject annotation may be registered!");
 		taggerList.put(type, new TypeTagger(type));
-	}
-
-	public static boolean hasMapping(Object o)
-	{
-		return taggerList.containsKey(o.getClass());
 	}
 
 	public static boolean hasMapping(Class type)

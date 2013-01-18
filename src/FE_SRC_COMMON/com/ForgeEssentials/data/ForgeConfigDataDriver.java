@@ -286,4 +286,10 @@ public class ForgeConfigDataDriver extends DataDriver
 
 		return data;
 	}
+
+	@Override
+	public EnumDriverType getType()
+	{
+		return EnumDriverType.TEXT;
+	}
 }

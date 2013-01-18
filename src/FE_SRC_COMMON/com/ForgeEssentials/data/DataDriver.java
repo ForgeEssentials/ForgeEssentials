@@ -77,4 +77,6 @@ public abstract class DataDriver
 	abstract protected TaggedClass[] loadAll(Class type);
 
 	abstract protected boolean deleteData(Class type, Object uniqueObjectKey);
+	
+	abstract public EnumDriverType getType();
 }

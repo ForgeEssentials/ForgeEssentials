@@ -60,8 +60,7 @@ public class CoreConfig
 	}
 
 	/**
-	 * @param name
-	 *            : ie WorldControl, Commands, Permissions, WorldEditCompat, WorldGuardCompat, etc... whatever comes after Module
+	 * @param name : ie WorldControl, Commands, Permissions, WorldEditCompat, WorldGuardCompat, etc... whatever comes after Module
 	 * @return boolean
 	 */
 	public boolean isModuleEnabled(String name)

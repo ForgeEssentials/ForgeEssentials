@@ -688,4 +688,10 @@ public class MySQLDataDriver extends DataDriver
 		}
 		return value;
 	}
+	
+	@Override
+	public EnumDriverType getType()
+	{
+		return EnumDriverType.SQL;
+	}
 }
