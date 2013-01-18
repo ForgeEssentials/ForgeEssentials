@@ -15,6 +15,11 @@ public abstract class DataDriver
 	{
 
 	}
+	
+	public final String getName()
+	{
+		return this.getClass().getSimpleName().replace(DataDriver.class.getSimpleName(), "");
+	}
 
 	public boolean saveObject(Object o)
 	{
@@ -68,7 +73,7 @@ public abstract class DataDriver
 		return deleteData(type, loadingKey);
 	}
 
-	abstract public void parseConfigs(Configuration config, String worldName) throws Exception;
+	abstract public void parseConfigs(Configuration config, String category, String worldName) throws Exception;
 
 	abstract protected boolean saveData(Class type, TaggedClass fieldList);
 

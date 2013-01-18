@@ -10,7 +10,6 @@ import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
 /**
  * This generates the configuration structure + an example file.
- * 
  * @author Dries007
  */
 public class ConfigProtection extends ModuleConfigBase

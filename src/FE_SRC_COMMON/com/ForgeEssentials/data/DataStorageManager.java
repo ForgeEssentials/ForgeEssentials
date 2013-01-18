@@ -83,7 +83,7 @@ public class DataStorageManager
 				String worldName = event.getServer().getFolderName();
 
 				// things MAY error here as well...
-				entry.getValue().parseConfigs(config, worldName);
+				entry.getValue().parseConfigs(config, "Data."+entry.getValue().getType()+"."+entry.getValue().getName(), worldName);
 
 				// register tagged classes...
 				for (TypeTagger tag : taggerList.values())

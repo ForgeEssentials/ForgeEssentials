@@ -153,12 +153,6 @@ public class ForgeEssentials
 		mdlaunch.serverStarting(e);
 	}
 
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent event)
-	{
-
-	}
-
 	@ServerStarted
 	public void serverStarted(FMLServerStartedEvent e)
 	{
@@ -169,16 +163,5 @@ public class ForgeEssentials
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		mdlaunch.serverStopping(e);
-
-//		if (FMLCommonHandler.instance().getSide().isServer())
-//		{
-//			dataManager.clearDrivers();
-//		}
-	}
-
-	@ForgeSubscribe
-	public void chuckSave(WorldEvent.Save event)
-	{
-
 	}
 }
