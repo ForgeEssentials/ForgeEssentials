@@ -104,44 +104,44 @@ public class Chat implements IChatListener
 		format = ConfigChat.chatFormat == null || ConfigChat.chatFormat.trim().isEmpty() ? "<%username>%message" : ConfigChat.chatFormat;
 		
 		// replace group, zone, and rank
-		format = format.replaceAll("%rank", rank);
-		format = format.replaceAll("%zone", zoneID);
-		format = format.replaceAll("%groupPrefix", gPrefix);
-		format = format.replaceAll("%groupSuffix", gSuffix);
+		format = replaceAllIgnoreCase(format, "%rank", rank);
+		format = replaceAllIgnoreCase(format, "%zone", zoneID);
+		format = replaceAllIgnoreCase(format, "%groupPrefix", gPrefix);
+		format = replaceAllIgnoreCase(format, "%groupSuffix", gSuffix);
 		
 		// replace colors
-		format = format.replaceAll("%red", FEChatFormatCodes.RED.toString());
-		format = format.replaceAll("%yellow", FEChatFormatCodes.YELLOW.toString());
-		format = format.replaceAll("%black", FEChatFormatCodes.BLACK.toString());
-		format = format.replaceAll("%darkblue", FEChatFormatCodes.DARKBLUE.toString());
-		format = format.replaceAll("%darkgreen", FEChatFormatCodes.DARKGREEN.toString());
-		format = format.replaceAll("%darkaqua", FEChatFormatCodes.DARKAQUA.toString());
-		format = format.replaceAll("%darkred", FEChatFormatCodes.DARKRED.toString());
-		format = format.replaceAll("%purple", FEChatFormatCodes.PURPLE.toString());
-		format = format.replaceAll("%gold", FEChatFormatCodes.GOLD.toString());
-		format = format.replaceAll("%grey", FEChatFormatCodes.GREY.toString());
-		format = format.replaceAll("%darkgrey", FEChatFormatCodes.DARKGREY.toString());
-		format = format.replaceAll("%indigo", FEChatFormatCodes.INDIGO.toString());
-		format = format.replaceAll("%green", FEChatFormatCodes.GREEN.toString());
-		format = format.replaceAll("%aqua", FEChatFormatCodes.AQUA.toString());
-		format = format.replaceAll("%pink", FEChatFormatCodes.PINK.toString());
-		format = format.replaceAll("%white", FEChatFormatCodes.WHITE.toString());
+		format = replaceAllIgnoreCase(format, "%red", FEChatFormatCodes.RED.toString());
+		format = replaceAllIgnoreCase(format, "%yellow", FEChatFormatCodes.YELLOW.toString());
+		format = replaceAllIgnoreCase(format, "%black", FEChatFormatCodes.BLACK.toString());
+		format = replaceAllIgnoreCase(format, "%darkblue", FEChatFormatCodes.DARKBLUE.toString());
+		format = replaceAllIgnoreCase(format, "%darkgreen", FEChatFormatCodes.DARKGREEN.toString());
+		format = replaceAllIgnoreCase(format, "%darkaqua", FEChatFormatCodes.DARKAQUA.toString());
+		format = replaceAllIgnoreCase(format, "%darkred", FEChatFormatCodes.DARKRED.toString());
+		format = replaceAllIgnoreCase(format, "%purple", FEChatFormatCodes.PURPLE.toString());
+		format = replaceAllIgnoreCase(format, "%gold", FEChatFormatCodes.GOLD.toString());
+		format = replaceAllIgnoreCase(format, "%grey", FEChatFormatCodes.GREY.toString());
+		format = replaceAllIgnoreCase(format, "%darkgrey", FEChatFormatCodes.DARKGREY.toString());
+		format = replaceAllIgnoreCase(format, "%indigo", FEChatFormatCodes.INDIGO.toString());
+		format = replaceAllIgnoreCase(format, "%green", FEChatFormatCodes.GREEN.toString());
+		format = replaceAllIgnoreCase(format, "%aqua", FEChatFormatCodes.AQUA.toString());
+		format = replaceAllIgnoreCase(format, "%pink", FEChatFormatCodes.PINK.toString());
+		format = replaceAllIgnoreCase(format, "%white", FEChatFormatCodes.WHITE.toString());
 		
 		// replace MC formating
-		format = format.replaceAll("%random", FEChatFormatCodes.RANDOM.toString());
-		format = format.replaceAll("%bold", FEChatFormatCodes.BOLD.toString());
-		format = format.replaceAll("%strike", FEChatFormatCodes.STRIKE.toString());
-		format = format.replaceAll("%underline", FEChatFormatCodes.UNDERLINE.toString());
-		format = format.replaceAll("%italics", FEChatFormatCodes.ITALICS.toString());
-		format = format.replaceAll("%reset", FEChatFormatCodes.RESET.toString());
+		format = replaceAllIgnoreCase(format, "%random", FEChatFormatCodes.RANDOM.toString());
+		format = replaceAllIgnoreCase(format, "%bold", FEChatFormatCodes.BOLD.toString());
+		format = replaceAllIgnoreCase(format, "%strike", FEChatFormatCodes.STRIKE.toString());
+		format = replaceAllIgnoreCase(format, "%underline", FEChatFormatCodes.UNDERLINE.toString());
+		format = replaceAllIgnoreCase(format, "%italics", FEChatFormatCodes.ITALICS.toString());
+		format = replaceAllIgnoreCase(format, "%reset", FEChatFormatCodes.RESET.toString());
 		
 		// random nice things...
-		format = format.replaceAll("%health", "" + event.player.getHealth());
+		format = replaceAllIgnoreCase(format, "%health", "" + event.player.getHealth());
 		
 		// essentials
-		format = format.replace("%playerPrefix", playerPrefix);
-		format = format.replaceAll("%playerSuffix", playerSuffix);
-		format = format.replaceAll("%username", nickname);
+		format = replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix);
+		format = replaceAllIgnoreCase(format, "%playerSuffix", playerSuffix);
+		format = replaceAllIgnoreCase(format, "%username", nickname);
 		format = format.replace("%message", message);
 		
 		// finally make it the chat line.
@@ -185,14 +185,14 @@ public class Chat implements IChatListener
 		
 		String end = "";
 		
-		String temp = "";
+		StringBuffer temp = new StringBuffer;
 		for (TreeSet<Group> set : list)
 		{
 			for (Group g: set)
-				temp = temp+g.name;
+				temp.append(g.name);
 			
-			end = match.replaceFirst(temp);
-			temp = "";
+			end = match.replaceFirst(temp.toString());
+			temp = new StringBuffer();
 		}
 		
 		return end;
