@@ -32,6 +32,8 @@ public class DataStorageManager
 	private ConcurrentHashMap<EnumDriverType, String> typeChosens; // the defaults...
 	private ConcurrentHashMap<String, Class<? extends DataDriver>> classMap; // registered ones...
 	private ConcurrentHashMap<String, DataDriver> instanceMap; // instantiated ones
+	
+	private boolean loaded = false;
 
 	protected static ConcurrentHashMap<Class, TypeTagger> taggerList = new ConcurrentHashMap<Class, TypeTagger>();
 
@@ -98,6 +100,8 @@ public class DataStorageManager
 				e.printStackTrace();
 			}
 		}
+		
+		loaded = true;
 	}
 
 	/**
@@ -162,9 +166,16 @@ public class DataStorageManager
 
 	public static TypeTagger getTaggerForType(Class type)
 	{
+		TypeTagger tagged;
 		if (!hasMapping(type))
 		{
 			registerSaveableClass(type);
+			tagged = taggerList.get(type);
+			if (ForgeEssentials.dataManager.loaded)
+				for (DataDriver driver : ForgeEssentials.dataManager.instanceMap.values())
+					driver.onClassRegistered(tagged);
+					
+			return tagged;
 		}
 		return taggerList.get(type);
 	}
