@@ -8,6 +8,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -178,5 +179,10 @@ public class DataStorageManager
 			return tagged;
 		}
 		return taggerList.get(type);
+	}
+	
+	public static DBConnector getCoreDBCOnnector()
+	{
+		return ((SQLDataDriver)ForgeEssentials.dataManager.getDriverOfType(EnumDriverType.SQL)).connector;
 	}
 }

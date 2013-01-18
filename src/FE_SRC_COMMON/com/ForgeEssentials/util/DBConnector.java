@@ -49,7 +49,9 @@ public class DBConnector
 	public void write(Configuration config, String cat)
 	{
 		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" ")).value = type.toString();
-		config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.").value = "" + useFallback;
+		
+		if (fallback != null)
+			config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.").value = "" + useFallback;
 
 		String newcat;
 		HashMap<String, Property> props;
@@ -87,7 +89,8 @@ public class DBConnector
 		try
 		{
 			type = type.valueOf(config.get(cat, "chosenType", dType.toString()).value);
-			useFallback = config.get(cat, "checkParent", false).getBoolean(false);
+			if (fallback != null)
+				useFallback = config.get(cat, "checkParent", false).getBoolean(false);
 		}
 		catch (Exception e)
 		{
