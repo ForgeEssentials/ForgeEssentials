@@ -116,7 +116,7 @@ public class CommandUser
 					}
 					else
 					{
-						OutputHandler.chatConfirmation(sender, player.getCommandSenderName() + " added to group " + args[3]);
+						OutputHandler.chatConfirmation(sender, playerName + " added to group " + args[3]);
 					}
 				}
 				else
@@ -129,14 +129,14 @@ public class CommandUser
 			{
 				if(args.length > 3)
 				{
-					String result = PermissionsAPI.clearPlayerGroup(args[3], player.getCommandSenderName(), zoneName);
+					String result = PermissionsAPI.clearPlayerGroup(args[3], playerName, zoneName);
 					if(result != null)
 					{
 						OutputHandler.chatError(sender, result);
 					}
 					else
 					{
-						OutputHandler.chatConfirmation(sender, player.getCommandSenderName() + " removed from group " + args[3]);
+						OutputHandler.chatConfirmation(sender, playerName + " removed from group " + args[3]);
 					}
 				}
 				return;
@@ -145,14 +145,14 @@ public class CommandUser
 			{
 				if(args.length > 3)
 				{
-					String result = PermissionsAPI.setPlayerGroup(args[3], player.getCommandSenderName(), zoneName);
+					String result = PermissionsAPI.setPlayerGroup(args[3], playerName, zoneName);
 					if(result != null)
 					{
 						OutputHandler.chatError(sender, result);
 					}
 					else
 					{
-						OutputHandler.chatConfirmation(sender, player.getCommandSenderName() + "'s group set to " + args[3]);
+						OutputHandler.chatConfirmation(sender, playerName + "'s group set to " + args[3]);
 					}
 				}
 				return;
@@ -198,7 +198,7 @@ public class CommandUser
 			}
 			else if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allow player perm
 			{
-				String result = PermissionsAPI.setPlayerPermission(player.getCommandSenderName(), args[2], true, zoneName);
+				String result = PermissionsAPI.setPlayerPermission(playerName, args[2], true, zoneName);
 				if(result != null)
 				{
 					OutputHandler.chatError(sender, result);
@@ -211,7 +211,7 @@ public class CommandUser
 			}
 			else if (args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove")) // remove perm settings
 			{
-				String result = PermissionsAPI.clearPlayerPermission(player.getCommandSenderName(), args[2], zoneName);
+				String result = PermissionsAPI.clearPlayerPermission(playerName, args[2], zoneName);
 				if(result != null)
 				{
 					OutputHandler.chatError(sender, result);
@@ -224,7 +224,7 @@ public class CommandUser
 			}
 			else if (args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("deny")) // deny player perm
 			{
-				String result = PermissionsAPI.setPlayerPermission(player.getCommandSenderName(), args[2], false, zoneName);
+				String result = PermissionsAPI.setPlayerPermission(playerName, args[2], false, zoneName);
 				if(result != null)
 				{
 					OutputHandler.chatError(sender, result);
