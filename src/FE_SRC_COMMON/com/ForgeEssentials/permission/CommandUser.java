@@ -15,15 +15,26 @@ public class CommandUser
 	{
 		if (args.length == 0) // display syntax & possible options for this level
 		{
-			//OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
+			OutputHandler.chatConfirmation(sender, "Possible usage:");
+			OutputHandler.chatConfirmation(sender, "/p user <player> : Display user statistics");
+			OutputHandler.chatConfirmation(sender, "/p user <player> supers : Player's superperms");
+			OutputHandler.chatConfirmation(sender, "/p user <player> group : Player's group settings");
+			OutputHandler.chatConfirmation(sender, "/p user <player> allow|true|deny|false|clear : Player's individual permissions");
 			return;
 		}
 		
+		boolean playerExists = true;
+		String playerName = args[0];
 		EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
 		if (player == null)
 		{
 			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			OutputHandler.chatConfirmation(sender, args[0] + " will be used, but may be inaccurate.");
+			playerExists = false;
+		}
+		else
+		{
+			playerName = player.username;
 		}
 		if (args.length == 1) // display user-specific settings & there values for this player
 		{
@@ -53,21 +64,21 @@ public class CommandUser
 				
 				if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("allow"))
 				{
-					PermissionsAPI.setPlayerPermission(player.username, args[3], true, zone.getZoneName());
-					OutputHandler.chatConfirmation(sender, player.username + " has been allowed " + args[3]);
+					PermissionsAPI.setPlayerPermission(playerName, args[3], true, zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, playerName + " has been allowed " + args[3]);
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove")) // remove super
 																									// perm settings
 				{
-					PermissionsAPI.clearPlayerPermission(player.username, args[3], zone.getZoneName());
-					OutputHandler.chatConfirmation(sender, player.username + "'s access to " + args[2] + " cleared");
+					PermissionsAPI.clearPlayerPermission(playerName, args[3], zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, playerName + "'s access to " + args[2] + " cleared");
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny")) // deny super perm
 				{
-					PermissionsAPI.setPlayerPermission(player.username, args[3], false, zone.getZoneName());
-					OutputHandler.chatConfirmation(sender, player.username + " has been denied " + args[3]);
+					PermissionsAPI.setPlayerPermission(playerName, args[3], false, zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, playerName + " has been denied " + args[3]);
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("get"))
@@ -98,7 +109,7 @@ public class CommandUser
 			{
 				if(args.length > 3)
 				{
-					String result = PermissionsAPI.addPlayerToGroup(args[3], player.getCommandSenderName(), zoneName);
+					String result = PermissionsAPI.addPlayerToGroup(args[3], playerName, zoneName);
 					if(result != null)
 					{
 						OutputHandler.chatError(sender, result);
@@ -167,22 +178,22 @@ public class CommandUser
 			{
 				if(args.length == 2)
 				{
-					OutputHandler.chatConfirmation(sender, player.username + "'s prefix is &f" + PlayerInfo.getPlayerInfo(player.username).prefix);
+					OutputHandler.chatConfirmation(sender, playerName + "'s prefix is &f" + PlayerInfo.getPlayerInfo(playerName).prefix);
 					return;
 				}
-				PlayerInfo.getPlayerInfo(player.username).prefix = args[2];
-				OutputHandler.chatConfirmation(sender, player.username + "'s prefix set to &f" + args[2]);
+				PlayerInfo.getPlayerInfo(playerName).prefix = args[2];
+				OutputHandler.chatConfirmation(sender, playerName + "'s prefix set to &f" + args[2]);
 				return;
 			}
 			else if (args[1].equalsIgnoreCase("suffix")) // suffix
 			{
 				if(args.length == 2)
 				{
-					OutputHandler.chatConfirmation(sender, player.username + "'s suffix is &f" + PlayerInfo.getPlayerInfo(player.username).suffix);
+					OutputHandler.chatConfirmation(sender, playerName + "'s suffix is &f" + PlayerInfo.getPlayerInfo(playerName).suffix);
 					return;
 				}
-				PlayerInfo.getPlayerInfo(player.username).suffix = args[2];
-				OutputHandler.chatConfirmation(sender, player.username + "'s suffix set to &f" + args[2]);
+				PlayerInfo.getPlayerInfo(playerName).suffix = args[2];
+				OutputHandler.chatConfirmation(sender, playerName + "'s suffix set to &f" + args[2]);
 				return;
 			}
 			else if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allow player perm
@@ -194,7 +205,7 @@ public class CommandUser
 				}
 				else
 				{
-					OutputHandler.chatConfirmation(sender, player.username + "  allowed access to " + args[2] + ".");
+					OutputHandler.chatConfirmation(sender, playerName + "  allowed access to " + args[2] + ".");
 				}
 				return;
 			}
@@ -207,7 +218,7 @@ public class CommandUser
 				}
 				else
 				{
-					OutputHandler.chatConfirmation(sender, player.username + " denied access to " + args[2] + ".");
+					OutputHandler.chatConfirmation(sender, playerName + " denied access to " + args[2] + ".");
 				}
 				return;
 			}
@@ -220,7 +231,7 @@ public class CommandUser
 				}
 				else
 				{
-					OutputHandler.chatConfirmation(sender, player.username + "'s  access to " + args[2] + "cleared.");
+					OutputHandler.chatConfirmation(sender, playerName + "'s  access to " + args[2] + "cleared.");
 				}
 				return;
 			}
