@@ -139,11 +139,6 @@ public class ForgeEssentials
 		ModListFile.makeModList();
 
 		// Data API stuff
-		if (FMLCommonHandler.instance().getSide().isClient())
-		{
-			dataManager.clearDrivers(); // clear before fuilling up.. if its the
-		}
-		// client...
 		dataManager.setupManager(e);
 
 		// Central TP system
