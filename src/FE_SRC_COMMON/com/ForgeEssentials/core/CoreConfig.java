@@ -17,6 +17,20 @@ public class CoreConfig
 
 	public final Configuration config;
 
+	private boolean cavemap;
+
+	private boolean radarPlayer;
+
+	private boolean radarAnimal;
+
+	private boolean radarMod;
+
+	private boolean radarSlime;
+
+	private boolean radarSquid;
+
+	private boolean radarOther;
+
 	// this is designed so it will work for any class.
 	public CoreConfig()
 	{
@@ -52,44 +66,20 @@ public class CoreConfig
 		
 		config.addCustomCategoryComment("Core.ReisMinimap", "Use this to enable sertain Rei's Minimap options. They will be added to the server's MOTD automatically.");
 		
-		try
-		{
-			String MOTD = FMLCommonHandler.instance().getMinecraftServerInstance().getMOTD();
-			
-			prop = config.get("Core.ReisMinimap", "caveMap", false);
-			boolean cavemap = prop.getBoolean(false);
-
-			prop = config.get("Core.ReisMinimap", "radarPlayer", false);
-			boolean radarPlayer = prop.getBoolean(false);
-
-			prop = config.get("Core.ReisMinimap", "radarAnimal", false);
-			boolean radarAnimal = prop.getBoolean(false);
-
-			prop = config.get("Core.ReisMinimap", "radarMod", false);
-			boolean radarMod = prop.getBoolean(false);
-
-			prop = config.get("Core.ReisMinimap", "radarSlime", false);
-			boolean radarSlime = prop.getBoolean(false);
-			
-			prop = config.get("Core.ReisMinimap", "radarSquid", false);
-			boolean radarSquid = prop.getBoolean(false);
-			
-			prop = config.get("Core.ReisMinimap", "radarOther", false);
-			boolean radarOther = prop.getBoolean(false);
-			
-			MOTD = "&0&0" + MOTD;
-			if(cavemap) MOTD 		= "&1" + MOTD;
-			if(radarPlayer) MOTD 	= "&2" + MOTD;
-			if(radarAnimal) MOTD 	= "&3" + MOTD;
-			if(radarMod) MOTD 		= "&4" + MOTD;
-			if(radarSlime) MOTD 	= "&5" + MOTD;
-			if(radarSquid) MOTD 	= "&6" + MOTD;
-			if(radarOther) MOTD 	= "&7" + MOTD;
-			MOTD = "&e&f" + MOTD;
-			
-			FMLCommonHandler.instance().getMinecraftServerInstance().setMOTD(MOTD);
-		}
-		catch (Exception e){}
+		prop = config.get("Core.ReisMinimap", "caveMap", false);
+		cavemap = prop.getBoolean(false);
+		prop = config.get("Core.ReisMinimap", "radarPlayer", false);
+		radarPlayer = prop.getBoolean(false);
+		prop = config.get("Core.ReisMinimap", "radarAnimal", false);
+		radarAnimal = prop.getBoolean(false);
+		prop = config.get("Core.ReisMinimap", "radarMod", false);
+		radarMod = prop.getBoolean(false);
+		prop = config.get("Core.ReisMinimap", "radarSlime", false);
+		radarSlime = prop.getBoolean(false);
+		prop = config.get("Core.ReisMinimap", "radarSquid", false);
+		radarSquid = prop.getBoolean(false);
+		prop = config.get("Core.ReisMinimap", "radarOther", false);
+		radarOther = prop.getBoolean(false);
 		
 		config.save();
 	}
@@ -119,5 +109,29 @@ public class CoreConfig
 		prop.value = newValue;
 
 		OutputHandler.logConfigChange(category, property, oldVal, newValue);
+	}
+
+	public void reimotd()
+	{
+		try
+		{
+			String MOTD = FMLCommonHandler.instance().getMinecraftServerInstance().getMOTD();
+			MOTD = "&e&f" + MOTD;
+			
+			if(radarOther) MOTD 	= "&7" + MOTD;
+			if(radarSquid) MOTD 	= "&6" + MOTD;
+			if(radarSlime) MOTD 	= "&5" + MOTD;
+			if(radarMod) MOTD 		= "&4" + MOTD;
+			if(radarAnimal) MOTD 	= "&3" + MOTD;
+			if(radarPlayer) MOTD 	= "&2" + MOTD;
+			if(cavemap) MOTD 		= "&1" + MOTD;
+			
+			MOTD = "&0&0" + MOTD;
+			
+			OutputHandler.debug("Changed MOTD to: " + MOTD);
+			FMLCommonHandler.instance().getMinecraftServerInstance().setMOTD(MOTD);
+		}
+		catch (Exception e)
+		{e.printStackTrace();}
 	}
 }
