@@ -27,7 +27,7 @@ public class DBConnector
 	 * @param fallback The DBConnector from which to take information for a given type if loading that type from this config fails.
 	 * @param dType the default database type to use
 	 * @param dbDefault the default name for remote databases
-	 * @param dbDefault the default path for file databases
+	 * @param dbFileDefault the default path for file databases. Relative to FEDIR 
 	 * @paramuseFallbac if the Fallback should be used for remote Databases
 	 */
 	public DBConnector(String name, DBConnector fallback, EnumDBType dType, String dbDefault, String dbFileDefault, boolean useFallback)
@@ -42,42 +42,11 @@ public class DBConnector
 	}
 
 	/**
-	 * Does not read the config. only ensures that the values exist, or generates them. the config's save() method is not called.
-	 * Also populates the default type's connection for use.
-	 * @param config
-	 * @param category the category where everything regarding this connector will be.
-	 */
-	public void generate(Configuration config, String cat)
-	{
-		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" "));
-		config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.");
-
-		String newcat;
-		for (EnumDBType type : EnumDBType.values())
-		{
-			newcat = cat + "." + type;
-			if (type.isRemote)
-			{
-				config.get(newcat, "host", "localhost");
-				config.get(newcat, "port", 3360);
-				config.get(newcat, "database", dbDefault);
-				config.get(newcat, "user", "FEUSER");
-				config.get(newcat, "pass", "password");
-			}
-			else
-			{
-				config.get(newcat, "database", dbFileDefault, "this may be a file path as well. Relative to the ForgeEssentials Folder. File Extension is auto-generated.");
-			}
-
-		}
-	}
-
-	/**
 	 * Forcibly writes everything to the config. the config's save() method is not called.
 	 * @param config
 	 * @param category the category where everything regarding this connector will be.
 	 */
-	public void wite(Configuration config, String cat)
+	public void write(Configuration config, String cat)
 	{
 		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" ")).value = type.toString();
 		config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.").value = "" + useFallback;
@@ -109,11 +78,11 @@ public class DBConnector
 	}
 
 	/**
-	 * Loads the the connector from the config for use. config laod method is not called.
+	 * Loads the the connector from the config for use. config load method is not called.
 	 * @param config
 	 * @param category the category where everything regarding this connector will be.
 	 */
-	public void read(Configuration config, String cat)
+	public void loadOrGenerate(Configuration config, String cat)
 	{
 		try
 		{
@@ -148,9 +117,13 @@ public class DBConnector
 				props.put("database", config.get(newcat, "database", dbDefault, "this may be a file path as well."));
 			}
 		}
+		
+		
+		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" "));
+		config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.");
 	}
 
-	public Connection getConnection()
+	public Connection getChosenConnection()
 	{
 		HashMap<String, Property> props;
 		Connection con;
@@ -257,5 +230,10 @@ public class DBConnector
 		{
 			return null;
 		}
+	}
+	
+	public EnumDBType getType()
+	{
+		return type;
 	}
 }

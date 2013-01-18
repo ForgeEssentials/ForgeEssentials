@@ -15,70 +15,32 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.data.TaggedClass.SavedField;
+import com.ForgeEssentials.util.DBConnector;
+import com.ForgeEssentials.util.EnumDBType;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.Pair;
 
-public class MySQLDataDriver extends DataDriver
+public class SQLDataDriver extends DataDriver
 {
-	private static String separationString = "__";
-	private String DriverClass = "com.mysql.jdbc.Driver";
-	private boolean isConfigured = false;
-	private Connection dbConnection;
-	private HashMap<Class, Boolean> classTableChecked = new HashMap<Class, Boolean>();
+	protected static String				separationString	= "__";
+	private Connection					dbConnection;
+	protected HashMap<Class, Boolean>	classTableChecked	= new HashMap<Class, Boolean>();
+	protected DBConnector				connector;
 
 	// Default constructor is good enough for us.
 
-	@Override
-	public void parseConfigs(Configuration config, String worldName) throws SQLException, ClassNotFoundException
+	public SQLDataDriver()
 	{
-		String type;
-		String connectionString = "";
+		connector = new DBConnector("CoreData", null, EnumDBType.H2_FILE, "ForgeEssentials", "FEData", false);
+	}
 
-		// Set up the MySQL connection.
-		Property prop;
-		prop = config.get("Data.SQL", "server", "server.example.com");
-		prop.comment = "Server name/IP that hosts the database.";
-		String server = prop.value;
+	@Override
+	public void parseConfigs(Configuration config, String category, String worldName) throws SQLException, ClassNotFoundException
+	{
+		String cat = category.substring(0, category.lastIndexOf('.'));
 
-		prop = config.get("Data.SQL", "port", 3306);
-		prop.comment = "Port to connect to the database on";
-		String port = Integer.toString(prop.getInt());
-
-		prop = config.get("Data.SQL", "database", "ForgeEssentials");
-		prop.comment = "Database name that FE will use to store its data & tables in. Highly reccomended to have a DB for FE data only.";
-		String database = prop.value;
-
-		prop = config.get("Data.SQL", "username", " ");
-		prop.comment = "Username to log into DB with";
-		String username = prop.value;
-
-		prop = config.get("Data.SQL", "password", " ");
-		prop.comment = "Password to log into DB with";
-		String password = prop.value;
-
-		if (!server.equalsIgnoreCase("server.example.com"))
-		{
-			connectionString = "jdbc:mysql://" + server + ":" + port + "/" + database;
-			;
-
-			try
-			{
-				Class driverClass = Class.forName(DriverClass);
-
-				dbConnection = DriverManager.getConnection(connectionString, username, password);
-				isConfigured = true;
-			}
-			catch (SQLException e)
-			{
-				OutputHandler.SOP("Unable to connect to the database. Check your connection info.");
-				throw e;
-			}
-			catch (ClassNotFoundException e)
-			{
-				OutputHandler.SOP("Could not load the MySQL JDBC Driver! Does it exist in the lib directory?");
-				throw e;
-			}
-		}
+		connector.loadOrGenerate(config, cat);
+		connector.getChosenConnection();
 	}
 
 	@Override
@@ -89,10 +51,7 @@ public class MySQLDataDriver extends DataDriver
 		// attempt to create a table.
 		if (!(tagger.inLine || classTableChecked.containsKey(tagger.forType)))
 		{
-			if (isConfigured)
-			{
-				createTable(tagger.forType);
-			}
+			createTable(tagger.forType);
 		}
 	}
 
@@ -101,21 +60,18 @@ public class MySQLDataDriver extends DataDriver
 	{
 		boolean isSuccess = false;
 
-		if (isConfigured)
+		try
 		{
-			try
-			{
-				Statement s;
-				s = dbConnection.createStatement();
-				int count = s.executeUpdate(createInsertStatement(type, fieldList));
+			Statement s;
+			s = dbConnection.createStatement();
+			int count = s.executeUpdate(createInsertStatement(type, fieldList));
 
-				isSuccess = true;
-			}
-			catch (SQLException e)
-			{
-				OutputHandler.SOP("Couldn't save object of type " + type.getSimpleName() + " to MySQL DB. Server will continue running.");
-				e.printStackTrace();
-			}
+			isSuccess = true;
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.SOP("Couldn't save object of type " + type.getSimpleName() + " to "+connector.getType()+" DB. Server will continue running.");
+			e.printStackTrace();
 		}
 
 		return isSuccess;
@@ -126,24 +82,21 @@ public class MySQLDataDriver extends DataDriver
 	{
 		TaggedClass reconstructed = null;
 
-		if (isConfigured)
+		try
 		{
-			try
-			{
-				Statement s = dbConnection.createStatement();
-				ResultSet result = s.executeQuery(createSelectStatement(type, uniqueKey));
+			Statement s = dbConnection.createStatement();
+			ResultSet result = s.executeQuery(createSelectStatement(type, uniqueKey));
 
-				// ResultSet initially sits just before first result.
-				if (result.next())
-				{
-					// Should only be one item in this set.
-					reconstructed = createTaggedClassFromResult(type, resultRowToMap(result));
-				}
-			}
-			catch (SQLException e)
+			// ResultSet initially sits just before first result.
+			if (result.next())
 			{
-				e.printStackTrace();
+				// Should only be one item in this set.
+				reconstructed = createTaggedClassFromResult(type, resultRowToMap(result));
 			}
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
 		}
 
 		return reconstructed;
@@ -154,23 +107,20 @@ public class MySQLDataDriver extends DataDriver
 	{
 		ArrayList<TaggedClass> values = new ArrayList<TaggedClass>();
 
-		if (isConfigured)
+		try
 		{
-			try
-			{
-				Statement s = dbConnection.createStatement();
-				ResultSet result = s.executeQuery(createSelectAllStatement(type));
+			Statement s = dbConnection.createStatement();
+			ResultSet result = s.executeQuery(createSelectAllStatement(type));
 
-				while (result.next())
-				{
-					// Continue reading rows as they exist.
-					values.add(createTaggedClassFromResult(type, resultRowToMap(result)));
-				}
-			}
-			catch (SQLException e)
+			while (result.next())
 			{
-				e.printStackTrace();
+				// Continue reading rows as they exist.
+				values.add(createTaggedClassFromResult(type, resultRowToMap(result)));
 			}
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
 		}
 
 		return values.toArray(new TaggedClass[values.size()]);
@@ -181,20 +131,17 @@ public class MySQLDataDriver extends DataDriver
 	{
 		boolean isSuccess = false;
 
-		if (isConfigured)
+		try
 		{
-			try
-			{
-				Statement s = dbConnection.createStatement();
-				s.execute(createDeleteStatement(type, uniqueObjectKey));
+			Statement s = dbConnection.createStatement();
+			s.execute(createDeleteStatement(type, uniqueObjectKey));
 
-				isSuccess = true;
-			}
-			catch (SQLException e)
-			{
-				OutputHandler.SOP("Problem deleting data from MySQL DB (May not actually be a critical error):");
-				e.printStackTrace();
-			}
+			isSuccess = true;
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.SOP("Problem deleting data from "+connector.getType()+" DB (May not actually be a critical error):");
+			e.printStackTrace();
 		}
 
 		return isSuccess;
@@ -472,9 +419,9 @@ public class MySQLDataDriver extends DataDriver
 	 * into constituent primitives in the form of: "parentField_childFieldName"
 	 * 
 	 * @param fieldName
-	 *            Name of saved field
+	 * Name of saved field
 	 * @param type
-	 *            Type of saved field
+	 * Type of saved field
 	 * @return Array of field => H2 type names.
 	 */
 	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, Class type)
@@ -528,9 +475,9 @@ public class MySQLDataDriver extends DataDriver
 	 * Generates an array of fieldname => String(Value) pairs, useful for Inserts, Updates, or Deletes.
 	 * 
 	 * @param fieldName
-	 *            Name of the field in the H2 DB
+	 * Name of the field in the H2 DB
 	 * @param type
-	 *            Type of field (Java)
+	 * Type of field (Java)
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */
@@ -688,7 +635,7 @@ public class MySQLDataDriver extends DataDriver
 		}
 		return value;
 	}
-	
+
 	@Override
 	public EnumDriverType getType()
 	{

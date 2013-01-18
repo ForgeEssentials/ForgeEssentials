@@ -2,6 +2,8 @@ package com.ForgeEssentials.util;
 
 import java.util.IllegalFormatException;
 
+import com.google.common.base.Throwables;
+
 public enum EnumDBType
 {
 	H2_FILE(false, "org.h2.jdbc.JdbcConnection", "jdbc:h2:file:%s;FILE_LOCK=SOCKET;IGNORECASE=TRUE"), // file
@@ -31,8 +33,8 @@ public enum EnumDBType
 		}
 		catch (ClassNotFoundException e)
 		{
-			OutputHandler.SOP("Failed to laod driver Database driver for typr : "+this+"   Ensure the libraries exists.");
-			e.printStackTrace();
+			OutputHandler.SOP("Could not load the "+this+" JDBC Driver! Does it exist in the lib directory?");
+			Throwables.propagateIfPossible(e);
 		}
 	}
 	

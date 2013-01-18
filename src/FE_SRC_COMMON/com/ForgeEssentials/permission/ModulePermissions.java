@@ -75,7 +75,7 @@ public class ModulePermissions
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		// load zones...
-		data = DataStorageManager.getDriverOfName("ForgeConfig");
+		data = DataStorageManager.getReccomendedDriver();
 		zManager.loadZones();
 
 		//init perms and vMC command overrides

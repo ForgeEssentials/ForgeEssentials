@@ -36,7 +36,7 @@ public class PlayerInfo
 		{
 			// Attempt to populate this info with some data from our storage.
 			// TODO: get the actual config-given choice...
-			info = (PlayerInfo) DataStorageManager.getDriverOfName("ForgeConfig").loadObject(PlayerInfo.class, player.username);
+			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(PlayerInfo.class, player.username);
 
 			if (info == null)
 			{
@@ -146,7 +146,7 @@ public class PlayerInfo
 	public void save()
 	{
 		// TODO: get the actual config-given choice...
-		DataStorageManager.getDriverOfName("ForgeConfig").saveObject(this);
+		DataStorageManager.getReccomendedDriver().saveObject(this);
 	}
 
 	// ----------------------------------------------

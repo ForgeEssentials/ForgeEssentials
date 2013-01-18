@@ -51,7 +51,7 @@ public class DataStorageManager
 		
 		typeChosens.put(EnumDriverType.TEXT, "ForgeConfig");
 		typeChosens.put(EnumDriverType.BINARY, "NBT");
-		typeChosens.put(EnumDriverType.SQL, "H2");
+		typeChosens.put(EnumDriverType.SQL, "SQL_DB");
 		
 		String cat;
 		for (EnumDriverType type : EnumDriverType.values())
@@ -74,11 +74,11 @@ public class DataStorageManager
 			throw new RuntimeException("{ForgeEssentials} Default DataDriver is invalid! Valid types: "+Arrays.toString(classMap.values().toArray()));
 
 		DataDriver driver;
-
 		for (Entry<String, DataDriver> entry : instanceMap.entrySet())
 		{
 			try
 			{
+				
 				// tried and tested method of getting the worldName
 				String worldName = event.getServer().getFolderName();
 
@@ -98,11 +98,6 @@ public class DataStorageManager
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void clearDrivers()
-	{
-		instanceMap.clear();
 	}
 
 	/**
@@ -143,7 +138,7 @@ public class DataStorageManager
 	 * @param name
 	 * @return default DataDriver if the requested one is unavailable.
 	 */
-	public static DataDriver getDriverOfName(String name)
+	private static DataDriver getDriverOfName(String name)
 	{
 		DataDriver d = ForgeEssentials.dataManager.instanceMap.get(name);
 		if (d == null)

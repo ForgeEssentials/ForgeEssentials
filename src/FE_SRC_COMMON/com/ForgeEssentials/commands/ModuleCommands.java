@@ -78,7 +78,7 @@ public class ModuleCommands
 	{
 		DataStorage.load();
 
-		data = DataStorageManager.getDriverOfName("ForgeConfig");
+		data = DataStorageManager.getReccomendedDriver();
 
 		CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
 
