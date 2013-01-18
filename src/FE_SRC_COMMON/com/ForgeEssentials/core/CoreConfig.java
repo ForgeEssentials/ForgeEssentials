@@ -86,6 +86,8 @@ public class CoreConfig
 			if(radarSquid) MOTD 	= "&6" + MOTD;
 			if(radarOther) MOTD 	= "&7" + MOTD;
 			MOTD = "&e&f" + MOTD;
+			
+			FMLCommonHandler.instance().getMinecraftServerInstance().setMOTD(MOTD);
 		}
 		catch (Exception e){}
 		
