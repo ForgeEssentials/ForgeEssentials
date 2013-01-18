@@ -163,7 +163,6 @@ public class ForgeEssentials
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		mdlaunch.serverStarted(e);
-		this.config.reimotd();
 	}
 	
 	@ServerStopping

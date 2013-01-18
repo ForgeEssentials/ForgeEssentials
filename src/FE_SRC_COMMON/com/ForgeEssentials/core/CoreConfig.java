@@ -111,13 +111,11 @@ public class CoreConfig
 		OutputHandler.logConfigChange(category, property, oldVal, newValue);
 	}
 
-	public void reimotd()
+	public String reimotd()
 	{
 		try
-		{
-			String MOTD = FMLCommonHandler.instance().getMinecraftServerInstance().getMOTD();
-			
-			MOTD = "\u00a7e\u00a7f" + MOTD;
+		{	
+			String MOTD = "\u00a7e\u00a7f";
 			
 			if(radarOther) MOTD 	= "\u00a77" + MOTD;
 			if(radarSquid) MOTD 	= "\u00a76" + MOTD;
@@ -129,10 +127,12 @@ public class CoreConfig
 			
 			MOTD = "\u00a70\u00a70" + MOTD;
 			
-			OutputHandler.debug("Changed MOTD to: " + MOTD);
-			FMLCommonHandler.instance().getMinecraftServerInstance().setMOTD(MOTD);
+			OutputHandler.debug("Rei's minimap settings: " + MOTD.replaceAll("\u00a7", "&"));
+			
+			return MOTD;
 		}
 		catch (Exception e)
 		{e.printStackTrace();}
+		return "";
 	}
 }
