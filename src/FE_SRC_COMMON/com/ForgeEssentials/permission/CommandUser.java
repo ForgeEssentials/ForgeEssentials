@@ -23,7 +23,7 @@ public class CommandUser
 		if (player == null)
 		{
 			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-			return;
+			OutputHandler.chatConfirmation(sender, args[0] + " will be used, but may be inaccurate.");
 		}
 		if (args.length == 1) // display user-specific settings & there values for this player
 		{
