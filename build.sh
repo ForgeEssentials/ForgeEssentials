@@ -12,7 +12,10 @@ echo "Downloading Forge..."
 wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip 
 # if it didn't downlaod, try the mirror...
 if [ -!e "minecraftforge-src-*.zip" ]
-   wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
+   then
+       wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
+fi
+
 unzip minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
 rm "For later.zip"
