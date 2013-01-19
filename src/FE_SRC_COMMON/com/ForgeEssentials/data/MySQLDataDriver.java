@@ -45,7 +45,7 @@ public class MySQLDataDriver extends DataDriver
 		String port = Integer.toString(prop.getInt());
 
 		prop = config.get("Data.SQL", "database", "ForgeEssentials");
-		prop.comment = "Database name that FE will use to store its data & tables in. Highly reccomended to have a DB for FE data only.";
+		prop.comment = "Database name that FE will use to store its data & tables in. Highly recommended to have a DB for FE data only.";
 		String database = prop.value;
 
 		prop = config.get("Data.SQL", "username", " ");

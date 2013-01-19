@@ -50,7 +50,7 @@ public class DBConnector
 	public void generate(Configuration config, String cat)
 	{
 		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" "));
-		config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.");
+		config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from the parent, most likely the Main or Core config. This is only in effect with remote databases.");
 
 		String newcat;
 		for (EnumDBType type : EnumDBType.values())
@@ -66,7 +66,7 @@ public class DBConnector
 			}
 			else
 			{
-				config.get(newcat, "database", dbFileDefault, "this may be a file path as well. Relative to the ForgeEssentials Folder. File Extension is auto-generated.");
+				config.get(newcat, "database", dbFileDefault, "This can be a file path as well, and is relative to the ForgeEssentials Folder. File extension is auto-generated.");
 			}
 
 		}
@@ -80,7 +80,7 @@ public class DBConnector
 	public void wite(Configuration config, String cat)
 	{
 		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" ")).value = type.toString();
-		config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.").value = "" + useFallback;
+		config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from the parent, most likely the Main or Core config. This is only in effect with remote databases.").value = "" + useFallback;
 
 		String newcat;
 		HashMap<String, Property> props;
@@ -102,7 +102,7 @@ public class DBConnector
 			}
 			else
 			{
-				config.get(newcat, "database", dbDefault, "this may be a file path as well.").value = props.get("database").value;
+				config.get(newcat, "database", dbDefault, "This may also be a file path.").value = props.get("database").value;
 			}
 
 		}
@@ -145,7 +145,7 @@ public class DBConnector
 			}
 			else
 			{
-				props.put("database", config.get(newcat, "database", dbDefault, "this may be a file path as well."));
+				props.put("database", config.get(newcat, "database", dbDefault, "This may also be a file path."));
 			}
 		}
 	}
@@ -167,7 +167,7 @@ public class DBConnector
 					if (con != null)
 						return con;
 					else
-						OutputHandler.SOP("Fallback check and parent check failed, goin to in-house.");
+						OutputHandler.SOP("Fallback check and parent check failed, going to in-house.");
 				}
 				
 				// continue with stuff
@@ -238,7 +238,7 @@ public class DBConnector
 	private Connection getSpecificConnection(EnumDBType type) throws IllegalArgumentException
 	{
 		if (!type.isRemote)
-			throw new IllegalArgumentException("Non remote type "+type+" is asking for parent config!");
+			throw new IllegalArgumentException("Non-remote type "+type+" is asking for parent config!");
 		
 		try
 		{

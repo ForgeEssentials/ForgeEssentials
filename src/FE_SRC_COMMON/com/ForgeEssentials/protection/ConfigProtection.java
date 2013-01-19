@@ -28,7 +28,7 @@ public class ConfigProtection extends ModuleConfigBase
 		config = new Configuration(file, true);
 		String cat = "Protection";
 
-		config.addCustomCategoryComment(cat, "You can override the default permission values on the permissions config. (or in the database.)");
+		config.addCustomCategoryComment(cat, "You can override the default permission values in the permissions config. (or in the database.)");
 		ModuleProtection.enable = config.get(cat, "enable", true, "Guess what this does?").getBoolean(true);
 
 		config.save();
@@ -46,7 +46,7 @@ public class ConfigProtection extends ModuleConfigBase
 		config.load();
 		String cat = "Protection";
 
-		config.addCustomCategoryComment(cat, "You can override the default permission values on the permissions config. (or in the database.)");
+		config.addCustomCategoryComment(cat, "You can override the default permission values in the permissions config. (or in the database.)");
 		ModuleProtection.enable = config.get(cat, "enable", true, "Guess what this does?").getBoolean(true);
 	}
 }

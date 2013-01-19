@@ -28,8 +28,8 @@ public class ConfigSnooper extends ModuleConfigBase
 		ModuleSnooper.port = config.get(cat, "port", 25565, "The query port").getInt();
 		ModuleSnooper.hostname = config.get(cat, "hostname", "", "The query hostname/IP").value;
 
-		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automaticly reload the query system if a fatal error occures").getBoolean(true);
-		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious don't you think?").getBoolean(false);
+		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").getBoolean(true);
+		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
 
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
@@ -49,8 +49,8 @@ public class ConfigSnooper extends ModuleConfigBase
 		config.get(cat, "port", 25565, "").value = "" + ModuleSnooper.port;
 		config.get(cat, "hostname", "", "The query hostname/IP").value = ModuleSnooper.hostname;
 
-		config.get(cat, "autoReload", true, "Automaticly reload the query system if a fatal error occures").value = "" + ModuleSnooper.autoReboot;
-		config.get(cat, "enable", false, "This one is obvious don't you think?").value = "" + ModuleSnooper.enable;
+		config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").value = "" + ModuleSnooper.autoReboot;
+		config.get(cat, "enable", false, "This one is obvious, don't you think?").value = "" + ModuleSnooper.enable;
 
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
@@ -71,8 +71,8 @@ public class ConfigSnooper extends ModuleConfigBase
 		ModuleSnooper.port = config.get(cat, "port", 25565, "The query port").getInt();
 		ModuleSnooper.hostname = config.get(cat, "hostname", "", "The query hostname/IP").value;
 
-		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automaticly reload the query system if a fatal error occures").getBoolean(true);
-		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious don't you think?").getBoolean(false);
+		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").getBoolean(true);
+		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
 
 		for (Response response : ResponseRegistry.getAllresponses())
 		{

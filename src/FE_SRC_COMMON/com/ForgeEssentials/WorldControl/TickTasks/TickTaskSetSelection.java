@@ -135,7 +135,7 @@ public class TickTaskSetSelection implements ITickTask
 			{
 				blockName = blockID + ":" + metadata;
 				OutputHandler.SOP("Could not retrieve the name of the block represented by ID " + blockID + " with meta " + metadata
-						+ ". This is a problem in the mod that provides the block not supporting getDisplayName for their block.");
+						+ ". This is a problem in the mod that provides the block, caused by not supporting getDisplayName for their block.");
 			}
 		}
 

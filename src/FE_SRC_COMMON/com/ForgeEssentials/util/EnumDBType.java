@@ -31,7 +31,7 @@ public enum EnumDBType
 		}
 		catch (ClassNotFoundException e)
 		{
-			OutputHandler.SOP("Failed to laod driver Database driver for typr : "+this+"   Ensure the libraries exists.");
+			OutputHandler.SOP("Failed to load Database driver for type : "+this+"   Ensure the libraries exist.");
 			e.printStackTrace();
 		}
 	}

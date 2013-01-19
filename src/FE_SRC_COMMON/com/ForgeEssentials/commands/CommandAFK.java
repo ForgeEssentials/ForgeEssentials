@@ -25,7 +25,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		TickHandlerCommands.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
-		sender.sendChatToPlayer("Stand still for " + warmup + "s.");
+		sender.sendChatToPlayer("Stand still for " + warmup + "seconds.");
 	}
 
 	@Override
@@ -60,6 +60,6 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 	{
 		afKdata.player.capabilities.disableDamage = true;
 		afKdata.player.sendPlayerAbilities();
-		afKdata.player.sendChatToPlayer("You are in AFK now.");
+		afKdata.player.sendChatToPlayer("You are now AFK.");
 	}
 }

@@ -2106,7 +2106,7 @@ public class SqlHelper
 		{
 			e.printStackTrace();
 		}
-		return "Player not added to group";
+		return "Player not added to group.";
 	}
 	
 	private static synchronized String addPlayerGroup(int groupID, int playerID, int zoneID) throws SQLException
@@ -2261,7 +2261,7 @@ public class SqlHelper
 	
 			if (zID < -4 || tID < -4)
 			{
-				return "Zone or target invalid";
+				return "Zone or target invalid.";
 			}
 	
 			// initial check.

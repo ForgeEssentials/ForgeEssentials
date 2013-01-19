@@ -8,7 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public class executecommand implements IEffect
 {
-	private String command = "/say %p Go back while you still can!";
+	private String command = "/say %p! Go back while you still can!";
 
 	@Override
 	public void registerConfig(Configuration config, String category)

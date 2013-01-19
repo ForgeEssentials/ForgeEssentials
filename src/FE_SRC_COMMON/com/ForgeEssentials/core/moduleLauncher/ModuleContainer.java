@@ -73,7 +73,7 @@ public class ModuleContainer
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error trying to laod " + data.getClassName() + " as an FEModule!");
+			OutputHandler.SOP("Error trying to load " + data.getClassName() + " as a FEModule!");
 			e.printStackTrace();
 			isValid = false;
 			isCore = false;
@@ -341,7 +341,7 @@ public class ModuleContainer
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error with invoking preInit event for " + name);
+			OutputHandler.SOP("Error while invoking preInit event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -360,7 +360,7 @@ public class ModuleContainer
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error with invoking Init event for " + name);
+			OutputHandler.SOP("Error while invoking Init event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -379,7 +379,7 @@ public class ModuleContainer
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error with invoking PostInit event for " + name);
+			OutputHandler.SOP("Error while invoking PostInit event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -398,7 +398,7 @@ public class ModuleContainer
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error with invoking ServerInit event for " + name);
+			OutputHandler.SOP("Error while invoking ServerInit event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -417,7 +417,7 @@ public class ModuleContainer
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error with invoking ServerPostInit event for " + name);
+			OutputHandler.SOP("Error while invoking ServerPostInit event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -436,7 +436,7 @@ public class ModuleContainer
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error with invoking ServerStop event for " + name);
+			OutputHandler.SOP("Error while invoking ServerStop event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -454,7 +454,7 @@ public class ModuleContainer
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error with invoking Reload method for " + name);
+			OutputHandler.SOP("Error while invoking Reload method for " + name);
 			Throwables.propagate(e);
 		}
 	}

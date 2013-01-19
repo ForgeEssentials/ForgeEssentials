@@ -310,15 +310,15 @@ public class RConQueryThread implements Runnable
 		}
 		catch (SocketException var2)
 		{
-			logWarning("Unable to initialise query system on " + serverHostname + ":" + queryPort + " (Socket): " + var2.getMessage());
+			logWarning("Unable to initialize query system on " + serverHostname + ":" + queryPort + " (Socket): " + var2.getMessage());
 		}
 		catch (UnknownHostException var3)
 		{
-			logWarning("Unable to initialise query system on " + serverHostname + ":" + queryPort + " (Unknown Host): " + var3.getMessage());
+			logWarning("Unable to initialize query system on " + serverHostname + ":" + queryPort + " (Unknown Host): " + var3.getMessage());
 		}
 		catch (Exception var4)
 		{
-			logWarning("Unable to initialise query system on " + serverHostname + ":" + queryPort + " (E): " + var4.getMessage());
+			logWarning("Unable to initialize query system on " + serverHostname + ":" + queryPort + " (E): " + var4.getMessage());
 		}
 
 		return false;
@@ -514,7 +514,7 @@ public class RConQueryThread implements Runnable
 
 		if (par1 && 0 < var2)
 		{
-			logWarning("Force closed " + var2 + " sockets");
+			logWarning("Forcibly closed " + var2 + " sockets");
 		}
 
 		if (ModuleSnooper.autoReboot)

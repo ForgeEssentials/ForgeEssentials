@@ -120,7 +120,7 @@ public class ServerInfo extends Response
 		overrideIP = config.get(category, "overrideIP", true).getBoolean(true);
 		overrideIPValue = config.get(category, "overrideIPValue", "").value;
 		sendMods = config.get(category, "sendMods", true).getBoolean(true);
-		TPSList = config.get(category, "TPS_dim", new int[] { -1, 0, 1 }, "Dimentions to send TPS of").getIntList();
+		TPSList = config.get(category, "TPS_dim", new int[] { -1, 0, 1 }, "Dimensions to send TPS of").getIntList();
 		ServerID = config.get(category, "ServerID", 0, "This is here to make it easy for other sites (server lists) to help authenticate the server.").getInt();
 		serverHash = config.get(category, "serverHash", "", "This is here to make it easy for other sites (server lists) to help authenticate the server.").value;
 	}
@@ -143,7 +143,7 @@ public class ServerInfo extends Response
 		{
 			list[i] = "" + TPSList[i];
 		}
-		config.get(category, "TPS_dim", new int[] { -1, 0, 1 }, "Dimentions to send TPS of").valueList = list;
+		config.get(category, "TPS_dim", new int[] { -1, 0, 1 }, "Dimensions to send TPS of").valueList = list;
 	}
 
 	public String getUptime()

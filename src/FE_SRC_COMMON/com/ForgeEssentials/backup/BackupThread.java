@@ -48,7 +48,7 @@ public class BackupThread extends Thread
 			source = new File("saves" + File.separator + server.getFolderName()).getAbsolutePath() + File.separator;
 		}
 
-		user.sendChatToPlayer("Generating backup from world " + source);
+		user.sendChatToPlayer("Generating backup for world " + source);
 
 		// generate file-list
 		fileList = new ArrayList<String>();

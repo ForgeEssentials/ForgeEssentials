@@ -25,8 +25,8 @@ public class ConfigPermissions extends ModuleConfigBase
 		config = new Configuration(file);
 
 		permDefault = config.get("stuff", "permissionDefault", false,
-				"if a permission is not set anywhere.. it will be return this. True = allow  False == deny").getBoolean(false);
-		config.get("stuff", "databaseType", "H2", " MySQL and H2 are the only ones supported atm.");
+				"If a permission is not set anywhere, it will return this. True = allow. False = deny").getBoolean(false);
+		config.get("stuff", "databaseType", "H2", " MySQL and H2 are the only supported databases at the moment.");
 
 		config.addCustomCategoryComment("MySQL", "For everything MySQL");
 		config.get("MySQL", "host", "server.example.com");
@@ -35,11 +35,11 @@ public class ConfigPermissions extends ModuleConfigBase
 		config.get("MySQL", "username", "FEUser");
 		config.get("MySQL", "password", "@we$0mePa$$w0rd");
 		config.get("MySQL", "stealConfigFromCore", false,
-				"if this is true, the mysql details from ForgeEssentials/main.cfg will be used. The database specified here wills till be used.");
+				"if this is true, the mysql details from ForgeEssentials/main.cfg will be used. The database specified here will still be used.");
 
 		config.addCustomCategoryComment("H2", "For everything H2 (flatfile DB)");
 		config.get("H2", "file", "permissions", "DO NOT put .db on the end of this file name!");
-		config.get("H2", "absolutePath", false, "if this is true, the below path will be parsed as an absolute path. otherwise it is relative to this dir.");
+		config.get("H2", "absolutePath", false, "if this is true, the path below will be parsed as an absolute path. Otherwise it is relative to this dir.");
 
 		config.save();
 	}
