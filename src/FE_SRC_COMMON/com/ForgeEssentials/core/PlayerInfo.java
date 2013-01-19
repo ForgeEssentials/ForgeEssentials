@@ -27,31 +27,30 @@ public class PlayerInfo
 {
 	private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
 
+	@Deprecated
 	public static PlayerInfo getPlayerInfo(EntityPlayer player)
 	{
-		PlayerInfo info = playerInfoMap.get(player.username);
+		return getPlayerInfo(player.username);
+	}
+
+	public static PlayerInfo getPlayerInfo(String username)
+	{
+		PlayerInfo info = playerInfoMap.get(username);
 
 		// load or create one
 		if (info == null)
 		{
 			// Attempt to populate this info with some data from our storage.
 			// TODO: get the actual config-given choice...
-			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(PlayerInfo.class, player.username);
+			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(PlayerInfo.class, username);
 
 			if (info == null)
 			{
-				info = new PlayerInfo(player);
+				info = new PlayerInfo(username);
 			}
 
-			playerInfoMap.put(player.username, info);
+			playerInfoMap.put(username, info);
 		}
-
-		return info;
-	}
-
-	public static PlayerInfo getPlayerInfo(String username)
-	{
-		PlayerInfo info = playerInfoMap.get(username);
 
 		return info;
 	}
@@ -66,7 +65,7 @@ public class PlayerInfo
 	{
 		String username = (String) tag.getFieldValue("username");
 
-		PlayerInfo info = new PlayerInfo(FunctionHelper.getPlayerFromUsername(username));
+		PlayerInfo info = new PlayerInfo(username);
 
 		info.setPoint1((Point) tag.getFieldValue("sel1"));
 		info.setPoint2((Point) tag.getFieldValue("sel2"));
@@ -125,13 +124,13 @@ public class PlayerInfo
 
 	public int TPcooldown = 0;
 	public HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
-
-	private PlayerInfo(EntityPlayer player)
+	
+	private PlayerInfo(String username)
 	{
 		sel1 = null;
 		sel2 = null;
 		selection = null;
-		username = player.username;
+		this.username = username;
 
 		undos = new Stack<BackupArea>();
 		redos = new Stack<BackupArea>();

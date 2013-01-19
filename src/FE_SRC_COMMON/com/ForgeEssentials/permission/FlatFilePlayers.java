@@ -24,8 +24,6 @@ public class FlatFilePlayers
 
 		Configuration config = new Configuration(file);
 		
-		String[] allPlayers = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getAllUsernames();
-		
 		PlayerInfo info;
 		for (String cat : config.categories.keySet())
 		{
@@ -39,10 +37,15 @@ public class FlatFilePlayers
 			}
 			
 			info = PlayerInfo.getPlayerInfo(cat);
-			info.prefix = config.get(cat, "prefix", " ").value;
-			info.suffix = config.get(cat, "suffix", " ").value;
+			
+			if (info != null)
+			{
+				info.prefix = config.get(cat, "prefix", " ").value;
+				info.suffix = config.get(cat, "suffix", " ").value;
+			}
+			
 			players.add(cat);
-			discardInfo(info, allPlayers);
+			discardInfo(info, new String[] {});
 		}
 
 		return players;
@@ -85,41 +88,6 @@ public class FlatFilePlayers
 		
 		// not logged in?? kill it.
 		PlayerInfo.discardInfo(info.username);
-	}
-	
-
-	private ArrayList<String> getCategoryChildren(Configuration config, ConfigCategory category)
-	{
-		ArrayList<String> categories = new ArrayList<String>();
-
-		for (ConfigCategory cat : config.categories.values())
-		{
-			if (!cat.isChild())
-			{
-				continue;
-			}
-
-			if (cat.getQualifiedName().startsWith(category.getQualifiedName()))
-			{
-				categories.add(cat.getQualifiedName());
-			}
-		}
-
-		return categories;
-	}
-
-	private String getPlayerNameFromCategory(String qualifiedName)
-	{
-		String[] names = qualifiedName.split("\\" + Configuration.CATEGORY_SPLITTER);
-
-		if (names.length == 0)
-		{
-			return qualifiedName;
-		}
-		else
-		{
-			return names[names.length - 1];
-		}
 	}
 
 }

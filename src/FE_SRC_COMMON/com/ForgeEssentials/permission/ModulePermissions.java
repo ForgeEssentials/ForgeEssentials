@@ -77,6 +77,9 @@ public class ModulePermissions
 		// load zones...
 		data = DataStorageManager.getReccomendedDriver();
 		zManager.loadZones();
+		
+		if (config.importBool)
+			sql.importPerms(config.importDir);
 
 		//init perms and vMC command overrides
 		e.registerServerCommand(new CommandZone());

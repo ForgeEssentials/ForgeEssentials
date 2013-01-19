@@ -147,7 +147,7 @@ public class SqlHelper
 		connect(config.connector);
 
 		if (generate)
-			generate();
+			generate(false);
 
 		try
 		{
@@ -580,7 +580,7 @@ public class SqlHelper
 	}
 
 	// create tables.
-	private void generate()
+	private void generate(boolean importing)
 	{
 		try
 		{
@@ -661,21 +661,25 @@ public class SqlHelper
 					.append("0, 0)"); // priority, zone
 			db.createStatement().executeUpdate(query.toString());
 
-			// GLOBAL zone
-			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (")
-					.append(COLUMN_ZONE_NAME).append(", ")
-					.append(COLUMN_ZONE_ZONEID).append(") ")
-					.append(" VALUES ").append(" ('")
-					.append(ZoneManager.GLOBAL.getZoneName()).append("', 0) ");
-			db.createStatement().executeUpdate(query.toString());
+			// zones arent touched when importing...
+			if (!importing)
+			{
+				// GLOBAL zone
+				query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (")
+						.append(COLUMN_ZONE_NAME).append(", ")
+						.append(COLUMN_ZONE_ZONEID).append(") ")
+						.append(" VALUES ").append(" ('")
+						.append(ZoneManager.GLOBAL.getZoneName()).append("', 0) ");
+				db.createStatement().executeUpdate(query.toString());
 
-			// SUPER zone
-			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (")
-					.append(COLUMN_ZONE_NAME).append(", ")
-					.append(COLUMN_ZONE_ZONEID)	.append(") ")
-					.append(" VALUES ").append(" ('")
-					.append(ZoneManager.SUPER.getZoneName()).append("', -1) ");
-			db.createStatement().executeUpdate(query.toString());
+				// SUPER zone
+				query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (")
+						.append(COLUMN_ZONE_NAME).append(", ")
+						.append(COLUMN_ZONE_ZONEID).append(") ")
+						.append(" VALUES ").append(" ('")
+						.append(ZoneManager.SUPER.getZoneName()).append("', -1) ");
+				db.createStatement().executeUpdate(query.toString());
+			}
 			
 			// Entry player...
 			query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (")
@@ -787,6 +791,115 @@ public class SqlHelper
 			s.clearParameters();
 
 			OutputHandler.SOP(" Registration permissions successfully inserted");
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	/**
+	 * "players" >> arraylist<String> DONE
+	 * "groups" >> arrayList<Group> DONE
+	 * "playerPerms" >> arrayList<permHolder> DONE 
+	 * "groupPerms" >> arrayList<permHolder> DONE
+	 * "groupConnectors" >> HashMap<String, HashMap<String, String[]>> DONE
+	 * "ladders" >> arraylist<PromotionLadder> DONE
+	 */
+	protected void importPerms(String importDir)
+	{
+		try
+		{
+			File file = new File(ModulePermissions.permsFolder, importDir);
+			OutputHandler.SOP(" Importing permissions from "+importDir);
+			
+			FlatFileGroups g = new FlatFileGroups(file);
+			HashMap<String, Object> map = g.load();
+			
+			FlatFilePlayers p = new FlatFilePlayers(file);
+			map.put("players", p.load());
+			
+			FlatFilePermissions pm = new FlatFilePermissions(file);
+			map.putAll(pm.load());
+			
+			// KILL ALL DE DATA!!!!
+			db.createStatement().executeUpdate("TRUNCATE TABLE "+TABLE_PERMISSION);
+			db.createStatement().executeUpdate("TRUNCATE TABLE "+TABLE_GROUP);
+			db.createStatement().executeUpdate("TRUNCATE TABLE "+TABLE_PLAYER);
+			db.createStatement().executeUpdate("TRUNCATE TABLE "+TABLE_LADDER);
+			db.createStatement().executeUpdate("TRUNCATE TABLE "+TABLE_LADDER_NAME);
+			db.createStatement().executeUpdate("TRUNCATE TABLE "+TABLE_GROUP_CONNECTOR);
+			
+			// call generate to remake the stuff that should be there
+			generate(true);
+			
+			// create players...
+			PreparedStatement s = this.statementPutPlayer;
+			for (String player : (ArrayList<String>)map.get("players"))
+			{
+				s.setString(1, player);
+				s.executeUpdate();
+			}
+			s.clearParameters();
+			
+			// create groups
+			s = instance.statementPutPlayerInGroup;
+			HashMap<String, HashMap<String, String[]>> playerMap = (HashMap<String, HashMap<String, String[]>>) map.get("connector");
+			HashMap<String, String[]> temp;
+			String[] list;
+			for (Group group : (ArrayList<Group>)map.get("groups"))
+			{
+				createGroup(group);
+				s.setInt(1, getGroupIDFromGroupName(group.name));
+				s.setInt(3, getZoneIDFromZoneName(group.zoneName));
+				
+				temp = playerMap.get(group.zoneName);
+				if (temp == null)
+					continue;
+				
+				list = temp.get(group.name);
+				
+				if (list == null)
+					continue;
+				
+				// add the players to the groups as well.
+				for (String player : list)
+				{
+					s.setInt(2, getPlayerIDFromPlayerName(player));
+					s.executeUpdate();
+				}
+				
+			}
+			
+			// add groups to ladders and stuff
+			s = this.statementPutLadderName;
+			PreparedStatement s2 = this.statementPutLadder; // groupID, zoneID, rank, ladderID
+			for (PromotionLadder ladder : (ArrayList<PromotionLadder>)map.get("ladders"))
+			{
+				s.setString(1, ladder.name);
+				s.executeUpdate();
+				s2.setInt(4, getLadderIDFromLadderName(ladder.name));
+				s2.setInt(2, getZoneIDFromZoneName(ladder.zoneID));
+				
+				list = ladder.getListGroup();
+				for (int i = 0; i < list.length; i++)
+				{
+					s2.setInt(3, i);
+					s2.setInt(1, getGroupIDFromGroupName(list[i]));
+					s2.executeUpdate();
+				}
+			}
+			
+			// now the permissions
+			ArrayList<PermissionHolder> perms = (ArrayList<PermissionHolder>) map.get("playerPerms");
+			for (PermissionHolder perm : perms)
+				setPermission(perm.target, false, perm, perm.zone);
+			
+			perms = (ArrayList<PermissionHolder>) map.get("groupPerms");
+			for (PermissionHolder perm : perms)
+				setPermission(perm.target, true, perm, perm.zone);
+			
 		}
 		catch (SQLException e)
 		{
@@ -1797,6 +1910,8 @@ public class SqlHelper
 	 */
 	private static synchronized int getZoneIDFromZoneName(String zone) throws SQLException
 	{
+		if (zone.equalsIgnoreCase(ZoneManager.GLOBAL.getZoneName()))
+			return 0;
 
 		instance.statementGetZoneIDFromName.setString(1, zone);
 		ResultSet set = instance.statementGetZoneIDFromName.executeQuery();
