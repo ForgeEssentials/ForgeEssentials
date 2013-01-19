@@ -184,7 +184,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 						.replaceAll("%z", "" + (int) sender.posZ));
 				return;
 			}
-			if (args.length == 4)
+			if (args.length == 5)
 			{
 				int X = parseInt(sender, args[3]);
 				int Z = parseInt(sender, args[4]);
