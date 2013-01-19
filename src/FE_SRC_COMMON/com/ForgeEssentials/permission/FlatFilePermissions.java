@@ -47,7 +47,7 @@ public class FlatFilePermissions
 			config.get(holder.zone + ".group." + holder.target, holder.name, holder.allowed);
 		}
 		
-		config.addCustomCategoryComment("GLOBAL.group."+PermissionsAPI.DEFAULT.name, "The group used to as a placeholder for zone flags and such.");
+		config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneName()+".group."+PermissionsAPI.DEFAULT.name, "The group used to as a placeholder for zone flags and such.");
 
 		config.save();
 	}

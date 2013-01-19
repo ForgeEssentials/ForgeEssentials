@@ -21,7 +21,7 @@ public class ConfigPermissions extends ModuleConfigBase
 	public ConfigPermissions(File file)
 	{
 		super(file);
-		connector = new DBConnector("PermissionsDB", DataStorageManager.getCoreDBConnector(), EnumDBType.H2_FILE, "FEPerms", "/"+file.getParent()+"/permissions", false);
+		connector = new DBConnector("PermissionsDB", DataStorageManager.getCoreDBConnector(), EnumDBType.H2_FILE, "FEPerms", file.getParent()+"/permissions", false);
 	}
 
 	@Override

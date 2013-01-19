@@ -105,20 +105,24 @@ public class DBConnector
 
 			props = data.get(type);
 			if (props == null)
+			{
 				props = new HashMap<String, Property>();
+				data.put(type, props);
+			}
 
 			if (type.isRemote)
 			{
 				props.put("host", config.get(newcat, "host", "localhost"));
-				props.put("port", config.get(newcat, "port", 3360));
+				props.put("port", config.get(newcat, "port", 3306));
 				props.put("database", config.get(newcat, "database", dbDefault));
 				props.put("user", config.get(newcat, "user", "FEUSER"));
 				props.put("pass", config.get(newcat, "pass", "password"));
 			}
 			else
 			{
-				props.put("database", config.get(newcat, "database", dbDefault, "this may be a file path as well."));
+				props.put("database", config.get(newcat, "database", dbFileDefault, "this may be a file path as well."));
 			}
+			
 		}
 
 
