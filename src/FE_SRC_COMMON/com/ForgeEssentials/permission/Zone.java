@@ -141,6 +141,8 @@ public class Zone extends WorldArea implements Comparable
 
 	public boolean isWorldZone()
 	{
+		if (parent == null)
+			return false;
 		return parent.equals(ZoneManager.GLOBAL.zoneID);
 	}
 
@@ -157,5 +159,11 @@ public class Zone extends WorldArea implements Comparable
 		zone.priority = (Integer) tag.getFieldValue("priority");
 
 		return zone;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return zoneID+" "+super.toString();
 	}
 }

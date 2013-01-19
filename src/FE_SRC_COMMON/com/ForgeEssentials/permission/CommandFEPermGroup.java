@@ -9,7 +9,7 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
-public class CommandGroup
+public class CommandFEPermGroup
 {
 	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{

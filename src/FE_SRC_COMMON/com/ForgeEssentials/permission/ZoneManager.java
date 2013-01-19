@@ -27,8 +27,8 @@ public class ZoneManager
 
 	public ZoneManager()
 	{
-		GLOBAL = new Zone("_GLOBAL_", Integer.MIN_VALUE);
-		SUPER = new Zone("_SUPER_", Integer.MIN_VALUE);
+		GLOBAL = new Zone("_GLOBAL_", 0);
+		SUPER = new Zone("_SUPER_", 0);
 		worldZoneMap = new ConcurrentHashMap<String, Zone>();
 		zoneMap = Collections.synchronizedSortedMap(new TreeMap<String, Zone>());
 	}
@@ -66,7 +66,7 @@ public class ZoneManager
 
 		if (!worldZoneMap.containsKey(worldString))
 		{
-			Zone zone = new Zone(worldString, e.world.getWorldInfo().getDimension());
+			Zone zone = new Zone(worldString, e.world.provider.dimensionId);
 			worldZoneMap.put(worldString, zone);
 			
 			boolean exists = SqlHelper.doesZoneExist(zone.getZoneName());

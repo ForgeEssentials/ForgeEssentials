@@ -87,7 +87,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 
 		if (first.equalsIgnoreCase("user") || first.equalsIgnoreCase("player"))
 		{
-			CommandUser.processCommandPlayer(sender, newArgs);
+			CommandFEPermUser.processCommandPlayer(sender, newArgs);
 		}
 		else if (first.equalsIgnoreCase("export"))
 		{
@@ -95,11 +95,11 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		}
 		else if (first.equalsIgnoreCase("group"))
 		{
-			CommandGroup.processCommandPlayer(sender, newArgs);
+			CommandFEPermGroup.processCommandPlayer(sender, newArgs);
 		}
 		else if (first.equalsIgnoreCase("promote"))
 		{
-			CommandPromote.processCommandPlayer(sender, newArgs);
+			CommandFEPermPromote.processCommandPlayer(sender, newArgs);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 
 		if (first.equalsIgnoreCase("user") || first.equalsIgnoreCase("player"))
 		{
-			CommandUser.processCommandConsole(sender, newArgs);
+			CommandFEPermUser.processCommandConsole(sender, newArgs);
 		}
 		else if (first.equalsIgnoreCase("export"))
 		{
@@ -123,11 +123,11 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		}
 		else if (first.equalsIgnoreCase("group"))
 		{
-			CommandGroup.processCommandConsole(sender, newArgs);
+			CommandFEPermGroup.processCommandConsole(sender, newArgs);
 		}
 		else if (first.equalsIgnoreCase("promote"))
 		{
-			CommandPromote.processCommandConsole(sender, newArgs);
+			CommandFEPermPromote.processCommandConsole(sender, newArgs);
 		}
 	}
 

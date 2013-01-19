@@ -83,7 +83,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
 					return;
 				}
-				WarpPoint p = new WarpPoint(sender.worldObj.getWorldInfo().getDimension(), x, y, z, sender.cameraPitch, sender.cameraYaw);
+				WarpPoint p = new WarpPoint(sender.worldObj.provider.dimensionId, x, y, z, sender.cameraPitch, sender.cameraYaw);
 				PlayerInfo.getPlayerInfo(sender).home = p;
 				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.getX(), p.getY(), p.getZ()));
 			}

@@ -9,7 +9,7 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandUser
+public class CommandFEPermUser
 {
 	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
@@ -32,10 +32,16 @@ public class CommandUser
 			OutputHandler.chatConfirmation(sender, args[0] + " will be used, but may be inaccurate.");
 			playerExists = false;
 		}
+		else if (playerName.equalsIgnoreCase("_ME_"))
+		{
+			player = (EntityPlayerMP) sender;
+			playerName = sender.username;
+		}
 		else
 		{
 			playerName = player.username;
 		}
+		
 		if (args.length == 1) // display user-specific settings & there values for this player
 		{
 			
