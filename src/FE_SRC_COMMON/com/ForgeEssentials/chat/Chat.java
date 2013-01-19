@@ -47,7 +47,13 @@ public class Chat implements IChatListener
 
 		String message = event.message;
 		String nickname = event.username;
-
+                //Perhaps add option to completely remove message?
+              /*if (censor && remove)
+		{
+			event.setCanceled(true);
+			event.player.sendChatToPlayer("Such language is not tolerated.");
+			return;
+		}*/
 		if (censor)
 		{
 			for (String word : bannedWords)
@@ -68,7 +74,8 @@ public class Chat implements IChatListener
 		/*
 		 * Colorize!
 		 */
-
+                //Flawed I would think... Pretty sure %color still works...
+                //Like I said a % formatting function would help here.
 		if (event.message.contains("&"))
 		{
 			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
@@ -89,7 +96,7 @@ public class Chat implements IChatListener
 		Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player), event.player.worldObj);
 		zoneID = zone.getZoneName();
 		
-		// group stuff!! NO TOUCH!!!
+		// Group stuff!!! DO NOT TOUCH!!!
 		{
 			rank = getGroupRankString(event.username);
 			
@@ -100,6 +107,7 @@ public class Chat implements IChatListener
 			gSuffix = FunctionHelper.formatColors(gSuffix).trim();
 		}
 
+                //It may be beneficial to make this a public function. -RlonRyan
 		String format = ConfigChat.chatFormat;
 		format = ConfigChat.chatFormat == null || ConfigChat.chatFormat.trim().isEmpty() ? "<%username>%message" : ConfigChat.chatFormat;
 		
@@ -185,14 +193,14 @@ public class Chat implements IChatListener
 		
 		String end = "";
 		
-		StringBuffer temp = new StringBuffer;
+		StringBuilder temp = new StringBuilder();
 		for (TreeSet<Group> set : list)
 		{
 			for (Group g: set)
 				temp.append(g.name);
 			
 			end = match.replaceFirst(temp.toString());
-			temp = new StringBuffer();
+			temp = new StringBuilder();
 		}
 		
 		return end;
@@ -206,14 +214,14 @@ public class Chat implements IChatListener
 		
 		String end = "";
 		
-		String temp = "";
+		StringBuilder temp = new StringBuilder();
 		for (TreeSet<Group> set : list)
 		{
 			for (Group g: set)
-				temp = g.prefix+temp;
+				temp.insert(0, g.prefix);
 			
-			end = match.replaceFirst(temp);
-			temp = "";
+			end = match.replaceFirst(temp.toString());
+			temp = new StringBuilder();
 		}
 		
 		return end;
@@ -227,14 +235,14 @@ public class Chat implements IChatListener
 		
 		String end = "";
 		
-		String temp = "";
+		StringBuilder temp = new StringBuilder();
 		for (TreeSet<Group> set : list)
 		{
 			for (Group g: set)
-				temp = temp+g.suffix;
+				temp.append(g.suffix);
 			
-			end = match.replaceFirst(temp);
-			temp = "";
+			end = match.replaceFirst(temp.toString());
+			temp = new StringBuilder();
 		}
 		
 		return end;
