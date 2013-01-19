@@ -40,7 +40,7 @@ public class SQLDataDriver extends DataDriver
 		String cat = category.substring(0, category.lastIndexOf('.'));
 
 		connector.loadOrGenerate(config, cat);
-		connector.getChosenConnection();
+		dbConnection = connector.getChosenConnection();
 	}
 
 	@Override
