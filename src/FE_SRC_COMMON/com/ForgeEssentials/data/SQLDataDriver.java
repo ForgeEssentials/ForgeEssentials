@@ -70,7 +70,7 @@ public class SQLDataDriver extends DataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("Couldn't save object of type " + type.getSimpleName() + " to "+connector.getType()+" DB. Server will continue running.");
+			OutputHandler.SOP("Couldn't save object of type " + type.getSimpleName() + " to "+connector.getChosenType()+" DB. Server will continue running.");
 			e.printStackTrace();
 		}
 
@@ -140,7 +140,7 @@ public class SQLDataDriver extends DataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("Problem deleting data from "+connector.getType()+" DB (May not actually be a critical error):");
+			OutputHandler.SOP("Problem deleting data from "+connector.getChosenType()+" DB (May not actually be a critical error):");
 			e.printStackTrace();
 		}
 

@@ -181,7 +181,7 @@ public class DataStorageManager
 		return taggerList.get(type);
 	}
 	
-	public static DBConnector getCoreDBCOnnector()
+	public static DBConnector getCoreDBConnector()
 	{
 		return ((SQLDataDriver)ForgeEssentials.dataManager.getDriverOfType(EnumDriverType.SQL)).connector;
 	}

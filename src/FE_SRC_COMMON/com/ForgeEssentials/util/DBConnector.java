@@ -235,7 +235,7 @@ public class DBConnector
 		}
 	}
 
-	public EnumDBType getType()
+	public EnumDBType getChosenType()
 	{
 		return type;
 	}

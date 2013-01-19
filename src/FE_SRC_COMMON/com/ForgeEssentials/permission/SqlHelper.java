@@ -16,7 +16,10 @@ import java.util.TreeSet;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.util.DBConnector;
+import com.ForgeEssentials.util.EnumDBType;
 import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 
@@ -27,8 +30,7 @@ public class SqlHelper
 	private Connection				db;
 	private boolean					generate						= false;
 	private static SqlHelper		instance;
-	private Configuration			config;
-	private String					dbType;
+	private EnumDBType					dbType;
 
 	// tables
 	private static final String		TABLE_ZONE						= "zones";
@@ -141,11 +143,8 @@ public class SqlHelper
 
 	public SqlHelper(ConfigPermissions config)
 	{
-		// set config.
-		this.config = config.config;
-
 		instance = this;
-		connect();
+		connect(config.connector);
 
 		if (generate)
 			generate();
@@ -540,7 +539,7 @@ public class SqlHelper
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			Throwables.propagateIfPossible(e);
+			Throwables.propagate(e);
 			// it may not get to this.. hopefully...
 			throw new RuntimeException(e.getMessage());
 		}
@@ -550,135 +549,26 @@ public class SqlHelper
 
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
-	// ---------------------------------------INIT ---- METHODS
-	// ------------------------------------------
+	// ---------------------------------------INIT ---- METHODS ------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 
-	private void connect()
+	private void connect(DBConnector connector)
 	{
 		try
 		{
-			// "org.h2.JDBC";
-			// DriverClass = "com.mysql.jdbc.Driver";
-
-			String type = config.get("stuff", "databaseType", "H2").value;
-			if (type.equalsIgnoreCase("mysql"))
-			{
-				// ------------------
-				// MYSQL
-				// ------------------
-				String server, port, database, user, pass, connect;
-				ResultSet set;
-				dbType = "mysql";
-
-				database = config.get("MySQL", "database", "FE_Permissions").value;
-
-				if (config.get("MySQL", "stealConfigFromCore", false).getBoolean(false))
-				{
-					Configuration fconfig = ForgeEssentials.config.config;
-					server = fconfig.get("MySQL", "server", "server.example.com").value;
-
-					if (!server.equalsIgnoreCase("server.example.com"))
-					{
-						port = fconfig.get("Data.SQL", "port", 3306).value;
-						user = fconfig.get("Data.SQL", "username", " ").value;
-						pass = fconfig.get("Data.SQL", "password", " ").value;
-
-						Class driverClass = Class.forName("com.mysql.jdbc.Driver");
-						connect = "jdbc:mysql://" + server + ":" + port + "/" + database;
-						db = DriverManager.getConnection(connect, user, pass);
-
-						// check table...
-						DatabaseMetaData dbm = db.getMetaData();
-						set = dbm.getTables(null, null, TABLE_PERMISSION, null);
-						generate = !set.next();
-						return;
-					}
-					else
-					{
-						OutputHandler.SOP("Core SQL configuration is invalid.. defaulting to in-house configurations");
-					}
-				}
-
-				server = config.get("MySQL", "host", "server.example.com").value;
-				port = config.get("MySQL", "port", 3306).value;
-				user = config.get("MySQL", "username", "FEUser").value;
-				pass = config.get("MySQL", "password", "@we$0mePa$$w0rd").value;
-
-				if (!server.equalsIgnoreCase("server.example.com"))
-				{
-					Class driverClass = Class.forName("com.mysql.jdbc.Driver");
-					connect = "jdbc:mysql://" + server + ":" + port + "/" + database;
-					db = DriverManager.getConnection(connect, user, pass);
-
-					// check table...
-					DatabaseMetaData dbm = db.getMetaData();
-					set = dbm.getTables(null, null, TABLE_PERMISSION, null);
-					generate = !set.next();
-					return;
-				}
-				else
-				{
-					OutputHandler.SOP("SQL configuration is invalid.. defaulting to H2");
-				}
-			}
-			else if (!type.equalsIgnoreCase("h2"))
-			{
-				OutputHandler.SOP("Permissions Database set to unknown type! defaulting to H2");
-			}
-
-			// ------------------
-			// H2
-			// ------------------
-
-			String path = config.get("H2", "file", "permissions").value;
-			try
-			{
-				path = config.get("H2", "file", "permissions").value + (FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer() ? "_server" : "");
-			}
-			catch(Exception e)
-			{
-				
-			}
-			boolean absolute = config.get("H2", "absolutePath", false).getBoolean(false);
-			dbType = "h2";
-			File file;
-			if (absolute)
-				file = new File(path+".h2.db");
-			else
-				file = new File(ModulePermissions.permsFolder, path + ".h2.db");
-
-			if (!file.exists())
-			{
-				OutputHandler.SOP("Permissions H2 db file not found, creating.");
-				generate = true;
-			}
+			dbType = connector.getChosenType();
+			db = connector.getChosenConnection();
 			
-			if (absolute)
-				file = new File(path);
-			else
-				file = new File(ModulePermissions.permsFolder, path);
-
-			if (db != null)
-			{
-				db.close();
-				db = null;
-			}
-
-			Class driverClass = Class.forName("org.h2.jdbc.JdbcConnection");
-
-			db = DriverManager.getConnection("jdbc:h2:file:" + file.getPath() + ";FILE_LOCK=SOCKET;IGNORECASE=TRUE");
+			// check table...
+			DatabaseMetaData dbm = db.getMetaData();
+			ResultSet set = dbm.getTables(null, null, TABLE_PERMISSION, null);
+			generate = !set.next();
 		}
 		catch (SQLException e)
 		{
 			OutputHandler.SOP("Unable to connect to the database!");
-			throw new RuntimeException(e.getMessage());
-		}
-		catch (ClassNotFoundException e)
-		{
-			OutputHandler.SOP("Could not load the Database Driver! Does it exist in the lib directory?");
-			throw new RuntimeException(e.getMessage());
+			Throwables.propagate(e);
 		}
 	}
 
