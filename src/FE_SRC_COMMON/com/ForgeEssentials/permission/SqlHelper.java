@@ -560,10 +560,17 @@ public class SqlHelper
 			dbType = connector.getChosenType();
 			db = connector.getChosenConnection();
 			
-			// check table...
-			DatabaseMetaData dbm = db.getMetaData();
-			ResultSet set = dbm.getTables(null, null, TABLE_PERMISSION, null);
-			generate = !set.next();
+			  DatabaseMetaData meta = db.getMetaData();
+			  ResultSet set = meta.getTables(null, null, null, new String[] {"TABLE"});
+			  generate = true;
+			  while (set.next())
+			  {
+				  if (set.getString("TABLE_NAME").equalsIgnoreCase(TABLE_PERMISSION))
+				  {
+					  generate = false;
+					  continue;
+				  }
+			  }
 		}
 		catch (SQLException e)
 		{
