@@ -11,9 +11,15 @@ echo "Version of ${JOB_NAME} is: ${VERSION} for MC ${MC}"
 echo "Downloading Forge..."
 wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip 
 # if it didn't downlaod, try the mirror...
-f [ ! -f "minecraftforge-src-*.zip" ]
-    then
-       wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
+if [ ! -f "minecraftforge-src-*.zip" ]
+then
+    echo "Forge server not found, using mirror"
+    wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
+fi
+
+if [ ! -f "$FILE" ];
+then
+   echo "File $FILE does not exist."
 fi
 
 unzip minecraftforge-src-*.zip
