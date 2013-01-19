@@ -11,7 +11,7 @@ echo "Version of ${JOB_NAME} is: ${VERSION} for MC ${MC}"
 echo "Downloading Forge..."
 wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip 
 # if it didn't downlaod, try the mirror...
-if [ -!e "minecraftforge-src-*.zip" ]
+if [! -e "minecraftforge-src-*.zip" ]
    then
        wget http://ken.wingedboot.com/forgemirror/files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
 fi
