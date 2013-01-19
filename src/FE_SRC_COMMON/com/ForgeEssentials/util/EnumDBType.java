@@ -35,7 +35,7 @@ public enum EnumDBType
 		{
 			OutputHandler.SOP("Could not load the "+this+" JDBC Driver! Does it exist in the lib directory?");
 			Throwables.propagateIfPossible(e);
-		}
+}
 	}
 	
 	/**

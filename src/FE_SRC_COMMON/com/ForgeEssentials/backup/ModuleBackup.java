@@ -25,7 +25,7 @@ public class ModuleBackup
 	@PreInit
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-		OutputHandler.SOP("Backups module is enabled. Loading...");
+		OutputHandler.SOP("Backup module is enabled. Loading...");
 	}
 
 	@Init

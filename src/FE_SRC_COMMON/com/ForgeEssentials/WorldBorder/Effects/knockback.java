@@ -12,7 +12,7 @@ public class knockback implements IEffect
 	@Override
 	public void registerConfig(Configuration config, String category)
 	{
-		config.addCustomCategoryComment(category, "This effect has no option.");
+		config.addCustomCategoryComment(category, "This effect has no options.");
 	}
 
 	@Override

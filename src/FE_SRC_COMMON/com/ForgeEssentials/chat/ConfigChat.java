@@ -36,7 +36,7 @@ public class ConfigChat extends ModuleConfigBase
 
 		Property prop = config.get("Chat", "chatformat", "%groupPrefix%playerPrefix<%username>%groupSuffix%playerSuffix %reset%message");
 		prop.comment = "This String formats the Chat.";
-		prop.comment += "\nIf you want a red color and special formatcodes, the color needs to be first before the special code";
+		prop.comment += "\nIf you want both a color and special formatcodes, the color needs to be first before the special code";
 		prop.comment += "\nExamples: '%red%username' '%red%bold%username'\nNot OK:'%bold%gold%underline%username' In this example you would get the username in gold and underline but without bold";
 		prop.comment += "\nList of possible variables:";
 		prop.comment += "\nFor the username: %username The health of the player can be used with %health. The variable, you need for the message:%message ";
@@ -72,7 +72,7 @@ public class ConfigChat extends ModuleConfigBase
 
 		Property prop = config.get("Chat", "chatformat", "%groupPrefix%playerPrefix<%username>%playerSuffix%groupSuffix %reset%message");
 		prop.comment = "This String formats the Chat.";
-		prop.comment += "\nIf you want a red color and special formatcodes, the color needs to be first before the special code";
+		prop.comment += "\nIf you want both a color and special formatcodes, the color needs to be first before the special code";
 		prop.comment += "\nExamples: '%red%username' '%red%bold%username'\nNot OK:'%bold%gold%underline%username' In this example you would get the username in gold and underline but without bold";
 		prop.comment += "\nList of possible variables:";
 		prop.comment += "\nFor the username: %username The health of the player can be used with %health. The variable, you need for the message:%message ";

@@ -49,7 +49,7 @@ public class DBConnector
 	public void write(Configuration config, String cat)
 	{
 		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" ")).value = type.toString();
-		
+
 		if (fallback != null)
 			config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.").value = "" + useFallback;
 
@@ -120,8 +120,8 @@ public class DBConnector
 				props.put("database", config.get(newcat, "database", dbDefault, "this may be a file path as well."));
 			}
 		}
-		
-		
+
+
 		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" "));
 		config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.");
 	}
@@ -145,7 +145,7 @@ public class DBConnector
 					else
 						OutputHandler.SOP("Fallback check and parent check failed, goin to in-house.");
 				}
-				
+
 				// continue with stuff
 				String host = props.get("host").value;
 				int port = props.get("port").getInt();
@@ -171,7 +171,7 @@ public class DBConnector
 		{
 			OutputHandler.SOP("In-House check failed, going to default.");
 		}
-		
+
 		try
 		{
 			// try the default...
@@ -202,10 +202,10 @@ public class DBConnector
 			OutputHandler.SOP("CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
 			Throwables.propagate(e);
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * @param type Only use this for remote types.
 	 * @return NULL if some error occurred.
@@ -215,7 +215,7 @@ public class DBConnector
 	{
 		if (!type.isRemote)
 			throw new IllegalArgumentException("Non remote type "+type+" is asking for parent config!");
-		
+
 		try
 		{
 			HashMap<String, Property> props = data.get(type);
@@ -234,7 +234,7 @@ public class DBConnector
 			return null;
 		}
 	}
-	
+
 	public EnumDBType getType()
 	{
 		return type;

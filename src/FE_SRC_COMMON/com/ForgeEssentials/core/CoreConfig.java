@@ -53,7 +53,7 @@ public class CoreConfig
 		OutputHandler.verbose = prop.getBoolean(false);
 
 		prop = config.get("Core.Misc", "tpWarmup", 5);
-		prop.comment = "The amount of time you need to keep still to tp.";
+		prop.comment = "The amount of time you need to stand still to TP.";
 		TeleportCenter.tpWarmup = prop.getInt(5);
 
 		prop = config.get("Core.Misc", "tpCooldown", 5);
@@ -61,10 +61,10 @@ public class CoreConfig
 		TeleportCenter.tpCooldown = prop.getInt(5);
 
 		prop = config.get("Core.Misc", "MajoritySleep", true);
-		prop.comment = "If +50% op players sleep, make day.";
+		prop.comment = "If +50% of players sleep, make it day.";
 		MiscEventHandler.MajoritySleep = prop.getBoolean(true);
 		
-		config.addCustomCategoryComment("Core.ReisMinimap", "Use this to enable sertain Rei's Minimap options. They will be added to the server's MOTD automatically.");
+		config.addCustomCategoryComment("Core.ReisMinimap", "Use this to enable certain Rei's Minimap options. They will be added to the server's MOTD automatically.");
 		
 		prop = config.get("Core.ReisMinimap", "caveMap", false);
 		cavemap = prop.getBoolean(false);
