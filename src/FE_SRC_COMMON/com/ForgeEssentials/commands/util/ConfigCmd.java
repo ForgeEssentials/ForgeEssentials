@@ -1,8 +1,14 @@
 package com.ForgeEssentials.commands.util;
 
 import java.io.File;
+import java.util.Set;
 
+import javax.security.auth.callback.ConfirmationCallback;
+
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.commands.CommandAFK;
@@ -12,7 +18,11 @@ import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.CommandVirtualchest;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class ConfigCmd extends ModuleConfigBase
 {
@@ -56,6 +66,7 @@ public class ConfigCmd extends ModuleConfigBase
 				"Setting this to false will disable the following commands: /back, /bed, /home, /spawn, /tp, /tphere, /tppos, /warp.").getBoolean(true);
 		CommandRegistrar.cheat = config.get("parts", "enableFECheats", true,
 				"Setting this to false will disable the following commands: /repair, /heal.").getBoolean(true);
+		
 		config.save();
 	}
 
@@ -112,5 +123,41 @@ public class ConfigCmd extends ModuleConfigBase
 		CommandRegistrar.fun = config.get("parts", "enableFun", true).getBoolean(true);
 		CommandRegistrar.teleport = config.get("parts", "enableTP", true).getBoolean(true);
 		CommandRegistrar.cheat = config.get("parts", "enableFECheats", true).getBoolean(true);
+		config.save();
+		
+		commandConfigs();
+	}
+	
+	public void commandConfigs()
+	{
+		config.load();
+		
+		try
+		{
+			config.addCustomCategoryComment("commands", "All FE commands will have a config space here.");
+			config.addCustomCategoryComment("CommandBlock", "Toggle server wide command block usage here.");
+			config.addCustomCategoryComment("Player", "Toggle server wide player usage here.");
+			config.addCustomCategoryComment("Console", "Toggle console usage here.");
+			
+			Set cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager(), "commandSet", "b");
+			for (Object cmdObj : cmdList)
+			{
+				ICommand cmd = (ICommand) cmdObj;
+				if(cmd instanceof ForgeEssentialsCommandBase)
+				{
+					ForgeEssentialsCommandBase fecmd = ((ForgeEssentialsCommandBase)cmd);
+					
+					if(fecmd.usefullCmdBlock())	config.get("CommandBlock", fecmd.getCommandName(), fecmd.enableCmdBlock);
+					if(fecmd.usefullPlayer()) 	config.get("Player", fecmd.getCommandName(), fecmd.enablePlayer);
+					if(fecmd.canConsoleUseCommand()) 	config.get("Console", fecmd.getCommandName(), fecmd.enableConsole);
+					
+					fecmd.doConfig(config);
+				}
+			}
+		}
+		catch(Exception e)
+		{e.printStackTrace();}
+		
+		config.save();
 	}
 }

@@ -99,6 +99,8 @@ public class ModuleCommands
 		{
 			removeDuplicateCommands(FMLCommonHandler.instance().getMinecraftServerInstance());
 		}
+		
+		conf.commandConfigs();
 	}
 
 	private void removeDuplicateCommands(MinecraftServer server)

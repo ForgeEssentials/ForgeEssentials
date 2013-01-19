@@ -4,6 +4,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
@@ -12,6 +13,37 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
+	public boolean enableCmdBlock = true;
+	public boolean enableConsole = true;
+	public boolean enablePlayer = true;
+	/*
+	public boolean usefullCmdBlock = true;
+	public boolean usefullConsole = true;
+	public boolean usefullPlayer = true;
+	*/
+	// ---------------------------
+	// config intercation
+	// ---------------------------
+	
+	/**
+	 * Override if you want config interaction.
+	 * @param config
+	 */
+	public void doConfig(Configuration config)
+	{
+		
+	}
+	
+	public boolean usefullCmdBlock()
+	{
+		return this.canConsoleUseCommand();
+	}
+	
+	public boolean usefullPlayer()
+	{
+		return true;
+	}
+	
 	// ---------------------------
 	// processing command
 	// ---------------------------
@@ -36,7 +68,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public abstract void processCommandPlayer(EntityPlayer sender, String[] args);
 
 	/**
-	 * Override is optional. does nothing by default.
+	 * Override is optional.
 	 */
 	public void processCommandBlock(TileEntityCommandBlock block, String[] args)
 	{
