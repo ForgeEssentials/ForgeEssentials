@@ -19,6 +19,12 @@ public class CommandDeselect extends WorldControlCommandBase
 	{
 		return "deselect";
 	}
+	
+	@Override
+	public String[] getDefaultAliases()
+	{
+		return new String[] {"/sel"};
+	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
