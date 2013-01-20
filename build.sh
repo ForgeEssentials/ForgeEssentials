@@ -121,7 +121,7 @@ rm -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip"
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-playerlogger-${MC}-${VERSION}.zip" 
 #leave this here, if they don't want a particular bit they can just delete the zip.
 rm -rf "${WORKSPACE}/output/FEReadme.txt"
-rm -rf "${WORKSPACE}/output/HowToGetFESupport.txt"
+rm -rf "${WORKSPACE}/output/HowToGetFEsupport.txt"
 
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
