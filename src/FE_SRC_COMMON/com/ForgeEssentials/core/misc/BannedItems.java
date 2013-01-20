@@ -36,8 +36,8 @@ public class BannedItems
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent e)
 	{
-		e.registerPerm(this, RegGroup.GUESTS, BYPASS, false);
-		e.registerPerm(this, RegGroup.OWNERS, BYPASS, true);
+		e.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, BYPASS, false);
+		e.registerPerm(ForgeEssentials.instance, RegGroup.OWNERS, BYPASS, true);
 	}
 	
 	@ForgeSubscribe
