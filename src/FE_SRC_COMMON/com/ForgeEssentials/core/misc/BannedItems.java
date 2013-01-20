@@ -15,13 +15,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
+import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
 public class BannedItems
 {
-	HashMap<Integer, Integer> noUse = new HashMap<Integer, Integer>();
+	HashMultimap<Integer, Integer> noUse = HashMultimap.create();
 	List<String> noCraft = new ArrayList<String>();
 	
 	@ForgeSubscribe
@@ -32,15 +33,15 @@ public class BannedItems
 		
 		ItemStack is = e.entityPlayer.inventory.getCurrentItem();
 		if(is != null)
-		{
+		{	
 			if(noUse.containsKey(is.itemID))
 			{
-				if(noUse.get(is.itemID) == is.getItemDamage())
+				if(noUse.get(is.itemID).contains(is.getItemDamage()))
 				{
 					e.entityPlayer.sendChatToPlayer("That item is banned.");
 					e.setCanceled(true);
 				}
-				else if(noUse.get(is.itemID) == -1)
+				else if(noUse.get(is.itemID).contains("-1"))
 				{
 					e.entityPlayer.sendChatToPlayer("That item is banned.");
 					e.setCanceled(true);
