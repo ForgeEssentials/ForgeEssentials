@@ -79,7 +79,7 @@ cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg .
 rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
 echo "Creating server packages"
-jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg HowToGetFEsupport.txt
+jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg HowToGetFEsupport.txt ./com/ForgeEssentials/api/permissions
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-chat-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-economy-${MC}-${VERSION}.zip" ./com/ForgeEssentials/economy/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-protection-${MC}-${VERSION}.zip" ./com/ForgeEssentials/protection/* 
@@ -110,16 +110,18 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./
 echo "Cleaning up"
 rm -rf ./mods/*
 rm -rf ./coremods/*
-#rm -rf "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" 
-#rm -rf "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" 
-#rm -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" 
-#rm -rf "${WORKSPACE}/output/${JOB_NAME}-chat-${MC}-${VERSION}.zip" 
-#rm -rf "${WORKSPACE}/output/${JOB_NAME}-economy-${MC}-${VERSION}.zip" 
-#rm -rf "${WORKSPACE}/output/${JOB_NAME}-protection-${MC}-${VERSION}.zip" 
-#rm -rf "${WORKSPACE}/output/${JOB_NAME}-snooper-${MC}-${VERSION}.zip" 
-#rm -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" 
-#rm -rf "${WORKSPACE}/output/${JOB_NAME}-playerlogger-${MC}-${VERSION}.zip" 
-# ^^ leave that commented please.. we want these things up for download you know...
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-chat-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-economy-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-protection-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-snooper-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-playerlogger-${MC}-${VERSION}.zip" 
+#leave this here, if they don't want a particular bit they can just delete the zip.
+rm -rf "${WORKSPACE}/output/FEReadme.txt"
+rm -rf "${WORKSPACE}/output/HowToGetFESupport.txt"
 
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
