@@ -70,9 +70,8 @@ public class ForgeEssentials
 	public static boolean preload;
 
 	public static String modlistLocation;
-	public static String fedirloc = "ForgeEssentials/";
 
-	public static final File FEDIR = new File(FunctionHelper.getBaseDir(), fedirloc);
+	public static File FEDIR;
 
 	public static DataStorageManager dataManager;
 	public BannedItems bannedItems;
@@ -83,6 +82,12 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		// setup fedir stuff
+		if (FMLCommonHandler.instance().getSide().isClient())
+			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials-CLIENT");
+		else
+			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
+		
 		OutputHandler.SOP("Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
 		config = new CoreConfig();
 

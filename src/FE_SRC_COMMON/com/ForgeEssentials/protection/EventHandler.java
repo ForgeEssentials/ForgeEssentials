@@ -15,11 +15,16 @@ import com.ForgeEssentials.permission.query.PermQueryPlayerZone;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class EventHandler
 {
 	@ForgeSubscribe(priority = EventPriority.HIGH)
 	public void breakEvent(PlayerBlockBreak e)
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
 		WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
 		Zone zone = ZoneManager.getWhichZoneIn(point);
 		PermQuery query = new PermQueryPlayerZone(e.player, ModuleProtection.PERM_OVERRIDE, zone);
@@ -37,6 +42,9 @@ public class EventHandler
 	@ForgeSubscribe(priority = EventPriority.HIGH)
 	public void placeEvent(PlayerBlockPlace e)
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
 		WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
 		Zone zone = ZoneManager.getWhichZoneIn(point);
 		PermQuery query = new PermQueryPlayerZone(e.player, ModuleProtection.PERM_OVERRIDE, zone);
@@ -54,6 +62,9 @@ public class EventHandler
 	@ForgeSubscribe(priority = EventPriority.HIGH)
 	public void playerInteractEvent(PlayerInteractEvent e)
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
 		if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
 		{
 			WorldPoint point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
@@ -74,6 +85,9 @@ public class EventHandler
 	@ForgeSubscribe(priority = EventPriority.HIGH)
 	public void entityInteractEvent(EntityInteractEvent e)
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
 		WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
 		Zone zone = ZoneManager.getWhichZoneIn(point);
 

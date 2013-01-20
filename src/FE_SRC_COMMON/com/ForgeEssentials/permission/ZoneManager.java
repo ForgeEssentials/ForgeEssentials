@@ -19,6 +19,8 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldArea;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class ZoneManager
 {
 	// GLOBAL and WORLD zones.
@@ -62,6 +64,9 @@ public class ZoneManager
 	@ForgeSubscribe
 	public void worldLoader(Load e) // thats the WorldLoad event.
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
 		String worldString = FunctionHelper.getZoneWorldString(e.world);
 
 		if (!worldZoneMap.containsKey(worldString))

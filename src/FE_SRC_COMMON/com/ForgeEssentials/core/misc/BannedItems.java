@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
 public class BannedItems
@@ -26,6 +27,9 @@ public class BannedItems
 	@ForgeSubscribe
 	public void click(PlayerInteractEvent e)
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
 		ItemStack is = e.entityPlayer.inventory.getCurrentItem();
 		if(is != null)
 		{
@@ -47,7 +51,7 @@ public class BannedItems
 	
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		Configuration config = new Configuration(new File(ForgeEssentials.fedirloc, "banneditems.cfg"));
+		Configuration config = new Configuration(new File(ForgeEssentials.FEDIR, "banneditems.cfg"));
 		
 		config.addCustomCategoryComment("NoCraft", "Configuration options to remove an item's crafting recipe.");
 		config.addCustomCategoryComment("NoUse", "Configuration options to make an item unusable.");

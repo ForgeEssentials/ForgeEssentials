@@ -26,6 +26,9 @@ public class EventHandler
 	@ForgeSubscribe()
 	public void playerInteractEvent(PlayerInteractEvent e)
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
 		/*
 		 * Colorize!
 		 */
@@ -96,6 +99,9 @@ public class EventHandler
 	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void onPlayerDeath(LivingDeathEvent e)
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
 		if (e.entity instanceof EntityPlayer)
 		{
 			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).back = new WarpPoint((EntityPlayer) e.entity);

@@ -32,6 +32,9 @@ public class MiscEventHandler
 	@ForgeSubscribe
 	public void playerSleepInBedEvent(PlayerSleepInBedEvent e)
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
 		if(MajoritySleep && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int playersT = FMLCommonHandler.instance().getMinecraftServerInstance().getCurrentPlayerCount();
