@@ -522,13 +522,17 @@ public class SqlHelper
 					.append(COLUMN_ZONE_ZONEID);
 			statementDumpGroupConnector = instance.db.prepareStatement(query.toString());
 
-			query = new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ").append(TABLE_LADDER_NAME).append(".")
-					.append(COLUMN_LADDER_NAME_NAME).append(", ").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(" FROM ").append(TABLE_LADDER)
-					.append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append("=")
-					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID).append(" INNER JOIN ").append(TABLE_LADDER_NAME).append(" ON ")
-					.append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=").append(TABLE_LADDER_NAME).append(".")
-					.append(COLUMN_LADDER_NAME_LADDERID).append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_LADDER).append(".")
-					.append(COLUMN_LADDER_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID);
+			query = new StringBuilder("SELECT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_LADDER_NAME).append(".").append(COLUMN_LADDER_NAME_NAME).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME)
+					.append(" FROM ").append(TABLE_LADDER)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
+					.append(" INNER JOIN ").append(TABLE_LADDER_NAME)
+					.append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=").append(TABLE_LADDER_NAME).append(".").append(COLUMN_LADDER_NAME_LADDERID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID);
 			statementDumpLadders = instance.db.prepareStatement(query.toString());
 
 			// remove specified group
@@ -1840,6 +1844,7 @@ public class SqlHelper
 					}
 
 					lad = new PromotionLadder(entry2.getKey(), entry1.getKey(), entry2.getValue().toArray(holder));
+					list.add(lad);
 				}
 			}
 
