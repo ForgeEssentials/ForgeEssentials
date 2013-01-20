@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
@@ -26,8 +27,10 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	public static ArrayList<String> rules;
 	public static File rulesFile = new File(ForgeEssentials.FEDIR, "rules.txt");
 
-	public CommandRules()
+	@Override
+	public void doConfig(Configuration config, String category)
 	{
+		rulesFile = new File(ForgeEssentials.FEDIR, config.get(category, "filename", "rules.txt").value);
 		rules = loadRules();
 	}
 

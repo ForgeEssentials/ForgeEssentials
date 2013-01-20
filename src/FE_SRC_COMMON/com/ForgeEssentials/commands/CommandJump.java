@@ -21,9 +21,9 @@ public class CommandJump extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public String[] getDefaultAliases()
 	{
-		return Arrays.asList(new String[] { "j" });
+		return new String[] {"j"};
 	}
 
 	@Override

@@ -26,9 +26,9 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public String[] getDefaultAliases()
 	{
-		return Arrays.asList(new String[] { "gm" });
+		return new String[] {"gm"};
 	}
 
 	@Override

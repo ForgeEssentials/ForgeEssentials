@@ -24,9 +24,9 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public String[] getDefaultAliases()
 	{
-		return Arrays.asList(new String[] { "ci" });
+		return new String[] {"ci"};
 	}
 
 	@Override

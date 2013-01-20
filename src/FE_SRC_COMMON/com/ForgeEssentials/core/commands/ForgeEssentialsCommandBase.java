@@ -1,5 +1,9 @@
 package com.ForgeEssentials.core.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,11 +20,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public boolean enableCmdBlock = true;
 	public boolean enableConsole = true;
 	public boolean enablePlayer = true;
-	/*
-	public boolean usefullCmdBlock = true;
-	public boolean usefullConsole = true;
-	public boolean usefullPlayer = true;
-	*/
+	
+	public ArrayList<String> aliasList = new ArrayList();
+	
 	// ---------------------------
 	// config intercation
 	// ---------------------------
@@ -28,10 +30,22 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	/**
 	 * Override if you want config interaction.
 	 * @param config
+	 * @param category 
 	 */
-	public void doConfig(Configuration config)
+	public void doConfig(Configuration config, String category)
 	{
 		
+	}
+	
+	@Override
+	public List getCommandAliases()
+	{
+		return aliasList;
+	}
+	
+	public String[] getDefaultAliases()
+	{
+		return new String[] {};
 	}
 	
 	public boolean usefullCmdBlock()
@@ -190,15 +204,24 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return canPlayerUseCommand((EntityPlayer) sender);
+			if(!enablePlayer) 
+				return false;
+			else
+				return canPlayerUseCommand((EntityPlayer) sender);
 		}
 		else if (sender instanceof TileEntityCommandBlock)
 		{
-			return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
+			if(!enableCmdBlock) 
+				return false;
+			else
+				return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
 		}
 		else
 		{
-			return canConsoleUseCommand();
+			if(!enableConsole) 
+				return false;
+			else
+				return canConsoleUseCommand();
 		}
 	}
 

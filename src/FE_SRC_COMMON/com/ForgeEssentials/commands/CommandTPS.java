@@ -25,9 +25,9 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public String[] getDefaultAliases()
 	{
-		return Arrays.asList(new String[] { "lag" });
+		return new String[] {"lag"};
 	}
 
 	private static final DecimalFormat DF = new DecimalFormat("########0.000");

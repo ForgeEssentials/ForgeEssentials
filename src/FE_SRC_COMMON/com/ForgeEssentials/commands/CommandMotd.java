@@ -11,8 +11,6 @@ import com.ForgeEssentials.core.misc.LoginMessage;
 public class CommandMotd extends ForgeEssentialsCommandBase
 {
 
-	public static String motd;
-
 	@Override
 	public String getCommandName()
 	{
