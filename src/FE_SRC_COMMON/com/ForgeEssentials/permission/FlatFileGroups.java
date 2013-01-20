@@ -90,6 +90,9 @@ public class FlatFileGroups
 		String[] list;
 		for (Group g : groups)
 		{
+			if (g.name.equals(APIHelper.DEFAULT.name))
+				continue;
+			
 			cat = g.zoneName + "." + g.name;
 			config.get(cat, "prefix", g.prefix);
 			config.get(cat, "suffix", g.suffix);
