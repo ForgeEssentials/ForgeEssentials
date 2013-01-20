@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -43,7 +43,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 				TeleportCenter.addToTpQue(home, player);
 			}
 		}
-		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".set")))
+		else if (APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".set")))
 		{
 			if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
 			{

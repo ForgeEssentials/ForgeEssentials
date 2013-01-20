@@ -68,7 +68,7 @@ public class ModulePermissions
 		sql.putRegistrationperms(permreg.registered);
 
 		pHandler = new PermissionsHandler();
-		PermissionsAPI.QUERY_BUS.register(pHandler);
+		APIHelper.QUERY_BUS.register(pHandler);
 	}
 
 	@ServerInit

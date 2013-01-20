@@ -13,52 +13,32 @@ import com.ForgeEssentials.permission.query.PermissionQueryBus;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 
-public class PermissionsAPI
+// Please redirect all calls to this class to @link PermissionsAPI , this should never be used directly by mods.
+
+public class APIHelper
 {
 
 	public static final PermissionQueryBus QUERY_BUS = new PermissionQueryBus();
 	public static final String EntryPlayer = "_ENTRY_PLAYER_";
 	protected static String EPPrefix = "";
 	protected static String EPSuffix = "";
-	
-
-	/**
-	 * Used for blankets permissions tied to no particular layer or group in a zone. This is the the group all players are assigned to if they are members of no
-	 * other groups. This group is guaranteed existence
-	 */
 	public static Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, ZoneManager.GLOBAL.getZoneName(), 0);
 
-	/**
-	 * Use this to check AllOrNothing Area queries, Player Queries, or Point Queries.
-	 * 
-	 * @param query
-	 * @return TRUE if the permission is allowed. FALSE if the permission is denied or partially allowed.
-	 */
+	
 	public static boolean checkPermAllowed(PermQuery query)
 	{
 		QUERY_BUS.post(query);
 		return query.isAllowed();
 	}
 
-	/**
-	 * Use this with Area Queries, so you can know if the Permission is partially allowed.
-	 * 
-	 * @param query
-	 * @return the Result of the query
-	 */
+	
 	public static PermResult checkPermResult(PermQuery query)
 	{
 		QUERY_BUS.post(query);
 		return query.getResult();
 	}
 
-	/**
-	 * Constructs, registers, and returns a group.
-	 * 
-	 * @param groupName
-	 * @param ZoneID
-	 * @return NULL if the construction or registration fails.
-	 */
+	
 	public static Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority)
 	{
 		Group g = new Group(groupName, prefix, suffix, parent, zoneName, priority);
@@ -66,16 +46,7 @@ public class PermissionsAPI
 		return g;
 	}
 
-	/**
-	 * Sets a permission for a player in a zone.
-	 * 
-	 * @param username
-	 *            player to apply the permission to.
-	 * @param permission
-	 *            Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
-	 * @param allow
-	 * @return Reason for set cancellation NULL if the set succeeds. EMpty String if it fails but has no reason.
-	 */
+	
 	public static String setPlayerPermission(String username, String permission, boolean allow, String zoneID)
 	{
 		try
@@ -110,16 +81,7 @@ public class PermissionsAPI
 		return null;
 	}
 
-	/**
-	 * Sets a permission for a group in a zone.
-	 * 
-	 * @param username
-	 *            player to apply the permission to.
-	 * @param permission
-	 *            Permission to be added. Best in form "ModName.parent1.parent2.parentN.name"
-	 * @param allow
-	 * @return Reason for set cancellation NULL if the set succeeds. EMpty String if it fails but has no reason.
-	 */
+	
 	public static String setGroupPermission(String group, String permission, boolean allow, String zoneID)
 	{
 		try
@@ -181,11 +143,7 @@ public class PermissionsAPI
 	// return gs;
 	// }
 
-	/**
-	 * Returns the list of all the groups the player is in at a given time. It is in order of priority the first bieng the highest.
-	 * @param player
-	 * @param includeDefaults  if the DEFAULT groups of each zone should be added to the list.
-	 */
+	
 	public static ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
 		ArrayList<Group> list = new ArrayList<Group>();

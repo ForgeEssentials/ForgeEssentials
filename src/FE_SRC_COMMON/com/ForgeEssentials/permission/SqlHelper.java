@@ -657,7 +657,7 @@ public class SqlHelper
 					.append(COLUMN_GROUP_ZONE).append(") ")
 					.append(" VALUES ").append(" (")
 					.append("-1, ") // groupID
-					.append("'").append(PermissionsAPI.DEFAULT.name).append("', ")
+					.append("'").append(APIHelper.DEFAULT.name).append("', ")
 					.append("0, 0)"); // priority, zone
 			db.createStatement().executeUpdate(query.toString());
 
@@ -686,7 +686,7 @@ public class SqlHelper
 					.append(COLUMN_PLAYER_USERNAME).append(", ")
 					.append(COLUMN_PLAYER_PLAYERID).append(") ")
 					.append(" VALUES ").append(" ('")
-					.append(PermissionsAPI.EntryPlayer).append("', 0) ");
+					.append(APIHelper.EntryPlayer).append("', 0) ");
 			db.createStatement().executeUpdate(query.toString());
 
 		}
@@ -2009,7 +2009,7 @@ public class SqlHelper
 	 */
 	private static synchronized int getGroupIDFromGroupName(String group) throws SQLException
 	{
-		if (group.equals(PermissionsAPI.DEFAULT.name))
+		if (group.equals(APIHelper.DEFAULT.name))
 			return -1;
 
 		instance.statementGetGroupIDFromName.setString(1, group);

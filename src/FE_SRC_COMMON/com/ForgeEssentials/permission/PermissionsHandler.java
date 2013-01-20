@@ -122,7 +122,7 @@ public final class PermissionsHandler
 			// check defaults... unless it has the override..
 			if (result.equals(PermResult.UNKNOWN) && !event.dOverride)
 			{
-				result = SqlHelper.getPermissionResult(PermissionsAPI.DEFAULT.name, true, event.checker, zone.getZoneName(), event.checkForward);
+				result = SqlHelper.getPermissionResult(APIHelper.DEFAULT.name, true, event.checker, zone.getZoneName(), event.checkForward);
 			}
 
 			// still unknown? check parent zones.
