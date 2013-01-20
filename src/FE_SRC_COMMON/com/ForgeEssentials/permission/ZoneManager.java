@@ -42,9 +42,6 @@ public class ZoneManager
 		boolean exists;
 		for (Object obj : objs)
 		{
-			if (obj == null)
-				continue;
-			
 			temp = (Zone) obj;
 			zoneMap.put(temp.getZoneName(), temp);
 			

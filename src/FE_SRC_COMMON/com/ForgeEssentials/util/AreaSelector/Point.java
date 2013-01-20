@@ -167,9 +167,9 @@ public class Point implements Serializable, Comparable<Point>
 	@Reconstructor()
 	public static Point reconstruct(TaggedClass tag)
 	{
-		float x = (Float) tag.getFieldValue("x");
-		float y = (Float) tag.getFieldValue("y");
-		float z = (Float) tag.getFieldValue("z");
+		double x = (Double) tag.getFieldValue("x");
+		double y = (Double) tag.getFieldValue("y");
+		double z = (Double) tag.getFieldValue("z");
 		return new Point(x, y, z);
 	}
 

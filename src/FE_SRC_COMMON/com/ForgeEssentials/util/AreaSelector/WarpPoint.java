@@ -47,8 +47,8 @@ public class WarpPoint extends WorldPoint
 		double y = (Double) tag.getFieldValue("y");
 		double z = (Double) tag.getFieldValue("z");
 		int dim = (Integer) tag.getFieldValue("dim");
-		float pitch = (Float) tag.getFieldValue("pitch");
-		float yaw = (Float) tag.getFieldValue("yaw");
+		float pitch = ((Double) tag.getFieldValue("pitch")).floatValue();
+		float yaw = ((Double) tag.getFieldValue("yaw")).floatValue();
 		return new WarpPoint(dim, x, y, z, pitch, yaw);
 	}
 	
