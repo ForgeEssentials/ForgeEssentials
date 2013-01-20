@@ -166,18 +166,18 @@ public class CommandKit extends ForgeEssentialsCommandBase
 
 	public void giveKit(EntityPlayer player, NBTTagCompound kit)
 	{
-		if (PlayerInfo.getPlayerInfo(player).kitCooldown.containsKey(kit.getName()))
+		if (PlayerInfo.getPlayerInfo(player.username).kitCooldown.containsKey(kit.getName()))
 		{
 			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c",
-					"" + PlayerInfo.getPlayerInfo(player).kitCooldown.get(kit.getName())));
+					"" + PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName())));
 		}
 		else
 		{
 			player.sendChatToPlayer(Localization.get(Localization.KIT_DONE));
 
-			if (APIHelper.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
+			if (!APIHelper.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
 			{
-				PlayerInfo.getPlayerInfo(player).kitCooldown.put(kit.getName(), kit.getInteger("cooldown"));
+				PlayerInfo.getPlayerInfo(player.username).kitCooldown.put(kit.getName(), kit.getInteger("cooldown"));
 			}
 
 			/*
