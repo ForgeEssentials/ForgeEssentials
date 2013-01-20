@@ -14,7 +14,13 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.permission.APIHelper;
+import com.ForgeEssentials.permission.PermissionRegistrationEvent;
+import com.ForgeEssentials.permission.RegGroup;
+import com.ForgeEssentials.permission.ZoneManager;
+import com.ForgeEssentials.permission.query.PermQueryPlayerZone;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -22,13 +28,25 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
 public class BannedItems
 {
+	private static final String BYPASS = "ForgeEssentials.BannedItems.override";
+	
 	HashMultimap<Integer, Integer> noUse = HashMultimap.create();
 	List<String> noCraft = new ArrayList<String>();
+	
+	@ForgeSubscribe
+	public void registerPermissions(PermissionRegistrationEvent e)
+	{
+		e.registerPerm(this, RegGroup.GUESTS, BYPASS, false);
+		e.registerPerm(this, RegGroup.OWNERS, BYPASS, true);
+	}
 	
 	@ForgeSubscribe
 	public void click(PlayerInteractEvent e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
+		if (APIHelper.checkPermAllowed(new PermQueryPlayerZone(e.entityPlayer, BYPASS, ZoneManager.getWhichZoneIn(new WorldPoint(e.entityPlayer)))))
 			return;
 		
 		ItemStack is = e.entityPlayer.inventory.getCurrentItem();
