@@ -11,6 +11,7 @@ import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.permission.query.PermQueryPlayerZone;
 import com.ForgeEssentials.permission.query.PermSubscribe;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 
 /**
@@ -43,6 +44,7 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayer event)
 	{
+		//OutputHandler.SOP("TEST!!!!");
 		// ensures its a permPlayerQuery before checking...
 		if (event.getClass().getSimpleName().equals(PermQueryPlayer.class.getSimpleName()))
 		{
@@ -55,13 +57,15 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayerZone event)
 	{
+		//OutputHandler.SOP("TEST!!!!");
 		PermResult result = getResultFromZone(event.toCheck, event);
-			event.setResult(result);
+		event.setResult(result);
 	}
 
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayerArea event)
 	{
+		//OutputHandler.SOP("TEST!!!!");
 		if (event.allOrNothing)
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo, event.doer.worldObj);
@@ -108,7 +112,7 @@ public final class PermissionsHandler
 			if (result.equals(PermResult.UNKNOWN))
 			{
 				// get all the players groups here.
-				groups = SqlHelper.getGroupsForPlayer(event.doer.username, tempZone.getZoneName());
+				groups = APIHelper.getApplicableGroups(event.doer, false);
 				
 				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
