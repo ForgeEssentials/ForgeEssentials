@@ -147,15 +147,15 @@ public class Chat implements IChatListener
 		
 		// random nice things...
 		format = replaceAllIgnoreCase(format, "%health", "" + event.player.getHealth());
-		format = replaceAllIgnoreCase(format, "%smile", "\u9786");
-		format = replaceAllIgnoreCase(format, "%copyrighted", "\u169");
-		format = replaceAllIgnoreCase(format, "%registered", "\u174");
-		format = replaceAllIgnoreCase(format, "%dimond", "\u9830");
-		format = replaceAllIgnoreCase(format, "%spade", "\u9824");
-		format = replaceAllIgnoreCase(format, "%club", "\u9827");
-		format = replaceAllIgnoreCase(format, "%heart", "\u9829");
-		format = replaceAllIgnoreCase(format, "%female", "\u9792");
-		format = replaceAllIgnoreCase(format, "%male", "\u9794");
+		format = replaceAllIgnoreCase(format, "%smile", "\u263A");
+		format = replaceAllIgnoreCase(format, "%copyrighted", "\u00A9");
+		format = replaceAllIgnoreCase(format, "%registered", "\u00AE");
+		format = replaceAllIgnoreCase(format, "%diamond", "\u2662");
+		format = replaceAllIgnoreCase(format, "%spade", "\u2664");
+		format = replaceAllIgnoreCase(format, "%club", "\u2667");
+		format = replaceAllIgnoreCase(format, "%heart", "\u2661");
+		format = replaceAllIgnoreCase(format, "%female", "\u2640");
+		format = replaceAllIgnoreCase(format, "%male", "\u2642");
 		
 		// essentials
 		format = replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix);
@@ -163,7 +163,7 @@ public class Chat implements IChatListener
 		format = replaceAllIgnoreCase(format, "%username", nickname);
 		// if(!enable_chat%){ //whereas enable chat is a boolean that can be set in the config or whatever
                   //                    //allowing the use of %codes in chat
-                  format = replaceAllIngnoreCase(format, "%message", message);
+                  format = replaceAllIgnoreCase(format, "%message", message);
                   // }
 		
 		// finally make it the chat line.
