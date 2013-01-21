@@ -192,7 +192,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.Chat." + getCommandName();
+		return "ForgeEssentials.Chat.commands." + getCommandName();
 	}
 
 	public static String getPlayerReply(String player)
