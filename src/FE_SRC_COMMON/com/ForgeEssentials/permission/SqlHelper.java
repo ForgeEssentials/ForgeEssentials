@@ -120,6 +120,7 @@ public class SqlHelper
 
 	// permissions
 	private final PreparedStatement	statementGetPermission;								// target, isgroup, perm, zone >> allowed
+	private final PreparedStatement statementGetAllPermissions;
 	private final PreparedStatement	statementGetAll;										// target, isgroup, zone >> allowed
 	private final PreparedStatement	statementGetPermissionForward;							// target, isgroup, perm, zone >> allowed
 	private final PreparedStatement	statementPutPermission;								// $ , allowed, target, isgroup, perm, zone
@@ -368,6 +369,13 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_PLAYER)
 					.append(" WHERE ").append(COLUMN_PLAYER_USERNAME).append("=").append("?");
 			statementGetPlayerIDFromName = db.prepareStatement(query.toString());
+			
+			// statementGetAllPermissions
+			query = new StringBuilder("SELECT * FROM ").append(TABLE_PERMISSION)
+					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			statementGetAllPermissions = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Put Statements
@@ -2309,6 +2317,51 @@ public class SqlHelper
 			{
 				return set.getInt(COLUMN_PERMISSION_ALLOWED) == 1 ? "allowed" : "denied";
 			}
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static ArrayList getAllPermissions(String target, String zone, int isGroup)
+	{
+		ArrayList list = new ArrayList();
+		PreparedStatement statement = instance.statementGetAllPermissions;
+		try
+		{
+			int targetID = (isGroup == 1 ? getGroupIDFromGroupName(target) : getPlayerIDFromPlayerName(target));
+			if(targetID == -5)
+			{
+				list.add("ERROR");
+				list.add((isGroup == 1 ? "Group " : "Player ") + target + " does not exist.");
+				return list;
+			}
+			int zoneID = getZoneIDFromZoneName(zone);
+			if(zoneID == -5)
+			{
+				list.add("ERROR");
+				list.add("Zone " + zone + " does not exist.");
+				return list;
+			}
+			ResultSet set;
+			
+			statement.setInt(1, targetID);
+			statement.setInt(2, zoneID);
+			statement.setInt(3, isGroup);
+			set = statement.executeQuery();
+			statement.clearParameters();
+			
+			while(set.next())
+			{
+				list.add(set.getString(COLUMN_PERMISSION_PERM) + ":" + (set.getInt(COLUMN_PERMISSION_ALLOWED) == 1 ? "ALLOW" : "DENY"));
+			}
+			if(list.isEmpty())
+			{
+				list.add(target + " has no individual permissions.");
+			}
+			return list;
 		}
 		catch (SQLException e)
 		{

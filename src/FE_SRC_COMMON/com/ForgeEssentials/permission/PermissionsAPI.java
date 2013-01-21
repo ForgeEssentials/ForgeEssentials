@@ -246,4 +246,14 @@ public class PermissionsAPI
 	{
 		return SqlHelper.getPermission(target, true, perm, zone);
 	}
+	
+	public static ArrayList getPlayerPermissions(String target, String zone)
+	{
+		return SqlHelper.getAllPermissions(target, zone, 0);
+	}
+	
+	public static ArrayList getGroupPermissions(String target, String zone)
+	{
+		return SqlHelper.getAllPermissions(target, zone, 1);
+	}
 }
