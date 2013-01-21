@@ -122,6 +122,6 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.chat." + getCommandName();
+		return "ForgeEssentials.Chat." + getCommandName();
 	}
 }

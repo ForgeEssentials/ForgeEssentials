@@ -65,7 +65,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.Chat.commands." + getCommandName();
+		return "ForgeEssentials.Chat." + getCommandName();
 	}
 
 	@Override
