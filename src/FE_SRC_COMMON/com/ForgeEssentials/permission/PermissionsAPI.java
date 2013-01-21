@@ -146,16 +146,22 @@ public class PermissionsAPI
 	
 	public static ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
-		ArrayList<Group> list = new ArrayList<Group>();
 		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
+
+		return getApplicableGroups(player.username, includeDefaults, zone.getZoneName());
+	}
+	
+	public static ArrayList<Group> getApplicableGroups(String player, boolean includeDefaults, String zoneID)
+	{
+		ArrayList<Group> list = new ArrayList<Group>();
 
 		ArrayList<Group> temp;
 		// while (zone != null)
 		// {
-		temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneName());
+		temp = SqlHelper.getGroupsForPlayer(player, zoneID);
 		if(temp.isEmpty())
 		{
-			temp = SqlHelper.getGroupsForPlayer(player.username, ZoneManager.GLOBAL.getZoneName());
+			temp = SqlHelper.getGroupsForPlayer(player, ZoneManager.GLOBAL.getZoneName());
 		}
 		list.addAll(temp);
 		// }
