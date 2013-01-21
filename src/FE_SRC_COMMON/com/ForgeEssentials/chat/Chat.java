@@ -88,7 +88,7 @@ public class Chat implements IChatListener
 		String gPrefix = "";
 		String gSuffix = "";
 		
-		PlayerInfo info = PlayerInfo.getPlayerInfo(event.player);
+		PlayerInfo info = PlayerInfo.getPlayerInfo(event.player.username);
 		String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
 		String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
 		
@@ -196,7 +196,7 @@ public class Chat implements IChatListener
 		for (TreeSet<Group> set : list)
 		{
 			for (Group g: set)
-				temp.append(g.name);
+				temp.append("&r").append(g.name).append("&r");
 			
 			end = match.replaceFirst(temp.toString());
 			temp = new StringBuilder();
@@ -217,7 +217,7 @@ public class Chat implements IChatListener
 		for (TreeSet<Group> set : list)
 		{
 			for (Group g: set)
-				temp.insert(0, g.prefix);
+				temp.insert(0, "&r"+g.prefix+"&r");
 			
 			end = match.replaceFirst(temp.toString());
 			temp = new StringBuilder();
@@ -238,7 +238,7 @@ public class Chat implements IChatListener
 		for (TreeSet<Group> set : list)
 		{
 			for (Group g: set)
-				temp.append(g.suffix);
+				temp.append("&r").append(g.suffix).append("&r");
 			
 			end = match.replaceFirst(temp.toString());
 			temp = new StringBuilder();
