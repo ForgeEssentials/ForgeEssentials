@@ -187,7 +187,7 @@ public class CommandFEPermUser
 					OutputHandler.chatConfirmation(sender, playerName + "'s prefix is &f" + PlayerInfo.getPlayerInfo(playerName).prefix);
 					return;
 				}
-				PlayerInfo.getPlayerInfo(playerName).prefix = args[2];
+				PlayerInfo.getPlayerInfo(playerName).prefix = "&r" + args[2] + "&r";
 				OutputHandler.chatConfirmation(sender, playerName + "'s prefix set to &f" + args[2]);
 				return;
 			}
@@ -198,7 +198,7 @@ public class CommandFEPermUser
 					OutputHandler.chatConfirmation(sender, playerName + "'s suffix is &f" + PlayerInfo.getPlayerInfo(playerName).suffix);
 					return;
 				}
-				PlayerInfo.getPlayerInfo(playerName).suffix = args[2];
+				PlayerInfo.getPlayerInfo(playerName).suffix = "&r" + args[2] + "&r";
 				OutputHandler.chatConfirmation(sender, playerName + "'s suffix set to &f" + args[2]);
 				return;
 			}
