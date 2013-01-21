@@ -46,7 +46,7 @@ public class CommandFEPermUser
 		
 		if (args.length == 1) // display user-specific settings & there values for this player
 		{
-			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups((player == null ? sender : player), false);
+			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(args[0], false, ZoneManager.GLOBAL.getZoneName());
 			OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.user.info.groups", player.username));
 			for (Group g : groups)
 			{
