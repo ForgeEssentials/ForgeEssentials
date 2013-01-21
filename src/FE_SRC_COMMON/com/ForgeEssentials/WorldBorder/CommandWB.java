@@ -369,7 +369,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.worldborder.command";
+		return "ForgeEssentials.WorldBorder.command";
 	}
 
 	@Override
