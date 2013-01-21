@@ -11,12 +11,12 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandPing extends ForgeEssentialsCommandBase
 {
-	String responce = "Pong! %time";
+	String response = "Pong! %time";
 	
 	@Override
 	public void doConfig(Configuration config, String category)
 	{
-		responce = config.get(category, "responce", "Pong! %time").value;
+		response = config.get(category, "response", "Pong! %time").value;
 	}
 	
 	@Override
@@ -34,13 +34,13 @@ public class CommandPing extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		sender.sendChatToPlayer(responce.replaceAll("%time", ((EntityPlayerMP) sender).ping + "ms."));
+		sender.sendChatToPlayer(response.replaceAll("%time", ((EntityPlayerMP) sender).ping + "ms."));
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		sender.sendChatToPlayer(responce.replaceAll("%time", ""));
+		sender.sendChatToPlayer(response.replaceAll("%time", ""));
 	}
 
 	@Override
