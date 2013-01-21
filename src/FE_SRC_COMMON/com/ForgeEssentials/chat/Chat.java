@@ -74,8 +74,7 @@ public class Chat implements IChatListener
 		/*
 		 * Colorize!
 		 */
-                //Flawed I would think... Pretty sure %color still works...
-                //Like I said a % formatting function would help here.
+
 		if (event.message.contains("&"))
 		{
 			if (APIHelper.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
@@ -174,7 +173,7 @@ public class Chat implements IChatListener
 		{
 			return text;
 		}
-		StringBuffer buffer = new StringBuffer(text);
+		StringBuilder buffer = new StringBuilder(text);
 		String lowerSearch = search.toLowerCase();
 		int i = 0;
 		int prev = 0;
