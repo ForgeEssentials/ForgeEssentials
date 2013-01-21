@@ -110,6 +110,9 @@ public class Chat implements IChatListener
 		String format = ConfigChat.chatFormat;
 		format = ConfigChat.chatFormat == null || ConfigChat.chatFormat.trim().isEmpty() ? "<%username>%message" : ConfigChat.chatFormat;
 		
+		/* if(enable_chat%){
+                        format = replaceAllIngnoreCase(format, "%message", message);
+                     }*/
 		// replace group, zone, and rank
 		format = replaceAllIgnoreCase(format, "%rank", rank);
 		format = replaceAllIgnoreCase(format, "%zone", zoneID);
@@ -144,12 +147,24 @@ public class Chat implements IChatListener
 		
 		// random nice things...
 		format = replaceAllIgnoreCase(format, "%health", "" + event.player.getHealth());
+		format = replaceAllIgnoreCase(format, "%smile", "\u9786");
+		format = replaceAllIgnoreCase(format, "%copyrighted", "\u169");
+		format = replaceAllIgnoreCase(format, "%registered", "\u174");
+		format = replaceAllIgnoreCase(format, "%dimond", "\u9830");
+		format = replaceAllIgnoreCase(format, "%spade", "\u9824");
+		format = replaceAllIgnoreCase(format, "%club", "\u9827");
+		format = replaceAllIgnoreCase(format, "%heart", "\u9829");
+		format = replaceAllIgnoreCase(format, "%female", "\u9792");
+		format = replaceAllIgnoreCase(format, "%male", "\u9794");
 		
 		// essentials
 		format = replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix);
 		format = replaceAllIgnoreCase(format, "%playerSuffix", playerSuffix);
 		format = replaceAllIgnoreCase(format, "%username", nickname);
-		format = format.replace("%message", message);
+		// if(!enable_chat%){ //whereas enable chat is a boolean that can be set in the config or whatever
+                  //                    //allowing the use of %codes in chat
+                  format = replaceAllIngnoreCase(format, "%message", message);
+                  // }
 		
 		// finally make it the chat line.
 		event.line = format;
