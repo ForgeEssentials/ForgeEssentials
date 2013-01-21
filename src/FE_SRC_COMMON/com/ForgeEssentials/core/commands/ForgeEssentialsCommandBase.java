@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.permission.APIHelper;
+import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -274,7 +274,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
-		return APIHelper.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
 	public abstract String getCommandPerm();

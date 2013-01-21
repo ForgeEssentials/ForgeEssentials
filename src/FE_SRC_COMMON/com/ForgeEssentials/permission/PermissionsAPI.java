@@ -15,7 +15,7 @@ import com.ForgeEssentials.util.Localization;
 
 // Please redirect all calls to this class to @link PermissionsAPI , this should never be used directly by mods.
 
-public class APIHelper
+public class PermissionsAPI
 {
 
 	public static final PermissionQueryBus QUERY_BUS = new PermissionQueryBus();

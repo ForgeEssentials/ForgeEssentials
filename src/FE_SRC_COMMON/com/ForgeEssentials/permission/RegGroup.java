@@ -18,7 +18,7 @@ public enum RegGroup
 		@Override
 		public Group getGroup()
 		{
-			return APIHelper.DEFAULT;
+			return PermissionsAPI.DEFAULT;
 		}
 	},
 	

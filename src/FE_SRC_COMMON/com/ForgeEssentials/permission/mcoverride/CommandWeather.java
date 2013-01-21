@@ -3,7 +3,7 @@ package com.ForgeEssentials.permission.mcoverride;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.permission.APIHelper;
+import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
 public class CommandWeather extends net.minecraft.command.CommandWeather
@@ -14,7 +14,7 @@ public class CommandWeather extends net.minecraft.command.CommandWeather
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return APIHelper.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
 		}
 		else
 		{

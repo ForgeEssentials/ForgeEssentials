@@ -4,7 +4,7 @@ import net.minecraft.command.CommandServerSaveOn;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.permission.APIHelper;
+import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
 public class CommandSaveOn extends CommandServerSaveOn
@@ -15,7 +15,7 @@ public class CommandSaveOn extends CommandServerSaveOn
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return APIHelper.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
 		}
 		else
 		{

@@ -659,7 +659,7 @@ public class SqlHelper
 					.append(COLUMN_GROUP_ZONE).append(") ")
 					.append(" VALUES ").append(" (")
 					.append("-1, ") // groupID
-					.append("'").append(APIHelper.DEFAULT.name).append("', ")
+					.append("'").append(PermissionsAPI.DEFAULT.name).append("', ")
 					.append("0, 0)"); // priority, zone
 			db.createStatement().executeUpdate(query.toString());
 
@@ -685,7 +685,7 @@ public class SqlHelper
 					.append(COLUMN_PLAYER_USERNAME).append(", ")
 					.append(COLUMN_PLAYER_PLAYERID).append(") ")
 					.append(" VALUES ").append(" ('")
-					.append(APIHelper.EntryPlayer).append("', 0) ");
+					.append(PermissionsAPI.EntryPlayer).append("', 0) ");
 			db.createStatement().executeUpdate(query.toString());
 
 		}
@@ -836,7 +836,7 @@ public class SqlHelper
 			// call generate to remake the stuff that should be there
 			{
 				// recreate EntryPlayer player
-				this.statementPutPlayer.setString(1, APIHelper.EntryPlayer);
+				this.statementPutPlayer.setString(1, PermissionsAPI.EntryPlayer);
 				this.statementPutPlayer.executeUpdate();
 				this.statementPutPlayer.clearParameters();
 				
@@ -848,7 +848,7 @@ public class SqlHelper
 						.append(COLUMN_GROUP_ZONE).append(") ")
 						.append(" VALUES ").append(" (")
 						.append("-1, ") // groupID
-						.append("'").append(APIHelper.DEFAULT.name).append("', ")
+						.append("'").append(PermissionsAPI.DEFAULT.name).append("', ")
 						.append("0, 0)"); // priority, zone
 				db.createStatement().executeUpdate(query.toString());
 			}
@@ -870,7 +870,7 @@ public class SqlHelper
 			String[] list;
 			for (Group group : (ArrayList<Group>) map.get("groups"))
 			{
-				if (group.name.equals(APIHelper.DEFAULT.name))
+				if (group.name.equals(PermissionsAPI.DEFAULT.name))
 					continue;
 				
 				createGroup(group);
@@ -2029,7 +2029,7 @@ public class SqlHelper
 	 */
 	private static synchronized int getGroupIDFromGroupName(String group) throws SQLException
 	{
-		if (group.equals(APIHelper.DEFAULT.name))
+		if (group.equals(PermissionsAPI.DEFAULT.name))
 			return -1;
 
 		instance.statementGetGroupIDFromName.setString(1, group);

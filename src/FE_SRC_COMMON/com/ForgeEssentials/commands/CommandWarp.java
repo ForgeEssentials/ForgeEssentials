@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.APIHelper;
+import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -47,7 +47,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		{
 			if (TeleportCenter.warps.containsKey(args[0].toLowerCase()))
 			{
-				if (APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					Warp warp = TeleportCenter.warps.get(args[0].toLowerCase());
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender);
@@ -68,7 +68,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		{
 			if (true)
 			{
-				if (APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
 				{
 					if (args[0].equalsIgnoreCase("set"))
 					{

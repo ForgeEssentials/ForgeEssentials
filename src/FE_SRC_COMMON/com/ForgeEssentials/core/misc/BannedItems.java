@@ -14,7 +14,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.permission.APIHelper;
+import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.permission.ZoneManager;
@@ -46,7 +46,7 @@ public class BannedItems
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
 		
-		if (APIHelper.checkPermAllowed(new PermQueryPlayerZone(e.entityPlayer, BYPASS, ZoneManager.getWhichZoneIn(new WorldPoint(e.entityPlayer)))))
+		if (PermissionsAPI.checkPermAllowed(new PermQueryPlayerZone(e.entityPlayer, BYPASS, ZoneManager.getWhichZoneIn(new WorldPoint(e.entityPlayer)))))
 			return;
 		
 		ItemStack is = e.entityPlayer.inventory.getCurrentItem();

@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.core.misc.ItemList;
-import com.ForgeEssentials.permission.APIHelper;
+import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -38,7 +38,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 			sender.inventoryContainer.detectAndSendChanges();
 			sender.sendChatToPlayer("Cleared inventory.");
 		}
-		else if (args.length == 1 && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 			int var6 = victim.inventory.clearInventory(-1, -1);

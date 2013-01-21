@@ -112,7 +112,7 @@ public final class PermissionsHandler
 			if (result.equals(PermResult.UNKNOWN))
 			{
 				// get all the players groups here.
-				groups = APIHelper.getApplicableGroups(event.doer, false);
+				groups = PermissionsAPI.getApplicableGroups(event.doer, false);
 				
 				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
@@ -126,7 +126,7 @@ public final class PermissionsHandler
 			// check defaults... unless it has the override..
 			if (result.equals(PermResult.UNKNOWN) && !event.dOverride)
 			{
-				result = SqlHelper.getPermissionResult(APIHelper.DEFAULT.name, true, event.checker, zone.getZoneName(), event.checkForward);
+				result = SqlHelper.getPermissionResult(PermissionsAPI.DEFAULT.name, true, event.checker, zone.getZoneName(), event.checkForward);
 			}
 
 			// still unknown? check parent zones.

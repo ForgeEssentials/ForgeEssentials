@@ -302,16 +302,15 @@
     <!-- Some localization for Permissions -->
     <entry key="command.permissions.set.syntax">/set &lt;permissions> &lt;allow|deny> &lt;p:player|g:group> [zone]</entry>
     <entry key="command.permissions.set.info">Sets a permissions for the player/group in the zone. GLOBAL used by default</entry>
-    
     <entry key="message.error.illegalState">"%s" is neither allow or deny</entry>
     <entry key="message.error.illegalEntity">"%s" must be in form "p:Player" or "g:Group"</entry>
-    
     <entry key="message.error.nogroup">No group of name %s exists!</entry>
     <entry key="message.error.yesgroup">A group of name %s already exists!</entry>
-	
 	<entry key="message.error.nopermission">You don't have permission for that.</entry>
-	
 	<entry key="message.error.permission.sql">An error has occurred processing your action. Tell an admin.</entry>
+	<entry key="command.permissions.user.info.groups">--- Groups %s is in....</entry>
+	<entry key="command.permissions.user.info.supers">--- SUPER permissions for %s...</entry>
+	
     
     <!-- Some localization for Zones -->
     <entry key="command.permissions.zone.list.header">--- Showing the zonelist page %1$d of %2$d ---</entry>

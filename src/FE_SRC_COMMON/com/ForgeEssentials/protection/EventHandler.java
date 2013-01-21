@@ -7,7 +7,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.core.customEvents.PlayerBlockBreak;
 import com.ForgeEssentials.core.customEvents.PlayerBlockPlace;
-import com.ForgeEssentials.permission.APIHelper;
+import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.permission.query.PermQuery;
@@ -28,12 +28,12 @@ public class EventHandler
 		
 		WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
 		PermQuery query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point);
-		Boolean result = APIHelper.checkPermAllowed(query);
+		Boolean result = PermissionsAPI.checkPermAllowed(query);
 
 		if (!result)
 		{
 			query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_EDITS, point);
-			result = APIHelper.checkPermAllowed(query);
+			result = PermissionsAPI.checkPermAllowed(query);
 		}
 
 		e.setCanceled(!result);
@@ -47,12 +47,12 @@ public class EventHandler
 		
 		WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
 		PermQuery query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point);
-		Boolean result = APIHelper.checkPermAllowed(query);
+		Boolean result = PermissionsAPI.checkPermAllowed(query);
 
 		if (!result)
 		{
 			query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_EDITS, point);
-			result = APIHelper.checkPermAllowed(query);
+			result = PermissionsAPI.checkPermAllowed(query);
 		}
 
 		e.setCanceled(!result);
@@ -68,12 +68,12 @@ public class EventHandler
 		{
 			WorldPoint point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
 			PermQuery query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_OVERRIDE, point);
-			Boolean result = APIHelper.checkPermAllowed(query);
+			Boolean result = PermissionsAPI.checkPermAllowed(query);
 
 			if (!result)
 			{
 				query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_INTERACT_BLOCK, point);
-				result = APIHelper.checkPermAllowed(query);
+				result = PermissionsAPI.checkPermAllowed(query);
 			}
 
 			e.setCanceled(!result);
@@ -90,12 +90,12 @@ public class EventHandler
 		Zone zone = ZoneManager.getWhichZoneIn(point);
 
 		PermQuery query = new PermQueryPlayerZone(e.entityPlayer, ModuleProtection.PERM_OVERRIDE, zone);
-		Boolean result = APIHelper.checkPermAllowed(query);
+		Boolean result = PermissionsAPI.checkPermAllowed(query);
 
 		if (!result)
 		{
 			query = new PermQueryPlayerZone(e.entityPlayer, ModuleProtection.PERM_INTERACT_ENTITY, zone);
-			result = APIHelper.checkPermAllowed(query);
+			result = PermissionsAPI.checkPermAllowed(query);
 		}
 
 		OutputHandler.debug("entityInteractEvent in zone: " + zone.getZoneName() + " result: " + result);

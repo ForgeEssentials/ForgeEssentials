@@ -13,7 +13,7 @@ import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.economy.Wallet;
 import com.ForgeEssentials.permission.Group;
-import com.ForgeEssentials.permission.APIHelper;
+import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class PlayerInfoResonce extends Response
@@ -96,7 +96,7 @@ public class PlayerInfoResonce extends Response
 
 		try
 		{
-			Group group = APIHelper.getHighestGroup(player);
+			Group group = PermissionsAPI.getHighestGroup(player);
 			PlayerData.put("group", group.name);
 		}
 		catch (Exception e)
