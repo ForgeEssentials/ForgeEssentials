@@ -299,7 +299,17 @@ public class CommandFEPermUser
 			playerName = player.username;
 		}
 		
-		if (args[1].equalsIgnoreCase("supers")) // super perms management
+		if (args.length == 1) // display user-specific settings & there values for this player
+		{
+			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(args[0], false, ZoneManager.GLOBAL.getZoneName());
+			sender.sendChatToPlayer(Localization.format("command.permissions.user.info.groups", player.username));
+			for (Group g : groups)
+			{
+				sender.sendChatToPlayer(" - "+g.name+" -- "+g.zoneName);
+			}
+			return;
+		}
+		else if (args[1].equalsIgnoreCase("supers")) // super perms management
 		{
 			if (args.length == 2) // display user super perms
 			{
@@ -382,7 +392,6 @@ public class CommandFEPermUser
 					return;
 				}
 			}
-			
 			if (args[2].equalsIgnoreCase("add")) // add player to group
 			{
 				if(args.length > 3)
@@ -516,13 +525,12 @@ public class CommandFEPermUser
 		}
 		else // display user-specific settings & there values for this player
 		{
-//			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups((player == null ? sender : player), false);
-//			sender.sendChatToPlayer(Localization.format("command.permissions.user.info.groups", player.username));
-//			for (Group g : groups)
-//			{
-//				sender.sendChatToPlayer(" - "+g.name+" -- "+g.zoneName);
-//			}
-			sender.sendChatToPlayer("User setting display is not yet enabled for console.");
+			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(args[0], false, args[1]);
+			sender.sendChatToPlayer(Localization.format("command.permissions.user.info.groups", player.username));
+			for (Group g : groups)
+			{
+				sender.sendChatToPlayer(" - "+g.name+" -- "+g.zoneName);
+			}
 			return;
 		}
 		
