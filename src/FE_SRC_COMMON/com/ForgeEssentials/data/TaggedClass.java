@@ -1,6 +1,7 @@
 package com.ForgeEssentials.data;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class TaggedClass
 {
@@ -19,6 +20,12 @@ public class TaggedClass
 			this.name = name;
 			this.value = value;
 			type = value.getClass();
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "{"+name+", "+type+", "+value+"}";
 		}
 	}
 
@@ -52,5 +59,24 @@ public class TaggedClass
 		}
 
 		return value;
+	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder s = new StringBuilder("{");
+		s.append("type=").append(type).append(", ");
+		s.append("unique=").append(uniqueKey).append(", ");
+		
+		s.append("[");
+		for (Entry<String, SavedField> e : TaggedMembers.entrySet())
+		{
+			s.append(e.getKey()).append("=").append(e.getValue()).append(", ");
+		}
+		s.replace(s.length()-2, s.length(), "]");
+		
+		s.append("}");
+		
+		return s.toString();
 	}
 }

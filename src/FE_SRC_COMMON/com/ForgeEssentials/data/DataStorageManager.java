@@ -133,7 +133,7 @@ public class DataStorageManager
 	
 	public static DataDriver getReccomendedDriver()
 	{
-		return getDriverOfType(defaultDriver);
+		return getDriverOfType(chosen);
 	}
 	
 	public static DataDriver getDriverOfType(EnumDriverType type)
