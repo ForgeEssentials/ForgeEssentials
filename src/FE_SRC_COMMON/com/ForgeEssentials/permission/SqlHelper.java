@@ -1676,15 +1676,17 @@ public class SqlHelper
 
 			int priority;
 			String parent, prefix, suffix, zone, name;
+			int parentID;
 			Group g;
 			while (set.next())
 			{
 				priority = set.getInt(COLUMN_GROUP_PRIORITY);
 				name = set.getString(COLUMN_GROUP_NAME);
-				parent = set.getString(COLUMN_GROUP_PARENT);
+				parentID = set.getInt(COLUMN_GROUP_PARENT);
 				prefix = set.getString(COLUMN_GROUP_PREFIX);
 				suffix = set.getString(COLUMN_GROUP_SUFFIX);
 				zone = set.getString(COLUMN_ZONE_NAME);
+				parent = getGroupNameFromGroupID(parentID);
 				g = new Group(name, prefix, suffix, parent, zone, priority);
 				list.add(g);
 			}

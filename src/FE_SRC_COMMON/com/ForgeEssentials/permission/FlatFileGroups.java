@@ -96,7 +96,7 @@ public class FlatFileGroups
 			cat = g.zoneName + "." + g.name;
 			config.get(cat, "prefix", g.prefix);
 			config.get(cat, "suffix", g.suffix);
-			config.get(cat, "parent", g.parent);
+			config.get(cat, "parent", g.parent == null ? "" : g.parent);
 			config.get(cat, "priority", g.priority);
 
 			list = getPlayerArray(g.name, g.zoneName, connector);
