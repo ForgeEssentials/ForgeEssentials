@@ -59,6 +59,8 @@ public class DataStorageManager
 		String cat;
 		for (EnumDriverType type : EnumDriverType.values())
 		{
+			if (type == EnumDriverType.SQL)
+				continue;
 			cat = "Data."+type;
 			config.get(cat, "chosenDriver", typeChosens.get(type));
 		}
