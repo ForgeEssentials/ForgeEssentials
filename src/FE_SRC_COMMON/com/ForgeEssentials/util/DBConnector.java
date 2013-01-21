@@ -73,7 +73,7 @@ public class DBConnector
 			}
 			else
 			{
-				config.get(newcat, "database", dbDefault, "this may be a file path as well.").value = props.get("database").value;
+				config.get(newcat, "database", dbFileDefault, "this may be a file path as well.").value = props.get("database").value;
 			}
 
 		}
