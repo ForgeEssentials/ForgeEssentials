@@ -1,0 +1,338 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties version="1.0">
+    <comment>English (US) Localization File, &lt; is the less than or left arrow sign</comment>
+    
+    <entry key="command.back.syntax.player">/back</entry>
+    <entry key="command.back.info.player">Teleport's ya to ya last death point</entry>
+    
+    <entry key="command.burn.syntax.console">/burn &lt;player></entry>
+    <entry key="command.burn.syntax.player">/burn [me|&lt;player>]</entry>
+    <entry key="command.burn.info.console">Starts up a fire with a player as the kindling</entry>
+    <entry key="command.burn.info.player">Start up a fire using ya'self or a 'nother as the kindling.</entry>
+
+
+    <entry key="command.butcher.syntax.console">/butcher &lt;radius> &lt;type> &lt;x, y, z> &lt;worldID></entry>
+    <entry key="command.butcher.info.console">Make some nice sausages out of mobs in that there area.</entry>
+    <entry key="command.butcher.syntax.player">/butcher [radius] [type] [x, y, z]</entry>
+    <entry key="command.butcher.info.player">'rounds up them there nearby mobs for ya. 'case you forgot your lasso.</entry>
+
+
+    <entry key="command.capabilities.syntax.console">/capabilities[player] [capability] [value|default]</entry>
+    <entry key="command.capabilities.syntax.player">/capabilities [player] [capability] [value|default]</entry>
+    <entry key="command.capabilities.info.console">Lets ya mess with a bunch of what they call "fancy stuff related to the player"</entry>
+    <entry key="command.capabilities.info.player">Lets ya mess with a bunch of what they call "fancy stuff related to the player"</entry>
+    
+    <entry key="command.enderchest.syntax.console">/enderchest</entry>
+    <entry key="command.enderchest.syntax.player">/enderchest</entry>
+    <entry key="command.enderchest.info.console">Reload ForgeEssentials' configs</entry>
+    <entry key="command.enderchest.info.player">Reload ForgeEssentials' configs</entry>
+    
+    <entry key="command.heal.info.player">Fixes ya right up. Like mama used to do.</entry>
+    <entry key="command.heal.info.console">Fixs up the specif'ed character</entry>
+    <entry key="command.heal.syntax.player">/heal &lt;player></entry>
+    <entry key="command.heal.syntax.console">/heal &lt;player></entry>
+    
+    <entry key="command.home.syntax.player">[here|x, y, z]</entry>
+    <entry key="command.home.info.player">Home sweet home!</entry>
+    <entry key="command.home.confirm">Home set to: %1$d, %2$d, %3$d</entry>
+
+
+    <entry key="command.kill.syntax.console">/kill &lt;player></entry>
+    <entry key="command.kill.syntax.player">/kill [player]</entry>
+    <entry key="command.kill.info.console">Takes care of business with a .45'</entry>
+    <entry key="command.kill.info.player">Takes care of business with a .45'</entry>
+
+
+    <entry key="command.motd.syntax.console">/motd [new motd]</entry>
+    <entry key="command.motd.syntax.player">/motd [new motd]</entry>
+    <entry key="command.motd.info.console">Takes ya to the 'billboard</entry>
+    <entry key="command.motd.info.player">Takes ya to the 'billboard</entry>
+    
+	<entry key="command.nickname.syntax.console">/nickname &lt;player> &lt;nickname|del></entry>
+    <entry key="command.nickname.syntax.player">/nickname [player] &lt;nickname|del></entry>
+    <entry key="command.nickname.info.console">Gives ya partner a spiffy nickname</entry>
+    <entry key="command.nickname.info.player">Gives ya partner a spiffy nickname</entry>
+
+
+	<entry key="message.chat.nick.self.remove">Ya 'nick has been removed!</entry>
+	<entry key="message.chat.nick.self.set">Nickname set to %n</entry>
+	<entry key="message.chat.nick.others.remove">Nickname of player %p removed</entry>
+	<entry key="message.chat.nick.others.set">Nickname of player %p set to %n</entry>
+
+
+    <entry key="command.msg.syntax.console">/msg &lt;player> &lt;message></entry>
+    <entry key="command.msg.syntax.player">/msg &lt;player> &lt;message></entry>
+    <entry key="command.msg.info.console">Sends a message quieter than an churchmouse to your partner.</entry>
+    <entry key="command.msg.info.player">Sends a message quieter than an churchmouse to your partner.</entry>
+
+
+    <entry key="command.potion.effectnotfound">Moonshine ain't have that there effect.</entry>
+    <entry key="command.potion.syntax.console">/potion &lt;player> &lt;effect> &lt;duration> [ampl]</entry>
+    <entry key="command.potion.syntax.player">/potion &lt;player> &lt;effect> &lt;duration> [ampl]</entry>
+    <entry key="command.potion.info.console">Give someone a drop a of moonshine</entry>
+    <entry key="command.potion.info.player">Give someone a drop a of moonshine</entry>
+    
+    <entry key="command.r.syntax.console">/r &lt;message></entry>
+    <entry key="command.r.syntax.player">/r &lt;message></entry>
+    <entry key="command.r.info.console">Responds to ya partner.</entry>
+    <entry key="command.r.info.player">Responds to ya partner.</</entry>
+    
+    <entry key="command.remove.syntax.console">/remove &lt;radius> %lt;x, y, z> [dimension]</entry>
+    <entry key="command.remove.info.console">Sweeps up the area for ya.</entry>
+    <entry key="command.remove.syntax.player">/remove[radius] [x, y, z]</entry>
+    <entry key="command.remove.info.player">Sweeps up the area for ya.</entry>
+
+
+    <entry key="command.repair.info.player">Repairs that there item.</entry>
+    <entry key="command.repair.info.console">Repairs that there item.</entry>
+    <entry key="command.repair.syntax.player">/repair &lt;player></entry>
+    <entry key="command.repair.syntax.console">/repair &lt;player></entry>
+
+
+    <entry key="command.rules.syntax.console">/rules [&lt;number> &lt;new rule>|remove]</entry>
+    <entry key="command.rules.syntax.player">[&lt;number> &lt;new rule>|remove]</entry>
+    <entry key="command.rules.info.console">Talk to the sheriff and get the LAW.</entry>
+    <entry key="command.rules.info.player">Talk to the sheriff and get the LAW.</entry>
+    
+    <entry key="command.setspawn.syntax.console">/setspawn [X Y Z]</entry>
+    <entry key="command.setspawn.syntax.player">[X Y Z]</entry>
+    <entry key="command.setspawn.info.console">Set the server spawn</entry>
+    <entry key="command.setspawn.info.player">Set the server spawn</entry>
+    <entry key="message.spawnset">Server spawn set.</entry>
+    
+    <entry key="command.smite.syntax.console">&lt;player></entry>
+    <entry key="command.smite.syntax.player">[me|&lt;player>]</entry>
+    <entry key="command.smite.info.console">Sets off a nice little storm on ya partner.</entry>
+    <entry key="command.smite.info.player">The hand of god.</entry>
+    
+    <entry key="command.spawn.syntax.console">/spawn &lt;mob type> [number] [x, y, z]</entry>
+    <entry key="command.spawn.info.console">Teleport you/a player to your/their spawnpoint</entry>
+    <entry key="command.spawn.syntax.player">/spawn &lt;mob type> &lt;number> &lt;x, y, z> [dimension]</entry>
+    <entry key="command.spawn.info.player">Teleport a player to their spawnpoint</entry>
+
+
+    <entry key="command.tps.info.player">Gets the lag on the server</entry>
+    <entry key="command.tps.info.console">Gets the lag on the server</entry>
+    <entry key="command.tps.syntax.player">/tps [all|dimension id]</entry>
+    <entry key="command.tps.syntax.console">/tps [all|dimension id]</entry>
+        
+    <entry key="command.tpspawn.syntax.console">[player]</entry>
+    <entry key="command.tpspawn.info.console">Teleport you/a player to your/their spawnpoint</entry>
+    <entry key="command.tpspawn.syntax.player">[player]</entry>
+    <entry key="command.tpspawn.info.player">Teleport a player to their spawnpoint</entry>
+    
+    <entry key="command.virtualchest.syntax.console"></entry>
+    <entry key="command.virtualchest.syntax.player">/virtualchest</entry>
+    <entry key="command.virtualchest.info.console"></entry>
+    <entry key="command.virtualchest.info.player">Open carry-sac</entry>
+    
+    <entry key="command.serverdo.syntax.player">/serverdo &lt;command> [arg1]...</entry>
+    <entry key="command.serverdo.info.player">Run a console command as a player</entry>
+
+
+    <entry key="message.burn.self">Ouch! That there's hot!</entry>
+    <entry key="message.burn.player">You should feel bad about doing that.</entry>
+    <entry key="message.butchered">%d mobs ground up into haggis.</entry>
+    <entry key="message.done">Done partner!</entry>
+    <entry key="message.healed">There, now ya all fix'd up.</entry>
+    <entry key="message.killed">You were deaded.</entry>
+    <entry key="message.removed">%d items took.</entry>
+    <entry key="message.smite.self">Was that really a good idea?</entry>
+    <entry key="message.smite.player">The skys rumble.</entry>
+    <entry key="message.smite.ground">Nice shooting tex.</entry>
+    <entry key="message.spawned">Teleported to spawn.</entry>
+    
+    <entry key="message.credits.AbrarSyed">Lead dev and permissions system</entry>
+    <entry key="message.credits.Bob_A_Red_Dino">Essentials-like commands</entry>
+    <entry key="message.credits.bspkrs">Helped with the coremod, no longer active</entry>
+    <entry key="message.credits.Dries007">Logger, random command stuff. Every spelling mistake ever</entry>
+    <entry key="message.credits.luacs1998">The IRC channel's Hitler</entry>
+    <entry key="message.credits.Malkierian">Latecoming bugsquasher.  The ADD coder (he's all over the place in here)</entry>
+    <entry key="message.credits.MysteriousAges">Backend, WorldControl commands, neurotic formatting</entry>
+    <entry key="message.credits.RlonRyan">Redneck translator.</entry>
+    
+    <!-- Some localization for Errors -->
+    <entry key="message.error.badsyntax">That there won't work proper. Try this: </entry>
+    <entry key="message.error.nan">"%s" param aint no number. Try again, even I can count to ten 1,2,4...</entry>
+    <entry key="message.error.noItemPlayer">You aint holding nuthing!</entry>
+    <entry key="message.error.noItemTarget">Yer partner aint holding nuthing!</entry>
+    <entry key="message.error.noMobX">Mob %s aint been around here for years.</entry>
+    <entry key="message.error.noPlayerX">Player %s aint been seen around here.</entry>
+    <entry key="message.error.nodeathpoint">You have not died yet.</entry>
+    <entry key="message.error.nohome">No home sweet home, poor thing. Try this here partner: </entry>
+    <entry key="message.error.nopage">There aint no page of that there number!</entry>
+    <entry key="message.error.noselection">That be there an invalid selection. Try you select something first.</entry>
+    <entry key="message.error.permdenied">Hold yer horses! Ya cant do that!</entry>
+    <entry key="message.error.r.noPrevious">You have not messaged anyone since the last server restart.</entry>
+    <entry key="message.error.target">You missed the dirt!</entry>
+    
+    <!-- Some localization for TeleportCenter -->
+    <entry key="message.tc.aborted">TP aborted.</entry>
+    <entry key="message.tc.cooldown">Cooldown still be active. You still have yourself %c seconds to go.</entry>
+    <entry key="message.tc.done">*poof*</entry>
+    <entry key="message.tc.warmup">Stand still there parner for %w seconds.</entry>
+    
+    <entry key="command.modlist.header">--- Showing modlist page %p of %t ---</entry>
+    <entry key="command.modlist.syntax.console">/modlist [page]</entry>
+    <entry key="command.modlist.syntax.player">/modlist [page]</entry>
+    <entry key="command.modlist.info.console">Get a list of mods used by the server</entry>
+    <entry key="command.modlist.info.player">Get a list of mods used by the server</entry>
+    
+    <entry key="command.zone.info.player">Define, remove, and edit zones</entry>
+    <entry key="command.zone.syntax.player">/zone&lt;define|redefine|remove|setparent &lt;newParent>> &lt;zoneID></entry>
+    
+    <entry key="command.warp.notfound">That warp doesn't exist!</entry>
+    <entry key="command.warp.list">All the warps on the server:</entry>
+    <entry key="command.warp.alreadyexists">That warp already exists. Use "/warp del &lt;name>" to delete.</entry>
+    <entry key="command.warp.syntax.player">/warp[name] OR &lt;set|del> &lt;name> </entry>
+    <entry key="command.warp.info.player">Teleport you to a warp point</entry>
+    
+    <!-- Some localization for WorldBorder -->
+    <entry key="command.worldborder.syntax.console">/worldborder [fill|turbo|autopilot] OR [set] &lt;round|square> &lt;Radius> &lt;X> &lt;Z></entry>
+    <entry key="command.worldborder.syntax.player">/worldborder [fill|turbo|autopilot] OR [set] &lt;round|square> &lt;Radius> [X] [Z]</entry>
+    <entry key="command.worldborder.info.console">Set the worldborder</entry>
+    <entry key="command.worldborder.info.player">Set the worldborder</entry>
+    
+    <entry key="message.wb.hitborder">You have reached Indian territory best not go no farther.</entry>
+    
+    <entry key="message.wb.status.header">Worldborder status:</entry>
+    <entry key="message.wb.status.borderset">Border set!</entry>
+    <entry key="message.wb.status.bordernotset">No border set!</entry>
+    
+    <entry key="message.wb.lagwarning">This will cause lag!</entry>
+    
+    <entry key="message.wb.fill.aborted">Done filling the world, now saving!</entry>
+    <entry key="message.wb.fill.confirm">To execute, do /worldborder fill ok</entry>
+    <entry key="message.wb.fill.consoleneedsdim">You must enter the dimension id you want generated. (0 for overworld)</entry>
+    <entry key="message.wb.fill.done">Done filling the world, now saving!</entry>
+    <entry key="message.wb.fill.eta">ETA: %eta</entry>
+    <entry key="message.wb.fill.finished">Done saving! Time needed: %ticks ticks or %sec sec.</entry>
+    <entry key="message.wb.fill.info">This command will fill all chuncks within the worldborder.</entry>
+    <entry key="message.wb.fill.onlyonce">You can't run this more then once at the same time!</entry>
+    <entry key="message.wb.fill.start">Starting filling of world, expect huge lag!</entry>
+    <entry key="message.wb.fill.stillgoing">Still filling the world. ETA: %eta. Current gen rate: %ctp chuncks per tick.</entry>
+    
+    <entry key="message.wb.saving.failed">Error saving the world!</entry>
+    
+    <entry key="message.wb.turbo.info">Set the amount of chuncks generated per tick. Use autopilot if you want to be safe!</entry>
+    <entry key="message.wb.turbo.confirm">To execute, do "/worldborder turbo &lt;cpt>" use off to turn turbo mode off.</entry>
+    <entry key="message.wb.turbo.nothingtodo">You need a running filler command to (dis)engage the turbo!</entry>
+    <entry key="message.wb.turbo.on">Turbo mode engaged! Prepare for more lag!</entry>
+    <entry key="message.wb.turbo.off">Turbo mode disengaged! Lag should lower.</entry>
+    
+    <entry key="message.wb.auto.info">This mode automatically adjusts the amount of chuncks/sec generated.</entry>
+    <entry key="message.wb.auto.confirm">To execute, do "/worldborder autopilot &lt;TargetTPS>" use off to turn autopilot mode off.</entry>
+    
+    <entry key="message.wb.set">WorldBorder set with radius %r  at point X:%x Z:%z</entry>
+    
+    <!-- Some localization for WorldControl -->
+    <entry key="command./replace.info.player">Replaces blocks of the first ID with blocks of the second</entry>
+    <entry key="command./replace.syntax.player">//replace &lt;blockID[:metadata]> &lt;blockID[:metadata]></entry>
+    <entry key="command./set.info.player">Sets all blocks in selection to given ID/metadata</entry>
+    <entry key="command./set.syntax.player">//set &lt;blockID[:metadata]></entry>
+    <entry key="command.freeze.info.player">Freezes exposed (open to the sky) water to ice</entry>
+    <entry key="command.freeze.syntax.player">/freeze &lt;radius of effect> [&lt;x> &lt;z>]</entry>
+    <entry key="command.snow.info.player">Adds a dusting of snow to blocks open to the sky</entry>
+    <entry key="command.snow.syntax.player">/snow &lt;radius of effect> [&lt;x> &lt;z>]</entry>
+    <entry key="command.thaw.info.player">Removes snow and ice from the exposed blocks, starting from the player's position or specified X and Z</entry>
+    <entry key="command.thaw.syntax.player">/thaw &lt;radius of effect> [&lt;x> &lt;z>]</entry>
+    <entry key="command.till.info.player">Tills exposed grass and dirt for planting crops</entry>
+    <entry key="command.till.syntax.player">/till &lt;radius of effect> [&lt;x> &lt;y>]</entry>
+    <entry key="command.untill.info.player">Replaces farmland open to the sky with dirt</entry>
+    <entry key="command.untill.syntax.player">/untill &lt;radius of effect> [&lt;x> &lt;y>]</entry>
+    
+    <entry key="message.wc.blockIdOutOfRange">Block IDs cannot exceed %d!</entry>
+    <entry key="message.wc.deselection">Selection cleared.</entry>
+    <entry key="message.wc.freezeConfirm">%d blocks have been frozen.</entry>
+    <entry key="message.wc.invalidBlockId">%d is not a valid block ID!</entry>
+    <entry key="message.wc.noRedo">Nothing to Redo!</entry>
+    <entry key="message.wc.noUndo">Nothing to Undo!</entry>
+    <entry key="message.wc.replaceConfirmBlocksChanged">Replaced %1$d %2$s blocks with %3$s.</entry>
+    <entry key="message.wc.setConfirmBlocksChanged">Set %1$d blocks changed to %2$s.</entry>
+    <entry key="message.wc.snowConfirm">%d blocks have been dusted with snow.</entry>
+    <entry key="message.wc.thawConfirm">%d blocks have been thawed.</entry>
+    <entry key="message.wc.tillConfirm">%d blocks have been tilled.</entry>
+    <entry key="message.wc.untillConfirm">%d blocks of farmland have been trampled.</entry>
+    
+    <entry key="tile.air.name">Air</entry>
+    
+    <entry key="unit.seconds">sec</entry>
+    
+    <!-- Some localization for Economy -->
+    
+    <!-- SERVER ADMINS if you edit a command name such as walletset -->
+    <!-- make sure to change the command syntax and info below as well -->
+
+
+    <entry key="message.wallet.currencyplural">gold</entry>
+    <entry key="message.wallet.currencysingular">gold</entry>
+    <entry key="message.wallet.walletadd">walletadd</entry>
+    <entry key="message.wallet.walletaddself"> added to your wallet.</entry>
+    <entry key="message.wallet.walletaddtarget"> added to the wallet.</entry>
+    <entry key="message.wallet.walletget">walletget</entry>
+    <entry key="message.wallet.walletgetself">Your wallet contains </entry>
+    <entry key="message.wallet.walletgettarget">'s wallet contains </entry>
+    <entry key="message.wallet.walletname">wallet</entry>
+    <entry key="message.wallet.walletremove">walletremove</entry>
+    <entry key="message.wallet.walletremoveself"> was removed from your wallet</entry>
+    <entry key="message.wallet.walletremovetarget"> was removed from the wallet.</entry>
+    <entry key="message.wallet.walletset">walletset</entry>
+    <entry key="message.wallet.walletsetself">Your wallet was set to </entry>
+    <entry key="message.wallet.walletsettarget">Wallet set to </entry>
+    
+    <entry key="command.walletset.syntax.player">/walletset [&lt;player> &lt;amount to set>]</entry>
+    <entry key="command.walletset.info.player">Sets the target's wallet to the amount specified</entry>
+    <entry key="command.walletset.syntax.console">/walletset [&lt;player> &lt;wallet amount>]</entry>
+    <entry key="command.walletset.info.console">Sets the target's wallet to the amount specified</entry>
+    
+    <entry key="command.walletadd.syntax.player">/walletadd [&lt;player> &lt;amount to add>]</entry>
+    <entry key="command.walletadd.info.player">Adds the specified amount to the target's wallet</entry>
+    <entry key="command.walletadd.syntax.console">/walletadd[&lt;player> &lt;amount to add>]</entry>
+    <entry key="command.walletadd.info.console">Adds the specified amount to the target's wallet</entry>
+    
+    <entry key="command.walletremove.syntax.player">/walletremove [&lt;player> &lt;amount to remove>]</entry>
+    <entry key="command.walletremove.info.player">Removes the specified amount from the target's wallet</entry>
+    <entry key="command.walletremove.syntax.console">/walletremove [&lt;player> &lt;amount to remove>]</entry>
+    <entry key="command.walletremove.info.console">Removes the specified amount from the target's wallet</entry>
+    
+    <entry key="command.walletget.syntax.player">/walletget [&lt;player>]</entry>
+    <entry key="command.walletget.info.player">Returns the target's wallet</entry>
+    <entry key="command.walletget.syntax.console">/walletget[&lt;player>]</entry>
+    <entry key="command.walletget.info.console">Returns the target's wallet</entry>
+    
+        <!-- Some localization for Kits -->
+    <entry key="command.kit.syntax.player">/kit [name] OR [name] [set|del] &lt;cooldown></entry>
+    <entry key="command.kit.info.player">Get free kits pre-defined by the server owner</entry>
+    
+    <entry key="command.kit.alreadyExists">This carepackage already exists.</entry>
+    <entry key="command.kit.done">Carepackage dropped.</entry>
+    <entry key="command.kit.list">This is a list of all available carepackages:</entry>
+    <entry key="command.kit.made">Carepackage made. %c sec cooldown.</entry>
+    <entry key="command.kit.noExists">This is a list of all available carepackages:</entry>
+    <entry key="command.kit.removed">Carepackage removed.</entry>
+    <entry key="command.kit.stillInCooldown">Carepackage cooldown active, %c seconds to go!</entry>
+    
+    <!-- Some localization for Permissions -->
+    <entry key="command.permissions.set.syntax">/set &lt;permissions> &lt;allow|deny> &lt;p:player|g:group> [zone]</entry>
+    <entry key="command.permissions.set.info">Sets a permissions for the player/group in the zone. GLOBAL used by default</entry>
+    <entry key="message.error.illegalState">"%s" is neither allow or deny</entry>
+    <entry key="message.error.illegalEntity">"%s" must be in form "p:Player" or "g:Group"</entry>
+    <entry key="message.error.nogroup">No group of name %s exists!</entry>
+    <entry key="message.error.yesgroup">A group of name %s already exists!</entry>
+	<entry key="message.error.nopermission">You don't have permission for that.</entry>
+	<entry key="message.error.permission.sql">An error has occurred processing your action. Tell an admin.</entry>
+	<entry key="command.permissions.user.info.groups">--- Groups %s is in....</entry>
+	<entry key="command.permissions.user.info.supers">--- SUPER permissions for %s...</entry>
+
+
+    
+    <!-- Some localization for Zones -->
+    <entry key="command.permissions.zone.list.header">--- Showing the zonelist page %1$d of %2$d ---</entry>
+    <entry key="message.error.nozone">No zone of name %s exists!</entry>
+    <entry key="message.error.yeszone">A zone of name %s already exists!</entry>
+    <entry key="message.confirm.zone.remove">%s removed successfully</entry>
+    <entry key="message.confirm.zone.define">%s defined successfully</entry>
+    <entry key="message.confirm.zone.redefine">%s redefined successfully</entry>
+    <entry key="message.confirm.zone.setparent">parent of %s successfully set to %s</entry>
+    
+</properties>
