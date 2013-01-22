@@ -134,7 +134,14 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			if (args.length == 2)
 			{
 				int speed = parseIntBounded(sender, args[1], 1, 20);
-				taskGooing.engageAutopilot(speed);
+				if (taskGooing != null)
+				{
+					taskGooing.engageAutopilot(speed);
+				}
+				else
+				{
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
+				}
 				return;
 			}
 		}
@@ -163,7 +170,14 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			try
 			{
 				int speed = Integer.parseInt(args[1]);
-				taskGooing.engageTurbo(speed);
+				if (taskGooing != null)
+				{
+					taskGooing.engageTurbo(speed);
+				}
+				else
+				{
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
+				}
 				return;
 			}
 			catch (Exception e)
@@ -339,7 +353,14 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			try
 			{
 				int speed = Integer.parseInt(args[1]);
-				taskGooing.engageTurbo(speed);
+				if (taskGooing != null)
+				{
+					taskGooing.engageTurbo(speed);
+				}
+				else
+				{
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
+				}
 				return;
 			}
 			catch (Exception e)
