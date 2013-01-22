@@ -52,9 +52,9 @@ public class CommandButcherTickTask implements ITickTask
 		else
 		{
 			this.aabb = aabb;
-			var4 = MathHelper.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
+			var4 = var9temp = MathHelper.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
 			var5 = MathHelper.floor_double((aabb.maxX + MAX_ENTITY_RADIUS) / 16.0D);
-			var6 = MathHelper.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
+			var6 = var10temp = MathHelper.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
 			var7 = MathHelper.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
 		}
 		world = sender.worldObj;
@@ -76,9 +76,9 @@ public class CommandButcherTickTask implements ITickTask
 		else
 		{
 			this.aabb = aabb;
-			var4 = MathHelper.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
+			var4 = var9temp = MathHelper.floor_double((aabb.minX - MAX_ENTITY_RADIUS) / 16.0D);
 			var5 = MathHelper.floor_double((aabb.maxX + MAX_ENTITY_RADIUS) / 16.0D);
-			var6 = MathHelper.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
+			var6 = var10temp = MathHelper.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
 			var7 = MathHelper.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
 		}
 		world = FunctionHelper.getDimension(worldID);
