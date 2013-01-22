@@ -29,7 +29,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 		playerReply = new HashMap<String, String>();
 		aliasList = new LinkedList<String>();
 		aliasList.add("tell");
-		aliasList.add("whipser");
+		aliasList.add("whisper");
 	}
 
 	@Override
