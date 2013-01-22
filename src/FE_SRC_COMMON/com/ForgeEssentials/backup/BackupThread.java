@@ -1,5 +1,8 @@
 package com.ForgeEssentials.backup;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,27 +13,29 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLLog;
 
 public class BackupThread extends Thread
 {
-	private final File backupDir;
-	public static String backupName;
+	private final File		backupDir;
+	public static String	backupName;
 
-	String source;
-	String output;
-	List<String> fileList;
-	ICommandSender user;
-	MinecraftServer server;
+	String					source;
+	String					output;
+	List<String>			fileList;
+	ICommandSender			user;
+	MinecraftServer			server;
 
 	public BackupThread(ICommandSender user, MinecraftServer server)
 	{
 		if (BackupConfig.isRelative)
+		{
 			backupDir = new File(ModuleBackup.moduleDir, BackupConfig.backupDir);
+		}
 		else
+		{
 			backupDir = new File(BackupConfig.backupDir);
+		}
 		this.server = server;
 		this.user = user;
 	}
@@ -38,13 +43,15 @@ public class BackupThread extends Thread
 	@Override
 	public void run()
 	{
-		
+
 		// backing up.
 		user.sendChatToPlayer("World save completed. Starting backup...");
-		
+
 		// ensure that target dir exists..
 		if (!backupDir.exists())
+		{
 			backupDir.mkdirs();
+		}
 
 		// get sources...
 		if (server.isDedicatedServer())

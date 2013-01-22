@@ -1,6 +1,8 @@
 package com.ForgeEssentials.backup;
 
-import java.util.List;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,16 +11,14 @@ import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldServer;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.PermissionsAPI;
-import com.ForgeEssentials.permission.query.PermQueryPlayer;
+import java.util.List;
 
 public class CommandBackup extends ForgeEssentialsCommandBase
 {
 
-	static String source;
-	static String output;
-	static List<String> fileList;
+	static String		source;
+	static String		output;
+	static List<String>	fileList;
 
 	@Override
 	public String getCommandName()
