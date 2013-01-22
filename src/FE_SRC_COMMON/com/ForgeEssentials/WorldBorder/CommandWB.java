@@ -303,7 +303,14 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			if (args.length == 2)
 			{
 				int speed = parseIntBounded(sender, args[1], 1, 20);
-				taskGooing.engageAutopilot(speed);
+				if (taskGooing != null)
+				{
+					taskGooing.engageAutopilot(speed);
+				}
+				else
+				{
+					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
+				}
 				return;
 			}
 		}
