@@ -19,6 +19,7 @@ import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.Pair;
+import com.ForgeEssentials.core.ForgeEssentials;
 
 public class SQLDataDriver extends DataDriver
 {
@@ -31,7 +32,7 @@ public class SQLDataDriver extends DataDriver
 
 	public SQLDataDriver()
 	{
-		connector = new DBConnector("CoreData", null, EnumDBType.H2_FILE, "ForgeEssentials", "FEData", false);
+		connector = new DBConnector("CoreData", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.FEDIR.getPath()+"/FEData", false);
 	}
 
 	@Override
