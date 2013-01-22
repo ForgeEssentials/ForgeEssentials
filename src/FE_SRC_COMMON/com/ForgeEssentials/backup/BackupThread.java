@@ -27,7 +27,10 @@ public class BackupThread extends Thread
 
 	public BackupThread(ICommandSender user, MinecraftServer server)
 	{
-		backupDir = new File(BackupConfig.backupDir.getAbsolutePath());
+		if (BackupConfig.isRelative)
+			backupDir = new File(ModuleBackup.moduleDir, BackupConfig.backupDir);
+		else
+			backupDir = new File(BackupConfig.backupDir);
 		this.server = server;
 		this.user = user;
 	}
@@ -35,8 +38,13 @@ public class BackupThread extends Thread
 	@Override
 	public void run()
 	{
+		
 		// backing up.
 		user.sendChatToPlayer("World save completed. Starting backup...");
+		
+		// ensure that target dir exists..
+		if (!backupDir.exists())
+			backupDir.mkdirs();
 
 		// get sources...
 		if (server.isDedicatedServer())
