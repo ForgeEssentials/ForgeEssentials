@@ -1,18 +1,19 @@
 package com.ForgeEssentials.chat.commands;
 
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityCommandBlock;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CommandNickname extends ForgeEssentialsCommandBase
 {
@@ -36,7 +37,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.chat.nickname.self")))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".self")))
 			{
 				if (args[0].equalsIgnoreCase("del"))
 				{
@@ -60,7 +61,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.chat.nickname.others")))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
 				EntityPlayerMP player = func_82359_c(sender, args[0]);
 				if (args[1].equalsIgnoreCase("del"))
@@ -88,6 +89,34 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	// Syntax: /nick <username> [nickname|del]
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+		if (args.length > 1)
+		{
+			EntityPlayerMP player = func_82359_c(sender, args[0]);
+			if (args.length == 2)
+			{
+				player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
+				sender.sendChatToPlayer("Nickname of player " + player.username + " set to " + args[1]);
+			}
+			else if (args.length == 1)
+			{
+				player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
+				sender.sendChatToPlayer("Nickname of player " + player.username + " removed");
+			}
+			else
+			{
+				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			}
+		}
+		else
+		{
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+		}
+	}
+
+	// Syntax: /nick <username> [nickname|del]
+	@Override
+	public void processCommandBlock(TileEntityCommandBlock sender, String[] args)
 	{
 		if (args.length > 1)
 		{

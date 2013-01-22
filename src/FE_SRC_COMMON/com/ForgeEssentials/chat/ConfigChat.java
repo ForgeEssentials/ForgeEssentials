@@ -1,23 +1,24 @@
 package com.ForgeEssentials.chat;
 
-import java.io.File;
-import java.util.regex.Pattern;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
-import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.util.OutputHandler;
 
+import net.minecraft.command.ICommandSender;
+
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
 public class ConfigChat extends ModuleConfigBase
 {
-	public static String chatFormat, groupPrefixFormat, groupSuffixFormat, groupRankFormat;
-	public static Pattern groupRegex = Pattern.compile("\\{[a-zA-Z0-9._]*\\<\\:\\>[a-zA-Z0-9._]*\\}");
-	public Configuration config;
+	public static String	chatFormat, groupPrefixFormat, groupSuffixFormat, groupRankFormat;
+	public static Pattern	groupRegex	= Pattern.compile("\\{[a-zA-Z0-9._]*\\<\\:\\>[a-zA-Z0-9._]*\\}");
+	public Configuration	config;
 
 	// this is designed so it will work for any class.
 	public ConfigChat(File file)
@@ -48,18 +49,18 @@ public class ConfigChat extends ModuleConfigBase
 		prop.comment += "\nUse %groupPrefix and %groupSuffix to display the group prefixes and suffixes as specified";
 		chatFormat = prop.value;
 
-		Chat.censor = config.get("Chat", "censor", true, "Censor words in the 'bannedwords.txt' file").getBoolean(true);
-		
+		Chat.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
+		Chat.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[] { "fuck", "ass", "bitch", "shit" }, "List of words to be censored").valueList);
+
 		config.addCustomCategoryComment("Chat.groups",
 				"You may put enything here that you want displaed as part of the group prefixes, suffixes, or ranks." +
-				"\n {ladderName<:>Zone} will display the data for the highest priority group that the player is in that is part of the specified ladder and specified zone." +
-				"\n {...<:>...} will display the data of each group the player is in in order of priority" +
-				"\n you may put contsraints with ladders or zones with {...<:>zoneName} or {ladderName<:>...}" +
-				"\n you may also use the color and MCFormat codes above.");
-		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{"+RegGroup.LADDER+"<:>"+ZoneManager.GLOBAL.getZoneName()+"}").value;
-		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{"+RegGroup.LADDER+"<:>"+ZoneManager.GLOBAL.getZoneName()+"}").value;
-		groupRankFormat = config.get("Chat.groups", "rank", "[{"+RegGroup.LADDER+"<:>"+ZoneManager.GLOBAL.getZoneName()+"}]").value;
-		
+						"\n {ladderName<:>Zone} will display the data for the highest priority group that the player is in that is part of the specified ladder and specified zone." +
+						"\n {...<:>...} will display the data of each group the player is in in order of priority" +
+						"\n you may put contsraints with ladders or zones with {...<:>zoneName} or {ladderName<:>...}" +
+						"\n you may also use the color and MCFormat codes above.");
+		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
+		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
+		groupRankFormat = config.get("Chat.groups", "rank", "[{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}]").value;
 
 		config.save();
 	}
@@ -84,19 +85,20 @@ public class ConfigChat extends ModuleConfigBase
 		prop.comment += "\nUse %groupPrefix and groupSuffix to display the prefix and suffix of groups as defined in the config";
 		prop.value = chatFormat;
 
-		config.get("Chat", "censor", true, "Censor words in the 'bannedwords.txt' file").value = "" + Chat.censor;
+		config.get("BannedWords", "censor", true, "censor the words in the censorList").value = "" + Chat.censor;
+		config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").valueList = Chat.bannedWords.toArray(new String[Chat.bannedWords.size()]);
 
 		config.addCustomCategoryComment("Chat.groups",
 				"You may put enything here that you want displaed as part of the group prefixes, suffixes, or ranks." +
-				"\n {ladderName<:>Zone} will display the data for the highest priority group that the player is in that is part of the specified ladder and specified zone." +
-				"\n {...} will display the data of each group the player is in in order of priority" +
-				"\n you may put contsraints with ladders or zones with {...<:>zoneName} or {ladderName<:>...}" +
-				"\n you may also use the color and MCFormat codes above.");
-		
+						"\n {ladderName<:>Zone} will display the data for the highest priority group that the player is in that is part of the specified ladder and specified zone." +
+						"\n {...} will display the data of each group the player is in in order of priority" +
+						"\n you may put contsraints with ladders or zones with {...<:>zoneName} or {ladderName<:>...}" +
+						"\n you may also use the color and MCFormat codes above.");
+
 		config.get("Chat.groups", "groupPrefix", "").value = groupPrefixFormat;
 		config.get("Chat.groups", "groupSuffix", "").value = groupSuffixFormat;
 		config.get("Chat.groups", "rank", "").value = groupRankFormat;
-		
+
 		config.save();
 	}
 
@@ -108,10 +110,11 @@ public class ConfigChat extends ModuleConfigBase
 
 		chatFormat = config.get("Chat", "chatformat", "%prefix<%username>%suffix %white%message").value;
 
-		Chat.censor = config.get("Chat", "censor", true).getBoolean(true);
-		
-		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{"+RegGroup.LADDER+"<:>"+ZoneManager.GLOBAL.getZoneName()+"}").value;
-		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{"+RegGroup.LADDER+"<:>"+ZoneManager.GLOBAL.getZoneName()+"}").value;
-		groupRankFormat = config.get("Chat.groups", "rank", "[{"+RegGroup.LADDER+"<:>"+ZoneManager.GLOBAL.getZoneName()+"}]").value;
+		Chat.censor = config.get("BannedWords", "censor", true).getBoolean(true);
+		Chat.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[] { "fuck", "ass", "bitch", "shit" }).valueList);
+
+		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
+		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
+		groupRankFormat = config.get("Chat.groups", "rank", "[{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}]").value;
 	}
 }

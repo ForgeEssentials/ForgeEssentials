@@ -1,18 +1,5 @@
 package com.ForgeEssentials.chat;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
-
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
 import com.ForgeEssentials.chat.commands.CommandMsg;
 import com.ForgeEssentials.chat.commands.CommandMute;
 import com.ForgeEssentials.chat.commands.CommandNickname;
@@ -22,6 +9,7 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PostInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
@@ -35,6 +23,17 @@ import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+
+import java.io.File;
+import java.util.Map;
+import java.util.Set;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -44,6 +43,9 @@ public class ModuleChat
 {
 	@Config
 	public static ConfigChat	conf;
+
+	@ModuleDir
+	public static File			moduleDir;
 
 	public ModuleChat()
 	{
@@ -67,28 +69,6 @@ public class ModuleChat
 	@PostInit
 	public void postLoad(FEModulePostInitEvent e)
 	{
-
-		File banedFile = new File(ForgeEssentials.FEDIR, "bannedwords.txt");
-		try
-		{
-			if (!banedFile.exists())
-			{
-				banedFile.createNewFile();
-			}
-			BufferedReader br = new BufferedReader(new FileReader(banedFile));
-			String line;
-			while ((line = br.readLine()) != null)
-			{
-				OutputHandler.debug(line.trim());
-				Chat.bannedWords.add(line.trim());
-			}
-			br.close();
-		}
-		catch (IOException e1)
-		{
-			e1.printStackTrace();
-		}
-
 	}
 
 	@ServerInit
@@ -110,8 +90,17 @@ public class ModuleChat
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.msg", true);
-		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.r", true);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.r", false);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.msg", false);
+		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.nickmame._ALL_", false);
+
+		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.Chat.commands.msg", true);
+		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.Chat.commands.r", true);
+		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.Chat.commands.nickname.self", true);
+
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.Chat.commands.nickname.others", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.Chat.commands.mute", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.Chat.commands.unmute", true);
 	}
 
 	private void removeTell(MinecraftServer server)
