@@ -220,7 +220,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					PlayerInfo.getPlayerInfo(playerName).prefix = "&r";
+					PlayerInfo.getPlayerInfo(playerName).prefix = "";
 					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
 					return;
 				}
@@ -239,7 +239,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					PlayerInfo.getPlayerInfo(playerName).prefix = "&r";
+					PlayerInfo.getPlayerInfo(playerName).prefix = "";
 					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
 					return;
 				}
@@ -491,7 +491,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					PlayerInfo.getPlayerInfo(playerName).prefix = "&r";
+					PlayerInfo.getPlayerInfo(playerName).prefix = "";
 					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
 					return;
 				}
@@ -510,7 +510,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					PlayerInfo.getPlayerInfo(playerName).prefix = "&r";
+					PlayerInfo.getPlayerInfo(playerName).prefix = "";
 					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
 					return;
 				}
