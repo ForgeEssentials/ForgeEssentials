@@ -39,7 +39,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	public String getSyntaxConsole()
 	{
 		// almost never called.
-		return "/" + getCommandName();
+		return getCommandName();
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	public String getSyntaxCommandBlock(TileEntityCommandBlock block)
 	{
 		// almost never called.
-		return "/" + getCommandName();
+		return getCommandName();
 	}
 
 	@Override
