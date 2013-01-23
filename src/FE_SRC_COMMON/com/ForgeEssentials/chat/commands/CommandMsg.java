@@ -195,6 +195,19 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 		return "ForgeEssentials.Chat.commands." + getCommandName();
 	}
 
+        	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 1 || args.length == 2)
+		{
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
+		else
+		{
+			return null;
+		}
+	}
+
 	public static String getPlayerReply(String player)
 	{
 		return playerReply.get(player);
