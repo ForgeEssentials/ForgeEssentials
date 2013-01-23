@@ -58,9 +58,9 @@ public class ConfigChat extends ModuleConfigBase
 						"\n {...<:>...} will display the data of each group the player is in in order of priority" +
 						"\n you may put contsraints with ladders or zones with {...<:>zoneName} or {ladderName<:>...}" +
 						"\n you may also use the color and MCFormat codes above.");
-		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
-		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
-		groupRankFormat = config.get("Chat.groups", "rank", "[{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}]").value;
+		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{...<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
+		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{...<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
+		groupRankFormat = config.get("Chat.groups", "rank", "[{...<:>" + ZoneManager.GLOBAL.getZoneName() + "}]").value;
 
 		config.save();
 	}
@@ -113,8 +113,8 @@ public class ConfigChat extends ModuleConfigBase
 		Chat.censor = config.get("BannedWords", "censor", true).getBoolean(true);
 		Chat.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[] { "fuck", "ass", "bitch", "shit" }).valueList);
 
-		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
-		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
-		groupRankFormat = config.get("Chat.groups", "rank", "[{" + RegGroup.LADDER + "<:>" + ZoneManager.GLOBAL.getZoneName() + "}]").value;
+		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{...<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
+		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{...<:>" + ZoneManager.GLOBAL.getZoneName() + "}").value;
+		groupRankFormat = config.get("Chat.groups", "rank", "[{...<:>" + ZoneManager.GLOBAL.getZoneName() + "}]").value;
 	}
 }
