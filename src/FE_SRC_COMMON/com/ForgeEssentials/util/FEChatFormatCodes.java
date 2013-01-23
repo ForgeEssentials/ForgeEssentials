@@ -5,6 +5,12 @@ public enum FEChatFormatCodes
 
 	BLACK
 	{
+		/* Perhaps add somthing like this and then parse all the regexes in chat so all you have to do is add them here?
+		*public String getRegex()
+		*{
+		*	return "%Black";
+		*}
+		*/
 		@Override
 		public String toString()
 		{
@@ -186,6 +192,78 @@ public enum FEChatFormatCodes
 		public String toString()
 		{
 			return "\u00a7r";
+		}
+	};
+	SMILE
+	{
+		@Override
+		public String toString()
+		{
+			return "\u263A";
+		}
+	};
+	COPYRIGHTED
+	{
+		@Override
+		public String toString()
+		{
+			return "\u00A9";
+		}
+	};
+	REGISTERED
+	{
+		@Override
+		public String toString()
+		{
+			return "\u00AE";
+		}
+	};
+	DIMOND
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2662";
+		}
+	};
+	SPADE
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2664";
+		}
+	};
+	CLUB
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2667";
+		}
+	};
+	HEART
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2661";
+		}
+	};
+	FEMALE
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2640";
+		}
+	};
+	MALE
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2642";
 		}
 	};
 
