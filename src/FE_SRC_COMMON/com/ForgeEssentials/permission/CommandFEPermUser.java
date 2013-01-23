@@ -209,18 +209,19 @@ public class CommandFEPermUser
 			
 			if (args[1].equalsIgnoreCase("prefix")) // prefix
 			{
+				if(args.length == 2 && args[2].equalsIgnoreCase("set")) {
+					args[2] = args[3];
+				}
 				if(args.length >= 2)
 				{
-					OutputHandler.chatConfirmation(sender, playerName + "'s prefix is &f" + PlayerInfo.getPlayerInfo(playerName).prefix);
 					PlayerInfo.getPlayerInfo(playerName).prefix = args[2];
 					OutputHandler.chatConfirmation(sender, playerName + "'s prefix set to &f" + args[2]);
 					return;
 				}
 				else
 				{
-					PlayerInfo.getPlayerInfo(playerName).prefix = "%Reset";
+					PlayerInfo.getPlayerInfo(playerName).prefix = "&r";
 					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
-					OutputHandler.chatConfirmation(sender, playerName + "'s prefix is &f" + PlayerInfo.getPlayerInfo(playerName).prefix);
 					return;
 				}
 				return;
@@ -229,16 +230,14 @@ public class CommandFEPermUser
 			{
 				if(args.length >= 2)
 				{
-					OutputHandler.chatConfirmation(sender, playerName + "'s sufffix is &f" + PlayerInfo.getPlayerInfo(playerName).prefix);
 					PlayerInfo.getPlayerInfo(playerName).suffix = args[2];
 					OutputHandler.chatConfirmation(sender, playerName + "'s suffix set to &f" + args[2]);
 					return;
 				}
 				else
 				{
-					PlayerInfo.getPlayerInfo(playerName).prefix = "%Reset";
+					PlayerInfo.getPlayerInfo(playerName).prefix = "&r";
 					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
-					OutputHandler.chatConfirmation(sender, playerName + "'s suffix is &f" + PlayerInfo.getPlayerInfo(playerName).suffix);
 					return;
 				}
 				return;
