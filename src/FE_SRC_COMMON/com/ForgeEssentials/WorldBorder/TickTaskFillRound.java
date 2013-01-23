@@ -38,7 +38,7 @@ public class TickTaskFillRound extends TickTaskFill
 		super.tick();
 
 		int i = 0;
-		while (i < chunksAtick)
+		while (i < chunksAtick && !isComplete)
 		{
 			if ((rad + ModuleWorldBorder.overGenerate) < ModuleWorldBorder.getDistanceRound(centerX, centerZ, X, Z))
 			{
@@ -46,9 +46,9 @@ public class TickTaskFillRound extends TickTaskFill
 				{
 					i++;
 					world.theChunkProviderServer.provideChunk((X >> 4), (Z >> 4));
+					world.theChunkProviderServer.unloadChunksIfNotNearSpawn((X >> 4), (Z >> 4));
+					world.theChunkProviderServer.unload100OldestChunks();
 				}
-				world.theChunkProviderServer.unloadChunksIfNotNearSpawn((X >> 4), (Z >> 4));
-				world.theChunkProviderServer.unload100OldestChunks();
 				
 				if (X <= maxX)
 				{
