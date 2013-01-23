@@ -5,6 +5,12 @@ public enum FEChatFormatCodes
 
 	BLACK
 	{
+		/* Perhaps add somthing like this and then parse all the regexes in chat so all you have to do is add them here?
+		*public String getRegex()
+		*{
+		*	return "%Black";
+		*}
+		*/
 		@Override
 		public String toString()
 		{
