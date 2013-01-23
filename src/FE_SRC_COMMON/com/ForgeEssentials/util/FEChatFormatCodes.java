@@ -188,5 +188,77 @@ public enum FEChatFormatCodes
 			return "\u00a7r";
 		}
 	};
+	SMILE
+	{
+		@Override
+		public String toString()
+		{
+			return "\u263A";
+		}
+	};
+	COPYRIGHTED
+	{
+		@Override
+		public String toString()
+		{
+			return "\u00A9";
+		}
+	};
+	REGISTERED
+	{
+		@Override
+		public String toString()
+		{
+			return "\u00AE";
+		}
+	};
+	DIMOND
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2662";
+		}
+	};
+	SPADE
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2664";
+		}
+	};
+	CLUB
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2667";
+		}
+	};
+	HEART
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2661";
+		}
+	};
+	FEMALE
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2640";
+		}
+	};
+	MALE
+	{
+		@Override
+		public String toString()
+		{
+			return "\u2642";
+		}
+	};
 
 }
