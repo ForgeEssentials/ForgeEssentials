@@ -60,7 +60,12 @@ public class Chat implements IChatListener
 		{
 			for (String word : bannedWords)
 			{
-				message = replaceAllIgnoreCase(message, word, "###");
+				message = replaceAllIgnoreCase(message, " " + word + " ", "###");
+				message = replaceAllIgnoreCase(message, " " + word + ".", "###");
+				message = replaceAllIgnoreCase(message, " " + word + ",", "###");
+				//this would fix words like assignment but would add the ability to circumvent censor by adding a character.
+				//Also more inefficiant.
+				//Perhaps implement censor modes?
 			}
 		}
 
