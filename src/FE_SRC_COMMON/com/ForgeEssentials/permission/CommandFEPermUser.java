@@ -228,6 +228,9 @@ public class CommandFEPermUser
 			}
 			else if (args[1].equalsIgnoreCase("suffix")) // suffix
 			{
+				if(args.length == 2 && args[2].equalsIgnoreCase("set")) {
+					args[2] = args[3];
+				}
 				if(args.length >= 2)
 				{
 					PlayerInfo.getPlayerInfo(playerName).suffix = args[2];
@@ -242,6 +245,7 @@ public class CommandFEPermUser
 				}
 				return;
 			}
+
 			else if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allow player perm
 			{
 				String result = PermissionsAPI.setPlayerPermission(playerName, args[2], true, zoneName);
@@ -476,26 +480,43 @@ public class CommandFEPermUser
 			
 			if (args[1].equalsIgnoreCase("prefix")) // prefix
 			{
-				if(args.length == 2)
+				if(args.length == 2 && args[2].equalsIgnoreCase("set")) {
+					args[2] = args[3];
+				}
+				if(args.length >= 2)
 				{
-					sender.sendChatToPlayer(playerName + "'s prefix is &f" + PlayerInfo.getPlayerInfo(playerName).prefix);
+					PlayerInfo.getPlayerInfo(playerName).prefix = args[2];
+					OutputHandler.chatConfirmation(sender, playerName + "'s prefix set to &f" + args[2]);
 					return;
 				}
-				PlayerInfo.getPlayerInfo(playerName).prefix = args[2];
-				sender.sendChatToPlayer(playerName + "'s prefix set to &f" + args[2]);
+				else
+				{
+					PlayerInfo.getPlayerInfo(playerName).prefix = "&r";
+					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
+					return;
+				}
 				return;
 			}
 			else if (args[1].equalsIgnoreCase("suffix")) // suffix
 			{
-				if(args.length == 2)
+				if(args.length == 2 && args[2].equalsIgnoreCase("set")) {
+					args[2] = args[3];
+				}
+				if(args.length >= 2)
 				{
-					sender.sendChatToPlayer(playerName + "'s suffix is &f" + PlayerInfo.getPlayerInfo(playerName).suffix);
+					PlayerInfo.getPlayerInfo(playerName).suffix = args[2];
+					OutputHandler.chatConfirmation(sender, playerName + "'s suffix set to &f" + args[2]);
 					return;
 				}
-				PlayerInfo.getPlayerInfo(playerName).suffix = args[2];
-				sender.sendChatToPlayer(playerName + "'s suffix set to &f" + args[2]);
+				else
+				{
+					PlayerInfo.getPlayerInfo(playerName).prefix = "&r";
+					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
+					return;
+				}
 				return;
 			}
+
 			else if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allow player perm
 			{
 				String result = PermissionsAPI.setPlayerPermission(playerName, args[2], true, zoneName);
