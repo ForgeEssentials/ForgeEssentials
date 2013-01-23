@@ -117,7 +117,9 @@ public class Chat implements IChatListener
 		 * format = replaceAllIngnoreCase(format, "%message", message);
 		 * }
 		 */
-		// replace group, zone, and rank
+		// replace group, zone, prefix, suffix, and rank
+		format = replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix); //I say this goes here so it gets to join the parsing party.
+		format = replaceAllIgnoreCase(format, "%playerSuffix", playerSuffix);
 		format = replaceAllIgnoreCase(format, "%rank", rank);
 		format = replaceAllIgnoreCase(format, "%zone", zoneID);
 		format = replaceAllIgnoreCase(format, "%groupPrefix", gPrefix);
@@ -162,8 +164,6 @@ public class Chat implements IChatListener
 		format = replaceAllIgnoreCase(format, "%male", "\u2642");
 
 		// essentials
-		format = replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix);
-		format = replaceAllIgnoreCase(format, "%playerSuffix", playerSuffix);
 		format = replaceAllIgnoreCase(format, "%username", nickname);
 		// if(!enable_chat%){ //whereas enable chat is a boolean that can be set in the config or whatever
 		// //allowing the use of %codes in chat
