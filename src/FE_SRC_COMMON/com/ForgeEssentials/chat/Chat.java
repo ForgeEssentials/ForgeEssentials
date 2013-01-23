@@ -151,15 +151,15 @@ public class Chat implements IChatListener
 
 		// random nice things...
 		format = replaceAllIgnoreCase(format, "%health", "" + event.player.getHealth());
-		format = replaceAllIgnoreCase(format, "%smile", "\u263A");
-		format = replaceAllIgnoreCase(format, "%copyrighted", "\u00A9");
-		format = replaceAllIgnoreCase(format, "%registered", "\u00AE");
-		format = replaceAllIgnoreCase(format, "%diamond", "\u2662");
-		format = replaceAllIgnoreCase(format, "%spade", "\u2664");
-		format = replaceAllIgnoreCase(format, "%club", "\u2667");
-		format = replaceAllIgnoreCase(format, "%heart", "\u2661");
-		format = replaceAllIgnoreCase(format, "%female", "\u2640");
-		format = replaceAllIgnoreCase(format, "%male", "\u2642");
+		format = replaceAllIgnoreCase(format, "%smile", FEChatFormatCodes.SMILE.toString());
+		format = replaceAllIgnoreCase(format, "%copyrighted", FEChatFormatCodes.COPYRIGHTED.toString());
+		format = replaceAllIgnoreCase(format, "%registered", FEChatFormatCodes.REGISTERED.toString());
+		format = replaceAllIgnoreCase(format, "%diamond", FEChatFormatCodes.DIMOND.toString());
+		format = replaceAllIgnoreCase(format, "%spade", FEChatFormatCodes.SPADE.toString());
+		format = replaceAllIgnoreCase(format, "%club", FEChatFormatCodes.CLUB.toString());
+		format = replaceAllIgnoreCase(format, "%heart", FEChatFormatCodes.HEART.toString());
+		format = replaceAllIgnoreCase(format, "%female", FEChatFormatCodes.FEMALE.toString());
+		format = replaceAllIgnoreCase(format, "%male", FEChatFormatCodes.MALE.toString());
 
 		// essentials
 		format = replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix);
