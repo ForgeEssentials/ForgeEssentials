@@ -209,7 +209,7 @@ public class CommandFEPermUser
 			
 			if (args[1].equalsIgnoreCase("prefix")) // prefix
 			{
-				if(args.length == 2 && args[2].equalsIgnoreCase("set"))
+				if(args.length == 3 && args[2].equalsIgnoreCase("set"))
 				{
 					args[2] = args[3];
 				}
@@ -228,7 +228,7 @@ public class CommandFEPermUser
 			}
 			else if (args[1].equalsIgnoreCase("suffix")) // suffix
 			{
-				if(args.length == 2 && args[2].equalsIgnoreCase("set")) {
+				if(args.length == 3 && args[2].equalsIgnoreCase("set")) {
 					args[2] = args[3];
 				}
 				
@@ -479,7 +479,7 @@ public class CommandFEPermUser
 			
 			if (args[1].equalsIgnoreCase("prefix")) // prefix
 			{
-				if(args.length == 2 && args[2].equalsIgnoreCase("set")) {
+				if(args.length == 3 && args[2].equalsIgnoreCase("set")) {
 					args[2] = args[3];
 				}
 				
@@ -497,7 +497,7 @@ public class CommandFEPermUser
 			}
 			else if (args[1].equalsIgnoreCase("suffix")) // suffix
 			{
-				if(args.length == 2 && args[2].equalsIgnoreCase("set")) {
+				if(args.length == 3 && args[2].equalsIgnoreCase("set")) {
 					args[2] = args[3];
 				}
 				if(args.length >= 2)
