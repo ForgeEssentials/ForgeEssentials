@@ -277,6 +277,13 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
+        	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+	        return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+                        
+	}
+
 	public abstract String getCommandPerm();
 
 }
