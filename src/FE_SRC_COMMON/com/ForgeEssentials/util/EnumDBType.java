@@ -6,7 +6,7 @@ import com.google.common.base.Throwables;
 
 public enum EnumDBType
 {
-	H2_FILE(false, "org.h2.jdbc.JdbcConnection", "jdbc:h2:file:%s;FILE_LOCK=SOCKET;IGNORECASE=TRUE"), // file
+	H2_FILE(false, "org.h2.Driver", "jdbc:h2:file:%s;FILE_LOCK=SOCKET;IGNORECASE=TRUE"), // file
 	MySQL(true, "com.mysql.jdbc.Driver", "jdbc:mysql://%s:%d/%s"); // host, port, database
 	
 	/**
