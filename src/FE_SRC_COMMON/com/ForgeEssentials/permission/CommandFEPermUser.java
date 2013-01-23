@@ -209,20 +209,20 @@ public class CommandFEPermUser
 			
 			if (args[1].equalsIgnoreCase("prefix")) // prefix
 			{
-				if(args.length == 2 && args[2].equalsIgnoreCase("set")) {
+				if(args.length == 2 && args[2].equalsIgnoreCase("set"))
+				{
 					args[2] = args[3];
 				}
+				
 				if(args.length >= 2)
 				{
 					PlayerInfo.getPlayerInfo(playerName).prefix = args[2];
 					OutputHandler.chatConfirmation(sender, playerName + "'s prefix set to &f" + args[2]);
-					return;
 				}
 				else
 				{
 					PlayerInfo.getPlayerInfo(playerName).prefix = "";
 					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
-					return;
 				}
 				return;
 			}
@@ -231,17 +231,16 @@ public class CommandFEPermUser
 				if(args.length == 2 && args[2].equalsIgnoreCase("set")) {
 					args[2] = args[3];
 				}
+				
 				if(args.length >= 2)
 				{
 					PlayerInfo.getPlayerInfo(playerName).suffix = args[2];
 					OutputHandler.chatConfirmation(sender, playerName + "'s suffix set to &f" + args[2]);
-					return;
 				}
 				else
 				{
 					PlayerInfo.getPlayerInfo(playerName).prefix = "";
 					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
-					return;
 				}
 				return;
 			}
@@ -483,17 +482,16 @@ public class CommandFEPermUser
 				if(args.length == 2 && args[2].equalsIgnoreCase("set")) {
 					args[2] = args[3];
 				}
+				
 				if(args.length >= 2)
 				{
 					PlayerInfo.getPlayerInfo(playerName).prefix = args[2];
-					OutputHandler.chatConfirmation(sender, playerName + "'s prefix set to &f" + args[2]);
-					return;
+					sender.sendChatToPlayer(playerName + "'s prefix set to &f" + args[2]);
 				}
 				else
 				{
 					PlayerInfo.getPlayerInfo(playerName).prefix = "";
-					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
-					return;
+					sender.sendChatToPlayer(playerName + "'s removed");
 				}
 				return;
 			}
@@ -505,14 +503,12 @@ public class CommandFEPermUser
 				if(args.length >= 2)
 				{
 					PlayerInfo.getPlayerInfo(playerName).suffix = args[2];
-					OutputHandler.chatConfirmation(sender, playerName + "'s suffix set to &f" + args[2]);
-					return;
+					sender.sendChatToPlayer(playerName + "'s suffix set to &f" + args[2]);
 				}
 				else
 				{
 					PlayerInfo.getPlayerInfo(playerName).prefix = "";
-					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
-					return;
+					sender.sendChatToPlayer(playerName + "'s removed");
 				}
 				return;
 			}

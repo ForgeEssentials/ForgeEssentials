@@ -94,7 +94,9 @@ rm -rf ./*.info ./*.txt
 echo "Creating ServerComplete package"
 cd ${WORKSPACE}/output
 cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
+cp -f ${WORKSPACE}/LICENSE.TXT .
 cp -rf ${WORKSPACE}/A1-zipStuff/HowToGetFEsupport.txt .
+
 mkdir mods
 mkdir coremods
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./coremods/
@@ -107,7 +109,7 @@ cp -rf "${WORKSPACE}/output/${JOB_NAME}-protection-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-snooper-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-playerlogger-${MC}-${VERSION}.zip" ./mods/
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt LICENSE.TXT
 
 echo "Cleaning up"
 rm -rf ./mods/*
@@ -122,13 +124,13 @@ rm -rf "${WORKSPACE}/output/${JOB_NAME}-protection-${MC}-${VERSION}.zip"
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-snooper-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-playerlogger-${MC}-${VERSION}.zip" 
-#leave this here, if they don't want a particular bit they can just delete the zip.
 rm -rf "${WORKSPACE}/output/FEReadme.txt"
 rm -rf "${WORKSPACE}/output/HowToGetFEsupport.txt"
 
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
+cp -f ${WORKSPACE}/LICENSE.TXT .
 cp -rf ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt .
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt LICENSE.TXT
 
 #upload
