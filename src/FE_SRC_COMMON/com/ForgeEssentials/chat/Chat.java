@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cpw.mods.fml.common.network.IChatListener;
 
@@ -60,7 +61,7 @@ public class Chat implements IChatListener
 		{
 			for (String word : bannedWords)
 			{
-				message = replaceAllIgnoreCase(message, word, "###");
+				message = message.replaceAll("(?i)\\b" + word + "\\b", "###");
 			}
 		}
 
