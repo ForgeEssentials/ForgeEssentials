@@ -124,6 +124,12 @@ public class CommandFEPermUser
 		}
 		else if (args[1].equalsIgnoreCase("group")) // group management
 		{
+			if(args.length == 2)
+			{
+				OutputHandler.chatConfirmation(sender, "/p user <player> group add : Adds them to specified group.");
+				OutputHandler.chatConfirmation(sender, "/p user <player> group remove : Removes player from specified group.");
+				OutputHandler.chatConfirmation(sender, "/p user <player> group set : Removes player from all groups and adds them to specified group.");
+			}
 			String zoneName = ZoneManager.GLOBAL.getZoneName();
 			if (args.length == 5) // zone is set
 			{
