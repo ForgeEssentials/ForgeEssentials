@@ -112,6 +112,12 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		if(args.length == 0)
+		{
+			sender.sendChatToPlayer("Base usage is /p user|group.");
+			sender.sendChatToPlayer("Type one of these for more information.");
+			return;
+		}
 		String first = args[0];
 		String[] newArgs = new String[args.length - 1];
 		for (int i = 0; i < newArgs.length; i++)
