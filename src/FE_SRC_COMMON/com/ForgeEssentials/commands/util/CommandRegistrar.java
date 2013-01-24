@@ -68,7 +68,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandEnderchest());
 		cmdList.add(new CommandVirtualchest());
 		cmdList.add(new CommandCapabilities());
-		cmdList.add(new CommandSetspawn());
+//		cmdList.add(new CommandSetspawn());
 		cmdList.add(new CommandJump());
 		cmdList.add(new CommandCraft());
 		cmdList.add(new CommandPing());
