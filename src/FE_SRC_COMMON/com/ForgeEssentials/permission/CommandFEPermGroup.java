@@ -90,8 +90,18 @@ public class CommandFEPermGroup
 				}
 			}
 			//Remove zone
-			PermissionsAPI.deleteGroupInZone(args[1], zone.getZoneName());
-			OutputHandler.chatConfirmation(sender, "Group " + args[1] + " removed in zone " + zone.getZoneName());
+			ArrayList groups = PermissionsAPI.getGroupsInZone(zone.getZoneName());
+			for(Object groupObj : groups)
+			{
+				Group group = (Group)groupObj;
+				if(group.name.equalsIgnoreCase(args[1]))
+				{
+					PermissionsAPI.deleteGroupInZone(args[1], zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, "Group " + args[1] + " removed in zone " + zone.getZoneName());
+					return;
+				}
+			}
+			OutputHandler.chatError(sender, args[1] + " does not exist in " + zone.getZoneName() + " zone!");
 			return;
 		}
 		if(args[0].equalsIgnoreCase("list"))
