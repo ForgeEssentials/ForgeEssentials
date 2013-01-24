@@ -281,7 +281,13 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
+		if (args.length == 0) {
+			List<String> poscmd = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getPossibleCommands(sender);
+			return getListOfStringsMatchingLastWord(args, poscmd.toArray(new String [poscmd.size()]));
+		}
+		else {
 	        return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
 	}
 
 	public abstract String getCommandPerm();
