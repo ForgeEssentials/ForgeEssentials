@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.InventoryEnderChest;
 import net.minecraft.network.packet.Packet100OpenWindow;
+import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
@@ -19,9 +20,7 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
  * 
  */
 public class CommandEnderchest extends ForgeEssentialsCommandBase
-{
-	public static boolean useAlias = true;
-
+{	
 	@Override
 	public String getCommandName()
 	{
@@ -29,15 +28,11 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public String[] getDefaultAliases()
 	{
-		if (useAlias)
-		{
-			return Arrays.asList(new String[] { "echest" });
-		}
-		return null;
+		return new String[] {"echest"};
 	}
-
+	
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{

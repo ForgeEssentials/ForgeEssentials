@@ -71,6 +71,7 @@ public class ModuleCommands
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		MinecraftForge.EVENT_BUS.register(this); // for the permissions.
 		GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
+		CommandRegistrar.commandConfigs(conf.config);
 	}
 
 	@ServerInit
@@ -78,16 +79,9 @@ public class ModuleCommands
 	{
 		DataStorage.load();
 
-		data = DataStorageManager.getDriverOfName("ForgeConfig");
-
+		data = DataStorageManager.getReccomendedDriver();
+		
 		CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
-
-		// Vanilla Override
-		e.registerServerCommand(new CommandKill());
-		e.registerServerCommand(new CommandGive());
-		e.registerServerCommand(new CommandI());
-		e.registerServerCommand(new CommandClearInventory());
-		e.registerServerCommand(new CommandGameMode());
 	}
 
 	@ServerPostInit
@@ -99,6 +93,7 @@ public class ModuleCommands
 		{
 			removeDuplicateCommands(FMLCommonHandler.instance().getMinecraftServerInstance());
 		}
+		
 	}
 
 	private void removeDuplicateCommands(MinecraftServer server)

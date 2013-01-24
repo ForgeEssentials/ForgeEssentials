@@ -15,8 +15,14 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class CommandFEPerm extends ForgeEssentialsCommandBase
 {
+	//Variables for autocomplete
+	String [] args2 =  {"user", "group", "export", "promote"};
+	String [] groupargs = {"prefix", "suffix", "parent", "priority","allow","true","deny","false","clear"};
+	String [] playerargs = {"prefix", "suffix", "set", "add", "remove","allow","true","deny","false","clear"};
 	@Override
 	public final String getCommandName()
 	{
@@ -87,7 +93,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 
 		if (first.equalsIgnoreCase("user") || first.equalsIgnoreCase("player"))
 		{
-			CommandUser.processCommandPlayer(sender, newArgs);
+			CommandFEPermUser.processCommandPlayer(sender, newArgs);
 		}
 		else if (first.equalsIgnoreCase("export"))
 		{
@@ -95,11 +101,11 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		}
 		else if (first.equalsIgnoreCase("group"))
 		{
-			CommandGroup.processCommandPlayer(sender, newArgs);
+			CommandFEPermGroup.processCommandPlayer(sender, newArgs);
 		}
 		else if (first.equalsIgnoreCase("promote"))
 		{
-			CommandPromote.processCommandPlayer(sender, newArgs);
+			CommandFEPermPromote.processCommandPlayer(sender, newArgs);
 		}
 	}
 
@@ -115,7 +121,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 
 		if (first.equalsIgnoreCase("user") || first.equalsIgnoreCase("player"))
 		{
-			CommandUser.processCommandConsole(sender, newArgs);
+			CommandFEPermUser.processCommandConsole(sender, newArgs);
 		}
 		else if (first.equalsIgnoreCase("export"))
 		{
@@ -123,11 +129,11 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		}
 		else if (first.equalsIgnoreCase("group"))
 		{
-			CommandGroup.processCommandConsole(sender, newArgs);
+			CommandFEPermGroup.processCommandConsole(sender, newArgs);
 		}
 		else if (first.equalsIgnoreCase("promote"))
 		{
-			CommandPromote.processCommandConsole(sender, newArgs);
+			CommandFEPermPromote.processCommandConsole(sender, newArgs);
 		}
 	}
 
@@ -144,4 +150,39 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		return result.equals(PermResult.DENY) ? false : true;
 	}
 
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 1) {
+			return getListOfStringsMatchingLastWord(args, args2);
+		}
+		
+		else {
+	        
+		}
+		switch (args.length){
+			case 1:
+				return getListOfStringsMatchingLastWord(args, args2);
+			case 2:
+				if (args[0].equalsIgnoreCase("group")) {
+					List<Group> groups = PermissionsAPI.getGroupsInZone(ZoneManager.GLOBAL.getZoneName());
+					ArrayList<String> groupnames = new ArrayList<String>();
+					for (int i = 0; i < groups.size(); i++) {
+						groupnames.add(groups.get(i).name);
+					}
+					groupnames.add("create");
+					return getListOfStringsFromIterableMatchingLastWord(args, groupnames);
+				}
+				break;
+			case 3:
+				if (args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player")) {
+					return getListOfStringsMatchingLastWord(args, playerargs);
+				}
+				else if (args[0].equalsIgnoreCase("group") && !args[1].equalsIgnoreCase("create")) {
+					return getListOfStringsMatchingLastWord(args, groupargs);
+				}
+				break;
+		}
+		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+	}
+	
 }

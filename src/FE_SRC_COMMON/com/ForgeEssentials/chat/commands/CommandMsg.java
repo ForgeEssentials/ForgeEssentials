@@ -1,15 +1,5 @@
 package com.ForgeEssentials.chat.commands;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
@@ -18,10 +8,20 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class CommandMsg extends ForgeEssentialsCommandBase
 {
-	private static Map<String, String> playerReply;
-	private List<String> aliasList;
+	private static Map<String, String>	playerReply;
+	private List<String>				aliasList;
 
 	public CommandMsg()
 	{
@@ -29,7 +29,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 		playerReply = new HashMap<String, String>();
 		aliasList = new LinkedList<String>();
 		aliasList.add("tell");
-		aliasList.add("whipser");
+		aliasList.add("whisper");
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				playerReply.put("server", sender.getCommandSenderName());
 				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] "
 						+ FEChatFormatCodes.GREY;
-				String receiverMessage = "[" + sender.getCommandSenderName() + " -> me ] ";
+				String receiverMessage =  FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
 				for (int i = 0; i < args.length; i++)
 				{
 					receiverMessage += args[i];

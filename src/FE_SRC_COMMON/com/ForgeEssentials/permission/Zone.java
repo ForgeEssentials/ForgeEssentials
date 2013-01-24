@@ -141,21 +141,31 @@ public class Zone extends WorldArea implements Comparable
 
 	public boolean isWorldZone()
 	{
+		if (parent == null)
+			return false;
 		return parent.equals(ZoneManager.GLOBAL.zoneID);
 	}
 
 	@Reconstructor
 	private static Zone reconstruct(TaggedClass tag)
 	{
-		Selection sel = new Selection((Point) tag.getFieldValue("high"), (Point) tag.getFieldValue("low"));
+		Point high = (Point) tag.getFieldValue("high");
+		Point low = (Point) tag.getFieldValue("low");
+		Selection sel = new Selection(high, low);
 		int dim = (Integer) tag.getFieldValue("dim");
 
 		Zone zone = new Zone(sel, dim);
 
-		zone.zoneID = (String) tag.getFieldValue("name");
+		zone.zoneID = (String) tag.getFieldValue("zoneID");
 		zone.parent = (String) tag.getFieldValue("parent");
 		zone.priority = (Integer) tag.getFieldValue("priority");
 
 		return zone;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return zoneID+" "+super.toString();
 	}
 }

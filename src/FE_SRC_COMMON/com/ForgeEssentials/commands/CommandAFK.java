@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.commands.util.AFKdata;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
@@ -16,6 +17,12 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 	public static int warmup = 5; 
 
 	@Override
+	public void doConfig(Configuration config, String category)
+	{
+		warmup = config.get(category, "warmup", 5, "Time in sec. you have to stand still to activate AFK.").getInt();
+	}
+	
+	@Override
 	public String getCommandName()
 	{
 		return "afk";
@@ -25,7 +32,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		TickHandlerCommands.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
-		sender.sendChatToPlayer("Stand still for " + warmup + "s.");
+		sender.sendChatToPlayer("Stand still for " + warmup + "seconds.");
 	}
 
 	@Override
@@ -60,6 +67,6 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 	{
 		afKdata.player.capabilities.disableDamage = true;
 		afKdata.player.sendPlayerAbilities();
-		afKdata.player.sendChatToPlayer("You are in AFK now.");
+		afKdata.player.sendChatToPlayer("You are now AFK.");
 	}
 }

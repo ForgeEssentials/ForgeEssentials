@@ -35,9 +35,14 @@ public class BlockSaveable implements Serializable
 		TileEntity entity = world.getBlockTileEntity(x, y, z);
 		if (entity != null)
 		{
-			NBTTagCompound compound = new NBTTagCompound();
-			entity.writeToNBT(compound);
-			tile = compound;
+			try
+			{
+				NBTTagCompound compound = new NBTTagCompound();
+				entity.writeToNBT(compound);
+				tile = compound;
+			}
+			catch(Exception e)
+			{}
 		}
 	}
 

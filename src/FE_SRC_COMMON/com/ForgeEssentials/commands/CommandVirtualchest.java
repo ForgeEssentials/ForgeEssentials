@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.network.packet.Packet100OpenWindow;
+import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.commands.util.VirtualChest;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
@@ -20,24 +21,26 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
  */
 public class CommandVirtualchest extends ForgeEssentialsCommandBase
 {
-	public static boolean useAlias = true;
 	public static int size = 54;
 	public static String name = "Vault 13";
 
+	@Override
+	public void doConfig(Configuration config, String category)
+	{
+		size = config.get(category, "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").getInt(6) * 9;
+		name = config.get(category, "VirtualChestName", "Vault 13", "Don't use special stuff....").value;
+	}
+	
 	@Override
 	public String getCommandName()
 	{
 		return "virtualchest";
 	}
-
+	
 	@Override
-	public List getCommandAliases()
+	public String[] getDefaultAliases()
 	{
-		if (useAlias)
-		{
-			return Arrays.asList(new String[] { "vchest" });
-		}
-		return null;
+		return new String[] {"vchest"};
 	}
 
 	@Override

@@ -5,11 +5,20 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandPing extends ForgeEssentialsCommandBase
 {
+	String response = "Pong! %time";
+	
+	@Override
+	public void doConfig(Configuration config, String category)
+	{
+		response = config.get(category, "response", "Pong! %time").value;
+	}
+	
 	@Override
 	public String getCommandName()
 	{
@@ -25,13 +34,13 @@ public class CommandPing extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		sender.sendChatToPlayer("Pong! " + ((EntityPlayerMP) sender).ping + "ms.");
+		sender.sendChatToPlayer(response.replaceAll("%time", ((EntityPlayerMP) sender).ping + "ms."));
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		sender.sendChatToPlayer("Pong!");
+		sender.sendChatToPlayer(response.replaceAll("%time", ""));
 	}
 
 	@Override

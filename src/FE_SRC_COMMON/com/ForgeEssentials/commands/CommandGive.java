@@ -68,7 +68,8 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			ItemStack stack = new ItemStack(id, amount, dam);
 
 			String name = Item.itemsList[id].func_77653_i(stack);
-			sender.sendChatToPlayer("Giving you " + amount + " " + name);
+			String uname = (receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()) ? "you" : receiver.username);
+			sender.sendChatToPlayer("Giving " + uname + " " + amount + " " + name);
 			receiver.inventory.addItemStackToInventory(stack);
 		}
 		else
@@ -120,7 +121,8 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			ItemStack stack = new ItemStack(id, amount, dam);
 
 			String name = Item.itemsList[id].func_77653_i(stack);
-			sender.sendChatToPlayer("Giving you " + amount + " " + name);
+			String uname = (receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()) ? "you" : receiver.username);
+			sender.sendChatToPlayer("Giving " + uname + " " + amount + " " + name);
 			receiver.inventory.addItemStackToInventory(stack);
 		}
 		else

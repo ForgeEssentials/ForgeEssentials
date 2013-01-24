@@ -22,9 +22,9 @@ public class CommandI extends ForgeEssentialsCommandBase {
 	}
 
 	@Override
-	public List getCommandAliases()
+	public String[] getDefaultAliases()
 	{
-		return Arrays.asList(new String[] {"item" });
+		return new String[] {"item"};
 	}
 
 	@Override

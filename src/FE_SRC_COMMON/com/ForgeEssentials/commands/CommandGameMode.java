@@ -26,9 +26,9 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public String[] getDefaultAliases()
 	{
-		return Arrays.asList(new String[] { "gm" });
+		return new String[] {"gm"};
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
 				victim.setGameType(gm);
 			}
-			sender.sendChatToPlayer("Gamemode changed of " + victim.username);
+			sender.sendChatToPlayer("Gamemode changed for " + victim.username);
 		}
 		else
 		{
@@ -109,7 +109,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
 				victim.setGameType(gm);
 			}
-			sender.sendChatToPlayer("Gamemode changed of " + victim.username);
+			sender.sendChatToPlayer("Gamemode changed for " + victim.username);
 		}
 		else
 		{

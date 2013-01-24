@@ -21,7 +21,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 /**
  * @author Dries007
  */
-@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true)
+@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true, configClass=ConfigProtection.class)
 public class ModuleProtection
 {
 	public final static String PERM_EDITS = "ForgeEssentials.Protection.allowEdits";

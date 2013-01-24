@@ -28,7 +28,7 @@ public class CommandWand extends WorldControlCommandBase
 	{
 		boolean allowed = checkCommandPerm(sender);
 
-		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
+		PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
 		int currentID = sender.getCurrentEquippedItem() == null ? 0 : sender.getCurrentEquippedItem().itemID;
 		int currentDmg = 0;
 
@@ -41,7 +41,10 @@ public class CommandWand extends WorldControlCommandBase
 		String wandName = "";
 		if (info.wandEnabled)
 		{
-			wandName = info.wandID == 0 ? "your fists" : sender.getCurrentEquippedItem().getDisplayName();
+			if (sender.getCurrentEquippedItem() == null || info.wandID == 0)
+				wandName = "your fists";
+			else
+				wandName = sender.getCurrentEquippedItem().getDisplayName();
 		}
 
 		if (args.length > 0)
@@ -129,7 +132,7 @@ public class CommandWand extends WorldControlCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+		PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
 		if (info.wandEnabled)
 		{
 			return true;

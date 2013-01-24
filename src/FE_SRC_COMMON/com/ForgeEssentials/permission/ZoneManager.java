@@ -19,6 +19,8 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldArea;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class ZoneManager
 {
 	// GLOBAL and WORLD zones.
@@ -27,8 +29,8 @@ public class ZoneManager
 
 	public ZoneManager()
 	{
-		GLOBAL = new Zone("_GLOBAL_", Integer.MIN_VALUE);
-		SUPER = new Zone("_SUPER_", Integer.MIN_VALUE);
+		GLOBAL = new Zone("_GLOBAL_", 0);
+		SUPER = new Zone("_SUPER_", 0);
 		worldZoneMap = new ConcurrentHashMap<String, Zone>();
 		zoneMap = Collections.synchronizedSortedMap(new TreeMap<String, Zone>());
 	}
@@ -40,9 +42,6 @@ public class ZoneManager
 		boolean exists;
 		for (Object obj : objs)
 		{
-			if (obj == null)
-				continue;
-			
 			temp = (Zone) obj;
 			zoneMap.put(temp.getZoneName(), temp);
 			
@@ -62,11 +61,14 @@ public class ZoneManager
 	@ForgeSubscribe
 	public void worldLoader(Load e) // thats the WorldLoad event.
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
+		
 		String worldString = FunctionHelper.getZoneWorldString(e.world);
 
 		if (!worldZoneMap.containsKey(worldString))
 		{
-			Zone zone = new Zone(worldString, e.world.getWorldInfo().getDimension());
+			Zone zone = new Zone(worldString, e.world.provider.dimensionId);
 			worldZoneMap.put(worldString, zone);
 			
 			boolean exists = SqlHelper.doesZoneExist(zone.getZoneName());

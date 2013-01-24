@@ -23,9 +23,7 @@ public class WandController
 	{
 		// only server events please.
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
 			return;
-		}
 
 		// get info now rather than later
 		EntityPlayer player = event.entityPlayer;

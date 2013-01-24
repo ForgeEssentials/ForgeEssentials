@@ -1,10 +1,13 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.misc.ItemList;
 
 public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 {
@@ -39,7 +42,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	public String getSyntaxConsole()
 	{
 		// almost never called.
-		return "/" + getCommandName();
+		return getCommandName();
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	public String getSyntaxCommandBlock(TileEntityCommandBlock block)
 	{
 		// almost never called.
-		return "/" + getCommandName();
+		return getCommandName();
 	}
 
 	@Override
@@ -78,5 +81,10 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.WorldControl.commands." + getName();
+	}
+	
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getBlockList());
 	}
 }

@@ -45,6 +45,8 @@ public class LoginMessage
 				
 				br.close();
 				fr.close();
+				
+				messageList.set(0, ForgeEssentials.config.reimotd() + messageList.get(0));
 			}
 			catch (Exception e)
 			{

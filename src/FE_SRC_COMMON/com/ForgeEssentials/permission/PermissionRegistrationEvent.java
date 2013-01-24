@@ -66,6 +66,6 @@ public class PermissionRegistrationEvent extends Event
 			}
 		}
 		else
-			throw new IllegalArgumentException("Don't trick me! THIS! > " + mod + " < ISNT A MOD OR A MODULE!");
+			throw new IllegalArgumentException("Don't trick me! THIS! > " + mod + " < ISN'T A MOD OR A MODULE!");
 	}
 }

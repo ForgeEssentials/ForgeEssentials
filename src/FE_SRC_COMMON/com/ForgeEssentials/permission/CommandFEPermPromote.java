@@ -8,7 +8,7 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandPromote
+public class CommandFEPermPromote
 {
 	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{

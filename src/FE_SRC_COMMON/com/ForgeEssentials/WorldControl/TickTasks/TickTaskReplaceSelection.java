@@ -66,9 +66,9 @@ public class TickTaskReplaceSelection implements ITickTask
 		int currentTickChanged = 0;
 		boolean continueFlag = true;
 
-		int x = current.getX();
-		int y = current.getY();
-		int z = current.getZ();
+		int x = current.x;
+		int y = current.y;
+		int z = current.z;
 
 		while (continueFlag)
 		{
@@ -90,20 +90,20 @@ public class TickTaskReplaceSelection implements ITickTask
 			}
 
 			y++;
-			if (y > high.getY())
+			if (y > high.y)
 			{
 				// Reset y, increment z.
-				y = first.getY();
+				y = first.y;
 				z++;
 
-				if (z > high.getZ())
+				if (z > high.z)
 				{
 					// Reset z, increment x.
-					z = first.getZ();
+					z = first.z;
 					x++;
 
 					// Check stop condition
-					if (x > high.getX())
+					if (x > high.x)
 					{
 						isComplete = true;
 					}

@@ -28,12 +28,6 @@ public class CommandSeeInventory extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
-	{
-		return null;
-	}
-
-	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		EntityPlayerMP player = (EntityPlayerMP) sender;

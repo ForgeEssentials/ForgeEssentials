@@ -18,9 +18,8 @@ import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
 import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
-import com.ForgeEssentials.data.H2DataDriver;
-import com.ForgeEssentials.data.MySQLDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
+import com.ForgeEssentials.data.SQLDataDriver;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -71,9 +70,8 @@ public class ForgeEssentials
 	public static boolean preload;
 
 	public static String modlistLocation;
-	public static String fedirloc = "ForgeEssentials/";
 
-	public static final File FEDIR = new File(FunctionHelper.getBaseDir(), fedirloc);
+	public static File FEDIR;
 
 	public static DataStorageManager dataManager;
 	public BannedItems bannedItems;
@@ -84,6 +82,12 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		// setup fedir stuff
+		if (FMLCommonHandler.instance().getSide().isClient())
+			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials-CLIENT");
+		else
+			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
+		
 		OutputHandler.SOP("Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
 		config = new CoreConfig();
 
@@ -95,8 +99,7 @@ public class ForgeEssentials
 			// register DataDrivers
 			DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
 			DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
-			DataStorageManager.registerDriver("MySQL", MySQLDataDriver.class);
-			DataStorageManager.registerDriver("H2", H2DataDriver.class);
+			DataStorageManager.registerDriver("SQL_DB", SQLDataDriver.class);
 
 			// Register saveables..
 			DataStorageManager.registerSaveableClass(PlayerInfo.class);
@@ -139,11 +142,6 @@ public class ForgeEssentials
 		ModListFile.makeModList();
 
 		// Data API stuff
-		if (FMLCommonHandler.instance().getSide().isClient())
-		{
-			dataManager.clearDrivers(); // clear before fuilling up.. if its the
-		}
-		// client...
 		dataManager.setupManager(e);
 
 		// Central TP system
@@ -158,32 +156,15 @@ public class ForgeEssentials
 		mdlaunch.serverStarting(e);
 	}
 
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent event)
-	{
-
-	}
-
 	@ServerStarted
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		mdlaunch.serverStarted(e);
 	}
-
+	
 	@ServerStopping
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		mdlaunch.serverStopping(e);
-
-		if (FMLCommonHandler.instance().getSide().isServer())
-		{
-			dataManager.clearDrivers();
-		}
-	}
-
-	@ForgeSubscribe
-	public void chuckSave(WorldEvent.Save event)
-	{
-
 	}
 }

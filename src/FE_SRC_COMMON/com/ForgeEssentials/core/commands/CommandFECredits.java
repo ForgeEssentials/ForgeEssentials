@@ -12,7 +12,7 @@ public class CommandFECredits extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName()
 	{
-		return "credits";
+		return "fecredits";
 	}
 
 	@Override

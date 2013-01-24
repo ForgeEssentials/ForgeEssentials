@@ -48,5 +48,11 @@ public class Group implements Comparable
 
 		return end;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return name+"["+parent+", "+prefix+", "+suffix+", "+zoneName+", "+priority+"]";
+	}
 
 }

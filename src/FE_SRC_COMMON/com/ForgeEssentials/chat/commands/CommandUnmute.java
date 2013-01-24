@@ -1,13 +1,13 @@
 package com.ForgeEssentials.chat.commands;
 
-import java.util.List;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FunctionHelper;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -18,6 +18,15 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	public String getCommandName()
 	{
 		return "unmute";
+	}
+
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 1)
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		else
+			return null;
 	}
 
 	@Override
@@ -66,18 +75,5 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.Chat.commands." + getCommandName();
-	}
-
-	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		if (args.length == 1)
-		{
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
-		else
-		{
-			return null;
-		}
 	}
 }
