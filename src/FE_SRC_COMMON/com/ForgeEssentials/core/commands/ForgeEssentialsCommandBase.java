@@ -15,6 +15,8 @@ import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
 	public boolean enableCmdBlock = true;
@@ -24,7 +26,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public ArrayList<String> aliasList = new ArrayList();
 	
 	// ---------------------------
-	// config intercation
+	// config interaction
 	// ---------------------------
 	
 	/**
@@ -275,6 +277,16 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
 		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+	}
+
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 0) {
+			return getListOfStringsFromIterableMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getPossibleCommands(sender));
+		}
+		else {
+	        return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		}
 	}
 
 	public abstract String getCommandPerm();
