@@ -1,10 +1,11 @@
-package com.ForgeEssentials.snooper.response;
+package com.ForgeEssentials.serverVote.snooper;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.DatagramPacket;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -18,21 +19,25 @@ import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.DatatypeConverter;
 
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.api.snooper.TextFormatter;
+import com.ForgeEssentials.api.snooper.VoteEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.snooper.ModuleSnooper;
+import com.ForgeEssentials.serverVote.ModuleServerVote;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class VoteResponce extends Response
 {
 	private File keyFolder;
-	private boolean debug = false;
 	
 	private KeyPair keyPair;
 	private PrivateKey privateKey;
@@ -43,21 +48,52 @@ public class VoteResponce extends Response
 	{
 		try
 		{
-			String encr = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
-			System.out.println("encr: " + encr);
+			String decoded;
 			
-			Cipher cipher = Cipher.getInstance("RSA");
-			cipher.init(Cipher.DECRYPT_MODE, privateKey);
-			byte[] decodedBytes = cipher.doFinal(encr.getBytes());
-			String decoded = new String(decodedBytes);
-			System.out.println("decoded: " + decoded);
+			try
+			{
+				String encr = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
+				Cipher cipher = Cipher.getInstance("RSA");
+				cipher.init(Cipher.DECRYPT_MODE, privateKey);
+				byte[] decodedBytes = cipher.doFinal(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
+				decoded = new String(decodedBytes);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				return TextFormatter.toJSON(new String[] {"Failed", TextFormatter.toJSON(new String[] {"Encryption"})});
+			}
+			
+			VoteEvent vote = new VoteEvent(decoded);
+				
+			if(!vote.isSane()) return TextFormatter.toJSON(new String[] {"Failed", TextFormatter.toJSON(new String[] {"notSane"})});
+			
+			OutputHandler.SOP("Vote: " + vote);
+			
+			try
+			{
+				MinecraftForge.EVENT_BUS.post(vote);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				return TextFormatter.toJSON(new String[] {"Failed", TextFormatter.toJSON(new String[] {e.getMessage()})});
+			}
+			
+			if(vote.isCanceled())
+			{
+				return TextFormatter.toJSON(new String[] {"Failed", TextFormatter.toJSON(vote.getFeedback())});
+			}
+			else
+			{
+				return TextFormatter.toJSON(new String[] {"Success"});
+			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			return null;
 		}
-		    
-		return TextFormatter.toJSON(new String[] {"Handled"});
 	}
 
 	@Override
@@ -69,19 +105,18 @@ public class VoteResponce extends Response
 	@Override
 	public void readConfig(String category, Configuration config)
 	{
-		debug = config.get(category, "debug", false, "This might print sensitive info in the server log!").getBoolean(false);
 		loadKeys();
 	}
 
 	@Override
 	public void writeConfig(String category, Configuration config)
 	{
-		config.get(category, "debug", false).value = "" + debug;
+		
 	}
 
 	private void loadKeys()
 	{
-		keyFolder = new File(ModuleSnooper.configSnooper.getFile().getParent(), "RSA");
+		keyFolder = new File(ModuleServerVote.config.getFile().getParent(), "RSA");
 		File publicFile = new File(keyFolder, "public.key");
 		File privateFile = new File(keyFolder, "private.key");
 		

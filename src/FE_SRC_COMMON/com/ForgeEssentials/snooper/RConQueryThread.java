@@ -22,6 +22,7 @@ import net.minecraft.network.rcon.IServer;
 import net.minecraft.network.rcon.RConUtils;
 
 import com.ForgeEssentials.api.snooper.Response;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class RConQueryThread implements Runnable
 {
@@ -164,7 +165,6 @@ public class RConQueryThread implements Runnable
 						return false;
 					}
 					byte[] bt = response.getResponceByte(getRequestId(par1DatagramPacket.getSocketAddress()), par1DatagramPacket);
-					logDebug(new String(bt));
 					sendResponsePacket(bt, par1DatagramPacket);
 					logDebug("Case " + var2[2] + " [" + var4 + "] ");
 					return true;
@@ -360,7 +360,7 @@ public class RConQueryThread implements Runnable
 	 */
 	protected void logDebug(String par1Str)
 	{
-		server.logDebug(par1Str);
+		OutputHandler.debug(par1Str);
 	}
 
 	/**

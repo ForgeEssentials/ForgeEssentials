@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import com.ForgeEssentials.api.snooper.Response;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLLog;
 
@@ -29,7 +30,7 @@ public class ResponseRegistry
 		}
 		else
 		{
-			FMLLog.fine("Response " + response.getName() + " ID: " + ID + " registered!");
+			OutputHandler.debug("Response " + response.getName() + " ID: " + ID + " registered!");
 			map.put(ID, response);
 		}
 	}
