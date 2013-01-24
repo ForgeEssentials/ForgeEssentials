@@ -2237,9 +2237,9 @@ public class SqlHelper
 		try
 		{
 			int zoneID = getZoneIDFromZoneName(zone);
-			instance.statementDeletePermission.setString(1, group);
-			instance.statementDeletePermission.executeUpdate();
-			instance.statementDeletePermission.clearParameters();
+			instance.statementDeleteGroupInZone.setString(1, group);
+			instance.statementDeleteGroupInZone.executeUpdate();
+			instance.statementDeleteGroupInZone.clearParameters();
 		}
 		catch (SQLException e)
 		{
