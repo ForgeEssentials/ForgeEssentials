@@ -65,7 +65,7 @@ public final class FunctionHelper
 
 	public static WorldPoint getEntityPoint(Entity entity)
 	{
-		return new WorldPoint(entity.worldObj, entity.posX, entity.posY, entity.posZ);
+		return new WorldPoint(entity);
 	}
 
 	public static EntityPlayerMP getPlayerFromUsername(String username)

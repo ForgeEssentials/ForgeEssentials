@@ -56,9 +56,9 @@ public class TickTaskSetSelection implements ITickTask
 		int currentTickChanged = 0;
 		boolean continueFlag = true;
 
-		int x = current.getX();
-		int y = current.getY();
-		int z = current.getZ();
+		int x = current.x;
+		int y = current.y;
+		int z = current.z;
 
 		while (continueFlag)
 		{
@@ -85,20 +85,20 @@ public class TickTaskSetSelection implements ITickTask
 
 			y++;
 			// Bounds checking comes first to avoid fencepost errors.
-			if (y > last.getY())
+			if (y > last.y)
 			{
 				// Reset y, increment z.
-				y = first.getY();
+				y = first.y;
 				z++;
 
-				if (z > last.getZ())
+				if (z > last.z)
 				{
 					// Reset z, increment x.
-					z = first.getZ();
+					z = first.z;
 					x++;
 
 					// Check stop condition
-					if (x > last.getX())
+					if (x > last.x)
 					{
 						isComplete = true;
 					}

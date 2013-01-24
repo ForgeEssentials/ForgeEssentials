@@ -61,8 +61,8 @@ public class TickTaskTopManipulator implements ITickTask
 		World world = player.worldObj;
 
 		// Only store the X and Z, since we're considering columns only.
-		int x = currentPos.getX();
-		int z = currentPos.getZ();
+		int x = currentPos.x;
+		int z = currentPos.z;
 		int y = 0;
 		int blockID;
 
@@ -144,11 +144,11 @@ public class TickTaskTopManipulator implements ITickTask
 
 			z++;
 
-			if (z > (effectOrigin.getZ() + effectRadius))
+			if (z > (effectOrigin.z + effectRadius))
 			{
 				x++;
-				z = effectOrigin.getZ() - effectRadius;
-				if (x > (effectOrigin.getX() + effectRadius))
+				z = effectOrigin.z - effectRadius;
+				if (x > (effectOrigin.x + effectRadius))
 				{
 					isComplete = true;
 				}

@@ -8,9 +8,9 @@ public abstract class AreaBase
 {
 	// used for pretty much everything else.
 	@SaveableField
-	private Point high;
+	private Point	high;
 	@SaveableField
-	private Point low;
+	private Point	low;
 
 	/**
 	 * Points are inclusive.
@@ -25,19 +25,19 @@ public abstract class AreaBase
 		high = points[1];
 	}
 
-	public int getXLength()
+	public int xLength()
 	{
-		return high.getX() - low.getX() + 1;
+		return high.x - low.x + 1;
 	}
 
 	public int getYLength()
 	{
-		return high.getY() - low.getY() + 1;
+		return high.y - low.y + 1;
 	}
 
 	public int getZLength()
 	{
-		return high.getZ() - low.getZ() + 1;
+		return high.z - low.z + 1;
 	}
 
 	public Point getHighPoint()
@@ -55,33 +55,33 @@ public abstract class AreaBase
 	 */
 	public static Point[] getAlignedPoints(Point p1, Point p2)
 	{
-		int diffx = p1.getX() - p2.getX();
-		int diffy = p1.getY() - p2.getY();
-		int diffz = p1.getZ() - p2.getZ();
+		int diffx = p1.x - p2.x;
+		int diffy = p1.y - p2.y;
+		int diffz = p1.z - p2.z;
 
-		int newX1 = p2.getX();
-		int newX2 = p1.getX();
-		int newY1 = p2.getY();
-		int newY2 = p1.getY();
-		int newZ1 = p2.getZ();
-		int newZ2 = p1.getZ();
+		int newX1 = p2.x;
+		int newX2 = p1.x;
+		int newY1 = p2.y;
+		int newY2 = p1.y;
+		int newZ1 = p2.z;
+		int newZ2 = p1.z;
 
 		if (diffx < 0)
 		{
-			newX1 = p1.getX();
-			newX2 = p2.getX();
+			newX1 = p1.x;
+			newX2 = p2.x;
 		}
 
 		if (diffy < 0)
 		{
-			newY1 = p1.getY();
-			newY2 = p2.getY();
+			newY1 = p1.y;
+			newY2 = p2.y;
 		}
 
 		if (diffz < 0)
 		{
-			newZ1 = p1.getZ();
-			newZ2 = p2.getZ();
+			newZ1 = p1.z;
+			newZ2 = p2.z;
 		}
 		return new Point[] { new Point(newX1, newY1, newZ1), new Point(newX2, newY2, newZ2) };
 	}
@@ -89,8 +89,7 @@ public abstract class AreaBase
 	/**
 	 * Determines if a given point is within the bounds of an area.
 	 * 
-	 * @param p
-	 *            Point to check against the Area
+	 * @param p Point to check against the Area
 	 * @return True, if the Point p is inside the area.
 	 */
 	public boolean contains(Point p)
@@ -102,15 +101,13 @@ public abstract class AreaBase
 	 * checks if this area contains with another
 	 * 
 	 * @param area
-	 *            to check against this area
+	 * to check against this area
 	 * @return True, AreaBAse area is completely within this area
 	 */
 	public boolean contains(AreaBase area)
 	{
 		if (this.contains(area.high) && this.contains(area.low))
-		{
 			return true;
-		}
 		return false;
 	}
 
@@ -118,34 +115,28 @@ public abstract class AreaBase
 	 * checks if this area is overlapping with another
 	 * 
 	 * @param area
-	 *            to check against this area
+	 * to check against this area
 	 * @return True, if the given area overlaps with this one.
 	 */
 	public boolean intersectsWith(AreaBase area)
 	{
 		if (this.contains(area.high) || this.contains(area.low))
-		{
 			return true;
-		}
 		return false;
 	}
 
 	/**
 	 * 
 	 * @param area
-	 *            The area to be checked.
+	 * The area to be checked.
 	 * @return NULL if the areas to do not intersect. Argument if this area completely contains the argument.
 	 */
 	public AreaBase getIntersection(AreaBase area)
 	{
 		if (intersectsWith(area))
-		{
 			return null;
-		}
 		else if (this.contains(area))
-		{
 			return area;
-		}
 		else
 		{
 			// highest low-point.
@@ -168,15 +159,13 @@ public abstract class AreaBase
 	/**
 	 * 
 	 * @param area
-	 *            The area to be checked.
+	 * The area to be checked.
 	 * @return NULL if the areas to do not make a cuboid together.
 	 */
 	public AreaBase getUnity(AreaBase area)
 	{
 		if (!makesCuboidWith(area))
-		{
 			return null;
-		}
 		else
 		{
 			// lowest low-point.
@@ -198,10 +187,10 @@ public abstract class AreaBase
 	{
 		return new Selection(low, high);
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return " {"+high.toString() + " , "+low.toString()+" }";
+		return " {" + high.toString() + " , " + low.toString() + " }";
 	}
 }

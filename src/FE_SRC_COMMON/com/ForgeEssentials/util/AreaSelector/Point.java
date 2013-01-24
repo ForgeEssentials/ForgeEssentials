@@ -1,54 +1,44 @@
 package com.ForgeEssentials.util.AreaSelector;
 
-import java.io.Serializable;
-
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.ForgeEssentials.data.SaveableObject;
 import com.ForgeEssentials.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.data.TaggedClass;
 
+import net.minecraft.entity.Entity;
+
+import java.io.Serializable;
+
 @SaveableObject(SaveInline = true)
 public class Point implements Serializable, Comparable<Point>
 {
-	@SaveableField
-	public double x;
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 9058731447466825626L;
 
 	@SaveableField
-	public double y;
+	public int					x;
 
 	@SaveableField
-	public double z;
+	public int					y;
 
-	public Point(double x, double y, double z)
+	@SaveableField
+	public int					z;
+
+	public Point(int x, int y, int z)
 	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public Point(EntityPlayer player)
+	public Point(Entity player)
 	{
-		x = player.posX;
-		y = player.posY;
-		z = player.posZ;
-	}
-
-	public int getX()
-	{
-		return (int) Math.floor(x);
-	}
-
-	public int getY()
-	{
-		return (int) Math.floor(y);
-	}
-
-	public int getZ()
-	{
-		return (int) Math.floor(z);
+		x = (int) Math.floor(player.posX);
+		y = (int) Math.floor(player.posY);
+		z = (int) Math.floor(player.posZ);
 	}
 
 	/**
@@ -60,9 +50,7 @@ public class Point implements Serializable, Comparable<Point>
 	public int compareTo(Point point)
 	{
 		if (equals(point))
-		{
 			return 0;
-		}
 
 		int positives = 0;
 		int negatives = 0;
@@ -95,26 +83,18 @@ public class Point implements Serializable, Comparable<Point>
 		}
 
 		if (positives > negatives)
-		{
 			return +1;
-		}
 		else if (negatives > positives)
-		{
 			return -1;
-		}
 		else
-		{
-			return (int) ((x - point.x) + (y - point.y) + (z - point.z));
-		}
+			return (int) (x - point.x + y - point.y + z - point.z);
 	}
 
 	@Override
 	public boolean equals(Object object)
 	{
 		if (object instanceof Point && x == ((Point) object).x && y == ((Point) object).y && z == ((Point) object).z)
-		{
 			return true;
-		}
 
 		return false;
 	}
@@ -125,7 +105,7 @@ public class Point implements Serializable, Comparable<Point>
 	 */
 	public double getDistanceTo(Point point)
 	{
-		return Math.sqrt(((x - point.x) * (x - point.x)) + ((y - point.y) * (y - point.y)) + ((z - point.z) * (z - point.z)));
+		return Math.sqrt((x - point.x) * (x - point.x) + (y - point.y) * (y - point.y) + (z - point.z) * (z - point.z));
 	}
 
 	/**
@@ -135,7 +115,7 @@ public class Point implements Serializable, Comparable<Point>
 	 */
 	public boolean alignsWith(Point p)
 	{
-		return getX() == p.getX() || getY() == p.getY() || getZ() == p.getZ();
+		return x == p.x || y == p.y || z == p.z;
 	}
 
 	/**
@@ -144,7 +124,7 @@ public class Point implements Serializable, Comparable<Point>
 	 * @param point
 	 * @return
 	 */
-	public Point copy(Point point)
+	public static Point copy(Point point)
 	{
 		return new Point(point.x, point.y, point.z);
 	}
@@ -152,36 +132,32 @@ public class Point implements Serializable, Comparable<Point>
 	/**
 	 * ensures the Point is valid. Just floors the Y axis to 0. Y can't be negative.
 	 */
-	public static Point validate(Point point)
+	public void validate()
 	{
-		if (point.y < 0)
+		if (y < 0)
 		{
-			return new Point(point.x, 0, point.z);
-		}
-		else
-		{
-			return point;
+			y = 0;
 		}
 	}
 
 	@Reconstructor()
 	public static Point reconstruct(TaggedClass tag)
 	{
-		double x = (Double) tag.getFieldValue("x");
-		double y = (Double) tag.getFieldValue("y");
-		double z = (Double) tag.getFieldValue("z");
+		int x = (Integer) tag.getFieldValue("x");
+		int y = (Integer) tag.getFieldValue("y");
+		int z = (Integer) tag.getFieldValue("z");
 		return new Point(x, y, z);
 	}
 
 	@UniqueLoadingKey()
 	private String getLoadingField()
 	{
-		return "Point"+this;
+		return "Point" + this;
 	}
 
 	@Override
 	public String toString()
 	{
-		return "[" + x + ";" + y + ";" + z + "]";
+		return "Point[" + x + ", " + y + ", " + z + "]";
 	}
 }

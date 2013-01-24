@@ -141,7 +141,7 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 			spawn.setInteger("dim", 0);
 			DataStorage.setData("spawn", spawn);
 			DataStorage.save();
-			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.getX(), point.getY(), point.getZ());
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.x, point.y, point.z);
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		}
 		else

@@ -126,6 +126,7 @@ rm -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip"
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-playerlogger-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/FEReadme.txt"
 rm -rf "${WORKSPACE}/output/HowToGetFEsupport.txt"
+rm -rf "${WORKSPACE}/output/LICENSE.TXT"
 
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON

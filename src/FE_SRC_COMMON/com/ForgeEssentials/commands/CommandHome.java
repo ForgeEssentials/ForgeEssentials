@@ -48,8 +48,8 @@ public class CommandHome extends ForgeEssentialsCommandBase
 			if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
 			{
 				WarpPoint p = new WarpPoint(sender);
-				PlayerInfo.getPlayerInfo(sender).home = p;
-				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.getX(), p.getY(), p.getZ()));
+				PlayerInfo.getPlayerInfo(sender.username).home = p;
+				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
 			}
 			else if (args.length >= 3)
 			{
@@ -84,8 +84,8 @@ public class CommandHome extends ForgeEssentialsCommandBase
 					return;
 				}
 				WarpPoint p = new WarpPoint(sender.worldObj.provider.dimensionId, x, y, z, sender.cameraPitch, sender.cameraYaw);
-				PlayerInfo.getPlayerInfo(sender).home = p;
-				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.getX(), p.getY(), p.getZ()));
+				PlayerInfo.getPlayerInfo(sender.username).home = p;
+				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
 			}
 		}
 	}
