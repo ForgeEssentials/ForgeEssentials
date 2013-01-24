@@ -19,7 +19,6 @@ import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
 import com.ForgeEssentials.snooper.response.PlayerInv;
 import com.ForgeEssentials.snooper.response.PlayerList;
 import com.ForgeEssentials.snooper.response.ServerInfo;
-import com.ForgeEssentials.snooper.response.VoteResponce;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -50,7 +49,6 @@ public class ModuleSnooper
 		API.registerResponce(5, new PlayerInfoResonce());
 		API.registerResponce(6, new PlayerArmor());
 		API.registerResponce(7, new PlayerInv());
-		API.registerResponce(8, new VoteResponce());
 	}
 
 	@ServerInit
