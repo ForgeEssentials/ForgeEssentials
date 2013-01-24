@@ -2238,6 +2238,7 @@ public class SqlHelper
 		{
 			int zoneID = getZoneIDFromZoneName(zone);
 			instance.statementDeleteGroupInZone.setString(1, group);
+			instance.statementDeleteGroupInZone.setInt(2, zoneID);
 			instance.statementDeleteGroupInZone.executeUpdate();
 			instance.statementDeleteGroupInZone.clearParameters();
 		}
