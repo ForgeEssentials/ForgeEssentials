@@ -31,6 +31,7 @@ public class Chat implements IChatListener
 {
 	public static List<String>	bannedWords	= new ArrayList<String>();
 	public static boolean		censor;
+	public static String censorSymbol;
 
 	@ForgeSubscribe
 	public void chatEvent(ServerChatEvent event)
@@ -61,7 +62,7 @@ public class Chat implements IChatListener
 		{
 			for (String word : bannedWords)
 			{
-				message = message.replaceAll("(?i)\\b" + word + "\\b", "###");
+				message = message.replaceAll("(?i)\\b" + word + "\\b", censorSymbol);
 			}
 		}
 
