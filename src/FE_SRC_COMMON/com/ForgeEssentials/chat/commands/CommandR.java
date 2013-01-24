@@ -46,7 +46,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 			{
 				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] "
 						+ FEChatFormatCodes.GREY;
-				String receiverMessage = "[" + sender.getCommandSenderName() + " -> me ] ";
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
 				for (int i = 0; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -68,9 +68,9 @@ public class CommandR extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, target + " is not a valid username");
 					return;
 				}
-				String receiverMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD
+				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD
 						+ "] " + FEChatFormatCodes.GREY;
-				String senderMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD
 						+ " -> me ] " + FEChatFormatCodes.GREY;
 				for (int i = 0; i < args.length; i++)
 				{
