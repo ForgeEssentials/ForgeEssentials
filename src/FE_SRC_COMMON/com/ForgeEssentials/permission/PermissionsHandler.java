@@ -118,7 +118,7 @@ public final class PermissionsHandler
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
 				{
 					group = groups.get(i);
-					while (group != null && result != PermResult.UNKNOWN)
+					while (group != null && result == PermResult.UNKNOWN)
 					{
 						// checks the permissions for the group.
 						result = SqlHelper.getPermissionResult(group.name, true, event.checker, tempZone.getZoneName(), event.checkForward);
