@@ -27,6 +27,7 @@ public class OverrideManager {
 		e.registerServerCommand(new CommandSaveOn());
 		e.registerServerCommand(new CommandSay());
 		e.registerServerCommand(new CommandSeed());
+		e.registerServerCommand(new CommandSetSpawn());
 		e.registerServerCommand(new CommandStop());
 		e.registerServerCommand(new CommandTime());
 		e.registerServerCommand(new CommandToggleDownfall());
