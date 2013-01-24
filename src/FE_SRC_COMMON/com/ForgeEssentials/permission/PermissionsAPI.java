@@ -156,15 +156,13 @@ public class PermissionsAPI
 		ArrayList<Group> list = new ArrayList<Group>();
 
 		ArrayList<Group> temp;
-		// while (zone != null)
-		// {
+		
 		temp = SqlHelper.getGroupsForPlayer(player, zoneID);
 		if(temp.isEmpty())
 		{
 			temp = SqlHelper.getGroupsForPlayer(player, ZoneManager.GLOBAL.getZoneName());
 		}
 		list.addAll(temp);
-		// }
 
 		if (includeDefaults)
 		{

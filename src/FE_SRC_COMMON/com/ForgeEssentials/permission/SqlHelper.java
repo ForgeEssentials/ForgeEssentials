@@ -1078,12 +1078,16 @@ public class SqlHelper
 
 	/**
 	 * @param groupName
-	 * @return NULL if no group in existence. or an SQL error hapenned.
+	 * @return NULL if no group in existence. or an SQL error happened.
 	 */
 	protected static synchronized Group getGroupForName(String group)
 	{
 		try
 		{
+			
+			if (group == null)
+				return null;
+			
 			// setup query for List
 			instance.statementGetGroupFromName.setString(1, group);
 			ResultSet set = instance.statementGetGroupFromName.executeQuery();
@@ -1129,7 +1133,7 @@ public class SqlHelper
 
 			int priority = set.getInt(COLUMN_GROUP_PRIORITY);
 			String name = set.getString(COLUMN_GROUP_NAME);
-			String parent = set.getString(COLUMN_GROUP_PARENT);
+			String parent = getGroupNameFromGroupID(set.getInt(COLUMN_GROUP_PARENT));
 			String prefix = set.getString(COLUMN_GROUP_PREFIX);
 			String suffix = set.getString(COLUMN_GROUP_SUFFIX);
 			String zone = set.getString(COLUMN_ZONE_NAME);
@@ -1171,7 +1175,7 @@ public class SqlHelper
 			{
 				priority = result.getInt(COLUMN_GROUP_PRIORITY);
 				name = result.getString(COLUMN_GROUP_NAME);
-				parent = result.getString(COLUMN_GROUP_PARENT);
+				parent = getGroupNameFromGroupID(result.getInt(COLUMN_GROUP_PARENT));
 				prefix = result.getString(COLUMN_GROUP_PREFIX);
 				suffix = result.getString(COLUMN_GROUP_SUFFIX);
 				g = new Group(name, prefix, suffix, parent, zone, priority);

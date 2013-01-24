@@ -118,8 +118,14 @@ public final class PermissionsHandler
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
 				{
 					group = groups.get(i);
-					// checks the permissions for the group.
-					result = SqlHelper.getPermissionResult(group.name, true, event.checker, tempZone.getZoneName(), event.checkForward);
+					while (group != null && result != PermResult.UNKNOWN)
+					{
+						// checks the permissions for the group.
+						result = SqlHelper.getPermissionResult(group.name, true, event.checker, tempZone.getZoneName(), event.checkForward);
+						
+						// sets the group to its parent.
+						group = SqlHelper.getGroupForName(group.parent);
+					}
 				}
 			}
 
@@ -149,7 +155,6 @@ public final class PermissionsHandler
 
 	private ArrayList<AreaBase> getApplicableAreas(AreaBase doneTo, PermQueryPlayer event)
 	{
-		PlayerInfo.getPlayerInfo(event.doer);
 		ArrayList<AreaBase> applicable = new ArrayList<AreaBase>();
 
 		Zone worldZone = ZoneManager.getWorldZone(event.doer.worldObj);
