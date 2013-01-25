@@ -93,6 +93,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandI());
 		cmdList.add(new CommandClearInventory());
 		cmdList.add(new CommandGameMode());
+		cmdList.add(new CommandSudo());
 	}
 	
 	public static void commandConfigs(Configuration config)
