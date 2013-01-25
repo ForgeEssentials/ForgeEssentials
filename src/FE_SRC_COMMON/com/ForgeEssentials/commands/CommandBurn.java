@@ -6,7 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -27,7 +27,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			if (args[0].toLowerCase().equals("me") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".me")))
+			if (args[0].toLowerCase().equals("me") && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".me")))
 			{
 				sender.setFire(15);
 				OutputHandler.chatError(sender, Localization.get(Localization.BURN_SELF));
@@ -35,7 +35,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			else
 			{
 				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
+				if (victim != null && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
 				{
 					victim.setFire(15);
 					OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
@@ -48,7 +48,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			if (args[0].toLowerCase().equals("me") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".me")))
+			if (args[0].toLowerCase().equals("me") && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".me")))
 			{
 				try
 				{
@@ -63,7 +63,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			else
 			{
 				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
+				if (victim != null && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
 				{
 					try
 					{

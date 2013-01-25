@@ -4,7 +4,7 @@ import net.minecraft.command.CommandServerEmote;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
 public class CommandMe extends CommandServerEmote
@@ -15,7 +15,7 @@ public class CommandMe extends CommandServerEmote
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
+			return APIHelper.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
 		}
 		else
 		{

@@ -70,7 +70,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
 	{
-		PermResult result = PermissionsAPI.checkPermResult(new PermQueryBlanketSpot(new WorldPoint(block.worldObj, block.xCoord, block.yCoord, block.zCoord),
+		PermResult result = APIHelper.checkPermResult(new PermQueryBlanketSpot(new WorldPoint(block.worldObj, block.xCoord, block.yCoord, block.zCoord),
 				getCommandPerm(), true));
 		return result.equals(PermResult.DENY) ? false : true;
 	}
@@ -152,7 +152,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		PermResult result = PermissionsAPI.checkPermResult(new PermQueryPlayer(player, getCommandPerm(), true));
+		PermResult result = APIHelper.checkPermResult(new PermQueryPlayer(player, getCommandPerm(), true));
 		return result.equals(PermResult.DENY) ? false : true;
 	}
 
@@ -170,7 +170,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 				return getListOfStringsMatchingLastWord(args, args2);
 			case 2:
 				if (args[0].equalsIgnoreCase("group")) {
-					List<Group> groups = PermissionsAPI.getGroupsInZone(ZoneManager.GLOBAL.getZoneName());
+					List<Group> groups = APIHelper.getGroupsInZone(ZoneManager.GLOBAL.getZoneName());
 					ArrayList<String> groupnames = new ArrayList<String>();
 					for (int i = 0; i < groups.size(); i++) {
 						groupnames.add(groups.get(i).name);

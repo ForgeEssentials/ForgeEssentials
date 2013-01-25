@@ -29,10 +29,10 @@ public class FlatFilePlayers
 		{
 			if (cat.contains("."))
 				continue;
-			else if (cat.equalsIgnoreCase(PermissionsAPI.EntryPlayer))
+			else if (cat.equalsIgnoreCase(APIHelper.EntryPlayer))
 			{
-				PermissionsAPI.EPPrefix = config.get(cat, "prefix", " ").value;
-				PermissionsAPI.EPSuffix = config.get(cat, "suffix", " ").value;
+				APIHelper.EPPrefix = config.get(cat, "prefix", " ").value;
+				APIHelper.EPSuffix = config.get(cat, "suffix", " ").value;
 				continue;
 			}
 			
@@ -64,10 +64,10 @@ public class FlatFilePlayers
 		PlayerInfo info;
 		for (String name : players)
 		{
-			if (name.equalsIgnoreCase(PermissionsAPI.EntryPlayer))
+			if (name.equalsIgnoreCase(APIHelper.EntryPlayer))
 			{
-				config.get(name, "prefix", PermissionsAPI.EPPrefix);
-				config.get(name, "suffix", PermissionsAPI.EPSuffix);
+				config.get(name, "prefix", APIHelper.EPPrefix);
+				config.get(name, "suffix", APIHelper.EPSuffix);
 				continue;
 			}
 			

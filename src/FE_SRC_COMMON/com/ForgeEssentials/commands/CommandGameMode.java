@@ -10,7 +10,7 @@ import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -55,7 +55,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				sender.setGameType(gm);
 			}
 		}
-		else if (args.length == 2 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		else if (args.length == 2 && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 			if (args.length == 2)

@@ -2,7 +2,7 @@ package com.ForgeEssentials.chat;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.Group;
-import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.permission.Zone;
 import com.ForgeEssentials.permission.ZoneManager;
@@ -81,7 +81,7 @@ public class Chat implements IChatListener
 
 		if (event.message.contains("&"))
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
+			if (APIHelper.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
 			{
 				message = FunctionHelper.formatColors(event.message);
 			}

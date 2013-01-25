@@ -57,7 +57,7 @@ public class CommandFEPermGroup
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
-			PermissionsAPI.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
+			APIHelper.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
 			sender.sendChatToPlayer("Group " + args[1] + " made in zone " + zone.getZoneName());
 			return;
 		}
@@ -68,7 +68,7 @@ public class CommandFEPermGroup
 				OutputHandler.chatConfirmation(sender, "Usage: /p group delete <groupname>");
 				return;
 			}
-			if(PermissionsAPI.getGroupForName(args[1]) == null)
+			if(APIHelper.getGroupForName(args[1]) == null)
 			{
 				OutputHandler.chatError(sender, args[0] + " does not exist as a group!");
 				return;
@@ -90,13 +90,13 @@ public class CommandFEPermGroup
 				}
 			}
 			//Remove zone
-			ArrayList groups = PermissionsAPI.getGroupsInZone(zone.getZoneName());
+			ArrayList groups = APIHelper.getGroupsInZone(zone.getZoneName());
 			for(Object groupObj : groups)
 			{
 				Group group = (Group)groupObj;
 				if(group.name.equalsIgnoreCase(args[1]))
 				{
-					PermissionsAPI.deleteGroupInZone(args[1], zone.getZoneName());
+					APIHelper.deleteGroupInZone(args[1], zone.getZoneName());
 					OutputHandler.chatConfirmation(sender, "Group " + args[1] + " removed in zone " + zone.getZoneName());
 					return;
 				}
@@ -123,7 +123,7 @@ public class CommandFEPermGroup
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
-			ArrayList list = PermissionsAPI.getGroupsInZone(zone.getZoneName());
+			ArrayList list = APIHelper.getGroupsInZone(zone.getZoneName());
 			String groups = "";
 			int i = 0;
 			for(Object groupObj : list)
@@ -139,7 +139,7 @@ public class CommandFEPermGroup
 		}
 		
 		
-		Group group = PermissionsAPI.getGroupForName(args[0]);
+		Group group = APIHelper.getGroupForName(args[0]);
 		if (group == null)
 		{
 			OutputHandler.chatError(sender, args[0] + " does not exist as a group!");
@@ -202,7 +202,7 @@ public class CommandFEPermGroup
 					group.prefix = " ";
 				else
 					group.prefix = args[3];
-				boolean result = PermissionsAPI.updateGroup(group);
+				boolean result = APIHelper.updateGroup(group);
 				if(result)
 				{
 					OutputHandler.chatConfirmation(sender, group.name + "'s prefix set to &f" + group.prefix);
@@ -227,7 +227,7 @@ public class CommandFEPermGroup
 					group.suffix = " ";
 				else
 					group.suffix = args[3];
-				boolean result = PermissionsAPI.updateGroup(group);
+				boolean result = APIHelper.updateGroup(group);
 				if(result)
 				{
 					OutputHandler.chatConfirmation(sender, group.name + "'s suffix set to &f" + group.suffix);
@@ -255,7 +255,7 @@ public class CommandFEPermGroup
 					group.parent = null;
 				else
 					group.parent = args[3];
-				boolean result = PermissionsAPI.updateGroup(group);
+				boolean result = APIHelper.updateGroup(group);
 				if(result)
 				{
 					OutputHandler.chatConfirmation(sender, group.name + "'s parent set to " + group.parent);
@@ -290,7 +290,7 @@ public class CommandFEPermGroup
 					{
 						OutputHandler.chatError(sender, args[3] + "");
 					}
-				boolean result = PermissionsAPI.updateGroup(group);
+				boolean result = APIHelper.updateGroup(group);
 				if(result)
 				{
 					OutputHandler.chatConfirmation(sender, group.name + "'s priority set to " + group.priority);
@@ -323,7 +323,7 @@ public class CommandFEPermGroup
 		}
 		if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow"))
 		{
-			String result = PermissionsAPI.setGroupPermission(group.name, args[2], true, zone.getZoneName());
+			String result = APIHelper.setGroupPermission(group.name, args[2], true, zone.getZoneName());
 			if(result == null)
 			{
 				OutputHandler.chatConfirmation(sender, group.name + " in zone " + zone.getZoneName() + " allowed access to " + args[2]);
@@ -336,7 +336,7 @@ public class CommandFEPermGroup
 		}
 		if(args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("deny"))
 		{
-			String result = PermissionsAPI.setGroupPermission(group.name, args[2], false, zone.getZoneName());
+			String result = APIHelper.setGroupPermission(group.name, args[2], false, zone.getZoneName());
 			if(result == null)
 			{
 				OutputHandler.chatConfirmation(sender, group.name + " in zone " + zone.getZoneName() + " denied access to " + args[2]);
@@ -349,7 +349,7 @@ public class CommandFEPermGroup
 		}
 		if(args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove"))
 		{
-			String result = PermissionsAPI.clearGroupPermission(group.name, args[2], zone.getZoneName());
+			String result = APIHelper.clearGroupPermission(group.name, args[2], zone.getZoneName());
 			if(result == null)
 			{
 				OutputHandler.chatConfirmation(sender, args[2] + " has been removed from " + group.name + " in zone " + zone.getZoneName());
@@ -362,7 +362,7 @@ public class CommandFEPermGroup
 		}
 		if(args[1].equalsIgnoreCase("get"))
 		{
-			String result = PermissionsAPI.getPermissionForGroup(group.name, zone.getZoneName(), args[2]);
+			String result = APIHelper.getPermissionForGroup(group.name, zone.getZoneName(), args[2]);
 			if(result == null)
 			{
 				OutputHandler.chatError(sender, "Error processing statement");
@@ -423,7 +423,7 @@ public class CommandFEPermGroup
 					sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
-			PermissionsAPI.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
+			APIHelper.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
 			sender.sendChatToPlayer("Group " + args[1] + " made in zone " + zone.getZoneName());
 			return;
 		}
@@ -434,7 +434,7 @@ public class CommandFEPermGroup
 				sender.sendChatToPlayer("Usage: /p group delete <groupname>");
 				return;
 			}
-			if(PermissionsAPI.getGroupForName(args[1]) == null)
+			if(APIHelper.getGroupForName(args[1]) == null)
 			{
 				sender.sendChatToPlayer(args[0] + " does not exist as a group!");
 				return;
@@ -452,7 +452,7 @@ public class CommandFEPermGroup
 				}
 			}
 			//Remove zone
-			PermissionsAPI.deleteGroupInZone(args[1], zone.getZoneName());
+			APIHelper.deleteGroupInZone(args[1], zone.getZoneName());
 			sender.sendChatToPlayer("Group " + args[1] + " removed in zone " + zone.getZoneName());
 			return;
 		}
@@ -471,7 +471,7 @@ public class CommandFEPermGroup
 					sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
-			ArrayList list = PermissionsAPI.getGroupsInZone(zone.getZoneName());
+			ArrayList list = APIHelper.getGroupsInZone(zone.getZoneName());
 			String groups = "";
 			int i = 0;
 			for(Object groupObj : list)
@@ -487,7 +487,7 @@ public class CommandFEPermGroup
 		}
 		
 		
-		Group group = PermissionsAPI.getGroupForName(args[0]);
+		Group group = APIHelper.getGroupForName(args[0]);
 		if (group == null)
 		{
 			sender.sendChatToPlayer(args[0] + " does not exist as a group!");
@@ -542,7 +542,7 @@ public class CommandFEPermGroup
 					group.prefix = " ";
 				else
 					group.prefix = args[3];
-				boolean result = PermissionsAPI.updateGroup(group);
+				boolean result = APIHelper.updateGroup(group);
 				if(result)
 				{
 					sender.sendChatToPlayer(group.name + "'s prefix set to &f" + group.prefix);
@@ -567,7 +567,7 @@ public class CommandFEPermGroup
 					group.suffix = " ";
 				else
 					group.suffix = args[3];
-				boolean result = PermissionsAPI.updateGroup(group);
+				boolean result = APIHelper.updateGroup(group);
 				if(result)
 				{
 					sender.sendChatToPlayer(group.name + "'s suffix set to &f" + group.suffix);
@@ -595,7 +595,7 @@ public class CommandFEPermGroup
 					group.parent = null;
 				else
 					group.parent = args[3];
-				boolean result = PermissionsAPI.updateGroup(group);
+				boolean result = APIHelper.updateGroup(group);
 				if(result)
 				{
 					sender.sendChatToPlayer(group.name + "'s parent set to " + group.parent);
@@ -630,7 +630,7 @@ public class CommandFEPermGroup
 					{
 						sender.sendChatToPlayer(args[3] + "");
 					}
-				boolean result = PermissionsAPI.updateGroup(group);
+				boolean result = APIHelper.updateGroup(group);
 				if(result)
 				{
 					sender.sendChatToPlayer(group.name + "'s priority set to " + group.priority);
@@ -659,7 +659,7 @@ public class CommandFEPermGroup
 		}
 		if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow"))
 		{
-			String result = PermissionsAPI.setGroupPermission(group.name, args[2], true, zone.getZoneName());
+			String result = APIHelper.setGroupPermission(group.name, args[2], true, zone.getZoneName());
 			if(result == null)
 			{
 				sender.sendChatToPlayer(group.name + " in zone " + zone.getZoneName() + " allowed access to " + args[2]);
@@ -672,7 +672,7 @@ public class CommandFEPermGroup
 		}
 		if(args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("deny"))
 		{
-			String result = PermissionsAPI.setGroupPermission(group.name, args[2], false, zone.getZoneName());
+			String result = APIHelper.setGroupPermission(group.name, args[2], false, zone.getZoneName());
 			if(result == null)
 			{
 				sender.sendChatToPlayer(group.name + " in zone " + zone.getZoneName() + " denied access to " + args[2]);
@@ -685,7 +685,7 @@ public class CommandFEPermGroup
 		}
 		if(args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove"))
 		{
-			String result = PermissionsAPI.clearGroupPermission(group.name, args[2], zone.getZoneName());
+			String result = APIHelper.clearGroupPermission(group.name, args[2], zone.getZoneName());
 			if(result == null)
 			{
 				sender.sendChatToPlayer(args[2] + " has been removed from " + group.name + " in zone " + zone.getZoneName());
@@ -698,7 +698,7 @@ public class CommandFEPermGroup
 		}
 		if(args[1].equalsIgnoreCase("get"))
 		{
-			String result = PermissionsAPI.getPermissionForGroup(group.name, zone.getZoneName(), args[2]);
+			String result = APIHelper.getPermissionForGroup(group.name, zone.getZoneName(), args[2]);
 			if(result == null)
 			{
 				sender.sendChatToPlayer("Error processing statement");
