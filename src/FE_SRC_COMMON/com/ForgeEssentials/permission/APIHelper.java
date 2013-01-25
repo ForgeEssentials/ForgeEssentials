@@ -13,7 +13,11 @@ import com.ForgeEssentials.permission.query.PermissionQueryBus;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 
-// Please redirect all calls to this class to @link PermissionsAPI , this should never be used directly by mods.
+/*
+ * This is a bouncer class for all FE Permissions API calls.
+ * If you would like to replace the backend on which the Permissions API operates, replace this class with your own.
+ * Please redirect all calls to this class to @link PermissionsAPI , this should never be used directly by mods.
+ */
 
 public class APIHelper
 {
