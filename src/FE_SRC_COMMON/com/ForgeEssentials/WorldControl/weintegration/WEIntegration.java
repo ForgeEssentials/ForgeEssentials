@@ -28,12 +28,12 @@ public class WEIntegration implements IChatListener {
 
 	protected WorldEdit we;
 	private LocalConfig config;
-	protected FEServerInterface serverInterface;
+	public static FEServerInterface serverInterface;
 
 	protected List<String> whitelist = new ArrayList<String>();
 	private Map<EntityPlayer, LocalPlayer> players = new WeakHashMap<EntityPlayer, LocalPlayer>();
-	private Map<World, LocalWorld> worlds = new WeakHashMap<World, LocalWorld>();
-	private Map<Entity, LocalEntity> entities = new WeakHashMap<Entity, LocalEntity>();
+	private static Map<World, LocalWorld> worlds = new WeakHashMap<World, LocalWorld>();
+	private static Map<Entity, LocalEntity> entities = new WeakHashMap<Entity, LocalEntity>();
 
 	@ServerStarting
 	public void onServerStarting(FMLServerStartingEvent event) {
@@ -71,7 +71,7 @@ public class WEIntegration implements IChatListener {
 		}
 	}
 
-	protected LocalWorld getWorld(World world) {
+	protected static LocalWorld getWorld(World world) {
 		if (worlds.containsKey(world)) {
 			return worlds.get(world);
 		} else {
@@ -81,7 +81,7 @@ public class WEIntegration implements IChatListener {
 		}
 	}
 
-	protected LocalEntity getEntity(Entity entity) {
+	protected static LocalEntity getEntity(Entity entity) {
 		if (entities.containsKey(entity)) {
 			return entities.get(entity);
 		} else {

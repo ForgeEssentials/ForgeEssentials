@@ -49,7 +49,7 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.util.TreeGenerator.TreeType;
 
 public class FELocalWorld extends LocalWorld {
-	private final World world;
+	protected final World world;
 
 	public FELocalWorld(World world) {
 		this.world = world;
@@ -186,7 +186,7 @@ public class FELocalWorld extends LocalWorld {
 	@Override
 	public BiomeType getBiome(Vector2D arg0) {
 		try {
-			return WEIntegration.instance.serverInterface.getBiomes().get(world.getBiomeGenForCoords(arg0.getBlockX(), arg0.getBlockZ()).biomeName);
+			return WEIntegration.serverInterface.getBiomes().get(world.getBiomeGenForCoords(arg0.getBlockX(), arg0.getBlockZ()).biomeName);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -325,7 +325,7 @@ public class FELocalWorld extends LocalWorld {
 		Vector min = arg0.getMinimumPoint();
 		Vector max = arg0.getMaximumPoint();
 		for (Entity entity : (List<Entity>)world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ()))) {
-			ret.add(WEIntegration.instance.getEntity(entity));
+			ret.add(WEIntegration.getEntity(entity));
 		}
 
 		return ret.toArray(new LocalEntity[0]);

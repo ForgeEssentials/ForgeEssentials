@@ -13,14 +13,14 @@ import com.sk89q.worldedit.bags.BlockBag;
 
 public class FELocalPlayer extends LocalPlayer {
 	private final EntityPlayer player;
-	private final com.ForgeEssentials.WorldControl.weintegration.FELocalWorld world;
+	private final LocalWorld world;
 	private final com.ForgeEssentials.WorldControl.weintegration.FEBlockBag bag;
 
 	public FELocalPlayer(EntityPlayer player) {
 		super(new com.ForgeEssentials.WorldControl.weintegration.FEServerInterface());
 
 		this.player = player;
-		this.world = WEIntegration.instance.getWorld(player.worldObj);
+		this.world = WEIntegration.getWorld(player.worldObj);
 		this.bag = new com.ForgeEssentials.WorldControl.weintegration.FEBlockBag(player);
 	}
 

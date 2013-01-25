@@ -10,7 +10,7 @@ public class FELocalEntity extends LocalEntity {
 	protected final Entity entity;
 
 	public FELocalEntity(Entity entity) {
-		super(new Location(WEIntegration.instance.getWorld(entity.worldObj), new Vector(entity.posX, entity.posY, entity.posZ), entity.rotationYaw, entity.rotationPitch));
+		super(new Location(WEIntegration.getWorld(entity.worldObj), new Vector(entity.posX, entity.posY, entity.posZ), entity.rotationYaw, entity.rotationPitch));
 
 		this.entity = entity;
 	}
