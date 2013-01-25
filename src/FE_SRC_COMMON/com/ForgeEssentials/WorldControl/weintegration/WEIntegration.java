@@ -12,13 +12,12 @@ import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
 import com.sk89q.worldedit.LocalEntity;
 import com.sk89q.worldedit.LocalPlayer;
 import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.WorldEdit;
 
-import cpw.mods.fml.common.Mod.ServerStarting;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.IChatListener;
 
 public class WEIntegration implements IChatListener {
@@ -35,14 +34,13 @@ public class WEIntegration implements IChatListener {
 	private static Map<World, LocalWorld> worlds = new WeakHashMap<World, LocalWorld>();
 	private static Map<Entity, LocalEntity> entities = new WeakHashMap<Entity, LocalEntity>();
 
-	@ServerStarting
-	public void onServerStarting(FMLServerStartingEvent event) {
-		server = event.getServer();
+	public void serverStarting(FEModuleServerInitEvent e) {
+		server = e.getServer();
 		
 
 		try {
 			we = new com.sk89q.worldedit.WorldEdit(new FEServerInterface(), config);
-		} catch (Throwable e) 
+		} catch (Throwable e1) 
 		{}
 		}
 
