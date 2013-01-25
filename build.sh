@@ -1,5 +1,5 @@
-VERSION="0.1.1.${BUILD_NUMBER}"
-MC="1.4.6"
+VERSION="1.0.0.${BUILD_NUMBER}"
+MC="1.4.7"
 
 #in case we arnt there already
 cd ${WORKSPACE}
