@@ -16,7 +16,17 @@ public class CommandDoAs extends ForgeEssentialsCommandBase{
 	}
 
 	@Override
+	public String[] getDefaultAliases()
+	{
+		return new String[] {"sudo"};
+	}
+
+	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args) {
+                if (args[1].equalsIgnoreCase("server") {
+                      target.sendChatToPlayer("Use //serverdo");
+                      return;
+                }
 		StringBuilder cmd = new StringBuilder(args.toString().length());
 		for (int i = 1; i < args.length; i++)
 		{
@@ -26,7 +36,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase{
 		EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 		target.sendChatToPlayer("Player " + sender + "is attempting to issue a command as you.");// hook into questioner
 		FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(target, cmd.toString());
-		sender.sendChatToPlayer("Successfully issued command as " + args[0]);
+		sender.sendChatToPlayer("Successfully issued command as " + args[0]); //unless you get the syntax wrong
 		
 	}
 
