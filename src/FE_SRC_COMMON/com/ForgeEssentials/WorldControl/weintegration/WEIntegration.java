@@ -19,25 +19,25 @@ import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.WorldEdit;
 
 import cpw.mods.fml.common.network.IChatListener;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 public class WEIntegration implements IChatListener {
 	
 	public static WorldEdit instance;
 	public static MinecraftServer server;
 
-	protected WorldEdit we;
-	private LocalConfig config;
+	protected static WorldEdit we;
+	private static LocalConfig config;
 	public static FEServerInterface serverInterface;
 
 	protected List<String> whitelist = new ArrayList<String>();
-	private Map<EntityPlayer, LocalPlayer> players = new WeakHashMap<EntityPlayer, LocalPlayer>();
+	private static Map<EntityPlayer, LocalPlayer> players = new WeakHashMap<EntityPlayer, LocalPlayer>();
 	private static Map<World, LocalWorld> worlds = new WeakHashMap<World, LocalWorld>();
 	private static Map<Entity, LocalEntity> entities = new WeakHashMap<Entity, LocalEntity>();
 
-	public void serverStarting(FEModuleServerInitEvent e) {
+	public static void serverStarting(FEModuleServerInitEvent e) {
 		server = e.getServer();
-		
-
+		new ChatListener();
 		try {
 			we = new com.sk89q.worldedit.WorldEdit(new FEServerInterface(), config);
 		} catch (Throwable e1) 
@@ -46,7 +46,7 @@ public class WEIntegration implements IChatListener {
 
 	@Override
 	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message) {
-		if (message.message.startsWith("//")) {
+		if (message.message.startsWith("///")) {
 			we.handleCommand(getPlayer(handler.getPlayer()), message.message.split(" "));
 			return new Packet3Chat("");
 		}
@@ -59,7 +59,7 @@ public class WEIntegration implements IChatListener {
 		return message;
 	}
 
-	protected LocalPlayer getPlayer(EntityPlayer player) {
+	protected static LocalPlayer getPlayer(EntityPlayer player) {
 		if (players.containsKey(player)) {
 			return players.get(player);
 		} else {
