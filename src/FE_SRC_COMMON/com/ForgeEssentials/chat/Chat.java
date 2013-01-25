@@ -9,7 +9,9 @@ import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
+import com.google.common.base.Strings;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.NetHandler;
@@ -60,9 +62,28 @@ public class Chat implements IChatListener
 		 */
 		if (censor)
 		{
+			
 			for (String word : bannedWords)
 			{
-				message = message.replaceAll("(?i)\\b" + word + "\\b", censorSymbol);
+				//set up our matching for censored words.
+				Pattern p = Pattern.compile("(?i)\\b" + word + "\\b");
+				Matcher m   = p.matcher(message);
+				
+				//check for found censored words
+				while(m.find())
+				{	
+					//get start index of the matched word
+					int startIndex = m.start();
+					//get end index of the matched word
+					int endIndex = m.end();
+					//determine the length of the matched censored word
+					int length = endIndex - startIndex;	
+					//build a string from the symbol in config matching the length of the censored word
+					String replaceWith = Strings.repeat(censorSymbol, length);
+					//and finally we replace the censored words :)
+					message = m.replaceAll(replaceWith);					
+				}
+									
 			}
 		}
 
@@ -271,7 +292,7 @@ public class Chat implements IChatListener
 
 		return end;
 	}
-
+	
 	private ArrayList<TreeSet<Group>> getGroupsList(Matcher match, String username)
 	{
 		ArrayList<TreeSet<Group>> list = new ArrayList<TreeSet<Group>>();
