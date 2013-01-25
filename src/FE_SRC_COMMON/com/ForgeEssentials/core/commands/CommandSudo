@@ -1,0 +1,88 @@
+package com.ForgeEssentials.commands;
+
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
+
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+
+public class CommandSudo extends ForgeEssentialsCommandBase
+{
+
+  @Override
+	public String getCommandName()
+	{
+		return "sudo";
+	}
+
+	@Override
+	public void processCommandPlayer(EntityPlayer player, String[] args)
+	{
+			StringBuilder cmd = new StringBuilder(args.toString().length());
+			for (int i = 1; i < args.length; i++)
+			{
+				cmd.append(args[i]);
+				cmd.append(" ");
+			}
+			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			target.sendChatToPlayer("You have been Sudo-ed");
+			FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(target, cmd.toString());
+			player.sendChatToPlayer("Sudo Attempted");
+	}
+
+	@Override
+	public boolean canConsoleUseCommand()
+	{
+		return true;
+	}
+
+	@Override
+	public int getRequiredPermissionLevel()
+	{
+		return 3;
+	}
+
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+		StringBuilder cmd = new StringBuilder(args.toString().length());
+		for (int i = 1; i < args.length; i++)
+		{
+			cmd.append(args[i]);
+			cmd.append(" ");
+		}
+		EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+		target.sendChatToPlayer("You have been Sudo-ed");
+		FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(target, cmd.toString());
+		sender.sendChatToPlayer("Sudo Attempted");
+	}
+
+	@Override
+	public boolean canPlayerUseCommand(EntityPlayer player)
+	{
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+	
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 2) {
+			return FMLClientHandler.instance().getServer().getPossibleCompletions(sender, "/" + args[args.length - 1]);
+		}
+		return FMLClientHandler.instance().getServer().getPossibleCompletions(sender, args[args.length - 1]);
+	}
+}
