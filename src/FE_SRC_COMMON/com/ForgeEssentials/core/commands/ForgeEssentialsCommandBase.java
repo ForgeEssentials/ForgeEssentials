@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.Configuration;
 
@@ -14,8 +15,6 @@ import com.ForgeEssentials.permission.PermissionsAPI;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
@@ -26,11 +25,11 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public ArrayList<String> aliasList = new ArrayList();
 	
 	// ---------------------------
-	// config interaction
+	// configuration interaction
 	// ---------------------------
 	
 	/**
-	 * Override if you want config interaction.
+	 * Override if you want configuration interaction.
 	 * @param config
 	 * @param category 
 	 */
@@ -281,7 +280,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		return FMLClientHandler.instance().getServer().getPossibleCompletions(sender, args[args.length - 1]);
+		return MinecraftServer.getServer().getPossibleCompletions(sender, args[args.length - 1]);
+
 	}
 
 	public abstract String getCommandPerm();
