@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
@@ -188,7 +189,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 				}
 				break;
 		}
-		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		return MinecraftServer.getServer().getPossibleCompletions(sender, args[args.length - 1]);
 	}
 	
 }
