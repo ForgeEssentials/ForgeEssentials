@@ -13,6 +13,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.compat.CompatReiMinimap;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -46,7 +47,7 @@ public class LoginMessage
 				br.close();
 				fr.close();
 				
-				messageList.set(0, ForgeEssentials.config.reimotd() + messageList.get(0));
+				messageList.set(0, CompatReiMinimap.reimotd() + messageList.get(0));
 			}
 			catch (Exception e)
 			{
