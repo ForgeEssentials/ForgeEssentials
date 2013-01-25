@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
 
+// This is a bouncer class for all Permissions API duties.
+
 public abstract class PermissionsAPI
 {
 	public static boolean checkPermAllowed(PermQuery query)
