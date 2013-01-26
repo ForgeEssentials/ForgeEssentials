@@ -44,11 +44,11 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			{
 //				NBTTagCompound spawn = DataStorage.getData("spawn");
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-//				TeleportCenter.addToTpQue(new WarpPoint(spawn.getInteger("dim"), spawn.getDouble("x"), spawn.getDouble("y"), spawn.getDouble("z"), spawn.getFloat("pitch"), spawn.getFloat("yaw")), player);
 
 				WarpPoint spawn;
 				ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
 				spawn = new WarpPoint(sender.dimension, point.posX, point.posY, point.posZ, sender.rotationPitch, sender.rotationYaw);
+				TeleportCenter.addToTpQue(spawn, player);
 				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 			}
 			else
