@@ -189,7 +189,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 				}
 				break;
 		}
-		return MinecraftServer.getServer().getPossibleCompletions(sender, args[args.length - 1]);
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().getPossibleCompletions(sender, args[args.length - 1]);
 	}
 	
 }
