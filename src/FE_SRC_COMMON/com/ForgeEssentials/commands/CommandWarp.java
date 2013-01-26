@@ -3,12 +3,15 @@ package com.ForgeEssentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -111,12 +114,36 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		if(args.length == 2)
+		{
+			if (TeleportCenter.warps.containsKey(args[0].toLowerCase()))
+			{
+				EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+				if(PlayerSelector.hasArguments(args[0]))
+				{
+					player = PlayerSelector.matchOnePlayer(sender, args[0]);
+				}
+				Warp warp = TeleportCenter.warps.get(args[1].toLowerCase());
+				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+				TeleportCenter.addToTpQue(warp.getPoint(), player);
+			}
+			else
+			{
+				OutputHandler.SOP("CommandBlock Error: " + Localization.get("command.warp.notfound"));
+			}
+		}
 	}
 
 	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
+	}
+	
+	@Override
+	public boolean canCommandBlockUseCommand(TileEntityCommandBlock te)
+	{
+		return true;
 	}
 
 	@Override

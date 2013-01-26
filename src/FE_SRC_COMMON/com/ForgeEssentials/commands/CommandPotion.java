@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
@@ -115,6 +116,10 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		}
 
 		target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+		if(PlayerSelector.hasArguments(args[0]))
+		{
+			target = PlayerSelector.matchOnePlayer(sender, args[0]);
+		}
 
 		if (names.containsKey(args[1]))
 		{

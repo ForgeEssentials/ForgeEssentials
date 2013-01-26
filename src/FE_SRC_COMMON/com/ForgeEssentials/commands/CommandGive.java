@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -115,6 +116,10 @@ public class CommandGive extends ForgeEssentialsCommandBase
 		if (args.length > 1)
 		{
 			receiver = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 	
 			amount = parseIntBounded(sender, args[2], 0, 64);
 	

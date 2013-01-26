@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 
@@ -49,6 +50,10 @@ public class CommandKill extends ForgeEssentialsCommandBase
 		if (args.length >= 1)
 		{
 			EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if (victim != null)
 			{
 				victim.attackEntityFrom(DamageSource.outOfWorld, 1000);

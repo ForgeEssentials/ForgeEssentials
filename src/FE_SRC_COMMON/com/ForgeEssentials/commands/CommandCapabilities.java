@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -78,6 +79,10 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 		else if (args.length == 1)
 		{
 			EntityPlayerMP target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]) && !(sender instanceof EntityPlayer))
+			{
+				target = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
 			sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
 			sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);

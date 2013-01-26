@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.EnumGameType;
@@ -90,6 +91,10 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		if (args.length <= 2)
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if (args.length == 2)
 			{
 				victim.setGameType(getGameTypeFromString(sender, args[1]));

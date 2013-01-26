@@ -69,7 +69,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 					"CommandBlock @ (" + ((TileEntityCommandBlock)sender).xCoord + ","
 					+ ((TileEntityCommandBlock)sender).yCoord + ","
 					+ ((TileEntityCommandBlock)sender).zCoord + ")."
-					: sender.getCommandSenderName());
+					: "the console");
 			victim.sendChatToPlayer("Inventory cleared by " + senderName);
 			sender.sendChatToPlayer("Cleared inventory of " + victim.username);
 		}

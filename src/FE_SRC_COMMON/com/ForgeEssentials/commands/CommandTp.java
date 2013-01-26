@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -39,7 +40,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 			if (target != null)
 			{
 				EntityPlayerMP player = (EntityPlayerMP) sender;
-				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(target), player);
 			}
@@ -54,7 +55,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 			EntityPlayer target = FunctionHelper.getPlayerFromUsername(args[1]);
 			if (player != null && target != null)
 			{
-				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(target), player);
 			}
@@ -104,7 +105,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 					return;
 				}
 				EntityPlayerMP player = (EntityPlayerMP) sender;
-				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
 			}
@@ -142,7 +143,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
 				if (player != null)
 				{
-					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 					playerInfo.back = new WarpPoint(player);
 					TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
 				}
@@ -168,10 +169,18 @@ public class CommandTp extends ForgeEssentialsCommandBase
 		if (args.length == 2)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			EntityPlayer target = FunctionHelper.getPlayerFromUsername(args[1]);
+			if(PlayerSelector.hasArguments(args[1]))
+			{
+				target = PlayerSelector.matchOnePlayer(sender, args[1]);
+			}
 			if (player != null && target != null)
 			{
-				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(target), player);
 			}
@@ -187,6 +196,56 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				}
 				return;
 			}
+		}else if (args.length == 4)
+		{
+
+			int x = 0, y = 0, z = 0;
+			try
+			{
+				x = new Integer(args[1]);
+			}
+			catch (NumberFormatException e)
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
+				return;
+			}
+			try
+			{
+				y = new Integer(args[2]);
+			}
+			catch (NumberFormatException e)
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
+				return;
+			}
+			try
+			{
+				z = new Integer(args[3]);
+			}
+			catch (NumberFormatException e)
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
+				return;
+			}
+			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
+			if (player != null)
+			{
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+				playerInfo.back = new WarpPoint(player);
+				TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
+			}
+			else
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else
+		{
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
 		}
 	}
 

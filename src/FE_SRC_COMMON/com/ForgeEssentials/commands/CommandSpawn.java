@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -86,6 +87,10 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 		if (args.length >= 1)
 		{
 			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if (player != null)
 			{
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);

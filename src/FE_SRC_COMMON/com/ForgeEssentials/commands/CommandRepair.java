@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -70,6 +71,10 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				target = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 
 			if (target != null)
 			{
