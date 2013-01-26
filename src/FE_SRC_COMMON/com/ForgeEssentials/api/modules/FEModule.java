@@ -23,7 +23,8 @@ public @interface FEModule
 	 * "Module" is not automatically
 	 * ie: "WorldControlModule" "SnooperModule" etc..
 	 * this is what will show up in logs, especially about errors.
-	 * This is similair to the ModuleID, it is the identifying mark.. and shouldn't have spaces.
+	 * This is similar to the ModuleID, it is the identifying mark.. and shouldn't have spaces.
+	 * If an outside module overrides another module, they should have the same name.
 	 */
 	String name();
 	
@@ -34,6 +35,12 @@ public @interface FEModule
 	 * @return
 	 */
 	boolean isCore() default false;
+	
+	/**
+	 * Allows a module to override another one. You can only override core modules.
+	 * @return
+	 */
+	boolean doesOverride() default false;
 	
 	/**
 	 * For all built in modules, this had better be the ForgeEssentials class.

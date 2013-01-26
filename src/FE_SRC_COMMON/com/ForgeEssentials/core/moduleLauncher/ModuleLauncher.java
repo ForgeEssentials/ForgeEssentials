@@ -37,13 +37,25 @@ public class ModuleLauncher
 		// started ASM handling for the module loaidng.
 		Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
 
-		ModuleContainer temp;
+		ModuleContainer temp, other;
 		for (ASMData asm : data)
 		{
 			temp = new ModuleContainer(asm);
 			if (temp.isValid)
 			{
-				containerMap.put(temp.name, temp);
+				if (containerMap.containsKey(temp.name))
+				{
+					other = containerMap.get(temp.name);
+					if (temp.doesOverride && other.isCore)
+						containerMap.put(temp.name, temp);
+					else if (temp.isCore && other.doesOverride)
+						continue;
+					else
+						throw new RuntimeException("{FE-Module-Launcher} "+temp.name+" is conflicting with "+other.name);
+				}
+				else
+					containerMap.put(temp.name, temp);
+				
 				temp.createAndPopulate();
 				OutputHandler.SOP("Loaded " + temp.name);
 			}
