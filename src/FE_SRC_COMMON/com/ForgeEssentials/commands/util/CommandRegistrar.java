@@ -1,49 +1,18 @@
 package com.ForgeEssentials.commands.util;
 
 import java.util.ArrayList;
+import java.util.Set;
 
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.commands.CommandAFK;
-import com.ForgeEssentials.commands.CommandBack;
-import com.ForgeEssentials.commands.CommandBed;
-import com.ForgeEssentials.commands.CommandBurn;
-import com.ForgeEssentials.commands.CommandButcher;
-import com.ForgeEssentials.commands.CommandCapabilities;
-import com.ForgeEssentials.commands.CommandClearInventory;
-import com.ForgeEssentials.commands.CommandColorize;
-import com.ForgeEssentials.commands.CommandCraft;
-import com.ForgeEssentials.commands.CommandDoAs;
-import com.ForgeEssentials.commands.CommandEnderchest;
-import com.ForgeEssentials.commands.CommandGameMode;
-import com.ForgeEssentials.commands.CommandGive;
-import com.ForgeEssentials.commands.CommandHeal;
-import com.ForgeEssentials.commands.CommandHome;
-import com.ForgeEssentials.commands.CommandI;
-import com.ForgeEssentials.commands.CommandJump;
-import com.ForgeEssentials.commands.CommandKill;
-import com.ForgeEssentials.commands.CommandKit;
-import com.ForgeEssentials.commands.CommandModlist;
-import com.ForgeEssentials.commands.CommandMotd;
-import com.ForgeEssentials.commands.CommandPing;
-import com.ForgeEssentials.commands.CommandPotion;
-import com.ForgeEssentials.commands.CommandRemove;
-import com.ForgeEssentials.commands.CommandRepair;
-import com.ForgeEssentials.commands.CommandRules;
-import com.ForgeEssentials.commands.CommandSeeInventory;
-import com.ForgeEssentials.commands.CommandServerDo;
-import com.ForgeEssentials.commands.CommandSmite;
-import com.ForgeEssentials.commands.CommandSpawn;
-import com.ForgeEssentials.commands.CommandSpawnMob;
-import com.ForgeEssentials.commands.CommandTPS;
-import com.ForgeEssentials.commands.CommandTp;
-import com.ForgeEssentials.commands.CommandTphere;
-import com.ForgeEssentials.commands.CommandTppos;
-import com.ForgeEssentials.commands.CommandVirtualchest;
-import com.ForgeEssentials.commands.CommandWarp;
+import com.ForgeEssentials.commands.*;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class CommandRegistrar 
 {
@@ -88,7 +57,8 @@ public class CommandRegistrar
 		cmdList.add(new CommandI());
 		cmdList.add(new CommandClearInventory());
 		cmdList.add(new CommandGameMode());
-		cmdList.add(new CommandDoAs());
+		cmdList.add(new CommandSlap());
+		cmdList.add(new CommandVanish());
 	}
 	
 	public static void commandConfigs(Configuration config)
