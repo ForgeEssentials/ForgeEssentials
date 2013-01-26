@@ -47,7 +47,7 @@ public class ModuleContainer implements Comparable
 {
 	protected static HashSet<Class>				modClasses		= new HashSet<Class>();
 
-	private Object								module, mod;
+	public Object								module, mod;
 	private ModuleConfigBase					configObj;
 	private Class<? extends ModuleConfigBase>	configClass;
 

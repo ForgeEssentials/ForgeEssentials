@@ -25,8 +25,6 @@ public class ConfigCmd extends ModuleConfigBase
 		config = new Configuration(file, true);
 
 		config.addCustomCategoryComment("general", "General Commands configuration.");
-		ModuleCommands.removeDuplicateCommands = config.get("general", "removeDuplicateCommands", true,
-				"Remove commands from the list if they already exist outside of FE.").getBoolean(true);
 		config.save();
 	}
 
@@ -38,8 +36,6 @@ public class ConfigCmd extends ModuleConfigBase
 		path = path.replace(ModuleCommands.cmddir.getPath(), "");
 		
 		config.addCustomCategoryComment("general", "General Commands configuration.");
-		config.get("general", "removeDuplicateCommands", true, "Remove commands from the list if they already exist outside of FE.").value = ""
-				+ ModuleCommands.removeDuplicateCommands;
 		config.save();
 	}
 
@@ -47,7 +43,6 @@ public class ConfigCmd extends ModuleConfigBase
 	public void forceLoad(ICommandSender sender)
 	{
 		config.load();
-		ModuleCommands.removeDuplicateCommands = config.get("general", "removeDuplicateCommands", true).getBoolean(true);
 		
 		config.save();
 		

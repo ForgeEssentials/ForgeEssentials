@@ -6,6 +6,8 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
+import java.util.TreeSet;
+
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLStateEvent;
 
@@ -32,11 +34,9 @@ public class FEModuleServerInitEvent extends FEModuleEvent
 
     public void registerServerCommand(ICommand command)
     {
-    	// todo: do some special Command registrations...
+    	// TODO: any fancy module command stuff
     	
-    	// VV this is from the FML event
-        CommandHandler ch = (CommandHandler) getServer().getCommandManager();
-        ch.registerCommand(command);
+    	// continue to register the commad.
+    	event.registerServerCommand(command);
     }
-
 }

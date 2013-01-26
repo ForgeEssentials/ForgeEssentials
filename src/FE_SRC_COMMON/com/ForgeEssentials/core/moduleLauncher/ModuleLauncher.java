@@ -2,6 +2,7 @@ package com.ForgeEssentials.core.moduleLauncher;
 
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
@@ -46,9 +47,9 @@ public class ModuleLauncher
 				if (containerMap.containsKey(temp.name))
 				{
 					other = containerMap.get(temp.name);
-					if (temp.doesOverride && other.isCore)
+					if (temp.doesOverride && other.mod == ForgeEssentials.instance)
 						containerMap.put(temp.name, temp);
-					else if (temp.isCore && other.doesOverride)
+					else if (other.mod == ForgeEssentials.instance && other.doesOverride)
 						continue;
 					else
 						throw new RuntimeException("{FE-Module-Launcher} "+temp.name+" is conflicting with "+other.name);

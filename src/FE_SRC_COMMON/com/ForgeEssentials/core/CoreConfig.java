@@ -1,6 +1,8 @@
 package com.ForgeEssentials.core;
 
+import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.core.compat.CompatReiMinimap;
+import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -12,11 +14,9 @@ import java.io.File;
 
 public class CoreConfig
 {
-	public static final File mainconfig = new File(ForgeEssentials.FEDIR, "main.cfg");
+	public static final File	mainconfig	= new File(ForgeEssentials.FEDIR, "main.cfg");
 
-	public final Configuration config;
-
-
+	public final Configuration	config;
 
 	// this is designed so it will work for any class.
 	public CoreConfig()
@@ -35,6 +35,8 @@ public class CoreConfig
 		prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
 		ForgeEssentials.modlistLocation = prop.value;
 
+		DuplicateCommandRemoval.removeDuplicateCommands = config.get("general", "removeDuplicateCommands", true, "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
+
 		prop = config.get("Core", "verbose", false);
 		prop.comment = "Specify if Verbose mode is enabled. Only useful in debugging.";
 		OutputHandler.verbose = prop.getBoolean(false);
@@ -50,9 +52,9 @@ public class CoreConfig
 		prop = config.get("Core.Misc", "MajoritySleep", true);
 		prop.comment = "If +50% of players sleep, make it day.";
 		MiscEventHandler.MajoritySleep = prop.getBoolean(true);
-		
+
 		config.addCustomCategoryComment("Core.ReisMinimap", "Use this to enable certain Rei's Minimap options. They will be added to the server's MOTD automatically.");
-		
+
 		prop = config.get("Core.ReisMinimap", "caveMap", false);
 		CompatReiMinimap.cavemap = prop.getBoolean(false);
 		prop = config.get("Core.ReisMinimap", "radarPlayer", false);
@@ -67,7 +69,7 @@ public class CoreConfig
 		CompatReiMinimap.radarSquid = prop.getBoolean(false);
 		prop = config.get("Core.ReisMinimap", "radarOther", false);
 		CompatReiMinimap.radarOther = prop.getBoolean(false);
-		
+
 		config.save();
 	}
 
@@ -77,6 +79,8 @@ public class CoreConfig
 	public void forceSave()
 	{
 		config.save();
+		
+		config.get("general", "removeDuplicateCommands", true, "Remove commands from the list if they already exist outside of FE.").value = ""	+ DuplicateCommandRemoval.removeDuplicateCommands;
 	}
 
 	/**
@@ -98,5 +102,4 @@ public class CoreConfig
 		OutputHandler.logConfigChange(category, property, oldVal, newValue);
 	}
 
-	
 }
