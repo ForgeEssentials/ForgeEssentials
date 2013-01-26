@@ -1,11 +1,11 @@
 package com.ForgeEssentials.WorldBorder;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
+import com.ForgeEssentials.api.modules.FEModule;
+import com.ForgeEssentials.api.modules.FEModule.Config;
+import com.ForgeEssentials.api.modules.FEModule.ServerInit;
+import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.FEModule;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.vector.Vector2;

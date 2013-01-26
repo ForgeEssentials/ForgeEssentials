@@ -1,5 +1,18 @@
 package com.ForgeEssentials.chat;
 
+import com.ForgeEssentials.api.modules.FEModule;
+import com.ForgeEssentials.api.modules.FEModule.Config;
+import com.ForgeEssentials.api.modules.FEModule.Init;
+import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
+import com.ForgeEssentials.api.modules.FEModule.PostInit;
+import com.ForgeEssentials.api.modules.FEModule.PreInit;
+import com.ForgeEssentials.api.modules.FEModule.ServerInit;
+import com.ForgeEssentials.api.modules.FEModule.ServerPostInit;
+import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModulePostInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.chat.commands.CommandMsg;
 import com.ForgeEssentials.chat.commands.CommandMute;
@@ -7,19 +20,6 @@ import com.ForgeEssentials.chat.commands.CommandNickname;
 import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.FEModule;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.PostInit;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerPostInit;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModulePostInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
 

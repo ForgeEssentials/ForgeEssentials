@@ -1,6 +1,6 @@
 package com.ForgeEssentials.protection;
 
-import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
 
 import net.minecraft.command.ICommandSender;
 

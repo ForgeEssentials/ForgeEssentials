@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core.moduleLauncher;
+package com.ForgeEssentials.api.modules;
 
 import net.minecraft.command.ICommandSender;
 

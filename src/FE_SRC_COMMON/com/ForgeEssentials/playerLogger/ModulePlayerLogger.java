@@ -1,16 +1,16 @@
 package com.ForgeEssentials.playerLogger;
 
+import com.ForgeEssentials.api.modules.FEModule;
+import com.ForgeEssentials.api.modules.FEModule.Config;
+import com.ForgeEssentials.api.modules.FEModule.Init;
+import com.ForgeEssentials.api.modules.FEModule.PreInit;
+import com.ForgeEssentials.api.modules.FEModule.ServerInit;
+import com.ForgeEssentials.api.modules.FEModule.ServerStop;
+import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.FEModule;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerStop;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.logEntry;

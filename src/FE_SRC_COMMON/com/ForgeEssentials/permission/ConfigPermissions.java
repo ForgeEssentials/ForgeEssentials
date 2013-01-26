@@ -1,8 +1,8 @@
 package com.ForgeEssentials.permission;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
 

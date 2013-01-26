@@ -1,12 +1,12 @@
 package com.ForgeEssentials.snooper;
 
+import com.ForgeEssentials.api.modules.FEModule;
+import com.ForgeEssentials.api.modules.FEModule.Config;
+import com.ForgeEssentials.api.modules.FEModule.ServerInit;
+import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.snooper.API;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.FEModule;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.snooper.response.PlayerArmor;
 import com.ForgeEssentials.snooper.response.PlayerInfoResonce;

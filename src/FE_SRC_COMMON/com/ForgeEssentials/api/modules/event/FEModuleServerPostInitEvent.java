@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core.moduleLauncher.event;
+package com.ForgeEssentials.api.modules.event;
 
 import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
 

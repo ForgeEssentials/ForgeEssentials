@@ -1,8 +1,8 @@
 package com.ForgeEssentials.commands.util;
 
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.ModuleCommands;
-import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
 import net.minecraft.command.ICommandSender;
 

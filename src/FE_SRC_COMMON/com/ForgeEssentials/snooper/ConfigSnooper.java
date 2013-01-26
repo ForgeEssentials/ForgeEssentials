@@ -1,7 +1,7 @@
 package com.ForgeEssentials.snooper;
 
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.api.snooper.Response;
-import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
 import net.minecraft.command.ICommandSender;
 

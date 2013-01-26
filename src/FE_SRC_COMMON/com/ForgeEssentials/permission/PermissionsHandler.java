@@ -46,7 +46,6 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayer event)
 	{
-		//OutputHandler.SOP("TEST!!!!");
 		// ensures its a permPlayerQuery before checking...
 		if (event.getClass().getSimpleName().equals(PermQueryPlayer.class.getSimpleName()))
 		{
@@ -59,7 +58,6 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayerZone event)
 	{
-		//OutputHandler.SOP("TEST!!!!");
 		PermResult result = getResultFromZone(event.toCheck, event);
 		event.setResult(result);
 	}
@@ -67,7 +65,6 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayerArea event)
 	{
-		//OutputHandler.SOP("TEST!!!!");
 		if (event.allOrNothing)
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo, event.doer.worldObj);

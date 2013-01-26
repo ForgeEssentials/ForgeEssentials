@@ -1,5 +1,7 @@
 package com.ForgeEssentials.core.moduleLauncher;
 
+import com.ForgeEssentials.api.modules.FEModule;
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;

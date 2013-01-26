@@ -1,7 +1,7 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraftforge.event.Event;

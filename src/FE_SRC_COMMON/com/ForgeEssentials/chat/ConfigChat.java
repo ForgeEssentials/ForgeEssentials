@@ -1,7 +1,7 @@
 package com.ForgeEssentials.chat;
 
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
