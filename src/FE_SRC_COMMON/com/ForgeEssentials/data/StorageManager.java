@@ -1,5 +1,6 @@
 package com.ForgeEssentials.data;
 
+import com.ForgeEssentials.api.data.IStorageManager;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.DBConnector;
@@ -14,14 +15,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-public class StorageManager
+public class StorageManager implements IStorageManager
 {
 	// just keeps an instance of the config for future use.
 	private Configuration config;
 	private static final String configCategory = "data";
 
 	public static final EnumDriverType defaultDriver = EnumDriverType.TEXT;
-	private static EnumDriverType chosen = defaultDriver;
+	private EnumDriverType chosen = defaultDriver;
 
 	private ConcurrentHashMap<EnumDriverType, String> typeChosens; // the defaults...
 	private ConcurrentHashMap<String, Class<? extends DataDriver>> classMap; // registered ones...
@@ -110,7 +111,7 @@ public class StorageManager
 	 * @param name Name to be used in configs
 	 * @param c
 	 */
-	public static void registerDriver(String name, Class<? extends DataDriver> c)
+	public void registerDriver(String name, Class<? extends DataDriver> c)
 	{
 		try
 		{
@@ -128,12 +129,12 @@ public class StorageManager
 		}
 	}
 	
-	public static DataDriver getReccomendedDriver()
+	public DataDriver getReccomendedDriver()
 	{
 		return getDriverOfType(chosen);
 	}
 	
-	public static DataDriver getDriverOfType(EnumDriverType type)
+	public DataDriver getDriverOfType(EnumDriverType type)
 	{
 		return getDriverOfName(instance.typeChosens.get(type));
 	}
@@ -142,7 +143,7 @@ public class StorageManager
 	 * @param name
 	 * @return default DataDriver if the requested one is unavailable.
 	 */
-	private static DataDriver getDriverOfName(String name)
+	private DataDriver getDriverOfName(String name)
 	{
 		DataDriver d = instance.instanceMap.get(name);
 		if (d == null)
@@ -152,19 +153,19 @@ public class StorageManager
 		return d;
 	}
 
-	public static void registerSaveableClass(Class type)
+	public void registerSaveableClass(Class type)
 	{
 		if (!type.isAnnotationPresent(SaveableObject.class))
 			throw new IllegalArgumentException("Only classes that have the @SaveableObject annotation may be registered!");
 		taggerList.put(type, new TypeTagger(type));
 	}
 
-	public static boolean hasMapping(Class type)
+	public boolean hasMapping(Class type)
 	{
 		return taggerList.containsKey(type);
 	}
 
-	public static TypeTagger getTaggerForType(Class type)
+	public TypeTagger getTaggerForType(Class type)
 	{
 		TypeTagger tagged;
 		if (!hasMapping(type))
@@ -180,7 +181,7 @@ public class StorageManager
 		return taggerList.get(type);
 	}
 	
-	public static DBConnector getCoreDBConnector()
+	public DBConnector getCoreDBConnector()
 	{
 		return ((SQLDataDriver)instance.getDriverOfType(EnumDriverType.SQL)).connector;
 	}

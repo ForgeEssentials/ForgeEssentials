@@ -28,6 +28,8 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
  */
 public class DataStorageManager
 {
+	
+	public static IStorageManager manager;
 
 	/**
 	 * Should only be done before the server starts. May override existing Driver types.
@@ -37,36 +39,36 @@ public class DataStorageManager
 	 */
 	public static void registerDriver(String name, Class<? extends DataDriver> c)
 	{
-		StorageManager.registerDriver(name, c);
+		manager.registerDriver(name, c);
 	}
 	
 	public static DataDriver getReccomendedDriver()
 	{
-		return StorageManager.getReccomendedDriver();
+		return manager.getReccomendedDriver();
 	}
 	
 	public static DataDriver getDriverOfType(EnumDriverType type)
 	{
-		return StorageManager.getDriverOfType(type);
+		return manager.getDriverOfType(type);
 	}
 
 	public static void registerSaveableClass(Class type)
 	{
-		StorageManager.hasMapping(type);
+		manager.hasMapping(type);
 	}
 
 	public static boolean hasMapping(Class type)
 	{
-		return StorageManager.hasMapping(type);
+		return manager.hasMapping(type);
 	}
 
 	public static TypeTagger getTaggerForType(Class type)
 	{
-		return StorageManager.getTaggerForType(type);
+		return manager.getTaggerForType(type);
 	}
 	
 	public static DBConnector getCoreDBConnector()
 	{
-		return StorageManager.getCoreDBConnector();
+		return manager.getCoreDBConnector();
 	}
 }
