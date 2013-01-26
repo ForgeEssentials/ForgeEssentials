@@ -118,7 +118,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		{
 			if (TeleportCenter.warps.containsKey(args[0].toLowerCase()))
 			{
-				EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+				EntityPlayer player = PlayerSelector.matchOnePlayer(sender, args[0]);
 				if(PlayerSelector.hasArguments(args[0]))
 				{
 					player = PlayerSelector.matchOnePlayer(sender, args[0]);

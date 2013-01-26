@@ -36,7 +36,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer target = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if (target != null)
 			{
 				EntityPlayerMP player = (EntityPlayerMP) sender;
@@ -51,8 +51,8 @@ public class CommandTp extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
-			EntityPlayer target = FunctionHelper.getPlayerFromUsername(args[1]);
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[1]);
 			if (player != null && target != null)
 			{
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
@@ -140,7 +140,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[3]));
 					return;
 				}
-				EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+				EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
 				if (player != null)
 				{
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
@@ -168,12 +168,12 @@ public class CommandTp extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
-			EntityPlayer target = FunctionHelper.getPlayerFromUsername(args[1]);
+			EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[1]);
 			if(PlayerSelector.hasArguments(args[1]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[1]);
@@ -227,7 +227,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
 				return;
 			}
-			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);

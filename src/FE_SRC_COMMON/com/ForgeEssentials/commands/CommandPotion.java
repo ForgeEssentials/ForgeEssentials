@@ -78,7 +78,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			target = FunctionHelper.getPlayerFromUsername(args[0]);
+			target = PlayerSelector.matchOnePlayer(sender, args[0]);
 		}
 
 		if (names.containsKey(args[1]))

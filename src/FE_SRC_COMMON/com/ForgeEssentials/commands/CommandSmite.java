@@ -36,7 +36,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+				EntityPlayer victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 				if (victim != null)
 				{
 					victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));

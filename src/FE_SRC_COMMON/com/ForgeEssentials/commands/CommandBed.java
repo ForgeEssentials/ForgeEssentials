@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
@@ -35,7 +36,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if (player != null)
 			{
 				ChunkCoordinates spawn = player.getBedLocation();

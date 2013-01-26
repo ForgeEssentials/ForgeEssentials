@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -35,7 +36,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if (player != null)
 			{
 				EntityPlayerMP target = (EntityPlayerMP) sender;

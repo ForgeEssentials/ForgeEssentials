@@ -39,7 +39,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if (player != null)
 			{
 //				NBTTagCompound spawn = DataStorage.getData("spawn");

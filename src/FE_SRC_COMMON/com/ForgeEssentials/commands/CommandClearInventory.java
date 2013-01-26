@@ -41,7 +41,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 1 && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			int var6 = victim.inventory.clearInventory(-1, -1);
 			victim.inventoryContainer.detectAndSendChanges();
 			victim.sendChatToPlayer("Inventory cleared by " + sender.username);
@@ -58,7 +58,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
