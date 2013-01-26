@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
 
 import com.ForgeEssentials.commands.util.CommandButcherTickTask;
@@ -84,50 +85,75 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 	{
 		int radius = 0;
 		int worldID = -2;
-		WorldPoint center = new WorldPoint(0, 0, 0, 0);
+		int x = 0, y = 0, z = 0;
+		if(sender instanceof TileEntityCommandBlock)
+		{
+			TileEntityCommandBlock cb = (TileEntityCommandBlock) sender;
+			worldID = cb.worldObj.getWorldInfo().getDimension();
+			x = cb.xCoord;
+			y = cb.yCoord;
+			z = cb.zCoord;
+		}
 
 		String mobType = "hostile";
 
-		if (args.length != 4)
+		if (args.length != 4 && !(sender instanceof TileEntityCommandBlock))
 		{
 			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "/butcher <radius> <type> <x,y,z> <worldID>");
 			return;
 		}
-
-		try
+		if(args.length == 4)
 		{
-			radius = args[0].equalsIgnoreCase("world") ? -1 : Integer.parseInt(args[0]);
+			try
+			{
+				radius = args[0].equalsIgnoreCase("world") ? -1 : Integer.parseInt(args[0]);
+			}
+			catch (NumberFormatException e)
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
+				return;
+			}
+			if (args[1].equalsIgnoreCase("golem") || args[1].equalsIgnoreCase("passive") || args[1].equalsIgnoreCase("all") || args[1].equalsIgnoreCase("villager")
+					|| args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile"))
+			{
+				mobType = args[1];
+			}
+			else
+			{
+				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "all, golem, hostile, passive, tamed, or villager");
+				return;
+			}
+			String[] split = args[2].split(",");
+			if (split.length != 3)
+			{
+				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "x,y,z");
+				return;
+			}
+			else
+			{
+				try
+				{
+					x = Integer.parseInt(split[0]);
+					y = Integer.parseInt(split[1]);
+					z = Integer.parseInt(split[2]);
+				}
+				catch (NumberFormatException e)
+				{
+					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
+					return;
+				}
+			}
+			try
+			{
+				worldID = Integer.parseInt(args[3]);
+			}
+			catch (NumberFormatException e)
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
+				return;
+			}
 		}
-		catch (NumberFormatException e)
-		{
-			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
-			return;
-		}
-		if (args[1].equalsIgnoreCase("golem") || args[1].equalsIgnoreCase("passive") || args[1].equalsIgnoreCase("all") || args[1].equalsIgnoreCase("villager")
-				|| args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile"))
-		{
-			mobType = args[1];
-		}
-		else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "all, golem, hostile, passive, tamed, or villager");
-			return;
-		}
-		String[] split = args[2].split(",");
-		if (split.length != 3)
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "x,y,z");
-			return;
-		}
-		try
-		{
-			worldID = Integer.parseInt(args[3]);
-		}
-		catch (NumberFormatException e)
-		{
-			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
-			return;
-		}
+		WorldPoint center = new WorldPoint(worldID, x, y, z);
 		TickTaskHandler.addTask(new CommandButcherTickTask(sender, mobType, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(center.x - radius,
 				center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1, center.z + radius + 1), radius, worldID));
 	}

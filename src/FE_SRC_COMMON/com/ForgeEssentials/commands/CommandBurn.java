@@ -3,7 +3,9 @@ package com.ForgeEssentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.APIHelper;
@@ -93,6 +95,10 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if (victim != null)
 			{
 				victim.setFire(Integer.parseInt(args[1]));
