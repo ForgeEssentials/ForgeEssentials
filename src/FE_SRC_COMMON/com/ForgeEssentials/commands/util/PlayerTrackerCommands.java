@@ -41,16 +41,16 @@ public class PlayerTrackerCommands implements IPlayerTracker
 		 * (player.dimension!=dim) FMLCommonHandler.instance().getMinecraftServerInstance ().getConfigurationManager
 		 * ().transferPlayerToDimension(((EntityPlayerMP) player), dim); player.setPositionAndRotation(X, Y, Z, yaw, pitch); } }
 		 */
-		NBTTagCompound spawn = DataStorage.getData("spawn");
-		if(spawn != null)
-		{
-			PlayerInfo.getPlayerInfo(player).back = new WarpPoint(player);
-			if(player.dimension != spawn.getInteger("dim"))
-				FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager()
-				.transferPlayerToDimension((EntityPlayerMP) player, spawn.getInteger("dim"));
-			((EntityPlayerMP)player).playerNetServerHandler
-					.setPlayerLocation(spawn.getDouble("x"), spawn.getDouble("y"), spawn.getDouble("z"), spawn.getFloat("pitch"), spawn.getFloat("yaw"));
-			player.isDead = false;
-		}
+//		NBTTagCompound spawn = DataStorage.getData("spawn");
+//		if(spawn != null)
+//		{
+//			PlayerInfo.getPlayerInfo(player).back = new WarpPoint(player);
+//			if(player.dimension != spawn.getInteger("dim"))
+//				FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager()
+//				.transferPlayerToDimension((EntityPlayerMP) player, spawn.getInteger("dim"));
+//			((EntityPlayerMP)player).playerNetServerHandler
+//					.setPlayerLocation(spawn.getDouble("x"), spawn.getDouble("y"), spawn.getDouble("z"), spawn.getFloat("pitch"), spawn.getFloat("yaw"));
+//			player.isDead = false;
+//		}
 	}
 }
