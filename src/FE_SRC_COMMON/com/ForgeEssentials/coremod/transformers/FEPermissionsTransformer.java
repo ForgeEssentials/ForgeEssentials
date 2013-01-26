@@ -78,7 +78,7 @@ public class FEPermissionsTransformer implements IClassTransformer
 	private boolean buildEvents(ClassNode classNode) throws Exception
 	{
 		Class<?> parent = this.getClass().getClassLoader().loadClass(classNode.superName.replace('/', '.'));
-		if (!com.ForgeEssentials.permission.query.PermQuery.class.isAssignableFrom(parent))
+		if (!com.ForgeEssentials.api.permissions.query.PermQuery.class.isAssignableFrom(parent))
 		{
 			return false;
 		}

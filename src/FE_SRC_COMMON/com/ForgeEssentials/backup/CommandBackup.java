@@ -1,8 +1,8 @@
 package com.ForgeEssentials.backup;
 
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;

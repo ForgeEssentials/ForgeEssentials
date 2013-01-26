@@ -1,27 +1,20 @@
 package com.ForgeEssentials.data;
 
-import java.util.Arrays;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
+import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.OutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
+
+import java.util.Arrays;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-/**
- * Manages the DataDrivers and selects the correct one based on configuration settings. Once the DataDriver has been initialized, this class's job is done
- * forever. (Well, until next load, I suppose.)
- * 
- * @author MysteriousAges
- * 
- */
-public class DataStorageManager
+public class StorageManager
 {
 	// just keeps an instance of the config for future use.
 	private Configuration config;
@@ -34,11 +27,13 @@ public class DataStorageManager
 	private ConcurrentHashMap<String, Class<? extends DataDriver>> classMap; // registered ones...
 	private ConcurrentHashMap<String, DataDriver> instanceMap; // instantiated ones
 	
+	private static StorageManager instance;
+	
 	private boolean loaded = false;
 
 	protected static ConcurrentHashMap<Class, TypeTagger> taggerList = new ConcurrentHashMap<Class, TypeTagger>();
 
-	public DataStorageManager(Configuration config)
+	public StorageManager(Configuration config)
 	{
 		classMap = new ConcurrentHashMap<String, Class<? extends DataDriver>>();
 		instanceMap = new ConcurrentHashMap<String, DataDriver>();
@@ -64,6 +59,8 @@ public class DataStorageManager
 			cat = "Data."+type;
 			config.get(cat, "chosenDriver", typeChosens.get(type));
 		}
+		
+		instance = this;
 	}
 
 	/**
@@ -120,8 +117,8 @@ public class DataStorageManager
 			// If there is a problem constructing the driver, this line will
 			// fail and we will enter the catch block.
 			DataDriver driver = c.newInstance();
-			ForgeEssentials.dataManager.classMap.put(name, c);
-			ForgeEssentials.dataManager.instanceMap.put(name, driver);
+			instance.classMap.put(name, c);
+			instance.instanceMap.put(name, driver);
 		}
 		catch (Exception e)
 		{
@@ -138,7 +135,7 @@ public class DataStorageManager
 	
 	public static DataDriver getDriverOfType(EnumDriverType type)
 	{
-		return getDriverOfName(ForgeEssentials.dataManager.typeChosens.get(type));
+		return getDriverOfName(instance.typeChosens.get(type));
 	}
 
 	/**
@@ -147,10 +144,10 @@ public class DataStorageManager
 	 */
 	private static DataDriver getDriverOfName(String name)
 	{
-		DataDriver d = ForgeEssentials.dataManager.instanceMap.get(name);
+		DataDriver d = instance.instanceMap.get(name);
 		if (d == null)
 		{
-			d = ForgeEssentials.dataManager.instanceMap.get(defaultDriver);
+			d = instance.instanceMap.get(defaultDriver);
 		}
 		return d;
 	}
@@ -174,8 +171,8 @@ public class DataStorageManager
 		{
 			registerSaveableClass(type);
 			tagged = taggerList.get(type);
-			if (ForgeEssentials.dataManager.loaded)
-				for (DataDriver driver : ForgeEssentials.dataManager.instanceMap.values())
+			if (instance.loaded)
+				for (DataDriver driver : instance.instanceMap.values())
 					driver.onClassRegistered(tagged);
 					
 			return tagged;
@@ -185,6 +182,6 @@ public class DataStorageManager
 	
 	public static DBConnector getCoreDBConnector()
 	{
-		return ((SQLDataDriver)ForgeEssentials.dataManager.getDriverOfType(EnumDriverType.SQL)).connector;
+		return ((SQLDataDriver)instance.getDriverOfType(EnumDriverType.SQL)).connector;
 	}
 }

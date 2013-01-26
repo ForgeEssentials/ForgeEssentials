@@ -1,10 +1,13 @@
 package com.ForgeEssentials.data;
 
+import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.IDataDriver;
+
 import java.util.ArrayList;
 
 import net.minecraftforge.common.Configuration;
 
-public abstract class DataDriver
+public abstract class DataDriver implements IDataDriver
 {
 
 	public DataDriver()
@@ -42,7 +45,7 @@ public abstract class DataDriver
 
 		if (data != null)
 		{
-			newObject = DataStorageManager.taggerList.get(type).createFromFields(data);
+			newObject = StorageManager.taggerList.get(type).createFromFields(data);
 		}
 
 		return newObject;
@@ -60,7 +63,7 @@ public abstract class DataDriver
 		{
 			for (TaggedClass tag : objectData)
 			{
-				tmp = DataStorageManager.taggerList.get(type).createFromFields(tag);
+				tmp = StorageManager.taggerList.get(type).createFromFields(tag);
 				list.add(tmp);
 			}
 		}

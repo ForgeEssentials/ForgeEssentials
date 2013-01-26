@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import com.ForgeEssentials.data.SaveableObject.Reconstructor;
-import com.ForgeEssentials.data.SaveableObject.SaveableField;
-import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
@@ -82,7 +85,7 @@ public class TypeTagger
 				assert Modifier.isStatic(m.getModifiers()) : new RuntimeException("The reconstructor method must be static!");
 				assert m.getReturnType().equals(type) : new RuntimeException("The reconstructor method must return " + type);
 				assert m.getParameterTypes().length == 1 : new RuntimeException("The reconstructor method must have exactly 1 paremeter/argument");
-				assert m.getParameterTypes()[0].equals(TaggedClass.class) : new RuntimeException("The reconstructor method must have a " + TaggedClass.class
+				assert m.getParameterTypes()[0].equals(ITaggedClass.class) : new RuntimeException("The reconstructor method must have a " + ITaggedClass.class
 						+ " parameter");
 
 				reconstructorMethod = m.getName();
@@ -120,13 +123,13 @@ public class TypeTagger
 	public TaggedClass getTaggedClassFromObject(Object objectSaved)
 	{
 		TaggedClass data = new TaggedClass();
-		Class c = data.type = objectSaved.getClass();
+		Class c = data.getType();
 		Field f;
 		Object obj;
 
 		try
 		{
-			data.uniqueKey = data.new SavedField();
+			data.uniqueKey = new SavedField();
 			if (isUniqueKeyField)
 			{
 				f = c.getDeclaredField(uniqueKey);
@@ -171,7 +174,7 @@ public class TypeTagger
 						// the appropriate TypeTagger.
 						obj = DataStorageManager.getTaggerForType(obj.getClass()).getTaggedClassFromObject(obj);
 					}
-					data.addField(data.new SavedField(savedFields[i], obj));
+					data.addField(new SavedField(savedFields[i], obj));
 				}
 				// Ensure we reset the currentClass after trying this. It may
 				// have been altered by a previous attempt.
@@ -209,9 +212,9 @@ public class TypeTagger
 	public Object createFromFields(TaggedClass data)
 	{
 		Object value = null;
-		for (TaggedClass.SavedField field : data.TaggedMembers.values())
+		for (SavedField field : data.TaggedMembers.values())
 		{
-			if (field.value instanceof TaggedClass)
+			if (field.value instanceof ITaggedClass)
 			{
 				field.value = DataStorageManager.getTaggerForType(getTypeOfField(field.name)).createFromFields((TaggedClass) field.value);
 			}
@@ -219,24 +222,24 @@ public class TypeTagger
 
 		try
 		{
-			Method reconstructor = forType.getDeclaredMethod(reconstructorMethod, TaggedClass.class);
+			Method reconstructor = forType.getDeclaredMethod(reconstructorMethod, ITaggedClass.class);
 			reconstructor.setAccessible(true);
 			value = reconstructor.invoke(null, data);
 		}
 		catch (Throwable thrown)
 		{
-			OutputHandler.felog.log(Level.SEVERE, "Error loading " + data.type + " with name " + data.uniqueKey, thrown);
+			OutputHandler.felog.log(Level.SEVERE, "Error loading " + data.getType() + " with name " + data.uniqueKey, thrown);
 		}
 
 		return value;
 	}
 
-	private Object savedFieldToObject(TaggedClass.SavedField field)
+	private Object savedFieldToObject(SavedField field)
 	{
 		Object obj = null;
 		// If the value of the field is a TaggedClass, run this function on it
 		// to recreate the original object.
-		if (field.value instanceof TaggedClass)
+		if (field.value instanceof ITaggedClass)
 		{
 			obj = DataStorageManager.getTaggerForType(field.type).createFromFields((TaggedClass) field.value);
 		}

@@ -1,7 +1,7 @@
 package com.ForgeEssentials.util.AreaSelector;
 
-import com.ForgeEssentials.data.SaveableObject.SaveableField;
-import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 
 import net.minecraft.world.World;
 

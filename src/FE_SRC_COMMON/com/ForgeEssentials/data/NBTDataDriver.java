@@ -18,8 +18,9 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.ITaggedClass;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.data.TaggedClass.SavedField;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -136,7 +137,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		// not gonna load it if its the method...
 		if (tagger.isUniqueKeyField)
 		{
-			SavedField unique = tClass.new SavedField();
+			SavedField unique = new SavedField();
 			unique.name = tagger.uniqueKey;
 			unique.type = tagger.getTypeOfField(unique.name);
 			unique.value = readFieldFromTag(tag, unique, tagger);
@@ -145,7 +146,7 @@ public class NBTDataDriver extends BinaryDataDriver
 
 		for (String name : tagger.savedFields)
 		{
-			SavedField field = tClass.new SavedField();
+			SavedField field = new SavedField();
 			field.name = name;
 			field.type = tagger.getTypeOfField(name);
 			field.value = readFieldFromTag(tag, field, tagger);
@@ -218,7 +219,7 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			tag.setTag(field.name, list);
 		}
-		else if (field.type.equals(TaggedClass.class))
+		else if (field.type.equals(ITaggedClass.class))
 		{
 			NBTTagCompound compound = new NBTTagCompound();
 			writeClassToTag(compound, (TaggedClass) field.value);
@@ -293,7 +294,7 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			return array;
 		}
-		else if (field.type.equals(TaggedClass.class))
+		else if (field.type.equals(ITaggedClass.class))
 		{
 			NBTTagCompound compound = new NBTTagCompound();
 			return readClassFromTag(compound, DataStorageManager.getTaggerForType(tagger.getTypeOfField(field.name)));
@@ -309,7 +310,7 @@ public class NBTDataDriver extends BinaryDataDriver
 	protected TaggedClass[] loadAll(Class type)
 	{
 		File[] files = getTypePath(type).listFiles();
-		ArrayList<TaggedClass> data = new ArrayList<TaggedClass>();
+		ArrayList<ITaggedClass> data = new ArrayList<ITaggedClass>();
 
 		for (File file : files)
 		{

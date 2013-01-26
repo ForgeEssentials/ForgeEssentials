@@ -14,11 +14,12 @@ import java.util.Map.Entry;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.data.TaggedClass.SavedField;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.Pair;
+import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.ITaggedClass;
 import com.ForgeEssentials.core.ForgeEssentials;
 
 public class SQLDataDriver extends DataDriver
@@ -106,7 +107,7 @@ public class SQLDataDriver extends DataDriver
 	@Override
 	protected TaggedClass[] loadAll(Class type)
 	{
-		ArrayList<TaggedClass> values = new ArrayList<TaggedClass>();
+		ArrayList<ITaggedClass> values = new ArrayList<ITaggedClass>();
 
 		try
 		{
@@ -214,7 +215,7 @@ public class SQLDataDriver extends DataDriver
 					if (tmpField == null)
 					{
 						// Create a new node for this position.
-						tmpField = cursor.new SavedField();
+						tmpField = new SavedField();
 						tmpField.name = fieldHeiarchy[i];
 						cursor.addField(tmpField);
 					}

@@ -10,9 +10,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
 
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 

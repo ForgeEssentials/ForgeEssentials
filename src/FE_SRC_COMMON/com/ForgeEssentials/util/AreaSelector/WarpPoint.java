@@ -1,10 +1,10 @@
 package com.ForgeEssentials.util.AreaSelector;
 
-import com.ForgeEssentials.data.SaveableObject;
-import com.ForgeEssentials.data.SaveableObject.Reconstructor;
-import com.ForgeEssentials.data.SaveableObject.SaveableField;
-import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.data.TaggedClass;
+import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -160,7 +160,7 @@ public class WarpPoint extends WorldPoint
 	}
 
 	@Reconstructor()
-	public static WarpPoint reconstruct(TaggedClass tag)
+	public static WarpPoint reconstruct(ITaggedClass tag)
 	{
 		double x = (Double) tag.getFieldValue("xd");
 		double y = (Double) tag.getFieldValue("yd");

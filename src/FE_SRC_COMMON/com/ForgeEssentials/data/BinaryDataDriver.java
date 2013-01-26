@@ -1,4 +1,5 @@
 package com.ForgeEssentials.data;
+import com.ForgeEssentials.api.data.ITaggedClass;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.FunctionHelper;
 import net.minecraftforge.common.Configuration;
@@ -61,7 +62,7 @@ public abstract class BinaryDataDriver extends DataDriver
 	protected TaggedClass[] loadAll(Class type)
 	{
 		File[] files = getTypePath(type).listFiles();
-		ArrayList<TaggedClass> data = new ArrayList<TaggedClass>();
+		ArrayList<ITaggedClass> data = new ArrayList<ITaggedClass>();
 
 		if (files != null)
 		{

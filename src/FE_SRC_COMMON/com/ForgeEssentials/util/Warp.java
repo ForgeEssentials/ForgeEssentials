@@ -1,10 +1,10 @@
 package com.ForgeEssentials.util;
 
-import com.ForgeEssentials.data.SaveableObject;
-import com.ForgeEssentials.data.SaveableObject.Reconstructor;
-import com.ForgeEssentials.data.SaveableObject.SaveableField;
-import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.data.TaggedClass;
+import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 @SaveableObject
@@ -34,7 +34,7 @@ public class Warp
 	}
 
 	@Reconstructor
-	private static Warp reconstruct(TaggedClass tag)
+	private static Warp reconstruct(ITaggedClass tag)
 	{
 		return new Warp((String) tag.getFieldValue("name"), (WarpPoint) tag.getFieldValue("point"));
 	}

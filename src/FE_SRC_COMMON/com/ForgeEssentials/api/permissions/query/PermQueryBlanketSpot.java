@@ -1,21 +1,11 @@
-package com.ForgeEssentials.permission.query;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.event.Event.HasResult;
+package com.ForgeEssentials.api.permissions.query;
 
 import com.ForgeEssentials.permission.PermissionChecker;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
-/**
- * Reuslts are: default, allow, deny.
- * 
- * @author AbrarSyed
- * 
- */
-@HasResult
-public class PermQueryPlayer extends PermQuery
+public class PermQueryBlanketSpot extends PermQuery
 {
-	public EntityPlayer doer;
-	public boolean dOverride;
+	public WorldPoint spot;
 
 	/**
 	 * Assumes the Players position as the "doneTo" point.
@@ -23,9 +13,9 @@ public class PermQueryPlayer extends PermQuery
 	 * @param player
 	 * @param permission
 	 */
-	public PermQueryPlayer(EntityPlayer player, String permission)
+	public PermQueryBlanketSpot(WorldPoint spot, String permission)
 	{
-		doer = player;
+		this.spot = spot;
 		checker = new PermissionChecker(permission);
 		checkForward = false;
 	}
@@ -38,9 +28,9 @@ public class PermQueryPlayer extends PermQuery
 	 * @param checkForward
 	 *            Specifies to only return allow if all the children of the permission are allowed.
 	 */
-	public PermQueryPlayer(EntityPlayer player, String permission, boolean checkForward)
+	public PermQueryBlanketSpot(WorldPoint spot, String permission, boolean checkForward)
 	{
-		doer = player;
+		this.spot = spot;
 		checker = new PermissionChecker(permission);
 		this.checkForward = checkForward;
 	}

@@ -1,35 +1,13 @@
 package com.ForgeEssentials.data;
 
+import com.ForgeEssentials.api.data.ITaggedClass;
+
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class TaggedClass
+public class TaggedClass implements ITaggedClass
 {
-	public class SavedField
-	{
-		public String name;
-		public Object value;
-		public Class type;
-
-		public SavedField()
-		{
-		}
-
-		public SavedField(String name, Object value)
-		{
-			this.name = name;
-			this.value = value;
-			type = value.getClass();
-		}
-		
-		@Override
-		public String toString()
-		{
-			return "{"+name+", "+type+", "+value+"}";
-		}
-	}
-
-	public Class type;
+	protected Class type;
 	protected SavedField uniqueKey;
 	protected HashMap<String, SavedField> TaggedMembers;
 
@@ -65,7 +43,7 @@ public class TaggedClass
 	public String toString()
 	{
 		StringBuilder s = new StringBuilder("{");
-		s.append("type=").append(type).append(", ");
+		s.append("type=").append(getType()).append(", ");
 		s.append("unique=").append(uniqueKey).append(", ");
 		
 		s.append("[");
@@ -78,5 +56,10 @@ public class TaggedClass
 		s.append("}");
 		
 		return s.toString();
+	}
+
+	public Class getType()
+	{
+		return type;
 	}
 }

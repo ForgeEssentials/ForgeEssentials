@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permission.query;
+package com.ForgeEssentials.api.permissions.query;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 import net.minecraftforge.event.EventPriority;
 
-import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 
 @Retention(value = RUNTIME)
 @Target(value = METHOD)

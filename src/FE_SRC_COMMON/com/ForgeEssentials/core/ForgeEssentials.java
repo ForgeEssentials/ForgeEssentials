@@ -1,11 +1,6 @@
 package com.ForgeEssentials.core;
 
-import java.io.File;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.WorldEvent;
-
+import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEDebug;
 import com.ForgeEssentials.core.commands.CommandFEReload;
@@ -16,11 +11,10 @@ import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
-import com.ForgeEssentials.data.DataStorageManager;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLDataDriver;
-import com.ForgeEssentials.permission.PermissionRegistrationEvent;
+import com.ForgeEssentials.data.StorageManager;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.MiscEventHandler;
@@ -29,6 +23,10 @@ import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+
+import net.minecraftforge.common.MinecraftForge;
+
+import java.io.File;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -73,7 +71,7 @@ public class ForgeEssentials
 
 	public static File FEDIR;
 
-	public static DataStorageManager dataManager;
+	private static StorageManager dataManager;
 	public BannedItems bannedItems;
 	private ItemList itemList;
 
@@ -94,7 +92,7 @@ public class ForgeEssentials
 		// Data API stuff
 		{
 			// setup
-			dataManager = new DataStorageManager(config.config);
+			dataManager = new StorageManager(config.config);
 
 			// register DataDrivers
 			DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);

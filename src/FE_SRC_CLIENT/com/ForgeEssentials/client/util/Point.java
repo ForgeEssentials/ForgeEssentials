@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.data.SaveableObject;
-import com.ForgeEssentials.data.SaveableObject.Reconstructor;
-import com.ForgeEssentials.data.SaveableObject.SaveableField;
-import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.data.TaggedClass;
+import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 
 @SaveableObject(SaveInline = true)
 public class Point implements Serializable, Comparable<Point>
@@ -140,7 +140,7 @@ public class Point implements Serializable, Comparable<Point>
 	}
 	
 	@Reconstructor()
-	public static Point reconstruct(TaggedClass tag)
+	public static Point reconstruct(ITaggedClass tag)
 	{
 		float x = (Float)tag.getFieldValue("x");
 		float y = (Float)tag.getFieldValue("y");

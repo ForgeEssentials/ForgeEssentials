@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permission.events;
+package com.ForgeEssentials.api.permissions.events;
 
 import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.Event;

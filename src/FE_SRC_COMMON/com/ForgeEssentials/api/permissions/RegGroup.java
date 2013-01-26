@@ -1,5 +1,8 @@
-package com.ForgeEssentials.permission;
+package com.ForgeEssentials.api.permissions;
 
+import com.ForgeEssentials.permission.APIHelper;
+import com.ForgeEssentials.permission.Group;
+import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
 /**

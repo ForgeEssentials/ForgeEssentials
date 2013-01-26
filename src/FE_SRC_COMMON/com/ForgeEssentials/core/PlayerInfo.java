@@ -5,13 +5,13 @@ import java.util.Stack;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.core.network.PacketSelectionUpdate;
-import com.ForgeEssentials.data.DataStorageManager;
-import com.ForgeEssentials.data.SaveableObject;
-import com.ForgeEssentials.data.SaveableObject.Reconstructor;
-import com.ForgeEssentials.data.SaveableObject.SaveableField;
-import com.ForgeEssentials.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.data.TaggedClass;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
@@ -61,7 +61,7 @@ public class PlayerInfo
 	}
 
 	@Reconstructor()
-	public static PlayerInfo reconstruct(TaggedClass tag)
+	public static PlayerInfo reconstruct(ITaggedClass tag)
 	{
 		String username = (String) tag.getFieldValue("username");
 

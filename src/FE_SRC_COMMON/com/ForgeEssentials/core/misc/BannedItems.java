@@ -13,12 +13,12 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
-import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.permission.ZoneManager;
-import com.ForgeEssentials.permission.query.PermQueryPlayerZone;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.google.common.collect.HashMultimap;

@@ -1,7 +1,7 @@
 package com.ForgeEssentials.chat;
 
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
-import com.ForgeEssentials.permission.RegGroup;
 import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.util.OutputHandler;
 

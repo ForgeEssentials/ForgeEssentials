@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permission.query;
+package com.ForgeEssentials.api.permissions.query;
 
 import com.ForgeEssentials.permission.PermissionChecker;
 

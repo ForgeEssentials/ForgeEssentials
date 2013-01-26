@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permission.query;
+package com.ForgeEssentials.api.permissions.query;
 
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
@@ -19,7 +19,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 
 public class ASMQueryHandler implements IQueryListener
 {

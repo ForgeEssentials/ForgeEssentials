@@ -7,8 +7,8 @@ import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.data.TaggedClass.SavedField;
 import com.ForgeEssentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -61,7 +61,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		TypeTagger tag = DataStorageManager.getTaggerForType(type);
 
 		TaggedClass data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), tag);
-		data.addField(data.new SavedField(tag.uniqueKey, uniqueKey));
+		data.addField(new SavedField(tag.uniqueKey, uniqueKey));
 
 		return data;
 	}
@@ -201,7 +201,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 			{
 				if (tag.isUniqueKeyField && prop.getName().equals(tag.uniqueKey))
 				{
-					field = data.new SavedField();
+					field = new SavedField();
 					field.name = tag.uniqueKey;
 					field.type = tag.getTypeOfField(field.name);
 					field.value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
@@ -209,7 +209,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 					continue;
 				}
 
-				field = data.new SavedField();
+				field = new SavedField();
 				field.name = prop.getName();
 				field.type = tag.getTypeOfField(field.name);
 				field.value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
@@ -221,7 +221,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 				if (child.isChild() && child.parent == cat) // intentional use
 															// of ==
 				{
-					field = data.new SavedField();
+					field = new SavedField();
 					field.name = child.getQualifiedName().replace(cat.getQualifiedName() + ".", "");
 					field.type = tag.getTypeOfField(field.name);
 

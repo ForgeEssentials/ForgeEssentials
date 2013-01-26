@@ -1,10 +1,10 @@
 package com.ForgeEssentials.api.permissions;
 
+import com.ForgeEssentials.api.permissions.query.PermQuery;
+import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.permission.Group;
 import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.permission.SqlHelper;
-import com.ForgeEssentials.permission.query.PermQuery;
-import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 
 import net.minecraft.entity.player.EntityPlayer;
 

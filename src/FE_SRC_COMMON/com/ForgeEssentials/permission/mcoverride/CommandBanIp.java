@@ -4,8 +4,8 @@ import net.minecraft.command.CommandServerBanIp;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
 public class CommandBanIp extends CommandServerBanIp
 {
