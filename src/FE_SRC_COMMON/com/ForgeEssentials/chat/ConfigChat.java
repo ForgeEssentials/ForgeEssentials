@@ -51,7 +51,7 @@ public class ConfigChat extends ModuleConfigBase
 
 		Chat.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
 		Chat.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[] { "fuck", "ass", "bitch", "shit" }, "List of words to be censored").valueList);
-		Chat.censorSymbol = config.get("BannedWords", "censorSymbol", "***", "Character to replace censored words with").value;
+		Chat.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").value;
 		
 		config.addCustomCategoryComment("Chat.groups",
 				"You may put enything here that you want displaed as part of the group prefixes, suffixes, or ranks." +
