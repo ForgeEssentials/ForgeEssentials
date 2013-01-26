@@ -18,6 +18,8 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -173,48 +175,57 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length > 1)
-		{
-			if (args[1].equals("remove"))
-			{
-				try
-				{
-					rules.remove(new Integer(args[0]) - 1);
-				}
-				catch (NumberFormatException e)
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
-				}
-				catch (IndexOutOfBoundsException e)
-				{
-					sender.sendChatToPlayer("That rule does not exist.");
-				}
-			}
-			else
-			{
-				try
-				{
-					String newRule = "";
-					for (int i = 1; i < args.length; i++)
-					{
-						newRule = newRule + args[i] + " ";
-					}
-					rules.add(new Integer(args[0]) - 1, newRule);
-				}
-				catch (NumberFormatException e)
-				{
-					sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
-				}
-			}
-			saveRules();
-		}
-		else
+		if (args.length == 0)
 		{
 			for (String rule : rules)
 			{
 				sender.sendChatToPlayer(rule);
 			}
 		}
+		else
+		{
+		
+			if (args.length > 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
+			{
+				if (args[1].equals("remove"))
+				{
+					try
+					{
+						rules.remove(new Integer(args[0]) - 1);
+					}
+					catch (NumberFormatException e)
+					{
+						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
+					}
+					catch (IndexOutOfBoundsException e)
+					{
+						sender.sendChatToPlayer("That rule does not exist.");
+					}
+				}
+				else
+				{
+					try
+					{
+						String newRule = "";
+						for (int i = 1; i < args.length; i++)
+						{
+							newRule = newRule + args[i] + " ";
+						}
+						rules.add(new Integer(args[0]) - 1, newRule);
+					}
+					catch (NumberFormatException e)
+					{
+						sender.sendChatToPlayer("Not a number. Try " + getSyntaxConsole());
+					}
+				}
+				saveRules();
+			}
+			else
+			{
+				OutputHandler.chatError(sender, Localization.get("message.error.nopermission"));
+			}
+		}
+
 	}
 
 	@Override
