@@ -1,5 +1,9 @@
 package com.ForgeEssentials.commands.util;
 
+import java.util.ArrayList;
+
+import net.minecraftforge.common.Configuration;
+
 import com.ForgeEssentials.commands.CommandAFK;
 import com.ForgeEssentials.commands.CommandBack;
 import com.ForgeEssentials.commands.CommandBed;
@@ -28,6 +32,7 @@ import com.ForgeEssentials.commands.CommandRepair;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.CommandSeeInventory;
 import com.ForgeEssentials.commands.CommandServerDo;
+import com.ForgeEssentials.commands.CommandSetspawn;
 import com.ForgeEssentials.commands.CommandSmite;
 import com.ForgeEssentials.commands.CommandSpawn;
 import com.ForgeEssentials.commands.CommandSpawnMob;
@@ -38,10 +43,6 @@ import com.ForgeEssentials.commands.CommandTppos;
 import com.ForgeEssentials.commands.CommandVirtualchest;
 import com.ForgeEssentials.commands.CommandWarp;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-
-import net.minecraftforge.common.Configuration;
-
-import java.util.ArrayList;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
@@ -63,7 +64,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandEnderchest());
 		cmdList.add(new CommandVirtualchest());
 		cmdList.add(new CommandCapabilities());
-//		cmdList.add(new CommandSetspawn());
+		cmdList.add(new CommandSetspawn());
 		cmdList.add(new CommandJump());
 		cmdList.add(new CommandCraft());
 		cmdList.add(new CommandPing());

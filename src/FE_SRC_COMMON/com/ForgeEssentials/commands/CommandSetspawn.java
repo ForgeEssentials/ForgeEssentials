@@ -71,29 +71,29 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[4]));
 				return;
 			}
-			Point point = new Point(x, y, z);
-			NBTTagCompound spawn = new NBTTagCompound();
-			spawn.setDouble("x", point.x);
-			spawn.setDouble("y", point.y);
-			spawn.setDouble("z", point.z);
-			spawn.setInteger("dim", dim);
-			DataStorage.setData("spawn", spawn);
-			//FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.getX(), point.getY(), point.getZ());
+//			Point point = new Point(x, y, z);
+//			NBTTagCompound spawn = new NBTTagCompound();
+//			spawn.setDouble("x", point.x);
+//			spawn.setDouble("y", point.y);
+//			spawn.setDouble("z", point.z);
+//			spawn.setInteger("dim", dim);
+//			DataStorage.setData("spawn", spawn);
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(x, y, z);
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		}
 		else
 		{
-			WarpPoint point = new WarpPoint(sender);
-			NBTTagCompound spawn = new NBTTagCompound();
-			spawn.setDouble("x", point.x);
-			spawn.setDouble("y", point.y);
-			spawn.setDouble("z", point.z);
-			spawn.setInteger("dim", sender.dimension);
-			spawn.setFloat("pich", point.pitch);
-			spawn.setFloat("yaw", point.yaw);
-			DataStorage.setData("spawn", spawn);
-			DataStorage.save();
-			//FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.getX(), point.getY(), point.getZ());
+//			WarpPoint point = new WarpPoint(sender);
+//			NBTTagCompound spawn = new NBTTagCompound();
+//			spawn.setDouble("x", point.x);
+//			spawn.setDouble("y", point.y);
+//			spawn.setDouble("z", point.z);
+//			spawn.setInteger("dim", sender.dimension);
+//			spawn.setFloat("pich", point.pitch);
+//			spawn.setFloat("yaw", point.yaw);
+//			DataStorage.setData("spawn", spawn);
+//			DataStorage.save();
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint((int)sender.posX, (int)sender.posY, (int)sender.posZ);
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		}
 	}
