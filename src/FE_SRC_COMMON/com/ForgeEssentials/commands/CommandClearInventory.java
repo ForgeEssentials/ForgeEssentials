@@ -1,10 +1,11 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.core.misc.ItemList;
@@ -58,9 +59,18 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			int var6 = victim.inventory.clearInventory(-1, -1);
 			victim.inventoryContainer.detectAndSendChanges();
-			victim.sendChatToPlayer("Inventory cleared by " + sender.getCommandSenderName());
+			String senderName = (sender instanceof TileEntityCommandBlock ? 
+					"CommandBlock @ (" + ((TileEntityCommandBlock)sender).xCoord + ","
+					+ ((TileEntityCommandBlock)sender).yCoord + ","
+					+ ((TileEntityCommandBlock)sender).zCoord + ")."
+					: sender.getCommandSenderName());
+			victim.sendChatToPlayer("Inventory cleared by " + senderName);
 			sender.sendChatToPlayer("Cleared inventory of " + victim.username);
 		}
 		else

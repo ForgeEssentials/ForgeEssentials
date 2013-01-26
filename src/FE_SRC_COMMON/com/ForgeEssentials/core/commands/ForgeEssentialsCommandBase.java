@@ -230,11 +230,11 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public abstract boolean canConsoleUseCommand();
 
 	/**
-	 * returns false by default. Override if you want to change that.
+	 * returns canConsoleUseCommand() by default. Override if you want to change that.
 	 */
 	public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
 	{
-		return false;
+		return canConsoleUseCommand();
 	}
 
 	public boolean canPlayerUseCommand(EntityPlayer player)
