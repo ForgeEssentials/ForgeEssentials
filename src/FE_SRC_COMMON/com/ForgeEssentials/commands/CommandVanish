@@ -1,0 +1,53 @@
+package com.ForgeEssentials.commands;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionHelper;
+
+import com.ForgeEssentials.WorldBorder.Effects.potion;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+
+public class CommandVanish extends ForgeEssentialsCommandBase
+{
+
+  @Override
+	public String getCommandName()
+	{
+		return "vanish";
+	}
+
+	@Override
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	{
+		if(!sender.isPotionActive(14)) {
+			PotionEffect eff = new PotionEffect(14, 1000000000, 1);
+			sender.addPotionEffect(eff);
+			sender.sendChatToPlayer("Poof! You have vanished!");
+		}
+		else {
+			sender.removePotionEffect(14);
+			sender.sendChatToPlayer("Poof! You have reappeared!");
+		}
+	}
+
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+		sender.sendChatToPlayer("That would require you to be visible in the first place");
+	}
+
+	@Override
+	public boolean canConsoleUseCommand()
+	{
+		return false;
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+
+}

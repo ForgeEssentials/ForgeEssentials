@@ -1,0 +1,59 @@
+package com.ForgeEssentials.commands;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+
+public class CommandSlap extends ForgeEssentialsCommandBase
+{
+
+  @Override
+	public String getCommandName()
+	{
+		return "slap";
+	}
+
+	@Override
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	{
+		EntityPlayer victim = null;
+		if (args.length == 0) {
+			sender.isAirBorne = true;
+			sender.addVelocity(.1F * Math.signum(sender.motionX), .45F, .1F * Math.signum(sender.motionZ));
+			sender.velocityChanged = true;
+			sender.addChatMessage("[" + sender.username + " slapped themself]");
+		}
+		if (args.length == 1){
+			victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			if (victim != null) {
+				victim.isAirBorne = true;
+				victim.addVelocity(.1F * Math.signum(victim.motionX), .45F, .1F * Math.signum(victim.motionZ));
+				victim.velocityChanged = true;
+				sender.addChatMessage("[" + sender.username + " slapped " + victim.username + "]");
+			}
+		}
+	}
+
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean canConsoleUseCommand()
+	{
+		return true;
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+
+}
