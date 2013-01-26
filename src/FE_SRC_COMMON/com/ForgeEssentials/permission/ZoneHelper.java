@@ -181,7 +181,7 @@ public class ZoneHelper implements IZoneManager
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 		{
-			if (zone.contains(p1) && worldZone.isParentOf(zone))
+			if (worldZone.isParentOf(zone) && zone.contains(p1))
 			{
 				zones.add(zone);
 			}

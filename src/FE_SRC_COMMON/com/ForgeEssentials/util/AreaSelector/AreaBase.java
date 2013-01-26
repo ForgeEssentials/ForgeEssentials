@@ -94,7 +94,8 @@ public abstract class AreaBase
 	 */
 	public boolean contains(Point p)
 	{
-		return high.compareTo(p) >= 0 && low.compareTo(p) <= 0;
+		return  (high.isGreaterThan(p) || high.equals(p))
+				&& (low.isLessThan(p) || low.equals(p));
 	}
 
 	/**
