@@ -6,6 +6,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.ArrayList;
 
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -46,7 +49,7 @@ public class CommandFEPermUser
 		
 		if (args.length == 1) // display user-specific settings & there values for this player
 		{
-			ArrayList<Group> groups = APIHelper.getApplicableGroups(args[0], false, ZoneManager.GLOBAL.getZoneName());
+			ArrayList<Group> groups = APIHelper.getApplicableGroups(args[0], false, ZoneManager.getGLOBAL().getZoneName());
 			OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.user.info.groups", player.username));
 			for (Group g : groups)
 			{
@@ -58,7 +61,7 @@ public class CommandFEPermUser
 		{
 			if (args.length == 2) // display user super perms
 			{
-				Zone zone = ZoneManager.SUPER;
+				Zone zone = ZoneManager.getSUPER();
 				ArrayList list = APIHelper.getPlayerPermissions(args[0], zone.getZoneName());
 				boolean error = false;
 				for(Object lineObj : list)
@@ -82,7 +85,7 @@ public class CommandFEPermUser
 			}
 			else if (args.length >= 3) // changing super perms
 			{
-				Zone zone = ZoneManager.SUPER;
+				Zone zone = ZoneManager.getSUPER();
 				if (args.length == 5) // zone is set
 				{
 					if(ZoneManager.doesZoneExist(args[4]))
@@ -130,7 +133,7 @@ public class CommandFEPermUser
 				OutputHandler.chatConfirmation(sender, "/p user <player> group remove : Removes player from specified group.");
 				OutputHandler.chatConfirmation(sender, "/p user <player> group set : Removes player from all groups and adds them to specified group.");
 			}
-			String zoneName = ZoneManager.GLOBAL.getZoneName();
+			String zoneName = ZoneManager.getGLOBAL().getZoneName();
 			if (args.length == 5) // zone is set
 			{
 				if(ZoneManager.getZone(args[4]) != null)
@@ -199,7 +202,7 @@ public class CommandFEPermUser
 		}
 		else if (args.length >= 3) // player management
 		{
-			String zoneName = ZoneManager.GLOBAL.getZoneName();
+			String zoneName = ZoneManager.getGLOBAL().getZoneName();
 			if (args.length == 4) // zone is set
 			{
 				if(ZoneManager.getZone(args[3]) != null)
@@ -323,7 +326,7 @@ public class CommandFEPermUser
 		
 		if (args.length == 1) // display user-specific settings & there values for this player
 		{
-			ArrayList<Group> groups = APIHelper.getApplicableGroups(args[0], false, ZoneManager.GLOBAL.getZoneName());
+			ArrayList<Group> groups = APIHelper.getApplicableGroups(args[0], false, ZoneManager.getGLOBAL().getZoneName());
 			sender.sendChatToPlayer(Localization.format("command.permissions.user.info.groups", player.username));
 			for (Group g : groups)
 			{
@@ -335,7 +338,7 @@ public class CommandFEPermUser
 		{
 			if (args.length == 2) // display user super perms
 			{
-				Zone zone = ZoneManager.SUPER;
+				Zone zone = ZoneManager.getSUPER();
 				ArrayList list = APIHelper.getPlayerPermissions(args[0], zone.getZoneName());
 				boolean error = false;
 				for(Object lineObj : list)
@@ -359,7 +362,7 @@ public class CommandFEPermUser
 			}
 			else if (args.length >= 3) // changing super perms
 			{
-				Zone zone = ZoneManager.SUPER;
+				Zone zone = ZoneManager.getSUPER();
 				if (args.length == 5) // zone is set
 				{
 					if(ZoneManager.doesZoneExist(args[4]))
@@ -401,7 +404,7 @@ public class CommandFEPermUser
 		}
 		else if (args[1].equalsIgnoreCase("group")) // group management
 		{
-			String zoneName = ZoneManager.GLOBAL.getZoneName();
+			String zoneName = ZoneManager.getGLOBAL().getZoneName();
 			if (args.length == 5) // zone is set
 			{
 				if(ZoneManager.getZone(args[4]) != null)
@@ -469,7 +472,7 @@ public class CommandFEPermUser
 		}
 		else if (args.length >= 3) // player management
 		{
-			String zoneName = ZoneManager.GLOBAL.getZoneName();
+			String zoneName = ZoneManager.getGLOBAL().getZoneName();
 			if (args.length == 4) // zone is set
 			{
 				if(ZoneManager.getZone(args[3]) != null)

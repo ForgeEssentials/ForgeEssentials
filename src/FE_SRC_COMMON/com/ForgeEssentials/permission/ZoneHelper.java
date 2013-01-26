@@ -1,17 +1,6 @@
 package com.ForgeEssentials.permission;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-
-import net.minecraft.world.World;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.WorldEvent.Load;
-
+import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
@@ -19,15 +8,28 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldArea;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
+import net.minecraft.world.World;
+
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.WorldEvent.Load;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class ZoneManager
+public class ZoneHelper
 {
 	// GLOBAL and WORLD zones.
-	public static Zone GLOBAL;
-	public static Zone SUPER;
+	private static Zone GLOBAL;
+	private static Zone SUPER;
 
-	public ZoneManager()
+	public ZoneHelper()
 	{
 		GLOBAL = new Zone("_GLOBAL_", 0);
 		SUPER = new Zone("_SUPER_", 0);
@@ -222,12 +224,6 @@ public class ZoneManager
 		return end;
 	}
 
-	public static Zone getWhichZoneIn(WorldPoint point)
-	{
-		World world = FunctionHelper.getDimension(point.dim);
-		return getWhichZoneIn(point, world);
-	}
-
 	/**
 	 * used for AllorNothing areas..
 	 * 
@@ -379,5 +375,15 @@ public class ZoneManager
 		zones.addAll(zoneMap.values());
 		
 		return zones;
+	}
+	
+	public static Zone getGLOBAL()
+	{
+		return GLOBAL;
+	}
+
+	public static Zone getSUPER()
+	{
+		return SUPER;
 	}
 }

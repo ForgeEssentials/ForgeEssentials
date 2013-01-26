@@ -16,7 +16,9 @@ import java.util.TreeSet;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.DBConnector;
@@ -678,7 +680,7 @@ public class SqlHelper
 					.append(COLUMN_ZONE_NAME).append(", ")
 					.append(COLUMN_ZONE_ZONEID).append(") ")
 					.append(" VALUES ").append(" ('")
-					.append(ZoneManager.GLOBAL.getZoneName()).append("', 0) ");
+					.append(ZoneManager.getGLOBAL().getZoneName()).append("', 0) ");
 			db.createStatement().executeUpdate(query.toString());
 
 			// SUPER zone
@@ -686,7 +688,7 @@ public class SqlHelper
 					.append(COLUMN_ZONE_NAME).append(", ")
 					.append(COLUMN_ZONE_ZONEID).append(") ")
 					.append(" VALUES ").append(" ('")
-					.append(ZoneManager.SUPER.getZoneName()).append("', -1) ");
+					.append(ZoneManager.getSUPER().getZoneName()).append("', -1) ");
 			db.createStatement().executeUpdate(query.toString());
 
 			// Entry player...
@@ -1945,7 +1947,7 @@ public class SqlHelper
 	 */
 	private static synchronized int getZoneIDFromZoneName(String zone) throws SQLException
 	{
-		if (zone.equalsIgnoreCase(ZoneManager.GLOBAL.getZoneName()))
+		if (zone.equalsIgnoreCase(ZoneManager.getGLOBAL().getZoneName()))
 			return 0;
 
 		instance.statementGetZoneIDFromName.setString(1, zone);

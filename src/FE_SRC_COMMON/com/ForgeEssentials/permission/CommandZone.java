@@ -6,6 +6,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
@@ -32,7 +34,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
+		PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
 		ArrayList<Zone> zones = ZoneManager.getZoneList();
 		int zonePages = zones.size() / 15 + 1;
 		switch (args.length)
@@ -109,7 +111,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			}
 			else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete"))
 			{
-				if (!ZoneManager.zoneMap.containsKey(args[1]))
+				if (!ZoneManager.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
 				}
@@ -128,7 +130,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			}
 			else if (args[0].equalsIgnoreCase("define"))
 			{
-				if (ZoneManager.zoneMap.containsKey(args[1]))
+				if (ZoneManager.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_YESZONE, args[1]));
 				}
@@ -150,7 +152,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			}
 			else if (args[0].equalsIgnoreCase("redefine"))
 			{
-				if (!ZoneManager.zoneMap.containsKey(args[1]))
+				if (!ZoneManager.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_YESZONE, args[1]));
 				}
@@ -170,7 +172,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					ZoneManager.zoneMap.get(args[1]).redefine(info.getPoint1(), info.getPoint2());
+					ZoneManager.getZone(args[1]).redefine(info.getPoint1(), info.getPoint2());
 					OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_REDEFINE, args[1]));
 				}
 				return;
@@ -183,11 +185,11 @@ public class CommandZone extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("setParent"))
 			{
-				if (!ZoneManager.zoneMap.containsKey(args[1]))
+				if (!ZoneManager.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
 				}
-				else if (!ZoneManager.zoneMap.containsKey(args[2]))
+				else if (!ZoneManager.doesZoneExist(args[2]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
@@ -197,7 +199,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					ZoneManager.zoneMap.get(args[1]).parent = args[2];
+					ZoneManager.getZone(args[1]).parent = args[2];
 					OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_SETPARENT, args[1], args[2]));
 				}
 				return;

@@ -5,14 +5,14 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
 import com.ForgeEssentials.core.customEvents.PlayerBlockBreak;
 import com.ForgeEssentials.core.customEvents.PlayerBlockPlace;
 import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.permission.Zone;
-import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 

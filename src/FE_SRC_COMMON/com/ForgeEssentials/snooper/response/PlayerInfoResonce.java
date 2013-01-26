@@ -8,11 +8,11 @@ import java.util.LinkedHashMap;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.economy.Wallet;
-import com.ForgeEssentials.permission.Group;
 import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 

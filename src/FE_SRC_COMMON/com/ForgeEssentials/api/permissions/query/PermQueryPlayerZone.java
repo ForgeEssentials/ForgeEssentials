@@ -4,8 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.event.Event.HasResult;
 
-import com.ForgeEssentials.permission.Zone;
-import com.ForgeEssentials.permission.ZoneManager;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 
 /**
  * Reuslts are: default, allow, deny.
@@ -47,7 +47,7 @@ public class PermQueryPlayerZone extends PermQueryPlayer
 	public PermQueryPlayerZone(EntityPlayer player, String permission)
 	{
 		super(player, permission);
-		toCheck = ZoneManager.GLOBAL;
+		toCheck = ZoneManager.getGLOBAL();
 	}
 
 	public PermQueryPlayerZone(EntityPlayer player, String permission, String zoneID, boolean checkForward)
@@ -70,7 +70,7 @@ public class PermQueryPlayerZone extends PermQueryPlayer
 
 	public PermQueryPlayerZone(EntityPlayer player, String permission, boolean checkForward)
 	{
-		this(player, permission, ZoneManager.GLOBAL);
+		this(player, permission, ZoneManager.getGLOBAL());
 		this.checkForward = checkForward;
 	}
 }

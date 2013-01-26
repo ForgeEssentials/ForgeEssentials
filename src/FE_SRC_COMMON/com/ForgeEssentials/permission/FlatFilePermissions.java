@@ -1,5 +1,7 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.api.permissions.ZoneManager;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,7 +85,7 @@ public class FlatFilePermissions
 			config.get(holder.zone + ".group." + holder.target, holder.name, holder.allowed);
 		}
 		
-		config.addCustomCategoryComment(ZoneManager.GLOBAL.getZoneName()+".group."+APIHelper.DEFAULT.name, "The group used to as a placeholder for zone flags and such.");
+		config.addCustomCategoryComment(ZoneManager.getGLOBAL().getZoneName()+".group."+APIHelper.DEFAULT.name, "The group used to as a placeholder for zone flags and such.");
 
 		config.save();
 	}

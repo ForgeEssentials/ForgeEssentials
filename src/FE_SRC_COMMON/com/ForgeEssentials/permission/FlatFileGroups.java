@@ -1,5 +1,7 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.api.permissions.Group;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;

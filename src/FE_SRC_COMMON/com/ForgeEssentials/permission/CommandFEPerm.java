@@ -7,6 +7,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
@@ -170,7 +172,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 				return getListOfStringsMatchingLastWord(args, args2);
 			case 2:
 				if (args[0].equalsIgnoreCase("group")) {
-					List<Group> groups = APIHelper.getGroupsInZone(ZoneManager.GLOBAL.getZoneName());
+					List<Group> groups = APIHelper.getGroupsInZone(ZoneManager.getGLOBAL().getZoneName());
 					ArrayList<String> groupnames = new ArrayList<String>();
 					for (int i = 0; i < groups.size(); i++) {
 						groupnames.add(groups.get(i).name);

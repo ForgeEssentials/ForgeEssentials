@@ -1,4 +1,4 @@
-package com.ForgeEssentials.permission;
+package com.ForgeEssentials.api.permissions;
 
 import net.minecraft.world.World;
 
@@ -51,7 +51,7 @@ public class Zone extends WorldArea implements Comparable
 
 		if (!name.equals("_GLOBAL_"))
 		{
-			parent = ZoneManager.GLOBAL.zoneID;
+			parent = ZoneManager.getGLOBAL().zoneID;
 		}
 	}
 
@@ -75,7 +75,7 @@ public class Zone extends WorldArea implements Comparable
 		{
 			return false;
 		}
-		else if (zone.parent.equals(ZoneManager.GLOBAL.zoneID))
+		else if (zone.parent.equals(ZoneManager.getGLOBAL().zoneID))
 		{
 			return false;
 		}
@@ -94,7 +94,7 @@ public class Zone extends WorldArea implements Comparable
 		{
 			return true;
 		}
-		else if (zone.parent.equals(ZoneManager.GLOBAL.zoneID))
+		else if (zone.parent.equals(ZoneManager.getGLOBAL().zoneID))
 		{
 			return dim == zone.dim;
 		}
@@ -143,7 +143,7 @@ public class Zone extends WorldArea implements Comparable
 	{
 		if (parent == null)
 			return false;
-		return parent.equals(ZoneManager.GLOBAL.zoneID);
+		return parent.equals(ZoneManager.getGLOBAL().zoneID);
 	}
 
 	@Reconstructor

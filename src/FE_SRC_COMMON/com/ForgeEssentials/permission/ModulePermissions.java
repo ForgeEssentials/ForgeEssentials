@@ -9,6 +9,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
@@ -33,7 +35,7 @@ public class ModulePermissions
 {
 	// public static ConfigPermissions config;
 	public static PermissionsHandler pHandler;
-	public static ZoneManager zManager;
+	public static ZoneHelper zManager;
 	public static SqlHelper sql;
 	
 	@Config
@@ -48,7 +50,7 @@ public class ModulePermissions
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		OutputHandler.SOP("Permissions module is enabled. Loading...");
-		zManager = new ZoneManager();
+		zManager = new ZoneHelper();
 
 		MinecraftForge.EVENT_BUS.register(zManager);
 
@@ -108,7 +110,7 @@ public class ModulePermissions
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		// save all the zones
-		for (Zone zone : ZoneManager.zoneMap.values())
+		for (Zone zone : ZoneHelper.zoneMap.values())
 			data.saveObject(zone);
 	}
 

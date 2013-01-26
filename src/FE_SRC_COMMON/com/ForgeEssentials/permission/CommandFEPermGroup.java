@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -35,7 +38,7 @@ public class CommandFEPermGroup
 				OutputHandler.chatConfirmation(sender, "Usage: /p group create <groupname>");
 				return;
 			}
-			Zone zone = ZoneManager.GLOBAL;
+			Zone zone = ZoneManager.getGLOBAL();
 			String prefix = "";
 			String suffix = "";
 			String parent = null;
@@ -73,7 +76,7 @@ public class CommandFEPermGroup
 				OutputHandler.chatError(sender, args[0] + " does not exist as a group!");
 				return;
 			}
-			Zone zone = ZoneManager.GLOBAL;
+			Zone zone = ZoneManager.getGLOBAL();
 			if(args.length == 3)
 			{
 				if(ZoneManager.doesZoneExist(args[2]))
@@ -107,7 +110,7 @@ public class CommandFEPermGroup
 		if(args[0].equalsIgnoreCase("list"))
 		{
 			// list the current groups: by zone?  in priority order?
-			Zone zone = ZoneManager.GLOBAL;
+			Zone zone = ZoneManager.getGLOBAL();
 			if(args.length == 2)
 			{
 				if(ZoneManager.doesZoneExist(args[1]))
@@ -154,7 +157,7 @@ public class CommandFEPermGroup
 		/*
 		 * Settings
 		 */
-		Zone zone = ZoneManager.GLOBAL;
+		Zone zone = ZoneManager.getGLOBAL();
 		if(args.length == 3 && (args[1].equalsIgnoreCase("prefix") || args[1].equalsIgnoreCase("suffix")
 				|| args[1].equalsIgnoreCase("parent") || args[1].equalsIgnoreCase("priority")))
 		{
@@ -305,7 +308,7 @@ public class CommandFEPermGroup
 		/*
 		 * Permissions part
 		 */
-		zone = ZoneManager.GLOBAL;
+		zone = ZoneManager.getGLOBAL();
 		if(args.length == 4)
 		{
 			if(ZoneManager.doesZoneExist(args[3]))
@@ -405,7 +408,7 @@ public class CommandFEPermGroup
 				sender.sendChatToPlayer("Usage: /p group create <groupname>");
 				return;
 			}
-			Zone zone = ZoneManager.GLOBAL;
+			Zone zone = ZoneManager.getGLOBAL();
 			String prefix = "";
 			String suffix = "";
 			String parent = null;
@@ -439,7 +442,7 @@ public class CommandFEPermGroup
 				sender.sendChatToPlayer(args[0] + " does not exist as a group!");
 				return;
 			}
-			Zone zone = ZoneManager.GLOBAL;
+			Zone zone = ZoneManager.getGLOBAL();
 			if(args.length == 3)
 			{
 				if(ZoneManager.doesZoneExist(args[2]))
@@ -459,7 +462,7 @@ public class CommandFEPermGroup
 		if(args[0].equalsIgnoreCase("list"))
 		{
 			// list the current groups: by zone?  in priority order?
-			Zone zone = ZoneManager.GLOBAL;
+			Zone zone = ZoneManager.getGLOBAL();
 			if(args.length == 2)
 			{
 				if(ZoneManager.doesZoneExist(args[1]))
@@ -502,7 +505,7 @@ public class CommandFEPermGroup
 		/*
 		 * Settings
 		 */
-		Zone zone = ZoneManager.GLOBAL;
+		Zone zone = ZoneManager.getGLOBAL();
 		if(args.length == 3 && (args[1].equalsIgnoreCase("prefix") || args[1].equalsIgnoreCase("suffix")
 				|| args[1].equalsIgnoreCase("parent") || args[1].equalsIgnoreCase("priority")))
 		{
@@ -645,7 +648,7 @@ public class CommandFEPermGroup
 		/*
 		 * Permissions part
 		 */
-		zone = ZoneManager.GLOBAL;
+		zone = ZoneManager.getGLOBAL();
 		if(args.length == 4)
 		{
 			if(ZoneManager.doesZoneExist(args[3]))

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import net.minecraftforge.event.EventPriority;
 
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
@@ -36,7 +39,7 @@ public final class PermissionsHandler
 	@PermSubscribe(priority = EventPriority.HIGH, handleResult = { PermResult.UNKNOWN })
 	public void checkPlayerSupers(PermQueryPlayer event)
 	{
-		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.SUPER.getZoneName(), event.checkForward);
+		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.getSUPER().getZoneName(), event.checkForward);
 		if (!result.equals(PermResult.UNKNOWN))
 			event.setResult(result);
 	}
@@ -138,7 +141,7 @@ public final class PermissionsHandler
 			// still unknown? check parent zones.
 			if (result.equals(PermResult.UNKNOWN))
 			{
-				if (tempZone == ZoneManager.GLOBAL)
+				if (tempZone == ZoneManager.getGLOBAL())
 				{
 					// default deny.
 					result = PermResult.DENY;
@@ -161,8 +164,10 @@ public final class PermissionsHandler
 		ArrayList<Zone> zones = new ArrayList<Zone>();
 
 		// add all children
-		for (Zone zone : ZoneManager.zoneMap.values())
+		Zone zone;
+		for (String zID : ZoneManager.zoneSet())
 		{
+			zone = ZoneManager.getZone(zID);
 			if (zone.intersectsWith(doneTo) && worldZone.isParentOf(zone))
 			{
 				zones.add(zone);
@@ -200,11 +205,11 @@ public final class PermissionsHandler
 		// else.. get the applicable states.
 		default:
 		{
-			for (Zone zone : zones)
+			for (Zone zone1 : zones)
 			{
-				if (getResultFromZone(zone, event).equals(PermResult.ALLOW))
+				if (getResultFromZone(zone1, event).equals(PermResult.ALLOW))
 				{
-					applicable.add(doneTo.getIntersection(zone));
+					applicable.add(doneTo.getIntersection(zone1));
 				}
 			}
 		}

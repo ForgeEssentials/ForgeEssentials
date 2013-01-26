@@ -1,8 +1,6 @@
 package com.ForgeEssentials.api.permissions;
 
 import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.permission.Group;
-import com.ForgeEssentials.permission.ZoneManager;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
 /**
@@ -54,7 +52,7 @@ public enum RegGroup
 	private RegGroup(String name, String parent, String prefix, String suffix, int priority)
 	{
 		this.name = name;
-		group = new Group(name, parent, prefix, suffix, ZoneManager.GLOBAL.getZoneName(), priority);
+		group = new Group(name, parent, prefix, suffix, ZoneManager.getGLOBAL().getZoneName(), priority);
 	}
 
 	@Override

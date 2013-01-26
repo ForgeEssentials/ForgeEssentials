@@ -6,7 +6,10 @@ import java.util.TreeSet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.events.PermissionSetEvent;
 import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermissionQueryBus;
@@ -27,7 +30,7 @@ public class APIHelper
 	public static final String EntryPlayer = "_ENTRY_PLAYER_";
 	protected static String EPPrefix = "";
 	protected static String EPSuffix = "";
-	public static Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, ZoneManager.GLOBAL.getZoneName(), 0);
+	public static Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, ZoneManager.getGLOBAL().getZoneName(), 0);
 
 	
 	public static boolean checkPermAllowed(PermQuery query)
@@ -165,7 +168,7 @@ public class APIHelper
 		temp = SqlHelper.getGroupsForPlayer(player, zoneID);
 		if(temp.isEmpty())
 		{
-			temp = SqlHelper.getGroupsForPlayer(player, ZoneManager.GLOBAL.getZoneName());
+			temp = SqlHelper.getGroupsForPlayer(player, ZoneManager.getGLOBAL().getZoneName());
 		}
 		list.addAll(temp);
 

@@ -3,8 +3,8 @@ package com.ForgeEssentials.api.permissions.events;
 import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.Event;
 
+import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.permission.Permission;
-import com.ForgeEssentials.permission.Zone;
 
 @Cancelable
 /**

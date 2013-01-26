@@ -2,8 +2,8 @@ package com.ForgeEssentials.api.permissions.query;
 
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.permission.Zone;
-import com.ForgeEssentials.permission.ZoneManager;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 
 public class PermQueryBlanketZone extends PermQuery
 {
@@ -48,6 +48,6 @@ public class PermQueryBlanketZone extends PermQuery
 	 */
 	public PermQueryBlanketZone(String permission)
 	{
-		toCheck = ZoneManager.GLOBAL;
+		toCheck = ZoneManager.getGLOBAL();
 	}
 }
