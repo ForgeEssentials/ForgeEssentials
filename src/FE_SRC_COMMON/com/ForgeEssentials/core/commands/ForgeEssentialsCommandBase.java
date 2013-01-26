@@ -16,6 +16,8 @@ import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
 	public boolean enableCmdBlock = true;
@@ -280,7 +282,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		return MinecraftServer.getServer().getPossibleCompletions(sender, args[args.length - 1]);
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().getPossibleCompletions(sender, args[args.length - 1]);
 
 	}
 
