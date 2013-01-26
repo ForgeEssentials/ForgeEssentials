@@ -110,6 +110,7 @@ public class ZoneHelper implements IZoneManager
 		Zone deleted = zoneMap.remove(zoneID);
 		onZoneDeleted(deleted);
 		SqlHelper.delZone(zoneID);
+		ModulePermissions.data.deleteObject(Zone.class, zoneID);
 	}
 
 	public boolean doesZoneExist(String zoneID)
