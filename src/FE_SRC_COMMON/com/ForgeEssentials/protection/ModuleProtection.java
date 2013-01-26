@@ -1,10 +1,5 @@
 package com.ForgeEssentials.protection;
 
-import java.util.HashMap;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
@@ -15,6 +10,11 @@ import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+
+import java.util.HashMap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

@@ -1,8 +1,8 @@
 package com.ForgeEssentials.chat.commands;
 
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -37,7 +37,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			if (APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".self")))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".self")))
 			{
 				if (args[0].equalsIgnoreCase("del"))
 				{
@@ -61,7 +61,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			if (APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
 				EntityPlayerMP player = func_82359_c(sender, args[0]);
 				if (args[1].equalsIgnoreCase("del"))

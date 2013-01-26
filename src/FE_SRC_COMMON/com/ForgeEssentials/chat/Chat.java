@@ -1,11 +1,11 @@
 package com.ForgeEssentials.chat;
 
 import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import cpw.mods.fml.common.network.IChatListener;
 
@@ -81,7 +80,7 @@ public class Chat implements IChatListener
 
 		if (event.message.contains("&"))
 		{
-			if (APIHelper.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
 			{
 				message = FunctionHelper.formatColors(event.message);
 			}

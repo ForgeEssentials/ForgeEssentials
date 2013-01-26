@@ -1,13 +1,13 @@
 package com.ForgeEssentials.core.moduleLauncher;
 
+import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.command.ICommandSender;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeMap;
-
-import net.minecraft.command.ICommandSender;
-
-import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLInitializationEvent;

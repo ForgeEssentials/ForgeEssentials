@@ -1,13 +1,13 @@
 package com.ForgeEssentials.permission;
 
-import java.util.HashMap;
-import java.util.HashSet;
-
-import net.minecraftforge.event.Event;
-
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraftforge.event.Event;
+
+import java.util.HashMap;
+import java.util.HashSet;
 
 import cpw.mods.fml.common.Mod;
 

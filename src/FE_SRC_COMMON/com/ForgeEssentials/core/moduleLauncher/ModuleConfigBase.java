@@ -1,8 +1,8 @@
 package com.ForgeEssentials.core.moduleLauncher;
 
-import java.io.File;
-
 import net.minecraft.command.ICommandSender;
+
+import java.io.File;
 
 /**
  * The constructor of this should only set the file. Any creation of a Forge COnfiguration class will throw everything off. DO NOT DO IT.

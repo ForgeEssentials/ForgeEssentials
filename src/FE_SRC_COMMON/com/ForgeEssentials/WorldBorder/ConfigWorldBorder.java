@@ -1,16 +1,16 @@
 package com.ForgeEssentials.WorldBorder;
 
-import java.io.File;
+import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
+import com.ForgeEssentials.WorldBorder.Effects.IEffect;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
+
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
-import com.ForgeEssentials.WorldBorder.Effects.IEffect;
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
-import com.ForgeEssentials.util.OutputHandler;
+import java.io.File;
 
 /**
  * This generates the configuration structure

@@ -1,10 +1,10 @@
 package com.ForgeEssentials.permission;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class CommandExport
 {

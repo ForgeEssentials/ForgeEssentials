@@ -1,15 +1,16 @@
 package com.ForgeEssentials.snooper.response;
 
-import java.net.DatagramPacket;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
+import com.ForgeEssentials.api.snooper.Response;
+import com.ForgeEssentials.api.snooper.TextFormatter;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.snooper.Response;
-import com.ForgeEssentials.api.snooper.TextFormatter;
+import java.net.DatagramPacket;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 
 public class PlayerArmor extends Response
 {

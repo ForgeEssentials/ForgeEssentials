@@ -1,12 +1,12 @@
 package com.ForgeEssentials.economy.commands;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.economy.Wallet;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

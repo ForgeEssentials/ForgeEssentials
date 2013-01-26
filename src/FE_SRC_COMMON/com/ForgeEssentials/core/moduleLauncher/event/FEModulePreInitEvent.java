@@ -1,9 +1,9 @@
 package com.ForgeEssentials.core.moduleLauncher.event;
 
-import java.util.logging.Logger;
-
 import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
 import com.ForgeEssentials.util.OutputHandler;
+
+import java.util.logging.Logger;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLStateEvent;

@@ -1,9 +1,17 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.util.DBConnector;
+import com.ForgeEssentials.util.EnumDBType;
+import com.ForgeEssentials.util.OutputHandler;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,20 +21,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
-import net.minecraftforge.common.Configuration;
-
-import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.util.DBConnector;
-import com.ForgeEssentials.util.EnumDBType;
-import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Throwables;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class SqlHelper
 {
@@ -670,7 +665,7 @@ public class SqlHelper
 					.append(COLUMN_GROUP_ZONE).append(") ")
 					.append(" VALUES ").append(" (")
 					.append("-1, ") // groupID
-					.append("'").append(APIHelper.DEFAULT.name).append("', ")
+					.append("'").append(PermissionsAPI.getDEFAULT().name).append("', ")
 					.append("0, 0)"); // priority, zone
 			db.createStatement().executeUpdate(query.toString());
 
@@ -696,7 +691,7 @@ public class SqlHelper
 					.append(COLUMN_PLAYER_USERNAME).append(", ")
 					.append(COLUMN_PLAYER_PLAYERID).append(") ")
 					.append(" VALUES ").append(" ('")
-					.append(APIHelper.EntryPlayer).append("', 0) ");
+					.append(PermissionsAPI.getEntryPlayer()).append("', 0) ");
 			db.createStatement().executeUpdate(query.toString());
 
 		}
@@ -847,7 +842,7 @@ public class SqlHelper
 			// call generate to remake the stuff that should be there
 			{
 				// recreate EntryPlayer player
-				this.statementPutPlayer.setString(1, APIHelper.EntryPlayer);
+				this.statementPutPlayer.setString(1, PermissionsAPI.getEntryPlayer());
 				this.statementPutPlayer.executeUpdate();
 				this.statementPutPlayer.clearParameters();
 				
@@ -859,7 +854,7 @@ public class SqlHelper
 						.append(COLUMN_GROUP_ZONE).append(") ")
 						.append(" VALUES ").append(" (")
 						.append("-1, ") // groupID
-						.append("'").append(APIHelper.DEFAULT.name).append("', ")
+						.append("'").append(PermissionsAPI.getDEFAULT().name).append("', ")
 						.append("0, 0)"); // priority, zone
 				db.createStatement().executeUpdate(query.toString());
 			}
@@ -881,7 +876,7 @@ public class SqlHelper
 			String[] list;
 			for (Group group : (ArrayList<Group>) map.get("groups"))
 			{
-				if (group.name.equals(APIHelper.DEFAULT.name))
+				if (group.name.equals(PermissionsAPI.getDEFAULT().name))
 					continue;
 				
 				createGroup(group);
@@ -2046,7 +2041,7 @@ public class SqlHelper
 	 */
 	private static synchronized int getGroupIDFromGroupName(String group) throws SQLException
 	{
-		if (group.equals(APIHelper.DEFAULT.name))
+		if (group.equals(PermissionsAPI.getDEFAULT().name))
 			return -1;
 
 		instance.statementGetGroupIDFromName.setString(1, group);

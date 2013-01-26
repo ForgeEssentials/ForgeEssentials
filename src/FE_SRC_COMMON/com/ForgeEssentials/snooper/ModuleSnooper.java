@@ -1,11 +1,5 @@
 package com.ForgeEssentials.snooper;
 
-import java.util.ArrayList;
-
-import net.minecraft.network.rcon.IServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.snooper.API;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -20,6 +14,13 @@ import com.ForgeEssentials.snooper.response.PlayerInv;
 import com.ForgeEssentials.snooper.response.PlayerList;
 import com.ForgeEssentials.snooper.response.ServerInfo;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.network.rcon.IServer;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+
+import java.util.ArrayList;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

@@ -1,11 +1,5 @@
 package com.ForgeEssentials.WorldBorder;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.event.ForgeSubscribe;
-
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
@@ -15,6 +9,13 @@ import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.vector.Vector2;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+
+import net.minecraftforge.event.ForgeSubscribe;
+
+import java.util.EnumSet;
+import java.util.HashMap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IScheduledTickHandler;

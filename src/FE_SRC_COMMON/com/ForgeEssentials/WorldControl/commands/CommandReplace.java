@@ -1,20 +1,20 @@
 package com.ForgeEssentials.WorldControl.commands;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskReplaceSelection;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
 public class CommandReplace extends WorldControlCommandBase
 {
@@ -93,7 +93,7 @@ public class CommandReplace extends WorldControlCommandBase
 				BackupArea back = new BackupArea();
 
 				PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
-				PermResult result = APIHelper.checkPermResult(query);
+				PermResult result = PermissionsAPI.checkPermResult(query);
 
 				switch (result)
 				{

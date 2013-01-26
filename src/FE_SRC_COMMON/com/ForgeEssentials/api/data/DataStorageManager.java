@@ -1,23 +1,9 @@
 package com.ForgeEssentials.api.data;
 
-import java.util.Arrays;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
-import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.EnumDriverType;
-import com.ForgeEssentials.data.SQLDataDriver;
-import com.ForgeEssentials.data.StorageManager;
 import com.ForgeEssentials.data.TypeTagger;
 import com.ForgeEssentials.util.DBConnector;
-import com.ForgeEssentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**
  * Manages the DataDrivers and selects the correct one based on configuration settings. Once the DataDriver has been initialized, this class's job is done
@@ -26,7 +12,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
  * @author MysteriousAges
  * 
  */
-public class DataStorageManager
+public abstract class DataStorageManager
 {
 	
 	public static IStorageManager manager;

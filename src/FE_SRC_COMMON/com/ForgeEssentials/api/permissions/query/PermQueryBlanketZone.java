@@ -1,9 +1,9 @@
 package com.ForgeEssentials.api.permissions.query;
 
-import net.minecraft.world.World;
-
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
+
+import net.minecraft.world.World;
 
 public class PermQueryBlanketZone extends PermQuery
 {

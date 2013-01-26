@@ -1,9 +1,9 @@
 package com.ForgeEssentials.snooper;
 
+import com.ForgeEssentials.api.snooper.Response;
+
 import java.util.Collection;
 import java.util.HashMap;
-
-import com.ForgeEssentials.api.snooper.Response;
 
 import cpw.mods.fml.common.FMLLog;
 

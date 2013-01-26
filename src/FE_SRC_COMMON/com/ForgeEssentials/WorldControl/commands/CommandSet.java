@@ -1,25 +1,25 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated - Huh? Do you mean depracated?
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.misc.ItemList;
-import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+
+import net.minecraft.block.Block;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+
+import java.util.List;
 
 public class CommandSet extends WorldControlCommandBase
 {
@@ -68,7 +68,7 @@ public class CommandSet extends WorldControlCommandBase
 				BackupArea back = new BackupArea();
 
 				PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
-				PermResult result = APIHelper.checkPermResult(query);
+				PermResult result = PermissionsAPI.checkPermResult(query);
 
 				switch (result)
 				{

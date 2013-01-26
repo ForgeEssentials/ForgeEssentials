@@ -1,12 +1,8 @@
 package com.ForgeEssentials.data;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.zip.GZIPOutputStream;
+import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -15,16 +11,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.ITaggedClass;
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.zip.GZIPOutputStream;
 
 public class NBTDataDriver extends BinaryDataDriver
 {

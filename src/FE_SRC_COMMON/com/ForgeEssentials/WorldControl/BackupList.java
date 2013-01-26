@@ -1,11 +1,11 @@
 package com.ForgeEssentials.WorldControl;
 
 //Depreciated
+import com.ForgeEssentials.util.BackupArea;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Queue;
-
-import com.ForgeEssentials.util.BackupArea;
 
 public class BackupList implements Queue<BackupArea>
 {

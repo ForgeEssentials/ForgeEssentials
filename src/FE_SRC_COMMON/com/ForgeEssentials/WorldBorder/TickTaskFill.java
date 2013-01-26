@@ -1,14 +1,14 @@
 package com.ForgeEssentials.WorldBorder;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.WorldServer;
-
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldServer;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

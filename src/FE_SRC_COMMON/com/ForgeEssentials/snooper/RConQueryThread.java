@@ -1,5 +1,10 @@
 package com.ForgeEssentials.snooper;
 
+import com.ForgeEssentials.api.snooper.Response;
+
+import net.minecraft.network.rcon.IServer;
+import net.minecraft.network.rcon.RConUtils;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -17,11 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import net.minecraft.network.rcon.IServer;
-import net.minecraft.network.rcon.RConUtils;
-
-import com.ForgeEssentials.api.snooper.Response;
 
 public class RConQueryThread implements Runnable
 {

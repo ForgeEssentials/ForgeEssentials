@@ -1,12 +1,12 @@
 package com.ForgeEssentials.commands.util;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import com.ForgeEssentials.core.PlayerInfo;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.core.PlayerInfo;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IScheduledTickHandler;

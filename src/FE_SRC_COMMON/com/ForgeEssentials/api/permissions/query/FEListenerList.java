@@ -1,8 +1,8 @@
 package com.ForgeEssentials.api.permissions.query;
 
-import java.util.ArrayList;
-
 import net.minecraftforge.event.EventPriority;
+
+import java.util.ArrayList;
 
 public class FEListenerList
 {

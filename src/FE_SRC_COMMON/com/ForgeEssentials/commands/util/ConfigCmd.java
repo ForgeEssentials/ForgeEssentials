@@ -1,28 +1,14 @@
 package com.ForgeEssentials.commands.util;
 
-import java.io.File;
-import java.util.Set;
-
-import javax.security.auth.callback.ConfirmationCallback;
-
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.ConfigCategory;
-import net.minecraftforge.common.Configuration;
-
-import com.ForgeEssentials.commands.CommandAFK;
-import com.ForgeEssentials.commands.CommandEnderchest;
-import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandRules;
-import com.ForgeEssentials.commands.CommandVirtualchest;
 import com.ForgeEssentials.commands.ModuleCommands;
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.command.ICommandSender;
+
+import net.minecraftforge.common.Configuration;
+
+import java.io.File;
 
 public class ConfigCmd extends ModuleConfigBase
 {

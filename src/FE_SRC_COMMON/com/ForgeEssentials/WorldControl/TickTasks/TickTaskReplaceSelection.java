@@ -1,11 +1,5 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
-import java.util.ArrayList;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
@@ -16,6 +10,12 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
 
 public class TickTaskReplaceSelection implements ITickTask
 {

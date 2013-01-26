@@ -1,12 +1,12 @@
 package com.ForgeEssentials.commands;
 
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.APIHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -60,7 +60,7 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		return APIHelper.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
 	@Override

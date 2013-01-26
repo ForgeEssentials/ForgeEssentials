@@ -71,7 +71,6 @@ public class ForgeEssentials
 
 	public static File FEDIR;
 
-	private static StorageManager dataManager;
 	public BannedItems bannedItems;
 	private ItemList itemList;
 
@@ -92,7 +91,7 @@ public class ForgeEssentials
 		// Data API stuff
 		{
 			// setup
-			dataManager = new StorageManager(config.config);
+			DataStorageManager.manager = new StorageManager(config.config);
 
 			// register DataDrivers
 			DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
@@ -140,7 +139,7 @@ public class ForgeEssentials
 		ModListFile.makeModList();
 
 		// Data API stuff
-		dataManager.setupManager(e);
+		((StorageManager) DataStorageManager.manager).setupManager(e);
 
 		// Central TP system
 		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);

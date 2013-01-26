@@ -1,5 +1,6 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.api.permissions.IZoneManager;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
@@ -15,24 +16,24 @@ import net.minecraftforge.event.world.WorldEvent.Load;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class ZoneHelper
+public class ZoneHelper implements IZoneManager
 {
 	// GLOBAL and WORLD zones.
-	private static Zone GLOBAL;
-	private static Zone SUPER;
+	private Zone GLOBAL;
+	private Zone SUPER;
 
 	public ZoneHelper()
 	{
-		GLOBAL = new Zone("_GLOBAL_", 0);
-		SUPER = new Zone("_SUPER_", 0);
+		GLOBAL = new Zone("_GLOBAL_");
+		SUPER = new Zone("_SUPER_");
 		worldZoneMap = new ConcurrentHashMap<String, Zone>();
 		zoneMap = Collections.synchronizedSortedMap(new TreeMap<String, Zone>());
 	}
@@ -57,7 +58,7 @@ public class ZoneHelper
 	// ------------ WorldZone stuff -----------------
 	// ----------------------------------------------
 
-	protected static ConcurrentHashMap<String, Zone> worldZoneMap;
+	protected ConcurrentHashMap<String, Zone> worldZoneMap;
 
 	// to load WorldZones
 	@ForgeSubscribe
@@ -79,7 +80,7 @@ public class ZoneHelper
 		}
 	}
 
-	public static Zone getWorldZone(World world)
+	public Zone getWorldZone(World world)
 	{
 		String worldString = FunctionHelper.getZoneWorldString(world);
 
@@ -99,19 +100,19 @@ public class ZoneHelper
 	// ----------------------------------------------
 
 	// normal zone map. WorldZones and Globals are not included.
-	protected static SortedMap<String, Zone> zoneMap;
+	protected SortedMap<String, Zone> zoneMap;
 
 	/**
 	 * WorldZones are not included here.
 	 */
-	public static void deleteZone(String zoneID)
+	public void deleteZone(String zoneID)
 	{
 		Zone deleted = zoneMap.remove(zoneID);
 		onZoneDeleted(deleted);
 		SqlHelper.delZone(zoneID);
 	}
 
-	public static boolean doesZoneExist(String zoneID)
+	public boolean doesZoneExist(String zoneID)
 	{
 		if (zoneID.equals(GLOBAL.getZoneName()))
 		{
@@ -127,7 +128,7 @@ public class ZoneHelper
 		}
 	}
 
-	public static Zone getZone(String zoneID)
+	public Zone getZone(String zoneID)
 	{
 		if (zoneID == null)
 		{
@@ -150,7 +151,7 @@ public class ZoneHelper
 	/**
 	 * WorldZones are not included here.
 	 */
-	public static boolean createZone(String zoneID, Selection sel, World world)
+	public boolean createZone(String zoneID, Selection sel, World world)
 	{
 		if (zoneMap.containsKey(zoneID))
 		{
@@ -164,12 +165,7 @@ public class ZoneHelper
 		return true;
 	}
 
-	public static Set<String> zoneSet()
-	{
-		return zoneMap.keySet();
-	}
-
-	public static Zone getWhichZoneIn(Point p1, World world)
+	public Zone getWhichZoneIn(Point p1, World world)
 	{
 		// check cache..
 		Zone end = getFromCache(new WorldPoint(world, p1.x, p1.y, p1.z));
@@ -231,7 +227,7 @@ public class ZoneHelper
 	 * @param world
 	 * @return
 	 */
-	public static Zone getWhichZoneIn(AreaBase area, World world)
+	public Zone getWhichZoneIn(AreaBase area, World world)
 	{
 		// check cache..
 		Zone end = getFromCache(new WorldArea(world, area));
@@ -289,20 +285,20 @@ public class ZoneHelper
 	// ------------ Cache ---------------------------
 	// ----------------------------------------------
 
-	private static ConcurrentHashMap<WorldPoint, String> pointCache = new ConcurrentHashMap<WorldPoint, String>();
-	private static ConcurrentHashMap<WorldArea, String> areaCache = new ConcurrentHashMap<WorldArea, String>();
+	private ConcurrentHashMap<WorldPoint, String> pointCache = new ConcurrentHashMap<WorldPoint, String>();
+	private ConcurrentHashMap<WorldArea, String> areaCache = new ConcurrentHashMap<WorldArea, String>();
 
-	private static void putCache(WorldPoint p, String zoneID)
+	private void putCache(WorldPoint p, String zoneID)
 	{
 		pointCache.put(p, zoneID);
 	}
 
-	private static void putCache(WorldArea a, String zoneID)
+	private void putCache(WorldArea a, String zoneID)
 	{
 		areaCache.put(a, zoneID);
 	}
 
-	private static Zone getFromCache(WorldPoint p)
+	private Zone getFromCache(WorldPoint p)
 	{
 		String zoneID = pointCache.get(p);
 		if (zoneID == null)
@@ -315,7 +311,7 @@ public class ZoneHelper
 		}
 	}
 
-	private static Zone getFromCache(WorldArea a)
+	private Zone getFromCache(WorldArea a)
 	{
 		String zoneID = areaCache.get(a);
 		if (zoneID == null)
@@ -328,7 +324,7 @@ public class ZoneHelper
 		}
 	}
 
-	private static void onZoneCreated(Zone created)
+	private void onZoneCreated(Zone created)
 	{
 		for (WorldPoint p : pointCache.keySet())
 		{
@@ -347,7 +343,7 @@ public class ZoneHelper
 		}
 	}
 
-	private static void onZoneDeleted(Zone deleted)
+	private void onZoneDeleted(Zone deleted)
 	{
 		for (Entry<WorldPoint, String> entry : pointCache.entrySet())
 		{
@@ -366,7 +362,7 @@ public class ZoneHelper
 		}
 	}
 	
-	public static ArrayList<Zone> getZoneList()
+	public ArrayList<Zone> getZoneList()
 	{
 		ArrayList<Zone> zones = new ArrayList<Zone>();
 		
@@ -377,12 +373,12 @@ public class ZoneHelper
 		return zones;
 	}
 	
-	public static Zone getGLOBAL()
+	public Zone getGLOBAL()
 	{
 		return GLOBAL;
 	}
 
-	public static Zone getSUPER()
+	public Zone getSUPER()
 	{
 		return SUPER;
 	}

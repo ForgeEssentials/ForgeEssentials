@@ -1,7 +1,10 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
-import java.util.List;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
@@ -10,11 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
 
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -56,7 +55,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				sender.setGameType(gm);
 			}
 		}
-		else if (args.length == 2 && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		else if (args.length == 2 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayer victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if (args.length == 2)

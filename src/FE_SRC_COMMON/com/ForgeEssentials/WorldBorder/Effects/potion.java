@@ -1,11 +1,12 @@
 package com.ForgeEssentials.WorldBorder.Effects;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
+
 import net.minecraftforge.common.Configuration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class potion implements IEffect
 {

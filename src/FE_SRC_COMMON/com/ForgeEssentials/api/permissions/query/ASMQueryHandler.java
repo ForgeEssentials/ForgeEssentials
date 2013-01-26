@@ -11,15 +11,15 @@ import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_6;
 
-import java.lang.reflect.Method;
+import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 
 import net.minecraftforge.event.EventPriority;
+
+import java.lang.reflect.Method;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
-
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 
 public class ASMQueryHandler implements IQueryListener
 {

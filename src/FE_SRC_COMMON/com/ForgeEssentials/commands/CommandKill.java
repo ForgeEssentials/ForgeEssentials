@@ -1,14 +1,14 @@
 package com.ForgeEssentials.commands;
 
-import java.util.List;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.Localization;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.Localization;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

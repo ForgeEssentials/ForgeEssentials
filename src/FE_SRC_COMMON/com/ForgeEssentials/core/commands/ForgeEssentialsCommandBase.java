@@ -1,19 +1,19 @@
 package com.ForgeEssentials.core.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
+import java.util.ArrayList;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -276,7 +276,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
-		return APIHelper.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)

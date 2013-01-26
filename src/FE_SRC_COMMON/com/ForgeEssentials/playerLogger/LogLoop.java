@@ -1,14 +1,14 @@
 package com.ForgeEssentials.playerLogger;
 
+import com.ForgeEssentials.playerLogger.types.logEntry;
+import com.ForgeEssentials.util.OutputHandler;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.ForgeEssentials.playerLogger.types.logEntry;
-import com.ForgeEssentials.util.OutputHandler;
 
 public class LogLoop implements Runnable
 {

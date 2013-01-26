@@ -1,21 +1,20 @@
 package com.ForgeEssentials.permission;
 
-import java.util.ArrayList;
-
-import net.minecraftforge.event.EventPriority;
-
 import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
 import com.ForgeEssentials.api.permissions.query.PermSubscribe;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
+
+import net.minecraftforge.event.EventPriority;
+
+import java.util.ArrayList;
 
 /**
  * 
@@ -115,7 +114,7 @@ public final class PermissionsHandler
 			if (result.equals(PermResult.UNKNOWN))
 			{
 				// get all the players groups here.
-				groups = APIHelper.getApplicableGroups(event.doer, false);
+				groups = PermissionsAPI.getApplicableGroups(event.doer, false);
 				
 				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
@@ -135,7 +134,7 @@ public final class PermissionsHandler
 			// check defaults... unless it has the override..
 			if (result.equals(PermResult.UNKNOWN) && !event.dOverride)
 			{
-				result = SqlHelper.getPermissionResult(APIHelper.DEFAULT.name, true, event.checker, zone.getZoneName(), event.checkForward);
+				result = SqlHelper.getPermissionResult(PermissionsAPI.getDEFAULT().name, true, event.checker, zone.getZoneName(), event.checkForward);
 			}
 
 			// still unknown? check parent zones.
@@ -164,10 +163,10 @@ public final class PermissionsHandler
 		ArrayList<Zone> zones = new ArrayList<Zone>();
 
 		// add all children
-		Zone zone;
-		for (String zID : ZoneManager.zoneSet())
+		for (Zone zone : ZoneManager.getZoneList())
 		{
-			zone = ZoneManager.getZone(zID);
+			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
+				continue;
 			if (zone.intersectsWith(doneTo) && worldZone.isParentOf(zone))
 			{
 				zones.add(zone);
@@ -205,11 +204,11 @@ public final class PermissionsHandler
 		// else.. get the applicable states.
 		default:
 		{
-			for (Zone zone1 : zones)
+			for (Zone zone : zones)
 			{
-				if (getResultFromZone(zone1, event).equals(PermResult.ALLOW))
+				if (getResultFromZone(zone, event).equals(PermResult.ALLOW))
 				{
-					applicable.add(doneTo.getIntersection(zone1));
+					applicable.add(doneTo.getIntersection(zone));
 				}
 			}
 		}

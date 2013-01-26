@@ -1,13 +1,13 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.entity.player.EntityPlayer;
 
 public class CommandWand extends WorldControlCommandBase
 {

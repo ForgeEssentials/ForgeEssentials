@@ -1,18 +1,18 @@
 package com.ForgeEssentials.commands;
 
-import java.util.List;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.core.misc.ItemList;
-import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -39,7 +39,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 			sender.inventoryContainer.detectAndSendChanges();
 			sender.sendChatToPlayer("Cleared inventory.");
 		}
-		else if (args.length == 1 && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayer victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			int var6 = victim.inventory.clearInventory(-1, -1);

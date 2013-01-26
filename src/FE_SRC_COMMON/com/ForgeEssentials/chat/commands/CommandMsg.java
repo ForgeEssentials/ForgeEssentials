@@ -1,8 +1,8 @@
 package com.ForgeEssentials.chat.commands;
 
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.APIHelper;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -186,7 +186,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		return APIHelper.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
 	@Override

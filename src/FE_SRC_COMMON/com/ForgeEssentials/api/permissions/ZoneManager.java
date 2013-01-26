@@ -1,65 +1,48 @@
 package com.ForgeEssentials.api.permissions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-
-import net.minecraft.world.World;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.WorldEvent.Load;
-
-import com.ForgeEssentials.permission.ModulePermissions;
-import com.ForgeEssentials.permission.SqlHelper;
-import com.ForgeEssentials.permission.ZoneHelper;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
-import com.ForgeEssentials.util.AreaSelector.WorldArea;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 public class ZoneManager
 {
+	public static IZoneManager manager;
 
 	public static Zone getWorldZone(World world)
 	{
-		return ZoneHelper.getWorldZone(world);
+		return manager.getWorldZone(world);
 	}
 
 	public static void deleteZone(String zoneID)
 	{
-		ZoneHelper.deleteZone(zoneID);
+		manager.deleteZone(zoneID);
 	}
 
 	public static boolean doesZoneExist(String zoneID)
 	{
-		return ZoneHelper.doesZoneExist(zoneID);
+		return manager.doesZoneExist(zoneID);
 	}
 
 	public static Zone getZone(String zoneID)
 	{
-		return ZoneHelper.getZone(zoneID);
+		return manager.getZone(zoneID);
 	}
 
 	public static boolean createZone(String zoneID, Selection sel, World world)
 	{
-		return ZoneHelper.createZone(zoneID, sel, world);
-	}
-
-	public static Set<String> zoneSet()
-	{
-		return ZoneHelper.zoneSet();
+		return manager.createZone(zoneID, sel, world);
 	}
 
 	public static Zone getWhichZoneIn(Point p, World world)
 	{
-		return ZoneHelper.getWhichZoneIn(p, world);
+		return manager.getWhichZoneIn(p, world);
 	}
 
 	public static Zone getWhichZoneIn(WorldPoint point)
@@ -70,21 +53,21 @@ public class ZoneManager
 
 	public static Zone getWhichZoneIn(AreaBase area, World world)
 	{
-		return ZoneHelper.getWhichZoneIn(area, world);
+		return manager.getWhichZoneIn(area, world);
 	}
 	
 	public static ArrayList<Zone> getZoneList()
 	{
-		return ZoneHelper.getZoneList();
+		return manager.getZoneList();
 	}
 
 	public static Zone getGLOBAL()
 	{
-		return ZoneHelper.getGLOBAL();
+		return manager.getGLOBAL();
 	}
 
 	public static Zone getSUPER()
 	{
-		return ZoneHelper.getSUPER();
+		return manager.getSUPER();
 	}
 }

@@ -1,19 +1,19 @@
 package com.ForgeEssentials.commands;
 
-import java.util.List;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+import java.util.List;
 
 public class CommandHome extends ForgeEssentialsCommandBase
 {
@@ -43,7 +43,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 				TeleportCenter.addToTpQue(home, player);
 			}
 		}
-		else if (APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".set")))
+		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".set")))
 		{
 			if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
 			{

@@ -2,6 +2,7 @@ package com.ForgeEssentials.WorldBorder.Effects;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
+
 import net.minecraftforge.common.Configuration;
 
 public class damage implements IEffect

@@ -1,7 +1,9 @@
 package com.ForgeEssentials.commands.util;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.ITickTask;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.IEntitySelector;
@@ -20,10 +22,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.ITickTask;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
+import java.util.LinkedList;
+import java.util.List;
 
 public class CommandButcherTickTask implements ITickTask
 {

@@ -1,15 +1,16 @@
 package com.ForgeEssentials.permission;
 
-import java.io.File;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
-
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
+
+import net.minecraft.command.ICommandSender;
+
+import net.minecraftforge.common.Configuration;
+
+import java.io.File;
 
 public class ConfigPermissions extends ModuleConfigBase
 {

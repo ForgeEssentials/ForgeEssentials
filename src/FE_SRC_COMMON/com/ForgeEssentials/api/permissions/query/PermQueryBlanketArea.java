@@ -1,10 +1,10 @@
 package com.ForgeEssentials.api.permissions.query;
 
-import java.util.ArrayList;
+import com.ForgeEssentials.util.AreaSelector.AreaBase;
 
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.util.AreaSelector.AreaBase;
+import java.util.ArrayList;
 
 public class PermQueryBlanketArea extends PermQuery
 {

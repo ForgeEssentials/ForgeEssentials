@@ -1,13 +1,7 @@
 package com.ForgeEssentials.permission;
 
-import java.io.File;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
@@ -28,14 +22,19 @@ import com.ForgeEssentials.permission.mcoverride.OverrideManager;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+
+import java.io.File;
+
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions
 {
 	// public static ConfigPermissions config;
 	public static PermissionsHandler pHandler;
-	public static ZoneHelper zManager;
 	public static SqlHelper sql;
 	
 	@Config
@@ -50,9 +49,10 @@ public class ModulePermissions
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		OutputHandler.SOP("Permissions module is enabled. Loading...");
-		zManager = new ZoneHelper();
+		ZoneManager.manager = new ZoneHelper();
+		PermissionsAPI.manager = new PermissionsHelper();
 
-		MinecraftForge.EVENT_BUS.register(zManager);
+		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
 
 		// testing DB.
 		MinecraftForge.EVENT_BUS.register(this);
@@ -71,7 +71,7 @@ public class ModulePermissions
 		sql.putRegistrationperms(permreg.registered);
 
 		pHandler = new PermissionsHandler();
-		APIHelper.QUERY_BUS.register(pHandler);
+		PermissionsAPI.QUERY_BUS.register(pHandler);
 	}
 
 	@ServerInit
@@ -79,7 +79,7 @@ public class ModulePermissions
 	{
 		// load zones...
 		data = DataStorageManager.getReccomendedDriver();
-		zManager.loadZones();
+		((ZoneHelper) ZoneManager.manager).loadZones();
 		
 		if (config.importBool)
 			sql.importPerms(config.importDir);
@@ -110,8 +110,12 @@ public class ModulePermissions
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		// save all the zones
-		for (Zone zone : ZoneHelper.zoneMap.values())
-			data.saveObject(zone);
+		for (Zone zone : ZoneManager.getZoneList())
+		{
+			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
+				continue;
+			data.saveObject(zone);			
+		}
 	}
 
 }

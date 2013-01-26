@@ -1,9 +1,9 @@
 package com.ForgeEssentials.WorldBorder;
 
+import com.ForgeEssentials.util.Localization;
+
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.WorldServer;
-
-import com.ForgeEssentials.util.Localization;
 
 /**
  * Does the actual filling, with limited chuncks per tick.

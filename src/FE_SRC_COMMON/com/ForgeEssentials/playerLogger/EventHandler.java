@@ -1,5 +1,8 @@
 package com.ForgeEssentials.playerLogger;
 
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -7,9 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
-
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class EventHandler
 {

@@ -1,8 +1,8 @@
 package com.ForgeEssentials.backup;
 
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.APIHelper;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -102,7 +102,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer sender)
 	{
-		return APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()));
+		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()));
 	}
 
 	@Override

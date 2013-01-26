@@ -1,19 +1,19 @@
 package com.ForgeEssentials.WorldBorder;
 
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.WorldServer;
-
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldServer;
+
+import java.util.Arrays;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

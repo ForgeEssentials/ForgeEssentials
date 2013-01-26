@@ -1,17 +1,13 @@
 package com.ForgeEssentials.data;
 
-import java.io.File;
-import java.util.ArrayList;
+import com.ForgeEssentials.api.data.DataStorageManager;
 
 import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.util.FunctionHelper;
-
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Storage driver for filesystem (flat-file) persistence.

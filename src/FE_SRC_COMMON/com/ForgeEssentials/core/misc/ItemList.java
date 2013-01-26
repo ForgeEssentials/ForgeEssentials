@@ -1,13 +1,13 @@
 package com.ForgeEssentials.core.misc;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-import com.ForgeEssentials.util.OutputHandler;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class ItemList
 {

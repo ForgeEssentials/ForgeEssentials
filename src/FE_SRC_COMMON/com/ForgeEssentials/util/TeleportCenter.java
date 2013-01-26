@@ -1,15 +1,15 @@
 package com.ForgeEssentials.util;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IScheduledTickHandler;
@@ -37,7 +37,7 @@ public class TeleportCenter implements IScheduledTickHandler
 
 	public static void addToTpQue(WarpPoint point, EntityPlayer player)
 	{
-		if (PlayerInfo.getPlayerInfo(player).TPcooldown != 0 && !APIHelper.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
+		if (PlayerInfo.getPlayerInfo(player).TPcooldown != 0 && !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
 		{
 			player.sendChatToPlayer(Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", "" + PlayerInfo.getPlayerInfo(player).TPcooldown));
 		}
@@ -45,7 +45,7 @@ public class TeleportCenter implements IScheduledTickHandler
 		{
 			PlayerInfo.getPlayerInfo(player).TPcooldown = tpCooldown;
 			TPdata data = new TPdata(point, player);
-			if (tpWarmup == 0 || APIHelper.checkPermAllowed(new PermQueryPlayer(player, BYPASS_WARMUP)))
+			if (tpWarmup == 0 || PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_WARMUP)))
 			{
 				data.doTP();
 			}

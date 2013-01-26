@@ -1,13 +1,5 @@
 package com.ForgeEssentials.data;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.logging.Level;
-
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.ITaggedClass;
 import com.ForgeEssentials.api.data.SaveableObject;
@@ -15,6 +7,14 @@ import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.util.OutputHandler;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
 
 /**
  * Responsible for transforming a particular type (class) into a TaggedClass for easier storage via DataDrivers, and eventually converts a TaggedClass into the
@@ -123,7 +123,7 @@ public class TypeTagger
 	public TaggedClass getTaggedClassFromObject(Object objectSaved)
 	{
 		TaggedClass data = new TaggedClass();
-		Class c = data.getType();
+		Class c = data.type = objectSaved.getClass();
 		Field f;
 		Object obj;
 

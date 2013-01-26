@@ -1,17 +1,15 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
-import java.util.List;
+import com.ForgeEssentials.commands.util.VirtualChest;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.network.packet.Packet100OpenWindow;
-import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.commands.util.VirtualChest;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import net.minecraftforge.common.Configuration;
 
 /**
  * Opens a configurable virtual chest

@@ -1,8 +1,5 @@
 package com.ForgeEssentials.WorldControl.commands;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
@@ -10,6 +7,9 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
 public class CommandTopManipulate extends WorldControlCommandBase
 {

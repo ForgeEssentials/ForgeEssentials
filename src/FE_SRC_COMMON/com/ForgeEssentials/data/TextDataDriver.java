@@ -2,8 +2,10 @@ package com.ForgeEssentials.data;
 import com.ForgeEssentials.api.data.ITaggedClass;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.FunctionHelper;
+
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
+
 import java.io.File;
 import java.util.ArrayList;
 

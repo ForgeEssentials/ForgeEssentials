@@ -1,5 +1,15 @@
 package com.ForgeEssentials.commands;
 
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+
+import net.minecraftforge.common.Configuration;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,15 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.Configuration;
-
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandRules extends ForgeEssentialsCommandBase
 {

@@ -2,7 +2,6 @@ package com.ForgeEssentials.data;
 
 import com.ForgeEssentials.api.data.IStorageManager;
 import com.ForgeEssentials.api.data.SaveableObject;
-import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.OutputHandler;
 

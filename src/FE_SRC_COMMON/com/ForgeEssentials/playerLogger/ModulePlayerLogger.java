@@ -1,14 +1,5 @@
 package com.ForgeEssentials.playerLogger;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraftforge.common.MinecraftForge;
-
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
@@ -25,6 +16,15 @@ import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.logEntry;
 import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraftforge.common.MinecraftForge;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;

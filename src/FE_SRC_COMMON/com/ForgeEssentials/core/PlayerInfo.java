@@ -1,10 +1,5 @@
 package com.ForgeEssentials.core;
 
-import java.util.HashMap;
-import java.util.Stack;
-
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.ITaggedClass;
 import com.ForgeEssentials.api.data.SaveableObject;
@@ -13,10 +8,14 @@ import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.core.network.PacketSelectionUpdate;
 import com.ForgeEssentials.util.BackupArea;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+
+import net.minecraft.entity.player.EntityPlayer;
+
+import java.util.HashMap;
+import java.util.Stack;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;

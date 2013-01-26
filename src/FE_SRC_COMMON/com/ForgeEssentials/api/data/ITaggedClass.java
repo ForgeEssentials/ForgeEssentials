@@ -1,7 +1,5 @@
 package com.ForgeEssentials.api.data;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 public interface ITaggedClass
 {

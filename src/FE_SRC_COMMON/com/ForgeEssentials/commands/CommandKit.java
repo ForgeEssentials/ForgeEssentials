@@ -1,8 +1,13 @@
 package com.ForgeEssentials.commands;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.commands.util.TickHandlerCommands;
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.DataStorage;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,14 +15,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.commands.util.TickHandlerCommands;
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.permission.APIHelper;
-import com.ForgeEssentials.util.DataStorage;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
@@ -47,7 +47,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 			for (Object temp : kitData.getTags())
 			{
 				NBTTagCompound kit = (NBTTagCompound) temp;
-				if (APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + kit.getName())))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + kit.getName())))
 				{
 					msg = kit.getName() + ", " + msg;
 				}
@@ -62,7 +62,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		{
 			if (kitData.hasKey(args[0].toLowerCase()))
 			{
-				if (APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					giveKit(sender, kitData.getCompoundTag(args[0].toLowerCase()));
 				}
@@ -80,7 +80,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		/*
 		 * Make kit
 		 */
-		if (args[1].equalsIgnoreCase("set") && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+		if (args[1].equalsIgnoreCase("set") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
 		{
 			if (args.length == 3)
 			{
@@ -101,7 +101,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		/*
 		 * Delete kit
 		 */
-		if (args[1].equalsIgnoreCase("del") && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+		if (args[1].equalsIgnoreCase("del") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
 		{
 			if (args.length == 2)
 			{
@@ -175,7 +175,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		{
 			player.sendChatToPlayer(Localization.get(Localization.KIT_DONE));
 
-			if (!APIHelper.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
+			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
 			{
 				PlayerInfo.getPlayerInfo(player.username).kitCooldown.put(kit.getName(), kit.getInteger("cooldown"));
 			}

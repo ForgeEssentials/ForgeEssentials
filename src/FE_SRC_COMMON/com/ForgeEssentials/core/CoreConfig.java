@@ -1,16 +1,14 @@
 package com.ForgeEssentials.core;
 
-import java.io.File;
-
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
 import com.ForgeEssentials.core.compat.CompatReiMinimap;
 import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
+
+import java.io.File;
 
 public class CoreConfig
 {

@@ -1,15 +1,16 @@
 package com.ForgeEssentials.permission;
 
 import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+
+import net.minecraftforge.common.ConfigCategory;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
-import net.minecraftforge.common.ConfigCategory;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
 
 public class FlatFileGroups
 {
@@ -92,7 +93,7 @@ public class FlatFileGroups
 		String[] list;
 		for (Group g : groups)
 		{
-			if (g.name.equals(APIHelper.DEFAULT.name))
+			if (g.name.equals(PermissionsAPI.getDEFAULT().name))
 				continue;
 			
 			cat = g.zoneName + "." + g.name;

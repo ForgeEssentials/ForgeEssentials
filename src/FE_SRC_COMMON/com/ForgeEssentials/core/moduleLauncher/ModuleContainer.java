@@ -1,17 +1,11 @@
 package com.ForgeEssentials.core.moduleLauncher;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-
-import net.minecraft.command.ICommandSender;
-
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Container;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.DummyConfig;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.Instance;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ParentMod;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PostInit;
@@ -20,7 +14,6 @@ import com.ForgeEssentials.core.moduleLauncher.FEModule.Reload;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerPostInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerStop;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.Instance;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModulePostInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
@@ -28,6 +21,14 @@ import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.util.OutputHandler;
+
+import net.minecraft.command.ICommandSender;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+
 import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.Loader;

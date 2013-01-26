@@ -1,15 +1,5 @@
 package com.ForgeEssentials.commands;
 
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.CommandRegistrar;
@@ -22,13 +12,11 @@ import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.PostInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerPostInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerStop;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModuleInitEvent;
-import com.ForgeEssentials.core.moduleLauncher.event.FEModulePostInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerPostInitEvent;
@@ -39,6 +27,17 @@ import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Warp;
+
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;

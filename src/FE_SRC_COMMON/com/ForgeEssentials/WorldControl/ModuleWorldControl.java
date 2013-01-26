@@ -1,13 +1,6 @@
 package com.ForgeEssentials.WorldControl;
 
 //Depreciated
-import java.io.File;
-import java.util.ArrayList;
-
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Property;
-
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
 import com.ForgeEssentials.WorldControl.commands.CommandDeselect;
 import com.ForgeEssentials.WorldControl.commands.CommandPos;
@@ -28,6 +21,13 @@ import com.ForgeEssentials.core.moduleLauncher.event.FEModulePreInitEvent;
 import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
+
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Property;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;

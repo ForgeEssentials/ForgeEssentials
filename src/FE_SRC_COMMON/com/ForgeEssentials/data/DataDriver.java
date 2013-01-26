@@ -3,9 +3,9 @@ package com.ForgeEssentials.data;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IDataDriver;
 
-import java.util.ArrayList;
-
 import net.minecraftforge.common.Configuration;
+
+import java.util.ArrayList;
 
 public abstract class DataDriver implements IDataDriver
 {

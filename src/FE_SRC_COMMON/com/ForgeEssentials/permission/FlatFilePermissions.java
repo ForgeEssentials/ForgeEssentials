@@ -1,14 +1,15 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.ZoneManager;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FlatFilePermissions
 {
@@ -85,7 +86,7 @@ public class FlatFilePermissions
 			config.get(holder.zone + ".group." + holder.target, holder.name, holder.allowed);
 		}
 		
-		config.addCustomCategoryComment(ZoneManager.getGLOBAL().getZoneName()+".group."+APIHelper.DEFAULT.name, "The group used to as a placeholder for zone flags and such.");
+		config.addCustomCategoryComment(ZoneManager.getGLOBAL().getZoneName()+".group."+PermissionsAPI.getDEFAULT().name, "The group used to as a placeholder for zone flags and such.");
 
 		config.save();
 	}

@@ -1,11 +1,11 @@
 package com.ForgeEssentials.permission.mcoverride;
 
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+
 import net.minecraft.command.CommandServerWhitelist;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.permission.APIHelper;
 
 public class CommandWhitelist extends CommandServerWhitelist
 {
@@ -15,7 +15,7 @@ public class CommandWhitelist extends CommandServerWhitelist
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			return APIHelper.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
 		}
 		else
 		{

@@ -1,17 +1,17 @@
 package com.ForgeEssentials.core.network;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.Point;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class PacketSelectionUpdate implements IForgeEssentialsPacket
 {

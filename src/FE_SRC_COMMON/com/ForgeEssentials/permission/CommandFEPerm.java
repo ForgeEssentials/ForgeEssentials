@@ -1,21 +1,22 @@
 package com.ForgeEssentials.permission;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
-import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import java.util.ArrayList;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -72,7 +73,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
 	{
-		PermResult result = APIHelper.checkPermResult(new PermQueryBlanketSpot(new WorldPoint(block.worldObj, block.xCoord, block.yCoord, block.zCoord),
+		PermResult result = PermissionsAPI.checkPermResult(new PermQueryBlanketSpot(new WorldPoint(block.worldObj, block.xCoord, block.yCoord, block.zCoord),
 				getCommandPerm(), true));
 		return result.equals(PermResult.DENY) ? false : true;
 	}
@@ -154,7 +155,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		PermResult result = APIHelper.checkPermResult(new PermQueryPlayer(player, getCommandPerm(), true));
+		PermResult result = PermissionsAPI.checkPermResult(new PermQueryPlayer(player, getCommandPerm(), true));
 		return result.equals(PermResult.DENY) ? false : true;
 	}
 
@@ -172,7 +173,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 				return getListOfStringsMatchingLastWord(args, args2);
 			case 2:
 				if (args[0].equalsIgnoreCase("group")) {
-					List<Group> groups = APIHelper.getGroupsInZone(ZoneManager.getGLOBAL().getZoneName());
+					List<Group> groups = PermissionsAPI.getGroupsInZone(ZoneManager.getGLOBAL().getZoneName());
 					ArrayList<String> groupnames = new ArrayList<String>();
 					for (int i = 0; i < groups.size(); i++) {
 						groupnames.add(groups.get(i).name);
