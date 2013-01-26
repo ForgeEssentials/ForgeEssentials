@@ -80,7 +80,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		/*
 		 * Make kit
 		 */
-		if (args[1].equalsIgnoreCase("set") && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
+		if (args[1].equalsIgnoreCase("set") && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
 		{
 			if (args.length == 3)
 			{
@@ -101,7 +101,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		/*
 		 * Delete kit
 		 */
-		if (args[1].equalsIgnoreCase("del") && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
+		if (args[1].equalsIgnoreCase("del") && APIHelper.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
 		{
 			if (args.length == 2)
 			{
