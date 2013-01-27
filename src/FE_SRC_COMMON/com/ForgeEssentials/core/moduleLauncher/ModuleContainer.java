@@ -43,11 +43,11 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-public class ModuleContainer
+public class ModuleContainer implements Comparable
 {
-	protected static HashSet<Class>				modClasses	= new HashSet<Class>();
+	protected static HashSet<Class>				modClasses		= new HashSet<Class>();
 
-	private Object								module, mod;
+	public Object								module, mod;
 	private ModuleConfigBase					configObj;
 	private Class<? extends ModuleConfigBase>	configClass;
 
@@ -61,8 +61,9 @@ public class ModuleContainer
 	public final String							className;
 	public final String							name;
 	public final boolean						isCore;
-	private boolean								isLoadable	= true;
-	protected boolean							isValid		= true;
+	private boolean								isLoadable		= true;
+	protected boolean							isValid			= true;
+	protected boolean							doesOverride	= false;
 
 	public ModuleContainer(ASMData data)
 	{
@@ -287,12 +288,12 @@ public class ModuleContainer
 				f.setAccessible(true);
 				f.set(module, mod);
 			}
-			
+
 			if (moduleDir != null)
 			{
 				File file = new File(ForgeEssentials.FEDIR, name);
 				file.mkdirs();
-				
+
 				f = c.getDeclaredField(moduleDir);
 				f.setAccessible(true);
 				f.set(module, file);
@@ -314,7 +315,7 @@ public class ModuleContainer
 
 		try
 		{
-			configObj = configClass.getConstructor(File.class).newInstance(new File(ForgeEssentials.FEDIR, name+"/config.cfg"));
+			configObj = configClass.getConstructor(File.class).newInstance(new File(ForgeEssentials.FEDIR, name + "/config.cfg"));
 
 			f = c.getDeclaredField(config);
 			f.setAccessible(true);
@@ -474,5 +475,34 @@ public class ModuleContainer
 	public ModuleConfigBase getConfig()
 	{
 		return configObj;
+	}
+	
+	@Override
+	public int compareTo(Object o)
+	{
+		ModuleContainer container = (ModuleContainer) o;
+		
+		if (equals(container))
+			return 0;
+		
+		if (isCore && !container.isCore)
+			return 1;
+		else if (!isCore && container.isCore)
+			return -1;
+		
+		return name.compareTo(container.name);
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if (!(o instanceof ModuleContainer))
+			return false;
+		
+		ModuleContainer c = (ModuleContainer) o;
+		
+		return isCore == c.isCore &&
+				name.equals(c.name) &&
+				className.equals(c.className);
 	}
 }

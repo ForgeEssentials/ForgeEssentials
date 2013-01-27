@@ -93,7 +93,7 @@ public class CUIRenderrer
 		}
 
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		// tess.renderingWorldRenderer = true;
 		GL11.glPopMatrix();

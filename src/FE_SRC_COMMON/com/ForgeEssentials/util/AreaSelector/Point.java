@@ -117,6 +117,22 @@ public class Point implements Serializable, Comparable<Point>
 	{
 		return x == p.x || y == p.y || z == p.z;
 	}
+	
+	public boolean isGreaterThan(Point p)
+	{
+		if (equals(p))
+			return false;
+		
+		return x >= p.x && y >= p.y && z >= p.z;  
+	}
+	
+	public boolean isLessThan(Point p)
+	{
+		if (equals(p))
+			return false;
+		
+		return x <= p.x && y <= p.y && z <= p.z;  
+	}
 
 	/**
 	 * gets a new Point with the same data as the provided one.

@@ -9,7 +9,6 @@ import cpw.mods.fml.common.event.FMLStateEvent;
 
 public abstract class FEModuleEvent
 {
-
 	protected ModuleContainer container;
 	
 	public FEModuleEvent(ModuleContainer container)
