@@ -201,28 +201,22 @@ public class CommandFEPermUser
 				return;
 			}
 		}
-		else if (args.length >= 3) // player management
+		else if (args.length >= 2) // player management
 		{
-			String zoneName = ZoneManager.getGLOBAL().getZoneName();
-			if (args.length == 4) // zone is set
-			{
-				if(ZoneManager.getZone(args[3]) != null)
-				{
-					zoneName = args[3];
-				}
-				else
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
-					return;
-				}
-			}
 			
 			if (args[1].equalsIgnoreCase("prefix")) // prefix
 			{
 				if(args.length == 2 || !args[2].equalsIgnoreCase("set"))
 				{
 					PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
-					OutputHandler.chatConfirmation(sender, player.username + "'s prefix is &f" + pi.prefix);
+					if(pi.prefix.trim().length() == 0)
+					{
+						OutputHandler.chatConfirmation(sender, player.username + " does not have a prefix.");
+					}
+					else
+					{
+						OutputHandler.chatConfirmation(sender, player.username + "'s prefix is &f" + pi.prefix);
+					}
 					return;
 				}
 				else // args[2] must contian "set"
@@ -246,7 +240,14 @@ public class CommandFEPermUser
 				if(args.length == 2 || !args[2].equalsIgnoreCase("set"))
 				{
 					PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
-					OutputHandler.chatConfirmation(sender, player.username + "'s suffix is &f" + pi.suffix);
+					if(pi.suffix.trim().length() == 0)
+					{
+						OutputHandler.chatConfirmation(sender, player.username + " does not have a suffix.");
+					}
+					else
+					{
+						OutputHandler.chatConfirmation(sender, player.username + "'s suffix is &f" + pi.suffix);
+					}
 					return;
 				}
 				else // args[2] must contian "set"
@@ -265,8 +266,22 @@ public class CommandFEPermUser
 					return;
 				}
 			}
+			
+			String zoneName = ZoneManager.getGLOBAL().getZoneName();
+			if (args.length == 4) // zone is set
+			{
+				if(ZoneManager.getZone(args[3]) != null)
+				{
+					zoneName = args[3];
+				}
+				else
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[3]));
+					return;
+				}
+			}
 
-			else if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allow player perm
+			if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allow player perm
 			{
 				String result = PermissionsAPI.setPlayerPermission(playerName, args[2], true, zoneName);
 				if(result != null)
