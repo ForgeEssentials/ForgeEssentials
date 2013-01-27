@@ -1,19 +1,22 @@
 package com.ForgeEssentials.permission;
 
-import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
-import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
+import java.util.ArrayList;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import java.util.ArrayList;
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import java.util.Collections;
 
 public class CommandFEPermUser
 {
@@ -318,6 +321,53 @@ public class CommandFEPermUser
 				{
 					OutputHandler.chatConfirmation(sender, playerName + "'s  access to " + args[2] + "cleared.");
 				}
+				return;
+			}
+			if(args[1].equalsIgnoreCase("perms"))
+			{
+				if(args.length == 3)
+				{
+					if(ZoneManager.getZone(args[2]) != null)
+					{
+						zoneName = args[2];
+					}
+					else if(args[2].equalsIgnoreCase("here"))
+					{
+						zoneName = ZoneManager.getWhichZoneIn(new WorldPoint(sender)).getZoneName();
+					}
+					else
+					{
+						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+						return;
+					}
+				}
+				ArrayList list = PermissionsAPI.getPlayerPermissions(player.username, zoneName);
+				Collections.sort(list);
+				StringBuilder messageAllowed = new StringBuilder();
+				StringBuilder messageDenied = new StringBuilder();
+				for(Object permObj : list)
+				{
+					String perm = (String)permObj;
+					if(perm.contains("has no individual permissions."))
+					{
+						OutputHandler.chatConfirmation(sender, perm);
+						return;
+					}
+					if(perm.contains("ALLOW"))
+					{
+						messageAllowed.append(FEChatFormatCodes.DARKGREEN)
+							.append(perm.substring(0, perm.indexOf(":"))).append("\n");
+					}
+					else
+					{
+						messageDenied.append(FEChatFormatCodes.DARKRED)
+							.append(perm.substring(0, perm.indexOf(":"))).append("\n");
+					}
+				}
+				OutputHandler.chatConfirmation(sender, player.username + ": Current permissions in zone " + zoneName + ":");
+				OutputHandler.chatConfirmation(sender, " (" + FEChatFormatCodes.DARKGREEN + "ALLOWED"
+					+ FEChatFormatCodes.DARKRED + " DENIED" + FEChatFormatCodes.GREEN + ")");
+				OutputHandler.chatConfirmation(sender, " " + messageAllowed.toString() + messageDenied.toString().trim());
 				return;
 			}
 		}
