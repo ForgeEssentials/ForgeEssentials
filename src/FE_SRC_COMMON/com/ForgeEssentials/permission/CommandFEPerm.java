@@ -168,8 +168,6 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	        
 		}
 		switch (args.length){
-			case 0:
-				return FMLCommonHandler.instance().getSidedDelegate().getServer().getPossibleCompletions(sender, args[args.length - 1]);
 			case 1:
 				return getListOfStringsMatchingLastWord(args, args2);
 			case 2:
@@ -208,7 +206,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 				}
 				break;
 		}
-		return null;
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().getPossibleCompletions(sender, args[args.length - 1]);
 	}
 	
 }
