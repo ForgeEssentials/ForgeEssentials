@@ -53,7 +53,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					Warp warp = TeleportCenter.warps.get(args[0].toLowerCase());
-					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender);
+					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.username);
 					playerInfo.back = new WarpPoint(sender);
 					TeleportCenter.addToTpQue(warp.getPoint(), sender);
 				}
@@ -118,7 +118,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		{
 			if (TeleportCenter.warps.containsKey(args[0].toLowerCase()))
 			{
-				EntityPlayer player = PlayerSelector.matchOnePlayer(sender, args[0]);
+				EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
 				if(PlayerSelector.hasArguments(args[0]))
 				{
 					player = PlayerSelector.matchOnePlayer(sender, args[0]);

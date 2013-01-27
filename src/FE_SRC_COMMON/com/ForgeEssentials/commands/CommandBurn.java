@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -35,7 +36,11 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+				EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+				if(PlayerSelector.hasArguments(args[0]))
+				{
+					victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+				}
 				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
 				{
 					victim.setFire(15);
@@ -63,7 +68,11 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+				EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+				if(PlayerSelector.hasArguments(args[0]))
+				{
+					victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+				}
 				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
 				{
 					try
@@ -93,7 +102,11 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);

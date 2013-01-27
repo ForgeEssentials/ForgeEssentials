@@ -38,7 +38,11 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			EntityPlayer player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if (player != null)
 			{
 //				NBTTagCompound spawn = DataStorage.getData("spawn");
@@ -87,7 +91,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);

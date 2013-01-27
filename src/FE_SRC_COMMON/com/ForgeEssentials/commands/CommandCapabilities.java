@@ -1,6 +1,7 @@
 package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -78,11 +79,12 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 1)
 		{
-			EntityPlayerMP target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			if(PlayerSelector.hasArguments(args[0]) && !(sender instanceof EntityPlayer))
+			EntityPlayerMP target = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
+			
 			sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
 			sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
 			sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
@@ -91,7 +93,11 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			EntityPlayerMP target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayerMP target = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				target = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if (args[1].equalsIgnoreCase(names.get(0)))
 			{
 				sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
@@ -115,7 +121,11 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 3)
 		{
-			EntityPlayerMP target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayerMP target = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				target = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if (args[1].equalsIgnoreCase(names.get(0)))
 			{
 				boolean bln = Boolean.parseBoolean(args[2]);

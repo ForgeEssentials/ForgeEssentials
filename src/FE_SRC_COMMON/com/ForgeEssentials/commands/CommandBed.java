@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
@@ -35,7 +36,11 @@ public class CommandBed extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if (player != null)
 			{
 				ChunkCoordinates spawn = player.getBedLocation();
@@ -54,7 +59,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
 			ChunkCoordinates spawn = sender.getBedLocation();
 			if (spawn != null)
 			{
-				PlayerInfo.getPlayerInfo(sender).back = new WarpPoint(sender);
+				PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
 				((EntityPlayerMP) sender).playerNetServerHandler
 						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
 				sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
@@ -67,10 +72,14 @@ public class CommandBed extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if (player != null)
 			{
-				PlayerInfo.getPlayerInfo(player).back = new WarpPoint(player);
+				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 				ChunkCoordinates spawn = player.getBedLocation();
 				((EntityPlayerMP) player).playerNetServerHandler
 						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);

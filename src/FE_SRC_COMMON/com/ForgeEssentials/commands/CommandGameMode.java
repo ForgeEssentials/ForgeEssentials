@@ -57,10 +57,10 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			EntityPlayer victim = PlayerSelector.matchOnePlayer(sender, args[0]);
-			if (args.length == 2)
+			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
 			{
-				victim.setGameType(getGameTypeFromString(sender, args[1]));
+				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
 			else
 			{
@@ -89,7 +89,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	{
 		if (args.length <= 2)
 		{
-			EntityPlayer victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
