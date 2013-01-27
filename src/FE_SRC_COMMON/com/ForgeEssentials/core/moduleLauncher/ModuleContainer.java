@@ -63,7 +63,7 @@ public class ModuleContainer implements Comparable
 	public final boolean						isCore;
 	private boolean								isLoadable		= true;
 	protected boolean							isValid			= true;
-	protected boolean							doesOverride	= false;
+	protected boolean							doesOverride;
 
 	public ModuleContainer(ASMData data)
 	{
@@ -93,6 +93,7 @@ public class ModuleContainer implements Comparable
 			throw new IllegalArgumentException(c.getName() + " doesn't have the @FEModule annotation!");
 		name = annot.name();
 		isCore = annot.isCore();
+		doesOverride = annot.doesOverride();
 		configClass = annot.configClass();
 
 		// try getting the parent mod.. and register it.
