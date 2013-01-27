@@ -219,40 +219,51 @@ public class CommandFEPermUser
 			
 			if (args[1].equalsIgnoreCase("prefix")) // prefix
 			{
-				if(args.length == 3 && args[2].equalsIgnoreCase("set"))
+				if(args.length == 2 || !args[2].equalsIgnoreCase("set"))
 				{
-					args[2] = args[3];
+					PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
+					OutputHandler.chatConfirmation(sender, player.username + "'s prefix is &f" + pi.prefix);
+					return;
 				}
-				
-				if(args.length >= 2)
+				else // args[2] must contian "set"
 				{
-					PlayerInfo.getPlayerInfo(playerName).prefix = args[2];
-					OutputHandler.chatConfirmation(sender, playerName + "'s prefix set to &f" + args[2]);
+					PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
+					if(args.length == 3)
+					{
+						pi.prefix = " ";
+						OutputHandler.chatConfirmation(sender, player.username + "'s prefix cleared");
+					}
+					else
+					{
+						pi.prefix = args[3];
+						OutputHandler.chatConfirmation(sender, player.username + "'s prefix set to &f" + pi.prefix);
+					}
+					return;
 				}
-				else
-				{
-					PlayerInfo.getPlayerInfo(playerName).prefix = "";
-					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
-				}
-				return;
 			}
 			else if (args[1].equalsIgnoreCase("suffix")) // suffix
 			{
-				if(args.length == 3 && args[2].equalsIgnoreCase("set")) {
-					args[2] = args[3];
-				}
-				
-				if(args.length >= 2)
+				if(args.length == 2 || !args[2].equalsIgnoreCase("set"))
 				{
-					PlayerInfo.getPlayerInfo(playerName).suffix = args[2];
-					OutputHandler.chatConfirmation(sender, playerName + "'s suffix set to &f" + args[2]);
+					PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
+					OutputHandler.chatConfirmation(sender, player.username + "'s suffix is &f" + pi.suffix);
+					return;
 				}
-				else
+				else // args[2] must contian "set"
 				{
-					PlayerInfo.getPlayerInfo(playerName).prefix = "";
-					OutputHandler.chatConfirmation(sender, playerName + "'s removed");
+					PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
+					if(args.length == 3)
+					{
+						pi.suffix = " ";
+						OutputHandler.chatConfirmation(sender, player.username + "'s suffix cleared");
+					}
+					else
+					{
+						pi.suffix = args[3];
+						OutputHandler.chatConfirmation(sender, player.username + "'s suffix set to &f" + pi.suffix);
+					}
+					return;
 				}
-				return;
 			}
 
 			else if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allow player perm
