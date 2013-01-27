@@ -19,7 +19,7 @@ wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zi
 
 unzip minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
-rm "For later.zip"
+rm -rf ./oldcode/*
 cd forge
 
 echo "Copying FE AccessTransformer..."
@@ -68,9 +68,9 @@ cd reobf/minecraft
 
 echo "Creating Client package"
 cp -rf ${WORKSPACE}/A1-zipStuff/client/* .
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-client-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/* mcmod.info
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-client-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/* mcmod.info logo.png FEReadme.txt LICENSE.TXT
 rm -rf ./com/ForgeEssentials/client
-rm -rf ./*.info ./*.txt
+rm -rf ./*.info ./*.txt logo.png
 
 echo "Copying in extra files for core"
 cp -rf ${WORKSPACE}/A1-zipStuff/core/* .
