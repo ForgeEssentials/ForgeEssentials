@@ -51,8 +51,16 @@ public class CommandTp extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
-			EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[1]);
+			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+			if(PlayerSelector.hasArguments(args[0]))
+			{
+				player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
+			EntityPlayer target = FunctionHelper.getPlayerFromUsername(args[1]);
+			if(PlayerSelector.hasArguments(args[1]))
+			{
+				target = PlayerSelector.matchOnePlayer(sender, args[1]);
+			}
 			if (player != null && target != null)
 			{
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
