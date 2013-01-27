@@ -108,7 +108,7 @@ public class ModuleContainer implements Comparable
 				OutputHandler.SOP("Modules from " + atMod.name() + " are bieng loaded");
 				modClasses.add(modClass);
 			}
-			mod = Loader.instance().getIndexedModList().get(atMod.modid());
+			mod = Loader.instance().getIndexedModList().get(atMod.modid()).getMod();
 		}
 
 		// check method annotations. they are all optional...
