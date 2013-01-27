@@ -5,6 +5,7 @@ import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEDebug;
 import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
+import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
@@ -164,6 +165,7 @@ public class ForgeEssentials
 	public void serverStarted(FMLServerStartedEvent e)
 	{
 		mdlaunch.serverStarted(e);
+		DuplicateCommandRemoval.remove();
 	}
 	
 	@ServerStopping

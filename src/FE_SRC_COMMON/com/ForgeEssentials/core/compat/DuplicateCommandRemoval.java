@@ -7,10 +7,11 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.TreeMultimap;
+import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
@@ -20,7 +21,7 @@ public class DuplicateCommandRemoval
 {
 	public static boolean removeDuplicateCommands;
 	
-	public static  void removeDuplicateCommands()
+	public static  void remove()
 	{
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		
@@ -28,46 +29,75 @@ public class DuplicateCommandRemoval
 		{
 			try
 			{
-				Set<String> commandNames = new HashSet<String>();
-				Set<String> toRemoveNames = new HashSet<String>();
+				HashMap<String, ICommand> initials = new HashMap<String, ICommand>();
+				HashMultimap<String, ICommand> duplicates = HashMultimap.create();
 
-				Set cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandSet", "b");
+				Set<ICommand> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandSet", "b");
 				OutputHandler.debug("commandSet size: " + cmdList.size());
 
-				for (Object cmdObj : cmdList)
+				ICommand keep;
+				boolean worked;
+				for (ICommand cmd : cmdList)
 				{
-					ICommand cmd = (ICommand) cmdObj;
-					if (!commandNames.add(cmd.getCommandName()))
+					keep = initials.put(cmd.getCommandName(), cmd);
+					worked = false;
+					if (keep != null)
 					{
-						OutputHandler.debug("Duplicate command found! Name:" + cmd.getCommandName());
-						toRemoveNames.add(cmd.getCommandName());
+						OutputHandler.debug("Duplicate command found! Name:" + keep.getCommandName());
+						duplicates.put(cmd.getCommandName(), cmd);
+						duplicates.put(cmd.getCommandName(), keep);
 					}
 				}
 				
-				Set toRemove = new HashSet();
-				for (Object cmdObj : cmdList)
+				Set<ICommand> toRemove = new HashSet();
+				keep = null;
+				Class<? extends ICommand> cmdClass;
+				int kept = -1, other = -1;
+				for (String name : duplicates.keySet())
 				{
-					ICommand cmd = (ICommand) cmdObj;
-					if (toRemoveNames.contains(cmd.getCommandName()))
+					keep = null;
+					kept = -1;
+					other = -1;
+					cmdClass = null;
+					
+					for (ICommand cmd : duplicates.get(name))
 					{
-						try
+						other = getCommandPriority(cmd);
+						
+						if (keep == null)
 						{
-							Class<?> cmdClass = cmd.getClass();
-							Package pkg = cmdClass.getPackage();
-							if (pkg == null || !pkg.getName().contains("ForgeEssentials"))
+							kept = other;
+							
+							if (kept == -1)
 							{
-								OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
-								toRemove.add(cmd);
+								keep = null;
+								duplicates.remove(name, cmd);
 							}
+							else
+								keep = cmd;
+							
+							continue;
 						}
-						catch (Exception e)
+						
+						if (kept > other)
 						{
-							OutputHandler.debug("Can't remove " + cmd.getCommandName());
-							OutputHandler.debug("" + e.getLocalizedMessage());
-							e.printStackTrace();
+							toRemove.add(cmd);
+							cmdClass = cmd.getClass();
+							OutputHandler.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
 						}
+						else
+						{
+							toRemove.add(keep);
+							cmdClass = keep.getClass();
+							OutputHandler.debug("Removing command '" + keep.getCommandName() + "' from class: " + cmdClass.getName());
+							
+							keep = cmd;
+							kept = other;
+						}
+							
 					}
 				}
+				
 				cmdList.removeAll(toRemove);
 				OutputHandler.debug("commandSet size: " + cmdList.size());
 				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, "commandSet", "b");
@@ -78,6 +108,29 @@ public class DuplicateCommandRemoval
 				OutputHandler.debug("Something broke: " + e.getLocalizedMessage());
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	 // 0 = vanilla. 1 = fe. 2 = other mods
+	private static int getCommandPriority(ICommand cmd)
+	{
+		try
+		{
+			Class<?> cmdClass = cmd.getClass();
+			Package pkg = cmdClass.getPackage();
+			if (pkg == null || !pkg.getName().contains("net.minecraft"))
+				return 0;
+			else if (pkg == null || !pkg.getName().contains("ForgeEssentials"))
+				return 1;
+			else
+				return 2;
+		}
+		catch (Exception e)
+		{
+			OutputHandler.debug("Can't remove " + cmd.getCommandName());
+			OutputHandler.debug("" + e.getLocalizedMessage());
+			e.printStackTrace();
+			return -1;
 		}
 	}
 }
