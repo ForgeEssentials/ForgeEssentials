@@ -371,8 +371,8 @@ public class SqlHelper
 			// statementGetAllPermissions
 			query = new StringBuilder("SELECT * FROM ").append(TABLE_PERMISSION)
 					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
-					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
-					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?");
 			statementGetAllPermissions = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
