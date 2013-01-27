@@ -12,7 +12,6 @@ import java.io.File;
 
 public class ConfigWorldControl extends ModuleConfigBase
 {
-	private File file;
 	private Configuration config;
 	public static int blocksPerTick;
 

@@ -6,12 +6,15 @@ import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.util.List;
+
 public class CommandDeselect extends WorldControlCommandBase
 {
 
 	public CommandDeselect()
 	{
 		super(true);
+		aliasList.add("/sel");
 	}
 
 	@Override
@@ -19,17 +22,11 @@ public class CommandDeselect extends WorldControlCommandBase
 	{
 		return "deselect";
 	}
-	
-	@Override
-	public String[] getDefaultAliases()
-	{
-		return new String[] {"/sel"};
-	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
+		PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
 		info.clearSelection();
 
 		OutputHandler.chatConfirmation(sender, Localization.get(Localization.COMMAND_DESELECT));
@@ -46,5 +43,4 @@ public class CommandDeselect extends WorldControlCommandBase
 	{
 		return "Clears the currently selected area";
 	}
-
 }

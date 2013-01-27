@@ -27,7 +27,7 @@ public class CommandRedo extends WorldControlCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		BackupArea back = PlayerInfo.getPlayerInfo(player).getNextRedo();
+		BackupArea back = PlayerInfo.getPlayerInfo(player.username).getNextRedo();
 
 		if (back == null)
 		{

@@ -57,7 +57,7 @@ public class CommandSet extends WorldControlCommandBase
 			}
 			else
 			{
-				PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+				PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
 				if (info.getSelection() == null)
 				{
 					OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));

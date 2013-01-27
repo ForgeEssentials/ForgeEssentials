@@ -35,7 +35,7 @@ public class CommandReplace extends WorldControlCommandBase
 	{
 		if (args.length == 2)
 		{
-			PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
 			if (info.getSelection() == null)
 			{
 				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));

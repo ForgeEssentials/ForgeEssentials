@@ -318,9 +318,12 @@ public class ModuleContainer implements Comparable
 		{
 			configObj = configClass.getConstructor(File.class).newInstance(new File(ForgeEssentials.FEDIR, name + "/config.cfg"));
 
-			f = c.getDeclaredField(config);
-			f.setAccessible(true);
-			f.set(module, configObj);
+			if (config != null)
+			{
+				f = c.getDeclaredField(config);
+				f.setAccessible(true);
+				f.set(module, configObj);
+			}
 
 		}
 		catch (Exception e)

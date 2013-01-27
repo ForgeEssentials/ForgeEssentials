@@ -27,7 +27,7 @@ public class CommandUndo extends WorldControlCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		BackupArea back = PlayerInfo.getPlayerInfo(player).getNextUndo();
+		BackupArea back = PlayerInfo.getPlayerInfo(player.username).getNextUndo();
 
 		if (back == null)
 		{
