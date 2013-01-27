@@ -33,39 +33,18 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 // central class for all the WorldControl stuff
-@FEModule(name = "WorldControl", parentMod = ForgeEssentials.class, isCore = true)
+@FEModule(name = "WorldControl", parentMod = ForgeEssentials.class, configClass = ConfigWorldControl.class)
 public class ModuleWorldControl
 {
 	// implicit constructor WorldControl()
 	public static int defaultWandID;
 	public static ArrayList<WorldControlCommandBase> needsCompleteCommands = new ArrayList<WorldControlCommandBase>();
 
-	// Some static fields for WorldControl config.
-	public static int WCblocksPerTick;
-
-	public static final File wcconf = new File(ForgeEssentials.FEDIR, "WorldControl.cfg");
-
 	// preload.
 	@PreInit
 	public void preLoad(FEModulePreInitEvent event)
 	{
 		OutputHandler.SOP("WorldControl module is enabled. Loading...");
-		doConfig();
-	}
-
-	public static void doConfig()
-	{
-		Configuration conf = new Configuration(wcconf, true);
-
-		conf.load();
-		conf.addCustomCategoryComment("WorldControl", "Properties used by WorldControl");
-
-		Property prop = conf.get("WorldControl", "BlocksPerTick", 20);
-		prop.comment = "Specifies the maximum blocks/tick that can be changed via the WorldControl functions. Powerful computers may set it higher, servers may want to keep it lower.";
-		WCblocksPerTick = prop.getInt();
-		OutputHandler.SOP("Setting blocks/tick to: " + WCblocksPerTick);
-
-		conf.save();
 	}
 
 	// load.
@@ -73,8 +52,6 @@ public class ModuleWorldControl
 	public void load(FEModuleInitEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(new WandController());
-		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
-
 	}
 
 	// serverStart.

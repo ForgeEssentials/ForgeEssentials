@@ -1,6 +1,6 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
-import com.ForgeEssentials.WorldControl.ModuleWorldControl;
+import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.BlockSaveable;
@@ -154,7 +154,7 @@ public class TickTaskTopManipulator implements ITickTask
 				}
 			}
 
-			if (isComplete || currentBlocksChanged >= ModuleWorldControl.WCblocksPerTick)
+			if (isComplete || currentBlocksChanged >= ConfigWorldControl.blocksPerTick)
 			{
 				changed += currentBlocksChanged;
 				currentPos = new Point(x, 0, z);

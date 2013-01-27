@@ -1,7 +1,7 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
 //Depreciated
-import com.ForgeEssentials.WorldControl.ModuleWorldControl;
+import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.BlockSaveable;
@@ -105,7 +105,7 @@ public class TickTaskSetSelection implements ITickTask
 				}
 			}
 
-			if (isComplete || currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
+			if (isComplete || currentTickChanged >= ConfigWorldControl.blocksPerTick)
 			{
 				// Stop running this tick.
 				changed += currentTickChanged;

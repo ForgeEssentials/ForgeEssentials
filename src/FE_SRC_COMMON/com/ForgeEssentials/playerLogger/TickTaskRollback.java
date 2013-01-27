@@ -1,5 +1,6 @@
 package com.ForgeEssentials.playerLogger;
 
+import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.WorldControl.ModuleWorldControl;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
@@ -92,7 +93,7 @@ public class TickTaskRollback implements ITickTask
 				e.printStackTrace();
 			}
 			
-			if (isComplete || currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
+			if (isComplete || currentTickChanged >= ConfigWorldControl.blocksPerTick)
 			{
 				// Stop running this tick.
 				changed  += currentTickChanged;

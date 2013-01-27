@@ -1,6 +1,6 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
-import com.ForgeEssentials.WorldControl.ModuleWorldControl;
+import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.BlockSaveable;
@@ -110,7 +110,7 @@ public class TickTaskReplaceSelection implements ITickTask
 				}
 			}
 
-			if (isComplete || currentTickChanged >= ModuleWorldControl.WCblocksPerTick)
+			if (isComplete || currentTickChanged >= ConfigWorldControl.blocksPerTick)
 			{
 				// Stop running this tick.
 				changed += currentTickChanged;
@@ -130,7 +130,7 @@ public class TickTaskReplaceSelection implements ITickTask
 	@Override
 	public void onComplete()
 	{
-		PlayerInfo.getPlayerInfo(player).addUndoAction(backup);
+		PlayerInfo.getPlayerInfo(player.username).addUndoAction(backup);
 		String targetName;
 		// Determine the target block name
 		if (targetId == 0)

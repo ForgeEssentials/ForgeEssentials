@@ -1,7 +1,7 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
 //Depreciated
-import com.ForgeEssentials.WorldControl.ModuleWorldControl;
+import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.BlockSaveable;
 import com.ForgeEssentials.util.ITickTask;
@@ -62,7 +62,7 @@ public class TickTaskSetBackup implements ITickTask
 				changed++;
 			}
 
-			if (lastChanged >= ModuleWorldControl.WCblocksPerTick)
+			if (lastChanged >= ConfigWorldControl.blocksPerTick)
 			{
 				return;
 			}
