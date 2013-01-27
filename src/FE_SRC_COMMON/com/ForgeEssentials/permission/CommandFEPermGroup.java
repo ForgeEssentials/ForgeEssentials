@@ -400,13 +400,12 @@ public class CommandFEPermGroup
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
 				}
 			}
-			ArrayList list = PermissionsAPI.getGroupPermissions(group.name, zone.getZoneName());
+			ArrayList<String> list = PermissionsAPI.getGroupPermissions(group.name, zone.getZoneName());
 			Collections.sort(list);
-			StringBuilder messageAllowed = new StringBuilder();
-			StringBuilder messageDenied = new StringBuilder();
-			for(Object permObj : list)
+			ArrayList<String> messageAllowed = new ArrayList<String>();
+			ArrayList<String> messageDenied = new ArrayList<String>();
+			for(String perm : list)
 			{
-				String perm = (String)permObj;
 				if(perm.contains("has no individual permissions."))
 				{
 					OutputHandler.chatConfirmation(sender, perm);
@@ -414,20 +413,25 @@ public class CommandFEPermGroup
 				}
 				if(perm.contains("ALLOW"))
 				{
-					messageAllowed.append(FEChatFormatCodes.DARKGREEN)
-						.append(perm.substring(0, perm.indexOf(":"))).append("\n");
+					messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + perm.substring(0, perm.indexOf(":")));
 				}
 				else
 				{
-					messageDenied.append(FEChatFormatCodes.DARKRED)
-						.append(perm.substring(0, perm.indexOf(":"))).append("\n");
+					messageDenied.add(" " + FEChatFormatCodes.DARKRED + perm.substring(0, perm.indexOf(":")));
 				}
 			}
 			OutputHandler.chatConfirmation(sender, group.name + (group.parent != null ? " inherits from " + group.parent : "")
-					+ ". Current permissions in zone " + zone.getZoneName() + ":");
+					+ ".\nCurrent permissions in zone " + zone.getZoneName() + ":");
 			OutputHandler.chatConfirmation(sender, " (" + FEChatFormatCodes.DARKGREEN + "ALLOWED"
 					+ FEChatFormatCodes.DARKRED + " DENIED" + FEChatFormatCodes.GREEN + ")");
-			OutputHandler.chatConfirmation(sender, " " + messageAllowed.toString() + messageDenied.toString().trim());
+			for(String perm : messageAllowed)
+			{
+				OutputHandler.chatConfirmation(sender, perm);
+			}
+			for(String perm : messageDenied)
+			{
+				OutputHandler.chatConfirmation(sender, perm);
+			}
 			return;
 		}
 		

@@ -341,13 +341,12 @@ public class CommandFEPermUser
 						return;
 					}
 				}
-				ArrayList list = PermissionsAPI.getPlayerPermissions(player.username, zoneName);
+				ArrayList<String> list = PermissionsAPI.getPlayerPermissions(player.username, zoneName);
 				Collections.sort(list);
-				StringBuilder messageAllowed = new StringBuilder();
-				StringBuilder messageDenied = new StringBuilder();
-				for(Object permObj : list)
+				ArrayList<String> messageAllowed = new ArrayList<String>();
+				ArrayList<String> messageDenied = new ArrayList<String>();
+				for(String perm : list)
 				{
-					String perm = (String)permObj;
 					if(perm.contains("has no individual permissions."))
 					{
 						OutputHandler.chatConfirmation(sender, perm);
@@ -355,19 +354,24 @@ public class CommandFEPermUser
 					}
 					if(perm.contains("ALLOW"))
 					{
-						messageAllowed.append(FEChatFormatCodes.DARKGREEN)
-							.append(perm.substring(0, perm.indexOf(":"))).append("\n");
+						messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + perm.substring(0, perm.indexOf(":")));
 					}
 					else
 					{
-						messageDenied.append(FEChatFormatCodes.DARKRED)
-							.append(perm.substring(0, perm.indexOf(":"))).append("\n");
+						messageDenied.add(" " + FEChatFormatCodes.DARKRED + perm.substring(0, perm.indexOf(":")));
 					}
 				}
 				OutputHandler.chatConfirmation(sender, player.username + ": Current permissions in zone " + zoneName + ":");
 				OutputHandler.chatConfirmation(sender, " (" + FEChatFormatCodes.DARKGREEN + "ALLOWED"
 					+ FEChatFormatCodes.DARKRED + " DENIED" + FEChatFormatCodes.GREEN + ")");
-				OutputHandler.chatConfirmation(sender, " " + messageAllowed.toString() + messageDenied.toString().trim());
+				for(String perm : messageAllowed)
+				{
+					OutputHandler.chatConfirmation(sender, perm);
+				}
+				for(String perm : messageDenied)
+				{
+					OutputHandler.chatConfirmation(sender, perm);
+				}
 				return;
 			}
 		}
