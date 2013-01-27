@@ -1,5 +1,7 @@
 package com.ForgeEssentials.commands;
 
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -34,7 +36,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length >= 1)
+		if (args.length >= 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayer player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if (player != null)
@@ -55,6 +57,10 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 		}
 		else
 		{
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+		}
+		if(args.length == 0)
+		{
 //			NBTTagCompound data = DataStorage.getData("spawn");
 			WarpPoint spawn;
 //			if(!(data == null))
@@ -71,8 +77,6 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 //			{
 				PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
 				TeleportCenter.addToTpQue(spawn, sender);
-//				((EntityPlayerMP) sender).playerNetServerHandler
-//						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
 				sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 //			}
 		}
