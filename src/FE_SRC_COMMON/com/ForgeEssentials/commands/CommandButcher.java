@@ -77,13 +77,13 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 
 		}
 		TickTaskHandler.addTask(new CommandButcherTickTask(sender, mobType, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(centerX - radius,
-				centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1), radius));
+				centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1), radius, sender.dimension));
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		int radius = 0;
+		int radius = 10;
 		int worldID = -2;
 		int x = 0, y = 0, z = 0;
 		if(sender instanceof TileEntityCommandBlock)
@@ -102,7 +102,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "/butcher <radius> <type> <x,y,z> <worldID>");
 			return;
 		}
-		if(args.length == 4)
+		if(args.length > 0)
 		{
 			try
 			{
@@ -113,6 +113,9 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
 				return;
 			}
+		}
+		if(args.length > 1)
+		{
 			if (args[1].equalsIgnoreCase("golem") || args[1].equalsIgnoreCase("passive") || args[1].equalsIgnoreCase("all") || args[1].equalsIgnoreCase("villager")
 					|| args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile"))
 			{
@@ -123,6 +126,9 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "all, golem, hostile, passive, tamed, or villager");
 				return;
 			}
+		}
+		if(args.length > 2)
+		{
 			String[] split = args[2].split(",");
 			if (split.length != 3)
 			{
@@ -143,6 +149,9 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 					return;
 				}
 			}
+		}
+		if(args.length == 4)
+		{
 			try
 			{
 				worldID = Integer.parseInt(args[3]);
