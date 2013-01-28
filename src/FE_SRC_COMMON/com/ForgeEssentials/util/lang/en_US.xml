@@ -80,8 +80,8 @@
     <entry key="command.repair.syntax.player">/repair &lt;player></entry>
     <entry key="command.repair.syntax.console">/repair &lt;player></entry>
 
-    <entry key="command.rules.syntax.console">/rules &lt;#help|add|remove|move> &lt;#|rule> [#]</entry>
-    <entry key="command.rules.syntax.player">&lt;#help|add|remove|move> &lt;#|rule> [#]</entry>
+    <entry key="command.rules.syntax.console">/rules &lt;#|help|add|remove|move> &lt;#|rule> [#]</entry>
+    <entry key="command.rules.syntax.player">&lt;#|help|add|remove|move> &lt;#|rule> [#]</entry>
     <entry key="command.rules.info.console">Get/set the rules of the server</entry>
     <entry key="command.rules.info.player">Get/set the rules of the server</entry>
 	<entry key="command.rules.help.1"> - /rules add &lt;newRule></entry>

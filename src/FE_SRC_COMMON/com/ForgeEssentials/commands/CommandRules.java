@@ -194,11 +194,33 @@ public class CommandRules extends ForgeEssentialsCommandBase
 
 			int index;
 
-			if (args.length == 1 && args[0].equalsIgnoreCase("help"))
+			if (args.length == 1)
 			{
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
+				if (args[0].equalsIgnoreCase("help"))
+				{
+					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
+					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
+					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
+					return;
+				}
+				
+				try
+				{
+					index = Integer.parseInt(args[1]);
+				}
+				catch (NumberFormatException e)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+					return;
+				}
+
+				if (index > rules.size() || index <= 0)
+				{
+					OutputHandler.chatError(sender, "That rule does not exist.");
+					return;
+				}
+
+				sender.sendChatToPlayer(rules.get(index - 1));
 			}
 			else if (args.length == 2 && args[0].equalsIgnoreCase("remove"))
 			{
@@ -295,11 +317,33 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(rule);
 			}
 		}
-		else if (args.length == 1 && args[0].equalsIgnoreCase("help"))
+		else if (args.length == 1)
 		{
-			sender.sendChatToPlayer(Localization.get("command.rules.help.1"));
-			sender.sendChatToPlayer(Localization.get("command.rules.help.2"));
-			sender.sendChatToPlayer(Localization.get("command.rules.help.3"));
+			if (args[0].equalsIgnoreCase("help"))
+			{
+				sender.sendChatToPlayer(Localization.get("command.rules.help.1"));
+				sender.sendChatToPlayer(Localization.get("command.rules.help.2"));
+				sender.sendChatToPlayer(Localization.get("command.rules.help.3"));
+				return;
+			}
+
+			try
+			{
+				index = Integer.parseInt(args[1]);
+			}
+			catch (NumberFormatException e)
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
+				return;
+			}
+
+			if (index > rules.size() || index <= 0)
+			{
+				sender.sendChatToPlayer("That rule does not exist.");
+				return;
+			}
+
+			sender.sendChatToPlayer(rules.get(index - 1));
 		}
 		else if (args.length == 2 && args[0].equalsIgnoreCase("remove"))
 		{
