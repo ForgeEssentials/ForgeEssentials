@@ -4,6 +4,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -186,168 +187,201 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-
-			if (args.length > 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
+			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
 			{
-				if (args[0].equalsIgnoreCase("remove"))
-				{
-					try
-					{
-						rules.remove(new Integer(args[1]) - 1);
-						sender.sendChatToPlayer("Rule #" + args[1] + " removed.");
-					}
-					catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
-					}
-					catch (IndexOutOfBoundsException e)
-					{
-						sender.sendChatToPlayer("That rule does not exist.");
-					}
-				}
-				else if (args[0].equalsIgnoreCase("add"))
-				{
-					String newRule = "";
-					for (int i = 1; i < args.length; i++)
-					{
-						newRule = newRule + args[i] + " ";
-					}
-					rules.add(newRule);
-					sender.sendChatToPlayer("Rule #" + rules.size() + ": " + rules.get(rules.size() - 1) + " Added!");
-				}
-				else if (args[0].equalsIgnoreCase("move"))
-				{
-					String temp = "";
-					try
-					{
-						temp = rules.remove(new Integer(args[1]) - 1);
-					}
-					catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
-						return;
-					}
-					catch (IndexOutOfBoundsException e)
-					{
-						sender.sendChatToPlayer("That rule does not exist.");
-						return;
-					}
-					try
-					{
-						if (new Integer(args[2]) < rules.size())
-						{
-							rules.add(new Integer(args[2]) - 1, temp);
-							sender.sendChatToPlayer("Rule #" + args[1] + ": " + rules.get(new Integer(args[2]) - 1) + " Moved to: " + args[2]);
-						}
-						else
-						{
-							rules.add(temp);
-							sender.sendChatToPlayer("Rule #" + args[1] + ": " + rules.get(rules.size() - 1) + " Moved to last position.");
-						}
-					}
-					catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
-						rules.add(new Integer(args[1]) - 1, temp);
-						return;
-					}
-				}
-				else
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_BADSYNTAX));
-				}
-				saveRules();
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 			}
-			else
+
+			int index;
+
+			if (args.length == 1 && args[0].equalsIgnoreCase("help"))
 			{
-				OutputHandler.chatError(sender, Localization.get("message.error.nopermission"));
+				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
+				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
+				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
 			}
-		}
-
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		if (args.length > 1)
-		{
-			if (args[0].equalsIgnoreCase("remove"))
+			else if (args.length == 2 && args[0].equalsIgnoreCase("remove"))
 			{
 				try
 				{
-					rules.remove(new Integer(args[1]) - 1);
-					sender.sendChatToPlayer("Rule #" + args[1] + " removed.");
+					index = Integer.parseInt(args[1]);
 				}
 				catch (NumberFormatException e)
 				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+					return;
 				}
-				catch (IndexOutOfBoundsException e)
+
+				if (index > rules.size() || index <= 0)
 				{
-					sender.sendChatToPlayer("That rule does not exist.");
+					OutputHandler.chatError(sender, "That rule does not exist.");
+					return;
 				}
+
+				rules.remove(index - 1);
+				OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + " removed.");
 			}
-			else if (args[0].equalsIgnoreCase("add"))
+			else if (args.length >= 2 && args[0].equalsIgnoreCase("add"))
 			{
 				String newRule = "";
 				for (int i = 1; i < args.length; i++)
 				{
 					newRule = newRule + args[i] + " ";
 				}
+				newRule = FunctionHelper.formatColors(newRule);
 				rules.add(newRule);
-				sender.sendChatToPlayer("Rule #" + rules.size() + ": " + rules.get(rules.size() - 1) + " Added!");
+				OutputHandler.chatConfirmation(sender, "Rule #" + rules.size() + ": " + rules.get(rules.size() - 1) + "&r Added!");
 			}
-			else if (args[0].equalsIgnoreCase("move"))
+			else if (args.length == 3 && args[0].equalsIgnoreCase("move"))
 			{
-				String temp = "";
 				try
 				{
-					temp = rules.remove(new Integer(args[1]) - 1);
+					index = Integer.parseInt(args[1]);
 				}
 				catch (NumberFormatException e)
 				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
 					return;
 				}
-				catch (IndexOutOfBoundsException e)
+
+				if (index > rules.size() || index <= 0)
 				{
-					sender.sendChatToPlayer("That rule does not exist.");
+					OutputHandler.chatError(sender, "That rule does not exist.");
 					return;
 				}
+
+				String temp = rules.remove(index - 1);
+
 				try
 				{
-					if (new Integer(args[2]) < rules.size())
-					{
-						rules.add(new Integer(args[2]) - 1, temp);
-						sender.sendChatToPlayer("Rule #" + args[1] + ": " + rules.get(new Integer(args[2]) - 1) + " Moved to: " + args[2]);
-					}
-					else
-					{
-						rules.add(temp);
-						sender.sendChatToPlayer("Rule #" + args[1] + ": " + rules.get(rules.size() - 1) + " Moved to last position.");
-					}
-					sender.sendChatToPlayer("Rule #" + args[1] + ": " + rules.get(new Integer(args[2]) - 1) + " Moved to: " + args[2]);
+					index = Integer.parseInt(args[2]);
 				}
 				catch (NumberFormatException e)
 				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
-					rules.add(new Integer(args[1]) - 1, temp);
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
+
+					// add it back in where it was
+					rules.add(index - 1, temp);
 					return;
+				}
+
+				if (index < rules.size())
+				{
+					rules.add(index - 1, temp);
+					OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + ": " + temp + "&r Moved to: " + args[2]);
+				}
+				else
+				{
+					rules.add(temp);
+					OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + ": " + temp + "&r Moved to last position.");
 				}
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_BADSYNTAX));
+				error(sender);
 			}
 			saveRules();
 		}
-		else
+	}
+
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+		int index;
+		if (args.length == 0)
 		{
 			for (String rule : rules)
 			{
 				sender.sendChatToPlayer(rule);
 			}
 		}
+		else if (args.length == 1 && args[0].equalsIgnoreCase("help"))
+		{
+			sender.sendChatToPlayer(Localization.get("command.rules.help.1"));
+			sender.sendChatToPlayer(Localization.get("command.rules.help.2"));
+			sender.sendChatToPlayer(Localization.get("command.rules.help.3"));
+		}
+		else if (args.length == 2 && args[0].equalsIgnoreCase("remove"))
+		{
+			try
+			{
+				index = Integer.parseInt(args[1]);
+			}
+			catch (NumberFormatException e)
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
+				return;
+			}
+
+			if (index > rules.size() || index <= 0)
+			{
+				sender.sendChatToPlayer("That rule does not exist.");
+				return;
+			}
+
+			rules.remove(index - 1);
+			sender.sendChatToPlayer("Rule #" + args[1] + " removed.");
+		}
+		else if (args.length >= 2 && args[0].equalsIgnoreCase("add"))
+		{
+			String newRule = "";
+			for (int i = 1; i < args.length; i++)
+			{
+				newRule = newRule + args[i] + " ";
+			}
+			newRule = FunctionHelper.formatColors(newRule);
+			rules.add(newRule);
+			sender.sendChatToPlayer("Rule #" + rules.size() + ": " + rules.get(rules.size() - 1) + " Added!");
+		}
+		else if (args.length == 3 && args[0].equalsIgnoreCase("move"))
+		{
+			try
+			{
+				index = Integer.parseInt(args[1]);
+			}
+			catch (NumberFormatException e)
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
+				return;
+			}
+
+			if (index > rules.size() || index <= 0)
+			{
+				sender.sendChatToPlayer("That rule does not exist.");
+				return;
+			}
+
+			String temp = rules.remove(index - 1);
+
+			try
+			{
+				index = Integer.parseInt(args[2]);
+			}
+			catch (NumberFormatException e)
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
+
+				// add it back in where it was
+				rules.add(index - 1, temp);
+				return;
+			}
+
+			if (index < rules.size())
+			{
+				rules.add(index - 1, temp);
+				sender.sendChatToPlayer("Rule #" + args[1] + ": " + temp + " Moved to: " + args[2]);
+			}
+			else
+			{
+				rules.add(temp);
+				sender.sendChatToPlayer("Rule #" + args[1] + ": " + temp + " Moved to last position.");
+			}
+		}
+		else
+		{
+			error(sender);
+		}
+		saveRules();
 	}
 
 	@Override
