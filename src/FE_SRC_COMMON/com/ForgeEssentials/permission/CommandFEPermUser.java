@@ -53,8 +53,8 @@ public class CommandFEPermUser
 		
 		if (args.length == 1) // display user-specific settings & there values for this player
 		{
-			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(args[0], false, ZoneManager.getGLOBAL().getZoneName());
-			OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.user.info.groups", player.username));
+			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(playerName, false, ZoneManager.getGLOBAL().getZoneName());
+			OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.user.info.groups", playerName));
 			for (Group g : groups)
 			{
 				OutputHandler.chatConfirmation(sender, " - "+g.name+" -- "+g.zoneName);
@@ -66,7 +66,7 @@ public class CommandFEPermUser
 			if (args.length == 2) // display user super perms
 			{
 				Zone zone = ZoneManager.getSUPER();
-				ArrayList list = PermissionsAPI.getPlayerPermissions(args[0], zone.getZoneName());
+				ArrayList list = PermissionsAPI.getPlayerPermissions(playerName, zone.getZoneName());
 				boolean error = false;
 				for(Object lineObj : list)
 				{
@@ -211,29 +211,29 @@ public class CommandFEPermUser
 			{
 				if(args.length == 2 || !args[2].equalsIgnoreCase("set"))
 				{
-					PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
+					PlayerInfo pi = PlayerInfo.getPlayerInfo(playerName);
 					if(pi.prefix.trim().length() == 0)
 					{
-						OutputHandler.chatConfirmation(sender, player.username + " does not have a prefix.");
+						OutputHandler.chatConfirmation(sender, playerName + " does not have a prefix.");
 					}
 					else
 					{
-						OutputHandler.chatConfirmation(sender, player.username + "'s prefix is &f" + pi.prefix);
+						OutputHandler.chatConfirmation(sender, playerName + "'s prefix is &f" + pi.prefix);
 					}
 					return;
 				}
 				else // args[2] must contian "set"
 				{
-					PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
+					PlayerInfo pi = PlayerInfo.getPlayerInfo(playerName);
 					if(args.length == 3)
 					{
 						pi.prefix = " ";
-						OutputHandler.chatConfirmation(sender, player.username + "'s prefix cleared");
+						OutputHandler.chatConfirmation(sender, playerName + "'s prefix cleared");
 					}
 					else
 					{
 						pi.prefix = args[3];
-						OutputHandler.chatConfirmation(sender, player.username + "'s prefix set to &f" + pi.prefix);
+						OutputHandler.chatConfirmation(sender, playerName + "'s prefix set to &f" + pi.prefix);
 					}
 					return;
 				}
@@ -242,29 +242,29 @@ public class CommandFEPermUser
 			{
 				if(args.length == 2 || !args[2].equalsIgnoreCase("set"))
 				{
-					PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
+					PlayerInfo pi = PlayerInfo.getPlayerInfo(playerName);
 					if(pi.suffix.trim().length() == 0)
 					{
-						OutputHandler.chatConfirmation(sender, player.username + " does not have a suffix.");
+						OutputHandler.chatConfirmation(sender, playerName + " does not have a suffix.");
 					}
 					else
 					{
-						OutputHandler.chatConfirmation(sender, player.username + "'s suffix is &f" + pi.suffix);
+						OutputHandler.chatConfirmation(sender, playerName + "'s suffix is &f" + pi.suffix);
 					}
 					return;
 				}
 				else // args[2] must contian "set"
 				{
-					PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
+					PlayerInfo pi = PlayerInfo.getPlayerInfo(playerName);
 					if(args.length == 3)
 					{
 						pi.suffix = " ";
-						OutputHandler.chatConfirmation(sender, player.username + "'s suffix cleared");
+						OutputHandler.chatConfirmation(sender, playerName + "'s suffix cleared");
 					}
 					else
 					{
 						pi.suffix = args[3];
-						OutputHandler.chatConfirmation(sender, player.username + "'s suffix set to &f" + pi.suffix);
+						OutputHandler.chatConfirmation(sender, playerName + "'s suffix set to &f" + pi.suffix);
 					}
 					return;
 				}
@@ -341,7 +341,7 @@ public class CommandFEPermUser
 						return;
 					}
 				}
-				ArrayList<String> list = PermissionsAPI.getPlayerPermissions(player.username, zoneName);
+				ArrayList<String> list = PermissionsAPI.getPlayerPermissions(playerName, zoneName);
 				Collections.sort(list);
 				ArrayList<String> messageAllowed = new ArrayList<String>();
 				ArrayList<String> messageDenied = new ArrayList<String>();
@@ -361,7 +361,7 @@ public class CommandFEPermUser
 						messageDenied.add(" " + FEChatFormatCodes.DARKRED + perm.substring(0, perm.indexOf(":")));
 					}
 				}
-				OutputHandler.chatConfirmation(sender, player.username + ": Current permissions in zone " + zoneName + ":");
+				OutputHandler.chatConfirmation(sender, playerName + ": Current permissions in zone " + zoneName + ":");
 				OutputHandler.chatConfirmation(sender, " (" + FEChatFormatCodes.DARKGREEN + "ALLOWED"
 					+ FEChatFormatCodes.DARKRED + " DENIED" + FEChatFormatCodes.GREEN + ")");
 				for(String perm : messageAllowed)
@@ -407,8 +407,8 @@ public class CommandFEPermUser
 		
 		if (args.length == 1) // display user-specific settings & there values for this player
 		{
-			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(args[0], false, ZoneManager.getGLOBAL().getZoneName());
-			sender.sendChatToPlayer(Localization.format("command.permissions.user.info.groups", player.username));
+			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(playerName, false, ZoneManager.getGLOBAL().getZoneName());
+			sender.sendChatToPlayer(Localization.format("command.permissions.user.info.groups", playerName));
 			for (Group g : groups)
 			{
 				sender.sendChatToPlayer(" - "+g.name+" -- "+g.zoneName);
@@ -420,7 +420,7 @@ public class CommandFEPermUser
 			if (args.length == 2) // display user super perms
 			{
 				Zone zone = ZoneManager.getSUPER();
-				ArrayList list = PermissionsAPI.getPlayerPermissions(args[0], zone.getZoneName());
+				ArrayList list = PermissionsAPI.getPlayerPermissions(playerName, zone.getZoneName());
 				boolean error = false;
 				for(Object lineObj : list)
 				{
@@ -645,8 +645,8 @@ public class CommandFEPermUser
 		}
 		else // display user-specific settings & there values for this player
 		{
-			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(args[0], false, args[1]);
-			sender.sendChatToPlayer(Localization.format("command.permissions.user.info.groups", player.username));
+			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(playerName, false, args[1]);
+			sender.sendChatToPlayer(Localization.format("command.permissions.user.info.groups", playerName));
 			for (Group g : groups)
 			{
 				sender.sendChatToPlayer(" - "+g.name+" -- "+g.zoneName);
