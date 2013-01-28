@@ -84,9 +84,10 @@
     <entry key="command.rules.syntax.player">&lt;#|help|add|remove|move> &lt;#|rule> [#]</entry>
     <entry key="command.rules.info.console">Get/set the rules of the server</entry>
     <entry key="command.rules.info.player">Get/set the rules of the server</entry>
-	<entry key="command.rules.help.1"> - /rules add &lt;newRule></entry>
-	<entry key="command.rules.help.2"> - /rules remove &lt;#></entry>
-	<entry key="command.rules.help.3"> - /rules move &lt;#> &lt;#></entry>
+	<entry key="command.rules.help.1"> - /rules &lt;#></entry>
+	<entry key="command.rules.help.2"> - /rules add &lt;newRule></entry>
+	<entry key="command.rules.help.3"> - /rules remove &lt;#></entry>
+	<entry key="command.rules.help.4"> - /rules move &lt;#> &lt;#></entry>
     
     <entry key="command.setspawn.syntax.console">/setspawn [X Y Z]</entry>
     <entry key="command.setspawn.syntax.player">[X Y Z]</entry>

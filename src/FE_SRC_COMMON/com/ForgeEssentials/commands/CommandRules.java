@@ -187,12 +187,41 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		}
 		else
 		{
+			int index;
+			
 			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
-			}
+				if (args.length == 1)
+				{
+					if (args[0].equalsIgnoreCase("help"))
+					{
+						OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
+						return;
+					}
+					
+					try
+					{
+						index = Integer.parseInt(args[1]);
+					}
+					catch (NumberFormatException e)
+					{
+						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+						return;
+					}
 
-			int index;
+					if (index > rules.size() || index <= 0)
+					{
+						OutputHandler.chatError(sender, "That rule does not exist.");
+						return;
+					}
+
+					sender.sendChatToPlayer(rules.get(index - 1));
+				}
+				else
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+				
+				return;
+			}
 
 			if (args.length == 1)
 			{
@@ -201,6 +230,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
+					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.4"));
 					return;
 				}
 				
@@ -324,6 +354,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get("command.rules.help.1"));
 				sender.sendChatToPlayer(Localization.get("command.rules.help.2"));
 				sender.sendChatToPlayer(Localization.get("command.rules.help.3"));
+				sender.sendChatToPlayer(Localization.get("command.rules.help.4"));
 				return;
 			}
 
