@@ -174,6 +174,7 @@ public class DBConnector
 		catch (Exception e)
 		{
 			OutputHandler.SOP("In-House check failed, going to default.");
+			e.printStackTrace();
 		}
 
 		try
