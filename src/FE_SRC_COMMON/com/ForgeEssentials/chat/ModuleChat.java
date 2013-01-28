@@ -92,11 +92,10 @@ public class ModuleChat
 	{
 		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.r", false);
 		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.msg", false);
-		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.nickmame._ALL_", false);
 
 		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.Chat.commands.msg", true);
 		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.Chat.commands.r", true);
-		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.Chat.commands.nickname.self", true);
+		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.Chat.commands.nickname", true);
 
 		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.Chat.commands.nickname.others", true);
 		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.Chat.commands.mute", true);
