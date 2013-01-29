@@ -88,9 +88,6 @@ public class ModulePermissions
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
-		
-		// setup PlayerTracker
-		GameRegistry.registerPlayerTracker(new PlayerTracker());
 	}
 
 	@ForgeSubscribe

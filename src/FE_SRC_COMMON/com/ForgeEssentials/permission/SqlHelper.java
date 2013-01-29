@@ -29,11 +29,11 @@ public class SqlHelper
 	private boolean					generate						= false;
 	private static SqlHelper		instance;
 	private EnumDBType				dbType;
-	
-	private static int GLOBAL_ID = 1;
-	private static int SUPER_ID = 2;
-	private static int ENTRY_PLAYER_ID = 1;
-	private static int DEFAULT_ID = 1;
+
+	private static int				GLOBAL_ID						= 1;
+	private static int				SUPER_ID						= 2;
+	private static int				ENTRY_PLAYER_ID					= 1;
+	private static int				DEFAULT_ID						= 1;
 
 	// tables
 	private static final String		TABLE_ZONE						= "zones";
@@ -690,7 +690,8 @@ public class SqlHelper
 					.append(COLUMN_ZONE_ZONEID).append(") ")
 					.append(" VALUES ").append(" ('")
 					.append(ZoneManager.getSUPER().getZoneName()).append("', ")
-					.append(SUPER_ID).append(")");;
+					.append(SUPER_ID).append(")");
+			;
 			db.createStatement().executeUpdate(query.toString());
 
 			// Entry player...
@@ -1888,49 +1889,19 @@ public class SqlHelper
 	/**
 	 * 
 	 * @param username
-	 * @return FALSE if player was not generated or SQL error.
+	 * @return false if SQL error or the player already exists.
 	 */
 	public static synchronized boolean generatePlayer(String username)
 	{
 		try
 		{
-			boolean generate = false;
-			int pid = getPlayerIDFromPlayerName(username);
-
-			if (pid == -5)
+			if (doesPlayerExist(username))
+				return false;
+			else
 			{
-				// generate players
-				generate = true;
 				instance.statementPutPlayer.setString(1, username);
 				instance.statementPutPlayer.executeUpdate();
 				instance.statementPutPlayer.clearParameters();
-
-				pid = getPlayerIDFromPlayerName(username);
-			}
-
-			if (generate)
-			{
-
-				// get groups list...
-				ArrayList<Integer> groups = new ArrayList<Integer>();
-				ResultSet set;
-
-				instance.statementGetGroupIDsForEntryPlayer.setInt(1, GLOBAL_ID); // global
-				set = instance.statementGetGroupIDsForEntryPlayer.executeQuery();
-				instance.statementGetGroupIDsForEntryPlayer.clearParameters();
-
-				while (set.next())
-					groups.add(set.getInt(1));
-
-				instance.statementPutPlayerInGroup.setInt(2, pid); // player
-				instance.statementPutPlayerInGroup.setInt(3, GLOBAL_ID); // zone
-				for (int num : groups)
-				{
-					instance.statementPutPlayerInGroup.setInt(1, num);
-					instance.statementPutPlayerInGroup.executeUpdate();
-				}
-
-				instance.statementPutPlayerInGroup.clearParameters();
 
 				return true;
 			}
@@ -1940,18 +1911,20 @@ public class SqlHelper
 			e.printStackTrace();
 			return false;
 		}
-		return false;
 	}
-	
+
 	public static synchronized boolean doesPlayerExist(String username)
 	{
 		try
 		{
-			int pid = getPlayerIDFromPlayerName(username);
-			
-			if (pid >= 0)
-				return true;
-			else return false;
+			instance.statementGetPlayerIDFromName.setString(1, username);
+			ResultSet set = instance.statementGetPlayerIDFromName.executeQuery();
+			instance.statementGetPlayerIDFromName.clearParameters();
+
+			if (!set.next())
+				return false;
+
+			return true;
 		}
 		catch (SQLException e)
 		{
@@ -2103,7 +2076,7 @@ public class SqlHelper
 
 	/**
 	 * @param player
-	 * @return returns -5 if the player doesn't exist.
+	 * @return returns the ID of the EntryPlayer if this player does not exist.
 	 * @throws SQLException
 	 */
 	private static synchronized int getPlayerIDFromPlayerName(String player) throws SQLException
@@ -2113,7 +2086,7 @@ public class SqlHelper
 		instance.statementGetPlayerIDFromName.clearParameters();
 
 		if (!set.next())
-			return -5;
+			return ENTRY_PLAYER_ID;
 
 		return set.getInt(1);
 	}
