@@ -771,7 +771,7 @@ public class SqlHelper
 			// put the EntryPlayer to GUESTS for the GLOBAL zone
 			s = this.statementPutPlayerInGroup;
 			s.setInt(1, groups.get(RegGroup.GUESTS));
-			s.setInt(2, 0);
+			s.setInt(2, ENTRY_PLAYER_ID);
 			s.setInt(3, GLOBAL_ID); // zoneID
 			s.executeUpdate();
 			s.clearParameters();
