@@ -1485,7 +1485,7 @@ public class SqlHelper
 				// params still set from initial
 				statement.setInt(1, tID);
 				statement.setInt(2, isG);
-				statement.setString(3, perm.name);
+				statement.setString(3, perm.name + (perm.isAll ? "._ALL_" : ""));
 				statement.setInt(4, zID);
 				set = statement.executeQuery();
 				statement.clearParameters();
