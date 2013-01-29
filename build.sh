@@ -4,8 +4,8 @@ MC="1.4.7"
 #in case we arnt there already
 cd ${WORKSPACE}
 
-VERSION = "`head -n 1 VERSION.TXT`"
-MC = "`tail -n 1 VERSION.TXT`"
+VERSION="`head -n 1 VERSION.TXT`"
+MC="`tail -n 1 VERSION.TXT`"
 echo "Version of ${JOB_NAME} is: ${VERSION} for MC ${MC}"
 
 echo "Downloading Forge..."
