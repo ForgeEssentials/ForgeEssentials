@@ -39,8 +39,13 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 1)
 			{
-				if((FunctionHelper.getPlayerFromUsername(args[0]) != null || PlayerSelector.matchOnePlayer(sender, args[0]) != null) && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+				if(FunctionHelper.getPlayerFromUsername(args[0]) != null || PlayerSelector.matchOnePlayer(sender, args[0]) != null)
 				{
+					if(!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+					{
+						OutputHandler.chatError(sender, "You do not have permission to do that.");
+						return;
+					}
 					EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 					if(PlayerSelector.hasArguments(args[0]))
 					{
@@ -58,10 +63,6 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
 					victim.setGameType(gm);
 					OutputHandler.chatConfirmation(sender, "Gamemode changed for " + victim.username);
-				}
-				else if(FunctionHelper.getPlayerFromUsername(args[0]) != null && !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
-				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 				}
 				else
 				{
@@ -83,8 +84,13 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				sender.setGameType(gm);
 			}
 		}
-		else if (args.length == 2 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		else if (args.length == 2)
 		{
+			if(!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+			{
+				OutputHandler.chatError(sender, "You do not have permission to do that.");
+				return;
+			}
 			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
@@ -105,7 +111,8 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /gamemode [type]");
+			OutputHandler.chatError(sender, " /gamemode [player] [type]");
 		}
 	}
 
@@ -164,7 +171,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands.gamemode.self";
+		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
 	@Override
