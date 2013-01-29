@@ -2215,16 +2215,24 @@ public class SqlHelper
 	{
 		try
 		{
-			int playerID = instance.getPlayerIDFromPlayerName(target);
+			int targetID = -5;
+			if(isGroup)
+			{
+				targetID = instance.getGroupIDFromGroupName(target);
+			}
+			else
+			{
+				targetID = instance.getPlayerIDFromPlayerName(target);
+			}
 			int zoneID = instance.getZoneIDFromZoneName(zone);
 
-			return removePermission(playerID, isGroup, node, zoneID);
+			return removePermission(targetID, isGroup, node, zoneID);
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
-		return "Player group not set.";
+		return "Permission not removed.";
 	}
 
 	public static synchronized String removePermission(int playerID, boolean isGroup,
