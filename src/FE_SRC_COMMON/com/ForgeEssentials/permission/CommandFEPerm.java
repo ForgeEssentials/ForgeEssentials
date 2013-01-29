@@ -2,6 +2,7 @@ package com.ForgeEssentials.permission;
 
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
@@ -83,7 +84,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	{
 		if(args.length == 0)
 		{
-			OutputHandler.chatConfirmation(sender, "Base usage is /p user|group.");
+			OutputHandler.chatConfirmation(sender, "Base usage is /p user|group|default.");
 			OutputHandler.chatConfirmation(sender, "Type one of these for more information.");
 			return;
 		}
@@ -110,6 +111,76 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		{
 			CommandFEPermPromote.processCommandPlayer(sender, newArgs);
 		}
+		else if(first.equalsIgnoreCase("default"))
+		{
+			Zone zone = ZoneManager.getGLOBAL();
+			int zoneIndex = -1;
+			if(args.length == 2)
+			{
+				zoneIndex = 1;
+			}
+			else if(args.length == 4)
+			{
+				zoneIndex = 3;
+			}
+			if(zoneIndex != -1)
+			{
+				if(ZoneManager.doesZoneExist(args[zoneIndex]))
+				{
+					zone = ZoneManager.getZone(args[zoneIndex]);
+				}
+				else if(args[2].equalsIgnoreCase("here"))
+				{
+					zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+				}
+				else
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[zoneIndex]));
+					return;
+				}
+			}
+			if(args.length > 2 && args[1].equalsIgnoreCase("set"))
+			{
+				if(zone.getZoneName() != ZoneManager.getGLOBAL().getZoneName())
+				{
+					OutputHandler.chatWarning(sender, "Setting the default group outside of _GLOBAL_ zone is not recommended.");
+				}
+				if(PermissionsAPI.getGroupForName(args[2]) == null)
+				{
+					OutputHandler.chatError(sender, args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
+					return;
+				}
+				String result = PermissionsAPI.setPlayerGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
+				sender.sendChatToPlayer("Default group set to " + PermissionsAPI.getGroupForName(args[2]).name + " in zone " + zone.getZoneName());
+			}
+			else if(args.length > 2 && args[1].equalsIgnoreCase("add"))
+			{
+				if(PermissionsAPI.getGroupForName(args[2]) == null)
+				{
+					OutputHandler.chatError(sender, args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
+					return;
+				}
+				String result = PermissionsAPI.addPlayerToGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
+				OutputHandler.chatConfirmation(sender, "Group "  + PermissionsAPI.getGroupForName(args[2]).name + " in zone " + zone.getZoneName() + " added to defaults.");
+			}
+			else if(args.length == 1)
+			{
+				ArrayList<Group> groupList = PermissionsAPI.getApplicableGroups("_ENTRY_PLAYER_", false, zone.getZoneName());
+				if(groupList.size() == 1)
+				{
+					OutputHandler.chatConfirmation(sender, "Default group in zone " + zone.getZoneName() + " is currently " + groupList.get(0).name);
+				}
+				else
+				{
+					OutputHandler.chatConfirmation(sender, "Default groups in zone " + zone.getZoneName() + " are currently:\n");
+					for(Group group : groupList)
+					{
+						OutputHandler.chatConfirmation(sender, " " + group.name);
+					}
+				}
+				OutputHandler.chatConfirmation(sender, "To change the default groups, type /p default add|set <groupname> [zone]");
+			}
+		}
 	}
 
 	@Override
@@ -117,7 +188,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	{
 		if(args.length == 0)
 		{
-			sender.sendChatToPlayer("Base usage is /p user|group.");
+			sender.sendChatToPlayer("Base usage is /p user|group|default.");
 			sender.sendChatToPlayer("Type one of these for more information.");
 			return;
 		}
@@ -143,6 +214,76 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		else if (first.equalsIgnoreCase("promote"))
 		{
 			CommandFEPermPromote.processCommandConsole(sender, newArgs);
+		}
+		else if(first.equalsIgnoreCase("default"))
+		{
+			Zone zone = ZoneManager.getGLOBAL();
+			int zoneIndex = -1;
+			if(args.length == 2)
+			{
+				zoneIndex = 1;
+			}
+			else if(args.length == 4)
+			{
+				zoneIndex = 3;
+			}
+			if(zoneIndex != -1)
+			{
+				if(ZoneManager.doesZoneExist(args[zoneIndex]))
+				{
+					zone = ZoneManager.getZone(args[zoneIndex]);
+				}
+				else if(args[2].equalsIgnoreCase("here"))
+				{
+					sender.sendChatToPlayer("Cannot use \"here\" as console");
+				}
+				else
+				{
+					sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					return;
+				}
+			}
+			if(args.length > 2 && args[1].equalsIgnoreCase("set"))
+			{
+				if(zone.getZoneName() != ZoneManager.getGLOBAL().getZoneName())
+				{
+					sender.sendChatToPlayer("WARNING: Setting the default group outside of _GLOBAL_ zone is not recommended.");
+				}
+				if(PermissionsAPI.getGroupForName(args[2]) == null)
+				{
+					sender.sendChatToPlayer("ERROR: " + args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
+					return;
+				}
+				String result = PermissionsAPI.setPlayerGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
+				sender.sendChatToPlayer("Default group set to " + PermissionsAPI.getGroupForName(args[2]).name + " in zone " + zone.getZoneName());
+			}
+			else if(args.length > 2 && args[1].equalsIgnoreCase("add"))
+			{
+				if(PermissionsAPI.getGroupForName(args[2]) == null)
+				{
+					sender.sendChatToPlayer("ERROR: " + args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
+					return;
+				}
+				String result = PermissionsAPI.addPlayerToGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
+				sender.sendChatToPlayer("Group "  + PermissionsAPI.getGroupForName(args[2]).name + " in zone " + zone.getZoneName() + " added to defaults.");
+			}
+			else if(args.length == 1)
+			{
+				ArrayList<Group> groupList = PermissionsAPI.getApplicableGroups("_ENTRY_PLAYER_", false, zone.getZoneName());
+				if(groupList.size() == 1)
+				{
+					sender.sendChatToPlayer("Default group in zone " + zone.getZoneName() + " is currently " + groupList.get(0).name);
+				}
+				else
+				{
+					sender.sendChatToPlayer("Default groups in zone " + zone.getZoneName() + " are currently:\n");
+					for(Group group : groupList)
+					{
+						sender.sendChatToPlayer(" " + group.name);
+					}
+				}
+				sender.sendChatToPlayer("To change the default groups, type /p default add|set <groupname> [zone]");
+			}
 		}
 	}
 
