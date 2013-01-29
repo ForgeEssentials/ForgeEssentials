@@ -227,10 +227,10 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			{
 				if (args[0].equalsIgnoreCase("help"))
 				{
-					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.4"));
+					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.5"));
 					return;
 				}
 				
@@ -378,10 +378,10 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				sender.sendChatToPlayer(Localization.get("command.rules.help.1"));
 				sender.sendChatToPlayer(Localization.get("command.rules.help.2"));
 				sender.sendChatToPlayer(Localization.get("command.rules.help.3"));
 				sender.sendChatToPlayer(Localization.get("command.rules.help.4"));
+				sender.sendChatToPlayer(Localization.get("command.rules.help.5"));
 				return;
 			}
 
