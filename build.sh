@@ -80,7 +80,7 @@ cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg .
 rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
 echo "Creating server packages"
-jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg HowToGetFEsupport.txt ./com/ForgeEssentials/api/*
+jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg HowToGetFEsupport.txt ./com/ForgeEssentials/api/* update.sql
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-backups-${MC}-${VERSION}.zip" ./com/ForgeEssentials/backup/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-chat-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-economy-${MC}-${VERSION}.zip" ./com/ForgeEssentials/economy/* 
@@ -97,6 +97,7 @@ cd ${WORKSPACE}/output
 cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
 cp -f ${WORKSPACE}/LICENSE.TXT .
 cp -rf ${WORKSPACE}/A1-zipStuff/HowToGetFEsupport.txt .
+cp -rf ${WORKSPACE}/A1-zipStuff/update.sql .
 
 mkdir mods
 mkdir coremods
@@ -110,7 +111,7 @@ cp -rf "${WORKSPACE}/output/${JOB_NAME}-protection-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-snooper-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-playerlogger-${MC}-${VERSION}.zip" ./mods/
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt LICENSE.TXT
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt LICENSE.TXT update.sql
 
 echo "Cleaning up"
 rm -rf ./mods/*
@@ -134,6 +135,7 @@ echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
 cp -f ${WORKSPACE}/LICENSE.TXT .
 cp -rf ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt .
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt LICENSE.TXT
+cp -rf ${WORKSPACE}/A1-zipStuff/API/update.sql .
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt LICENSE.TXT update.sql
 
 #upload
