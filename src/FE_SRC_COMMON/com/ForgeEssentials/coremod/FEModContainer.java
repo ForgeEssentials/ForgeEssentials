@@ -23,7 +23,7 @@ public class FEModContainer extends DummyModContainer
 		myMeta.authorList = Arrays.asList(new String[] { "See the ForgeEssentials author list." });
 		myMeta.description = "The preloader for Forge Essentials.";
 		myMeta.modId = "FEPreLoader";
-		myMeta.version = "@version@";
+		myMeta.version = "@VERSION@";
 		myMeta.name = "Forge Essentials|PreLoader";
 		myMeta.url = "";
 	}
