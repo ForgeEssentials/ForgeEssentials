@@ -118,9 +118,9 @@ public class DuplicateCommandRemoval
 		{
 			Class<?> cmdClass = cmd.getClass();
 			Package pkg = cmdClass.getPackage();
-			if (pkg == null || !pkg.getName().contains("net.minecraft"))
+			if (pkg == null || pkg.getName().contains("net.minecraft"))
 				return 0;
-			else if (pkg == null || !pkg.getName().contains("ForgeEssentials"))
+			else if (pkg == null || pkg.getName().contains("ForgeEssentials"))
 				return 1;
 			else
 				return 2;
