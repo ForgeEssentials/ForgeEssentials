@@ -1,4 +1,4 @@
-VERSION="1.1.0.${BUILD_NUMBER}"
+VERSION="1.1.0"
 MC="1.4.7"
 
 #in case we arnt there already
@@ -6,6 +6,7 @@ cd ${WORKSPACE}
 
 # try getting the version from files
 VERSION="`head -n 1 VERSION.TXT`"
+VERSION="${VERSION}.${BUILD_NUMBER}"
 MC="`tail -n 1 VERSION.TXT`"
 echo "Version of ${JOB_NAME} is: ${VERSION} for MC ${MC}"
 
