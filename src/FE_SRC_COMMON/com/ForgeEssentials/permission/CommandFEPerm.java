@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
@@ -15,8 +16,16 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class CommandFEPerm extends ForgeEssentialsCommandBase
 {
+	// Variables for autocomplete
+	String[]	args2			= { "user", "group", "export", "promote" };
+	String[]	groupargs		= { "prefix", "suffix", "parent", "priority", "allow", "true", "deny", "false", "clear" };
+	String[]	playerargs		= { "prefix", "suffix", "group", "allow", "true", "deny", "false", "clear" };
+	String[]	playergroupargs	= { "set", "add", "remove" };
+
 	@Override
 	public final String getCommandName()
 	{
@@ -72,7 +81,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(args.length == 0)
+		if (args.length == 0)
 		{
 			OutputHandler.chatConfirmation(sender, "Base usage is /p user|group.");
 			OutputHandler.chatConfirmation(sender, "Type one of these for more information.");
@@ -106,6 +115,12 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		if (args.length == 0)
+		{
+			sender.sendChatToPlayer("Base usage is /p user|group.");
+			sender.sendChatToPlayer("Type one of these for more information.");
+			return;
+		}
 		String first = args[0];
 		String[] newArgs = new String[args.length - 1];
 		for (int i = 0; i < newArgs.length; i++)
@@ -142,6 +157,67 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	{
 		PermResult result = PermissionsAPI.checkPermResult(new PermQueryPlayer(player, getCommandPerm(), true));
 		return result.equals(PermResult.DENY) ? false : true;
+	}
+
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, args2);
+		}
+
+		else
+		{
+
+		}
+		switch (args.length)
+			{
+				case 1:
+					return getListOfStringsMatchingLastWord(args, args2);
+				case 2:
+					if (args[0].equalsIgnoreCase("group"))
+					{
+						List<Group> groups = PermissionsAPI.getGroupsInZone(ZoneManager.GLOBAL.getZoneName());
+						ArrayList<String> groupnames = new ArrayList<String>();
+						for (int i = 0; i < groups.size(); i++)
+						{
+							groupnames.add(groups.get(i).name);
+						}
+						groupnames.add("create");
+						return getListOfStringsFromIterableMatchingLastWord(args, groupnames);
+					}
+					break;
+				case 3:
+					if (args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player"))
+					{
+						return getListOfStringsMatchingLastWord(args, playerargs);
+					}
+					else if (args[0].equalsIgnoreCase("group") && !args[1].equalsIgnoreCase("create"))
+					{
+						return getListOfStringsMatchingLastWord(args, groupargs);
+					}
+					break;
+				case 4:
+					if (args[0].equalsIgnoreCase("user") && (args[2].equalsIgnoreCase("group")))
+					{
+						return getListOfStringsMatchingLastWord(args, playergroupargs);
+					}
+					break;
+				case 5:
+					if (args[0].equalsIgnoreCase("user") && (args[2].equalsIgnoreCase("group")))
+					{
+						List<Group> groups = PermissionsAPI.getGroupsInZone(ZoneManager.GLOBAL.getZoneName());
+						ArrayList<String> groupnames = new ArrayList<String>();
+						for (int i = 0; i < groups.size(); i++)
+						{
+							groupnames.add(groups.get(i).name);
+						}
+						groupnames.add("create");
+						return getListOfStringsFromIterableMatchingLastWord(args, groupnames);
+					}
+					break;
+			}
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().getPossibleCompletions(sender, args[args.length - 1]);
 	}
 
 }
