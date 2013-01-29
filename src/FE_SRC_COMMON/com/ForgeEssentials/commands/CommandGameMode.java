@@ -5,6 +5,7 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
@@ -38,7 +39,34 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 1)
 			{
-				sender.setGameType(getGameTypeFromString(sender, args[0]));
+				if((FunctionHelper.getPlayerFromUsername(args[0]) != null || PlayerSelector.matchOnePlayer(sender, args[0]) != null) && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+				{
+					EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+					if(PlayerSelector.hasArguments(args[0]))
+					{
+						victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+					}
+					EnumGameType gm;
+					if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType().isCreative())
+					{
+						gm = EnumGameType.SURVIVAL;
+					}
+					else
+					{
+						gm = EnumGameType.CREATIVE;
+					}
+
+					victim.setGameType(gm);
+					OutputHandler.chatConfirmation(sender, "Gamemode changed for " + victim.username);
+				}
+				else if(FunctionHelper.getPlayerFromUsername(args[0]) != null && !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+				{
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+				}
+				else
+				{
+					sender.setGameType(getGameTypeFromString(sender, args[0]));
+				}
 			}
 			else
 			{
@@ -62,25 +90,22 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
+			EnumGameType gm;
+			if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType().isSurvivalOrAdventure())
+			{
+				gm = EnumGameType.CREATIVE;
+			}
 			else
 			{
-				EnumGameType gm;
-				if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType().isSurvivalOrAdventure())
-				{
-					gm = EnumGameType.CREATIVE;
-				}
-				else
-				{
-					gm = EnumGameType.SURVIVAL;
-				}
-
-				victim.setGameType(gm);
+				gm = EnumGameType.SURVIVAL;
 			}
-			sender.sendChatToPlayer("Gamemode changed for " + victim.username);
+
+			victim.setGameType(gm);
+			OutputHandler.chatConfirmation(sender, "Gamemode changed for " + victim.username);
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 	}
 
