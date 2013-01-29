@@ -98,7 +98,7 @@ public class FEListenerList
 		lists[id].unregister(listener);
 	}
 
-	public static void unregiterAll(int id, IQueryListener listener)
+	public static void unregisterAll(int id, IQueryListener listener)
 	{
 		for (FEListenerList list : allLists)
 		{

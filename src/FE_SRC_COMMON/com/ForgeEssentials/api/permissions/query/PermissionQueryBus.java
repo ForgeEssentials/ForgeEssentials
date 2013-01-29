@@ -88,7 +88,7 @@ public class PermissionQueryBus
 		ArrayList<IQueryListener> list = listeners.remove(object);
 		for (IQueryListener listener : list)
 		{
-			FEListenerList.unregiterAll(busID, listener);
+			FEListenerList.unregisterAll(busID, listener);
 		}
 	}
 

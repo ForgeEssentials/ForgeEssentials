@@ -1,6 +1,12 @@
 package com.ForgeEssentials.api.permissions;
 
-
+/**
+ * This class is not a format that is designed to actually be saved in any way. It is simply an output format
+ * for the data that is saved in the DataBase. The fields here are not fnal in order to save memory and CPU
+ * when editing and sending the instance back in to update.
+ * 
+ * @author AbrarSyed
+ */
 public class Group implements Comparable
 {
 

@@ -104,7 +104,7 @@ public class Zone extends WorldArea implements Comparable
 	{
 		if (zone.parent == null)
 		{
-			return true;
+			return false;
 		}
 		else if (zone.parent.equals(ZoneManager.getGLOBAL().zoneID))
 		{
@@ -131,6 +131,9 @@ public class Zone extends WorldArea implements Comparable
 	@Override
 	public int compareTo(Object o)
 	{
+		if (!(o instanceof Zone))
+			return Integer.MIN_VALUE;
+		
 		Zone zone = (Zone) o;
 		if (zone.isParentOf(this))
 		{
