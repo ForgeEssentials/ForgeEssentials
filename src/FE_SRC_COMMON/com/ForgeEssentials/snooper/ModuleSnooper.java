@@ -61,7 +61,7 @@ public class ModuleSnooper
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.commands", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.Snooper._ALL_", true);
 	}
 
 	public static void startQuery()

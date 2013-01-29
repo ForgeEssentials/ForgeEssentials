@@ -93,7 +93,7 @@ public class ModuleCommands
 	@ForgeSubscribe
 	public void registerPermissions(PermissionRegistrationEvent event)
 	{
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.BasicCommands", true);
+		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.BasicCommands._ALL_", true);
 		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.BasicCommands.compass", true);
 		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.list", true);
 		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.BasicCommands.rules", true);
