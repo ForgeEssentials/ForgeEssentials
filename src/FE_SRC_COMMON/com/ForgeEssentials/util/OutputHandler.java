@@ -42,6 +42,19 @@ public final class OutputHandler
 	}
 
 	/**
+	 * outputs a message in yellow to the chat box of the given player.
+	 * 
+	 * @param msg
+	 *            the message to be chatted
+	 * @param player
+	 *            player to chat to.
+	 */
+	public static void chatWarning(EntityPlayer player, String msg)
+	{
+		player.addChatMessage(FEChatFormatCodes.YELLOW + FunctionHelper.formatColors(msg));
+	}
+
+	/**
 	 * outputs a string to the console if the code is in MCP
 	 * 
 	 * @param msg
