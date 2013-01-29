@@ -205,7 +205,7 @@ public class Chat
 			{
 				if (temp.length() != 0)
 					temp.append("&r");
-					
+				
 				temp.append(g.name);
 			}
 
@@ -234,8 +234,8 @@ public class Chat
 				
 				if (temp.length() == 0)
 					temp.append(g.prefix);
-				
-				temp.insert(0,g.prefix + "&r");
+				else
+					temp.insert(0,g.prefix + "&r");
 			}
 
 			end = match.replaceFirst(temp.toString());
