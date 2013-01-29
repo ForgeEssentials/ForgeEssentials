@@ -14,6 +14,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import java.util.ArrayList;
@@ -26,7 +27,8 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	//Variables for autocomplete
 	String [] args2 =  {"user", "group", "export", "promote"};
 	String [] groupargs = {"prefix", "suffix", "parent", "priority","allow","true","deny","false","clear"};
-	String [] playerargs = {"prefix", "suffix", "set", "add", "remove","allow","true","deny","false","clear"};
+	String [] playerargs = {"prefix", "suffix", "group","allow","true","deny","false","clear"};
+	String [] playergroupargs = {"set","add","remove"};
 	@Override
 	public final String getCommandName()
 	{
@@ -331,8 +333,24 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 					return getListOfStringsMatchingLastWord(args, groupargs);
 				}
 				break;
+			case 4:
+				if (args[0].equalsIgnoreCase("user") && (args[2].equalsIgnoreCase("group"))) {
+					return getListOfStringsMatchingLastWord(args, playergroupargs);
+				}
+				break;
+			case 5:
+				if (args[0].equalsIgnoreCase("user") && (args[2].equalsIgnoreCase("group"))) {
+					List<Group> groups = PermissionsAPI.getGroupsInZone(ZoneManager.GLOBAL.getZoneName());
+					ArrayList<String> groupnames = new ArrayList<String>();
+					for (int i = 0; i < groups.size(); i++) {
+						groupnames.add(groups.get(i).name);
+					}
+					groupnames.add("create");
+					return getListOfStringsFromIterableMatchingLastWord(args, groupnames);
+				}
+				break;
 		}
-		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().getPossibleCompletions(sender, args[args.length - 1]);
 	}
 	
 }

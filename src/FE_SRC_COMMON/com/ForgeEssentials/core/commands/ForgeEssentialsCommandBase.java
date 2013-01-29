@@ -8,6 +8,7 @@ import com.ForgeEssentials.util.OutputHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import net.minecraftforge.common.Configuration;
@@ -26,11 +27,11 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public ArrayList<String> aliasList = new ArrayList();
 	
 	// ---------------------------
-	// config interaction
+	// configuration interaction
 	// ---------------------------
 	
 	/**
-	 * Override if you want config interaction.
+	 * Override if you want configuration interaction.
 	 * @param config
 	 * @param category 
 	 */
@@ -281,12 +282,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		if (args.length == 0) {
-			return getListOfStringsFromIterableMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getPossibleCommands(sender));
-		}
-		else {
-	        return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().getPossibleCompletions(sender, args[args.length - 1]);
+
 	}
 
 	public abstract String getCommandPerm();
