@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.Configuration;
 
@@ -15,49 +16,51 @@ import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
-	public boolean enableCmdBlock = true;
-	public boolean enableConsole = true;
-	public boolean enablePlayer = true;
-	
-	public ArrayList<String> aliasList = new ArrayList();
-	
+	public boolean				enableCmdBlock	= true;
+	public boolean				enableConsole	= true;
+	public boolean				enablePlayer	= true;
+
+	public ArrayList<String>	aliasList		= new ArrayList();
+
 	// ---------------------------
-	// config intercation
+	// configuration interaction
 	// ---------------------------
-	
+
 	/**
-	 * Override if you want config interaction.
+	 * Override if you want configuration interaction.
 	 * @param config
-	 * @param category 
+	 * @param category
 	 */
 	public void doConfig(Configuration config, String category)
 	{
-		
+
 	}
-	
+
 	@Override
 	public List getCommandAliases()
 	{
 		return aliasList;
 	}
-	
+
 	public String[] getDefaultAliases()
 	{
 		return new String[] {};
 	}
-	
+
 	public boolean usefullCmdBlock()
 	{
 		return this.canConsoleUseCommand();
 	}
-	
+
 	public boolean usefullPlayer()
 	{
 		return true;
 	}
-	
+
 	// ---------------------------
 	// processing command
 	// ---------------------------
@@ -204,21 +207,21 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			if(!enablePlayer) 
+			if (!enablePlayer)
 				return false;
 			else
 				return canPlayerUseCommand((EntityPlayer) sender);
 		}
 		else if (sender instanceof TileEntityCommandBlock)
 		{
-			if(!enableCmdBlock) 
+			if (!enableCmdBlock)
 				return false;
 			else
 				return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
 		}
 		else
 		{
-			if(!enableConsole) 
+			if (!enableConsole)
 				return false;
 			else
 				return canConsoleUseCommand();
@@ -245,7 +248,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	 * Simply prints a usage message to the sender of the command.
 	 * 
 	 * @param sender
-	 *            Object that issued the command
+	 * Object that issued the command
 	 */
 	public void error(ICommandSender sender)
 	{
@@ -256,9 +259,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	 * Prints an error message to the sender of the command.
 	 * 
 	 * @param sender
-	 *            Object that issued the command
+	 * Object that issued the command
 	 * @param message
-	 *            Error message
+	 * Error message
 	 */
 	public void error(ICommandSender sender, String message)
 	{
@@ -275,6 +278,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
 		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+	}
+
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().getPossibleCompletions(sender, args[args.length - 1]);
+
 	}
 
 	public abstract String getCommandPerm();
