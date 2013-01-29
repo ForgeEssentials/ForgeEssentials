@@ -11,30 +11,26 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 public final class OutputHandler
 {
 
-	public static boolean verbose;
+	public static boolean	verbose;
 
-	public static Logger felog = Logger.getLogger("Forge Essentials");
+	public static Logger	felog	= Logger.getLogger("Forge Essentials");
 
 	/**
 	 * outputs a message in red text to the chat box of the given player.
 	 * 
-	 * @param msg
-	 *            the message to be chatted
-	 * @param player
-	 *            player to chat to.
+	 * @param msg the message to be chatted
+	 * @param player player to chat to.
 	 */
 	public static void chatError(EntityPlayer player, String msg)
 	{
-		player.addChatMessage(FEChatFormatCodes.RED + FunctionHelper.formatColors(msg));
+		player.addChatMessage(FEChatFormatCodes.DARKRED + FunctionHelper.formatColors(msg));
 	}
 
 	/**
 	 * outputs a message in bright green to the chat box of the given player.
 	 * 
-	 * @param msg
-	 *            the message to be chatted
-	 * @param player
-	 *            player to chat to.
+	 * @param msg the message to be chatted
+	 * @param player player to chat to.
 	 */
 	public static void chatConfirmation(EntityPlayer player, String msg)
 	{
@@ -44,10 +40,8 @@ public final class OutputHandler
 	/**
 	 * outputs a message in yellow to the chat box of the given player.
 	 * 
-	 * @param msg
-	 *            the message to be chatted
-	 * @param player
-	 *            player to chat to.
+	 * @param msg the message to be chatted
+	 * @param player player to chat to.
 	 */
 	public static void chatWarning(EntityPlayer player, String msg)
 	{
@@ -57,8 +51,7 @@ public final class OutputHandler
 	/**
 	 * outputs a string to the console if the code is in MCP
 	 * 
-	 * @param msg
-	 *            message to be outputted
+	 * @param msg message to be outputted
 	 */
 	public static void devdebug(Object msg)
 	{
@@ -71,8 +64,7 @@ public final class OutputHandler
 	/**
 	 * outputs a string to the console. Messages here are also logged.
 	 * 
-	 * @param msg
-	 *            message to be outputted
+	 * @param msg message to be outputted
 	 */
 	public static void SOP(Object msg)
 	{
@@ -89,7 +81,10 @@ public final class OutputHandler
 
 	}
 
-	// At Dries' request
+	/**
+	 * only outputs in MCP or if the verbose mode is activated.
+	 * @param msg
+	 */
 	public static void debug(Object msg)
 	{
 		if (verbose || !ObfuscationReflectionHelper.obfuscation)
