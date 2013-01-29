@@ -63,7 +63,6 @@ public class ModuleChat
 		Chat chat = new Chat();
 		MinecraftForge.EVENT_BUS.register(chat);
 		MinecraftForge.EVENT_BUS.register(this); // for the permissions.
-		NetworkRegistry.instance().registerChatListener(chat);
 	}
 
 	@PostInit

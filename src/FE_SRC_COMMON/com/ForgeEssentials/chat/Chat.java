@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 
 import cpw.mods.fml.common.network.IChatListener;
 
-public class Chat implements IChatListener
+public class Chat
 {
 	public static List<String>	bannedWords	= new ArrayList<String>();
 	public static boolean		censor;
@@ -175,18 +175,6 @@ public class Chat implements IChatListener
 		event.line = format;
 	}
 
-	@Override
-	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message)
-	{
-		return message;
-	}
-
-	@Override
-	public Packet3Chat clientChat(NetHandler handler, Packet3Chat message)
-	{
-		return message;
-	}
-
 	private String replaceAllIgnoreCase(String text, String search, String replacement)
 	{
 		if (search.equals(replacement))
@@ -215,7 +203,10 @@ public class Chat implements IChatListener
 		{
 			for (Group g : set)
 			{
-				temp.append("&r").append(g.name).append("&r");
+				if (temp.length() != 0)
+					temp.append("&r");
+					
+				temp.append(g.name);
 			}
 
 			end = match.replaceFirst(temp.toString());
@@ -238,7 +229,13 @@ public class Chat implements IChatListener
 		{
 			for (Group g : set)
 			{
-				temp.insert(0, "&r" + g.prefix + "&r");
+				if (g.prefix.trim().isEmpty())
+					continue;
+				
+				if (temp.length() == 0)
+					temp.append(g.prefix);
+				
+				temp.insert(0,g.prefix + "&r");
 			}
 
 			end = match.replaceFirst(temp.toString());
@@ -261,7 +258,10 @@ public class Chat implements IChatListener
 		{
 			for (Group g : set)
 			{
-				temp.append("&r").append(g.suffix).append("&r");
+				if (g.suffix.trim().isEmpty())
+					continue;
+				
+				temp.append("&r").append(g.suffix);
 			}
 
 			end = match.replaceFirst(temp.toString());
