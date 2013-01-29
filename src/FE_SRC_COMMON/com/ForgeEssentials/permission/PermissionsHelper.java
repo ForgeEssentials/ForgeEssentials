@@ -47,6 +47,7 @@ public class PermissionsHelper implements IPermissionsHelper
 			if (MinecraftForge.EVENT_BUS.post(event))
 				return event.getCancelReason();
 
+			SqlHelper.generatePlayer(username);
 			boolean worked = SqlHelper.setPermission(username, false, perm, zoneID);
 
 			if (!worked)
@@ -178,12 +179,14 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public String setPlayerGroup(String group, String player, String zone)
 	{
+		SqlHelper.generatePlayer(player);
 		return SqlHelper.setPlayerGroup(group, player, zone);
 	}
 
 	@Override
 	public String addPlayerToGroup(String group, String player, String zone)
 	{
+		SqlHelper.generatePlayer(player);
 		return SqlHelper.addPlayerGroup(group, player, zone);
 	}
 
