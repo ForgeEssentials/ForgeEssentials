@@ -80,14 +80,15 @@
     <entry key="command.repair.syntax.player">/repair &lt;player></entry>
     <entry key="command.repair.syntax.console">/repair &lt;player></entry>
 
-    <entry key="command.rules.syntax.console">/rules &lt;#|help|add|remove|move> &lt;#|rule> [#]</entry>
-    <entry key="command.rules.syntax.player">&lt;#|help|add|remove|move> &lt;#|rule> [#]</entry>
+    <entry key="command.rules.syntax.console">/rules help[#]</entry>
+    <entry key="command.rules.syntax.player">help</entry>
     <entry key="command.rules.info.console">Get/set the rules of the server</entry>
     <entry key="command.rules.info.player">Get/set the rules of the server</entry>
-	<entry key="command.rules.help.1"> - /rules &lt;#></entry>
-	<entry key="command.rules.help.2"> - /rules add &lt;newRule></entry>
-	<entry key="command.rules.help.3"> - /rules remove &lt;#></entry>
-	<entry key="command.rules.help.4"> - /rules move &lt;#> &lt;#></entry>
+	<entry key="command.rules.help.1"> - /rules [#]</entry>
+	<entry key="command.rules.help.2"> - /rules &lt;#> [changedRule]</entry>
+	<entry key="command.rules.help.3"> - /rules add &lt;newRule></entry>
+	<entry key="command.rules.help.4"> - /rules remove &lt;#></entry>
+	<entry key="command.rules.help.5"> - /rules move &lt;#> &lt;#></entry>
     
     <entry key="command.setspawn.syntax.console">/setspawn [X Y Z]</entry>
     <entry key="command.setspawn.syntax.player">[X Y Z]</entry>

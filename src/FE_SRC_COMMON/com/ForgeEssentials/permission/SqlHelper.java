@@ -35,14 +35,17 @@ public class SqlHelper
 	private static int				ENTRY_PLAYER_ID					= 1;
 	private static int				DEFAULT_ID						= 1;
 
+	//
+	private static final String		DATABASE_TABLE_PREFIX			= "fepermissions_";
+
 	// tables
-	private static final String		TABLE_ZONE						= "zones";
-	private static final String		TABLE_GROUP						= "groups";
-	private static final String		TABLE_GROUP_CONNECTOR			= "groupConnectors";
-	private static final String		TABLE_LADDER					= "ladders";
-	private static final String		TABLE_LADDER_NAME				= "ladderNames";
-	private static final String		TABLE_PLAYER					= "players";
-	private static final String		TABLE_PERMISSION				= "permissions";
+	private static final String		TABLE_ZONE						= DATABASE_TABLE_PREFIX+"zones";
+	private static final String		TABLE_GROUP						= DATABASE_TABLE_PREFIX+"groups";
+	private static final String		TABLE_GROUP_CONNECTOR			= DATABASE_TABLE_PREFIX+"groupConnectors";
+	private static final String		TABLE_LADDER					= DATABASE_TABLE_PREFIX+"ladders";
+	private static final String		TABLE_LADDER_NAME				= DATABASE_TABLE_PREFIX+"ladderNames";
+	private static final String		TABLE_PLAYER					= DATABASE_TABLE_PREFIX+"players";
+	private static final String		TABLE_PERMISSION				= DATABASE_TABLE_PREFIX+"permissions";
 
 	// columns for the zone table
 	private static final String		COLUMN_ZONE_ZONEID				= "zoneID";

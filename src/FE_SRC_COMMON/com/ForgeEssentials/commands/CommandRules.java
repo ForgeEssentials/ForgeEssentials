@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 public class CommandRules extends ForgeEssentialsCommandBase
 {
 
-	public static final String[]	autocomargs	= { "Add", "Remove", "Move" };
+	public static final String[]	autocomargs	= { "add", "remove", "move" };
 	public static ArrayList<String>	rules;
 	public static File				rulesFile	= new File(ForgeEssentials.FEDIR, "rules.txt");
 
@@ -227,10 +227,10 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			{
 				if (args[0].equalsIgnoreCase("help"))
 				{
-					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.4"));
+					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.5"));
 					return;
 				}
 				
@@ -328,6 +328,33 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + ": " + temp + "&r Moved to last position.");
 				}
 			}
+			else if (args.length >= 2)
+			{
+				try
+				{
+					index = Integer.parseInt(args[1]);
+				}
+				catch (NumberFormatException e)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+					return;
+				}
+
+				if (index > rules.size() || index <= 0)
+				{
+					OutputHandler.chatError(sender, "That rule does not exist.");
+					return;
+				}
+				
+				String newRule = "";
+				for (int i = 1; i < args.length; i++)
+				{
+					newRule = newRule + args[i] + " ";
+				}
+				newRule = FunctionHelper.formatColors(newRule);
+				rules.set(index-1, newRule);
+				OutputHandler.chatConfirmation(sender, "Rule #" + index + " changed to &r" + newRule);
+			}
 			else
 			{
 				error(sender);
@@ -351,10 +378,10 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				sender.sendChatToPlayer(Localization.get("command.rules.help.1"));
 				sender.sendChatToPlayer(Localization.get("command.rules.help.2"));
 				sender.sendChatToPlayer(Localization.get("command.rules.help.3"));
 				sender.sendChatToPlayer(Localization.get("command.rules.help.4"));
+				sender.sendChatToPlayer(Localization.get("command.rules.help.5"));
 				return;
 			}
 
@@ -451,6 +478,33 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				rules.add(temp);
 				sender.sendChatToPlayer("Rule #" + args[1] + ": " + temp + " Moved to last position.");
 			}
+		}
+		else if (args.length >= 2)
+		{
+			try
+			{
+				index = Integer.parseInt(args[1]);
+			}
+			catch (NumberFormatException e)
+			{
+				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
+				return;
+			}
+
+			if (index > rules.size() || index <= 0)
+			{
+				sender.sendChatToPlayer("That rule does not exist.");
+				return;
+			}
+			
+			String newRule = "";
+			for (int i = 1; i < args.length; i++)
+			{
+				newRule = newRule + args[i] + " ";
+			}
+			newRule = FunctionHelper.formatColors(newRule);
+			rules.set(index-1, newRule);
+			sender.sendChatToPlayer("Rule #" + index + " changed to " + newRule);
 		}
 		else
 		{
