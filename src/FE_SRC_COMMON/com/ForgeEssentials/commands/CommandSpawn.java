@@ -57,11 +57,13 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			else
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				return;
 			}
 		}
 		else
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+			return;
 		}
 		if(args.length == 0)
 		{
