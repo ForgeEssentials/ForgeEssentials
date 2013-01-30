@@ -135,11 +135,11 @@ public class ZoneHelper implements IZoneManager
 		{
 			return null;
 		}
-		else if (zoneID.equals(GLOBAL.getZoneName()))
+		else if (zoneID.equalsIgnoreCase(GLOBAL.getZoneName()))
 		{
 			return GLOBAL;
 		}
-		else if (zoneID.startsWith("WORLD_"))
+		else if (zoneID.startsWith("WORLD_") || zoneID.startsWith("world_"))
 		{
 			return worldZoneMap.get(zoneID);
 		}

@@ -838,7 +838,7 @@ public class SqlHelper
 
 	/**
 	 * "players" >> arraylist<String> DONE
-	 * "groups" >> arrayList<Group> DONE
+	 * "groups" >> TreeSet<Group> DONE
 	 * "playerPerms" >> arrayList<permHolder> DONE
 	 * "groupPerms" >> arrayList<permHolder> DONE
 	 * "groupConnectors" >> HashMap<String, HashMap<String, String[]>> DONE
@@ -867,17 +867,22 @@ public class SqlHelper
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_GROUP);
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_LADDER_NAME);
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_GROUP_CONNECTOR);
+			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_PLAYER);
 			OutputHandler.SOP("[PermSQL] Cleaned tables of existing data");
 
 			// call generate to remake the stuff that should be there
 			{
 				// recreate EntryPlayer player
-				statementPutPlayer.setString(1, PermissionsAPI.getEntryPlayer());
-				statementPutPlayer.executeUpdate();
-				statementPutPlayer.clearParameters();
+				StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (")
+						.append(COLUMN_PLAYER_USERNAME).append(", ")
+						.append(COLUMN_PLAYER_PLAYERID).append(") ")
+						.append(" VALUES ").append(" ('")
+						.append(PermissionsAPI.getEntryPlayer()).append("', ")
+						.append(ENTRY_PLAYER_ID).append(")");
+				db.createStatement().executeUpdate(query.toString());
 
 				// recreate DEFAULT group
-				StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (")
+				query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (")
 						.append(COLUMN_GROUP_GROUPID).append(", ")
 						.append(COLUMN_GROUP_NAME).append(", ")
 						.append(COLUMN_GROUP_PRIORITY).append(", ")
@@ -904,6 +909,7 @@ public class SqlHelper
 			HashMap<String, HashMap<String, String[]>> playerMap = (HashMap<String, HashMap<String, String[]>>) map.get("connector");
 			HashMap<String, String[]> temp;
 			String[] list;
+			
 			for (Group group : (ArrayList<Group>) map.get("groups"))
 			{
 				if (group.name.equals(PermissionsAPI.getDEFAULT().name))
@@ -911,7 +917,7 @@ public class SqlHelper
 					continue;
 				}
 
-				createGroup(group);
+				createGroup(new Group(group.name, group.prefix, group.suffix,  null, group.zoneName, group.priority));
 				s.setInt(1, getGroupIDFromGroupName(group.name));
 				s.setInt(3, getZoneIDFromZoneName(group.zoneName));
 
@@ -936,6 +942,10 @@ public class SqlHelper
 				}
 
 			}
+			
+			// update groups with true parents..
+			for (Group group : (ArrayList<Group>) map.get("groups"))
+				updateGroup(group);
 			OutputHandler.SOP("[PermSQL] Imported groups");
 
 			// add groups to ladders and stuff
@@ -2081,7 +2091,7 @@ public class SqlHelper
 		instance.statementGetPlayerIDFromName.clearParameters();
 
 		if (!set.next())
-			return ENTRY_PLAYER_ID;
+			return getPlayerIDFromPlayerName(PermissionsAPI.getEntryPlayer());
 
 		return set.getInt(1);
 	}

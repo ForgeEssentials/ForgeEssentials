@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
 public class FlatFileGroups
 {
@@ -57,7 +58,7 @@ public class FlatFileGroups
 			parent = config.get(e.getKey(), "parent", "").value;
 			priority = config.get(e.getKey(), "priority", 0).getInt();
 
-			if (parent.isEmpty())
+			if (parent.trim().isEmpty())
 				parent = null;
 
 			g = new Group(split[1], prefix, suffix, parent, split[0], priority);
