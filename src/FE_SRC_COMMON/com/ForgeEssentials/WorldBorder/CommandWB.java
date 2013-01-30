@@ -26,7 +26,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandWB extends ForgeEssentialsCommandBase
 {
-	public static TickTaskFill taskGooing = null;
+	public static Filler taskGooing = null;
 
 	@Override
 	public String getCommandName()
@@ -92,15 +92,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					if (ModuleWorldBorder.shape == BorderShape.round)
-					{
-						taskGooing = new TickTaskFillRound(world);
-					}
-					if (ModuleWorldBorder.shape == BorderShape.square)
-					{
-						taskGooing = new TickTaskFillSquare(world);
-					}
-					TickTaskHandler.addTask(taskGooing);
+					taskGooing = new Filler(world, ModuleWorldBorder.shape);
 				}
 				return;
 			}
@@ -108,81 +100,6 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			{
 				taskGooing.stop();
 				return;
-			}
-		}
-		// Autopilot
-		if (args[0].equalsIgnoreCase("autopilot"))
-		{
-			if (args.length == 1)
-			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_AUTO_INFO));
-				sender.sendChatToPlayer(Localization.get(Localization.WB_AUTO_CONFIRM));
-				return;
-			}
-			if (args[1].equalsIgnoreCase("off"))
-			{
-				if (taskGooing != null)
-				{
-					taskGooing.disengageAutopilot();
-				}
-				else
-				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
-				}
-				return;
-			}
-			if (args.length == 2)
-			{
-				int speed = parseIntBounded(sender, args[1], 1, 20);
-				if (taskGooing != null)
-				{
-					taskGooing.engageAutopilot(speed);
-				}
-				else
-				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
-				}
-				return;
-			}
-		}
-		// Turbo
-		if (args[0].equalsIgnoreCase("turbo"))
-		{
-			if (args.length == 1)
-			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_LAGWARING));
-				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_TURBO_INFO));
-				sender.sendChatToPlayer(Localization.get(Localization.WB_TURBO_CONFIRM));
-				return;
-			}
-			if (args[1].equalsIgnoreCase("off"))
-			{
-				if (taskGooing != null)
-				{
-					taskGooing.disengageTurbo();
-				}
-				else
-				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
-				}
-				return;
-			}
-			try
-			{
-				int speed = Integer.parseInt(args[1]);
-				if (taskGooing != null)
-				{
-					taskGooing.engageTurbo(speed);
-				}
-				else
-				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
-				}
-				return;
-			}
-			catch (Exception e)
-			{
-				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_NAN)));
 			}
 		}
 		// Set
@@ -244,12 +161,6 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		// Fill
 		if (args[0].equalsIgnoreCase("fill"))
 		{
-			if (ModuleWorldBorder.shape == BorderShape.round)
-			{
-				// TODO Make the filler
-				sender.sendChatToPlayer("Not done yet!");
-				return;
-			}
 			if (args.length == 1)
 			{
 				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_LAGWARING));
@@ -274,16 +185,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					world.canNotSave = true;
-					if (ModuleWorldBorder.shape == BorderShape.round)
-					{
-						taskGooing = new TickTaskFillRound(world);
-					}
-					if (ModuleWorldBorder.shape == BorderShape.square)
-					{
-						taskGooing = new TickTaskFillSquare(world);
-					}
-					TickTaskHandler.addTask(taskGooing);
+					taskGooing = new Filler(world, ModuleWorldBorder.shape);
 				}
 				return;
 			}
@@ -291,81 +193,6 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			{
 				taskGooing.stop();
 				return;
-			}
-		}
-		// Autopilot
-		if (args[0].equalsIgnoreCase("autopilot"))
-		{
-			if (args.length == 1)
-			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_AUTO_INFO));
-				sender.sendChatToPlayer(Localization.get(Localization.WB_AUTO_CONFIRM));
-				return;
-			}
-			if (args[1].equalsIgnoreCase("off"))
-			{
-				if (taskGooing != null)
-				{
-					taskGooing.disengageAutopilot();
-				}
-				else
-				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
-				}
-				return;
-			}
-			if (args.length == 2)
-			{
-				int speed = parseIntBounded(sender, args[1], 1, 20);
-				if (taskGooing != null)
-				{
-					taskGooing.engageAutopilot(speed);
-				}
-				else
-				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
-				}
-				return;
-			}
-		}
-		// Turbo
-		if (args[0].equalsIgnoreCase("turbo"))
-		{
-			if (args.length == 1)
-			{
-				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_LAGWARING));
-				sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_TURBO_INFO));
-				sender.sendChatToPlayer(Localization.get(Localization.WB_TURBO_CONFIRM));
-				return;
-			}
-			if (args[1].equalsIgnoreCase("off"))
-			{
-				if (taskGooing != null)
-				{
-					taskGooing.disengageTurbo();
-				}
-				else
-				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
-				}
-				return;
-			}
-			try
-			{
-				int speed = Integer.parseInt(args[1]);
-				if (taskGooing != null)
-				{
-					taskGooing.engageTurbo(speed);
-				}
-				else
-				{
-					sender.sendChatToPlayer(FEChatFormatCodes.RED + Localization.get(Localization.WB_NOTHINGTODO));
-				}
-				return;
-			}
-			catch (Exception e)
-			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NAN));
 			}
 		}
 		// Set
@@ -405,7 +232,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, "set", "fill", "turbo", "autopilot");
+			return getListOfStringsMatchingLastWord(args, "set", "fill");
 		}
 		if (args.length == 2 && args[0].equalsIgnoreCase("set"))
 		{
@@ -414,14 +241,6 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		if (args.length == 2 && args[0].equalsIgnoreCase("fill"))
 		{
 			return getListOfStringsMatchingLastWord(args, "ok", "cancel");
-		}
-		if (args.length == 2 && args[0].equalsIgnoreCase("turbo"))
-		{
-			return getListOfStringsMatchingLastWord(args, "off");
-		}
-		if (args.length == 2 && args[0].equalsIgnoreCase("autopilot"))
-		{
-			return getListOfStringsMatchingLastWord(args, "off");
 		}
 		return null;
 	}

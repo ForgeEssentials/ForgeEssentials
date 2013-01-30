@@ -1,5 +1,7 @@
 package com.ForgeEssentials.WorldBorder;
 
+import java.util.ArrayList;
+
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.ITickTask;
@@ -8,7 +10,12 @@ import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -19,7 +26,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
  * 
  */
 
-public class TickTaskFill implements ITickTask
+public abstract class TickTaskFill implements ITickTask
 {
 	protected boolean isComplete;
 
@@ -36,19 +43,39 @@ public class TickTaskFill implements ITickTask
 	protected int centerZ;
 	protected int rad;
 
-	protected int X;
-	protected int Z;
-
 	protected int tps = 20;
-
-	protected int eta; // in ticks
+	
 	protected Long ticks = 0L;
 	protected int chunksAtick = 1;
 
 	public boolean autoPilot = false;
 	public int targetTPS = 20;
+	
+	public static boolean debug;
 
 	protected MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+	
+	protected ArrayList<ChunkCoordIntPair> toDo = new ArrayList<ChunkCoordIntPair>();
+
+	public TickTaskFill(WorldServer world) 
+	{
+		isComplete = false;
+		this.world = world;
+		minX = ModuleWorldBorder.minX - ModuleWorldBorder.overGenerate;
+		minZ = ModuleWorldBorder.minZ - ModuleWorldBorder.overGenerate;
+		maxX = ModuleWorldBorder.maxX + ModuleWorldBorder.overGenerate;
+		maxZ = ModuleWorldBorder.maxZ + ModuleWorldBorder.overGenerate;
+		centerX = ModuleWorldBorder.X;
+		centerZ = ModuleWorldBorder.Z;
+		rad = ModuleWorldBorder.rad;
+		
+		genList();
+
+		warnEveryone(Localization.get(Localization.WB_FILL_START));
+		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
+		
+		
+	}
 
 	public double getTPS()
 	{
@@ -63,7 +90,7 @@ public class TickTaskFill implements ITickTask
 
 	public String getETA()
 	{
-		return (int) (((eta - ticks) / getTPS())) + Localization.get(Localization.UNIT_SECONDS);
+		return (int) ((toDo.size() / chunksAtick) / getTPS()) + Localization.get(Localization.UNIT_SECONDS);
 	}
 
 	public void warnEveryone(String msg)
@@ -103,15 +130,24 @@ public class TickTaskFill implements ITickTask
 	@Override
 	public void tick()
 	{
+		/*
+		 * User & console waring
+		 */
+		
+		getTPS();
+		
 		ticks++;
-		if (ticks % (tps * 10) == 0)
+		if (ticks % 20 == 0)
 		{
+			if(debug) warnEveryone(world.theChunkProviderServer.makeString()  + " " + "toDo: " + toDo.size());
 			warnEveryone(Localization.get(Localization.WB_FILL_STILLGOING).replaceAll("%eta", getETA()).replaceAll("%ctp", chunksAtick + ""));
 		}
 
-		getTPS();
-
-		if (autoPilot && ticks % (tps) == 0)
+		/*
+		 * AutoPilot
+		 */
+		
+		if (autoPilot)
 		{
 			if (tps < targetTPS)
 			{
@@ -132,11 +168,49 @@ public class TickTaskFill implements ITickTask
 				OutputHandler.debug("WB Autopilot: Good CPT:" + chunksAtick + " TPS:" + tps + " ~~ " + targetTPS);
 			}
 		}
+		
+		/*
+		 * Actual chunk gen
+		 */
+		
+		int i = 0;
+		while (i < chunksAtick && !isComplete)
+		{
+			ChunkCoordIntPair coords = toDo.get(0);
+			toDo.remove(coords);
+			if(!world.theChunkProviderServer.chunkExists(coords.chunkXPos, coords.chunkZPos))
+			{
+				i++;
+				Chunk chunk = world.theChunkProviderServer.provideChunk(coords.chunkXPos, coords.chunkZPos);
+				world.theChunkProviderServer.unloadChunksIfNotNearSpawn(coords.chunkXPos, coords.chunkZPos);
+				world.theChunkProviderServer.unloadAllChunks();
+				world.theChunkProviderServer.unload100OldestChunks();
+			}
+			
+			if(toDo.size() == 0)
+			{
+				isComplete = true;
+			}
+		}
 	}
+
+	public abstract void genList();
 
 	@Override
 	public void onComplete()
 	{
+		try
+        {
+			boolean var6 = world.canNotSave;
+			world.canNotSave = false;
+			world.saveAllChunks(true, (IProgressUpdate)null);
+			world.canNotSave = var6;
+        }
+        catch (MinecraftException var7)
+        {
+        	warnEveryone("Save FAILED!");
+            return;
+        }
 		warnEveryone(Localization.get(Localization.WB_FILL_DONE));
 		warnEveryone(Localization.get(Localization.WB_FILL_FINISHED).replaceAll("%ticks", "" + ticks).replaceAll("%sec", "" + (int) (ticks / tps)));
 		CommandWB.taskGooing = null;
@@ -159,5 +233,12 @@ public class TickTaskFill implements ITickTask
 		warnEveryone(Localization.get(Localization.WB_FILL_ABORTED));
 		isComplete = true;
 	}
-
+	
+	public void debug(String string) 
+	{
+		if(debug)
+		{
+			OutputHandler.debug(string);
+		}
+	}
 }
