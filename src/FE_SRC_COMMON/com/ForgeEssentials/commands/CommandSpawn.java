@@ -36,8 +36,12 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length >= 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		if (args.length >= 1)
 		{
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+			{
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+			}
 			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
@@ -59,11 +63,6 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				return;
 			}
-		}
-		else
-		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
-			return;
 		}
 		if(args.length == 0)
 		{
