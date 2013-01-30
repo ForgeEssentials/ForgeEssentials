@@ -4,11 +4,13 @@ import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 
+import net.minecraft.src.BaseMod;
 import net.minecraftforge.event.Event;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
+import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.Mod;
 
 public class PermissionRegistrationEvent extends Event
@@ -20,12 +22,9 @@ public class PermissionRegistrationEvent extends Event
 	 * This is to define the level the permission should be used for by defualt.. see @see com.ForgeEssentials.permissions.PermissionsAPI for the default groups
 	 * If you want.. you can also set specific group permissions with this.. though they may or may not exist...
 	 * 
-	 * @param level
-	 *            to apply permission to.
-	 * @param permission
-	 *            Permission to be added. Best in form "ModName.parent1.parent2.parentN.name". I WILL NOT put the mod in fron for you.
-	 * @param allow
-	 *            or deny. If unset, all permissions default to deny. See the wiki for more info.
+	 * @param level to apply permission to.
+	 * @param permission Permission to be added. Best in form "ModName.parent1.parent2.parentN.name". I WILL NOT put the mod in fron for you.
+	 * @param allow or deny. If unset, all permissions default to deny. See the wiki for more info.
 	 */
 	public void registerPerm(Object mod, RegGroup group, String permission, boolean allow)
 	{
@@ -51,7 +50,23 @@ public class PermissionRegistrationEvent extends Event
 		if (c.isAnnotationPresent(Mod.class))
 		{
 			Mod info = (Mod) c.getAnnotation(Mod.class);
-			modid = info.modid();
+			modid = info.modid()+info.version();
+			if (mods.add(modid))
+			{
+				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
+			}
+		}
+		else if (mod instanceof BaseMod)
+		{
+			modid = ((BaseMod) mod).getName()+"--"+((BaseMod) mod).getVersion();
+			if (mods.add(modid))
+			{
+				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
+			}
+		}
+		else if (mod instanceof DummyModContainer)
+		{
+			modid = ((DummyModContainer) mod).getModId()+"_"+((DummyModContainer) mod).getVersion();
 			if (mods.add(modid))
 			{
 				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
@@ -67,6 +82,6 @@ public class PermissionRegistrationEvent extends Event
 			}
 		}
 		else
-			throw new IllegalArgumentException("Don't trick me! THIS! > " + mod + " < ISN'T A MOD OR A MODULE!");
+			throw new IllegalArgumentException("Don't trick me! THIS! > " + mod + " < ISN'T A MOD, A COREMOD, OR EVEN A MODULE!");
 	}
 }
