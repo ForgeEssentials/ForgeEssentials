@@ -41,6 +41,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+				return;
 			}
 			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
