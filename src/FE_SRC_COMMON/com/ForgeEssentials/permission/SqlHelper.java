@@ -669,7 +669,7 @@ public class SqlHelper
 			permissionTable = new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_PERMISSION).append("(")
 					.append(COLUMN_PERMISSION_TARGET).append(" INTEGER NOT NULL, ")
 					.append(COLUMN_PERMISSION_ISGROUP).append(" TINYINT(1) NOT NULL, ")
-					.append(COLUMN_PERMISSION_PERM).append(" TEXT NOT NULL, ")
+					.append(COLUMN_PERMISSION_PERM).append(" VARCHAR(60) NOT NULL, ")
 					.append(COLUMN_PERMISSION_ALLOWED).append(" TINYINT(1) NOT NULL, ")
 					.append(COLUMN_PERMISSION_ZONEID).append(" INTEGER NOT NULL")
 					.append(")").toString();
