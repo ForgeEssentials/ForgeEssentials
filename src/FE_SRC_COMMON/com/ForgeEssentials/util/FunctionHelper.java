@@ -55,7 +55,7 @@ public final class FunctionHelper
 
 	public static String getZoneWorldString(World world)
 	{
-		return "WORLD_" + world.provider.getDimensionName() + "_" + world.provider.dimensionId;
+		return "WORLD_" + world.provider.getDimensionName().replace(' ', '_') + "_" + world.provider.dimensionId;
 	}
 
 	public static WorldServer getDimension(int dimension)

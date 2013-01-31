@@ -525,16 +525,17 @@ public class ModuleContainer implements Comparable
 					obj = container.getMod();
 					break;
 				}
+			
+			if (obj == null)
+				OutputHandler.SOP("{ModuleLauncher} ERROR! parent mod isn't loaded!");
 
-			if (obj instanceof BaseMod)
+			if (BaseMod.class.isAssignableFrom(c))
 			{
 				modid = ((BaseMod) obj).getName() + "--" + ((BaseMod) obj).getVersion();
-				OutputHandler.SOP("Modules from " + modid + " are bieng loaded");
 			}
-			else if (obj instanceof ModContainer)
+			else if (BaseMod.class.isAssignableFrom(c))
 			{
 				modid = ((ModContainer) obj).getModId() + "_" + ((ModContainer) obj).getVersion();
-				OutputHandler.SOP("Modules from " + modid + " are bieng loaded");
 			}
 			else
 				throw new RuntimeException(c + " isn't an @mod class, a BaseMod, or even a ModContainer!");
