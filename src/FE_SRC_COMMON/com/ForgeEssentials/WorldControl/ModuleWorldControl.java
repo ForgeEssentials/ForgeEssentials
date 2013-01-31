@@ -1,6 +1,10 @@
 package com.ForgeEssentials.WorldControl;
 
 //Depreciated
+import java.util.ArrayList;
+
+import net.minecraftforge.common.MinecraftForge;
+
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
 import com.ForgeEssentials.WorldControl.commands.CommandDeselect;
 import com.ForgeEssentials.WorldControl.commands.CommandPos;
@@ -11,6 +15,7 @@ import com.ForgeEssentials.WorldControl.commands.CommandTopManipulate;
 import com.ForgeEssentials.WorldControl.commands.CommandUndo;
 import com.ForgeEssentials.WorldControl.commands.CommandWand;
 import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
+import com.ForgeEssentials.WorldControl.weintegration.WEIntegration;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
@@ -20,17 +25,6 @@ import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TickTaskHandler;
-
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Property;
-
-import java.io.File;
-import java.util.ArrayList;
-
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 // central class for all the WorldControl stuff
 @FEModule(name = "WorldControl", parentMod = ForgeEssentials.class, configClass = ConfigWorldControl.class)
@@ -71,5 +65,6 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandTopManipulate("snow", Mode.SNOW));
 		e.registerServerCommand(new CommandTopManipulate("till", Mode.TILL));
 		e.registerServerCommand(new CommandTopManipulate("untill", Mode.UNTILL));
+		WEIntegration.serverStarting(e);
 	}
 }

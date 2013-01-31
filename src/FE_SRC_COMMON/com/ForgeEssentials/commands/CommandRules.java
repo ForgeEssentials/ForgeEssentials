@@ -1,18 +1,5 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-
-import net.minecraftforge.common.Configuration;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,6 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.Configuration;
+
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandRules extends ForgeEssentialsCommandBase
 {
@@ -254,11 +253,11 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			}
 			else if (args.length == 2 && args[0].equalsIgnoreCase("remove"))
 			{
-				try
+				if (args[1].equals("remove"))
 				{
 					index = Integer.parseInt(args[1]);
 				}
-				catch (NumberFormatException e)
+				else
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
 					return;

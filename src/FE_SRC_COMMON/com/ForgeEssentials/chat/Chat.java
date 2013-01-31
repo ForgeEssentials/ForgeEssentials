@@ -10,6 +10,7 @@ import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
+import com.google.common.base.Strings;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.NetHandler;
@@ -23,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cpw.mods.fml.common.network.IChatListener;
 
@@ -61,7 +63,19 @@ public class Chat
 		{
 			for (String word : bannedWords)
 			{
-				message = message.replaceAll("(?i)\\b" + word + "\\b", censorSymbol);
+				Pattern p = Pattern.compile("(?i)\\b" + word + "\\b");
+				Matcher m   = p.matcher(message);
+				
+				while(m.find())
+				{	
+					int startIndex = m.start();
+					int endIndex = m.end();
+
+					int length = endIndex - startIndex;	
+					String replaceWith = Strings.repeat(censorSymbol, length);
+
+					message = m.replaceAll(replaceWith);					
+				}			
 			}
 		}
 
