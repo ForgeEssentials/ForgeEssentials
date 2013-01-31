@@ -1,5 +1,11 @@
 package com.ForgeEssentials.snooper;
 
+import java.util.ArrayList;
+
+import net.minecraft.network.rcon.IServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
@@ -13,14 +19,6 @@ import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
 import com.ForgeEssentials.snooper.response.PlayerInv;
 import com.ForgeEssentials.snooper.response.PlayerList;
 import com.ForgeEssentials.snooper.response.ServerInfo;
-import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraft.network.rcon.IServer;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
-import java.util.ArrayList;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -41,7 +39,6 @@ public class ModuleSnooper
 
 	public ModuleSnooper()
 	{
-		OutputHandler.SOP("Snooper module is enabled. Loading...");
 		MinecraftForge.EVENT_BUS.register(this);
 
 		API.registerResponce(0, new ServerInfo());

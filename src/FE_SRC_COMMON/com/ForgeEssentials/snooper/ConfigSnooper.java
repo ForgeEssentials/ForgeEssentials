@@ -1,13 +1,12 @@
 package com.ForgeEssentials.snooper;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
-import com.ForgeEssentials.api.snooper.Response;
+import java.io.File;
 
 import net.minecraft.command.ICommandSender;
-
 import net.minecraftforge.common.Configuration;
 
-import java.io.File;
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.api.snooper.Response;
 
 public class ConfigSnooper extends ModuleConfigBase
 {	
