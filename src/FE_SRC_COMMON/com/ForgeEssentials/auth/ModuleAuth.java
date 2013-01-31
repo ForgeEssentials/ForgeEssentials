@@ -27,6 +27,7 @@ public class ModuleAuth
 	public static BackupConfig	config;
 
 	public static boolean forceEnabled;
+	public static boolean checkVanillaAuthStatus;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)

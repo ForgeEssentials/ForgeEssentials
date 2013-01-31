@@ -26,7 +26,8 @@ public class AuthConfig extends ModuleConfigBase
 		config = new Configuration(file);
 		
 		config.addCustomCategoryComment("main", "all the main important stuff");
-		ModuleAuth.forceEnabled = config.get(CATEGORY_MAIN, "forceEnable", false, "Forces te module to be loaded regardless of Minecraft auth services").getBoolean(false);
+		ModuleAuth.forceEnabled = config.get(CATEGORY_MAIN, "forceEnable", false, "Forces the module to be loaded regardless of Minecraft auth services").getBoolean(false);
+		ModuleAuth.checkVanillaAuthStatus = config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the module if and when the Minecraft Auth servers go down.").getBoolean(false);
 		
 	}
 
