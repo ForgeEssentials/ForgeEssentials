@@ -20,32 +20,39 @@ import com.sk89q.worldedit.WorldEdit;
 
 import cpw.mods.fml.common.network.IChatListener;
 
-public class WEIntegration implements IChatListener {
-	
-	public static WorldEdit instance;
-	public static MinecraftServer server;
+public class WEIntegration implements IChatListener
+{
 
-	protected static WorldEdit we;
-	private static LocalConfig config;
-	public static FEServerInterface serverInterface;
+	public static WorldEdit							instance;
+	public static MinecraftServer					server;
 
-	protected List<String> whitelist = new ArrayList<String>();
-	private static Map<EntityPlayer, LocalPlayer> players = new WeakHashMap<EntityPlayer, LocalPlayer>();
-	private static Map<World, LocalWorld> worlds = new WeakHashMap<World, LocalWorld>();
-	private static Map<Entity, LocalEntity> entities = new WeakHashMap<Entity, LocalEntity>();
+	protected static WorldEdit						we;
+	private static LocalConfig						config;
+	public static FEServerInterface					serverInterface;
 
-	public static void serverStarting(FEModuleServerInitEvent e) {
+	protected List<String>							whitelist	= new ArrayList<String>();
+	private static Map<EntityPlayer, LocalPlayer>	players		= new WeakHashMap<EntityPlayer, LocalPlayer>();
+	private static Map<World, LocalWorld>			worlds		= new WeakHashMap<World, LocalWorld>();
+	private static Map<Entity, LocalEntity>			entities	= new WeakHashMap<Entity, LocalEntity>();
+
+	public static void serverStarting(FEModuleServerInitEvent e)
+	{
 		server = e.getServer();
 		new ChatListener();
-		try {
+		try
+		{
 			we = new com.sk89q.worldedit.WorldEdit(new FEServerInterface(), config);
-		} catch (Throwable e1) 
-		{}
 		}
+		catch (Throwable e1)
+		{
+		}
+	}
 
 	@Override
-	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message) {
-		if (message.message.startsWith("///")) {
+	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message)
+	{
+		if (message.message.startsWith("///"))
+		{
 			we.handleCommand(getPlayer(handler.getPlayer()), message.message.split(" "));
 			return new Packet3Chat("");
 		}
@@ -54,34 +61,41 @@ public class WEIntegration implements IChatListener {
 	}
 
 	@Override
-	public Packet3Chat clientChat(NetHandler handler, Packet3Chat message) {
+	public Packet3Chat clientChat(NetHandler handler, Packet3Chat message)
+	{
 		return message;
 	}
 
-	protected static LocalPlayer getPlayer(EntityPlayer player) {
-		if (players.containsKey(player)) {
+	protected static LocalPlayer getPlayer(EntityPlayer player)
+	{
+		if (players.containsKey(player))
 			return players.get(player);
-		} else {
+		else
+		{
 			LocalPlayer ret = new FELocalPlayer(player);
 			players.put(player, ret);
 			return ret;
 		}
 	}
 
-	protected static LocalWorld getWorld(World world) {
-		if (worlds.containsKey(world)) {
+	protected static LocalWorld getWorld(World world)
+	{
+		if (worlds.containsKey(world))
 			return worlds.get(world);
-		} else {
+		else
+		{
 			LocalWorld ret = new FELocalWorld(world);
 			worlds.put(world, ret);
 			return ret;
 		}
 	}
 
-	protected static LocalEntity getEntity(Entity entity) {
-		if (entities.containsKey(entity)) {
+	protected static LocalEntity getEntity(Entity entity)
+	{
+		if (entities.containsKey(entity))
 			return entities.get(entity);
-		} else {
+		else
+		{
 			LocalEntity ret = new FELocalEntity(entity);
 			entities.put(entity, ret);
 			return ret;

@@ -37,7 +37,6 @@ import com.sk89q.worldedit.LocalEntity;
 import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.blocks.BaseItemStack;
 import com.sk89q.worldedit.blocks.ContainerBlock;
@@ -296,13 +295,15 @@ public class FELocalWorld extends LocalWorld
 		for (Entity ent : (List<Entity>) world.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(arg1.getX() - arg2, arg1.getY() - arg2, arg1.getZ() - arg2, arg1.getX() + arg2, arg1.getY() + arg2, arg1.getZ() + arg2)))
 		{
 			if (ent instanceof IMob ||
-					(killPets && ent instanceof EntityTameable) ||
-					(killNPCs && ent instanceof INpc) ||
-					(killAnimals && ent instanceof IAnimals) ||
-					(killGolems && ent instanceof EntityGolem))
+					killPets && ent instanceof EntityTameable ||
+					killNPCs && ent instanceof INpc ||
+					killAnimals && ent instanceof IAnimals ||
+					killGolems && ent instanceof EntityGolem)
 			{
 				if (withLightning)
+				{
 					world.addWeatherEffect(new EntityLightningBolt(world, ent.posX, ent.posY, ent.posZ));
+				}
 				ent.setDead();
 				count++;
 			}
@@ -316,7 +317,7 @@ public class FELocalWorld extends LocalWorld
 	{
 		Chunk chunk = world.getChunkFromBlockCoords(arg0.getBlockX(), arg0.getBlockZ());
 		byte[] array = chunk.getBiomeArray();
-		array[(arg0.getBlockX() & 16) << 4 | (arg0.getBlockZ() & 16)] = (byte) (((FEBiomeType) arg1).biome.biomeID & 255);
+		array[(arg0.getBlockX() & 16) << 4 | arg0.getBlockZ() & 16] = (byte) (((FEBiomeType) arg1).biome.biomeID & 255);
 		chunk.setBiomeArray(array);
 	}
 
@@ -404,7 +405,9 @@ public class FELocalWorld extends LocalWorld
 	public int killEntities(com.sk89q.worldedit.LocalEntity... entities)
 	{
 		for (com.sk89q.worldedit.LocalEntity entity : entities)
+		{
 			((FELocalEntity) entity).entity.setDead();
+		}
 		return entities.length;
 	}
 
@@ -412,6 +415,8 @@ public class FELocalWorld extends LocalWorld
 	public void fixAfterFastMode(Iterable<BlockVector2D> chunks)
 	{
 		for (BlockVector2D chunk : chunks)
+		{
 			((WorldServer) world).getPlayerManager().flagChunkForUpdate(chunk.getBlockX(), 0, chunk.getBlockZ());
+		}
 	}
 }

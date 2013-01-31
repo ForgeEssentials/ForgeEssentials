@@ -6,31 +6,36 @@ import net.minecraft.entity.EntityLiving;
 import com.sk89q.worldedit.BiomeTypes;
 import com.sk89q.worldedit.ServerInterface;
 
+public class FEServerInterface extends ServerInterface
+{
+	private final com.ForgeEssentials.WorldControl.weintegration.FEBiomeTypes	biomeTypes;
 
-public class FEServerInterface extends ServerInterface {
-	private final com.ForgeEssentials.WorldControl.weintegration.FEBiomeTypes biomeTypes;
-
-	public FEServerInterface() {
-		this.biomeTypes = new com.ForgeEssentials.WorldControl.weintegration.FEBiomeTypes();
+	public FEServerInterface()
+	{
+		biomeTypes = new com.ForgeEssentials.WorldControl.weintegration.FEBiomeTypes();
 	}
 
 	@Override
-	public BiomeTypes getBiomes() {
+	public BiomeTypes getBiomes()
+	{
 		return biomeTypes;
 	}
 
 	@Override
-	public boolean isValidMobType(String arg0) {
-		return EntityList.stringToClassMapping.containsKey(arg0) && EntityLiving.class.isAssignableFrom((Class)EntityList.stringToClassMapping.get(arg0));
+	public boolean isValidMobType(String arg0)
+	{
+		return EntityList.stringToClassMapping.containsKey(arg0) && EntityLiving.class.isAssignableFrom((Class) EntityList.stringToClassMapping.get(arg0));
 	}
 
 	@Override
-	public void reload() {
+	public void reload()
+	{
 
 	}
 
 	@Override
-	public int resolveItem(String arg0) {
+	public int resolveItem(String arg0)
+	{
 		return 0;
 	}
 }
