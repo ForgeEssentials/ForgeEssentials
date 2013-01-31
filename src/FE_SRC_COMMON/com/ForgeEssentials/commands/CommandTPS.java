@@ -64,53 +64,33 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 			return DF.format((1000 / tps));
 		}
 	}
+	
+	private String getTickTime(long[] par1ArrayOfLong) 
+	{
+		double tps = (func_79015_a(par1ArrayOfLong));
+		return "" + DF.format(tps);
+	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		if (args.length == 0)
+		if(!doCommand(sender, args))
 		{
-			long var1 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-
-			sender.sendChatToPlayer("Memory use: " + var1 / 1024L / 1024L + " mb (" + Runtime.getRuntime().freeMemory() * 100L
-					/ Runtime.getRuntime().maxMemory() + "% free)");
-			sender.sendChatToPlayer("Threads: " + TcpConnection.field_74471_a.get() + " + " + TcpConnection.field_74469_b.get());
-			sender.sendChatToPlayer("Avg tick: " + getTPS(server.tickTimeArray));
-			sender.sendChatToPlayer("Avg sent: " + (int) func_79015_a(server.sentPacketCountArray) + ", Avg size: "
-					+ (int) func_79015_a(server.sentPacketSizeArray));
-			sender.sendChatToPlayer("Avg rec: " + (int) func_79015_a(server.receivedPacketCountArray) + ", Avg size: "
-					+ (int) func_79015_a(server.receivedPacketSizeArray));
-			return;
+			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 		}
-		if (args.length == 1)
-		{
-			if (args[0].equalsIgnoreCase("all"))
-			{
-				if (server.worldServers != null)
-				{
-					int x = 0;
-					for (Integer id : DimensionManager.getIDs())
-					{
-						sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)));
-						x++;
-					}
-				}
-				return;
-			}
-			else
-			{
-				int dim = parseIntBounded(sender, args[0], DimensionManager.getIDs()[0], (DimensionManager.getNextFreeDimId() - 1));
-				sender.sendChatToPlayer("Lvl " + dim + " TPS: " + getTPS(server.worldTickTimes.get(dim)));
-			}
-			return;
-		}
-		OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		if(!doCommand(sender, args))
+		{
+			sender.sendChatToPlayer((Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
+		}
+	}
+	
+	public boolean doCommand(ICommandSender sender, String[] args)
+	{
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		if (args.length == 0)
 		{
@@ -124,7 +104,17 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 					+ (int) func_79015_a(server.sentPacketSizeArray));
 			sender.sendChatToPlayer("Avg rec: " + (int) func_79015_a(server.receivedPacketCountArray) + ", Avg size: "
 					+ (int) func_79015_a(server.receivedPacketSizeArray));
-			return;
+			
+			if (server.worldServers != null)
+			{
+				int x = 0;
+				for (Integer id : DimensionManager.getIDs())
+				{
+					sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + getTickTime(server.worldTickTimes.get(id)) + "ms");
+					x++;
+				}
+			}
+			return true;
 		}
 		if (args.length == 1)
 		{
@@ -135,20 +125,20 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 					int x = 0;
 					for (Integer id : DimensionManager.getIDs())
 					{
-						sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)));
+						sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
 						x++;
 					}
 				}
-				return;
+				return true;
 			}
 			else
 			{
-				int dim = parseIntBounded(sender, args[0], DimensionManager.getIDs()[0], (DimensionManager.getNextFreeDimId() - 1));
-				sender.sendChatToPlayer("Lvl " + dim + " TPS: " + getTPS(server.worldTickTimes.get(dim)));
+				int id = parseIntBounded(sender, args[0], DimensionManager.getIDs()[0], (DimensionManager.getNextFreeDimId() - 1));
+				sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
 			}
-			return;
+			return true;
 		}
-		sender.sendChatToPlayer((Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
+		return false;
 	}
 
 	@Override
