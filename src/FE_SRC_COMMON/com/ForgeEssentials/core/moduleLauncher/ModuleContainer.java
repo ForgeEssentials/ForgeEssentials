@@ -46,7 +46,7 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleContainer implements Comparable
 {
-	protected static HashSet<Class>				modClasses		= new HashSet<Class>();
+	protected static HashSet<Class>				modClasses	= new HashSet<Class>();
 
 	public Object								module, mod;
 	private ModuleConfigBase					configObj;
@@ -62,8 +62,8 @@ public class ModuleContainer implements Comparable
 	public final String							className;
 	public final String							name;
 	public final boolean						isCore;
-	private boolean								isLoadable		= true;
-	protected boolean							isValid			= true;
+	private boolean								isLoadable	= true;
+	protected boolean							isValid		= true;
 	protected boolean							doesOverride;
 
 	public ModuleContainer(ASMData data)
@@ -99,17 +99,7 @@ public class ModuleContainer implements Comparable
 
 		// try getting the parent mod.. and register it.
 		{
-			Class modClass = annot.parentMod();
-			Mod atMod = (Mod) annot.parentMod().getAnnotation(Mod.class);
-			if (atMod == null && !BaseMod.class.isAssignableFrom(modClass) && !ModContainer.class.isAssignableFrom(modClass))
-				throw new RuntimeException(modClass + " isn't an @mod class, a BaseMod, or even a ModContainer!");
-			// register
-			if (!modClasses.contains(modClass))
-			{
-				OutputHandler.SOP("Modules from " + atMod.name() + " are bieng loaded");
-				modClasses.add(modClass);
-			}
-			mod = Loader.instance().getIndexedModList().get(atMod.modid()).getMod();
+			mod = handleMod(annot.parentMod());
 		}
 
 		// check method annotations. they are all optional...
@@ -481,33 +471,76 @@ public class ModuleContainer implements Comparable
 	{
 		return configObj;
 	}
-	
+
 	@Override
 	public int compareTo(Object o)
 	{
 		ModuleContainer container = (ModuleContainer) o;
-		
+
 		if (equals(container))
 			return 0;
-		
+
 		if (isCore && !container.isCore)
 			return 1;
 		else if (!isCore && container.isCore)
 			return -1;
-		
+
 		return name.compareTo(container.name);
 	}
-	
+
 	@Override
 	public boolean equals(Object o)
 	{
 		if (!(o instanceof ModuleContainer))
 			return false;
-		
+
 		ModuleContainer c = (ModuleContainer) o;
-		
+
 		return isCore == c.isCore &&
 				name.equals(c.name) &&
 				className.equals(c.className);
+	}
+
+	private static Object handleMod(Class c)
+	{
+		String modid;
+		Object obj = null;
+
+		if (c.isAnnotationPresent(Mod.class))
+		{
+			Mod info = (Mod) c.getAnnotation(Mod.class);
+			modid = info.modid() + info.version();
+			obj = Loader.instance().getIndexedModList().get(info.modid()).getMod();
+		}
+		else
+		{
+			for (ModContainer container : Loader.instance().getModList())
+				if (container.getClass().equals(c))
+				{
+					obj = container;
+					break;
+				}
+				else if (container.getMod() != null && container.getMod().getClass().equals(c))
+				{
+					obj = container.getMod();
+					break;
+				}
+
+			if (obj instanceof BaseMod)
+			{
+				modid = ((BaseMod) obj).getName() + "--" + ((BaseMod) obj).getVersion();
+				OutputHandler.SOP("Modules from " + modid + " are bieng loaded");
+			}
+			else if (obj instanceof ModContainer)
+			{
+				modid = ((ModContainer) obj).getModId() + "_" + ((ModContainer) obj).getVersion();
+				OutputHandler.SOP("Modules from " + modid + " are bieng loaded");
+			}
+			else
+				throw new RuntimeException(c + " isn't an @mod class, a BaseMod, or even a ModContainer!");
+		}
+
+		OutputHandler.SOP("Modules from " + modid + " are bieng loaded");
+		return obj;
 	}
 }
