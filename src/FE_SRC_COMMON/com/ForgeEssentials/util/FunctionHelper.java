@@ -1,6 +1,7 @@
 package com.ForgeEssentials.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -64,29 +66,29 @@ public final class FunctionHelper
 		return DimensionManager.getWorld(dimension);
 	}
 
+	/**
+	 * Use WorldPoint(Entity)
+	 * @param entity
+	 * @return
+	 */
+	@Deprecated
 	public static WorldPoint getEntityPoint(Entity entity)
 	{
 		return new WorldPoint(entity);
 	}
 
-	public static EntityPlayerMP getPlayerFromUsername(String username)
+	public static EntityPlayerMP getPlayerFromPartialName(String username)
 	{
 		EntityPlayerMP target;
 		List possibles = new LinkedList<EntityPlayer>();
-		for (Object player : FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
+		ArrayList<EntityPlayerMP> temp = (ArrayList<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList;
+		for (EntityPlayerMP player : temp)
 		{
-			if (player instanceof EntityPlayerMP)
-			{
-				if (((EntityPlayerMP) player).getCommandSenderName().toLowerCase().contains(username.toLowerCase()))
-				{
-					possibles.add(player);
-				}
-				target = (EntityPlayerMP) player;
-				if (target.getCommandSenderName().equalsIgnoreCase(username))
-				{
-					return target;
-				}
-			}
+			if (player.username.equalsIgnoreCase(username))
+				return player;
+
+			if (player.username.toLowerCase().contains(username.toLowerCase()))
+				possibles.add(player);
 		}
 		if (possibles.size() == 1)
 		{
@@ -100,7 +102,7 @@ public final class FunctionHelper
 	 * 
 	 * @return never NULL. always {0, -1}. Meta by default is -1.
 	 * @throws RuntimeException
-	 *             the message is a formatted chat string.
+	 * the message is a formatted chat string.
 	 */
 	public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly) throws RuntimeException
 	{
@@ -235,15 +237,20 @@ public final class FunctionHelper
 	public static String formatColors(String message)
 	{
 		char[] b = message.toCharArray();
-        for (int i = 0; i < b.length - 1; i++)
-        {
-            if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i+1]) > -1)
-            {
-                b[i] = '\u00a7';
-                b[i+1] = Character.toLowerCase(b[i+1]);
-            }
-        }
-        return new String(b);
+		for (int i = 0; i < b.length - 1; i++)
+		{
+			if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1)
+			{
+				b[i] = '\u00a7';
+				b[i + 1] = Character.toLowerCase(b[i + 1]);
+			}
+		}
+		return new String(b);
+	}
+	
+	public static void setPlayer(EntityPlayerMP player, WarpPoint p)
+	{
+		player.playerNetServerHandler.setPlayerLocation(p.xd, p.yd, p.zd, p.yaw, p.pitch);
 	}
 
 }

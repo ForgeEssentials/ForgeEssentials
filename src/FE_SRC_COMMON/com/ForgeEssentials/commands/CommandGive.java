@@ -63,7 +63,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			{
 				dam = idAndMeta[1];
 			}
-			receiver = FunctionHelper.getPlayerFromUsername(args[0]);
+			receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -118,7 +118,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 		}
 		if (args.length > 1)
 		{
-			receiver = FunctionHelper.getPlayerFromUsername(args[0]);
+			receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				receiver = PlayerSelector.matchOnePlayer(sender, args[0]);

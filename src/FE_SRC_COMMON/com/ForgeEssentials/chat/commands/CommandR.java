@@ -62,7 +62,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayerMP receiver = FunctionHelper.getPlayerFromUsername(target);
+				EntityPlayerMP receiver = FunctionHelper.getPlayerFromPartialName(target);
 				if (receiver == null)
 				{
 					OutputHandler.chatError(sender, target + " is not a valid username");
@@ -104,7 +104,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get("message.error.r.noPrevious"));
 				return;
 			}
-			EntityPlayer receiver = FunctionHelper.getPlayerFromUsername(target);
+			EntityPlayer receiver = FunctionHelper.getPlayerFromPartialName(target);
 			if (receiver == null)
 			{
 				sender.sendChatToPlayer(target + " is not a valid username");

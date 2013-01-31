@@ -34,7 +34,7 @@ public class CommandFEPermUser
 		
 		boolean playerExists = true;
 		String playerName = args[0];
-		EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
 		if (playerName.equalsIgnoreCase("_ME_"))
 		{
 			player = (EntityPlayerMP) sender;
@@ -393,7 +393,7 @@ public class CommandFEPermUser
 		
 		boolean playerExists = true;
 		String playerName = args[0];
-		EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
 		if (player == null)
 		{
 			sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_NOPLAYER, args[0]));

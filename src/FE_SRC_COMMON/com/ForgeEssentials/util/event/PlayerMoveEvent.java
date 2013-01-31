@@ -1,4 +1,4 @@
-package com.ForgeEssentials.util;
+package com.ForgeEssentials.util.event;
 
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 

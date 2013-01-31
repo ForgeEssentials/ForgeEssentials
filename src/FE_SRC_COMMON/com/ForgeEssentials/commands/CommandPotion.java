@@ -80,7 +80,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		}
 		else if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			target = FunctionHelper.getPlayerFromUsername(args[0]);
+			target = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -124,7 +124,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 			return;
 		}
 
-		target = FunctionHelper.getPlayerFromUsername(args[0]);
+		target = FunctionHelper.getPlayerFromPartialName(args[0]);
 		if(PlayerSelector.hasArguments(args[0]))
 		{
 			target = PlayerSelector.matchOnePlayer(sender, args[0]);

@@ -36,7 +36,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+				EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
 				if(PlayerSelector.hasArguments(args[0]))
 				{
 					victim = PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -68,7 +68,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+				EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
 				if(PlayerSelector.hasArguments(args[0]))
 				{
 					victim = PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -102,7 +102,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
