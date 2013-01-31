@@ -1,7 +1,8 @@
 package com.ForgeEssentials.util;
 
-import com.ForgeEssentials.core.misc.ItemList;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -16,10 +17,10 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
+import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -60,7 +61,7 @@ public final class FunctionHelper
 
 	public static WorldServer getDimension(int dimension)
 	{
-		return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension);
+		return DimensionManager.getWorld(dimension);
 	}
 
 	public static WorldPoint getEntityPoint(Entity entity)

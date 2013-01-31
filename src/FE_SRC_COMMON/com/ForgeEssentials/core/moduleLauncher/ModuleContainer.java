@@ -514,30 +514,22 @@ public class ModuleContainer implements Comparable
 		}
 		else
 		{
+			ModContainer contain = null;
 			for (ModContainer container : Loader.instance().getModList())
-				if (container.getClass().equals(c))
+				if (container.getMod() != null && container.getMod().getClass().equals(c))
 				{
-					obj = container;
-					break;
-				}
-				else if (container.getMod() != null && container.getMod().getClass().equals(c))
-				{
+					contain = container;
 					obj = container.getMod();
 					break;
 				}
 			
-			if (obj == null)
+			if (obj == null || contain == null)
 				OutputHandler.SOP("{ModuleLauncher} ERROR! parent mod isn't loaded!");
+			
+			
+			modid = contain.getModId() + "--" + contain.getVersion();
 
-			if (BaseMod.class.isAssignableFrom(c))
-			{
-				modid = ((BaseMod) obj).getName() + "--" + ((BaseMod) obj).getVersion();
-			}
-			else if (BaseMod.class.isAssignableFrom(c))
-			{
-				modid = ((ModContainer) obj).getModId() + "_" + ((ModContainer) obj).getVersion();
-			}
-			else
+			if (!BaseMod.class.isAssignableFrom(c) && !ModContainer.class.isAssignableFrom(c))
 				throw new RuntimeException(c + " isn't an @mod class, a BaseMod, or even a ModContainer!");
 		}
 
