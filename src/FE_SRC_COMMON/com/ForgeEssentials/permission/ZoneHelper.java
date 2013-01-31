@@ -139,6 +139,10 @@ public class ZoneHelper implements IZoneManager
 		{
 			return GLOBAL;
 		}
+		else if (zoneID.equalsIgnoreCase(SUPER.getZoneName()))
+		{
+			return SUPER;
+		}
 		else if (zoneID.startsWith("WORLD_") || zoneID.startsWith("world_"))
 		{
 			return worldZoneMap.get(zoneID);
