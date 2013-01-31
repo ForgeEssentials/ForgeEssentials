@@ -12,6 +12,7 @@ import java.util.HashSet;
 
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.ModContainer;
 
 public class PermissionRegistrationEvent extends Event
 {
@@ -64,9 +65,9 @@ public class PermissionRegistrationEvent extends Event
 				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
 			}
 		}
-		else if (mod instanceof DummyModContainer)
+		else if (mod instanceof ModContainer)
 		{
-			modid = ((DummyModContainer) mod).getModId()+"_"+((DummyModContainer) mod).getVersion();
+			modid = ((ModContainer) mod).getModId()+"_"+((ModContainer) mod).getVersion();
 			if (mods.add(modid))
 			{
 				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");

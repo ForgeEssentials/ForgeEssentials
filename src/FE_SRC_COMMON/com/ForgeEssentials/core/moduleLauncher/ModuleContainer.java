@@ -1,7 +1,14 @@
 package com.ForgeEssentials.core.moduleLauncher;
 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.src.BaseMod;
+
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Container;
 import com.ForgeEssentials.api.modules.FEModule.DummyConfig;
@@ -15,6 +22,7 @@ import com.ForgeEssentials.api.modules.FEModule.Reload;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerPostInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerStop;
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
@@ -23,20 +31,11 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.src.BaseMod;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-
 import com.google.common.base.Throwables;
 
-import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -102,8 +101,8 @@ public class ModuleContainer implements Comparable
 		{
 			Class modClass = annot.parentMod();
 			Mod atMod = (Mod) annot.parentMod().getAnnotation(Mod.class);
-			if (atMod == null && !BaseMod.class.isAssignableFrom(modClass) && !DummyModContainer.class.isAssignableFrom(modClass))
-				throw new RuntimeException(modClass + " isn't an @mod class, a BaseMod, or even a DummyModContainer!");
+			if (atMod == null && !BaseMod.class.isAssignableFrom(modClass) && !ModContainer.class.isAssignableFrom(modClass))
+				throw new RuntimeException(modClass + " isn't an @mod class, a BaseMod, or even a ModContainer!");
 			// register
 			if (!modClasses.contains(modClass))
 			{
