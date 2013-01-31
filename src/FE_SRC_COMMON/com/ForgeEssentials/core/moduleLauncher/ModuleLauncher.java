@@ -49,7 +49,7 @@ public class ModuleLauncher
 					other = containerMap.get(temp.name);
 					if (temp.doesOverride && other.mod == ForgeEssentials.instance)
 						containerMap.put(temp.name, temp);
-					else if (other.mod == ForgeEssentials.instance && other.doesOverride)
+					else if (temp.mod == ForgeEssentials.instance && other.doesOverride)
 						continue;
 					else
 						throw new RuntimeException("{FE-Module-Launcher} "+temp.name+" is conflicting with "+other.name);
