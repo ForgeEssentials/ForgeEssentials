@@ -770,6 +770,55 @@ public class CommandFEPermGroup
 			}
 			return;
 		}
+		if(args[1].equalsIgnoreCase("perms"))
+		{
+			if(args.length == 3)
+			{
+				if(ZoneManager.doesZoneExist(args[2]))
+				{
+					zone = ZoneManager.getZone(args[2]);
+				}
+				else if(args[2].equalsIgnoreCase("here"))
+				{
+					sender.sendChatToPlayer("ERROR: You are not allowed to use the here keyword in console.");
+				}
+				else
+				{
+					sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+				}
+			}
+			ArrayList<String> list = PermissionsAPI.getGroupPermissions(group.name, zone.getZoneName());
+			Collections.sort(list);
+			ArrayList<String> messageAllowed = new ArrayList<String>();
+			ArrayList<String> messageDenied = new ArrayList<String>();
+			for(String perm : list)
+			{
+				if(perm.contains("has no individual permissions."))
+				{
+					sender.sendChatToPlayer(perm);
+					return;
+				}
+				if(perm.contains("ALLOW"))
+				{
+					messageAllowed.add(" " + perm);
+				}
+				else
+				{
+					messageDenied.add(" " + perm);
+				}
+			}
+			sender.sendChatToPlayer(group.name + (group.parent != null ? " inherits from " + group.parent : "")
+					+ ".\nCurrent permissions in zone " + zone.getZoneName() + ":");
+			for(String perm : messageAllowed)
+			{
+				sender.sendChatToPlayer(perm);
+			}
+			for(String perm : messageDenied)
+			{
+				sender.sendChatToPlayer(perm);
+			}
+			return;
+		}
 		
 		sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "");
 	}
