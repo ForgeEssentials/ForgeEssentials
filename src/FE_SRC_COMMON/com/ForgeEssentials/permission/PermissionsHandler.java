@@ -47,7 +47,7 @@ public final class PermissionsHandler
 	public void handleQuery(PermQueryPlayer event)
 	{
 		// ensures its a permPlayerQuery before checking...
-		if (event.getClass().getSimpleName().equals(PermQueryPlayer.class.getSimpleName()))
+		if (event.getClass().equals(PermQueryPlayer.class))
 		{
 			Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(event.doer), event.doer.worldObj);
 			PermResult result = getResultFromZone(zone, event);
@@ -105,7 +105,7 @@ public final class PermissionsHandler
 		while (result.equals(PermResult.UNKNOWN))
 		{
 			// get the permissions... Tis automatically checks permision parents...
-			result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, zone.getZoneName(), event.checkForward);
+			result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, tempZone.getZoneName(), event.checkForward);
 
 			// if its unknown still
 			if (result.equals(PermResult.UNKNOWN))

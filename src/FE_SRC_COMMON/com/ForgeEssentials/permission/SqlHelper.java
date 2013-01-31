@@ -291,10 +291,12 @@ public class SqlHelper
 			statementUpdateGroup = db.prepareStatement(query.toString());
 
 			// statementGetPermission
-			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" WHERE ")
-					.append(COLUMN_PERMISSION_TARGET).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
-					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=")
-					.append("?");
+			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED)
+					.append(" FROM ").append(TABLE_PERMISSION)
+					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("?")
+					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
 			statementGetPermission = db.prepareStatement(query.toString());
 
 			// statementGetAll
