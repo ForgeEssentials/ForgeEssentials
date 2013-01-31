@@ -12,12 +12,16 @@ import com.ForgeEssentials.api.snooper.VoteEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
+import com.ForgeEssentials.core.moduleLauncher.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
+import com.ForgeEssentials.serverVote.Votifier.VoteReceiver;
 import com.ForgeEssentials.serverVote.snooper.VoteResponce;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 
 @FEModule(name = "ServerVoteModule", parentMod = ForgeEssentials.class, configClass = ConfigServerVote.class)
 public class ModuleServerVote
@@ -25,15 +29,35 @@ public class ModuleServerVote
 	@Config
 	public static ConfigServerVote config;
 	
+	public static VoteReceiver votifier;
+	
 	public ModuleServerVote()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
-		API.registerResponce(10, new VoteResponce());
+		API.registerResponce(10, new VoteResponce());	
+	}
+	
+	@ServerInit
+	public void serverStarting(FEModuleServerInitEvent e)
+	{
+		try 
+		{
+			votifier = new VoteReceiver(config.hostname, config.port);
+			votifier.start();
+		}
+		catch (Exception e1) 
+		{
+			FMLLog.severe("Error initializing Votifier compat.");
+			FMLLog.severe(e.toString());
+			e1.printStackTrace();
+		}
 	}
 	
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void defVoteResponces(VoteEvent vote)
 	{
+		OutputHandler.debug("Got Vote!");
+		
 		/*
 		 * Offline check.
 		 */
