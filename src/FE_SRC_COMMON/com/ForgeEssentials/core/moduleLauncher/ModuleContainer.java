@@ -505,33 +505,20 @@ public class ModuleContainer implements Comparable
 	{
 		String modid;
 		Object obj = null;
-
-		if (c.isAnnotationPresent(Mod.class))
-		{
-			Mod info = (Mod) c.getAnnotation(Mod.class);
-			modid = info.modid() + info.version();
-			obj = Loader.instance().getIndexedModList().get(info.modid()).getMod();
-		}
-		else
-		{
-			ModContainer contain = null;
-			for (ModContainer container : Loader.instance().getModList())
-				if (container.getMod() != null && container.getMod().getClass().equals(c))
-				{
-					contain = container;
-					obj = container.getMod();
-					break;
-				}
-			
-			if (obj == null || contain == null)
-				OutputHandler.SOP("{ModuleLauncher} ERROR! parent mod isn't loaded!");
-			
-			
-			modid = contain.getModId() + "--" + contain.getVersion();
-
-			if (!BaseMod.class.isAssignableFrom(c) && !ModContainer.class.isAssignableFrom(c))
-				throw new RuntimeException(c + " isn't an @mod class, a BaseMod, or even a ModContainer!");
-		}
+		
+		ModContainer contain = null;
+		for (ModContainer container : Loader.instance().getModList())
+			if (container.getMod() != null && container.getMod().getClass().equals(c))
+			{
+				contain = container;
+				obj = container.getMod();
+				break;
+			}
+		
+		if (obj == null || contain == null)
+			throw new RuntimeException(c + " isn't an loaded mod class!");
+		
+		modid = contain.getModId() + "--" + contain.getVersion();
 
 		OutputHandler.SOP("Modules from " + modid + " are bieng loaded");
 		return obj;
