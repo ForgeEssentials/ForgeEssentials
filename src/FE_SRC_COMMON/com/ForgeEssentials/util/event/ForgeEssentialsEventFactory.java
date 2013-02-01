@@ -27,24 +27,32 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 	}
 	
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
-	{
-		EntityPlayerMP player = (EntityPlayerMP) tickData[0];
-		befores.put(player.username, new WarpPoint(player));
-	}
+	public void tickStart(EnumSet<TickType> type, Object... tickData){}
 
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
 		EntityPlayerMP player = (EntityPlayerMP) tickData[0];
-		WarpPoint after = new WarpPoint(player);
-		WarpPoint before = befores.get(player.username);
 		
-		PlayerMoveEvent event = new PlayerMoveEvent(player, before, after);
+		WarpPoint before = befores.get(player.username);
+		WarpPoint current = new WarpPoint(player);
+		
+		if (before == null)
+		{
+			befores.put(player.username, current);
+			return;
+		}
+		
+		if (before.equals(current))
+			return;
+		
+		PlayerMoveEvent event = new PlayerMoveEvent(player, before, current);
 		MinecraftForge.EVENT_BUS.post(event);
 		
 		if (event.isCanceled())
 			FunctionHelper.setPlayer(player, before);
+		else
+			befores.put(player.username, current);
 	}
 	
 	@Override

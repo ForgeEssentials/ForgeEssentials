@@ -29,7 +29,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ModuleAuth
 {
 	@Config
-	public static BackupConfig	config;
+	public static AuthConfig	config;
 
 	public static boolean forceEnabled;
 	public static boolean checkVanillaAuthStatus;
@@ -38,8 +38,8 @@ public class ModuleAuth
 	
 	LoginHandler handler;
 
-	@PreInit
-	public void preLoad(FEModulePreInitEvent e)
+	@Init
+	public void load(FEModuleInitEvent e)
 	{
 		// No Auth Plugin on client
 		if (e.getFMLEvent().getSide().isClient())
@@ -47,11 +47,7 @@ public class ModuleAuth
 			enabled = false;
 			checkVanillaAuthStatus = false;
 		}
-	}
-
-	@Init
-	public void load(FEModuleInitEvent e)
-	{
+		
 		if (checkVanillaAuthStatus)
 			TickRegistry.registerScheduledTickHandler(new VanillaServiceChecker(), Side.SERVER);
 	}

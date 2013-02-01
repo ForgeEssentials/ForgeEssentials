@@ -29,11 +29,16 @@ public class AuthConfig extends ModuleConfigBase
 		ModuleAuth.enabled = ModuleAuth.forceEnabled = config.get(CATEGORY_MAIN, "forceEnable", false, "Forces the module to be loaded regardless of Minecraft auth services").getBoolean(false);
 		ModuleAuth.checkVanillaAuthStatus = config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the module if and when the Minecraft Auth servers go down.").getBoolean(false);
 		
+		config.save();
 	}
 
 	@Override
 	public void forceSave()
 	{
+		config.get(CATEGORY_MAIN, "forceEnable", false, "Forces the module to be loaded regardless of Minecraft auth services").value = ""+ModuleAuth.forceEnabled;
+		config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the module if and when the Minecraft Auth servers go down.").value = ""+ModuleAuth.checkVanillaAuthStatus;
+		
+		
 		config.save();
 	}
 
@@ -41,6 +46,8 @@ public class AuthConfig extends ModuleConfigBase
 	public void forceLoad(ICommandSender sender)
 	{
 		config.load();
+		ModuleAuth.forceEnabled = config.get(CATEGORY_MAIN, "forceEnable", false).getBoolean(false);
+		ModuleAuth.checkVanillaAuthStatus = config.get(CATEGORY_MAIN, "autoEnable", true).getBoolean(false);
 	}
 
 }
