@@ -1,27 +1,26 @@
 package com.ForgeEssentials.core.misc;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
-import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.permission.PermissionRegistrationEvent;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermRegister;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -34,11 +33,10 @@ public class BannedItems
 	HashMultimap<Integer, Integer> noUse = HashMultimap.create();
 	List<String> noCraft = new ArrayList<String>();
 	
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent e)
+	@PermRegister(ident = "FE-Core-bannedItems")
+	public void registerPermissions(IPermRegisterEvent event)
 	{
-		e.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, BYPASS, false);
-		e.registerPerm(ForgeEssentials.instance, RegGroup.OWNERS, BYPASS, true);
+		event.registerPermissionLevel(BYPASS, RegGroup.OWNERS);
 	}
 	
 	@ForgeSubscribe

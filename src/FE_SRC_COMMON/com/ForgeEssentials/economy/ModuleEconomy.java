@@ -1,5 +1,11 @@
 package com.ForgeEssentials.economy;
 
+import java.util.HashMap;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.MinecraftForge;
+
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
@@ -12,15 +18,6 @@ import com.ForgeEssentials.economy.commands.CommandAddToWallet;
 import com.ForgeEssentials.economy.commands.CommandGetWallet;
 import com.ForgeEssentials.economy.commands.CommandRemoveWallet;
 import com.ForgeEssentials.economy.commands.CommandSetWallet;
-import com.ForgeEssentials.permission.PermissionRegistrationEvent;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
-import java.util.HashMap;
 
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -111,12 +108,6 @@ public class ModuleEconomy implements IPlayerTracker
 		e.registerServerCommand(new CommandRemoveWallet());
 		e.registerServerCommand(new CommandGetWallet());
 		e.registerServerCommand(new CommandSetWallet());
-	}
-
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent event)
-	{
-
 	}
 
 	@Override

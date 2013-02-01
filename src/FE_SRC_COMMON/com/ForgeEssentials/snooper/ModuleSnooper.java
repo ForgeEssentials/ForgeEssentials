@@ -4,16 +4,16 @@ import java.util.ArrayList;
 
 import net.minecraft.network.rcon.IServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.snooper.API;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.snooper.response.PlayerArmor;
 import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
 import com.ForgeEssentials.snooper.response.PlayerInv;
@@ -55,10 +55,10 @@ public class ModuleSnooper
 		e.registerServerCommand(new CommandReloadQuery());
 	}
 
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent event)
+	@PermRegister(ident = "SnooperModule")
+	public void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.Snooper._ALL_", true);
+		event.registerPermissionLevel("ForgeEssentials.Snooper._ALL_", RegGroup.OWNERS);
 	}
 
 	public static void startQuery()

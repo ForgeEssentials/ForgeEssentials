@@ -1,5 +1,9 @@
 package com.ForgeEssentials.backup;
 
+import java.io.File;
+
+import net.minecraftforge.common.MinecraftForge;
+
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Init;
@@ -9,15 +13,11 @@ import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
-import java.io.File;
 
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup
@@ -48,9 +48,9 @@ public class ModuleBackup
 		e.registerServerCommand(new CommandBackup());
 	}
 
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent event)
+	@PermRegister(ident = "ModuleBackups")
+	public void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.backup", true);
+		event.registerPermissionLevel("ForgeEssentials.backup", RegGroup.OWNERS);
 	}
 }

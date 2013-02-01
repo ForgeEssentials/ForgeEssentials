@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.HashMultimap;
 
 public class SqlHelper
 {
@@ -738,7 +739,7 @@ public class SqlHelper
 	 * 
 	 * @param map
 	 */
-	protected synchronized void putRegistrationperms(HashMap<RegGroup, HashSet<Permission>> map)
+	protected synchronized void putRegistrationperms(HashMultimap<RegGroup, Permission> map)
 	{
 		if (!generate)
 			return;
@@ -777,10 +778,10 @@ public class SqlHelper
 			}
 
 			// register permissions
-			for (Entry<RegGroup, HashSet<Permission>> entry : map.entrySet())
+			for (RegGroup group : map.keySet())
 			{
-				statement.setInt(1, groups.get(entry.getKey()));
-				for (Permission perm : entry.getValue())
+				statement.setInt(1, groups.get(group));
+				for (Permission perm : map.get(group))
 				{
 					statement.setInt(2, perm.allowed ? 1 : 0);
 					statement.setString(3, perm.name);

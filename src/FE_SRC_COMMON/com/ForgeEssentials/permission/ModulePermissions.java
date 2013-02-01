@@ -1,5 +1,9 @@
 package com.ForgeEssentials.permission;
 
+import java.io.File;
+
+import net.minecraftforge.common.MinecraftForge;
+
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -12,6 +16,8 @@ import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
@@ -21,14 +27,10 @@ import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.permission.mcoverride.OverrideManager;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
+import com.google.common.collect.HashMultimap;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
-import java.io.File;
-
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions
@@ -44,6 +46,9 @@ public class ModulePermissions
 	public static File permsFolder;
 	
 	protected static DataDriver data;
+	
+	// permission registrations here...
+	protected HashMultimap regPerms;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -53,22 +58,18 @@ public class ModulePermissions
 		PermissionsAPI.manager = new PermissionsHelper();
 
 		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
-
-		// testing DB.
-		MinecraftForge.EVENT_BUS.register(this);
+		FMLPreInitializationEvent event = (FMLPreInitializationEvent) e.getFMLEvent();
+		PermRegLoader laoder = new PermRegLoader(event.getAsmData().getAll(PermRegister.class.getName()));
+		regPerms = laoder.loadAllPerms();
 	}
 
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
-		OutputHandler.SOP("Starting permissions registration period.");
-		PermissionRegistrationEvent permreg = new PermissionRegistrationEvent();
-		MinecraftForge.EVENT_BUS.post(permreg);
-		OutputHandler.SOP("Ending permissions registration period.");
 
 		// setup SQL
 		sql = new SqlHelper(config);
-		sql.putRegistrationperms(permreg.registered);
+		sql.putRegistrationperms(regPerms);
 
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
@@ -90,17 +91,19 @@ public class ModulePermissions
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
 	}
 
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent event)
+	@PermRegister(ident = "ModulePermissions")
+	public static void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPerm(this, RegGroup.ZONE_ADMINS, "ForgeEssentials.permissions.zone.setparent", true);
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.perm", true);
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.zone", true);
+		event.registerPermissionLevel("ForgeEssentials.permissions.zone.setparent", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("ForgeEssentials.perm", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.perm._ALL_", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.permissions.zone", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("ForgeEssentials.permissions.zone._ALL_", RegGroup.ZONE_ADMINS);
 		
-		event.registerPerm(this, RegGroup.OWNERS, Permission.ALL, true);
-
-		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_COOLDOWN, true);
-		event.registerPerm(this, RegGroup.OWNERS, TeleportCenter.BYPASS_WARMUP, true);
+		event.registerPermissionLevel("_ALL_", RegGroup.OWNERS);
+		
+		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
+		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 	}
 
 	@ServerStop
