@@ -26,7 +26,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 	@Override
 	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr)
 	{
-		return getListOfStringsMatchingLastWord(par2ArrayOfStr, "passive", "villager", "hostile", "tamed", "all", "golem", "world");
+		return getListOfStringsMatchingLastWord(par2ArrayOfStr, "passive", "villager", "hostile", "tamed", "all", "golem", "world", "boss");
 	}
 
 	@Override
@@ -53,13 +53,14 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		if (args.length > 1)
 		{
 			if (args[1].equalsIgnoreCase("golem") || args[1].equalsIgnoreCase("passive") || args[1].equalsIgnoreCase("all")
-					|| args[1].equalsIgnoreCase("villager") || args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile"))
+					|| args[1].equalsIgnoreCase("villager") || args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile")
+					|| args[1].equalsIgnoreCase("boss"))
 			{
 				mobType = args[1];
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "all, golem, hostile, passive, tamed, or villager");
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "all, boss, golem, hostile, passive, tamed, or villager");
 				return;
 			}
 		}
@@ -116,14 +117,15 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		}
 		if(args.length > 1)
 		{
-			if (args[1].equalsIgnoreCase("golem") || args[1].equalsIgnoreCase("passive") || args[1].equalsIgnoreCase("all") || args[1].equalsIgnoreCase("villager")
-					|| args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile"))
+			if (args[1].equalsIgnoreCase("golem") || args[1].equalsIgnoreCase("passive") || args[1].equalsIgnoreCase("all")
+					|| args[1].equalsIgnoreCase("villager") || args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile")
+					|| args[1].equalsIgnoreCase("boss"))
 			{
 				mobType = args[1];
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "all, golem, hostile, passive, tamed, or villager");
+				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "all, boss, golem, hostile, passive, tamed, or villager");
 				return;
 			}
 		}

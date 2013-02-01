@@ -1,13 +1,15 @@
 package com.ForgeEssentials.commands.util;
 
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.ITickTask;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityDragonPart;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.monster.EntityMob;
@@ -22,8 +24,11 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.ForgeEssentials.api.commands.EnumMobType;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.ITickTask;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandButcherTickTask implements ITickTask
 {
@@ -98,7 +103,14 @@ public class CommandButcherTickTask implements ITickTask
 				{
 					if (mobType.equalsIgnoreCase("hostile") || mobType.equalsIgnoreCase("all"))
 					{
+						Set<String> typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.HOSTILE);
 						if (entity instanceof EntityMob || entity instanceof EntitySlime || entity instanceof EntityGhast)
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+						else if (typeSet.contains(entity.getClass().getName()))
 						{
 							((EntityLiving) entity).setDead();
 							counter++;
@@ -107,6 +119,7 @@ public class CommandButcherTickTask implements ITickTask
 					}
 					if (mobType.equalsIgnoreCase("passive") || mobType.equalsIgnoreCase("all"))
 					{
+						Set<String> typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.PASSIVE);
 						if (entity instanceof EntityAnimal || entity instanceof EntityAmbientCreature || entity instanceof EntitySquid)
 						{
 							if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
@@ -117,10 +130,24 @@ public class CommandButcherTickTask implements ITickTask
 							counter++;
 							tempCount++;
 						}
+						else if (typeSet.contains(entity.getClass().getName()))
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
 					}
 					if (mobType.equalsIgnoreCase("villager") || mobType.equalsIgnoreCase("all"))
 					{
+						Set<String> typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.VILLAGER);
+						Set<String> tameableSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.TAMEABLE);
 						if (entity instanceof EntityVillager)
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+						else if (typeSet.contains(entity.getClass().getName()))
 						{
 							((EntityLiving) entity).setDead();
 							counter++;
@@ -129,7 +156,14 @@ public class CommandButcherTickTask implements ITickTask
 					}
 					if (mobType.equalsIgnoreCase("golem") || mobType.equalsIgnoreCase("all"))
 					{
+						Set<String> typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.GOLEM);
 						if (entity instanceof EntityGolem)
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+						else if (typeSet.contains(entity.getClass().getName()))
 						{
 							((EntityLiving) entity).setDead();
 							counter++;
@@ -138,7 +172,40 @@ public class CommandButcherTickTask implements ITickTask
 					}
 					if (mobType.equalsIgnoreCase("tamed") || mobType.equalsIgnoreCase("all"))
 					{
+						Set<String> typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.TAMEABLE);
 						if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+						else if (typeSet.contains(entity.getClass().getName()))
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+					}
+					if (mobType.equalsIgnoreCase("boss") || mobType.equalsIgnoreCase("all"))
+					{
+						Set<String> typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.BOSS);
+						if (entity instanceof EntityDragon)
+						{
+							for(EntityDragonPart part : ((EntityDragon) entity).dragonPartArray)
+							{
+								part.setDead();
+							}
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+						else if (entity instanceof EntityWither)
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+						else if (typeSet.contains(entity.getClass().getName()))
 						{
 							((EntityLiving) entity).setDead();
 							counter++;
@@ -209,6 +276,25 @@ public class CommandButcherTickTask implements ITickTask
 							if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
 							{
 								entity.setDead();
+								counter++;
+								tempCount++;
+							}
+						}
+						if (mobType.equalsIgnoreCase("boss") || mobType.equalsIgnoreCase("all"))
+						{
+							if (entity instanceof EntityDragon)
+							{
+								for(EntityDragonPart part : ((EntityDragon) entity).dragonPartArray)
+								{
+									part.setDead();
+								}
+								((EntityLiving) entity).setDead();
+								counter++;
+								tempCount++;
+							}
+							else if (entity instanceof EntityWither)
+							{
+								((EntityLiving) entity).setDead();
 								counter++;
 								tempCount++;
 							}

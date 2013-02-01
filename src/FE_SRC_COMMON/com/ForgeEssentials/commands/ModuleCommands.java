@@ -1,5 +1,10 @@
 package com.ForgeEssentials.commands;
 
+import java.io.File;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -18,6 +23,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.CommandRegistrar;
 import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
+import com.ForgeEssentials.commands.util.MobTypeLoader;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -28,22 +34,9 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Warp;
 
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.server.MinecraftServer;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
 @FEModule(configClass = ConfigCmd.class, name = "CommandsModule", parentMod = ForgeEssentials.class)
@@ -61,6 +54,7 @@ public class ModuleCommands
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		OutputHandler.SOP("Commands module is enabled. Loading...");
+		MobTypeLoader.preLoad(e);
 	}
 
 	@Init
