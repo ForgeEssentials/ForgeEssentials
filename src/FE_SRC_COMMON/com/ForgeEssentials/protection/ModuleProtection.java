@@ -1,20 +1,20 @@
 package com.ForgeEssentials.protection;
 
+import java.util.HashMap;
+
+import net.minecraftforge.common.MinecraftForge;
+
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
-import java.util.HashMap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -68,13 +68,12 @@ public class ModuleProtection
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent event)
+	@PermRegister(ident="FE-Core-Protection")
+	public void registerPermissions(IPermRegisterEvent event)
 	{
-		// event.registerPermissionDefault(PERM, false);
-		event.registerPerm(this, RegGroup.MEMBERS, PERM_EDITS, true);
-		event.registerPerm(this, RegGroup.MEMBERS, PERM_INTERACT_BLOCK, true);
-		event.registerPerm(this, RegGroup.MEMBERS, PERM_INTERACT_ENTITY, true);
-		event.registerPerm(this, RegGroup.OWNERS, PERM_OVERRIDE, true);
+		event.registerPermissionLevel(PERM_EDITS, RegGroup.MEMBERS);
+		event.registerPermissionLevel(PERM_INTERACT_BLOCK, RegGroup.MEMBERS);
+		event.registerPermissionLevel(PERM_INTERACT_ENTITY, RegGroup.MEMBERS);
+		event.registerPermissionLevel(PERM_OVERRIDE, RegGroup.OWNERS);
 	}
 }
