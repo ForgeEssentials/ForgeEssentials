@@ -39,7 +39,15 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 1)
 			{
-				if(FunctionHelper.getPlayerFromPartialName(args[0]) != null || PlayerSelector.matchOnePlayer(sender, args[0]) != null)
+				if(args[0].equals("0") || args[0].equals("1") || args[0].equals("2")
+						|| args[0].equalsIgnoreCase(EnumGameType.CREATIVE.getName())
+						|| args[0].equalsIgnoreCase(EnumGameType.SURVIVAL.getName())
+						|| args[0].equalsIgnoreCase(EnumGameType.ADVENTURE.getName())
+						|| args[0].equalsIgnoreCase("a") || args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("s"))
+				{
+					sender.setGameType(getGameTypeFromString(sender, args[0]));
+				}
+				else if(FunctionHelper.getPlayerFromPartialName(args[0]) != null || PlayerSelector.matchOnePlayer(sender, args[0]) != null)
 				{
 					if(!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 					{
@@ -66,7 +74,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					sender.setGameType(getGameTypeFromString(sender, args[0]));
+					OutputHandler.chatError(sender, "Invalid gametype or username: " + args[0]);
 				}
 			}
 			else
