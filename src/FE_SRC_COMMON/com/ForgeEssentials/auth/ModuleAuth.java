@@ -11,14 +11,19 @@ import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
+import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.backup.BackupConfig;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.permission.PermissionRegistrationEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, configClass = AuthConfig.class)
 public class ModuleAuth
@@ -28,25 +33,47 @@ public class ModuleAuth
 
 	public static boolean forceEnabled;
 	public static boolean checkVanillaAuthStatus;
+	
+	public static boolean enabled;
+	
+	LoginHandler handler;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
+		// No Auth Plugin on client
+		if (e.getFMLEvent().getSide().isClient())
+		{
+			enabled = false;
+			checkVanillaAuthStatus = false;
+		}
 	}
 
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
-		MinecraftForge.EVENT_BUS.register(this);
+		if (checkVanillaAuthStatus)
+			TickRegistry.registerScheduledTickHandler(new VanillaServiceChecker(), Side.SERVER);
 	}
 
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
+		if (enabled)
+		{
+			handler = new LoginHandler();
+			GameRegistry.registerPlayerTracker(handler);
+			MinecraftForge.EVENT_BUS.register(handler);
+		}
 	}
-
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent event)
+	
+	@ServerStop
+	public void serverStop(FEModuleServerStopEvent e)
 	{
+		if (handler != null)
+		{
+			MinecraftForge.EVENT_BUS.unregister(handler);
+			handler = null;
+		}
 	}
 }
