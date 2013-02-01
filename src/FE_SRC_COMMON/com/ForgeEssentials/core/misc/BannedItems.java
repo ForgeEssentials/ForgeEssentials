@@ -1,5 +1,7 @@
 package com.ForgeEssentials.core.misc;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.ZoneManager;
@@ -34,11 +36,10 @@ public class BannedItems
 	HashMultimap<Integer, Integer> noUse = HashMultimap.create();
 	List<String> noCraft = new ArrayList<String>();
 	
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent e)
+	@PermRegister(ident = "FE-Core-bannedItems")
+	public void registerPermissions(IPermRegisterEvent event)
 	{
-		e.registerPerm(ForgeEssentials.instance, RegGroup.GUESTS, BYPASS, false);
-		e.registerPerm(ForgeEssentials.instance, RegGroup.OWNERS, BYPASS, true);
+		event.registerPermissionLevel(BYPASS, RegGroup.OWNERS);
 	}
 	
 	@ForgeSubscribe

@@ -13,7 +13,10 @@ import com.ForgeEssentials.api.modules.event.FEModulePostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.backup.ModuleBackup;
 import com.ForgeEssentials.chat.commands.CommandMsg;
 import com.ForgeEssentials.chat.commands.CommandMute;
 import com.ForgeEssentials.chat.commands.CommandNickname;
@@ -86,19 +89,17 @@ public class ModuleChat
 		removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
 
-	@ForgeSubscribe
-	public void registerPermissions(PermissionRegistrationEvent event)
+	@PermRegister(ident = "ModuleChat")
+	public void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.r", false);
-		event.registerPerm(this, RegGroup.GUESTS, "ForgeEssentials.Chat.msg", false);
+		event.registerPermissionLevel("ForgeEssentials.Chat.r", RegGroup.GUESTS);
+		event.registerPermissionLevel("ForgeEssentials.Chat.msg", RegGroup.GUESTS);
 
-		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.Chat.commands.msg", true);
-		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.Chat.commands.r", true);
-		event.registerPerm(this, RegGroup.MEMBERS, "ForgeEssentials.Chat.commands.nickname", true);
+		event.registerPermissionLevel("ForgeEssentials.Chat.commands.nickname", RegGroup.MEMBERS);
 
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.Chat.commands.nickname.others", true);
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.Chat.commands.mute", true);
-		event.registerPerm(this, RegGroup.OWNERS, "ForgeEssentials.Chat.commands.unmute", true);
+		event.registerPermissionLevel("ForgeEssentials.Chat.commands.nickname.others", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Chat.commands.mute", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Chat.commands.unmute", RegGroup.OWNERS);
 	}
 
 	private void removeTell(MinecraftServer server)

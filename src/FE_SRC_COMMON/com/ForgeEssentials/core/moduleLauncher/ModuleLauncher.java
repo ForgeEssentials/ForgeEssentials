@@ -35,7 +35,7 @@ public class ModuleLauncher
 		OutputHandler.SOP("Discovering and loading modules...");
 		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
 
-		// started ASM handling for the module loaidng.
+		// started ASM handling for the module loading.
 		Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
 
 		ModuleContainer temp, other;

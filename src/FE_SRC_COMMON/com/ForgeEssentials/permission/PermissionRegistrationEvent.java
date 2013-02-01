@@ -1,12 +1,15 @@
 package com.ForgeEssentials.permission;
 
 import com.ForgeEssentials.api.modules.FEModule;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
+import com.google.common.collect.HashMultimap;
 
 import net.minecraft.src.BaseMod;
 import net.minecraftforge.event.Event;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -14,75 +17,55 @@ import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModContainer;
 
-public class PermissionRegistrationEvent extends Event
+public class PermissionRegistrationEvent implements IPermRegisterEvent
 {
-	protected HashSet<String> mods = new HashSet<String>();
-	protected HashMap<RegGroup, HashSet<Permission>> registered = new HashMap<RegGroup, HashSet<Permission>>();
-
-	/**
-	 * This is to define the level the permission should be used for by defualt.. see @see com.ForgeEssentials.permissions.PermissionsAPI for the default groups
-	 * If you want.. you can also set specific group permissions with this.. though they may or may not exist...
-	 * 
-	 * @param level to apply permission to.
-	 * @param permission Permission to be added. Best in form "ModName.parent1.parent2.parentN.name". I WILL NOT put the mod in fron for you.
-	 * @param allow or deny. If unset, all permissions default to deny. See the wiki for more info.
-	 */
-	public void registerPerm(Object mod, RegGroup group, String permission, boolean allow)
+	protected HashMultimap<RegGroup, Permission> perms;
+	
+	protected PermissionRegistrationEvent()
 	{
-		handleMod(mod);
-
-		Permission perm = new Permission(permission, allow);
-
-		HashSet<Permission> set = registered.get(group);
-		if (set == null)
-		{
-			set = new HashSet<Permission>();
-			registered.put(group, set);
-		}
-
-		set.add(perm);
+		perms = HashMultimap.create();
 	}
 
-	private void handleMod(Object mod)
+	@Override
+	public void registerPermissionLevel(String permission, RegGroup group)
 	{
-		String modid;
-		Class c = mod.getClass();
+		Permission deny = new Permission(permission, group != null);
+		Permission allow = new Permission(permission, true);
 		
-		if (c.isAnnotationPresent(Mod.class))
-		{
-			Mod info = (Mod) c.getAnnotation(Mod.class);
-			modid = info.modid()+info.version();
-			if (mods.add(modid))
-			{
-				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
-			}
-		}
-		else if (mod instanceof BaseMod)
-		{
-			modid = ((BaseMod) mod).getName()+"--"+((BaseMod) mod).getVersion();
-			if (mods.add(modid))
-			{
-				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
-			}
-		}
-		else if (mod instanceof ModContainer)
-		{
-			modid = ((ModContainer) mod).getModId()+"_"+((ModContainer) mod).getVersion();
-			if (mods.add(modid))
-			{
-				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
-			}
-		}
-		else if (c.isAnnotationPresent(FEModule.class))
-		{
-			FEModule info = (FEModule) c.getAnnotation(FEModule.class);
-			modid = info.name();
-			if (mods.add(modid))
-			{
-				OutputHandler.SOP("[PermReg] " + modid + " has registered permissions.");
-			}
-		}
+		if (group == null)
+			perms.put(RegGroup.ZONE, deny);
+		else if (group == RegGroup.ZONE)
+			perms.put(RegGroup.ZONE, allow);
 		else
-			throw new IllegalArgumentException("Don't trick me! THIS! > " + mod + " < ISN'T A MOD, A COREMOD, OR EVEN A MODULE!");
+		{
+			perms.put(group, allow);
+			for (RegGroup g: getHigherGroups(group))
+				perms.put(g, allow);
+			
+			for (RegGroup g: getLowerGroups(group))
+				perms.put(g, deny);
+		}
+	}
+	
+	private RegGroup[] getHigherGroups(RegGroup g)
+	{
+		switch(g)
+		{
+			case GUESTS: return new RegGroup[] {RegGroup.MEMBERS, RegGroup.ZONE_ADMINS, RegGroup.OWNERS};
+			case MEMBERS: return new RegGroup[] {RegGroup.ZONE_ADMINS, RegGroup.OWNERS};
+			case ZONE_ADMINS: return new RegGroup[] {RegGroup.OWNERS};
+			default: return new RegGroup[] {};
+		}
+	}
+	
+	private RegGroup[] getLowerGroups(RegGroup g)
+	{
+		switch(g)
+		{
+			case MEMBERS: return new RegGroup[] {RegGroup.GUESTS};
+			case ZONE_ADMINS: return new RegGroup[] {RegGroup.MEMBERS, RegGroup.GUESTS};
+			case OWNERS: return new RegGroup[] {RegGroup.MEMBERS, RegGroup.GUESTS, RegGroup.ZONE_ADMINS};
+			default: return new RegGroup[] {};
+		}
 	}
 }
