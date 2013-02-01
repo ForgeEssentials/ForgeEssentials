@@ -41,7 +41,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -62,7 +62,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);

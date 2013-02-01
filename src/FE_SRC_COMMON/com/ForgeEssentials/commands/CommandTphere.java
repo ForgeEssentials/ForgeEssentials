@@ -36,7 +36,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);

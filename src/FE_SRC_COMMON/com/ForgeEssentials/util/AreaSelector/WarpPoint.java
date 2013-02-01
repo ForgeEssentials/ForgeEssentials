@@ -67,7 +67,7 @@ public class WarpPoint extends WorldPoint
 		pitch = sender.rotationPitch;
 		yaw = sender.rotationYaw;
 	}
-
+	
 	/**
 	 * This is calculated by the whichever has higher coords.
 	 * 

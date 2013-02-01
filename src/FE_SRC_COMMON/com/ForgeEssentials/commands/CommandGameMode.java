@@ -39,14 +39,14 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 1)
 			{
-				if(FunctionHelper.getPlayerFromUsername(args[0]) != null || PlayerSelector.matchOnePlayer(sender, args[0]) != null)
+				if(FunctionHelper.getPlayerFromPartialName(args[0]) != null || PlayerSelector.matchOnePlayer(sender, args[0]) != null)
 				{
 					if(!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 					{
 						OutputHandler.chatError(sender, "You do not have permission to do that.");
 						return;
 					}
-					EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+					EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
 					if(PlayerSelector.hasArguments(args[0]))
 					{
 						victim = PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -91,7 +91,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, "You do not have permission to do that.");
 				return;
 			}
-			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -121,7 +121,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	{
 		if (args.length <= 2)
 		{
-			EntityPlayer victim = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);

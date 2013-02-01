@@ -35,7 +35,7 @@ public class CommandMute extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer receiver = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if (receiver == null)
 			{
 				sender.sendChatToPlayer(args[0] + " is not a valid username");
@@ -53,7 +53,7 @@ public class CommandMute extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer receiver = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if (receiver == null)
 			{
 				sender.sendChatToPlayer(args[0] + " is not a valid username");
@@ -71,7 +71,7 @@ public class CommandMute extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer receiver = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if (receiver == null)
 			{
 				sender.sendChatToPlayer(args[0] + " is not a valid username");

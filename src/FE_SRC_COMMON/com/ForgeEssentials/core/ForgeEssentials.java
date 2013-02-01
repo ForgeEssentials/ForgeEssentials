@@ -25,6 +25,7 @@ import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.util.event.ForgeEssentialsEventFactory;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
@@ -132,6 +133,10 @@ public class ForgeEssentials
 		localization.load();
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
 		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
+		
+		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
+		TickRegistry.registerTickHandler(factory, Side.SERVER);
+		GameRegistry.registerPlayerTracker(factory);
 	}
 
 	@PostInit

@@ -79,7 +79,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 1)
 		{
-			EntityPlayerMP target = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayerMP target = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -93,7 +93,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			EntityPlayerMP target = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayerMP target = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -121,7 +121,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 3)
 		{
-			EntityPlayerMP target = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayerMP target = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[0]);

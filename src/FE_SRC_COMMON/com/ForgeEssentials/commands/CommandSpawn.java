@@ -43,7 +43,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 				return;
 			}
-			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer player = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -93,7 +93,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer player = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);

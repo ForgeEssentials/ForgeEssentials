@@ -21,7 +21,7 @@ public class CommandFEPermPromote
 			return;
 		}
 		
-		EntityPlayerMP player = FunctionHelper.getPlayerFromUsername(args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
 		if (player == null)
 		{
 			// No such player!

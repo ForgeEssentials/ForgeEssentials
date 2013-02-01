@@ -36,7 +36,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer player = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -72,7 +72,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer player = FunctionHelper.getPlayerFromUsername(args[0]);
+			EntityPlayer player = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if(PlayerSelector.hasArguments(args[0]))
 			{
 				PlayerSelector.matchOnePlayer(sender, args[0]);
