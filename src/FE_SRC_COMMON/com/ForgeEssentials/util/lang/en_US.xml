@@ -101,10 +101,15 @@
     <entry key="command.smite.info.console">Strike the specified player with lightning</entry>
     <entry key="command.smite.info.player">Strike where you are looking, yourself, or another player with lightning</entry>
     
-    <entry key="command.spawn.syntax.console">/spawn &lt;mob type> [number] [x, y, z]</entry>
+    <entry key="command.spawn.syntax.console">/spawn [player]</entry>
     <entry key="command.spawn.info.console">Teleport you/a player to your/their spawnpoint</entry>
-    <entry key="command.spawn.syntax.player">/spawn &lt;mob type> &lt;number> &lt;x, y, z> [dimension]</entry>
+    <entry key="command.spawn.syntax.player">/spawn &#60;player> [dimension]</entry>
     <entry key="command.spawn.info.player">Teleport a player to their spawnpoint</entry>
+    
+    <entry key="command.spawn.syntax.console">/spawnmob &lt;mob type> [amount] [x, y, z]</entry>
+    <entry key="command.spawn.info.console">Spawn specified mob of amount at x,y,z or where you are looking</entry>
+    <entry key="command.spawn.syntax.player">/spawnmob &lt;mob type> &lt;amount> &lt;x, y, z> [dimension]</entry>
+    <entry key="command.spawn.info.player">Spawn specified mob of amount at x,y,z</entry>
 
     <entry key="command.tps.info.player">Gets the lag on the server</entry>
     <entry key="command.tps.info.console">Gets the lag on the server</entry>
