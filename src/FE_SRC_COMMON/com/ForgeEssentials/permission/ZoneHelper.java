@@ -1,5 +1,16 @@
 package com.ForgeEssentials.permission;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+
+import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.WorldEvent.Load;
+
 import com.ForgeEssentials.api.permissions.IZoneManager;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -8,19 +19,6 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldArea;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-
-import net.minecraft.world.World;
-
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.WorldEvent.Load;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

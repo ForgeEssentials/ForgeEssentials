@@ -1,5 +1,9 @@
 package com.ForgeEssentials.permission;
 
+import java.io.File;
+
+import net.minecraftforge.common.MinecraftForge;
+
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -25,14 +29,8 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.google.common.collect.HashMultimap;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-
-import java.io.File;
-
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions
