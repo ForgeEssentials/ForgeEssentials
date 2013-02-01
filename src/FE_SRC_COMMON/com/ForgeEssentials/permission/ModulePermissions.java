@@ -23,6 +23,7 @@ import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.permission.mcoverride.OverrideManager;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
+import com.google.common.collect.HashMultimap;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -47,6 +48,9 @@ public class ModulePermissions
 	public static File permsFolder;
 	
 	protected static DataDriver data;
+	
+	// permission registrations here...
+	protected HashMultimap regPerms;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -58,6 +62,7 @@ public class ModulePermissions
 		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
 		FMLPreInitializationEvent event = (FMLPreInitializationEvent) e.getFMLEvent();
 		PermRegLoader laoder = new PermRegLoader(event.getAsmData().getAll(PermRegister.class.getName()));
+		regPerms = laoder.loadAllPerms();
 	}
 
 	@Init
@@ -66,7 +71,7 @@ public class ModulePermissions
 
 		// setup SQL
 		sql = new SqlHelper(config);
-		sql.putRegistrationperms(permreg.perms);
+		sql.putRegistrationperms(regPerms);
 
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
@@ -89,7 +94,7 @@ public class ModulePermissions
 	}
 
 	@PermRegister(ident = "ModulePermissions")
-	public void registerPermissions(IPermRegisterEvent event)
+	public static void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone.setparent", RegGroup.ZONE_ADMINS);
 		event.registerPermissionLevel("ForgeEssentials.perm", RegGroup.OWNERS);
