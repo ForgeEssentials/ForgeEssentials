@@ -80,7 +80,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_CONFIRM));
 				return;
 			}
-			if (args[1].equalsIgnoreCase("ok"))
+			if (args[1].equalsIgnoreCase("start"))
 			{
 				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 				WorldServer world = server.worldServers[sender.dimension];
@@ -91,7 +91,22 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					taskGooing = new Filler(world, ModuleWorldBorder.shape);
+					taskGooing = new Filler(world, ModuleWorldBorder.shape, true);
+				}
+				return;
+			}
+			if (args[1].equalsIgnoreCase("continue"))
+			{
+				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+				WorldServer world = server.worldServers[sender.dimension];
+
+				if (taskGooing != null)
+				{
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_ONLYONCE));
+				}
+				else
+				{
+					taskGooing = new Filler(world, ModuleWorldBorder.shape, false);
 				}
 				return;
 			}
@@ -167,7 +182,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_CONFIRM));
 				return;
 			}
-			if (args[1].equalsIgnoreCase("ok"))
+			if (args[1].equalsIgnoreCase("start"))
 			{
 				if (args.length != 3)
 				{
@@ -184,7 +199,28 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					taskGooing = new Filler(world, ModuleWorldBorder.shape);
+					taskGooing = new Filler(world, ModuleWorldBorder.shape, true);
+				}
+				return;
+			}
+			if (args[1].equalsIgnoreCase("continue"))
+			{
+				if (args.length != 3)
+				{
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_CONSOLENEEDSDIM));
+					return;
+				}
+				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+				int dim = parseInt(sender, args[2]);
+				WorldServer world = server.worldServers[dim];
+
+				if (taskGooing != null)
+				{
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_ONLYONCE));
+				}
+				else
+				{
+					taskGooing = new Filler(world, ModuleWorldBorder.shape, false);
 				}
 				return;
 			}
@@ -239,7 +275,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		}
 		if (args.length == 2 && args[0].equalsIgnoreCase("fill"))
 		{
-			return getListOfStringsMatchingLastWord(args, "ok", "cancel");
+			return getListOfStringsMatchingLastWord(args, "start", "continue", "cancel");
 		}
 		return null;
 	}

@@ -43,12 +43,14 @@ public class Filler implements Runnable
 
 	private MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 	
-	private ArrayList<ChunkCoordIntPair> toDo = new ArrayList<ChunkCoordIntPair>();
+	private static ArrayList<ChunkCoordIntPair> toDo = new ArrayList<ChunkCoordIntPair>();
 
 	private BorderShape shape;
 	
-	public Filler(WorldServer world, BorderShape shape) 
+	public Filler(WorldServer world, BorderShape shape, boolean newList) 
 	{
+		if(newList) toDo = new ArrayList<ChunkCoordIntPair>();
+		
 		isComplete = false;
 		this.world = world;
 		minX = ModuleWorldBorder.minX - ModuleWorldBorder.overGenerate;
@@ -74,7 +76,8 @@ public class Filler implements Runnable
 		try 
 		{
 			warnEveryone(Localization.get(Localization.WB_FILL_START));
-			genList();
+			
+			if(!toDo.isEmpty()) genList();
 			
 			while (!isComplete)
 			{
@@ -90,6 +93,23 @@ public class Filler implements Runnable
 					warnEveryone(world.theChunkProviderServer.makeString()  + " " + "toDo: " + toDo.size());
 				}
 				
+				if(ticks % 50 == 0)
+				{
+					try
+					{
+						boolean var6 = world.canNotSave;
+						world.canNotSave = false;
+						world.saveAllChunks(true, (IProgressUpdate)null);
+						world.canNotSave = var6;
+					}
+					catch (MinecraftException var7)
+					{
+						warnEveryone("Save FAILED!");
+					    return;
+					}
+					world.theChunkProviderServer.unload100OldestChunks();
+				}
+				
 				ChunkCoordIntPair coords = toDo.get(0);
 				
 				try 
@@ -98,8 +118,6 @@ public class Filler implements Runnable
 					{
 						world.theChunkProviderServer.provideChunk(coords.chunkXPos, coords.chunkZPos);
 						world.theChunkProviderServer.unloadChunksIfNotNearSpawn(coords.chunkXPos, coords.chunkZPos);
-						world.theChunkProviderServer.unloadAllChunks();
-						world.theChunkProviderServer.unload100OldestChunks();
 					}
 					toDo.remove(coords);
 				}
@@ -123,6 +141,7 @@ public class Filler implements Runnable
 				warnEveryone("Save FAILED!");
 			    return;
 			}
+			
 			warnEveryone(Localization.get(Localization.WB_FILL_DONE));
 		}
 		catch (Exception e) 
