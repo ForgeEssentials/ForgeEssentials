@@ -96,6 +96,7 @@ public class ForgeEssentials
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
 		
 		OutputHandler.felog = e.getModLog();
+		OutputHandler.felog.setParent(MinecraftServer.logger);
 		
 		config = new CoreConfig();
 
