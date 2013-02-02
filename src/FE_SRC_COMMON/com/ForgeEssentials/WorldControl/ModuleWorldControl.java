@@ -15,7 +15,7 @@ import com.ForgeEssentials.WorldControl.commands.CommandTopManipulate;
 import com.ForgeEssentials.WorldControl.commands.CommandUndo;
 import com.ForgeEssentials.WorldControl.commands.CommandWand;
 import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
-import com.ForgeEssentials.WorldControl.weintegration.WEIntegration;
+//import com.ForgeEssentials.WorldControl.weintegration.WEIntegration;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
@@ -65,6 +65,6 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandTopManipulate("snow", Mode.SNOW));
 		e.registerServerCommand(new CommandTopManipulate("till", Mode.TILL));
 		e.registerServerCommand(new CommandTopManipulate("untill", Mode.UNTILL));
-		WEIntegration.serverStarting(e);
+		//WEIntegration.serverStarting(e);
 	}
 }
