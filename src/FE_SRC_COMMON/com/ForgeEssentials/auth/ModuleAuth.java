@@ -37,6 +37,8 @@ public class ModuleAuth
 	
 	private static boolean vanillaOnlineMode;
 
+	public static boolean allowOfflineReg;
+
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
@@ -76,7 +78,7 @@ public class ModuleAuth
 		return vanillaOnlineMode;
 	}
 	
-	public static void FEAuth(boolean onlineMode)
+	public static void FEAuth(Boolean onlineMode)
 	{
 		if(onlineMode)
 		{

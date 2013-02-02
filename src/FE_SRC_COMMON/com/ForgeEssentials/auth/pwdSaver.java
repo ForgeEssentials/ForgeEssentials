@@ -13,6 +13,19 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class pwdSaver 
 {
+	public static File dir;
+	
+	static
+	{
+		dir = new File(ModuleAuth.config.getFile().getParent(), "playerdata");
+		dir.mkdirs();
+	}
+	
+	public static boolean isRegisted(String username)	
+	{
+		return new File(dir, username + ".pwd").exists();
+	}
+	
 	public static pwdData getData(String username) 
 	{
 		try
