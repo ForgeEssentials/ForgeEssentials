@@ -520,7 +520,7 @@ public class ModuleContainer implements Comparable
 		
 		modid = contain.getModId() + "--" + contain.getVersion();
 
-		OutputHandler.SOP("Modules from " + modid + " are bieng loaded");
+		OutputHandler.SOP("Modules from " + modid + " are being loaded");
 		return obj;
 	}
 }
