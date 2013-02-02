@@ -6,6 +6,7 @@ import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
 import java.io.BufferedReader;
@@ -46,8 +47,6 @@ public class LoginMessage
 				
 				br.close();
 				fr.close();
-				
-				messageList.set(0, CompatReiMinimap.reimotd() + messageList.get(0));
 			}
 			catch (Exception e)
 			{
@@ -92,11 +91,18 @@ public class LoginMessage
 		}
 	}
 	
-	public static void sendLoginMessage(ICommandSender sender)
+	public static void sendLoginMessage(EntityPlayer sender)
 	{
-		for(String line : messageList)
+		for(int id = 0; id < messageList.size(); id++)//String line : messageList)
 		{
-			sender.sendChatToPlayer(Format(line));
+			if(id == 0)
+			{
+				sender.sendChatToPlayer(CompatReiMinimap.reimotd(sender) + Format(messageList.get(id)));
+			}
+			else
+			{
+				sender.sendChatToPlayer(Format(messageList.get(id)));
+			}
 		}
 	}
 

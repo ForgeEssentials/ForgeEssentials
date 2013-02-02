@@ -1,45 +1,45 @@
 package com.ForgeEssentials.core.compat;
 
+import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CompatReiMinimap {
+public class CompatReiMinimap
+{
+	private static final String base = "ForgeEssentials.compat.";
 	
-	public static boolean cavemap;
-
-	public static boolean radarPlayer;
-
-	public static boolean radarAnimal;
-
-	public static boolean radarMod;
-
-	public static boolean radarSlime;
-
-	public static boolean radarSquid;
-
-	public static boolean radarOther;
+	public static final String cavemap 		= base + ".cavemap";
+	public static final String radarPlayer 	= base + ".radarPlayer";
+	public static final String radarAnimal 	= base + ".radarAnimal";
+	public static final String radarMod 	= base + ".radarMod";
+	public static final String radarSlime 	= base + ".radarSlime";
+	public static final String radarSquid 	= base + ".radarSquid";
+	public static final String radarOther 	= base + ".radarOther";
 	
-	public static String reimotd()
+	public static String reimotd(EntityPlayer username)
 	{
 		try
 		{	
 			String MOTD = "\u00a7e\u00a7f";
 			
-			if(radarOther) MOTD 	= "\u00a77" + MOTD;
-			if(radarSquid) MOTD 	= "\u00a76" + MOTD;
-			if(radarSlime) MOTD 	= "\u00a75" + MOTD;
-			if(radarMod) MOTD 		= "\u00a74" + MOTD;
-			if(radarAnimal) MOTD 	= "\u00a73" + MOTD;
-			if(radarPlayer) MOTD 	= "\u00a72" + MOTD;
-			if(cavemap) MOTD 		= "\u00a71" + MOTD;
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, cavemap))) 	MOTD = "\u00a77" + MOTD;
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, radarSquid))) 	MOTD = "\u00a76" + MOTD;
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, radarSlime))) 	MOTD = "\u00a75" + MOTD;
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, radarMod))) 	MOTD = "\u00a74" + MOTD;
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, radarAnimal)))	MOTD = "\u00a73" + MOTD;
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, radarPlayer)))	MOTD = "\u00a72" + MOTD;
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, cavemap))) 	MOTD = "\u00a71" + MOTD;
 			
 			MOTD = "\u00a70\u00a70" + MOTD;
-			
-			OutputHandler.finer("Rei's minimap settings: " + MOTD.replaceAll("\u00a7", "&"));
 			
 			return MOTD;
 		}
 		catch (Exception e)
-		{e.printStackTrace();}
+		{
+			e.printStackTrace();
+		}
 		return "";
 	}
 
