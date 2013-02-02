@@ -19,6 +19,7 @@ public class LoginHandler implements IPlayerTracker
 	public LoginHandler()
 	{
 		unlogged = new ArrayList<String>();
+		OutputHandler.info("FEauth initialized. Enabled: " + ModuleAuth.enabled);
 	}
 
 	@ForgeSubscribe(priority=EventPriority.HIGHEST)

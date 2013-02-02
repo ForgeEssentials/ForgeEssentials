@@ -11,7 +11,9 @@ import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -28,6 +30,9 @@ public class ModuleAuth
 	public static boolean enabled;
 	
 	LoginHandler handler;
+	VanillaServiceChecker vanillaCheck;
+
+	private static boolean vanillaOnlineMode;
 
 	@Init
 	public void load(FEModuleInitEvent e)
@@ -38,19 +43,73 @@ public class ModuleAuth
 			enabled = false;
 			checkVanillaAuthStatus = false;
 		}
-		
-		if (checkVanillaAuthStatus)
-			TickRegistry.registerScheduledTickHandler(new VanillaServiceChecker(), Side.SERVER);
 	}
 
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
-	{
-		if (enabled)
+	{	
+		if (checkVanillaAuthStatus)
+		{
+			vanillaOnlineMode = e.getServer().isServerInOnlineMode();
+			vanillaCheck = new VanillaServiceChecker();
+			TickRegistry.registerScheduledTickHandler(vanillaCheck, Side.SERVER);
+		}
+		
+		if (e.getFMLEvent().getSide().isServer())
 		{
 			handler = new LoginHandler();
 			GameRegistry.registerPlayerTracker(handler);
 			MinecraftForge.EVENT_BUS.register(handler);
+		}
+	}
+	
+	public static boolean getVanillaOnlineMode() 
+	{
+		return vanillaOnlineMode;
+	}
+	
+	public static void FEAuth(boolean onlineMode)
+	{
+		if(onlineMode)
+		{
+			boolean bln = ModuleAuth.getVanillaOnlineMode();
+			
+			if(bln != FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode())
+			{
+				if(bln) OutputHandler.warning("Server set to Online mode!");
+				else 	OutputHandler.warning("Server set to Offline mode!");	
+			}
+			
+			FMLCommonHandler.instance().getMinecraftServerInstance().setOnlineMode(bln);
+			
+			if(!forceEnabled)
+			{
+				OutputHandler.fine("FEauth disabled.");
+				enabled = false;
+			}
+			else
+			{
+				OutputHandler.fine("FEauth remains enabled due to forceEnabled in config.");
+				enabled = true;
+			}
+		}
+		else
+		{
+			if(enabled)
+			{
+				OutputHandler.fine("FEauth remains enabled.");
+			}
+			else
+			{
+				OutputHandler.fine("FEauth enabled.");
+				enabled = true;
+				
+				if(FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode())
+				{
+					FMLCommonHandler.instance().getMinecraftServerInstance().setOnlineMode(false);
+					OutputHandler.warning("Server set to Offline mode!");
+				}
+			}
 		}
 	}
 	
