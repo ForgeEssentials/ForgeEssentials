@@ -120,13 +120,17 @@ public class CommandButcherTickTask implements ITickTask
 							tempCount++;
 						}
 					}
-					else if (shouldKill((EntityLiving) entity, mobType))
-
-						if (tempCount == 29)
-						{
-							tempCount = 0;
-							return;
-						}
+					else if (shouldKill((EntityLiving) entity))
+					{
+						((EntityLiving) entity).setDead();
+						counter++;
+						tempCount++;
+					}
+					if (tempCount == 29)
+					{
+						tempCount = 0;
+						return;
+					}
 				}
 			}
 			isComplete = true;
@@ -142,7 +146,11 @@ public class CommandButcherTickTask implements ITickTask
 					world.getChunkFromChunkCoords(var9, var10).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, (IEntitySelector) null);
 					for (EntityLiving entity : list)
 					{
-						if (mobType.equalsIgnoreCase("boss") || mobType.equalsIgnoreCase("all"))
+						if(entity instanceof EntityPlayer)
+						{
+							continue;
+						}
+						else if (mobType.equalsIgnoreCase("boss") || mobType.equalsIgnoreCase("all"))
 						{
 							typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.BOSS);
 							if (entity instanceof EntityDragon)
@@ -168,13 +176,17 @@ public class CommandButcherTickTask implements ITickTask
 								tempCount++;
 							}
 						}
-						else if (shouldKill((EntityLiving) entity, mobType))
-
-							if (tempCount == 29)
-							{
-								tempCount = 0;
-								return;
-							}
+						else if (shouldKill((EntityLiving) entity))
+						{
+							((EntityLiving) entity).setDead();
+							counter++;
+							tempCount++;
+						}
+						if (tempCount == 29)
+						{
+							tempCount = 0;
+							return;
+						}
 					}
 				}
 			}
@@ -182,7 +194,7 @@ public class CommandButcherTickTask implements ITickTask
 		isComplete = true;
 	}
 
-	private boolean shouldKill(EntityLiving entity, String type)
+	private boolean shouldKill(EntityLiving entity)
 	{
 		Set<String> typeSet, tameableSet;
 
