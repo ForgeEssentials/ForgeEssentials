@@ -123,8 +123,8 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./
 echo "Cleaning up"
 rm -rf ./mods/*
 rm -rf ./coremods/*
-rm -rf "${WORKSPACE}/output/${JOB_NAME}-auth-${MC}-${VERSION}.jar" 
-rm -rf "${WORKSPACE}/output/${JOB_NAME}-backups-${MC}-${VERSION}.jar" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-auth-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-backups-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-chat-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" 
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-commands-${MC}-${VERSION}.zip" 
