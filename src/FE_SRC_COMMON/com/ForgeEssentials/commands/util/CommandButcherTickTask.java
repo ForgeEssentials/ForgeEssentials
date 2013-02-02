@@ -249,6 +249,10 @@ public class CommandButcherTickTask implements ITickTask
 		}
 		else if (mobType.equalsIgnoreCase("tamed"))
 		{
+			if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
+			{
+				return true;
+			}
 			if (MobTypeRegistry.isTamed((EntityLiving) entity))
 			{
 				return true;
