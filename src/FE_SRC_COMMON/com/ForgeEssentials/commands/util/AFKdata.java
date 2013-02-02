@@ -38,11 +38,11 @@ public class AFKdata
 		
 		if(needstowait)
 		{
-			waittime--;
 			if (waittime == 0)
 			{
 				CommandAFK.makeAFK(this);
-			}	
+			}
+			waittime--;
 		}
 	}
 }
