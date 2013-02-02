@@ -114,9 +114,9 @@ public class PlayerInfo
 	public String suffix;
 
 	// 0: Normal 1: World spawn 2: Bed 3: Home
-	@SaveableField
+	@SaveableField(nullableField = true)
 	public int spawnType;
-
+	
 	// undo and redo stuff
 	private Stack<BackupArea> undos;
 	private Stack<BackupArea> redos;

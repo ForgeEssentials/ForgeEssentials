@@ -38,7 +38,6 @@ public class AuthConfig extends ModuleConfigBase
 		config.get(CATEGORY_MAIN, "forceEnable", false, "Forces the module to be loaded regardless of Minecraft auth services").value = ""+ModuleAuth.forceEnabled;
 		config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the module if and when the Minecraft Auth servers go down.").value = ""+ModuleAuth.checkVanillaAuthStatus;
 		
-		
 		config.save();
 	}
 

@@ -35,6 +35,12 @@ public class LoginHandler implements IPlayerTracker
 		}
 	}
 	
+	public void login(EntityPlayer sender)
+	{
+		sender.sendChatToPlayer("Successfully logged in.");
+		unlogged.remove(sender.username);
+	}
+	
 	@Override
 	public void onPlayerLogout(EntityPlayer player)
 	{

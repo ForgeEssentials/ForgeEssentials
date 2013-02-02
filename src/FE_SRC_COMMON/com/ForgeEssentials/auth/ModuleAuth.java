@@ -10,6 +10,8 @@ import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
+import com.ForgeEssentials.auth.commands.CommandLogin;
+import com.ForgeEssentials.auth.commands.CommandRegister;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -29,9 +31,10 @@ public class ModuleAuth
 	
 	public static boolean enabled;
 	
-	LoginHandler handler;
-	VanillaServiceChecker vanillaCheck;
-
+	public static LoginHandler handler;
+	public static VanillaServiceChecker vanillaCheck;
+	public static PasswordEncryptionService pwdEnc;
+	
 	private static boolean vanillaOnlineMode;
 
 	@Init
@@ -43,11 +46,16 @@ public class ModuleAuth
 			enabled = false;
 			checkVanillaAuthStatus = false;
 		}
+		
+		pwdEnc = new PasswordEncryptionService();
 	}
 
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
-	{	
+	{
+		e.registerServerCommand(new CommandLogin());
+		e.registerServerCommand(new CommandRegister());
+		
 		if (checkVanillaAuthStatus)
 		{
 			vanillaOnlineMode = e.getServer().isServerInOnlineMode();
