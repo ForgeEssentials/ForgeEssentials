@@ -5,8 +5,8 @@ The Forge Essentials project consists of a permissions and protection system to 
 Setup
 =====
 Minecraft: 1.4.7  
-MCP: 7.26  
-Forge: #518  
+MCP: <a href="http://www.mediafire.com/?07d59w314ewjfth">7.26</a>
+Forge: <a href="http://adf.ly/673885/http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.4.7-6.6.0.518.zip">#518</a>
 
 Get the mentioned Forge, and decompile (using install.cmd/sh). Once you have a working Forge workspace, pull the repo into that MCP folder.
 
