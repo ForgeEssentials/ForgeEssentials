@@ -31,7 +31,7 @@ public class pwdSaver
 		try
 		{
 			pwdData data = new pwdData();
-			FileInputStream fstream = new FileInputStream(new File(ModuleAuth.config.getFile().getParent(), username + ".pwd"));
+			FileInputStream fstream = new FileInputStream(new File(dir, username + ".pwd"));
 			
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -53,7 +53,7 @@ public class pwdSaver
 	{
 		try
 		{
-			PrintWriter out = new PrintWriter(new FileWriter(new File(ModuleAuth.config.getFile().getParent(), username + ".pwd")));
+			PrintWriter out = new PrintWriter(new FileWriter(new File(dir, username + ".pwd")));
 			
 			out.println(new String(data.encPwd));
 			out.println(new String(data.salt));

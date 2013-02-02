@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import com.ForgeEssentials.commands.util.InvSeeMisk;
 import com.ForgeEssentials.commands.util.PlayerInvChest;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
@@ -8,8 +9,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.network.packet.Packet100OpenWindow;
+import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * Opens other player inventory.
@@ -19,6 +24,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
  */
 public class CommandSeeInventory extends ForgeEssentialsCommandBase
 {
+	private InvSeeMisk invSeeMisk;
+
+	public CommandSeeInventory()
+	{
+		invSeeMisk = new InvSeeMisk();
+		TickRegistry.registerTickHandler(invSeeMisk, Side.SERVER);
+	}
+	
 	@Override
 	public String getCommandName()
 	{
@@ -28,6 +41,7 @@ public class CommandSeeInventory extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		if(!FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
 		EntityPlayerMP player = (EntityPlayerMP) sender;
 		EntityPlayerMP victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 		
@@ -37,7 +51,7 @@ public class CommandSeeInventory extends ForgeEssentialsCommandBase
 		}
 		player.incrementWindowID();
 
-		PlayerInvChest chest = new PlayerInvChest(victim);
+		PlayerInvChest chest = new PlayerInvChest(victim, (EntityPlayerMP) sender);
 		player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, chest.getInvName(), chest.getSizeInventory()));
 		player.openContainer = new ContainerChest(player.inventory, chest);
 		player.openContainer.windowId = player.currentWindowId;
