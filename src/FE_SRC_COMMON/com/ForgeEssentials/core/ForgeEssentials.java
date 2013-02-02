@@ -95,7 +95,9 @@ public class ForgeEssentials
 		else
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
 		
-		OutputHandler.SOP("Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
+		OutputHandler.felog = e.getModLog();
+		
+		OutputHandler.info("Forge Essentials is still in alpha. There are plenty of incomplete features in the mod. We hope to seek your understanding.");
 		config = new CoreConfig();
 
 		// Data API stuff

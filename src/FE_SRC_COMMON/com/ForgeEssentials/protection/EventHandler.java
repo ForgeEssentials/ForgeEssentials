@@ -98,7 +98,7 @@ public class EventHandler
 			result = PermissionsAPI.checkPermAllowed(query);
 		}
 
-		OutputHandler.debug("entityInteractEvent in zone: " + zone.getZoneName() + " result: " + result);
+		OutputHandler.finer("entityInteractEvent in zone: " + zone.getZoneName() + " result: " + result);
 
 		e.setCanceled(!result);
 	}

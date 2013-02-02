@@ -28,7 +28,7 @@ public class ConfigChat extends ModuleConfigBase
 	@Override
 	public void init()
 	{
-		OutputHandler.debug("Loading chatconfigs");
+		OutputHandler.finer("Loading chatconfigs");
 		config = new Configuration(file, true);
 
 		// config.load -- Configurations are loaded on Construction.
@@ -105,7 +105,7 @@ public class ConfigChat extends ModuleConfigBase
 	@Override
 	public void forceLoad(ICommandSender sender)
 	{
-		OutputHandler.debug("Loading chatconfigs");
+		OutputHandler.finer("Loading chatconfigs");
 		config.load();
 
 		chatFormat = config.get("Chat", "chatformat", "%prefix<%username>%suffix %white%message").value;

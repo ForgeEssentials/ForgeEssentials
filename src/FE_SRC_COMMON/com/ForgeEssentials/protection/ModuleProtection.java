@@ -55,7 +55,7 @@ public class ModuleProtection
 		{
 			return;
 		}
-		OutputHandler.SOP("Protection module is enabled. Loading...");
+		OutputHandler.info("Protection module is enabled. Loading...");
 	}
 
 	@Init

@@ -55,7 +55,7 @@ public class ModuleServerVote
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void defVoteResponces(VoteEvent vote)
 	{
-		OutputHandler.debug("Got Vote!");
+		OutputHandler.finer("Got Vote!");
 		
 		/*
 		 * Offline check.
@@ -66,7 +66,7 @@ public class ModuleServerVote
 		{
 			if(!config.allowOfflineVotes)
 			{
-				OutputHandler.SOP("Player for vote not online, vote canceled.");
+				OutputHandler.info("Player for vote not online, vote canceled.");
 				vote.setFeedback("notOnline");
 				vote.setCanceled(true);
 				return;
@@ -92,13 +92,13 @@ public class ModuleServerVote
 		{
 			for(ItemStack stack : config.freeStuff)
 			{
-				OutputHandler.debug(stack);
+				OutputHandler.finer(stack);
 				player.inventory.addItemStackToInventory(stack.copy());
 			}
 		}
 		else
 		{
-			OutputHandler.debug("noFreeStuff :(");
+			OutputHandler.finer("noFreeStuff :(");
 		}
 	}
 }

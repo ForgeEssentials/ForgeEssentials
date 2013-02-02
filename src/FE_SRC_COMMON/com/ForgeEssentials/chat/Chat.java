@@ -50,15 +50,6 @@ public class Chat
 
 		String message = event.message;
 		String nickname = event.username;
-		// Perhaps add option to completely remove message?
-		/*
-		 * if (censor && remove)
-		 * {
-		 * event.setCanceled(true);
-		 * event.player.sendChatToPlayer("Such language is not tolerated.");
-		 * return;
-		 * }
-		 */
 		if (censor)
 		{
 			for (String word : bannedWords)

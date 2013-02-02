@@ -16,8 +16,8 @@ public class MobTypeLoader
 {
 	public static void preLoad(FEModulePreInitEvent event)
 	{
-		OutputHandler.SOP("Discovering and loading modules...");
-		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
+		OutputHandler.info("Discovering and loading modules...");
+		OutputHandler.info("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
 
 		// started ASM handling for the module loaidng.
 		Set<ASMData> data = ((FMLPreInitializationEvent)event.getFMLEvent()).getAsmData().getAll(FEMob.class.getName());
@@ -37,7 +37,7 @@ public class MobTypeLoader
 			}
 			catch (Exception e)
 			{
-				OutputHandler.SOP("Error trying to load " + asm.getClassName() + " as a FEMob!");
+				OutputHandler.info("Error trying to load " + asm.getClassName() + " as a FEMob!");
 				e.printStackTrace();
 				return;
 			}

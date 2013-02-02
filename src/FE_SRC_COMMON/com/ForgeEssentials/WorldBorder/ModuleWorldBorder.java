@@ -55,7 +55,7 @@ public class ModuleWorldBorder implements IScheduledTickHandler
 	public ModuleWorldBorder()
 	{
 		WBenabled = true;
-		OutputHandler.SOP("WorldBorder module is enabled. Loading...");
+		OutputHandler.info("WorldBorder module is enabled. Loading...");
 	}
 
 	@ServerInit
@@ -101,8 +101,8 @@ public class ModuleWorldBorder implements IScheduledTickHandler
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Failed to tick WorldBorder");
-			OutputHandler.SOP("" + e.getLocalizedMessage());
+			OutputHandler.info("Failed to tick WorldBorder");
+			OutputHandler.info("" + e.getLocalizedMessage());
 		}
 	}
 
@@ -255,7 +255,7 @@ public class ModuleWorldBorder implements IScheduledTickHandler
 	{
 		if (logToConsole)
 		{
-			OutputHandler.SOP(player.username + " passed the worldborder by " + dist + " blocks.");
+			OutputHandler.info(player.username + " passed the worldborder by " + dist + " blocks.");
 		}
 	}
 

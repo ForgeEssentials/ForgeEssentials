@@ -129,7 +129,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				OutputHandler.SOP("CommandBlock Error: " + Localization.get("command.warp.notfound"));
+				OutputHandler.info("CommandBlock Error: " + Localization.get("command.warp.notfound"));
 			}
 		}
 	}

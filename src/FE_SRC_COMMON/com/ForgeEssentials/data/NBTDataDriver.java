@@ -83,7 +83,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Writing NBT to " + file + " failed");
+			OutputHandler.info("Writing NBT to " + file + " failed");
 		}
 	}
 

@@ -167,7 +167,7 @@ public class BannedItems
 					if (result.itemID == bannedItem.itemID && (bannedItem.getItemDamage() == -1 || result.getItemDamage() == bannedItem.getItemDamage()))
 					{
 						minecraftRecipes.remove(i);
-						OutputHandler.debug("Recipes removed for item " + bannedItem.itemID);
+						OutputHandler.finer("Recipes removed for item " + bannedItem.itemID);
 						--i;
 					}
 				}

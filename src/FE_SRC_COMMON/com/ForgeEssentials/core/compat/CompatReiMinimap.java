@@ -34,7 +34,7 @@ public class CompatReiMinimap {
 			
 			MOTD = "\u00a70\u00a70" + MOTD;
 			
-			OutputHandler.debug("Rei's minimap settings: " + MOTD.replaceAll("\u00a7", "&"));
+			OutputHandler.finer("Rei's minimap settings: " + MOTD.replaceAll("\u00a7", "&"));
 			
 			return MOTD;
 		}

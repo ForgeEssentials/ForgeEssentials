@@ -147,7 +147,7 @@ public class DBConnector
 					if (con != null)
 						return con;
 					else
-						OutputHandler.SOP("Fallback check and parent check failed, goin to in-house.");
+						OutputHandler.info("Fallback check and parent check failed, goin to in-house.");
 				}
 
 				// continue with stuff
@@ -173,7 +173,7 @@ public class DBConnector
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("In-House check failed, going to default.");
+			OutputHandler.info("In-House check failed, going to default.");
 			e.printStackTrace();
 		}
 
@@ -204,7 +204,7 @@ public class DBConnector
 		}
 		catch(SQLException e)
 		{
-			OutputHandler.SOP("CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
+			OutputHandler.info("CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
 			Throwables.propagate(e);
 		}
 

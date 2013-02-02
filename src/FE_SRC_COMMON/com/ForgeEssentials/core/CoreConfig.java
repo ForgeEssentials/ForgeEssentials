@@ -21,7 +21,7 @@ public class CoreConfig
 	// this is designed so it will work for any class.
 	public CoreConfig()
 	{
-		OutputHandler.debug("Loading configs");
+		OutputHandler.finer("Loading configs");
 
 		config = new Configuration(mainconfig, true);
 
@@ -82,24 +82,4 @@ public class CoreConfig
 		
 		config.get("general", "removeDuplicateCommands", true, "Remove commands from the list if they already exist outside of FE.").value = ""	+ DuplicateCommandRemoval.removeDuplicateCommands;
 	}
-
-	/**
-	 * @param name : ie WorldControl, Commands, Permissions, WorldEditCompat, WorldGuardCompat, etc... whatever comes after Module
-	 * @return boolean
-	 */
-	public boolean isModuleEnabled(String name)
-	{
-		Property prop = config.get("Modules", name + " Enabled", true);
-		return prop.getBoolean(true);
-	}
-
-	public void changeProperty(String category, String property, String newValue)
-	{
-		Property prop = config.get(category, property, newValue);
-		String oldVal = prop.value;
-		prop.value = newValue;
-
-		OutputHandler.logConfigChange(category, property, oldVal, newValue);
-	}
-
 }

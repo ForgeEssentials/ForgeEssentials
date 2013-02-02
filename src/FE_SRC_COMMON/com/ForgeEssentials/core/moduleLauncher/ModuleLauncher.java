@@ -32,8 +32,8 @@ public class ModuleLauncher
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-		OutputHandler.SOP("Discovering and loading modules...");
-		OutputHandler.SOP("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
+		OutputHandler.info("Discovering and loading modules...");
+		OutputHandler.info("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
 
 		// started ASM handling for the module loading.
 		Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
@@ -58,7 +58,7 @@ public class ModuleLauncher
 					containerMap.put(temp.name, temp);
 				
 				temp.createAndPopulate();
-				OutputHandler.SOP("Loaded " + temp.name);
+				OutputHandler.info("Loaded " + temp.name);
 			}
 		}
 

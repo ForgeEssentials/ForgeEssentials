@@ -78,7 +78,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error trying to load " + data.getClassName() + " as a FEModule!");
+			OutputHandler.info("Error trying to load " + data.getClassName() + " as a FEModule!");
 			e.printStackTrace();
 			isValid = false;
 			isCore = false;
@@ -251,7 +251,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP(name + " could not be instantiated. FE will not load this module.");
+			OutputHandler.info(name + " could not be instantiated. FE will not load this module.");
 			e.printStackTrace();
 			isLoadable = false;
 			return;
@@ -293,14 +293,14 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error populating fields of " + name);
+			OutputHandler.info("Error populating fields of " + name);
 			Throwables.propagate(e);
 		}
 
 		// now for the config..
 		if (configClass.equals(DummyConfig.class))
 		{
-			OutputHandler.SOP("No config specified for " + name);
+			OutputHandler.info("No config specified for " + name);
 			configObj = null;
 			return;
 		}
@@ -319,7 +319,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error Instantiating or populating config for " + name);
+			OutputHandler.info("Error Instantiating or populating config for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -340,7 +340,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error while invoking preInit event for " + name);
+			OutputHandler.info("Error while invoking preInit event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -359,7 +359,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error while invoking Init event for " + name);
+			OutputHandler.info("Error while invoking Init event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -378,7 +378,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error while invoking PostInit event for " + name);
+			OutputHandler.info("Error while invoking PostInit event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -397,7 +397,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error while invoking ServerInit event for " + name);
+			OutputHandler.info("Error while invoking ServerInit event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -416,7 +416,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error while invoking ServerPostInit event for " + name);
+			OutputHandler.info("Error while invoking ServerPostInit event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -435,7 +435,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error while invoking ServerStop event for " + name);
+			OutputHandler.info("Error while invoking ServerStop event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -453,7 +453,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error while invoking Reload method for " + name);
+			OutputHandler.info("Error while invoking Reload method for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -520,7 +520,7 @@ public class ModuleContainer implements Comparable
 		
 		modid = contain.getModId() + "--" + contain.getVersion();
 
-		OutputHandler.SOP("Modules from " + modid + " are being loaded");
+		OutputHandler.info("Modules from " + modid + " are being loaded");
 		return obj;
 	}
 }

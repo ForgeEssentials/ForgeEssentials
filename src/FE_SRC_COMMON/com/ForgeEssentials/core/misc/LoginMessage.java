@@ -51,7 +51,7 @@ public class LoginMessage
 			}
 			catch (Exception e)
 			{
-				OutputHandler.SOP("Error reading the MOTD file.");
+				OutputHandler.info("Error reading the MOTD file.");
 				e.printStackTrace();
 			}
 		}
@@ -85,7 +85,7 @@ public class LoginMessage
 			}
 			catch (Exception e)
 			{
-				OutputHandler.SOP("Error reading the MOTD file.");
+				OutputHandler.info("Error reading the MOTD file.");
 				e.printStackTrace();
 			}
 			

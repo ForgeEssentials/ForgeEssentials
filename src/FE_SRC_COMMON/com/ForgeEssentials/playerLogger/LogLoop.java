@@ -18,7 +18,7 @@ public class LogLoop implements Runnable
 	@Override
 	public void run()
 	{
-		OutputHandler.debug("Started running the logger " + run);
+		OutputHandler.finer("Started running the logger " + run);
 		while (run)
 		{
 			int i = 0;
@@ -42,7 +42,7 @@ public class LogLoop implements Runnable
 	{
 		try
 		{
-			OutputHandler.debug("Trying to make " + buffer.size() + " logs.");
+			OutputHandler.finer("Trying to make " + buffer.size() + " logs.");
 			Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
 			List<logEntry> temp = new ArrayList<logEntry>(buffer);
 			for (logEntry type : ModulePlayerLogger.logTypes)
@@ -51,12 +51,12 @@ public class LogLoop implements Runnable
 			}
 			buffer.removeAll(temp);
 			connection.close();
-			OutputHandler.debug("Made " + temp.size() + " logs.");
+			OutputHandler.finer("Made " + temp.size() + " logs.");
 		}
 		catch (SQLException e1)
 		{
-			OutputHandler.SOP("Could not connect to database!");
-			OutputHandler.SOP(e1.getMessage());
+			OutputHandler.info("Could not connect to database!");
+			OutputHandler.info(e1.getMessage());
 			e1.printStackTrace();
 		}
 	}

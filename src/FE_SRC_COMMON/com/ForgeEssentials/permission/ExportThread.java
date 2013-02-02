@@ -59,6 +59,6 @@ public class ExportThread extends Thread
 		if (user instanceof EntityPlayer)
 			user.sendChatToPlayer("[PermSQL]"+msg);
 		else
-			OutputHandler.SOP("[PermSQL]" + msg);
+			OutputHandler.info("[PermSQL]" + msg);
 	}
 }

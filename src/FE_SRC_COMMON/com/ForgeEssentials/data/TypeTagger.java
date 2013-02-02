@@ -152,7 +152,7 @@ public class TypeTagger
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Reflection error trying to get UniqueLoadingKey from " + objectSaved.getClass() + ". FE will continue without saving this.");
+			OutputHandler.info("Reflection error trying to get UniqueLoadingKey from " + objectSaved.getClass() + ". FE will continue without saving this.");
 			e.printStackTrace();
 		}
 
@@ -187,7 +187,7 @@ public class TypeTagger
 				if (currentClass == null)
 				{
 					// Unless this happens. (Note: This shouldn't happen.)
-					OutputHandler.SOP("Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.");
+					OutputHandler.info("Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.");
 					e.printStackTrace();
 				}
 				--i;
@@ -195,7 +195,7 @@ public class TypeTagger
 			catch (Throwable e)
 			{
 				// This... Should not happen. Unless something stupid.
-				OutputHandler.SOP("Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.");
+				OutputHandler.info("Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.");
 				e.printStackTrace();
 			}
 		}

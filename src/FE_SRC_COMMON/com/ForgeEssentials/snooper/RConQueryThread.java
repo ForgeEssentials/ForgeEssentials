@@ -360,7 +360,7 @@ public class RConQueryThread implements Runnable
 	 */
 	protected void logDebug(String par1Str)
 	{
-		OutputHandler.debug(par1Str);
+		OutputHandler.finer(par1Str);
 	}
 
 	/**

@@ -33,7 +33,7 @@ public class ModuleBackup
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		OutputHandler.SOP("Backup module is enabled. Loading...");
+		OutputHandler.info("Backup module is enabled. Loading...");
 	}
 
 	@Init

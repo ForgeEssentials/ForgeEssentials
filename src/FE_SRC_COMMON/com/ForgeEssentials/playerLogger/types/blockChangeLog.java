@@ -44,9 +44,9 @@ public class blockChangeLog extends logEntry
 			HashMap<String, String> data = new HashMap();
 			data.put(te.getClass().getName(), TextFormatter.toJSONnbtComp(nbt));
 			this.te = TextFormatter.toJSON(data);
-			OutputHandler.debug(te.getClass().getSimpleName());
-			OutputHandler.debug(this.te);
-			OutputHandler.debug(this.te.length());
+			OutputHandler.finer(te.getClass().getSimpleName());
+			OutputHandler.finer(this.te);
+			OutputHandler.finer(this.te.length());
 		}
 	}
 	

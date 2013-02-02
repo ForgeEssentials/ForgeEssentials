@@ -45,12 +45,12 @@ public class CommandRules extends ForgeEssentialsCommandBase
 
 		// somehow a new rules.txt is generated EVERY load.
 
-		OutputHandler.SOP("Loading rules");
+		OutputHandler.info("Loading rules");
 		if (!rulesFile.exists())
 		{
 			try
 			{
-				OutputHandler.SOP("No rules file found. Generating with default rules..");
+				OutputHandler.info("No rules file found. Generating with default rules..");
 
 				rulesFile.createNewFile();
 
@@ -74,7 +74,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				streamWriter.close();
 				stream.close();
 
-				OutputHandler.SOP("Completed generating rules file.");
+				OutputHandler.info("Completed generating rules file.");
 			}
 			catch (Exception e)
 			{
@@ -86,7 +86,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		{
 			try
 			{
-				OutputHandler.SOP("Rules file found. Reading...");
+				OutputHandler.info("Rules file found. Reading...");
 
 				FileInputStream stream = new FileInputStream(rulesFile);
 				InputStreamReader streamReader = new InputStreamReader(stream);
@@ -118,7 +118,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				streamReader.close();
 				stream.close();
 
-				OutputHandler.SOP("Completed reading rules file. " + counter + " rules read.");
+				OutputHandler.info("Completed reading rules file. " + counter + " rules read.");
 			}
 			catch (Exception e)
 			{
@@ -134,7 +134,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	{
 		try
 		{
-			OutputHandler.SOP("Saving rules");
+			OutputHandler.info("Saving rules");
 
 			if (!rulesFile.exists())
 			{
@@ -159,7 +159,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			streamWriter.close();
 			stream.close();
 
-			OutputHandler.SOP("Completed saving rules file.");
+			OutputHandler.info("Completed saving rules file.");
 		}
 		catch (Exception e)
 		{

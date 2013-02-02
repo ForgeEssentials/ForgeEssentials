@@ -40,6 +40,6 @@ public class TickTaskFillRound extends TickTaskFill
 				}
 			}
 		}
-		OutputHandler.SOP(toDo.size() + " chunks to generate.");
+		OutputHandler.info(toDo.size() + " chunks to generate.");
 	}
 }

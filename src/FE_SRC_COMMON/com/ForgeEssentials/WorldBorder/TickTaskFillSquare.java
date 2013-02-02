@@ -39,6 +39,6 @@ public class TickTaskFillSquare extends TickTaskFill
 				toDo.add(new ChunkCoordIntPair(X, Z));
 			}
 		}
-		OutputHandler.SOP(toDo.size() + " chunks to generate.");
+		OutputHandler.info(toDo.size() + " chunks to generate.");
 	}
 }

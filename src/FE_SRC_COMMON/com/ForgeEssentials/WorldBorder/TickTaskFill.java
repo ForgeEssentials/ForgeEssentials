@@ -95,7 +95,7 @@ public abstract class TickTaskFill implements ITickTask
 
 	public void warnEveryone(String msg)
 	{
-		OutputHandler.SOP("#### " + msg);
+		OutputHandler.info("#### " + msg);
 		for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
 		{
 			((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2))
@@ -155,17 +155,17 @@ public abstract class TickTaskFill implements ITickTask
 				{
 					--chunksAtick;
 				}
-				OutputHandler.debug("WB Autopilot: Less CPT:" + chunksAtick + " TPS:" + tps + " < " + targetTPS);
+				OutputHandler.finer("WB Autopilot: Less CPT:" + chunksAtick + " TPS:" + tps + " < " + targetTPS);
 			}
 			else if (tps - 2 > targetTPS)
 			{
 				// We can handle more!
 				++chunksAtick;
-				OutputHandler.debug("WB Autopilot: More CPT:" + chunksAtick + " TPS:" + tps + " > " + targetTPS);
+				OutputHandler.finer("WB Autopilot: More CPT:" + chunksAtick + " TPS:" + tps + " > " + targetTPS);
 			}
 			else
 			{
-				OutputHandler.debug("WB Autopilot: Good CPT:" + chunksAtick + " TPS:" + tps + " ~~ " + targetTPS);
+				OutputHandler.finer("WB Autopilot: Good CPT:" + chunksAtick + " TPS:" + tps + " ~~ " + targetTPS);
 			}
 		}
 		
@@ -238,7 +238,7 @@ public abstract class TickTaskFill implements ITickTask
 	{
 		if(debug)
 		{
-			OutputHandler.debug(string);
+			OutputHandler.finer(string);
 		}
 	}
 }

@@ -67,7 +67,7 @@ public class ModulePlayerLogger
 		{
 			return;
 		}
-		OutputHandler.SOP("PlayerLogger module is enabled. Loading...");
+		OutputHandler.info("PlayerLogger module is enabled. Loading...");
 	}
 
 	@Init
@@ -122,8 +122,8 @@ public class ModulePlayerLogger
 		}
 		catch (SQLException e1)
 		{
-			OutputHandler.SOP("Could not connect to database! Wrong credentials?");
-			OutputHandler.SOP(e1.getMessage());
+			OutputHandler.info("Could not connect to database! Wrong credentials?");
+			OutputHandler.info(e1.getMessage());
 			e1.printStackTrace();
 		}
 	}
@@ -142,7 +142,7 @@ public class ModulePlayerLogger
 		}
 		catch (Exception ex)
 		{
-			OutputHandler.SOP("WARNING! MySQLConnector for playerLogger failed!");
+			OutputHandler.info("WARNING! MySQLConnector for playerLogger failed!");
 		}
 	}
 

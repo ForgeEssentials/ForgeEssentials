@@ -20,7 +20,7 @@ public class ItemList
 	{
 		instance = this;
 		makeList();
-		OutputHandler.SOP("Item & blockList made. Added " + itemMap.size() + " items and " + blockMap.size() + " blocks.");
+		OutputHandler.info("Item & blockList made. Added " + itemMap.size() + " items and " + blockMap.size() + " blocks.");
 	}
 
 	public static ItemList instance()
@@ -40,7 +40,7 @@ public class ItemList
 				}
 				catch (Exception e)
 				{
-					OutputHandler.debug("Not added to list: " + item.getClass().getName());
+					OutputHandler.finer("Not added to list: " + item.getClass().getName());
 				}
 			}
 		}
@@ -56,7 +56,7 @@ public class ItemList
 				}
 				catch (Exception e)
 				{
-					OutputHandler.debug("Not added to list: " + block.getClass().getName());
+					OutputHandler.finer("Not added to list: " + block.getClass().getName());
 				}
 			}
 		}

@@ -90,7 +90,7 @@ public class VoteReceiver extends Thread
 		{
 			server = new ServerSocket();
 			server.bind(new InetSocketAddress(host, port));
-			OutputHandler.SOP("Votifier connection handler initialized!");
+			OutputHandler.info("Votifier connection handler initialized!");
 		}
 		catch (Exception ex) 
 		{

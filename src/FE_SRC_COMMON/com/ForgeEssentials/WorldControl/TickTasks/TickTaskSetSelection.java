@@ -134,7 +134,7 @@ public class TickTaskSetSelection implements ITickTask
 			catch (Exception e)
 			{
 				blockName = blockID + ":" + metadata;
-				OutputHandler.SOP("Could not retrieve the name of the block represented by ID " + blockID + " with meta " + metadata
+				OutputHandler.info("Could not retrieve the name of the block represented by ID " + blockID + " with meta " + metadata
 						+ ". This is a problem in the mod that provides the block, caused by not supporting getDisplayName for their block.");
 			}
 		}

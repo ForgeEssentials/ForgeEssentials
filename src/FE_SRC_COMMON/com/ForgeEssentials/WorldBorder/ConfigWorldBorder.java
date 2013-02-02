@@ -69,12 +69,12 @@ public class ConfigWorldBorder extends ModuleConfigBase
 					}
 					catch (Exception e)
 					{
-						OutputHandler.SOP("Could not initialize '" + effect + "' in stage '" + stage + "'");
+						OutputHandler.info("Could not initialize '" + effect + "' in stage '" + stage + "'");
 					}
 				}
 				catch (ClassNotFoundException e)
 				{
-					OutputHandler.SOP("'" + effect + "' in the stage '" + stage + "' does not exist!");
+					OutputHandler.info("'" + effect + "' in the stage '" + stage + "' does not exist!");
 				}
 			}
 

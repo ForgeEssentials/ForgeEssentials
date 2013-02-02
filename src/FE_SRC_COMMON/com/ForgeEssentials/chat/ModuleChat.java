@@ -52,7 +52,7 @@ public class ModuleChat
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		OutputHandler.SOP("Chat module is enabled. Loading...");
+		OutputHandler.info("Chat module is enabled. Loading...");
 	}
 
 	@Init
@@ -124,15 +124,15 @@ public class ModuleChat
 						}
 						catch (Exception e)
 						{
-							OutputHandler.debug("Can't remove " + cmd.getCommandName());
-							OutputHandler.debug("" + e.getLocalizedMessage());
+							OutputHandler.finer("Can't remove " + cmd.getCommandName());
+							OutputHandler.finer("" + e.getLocalizedMessage());
 							e.printStackTrace();
 						}
 					}
 				}
 				if (toRemove != null)
 				{
-					OutputHandler.debug("Removing command '" + toRemove.getCommandName() + "' from class: " + cmdClass.getName());
+					OutputHandler.finer("Removing command '" + toRemove.getCommandName() + "' from class: " + cmdClass.getName());
 					cmdList.remove(toRemove);
 				}
 				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, "commandSet", "b");
@@ -140,7 +140,7 @@ public class ModuleChat
 				Map cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandMap", "a");
 				if (cmds.containsKey("tell"))
 				{
-					OutputHandler.debug("Removing command tell from vanilla set.");
+					OutputHandler.finer("Removing command tell from vanilla set.");
 					cmds.remove("tell");
 					cmds.put("tell", new CommandMsg());
 				}

@@ -66,7 +66,7 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Error creating packet >> " + this.getClass());
+			OutputHandler.info("Error creating packet >> " + this.getClass());
 		}
 	}
 

@@ -28,7 +28,7 @@ public class ResponseRegistry
 		}
 		else
 		{
-			OutputHandler.debug("Response " + response.getName() + " ID: " + ID + " registered!");
+			OutputHandler.finer("Response " + response.getName() + " ID: " + ID + " registered!");
 			map.put(ID, response);
 		}
 	}

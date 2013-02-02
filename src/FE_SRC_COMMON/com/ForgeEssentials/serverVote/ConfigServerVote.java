@@ -87,7 +87,7 @@ public class ConfigServerVote extends ModuleConfigBase
 			int id = Integer.parseInt(temp);
 			ItemStack stack = new ItemStack(id, amount, meta);
 			
-			OutputHandler.debug(stack);
+			OutputHandler.finer(stack);
 			
 			freeStuff.add(stack);
 		}
@@ -124,7 +124,7 @@ public class ConfigServerVote extends ModuleConfigBase
 		{
 			try
 			{
-				OutputHandler.SOP("Generating RSA key pair...");
+				OutputHandler.info("Generating RSA key pair...");
 				
 				keyFolder.mkdirs();
 				KeyPairGenerator keygen = KeyPairGenerator.getInstance("RSA");
@@ -144,7 +144,7 @@ public class ConfigServerVote extends ModuleConfigBase
 				out.write(DatatypeConverter.printBase64Binary(privateSpec.getEncoded()).getBytes());
 				out.close();
 				
-				OutputHandler.SOP("RSA key pair made!");
+				OutputHandler.info("RSA key pair made!");
 			}
 			catch (Exception e)
 			{
@@ -155,7 +155,7 @@ public class ConfigServerVote extends ModuleConfigBase
 		{
 			try
 			{
-				OutputHandler.SOP("Loading RSA key pair...");
+				OutputHandler.info("Loading RSA key pair...");
 				
 				FileInputStream in = new FileInputStream(publicFile);
 				byte[] encodedPublicKey = new byte[(int) publicFile.length()];
@@ -176,7 +176,7 @@ public class ConfigServerVote extends ModuleConfigBase
 				privateKey = keyFactory.generatePrivate(privateKeySpec);
 				
 				keyPair = new KeyPair(publicKey, privateKey);
-				OutputHandler.SOP("RSA key pair loaded!");
+				OutputHandler.info("RSA key pair loaded!");
 			}
 			catch(Exception e)
 			{

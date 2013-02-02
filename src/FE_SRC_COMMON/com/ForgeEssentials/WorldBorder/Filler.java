@@ -193,13 +193,13 @@ public class Filler implements Runnable
 	{
 		if(debug)
 		{
-			OutputHandler.debug(string);
+			OutputHandler.finer(string);
 		}
 	}
 
 	public void warnEveryone(String msg)
 	{
-		OutputHandler.SOP("#### " + msg);
+		OutputHandler.info("#### " + msg);
 		for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
 		{
 			((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2))

@@ -95,8 +95,8 @@ public class StorageManager implements IStorageManager
 			}
 			catch (Exception e)
 			{
-				OutputHandler.SOP("Problem loading DataDriver " + entry.getKey());
-				OutputHandler.SOP("ForgeEssentials will not be able to save any data through this driver");
+				OutputHandler.info("Problem loading DataDriver " + entry.getKey());
+				OutputHandler.info("ForgeEssentials will not be able to save any data through this driver");
 				e.printStackTrace();
 			}
 		}
@@ -122,8 +122,8 @@ public class StorageManager implements IStorageManager
 		}
 		catch (Exception e)
 		{
-			OutputHandler.SOP("Problem initializing DataDriver " + name);
-			OutputHandler.SOP("ForgeEssentials will not be able to save any data through this driver");
+			OutputHandler.info("Problem initializing DataDriver " + name);
+			OutputHandler.info("ForgeEssentials will not be able to save any data through this driver");
 			e.printStackTrace();
 		}
 	}

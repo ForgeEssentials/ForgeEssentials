@@ -581,7 +581,7 @@ public class SqlHelper
 			throw new RuntimeException(e.getMessage());
 		}
 
-		OutputHandler.SOP("Statement preparation successful");
+		OutputHandler.info("Statement preparation successful");
 	}
 
 	// ---------------------------------------------------------------------------------------------------
@@ -611,7 +611,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("Unable to connect to the database!");
+			OutputHandler.info("Unable to connect to the database!");
 			Throwables.propagate(e);
 		}
 	}
@@ -745,7 +745,7 @@ public class SqlHelper
 			return;
 		try
 		{
-			OutputHandler.SOP(" Inserting registration permissions into Permissions DB");
+			OutputHandler.info(" Inserting registration permissions into Permissions DB");
 
 			// make a statement to be used later.. just easier...
 			PreparedStatement s;
@@ -830,7 +830,7 @@ public class SqlHelper
 			}
 			s.clearParameters();
 
-			OutputHandler.SOP(" Registration permissions successfully inserted");
+			OutputHandler.info(" Registration permissions successfully inserted");
 		}
 		catch (SQLException e)
 		{
@@ -852,7 +852,7 @@ public class SqlHelper
 		try
 		{
 			File file = new File(ModulePermissions.permsFolder, importDir);
-			OutputHandler.SOP("[PermSQL] Importing permissions from " + importDir);
+			OutputHandler.info("[PermSQL] Importing permissions from " + importDir);
 
 			FlatFileGroups g = new FlatFileGroups(file);
 			HashMap<String, Object> map = g.load();
@@ -863,7 +863,7 @@ public class SqlHelper
 			FlatFilePermissions pm = new FlatFilePermissions(file);
 			map.putAll(pm.load());
 
-			OutputHandler.SOP("[PermSQL] Loaded Configs into ram");
+			OutputHandler.info("[PermSQL] Loaded Configs into ram");
 
 			// KILL ALL DE DATA!!!!
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_PERMISSION);
@@ -871,7 +871,7 @@ public class SqlHelper
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_LADDER_NAME);
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_GROUP_CONNECTOR);
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_PLAYER);
-			OutputHandler.SOP("[PermSQL] Cleaned tables of existing data");
+			OutputHandler.info("[PermSQL] Cleaned tables of existing data");
 
 			// call generate to remake the stuff that should be there
 			{
@@ -905,7 +905,7 @@ public class SqlHelper
 				s.executeUpdate();
 			}
 			s.clearParameters();
-			OutputHandler.SOP("[PermSQL] Imported players");
+			OutputHandler.info("[PermSQL] Imported players");
 
 			// create groups
 			s = instance.statementPutPlayerInGroup;
@@ -949,7 +949,7 @@ public class SqlHelper
 			// update groups with true parents..
 			for (Group group : (ArrayList<Group>) map.get("groups"))
 				updateGroup(group);
-			OutputHandler.SOP("[PermSQL] Imported groups");
+			OutputHandler.info("[PermSQL] Imported groups");
 
 			// add groups to ladders and stuff
 			s = statementPutLadderName;
@@ -969,7 +969,7 @@ public class SqlHelper
 					s2.executeUpdate();
 				}
 			}
-			OutputHandler.SOP("[PermSQL] Imported ladders");
+			OutputHandler.info("[PermSQL] Imported ladders");
 
 			// now the permissions
 			ArrayList<PermissionHolder> perms = (ArrayList<PermissionHolder>) map.get("playerPerms");
@@ -984,9 +984,9 @@ public class SqlHelper
 				setPermission(perm.target, true, perm, perm.zone);
 			}
 
-			OutputHandler.SOP("[PermSQL] Imported permissions");
+			OutputHandler.info("[PermSQL] Imported permissions");
 
-			OutputHandler.SOP("[PermSQL] Import successful!");
+			OutputHandler.info("[PermSQL] Import successful!");
 		}
 		catch (SQLException e)
 		{
@@ -1077,7 +1077,7 @@ public class SqlHelper
 
 			if (lID < -4 || zID < -4 || pID < -4)
 			{
-				OutputHandler.SOP("Ladder, Player, or Zone does not exist!");
+				OutputHandler.info("Ladder, Player, or Zone does not exist!");
 				return end;
 			}
 
@@ -1708,7 +1708,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("[PermSQL] Player dump for export failed!");
+			OutputHandler.info("[PermSQL] Player dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -1741,7 +1741,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("[PermSQL] Group dump for export failed!");
+			OutputHandler.info("[PermSQL] Group dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -1770,7 +1770,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("[PermSQL] Player Permission dump for export failed!");
+			OutputHandler.info("[PermSQL] Player Permission dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -1799,7 +1799,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("[PermSQL] Group Permission dump for export failed!");
+			OutputHandler.info("[PermSQL] Group Permission dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -1840,7 +1840,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("[PermSQL] Group Connection dump for export failed!");
+			OutputHandler.info("[PermSQL] Group Connection dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -1900,7 +1900,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.SOP("[PermSQL] Ladder dump for export failed!");
+			OutputHandler.info("[PermSQL] Ladder dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}

@@ -53,12 +53,12 @@ public class DataStorage
 			}
 			catch (FileNotFoundException e)
 			{
-				OutputHandler.SOP("Failed while reading file: " + DATAFILE.getName());
+				OutputHandler.info("Failed while reading file: " + DATAFILE.getName());
 				e.printStackTrace();
 			}
 			catch (IOException e)
 			{
-				OutputHandler.SOP("Failed while reading file: " + DATAFILE.getName());
+				OutputHandler.info("Failed while reading file: " + DATAFILE.getName());
 				e.printStackTrace();
 			}
 		}
@@ -83,12 +83,12 @@ public class DataStorage
 		}
 		catch (FileNotFoundException e)
 		{
-			OutputHandler.SOP("Failed while writing file: " + DATAFILE.getName());
+			OutputHandler.info("Failed while writing file: " + DATAFILE.getName());
 			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			OutputHandler.SOP("Failed while writing file: " + DATAFILE.getName());
+			OutputHandler.info("Failed while writing file: " + DATAFILE.getName());
 			e.printStackTrace();
 		}
 

@@ -52,32 +52,32 @@ public class PermRegLoader
 			}
 			catch (ClassNotFoundException e)
 			{
-				OutputHandler.SOP("Error trying to load permissions from \"" + modid + "\"!");
+				OutputHandler.info("Error trying to load permissions from \"" + modid + "\"!");
 				e.printStackTrace();
 			}
 			catch (NoSuchMethodException e)
 			{
-				OutputHandler.SOP("Error trying to load permissions from \"" + modid + "\"!");
+				OutputHandler.info("Error trying to load permissions from \"" + modid + "\"!");
 				e.printStackTrace();
 			}
 			catch (SecurityException e)
 			{
-				OutputHandler.SOP("Error trying to load permissions from \"" + modid + "\"!");
+				OutputHandler.info("Error trying to load permissions from \"" + modid + "\"!");
 				e.printStackTrace();
 			}
 			catch (IllegalAccessException e)
 			{
-				OutputHandler.SOP("Error trying to load permissions from \"" + modid + "\"!");
+				OutputHandler.info("Error trying to load permissions from \"" + modid + "\"!");
 				e.printStackTrace();
 			}
 			catch (IllegalArgumentException e)
 			{
-				OutputHandler.SOP("Error trying to load permissions from \"" + modid + "\"!");
+				OutputHandler.info("Error trying to load permissions from \"" + modid + "\"!");
 				e.printStackTrace();
 			}
 			catch (InvocationTargetException e)
 			{
-				OutputHandler.SOP("Error trying to load permissions from \"" + modid + "\"!");
+				OutputHandler.info("Error trying to load permissions from \"" + modid + "\"!");
 				e.printStackTrace();
 			}
 		}
