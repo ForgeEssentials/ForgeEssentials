@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.src.BaseMod;
 
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -34,7 +33,6 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -505,7 +503,7 @@ public class ModuleContainer implements Comparable
 	{
 		String modid;
 		Object obj = null;
-		
+
 		ModContainer contain = null;
 		for (ModContainer container : Loader.instance().getModList())
 			if (container.getMod() != null && container.getMod().getClass().equals(c))
@@ -514,10 +512,10 @@ public class ModuleContainer implements Comparable
 				obj = container.getMod();
 				break;
 			}
-		
+
 		if (obj == null || contain == null)
 			throw new RuntimeException(c + " isn't an loaded mod class!");
-		
+
 		modid = contain.getModId() + "--" + contain.getVersion();
 
 		OutputHandler.info("Modules from " + modid + " are being loaded");

@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import com.ForgeEssentials.api.commands.EnumMobType;
 import com.ForgeEssentials.commands.util.CommandButcherTickTask;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
@@ -36,7 +37,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		double centerX = sender.posX;
 		double centerY = sender.posY;
 		double centerZ = sender.posZ;
-		String mobType = "hostile";
+		String mobType = EnumMobType.HOSTILE.toString();
 
 		if (args.length > 0)
 		{
