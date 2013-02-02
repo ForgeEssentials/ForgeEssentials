@@ -53,23 +53,6 @@ public class CoreConfig
 		prop.comment = "If +50% of players sleep, make it day.";
 		MiscEventHandler.MajoritySleep = prop.getBoolean(true);
 
-		config.addCustomCategoryComment("Core.ReisMinimap", "Use this to enable certain Rei's Minimap options. They will be added to the server's MOTD automatically.");
-
-		prop = config.get("Core.ReisMinimap", "caveMap", false);
-		CompatReiMinimap.cavemap = prop.getBoolean(false);
-		prop = config.get("Core.ReisMinimap", "radarPlayer", false);
-		CompatReiMinimap.radarPlayer = prop.getBoolean(false);
-		prop = config.get("Core.ReisMinimap", "radarAnimal", false);
-		CompatReiMinimap.radarAnimal = prop.getBoolean(false);
-		prop = config.get("Core.ReisMinimap", "radarMod", false);
-		CompatReiMinimap.radarMod = prop.getBoolean(false);
-		prop = config.get("Core.ReisMinimap", "radarSlime", false);
-		CompatReiMinimap.radarSlime = prop.getBoolean(false);
-		prop = config.get("Core.ReisMinimap", "radarSquid", false);
-		CompatReiMinimap.radarSquid = prop.getBoolean(false);
-		prop = config.get("Core.ReisMinimap", "radarOther", false);
-		CompatReiMinimap.radarOther = prop.getBoolean(false);
-
 		config.save();
 	}
 

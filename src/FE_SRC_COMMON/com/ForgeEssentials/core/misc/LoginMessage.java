@@ -91,13 +91,20 @@ public class LoginMessage
 		}
 	}
 	
-	public static void sendLoginMessage(EntityPlayer sender)
+	public static void sendLoginMessage(ICommandSender sender)
 	{
 		for(int id = 0; id < messageList.size(); id++)//String line : messageList)
 		{
 			if(id == 0)
 			{
-				sender.sendChatToPlayer(CompatReiMinimap.reimotd(sender) + Format(messageList.get(id)));
+				if(sender instanceof EntityPlayer)
+				{
+					sender.sendChatToPlayer(CompatReiMinimap.reimotd((EntityPlayer) sender) + Format(messageList.get(id)));	
+				}
+				else
+				{
+					sender.sendChatToPlayer(Format(messageList.get(id)));
+				}
 			}
 			else
 			{
