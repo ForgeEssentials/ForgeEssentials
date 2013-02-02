@@ -32,6 +32,11 @@ public class MobTypeRegistry
 		return MobTypeRegistry.get(type);
 	}
 
+	/**
+	 * Internally checks for if the mob is tameable...
+	 * @param mob
+	 * @return
+	 */
 	public static boolean isTamed(EntityLiving mob)
 	{
 		if (mob instanceof EntityTameable)
