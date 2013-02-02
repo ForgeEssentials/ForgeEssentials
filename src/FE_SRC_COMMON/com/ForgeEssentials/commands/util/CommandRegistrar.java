@@ -23,6 +23,7 @@ import com.ForgeEssentials.commands.CommandI;
 import com.ForgeEssentials.commands.CommandJump;
 import com.ForgeEssentials.commands.CommandKill;
 import com.ForgeEssentials.commands.CommandKit;
+import com.ForgeEssentials.commands.CommandLocate;
 import com.ForgeEssentials.commands.CommandModlist;
 import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandPing;
@@ -53,6 +54,7 @@ public class CommandRegistrar
 	static
 	{
 		cmdList.add(new CommandMotd());
+		cmdList.add(new CommandLocate());
 		cmdList.add(new CommandRules());
 		cmdList.add(new CommandModlist());
 		cmdList.add(new CommandButcher());
