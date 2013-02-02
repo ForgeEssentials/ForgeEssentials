@@ -12,6 +12,8 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class CommandRegister extends ForgeEssentialsCommandBase 
 {
 
@@ -20,7 +22,7 @@ public class CommandRegister extends ForgeEssentialsCommandBase
 	{
 		return "register";
 	}
-
+	
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args) 
 	{
@@ -30,22 +32,34 @@ public class CommandRegister extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			try 
+			if(FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode())
 			{
-				String pass = args[0];
-				pwdData data = new pwdData();
-				data.salt = ModuleAuth.pwdEnc.generateSalt();
-				data.encPwd = ModuleAuth.pwdEnc.getEncryptedPassword(pass, data.salt);
-				pwdSaver.setData(sender.username, data);
+				register(sender, args[0]);
 			}
-			catch (Exception e) 
+			else if(!FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode() && ModuleAuth.allowOfflineReg)
 			{
-				OutputHandler.chatError(sender, e.toString());
-				e.printStackTrace();
+				register(sender, args[0]);
 			}
 		}
 	}
-
+	
+	public void register(EntityPlayer sender, String pass)
+	{
+		try 
+		{
+			pwdData data = new pwdData();
+			data.salt = ModuleAuth.pwdEnc.generateSalt();
+			data.encPwd = ModuleAuth.pwdEnc.getEncryptedPassword(pass, data.salt);
+			pwdSaver.setData(sender.username, data);
+			sender.sendChatToPlayer("You have been registerd. Use /login <pwd>");
+		}
+		catch (Exception e) 
+		{
+			OutputHandler.chatError(sender, e.toString());
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args) {}
 

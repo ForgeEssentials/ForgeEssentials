@@ -14,43 +14,67 @@ import cpw.mods.fml.common.IPlayerTracker;
 
 public class LoginHandler implements IPlayerTracker
 {
-	ArrayList<String> unlogged;
+	ArrayList<String> unlogged;	
+	ArrayList<String> notRegisted;
 	
 	public LoginHandler()
 	{
 		unlogged = new ArrayList<String>();
+		notRegisted = new ArrayList<String>();
 		OutputHandler.info("FEauth initialized. Enabled: " + ModuleAuth.enabled);
 	}
 
 	@ForgeSubscribe(priority=EventPriority.HIGHEST)
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
-		if (!ModuleAuth.enabled)
+		if(!ModuleAuth.enabled)
+		{
 			return;
+		}
 		
 		if (unlogged.contains(event.entityPlayer.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, "Please use /login to login");
+			OutputHandler.chatError(event.entityPlayer, "Please use '/login <pwd>' to login");
+		}
+		
+		if (notRegisted.contains(event.entityPlayer.username))
+		{
+			event.setCanceled(true);
+			OutputHandler.chatError(event.entityPlayer, "Please use '/register <pwd>' to register");
 		}
 	}
 	
-	public void login(EntityPlayer sender)
+	public void login(EntityPlayer player)
 	{
-		sender.sendChatToPlayer("Successfully logged in.");
-		unlogged.remove(sender.username);
+		player.sendChatToPlayer("Successfully logged in.");
+		unlogged.remove(player.username);
+		notRegisted.remove(player.username);
 	}
 	
 	@Override
 	public void onPlayerLogout(EntityPlayer player)
 	{
 		unlogged.remove(player.username);
+		notRegisted.remove(player.username);
 	}
 
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
-		unlogged.add(player.username);
+		if(pwdSaver.isRegisted(player.username))
+		{
+			if(ModuleAuth.enabled)
+			{
+				player.sendChatToPlayer("Please use '/login <pwd>' to login");
+				unlogged.add(player.username);		
+			}
+		}
+		else
+		{
+			player.sendChatToPlayer("You must '/register <pwd>'!");
+			notRegisted.add(player.username);
+		}
 	}
 
 	@Override

@@ -32,22 +32,29 @@ public class CommandLogin extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			try 
+			if(pwdSaver.isRegisted(sender.username))
 			{
-				pwdData data = pwdSaver.getData(sender.username);
-				if(ModuleAuth.pwdEnc.authenticate(args[0], data.encPwd, data.salt))
+				try
 				{
-					ModuleAuth.handler.login(sender);
+					pwdData data = pwdSaver.getData(sender.username);
+					if(ModuleAuth.pwdEnc.authenticate(args[0], data.encPwd, data.salt))
+					{
+						ModuleAuth.handler.login(sender);
+					}
+					else
+					{
+						OutputHandler.chatError(sender, "Wrong pass!");
+					}
 				}
-				else
+				catch (Exception e) 
 				{
-					OutputHandler.chatError(sender, "Wrong pass!");
-				}
+					OutputHandler.chatError(sender, e.toString());
+					e.printStackTrace();
+				}	
 			}
-			catch (Exception e) 
+			else
 			{
-				OutputHandler.chatError(sender, e.toString());
-				e.printStackTrace();
+				sender.sendChatToPlayer("You have not registerd. Use /register <pwd>");
 			}
 		}
 	}
