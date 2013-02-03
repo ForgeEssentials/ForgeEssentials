@@ -79,13 +79,13 @@ public class Zone extends WorldArea implements Comparable
 		{
 			return true;
 		}
-		else if (zoneID.equals(zone.parent))
-		{
-			return true;
-		}
 		else if (zone.parent == null)
 		{
 			return false;
+		}
+		else if (zoneID.equals(zone.parent))
+		{
+			return true;
 		}
 		else if (zone.parent.equals(ZoneManager.getGLOBAL().zoneID))
 		{
