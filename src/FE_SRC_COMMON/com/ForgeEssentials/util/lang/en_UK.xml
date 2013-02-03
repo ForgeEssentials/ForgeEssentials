@@ -128,6 +128,7 @@
     <entry key="message.smite.player">You should feel bad about doing that.</entry>
     <entry key="message.smite.ground">I hope that didn't start a fire.</entry>
     <entry key="message.spawned">Teleporting to spawn.</entry>
+    <entry key="message.noroom">No room to spawn.</entry>
     
     <entry key="message.credits.AbrarSyed">Lead dev and permissions system.</entry>
     <entry key="message.credits.Bob_A_Red_Dino">Essentials-like commands</entry>

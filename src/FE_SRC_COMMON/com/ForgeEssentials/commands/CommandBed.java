@@ -37,32 +37,39 @@ public class CommandBed extends ForgeEssentialsCommandBase
 		if (args.length >= 1)
 		{
 			EntityPlayer player = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
 			if (player != null)
 			{
 				ChunkCoordinates spawn = player.getBedLocation();
-				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-				((EntityPlayerMP) player).playerNetServerHandler
-						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
-				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
-			}
-			else
+				if (spawn != null)
+				{
+					if (player.worldObj.getBlockId(spawn.posX, spawn.posY + 1, spawn.posZ) == 0 && player.worldObj.getBlockId(spawn.posX, spawn.posY + 2, spawn.posZ) == 0)
+					{
+						PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+						((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
+						player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
+					} else
+						player.sendChatToPlayer(Localization.get(Localization.NOROOM));
+				}
+			} else
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-		}
-		else
+		} else
 		{
 			ChunkCoordinates spawn = sender.getBedLocation();
 			if (spawn != null)
 			{
-				PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
-				((EntityPlayerMP) sender).playerNetServerHandler
-						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
-				sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
+				if (sender.worldObj.getBlockId(spawn.posX, spawn.posY + 1, spawn.posZ) == 0 && sender.worldObj.getBlockId(spawn.posX, spawn.posY + 2, spawn.posZ) == 0)
+				{
+					PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
+					((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
+					sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
+				} else
+					sender.sendChatToPlayer(Localization.get(Localization.NOROOM));
 			}
 		}
 	}
@@ -73,7 +80,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
 		if (args.length >= 1)
 		{
 			EntityPlayer player = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
@@ -81,11 +88,9 @@ public class CommandBed extends ForgeEssentialsCommandBase
 			{
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 				ChunkCoordinates spawn = player.getBedLocation();
-				((EntityPlayerMP) player).playerNetServerHandler
-						.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
+				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
-			}
-			else
+			} else
 			{
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
@@ -110,8 +115,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
-		else
+		} else
 		{
 			return null;
 		}

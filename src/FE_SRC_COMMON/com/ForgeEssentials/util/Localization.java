@@ -21,6 +21,7 @@ public class Localization
 	public static final String HEALED = "message.healed";
 	public static final String SPAWNED = "message.spawned";
 	public static final String SPAWNSET = "message.spawnset";
+	public static final String NOROOM = "message.noroom";
 	public static final String POTIONEFFECTNOTFOUND = "command.potion.effectnotfound";
 
 	/*
@@ -183,11 +184,9 @@ public class Localization
 		{
 			try
 			{
-				LanguageRegistry.instance().loadLocalization(langDir + langFile, langFile.substring(langFile.lastIndexOf('/') + 1, langFile.lastIndexOf('.')),
-						true);
+				LanguageRegistry.instance().loadLocalization(langDir + langFile, langFile.substring(langFile.lastIndexOf('/') + 1, langFile.lastIndexOf('.')), true);
 				OutputHandler.info("Loaded language file " + langFile);
-			}
-			catch (Exception e)
+			} catch (Exception e)
 			{
 				OutputHandler.info("Could not load language file " + langFile);
 				e.printStackTrace();
@@ -201,8 +200,7 @@ public class Localization
 	}
 
 	/**
-	 * Fetches a localized format string, and inserts any provided arguments into it. A wrapper for all the "String.format(Localization.get(key), ...)" calls in
-	 * commands.
+	 * Fetches a localized format string, and inserts any provided arguments into it. A wrapper for all the "String.format(Localization.get(key), ...)" calls in commands.
 	 * 
 	 * @param localizationKey
 	 *            Key to get the appropriate entry in the current localization file.
