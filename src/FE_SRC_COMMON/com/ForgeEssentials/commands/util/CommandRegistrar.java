@@ -14,6 +14,7 @@ import com.ForgeEssentials.commands.CommandClearInventory;
 import com.ForgeEssentials.commands.CommandColorize;
 import com.ForgeEssentials.commands.CommandCraft;
 import com.ForgeEssentials.commands.CommandDoAs;
+import com.ForgeEssentials.commands.CommandEnchant;
 import com.ForgeEssentials.commands.CommandEnderchest;
 import com.ForgeEssentials.commands.CommandGameMode;
 import com.ForgeEssentials.commands.CommandGive;
@@ -55,6 +56,7 @@ public class CommandRegistrar
 	static
 	{
 		cmdList.add(new CommandMotd());
+		cmdList.add(new CommandEnchant());
 		cmdList.add(new CommandPersonalWarp());
 		cmdList.add(new CommandLocate());
 		cmdList.add(new CommandRules());
