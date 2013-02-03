@@ -8,7 +8,7 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class CompatReiMinimap
 {
-	private static final String base = "ForgeEssentials.compat.";
+	private static final String base = "ForgeEssentials.compat";
 	
 	public static final String cavemap 		= base + ".cavemap";
 	public static final String radarPlayer 	= base + ".radarPlayer";
