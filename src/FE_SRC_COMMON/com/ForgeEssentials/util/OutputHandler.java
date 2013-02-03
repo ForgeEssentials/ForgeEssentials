@@ -1,5 +1,6 @@
 package com.ForgeEssentials.util;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.minecraft.command.ICommandSender;
@@ -13,6 +14,11 @@ public final class OutputHandler
 	public static boolean	verbose;
 
 	public static Logger	felog;
+	
+	public static void init(Logger logger)
+	{
+		felog = logger;
+	}
 
 	/**
 	 * outputs a message in red text to the chat box of the given player.
@@ -77,6 +83,17 @@ public final class OutputHandler
 	public static void finest(Object msg)
 	{
 		felog.finest(msg.toString());
+	}
+	
+	/**
+	 * Use this to throw errors that can continue without crashing the server.
+	 * @param level
+	 * @param message
+	 * @param error
+	 */
+	public static void LogException(Level level, String message, Throwable error)
+	{
+		felog.log(level, message, error);
 	}
 	
 
