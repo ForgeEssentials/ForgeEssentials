@@ -91,7 +91,7 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-economy-${MC}-${VERSION}.zip" ./com/For
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-playerlogger-${MC}-${VERSION}.zip" ./com/ForgeEssentials/playerLogger/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-protection-${MC}-${VERSION}.zip" ./com/ForgeEssentials/protection/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-snooper-${MC}-${VERSION}.zip" ./com/ForgeEssentials/snooper/* ./com/ForgeEssentials/api/snooper/*
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-servervote-${MC}-${VERSION}.zip" ./com/ForgeEssentials/vote/*
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-servervote-${MC}-${VERSION}.zip" ./com/ForgeEssentials/serverVote/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldBorder/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl
 rm -rf ./*.info ./*.txt
