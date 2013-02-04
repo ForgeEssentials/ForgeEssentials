@@ -1,68 +1,84 @@
 package com.ForgeEssentials.core.commands;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
-
 import net.minecraftforge.common.Configuration;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import com.ForgeEssentials.permission.PermissionsAPI;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
+
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
+
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
-	public boolean enableCmdBlock = true;
-	public boolean enableConsole = true;
-	public boolean enablePlayer = true;
-	
-	public ArrayList<String> aliasList = new ArrayList();
-	
+	public boolean				enableCmdBlock	= true;
+	public boolean				enableConsole	= true;
+	public boolean				enablePlayer	= true;
+
+
+	public ArrayList<String>	aliasList		= new ArrayList();
+
+
 	// ---------------------------
-	// config interaction
+	// configuration interaction
 	// ---------------------------
-	
+
+
 	/**
-	 * Override if you want config interaction.
+	 * Override if you want configuration interaction.
 	 * @param config
-	 * @param category 
+	 * @param category
 	 */
 	public void doConfig(Configuration config, String category)
 	{
-		
+
+
 	}
-	
+
+
 	@Override
 	public List getCommandAliases()
 	{
 		return aliasList;
 	}
-	
+
+
 	public String[] getDefaultAliases()
 	{
 		return new String[] {};
 	}
-	
+
+
 	public boolean usefullCmdBlock()
 	{
 		return this.canConsoleUseCommand();
 	}
-	
+
+
 	public boolean usefullPlayer()
 	{
 		return true;
 	}
-	
+
+
 	// ---------------------------
 	// processing command
 	// ---------------------------
+
 
 	@Override
 	public void processCommand(ICommandSender var1, String[] var2)
@@ -81,7 +97,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		}
 	}
 
+
 	public abstract void processCommandPlayer(EntityPlayer sender, String[] args);
+
 
 	/**
 	 * Override is optional.
@@ -91,11 +109,14 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		processCommandConsole(block, args);
 	}
 
+
 	public abstract void processCommandConsole(ICommandSender sender, String[] args);
+
 
 	// ---------------------------
 	// command usage
 	// ---------------------------
+
 
 	@Override
 	public String getCommandUsage(ICommandSender sender)
@@ -132,6 +153,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		}
 	}
 
+
 	public String getCommandInfo(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
@@ -143,6 +165,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 			return getInfoConsole();
 		}
 	}
+
 
 	public String getCommandSyntax(ICommandSender sender)
 	{
@@ -156,6 +179,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		}
 	}
 
+
 	public String getSyntaxConsole()
 	{
 		if (canConsoleUseCommand())
@@ -165,10 +189,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		return null;
 	}
 
+
 	public String getSyntaxCommandBlock(TileEntityCommandBlock block)
 	{
 		return "/" + getCommandName();
 	}
+
 
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
@@ -179,6 +205,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		return null;
 	}
 
+
 	public String getInfoConsole()
 	{
 		if (canConsoleUseCommand())
@@ -187,6 +214,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		}
 		return null;
 	}
+
 
 	public String getInfoPlayer(EntityPlayer player)
 	{
@@ -197,45 +225,50 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		return null;
 	}
 
+
 	// ---------------------------
 	// permissions
 	// ---------------------------
+
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			if(!enablePlayer) 
+			if (!enablePlayer)
 				return false;
 			else
 				return canPlayerUseCommand((EntityPlayer) sender);
 		}
 		else if (sender instanceof TileEntityCommandBlock)
 		{
-			if(!enableCmdBlock) 
+			if (!enableCmdBlock)
 				return false;
 			else
 				return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
 		}
 		else
 		{
-			if(!enableConsole) 
+			if (!enableConsole)
 				return false;
 			else
 				return canConsoleUseCommand();
 		}
 	}
 
+
 	public abstract boolean canConsoleUseCommand();
 
+
 	/**
-	 * returns canConsoleUseCommand() by default. Override if you want to change that.
+	 * returns false by default. Override if you want to change that.
 	 */
 	public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
 	{
-		return canConsoleUseCommand();
+		return false;
 	}
+
 
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
@@ -243,24 +276,26 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		return checkCommandPerm(player);
 	}
 
+
 	/**
 	 * Simply prints a usage message to the sender of the command.
 	 * 
 	 * @param sender
-	 *            Object that issued the command
+	 * Object that issued the command
 	 */
 	public void error(ICommandSender sender)
 	{
 		this.error(sender, getCommandUsage(sender));
 	}
 
+
 	/**
 	 * Prints an error message to the sender of the command.
 	 * 
 	 * @param sender
-	 *            Object that issued the command
+	 * Object that issued the command
 	 * @param message
-	 *            Error message
+	 * Error message
 	 */
 	public void error(ICommandSender sender, String message)
 	{
@@ -274,21 +309,22 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		}
 	}
 
+
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
 		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
+
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		if (args.length == 0) {
-			return getListOfStringsFromIterableMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getPossibleCommands(sender));
-		}
-		else {
-	        return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().getPossibleCompletions(sender, args[args.length - 1]);
+
+
 	}
 
+
 	public abstract String getCommandPerm();
+
 
 }
