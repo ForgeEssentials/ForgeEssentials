@@ -58,7 +58,7 @@ public class BannedItems
 					e.entityPlayer.sendChatToPlayer("That item is banned.");
 					e.setCanceled(true);
 				}
-				else if(noUse.get(is.itemID).contains("-1"))
+				if(noUse.get(is.itemID).contains(-1))
 				{
 					e.entityPlayer.sendChatToPlayer("That item is banned.");
 					e.setCanceled(true);
