@@ -1,6 +1,7 @@
 package com.ForgeEssentials.commands;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -84,7 +85,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
-			
+			sender.sendChatToPlayer(FEChatFormatCodes.GREEN + "Capabilities for " + target.username); //made this green because its a massive wall of text, and unclear whats going on
 			sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
 			sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
 			sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
