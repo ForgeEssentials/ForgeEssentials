@@ -4,6 +4,8 @@ import java.util.EnumSet;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.api.modules.FEModule;
@@ -12,6 +14,7 @@ import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.event.PlayerMoveEvent;
 import com.ForgeEssentials.util.vector.Vector2;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -27,7 +30,7 @@ import cpw.mods.fml.relauncher.Side;
  * 
  */
 @FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class, configClass = ConfigWorldBorder.class)
-public class ModuleWorldBorder implements IScheduledTickHandler
+public class ModuleWorldBorder
 {
 	public static boolean						WBenabled		= false;
 	public static boolean						logToConsole	= true;
@@ -62,84 +65,18 @@ public class ModuleWorldBorder implements IScheduledTickHandler
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandWB());
-		TickRegistry.registerScheduledTickHandler(this, Side.SERVER);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
-
-	/*
-	 * Tickhandler part
-	 */
-
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
+	
+	@ForgeSubscribe
+	public void playerMove(PlayerMoveEvent e)
 	{
-		try
+		if(WBenabled && set)
 		{
-			if (ticks >= Integer.MAX_VALUE)
-			{
-				ticks = 1;
-			}
-			ticks++;
-			if (!WBenabled)
-			{
-				return;
-			}
-			if (!set)
-			{
-				return;
-			}
-
-			if (ticks % players == 0)
-			{
-				players = FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames().length + 1;
-			}
-			else
-			{
-				EntityPlayerMP player = ((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList
-						.get(ticks % players - 1));
-				shape.doCheck(player);
-			}
-		}
-		catch (Exception e)
-		{
-			OutputHandler.info("Failed to tick WorldBorder");
-			OutputHandler.info("" + e.getLocalizedMessage());
+			shape.doCheck((EntityPlayerMP) e.entityPlayer);
 		}
 	}
-
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
-	{
-	}
-
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of(TickType.SERVER);
-	}
-
-	@Override
-	public String getLabel()
-	{
-		return "WorldBorder";
-	}
-
-	@Override
-	public int nextTickSpacing()
-	{
-		if (players < 10)
-		{
-			return 10;
-		}
-		else if (players < 20)
-		{
-			return 5;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
+	
 	/*
 	 * Used to get determen shapes & execute the actual check.
 	 */
