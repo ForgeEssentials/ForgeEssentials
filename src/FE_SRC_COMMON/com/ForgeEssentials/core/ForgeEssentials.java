@@ -1,5 +1,9 @@
 package com.ForgeEssentials.core;
 
+import java.io.File;
+
+import net.minecraftforge.common.MinecraftForge;
+
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEDebug;
@@ -27,16 +31,6 @@ import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.event.ForgeEssentialsEventFactory;
 
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.server.MinecraftServer;
-
-import net.minecraftforge.common.MinecraftForge;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -54,9 +48,9 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
+import cpw.mods.fml.common.network.NetworkMod.VersionCheckHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 
 /**
@@ -180,6 +174,12 @@ public class ForgeEssentials
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		mdlaunch.serverStopping(e);
+	}
+	
+	@VersionCheckHandler
+	public boolean versionCheck(String version)
+	{
+		return true;
 	}
 	
 }
