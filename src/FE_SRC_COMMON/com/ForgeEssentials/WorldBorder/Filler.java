@@ -77,7 +77,7 @@ public class Filler implements Runnable
 		{
 			warnEveryone(Localization.get(Localization.WB_FILL_START));
 			
-			if(!toDo.isEmpty()) genList();
+			if(toDo.isEmpty()) genList();
 			
 			while (!isComplete)
 			{
