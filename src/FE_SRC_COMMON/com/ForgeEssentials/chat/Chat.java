@@ -5,6 +5,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.FEChatFormatCodes;
@@ -45,6 +46,13 @@ public class Chat
 		{
 			event.setCanceled(true);
 			event.player.sendChatToPlayer("You are muted.");
+			return;
+		}
+		
+		if (CommandPm.isMessagePersistent(event.player.getCommandSenderName()))
+		{
+			event.setCanceled(true);
+			CommandPm.processChat(event.player, event.message.split(" "));
 			return;
 		}
 

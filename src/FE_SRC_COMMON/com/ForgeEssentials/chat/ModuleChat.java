@@ -28,6 +28,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.chat.commands.CommandMsg;
 import com.ForgeEssentials.chat.commands.CommandMute;
 import com.ForgeEssentials.chat.commands.CommandNickname;
+import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -74,6 +75,7 @@ public class ModuleChat
 		e.registerServerCommand(new CommandMsg());
 		e.registerServerCommand(new CommandR());
 		e.registerServerCommand(new CommandNickname());
+		e.registerServerCommand(new CommandPm());
 		e.registerServerCommand(new CommandMute());
 		e.registerServerCommand(new CommandUnmute());
 	}

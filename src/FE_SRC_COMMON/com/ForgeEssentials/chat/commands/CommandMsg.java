@@ -61,16 +61,10 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("server") || args[0].equalsIgnoreCase("console"))
 			{
-				if (playerReply.containsKey(sender.getCommandSenderName()))
-				{
-					playerReply.remove(sender.getCommandSenderName());
-				}
-				if (playerReply.containsKey("server"))
-				{
-					playerReply.remove("server");
-				}
-				playerReply.put(sender.getCommandSenderName(), "server");
-				playerReply.put("server", sender.getCommandSenderName());
+				clearReply(sender.getCommandSenderName());
+				clearReply("server");
+				addReply(sender.getCommandSenderName(), "server");
+				addReply("server", sender.getCommandSenderName());
 				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] "
 						+ FEChatFormatCodes.GREY;
 				String receiverMessage =  FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
@@ -95,16 +89,10 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, args[0] + " is not a valid username");
 					return;
 				}
-				if (playerReply.containsKey(sender.getCommandSenderName()))
-				{
-					playerReply.remove(sender.getCommandSenderName());
-				}
-				if (playerReply.containsKey(receiver.getCommandSenderName()))
-				{
-					playerReply.remove(receiver.getCommandSenderName());
-				}
-				playerReply.put(sender.getCommandSenderName(), receiver.getCommandSenderName());
-				playerReply.put(receiver.getCommandSenderName(), sender.getCommandSenderName());
+				clearReply(sender.getCommandSenderName());
+				clearReply(receiver.getCommandSenderName());
+				addReply(sender.getCommandSenderName(), receiver.getCommandSenderName());
+				addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
 				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD
 						+ "] " + FEChatFormatCodes.WHITE;
 				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD
@@ -148,16 +136,10 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				if (playerReply.containsKey(receiver.getCommandSenderName()))
-				{
-					playerReply.remove(receiver.getCommandSenderName());
-				}
-				if (playerReply.containsKey("server"))
-				{
-					playerReply.remove("server");
-				}
-				playerReply.put(receiver.getCommandSenderName(), "server");
-				playerReply.put("server", receiver.getCommandSenderName());
+				clearReply(receiver.getCommandSenderName());
+				clearReply("server");
+				addReply(receiver.getCommandSenderName(), "server");
+				addReply("server", receiver.getCommandSenderName());
 				String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
 				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] "
 						+ FEChatFormatCodes.GREY;
@@ -198,5 +180,18 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	public static String getPlayerReply(String player)
 	{
 		return playerReply.get(player);
+	}
+	
+	public static void clearReply(String player)
+	{
+		if (playerReply.containsKey(player))
+		{
+			playerReply.remove(player);
+		}
+	}
+	
+	public static void addReply(String player, String target)
+	{
+		playerReply.put(player, target);
 	}
 }
