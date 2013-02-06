@@ -5,7 +5,6 @@ import com.ForgeEssentials.core.compat.CompatReiMinimap;
 //import com.ForgeEssentials.economy.Wallet;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.economy.Wallet;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
