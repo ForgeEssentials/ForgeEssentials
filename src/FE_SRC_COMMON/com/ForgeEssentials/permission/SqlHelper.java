@@ -603,7 +603,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.exception(Level.SEVERE, "Permissions connection database unable to be reset!", e);
+			OutputHandler.severe("Permissions connection database unable to be reset!");
 			Throwables.propagate(e);
 		}
 
@@ -631,7 +631,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("Unable to connect to the database!");
+			OutputHandler.severe("Unable to connect to the database!");
 			Throwables.propagate(e);
 		}
 	}
@@ -1097,7 +1097,7 @@ public class SqlHelper
 
 			if (lID < -4 || zID < -4 || pID < -4)
 			{
-				OutputHandler.info("Ladder, Player, or Zone does not exist!");
+				OutputHandler.warning("Ladder, Player, or Zone does not exist!");
 				return end;
 			}
 
@@ -1728,7 +1728,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("[PermSQL] Player dump for export failed!");
+			OutputHandler.severe("[PermSQL] Player dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}

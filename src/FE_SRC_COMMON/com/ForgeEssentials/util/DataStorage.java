@@ -53,12 +53,12 @@ public class DataStorage
 			}
 			catch (FileNotFoundException e)
 			{
-				OutputHandler.info("Failed while reading file: " + DATAFILE.getName());
+				OutputHandler.severe("Failed while reading file: " + DATAFILE.getName());
 				e.printStackTrace();
 			}
 			catch (IOException e)
 			{
-				OutputHandler.info("Failed while reading file: " + DATAFILE.getName());
+				OutputHandler.severe("Failed while reading file: " + DATAFILE.getName());
 				e.printStackTrace();
 			}
 		}

@@ -249,7 +249,7 @@ public class ModuleContainer implements Comparable
 		}
 		catch (Exception e)
 		{
-			OutputHandler.info(name + " could not be instantiated. FE will not load this module.");
+			OutputHandler.warning(name + " could not be instantiated. FE will not load this module.");
 			e.printStackTrace();
 			isLoadable = false;
 			return;
@@ -517,8 +517,9 @@ public class ModuleContainer implements Comparable
 			throw new RuntimeException(c + " isn't an loaded mod class!");
 
 		modid = contain.getModId() + "--" + contain.getVersion();
-
-		OutputHandler.info("Modules from " + modid + " are being loaded");
+		
+		if (modClasses.add(c))
+			OutputHandler.info("Modules from " + modid + " are being loaded");
 		return obj;
 	}
 }

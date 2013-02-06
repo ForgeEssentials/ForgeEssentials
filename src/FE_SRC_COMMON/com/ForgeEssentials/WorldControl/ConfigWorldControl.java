@@ -51,7 +51,7 @@ public class ConfigWorldControl extends ModuleConfigBase
 		config.load();
 
 		blocksPerTick = config.get("WorldControl", "BlocksPerTick", 20).getInt();
-		OutputHandler.info("Setting blocks/tick to: " + blocksPerTick);
+		OutputHandler.fine("Setting blocks/tick to: " + blocksPerTick);
 	}
 
 }

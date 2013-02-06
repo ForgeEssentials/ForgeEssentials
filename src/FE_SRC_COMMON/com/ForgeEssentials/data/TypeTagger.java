@@ -152,7 +152,7 @@ public class TypeTagger
 		}
 		catch (Exception e)
 		{
-			OutputHandler.info("Reflection error trying to get UniqueLoadingKey from " + objectSaved.getClass() + ". FE will continue without saving this.");
+			OutputHandler.severe("Reflection error trying to get UniqueLoadingKey from " + objectSaved.getClass() + ". FE will continue without saving this.");
 			e.printStackTrace();
 		}
 

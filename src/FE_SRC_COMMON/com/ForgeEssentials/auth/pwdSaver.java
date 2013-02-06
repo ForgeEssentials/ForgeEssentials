@@ -44,7 +44,7 @@ public class pwdSaver
 		}
 		catch (Exception e)
 		{
-			OutputHandler.sever("Error: " + e);
+			OutputHandler.severe("Error: " + e);
 		}
 		return null;
 	}
@@ -62,7 +62,7 @@ public class pwdSaver
 		}
 		catch (Exception e)
 		{
-			OutputHandler.sever("Error: " + e);
+			OutputHandler.severe("Error: " + e);
 		}
 	}
 }

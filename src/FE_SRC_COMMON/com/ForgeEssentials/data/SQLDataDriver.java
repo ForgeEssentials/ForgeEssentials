@@ -140,7 +140,7 @@ public class SQLDataDriver extends DataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("Problem deleting data from "+connector.getChosenType()+" DB (May not actually be a critical error):");
+			OutputHandler.severe("Problem deleting data from "+connector.getChosenType()+" DB (May not actually be a critical error):");
 			e.printStackTrace();
 		}
 

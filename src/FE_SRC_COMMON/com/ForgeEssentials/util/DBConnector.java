@@ -147,7 +147,7 @@ public class DBConnector
 					if (con != null)
 						return con;
 					else
-						OutputHandler.info("Fallback check and parent check failed, goin to in-house.");
+						OutputHandler.info("Fallback check and parent check failed, going to in-house.");
 				}
 
 				// continue with stuff

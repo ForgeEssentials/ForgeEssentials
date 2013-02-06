@@ -177,7 +177,7 @@ public class Localization
 
 	public void load()
 	{
-		OutputHandler.info("Loading languages");
+		OutputHandler.finer("Loading languages");
 		String langDir = "/com/ForgeEssentials/util/lang/";
 
 		for (String langFile : langFiles)

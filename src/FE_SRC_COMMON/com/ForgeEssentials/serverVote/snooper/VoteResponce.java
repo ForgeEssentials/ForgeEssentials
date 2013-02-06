@@ -62,7 +62,7 @@ public class VoteResponce extends Response
 				
 			if(!vote.isSane()) return TextFormatter.toJSON(new String[] {"Failed", TextFormatter.toJSON(new String[] {"notSane"})});
 			
-			OutputHandler.info("Vote: " + vote);
+			OutputHandler.fine("Vote: " + vote);
 			
 			try
 			{

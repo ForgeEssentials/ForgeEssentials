@@ -55,7 +55,7 @@ public final class OutputHandler
 	
 	
 
-	public static void sever(Object msg)
+	public static void severe(Object msg)
 	{
 		felog.severe(msg.toString());
 	}
