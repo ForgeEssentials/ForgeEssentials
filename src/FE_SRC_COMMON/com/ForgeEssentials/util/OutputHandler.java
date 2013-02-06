@@ -91,7 +91,7 @@ public final class OutputHandler
 	 * @param message
 	 * @param error
 	 */
-	public static void LogException(Level level, String message, Throwable error)
+	public static void exception(Level level, String message, Throwable error)
 	{
 		felog.log(level, message, error);
 	}
