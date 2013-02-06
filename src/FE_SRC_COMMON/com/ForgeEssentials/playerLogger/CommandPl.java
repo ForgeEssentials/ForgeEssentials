@@ -37,8 +37,7 @@ public class CommandPl extends ForgeEssentialsCommandBase
 		if(sender.worldObj.isRemote) return;
 		if (args.length == 0)
 		{
-			// TODO INFO
-			
+			sender.sendChatToPlayer("You must use /pl get");
 			return;
 		}
 		if (args[0].equalsIgnoreCase("get"))
