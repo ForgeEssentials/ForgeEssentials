@@ -2,7 +2,7 @@ package com.ForgeEssentials.core.misc;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.CompatReiMinimap;
-import com.ForgeEssentials.economy.Wallet;
+//import com.ForgeEssentials.economy.Wallet;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.economy.Wallet;
