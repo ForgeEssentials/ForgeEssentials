@@ -70,7 +70,7 @@ public class LoginMessage
 				pw.println("# Handy link: http://www.minecraftwiki.net/wiki/Formatting_codes");
 				pw.println("# Other codes:");
 				pw.println("# %playername% => The name of the player the message is send to");
-				pw.println("# %balance% => Prints the users balance (economy)");
+				//pw.println("# %balance% => Prints the users balance (economy)");
 				pw.println("# %players% => Amount of players online.");
 				pw.println("# %uptime% => Current server uptime.");
 				pw.println("# %uniqueplayers% => Amount of unique player logins.");
@@ -129,12 +129,12 @@ public class LoginMessage
 	{
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(playerName);
 		Date now = new Date();
-		int wallet = Wallet.getWallet(player); //needed to return wallet info
+		//int wallet = Wallet.getWallet(player); //needed to return wallet info
 		return line
 				.replaceAll("&", FEChatFormatCodes.CODE.toString()) //color codes
 				.replaceAll("%playername%",player.username)
 				.replaceAll("%players%", online()) //players
-				.replaceAll("%balance%",wallet + " " + Wallet.currency(wallet))//can be usefull for the user
+				//.replaceAll("%balance%",wallet + " " + Wallet.currency(wallet))//can be usefull for the user
 				.replaceAll("%uptime%", getUptime()) //uptime
 				.replaceAll("%uniqueplayers%",  uniqueplayers()) //unique players
 				.replaceAll("%time%", now.toLocaleString()).replaceAll("%hour%", now.getHours() + "").replaceAll("%min%", now.getMinutes() + "").replaceAll("%sec%", now.getSeconds() + "") //time
