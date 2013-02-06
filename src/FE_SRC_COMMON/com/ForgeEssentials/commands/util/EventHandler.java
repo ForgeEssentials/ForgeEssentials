@@ -10,10 +10,13 @@ import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.network.packet.NetHandler;
+import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.MovingObjectPosition;
 
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -21,9 +24,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.IChatListener;
 
-public class EventHandler
-{
+public class EventHandler implements IChatListener
+{	
 	@ForgeSubscribe()
 	public void playerInteractEvent(PlayerInteractEvent e)
 	{
@@ -107,5 +111,17 @@ public class EventHandler
 		{
 			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).back = new WarpPoint((EntityPlayer) e.entity);
 		}
+	}
+
+	@Override
+	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message) 
+	{
+		return message;
+	}
+
+	@Override
+	public Packet3Chat clientChat(NetHandler handler, Packet3Chat message) 
+	{
+		return message;
 	}
 }

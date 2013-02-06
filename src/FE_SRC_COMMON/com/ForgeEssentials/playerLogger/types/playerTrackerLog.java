@@ -1,6 +1,7 @@
 package com.ForgeEssentials.playerLogger.types;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,12 +14,14 @@ public class playerTrackerLog extends logEntry
 	public playerTrackerLogCategory cat;
 	public String username;
 	public String extra;
+	public String ip;
 
 	public playerTrackerLog(playerTrackerLogCategory cat, EntityPlayer player)
 	{
 		super();
 		this.cat = cat;
 		username = player.username;
+		ip = ((EntityPlayerMP) player).playerNetServerHandler.netManager.getSocketAddress().toString();
 	}
 
 	public playerTrackerLog()
@@ -36,13 +39,13 @@ public class playerTrackerLog extends logEntry
 	public String getTableCreateSQL()
 	{
 		return "CREATE TABLE IF NOT EXISTS " + getName()
-				+ "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), disciption CHAR(128), time DATETIME)";
+				+ "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), disciption CHAR(128), time DATETIME, ip CHAR(16))";
 	}
 
 	@Override
 	public String getprepareStatementSQL()
 	{
-		return "INSERT INTO " + getName() + " (player, category, disciption, time) VALUES (?,?,?,?);";
+		return "INSERT INTO " + getName() + " (player, category, disciption, time, ip) VALUES (?,?,?,?,?);";
 	}
 
 	@Override
@@ -60,6 +63,7 @@ public class playerTrackerLog extends logEntry
 				ps.setString(2, log.cat.toString());
 				ps.setString(3, log.extra);
 				ps.setTimestamp(4, log.time);
+				ps.setString(5, log.ip);
 				ps.execute();
 				ps.clearParameters();	
 			}

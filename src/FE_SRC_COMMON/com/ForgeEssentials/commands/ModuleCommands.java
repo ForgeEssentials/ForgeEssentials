@@ -38,6 +38,7 @@ import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Warp;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -51,6 +52,7 @@ public class ModuleCommands
 	@ModuleDir
 	public static File cmddir;
 
+	public static EventHandler eventHandler = new EventHandler();
 	public static DataDriver		data;
 
 	@PreInit
@@ -63,9 +65,10 @@ public class ModuleCommands
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
-		MinecraftForge.EVENT_BUS.register(new EventHandler());
+		MinecraftForge.EVENT_BUS.register(eventHandler);
 		MinecraftForge.EVENT_BUS.register(this); // for the permissions.
 		GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
+		NetworkRegistry.instance().registerChatListener(eventHandler);
 		CommandRegistrar.commandConfigs(conf.config);
 	}
 
