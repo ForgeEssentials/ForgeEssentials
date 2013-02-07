@@ -79,6 +79,10 @@ public class Zone extends WorldArea implements Comparable
 		{
 			return true;
 		}
+		else if (zone == null)
+		{
+			return false;
+		}
 		else if (zone.parent == null)
 		{
 			return false;
