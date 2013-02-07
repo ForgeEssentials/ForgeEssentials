@@ -5,10 +5,10 @@ import java.io.File;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.ModuleCommands;
 import com.ForgeEssentials.commands.util.CommandRegistrar;
-import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
 public class ConfigQuestioner extends ModuleConfigBase
 {
@@ -47,8 +47,6 @@ public class ConfigQuestioner extends ModuleConfigBase
 	public void forceLoad(ICommandSender sender)
 	{
 		config.load();
-		ModuleCommands.removeDuplicateCommands = config.get("general", "removeDuplicateCommands", true).getBoolean(true);
-		
 		config.save();
 		
 		CommandRegistrar.commandConfigs(config);
