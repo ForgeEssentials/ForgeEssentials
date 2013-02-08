@@ -201,7 +201,7 @@
     <entry key="message.wb.lagwarning">This will cause lag!</entry>
     
     <entry key="message.wb.fill.aborted">Done filling the world, now saving!</entry>
-    <entry key="message.wb.fill.confirm">To execute, do /worldborder fill ok</entry>
+    <entry key="message.wb.fill.confirm">To execute, do /worldborder fill start</entry>
     <entry key="message.wb.fill.consoleneedsdim">You must enter the dimension id you want generated. (0 for overworld)</entry>
     <entry key="message.wb.fill.done">Done filling the world, now saving!</entry>
     <entry key="message.wb.fill.eta">ETA: %eta</entry>
@@ -210,6 +210,7 @@
     <entry key="message.wb.fill.onlyonce">You can't run this more then once at the same time!</entry>
     <entry key="message.wb.fill.start">Starting filling of world, expect huge lag!</entry>
     <entry key="message.wb.fill.stillgoing">Still filling the world. ETA: %eta. Current gen rate: %ctp chuncks per tick.</entry>
+    <entry key="message.wb.fill.worldunloaded">The world you want to fill does not exist or is not loaded!</entry>
     
     <entry key="message.wb.saving.failed">Error saving the world!</entry>
     

@@ -137,6 +137,7 @@ public class Localization
 	public static final String WB_FILL_ETA = "message.wb.fill.eta";
 	public static final String WB_FILL_ABORTED = "message.wb.fill.aborted";
 	public static final String WB_FILL_FINISHED = "message.wb.fill.finished";
+	public static final String WB_FILL_UNLOADEDWOLD = "message.wb.fill.worldunloaded";
 
 	public static final String WB_SAVING_FAILED = "message.wb.saving.failed";
 

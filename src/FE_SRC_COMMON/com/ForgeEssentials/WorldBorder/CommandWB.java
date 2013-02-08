@@ -98,7 +98,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			if (args[1].equalsIgnoreCase("continue"))
 			{
 				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-				WorldServer world = server.worldServers[sender.dimension];
+				WorldServer world = server.worldServerForDimension(sender.dimension);
 
 				if (taskGooing != null)
 				{
@@ -191,16 +191,24 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 				int dim = parseInt(sender, args[2]);
-				WorldServer world = server.worldServers[dim];
+				WorldServer world = server.worldServerForDimension(dim);
 
-				if (taskGooing != null)
+				if(world != null)
 				{
-					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_ONLYONCE));
+					if (taskGooing != null)
+					{
+						sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_ONLYONCE));
+					}
+					else
+					{
+						taskGooing = new Filler(world, ModuleWorldBorder.shape, true);
+					}
 				}
 				else
 				{
-					taskGooing = new Filler(world, ModuleWorldBorder.shape, true);
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_UNLOADEDWOLD));	
 				}
+				
 				return;
 			}
 			if (args[1].equalsIgnoreCase("continue"))
