@@ -234,6 +234,34 @@ public final class FunctionHelper
 		}
 	}
 
+	/**
+	 * 
+	 * @param text
+	 * @param search
+	 * @param replacement
+	 * @return
+	 */
+	public static String replaceAllIgnoreCase(String text, String search, String replacement)
+	{
+		if (search.equals(replacement))
+			return text;
+		StringBuilder buffer = new StringBuilder(text);
+		String lowerSearch = search.toLowerCase();
+		int i = 0;
+		int prev = 0;
+		while ((i = buffer.toString().toLowerCase().indexOf(lowerSearch, prev)) > -1)
+		{
+			buffer.replace(i, i + search.length(), replacement);
+			prev = i + replacement.length();
+		}
+		return buffer.toString();
+	}
+	
+	/**
+	 * Uses & as identifier
+	 * @param message
+	 * @return
+	 */
 	public static String formatColors(String message)
 	{
 		char[] b = message.toCharArray();
@@ -246,6 +274,52 @@ public final class FunctionHelper
 			}
 		}
 		return new String(b);
+	}
+	
+	/**
+	 * Uses the % char as identifier
+	 * @param format
+	 * @return
+	 */
+	public static String format(String format)
+	{
+		format = replaceAllIgnoreCase(format, "%smile", "\u263A");
+		format = replaceAllIgnoreCase(format, "%copyrighted", "\u00A9");
+		format = replaceAllIgnoreCase(format, "%registered", "\u00AE");
+		format = replaceAllIgnoreCase(format, "%diamond", "\u2662");
+		format = replaceAllIgnoreCase(format, "%spade", "\u2664");
+		format = replaceAllIgnoreCase(format, "%club", "\u2667");
+		format = replaceAllIgnoreCase(format, "%heart", "\u2661");
+		format = replaceAllIgnoreCase(format, "%female", "\u2640");
+		format = replaceAllIgnoreCase(format, "%male", "\u2642");
+		
+		// replace colors
+		format = replaceAllIgnoreCase(format, "%red", FEChatFormatCodes.RED.toString());
+		format = replaceAllIgnoreCase(format, "%yellow", FEChatFormatCodes.YELLOW.toString());
+		format = replaceAllIgnoreCase(format, "%black", FEChatFormatCodes.BLACK.toString());
+		format = replaceAllIgnoreCase(format, "%darkblue", FEChatFormatCodes.DARKBLUE.toString());
+		format = replaceAllIgnoreCase(format, "%darkgreen", FEChatFormatCodes.DARKGREEN.toString());
+		format = replaceAllIgnoreCase(format, "%darkaqua", FEChatFormatCodes.DARKAQUA.toString());
+		format = replaceAllIgnoreCase(format, "%darkred", FEChatFormatCodes.DARKRED.toString());
+		format = replaceAllIgnoreCase(format, "%purple", FEChatFormatCodes.PURPLE.toString());
+		format = replaceAllIgnoreCase(format, "%gold", FEChatFormatCodes.GOLD.toString());
+		format = replaceAllIgnoreCase(format, "%grey", FEChatFormatCodes.GREY.toString());
+		format = replaceAllIgnoreCase(format, "%darkgrey", FEChatFormatCodes.DARKGREY.toString());
+		format = replaceAllIgnoreCase(format, "%indigo", FEChatFormatCodes.INDIGO.toString());
+		format = replaceAllIgnoreCase(format, "%green", FEChatFormatCodes.GREEN.toString());
+		format = replaceAllIgnoreCase(format, "%aqua", FEChatFormatCodes.AQUA.toString());
+		format = replaceAllIgnoreCase(format, "%pink", FEChatFormatCodes.PINK.toString());
+		format = replaceAllIgnoreCase(format, "%white", FEChatFormatCodes.WHITE.toString());
+
+		// replace MC formating
+		format = replaceAllIgnoreCase(format, "%random", FEChatFormatCodes.RANDOM.toString());
+		format = replaceAllIgnoreCase(format, "%bold", FEChatFormatCodes.BOLD.toString());
+		format = replaceAllIgnoreCase(format, "%strike", FEChatFormatCodes.STRIKE.toString());
+		format = replaceAllIgnoreCase(format, "%underline", FEChatFormatCodes.UNDERLINE.toString());
+		format = replaceAllIgnoreCase(format, "%italics", FEChatFormatCodes.ITALICS.toString());
+		format = replaceAllIgnoreCase(format, "%reset", FEChatFormatCodes.RESET.toString());
+		
+		return format;
 	}
 	
 	public static void setPlayer(EntityPlayerMP player, WarpPoint p)

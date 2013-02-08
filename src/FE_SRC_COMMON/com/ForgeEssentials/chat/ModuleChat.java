@@ -84,6 +84,7 @@ public class ModuleChat
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
+		new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
 
 	@PermRegister(ident = "ModuleChat")
