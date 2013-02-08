@@ -42,6 +42,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
 		boolean set = ModuleWorldBorder.set;
 		// Info
 		if (args.length == 0)
@@ -146,6 +147,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
 		boolean set = ModuleWorldBorder.set;
 		// Info
 		if (args.length == 0)
