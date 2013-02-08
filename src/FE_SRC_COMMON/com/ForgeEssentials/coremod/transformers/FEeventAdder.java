@@ -11,9 +11,12 @@ import static org.objectweb.asm.Opcodes.ILOAD;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.ISTORE;
+import static org.objectweb.asm.Opcodes.LDC;
 
 import java.util.HashMap;
 import java.util.Iterator;
+
+import net.minecraft.server.MinecraftServer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -25,6 +28,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -33,17 +37,24 @@ import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class FEeventAdder implements IClassTransformer
 {
-	public static HashMap<String, String> iiwmHMob;
-	public static HashMap<String, String> isHMob;
-	public static HashMap<String, String> iiwmHMdev;
-	public static HashMap<String, String> isHMdev;
+	public static HashMap<String, String> iiwmHMob = makeiiwmHMob();
+	public static HashMap<String, String> iiwmHMdev = makeiiwmHMdev();
+	
+	public static HashMap<String, String> isHMob = makeisHMob();
+	public static HashMap<String, String> isHMdev = makeisHMdev();
+	
+	public static HashMap<String, String> mcsHMob = makemcsHMob();
+	public static HashMap<String, String> mcsHMdev = makemcsHMdev();
 
 	public static boolean addedBreak = false;
 	public static boolean addedPlace = false;
-
-	static
+	public static boolean branded = false;
+	
+	private static final String SERVERBRAND = "forge,fml, ForgeEssentials";
+	
+	public static HashMap makeiiwmHMob()
 	{
-		iiwmHMob = new HashMap();
+		HashMap	iiwmHMob = new HashMap();
 
 		iiwmHMob.put("className", "ir");
 		iiwmHMob.put("javaClassName", "ir");
@@ -56,17 +67,12 @@ public class FEeventAdder implements IClassTransformer
 		iiwmHMob.put("blocksListFieldName", "p");
 		iiwmHMob.put("entityPlayerJavaClassName", "qx");
 		iiwmHMob.put("entityPlayerMPJavaClassName", "iq");
-
-		isHMob = new HashMap<String, String>();
-
-		isHMob.put("className", "ur");
-		isHMob.put("javaClassName", "ur");
-		isHMob.put("targetMethodName", "a");
-		isHMob.put("itemstackJavaClassName", "ur");
-		isHMob.put("entityPlayerJavaClassName", "qx");
-		isHMob.put("worldJavaClassName", "yc");
-
-		iiwmHMdev = new HashMap<String, String>();
+		
+		return iiwmHMob;
+	}
+	public static HashMap makeiiwmHMdev()
+	{
+		HashMap iiwmHMdev = new HashMap<String, String>();
 
 		iiwmHMdev.put("className", "net.minecraft.item.ItemInWorldManager");
 		iiwmHMdev.put("javaClassName", "net/minecraft/item/ItemInWorldManager");
@@ -79,8 +85,26 @@ public class FEeventAdder implements IClassTransformer
 		iiwmHMdev.put("blocksListFieldName", "blocksList");
 		iiwmHMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
 		iiwmHMdev.put("entityPlayerMPJavaClassName", "net/minecraft/entity/player/EntityPlayerMP");
-
-		isHMdev = new HashMap<String, String>();
+		
+		return iiwmHMdev;
+	}
+	
+	public static HashMap makeisHMob()
+	{
+		HashMap	isHMob = new HashMap();
+		
+		isHMob.put("className", "ur");
+		isHMob.put("javaClassName", "ur");
+		isHMob.put("targetMethodName", "a");
+		isHMob.put("itemstackJavaClassName", "ur");
+		isHMob.put("entityPlayerJavaClassName", "qx");
+		isHMob.put("worldJavaClassName", "yc");
+		
+		return isHMob;
+	}
+	public static HashMap makeisHMdev()
+	{
+		HashMap isHMdev = new HashMap<String, String>();
 
 		isHMdev.put("className", "net.minecraft.item.ItemStack");
 		isHMdev.put("javaClassName", "net/minecraft/item/ItemStack");
@@ -89,11 +113,35 @@ public class FEeventAdder implements IClassTransformer
 		isHMdev.put("itemstackJavaClassName", "net/minecraft/item/ItemStack");
 		isHMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
 		isHMdev.put("worldJavaClassName", "net/minecraft/world/World");
+		
+		return isHMdev;
 	}
-
+	
+	public static HashMap makemcsHMob()
+	{
+		HashMap mcsHMdev = new HashMap<String, String>();
+		
+		mcsHMdev.put("className", "net.minecraft.server.MinecraftServer");
+		mcsHMdev.put("javaClassName", "net/minecraft/server/MinecraftServer");
+		mcsHMdev.put("targetMethodName", "getServerModName");
+		
+		return mcsHMdev;
+	}
+	public static HashMap makemcsHMdev()
+	{
+		HashMap mcsHMdev = new HashMap<String, String>();
+		
+		mcsHMdev.put("className", "fy");
+		mcsHMdev.put("javaClassName", "fy");
+		mcsHMdev.put("targetMethodName", "getServerModName");
+		
+		return mcsHMdev;
+	}
+	
+	
 	@Override
 	public byte[] transform(String name, byte[] bytes)
-	{
+	{	
 		if (name.equals(iiwmHMob.get("className")))
 		{
 			// ItemInWorldManager, Obfuscated
@@ -117,8 +165,59 @@ public class FEeventAdder implements IClassTransformer
 			// ItemStack, NOT Obfuscated
 			return transformItemStack(bytes, isHMdev);
 		}
+		
+		if (name.equals(mcsHMob.get("className")))
+		{
+			// MinecraftServer, Obfuscated
+			return transformMinecraftServer(bytes, mcsHMob);
+		}
+		
+		if (name.equals(mcsHMdev.get("className")))
+		{
+			// MinecraftServer, NOT Obfuscated
+			return transformMinecraftServer(bytes, mcsHMdev);
+		}
 
 		return bytes;
+	}
+	
+	private byte[] transformMinecraftServer(byte[] bytes, HashMap<String, String> hm)
+	{
+		msg("[FE coremod] Patching MinecraftServer...");
+		
+		ClassNode classNode = new ClassNode();
+		ClassReader classReader = new ClassReader(bytes);
+		classReader.accept(classNode, 0);
+		
+		Iterator<MethodNode> methods = classNode.methods.iterator();
+		while (methods.hasNext())
+		{
+			MethodNode m = methods.next();
+			if(m.name.equals(hm.get("targetMethodName")))
+			{
+				msg("[FE coremod] Found target method " + m.name + m.desc + "!");
+				
+				int offset = 0;
+				while (m.instructions.get(offset).getOpcode() != LDC)
+				{
+					offset++;
+				}
+				
+				InsnList toInject = new InsnList();
+				
+				toInject.add(new LdcInsnNode(SERVERBRAND));
+				
+				m.instructions.insertBefore(m.instructions.get(offset), toInject);
+				m.instructions.remove(m.instructions.get(offset + 1));
+				
+				branded = true;
+				break;
+			}
+		}
+		
+		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		classNode.accept(writer);
+		return writer.toByteArray();
 	}
 
 	private byte[] transformItemStack(byte[] bytes, HashMap<String, String> hm)
