@@ -28,7 +28,7 @@ public class AutoMessage implements Runnable
 		this.currentMsgID = 0;
 		
 		thread = new Thread(this, "ForgeEssentials - Chat - automessage");
-		thread.run();
+		thread.start();
 	}
 	
 	@Override

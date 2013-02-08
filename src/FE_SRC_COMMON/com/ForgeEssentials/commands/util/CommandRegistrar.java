@@ -35,6 +35,7 @@ import com.ForgeEssentials.commands.CommandRepair;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.CommandSeeInventory;
 import com.ForgeEssentials.commands.CommandServerDo;
+import com.ForgeEssentials.commands.CommandServerSettings;
 import com.ForgeEssentials.commands.CommandSetspawn;
 import com.ForgeEssentials.commands.CommandSmite;
 import com.ForgeEssentials.commands.CommandSpawn;
@@ -96,6 +97,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandClearInventory());
 		cmdList.add(new CommandGameMode());
 		cmdList.add(new CommandDoAs());
+		cmdList.add(new CommandServerSettings());
 	}
 	
 	public static void commandConfigs(Configuration config)

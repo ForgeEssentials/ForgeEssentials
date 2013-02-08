@@ -25,9 +25,14 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr)
+	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
 	{
-		return getListOfStringsMatchingLastWord(par2ArrayOfStr, "passive", "villager", "hostile", "tamed", "all", "golem", "world", "boss");
+		if(args.length == 1)
+			return getListOfStringsMatchingLastWord(args, "-1");
+		else if(args.length == 2) 
+			return getListOfStringsMatchingLastWord(args, "passive", "villager", "hostile", "tamed", "all", "golem", "world", "boss");
+		else
+			return null;
 	}
 
 	@Override

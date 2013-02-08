@@ -55,6 +55,18 @@ public final class FunctionHelper
 		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
+	
+	public static String[] dropFirstString(String[] par0ArrayOfStr)
+    {
+        String[] var1 = new String[par0ArrayOfStr.length - 1];
+
+        for (int var2 = 1; var2 < par0ArrayOfStr.length; ++var2)
+        {
+            var1[var2 - 1] = par0ArrayOfStr[var2];
+        }
+
+        return var1;
+    }
 
 	public static String getZoneWorldString(World world)
 	{
