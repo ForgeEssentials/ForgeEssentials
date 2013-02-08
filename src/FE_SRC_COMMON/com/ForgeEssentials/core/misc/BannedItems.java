@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -39,7 +40,7 @@ public class BannedItems
 		event.registerPermissionLevel(BYPASS, RegGroup.OWNERS);
 	}
 	
-	@ForgeSubscribe
+	@ForgeSubscribe(priority = EventPriority.HIGHEST, receiveCanceled = true)
 	public void click(PlayerInteractEvent e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
