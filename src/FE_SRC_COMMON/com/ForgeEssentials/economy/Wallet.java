@@ -53,7 +53,8 @@ public class Wallet
 	}
 
 	/**
-	 * Checks if the player's wallet exists, if not set it to 0. Should only be called under special circumstances, FEE should do everything needed.
+	 * Checks if the player's wallet exists, if not set it to 0. Should only be
+	 * called under special circumstances, FEE should do everything needed.
 	 * 
 	 * @param player
 	 *            target player

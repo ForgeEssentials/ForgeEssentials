@@ -13,11 +13,11 @@ public interface IPermissionsHelper
 	String setGroupPermission(String group, String permission, boolean allow, String zoneID);
 
 	ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults);
-	
+
 	ArrayList<Group> getApplicableGroups(String player, boolean includeDefaults, String zoneID);
 
 	Group getGroupForName(String name);
-	
+
 	Group getHighestGroup(EntityPlayer player);
 
 	String setPlayerGroup(String group, String player, String zone);
@@ -37,7 +37,7 @@ public interface IPermissionsHelper
 	ArrayList getGroupsInZone(String zoneName);
 
 	String getPermissionForGroup(String target, String zone, String perm);
-	
+
 	ArrayList getPlayerPermissions(String target, String zone);
 
 	ArrayList getGroupPermissions(String target, String zone);
@@ -51,6 +51,6 @@ public interface IPermissionsHelper
 	void setEPSuffix(String ePSuffix);
 
 	Group getDEFAULT();
-	
+
 	String getEntryPlayer();
 }

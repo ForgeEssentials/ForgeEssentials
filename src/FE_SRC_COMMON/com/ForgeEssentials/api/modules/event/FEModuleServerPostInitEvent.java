@@ -7,7 +7,7 @@ import cpw.mods.fml.common.event.FMLStateEvent;
 
 public class FEModuleServerPostInitEvent extends FEModuleEvent
 {
-	private FMLServerStartedEvent event;
+	private FMLServerStartedEvent	event;
 
 	public FEModuleServerPostInitEvent(ModuleContainer container, FMLServerStartedEvent event)
 	{

@@ -25,17 +25,17 @@ public class TickTaskTopManipulator implements ITickTask
 	}
 
 	// Data that is determined at start and does not change.
-	private EntityPlayer player;
-	private BackupArea backup;
-	private Point effectOrigin;
-	private int effectRadius;
-	private Mode effectMode;
+	private EntityPlayer	player;
+	private BackupArea		backup;
+	private Point			effectOrigin;
+	private int				effectRadius;
+	private Mode			effectMode;
 
 	// State info
-	private int changed;
-	private int ticks;
-	private boolean isComplete;
-	private Point currentPos;
+	private int				changed;
+	private int				ticks;
+	private boolean			isComplete;
+	private Point			currentPos;
 
 	public TickTaskTopManipulator(EntityPlayer play, BackupArea back, Point origin, int radius, Mode mode)
 	{

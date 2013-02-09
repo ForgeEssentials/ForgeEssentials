@@ -7,7 +7,7 @@ import com.ForgeEssentials.api.permissions.ZoneManager;
 
 public class PermQueryBlanketZone extends PermQuery
 {
-	public Zone toCheck;
+	public Zone	toCheck;
 
 	public PermQueryBlanketZone(String permission, String zoneID)
 	{

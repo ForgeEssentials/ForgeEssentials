@@ -14,8 +14,8 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 public class CommandTopManipulate extends WorldControlCommandBase
 {
 
-	private String name;
-	private TickTaskTopManipulator.Mode manipulateMode;
+	private String						name;
+	private TickTaskTopManipulator.Mode	manipulateMode;
 
 	public CommandTopManipulate(String cmdName, TickTaskTopManipulator.Mode mode)
 	{

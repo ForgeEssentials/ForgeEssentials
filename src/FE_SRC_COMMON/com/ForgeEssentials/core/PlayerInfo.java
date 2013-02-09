@@ -24,7 +24,7 @@ import cpw.mods.fml.common.network.Player;
 @SaveableObject
 public class PlayerInfo
 {
-	private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
+	private static HashMap<String, PlayerInfo>	playerInfoMap	= new HashMap<String, PlayerInfo>();
 
 	@Deprecated
 	public static PlayerInfo getPlayerInfo(EntityPlayer player)
@@ -85,45 +85,45 @@ public class PlayerInfo
 	// -------------------------------------------------------------------------------------------
 	@UniqueLoadingKey()
 	@SaveableField()
-	public final String username;
+	public final String				username;
 
 	// wand stuff
-	public int wandID = 0;
-	public int wandDmg = 0;
-	public boolean wandEnabled = false;
+	public int						wandID		= 0;
+	public int						wandDmg		= 0;
+	public boolean					wandEnabled	= false;
 
 	// selection stuff
 	@SaveableField(nullableField = true)
-	private Point sel1;
+	private Point					sel1;
 
 	@SaveableField(nullableField = true)
-	private Point sel2;
+	private Point					sel2;
 
-	private Selection selection;
-
-	@SaveableField(nullableField = true)
-	public WarpPoint home;
+	private Selection				selection;
 
 	@SaveableField(nullableField = true)
-	public WarpPoint back;
+	public WarpPoint				home;
+
+	@SaveableField(nullableField = true)
+	public WarpPoint				back;
 
 	@SaveableField()
-	public String prefix;
+	public String					prefix;
 
 	@SaveableField()
-	public String suffix;
+	public String					suffix;
 
 	// 0: Normal 1: World spawn 2: Bed 3: Home
 	@SaveableField(nullableField = true)
-	public int spawnType;
-	
-	// undo and redo stuff
-	private Stack<BackupArea> undos;
-	private Stack<BackupArea> redos;
+	public int						spawnType;
 
-	public int TPcooldown = 0;
-	public HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
-	
+	// undo and redo stuff
+	private Stack<BackupArea>		undos;
+	private Stack<BackupArea>		redos;
+
+	public int						TPcooldown	= 0;
+	public HashMap<String, Integer>	kitCooldown	= new HashMap<String, Integer>();
+
 	private PlayerInfo(String username)
 	{
 		sel1 = null;

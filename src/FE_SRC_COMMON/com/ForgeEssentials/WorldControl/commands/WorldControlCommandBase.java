@@ -12,7 +12,7 @@ import com.ForgeEssentials.core.misc.ItemList;
 public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 {
 
-	protected boolean usesExtraSlash;
+	protected boolean	usesExtraSlash;
 
 	/**
 	 * 
@@ -82,7 +82,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.WorldControl.commands." + getName();
 	}
-	
+
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getBlockList());

@@ -26,13 +26,13 @@ public class TickTaskFillRound extends TickTaskFill
 	}
 
 	@Override
-	public void genList() 
+	public void genList()
 	{
-		for(int X = this.minX; X <= this.maxX; X = X + 16)
+		for (int X = this.minX; X <= this.maxX; X = X + 16)
 		{
-			for(int Z = this.minZ; Z <= this.maxZ; Z = Z + 16)
+			for (int Z = this.minZ; Z <= this.maxZ; Z = Z + 16)
 			{
-				if((rad + ModuleWorldBorder.overGenerate) < ModuleWorldBorder.getDistanceRound(centerX, centerZ, X, Z))
+				if ((rad + ModuleWorldBorder.overGenerate) < ModuleWorldBorder.getDistanceRound(centerX, centerZ, X, Z))
 				{
 					toDo.add(new ChunkCoordIntPair(X, Z));
 				}

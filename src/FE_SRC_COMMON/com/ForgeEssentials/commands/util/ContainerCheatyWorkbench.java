@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 
 public class ContainerCheatyWorkbench extends ContainerWorkbench
 {
-	private World worldObj;
+	private World	worldObj;
 
 	public ContainerCheatyWorkbench(InventoryPlayer par1InventoryPlayer, World par2World)
 	{
@@ -57,7 +57,8 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
 	}
 
 	/**
-	 * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
+	 * Called when a player shift-clicks on a slot. You must override this or
+	 * you will crash when someone does that.
 	 */
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)

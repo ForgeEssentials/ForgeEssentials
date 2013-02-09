@@ -12,10 +12,10 @@ public class PWarp
 {
 	@UniqueLoadingKey
 	@SaveableField
-	private String name;
+	private String		name;
 
 	@SaveableField
-	private WarpPoint point;
+	private WarpPoint	point;
 
 	public PWarp(String username, String name, WarpPoint point)
 	{
@@ -27,12 +27,12 @@ public class PWarp
 	{
 		return name;
 	}
-	
+
 	public String getUsername()
 	{
 		return name.split("$")[0];
 	}
-	
+
 	public String getName()
 	{
 		return name.split("$")[1];

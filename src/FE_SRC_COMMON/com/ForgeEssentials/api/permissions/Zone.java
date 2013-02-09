@@ -16,14 +16,14 @@ import com.ForgeEssentials.util.AreaSelector.WorldArea;
 public class Zone extends WorldArea implements Comparable
 {
 	@SaveableField
-	public int priority; // lowest priority is 0
+	public int		priority;	// lowest priority is 0
 
 	@UniqueLoadingKey
 	@SaveableField
-	private String zoneID; // unique string name
+	private String	zoneID;	// unique string name
 
 	@SaveableField
-	public String parent; // the unique name of the parent.
+	public String	parent;	// the unique name of the parent.
 
 	public Zone(String name, Selection sel, Zone parent)
 	{
@@ -50,7 +50,7 @@ public class Zone extends WorldArea implements Comparable
 		zoneID = name;
 		parent = ZoneManager.getGLOBAL().zoneID;
 	}
-	
+
 	/**
 	 * special one just for the SUPER and GLOBAL zones
 	 * 
@@ -65,6 +65,7 @@ public class Zone extends WorldArea implements Comparable
 
 	/**
 	 * used for reconstruct method only.
+	 * 
 	 * @param sel
 	 * @param dim
 	 */
@@ -137,7 +138,7 @@ public class Zone extends WorldArea implements Comparable
 	{
 		if (!(o instanceof Zone))
 			return Integer.MIN_VALUE;
-		
+
 		Zone zone = (Zone) o;
 		if (zone.isParentOf(this))
 		{
@@ -181,10 +182,10 @@ public class Zone extends WorldArea implements Comparable
 
 		return zone;
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return zoneID+" "+super.toString();
+		return zoneID + " " + super.toString();
 	}
 }

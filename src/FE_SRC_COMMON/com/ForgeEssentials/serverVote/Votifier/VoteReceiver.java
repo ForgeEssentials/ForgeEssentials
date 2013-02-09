@@ -45,23 +45,23 @@ import cpw.mods.fml.common.FMLLog;
  * I only changed the init code and the event stuff.
  * 
  * @author Dries007
- *
+ * 
  */
-public class VoteReceiver extends Thread 
+public class VoteReceiver extends Thread
 {
 	/** The host to listen on. */
-	private final String host;
+	private final String	host;
 
 	/** The port to listen on. */
-	private final int port;
+	private final int		port;
 
 	/** The server socket. */
-	private ServerSocket server;
+	private ServerSocket	server;
 
 	/** The running flag. */
-	private boolean running = true;
-	
-	public VoteReceiver(String host, int port) throws Exception 
+	private boolean			running	= true;
+
+	public VoteReceiver(String host, int port) throws Exception
 	{
 		if (0 == host.length())
 		{
@@ -77,39 +77,39 @@ public class VoteReceiver extends Thread
 				FMLLog.severe("Unable to determine local host IP, please set server-ip/hostname in the snooper config : " + var3.getMessage());
 			}
 		}
-		
+
 		this.host = host;
 		this.port = port;
 
 		initialize();
 	}
 
-	private void initialize() throws Exception 
+	private void initialize() throws Exception
 	{
-		try 
+		try
 		{
 			server = new ServerSocket();
 			server.bind(new InetSocketAddress(host, port));
 			OutputHandler.info("Votifier connection handler initialized!");
 		}
-		catch (Exception ex) 
+		catch (Exception ex)
 		{
 			FMLLog.severe("Error initializing vote receiver. Please verify that the configured");
 			FMLLog.severe("IP address and port are not already in use. This is a common problem");
 			FMLLog.severe("with hosting services and, if so, you should check with your hosting provider." + ex);
 			throw new Exception(ex);
-		}	
+		}
 	}
 
 	/**
 	 * Shuts the vote receiver down cleanly.
 	 */
-	public void shutdown() 
+	public void shutdown()
 	{
 		running = false;
 		if (server == null)
 		{
-			return;	
+			return;
 		}
 		try
 		{
@@ -122,9 +122,9 @@ public class VoteReceiver extends Thread
 	}
 
 	@Override
-	public void run() 
+	public void run()
 	{
-		while (running) 
+		while (running)
 		{
 			try
 			{
@@ -169,17 +169,17 @@ public class VoteReceiver extends Thread
 
 				// Create the vote.
 				VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
-				
-				FMLLog.fine("Received vote record -> " + vote);				
+
+				FMLLog.fine("Received vote record -> " + vote);
 
 				MinecraftForge.EVENT_BUS.post(vote);
-				
+
 				// Clean up.
 				writer.close();
 				in.close();
 				socket.close();
 			}
-			catch (SocketException ex) 
+			catch (SocketException ex)
 			{
 				FMLLog.severe("Protocol error. Ignoring packet");
 				ex.printStackTrace();
@@ -204,10 +204,10 @@ public class VoteReceiver extends Thread
 	 *            The data to read from
 	 * @return The string
 	 */
-	private String readString(byte[] data, int offset) 
+	private String readString(byte[] data, int offset)
 	{
 		StringBuilder builder = new StringBuilder();
-		for (int i = offset; i < data.length; i++) 
+		for (int i = offset; i < data.length; i++)
 		{
 			if (data[i] == '\n')
 				break; // Delimiter reached.

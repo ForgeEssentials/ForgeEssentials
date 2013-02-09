@@ -10,10 +10,10 @@ import com.google.common.reflect.TypeToken;
 
 public class PermissionQueryBus
 {
-	private static int maxID = 0;
+	private static int												maxID		= 0;
 
-	private ConcurrentHashMap<Object, ArrayList<IQueryListener>> listeners = new ConcurrentHashMap<Object, ArrayList<IQueryListener>>();
-	private final int busID = maxID++;
+	private ConcurrentHashMap<Object, ArrayList<IQueryListener>>	listeners	= new ConcurrentHashMap<Object, ArrayList<IQueryListener>>();
+	private final int												busID		= maxID++;
 
 	public PermissionQueryBus()
 	{
@@ -35,16 +35,14 @@ public class PermissionQueryBus
 						Class<?>[] parameterTypes = method.getParameterTypes();
 						if (parameterTypes.length != 1)
 						{
-							throw new IllegalArgumentException("Method " + method + " has @PermSubscribe annotation, but requires " + parameterTypes.length
-									+ " arguments.  PermQuery handler methods must require a single argument.");
+							throw new IllegalArgumentException("Method " + method + " has @PermSubscribe annotation, but requires " + parameterTypes.length + " arguments.  PermQuery handler methods must require a single argument.");
 						}
 
 						Class<?> eventType = parameterTypes[0];
 
 						if (!PermQuery.class.isAssignableFrom(eventType))
 						{
-							throw new IllegalArgumentException("Method " + method
-									+ " has @PermSubscribe annotation, but takes a argument that is not a PermQuery " + eventType);
+							throw new IllegalArgumentException("Method " + method + " has @PermSubscribe annotation, but takes a argument that is not a PermQuery " + eventType);
 						}
 
 						register(eventType, target, method);

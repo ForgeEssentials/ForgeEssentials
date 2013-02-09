@@ -27,7 +27,8 @@ import com.ForgeEssentials.util.OutputHandler;
 public class CommandRules extends ForgeEssentialsCommandBase
 {
 
-	public static final String[]	autocomargs	= { "add", "remove", "move" };
+	public static final String[]	autocomargs	=
+												{ "add", "remove", "move" };
 	public static ArrayList<String>	rules;
 	public static File				rulesFile	= new File(ForgeEssentials.FEDIR, "rules.txt");
 
@@ -187,7 +188,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		else
 		{
 			int index;
-			
+
 			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
 			{
 				if (args.length == 1)
@@ -197,7 +198,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 						OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
 						return;
 					}
-					
+
 					try
 					{
 						index = Integer.parseInt(args[1]);
@@ -218,7 +219,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				}
 				else
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
-				
+
 				return;
 			}
 
@@ -232,7 +233,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.5"));
 					return;
 				}
-				
+
 				try
 				{
 					index = Integer.parseInt(args[1]);
@@ -344,14 +345,14 @@ public class CommandRules extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, "That rule does not exist.");
 					return;
 				}
-				
+
 				String newRule = "";
 				for (int i = 1; i < args.length; i++)
 				{
 					newRule = newRule + args[i] + " ";
 				}
 				newRule = FunctionHelper.formatColors(newRule);
-				rules.set(index-1, newRule);
+				rules.set(index - 1, newRule);
 				OutputHandler.chatConfirmation(sender, "Rule #" + index + " changed to &r" + newRule);
 			}
 			else
@@ -495,14 +496,14 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer("That rule does not exist.");
 				return;
 			}
-			
+
 			String newRule = "";
 			for (int i = 1; i < args.length; i++)
 			{
 				newRule = newRule + args[i] + " ";
 			}
 			newRule = FunctionHelper.formatColors(newRule);
-			rules.set(index-1, newRule);
+			rules.set(index - 1, newRule);
 			sender.sendChatToPlayer("Rule #" + index + " changed to " + newRule);
 		}
 		else

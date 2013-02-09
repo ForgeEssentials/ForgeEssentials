@@ -7,7 +7,7 @@ import cpw.mods.fml.common.event.FMLStateEvent;
 
 public class FEModuleServerStopEvent extends FEModuleEvent
 {
-	private FMLServerStoppingEvent event;
+	private FMLServerStoppingEvent	event;
 
 	public FEModuleServerStopEvent(ModuleContainer container, FMLServerStoppingEvent event)
 	{

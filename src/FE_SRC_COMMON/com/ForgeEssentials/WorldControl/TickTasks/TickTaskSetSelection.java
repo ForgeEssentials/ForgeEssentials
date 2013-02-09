@@ -19,18 +19,18 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 public class TickTaskSetSelection implements ITickTask
 {
 	// stuff needed
-	private final int blockID;
-	private final int metadata;
-	private BackupArea back;
-	private EntityPlayer player;
-	private ArrayList<AreaBase> applicable;
+	private final int			blockID;
+	private final int			metadata;
+	private BackupArea			back;
+	private EntityPlayer		player;
+	private ArrayList<AreaBase>	applicable;
 
 	// actually used
-	private Point first;
-	private Point last;
-	private Point current;
-	private int changed;
-	private boolean isComplete;
+	private Point				first;
+	private Point				last;
+	private Point				current;
+	private int					changed;
+	private boolean				isComplete;
 
 	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata, BackupArea back, AreaBase area)
 	{

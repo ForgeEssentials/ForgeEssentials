@@ -36,19 +36,19 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 public class ModulePermissions
 {
 	// public static ConfigPermissions config;
-	public static PermissionsHandler pHandler;
-	public static SqlHelper sql;
-	
+	public static PermissionsHandler	pHandler;
+	public static SqlHelper				sql;
+
 	@Config
-	public static ConfigPermissions config;
+	public static ConfigPermissions		config;
 
 	@ModuleDir
-	public static File permsFolder;
-	
-	protected static DataDriver data;
-	
+	public static File					permsFolder;
+
+	protected static DataDriver			data;
+
 	// permission registrations here...
-	protected HashMultimap regPerms;
+	protected HashMultimap				regPerms;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -81,11 +81,11 @@ public class ModulePermissions
 		// load zones...
 		data = DataStorageManager.getReccomendedDriver();
 		((ZoneHelper) ZoneManager.manager).loadZones();
-		
+
 		if (config.importBool)
 			sql.importPerms(config.importDir);
 
-		//init perms and vMC command overrides
+		// init perms and vMC command overrides
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
@@ -99,9 +99,9 @@ public class ModulePermissions
 		event.registerPermissionLevel("ForgeEssentials.perm._ALL_", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone", RegGroup.ZONE_ADMINS);
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone._ALL_", RegGroup.ZONE_ADMINS);
-		
+
 		event.registerPermissionLevel("_ALL_", RegGroup.OWNERS);
-		
+
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 	}
@@ -114,7 +114,7 @@ public class ModulePermissions
 		{
 			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
 				continue;
-			data.saveObject(zone);			
+			data.saveObject(zone);
 		}
 	}
 

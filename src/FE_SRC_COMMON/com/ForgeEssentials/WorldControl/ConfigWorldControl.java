@@ -11,8 +11,8 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigWorldControl extends ModuleConfigBase
 {
-	private Configuration config;
-	public static int blocksPerTick;
+	private Configuration	config;
+	public static int		blocksPerTick;
 
 	public ConfigWorldControl(File file)
 	{
@@ -38,7 +38,7 @@ public class ConfigWorldControl extends ModuleConfigBase
 	{
 		Property prop = config.get("WorldControl", "BlocksPerTick", 20);
 		prop.comment = "Specifies the maximum blocks/tick that can be changed via the WorldControl functions. Powerful computers may set it higher, servers may want to keep it lower.";
-		prop.value = ""+blocksPerTick;
+		prop.value = "" + blocksPerTick;
 
 		config.save();
 

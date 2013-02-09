@@ -8,12 +8,13 @@ public abstract class AreaBase
 {
 	// used for pretty much everything else.
 	@SaveableField
-	private Point				high;
+	private Point	high;
 	@SaveableField
-	private Point				low;
+	private Point	low;
 
 	/**
 	 * Points are inclusive.
+	 * 
 	 * @param start
 	 * @param end
 	 */
@@ -26,17 +27,17 @@ public abstract class AreaBase
 
 	public int getXLength()
 	{
-		return (int)(high.x - low.x + 1);
+		return (int) (high.x - low.x + 1);
 	}
 
 	public int getYLength()
 	{
-		return (int)(high.y - low.y + 1);
+		return (int) (high.y - low.y + 1);
 	}
 
 	public int getZLength()
 	{
-		return (int)(high.z - low.z + 1);
+		return (int) (high.z - low.z + 1);
 	}
 
 	public Point getHighPoint()
@@ -82,12 +83,15 @@ public abstract class AreaBase
 			newZ1 = p1.getZ();
 			newZ2 = p2.getZ();
 		}
-		return new Point[] { new Point(newX1, newY1, newZ1), new Point(newX2, newY2, newZ2) };
+		return new Point[]
+		{ new Point(newX1, newY1, newZ1), new Point(newX2, newY2, newZ2) };
 	}
 
 	/**
 	 * Determines if a given point is within the bounds of an area.
-	 * @param p Point to check against the Area
+	 * 
+	 * @param p
+	 *            Point to check against the Area
 	 * @return True, if the Point p is inside the area.
 	 */
 	public boolean contains(Point p)
@@ -97,7 +101,9 @@ public abstract class AreaBase
 
 	/**
 	 * checks if this area contains with another
-	 * @param area to check against this area
+	 * 
+	 * @param area
+	 *            to check against this area
 	 * @return True, AreaBAse area is completely within this area
 	 */
 	public boolean contains(AreaBase area)
@@ -109,7 +115,9 @@ public abstract class AreaBase
 
 	/**
 	 * checks if this area is overlapping with another
-	 * @param area to check against this area
+	 * 
+	 * @param area
+	 *            to check against this area
 	 * @return True, if the given area overlaps with this one.
 	 */
 	public boolean intersectsWith(AreaBase area)
@@ -121,8 +129,10 @@ public abstract class AreaBase
 
 	/**
 	 * 
-	 * @param area The area to be checked.
-	 * @return NULL if the areas to do not intersect. Argument if this area completely contains the argument.
+	 * @param area
+	 *            The area to be checked.
+	 * @return NULL if the areas to do not intersect. Argument if this area
+	 *         completely contains the argument.
 	 */
 	public AreaBase getIntersection(AreaBase area)
 	{
@@ -139,19 +149,20 @@ public abstract class AreaBase
 			return new Selection(iLow, iHigh);
 		}
 	}
-	
+
 	public boolean makesCuboidWith(AreaBase area)
 	{
 		boolean alignX = low.x == area.low.x && high.x == area.high.x;
 		boolean alignY = low.y == area.low.y && high.y == area.high.y;
 		boolean alignZ = low.z == area.low.z && high.z == area.high.z;
-		
+
 		return alignX || alignY || alignZ;
 	}
-	
+
 	/**
 	 * 
-	 * @param area The area to be checked.
+	 * @param area
+	 *            The area to be checked.
 	 * @return NULL if the areas to do not make a cuboid together.
 	 */
 	public AreaBase getUnity(AreaBase area)

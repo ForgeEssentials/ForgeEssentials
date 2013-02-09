@@ -12,8 +12,8 @@ import cpw.mods.fml.common.TickType;
 
 public class VanillaServiceChecker implements IScheduledTickHandler
 {
-	public static boolean online = true;
-	public static boolean oldOnline;
+	public static boolean	online	= true;
+	public static boolean	oldOnline;
 
 	public VanillaServiceChecker()
 	{
@@ -23,7 +23,7 @@ public class VanillaServiceChecker implements IScheduledTickHandler
 			BufferedReader var3 = new BufferedReader(new InputStreamReader(var2.openStream()));
 			String var4 = var3.readLine();
 			var3.close();
-			if(!var4.equals("NOT YET"))
+			if (!var4.equals("NOT YET"))
 			{
 				online = false;
 			}
@@ -31,13 +31,13 @@ public class VanillaServiceChecker implements IScheduledTickHandler
 		catch (Exception e)
 		{
 			online = false;
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		oldOnline = online;
 		OutputHandler.info("VanillaServiceChecker initialized. Vanilla online mode: '" + ModuleAuth.getVanillaOnlineMode() + "' Mojang login servers: '" + online + "'");
 		ModuleAuth.FEAuth(online);
 	}
-	
+
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
@@ -45,7 +45,8 @@ public class VanillaServiceChecker implements IScheduledTickHandler
 	}
 
 	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData){}
+	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	{}
 
 	@Override
 	public EnumSet<TickType> ticks()
@@ -65,7 +66,7 @@ public class VanillaServiceChecker implements IScheduledTickHandler
 		// TODO: make configureable
 		return 20 * 5;
 	}
-	
+
 	private static void check()
 	{
 		oldOnline = online;
@@ -76,7 +77,7 @@ public class VanillaServiceChecker implements IScheduledTickHandler
 			BufferedReader var3 = new BufferedReader(new InputStreamReader(var2.openStream()));
 			String var4 = var3.readLine();
 			var3.close();
-			if(!var4.equals("NOT YET"))
+			if (!var4.equals("NOT YET"))
 			{
 				online = false;
 			}
@@ -84,16 +85,16 @@ public class VanillaServiceChecker implements IScheduledTickHandler
 		catch (Exception e)
 		{
 			online = false;
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
-		
-		if(online != oldOnline)
+
+		if (online != oldOnline)
 		{
 			OutputHandler.warning("MC login changed status, now " + online + "!");
 			ModuleAuth.FEAuth(online);
 		}
 	}
-	
+
 	public static boolean forceCheck()
 	{
 		check();

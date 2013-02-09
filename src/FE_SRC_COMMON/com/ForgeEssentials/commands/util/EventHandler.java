@@ -25,13 +25,13 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IChatListener;
 
 public class EventHandler implements IChatListener
-{	
+{
 	@ForgeSubscribe()
 	public void playerInteractEvent(PlayerInteractEvent e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		/*
 		 * Colorize!
 		 */
@@ -83,11 +83,11 @@ public class EventHandler implements IChatListener
 						try
 						{
 							MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, false);
-						
-							((EntityPlayerMP) e.entityPlayer).playerNetServerHandler.setPlayerLocation(mo.blockX, mo.blockY, mo.blockZ,
-								e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw);
+
+							((EntityPlayerMP) e.entityPlayer).playerNetServerHandler.setPlayerLocation(mo.blockX, mo.blockY, mo.blockZ, e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw);
 						}
-						catch(Exception ex) {}
+						catch (Exception ex)
+						{}
 					}
 				}
 			}
@@ -104,7 +104,7 @@ public class EventHandler implements IChatListener
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		if (e.entity instanceof EntityPlayer)
 		{
 			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).back = new WarpPoint((EntityPlayer) e.entity);
@@ -112,13 +112,13 @@ public class EventHandler implements IChatListener
 	}
 
 	@Override
-	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message) 
+	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message)
 	{
 		return message;
 	}
 
 	@Override
-	public Packet3Chat clientChat(NetHandler handler, Packet3Chat message) 
+	public Packet3Chat clientChat(NetHandler handler, Packet3Chat message)
 	{
 		return message;
 	}

@@ -1,4 +1,5 @@
 package com.ForgeEssentials.data;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -13,13 +14,13 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class TextDataDriver extends DataDriver
 {
-	protected File baseFile;
+	protected File	baseFile;
 
 	@Override
 	public final void parseConfigs(Configuration config, String category, String worldName) throws Exception
 	{
 		Property prop;
-		
+
 		String cat = category.substring(0, category.lastIndexOf('.'));
 
 		prop = config.get(cat, "useFEDataDir", false);
@@ -29,7 +30,7 @@ public abstract class TextDataDriver extends DataDriver
 
 		if (useFEDir)
 		{
-			baseFile = new File(ForgeEssentials.FEDIR, "saves/"+getName()+"/" + worldName + "/");
+			baseFile = new File(ForgeEssentials.FEDIR, "saves/" + getName() + "/" + worldName + "/");
 		}
 		else
 		{
@@ -39,28 +40,28 @@ public abstract class TextDataDriver extends DataDriver
 				parent = new File(FunctionHelper.getBaseDir(), "saves/");
 			}
 
-			baseFile = new File(parent, worldName + "/FEData/"+getName()+"/");
+			baseFile = new File(parent, worldName + "/FEData/" + getName() + "/");
 		}
 
 		config.save();
 	}
-	 
+
 	protected final File getTypePath(Class type)
 	{
 		return new File(baseFile, type.getSimpleName() + "/");
 	}
-	
-	protected  File getFilePath(Class type, Object uniqueKey)
+
+	protected File getFilePath(Class type, Object uniqueKey)
 	{
-		return new File(getTypePath(type).getPath(), uniqueKey.toString() + "."+getExtension());
+		return new File(getTypePath(type).getPath(), uniqueKey.toString() + "." + getExtension());
 	}
-	
+
 	/**
-	 * @return extension of the file. ommit the preceding period, its automatically added.
-	 * eg txt, cfg, dat, yml, etc...
+	 * @return extension of the file. ommit the preceding period, its
+	 *         automatically added. eg txt, cfg, dat, yml, etc...
 	 */
 	protected abstract String getExtension();
-	
+
 	@Override
 	protected TaggedClass[] loadAll(Class type)
 	{
@@ -71,16 +72,16 @@ public abstract class TextDataDriver extends DataDriver
 		{
 			for (File file : files)
 			{
-				if (!file.isDirectory() && file.getName().endsWith("."+getExtension()))
+				if (!file.isDirectory() && file.getName().endsWith("." + getExtension()))
 				{
-					data.add(loadData(type, file.getName().replace("."+getExtension(), "")));
+					data.add(loadData(type, file.getName().replace("." + getExtension(), "")));
 				}
 			}
 		}
 
 		return data.toArray(new TaggedClass[] {});
 	}
-	
+
 	@Override
 	protected final boolean deleteData(Class type, Object uniqueObjectKey)
 	{

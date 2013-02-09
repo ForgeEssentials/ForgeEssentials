@@ -4,9 +4,11 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 // Hopefully we can transform the stuff in and we won't need this class.
 
-public class OverrideManager {
+public class OverrideManager
+{
 
-	public static void regOverrides(FMLServerStartingEvent e) {
+	public static void regOverrides(FMLServerStartingEvent e)
+	{
 		e.registerServerCommand(new CommandBan());
 		e.registerServerCommand(new CommandBanIp());
 		e.registerServerCommand(new CommandBanlist());

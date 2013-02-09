@@ -14,8 +14,8 @@ import com.ForgeEssentials.permission.PermissionChecker;
 @HasResult
 public class PermQueryPlayer extends PermQuery
 {
-	public EntityPlayer doer;
-	public boolean dOverride;
+	public EntityPlayer	doer;
+	public boolean		dOverride;
 
 	/**
 	 * Assumes the Players position as the "doneTo" point.
@@ -36,7 +36,8 @@ public class PermQueryPlayer extends PermQuery
 	 * @param player
 	 * @param permission
 	 * @param checkForward
-	 *            Specifies to only return allow if all the children of the permission are allowed.
+	 *            Specifies to only return allow if all the children of the
+	 *            permission are allowed.
 	 */
 	public PermQueryPlayer(EntityPlayer player, String permission, boolean checkForward)
 	{

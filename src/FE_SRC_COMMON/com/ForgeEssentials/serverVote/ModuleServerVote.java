@@ -26,45 +26,45 @@ import cpw.mods.fml.common.FMLLog;
 public class ModuleServerVote
 {
 	@Config
-	public static ConfigServerVote config;
-	
-	public static VoteReceiver votifier;
-	
+	public static ConfigServerVote	config;
+
+	public static VoteReceiver		votifier;
+
 	public ModuleServerVote()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
-		API.registerResponce(10, new VoteResponce());	
+		API.registerResponce(10, new VoteResponce());
 	}
-	
+
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
-		try 
+		try
 		{
 			votifier = new VoteReceiver(config.hostname, config.port);
 			votifier.start();
 		}
-		catch (Exception e1) 
+		catch (Exception e1)
 		{
 			FMLLog.severe("Error initializing Votifier compat.");
 			FMLLog.severe(e.toString());
 			e1.printStackTrace();
 		}
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void defVoteResponces(VoteEvent vote)
 	{
 		OutputHandler.finer("Got Vote!");
-		
+
 		/*
 		 * Offline check.
 		 */
-		
+
 		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(vote.player);
-		if(player == null)
+		if (player == null)
 		{
-			if(!config.allowOfflineVotes)
+			if (!config.allowOfflineVotes)
 			{
 				OutputHandler.info("Player for vote not online, vote canceled.");
 				vote.setFeedback("notOnline");
@@ -73,24 +73,25 @@ public class ModuleServerVote
 			}
 			return;
 		}
-		
+
 		/*
 		 * do sh*t!
 		 */
-		
-		if(!config.msgAll.equals(""))
+
+		if (!config.msgAll.equals(""))
 		{
-			FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendPacketToAllPlayers(new Packet3Chat(FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player))));
+			FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager()
+					.sendPacketToAllPlayers(new Packet3Chat(FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player))));
 		}
-		
-		if(!config.msgVoter.equals(""))
+
+		if (!config.msgVoter.equals(""))
 		{
 			player.sendChatToPlayer(FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
 		}
-		
-		if(!config.freeStuff.isEmpty())
+
+		if (!config.freeStuff.isEmpty())
 		{
-			for(ItemStack stack : config.freeStuff)
+			for (ItemStack stack : config.freeStuff)
 			{
 				OutputHandler.finer(stack);
 				player.inventory.addItemStackToInventory(stack.copy());

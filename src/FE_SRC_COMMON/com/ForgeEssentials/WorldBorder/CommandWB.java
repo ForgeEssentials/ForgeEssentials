@@ -17,7 +17,8 @@ import com.ForgeEssentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
- * Used to check, set and fill the border. You need to activate the module before this command is usable.
+ * Used to check, set and fill the border. You need to activate the module
+ * before this command is usable.
  * 
  * @author Dries007
  * 
@@ -25,7 +26,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandWB extends ForgeEssentialsCommandBase
 {
-	public static Filler taskGooing = null;
+	public static Filler	taskGooing	= null;
 
 	@Override
 	public String getCommandName()
@@ -36,13 +37,15 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public List getCommandAliases()
 	{
-		return Arrays.asList(new String[] { "wb" });
+		return Arrays.asList(new String[]
+		{ "wb" });
 	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
 		boolean set = ModuleWorldBorder.set;
 		// Info
 		if (args.length == 0)
@@ -126,8 +129,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			if (args.length == 3)
 			{
 				ModuleWorldBorder.setCenter(rad, (int) sender.posX, (int) sender.posZ, shape, true);
-				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + (int) sender.posX)
-						.replaceAll("%z", "" + (int) sender.posZ));
+				sender.sendChatToPlayer(Localization.get(Localization.WB_SET).replaceAll("%r", "" + rad).replaceAll("%x", "" + (int) sender.posX).replaceAll("%z", "" + (int) sender.posZ));
 				return;
 			}
 			if (args.length == 5)
@@ -147,7 +149,8 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
 		boolean set = ModuleWorldBorder.set;
 		// Info
 		if (args.length == 0)
@@ -195,7 +198,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				int dim = parseInt(sender, args[2]);
 				WorldServer world = server.worldServerForDimension(dim);
 
-				if(world != null)
+				if (world != null)
 				{
 					if (taskGooing != null)
 					{
@@ -208,9 +211,9 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_UNLOADEDWOLD));	
+					sender.sendChatToPlayer(Localization.get(Localization.WB_FILL_UNLOADEDWOLD));
 				}
-				
+
 				return;
 			}
 			if (args[1].equalsIgnoreCase("continue"))

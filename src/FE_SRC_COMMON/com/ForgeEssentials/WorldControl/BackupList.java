@@ -18,8 +18,7 @@ public class BackupList implements Queue<BackupArea>
 
 	@Override
 	public void clear()
-	{
-	}
+	{}
 
 	@Override
 	public boolean contains(Object arg0)

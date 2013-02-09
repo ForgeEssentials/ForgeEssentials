@@ -18,47 +18,48 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
-	public boolean enableCmdBlock = true;
-	public boolean enableConsole = true;
-	public boolean enablePlayer = true;
-	
-	public ArrayList<String> aliasList = new ArrayList();
-	
+	public boolean				enableCmdBlock	= true;
+	public boolean				enableConsole	= true;
+	public boolean				enablePlayer	= true;
+
+	public ArrayList<String>	aliasList		= new ArrayList();
+
 	// ---------------------------
 	// config interaction
 	// ---------------------------
-	
+
 	/**
 	 * Override if you want config interaction.
+	 * 
 	 * @param config
-	 * @param category 
+	 * @param category
 	 */
 	public void doConfig(Configuration config, String category)
 	{
-		
+
 	}
-	
+
 	@Override
 	public List getCommandAliases()
 	{
 		return aliasList;
 	}
-	
+
 	public String[] getDefaultAliases()
 	{
 		return new String[] {};
 	}
-	
+
 	public boolean usefullCmdBlock()
 	{
 		return this.canConsoleUseCommand();
 	}
-	
+
 	public boolean usefullPlayer()
 	{
 		return true;
 	}
-	
+
 	// ---------------------------
 	// processing command
 	// ---------------------------
@@ -205,21 +206,21 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			if(!enablePlayer) 
+			if (!enablePlayer)
 				return false;
 			else
 				return canPlayerUseCommand((EntityPlayer) sender);
 		}
 		else if (sender instanceof TileEntityCommandBlock)
 		{
-			if(!enableCmdBlock) 
+			if (!enableCmdBlock)
 				return false;
 			else
 				return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
 		}
 		else
 		{
-			if(!enableConsole) 
+			if (!enableConsole)
 				return false;
 			else
 				return canConsoleUseCommand();
@@ -229,7 +230,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public abstract boolean canConsoleUseCommand();
 
 	/**
-	 * returns canConsoleUseCommand() by default. Override if you want to change that.
+	 * returns canConsoleUseCommand() by default. Override if you want to change
+	 * that.
 	 */
 	public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
 	{
@@ -280,11 +282,13 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		if (args.length == 0) {
+		if (args.length == 0)
+		{
 			return getListOfStringsFromIterableMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getPossibleCommands(sender));
 		}
-		else {
-	        return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		else
+		{
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 		}
 	}
 

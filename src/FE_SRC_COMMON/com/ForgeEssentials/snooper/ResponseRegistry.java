@@ -8,7 +8,7 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class ResponseRegistry
 {
-	private static HashMap<Integer, Response> map = new HashMap<Integer, Response>();
+	private static HashMap<Integer, Response>	map	= new HashMap<Integer, Response>();
 
 	/**
 	 * Register a response for an ID. Use the API!

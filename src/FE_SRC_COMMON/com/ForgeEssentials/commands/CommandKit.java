@@ -168,8 +168,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 	{
 		if (PlayerInfo.getPlayerInfo(player.username).kitCooldown.containsKey(kit.getName()))
 		{
-			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c",
-					"" + PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName())));
+			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c", "" + PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName())));
 		}
 		else
 		{
@@ -189,7 +188,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 				stack.readFromNBT((NBTTagCompound) kit.getTagList("items").tagAt(i));
 				player.inventory.addItemStackToInventory(stack);
 			}
-			
+
 			/*
 			 * Armor
 			 */
@@ -214,8 +213,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-	}
+	{}
 
 	@Override
 	public boolean canConsoleUseCommand()

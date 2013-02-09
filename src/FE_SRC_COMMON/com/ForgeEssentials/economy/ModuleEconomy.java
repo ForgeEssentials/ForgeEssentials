@@ -28,7 +28,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @FEModule(name = "Economy", parentMod = ForgeEssentials.class)
 public class ModuleEconomy implements IPlayerTracker
 {
-	private static HashMap<String, ModuleEconomy> playerEconomyMap = new HashMap<String, ModuleEconomy>();
+	private static HashMap<String, ModuleEconomy>	playerEconomyMap	= new HashMap<String, ModuleEconomy>();
 
 	/**
 	 * Returns the player's economy instance
@@ -65,15 +65,13 @@ public class ModuleEconomy implements IPlayerTracker
 		return info;
 	}
 
-	public int wallet;
+	public int	wallet;
 
 	private ModuleEconomy(EntityPlayer player)
-	{
-	}
+	{}
 
 	public ModuleEconomy()
-	{
-	}
+	{}
 
 	public static void saveData(EntityPlayer player)
 	{

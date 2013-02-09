@@ -8,13 +8,12 @@ package com.ForgeEssentials.data;
  */
 class FieldInfo
 {
-	public Class Type;
-	public String Name;
+	public Class	Type;
+	public String	Name;
 
 	// Default constructor for simples!
 	public FieldInfo()
-	{
-	}
+	{}
 
 	public FieldInfo(Class type, String name)
 	{

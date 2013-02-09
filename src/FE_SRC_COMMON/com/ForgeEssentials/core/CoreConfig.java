@@ -50,21 +50,21 @@ public class CoreConfig
 		prop = config.get("Core.Misc", "MajoritySleep", true);
 		prop.comment = "If +50% of players sleep, make it day.";
 		MiscEventHandler.MajoritySleep = prop.getBoolean(true);
-		
+
 		config.addCustomCategoryComment("Core.VIP", "Permission \n" + PlayerTracker.PERMISSION);
-		
+
 		prop = config.get("Core.VIP", "KickForVIP", true);
 		prop.comment = "Kick a player if not VIP and (playercount + VIP slots = total slots)";
 		PlayerTracker.KickForVIP = prop.getBoolean(true);
-		
+
 		prop = config.get("Core.VIP", "VIPslots", 5);
 		prop.comment = "Amount of space reserved for VIPs";
 		PlayerTracker.VIPslots = prop.getInt();
-		
+
 		prop = config.get("Core.VIP", "kickMessage", "Sorry, this spot is for VIPs");
 		prop.comment = "Message you get when you log in and no VIP space is available";
 		PlayerTracker.kickMessage = prop.value;
-		
+
 		config.save();
 	}
 
@@ -74,7 +74,7 @@ public class CoreConfig
 	public void forceSave()
 	{
 		config.save();
-		
-		config.get("general", "removeDuplicateCommands", true, "Remove commands from the list if they already exist outside of FE.").value = ""	+ DuplicateCommandRemoval.removeDuplicateCommands;
+
+		config.get("general", "removeDuplicateCommands", true, "Remove commands from the list if they already exist outside of FE.").value = "" + DuplicateCommandRemoval.removeDuplicateCommands;
 	}
 }

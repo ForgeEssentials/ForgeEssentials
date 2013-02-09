@@ -25,7 +25,7 @@ public class EventHandler
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
 		PermQuery query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point);
 		Boolean result = PermissionsAPI.checkPermAllowed(query);
@@ -44,7 +44,7 @@ public class EventHandler
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
 		PermQuery query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point);
 		Boolean result = PermissionsAPI.checkPermAllowed(query);
@@ -63,7 +63,7 @@ public class EventHandler
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
 		{
 			WorldPoint point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
@@ -85,7 +85,7 @@ public class EventHandler
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
 		Zone zone = ZoneManager.getWhichZoneIn(point);
 

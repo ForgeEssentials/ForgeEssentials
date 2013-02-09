@@ -5,7 +5,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class PermQueryBlanketSpot extends PermQuery
 {
-	public WorldPoint spot;
+	public WorldPoint	spot;
 
 	/**
 	 * Assumes the Players position as the "doneTo" point.
@@ -26,7 +26,8 @@ public class PermQueryBlanketSpot extends PermQuery
 	 * @param player
 	 * @param permission
 	 * @param checkForward
-	 *            Specifies to only return allow if all the children of the permission are allowed.
+	 *            Specifies to only return allow if all the children of the
+	 *            permission are allowed.
 	 */
 	public PermQueryBlanketSpot(WorldPoint spot, String permission, boolean checkForward)
 	{

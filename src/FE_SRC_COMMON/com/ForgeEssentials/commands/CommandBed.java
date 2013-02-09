@@ -23,7 +23,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
 {
 
 	/** Spawn point for each dimension */
-	public static HashMap<Integer, Point> spawnPoints = new HashMap<Integer, Point>();
+	public static HashMap<Integer, Point>	spawnPoints	= new HashMap<Integer, Point>();
 
 	@Override
 	public String getCommandName()
@@ -51,14 +51,17 @@ public class CommandBed extends ForgeEssentialsCommandBase
 						PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 						((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 						player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
-					} else
+					}
+					else
 						player.sendChatToPlayer(Localization.get(Localization.NOROOM));
 				}
-			} else
+			}
+			else
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
-		} else
+		}
+		else
 		{
 			ChunkCoordinates spawn = sender.getBedLocation();
 			if (spawn != null)
@@ -68,7 +71,8 @@ public class CommandBed extends ForgeEssentialsCommandBase
 					PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
 					((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, sender.rotationYaw, sender.rotationPitch);
 					sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
-				} else
+				}
+				else
 					sender.sendChatToPlayer(Localization.get(Localization.NOROOM));
 			}
 		}
@@ -90,7 +94,8 @@ public class CommandBed extends ForgeEssentialsCommandBase
 				ChunkCoordinates spawn = player.getBedLocation();
 				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 				player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
-			} else
+			}
+			else
 			{
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
@@ -115,7 +120,8 @@ public class CommandBed extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		} else
+		}
+		else
 		{
 			return null;
 		}

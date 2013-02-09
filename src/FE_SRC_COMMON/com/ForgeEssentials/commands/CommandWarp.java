@@ -114,12 +114,12 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if(args.length == 2)
+		if (args.length == 2)
 		{
 			if (TeleportCenter.warps.containsKey(args[0].toLowerCase()))
 			{
 				EntityPlayer player = FunctionHelper.getPlayerFromPartialName(args[0]);
-				if(PlayerSelector.hasArguments(args[0]))
+				if (PlayerSelector.hasArguments(args[0]))
 				{
 					player = PlayerSelector.matchOnePlayer(sender, args[0]);
 				}
@@ -139,7 +139,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	{
 		return false;
 	}
-	
+
 	@Override
 	public boolean canCommandBlockUseCommand(TileEntityCommandBlock te)
 	{

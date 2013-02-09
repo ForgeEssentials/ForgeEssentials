@@ -50,10 +50,10 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-public class CommandRegistrar 
+public class CommandRegistrar
 {
-	public static ArrayList<ForgeEssentialsCommandBase> cmdList = new ArrayList();
-	
+	public static ArrayList<ForgeEssentialsCommandBase>	cmdList	= new ArrayList();
+
 	static
 	{
 		cmdList.add(new CommandMotd());
@@ -99,42 +99,47 @@ public class CommandRegistrar
 		cmdList.add(new CommandDoAs());
 		cmdList.add(new CommandServerSettings());
 	}
-	
+
 	public static void commandConfigs(Configuration config)
 	{
 		config.load();
-		
+
 		try
 		{
 			config.addCustomCategoryComment("commands", "All FE commands will have a config space here.");
 			config.addCustomCategoryComment("CommandBlock", "Toggle server wide command block usage here.");
 			config.addCustomCategoryComment("Player", "Toggle server wide player usage here.");
 			config.addCustomCategoryComment("Console", "Toggle console usage here.");
-			
+
 			for (ForgeEssentialsCommandBase fecmd : cmdList)
-			{		
-				if(fecmd.usefullCmdBlock())			config.get("CommandBlock", fecmd.getCommandName(), fecmd.enableCmdBlock);
-				if(fecmd.usefullPlayer()) 			config.get("Player", fecmd.getCommandName(), fecmd.enablePlayer);
-				if(fecmd.canConsoleUseCommand()) 	config.get("Console", fecmd.getCommandName(), fecmd.enableConsole);
-				
+			{
+				if (fecmd.usefullCmdBlock())
+					config.get("CommandBlock", fecmd.getCommandName(), fecmd.enableCmdBlock);
+				if (fecmd.usefullPlayer())
+					config.get("Player", fecmd.getCommandName(), fecmd.enablePlayer);
+				if (fecmd.canConsoleUseCommand())
+					config.get("Console", fecmd.getCommandName(), fecmd.enableConsole);
+
 				String category = "commands." + fecmd.getCommandName();
 				config.addCustomCategoryComment(category, fecmd.getCommandPerm());
-				for(String alias : config.get(category, "aliases", fecmd.getDefaultAliases()).valueList)
+				for (String alias : config.get(category, "aliases", fecmd.getDefaultAliases()).valueList)
 				{
 					fecmd.aliasList.add(alias);
 				}
 				fecmd.doConfig(config, category);
 			}
 		}
-		catch(Exception e)
-		{e.printStackTrace();}
-		
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
 		config.save();
 	}
-	
-	public static void load(FMLServerStartingEvent e) 
+
+	public static void load(FMLServerStartingEvent e)
 	{
-		for(ForgeEssentialsCommandBase cmd : cmdList)
+		for (ForgeEssentialsCommandBase cmd : cmdList)
 		{
 			e.registerServerCommand(cmd);
 		}

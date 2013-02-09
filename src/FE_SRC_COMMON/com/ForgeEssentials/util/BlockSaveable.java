@@ -9,12 +9,12 @@ import net.minecraft.world.World;
 
 public class BlockSaveable implements Serializable
 {
-	private int x;
-	private int y;
-	private int z;
-	private short blockID;
-	private byte metadata;
-	private NBTTagCompound tile;
+	private int				x;
+	private int				y;
+	private int				z;
+	private short			blockID;
+	private byte			metadata;
+	private NBTTagCompound	tile;
 
 	/**
 	 * generates the block from the world.
@@ -41,7 +41,7 @@ public class BlockSaveable implements Serializable
 				entity.writeToNBT(compound);
 				tile = compound;
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{}
 		}
 	}

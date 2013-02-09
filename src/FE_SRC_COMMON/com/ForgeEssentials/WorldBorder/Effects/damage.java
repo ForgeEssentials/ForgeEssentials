@@ -6,7 +6,7 @@ import net.minecraftforge.common.Configuration;
 
 public class damage implements IEffect
 {
-	private int damage = 1;
+	private int	damage	= 1;
 
 	@Override
 	public void registerConfig(Configuration config, String category)

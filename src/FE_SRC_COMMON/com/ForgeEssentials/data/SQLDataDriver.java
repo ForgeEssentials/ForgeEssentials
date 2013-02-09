@@ -31,7 +31,7 @@ public class SQLDataDriver extends DataDriver
 
 	public SQLDataDriver()
 	{
-		connector = new DBConnector("CoreData", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.FEDIR.getPath()+"/FEData", false);
+		connector = new DBConnector("CoreData", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.FEDIR.getPath() + "/FEData", false);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class SQLDataDriver extends DataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("Couldn't save object of type " + type.getSimpleName() + " to "+connector.getChosenType()+" DB. Server will continue running.");
+			OutputHandler.info("Couldn't save object of type " + type.getSimpleName() + " to " + connector.getChosenType() + " DB. Server will continue running.");
 			e.printStackTrace();
 		}
 
@@ -140,7 +140,7 @@ public class SQLDataDriver extends DataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.severe("Problem deleting data from "+connector.getChosenType()+" DB (May not actually be a critical error):");
+			OutputHandler.severe("Problem deleting data from " + connector.getChosenType() + " DB (May not actually be a critical error):");
 			e.printStackTrace();
 		}
 
@@ -358,8 +358,10 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	/**
-	 * Attempts to create a table to store the type passed to it. These should only be top-level types that need to be stored, such as PlayerInfo and Zones.
-	 * Points, WorldPoints and other "simple" types that are contained within the top-level types will be unrolled automatically.
+	 * Attempts to create a table to store the type passed to it. These should
+	 * only be top-level types that need to be stored, such as PlayerInfo and
+	 * Zones. Points, WorldPoints and other "simple" types that are contained
+	 * within the top-level types will be unrolled automatically.
 	 * 
 	 * @param type
 	 * @return
@@ -415,13 +417,15 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	/**
-	 * Examines the provided type and produces an array of field => H2 Type pairs, ideal for creating new tables with. Complex type fields are broken down
-	 * into constituent primitives in the form of: "parentField_childFieldName"
+	 * Examines the provided type and produces an array of field => H2 Type
+	 * pairs, ideal for creating new tables with. Complex type fields are broken
+	 * down into constituent primitives in the form of:
+	 * "parentField_childFieldName"
 	 * 
 	 * @param fieldName
-	 * Name of saved field
+	 *            Name of saved field
 	 * @param type
-	 * Type of saved field
+	 *            Type of saved field
 	 * @return Array of field => H2 type names.
 	 */
 	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, Class type)
@@ -472,12 +476,13 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	/**
-	 * Generates an array of fieldname => String(Value) pairs, useful for Inserts, Updates, or Deletes.
+	 * Generates an array of fieldname => String(Value) pairs, useful for
+	 * Inserts, Updates, or Deletes.
 	 * 
 	 * @param fieldName
-	 * Name of the field in the H2 DB
+	 *            Name of the field in the H2 DB
 	 * @param type
-	 * Type of field (Java)
+	 *            Type of field (Java)
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */

@@ -13,12 +13,13 @@ import com.ForgeEssentials.permission.Permission;
  */
 public class PermissionSetEvent extends Event
 {
-	public Permission perm;
-	public Zone zone;
-	public String entity; // p:PlayerUsername or g:GroupName. the prefixes will
-							// be there.
+	public Permission	perm;
+	public Zone			zone;
+	public String		entity; // p:PlayerUsername or g:GroupName. the prefixes
+								// will
+								// be there.
 
-	private String reason;
+	private String		reason;
 
 	public PermissionSetEvent(Permission perm, Zone zone, String entity)
 	{

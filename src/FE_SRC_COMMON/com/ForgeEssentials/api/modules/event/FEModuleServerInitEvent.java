@@ -10,7 +10,7 @@ import cpw.mods.fml.common.event.FMLStateEvent;
 
 public class FEModuleServerInitEvent extends FEModuleEvent
 {
-	private FMLServerStartingEvent event;
+	private FMLServerStartingEvent	event;
 
 	public FEModuleServerInitEvent(ModuleContainer container, FMLServerStartingEvent event)
 	{
@@ -23,17 +23,17 @@ public class FEModuleServerInitEvent extends FEModuleEvent
 	{
 		return event;
 	}
-	
-    public MinecraftServer getServer()
-    {
-        return event.getServer();
-    }
 
-    public void registerServerCommand(ICommand command)
-    {
-    	// TODO: any fancy module command stuff
-    	
-    	// continue to register the commad.
-    	event.registerServerCommand(command);
-    }
+	public MinecraftServer getServer()
+	{
+		return event.getServer();
+	}
+
+	public void registerServerCommand(ICommand command)
+	{
+		// TODO: any fancy module command stuff
+
+		// continue to register the commad.
+		event.registerServerCommand(command);
+	}
 }

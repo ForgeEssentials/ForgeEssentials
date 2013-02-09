@@ -146,7 +146,7 @@ public class CommandButcherTickTask implements ITickTask
 					world.getChunkFromChunkCoords(var9, var10).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, (IEntitySelector) null);
 					for (EntityLiving entity : list)
 					{
-						if(entity instanceof EntityPlayer)
+						if (entity instanceof EntityPlayer)
 						{
 							continue;
 						}

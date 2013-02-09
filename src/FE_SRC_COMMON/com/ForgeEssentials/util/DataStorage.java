@@ -22,14 +22,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class DataStorage
 {
-	private static NBTTagCompound mainData;
-	private static final String DATAFILENAME = "worlddata";
+	private static NBTTagCompound	mainData;
+	private static final String		DATAFILENAME	= "worlddata";
 
-	private static final File DATAFILE = new File(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).getChunkSaveLocation(),
-			DATAFILENAME + ".dat");
+	private static final File		DATAFILE		= new File(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).getChunkSaveLocation(), DATAFILENAME + ".dat");
 
 	/*
-	 * This class is used to store warps and other non - player based info. Don't use this to store info the user needs to be able to edit.
+	 * This class is used to store warps and other non - player based info.
+	 * Don't use this to store info the user needs to be able to edit.
 	 */
 
 	public static NBTTagCompound getData(String name)

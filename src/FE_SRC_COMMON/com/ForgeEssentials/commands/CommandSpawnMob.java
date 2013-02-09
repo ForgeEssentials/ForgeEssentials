@@ -18,7 +18,7 @@ import com.ForgeEssentials.util.OutputHandler;
 public class CommandSpawnMob extends ForgeEssentialsCommandBase
 {
 
-	private HashMap<String, String> mobNames = new HashMap<String, String>();
+	private HashMap<String, String>	mobNames	= new HashMap<String, String>();
 
 	public CommandSpawnMob()
 	{

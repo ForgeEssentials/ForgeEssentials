@@ -18,8 +18,8 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
  */
 public class CommandVirtualchest extends ForgeEssentialsCommandBase
 {
-	public static int size = 54;
-	public static String name = "Vault 13";
+	public static int		size	= 54;
+	public static String	name	= "Vault 13";
 
 	@Override
 	public void doConfig(Configuration config, String category)
@@ -27,17 +27,18 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase
 		size = config.get(category, "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").getInt(6) * 9;
 		name = config.get(category, "VirtualChestName", "Vault 13", "Don't use special stuff....").value;
 	}
-	
+
 	@Override
 	public String getCommandName()
 	{
 		return "virtualchest";
 	}
-	
+
 	@Override
 	public String[] getDefaultAliases()
 	{
-		return new String[] {"vchest"};
+		return new String[]
+		{ "vchest" };
 	}
 
 	@Override
@@ -59,8 +60,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-	}
+	{}
 
 	@Override
 	public boolean canConsoleUseCommand()

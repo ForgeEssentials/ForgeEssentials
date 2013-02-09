@@ -277,7 +277,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	{
 		EPSuffix = ePSuffix;
 	}
-	
+
 	@Override
 	public String getEntryPlayer()
 	{

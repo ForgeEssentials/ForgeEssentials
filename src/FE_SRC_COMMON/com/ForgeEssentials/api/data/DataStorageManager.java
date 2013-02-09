@@ -6,7 +6,8 @@ import com.ForgeEssentials.data.TypeTagger;
 import com.ForgeEssentials.util.DBConnector;
 
 /**
- * Manages the DataDrivers and selects the correct one based on configuration settings. Once the DataDriver has been initialized, this class's job is done
+ * Manages the DataDrivers and selects the correct one based on configuration
+ * settings. Once the DataDriver has been initialized, this class's job is done
  * forever. (Well, until next load, I suppose.)
  * 
  * @author MysteriousAges
@@ -14,25 +15,27 @@ import com.ForgeEssentials.util.DBConnector;
  */
 public abstract class DataStorageManager
 {
-	
-	public static IStorageManager manager;
+
+	public static IStorageManager	manager;
 
 	/**
-	 * Should only be done before the server starts. May override existing Driver types.
+	 * Should only be done before the server starts. May override existing
+	 * Driver types.
 	 * 
-	 * @param name Name to be used in configs
+	 * @param name
+	 *            Name to be used in configs
 	 * @param c
 	 */
 	public static void registerDriver(String name, Class<? extends DataDriver> c)
 	{
 		manager.registerDriver(name, c);
 	}
-	
+
 	public static DataDriver getReccomendedDriver()
 	{
 		return manager.getReccomendedDriver();
 	}
-	
+
 	public static DataDriver getDriverOfType(EnumDriverType type)
 	{
 		return manager.getDriverOfType(type);
@@ -52,7 +55,7 @@ public abstract class DataStorageManager
 	{
 		return manager.getTaggerForType(type);
 	}
-	
+
 	public static DBConnector getCoreDBConnector()
 	{
 		return manager.getCoreDBConnector();

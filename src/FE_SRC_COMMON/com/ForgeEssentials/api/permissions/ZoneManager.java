@@ -12,7 +12,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class ZoneManager
 {
-	public static IZoneManager manager;
+	public static IZoneManager	manager;
 
 	public static Zone getWorldZone(World world)
 	{
@@ -54,7 +54,7 @@ public class ZoneManager
 	{
 		return manager.getWhichZoneIn(area, world);
 	}
-	
+
 	public static ArrayList<Zone> getZoneList()
 	{
 		return manager.getZoneList();

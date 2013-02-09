@@ -10,8 +10,8 @@ import cpw.mods.fml.common.asm.transformers.AccessTransformer;
 
 public class FEAccessTransformer extends AccessTransformer
 {
-	private static FEAccessTransformer instance;
-	private static List mapFiles = new LinkedList();
+	private static FEAccessTransformer	instance;
+	private static List					mapFiles	= new LinkedList();
 
 	public FEAccessTransformer() throws IOException
 	{
@@ -46,10 +46,12 @@ public class FEAccessTransformer extends AccessTransformer
 		try
 		{
 			// get a method from AccessTransformer
-			Method e = AccessTransformer.class.getDeclaredMethod("readMapFile", new Class[] { String.class });
+			Method e = AccessTransformer.class.getDeclaredMethod("readMapFile", new Class[]
+			{ String.class });
 			e.setAccessible(true);
 			// run it with the file given.
-			e.invoke(this, new Object[] { name });
+			e.invoke(this, new Object[]
+			{ name });
 
 		}
 		catch (Exception ex)

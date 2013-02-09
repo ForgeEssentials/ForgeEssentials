@@ -7,7 +7,7 @@ import cpw.mods.fml.common.event.FMLStateEvent;
 
 public class FEModulePostInitEvent extends FEModuleEvent
 {
-	private FMLPostInitializationEvent event;
+	private FMLPostInitializationEvent	event;
 
 	public FEModulePostInitEvent(ModuleContainer container, FMLPostInitializationEvent event)
 	{
@@ -20,16 +20,17 @@ public class FEModulePostInitEvent extends FEModuleEvent
 	{
 		return event;
 	}
-	
+
 	/**
 	 * bouncer for FML event method
+	 * 
 	 * @param modId
 	 * @param className
 	 * @return
 	 */
-    public Object buildSoftDependProxy(String modId, String className)
-    {
-    	return event.buildSoftDependProxy(modId, className);
-    }
+	public Object buildSoftDependProxy(String modId, String className)
+	{
+		return event.buildSoftDependProxy(modId, className);
+	}
 
 }

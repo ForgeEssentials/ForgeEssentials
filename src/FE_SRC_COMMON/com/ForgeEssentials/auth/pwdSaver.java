@@ -10,34 +10,34 @@ import java.io.PrintWriter;
 
 import com.ForgeEssentials.util.OutputHandler;
 
-public class pwdSaver 
+public class pwdSaver
 {
-	public static File dir;
-	
+	public static File	dir;
+
 	static
 	{
 		dir = new File(ModuleAuth.config.getFile().getParent(), "playerdata");
 		dir.mkdirs();
 	}
-	
-	public static boolean isRegisted(String username)	
+
+	public static boolean isRegisted(String username)
 	{
 		return new File(dir, username + ".pwd").exists();
 	}
-	
-	public static pwdData getData(String username) 
+
+	public static pwdData getData(String username)
 	{
 		try
 		{
 			pwdData data = new pwdData();
 			FileInputStream fstream = new FileInputStream(new File(dir, username + ".pwd"));
-			
+
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			
+
 			data.encPwd = br.readLine().getBytes();
 			data.salt = br.readLine().getBytes();
-			
+
 			in.close();
 			return data;
 		}
@@ -53,10 +53,10 @@ public class pwdSaver
 		try
 		{
 			PrintWriter out = new PrintWriter(new FileWriter(new File(dir, username + ".pwd")));
-			
+
 			out.println(new String(data.encPwd));
 			out.println(new String(data.salt));
-			
+
 			out.close();
 		}
 		catch (Exception e)

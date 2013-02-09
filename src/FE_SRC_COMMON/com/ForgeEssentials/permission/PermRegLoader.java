@@ -126,31 +126,37 @@ public class PermRegLoader
 		private RegGroup[] getHigherGroups(RegGroup g)
 		{
 			switch (g)
-				{
-					case GUESTS:
-						return new RegGroup[] { RegGroup.MEMBERS, RegGroup.ZONE_ADMINS, RegGroup.OWNERS };
-					case MEMBERS:
-						return new RegGroup[] { RegGroup.ZONE_ADMINS, RegGroup.OWNERS };
-					case ZONE_ADMINS:
-						return new RegGroup[] { RegGroup.OWNERS };
-					default:
-						return new RegGroup[] {};
-				}
+			{
+			case GUESTS:
+				return new RegGroup[]
+				{ RegGroup.MEMBERS, RegGroup.ZONE_ADMINS, RegGroup.OWNERS };
+			case MEMBERS:
+				return new RegGroup[]
+				{ RegGroup.ZONE_ADMINS, RegGroup.OWNERS };
+			case ZONE_ADMINS:
+				return new RegGroup[]
+				{ RegGroup.OWNERS };
+			default:
+				return new RegGroup[] {};
+			}
 		}
 
 		private RegGroup[] getLowerGroups(RegGroup g)
 		{
 			switch (g)
-				{
-					case MEMBERS:
-						return new RegGroup[] { RegGroup.GUESTS };
-					case ZONE_ADMINS:
-						return new RegGroup[] { RegGroup.MEMBERS, RegGroup.GUESTS };
-					case OWNERS:
-						return new RegGroup[] { RegGroup.MEMBERS, RegGroup.GUESTS, RegGroup.ZONE_ADMINS };
-					default:
-						return new RegGroup[] {};
-				}
+			{
+			case MEMBERS:
+				return new RegGroup[]
+				{ RegGroup.GUESTS };
+			case ZONE_ADMINS:
+				return new RegGroup[]
+				{ RegGroup.MEMBERS, RegGroup.GUESTS };
+			case OWNERS:
+				return new RegGroup[]
+				{ RegGroup.MEMBERS, RegGroup.GUESTS, RegGroup.ZONE_ADMINS };
+			default:
+				return new RegGroup[] {};
+			}
 		}
 	}
 }

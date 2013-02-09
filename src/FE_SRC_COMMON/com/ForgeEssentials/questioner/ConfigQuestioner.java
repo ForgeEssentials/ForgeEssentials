@@ -12,8 +12,8 @@ import com.ForgeEssentials.commands.util.CommandRegistrar;
 
 public class ConfigQuestioner extends ModuleConfigBase
 {
-	public Configuration config;
-	
+	public Configuration	config;
+
 	public ConfigQuestioner(File file)
 	{
 		super(file);
@@ -24,9 +24,11 @@ public class ConfigQuestioner extends ModuleConfigBase
 	{
 		config = new Configuration(file, true);
 
-//		config.addCustomCategoryComment("general", "General Commands configuration.");
-//		ModuleCommands.removeDuplicateCommands = config.get("general", "removeDuplicateCommands", true,
-//				"Remove commands from the list if they already exist outside of FE.").getBoolean(true);
+		// config.addCustomCategoryComment("general",
+		// "General Commands configuration.");
+		// ModuleCommands.removeDuplicateCommands = config.get("general",
+		// "removeDuplicateCommands", true,
+		// "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
 		config.save();
 	}
 
@@ -36,10 +38,13 @@ public class ConfigQuestioner extends ModuleConfigBase
 		// TODO: may have problems..
 		String path = CommandRules.rulesFile.getPath();
 		path = path.replace(ModuleCommands.cmddir.getPath(), "");
-		
-//		config.addCustomCategoryComment("general", "General Commands configuration.");
-//		config.get("general", "removeDuplicateCommands", true, "Remove commands from the list if they already exist outside of FE.").value = ""
-//				+ ModuleCommands.removeDuplicateCommands;
+
+		// config.addCustomCategoryComment("general",
+		// "General Commands configuration.");
+		// config.get("general", "removeDuplicateCommands", true,
+		// "Remove commands from the list if they already exist outside of FE.").value
+		// = ""
+		// + ModuleCommands.removeDuplicateCommands;
 		config.save();
 	}
 
@@ -48,7 +53,7 @@ public class ConfigQuestioner extends ModuleConfigBase
 	{
 		config.load();
 		config.save();
-		
+
 		CommandRegistrar.commandConfigs(config);
 	}
 }

@@ -1,21 +1,22 @@
 package com.ForgeEssentials.api.permissions;
 
 /**
- * This class is not a format that is designed to actually be saved in any way. It is simply an output format
- * for the data that is saved in the DataBase. The fields here are not fnal in order to save memory and CPU
- * when editing and sending the instance back in to update.
+ * This class is not a format that is designed to actually be saved in any way.
+ * It is simply an output format for the data that is saved in the DataBase. The
+ * fields here are not fnal in order to save memory and CPU when editing and
+ * sending the instance back in to update.
  * 
  * @author AbrarSyed
  */
 public class Group implements Comparable
 {
 
-	public String name;
-	public String parent;
-	public String prefix;
-	public String suffix;
-	public String zoneName;
-	public int priority; // lowest priority is 0
+	public String	name;
+	public String	parent;
+	public String	prefix;
+	public String	suffix;
+	public String	zoneName;
+	public int		priority;	// lowest priority is 0
 
 	public Group(String name, String prefix, String suffix, String parent, String zoneName, int priority)
 	{
@@ -55,11 +56,11 @@ public class Group implements Comparable
 
 		return end;
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return name+"["+parent+", "+prefix+", "+suffix+", "+zoneName+", "+priority+"]";
+		return name + "[" + parent + ", " + prefix + ", " + suffix + ", " + zoneName + ", " + priority + "]";
 	}
 
 }

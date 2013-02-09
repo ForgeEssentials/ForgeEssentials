@@ -68,7 +68,7 @@ public class PlayerInfoClient
 	{
 		return selection;
 	}
-	
+
 	public void clearSelection()
 	{
 		this.selection = null;

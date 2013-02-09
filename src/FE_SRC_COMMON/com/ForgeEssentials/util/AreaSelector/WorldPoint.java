@@ -10,7 +10,8 @@ import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 
 /**
- * Almost exactly like a Point, except with an additional dimension member so we can tell things apart. (So we can get back to The End or Nether using /back)
+ * Almost exactly like a Point, except with an additional dimension member so we
+ * can tell things apart. (So we can get back to The End or Nether using /back)
  * 
  * @author MysteriousAges
  * 

@@ -9,8 +9,8 @@ import net.minecraftforge.event.Event;
 import com.ForgeEssentials.api.json.JSONObject;
 
 /**
- * Event triggered when the snooper gets a vote from a service.
- * If you cancel the event, the service will receive "Failed".
+ * Event triggered when the snooper gets a vote from a service. If you cancel
+ * the event, the service will receive "Failed".
  * 
  * @author Dries007
  */
@@ -18,13 +18,13 @@ import com.ForgeEssentials.api.json.JSONObject;
 @Cancelable
 public class VoteEvent extends Event
 {
-	public String player;
-	public String serviceName;
-	public String ip;
-	public String timeStamp;
-	private boolean sane = false;
-	List<String> feedback = new ArrayList();
-	
+	public String	player;
+	public String	serviceName;
+	public String	ip;
+	public String	timeStamp;
+	private boolean	sane		= false;
+	List<String>	feedback	= new ArrayList();
+
 	public VoteEvent(String player, String serviceName, String ip, String timeStamp)
 	{
 		this.player = player;
@@ -33,7 +33,7 @@ public class VoteEvent extends Event
 		this.timeStamp = timeStamp;
 		this.sane = true;
 	}
-	
+
 	public VoteEvent(String decoded)
 	{
 		try
@@ -56,7 +56,7 @@ public class VoteEvent extends Event
 	{
 		return player + "@" + ip + " by " + serviceName + "@" + timeStamp;
 	}
-	
+
 	public boolean isSane()
 	{
 		return sane;
@@ -66,7 +66,7 @@ public class VoteEvent extends Event
 	{
 		feedback.add(text);
 	}
-	
+
 	public List<String> getFeedback()
 	{
 		return feedback;

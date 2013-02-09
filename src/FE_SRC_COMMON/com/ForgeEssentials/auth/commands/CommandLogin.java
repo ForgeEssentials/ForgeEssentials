@@ -9,30 +9,30 @@ import com.ForgeEssentials.auth.pwdSaver;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandLogin extends ForgeEssentialsCommandBase 
+public class CommandLogin extends ForgeEssentialsCommandBase
 {
 
 	@Override
-	public String getCommandName() 
+	public String getCommandName()
 	{
 		return "login";
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args) 
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(args.length != 1)
+		if (args.length != 1)
 		{
 			sender.sendChatToPlayer("You have to give your password.");
 		}
 		else
 		{
-			if(pwdSaver.isRegisted(sender.username))
+			if (pwdSaver.isRegisted(sender.username))
 			{
 				try
 				{
 					pwdData data = pwdSaver.getData(sender.username);
-					if(ModuleAuth.pwdEnc.authenticate(args[0], data.encPwd, data.salt))
+					if (ModuleAuth.pwdEnc.authenticate(args[0], data.encPwd, data.salt))
 					{
 						ModuleAuth.handler.login(sender);
 					}
@@ -41,11 +41,11 @@ public class CommandLogin extends ForgeEssentialsCommandBase
 						OutputHandler.chatError(sender, "Wrong pass!");
 					}
 				}
-				catch (Exception e) 
+				catch (Exception e)
 				{
 					OutputHandler.chatError(sender, e.toString());
 					e.printStackTrace();
-				}	
+				}
 			}
 			else
 			{
@@ -55,21 +55,22 @@ public class CommandLogin extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args) {}
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{}
 
 	@Override
-	public boolean canConsoleUseCommand() 
+	public boolean canConsoleUseCommand()
 	{
 		return false;
 	}
 
 	@Override
-	public String getCommandPerm() 
+	public String getCommandPerm()
 	{
 		return null;
-		//return "ForgeEssentials.Auth." + getCommandName();
+		// return "ForgeEssentials.Auth." + getCommandName();
 	}
-	
+
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{

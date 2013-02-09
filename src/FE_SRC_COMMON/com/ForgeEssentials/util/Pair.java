@@ -5,8 +5,10 @@ package com.ForgeEssentials.util;
  * 
  * @author MysteriousAges
  * 
- * @param <A> First type
- * @param <B> Second type
+ * @param <A>
+ *            First type
+ * @param <B>
+ *            Second type
  */
 public class Pair<A, B>
 {

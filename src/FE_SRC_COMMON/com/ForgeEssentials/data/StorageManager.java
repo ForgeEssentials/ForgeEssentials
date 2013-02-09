@@ -17,21 +17,24 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 public class StorageManager implements IStorageManager
 {
 	// just keeps an instance of the config for future use.
-	private Configuration config;
-	private static final String configCategory = "data";
+	private Configuration											config;
+	private static final String										configCategory	= "data";
 
-	public static final EnumDriverType defaultDriver = EnumDriverType.TEXT;
-	private EnumDriverType chosen = defaultDriver;
+	public static final EnumDriverType								defaultDriver	= EnumDriverType.TEXT;
+	private EnumDriverType											chosen			= defaultDriver;
 
-	private ConcurrentHashMap<EnumDriverType, String> typeChosens; // the defaults...
-	private ConcurrentHashMap<String, Class<? extends DataDriver>> classMap; // registered ones...
-	private ConcurrentHashMap<String, DataDriver> instanceMap; // instantiated ones
-	
-	private static StorageManager instance;
-	
-	private boolean loaded = false;
+	private ConcurrentHashMap<EnumDriverType, String>				typeChosens;													// the
+																																	// defaults...
+	private ConcurrentHashMap<String, Class<? extends DataDriver>>	classMap;														// registered
+																																	// ones...
+	private ConcurrentHashMap<String, DataDriver>					instanceMap;													// instantiated
+																																	// ones
 
-	protected static ConcurrentHashMap<Class, TypeTagger> taggerList = new ConcurrentHashMap<Class, TypeTagger>();
+	private static StorageManager									instance;
+
+	private boolean													loaded			= false;
+
+	protected static ConcurrentHashMap<Class, TypeTagger>			taggerList		= new ConcurrentHashMap<Class, TypeTagger>();
 
 	public StorageManager(Configuration config)
 	{
@@ -42,50 +45,51 @@ public class StorageManager implements IStorageManager
 		this.config = config;
 
 		config.addCustomCategoryComment("Data", "Configuration options for how ForgeEssentials will save its data for persistence between sessions.");
-		
+
 		// generates the configs...
 		Property prop = config.get("Data", "storageType", defaultDriver.toString());
-		prop.comment = "Specifies the variety of data storage FE will use. Options: "+EnumDriverType.getAll(" ");
-		
+		prop.comment = "Specifies the variety of data storage FE will use. Options: " + EnumDriverType.getAll(" ");
+
 		typeChosens.put(EnumDriverType.TEXT, "ForgeConfig");
 		typeChosens.put(EnumDriverType.BINARY, "NBT");
 		typeChosens.put(EnumDriverType.SQL, "SQL_DB");
-		
+
 		String cat;
 		for (EnumDriverType type : EnumDriverType.values())
 		{
 			if (type == EnumDriverType.SQL)
 				continue;
-			cat = "Data."+type;
+			cat = "Data." + type;
 			config.get(cat, "chosenDriver", typeChosens.get(type));
 		}
-		
+
 		instance = this;
 	}
 
 	/**
-	 * Parses the ForgeEssentials config file and determines which Driver to use.
-	 * This will be loaded up with the lazy method. only the chosen ones will be loaded...
-	 *  
+	 * Parses the ForgeEssentials config file and determines which Driver to
+	 * use. This will be loaded up with the lazy method. only the chosen ones
+	 * will be loaded...
+	 * 
 	 * @param Config
 	 */
 	public void setupManager(FMLServerStartingEvent event)
 	{
 		// verify default driver...
 		if (classMap.get(typeChosens.get(defaultDriver)) == null)
-			throw new RuntimeException("{ForgeEssentials} Default DataDriver is invalid! Valid types: "+Arrays.toString(classMap.values().toArray()));
+			throw new RuntimeException("{ForgeEssentials} Default DataDriver is invalid! Valid types: " + Arrays.toString(classMap.values().toArray()));
 
 		DataDriver driver;
 		for (Entry<String, DataDriver> entry : instanceMap.entrySet())
 		{
 			try
 			{
-				
+
 				// tried and tested method of getting the worldName
 				String worldName = event.getServer().getFolderName();
 
 				// things MAY error here as well...
-				entry.getValue().parseConfigs(config, "Data."+entry.getValue().getType()+"."+entry.getValue().getName(), worldName);
+				entry.getValue().parseConfigs(config, "Data." + entry.getValue().getType() + "." + entry.getValue().getName(), worldName);
 
 				// register tagged classes...
 				for (TypeTagger tag : taggerList.values())
@@ -100,14 +104,16 @@ public class StorageManager implements IStorageManager
 				e.printStackTrace();
 			}
 		}
-		
+
 		loaded = true;
 	}
 
 	/**
-	 * Should only be done before the server starts. May override existing Driver types.
+	 * Should only be done before the server starts. May override existing
+	 * Driver types.
 	 * 
-	 * @param name Name to be used in configs
+	 * @param name
+	 *            Name to be used in configs
 	 * @param c
 	 */
 	public void registerDriver(String name, Class<? extends DataDriver> c)
@@ -127,12 +133,12 @@ public class StorageManager implements IStorageManager
 			e.printStackTrace();
 		}
 	}
-	
+
 	public DataDriver getReccomendedDriver()
 	{
 		return getDriverOfType(chosen);
 	}
-	
+
 	public DataDriver getDriverOfType(EnumDriverType type)
 	{
 		return getDriverOfName(instance.typeChosens.get(type));
@@ -174,14 +180,14 @@ public class StorageManager implements IStorageManager
 			if (instance.loaded)
 				for (DataDriver driver : instance.instanceMap.values())
 					driver.onClassRegistered(tagged);
-					
+
 			return tagged;
 		}
 		return taggerList.get(type);
 	}
-	
+
 	public DBConnector getCoreDBConnector()
 	{
-		return ((SQLDataDriver)instance.getDriverOfType(EnumDriverType.SQL)).connector;
+		return ((SQLDataDriver) instance.getDriverOfType(EnumDriverType.SQL)).connector;
 	}
 }

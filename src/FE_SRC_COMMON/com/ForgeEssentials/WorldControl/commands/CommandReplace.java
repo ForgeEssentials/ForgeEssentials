@@ -108,7 +108,7 @@ public class CommandReplace extends WorldControlCommandBase
 				}
 
 			}
-			
+
 			player.sendChatToPlayer("Working on replace.");
 		}
 		else

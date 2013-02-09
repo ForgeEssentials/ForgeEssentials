@@ -11,8 +11,8 @@ import com.ForgeEssentials.commands.ModuleCommands;
 
 public class ConfigCmd extends ModuleConfigBase
 {
-	public Configuration config;
-	
+	public Configuration	config;
+
 	public ConfigCmd(File file)
 	{
 		super(file);
@@ -33,7 +33,7 @@ public class ConfigCmd extends ModuleConfigBase
 		// TODO: may have problems..
 		String path = CommandRules.rulesFile.getPath();
 		path = path.replace(ModuleCommands.cmddir.getPath(), "");
-		
+
 		config.addCustomCategoryComment("general", "General Commands configuration.");
 		config.save();
 	}
@@ -42,9 +42,9 @@ public class ConfigCmd extends ModuleConfigBase
 	public void forceLoad(ICommandSender sender)
 	{
 		config.load();
-		
+
 		config.save();
-		
+
 		CommandRegistrar.commandConfigs(config);
 	}
 }

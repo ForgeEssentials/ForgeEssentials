@@ -22,14 +22,14 @@ import cpw.mods.fml.relauncher.Side;
  */
 public class CommandSeeInventory extends ForgeEssentialsCommandBase
 {
-	private InvSeeMisk invSeeMisk;
+	private InvSeeMisk	invSeeMisk;
 
 	public CommandSeeInventory()
 	{
 		invSeeMisk = new InvSeeMisk();
 		TickRegistry.registerTickHandler(invSeeMisk, Side.SERVER);
 	}
-	
+
 	@Override
 	public String getCommandName()
 	{
@@ -39,10 +39,11 @@ public class CommandSeeInventory extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(!FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
+		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+			return;
 		EntityPlayerMP player = (EntityPlayerMP) sender;
 		EntityPlayerMP victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-		
+
 		if (player.openContainer != player.inventoryContainer)
 		{
 			player.closeScreen();
@@ -58,8 +59,7 @@ public class CommandSeeInventory extends ForgeEssentialsCommandBase
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-	}
+	{}
 
 	@Override
 	public boolean canConsoleUseCommand()

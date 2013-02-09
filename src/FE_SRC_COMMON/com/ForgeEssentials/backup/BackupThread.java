@@ -75,8 +75,8 @@ public class BackupThread extends Thread
 		Integer year = cal.get(Calendar.YEAR);
 		Integer hour = cal.get(Calendar.HOUR_OF_DAY);
 		Integer min = cal.get(Calendar.MINUTE);
-		String output = backupName.replaceAll("%day", day.toString()).replaceAll("%month", month.toString()).replaceAll("%year", year.toString())
-				.replaceAll("%hour", hour.toString()).replaceAll("%min", min.toString()).replaceAll("%world", server.getFolderName());
+		String output = backupName.replaceAll("%day", day.toString()).replaceAll("%month", month.toString()).replaceAll("%year", year.toString()).replaceAll("%hour", hour.toString()).replaceAll("%min", min.toString())
+				.replaceAll("%world", server.getFolderName());
 
 		byte[] buffer = new byte[1024];
 		try

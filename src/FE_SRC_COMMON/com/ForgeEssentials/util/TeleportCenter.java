@@ -16,7 +16,8 @@ import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 
 /**
- * Use this for all TPs. This system does it all for you: warmup, cooldown, bypass for both, going between dimensions.
+ * Use this for all TPs. This system does it all for you: warmup, cooldown,
+ * bypass for both, going between dimensions.
  * 
  * @author Dries007
  * 
@@ -24,17 +25,17 @@ import cpw.mods.fml.common.TickType;
 
 public class TeleportCenter implements IScheduledTickHandler
 {
-	public static HashMap<String, Warp> warps = new HashMap<String, Warp>();
-	public static HashMap<String, HashMap<String, PWarp>> pwMap = new HashMap<String, HashMap<String, PWarp>>();
+	public static HashMap<String, Warp>						warps			= new HashMap<String, Warp>();
+	public static HashMap<String, HashMap<String, PWarp>>	pwMap			= new HashMap<String, HashMap<String, PWarp>>();
 
-	private static ArrayList<TPdata> que = new ArrayList();
-	private static ArrayList<TPdata> removeQue = new ArrayList();
+	private static ArrayList<TPdata>						que				= new ArrayList();
+	private static ArrayList<TPdata>						removeQue		= new ArrayList();
 
-	public static int tpWarmup;
-	public static int tpCooldown;
+	public static int										tpWarmup;
+	public static int										tpCooldown;
 
-	public static final String BYPASS_WARMUP = "ForgeEssentials.TeleportCenter.BypassWarmup";
-	public static final String BYPASS_COOLDOWN = "ForgeEssentials.TeleportCenter.BypassCooldown";
+	public static final String								BYPASS_WARMUP	= "ForgeEssentials.TeleportCenter.BypassWarmup";
+	public static final String								BYPASS_COOLDOWN	= "ForgeEssentials.TeleportCenter.BypassCooldown";
 
 	public static void addToTpQue(WarpPoint point, EntityPlayer player)
 	{

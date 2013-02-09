@@ -333,7 +333,8 @@ public class ModuleContainer implements Comparable
 		try
 		{
 			Class c = Class.forName(className);
-			Method m = c.getDeclaredMethod(preinit, new Class[] { FEModulePreInitEvent.class });
+			Method m = c.getDeclaredMethod(preinit, new Class[]
+			{ FEModulePreInitEvent.class });
 			m.invoke(module, event);
 		}
 		catch (Exception e)
@@ -352,7 +353,8 @@ public class ModuleContainer implements Comparable
 		try
 		{
 			Class c = Class.forName(className);
-			Method m = c.getDeclaredMethod(init, new Class[] { FEModuleInitEvent.class });
+			Method m = c.getDeclaredMethod(init, new Class[]
+			{ FEModuleInitEvent.class });
 			m.invoke(module, event);
 		}
 		catch (Exception e)
@@ -371,7 +373,8 @@ public class ModuleContainer implements Comparable
 		try
 		{
 			Class c = Class.forName(className);
-			Method m = c.getDeclaredMethod(postinit, new Class[] { FEModulePostInitEvent.class });
+			Method m = c.getDeclaredMethod(postinit, new Class[]
+			{ FEModulePostInitEvent.class });
 			m.invoke(module, event);
 		}
 		catch (Exception e)
@@ -390,7 +393,8 @@ public class ModuleContainer implements Comparable
 		try
 		{
 			Class c = Class.forName(className);
-			Method m = c.getDeclaredMethod(serverinit, new Class[] { FEModuleServerInitEvent.class });
+			Method m = c.getDeclaredMethod(serverinit, new Class[]
+			{ FEModuleServerInitEvent.class });
 			m.invoke(module, event);
 		}
 		catch (Exception e)
@@ -409,7 +413,8 @@ public class ModuleContainer implements Comparable
 		try
 		{
 			Class c = Class.forName(className);
-			Method m = c.getDeclaredMethod(serverpostinit, new Class[] { FEModuleServerPostInitEvent.class });
+			Method m = c.getDeclaredMethod(serverpostinit, new Class[]
+			{ FEModuleServerPostInitEvent.class });
 			m.invoke(module, event);
 		}
 		catch (Exception e)
@@ -428,7 +433,8 @@ public class ModuleContainer implements Comparable
 		try
 		{
 			Class c = Class.forName(className);
-			Method m = c.getDeclaredMethod(serverstop, new Class[] { FEModuleServerStopEvent.class });
+			Method m = c.getDeclaredMethod(serverstop, new Class[]
+			{ FEModuleServerStopEvent.class });
 			m.invoke(module, event);
 		}
 		catch (Exception e)
@@ -446,7 +452,8 @@ public class ModuleContainer implements Comparable
 		try
 		{
 			Class c = Class.forName(className);
-			Method m = c.getDeclaredMethod(reload, new Class[] { ICommandSender.class });
+			Method m = c.getDeclaredMethod(reload, new Class[]
+			{ ICommandSender.class });
 			m.invoke(module, user);
 		}
 		catch (Exception e)
@@ -463,6 +470,7 @@ public class ModuleContainer implements Comparable
 
 	/**
 	 * May be null if the module has no config
+	 * 
 	 * @return
 	 */
 	public ModuleConfigBase getConfig()
@@ -494,9 +502,7 @@ public class ModuleContainer implements Comparable
 
 		ModuleContainer c = (ModuleContainer) o;
 
-		return isCore == c.isCore &&
-				name.equals(c.name) &&
-				className.equals(c.className);
+		return isCore == c.isCore && name.equals(c.name) && className.equals(c.className);
 	}
 
 	private static Object handleMod(Class c)
@@ -517,7 +523,7 @@ public class ModuleContainer implements Comparable
 			throw new RuntimeException(c + " isn't an loaded mod class!");
 
 		modid = contain.getModId() + "--" + contain.getVersion();
-		
+
 		if (modClasses.add(c))
 			OutputHandler.info("Modules from " + modid + " are being loaded");
 		return obj;

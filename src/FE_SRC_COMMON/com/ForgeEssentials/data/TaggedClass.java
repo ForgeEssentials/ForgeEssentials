@@ -7,9 +7,9 @@ import com.ForgeEssentials.api.data.ITaggedClass;
 
 public class TaggedClass implements ITaggedClass
 {
-	protected Class type;
-	protected SavedField uniqueKey;
-	protected HashMap<String, SavedField> TaggedMembers;
+	protected Class							type;
+	protected SavedField					uniqueKey;
+	protected HashMap<String, SavedField>	TaggedMembers;
 
 	public TaggedClass()
 	{
@@ -38,23 +38,23 @@ public class TaggedClass implements ITaggedClass
 
 		return value;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		StringBuilder s = new StringBuilder("{");
 		s.append("type=").append(getType()).append(", ");
 		s.append("unique=").append(uniqueKey).append(", ");
-		
+
 		s.append("[");
 		for (Entry<String, SavedField> e : TaggedMembers.entrySet())
 		{
 			s.append(e.getKey()).append("=").append(e.getValue()).append(", ");
 		}
-		s.replace(s.length()-2, s.length(), "]");
-		
+		s.replace(s.length() - 2, s.length(), "]");
+
 		s.append("}");
-		
+
 		return s.toString();
 	}
 

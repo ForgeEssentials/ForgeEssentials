@@ -36,7 +36,7 @@ public class CommandRedo extends WorldControlCommandBase
 		}
 
 		TickTaskHandler.addTask(new TickTaskSetBackup(player, back, true));
-		
+
 		player.sendChatToPlayer("Working on redo");
 	}
 }

@@ -59,9 +59,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
 						{
 							break;
 						}
-						output = " - "+zone.getZoneName();
+						output = " - " + zone.getZoneName();
 						if (zone.isWorldZone())
-							output = output+" --> WorldZone";
+							output = output + " --> WorldZone";
 						OutputHandler.chatConfirmation(sender, output);
 					}
 				}
@@ -96,9 +96,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
 							for (int i = (page - 1) * 15; i < page * 15; i++)
 							{
 								zone = zones.get(i);
-								output = " - "+zone.getZoneName();
+								output = " - " + zone.getZoneName();
 								if (zone.isWorldZone())
-									output = output+" --> WorldZone";
+									output = output + " --> WorldZone";
 								OutputHandler.chatConfirmation(sender, output);
 							}
 						}

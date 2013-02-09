@@ -57,28 +57,29 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false, serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = PacketHandler.class))
+@NetworkMod(clientSideRequired = false, serverSideRequired = false, serverPacketHandlerSpec = @SidedPacketHandler(channels =
+{ "ForgeEssentials" }, packetHandler = PacketHandler.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "@VERSION@")
 public class ForgeEssentials
 {
 
 	@Instance(value = "ForgeEssentials")
-	public static ForgeEssentials instance;
+	public static ForgeEssentials	instance;
 
-	public static CoreConfig config;
-	public ModuleLauncher mdlaunch;
-	public Localization localization;
-	public static boolean verCheck = true;
-	public static boolean preload;
+	public static CoreConfig		config;
+	public ModuleLauncher			mdlaunch;
+	public Localization				localization;
+	public static boolean			verCheck	= true;
+	public static boolean			preload;
 
-	public static String modlistLocation;
+	public static String			modlistLocation;
 
-	public static File FEDIR;
+	public static File				FEDIR;
 
-	public BannedItems bannedItems;
-	private ItemList itemList;
+	public BannedItems				bannedItems;
+	private ItemList				itemList;
 
-	private MiscEventHandler miscEventHandler;
+	private MiscEventHandler		miscEventHandler;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -88,9 +89,9 @@ public class ForgeEssentials
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials-CLIENT");
 		else
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
-		
+
 		OutputHandler.init(e.getModLog());
-		
+
 		config = new CoreConfig();
 
 		// Data API stuff
@@ -117,7 +118,7 @@ public class ForgeEssentials
 		LoginMessage.loadFile();
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
-		
+
 		localization = new Localization();
 	}
 
@@ -128,7 +129,7 @@ public class ForgeEssentials
 		localization.load();
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
 		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
-		
+
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		TickRegistry.registerTickHandler(factory, Side.SERVER);
 		GameRegistry.registerPlayerTracker(factory);
@@ -169,17 +170,17 @@ public class ForgeEssentials
 		mdlaunch.serverStarted(e);
 		DuplicateCommandRemoval.remove();
 	}
-	
+
 	@ServerStopping
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		mdlaunch.serverStopping(e);
 	}
-	
+
 	@VersionCheckHandler
 	public boolean versionCheck(String version)
 	{
 		return true;
 	}
-	
+
 }

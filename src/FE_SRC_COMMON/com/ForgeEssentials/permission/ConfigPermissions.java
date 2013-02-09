@@ -13,17 +13,17 @@ import com.ForgeEssentials.util.EnumDBType;
 
 public class ConfigPermissions extends ModuleConfigBase
 {
-	protected Configuration config;
-	protected DBConnector connector;
-	protected boolean importBool;
-	protected String importDir;
+	protected Configuration	config;
+	protected DBConnector	connector;
+	protected boolean		importBool;
+	protected String		importDir;
 
-	private static boolean permDefault = false;
+	private static boolean	permDefault	= false;
 
 	public ConfigPermissions(File file)
 	{
 		super(file);
-		connector = new DBConnector("PermissionsDB", DataStorageManager.getCoreDBConnector(), EnumDBType.H2_FILE, "FEPerms", file.getParent()+"/permissions", false);
+		connector = new DBConnector("PermissionsDB", DataStorageManager.getCoreDBConnector(), EnumDBType.H2_FILE, "FEPerms", file.getParent() + "/permissions", false);
 	}
 
 	@Override
@@ -32,15 +32,15 @@ public class ConfigPermissions extends ModuleConfigBase
 		config = new Configuration(file);
 
 		permDefault = config.get("stuff", "permissionDefault", false, "If a permission is not set anywhere, it will return this. True = allow. False = deny").getBoolean(false);
-		
+
 		importBool = config.get("stuff", "import", false, "if permissions should be imported from the specified dir").getBoolean(false);
 		importDir = config.get("stuff", "importDir", "import", "file from wich permissions should be imported").value;
-		
+
 		if (importBool == true)
-			config.get("stuff", "import", false).value = ""+false;
-		
+			config.get("stuff", "import", false).value = "" + false;
+
 		connector.loadOrGenerate(config, "database");
-		
+
 		config.save();
 	}
 

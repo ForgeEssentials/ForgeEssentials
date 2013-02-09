@@ -25,8 +25,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class ZoneHelper implements IZoneManager
 {
 	// GLOBAL and WORLD zones.
-	private Zone GLOBAL;
-	private Zone SUPER;
+	private Zone	GLOBAL;
+	private Zone	SUPER;
 
 	public ZoneHelper()
 	{
@@ -45,7 +45,7 @@ public class ZoneHelper implements IZoneManager
 		{
 			temp = (Zone) obj;
 			zoneMap.put(temp.getZoneName(), temp);
-			
+
 			exists = SqlHelper.doesZoneExist(temp.getZoneName());
 			if (!exists)
 				SqlHelper.createZone(temp.getZoneName());
@@ -56,7 +56,7 @@ public class ZoneHelper implements IZoneManager
 	// ------------ WorldZone stuff -----------------
 	// ----------------------------------------------
 
-	protected ConcurrentHashMap<String, Zone> worldZoneMap;
+	protected ConcurrentHashMap<String, Zone>	worldZoneMap;
 
 	// to load WorldZones
 	@ForgeSubscribe
@@ -64,14 +64,14 @@ public class ZoneHelper implements IZoneManager
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		String worldString = FunctionHelper.getZoneWorldString(e.world);
 
 		if (!worldZoneMap.containsKey(worldString))
 		{
 			Zone zone = new Zone(worldString, e.world.provider.dimensionId);
 			worldZoneMap.put(worldString, zone);
-			
+
 			boolean exists = SqlHelper.doesZoneExist(zone.getZoneName());
 			if (!exists)
 				SqlHelper.createZone(zone.getZoneName());
@@ -98,7 +98,7 @@ public class ZoneHelper implements IZoneManager
 	// ----------------------------------------------
 
 	// normal zone map. WorldZones and Globals are not included.
-	protected SortedMap<String, Zone> zoneMap;
+	protected SortedMap<String, Zone>	zoneMap;
 
 	/**
 	 * WorldZones are not included here.
@@ -288,8 +288,8 @@ public class ZoneHelper implements IZoneManager
 	// ------------ Cache ---------------------------
 	// ----------------------------------------------
 
-	private ConcurrentHashMap<WorldPoint, String> pointCache = new ConcurrentHashMap<WorldPoint, String>();
-	private ConcurrentHashMap<WorldArea, String> areaCache = new ConcurrentHashMap<WorldArea, String>();
+	private ConcurrentHashMap<WorldPoint, String>	pointCache	= new ConcurrentHashMap<WorldPoint, String>();
+	private ConcurrentHashMap<WorldArea, String>	areaCache	= new ConcurrentHashMap<WorldArea, String>();
 
 	private void putCache(WorldPoint p, String zoneID)
 	{
@@ -364,18 +364,18 @@ public class ZoneHelper implements IZoneManager
 			}
 		}
 	}
-	
+
 	public ArrayList<Zone> getZoneList()
 	{
 		ArrayList<Zone> zones = new ArrayList<Zone>();
-		
+
 		zones.add(GLOBAL);
 		zones.addAll(worldZoneMap.values());
 		zones.addAll(zoneMap.values());
-		
+
 		return zones;
 	}
-	
+
 	public Zone getGLOBAL()
 	{
 		return GLOBAL;

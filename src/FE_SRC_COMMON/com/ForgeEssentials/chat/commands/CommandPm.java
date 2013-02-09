@@ -21,7 +21,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 {
 	private static Map<String, String>	persistentMessage;
 	private List<String>				aliasList;
-	private static CommandPm instance;
+	private static CommandPm			instance;
 
 	public CommandPm()
 	{
@@ -49,7 +49,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			if(persistentMessage.containsKey(sender.getCommandSenderName()))
+			if (persistentMessage.containsKey(sender.getCommandSenderName()))
 			{
 				persistentMessage.remove(sender.getCommandSenderName());
 				OutputHandler.chatConfirmation(sender, "Persistent message disabled.");
@@ -62,19 +62,19 @@ public class CommandPm extends ForgeEssentialsCommandBase
 		}
 		if (args.length > 0)
 		{
-			if(args[0].equalsIgnoreCase("help"))
+			if (args[0].equalsIgnoreCase("help"))
 			{
 				OutputHandler.chatConfirmation(sender, "/pm <player> to engage persistent message.  /pm to return to normal chat");
 			}
 			else
 			{
 				EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[0]);
-				if(target == null)
+				if (target == null)
 				{
 					OutputHandler.chatError(sender, args[0] + " does not match an online user.");
 					return;
 				}
-				if(persistentMessage.containsKey(sender.getCommandSenderName()))
+				if (persistentMessage.containsKey(sender.getCommandSenderName()))
 				{
 					persistentMessage.remove(sender.getCommandSenderName());
 				}
@@ -86,9 +86,9 @@ public class CommandPm extends ForgeEssentialsCommandBase
 		if (args.length > 1)
 		{
 			String[] args2 = new String[args.length - 1];
-			for(int i = 1; i < args.length; i++)
+			for (int i = 1; i < args.length; i++)
 			{
-				args2[i-1] = args[i];
+				args2[i - 1] = args[i];
 			}
 			processChat(sender, args2);
 		}
@@ -99,7 +99,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			if(persistentMessage.containsKey(sender.getCommandSenderName()))
+			if (persistentMessage.containsKey(sender.getCommandSenderName()))
 			{
 				persistentMessage.remove(sender.getCommandSenderName());
 				OutputHandler.chatConfirmation(sender, "Persistent message disabled.");
@@ -112,19 +112,19 @@ public class CommandPm extends ForgeEssentialsCommandBase
 		}
 		if (args.length > 0)
 		{
-			if(args[0].equalsIgnoreCase("help"))
+			if (args[0].equalsIgnoreCase("help"))
 			{
 				OutputHandler.chatConfirmation(sender, "/pm <player> to engage persistent message.  /pm to return to normal chat");
 			}
 			else
 			{
 				EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[0]);
-				if(target == null)
+				if (target == null)
 				{
 					OutputHandler.chatError(sender, args[0] + " does not match an online user.");
 					return;
 				}
-				if(persistentMessage.containsKey(sender.getCommandSenderName()))
+				if (persistentMessage.containsKey(sender.getCommandSenderName()))
 				{
 					persistentMessage.remove(sender.getCommandSenderName());
 				}
@@ -145,15 +145,14 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			{
 				CommandMsg.clearReply(receiver.getCommandSenderName());
 				CommandMsg.addReply(receiver.getCommandSenderName(), "server");
-				if(persistentMessage.containsKey("server"))
+				if (persistentMessage.containsKey("server"))
 				{
 					persistentMessage.remove("server");
 				}
 				persistentMessage.put(sender.getCommandSenderName(), receiver.getCommandSenderName());
 				OutputHandler.chatConfirmation(sender, "Persistent message to " + receiver.getCommandSenderName() + " enabled.");
 				String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] "
-						+ FEChatFormatCodes.GREY;
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.GREY;
 				for (int i = 1; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -187,24 +186,23 @@ public class CommandPm extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.Chat.commands." + getCommandName();
 	}
-	
+
 	public static boolean isMessagePersistent(String username)
 	{
 		return persistentMessage.containsKey(username);
 	}
-	
+
 	public static void processChat(ICommandSender sender, String[] args)
 	{
-		if(sender instanceof EntityPlayer)
+		if (sender instanceof EntityPlayer)
 		{
 			String target = persistentMessage.get(sender.getCommandSenderName());
 			if (target.equalsIgnoreCase("server") || target.equalsIgnoreCase("console"))
 			{
 				CommandMsg.clearReply("server");
 				CommandMsg.addReply("server", sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] "
-						+ FEChatFormatCodes.GREY;
-				String receiverMessage =  FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
+				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.GREY;
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
 				for (int i = 0; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -228,10 +226,8 @@ public class CommandPm extends ForgeEssentialsCommandBase
 				}
 				CommandMsg.clearReply(receiver.getCommandSenderName());
 				CommandMsg.addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD
-						+ "] " + FEChatFormatCodes.WHITE;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD
-						+ " -> me ] " + FEChatFormatCodes.WHITE;
+				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.WHITE;
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.WHITE;
 				for (int i = 1; i < args.length; i++)
 				{
 					receiverMessage += args[i];

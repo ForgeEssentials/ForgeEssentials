@@ -14,14 +14,15 @@ import com.ForgeEssentials.util.OutputHandler;
 public class TickTaskSetBackup implements ITickTask
 {
 	// stuff needed
-	private final EntityPlayer player;
-	private final boolean redo; // true = redo. // false = undo
+	private final EntityPlayer			player;
+	private final boolean				redo;		// true = redo. // false =
+													// undo
 
 	// actually used
-	private final int last;
-	private int current;
-	private int changed;
-	private ArrayList<BlockSaveable> list;
+	private final int					last;
+	private int							current;
+	private int							changed;
+	private ArrayList<BlockSaveable>	list;
 
 	/**
 	 * 

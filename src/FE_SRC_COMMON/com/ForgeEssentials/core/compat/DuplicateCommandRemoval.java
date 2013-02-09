@@ -16,12 +16,12 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class DuplicateCommandRemoval
 {
-	public static boolean removeDuplicateCommands;
-	
-	public static  void remove()
+	public static boolean	removeDuplicateCommands;
+
+	public static void remove()
 	{
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		
+
 		if (server.getCommandManager() instanceof CommandHandler)
 		{
 			try
@@ -45,7 +45,7 @@ public class DuplicateCommandRemoval
 						duplicates.put(cmd.getCommandName(), keep);
 					}
 				}
-				
+
 				Set<ICommand> toRemove = new HashSet();
 				keep = null;
 				Class<? extends ICommand> cmdClass;
@@ -56,15 +56,15 @@ public class DuplicateCommandRemoval
 					kept = -1;
 					other = -1;
 					cmdClass = null;
-					
+
 					for (ICommand cmd : duplicates.get(name))
 					{
 						other = getCommandPriority(cmd);
-						
+
 						if (keep == null)
 						{
 							kept = other;
-							
+
 							if (kept == -1)
 							{
 								keep = null;
@@ -72,10 +72,10 @@ public class DuplicateCommandRemoval
 							}
 							else
 								keep = cmd;
-							
+
 							continue;
 						}
-						
+
 						if (kept > other)
 						{
 							toRemove.add(cmd);
@@ -87,14 +87,14 @@ public class DuplicateCommandRemoval
 							toRemove.add(keep);
 							cmdClass = keep.getClass();
 							OutputHandler.finer("Removing command '" + keep.getCommandName() + "' from class: " + cmdClass.getName());
-							
+
 							keep = cmd;
 							kept = other;
 						}
-							
+
 					}
 				}
-				
+
 				cmdList.removeAll(toRemove);
 				OutputHandler.finer("commandSet size: " + cmdList.size());
 				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, "commandSet", "b");
@@ -107,8 +107,8 @@ public class DuplicateCommandRemoval
 			}
 		}
 	}
-	
-	 // 0 = vanilla. 1 = fe. 2 = other mods
+
+	// 0 = vanilla. 1 = fe. 2 = other mods
 	private static int getCommandPriority(ICommand cmd)
 	{
 		try

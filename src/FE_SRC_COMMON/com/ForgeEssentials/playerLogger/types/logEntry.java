@@ -8,8 +8,8 @@ import java.util.List;
 
 public abstract class logEntry
 {
-	public Timestamp time;
-	
+	public Timestamp	time;
+
 	public logEntry()
 	{
 		Date date = new Date();

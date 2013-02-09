@@ -14,14 +14,14 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 	/*
 	 * Config
 	 */
-	public static int warmup = 5; 
+	public static int	warmup	= 5;
 
 	@Override
 	public void doConfig(Configuration config, String category)
 	{
 		warmup = config.get(category, "warmup", 5, "Time in sec. you have to stand still to activate AFK.").getInt();
 	}
-	
+
 	@Override
 	public String getCommandName()
 	{
@@ -37,8 +37,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-	}
+	{}
 
 	@Override
 	public boolean canConsoleUseCommand()
@@ -51,10 +50,10 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	public static void abort(AFKdata afKdata)
 	{
-		if(!afKdata.player.capabilities.isCreativeMode)
+		if (!afKdata.player.capabilities.isCreativeMode)
 		{
 			afKdata.player.capabilities.disableDamage = false;
 			afKdata.player.sendPlayerAbilities();

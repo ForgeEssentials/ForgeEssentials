@@ -7,7 +7,8 @@ import cpw.mods.fml.common.FMLLog;
 public class API
 {
 	/**
-	 * Use this method to register your responses. DON'T ID 9. That is used for challenge.
+	 * Use this method to register your responses. DON'T ID 9. That is used for
+	 * challenge.
 	 * 
 	 * @param ID
 	 * @param response
@@ -18,8 +19,7 @@ public class API
 		{
 			if (ResponseRegistry_regsisterResponce == null)
 			{
-				ResponseRegistry_regsisterResponce = Class.forName("com.ForgeEssentials.snooper.ResponseRegistry").getMethod("registerResponse", Integer.class,
-						Response.class);
+				ResponseRegistry_regsisterResponce = Class.forName("com.ForgeEssentials.snooper.ResponseRegistry").getMethod("registerResponse", Integer.class, Response.class);
 			}
 			ResponseRegistry_regsisterResponce.invoke(null, ID, response);
 		}
@@ -30,5 +30,5 @@ public class API
 		}
 	}
 
-	private static Method ResponseRegistry_regsisterResponce;
+	private static Method	ResponseRegistry_regsisterResponce;
 }

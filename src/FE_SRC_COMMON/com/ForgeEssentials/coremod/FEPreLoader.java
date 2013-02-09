@@ -12,11 +12,13 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 {
 
-	public static File location;
+	public static File	location;
+
 	@Override
 	public String[] getLibraryRequestClass()
 	{
-		return new String[] {"com.ForgeEssentials.coremod.Downloader"};
+		return new String[]
+		{ "com.ForgeEssentials.coremod.Downloader" };
 	}
 
 	@Override
@@ -40,7 +42,7 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 	@Override
 	public void injectData(Map<String, Object> data)
 	{
-		if(data.containsKey("coremodLocation"))
+		if (data.containsKey("coremodLocation"))
 			location = (File) data.get("coremodLocation");
 	}
 

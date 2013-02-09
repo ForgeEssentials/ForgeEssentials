@@ -44,8 +44,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 			}
 			if (target.equalsIgnoreCase("server"))
 			{
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] "
-						+ FEChatFormatCodes.GREY;
+				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.GREY;
 				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
 				for (int i = 0; i < args.length; i++)
 				{
@@ -68,10 +67,8 @@ public class CommandR extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, target + " is not a valid username");
 					return;
 				}
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD
-						+ "] " + FEChatFormatCodes.GREY;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD
-						+ " -> me ] " + FEChatFormatCodes.GREY;
+				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.GREY;
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.GREY;
 				for (int i = 0; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -113,8 +110,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 			else
 			{
 				String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] "
-						+ FEChatFormatCodes.GREY;
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.GREY;
 				for (int i = 0; i < args.length; i++)
 				{
 					receiverMessage += args[i];

@@ -13,9 +13,9 @@ import cpw.mods.fml.common.IPlayerTracker;
 
 public class LoginHandler implements IPlayerTracker
 {
-	ArrayList<String> unlogged;	
-	ArrayList<String> notRegisted;
-	
+	ArrayList<String>	unlogged;
+	ArrayList<String>	notRegisted;
+
 	public LoginHandler()
 	{
 		unlogged = new ArrayList<String>();
@@ -23,34 +23,34 @@ public class LoginHandler implements IPlayerTracker
 		OutputHandler.info("FEauth initialized. Enabled: " + ModuleAuth.enabled);
 	}
 
-	@ForgeSubscribe(priority=EventPriority.HIGHEST)
+	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
-		if(!ModuleAuth.enabled)
+		if (!ModuleAuth.enabled)
 		{
 			return;
 		}
-		
+
 		if (unlogged.contains(event.entityPlayer.username))
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.entityPlayer, "Please use '/login <pwd>' to login");
 		}
-		
+
 		if (notRegisted.contains(event.entityPlayer.username))
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.entityPlayer, "Please use '/register <pwd>' to register");
 		}
 	}
-	
+
 	public void login(EntityPlayer player)
 	{
 		player.sendChatToPlayer("Successfully logged in.");
 		unlogged.remove(player.username);
 		notRegisted.remove(player.username);
 	}
-	
+
 	@Override
 	public void onPlayerLogout(EntityPlayer player)
 	{
@@ -61,12 +61,12 @@ public class LoginHandler implements IPlayerTracker
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
-		if(pwdSaver.isRegisted(player.username))
+		if (pwdSaver.isRegisted(player.username))
 		{
-			if(ModuleAuth.enabled)
+			if (ModuleAuth.enabled)
 			{
 				player.sendChatToPlayer("Please use '/login <pwd>' to login");
-				unlogged.add(player.username);		
+				unlogged.add(player.username);
 			}
 		}
 		else
@@ -77,8 +77,10 @@ public class LoginHandler implements IPlayerTracker
 	}
 
 	@Override
-	public void onPlayerChangedDimension(EntityPlayer player){}
+	public void onPlayerChangedDimension(EntityPlayer player)
+	{}
 
 	@Override
-	public void onPlayerRespawn(EntityPlayer player){}
+	public void onPlayerRespawn(EntityPlayer player)
+	{}
 }

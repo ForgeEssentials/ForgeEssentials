@@ -13,7 +13,7 @@ import com.ForgeEssentials.api.permissions.ZoneManager;
 
 public class FlatFilePermissions
 {
-	File file;
+	File	file;
 
 	public FlatFilePermissions(File file)
 	{
@@ -26,24 +26,24 @@ public class FlatFilePermissions
 		ArrayList<PermissionHolder> player = new ArrayList<PermissionHolder>();
 
 		Configuration config = new Configuration(file);
-		
+
 		PermissionHolder holder;
 		String catName;
 		boolean allowed;
 		String[] split;
-		for (ConfigCategory cat: config.categories.values())
+		for (ConfigCategory cat : config.categories.values())
 		{
 			if (!cat.isChild())
 				continue;
-			
+
 			catName = cat.getQualifiedName();
-			
+
 			// ensures that the player and group catNameegories don't get in.
 			if (catName.indexOf('.') == catName.lastIndexOf('.'))
 				continue;
-			
+
 			split = splitCat(catName);
-			
+
 			if (catName.contains(".player."))
 			{
 				for (Property prop : cat.getValues().values())
@@ -73,7 +73,7 @@ public class FlatFilePermissions
 		// clear it.
 		if (file.exists())
 			file.delete();
-		
+
 		Configuration config = new Configuration(file);
 
 		for (PermissionHolder holder : players)
@@ -85,8 +85,8 @@ public class FlatFilePermissions
 		{
 			config.get(holder.zone + ".group." + holder.target, holder.name, holder.allowed);
 		}
-		
-		config.addCustomCategoryComment(ZoneManager.getGLOBAL().getZoneName()+".group."+PermissionsAPI.getDEFAULT().name, "The group used to as a placeholder for zone flags and such.");
+
+		config.addCustomCategoryComment(ZoneManager.getGLOBAL().getZoneName() + ".group." + PermissionsAPI.getDEFAULT().name, "The group used to as a placeholder for zone flags and such.");
 
 		config.save();
 	}
@@ -94,7 +94,8 @@ public class FlatFilePermissions
 	private String[] splitCat(String qualifiedName)
 	{
 		String[] names = qualifiedName.split("\\" + Configuration.CATEGORY_SPLITTER, 3);
-		return new String[] {names[0], names[2]};
+		return new String[]
+		{ names[0], names[2] };
 	}
 
 }

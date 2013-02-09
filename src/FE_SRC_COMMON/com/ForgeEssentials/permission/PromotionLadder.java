@@ -5,9 +5,9 @@ import java.util.Arrays;
 
 public class PromotionLadder
 {
-	public final String name;
-	public final String zoneID;
-	private final ArrayList<String> groupsList;
+	public final String				name;
+	public final String				zoneID;
+	private final ArrayList<String>	groupsList;
 
 	/**
 	 * @param name
