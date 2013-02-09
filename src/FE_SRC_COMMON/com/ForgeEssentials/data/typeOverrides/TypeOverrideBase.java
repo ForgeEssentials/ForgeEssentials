@@ -1,7 +1,6 @@
 package com.ForgeEssentials.data.typeOverrides;
 
 import java.rmi.server.UID;
-import java.util.UUID;
 
 public abstract class TypeOverrideBase<T>
 {

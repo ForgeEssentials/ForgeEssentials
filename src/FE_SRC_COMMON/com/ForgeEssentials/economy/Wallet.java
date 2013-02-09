@@ -1,8 +1,8 @@
 package com.ForgeEssentials.economy;
 
-import com.ForgeEssentials.util.Localization;
-
 import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.util.Localization;
 
 /**
  * Call these methods to modify a target's wallet.

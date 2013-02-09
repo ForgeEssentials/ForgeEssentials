@@ -1,14 +1,13 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-
 import net.minecraftforge.common.Configuration;
 
-import java.util.List;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandPing extends ForgeEssentialsCommandBase
 {

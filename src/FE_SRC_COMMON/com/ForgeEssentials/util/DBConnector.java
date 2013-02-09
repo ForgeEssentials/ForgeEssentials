@@ -1,12 +1,12 @@
 package com.ForgeEssentials.util;
 
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
+
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
 
 import com.google.common.base.Throwables;
 

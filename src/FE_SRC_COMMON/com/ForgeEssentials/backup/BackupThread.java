@@ -1,8 +1,5 @@
 package com.ForgeEssentials.backup;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,6 +10,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLLog;
 
 public class BackupThread extends Thread

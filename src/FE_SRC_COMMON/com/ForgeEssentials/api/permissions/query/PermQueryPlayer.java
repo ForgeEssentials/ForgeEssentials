@@ -1,10 +1,9 @@
 package com.ForgeEssentials.api.permissions.query;
 
-import com.ForgeEssentials.permission.PermissionChecker;
-
 import net.minecraft.entity.player.EntityPlayer;
-
 import net.minecraftforge.event.Event.HasResult;
+
+import com.ForgeEssentials.permission.PermissionChecker;
 
 /**
  * Reuslts are: default, allow, deny.

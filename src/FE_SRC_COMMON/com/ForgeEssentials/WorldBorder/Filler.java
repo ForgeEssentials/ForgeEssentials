@@ -2,20 +2,18 @@ package com.ForgeEssentials.WorldBorder;
 
 import java.util.ArrayList;
 
-import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
-import com.ForgeEssentials.playerLogger.LogLoop;
-import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
+
+import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
+import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class Filler implements Runnable 

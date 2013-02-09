@@ -1,10 +1,10 @@
 package com.ForgeEssentials.core.commands;
 
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandFECredits extends ForgeEssentialsCommandBase
 {

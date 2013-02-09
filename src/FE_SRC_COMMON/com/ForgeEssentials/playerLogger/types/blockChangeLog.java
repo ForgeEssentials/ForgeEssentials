@@ -1,12 +1,5 @@
 package com.ForgeEssentials.playerLogger.types;
 
-import com.ForgeEssentials.api.snooper.TextFormatter;
-import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -15,6 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+
+import com.ForgeEssentials.api.snooper.TextFormatter;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class blockChangeLog extends logEntry
 {

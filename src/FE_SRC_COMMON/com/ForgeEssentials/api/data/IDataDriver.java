@@ -1,9 +1,9 @@
 package com.ForgeEssentials.api.data;
 
+import net.minecraftforge.common.Configuration;
+
 import com.ForgeEssentials.data.EnumDriverType;
 import com.ForgeEssentials.data.TypeTagger;
-
-import net.minecraftforge.common.Configuration;
 
 public interface IDataDriver
 {

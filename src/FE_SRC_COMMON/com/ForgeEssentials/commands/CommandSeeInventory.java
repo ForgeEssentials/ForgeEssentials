@@ -1,18 +1,16 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.commands.util.InvSeeMisk;
-import com.ForgeEssentials.commands.util.PlayerInvChest;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.network.packet.Packet100OpenWindow;
-import net.minecraftforge.common.MinecraftForge;
+
+import com.ForgeEssentials.commands.util.InvSeeMisk;
+import com.ForgeEssentials.commands.util.PlayerInvChest;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 

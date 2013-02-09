@@ -1,12 +1,12 @@
 package com.ForgeEssentials.permission;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
-import com.ForgeEssentials.core.PlayerInfo;
+import java.io.File;
+import java.util.ArrayList;
 
 import net.minecraftforge.common.Configuration;
 
-import java.io.File;
-import java.util.ArrayList;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.core.PlayerInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

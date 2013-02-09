@@ -1,12 +1,12 @@
 package com.ForgeEssentials.api.permissions;
 
-import com.ForgeEssentials.api.permissions.query.PermQuery;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.api.permissions.query.PermissionQueryBus;
+import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import java.util.ArrayList;
+import com.ForgeEssentials.api.permissions.query.PermQuery;
+import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.api.permissions.query.PermissionQueryBus;
 
 // This is a bouncer class for all Permissions API duties.
 

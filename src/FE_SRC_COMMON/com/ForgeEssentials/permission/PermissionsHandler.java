@@ -1,5 +1,9 @@
 package com.ForgeEssentials.permission;
 
+import java.util.ArrayList;
+
+import net.minecraftforge.event.EventPriority;
+
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
@@ -11,10 +15,6 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
 import com.ForgeEssentials.api.permissions.query.PermSubscribe;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
-
-import net.minecraftforge.event.EventPriority;
-
-import java.util.ArrayList;
 
 /**
  * 

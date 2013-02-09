@@ -1,18 +1,12 @@
 package com.ForgeEssentials.auth;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.EnumSet;
 
 import com.ForgeEssentials.util.OutputHandler;
 
-import net.minecraft.network.NetLoginHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 

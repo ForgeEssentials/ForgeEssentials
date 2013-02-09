@@ -1,12 +1,12 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.core.misc.LoginMessage;
+import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import java.util.List;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.misc.LoginMessage;
 
 public class CommandMotd extends ForgeEssentialsCommandBase
 {

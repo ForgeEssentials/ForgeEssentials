@@ -1,11 +1,11 @@
 package com.ForgeEssentials.core.commands;
 
-import com.ForgeEssentials.coremod.transformers.FEeventAdder;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.item.ItemStack;
+
+import com.ForgeEssentials.coremod.transformers.FEeventAdder;
 
 public class CommandFEDebug extends ForgeEssentialsCommandBase
 {

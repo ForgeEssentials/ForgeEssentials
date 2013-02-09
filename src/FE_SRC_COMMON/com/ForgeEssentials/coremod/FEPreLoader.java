@@ -1,5 +1,6 @@
 package com.ForgeEssentials.coremod;
 
+import java.io.File;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLCallHook;
@@ -11,6 +12,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 {
 
+	public static File location;
 	@Override
 	public String[] getLibraryRequestClass()
 	{
@@ -38,7 +40,8 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 	@Override
 	public void injectData(Map<String, Object> data)
 	{
-		// We don't need this yet.
+		if(data.containsKey("coremodLocation"))
+			location = (File) data.get("coremodLocation");
 	}
 
 	@Override

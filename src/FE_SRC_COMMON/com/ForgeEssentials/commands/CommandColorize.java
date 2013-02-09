@@ -1,9 +1,9 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandColorize extends ForgeEssentialsCommandBase
 {

@@ -1,18 +1,17 @@
 package com.ForgeEssentials.chat;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
+
 import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraft.command.ICommandSender;
-
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.regex.Pattern;
 
 public class ConfigChat extends ModuleConfigBase
 {

@@ -3,12 +3,10 @@ package com.ForgeEssentials.api.snooper;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ForgeEssentials.api.json.JSONException;
-import com.ForgeEssentials.api.json.JSONObject;
-
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.Event;
+
+import com.ForgeEssentials.api.json.JSONObject;
 
 /**
  * Event triggered when the snooper gets a vote from a service.

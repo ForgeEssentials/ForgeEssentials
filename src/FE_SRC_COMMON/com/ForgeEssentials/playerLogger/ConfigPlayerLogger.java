@@ -1,12 +1,11 @@
 package com.ForgeEssentials.playerLogger;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import java.io.File;
 
 import net.minecraft.command.ICommandSender;
-
 import net.minecraftforge.common.Configuration;
 
-import java.io.File;
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
 
 public class ConfigPlayerLogger extends ModuleConfigBase
 {

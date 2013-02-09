@@ -1,12 +1,11 @@
 package com.ForgeEssentials.protection;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import java.io.File;
 
 import net.minecraft.command.ICommandSender;
-
 import net.minecraftforge.common.Configuration;
 
-import java.io.File;
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
 
 /**
  * This generates the configuration structure + an example file.

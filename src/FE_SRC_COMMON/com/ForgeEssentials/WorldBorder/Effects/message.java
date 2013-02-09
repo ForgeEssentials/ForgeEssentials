@@ -1,10 +1,9 @@
 package com.ForgeEssentials.WorldBorder.Effects;
 
-import com.ForgeEssentials.util.FunctionHelper;
-
 import net.minecraft.entity.player.EntityPlayerMP;
-
 import net.minecraftforge.common.Configuration;
+
+import com.ForgeEssentials.util.FunctionHelper;
 
 public class message implements IEffect
 {

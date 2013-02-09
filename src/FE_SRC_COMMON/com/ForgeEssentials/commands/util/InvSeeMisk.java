@@ -2,11 +2,10 @@ package com.ForgeEssentials.commands.util;
 
 import java.util.EnumSet;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.google.common.collect.HashMultimap;
 
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.IPickupNotifier;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 

@@ -1,9 +1,9 @@
 package com.ForgeEssentials.data;
 
-import com.ForgeEssentials.api.data.ITaggedClass;
-
 import java.util.HashMap;
 import java.util.Map.Entry;
+
+import com.ForgeEssentials.api.data.ITaggedClass;
 
 public class TaggedClass implements ITaggedClass
 {

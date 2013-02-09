@@ -1,12 +1,10 @@
 package com.ForgeEssentials.WorldControl.commands;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.List;
 
 public class CommandDeselect extends WorldControlCommandBase
 {

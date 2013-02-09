@@ -1,13 +1,11 @@
 package com.ForgeEssentials.api.snooper;
 
-import net.minecraft.network.rcon.RConOutputStream;
-import net.minecraft.server.MinecraftServer;
-
-import net.minecraftforge.common.Configuration;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 
+import net.minecraft.network.rcon.RConOutputStream;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 /**

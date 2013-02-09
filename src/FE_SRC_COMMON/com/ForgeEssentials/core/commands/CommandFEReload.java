@@ -1,10 +1,10 @@
 package com.ForgeEssentials.core.commands;
 
-import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
-import com.ForgeEssentials.util.FEChatFormatCodes;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
+import com.ForgeEssentials.util.FEChatFormatCodes;
 
 public class CommandFEReload extends ForgeEssentialsCommandBase
 {

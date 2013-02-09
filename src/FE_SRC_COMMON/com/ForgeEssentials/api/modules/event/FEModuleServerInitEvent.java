@@ -1,12 +1,9 @@
 package com.ForgeEssentials.api.modules.event;
 
-import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
-
-import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.TreeSet;
+import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLStateEvent;

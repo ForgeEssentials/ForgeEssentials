@@ -2,9 +2,7 @@ package com.ForgeEssentials.WorldBorder.Effects;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-
 import net.minecraftforge.common.Configuration;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 

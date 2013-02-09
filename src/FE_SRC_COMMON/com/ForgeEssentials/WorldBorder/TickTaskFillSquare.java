@@ -1,13 +1,9 @@
 package com.ForgeEssentials.WorldBorder;
 
-import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
+
+import com.ForgeEssentials.util.OutputHandler;
 
 /**
  * Does the actual filling, with limited chuncks per tick.

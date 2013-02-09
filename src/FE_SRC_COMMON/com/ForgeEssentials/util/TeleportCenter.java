@@ -1,15 +1,15 @@
 package com.ForgeEssentials.util;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IScheduledTickHandler;

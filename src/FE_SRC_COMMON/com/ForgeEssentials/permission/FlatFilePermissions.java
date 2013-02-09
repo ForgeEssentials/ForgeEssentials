@@ -1,15 +1,15 @@
 package com.ForgeEssentials.permission;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
-import com.ForgeEssentials.api.permissions.ZoneManager;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 
 public class FlatFilePermissions
 {

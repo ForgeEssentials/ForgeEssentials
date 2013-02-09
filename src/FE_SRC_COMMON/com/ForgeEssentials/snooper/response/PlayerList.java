@@ -1,11 +1,11 @@
 package com.ForgeEssentials.snooper.response;
 
-import com.ForgeEssentials.api.snooper.Response;
-import com.ForgeEssentials.api.snooper.TextFormatter;
+import java.net.DatagramPacket;
 
 import net.minecraftforge.common.Configuration;
 
-import java.net.DatagramPacket;
+import com.ForgeEssentials.api.snooper.Response;
+import com.ForgeEssentials.api.snooper.TextFormatter;
 
 public class PlayerList extends Response
 {

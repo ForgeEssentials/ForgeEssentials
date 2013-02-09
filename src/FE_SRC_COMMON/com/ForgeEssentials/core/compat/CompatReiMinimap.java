@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.util.OutputHandler;
 
 public class CompatReiMinimap
 {

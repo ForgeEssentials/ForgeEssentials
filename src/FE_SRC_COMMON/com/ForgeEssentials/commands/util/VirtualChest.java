@@ -1,13 +1,13 @@
 package com.ForgeEssentials.commands.util;
 
-import com.ForgeEssentials.commands.CommandVirtualchest;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
+import com.ForgeEssentials.commands.CommandVirtualchest;
 
 public class VirtualChest extends InventoryBasic
 {

@@ -1,12 +1,12 @@
 package com.ForgeEssentials.util;
 
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
+
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

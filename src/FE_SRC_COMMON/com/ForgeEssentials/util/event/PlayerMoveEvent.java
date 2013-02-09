@@ -1,11 +1,10 @@
 package com.ForgeEssentials.util.event;
 
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.Cancelable;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 @Cancelable
 public class PlayerMoveEvent extends PlayerEvent

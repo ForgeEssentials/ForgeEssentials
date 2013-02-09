@@ -1,13 +1,13 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.core.misc.ItemList;
+import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
-import java.util.List;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.misc.ItemList;
 
 public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 {

@@ -1,9 +1,9 @@
 package com.ForgeEssentials.util.AreaSelector;
 
+import net.minecraft.world.World;
+
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
-
-import net.minecraft.world.World;
 
 public class WorldArea extends AreaBase
 {

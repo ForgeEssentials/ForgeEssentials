@@ -1,15 +1,5 @@
 package com.ForgeEssentials.data;
 
-import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.ITaggedClass;
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.util.DBConnector;
-import com.ForgeEssentials.util.EnumDBType;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.Pair;
-
-import net.minecraftforge.common.Configuration;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -19,6 +9,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+
+import net.minecraftforge.common.Configuration;
+
+import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.DBConnector;
+import com.ForgeEssentials.util.EnumDBType;
+import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.Pair;
 
 public class SQLDataDriver extends DataDriver
 {

@@ -1,14 +1,6 @@
 package com.ForgeEssentials.commands.util;
 
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.DataStorage;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;
 
 public class PlayerTrackerCommands implements IPlayerTracker

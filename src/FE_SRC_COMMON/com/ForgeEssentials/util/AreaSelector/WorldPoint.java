@@ -1,13 +1,13 @@
 package com.ForgeEssentials.util.AreaSelector;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
+
 import com.ForgeEssentials.api.data.ITaggedClass;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
 
 /**
  * Almost exactly like a Point, except with an additional dimension member so we can tell things apart. (So we can get back to The End or Nether using /back)

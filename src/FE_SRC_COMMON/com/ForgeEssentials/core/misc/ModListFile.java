@@ -1,15 +1,15 @@
 package com.ForgeEssentials.core.misc;
 
-import com.ForgeEssentials.core.CoreConfig;
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.util.OutputHandler;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.ForgeEssentials.core.CoreConfig;
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;

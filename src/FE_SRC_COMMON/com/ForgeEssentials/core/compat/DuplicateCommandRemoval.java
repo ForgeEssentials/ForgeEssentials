@@ -1,20 +1,17 @@
 package com.ForgeEssentials.core.compat;
 
-import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
-import com.ForgeEssentials.util.OutputHandler;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class DuplicateCommandRemoval

@@ -1,5 +1,13 @@
 package com.ForgeEssentials.snooper.response;
 
+import java.net.DatagramPacket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.Configuration;
+
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.snooper.Response;
@@ -7,15 +15,6 @@ import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.economy.Wallet;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-
-import net.minecraftforge.common.Configuration;
-
-import java.net.DatagramPacket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 
 public class PlayerInfoResonce extends Response
 {

@@ -2,7 +2,6 @@ package com.ForgeEssentials.core.customEvents;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-
 import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.Event;
 

@@ -1,12 +1,11 @@
 package com.ForgeEssentials.api.permissions.query;
 
-import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-
 import net.minecraftforge.event.Event.HasResult;
+
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 
 /**
  * Reuslts are: default, allow, deny.

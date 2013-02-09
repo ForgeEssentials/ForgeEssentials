@@ -1,12 +1,12 @@
 package com.ForgeEssentials.playerLogger;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import java.util.Arrays;
+import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import java.util.Arrays;
-import java.util.List;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

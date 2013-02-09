@@ -1,11 +1,11 @@
 package com.ForgeEssentials.util;
 
 //Depreciated
+import java.io.Serializable;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-
-import java.io.Serializable;
 
 public class BlockSaveable implements Serializable
 {

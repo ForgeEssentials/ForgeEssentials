@@ -1,16 +1,14 @@
 package com.ForgeEssentials.core;
 
-import com.ForgeEssentials.commands.ModuleCommands;
-import com.ForgeEssentials.core.compat.CompatReiMinimap;
-import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
-import com.ForgeEssentials.util.MiscEventHandler;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TeleportCenter;
+import java.io.File;
 
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import java.io.File;
+import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
+import com.ForgeEssentials.util.MiscEventHandler;
+import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.TeleportCenter;
 
 public class CoreConfig
 {

@@ -1,14 +1,14 @@
 package com.ForgeEssentials.permission;
 
-import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.util.OutputHandler;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class ExportThread extends Thread
 {

@@ -1,8 +1,8 @@
 package com.ForgeEssentials.api.permissions;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.util.ArrayList;
+
+import net.minecraft.entity.player.EntityPlayer;
 
 public interface IPermissionsHelper
 {

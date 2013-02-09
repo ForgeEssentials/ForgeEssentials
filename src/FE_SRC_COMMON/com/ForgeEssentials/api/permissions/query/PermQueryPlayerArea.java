@@ -1,14 +1,13 @@
 package com.ForgeEssentials.api.permissions.query;
 
+import java.util.ArrayList;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.Event.HasResult;
+
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import net.minecraftforge.event.Event.HasResult;
-
-import java.util.ArrayList;
 
 /**
  * Reuslts are: default, allow, deny.

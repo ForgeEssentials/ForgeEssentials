@@ -5,14 +5,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-import javax.swing.text.html.parser.Entity;
-
 import net.minecraft.entity.passive.EntityTameable;
 
 import com.ForgeEssentials.api.commands.EnumMobType;
 import com.ForgeEssentials.api.commands.FEMob;
 import com.ForgeEssentials.api.commands.FEMob.IsTamed;
-import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.util.OutputHandler;
 

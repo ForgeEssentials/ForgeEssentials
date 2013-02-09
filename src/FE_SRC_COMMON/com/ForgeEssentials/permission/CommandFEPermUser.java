@@ -1,6 +1,7 @@
 package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +17,6 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-import java.util.Collections;
 
 public class CommandFEPermUser
 {

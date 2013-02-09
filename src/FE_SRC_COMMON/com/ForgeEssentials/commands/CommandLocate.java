@@ -1,16 +1,12 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.commands.util.AFKdata;
-import com.ForgeEssentials.commands.util.TickHandlerCommands;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.OutputHandler;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import net.minecraftforge.common.Configuration;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandLocate extends ForgeEssentialsCommandBase
 {

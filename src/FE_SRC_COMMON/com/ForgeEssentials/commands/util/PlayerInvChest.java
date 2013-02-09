@@ -1,20 +1,7 @@
 package com.ForgeEssentials.commands.util;
 
-import java.util.EnumSet;
-
-import cpw.mods.fml.common.IPickupNotifier;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.TickType;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event.Result;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class PlayerInvChest extends InventoryBasic
 {	

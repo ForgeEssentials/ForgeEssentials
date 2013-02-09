@@ -1,15 +1,5 @@
 package com.ForgeEssentials.core.misc;
 
-import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.compat.CompatReiMinimap;
-//import com.ForgeEssentials.economy.Wallet;
-import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -19,7 +9,17 @@ import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.Date;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+
+import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.compat.CompatReiMinimap;
+import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.OutputHandler;
+
 import cpw.mods.fml.common.FMLCommonHandler;
+//import com.ForgeEssentials.economy.Wallet;
 
 public class LoginMessage
 {

@@ -13,10 +13,12 @@ import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.ISTORE;
 import static org.objectweb.asm.Opcodes.LDC;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import net.minecraft.server.MinecraftServer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -33,7 +35,14 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import com.ForgeEssentials.coremod.FEPreLoader;
+import com.ForgeEssentials.util.OutputHandler;
+
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import cpw.mods.fml.relauncher.FMLRelauncher;
 import cpw.mods.fml.relauncher.IClassTransformer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class FEeventAdder implements IClassTransformer
 {
@@ -45,12 +54,14 @@ public class FEeventAdder implements IClassTransformer
 	
 	public static HashMap<String, String> mcsHMob = makemcsHMob();
 	public static HashMap<String, String> mcsHMdev = makemcsHMdev();
-
-	public static boolean addedBreak = false;
-	public static boolean addedPlace = false;
-	public static boolean branded = false;
+	
+    public static boolean serverbranded = false;
+    public static boolean clientbranded = false;
 	
 	private static final String SERVERBRAND = "forge,fml, ForgeEssentials";
+	
+	public static boolean addedBreak = false;
+	public static boolean addedPlace = false;
 	
 	public static HashMap makeiiwmHMob()
 	{
@@ -116,29 +127,6 @@ public class FEeventAdder implements IClassTransformer
 		
 		return isHMdev;
 	}
-	
-	public static HashMap makemcsHMob()
-	{
-		HashMap mcsHMdev = new HashMap<String, String>();
-		
-		mcsHMdev.put("className", "net.minecraft.server.MinecraftServer");
-		mcsHMdev.put("javaClassName", "net/minecraft/server/MinecraftServer");
-		mcsHMdev.put("targetMethodName", "getServerModName");
-		
-		return mcsHMdev;
-	}
-	public static HashMap makemcsHMdev()
-	{
-		HashMap mcsHMdev = new HashMap<String, String>();
-		
-		mcsHMdev.put("className", "fy");
-		mcsHMdev.put("javaClassName", "fy");
-		mcsHMdev.put("targetMethodName", "getServerModName");
-		
-		return mcsHMdev;
-	}
-	
-	
 	@Override
 	public byte[] transform(String name, byte[] bytes)
 	{	
@@ -165,7 +153,6 @@ public class FEeventAdder implements IClassTransformer
 			// ItemStack, NOT Obfuscated
 			return transformItemStack(bytes, isHMdev);
 		}
-		
 		if (name.equals(mcsHMob.get("className")))
 		{
 			// MinecraftServer, Obfuscated
@@ -177,49 +164,13 @@ public class FEeventAdder implements IClassTransformer
 			// MinecraftServer, NOT Obfuscated
 			return transformMinecraftServer(bytes, mcsHMdev);
 		}
-
+		if (FMLRelauncher.side().equals("CLIENT")){
+			// ClientBrandRetriever - not obfed for some reason
+			return transformClientBrandRetriever(name, bytes, "net.minecraft.client.ClientBrandRetriever", FEPreLoader.location);
+		}
 		return bytes;
 	}
 	
-	private byte[] transformMinecraftServer(byte[] bytes, HashMap<String, String> hm)
-	{
-		msg("[FE coremod] Patching MinecraftServer...");
-		
-		ClassNode classNode = new ClassNode();
-		ClassReader classReader = new ClassReader(bytes);
-		classReader.accept(classNode, 0);
-		
-		Iterator<MethodNode> methods = classNode.methods.iterator();
-		while (methods.hasNext())
-		{
-			MethodNode m = methods.next();
-			if(m.name.equals(hm.get("targetMethodName")))
-			{
-				msg("[FE coremod] Found target method " + m.name + m.desc + "!");
-				
-				int offset = 0;
-				while (m.instructions.get(offset).getOpcode() != LDC)
-				{
-					offset++;
-				}
-				
-				InsnList toInject = new InsnList();
-				
-				toInject.add(new LdcInsnNode(SERVERBRAND));
-				
-				m.instructions.insertBefore(m.instructions.get(offset), toInject);
-				m.instructions.remove(m.instructions.get(offset + 1));
-				
-				branded = true;
-				break;
-			}
-		}
-		
-		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		classNode.accept(writer);
-		return writer.toByteArray();
-	}
-
 	private byte[] transformItemStack(byte[] bytes, HashMap<String, String> hm)
 	{
 		msg("[FE coremod] Patching ItemStack...");
@@ -375,9 +326,94 @@ public class FEeventAdder implements IClassTransformer
 		classNode.accept(writer);
 		return writer.toByteArray();
 	}
-
-	public static void msg(String msg)
+	public static HashMap makemcsHMob()
 	{
+		HashMap mcsHMdev = new HashMap<String, String>();
+		
+		mcsHMdev.put("className", "net.minecraft.server.MinecraftServer");
+		mcsHMdev.put("javaClassName", "net/minecraft/server/MinecraftServer");
+		mcsHMdev.put("targetMethodName", "getServerModName");
+		
+		return mcsHMdev;
+	}
+	public static HashMap makemcsHMdev()
+	{
+		HashMap mcsHMdev = new HashMap<String, String>();
+		
+		mcsHMdev.put("className", "fy");
+		mcsHMdev.put("javaClassName", "fy");
+		mcsHMdev.put("targetMethodName", "getServerModName");
+		
+		return mcsHMdev;
+	}
+	private byte[] transformMinecraftServer(byte[] bytes, HashMap<String, String> hm)
+	{
+		OutputHandler.fine("[FE coremod] Patching MinecraftServer...");
+		
+		ClassNode classNode = new ClassNode();
+		ClassReader classReader = new ClassReader(bytes);
+		classReader.accept(classNode, 0);
+		Iterator<MethodNode> methods = classNode.methods.iterator();
+		while (methods.hasNext())
+		{
+			MethodNode m = methods.next();
+			if(m.name.equals(hm.get("targetMethodName")))
+			{
+				OutputHandler.fine("[FE coremod] Found target method " + m.name + m.desc + "!");
+				
+				int offset = 0;
+				while (m.instructions.get(offset).getOpcode() != LDC)
+				{
+					offset++;
+				}
+				
+				InsnList toInject = new InsnList();
+				
+				toInject.add(new LdcInsnNode(SERVERBRAND));
+				
+				m.instructions.insertBefore(m.instructions.get(offset), toInject);
+				m.instructions.remove(m.instructions.get(offset + 1));
+				
+				serverbranded = true;
+				break;
+			}
+		}
+		
+		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		classNode.accept(writer);
+		return writer.toByteArray();
+	}
+	@SideOnly(Side.CLIENT)
+	public static byte[] transformClientBrandRetriever(String name, byte[] bytes, String classname, File location)
+	{
+		if(!name.equals(classname) || !!ObfuscationReflectionHelper.obfuscation)
+			return bytes;
+		
+		try
+		{
+			ZipFile zip = new ZipFile(location);
+			ZipEntry entry = zip.getEntry(name.replace('.', '/')+".class");
+			if(entry == null)
+				System.out.println(name+" not found in "+location.getName());
+			else
+			{
+				InputStream zin = zip.getInputStream(entry);
+				bytes = new byte[(int) entry.getSize()];
+				zin.read(bytes);
+				zin.close();
+				System.out.println(name+" was overriden from "+location.getName());
+			}
+			zip.close();
+			clientbranded = true;
+		}
+		catch(Exception e)
+		{
+			throw new RuntimeException("Error overriding "+name+" from "+location.getName(), e);
+		}
+		return bytes;
+	}
+	
+	public static void msg (String msg){
 		System.out.println(msg);
 	}
 

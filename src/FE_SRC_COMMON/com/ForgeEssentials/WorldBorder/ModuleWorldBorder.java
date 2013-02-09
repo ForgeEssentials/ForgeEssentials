@@ -1,6 +1,5 @@
 package com.ForgeEssentials.WorldBorder;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,12 +15,6 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.event.PlayerMoveEvent;
 import com.ForgeEssentials.util.vector.Vector2;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.IScheduledTickHandler;
-import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 /**
  * Bounces players back into the border if they pass it. No bypass permissions available, If needed, tell me on github.

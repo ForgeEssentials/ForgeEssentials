@@ -1,14 +1,11 @@
 package com.ForgeEssentials.auth.commands;
 
-import java.security.NoSuchAlgorithmException;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.auth.ModuleAuth;
 import com.ForgeEssentials.auth.pwdData;
 import com.ForgeEssentials.auth.pwdSaver;
-import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.OutputHandler;
 

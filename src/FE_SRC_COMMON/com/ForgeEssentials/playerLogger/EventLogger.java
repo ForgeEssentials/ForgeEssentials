@@ -1,21 +1,20 @@
 package com.ForgeEssentials.playerLogger;
 
-import com.ForgeEssentials.core.customEvents.PlayerBlockBreak;
-import com.ForgeEssentials.core.customEvents.PlayerBlockPlace;
-import com.ForgeEssentials.playerLogger.types.blockChangeLog;
-import com.ForgeEssentials.playerLogger.types.commandLog;
-import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
+import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import java.util.ArrayList;
+import com.ForgeEssentials.core.customEvents.PlayerBlockBreak;
+import com.ForgeEssentials.core.customEvents.PlayerBlockPlace;
+import com.ForgeEssentials.playerLogger.types.blockChangeLog;
+import com.ForgeEssentials.playerLogger.types.commandLog;
+import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;

@@ -1,14 +1,13 @@
 package com.ForgeEssentials.WorldControl;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
-import com.ForgeEssentials.util.OutputHandler;
+import java.io.File;
 
 import net.minecraft.command.ICommandSender;
-
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import java.io.File;
+import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigWorldControl extends ModuleConfigBase
 {

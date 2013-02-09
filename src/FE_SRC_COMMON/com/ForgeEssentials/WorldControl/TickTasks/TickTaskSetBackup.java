@@ -1,15 +1,15 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
 //Depreciated
+import java.util.ArrayList;
+
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.BlockSaveable;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.OutputHandler;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.ArrayList;
 
 public class TickTaskSetBackup implements ITickTask
 {

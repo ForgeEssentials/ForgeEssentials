@@ -1,15 +1,14 @@
 package com.ForgeEssentials.api.permissions;
 
+import java.util.ArrayList;
+
+import net.minecraft.world.World;
+
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-
-import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.Set;
 
 public class ZoneManager
 {

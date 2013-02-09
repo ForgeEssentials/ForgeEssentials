@@ -1,26 +1,16 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.PWarp;
-import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.Warp;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.TcpConnection;
-import net.minecraft.server.MinecraftServer;
-
-import net.minecraftforge.common.DimensionManager;
-
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.PWarp;
+import com.ForgeEssentials.util.TeleportCenter;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 {

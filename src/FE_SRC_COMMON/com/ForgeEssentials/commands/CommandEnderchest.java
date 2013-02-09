@@ -1,13 +1,13 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.InventoryEnderChest;
 import net.minecraft.network.packet.Packet100OpenWindow;
+
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 /**
  * Opens your enderchest.

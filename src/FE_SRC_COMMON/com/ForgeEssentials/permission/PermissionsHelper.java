@@ -1,5 +1,11 @@
 package com.ForgeEssentials.permission;
 
+import java.util.ArrayList;
+import java.util.TreeSet;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.MinecraftForge;
+
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.IPermissionsHelper;
 import com.ForgeEssentials.api.permissions.RegGroup;
@@ -8,13 +14,6 @@ import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.events.PermissionSetEvent;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import net.minecraftforge.common.MinecraftForge;
-
-import java.util.ArrayList;
-import java.util.TreeSet;
 
 public class PermissionsHelper implements IPermissionsHelper
 {

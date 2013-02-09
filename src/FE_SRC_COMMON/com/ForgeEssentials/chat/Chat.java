@@ -1,5 +1,16 @@
 package com.ForgeEssentials.chat;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.ServerChatEvent;
+
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
@@ -8,26 +19,9 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.SqlHelper;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.google.common.base.Strings;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.NetHandler;
-import net.minecraft.network.packet.Packet3Chat;
-
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.ServerChatEvent;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import cpw.mods.fml.common.network.IChatListener;
 
 public class Chat
 {

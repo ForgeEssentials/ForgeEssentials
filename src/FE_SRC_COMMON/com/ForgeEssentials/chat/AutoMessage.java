@@ -1,15 +1,8 @@
 package com.ForgeEssentials.chat;
 
-import java.util.EnumSet;
 import java.util.Random;
 
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.OutputHandler;
-
 import net.minecraft.server.MinecraftServer;
-
-import cpw.mods.fml.common.IScheduledTickHandler;
-import cpw.mods.fml.common.TickType;
 
 public class AutoMessage implements Runnable 
 {

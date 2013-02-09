@@ -1,12 +1,5 @@
 package com.ForgeEssentials.snooper.response;
 
-import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
-import com.ForgeEssentials.api.snooper.Response;
-import com.ForgeEssentials.api.snooper.TextFormatter;
-import com.ForgeEssentials.util.AreaSelector.Point;
-
-import net.minecraftforge.common.Configuration;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.DatagramPacket;
@@ -16,6 +9,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import net.minecraftforge.common.Configuration;
+
+import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
+import com.ForgeEssentials.api.snooper.Response;
+import com.ForgeEssentials.api.snooper.TextFormatter;
+import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
