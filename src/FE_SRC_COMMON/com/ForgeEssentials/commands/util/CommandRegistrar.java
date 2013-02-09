@@ -17,6 +17,7 @@ import com.ForgeEssentials.commands.CommandDoAs;
 import com.ForgeEssentials.commands.CommandEnchant;
 import com.ForgeEssentials.commands.CommandEnderchest;
 import com.ForgeEssentials.commands.CommandGameMode;
+import com.ForgeEssentials.commands.CommandGetCommandBook;
 import com.ForgeEssentials.commands.CommandGive;
 import com.ForgeEssentials.commands.CommandHeal;
 import com.ForgeEssentials.commands.CommandHome;
@@ -98,6 +99,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandGameMode());
 		cmdList.add(new CommandDoAs());
 		cmdList.add(new CommandServerSettings());
+		cmdList.add(new CommandGetCommandBook());
 	}
 
 	public static void commandConfigs(Configuration config)
