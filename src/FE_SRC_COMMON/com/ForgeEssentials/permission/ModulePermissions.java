@@ -52,6 +52,8 @@ public class ModulePermissions
 
 	// permission registrations here...
 	protected HashMultimap				regPerms;
+	
+	protected AutoPromote				autoPromoteGlobal;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -97,7 +99,7 @@ public class ModulePermissions
 	@ServerPostInit()
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		new AutoPromote(FMLCommonHandler.instance().getMinecraftServerInstance());
+		autoPromoteGlobal = new AutoPromote(FMLCommonHandler.instance().getMinecraftServerInstance(), ZoneManager.getGLOBAL().getZoneName());
 	}
 
 	@PermRegister(ident = "ModulePermissions")

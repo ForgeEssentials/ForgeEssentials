@@ -1,5 +1,8 @@
 package com.ForgeEssentials.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,6 +14,8 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandAFK extends ForgeEssentialsCommandBase
 {
+	public static List<String> afkList = new ArrayList();
+	
 	/*
 	 * Config
 	 */
@@ -60,6 +65,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 			afKdata.player.sendPlayerAbilities();
 		}
 		afKdata.player.sendChatToPlayer("AFK lifted.");
+		afkList.remove(afKdata.player.username);
 		TickHandlerCommands.afkListToRemove.add(afKdata);
 	}
 
@@ -67,6 +73,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 	{
 		afKdata.player.capabilities.disableDamage = true;
 		afKdata.player.sendPlayerAbilities();
+		afkList.add(afKdata.player.username);
 		afKdata.player.sendChatToPlayer("You are now AFK.");
 	}
 }
