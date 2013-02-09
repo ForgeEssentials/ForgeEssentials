@@ -50,15 +50,23 @@ public class TPdata
 
 	public void doTP()
 	{
-		PlayerInfo.getPlayerInfo(player).back = new WarpPoint(player);
-		ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
-		if (player.dimension != point.dim)
+		try
 		{
-			server.transferPlayerToDimension((EntityPlayerMP) player, point.dim);
+			PlayerInfo.getPlayerInfo(player).back = new WarpPoint(player);
+			ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
+			if (player.dimension != point.dim)
+			{
+				server.transferPlayerToDimension((EntityPlayerMP) player, point.dim);
+			}
+			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y, point.z, point.yaw, point.pitch);
+			PlayerInfo.getPlayerInfo(player).TPcooldown = TeleportCenter.tpCooldown;
+			TeleportCenter.TPdone(this);
 		}
-		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y, point.z, point.yaw, point.pitch);
-		PlayerInfo.getPlayerInfo(player).TPcooldown = TeleportCenter.tpCooldown;
-		TeleportCenter.TPdone(this);
+		catch (Exception e)
+		{
+			OutputHandler.warning("Someone tried to crash the server when warping!");
+			e.printStackTrace();
+		}
 	}
 
 	public EntityPlayer getPlayer()
