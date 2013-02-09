@@ -16,6 +16,7 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.economy.commands.CommandAddToWallet;
 import com.ForgeEssentials.economy.commands.CommandGetWallet;
+import com.ForgeEssentials.economy.commands.CommandPay;
 import com.ForgeEssentials.economy.commands.CommandRemoveWallet;
 import com.ForgeEssentials.economy.commands.CommandSetWallet;
 
@@ -106,6 +107,7 @@ public class ModuleEconomy implements IPlayerTracker
 		e.registerServerCommand(new CommandRemoveWallet());
 		e.registerServerCommand(new CommandGetWallet());
 		e.registerServerCommand(new CommandSetWallet());
+		e.registerServerCommand(new CommandPay());
 	}
 
 	@Override

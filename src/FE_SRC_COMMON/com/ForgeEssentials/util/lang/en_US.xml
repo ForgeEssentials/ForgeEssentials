@@ -299,6 +299,11 @@
     <entry key="command.walletget.syntax.console">[&lt;player>]</entry>
     <entry key="command.walletget.info.console">Returns the target's wallet</entry>
     
+    <entry key="command.pay.syntax.player">&lt;player> &lt;amount></entry>
+    <entry key="command.pay.info.player">Play the player the specified amount. You must have enough money</entry>
+    <entry key="command.pay.syntax.console">&lt;player> &lt;amount></entry>
+    <entry key="command.pay.info.console">Play the player the specified amount.</entry>
+    
         <!-- Some localization for Kits -->
     <entry key="command.kit.syntax.player">[name] OR [name] [set|del] &lt;cooldown></entry>
     <entry key="command.kit.info.player">Get free kits pre-defined by the server owner</entry>
