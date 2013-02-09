@@ -8,7 +8,8 @@ public final class SpecialSaveableType
 	 * In order to stop people from trying to instantiate
 	 */
 	private SpecialSaveableType()
-	{}
+	{
+	}
 
 	private static final HashMap<Class, Class<? extends TypeOverrideBase>>	typeMap	= new HashMap<Class, Class<? extends TypeOverrideBase>>();
 
@@ -24,9 +25,9 @@ public final class SpecialSaveableType
 	 * specific class is not found, its SuperClasses are checked recursively.
 	 * 
 	 * @param c
-	 *            Class of which to get the override
+	 * Class of which to get the override
 	 * @return NULL if neither the class nor any of its SuperClasses have an
-	 *         override counterpart registered
+	 * override counterpart registered
 	 */
 	public static Class<? extends TypeOverrideBase> getOverrideType(Class c)
 	{
@@ -43,12 +44,12 @@ public final class SpecialSaveableType
 	 * Returns a class
 	 * 
 	 * @param c
-	 *            Class of which to see if an Override counterpart exists
+	 * Class of which to see if an Override counterpart exists
 	 * @param parentCheck
-	 *            If this method should return true if a superClass of the
-	 *            provided class is registered
+	 * If this method should return true if a superClass of the
+	 * provided class is registered
 	 * @return FALSE if the class does not have an override counterpart
-	 *         registered
+	 * registered
 	 */
 	public static boolean hasOverrideType(Class c, boolean parentCheck)
 	{
@@ -71,9 +72,9 @@ public final class SpecialSaveableType
 	 * registering a SuperClass.
 	 * 
 	 * @param override
-	 *            The Override Class.
+	 * The Override Class.
 	 * @param others
-	 *            The classes which the provided override should be mapped to.
+	 * The classes which the provided override should be mapped to.
 	 */
 	public static void registerOverride(Class<? extends TypeOverrideBase> override, Class... others)
 	{

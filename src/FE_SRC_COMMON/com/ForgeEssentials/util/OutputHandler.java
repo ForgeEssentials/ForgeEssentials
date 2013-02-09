@@ -22,9 +22,9 @@ public final class OutputHandler
 	 * outputs a message in red text to the chat box of the given player.
 	 * 
 	 * @param msg
-	 *            the message to be chatted
+	 * the message to be chatted
 	 * @param player
-	 *            player to chat to.
+	 * player to chat to.
 	 */
 	public static void chatError(ICommandSender sender, String msg)
 	{
@@ -35,9 +35,9 @@ public final class OutputHandler
 	 * outputs a message in bright green to the chat box of the given player.
 	 * 
 	 * @param msg
-	 *            the message to be chatted
+	 * the message to be chatted
 	 * @param player
-	 *            player to chat to.
+	 * player to chat to.
 	 */
 	public static void chatConfirmation(ICommandSender sender, String msg)
 	{
@@ -48,9 +48,9 @@ public final class OutputHandler
 	 * outputs a message in yellow to the chat box of the given player.
 	 * 
 	 * @param msg
-	 *            the message to be chatted
+	 * the message to be chatted
 	 * @param player
-	 *            player to chat to.
+	 * player to chat to.
 	 */
 	public static void chatWarning(ICommandSender sender, String msg)
 	{
@@ -103,7 +103,7 @@ public final class OutputHandler
 	 * outputs a string to the console if the code is in MCP
 	 * 
 	 * @param msg
-	 *            message to be outputted
+	 * message to be outputted
 	 */
 	public static void debug(Object msg)
 	{

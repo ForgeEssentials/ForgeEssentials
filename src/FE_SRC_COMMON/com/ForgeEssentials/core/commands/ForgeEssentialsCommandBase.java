@@ -248,7 +248,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	 * Simply prints a usage message to the sender of the command.
 	 * 
 	 * @param sender
-	 *            Object that issued the command
+	 * Object that issued the command
 	 */
 	public void error(ICommandSender sender)
 	{
@@ -259,9 +259,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	 * Prints an error message to the sender of the command.
 	 * 
 	 * @param sender
-	 *            Object that issued the command
+	 * Object that issued the command
 	 * @param message
-	 *            Error message
+	 * Error message
 	 */
 	public void error(ICommandSender sender, String message)
 	{

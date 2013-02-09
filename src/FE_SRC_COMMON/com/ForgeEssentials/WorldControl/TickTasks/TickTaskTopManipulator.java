@@ -82,64 +82,64 @@ public class TickTaskTopManipulator implements ITickTask
 				blockID = world.getBlockId(x, y, z);
 
 				switch (effectMode)
-				{
-				case THAW:
-					if (blockID == Block.ice.blockID)
 					{
-						// Replace ice with water.
-						backup.before.add(new BlockSaveable(world, x, y, z));
-						world.setBlock(x, y, z, Block.waterMoving.blockID);
-						backup.after.add(new BlockSaveable(world, x, y, z));
-						currentBlocksChanged++;
+						case THAW:
+							if (blockID == Block.ice.blockID)
+							{
+								// Replace ice with water.
+								backup.before.add(new BlockSaveable(world, x, y, z));
+								world.setBlock(x, y, z, Block.waterMoving.blockID);
+								backup.after.add(new BlockSaveable(world, x, y, z));
+								currentBlocksChanged++;
+							}
+							else if (blockID == Block.snow.blockID)
+							{
+								// Remove snow.
+								backup.before.add(new BlockSaveable(world, x, y, z));
+								world.setBlock(x, y, z, 0);
+								backup.after.add(new BlockSaveable(world, x, y, z));
+								currentBlocksChanged++;
+							}
+							break;
+						case FREEZE:
+							if (blockID == Block.waterMoving.blockID || blockID == Block.waterStill.blockID)
+							{
+								// Both water types become ice.
+								backup.before.add(new BlockSaveable(world, x, y, z));
+								world.setBlock(x, y, z, Block.ice.blockID);
+								backup.after.add(new BlockSaveable(world, x, y, z));
+								currentBlocksChanged++;
+							}
+							break;
+						case SNOW:
+							if (Block.isNormalCube(world.getBlockId(x, y, z)) || Block.blocksList[blockID].isLeaves(world, x, y, z))
+							{
+								// Add snow covering to the block above.
+								backup.before.add(new BlockSaveable(world, x, y + 1, z));
+								world.setBlock(x, y + 1, z, Block.snow.blockID);
+								backup.after.add(new BlockSaveable(world, x, y + 1, z));
+								currentBlocksChanged++;
+							}
+							break;
+						case TILL:
+							if (blockID == Block.dirt.blockID || blockID == Block.grass.blockID)
+							{
+								backup.before.add(new BlockSaveable(world, x, y, z));
+								world.setBlock(x, y, z, Block.tilledField.blockID);
+								backup.after.add(new BlockSaveable(world, x, y, z));
+								currentBlocksChanged++;
+							}
+							break;
+						case UNTILL:
+							if (blockID == Block.tilledField.blockID)
+							{
+								backup.before.add(new BlockSaveable(world, x, y, z));
+								world.setBlock(x, y, z, Block.dirt.blockID);
+								backup.after.add(new BlockSaveable(world, x, y, z));
+								currentBlocksChanged++;
+							}
+							break;
 					}
-					else if (blockID == Block.snow.blockID)
-					{
-						// Remove snow.
-						backup.before.add(new BlockSaveable(world, x, y, z));
-						world.setBlock(x, y, z, 0);
-						backup.after.add(new BlockSaveable(world, x, y, z));
-						currentBlocksChanged++;
-					}
-					break;
-				case FREEZE:
-					if (blockID == Block.waterMoving.blockID || blockID == Block.waterStill.blockID)
-					{
-						// Both water types become ice.
-						backup.before.add(new BlockSaveable(world, x, y, z));
-						world.setBlock(x, y, z, Block.ice.blockID);
-						backup.after.add(new BlockSaveable(world, x, y, z));
-						currentBlocksChanged++;
-					}
-					break;
-				case SNOW:
-					if (Block.isNormalCube(world.getBlockId(x, y, z)) || Block.blocksList[blockID].isLeaves(world, x, y, z))
-					{
-						// Add snow covering to the block above.
-						backup.before.add(new BlockSaveable(world, x, y + 1, z));
-						world.setBlock(x, y + 1, z, Block.snow.blockID);
-						backup.after.add(new BlockSaveable(world, x, y + 1, z));
-						currentBlocksChanged++;
-					}
-					break;
-				case TILL:
-					if (blockID == Block.dirt.blockID || blockID == Block.grass.blockID)
-					{
-						backup.before.add(new BlockSaveable(world, x, y, z));
-						world.setBlock(x, y, z, Block.tilledField.blockID);
-						backup.after.add(new BlockSaveable(world, x, y, z));
-						currentBlocksChanged++;
-					}
-					break;
-				case UNTILL:
-					if (blockID == Block.tilledField.blockID)
-					{
-						backup.before.add(new BlockSaveable(world, x, y, z));
-						world.setBlock(x, y, z, Block.dirt.blockID);
-						backup.after.add(new BlockSaveable(world, x, y, z));
-						currentBlocksChanged++;
-					}
-					break;
-				}
 			}
 
 			z++;
@@ -170,23 +170,23 @@ public class TickTaskTopManipulator implements ITickTask
 
 		String confirmMessage = "";
 		switch (effectMode)
-		{
-		case THAW:
-			confirmMessage = "thaw";
-			break;
-		case FREEZE:
-			confirmMessage = "freeze";
-			break;
-		case SNOW:
-			confirmMessage = "snow";
-			break;
-		case TILL:
-			confirmMessage = "till";
-			break;
-		case UNTILL:
-			confirmMessage = "untill";
-			break;
-		}
+			{
+				case THAW:
+					confirmMessage = "thaw";
+					break;
+				case FREEZE:
+					confirmMessage = "freeze";
+					break;
+				case SNOW:
+					confirmMessage = "snow";
+					break;
+				case TILL:
+					confirmMessage = "till";
+					break;
+				case UNTILL:
+					confirmMessage = "untill";
+					break;
+			}
 		OutputHandler.chatConfirmation(player, Localization.format("message.wc." + confirmMessage + "Confirm", changed));
 	}
 

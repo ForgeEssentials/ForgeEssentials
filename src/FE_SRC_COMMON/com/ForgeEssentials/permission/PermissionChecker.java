@@ -32,8 +32,8 @@ public class PermissionChecker
 
 	/**
 	 * @return the qualified full name of the parent of this permission's
-	 *         parent. returns "_ALL_" if there is no parent. NULL if this
-	 *         permission is already _ALL_
+	 * parent. returns "_ALL_" if there is no parent. NULL if this
+	 * permission is already _ALL_
 	 */
 	public String getImmediateParent()
 	{
@@ -48,8 +48,8 @@ public class PermissionChecker
 
 	/**
 	 * @return the fully qualified name of the parent + _ALL_. unless this perm
-	 *         has no parent, in which case it returns _ALL_. NULL if this
-	 *         permission is already _ALL_
+	 * has no parent, in which case it returns _ALL_. NULL if this
+	 * permission is already _ALL_
 	 */
 	public String getAllParent()
 	{
@@ -62,7 +62,7 @@ public class PermissionChecker
 
 	/**
 	 * @return the modID of the mod that added this permission. returns "" if
-	 *         there is none.
+	 * there is none.
 	 */
 	public String getMod()
 	{
@@ -79,7 +79,7 @@ public class PermissionChecker
 
 	/**
 	 * @return if this Permission is a child of the given Permission. Only works
-	 *         for ALL permisisons.
+	 * for ALL permisisons.
 	 */
 	public boolean isChildOf(PermissionChecker perm)
 	{

@@ -427,45 +427,45 @@ public class TextFormatter
 
 			NBTBase tag = NBTBase.newTag(type, name);
 			switch (type)
-			{
-			case 1:
-				((NBTTagByte) tag).data = (byte) top.getInt(key);
-				break;
-			case 2:
-				((NBTTagShort) tag).data = (short) top.getInt(key);
-				break;
-			case 3:
-				((NBTTagInt) tag).data = top.getInt(key);
-				break;
-			case 4:
-				((NBTTagLong) tag).data = top.getLong(key);
-				break;
-			case 5:
-				((NBTTagFloat) tag).data = (float) top.getDouble(key);
-				break;
-			case 6:
-				((NBTTagDouble) tag).data = top.getDouble(key);
-				break;
-			case 7:
-				tag = reconstructNBTTagByteArray(top.getJSONArray(key));
-				tag.setName(name);
-				break;
-			case 8:
-				((NBTTagString) tag).data = top.getString(key);
-				break;
-			case 9:
-				tag = reconstructNBTTagList(top.getJSONArray(key));
-				tag.setName(name);
-				break;
-			case 10:
-				tag = reconstructNBTTagCompound(top.getJSONArray(key));
-				tag.setName(name);
-				break;
-			case 11:
-				tag = reconstructNBTTagIntArray(top.getJSONArray(key));
-				tag.setName(name);
-				break;
-			}
+				{
+					case 1:
+						((NBTTagByte) tag).data = (byte) top.getInt(key);
+						break;
+					case 2:
+						((NBTTagShort) tag).data = (short) top.getInt(key);
+						break;
+					case 3:
+						((NBTTagInt) tag).data = top.getInt(key);
+						break;
+					case 4:
+						((NBTTagLong) tag).data = top.getLong(key);
+						break;
+					case 5:
+						((NBTTagFloat) tag).data = (float) top.getDouble(key);
+						break;
+					case 6:
+						((NBTTagDouble) tag).data = top.getDouble(key);
+						break;
+					case 7:
+						tag = reconstructNBTTagByteArray(top.getJSONArray(key));
+						tag.setName(name);
+						break;
+					case 8:
+						((NBTTagString) tag).data = top.getString(key);
+						break;
+					case 9:
+						tag = reconstructNBTTagList(top.getJSONArray(key));
+						tag.setName(name);
+						break;
+					case 10:
+						tag = reconstructNBTTagCompound(top.getJSONArray(key));
+						tag.setName(name);
+						break;
+					case 11:
+						tag = reconstructNBTTagIntArray(top.getJSONArray(key));
+						tag.setName(name);
+						break;
+				}
 			return tag;
 		}
 		catch (Exception e)

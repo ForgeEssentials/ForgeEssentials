@@ -54,7 +54,7 @@ public class JSONTokener
 	 * Construct a JSONTokener from a Reader.
 	 * 
 	 * @param reader
-	 *            A reader.
+	 * A reader.
 	 */
 	public JSONTokener(Reader reader)
 	{
@@ -79,7 +79,7 @@ public class JSONTokener
 	 * Construct a JSONTokener from a string.
 	 * 
 	 * @param s
-	 *            A source string.
+	 * A source string.
 	 */
 	public JSONTokener(String s)
 	{
@@ -107,8 +107,8 @@ public class JSONTokener
 	 * Get the hex value of a character (base16).
 	 * 
 	 * @param c
-	 *            A character between '0' and '9' or between 'A' and 'F' or
-	 *            between 'a' and 'f'.
+	 * A character between '0' and '9' or between 'A' and 'F' or
+	 * between 'a' and 'f'.
 	 * @return An int between 0 and 15, or -1 if c was not a hex digit.
 	 */
 	public static int dehexchar(char c)
@@ -204,10 +204,10 @@ public class JSONTokener
 	 * character.
 	 * 
 	 * @param c
-	 *            The character to match.
+	 * The character to match.
 	 * @return The character.
 	 * @throws JSONException
-	 *             if the character does not match.
+	 * if the character does not match.
 	 */
 	public char next(char c) throws JSONException
 	{
@@ -223,11 +223,11 @@ public class JSONTokener
 	 * Get the next n characters.
 	 * 
 	 * @param n
-	 *            The number of characters to take.
+	 * The number of characters to take.
 	 * @return A string of n characters.
 	 * @throws JSONException
-	 *             Substring bounds error if there are not n characters
-	 *             remaining in the source string.
+	 * Substring bounds error if there are not n characters
+	 * remaining in the source string.
 	 */
 	public String next(int n) throws JSONException
 	{
@@ -275,12 +275,10 @@ public class JSONTokener
 	 * single quotes, but an implementation is allowed to accept them.
 	 * 
 	 * @param quote
-	 *            The quoting character, either <code>"</code>
-	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
-	 *            &nbsp;<small>(single quote)</small>.
+	 * The quoting character, either <code>"</code> &nbsp;<small>(double quote)</small> or <code>'</code> &nbsp;<small>(single quote)</small>.
 	 * @return A String.
 	 * @throws JSONException
-	 *             Unterminated string.
+	 * Unterminated string.
 	 */
 	public String nextString(char quote) throws JSONException
 	{
@@ -290,50 +288,50 @@ public class JSONTokener
 		{
 			c = this.next();
 			switch (c)
-			{
-			case 0:
-			case '\n':
-			case '\r':
-				throw this.syntaxError("Unterminated string");
-			case '\\':
-				c = this.next();
-				switch (c)
 				{
-				case 'b':
-					sb.append('\b');
-					break;
-				case 't':
-					sb.append('\t');
-					break;
-				case 'n':
-					sb.append('\n');
-					break;
-				case 'f':
-					sb.append('\f');
-					break;
-				case 'r':
-					sb.append('\r');
-					break;
-				case 'u':
-					sb.append((char) Integer.parseInt(this.next(4), 16));
-					break;
-				case '"':
-				case '\'':
-				case '\\':
-				case '/':
-					sb.append(c);
-					break;
-				default:
-					throw this.syntaxError("Illegal escape.");
+					case 0:
+					case '\n':
+					case '\r':
+						throw this.syntaxError("Unterminated string");
+					case '\\':
+						c = this.next();
+						switch (c)
+							{
+								case 'b':
+									sb.append('\b');
+									break;
+								case 't':
+									sb.append('\t');
+									break;
+								case 'n':
+									sb.append('\n');
+									break;
+								case 'f':
+									sb.append('\f');
+									break;
+								case 'r':
+									sb.append('\r');
+									break;
+								case 'u':
+									sb.append((char) Integer.parseInt(this.next(4), 16));
+									break;
+								case '"':
+								case '\'':
+								case '\\':
+								case '/':
+									sb.append(c);
+									break;
+								default:
+									throw this.syntaxError("Illegal escape.");
+							}
+						break;
+					default:
+						if (c == quote)
+						{
+							return sb.toString();
+						}
+						sb.append(c);
 				}
-				break;
-			default:
-				if (c == quote)
-				{
-					return sb.toString();
-				}
-				sb.append(c);
-			}
 		}
 	}
 
@@ -342,7 +340,7 @@ public class JSONTokener
 	 * line, whichever comes first.
 	 * 
 	 * @param delimiter
-	 *            A delimiter character.
+	 * A delimiter character.
 	 * @return A string.
 	 */
 	public String nextTo(char delimiter) throws JSONException
@@ -368,7 +366,7 @@ public class JSONTokener
 	 * characters or the end of line, whichever comes first.
 	 * 
 	 * @param delimiters
-	 *            A set of delimiter characters.
+	 * A set of delimiter characters.
 	 * @return A string, trimmed.
 	 */
 	public String nextTo(String delimiters) throws JSONException
@@ -395,7 +393,7 @@ public class JSONTokener
 	 * JSONArray, JSONObject, Long, or String, or the JSONObject.NULL object.
 	 * 
 	 * @throws JSONException
-	 *             If syntax error.
+	 * If syntax error.
 	 * 
 	 * @return An object.
 	 */
@@ -405,23 +403,22 @@ public class JSONTokener
 		String string;
 
 		switch (c)
-		{
-		case '"':
-		case '\'':
-			return this.nextString(c);
-		case '{':
-			this.back();
-			return new JSONObject(this);
-		case '[':
-			this.back();
-			return new JSONArray(this);
-		}
+			{
+				case '"':
+				case '\'':
+					return this.nextString(c);
+				case '{':
+					this.back();
+					return new JSONObject(this);
+				case '[':
+					this.back();
+					return new JSONArray(this);
+			}
 
 		/*
 		 * Handle unquoted text. This could be the values true, false, or null,
 		 * or it can be a number. An implementation (such as this one) is
 		 * allowed to also accept non-standard forms.
-		 * 
 		 * Accumulate characters until we reach the end of the text or a
 		 * formatting character.
 		 */
@@ -447,9 +444,9 @@ public class JSONTokener
 	 * the requested character is not found, no characters are skipped.
 	 * 
 	 * @param to
-	 *            A character to skip to.
+	 * A character to skip to.
 	 * @return The requested character, or zero if the requested character is
-	 *         not found.
+	 * not found.
 	 */
 	public char skipTo(char to) throws JSONException
 	{
@@ -471,8 +468,7 @@ public class JSONTokener
 					this.line = startLine;
 					return c;
 				}
-			}
-			while (c != to);
+			} while (c != to);
 		}
 		catch (IOException exc)
 		{
@@ -487,7 +483,7 @@ public class JSONTokener
 	 * Make a JSONException to signal a syntax error.
 	 * 
 	 * @param message
-	 *            The error message.
+	 * The error message.
 	 * @return A JSONException object, suitable for throwing
 	 */
 	public JSONException syntaxError(String message)

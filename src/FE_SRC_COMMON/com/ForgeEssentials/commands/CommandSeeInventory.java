@@ -59,7 +59,8 @@ public class CommandSeeInventory extends ForgeEssentialsCommandBase
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
-	{}
+	{
+	}
 
 	@Override
 	public boolean canConsoleUseCommand()

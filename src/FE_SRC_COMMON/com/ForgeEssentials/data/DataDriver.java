@@ -11,7 +11,8 @@ public abstract class DataDriver implements IDataDriver
 {
 
 	public DataDriver()
-	{}
+	{
+	}
 
 	public void onClassRegistered(TypeTagger tagger)
 	{

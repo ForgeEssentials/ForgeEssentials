@@ -47,7 +47,8 @@ public class ModuleChat
 	public static File			moduleDir;
 
 	public ModuleChat()
-	{}
+	{
+	}
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -65,7 +66,8 @@ public class ModuleChat
 
 	@PostInit
 	public void postLoad(FEModulePostInitEvent e)
-	{}
+	{
+	}
 
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)

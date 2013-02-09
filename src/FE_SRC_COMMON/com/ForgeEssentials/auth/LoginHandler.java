@@ -78,9 +78,11 @@ public class LoginHandler implements IPlayerTracker
 
 	@Override
 	public void onPlayerChangedDimension(EntityPlayer player)
-	{}
+	{
+	}
 
 	@Override
 	public void onPlayerRespawn(EntityPlayer player)
-	{}
+	{
+	}
 }

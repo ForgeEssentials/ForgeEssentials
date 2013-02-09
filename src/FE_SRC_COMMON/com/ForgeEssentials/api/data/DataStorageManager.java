@@ -23,7 +23,7 @@ public abstract class DataStorageManager
 	 * Driver types.
 	 * 
 	 * @param name
-	 *            Name to be used in configs
+	 * Name to be used in configs
 	 * @param c
 	 */
 	public static void registerDriver(String name, Class<? extends DataDriver> c)

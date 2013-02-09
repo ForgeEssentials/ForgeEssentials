@@ -42,7 +42,8 @@ import cpw.mods.fml.relauncher.IClassTransformer;
 public class FEPermissionsTransformer implements IClassTransformer
 {
 	public FEPermissionsTransformer()
-	{}
+	{
+	}
 
 	@Override
 	public byte[] transform(String name, byte[] bytes)

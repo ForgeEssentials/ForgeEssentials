@@ -11,10 +11,12 @@ import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
+import com.ForgeEssentials.api.modules.FEModule.ServerPostInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermRegister;
@@ -29,6 +31,7 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.google.common.collect.HashMultimap;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
@@ -89,6 +92,12 @@ public class ModulePermissions
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
+	}
+
+	@ServerPostInit()
+	public void serverStarted(FEModuleServerPostInitEvent e)
+	{
+		new AutoPromote(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
 
 	@PermRegister(ident = "ModulePermissions")

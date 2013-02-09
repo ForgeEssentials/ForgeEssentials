@@ -59,37 +59,43 @@ public @interface FEModule
 	@Target(
 	{ ElementType.METHOD })
 	public @interface PreInit
-	{}
+	{
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(
 	{ ElementType.METHOD })
 	public @interface Init
-	{}
+	{
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(
 	{ ElementType.METHOD })
 	public @interface PostInit
-	{}
+	{
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(
 	{ ElementType.METHOD })
 	public @interface ServerInit
-	{}
+	{
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(
 	{ ElementType.METHOD })
 	public @interface ServerPostInit
-	{}
+	{
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(
 	{ ElementType.METHOD })
 	public @interface ServerStop
-	{}
+	{
+	}
 
 	/**
 	 * this should be obvious, This is the method that will be called when the
@@ -100,7 +106,8 @@ public @interface FEModule
 	@Target(
 	{ ElementType.METHOD })
 	public @interface Reload
-	{}
+	{
+	}
 
 	/**
 	 * This field will be populated with an instance of this Module.
@@ -109,7 +116,8 @@ public @interface FEModule
 	@Target(
 	{ ElementType.FIELD })
 	public @interface Instance
-	{}
+	{
+	}
 
 	/**
 	 * This field will be populated with an instance of this Module's parent
@@ -119,7 +127,8 @@ public @interface FEModule
 	@Target(
 	{ ElementType.FIELD })
 	public @interface ParentMod
-	{}
+	{
+	}
 
 	/**
 	 * This field will be populated with an instance of this Module's
@@ -129,7 +138,8 @@ public @interface FEModule
 	@Target(
 	{ ElementType.FIELD })
 	public @interface Container
-	{}
+	{
+	}
 
 	/**
 	 * This field will be populated with an instance of this Module's Config
@@ -139,7 +149,8 @@ public @interface FEModule
 	@Target(
 	{ ElementType.FIELD })
 	public @interface Config
-	{}
+	{
+	}
 
 	/**
 	 * This field will be populated with a File instance of this Modules
@@ -149,7 +160,8 @@ public @interface FEModule
 	@Target(
 	{ ElementType.FIELD })
 	public @interface ModuleDir
-	{}
+	{
+	}
 
 	// dummy for the default config.
 	class DummyConfig extends ModuleConfigBase
@@ -162,15 +174,18 @@ public @interface FEModule
 
 		@Override
 		public void init()
-		{}
+		{
+		}
 
 		@Override
 		public void forceSave()
-		{}
+		{
+		}
 
 		@Override
 		public void forceLoad(ICommandSender sender)
-		{}
+		{
+		}
 
 		@Override
 		public File getFile()

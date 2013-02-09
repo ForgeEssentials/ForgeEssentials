@@ -9,8 +9,8 @@ public enum EnumDriverType
 	/**
 	 * 
 	 * @param delimeter
-	 *            The char sequence to be done between elements. trailing
-	 *            delimiter will be there at the end.
+	 * The char sequence to be done between elements. trailing
+	 * delimiter will be there at the end.
 	 * @return
 	 */
 	public static String getAll(String delimeter)

@@ -42,7 +42,8 @@ public class BlockSaveable implements Serializable
 				tile = compound;
 			}
 			catch (Exception e)
-			{}
+			{
+			}
 		}
 	}
 

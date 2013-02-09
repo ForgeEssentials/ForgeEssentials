@@ -13,7 +13,8 @@ class FieldInfo
 
 	// Default constructor for simples!
 	public FieldInfo()
-	{}
+	{
+	}
 
 	public FieldInfo(Class type, String name)
 	{

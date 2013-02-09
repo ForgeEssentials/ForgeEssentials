@@ -87,7 +87,8 @@ public class EventHandler implements IChatListener
 							((EntityPlayerMP) e.entityPlayer).playerNetServerHandler.setPlayerLocation(mo.blockX, mo.blockY, mo.blockZ, e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw);
 						}
 						catch (Exception ex)
-						{}
+						{
+						}
 					}
 				}
 			}

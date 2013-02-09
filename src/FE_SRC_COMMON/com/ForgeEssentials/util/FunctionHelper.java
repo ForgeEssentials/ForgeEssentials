@@ -116,7 +116,7 @@ public final class FunctionHelper
 	 * 
 	 * @return never NULL. always {0, -1}. Meta by default is -1.
 	 * @throws RuntimeException
-	 *             the message is a formatted chat string.
+	 * the message is a formatted chat string.
 	 */
 	public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly) throws RuntimeException
 	{

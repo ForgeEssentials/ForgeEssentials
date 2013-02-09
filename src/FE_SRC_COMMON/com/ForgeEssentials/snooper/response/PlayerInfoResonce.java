@@ -100,7 +100,8 @@ public class PlayerInfoResonce extends Response
 			PlayerData.put("group", group.name);
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 
 		return dataString = TextFormatter.toJSON(PlayerData);
 	}

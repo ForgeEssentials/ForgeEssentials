@@ -71,16 +71,16 @@ public class CommandSet extends WorldControlCommandBase
 				PermResult result = PermissionsAPI.checkPermResult(query);
 
 				switch (result)
-				{
-				case ALLOW:
-					TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
-					return;
-				case PARTIAL:
-					TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel, query.applicable));
-				default:
-					OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
-					return;
-				}
+					{
+						case ALLOW:
+							TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
+							return;
+						case PARTIAL:
+							TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel, query.applicable));
+						default:
+							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+							return;
+					}
 			}
 			player.sendChatToPlayer("Working on set.");
 		}

@@ -134,7 +134,7 @@ public class Chat
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%health", "" + event.player.getHealth());
 
 		format = FunctionHelper.format(format);
-		
+
 		// essentials
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%playerSuffix", playerSuffix);

@@ -50,7 +50,8 @@ public @interface SaveableObject
 	@Target(
 	{ ElementType.METHOD, ElementType.FIELD })
 	public @interface UniqueLoadingKey
-	{}
+	{
+	}
 
 	/**
 	 * This method must have exactly 1 argument, a TaggedClass. When an object
@@ -63,5 +64,6 @@ public @interface SaveableObject
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
 	public @interface Reconstructor
-	{}
+	{
+	}
 }

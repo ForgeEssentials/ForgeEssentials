@@ -99,7 +99,8 @@ public class ServerInfo extends Response
 			}
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 
 		return dataString = TextFormatter.toJSON(data);
 	}

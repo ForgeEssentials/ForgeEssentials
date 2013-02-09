@@ -28,7 +28,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 {
 
 	public static final String[]	autocomargs	=
-												{ "add", "remove", "move" , "change"};
+												{ "add", "remove", "move", "change" };
 	public static ArrayList<String>	rules;
 	public static File				rulesFile	= new File(ForgeEssentials.FEDIR, "rules.txt");
 
@@ -200,23 +200,23 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				}
 				return;
 			}
-			
+
 			sender.sendChatToPlayer(rules.get(this.parseIntBounded(sender, args[0], 1, rules.size()) - 1));
 			return;
 		}
-			
+
 		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));	
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 			return;
 		}
-		
+
 		int index;
-			
+
 		if (args[0].equalsIgnoreCase("remove"))
 		{
 			index = this.parseIntBounded(sender, args[1], 1, rules.size());
-			
+
 			rules.remove(index - 1);
 			OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + " removed.");
 		}
@@ -234,11 +234,11 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		else if (args[0].equalsIgnoreCase("move"))
 		{
 			index = this.parseIntBounded(sender, args[1], 1, rules.size());
-			
+
 			String temp = rules.remove(index - 1);
 
 			index = this.parseIntWithMin(sender, args[2], 1);
-			
+
 			if (index < rules.size())
 			{
 				rules.add(index - 1, temp);
@@ -290,19 +290,19 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
 				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.4"));
 				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.5"));
-				
+
 			}
-			
+
 			sender.sendChatToPlayer(rules.get(this.parseIntBounded(sender, args[0], 1, rules.size()) - 1));
 			return;
 		}
-		
+
 		int index;
-			
+
 		if (args[0].equalsIgnoreCase("remove"))
 		{
 			index = this.parseIntBounded(sender, args[1], 1, rules.size());
-			
+
 			rules.remove(index - 1);
 			OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + " removed.");
 		}
@@ -320,11 +320,11 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		else if (args[0].equalsIgnoreCase("move"))
 		{
 			index = this.parseIntBounded(sender, args[1], 1, rules.size());
-			
+
 			String temp = rules.remove(index - 1);
 
 			index = this.parseIntWithMin(sender, args[2], 1);
-			
+
 			if (index < rules.size())
 			{
 				rules.add(index - 1, temp);
@@ -355,7 +355,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		}
 		saveRules();
 	}
-	
+
 	@Override
 	public boolean canConsoleUseCommand()
 	{

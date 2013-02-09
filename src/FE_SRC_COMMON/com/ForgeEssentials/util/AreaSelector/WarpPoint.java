@@ -72,7 +72,7 @@ public class WarpPoint extends WorldPoint
 	 * This is calculated by the whichever has higher coords.
 	 * 
 	 * @return Posotive number if this Point is larger. 0 if they are equal.
-	 *         Negative if the provided point is larger.
+	 * Negative if the provided point is larger.
 	 */
 	public int compareTo(WarpPoint point)
 	{

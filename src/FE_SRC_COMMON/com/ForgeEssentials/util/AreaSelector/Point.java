@@ -45,7 +45,7 @@ public class Point implements Serializable, Comparable<Point>
 	 * This is calculated by the whichever has higher coords.
 	 * 
 	 * @return Posotive number if this Point is larger. 0 if they are equal.
-	 *         Negative if the provided point is larger.
+	 * Negative if the provided point is larger.
 	 */
 	@Override
 	public int compareTo(Point point)

@@ -67,7 +67,8 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 
 	@Override
 	public void forceSave()
-	{}
+	{
+	}
 
 	@Override
 	public void forceLoad(ICommandSender sender)

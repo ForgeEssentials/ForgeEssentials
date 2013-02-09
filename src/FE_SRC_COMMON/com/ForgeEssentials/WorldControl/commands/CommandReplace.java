@@ -96,16 +96,16 @@ public class CommandReplace extends WorldControlCommandBase
 				PermResult result = PermissionsAPI.checkPermResult(query);
 
 				switch (result)
-				{
-				case ALLOW:
-					TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
-					return;
-				case PARTIAL:
-					TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel, query.applicable));
-				default:
-					OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
-					return;
-				}
+					{
+						case ALLOW:
+							TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
+							return;
+						case PARTIAL:
+							TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel, query.applicable));
+						default:
+							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+							return;
+					}
 
 			}
 

@@ -14,5 +14,6 @@ public @interface FEMob
 	@Target(
 	{ ElementType.METHOD, ElementType.FIELD })
 	public @interface IsTamed
-	{}
+	{
+	}
 }

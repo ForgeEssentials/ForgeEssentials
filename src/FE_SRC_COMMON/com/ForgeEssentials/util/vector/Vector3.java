@@ -290,9 +290,9 @@ public class Vector3 extends Vector2 implements Cloneable
 	 * Saves this Vector3 to disk
 	 * 
 	 * @param prefix
-	 *            - The prefix of this save. Use some unique string.
+	 * - The prefix of this save. Use some unique string.
 	 * @param par1NBTTagCompound
-	 *            - The NBT compound object to save the data in
+	 * - The NBT compound object to save the data in
 	 */
 	public void writeToNBT(String prefix, NBTTagCompound par1NBTTagCompound)
 	{

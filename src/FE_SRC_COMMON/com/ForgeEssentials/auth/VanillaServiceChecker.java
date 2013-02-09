@@ -46,7 +46,8 @@ public class VanillaServiceChecker implements IScheduledTickHandler
 
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
-	{}
+	{
+	}
 
 	@Override
 	public EnumSet<TickType> ticks()

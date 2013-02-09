@@ -1,8 +1,6 @@
 package com.ForgeEssentials.commands;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +17,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 
-import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
@@ -30,29 +27,30 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 	{
 		return "getcommandbook";
 	}
-	
+
 	public String[] getDefaultAliases()
 	{
-		return new String[] {"cmdb", "gcmdb"};
+		return new String[]
+		{ "cmdb", "gcmdb" };
 	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		List cmdList = Arrays.asList(MinecraftServer.getServer().getCommandManager().getCommands().values().toArray());
-        Collections.sort(cmdList);
-		
+		Collections.sort(cmdList);
+
 		NBTTagCompound tag = new NBTTagCompound();
 		NBTTagList pages = new NBTTagList();
-		
-		HashMap <String, String> map = new HashMap();
-		
-		for(Object cmdObj : cmdList)
+
+		HashMap<String, String> map = new HashMap();
+
+		for (Object cmdObj : cmdList)
 		{
 			ICommand cmd = (ICommand) cmdObj;
-			
+
 			String text = "\n";
-			if(cmd.getCommandAliases() != null && cmd.getCommandAliases().size() != 0)
+			if (cmd.getCommandAliases() != null && cmd.getCommandAliases().size() != 0)
 			{
 				text += joinAliases(cmd.getCommandAliases().toArray()) + "\n";
 			}
@@ -60,57 +58,59 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 			{
 				text += "No aliases.\n";
 			}
-			
+
 			text += FEChatFormatCodes.BLACK + cmd.getCommandUsage(sender);
-			
-			if(cmd instanceof ForgeEssentialsCommandBase)
+
+			if (cmd instanceof ForgeEssentialsCommandBase)
 			{
 				text += "\n";
 				text += FEChatFormatCodes.DARKGREY + ((ForgeEssentialsCommandBase) cmd).getCommandPerm();
 			}
-			
-			if(!text.equals(""))
+
+			if (!text.equals(""))
 			{
 				map.put(FEChatFormatCodes.DARKAQUA + "/" + cmd.getCommandName(), text);
 			}
 		}
-		
+
 		SortedSet<String> keys = new TreeSet<String>(map.keySet());
-		for(String name : keys)
+		for (String name : keys)
 		{
 			pages.appendTag(new NBTTagString("", name + map.get(name)));
 		}
-		
+
 		tag.setString("author", "ForgeEssentials");
 		tag.setString("title", "CommandBook");
 		tag.setTag("pages", pages);
-		
+
 		ItemStack is = new ItemStack(Item.writtenBook);
 		is.setTagCompound(tag);
 		sender.inventory.addItemStackToInventory(is);
 	}
-	
+
 	public static String joinAliases(Object[] par0ArrayOfObj)
-    {
-        StringBuilder var1 = new StringBuilder();
+	{
+		StringBuilder var1 = new StringBuilder();
 
-        for (int var2 = 0; var2 < par0ArrayOfObj.length; ++var2)
-        {
-            String var3 = "/" + par0ArrayOfObj[var2].toString();
+		for (int var2 = 0; var2 < par0ArrayOfObj.length; ++var2)
+		{
+			String var3 = "/" + par0ArrayOfObj[var2].toString();
 
-            if (var2 > 0)
-            {
-            	var1.append(", ");
-            }
+			if (var2 > 0)
+			{
+				var1.append(", ");
+			}
 
-            var1.append(var3);
-        }
+			var1.append(var3);
+		}
 
-        return var1.toString();
-    }
+		return var1.toString();
+	}
 
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args) {}
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+	}
 
 	@Override
 	public boolean canConsoleUseCommand()
@@ -123,7 +123,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

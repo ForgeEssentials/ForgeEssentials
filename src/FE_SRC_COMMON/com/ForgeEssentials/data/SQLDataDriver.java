@@ -423,9 +423,9 @@ public class SQLDataDriver extends DataDriver
 	 * "parentField_childFieldName"
 	 * 
 	 * @param fieldName
-	 *            Name of saved field
+	 * Name of saved field
 	 * @param type
-	 *            Type of saved field
+	 * Type of saved field
 	 * @return Array of field => H2 type names.
 	 */
 	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, Class type)
@@ -480,9 +480,9 @@ public class SQLDataDriver extends DataDriver
 	 * Inserts, Updates, or Deletes.
 	 * 
 	 * @param fieldName
-	 *            Name of the field in the H2 DB
+	 * Name of the field in the H2 DB
 	 * @param type
-	 *            Type of field (Java)
+	 * Type of field (Java)
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */

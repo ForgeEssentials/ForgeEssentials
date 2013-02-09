@@ -27,13 +27,13 @@ public class PacketHandler implements IPacketHandler
 			int ID = stream.read();
 
 			switch (ID)
-			{
-			// cast to the correct instance of ForgeEssentialsPacketbase and use
-			// the read methods.
-			case 0:
-				PacketSelectionUpdate.readServer(stream, world, player);
-				break;
-			}
+				{
+				// cast to the correct instance of ForgeEssentialsPacketbase and use
+				// the read methods.
+					case 0:
+						PacketSelectionUpdate.readServer(stream, world, player);
+						break;
+				}
 		}
 		catch (Exception e)
 		{

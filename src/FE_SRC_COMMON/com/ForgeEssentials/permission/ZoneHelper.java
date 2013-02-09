@@ -190,34 +190,34 @@ public class ZoneHelper implements IZoneManager
 		}
 
 		switch (zones.size())
-		{
-		// no children of the world? return the worldZone
-		case 0:
-			end = worldZone;
-			break;
-		// only 1 usable Zone? use it.
-		case 1:
-			end = zones.get(0);
-			break;
-
-		// else.. narrow it down
-		default:
-		{
-			// get the one with the highest priority
-			Zone priority = null;
-
-			for (Zone zone : zones)
 			{
-				if (priority == null || priority.compareTo(zone) < 0)
-				{
-					priority = zone;
-				}
-			}
+			// no children of the world? return the worldZone
+				case 0:
+					end = worldZone;
+					break;
+				// only 1 usable Zone? use it.
+				case 1:
+					end = zones.get(0);
+					break;
 
-			end = priority;
-			break;
-		}
-		}
+				// else.. narrow it down
+				default:
+					{
+						// get the one with the highest priority
+						Zone priority = null;
+
+						for (Zone zone : zones)
+						{
+							if (priority == null || priority.compareTo(zone) < 0)
+							{
+								priority = zone;
+							}
+						}
+
+						end = priority;
+						break;
+					}
+			}
 
 		putCache(new WorldPoint(world, p1.x, p1.y, p1.z), end.getZoneName());
 		return end;
@@ -252,34 +252,34 @@ public class ZoneHelper implements IZoneManager
 		}
 
 		switch (zones.size())
-		{
-		// no children of the world? return the worldZone
-		case 0:
-			end = worldZone;
-			break;
-		// only 1 usable Zone? use it.
-		case 1:
-			end = zones.get(0);
-			break;
-
-		// else.. narrow it down
-		default:
-		{
-			// get the one with the highest priority
-			Zone priority = null;
-
-			for (Zone zone : zones)
 			{
-				if (priority == null || priority.compareTo(zone) < 0)
-				{
-					priority = zone;
-				}
-			}
+			// no children of the world? return the worldZone
+				case 0:
+					end = worldZone;
+					break;
+				// only 1 usable Zone? use it.
+				case 1:
+					end = zones.get(0);
+					break;
 
-			end = priority;
-			break;
-		}
-		}
+				// else.. narrow it down
+				default:
+					{
+						// get the one with the highest priority
+						Zone priority = null;
+
+						for (Zone zone : zones)
+						{
+							if (priority == null || priority.compareTo(zone) < 0)
+							{
+								priority = zone;
+							}
+						}
+
+						end = priority;
+						break;
+					}
+			}
 
 		return end;
 	}

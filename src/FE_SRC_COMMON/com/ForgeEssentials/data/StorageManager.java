@@ -113,7 +113,7 @@ public class StorageManager implements IStorageManager
 	 * Driver types.
 	 * 
 	 * @param name
-	 *            Name to be used in configs
+	 * Name to be used in configs
 	 * @param c
 	 */
 	public void registerDriver(String name, Class<? extends DataDriver> c)

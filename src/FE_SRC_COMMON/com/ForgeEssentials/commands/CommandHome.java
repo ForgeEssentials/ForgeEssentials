@@ -56,7 +56,8 @@ public class CommandHome extends ForgeEssentialsCommandBase
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
-	{}
+	{
+	}
 
 	@Override
 	public String getCommandPerm()

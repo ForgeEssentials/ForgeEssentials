@@ -136,26 +136,26 @@ public class EventLogger implements IPlayerTracker
 			int y = e.blockY;
 			int z = e.blockZ;
 			switch (e.side)
-			{
-			case 0:
-				y--;
-				break;
-			case 1:
-				y++;
-				break;
-			case 2:
-				z--;
-				break;
-			case 3:
-				z++;
-				break;
-			case 4:
-				x--;
-				break;
-			case 5:
-				x++;
-				break;
-			}
+				{
+					case 0:
+						y--;
+						break;
+					case 1:
+						y++;
+						break;
+					case 2:
+						z--;
+						break;
+					case 3:
+						z++;
+						break;
+					case 4:
+						x--;
+						break;
+					case 5:
+						x++;
+						break;
+				}
 			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, x, y, z, null));
 		}
 	}

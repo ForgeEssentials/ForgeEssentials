@@ -98,11 +98,11 @@ public final class PermissionsHandler
 	/**
 	 * 
 	 * @param zone
-	 *            Zone to check permissions in.
+	 * Zone to check permissions in.
 	 * @param perm
-	 *            The permission to check.
+	 * The permission to check.
 	 * @param player
-	 *            Player to check/
+	 * Player to check/
 	 * @return the result for the perm.
 	 */
 	private PermResult getResultFromZone(Zone zone, PermQueryPlayer event)
@@ -181,45 +181,45 @@ public final class PermissionsHandler
 		}
 
 		switch (zones.size())
-		{
-		// no children of the world? return the worldZone
-		case 0:
-		{
-			PermResult result = getResultFromZone(worldZone, event);
-			if (result.equals(PermResult.ALLOW))
 			{
-				return applicable;
+			// no children of the world? return the worldZone
+				case 0:
+					{
+						PermResult result = getResultFromZone(worldZone, event);
+						if (result.equals(PermResult.ALLOW))
+						{
+							return applicable;
+						}
+						else
+						{
+							return null;
+						}
+					}
+				// only 1 usable Zone? use it.
+				case 1:
+					{
+						PermResult result = getResultFromZone(zones.get(0), event);
+						if (result.equals(PermResult.ALLOW))
+						{
+							return applicable;
+						}
+						else
+						{
+							return null;
+						}
+					}
+				// else.. get the applicable states.
+				default:
+					{
+						for (Zone zone : zones)
+						{
+							if (getResultFromZone(zone, event).equals(PermResult.ALLOW))
+							{
+								applicable.add(doneTo.getIntersection(zone));
+							}
+						}
+					}
 			}
-			else
-			{
-				return null;
-			}
-		}
-		// only 1 usable Zone? use it.
-		case 1:
-		{
-			PermResult result = getResultFromZone(zones.get(0), event);
-			if (result.equals(PermResult.ALLOW))
-			{
-				return applicable;
-			}
-			else
-			{
-				return null;
-			}
-		}
-		// else.. get the applicable states.
-		default:
-		{
-			for (Zone zone : zones)
-			{
-				if (getResultFromZone(zone, event).equals(PermResult.ALLOW))
-				{
-					applicable.add(doneTo.getIntersection(zone));
-				}
-			}
-		}
-		}
 
 		return applicable;
 	}

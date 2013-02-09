@@ -36,27 +36,27 @@ import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class FEeventAdder implements IClassTransformer
 {
-	public static HashMap<String, String> iiwmHMob = makeiiwmHMob();
-	public static HashMap<String, String> iiwmHMdev = makeiiwmHMdev();
-	
-	public static HashMap<String, String> isHMob = makeisHMob();
-	public static HashMap<String, String> isHMdev = makeisHMdev();
-	
-	public static HashMap<String, String> mcsHM = makemcsHM();
-	
-	public static HashMap<String, String> cbrHM = makecbrHM();
-	
-    public static boolean serverbranded = false;
-    public static boolean clientbranded = false;
-	
-	private static final String SERVERBRAND = "forge,fml, ForgeEssentials";
-	
-	public static boolean addedBreak = false;
-	public static boolean addedPlace = false;
-	
+	public static HashMap<String, String>	iiwmHMob		= makeiiwmHMob();
+	public static HashMap<String, String>	iiwmHMdev		= makeiiwmHMdev();
+
+	public static HashMap<String, String>	isHMob			= makeisHMob();
+	public static HashMap<String, String>	isHMdev			= makeisHMdev();
+
+	public static HashMap<String, String>	mcsHM			= makemcsHM();
+
+	public static HashMap<String, String>	cbrHM			= makecbrHM();
+
+	public static boolean					serverbranded	= false;
+	public static boolean					clientbranded	= false;
+
+	private static final String				SERVERBRAND		= "forge,fml, ForgeEssentials";
+
+	public static boolean					addedBreak		= false;
+	public static boolean					addedPlace		= false;
+
 	public static HashMap makeiiwmHMob()
 	{
-		HashMap	iiwmHMob = new HashMap();
+		HashMap iiwmHMob = new HashMap();
 
 		iiwmHMob.put("className", "ir");
 		iiwmHMob.put("javaClassName", "ir");
@@ -69,9 +69,10 @@ public class FEeventAdder implements IClassTransformer
 		iiwmHMob.put("blocksListFieldName", "p");
 		iiwmHMob.put("entityPlayerJavaClassName", "qx");
 		iiwmHMob.put("entityPlayerMPJavaClassName", "iq");
-		
+
 		return iiwmHMob;
 	}
+
 	public static HashMap makeiiwmHMdev()
 	{
 		HashMap iiwmHMdev = new HashMap<String, String>();
@@ -87,23 +88,24 @@ public class FEeventAdder implements IClassTransformer
 		iiwmHMdev.put("blocksListFieldName", "blocksList");
 		iiwmHMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
 		iiwmHMdev.put("entityPlayerMPJavaClassName", "net/minecraft/entity/player/EntityPlayerMP");
-		
+
 		return iiwmHMdev;
 	}
-	
+
 	public static HashMap makeisHMob()
 	{
-		HashMap	isHMob = new HashMap();
-		
+		HashMap isHMob = new HashMap();
+
 		isHMob.put("className", "ur");
 		isHMob.put("javaClassName", "ur");
 		isHMob.put("targetMethodName", "a");
 		isHMob.put("itemstackJavaClassName", "ur");
 		isHMob.put("entityPlayerJavaClassName", "qx");
 		isHMob.put("worldJavaClassName", "yc");
-		
+
 		return isHMob;
 	}
+
 	public static HashMap makeisHMdev()
 	{
 		HashMap isHMdev = new HashMap<String, String>();
@@ -115,34 +117,35 @@ public class FEeventAdder implements IClassTransformer
 		isHMdev.put("itemstackJavaClassName", "net/minecraft/item/ItemStack");
 		isHMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
 		isHMdev.put("worldJavaClassName", "net/minecraft/world/World");
-		
+
 		return isHMdev;
 	}
-	
+
 	public static HashMap makemcsHM()
 	{
 		HashMap mcsHM = new HashMap<String, String>();
-		
+
 		mcsHM.put("className", "net.minecraft.server.MinecraftServer");
 		mcsHM.put("javaClassName", "net/minecraft/server/MinecraftServer");
 		mcsHM.put("targetMethodName", "getServerModName");
-		
+
 		return mcsHM;
 	}
+
 	public static HashMap makecbrHM()
 	{
 		HashMap cbrHM = new HashMap<String, String>();
-		
+
 		cbrHM.put("className", "net.minecraft.client.ClientBrandRetriever");
 		cbrHM.put("javaClassName", "net/minecraft/client/ClientBrandRetriever");
 		cbrHM.put("targetMethodName", "getClientModName");
-		
+
 		return cbrHM;
 	}
-	
+
 	@Override
 	public byte[] transform(String name, byte[] bytes)
-	{	
+	{
 		if (name.equals(iiwmHMob.get("className")))
 		{
 			// ItemInWorldManager, Obfuscated
@@ -166,20 +169,21 @@ public class FEeventAdder implements IClassTransformer
 			// ItemStack, NOT Obfuscated
 			return transformItemStack(bytes, isHMdev);
 		}
-		
+
 		if (name.equals(mcsHM.get("className")))
 		{
 			// MinecraftServer, NOT Obfuscated
 			return transformBranding(bytes, mcsHM);
 		}
-		if (FMLRelauncher.side().equals("CLIENT")){
+		if (FMLRelauncher.side().equals("CLIENT"))
+		{
 			if (name.equals(cbrHM.get("className")))
-			    // ClientBrandRetriever, NOT obfuscated
+				// ClientBrandRetriever, NOT obfuscated
 				return transformBranding(bytes, cbrHM);
 		}
 		return bytes;
 	}
-	
+
 	private byte[] transformItemStack(byte[] bytes, HashMap<String, String> hm)
 	{
 		msg("[FE coremod] Patching ItemStack...");
@@ -194,8 +198,7 @@ public class FEeventAdder implements IClassTransformer
 		{
 			MethodNode m = methods.next();
 
-			if (m.name.equals(hm.get("targetMethodName"))
-					&& m.desc.equals("(L" + hm.get("entityPlayerJavaClassName") + ";L" + hm.get("worldJavaClassName") + ";IIIIFFF)Z"))
+			if (m.name.equals(hm.get("targetMethodName")) && m.desc.equals("(L" + hm.get("entityPlayerJavaClassName") + ";L" + hm.get("worldJavaClassName") + ";IIIIFFF)Z"))
 			{
 				msg("[FE coremod] Found target method " + m.name + m.desc + "!");
 
@@ -220,8 +223,8 @@ public class FEeventAdder implements IClassTransformer
 				toInject.add(new VarInsnNode(FLOAD, 7));
 				toInject.add(new VarInsnNode(FLOAD, 8));
 				toInject.add(new VarInsnNode(FLOAD, 9));
-				toInject.add(new MethodInsnNode(INVOKESTATIC, "com/ForgeEssentials/core/CustomEventFactory", "onBlockPlace", "(L"
-						+ hm.get("itemstackJavaClassName") + ";L" + hm.get("entityPlayerJavaClassName") + ";L" + hm.get("worldJavaClassName") + ";IIIIFFF)Z"));
+				toInject.add(new MethodInsnNode(INVOKESTATIC, "com/ForgeEssentials/core/CustomEventFactory", "onBlockPlace", "(L" + hm.get("itemstackJavaClassName") + ";L" + hm.get("entityPlayerJavaClassName") + ";L" + hm.get("worldJavaClassName")
+						+ ";IIIIFFF)Z"));
 				toInject.add(new JumpInsnNode(IFNE, lmm2Node));
 				toInject.add(new InsnNode(ICONST_0));
 				toInject.add(new InsnNode(IRETURN));
@@ -312,10 +315,9 @@ public class FEeventAdder implements IClassTransformer
 						toInject.add(new VarInsnNode(ALOAD, blockIndex));
 						toInject.add(new VarInsnNode(ILOAD, mdIndex));
 						toInject.add(new VarInsnNode(ALOAD, 0));
-						toInject.add(new FieldInsnNode(GETFIELD, hm.get("javaClassName"), hm.get("entityPlayerFieldName"), "L"
-								+ hm.get("entityPlayerMPJavaClassName") + ";"));
-						toInject.add(new MethodInsnNode(INVOKESTATIC, "com/ForgeEssentials/core/CustomEventFactory", "onBlockHarvested", "(L"
-								+ hm.get("worldJavaClassName") + ";IIIL" + hm.get("blockJavaClassName") + ";IL" + hm.get("entityPlayerJavaClassName") + ";)Z"));
+						toInject.add(new FieldInsnNode(GETFIELD, hm.get("javaClassName"), hm.get("entityPlayerFieldName"), "L" + hm.get("entityPlayerMPJavaClassName") + ";"));
+						toInject.add(new MethodInsnNode(INVOKESTATIC, "com/ForgeEssentials/core/CustomEventFactory", "onBlockHarvested", "(L" + hm.get("worldJavaClassName") + ";IIIL" + hm.get("blockJavaClassName") + ";IL"
+								+ hm.get("entityPlayerJavaClassName") + ";)Z"));
 						toInject.add(new JumpInsnNode(IFNE, lmm2Node));
 						toInject.add(new InsnNode(ICONST_0));
 						toInject.add(new InsnNode(IRETURN));
@@ -335,11 +337,11 @@ public class FEeventAdder implements IClassTransformer
 		classNode.accept(writer);
 		return writer.toByteArray();
 	}
-	
+
 	private byte[] transformBranding(byte[] bytes, HashMap<String, String> hm)
 	{
 		msg("[FE coremod] Patching MinecraftServer...");
-		
+
 		ClassNode classNode = new ClassNode();
 		ClassReader classReader = new ClassReader(bytes);
 		classReader.accept(classNode, 0);
@@ -347,35 +349,35 @@ public class FEeventAdder implements IClassTransformer
 		while (methods.hasNext())
 		{
 			MethodNode m = methods.next();
-			if(m.name.equals(hm.get("targetMethodName")))
+			if (m.name.equals(hm.get("targetMethodName")))
 			{
 				msg("[FE coremod] Found target method " + m.name + m.desc + "!");
-				
+
 				int offset = 0;
 				while (m.instructions.get(offset).getOpcode() != LDC)
 				{
 					offset++;
 				}
-				
+
 				InsnList toInject = new InsnList();
-				
+
 				toInject.add(new LdcInsnNode(SERVERBRAND));
-				
+
 				m.instructions.insertBefore(m.instructions.get(offset), toInject);
 				m.instructions.remove(m.instructions.get(offset + 1));
-				
+
 				serverbranded = true;
 				break;
 			}
 		}
-		
+
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		classNode.accept(writer);
 		return writer.toByteArray();
 	}
-	
-	
-	public static void msg (String msg){
+
+	public static void msg(String msg)
+	{
 		System.out.println(msg);
 	}
 

@@ -43,7 +43,8 @@ public class PermQuery
 	 * classes to setup various functionality such as the listener's list.
 	 */
 	protected void setup()
-	{}
+	{
+	}
 
 	public void setResult(PermResult result)
 	{

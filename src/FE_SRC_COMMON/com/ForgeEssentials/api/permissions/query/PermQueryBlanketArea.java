@@ -32,7 +32,7 @@ public class PermQueryBlanketArea extends PermQuery
 	 * if the permission is completely allowed throughout the requested area.
 	 * 
 	 * @param value
-	 *            The new result
+	 * The new result
 	 */
 	@Override
 	public void setResult(PermResult value)

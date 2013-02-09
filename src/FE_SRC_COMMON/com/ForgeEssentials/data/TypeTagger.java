@@ -73,8 +73,7 @@ public class TypeTagger
 					throw new RuntimeException("if the UniqueLoadingKey is to be a field, it must be a SaveableField as well");
 				}
 			}
-		}
-		while ((currentType = currentType.getSuperclass()) != null);
+		} while ((currentType = currentType.getSuperclass()) != null);
 
 		// find reconstructor method
 		for (Method m : type.getDeclaredMethods())
@@ -251,9 +250,9 @@ public class TypeTagger
 
 	/**
 	 * @param t
-	 *            Type of object to check
+	 * Type of object to check
 	 * @return True if TypeTagger must create a nested TaggedClass to allow
-	 *         DataDrivers to correctly save the object.
+	 * DataDrivers to correctly save the object.
 	 */
 	public static boolean isTypeComplex(Object obj)
 	{
@@ -269,9 +268,9 @@ public class TypeTagger
 
 	/**
 	 * @param t
-	 *            class check
+	 * class check
 	 * @return True if TypeTagger must create a nested TaggedClass to allow
-	 *         DataDrivers to correctly save this type of object.
+	 * DataDrivers to correctly save this type of object.
 	 */
 	public static boolean isTypeComplex(Class obj)
 	{

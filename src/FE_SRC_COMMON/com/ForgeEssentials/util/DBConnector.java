@@ -24,16 +24,16 @@ public class DBConnector
 
 	/**
 	 * @param name
-	 *            a name for the DB connector. to be used in Logging.
+	 * a name for the DB connector. to be used in Logging.
 	 * @param fallback
-	 *            The DBConnector from which to take information for a given
-	 *            type if loading that type from this config fails.
+	 * The DBConnector from which to take information for a given
+	 * type if loading that type from this config fails.
 	 * @param dType
-	 *            the default database type to use
+	 * the default database type to use
 	 * @param dbDefault
-	 *            the default name for remote databases
+	 * the default name for remote databases
 	 * @param dbFileDefault
-	 *            the default path for file databases. Relative to FEDIR
+	 * the default path for file databases. Relative to FEDIR
 	 * @paramuseFallbac if the Fallback should be used for remote Databases
 	 */
 	public DBConnector(String name, DBConnector fallback, EnumDBType dType, String dbDefault, String dbFileDefault, boolean useFallback)
@@ -53,8 +53,8 @@ public class DBConnector
 	 * 
 	 * @param config
 	 * @param category
-	 *            the category where everything regarding this connector will
-	 *            be.
+	 * the category where everything regarding this connector will
+	 * be.
 	 */
 	public void write(Configuration config, String cat)
 	{
@@ -95,8 +95,8 @@ public class DBConnector
 	 * 
 	 * @param config
 	 * @param category
-	 *            the category where everything regarding this connector will
-	 *            be.
+	 * the category where everything regarding this connector will
+	 * be.
 	 */
 	public void loadOrGenerate(Configuration config, String cat)
 	{
@@ -226,10 +226,10 @@ public class DBConnector
 
 	/**
 	 * @param type
-	 *            Only use this for remote types.
+	 * Only use this for remote types.
 	 * @return NULL if some error occurred.
 	 * @throws IllegalArgumentException
-	 *             if the type is not remote
+	 * if the type is not remote
 	 */
 	private Connection getSpecificConnection(EnumDBType type) throws IllegalArgumentException
 	{

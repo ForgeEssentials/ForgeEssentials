@@ -76,6 +76,8 @@ public class PlayerInfo
 
 		info.prefix = (String) tag.getFieldValue("prefix");
 		info.suffix = (String) tag.getFieldValue("suffix");
+
+		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
 		return info;
 	}
 
@@ -116,6 +118,9 @@ public class PlayerInfo
 	// 0: Normal 1: World spawn 2: Bed 3: Home
 	@SaveableField(nullableField = true)
 	public int						spawnType;
+
+	@SaveableField()
+	public int						timePlayed;
 
 	// undo and redo stuff
 	private Stack<BackupArea>		undos;

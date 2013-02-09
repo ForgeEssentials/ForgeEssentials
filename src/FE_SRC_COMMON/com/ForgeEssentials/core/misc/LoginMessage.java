@@ -141,7 +141,7 @@ public class LoginMessage
 	 * Formats the chat, replacing given strings by their values
 	 * 
 	 * @param String
-	 *            to parse the amount to add to the wallet
+	 * to parse the amount to add to the wallet
 	 * 
 	 */
 
@@ -154,14 +154,14 @@ public class LoginMessage
 		// int wallet = Wallet.getWallet(player); //needed to return wallet info
 		return line.replaceAll("&", FEChatFormatCodes.CODE.toString()) // color
 																		// codes
-				.replaceAll("%playername%", player.username).replaceAll("%players%", online()) // players
-				// .replaceAll("%balance%",wallet + " " +
-				// Wallet.currency(wallet))//can be usefull for the user
-				.replaceAll("%uptime%", getUptime()) // uptime
-				.replaceAll("%uniqueplayers%", uniqueplayers()) // unique
-																// players
-				.replaceAll("%time%", now.toLocaleString()).replaceAll("%hour%", now.getHours() + "").replaceAll("%min%", now.getMinutes() + "").replaceAll("%sec%", now.getSeconds() + "") // time
-				.replaceAll("%day%", now.getDate() + "").replaceAll("%month%", now.getMonth() + "").replaceAll("%year%", now.getYear() + ""); // date
+		.replaceAll("%playername%", player.username).replaceAll("%players%", online()) // players
+		// .replaceAll("%balance%",wallet + " " +
+		// Wallet.currency(wallet))//can be usefull for the user
+		.replaceAll("%uptime%", getUptime()) // uptime
+		.replaceAll("%uniqueplayers%", uniqueplayers()) // unique
+														// players
+		.replaceAll("%time%", now.toLocaleString()).replaceAll("%hour%", now.getHours() + "").replaceAll("%min%", now.getMinutes() + "").replaceAll("%sec%", now.getSeconds() + "") // time
+		.replaceAll("%day%", now.getDate() + "").replaceAll("%month%", now.getMonth() + "").replaceAll("%year%", now.getYear() + ""); // date
 	}
 
 	private static String online()
@@ -172,7 +172,8 @@ public class LoginMessage
 			online = server.getCurrentPlayerCount();
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 		return "" + online;
 	}
 
@@ -184,7 +185,8 @@ public class LoginMessage
 			logins = server.getConfigurationManager().getAvailablePlayerDat().length;
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 		return "" + logins;
 	}
 

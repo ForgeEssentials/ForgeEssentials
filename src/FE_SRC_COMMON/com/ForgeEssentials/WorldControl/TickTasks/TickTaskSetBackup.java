@@ -28,9 +28,9 @@ public class TickTaskSetBackup implements ITickTask
 	 * 
 	 * @param player
 	 * @param back
-	 *            BackupArea
+	 * BackupArea
 	 * @param before
-	 *            true = redo -- false = undo
+	 * true = redo -- false = undo
 	 */
 	public TickTaskSetBackup(EntityPlayer player, BackupArea back, boolean redo)
 	{

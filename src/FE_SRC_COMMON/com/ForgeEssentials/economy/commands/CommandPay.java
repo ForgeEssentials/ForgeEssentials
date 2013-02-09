@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.economy.Wallet;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -23,7 +22,7 @@ public class CommandPay extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(args.length == 2)
+		if (args.length == 2)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if (player == null)
@@ -33,7 +32,7 @@ public class CommandPay extends ForgeEssentialsCommandBase
 			else
 			{
 				int amount = this.parseIntWithMin(sender, args[1], 0);
-				if(Wallet.getWallet(sender) >= amount)
+				if (Wallet.getWallet(sender) >= amount)
 				{
 					Wallet.removeFromWallet(amount, sender);
 					Wallet.addToWallet(amount, player);
@@ -42,7 +41,7 @@ public class CommandPay extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, "You can't afford that!!");	
+					OutputHandler.chatError(sender, "You can't afford that!!");
 				}
 			}
 		}
@@ -55,7 +54,7 @@ public class CommandPay extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if(args.length == 2)
+		if (args.length == 2)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if (PlayerSelector.hasArguments(args[0]))
