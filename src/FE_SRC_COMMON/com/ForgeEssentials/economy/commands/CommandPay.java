@@ -1,6 +1,7 @@
 package com.ForgeEssentials.economy.commands;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -39,6 +40,10 @@ public class CommandPay extends ForgeEssentialsCommandBase
 					OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount);
 					OutputHandler.chatConfirmation(player, "You have been payed " + amount + " by " + sender.getCommandSenderName());
 				}
+				else
+				{
+					OutputHandler.chatError(sender, "You can't afford that!!");	
+				}
 			}
 		}
 		else
@@ -53,6 +58,10 @@ public class CommandPay extends ForgeEssentialsCommandBase
 		if(args.length == 2)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
+			if (PlayerSelector.hasArguments(args[0]))
+			{
+				player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			}
 			if (player == null)
 			{
 				sender.sendChatToPlayer(args[0] + " not found!");
