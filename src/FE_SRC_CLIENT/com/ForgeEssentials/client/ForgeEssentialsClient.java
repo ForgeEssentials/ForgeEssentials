@@ -1,6 +1,8 @@
 package com.ForgeEssentials.client;
 
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Property;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -20,6 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ForgeEssentialsClient
 {
 
+	private boolean allowCUI;
 	@SideOnly(Side.CLIENT)
 	private static PlayerInfoClient	info;
 
@@ -28,6 +31,16 @@ public class ForgeEssentialsClient
 	{
 		if (FMLCommonHandler.instance().getSide().isServer() && ObfuscationReflectionHelper.obfuscation)
 			throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
+		Configuration config = new Configuration(e.getSuggestedConfigurationFile());
+		config.load();
+		config.addCustomCategoryComment("Core", "Configure ForgeEssentials .");
+
+		Property prop = config.get("Core", "allowCUI", true);
+		prop.comment = "Set to false to disable the WorldControl CUI.";
+		allowCUI = prop.getBoolean(true);
+		// any other parts please config here
+		config.save();
+		
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -35,7 +48,9 @@ public class ForgeEssentialsClient
 	public void load(FMLInitializationEvent e)
 	{
 		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
-		MinecraftForge.EVENT_BUS.register(new CUIRenderrer());
+		if (allowCUI){
+			MinecraftForge.EVENT_BUS.register(new CUIRenderrer());
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
