@@ -13,12 +13,8 @@ import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.ISTORE;
 import static org.objectweb.asm.Opcodes.LDC;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -35,14 +31,8 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.ForgeEssentials.coremod.FEPreLoader;
-import com.ForgeEssentials.util.OutputHandler;
-
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.FMLRelauncher;
 import cpw.mods.fml.relauncher.IClassTransformer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class FEeventAdder implements IClassTransformer
 {
@@ -52,11 +42,9 @@ public class FEeventAdder implements IClassTransformer
 	public static HashMap<String, String> isHMob = makeisHMob();
 	public static HashMap<String, String> isHMdev = makeisHMdev();
 	
-	public static HashMap<String, String> mcsHMob = makemcsHMob();
-	public static HashMap<String, String> mcsHMdev = makemcsHMdev();
+	public static HashMap<String, String> mcsHM = makemcsHM();
 	
-	public static HashMap<String, String> cbrHMdev = makecbrHMdev();
-	public static HashMap<String, String> cbrHMob = makecbrHMob();
+	public static HashMap<String, String> cbrHM = makecbrHM();
 	
     public static boolean serverbranded = false;
     public static boolean clientbranded = false;
@@ -130,46 +118,28 @@ public class FEeventAdder implements IClassTransformer
 		
 		return isHMdev;
 	}
-	public static HashMap makemcsHMob()
+	
+	public static HashMap makemcsHM()
 	{
-		HashMap mcsHMdev = new HashMap<String, String>();
+		HashMap mcsHM = new HashMap<String, String>();
 		
-		mcsHMdev.put("className", "net.minecraft.server.MinecraftServer");
-		mcsHMdev.put("javaClassName", "net/minecraft/server/MinecraftServer");
-		mcsHMdev.put("targetMethodName", "getServerModName");
+		mcsHM.put("className", "net.minecraft.server.MinecraftServer");
+		mcsHM.put("javaClassName", "net/minecraft/server/MinecraftServer");
+		mcsHM.put("targetMethodName", "getServerModName");
 		
-		return mcsHMdev;
+		return mcsHM;
 	}
-	public static HashMap makemcsHMdev()
+	public static HashMap makecbrHM()
 	{
-		HashMap mcsHMdev = new HashMap<String, String>();
+		HashMap cbrHM = new HashMap<String, String>();
 		
-		mcsHMdev.put("className", "net.minecraft.server.MinecraftServer");
-		mcsHMdev.put("javaClassName", "net/minecraft/server/MinecraftServer");
-		mcsHMdev.put("targetMethodName", "getServerModName");
+		cbrHM.put("className", "net.minecraft.client.ClientBrandRetriever");
+		cbrHM.put("javaClassName", "net/minecraft/client/ClientBrandRetriever");
+		cbrHM.put("targetMethodName", "getClientModName");
 		
-		return mcsHMdev;
+		return cbrHM;
 	}
-	public static HashMap makecbrHMdev()
-	{
-		HashMap cbrHMdev = new HashMap<String, String>();
-		
-		cbrHMdev.put("className", "net.minecraft.client.ClientBrandRetriever");
-		cbrHMdev.put("javaClassName", "net/minecraft/client/ClientBrandRetriever");
-		cbrHMdev.put("targetMethodName", "getClientModName");
-		
-		return cbrHMdev;
-	}
-	public static HashMap makecbrHMob()
-	{
-		HashMap cbrHMob = new HashMap<String, String>();
-		
-		cbrHMob.put("className", "net.minecraft.client.ClientBrandRetriever");
-		cbrHMob.put("javaClassName", "net/minecraft/client/ClientBrandRetriever");
-		cbrHMob.put("targetMethodName", "getClientModName");
-		
-		return cbrHMob;
-	}
+	
 	@Override
 	public byte[] transform(String name, byte[] bytes)
 	{	
@@ -196,25 +166,16 @@ public class FEeventAdder implements IClassTransformer
 			// ItemStack, NOT Obfuscated
 			return transformItemStack(bytes, isHMdev);
 		}
-		if (name.equals(mcsHMob.get("className")))
-		{
-			// MinecraftServer, Obfuscated
-			return transformMinecraftServer(bytes, mcsHMob);
-		}
 		
-		if (name.equals(mcsHMdev.get("className")))
+		if (name.equals(mcsHM.get("className")))
 		{
 			// MinecraftServer, NOT Obfuscated
-			return transformMinecraftServer(bytes, mcsHMdev);
+			return transformBranding(bytes, mcsHM);
 		}
 		if (FMLRelauncher.side().equals("CLIENT")){
-			if (name.equals(cbrHMdev.get("className")))
+			if (name.equals(cbrHM.get("className")))
 			    // ClientBrandRetriever, NOT obfuscated
-				return transformClientBrandRetriever(bytes, cbrHMdev);
-			
-			if (name.equals(cbrHMob.get("className")))
-				// ClientBrandRetriever, Obfuscated
-				return transformClientBrandRetriever(bytes, cbrHMob);
+				return transformBranding(bytes, cbrHM);
 		}
 		return bytes;
 	}
@@ -375,7 +336,7 @@ public class FEeventAdder implements IClassTransformer
 		return writer.toByteArray();
 	}
 	
-	private byte[] transformMinecraftServer(byte[] bytes, HashMap<String, String> hm)
+	private byte[] transformBranding(byte[] bytes, HashMap<String, String> hm)
 	{
 		msg("[FE coremod] Patching MinecraftServer...");
 		
@@ -412,43 +373,7 @@ public class FEeventAdder implements IClassTransformer
 		classNode.accept(writer);
 		return writer.toByteArray();
 	}
-	@SideOnly(Side.CLIENT)
-	public static byte[] transformClientBrandRetriever(byte[] bytes, HashMap<String, String> hm)
-	{
-    msg("[FE coremod] Patching ClientBrandRetriever...");
-		
-		ClassNode classNode = new ClassNode();
-		ClassReader classReader = new ClassReader(bytes);
-		classReader.accept(classNode, 0);
-		Iterator<MethodNode> methods = classNode.methods.iterator();
-		while (methods.hasNext())
-		{
-			MethodNode m = methods.next();
-			if(m.name.equals(hm.get("targetMethodName")))
-			{
-				msg("[FE coremod] Found target method " + m.name + m.desc + "!");
-				
-				int offset = 0;
-				while (m.instructions.get(offset).getOpcode() != LDC)
-				{
-					offset++;
-				}
-				
-				InsnList toInject = new InsnList();
-				
-				toInject.add(new LdcInsnNode(SERVERBRAND));
-				
-				m.instructions.insertBefore(m.instructions.get(offset), toInject);
-				m.instructions.remove(m.instructions.get(offset + 1));
-				
-				serverbranded = true;
-				break;
-			}
-		}
-		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		classNode.accept(writer);
-		return writer.toByteArray();
-	}
+	
 	
 	public static void msg (String msg){
 		System.out.println(msg);
