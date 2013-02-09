@@ -86,9 +86,7 @@ public class SqlHelper
 	private static final String		COLUMN_PERMISSION_ZONEID		= "zoneID";
 
 	// zones
-	private final PreparedStatement	statementGetZoneIDFromName;													// zoneName
-																													// >>
-																													// zoneID
+	private final PreparedStatement	statementGetZoneIDFromName;													// zoneName >> zoneID
 	private final PreparedStatement	statementGetZoneNameFromID;													// zoneID
 																													// >>
 																													// zoneName
@@ -659,7 +657,6 @@ public class SqlHelper
 	/**
 	 * If generation is enabled, puts the provided Registered permissions into
 	 * the DB.
-	 * 
 	 * @param map
 	 */
 	protected synchronized void putRegistrationperms(HashMultimap<RegGroup, Permission> map)
@@ -951,11 +948,11 @@ public class SqlHelper
 
 	/**
 	 * @param ladderName
-	 * may be null
+	 *            may be null
 	 * @param zoneName
-	 * may be null
+	 *            may be null
 	 * @param username
-	 * may NOT be null
+	 *            may NOT be null
 	 * @return at worst an EmptySet
 	 */
 	public static TreeSet<Group> getGroupsForChat(String ladderName, String zoneName, String username)
@@ -1079,7 +1076,7 @@ public class SqlHelper
 	/**
 	 * @param groupID
 	 * @return NULL if no group in existence, or an SQL erorr happenend. TDOD:
-	 * remove?? its unused...
+	 *         remove?? its unused...
 	 */
 	protected static synchronized Group getGroupForID(int group)
 	{
@@ -1111,7 +1108,6 @@ public class SqlHelper
 
 	/**
 	 * groups are in order of priority.
-	 * 
 	 * @param username
 	 * @param zone
 	 * @return NULL if SQL exception. Empty if in no groups.
@@ -1159,7 +1155,7 @@ public class SqlHelper
 	/**
 	 * @param g
 	 * @return FALSE if the group already exists, parent doesn't exist, zone
-	 * doesn't exist, or if the INSERT failed.
+	 *         doesn't exist, or if the INSERT failed.
 	 */
 	protected static synchronized boolean createGroup(Group g)
 	{
@@ -1213,7 +1209,7 @@ public class SqlHelper
 	/**
 	 * @param g
 	 * @return FALSE if the group already exists, parent doesn't exist, zone
-	 * doesn't exist, or if the UPDATE failed.
+	 *         doesn't exist, or if the UPDATE failed.
 	 */
 	protected static synchronized boolean updateGroup(Group g)
 	{
@@ -1266,11 +1262,11 @@ public class SqlHelper
 
 	/**
 	 * @param target
-	 * (username or groupname)
+	 *            (username or groupname)
 	 * @param isGroup
 	 * @param perm
 	 * @return ALLOW/DENY if the permission is allowed/denied. UNKNOWN if its
-	 * not found.
+	 *         not found.
 	 */
 	protected static synchronized PermResult getAllResult(String target, boolean isGroup, String zone, boolean checkForward)
 	{
@@ -1317,12 +1313,12 @@ public class SqlHelper
 
 	/**
 	 * @param target
-	 * (username or groupname)
+	 *            (username or groupname)
 	 * @param isGroup
 	 * @param perm
 	 * @return ALLOW/DENY if the permission or a parent is allowed/denied.
-	 * UNKNOWN if nor it or any parents were not found. UNKNOWN also if
-	 * the target or the zone do not exist.
+	 *         UNKNOWN if nor it or any parents were not found. UNKNOWN also if
+	 *         the target or the zone do not exist.
 	 */
 	protected static synchronized PermResult getPermissionResult(String target, boolean isGroup, PermissionChecker perm, String zone, boolean checkForward)
 	{
@@ -1423,7 +1419,6 @@ public class SqlHelper
 
 	/**
 	 * Creates the permission if it doesn't exist.. updates it if it does.
-	 * 
 	 * @param target
 	 * @param isGroup
 	 * @param perm
@@ -1561,12 +1556,11 @@ public class SqlHelper
 
 	/**
 	 * queries the entire DB and make it into nonDB format..
-	 * 
 	 * @return "players" >> arraylist<String> DONE "groups" >> arrayList<Group>
-	 * DONE "playerPerms" >> arrayList<permHolder> DONE "groupPerms" >>
-	 * arrayList<permHolder> DONE "groupConnectors" >> HashMap<String,
-	 * HashMap<String, ArrayList<String>>> DONE "ladders" >>
-	 * arraylist<PromotionLadder> DONE
+	 *         DONE "playerPerms" >> arrayList<permHolder> DONE "groupPerms" >>
+	 *         arrayList<permHolder> DONE "groupConnectors" >> HashMap<String,
+	 *         HashMap<String, ArrayList<String>>> DONE "ladders" >>
+	 *         arraylist<PromotionLadder> DONE
 	 */
 	protected static synchronized HashMap<String, Object> dump()
 	{
@@ -1792,7 +1786,6 @@ public class SqlHelper
 	}
 
 	/**
-	 * 
 	 * @param username
 	 * @return false if SQL error or the player already exists.
 	 */
@@ -2011,7 +2004,6 @@ public class SqlHelper
 	/**
 	 * removes all the players groups in a zone, and then sets their group to
 	 * the specified.
-	 * 
 	 * @param group
 	 * @param player
 	 * @param zone
