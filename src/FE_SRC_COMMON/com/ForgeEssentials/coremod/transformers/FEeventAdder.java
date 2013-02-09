@@ -55,6 +55,9 @@ public class FEeventAdder implements IClassTransformer
 	public static HashMap<String, String> mcsHMob = makemcsHMob();
 	public static HashMap<String, String> mcsHMdev = makemcsHMdev();
 	
+	public static HashMap<String, String> cbrHMdev = makecbrHMdev();
+	public static HashMap<String, String> cbrHMob = makecbrHMob();
+	
     public static boolean serverbranded = false;
     public static boolean clientbranded = false;
 	
@@ -127,6 +130,46 @@ public class FEeventAdder implements IClassTransformer
 		
 		return isHMdev;
 	}
+	public static HashMap makemcsHMob()
+	{
+		HashMap mcsHMdev = new HashMap<String, String>();
+		
+		mcsHMdev.put("className", "net.minecraft.server.MinecraftServer");
+		mcsHMdev.put("javaClassName", "net/minecraft/server/MinecraftServer");
+		mcsHMdev.put("targetMethodName", "getServerModName");
+		
+		return mcsHMdev;
+	}
+	public static HashMap makemcsHMdev()
+	{
+		HashMap mcsHMdev = new HashMap<String, String>();
+		
+		mcsHMdev.put("className", "net.minecraft.server.MinecraftServer");
+		mcsHMdev.put("javaClassName", "net/minecraft/server/MinecraftServer");
+		mcsHMdev.put("targetMethodName", "getServerModName");
+		
+		return mcsHMdev;
+	}
+	public static HashMap makecbrHMdev()
+	{
+		HashMap cbrHMdev = new HashMap<String, String>();
+		
+		cbrHMdev.put("className", "net.minecraft.client.ClientBrandRetriever");
+		cbrHMdev.put("javaClassName", "net/minecraft/client/ClientBrandRetriever");
+		cbrHMdev.put("targetMethodName", "getClientModName");
+		
+		return cbrHMdev;
+	}
+	public static HashMap makecbrHMob()
+	{
+		HashMap cbrHMob = new HashMap<String, String>();
+		
+		cbrHMob.put("className", "net.minecraft.client.ClientBrandRetriever");
+		cbrHMob.put("javaClassName", "net/minecraft/client/ClientBrandRetriever");
+		cbrHMob.put("targetMethodName", "getClientModName");
+		
+		return cbrHMob;
+	}
 	@Override
 	public byte[] transform(String name, byte[] bytes)
 	{	
@@ -165,8 +208,13 @@ public class FEeventAdder implements IClassTransformer
 			return transformMinecraftServer(bytes, mcsHMdev);
 		}
 		if (FMLRelauncher.side().equals("CLIENT")){
-			// ClientBrandRetriever - not obfed for some reason
-			return transformClientBrandRetriever(name, bytes, "net.minecraft.client.ClientBrandRetriever", FEPreLoader.location);
+			if (name.equals(cbrHMdev.get("className")))
+			    // ClientBrandRetriever, NOT obfuscated
+				return transformClientBrandRetriever(bytes, cbrHMdev);
+			
+			if (name.equals(cbrHMob.get("className")))
+				// ClientBrandRetriever, Obfuscated
+				return transformClientBrandRetriever(bytes, cbrHMob);
 		}
 		return bytes;
 	}
@@ -326,29 +374,10 @@ public class FEeventAdder implements IClassTransformer
 		classNode.accept(writer);
 		return writer.toByteArray();
 	}
-	public static HashMap makemcsHMob()
-	{
-		HashMap mcsHMdev = new HashMap<String, String>();
-		
-		mcsHMdev.put("className", "net.minecraft.server.MinecraftServer");
-		mcsHMdev.put("javaClassName", "net/minecraft/server/MinecraftServer");
-		mcsHMdev.put("targetMethodName", "getServerModName");
-		
-		return mcsHMdev;
-	}
-	public static HashMap makemcsHMdev()
-	{
-		HashMap mcsHMdev = new HashMap<String, String>();
-		
-		mcsHMdev.put("className", "fy");
-		mcsHMdev.put("javaClassName", "fy");
-		mcsHMdev.put("targetMethodName", "getServerModName");
-		
-		return mcsHMdev;
-	}
+	
 	private byte[] transformMinecraftServer(byte[] bytes, HashMap<String, String> hm)
 	{
-		OutputHandler.fine("[FE coremod] Patching MinecraftServer...");
+		msg("[FE coremod] Patching MinecraftServer...");
 		
 		ClassNode classNode = new ClassNode();
 		ClassReader classReader = new ClassReader(bytes);
@@ -359,7 +388,7 @@ public class FEeventAdder implements IClassTransformer
 			MethodNode m = methods.next();
 			if(m.name.equals(hm.get("targetMethodName")))
 			{
-				OutputHandler.fine("[FE coremod] Found target method " + m.name + m.desc + "!");
+				msg("[FE coremod] Found target method " + m.name + m.desc + "!");
 				
 				int offset = 0;
 				while (m.instructions.get(offset).getOpcode() != LDC)
@@ -384,33 +413,41 @@ public class FEeventAdder implements IClassTransformer
 		return writer.toByteArray();
 	}
 	@SideOnly(Side.CLIENT)
-	public static byte[] transformClientBrandRetriever(String name, byte[] bytes, String classname, File location)
+	public static byte[] transformClientBrandRetriever(byte[] bytes, HashMap<String, String> hm)
 	{
-		if(!name.equals(classname) || !!ObfuscationReflectionHelper.obfuscation)
-			return bytes;
+    msg("[FE coremod] Patching ClientBrandRetriever...");
 		
-		try
+		ClassNode classNode = new ClassNode();
+		ClassReader classReader = new ClassReader(bytes);
+		classReader.accept(classNode, 0);
+		Iterator<MethodNode> methods = classNode.methods.iterator();
+		while (methods.hasNext())
 		{
-			ZipFile zip = new ZipFile(location);
-			ZipEntry entry = zip.getEntry(name.replace('.', '/')+".class");
-			if(entry == null)
-				System.out.println(name+" not found in "+location.getName());
-			else
+			MethodNode m = methods.next();
+			if(m.name.equals(hm.get("targetMethodName")))
 			{
-				InputStream zin = zip.getInputStream(entry);
-				bytes = new byte[(int) entry.getSize()];
-				zin.read(bytes);
-				zin.close();
-				System.out.println(name+" was overriden from "+location.getName());
+				msg("[FE coremod] Found target method " + m.name + m.desc + "!");
+				
+				int offset = 0;
+				while (m.instructions.get(offset).getOpcode() != LDC)
+				{
+					offset++;
+				}
+				
+				InsnList toInject = new InsnList();
+				
+				toInject.add(new LdcInsnNode(SERVERBRAND));
+				
+				m.instructions.insertBefore(m.instructions.get(offset), toInject);
+				m.instructions.remove(m.instructions.get(offset + 1));
+				
+				serverbranded = true;
+				break;
 			}
-			zip.close();
-			clientbranded = true;
 		}
-		catch(Exception e)
-		{
-			throw new RuntimeException("Error overriding "+name+" from "+location.getName(), e);
-		}
-		return bytes;
+		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		classNode.accept(writer);
+		return writer.toByteArray();
 	}
 	
 	public static void msg (String msg){
