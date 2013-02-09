@@ -17,7 +17,8 @@ import com.ForgeEssentials.util.event.PlayerMoveEvent;
 import com.ForgeEssentials.util.vector.Vector2;
 
 /**
- * Bounces players back into the border if they pass it. No bypass permissions available, If needed, tell me on github.
+ * Bounces players back into the border if they pass it. No bypass permissions
+ * available, If needed, tell me on github.
  * 
  * @author Dries007
  * 
@@ -60,16 +61,16 @@ public class ModuleWorldBorder
 		e.registerServerCommand(new CommandWB());
 		MinecraftForge.EVENT_BUS.register(this);
 	}
-	
+
 	@ForgeSubscribe
 	public void playerMove(PlayerMoveEvent e)
 	{
-		if(WBenabled && set)
+		if (WBenabled && set)
 		{
 			shape.doCheck((EntityPlayerMP) e.entityPlayer);
 		}
 	}
-	
+
 	/*
 	 * Used to get determen shapes & execute the actual check.
 	 */

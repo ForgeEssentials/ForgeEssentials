@@ -23,9 +23,9 @@ import cpw.mods.fml.relauncher.Side;
 
 public class EventLogger implements IPlayerTracker
 {
-	public LogLoop logLoop;
-	public Thread thread;
-	public Side side = FMLCommonHandler.instance().getEffectiveSide();
+	public LogLoop	logLoop;
+	public Thread	thread;
+	public Side		side	= FMLCommonHandler.instance().getEffectiveSide();
 
 	public EventLogger()
 	{
@@ -37,18 +37,18 @@ public class EventLogger implements IPlayerTracker
 		GameRegistry.registerPlayerTracker(this);
 	}
 
-	public static boolean logPlayerChangedDimension = true;
-	public static boolean logPlayerRespawn = true;
-	public static boolean logItemUsage = true;
-	public static boolean logBlockChanges = true;
-	public static boolean logPlayerLoginLogout = true;
-	
-	public static boolean logCommands_Player = true;
-	public static boolean logCommands_Block = true;
-	public static boolean logCommands_rest = true;
-	public static boolean BlockChange_WhiteList_Use = false;
-	public static ArrayList<Integer> BlockChange_WhiteList = new ArrayList<Integer>();
-	public static ArrayList<Integer> BlockChange_BlackList = new ArrayList<Integer>();
+	public static boolean				logPlayerChangedDimension	= true;
+	public static boolean				logPlayerRespawn			= true;
+	public static boolean				logItemUsage				= true;
+	public static boolean				logBlockChanges				= true;
+	public static boolean				logPlayerLoginLogout		= true;
+
+	public static boolean				logCommands_Player			= true;
+	public static boolean				logCommands_Block			= true;
+	public static boolean				logCommands_rest			= true;
+	public static boolean				BlockChange_WhiteList_Use	= false;
+	public static ArrayList<Integer>	BlockChange_WhiteList		= new ArrayList<Integer>();
+	public static ArrayList<Integer>	BlockChange_BlackList		= new ArrayList<Integer>();
 
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
@@ -122,9 +122,11 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logBlockChanges && !e.isCanceled() && side.isServer())
 		{
-			if(BlockChange_WhiteList_Use && !BlockChange_WhiteList.contains(e.player.dimension)) return;
-			if(BlockChange_BlackList.contains(e.player.dimension) && !BlockChange_WhiteList.contains(e.player.dimension)) return;
-			
+			if (BlockChange_WhiteList_Use && !BlockChange_WhiteList.contains(e.player.dimension))
+				return;
+			if (BlockChange_BlackList.contains(e.player.dimension) && !BlockChange_WhiteList.contains(e.player.dimension))
+				return;
+
 			String block = "";
 			if (e.player.inventory.getCurrentItem() != null)
 			{

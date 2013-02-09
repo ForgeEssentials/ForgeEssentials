@@ -46,13 +46,13 @@ import cpw.mods.fml.relauncher.Side;
 public class ModuleCommands
 {
 	@Config
-	public static ConfigCmd	conf;
-	
-	@ModuleDir
-	public static File cmddir;
+	public static ConfigCmd		conf;
 
-	public static EventHandler eventHandler = new EventHandler();
-	public static DataDriver		data;
+	@ModuleDir
+	public static File			cmddir;
+
+	public static EventHandler	eventHandler	= new EventHandler();
+	public static DataDriver	data;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -77,7 +77,7 @@ public class ModuleCommands
 		DataStorage.load();
 
 		data = DataStorageManager.getReccomendedDriver();
-		
+
 		CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
 	}
 
@@ -86,20 +86,20 @@ public class ModuleCommands
 	{
 		loadWarps();
 		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
-		
+
 	}
 
 	@PermRegister(ident = "ModuleBasicCommands")
 	public static void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands._ALL_", RegGroup.MEMBERS);
-		
+
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.compass", RegGroup.MEMBERS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.afk", RegGroup.MEMBERS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.back", RegGroup.MEMBERS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.bed", RegGroup.MEMBERS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.colorize", RegGroup.MEMBERS);
-		
+
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.list", RegGroup.GUESTS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.rules", RegGroup.GUESTS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.motd", RegGroup.GUESTS);
@@ -120,10 +120,10 @@ public class ModuleCommands
 		{
 			data.saveObject(warp);
 		}
-		
+
 		for (HashMap<String, PWarp> pws : TeleportCenter.pwMap.values())
 		{
-			for(PWarp warp : pws.values())
+			for (PWarp warp : pws.values())
 			{
 				data.saveObject(warp);
 			}
@@ -138,13 +138,14 @@ public class ModuleCommands
 			Warp warp = ((Warp) obj);
 			TeleportCenter.warps.put(warp.getName(), warp);
 		}
-		
+
 		objs = data.loadAllObjects(PWarp.class);
 		for (Object obj : objs)
 		{
 			PWarp warp = ((PWarp) obj);
 			HashMap<String, PWarp> map = TeleportCenter.pwMap.get(warp.getUsername());
-			if(map == null) map = new HashMap<String, PWarp>(); 
+			if (map == null)
+				map = new HashMap<String, PWarp>();
 			map.put(warp.getName(), warp);
 			TeleportCenter.pwMap.put(warp.getUsername(), map);
 		}

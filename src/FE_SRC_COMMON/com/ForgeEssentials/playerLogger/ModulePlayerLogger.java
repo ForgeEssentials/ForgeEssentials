@@ -102,13 +102,8 @@ public class ModulePlayerLogger
 			Statement s = connection.createStatement();
 
 			/*
-			 * if (DEBUG && false)
-			 * {
-			 * for (logEntry type : logTypes)
-			 * {
-			 * s.execute("DROP TABLE IF EXISTS " + type.getName());
-			 * }
-			 * }
+			 * if (DEBUG && false) { for (logEntry type : logTypes) {
+			 * s.execute("DROP TABLE IF EXISTS " + type.getName()); } }
 			 */
 
 			for (logEntry type : logTypes)

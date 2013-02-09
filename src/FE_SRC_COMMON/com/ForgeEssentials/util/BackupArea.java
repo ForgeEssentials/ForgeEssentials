@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class BackupArea implements Serializable
 {
-	public ArrayList<BlockSaveable> before;
-	public ArrayList<BlockSaveable> after;
+	public ArrayList<BlockSaveable>	before;
+	public ArrayList<BlockSaveable>	after;
 
 	public BackupArea()
 	{

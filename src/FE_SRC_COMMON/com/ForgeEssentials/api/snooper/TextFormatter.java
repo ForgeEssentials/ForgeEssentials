@@ -85,7 +85,7 @@ public class TextFormatter
 
 		return toSend;
 	}
-	
+
 	public static String toJSON(int[] data)
 	{
 		if (data.length == 0)
@@ -104,7 +104,7 @@ public class TextFormatter
 
 		return toSend;
 	}
-	
+
 	public static String toJSON(byte[] data)
 	{
 		if (data.length == 0)
@@ -244,43 +244,48 @@ public class TextFormatter
 
 		return toSend;
 	}
-	
+
 	public static String toJSONnbtComp(NBTTagCompound nbt)
 	{
 		Object[] obj = nbt.getTags().toArray();
 		String[] data = new String[nbt.getTags().size()];
-		for(int i = 0; i < obj.length; i++)
+		for (int i = 0; i < obj.length; i++)
 		{
 			data[i] = toJSONnbtBase((NBTBase) obj[i]);
 		}
 		return toJSON(data);
 	}
-	
+
 	public static String toJSONnbtBase(NBTBase nbt)
 	{
 		HashMap<String, String> map = new HashMap();
 		String data;
-		
-		if (nbt instanceof NBTTagCompound) data = toJSONnbtComp((NBTTagCompound) nbt);
-		else if (nbt instanceof NBTTagByteArray) data = toJSONnbtBtArray((NBTTagByteArray) nbt);
-		else if (nbt instanceof NBTTagIntArray) data = toJSONnbtIntArray((NBTTagIntArray) nbt);
-		else if (nbt instanceof NBTTagList) data = toJSONnbtTagList((NBTTagList) nbt);
-		else data = nbt.toString();
-		
+
+		if (nbt instanceof NBTTagCompound)
+			data = toJSONnbtComp((NBTTagCompound) nbt);
+		else if (nbt instanceof NBTTagByteArray)
+			data = toJSONnbtBtArray((NBTTagByteArray) nbt);
+		else if (nbt instanceof NBTTagIntArray)
+			data = toJSONnbtIntArray((NBTTagIntArray) nbt);
+		else if (nbt instanceof NBTTagList)
+			data = toJSONnbtTagList((NBTTagList) nbt);
+		else
+			data = nbt.toString();
+
 		map.put(nbt.getId() + "~" + nbt.getName(), data);
 		return toJSON(map);
 	}
-	
+
 	public static String toJSONnbtTagList(NBTTagList nbt)
 	{
 		String[] data = new String[nbt.tagCount()];
-		for(int i = 0; i < nbt.tagCount(); i ++)
+		for (int i = 0; i < nbt.tagCount(); i++)
 		{
 			data[i] = toJSONnbtBase(nbt.tagAt(i));
 		}
 		return toJSON(data);
 	}
-	
+
 	public static String toJSONnbtIntArray(NBTTagIntArray nbt)
 	{
 		return toJSON(nbt.intArray);
@@ -290,31 +295,31 @@ public class TextFormatter
 	{
 		return toJSON(nbt.byteArray);
 	}
-	
+
 	public static TileEntity reconstructTE(String JSON)
 	{
 		try
 		{
 			JSONObject top = new JSONObject(JSON);
-			String className = top.getNames(top)[0]; 
-			//OutputHandler.debug("RECONSTRUCT: " + className);
+			String className = top.getNames(top)[0];
+			// OutputHandler.debug("RECONSTRUCT: " + className);
 			TileEntity te = (TileEntity) Class.forName(className).newInstance();
 			JSONArray dataArray = top.getJSONArray(className);
 			NBTTagCompound data = new NBTTagCompound();
-			for(int i = 0; i < dataArray.length(); i++)
+			for (int i = 0; i < dataArray.length(); i++)
 			{
 				data.setTag(reconstructNBTName(dataArray.get(i).toString()), reconstructNBT(dataArray.get(i).toString()));
 			}
 			te.readFromNBT(data);
 			return te;
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			return null;
-		}	
+		}
 	}
-	
+
 	public static String reconstructNBTName(String JSON)
 	{
 		try
@@ -328,13 +333,13 @@ public class TextFormatter
 			return null;
 		}
 	}
-	
+
 	public static NBTTagCompound reconstructNBTTagCompound(JSONArray dataArray)
 	{
 		try
 		{
 			NBTTagCompound comp = new NBTTagCompound();
-			for(int i = 0; i < dataArray.length(); i++)
+			for (int i = 0; i < dataArray.length(); i++)
 			{
 				comp.setTag(reconstructNBTName(dataArray.get(i).toString()), reconstructNBT(dataArray.get(i).toString()));
 			}
@@ -346,13 +351,13 @@ public class TextFormatter
 			return null;
 		}
 	}
-	
+
 	public static NBTTagList reconstructNBTTagList(JSONArray dataArray)
 	{
 		try
 		{
 			NBTTagList list = new NBTTagList();
-			for(int i = 0; i < dataArray.length(); i++)
+			for (int i = 0; i < dataArray.length(); i++)
 			{
 				list.appendTag(reconstructNBT(dataArray.get(i).toString()));
 			}
@@ -364,14 +369,14 @@ public class TextFormatter
 			return null;
 		}
 	}
-	
+
 	public static NBTTagByteArray reconstructNBTTagByteArray(JSONArray dataArray)
 	{
 		try
 		{
 			NBTTagByteArray list = new NBTTagByteArray(null);
 			list.byteArray = new byte[dataArray.length()];
-			for(int i = 0; i < dataArray.length(); i++)
+			for (int i = 0; i < dataArray.length(); i++)
 			{
 				System.out.println(dataArray.get(i).toString());
 				list.byteArray[i] = (byte) dataArray.getInt(i);
@@ -384,14 +389,14 @@ public class TextFormatter
 			return null;
 		}
 	}
-	
+
 	public static NBTTagIntArray reconstructNBTTagIntArray(JSONArray dataArray)
 	{
 		try
 		{
 			NBTTagIntArray list = new NBTTagIntArray(null);
 			list.intArray = new int[dataArray.length()];
-			for(int i = 0; i < dataArray.length(); i++)
+			for (int i = 0; i < dataArray.length(); i++)
 			{
 				System.out.println(dataArray.get(i).toString());
 				list.intArray[i] = Integer.parseInt(dataArray.get(i).toString());
@@ -404,24 +409,24 @@ public class TextFormatter
 			return null;
 		}
 	}
-	
+
 	public static NBTBase reconstructNBT(String JSON)
 	{
 		try
 		{
 			JSONObject top = new JSONObject(JSON);
 			Object keyObj = top.keySet().toArray()[0];
-			
+
 			String key = keyObj.toString();
-			
-			//OutputHandler.debug("KEY: " + key + " DATA: " + top.get(key));
-				
+
+			// OutputHandler.debug("KEY: " + key + " DATA: " + top.get(key));
+
 			String[] split = key.split("~", 2);
 			byte type = new Byte(split[0]);
 			String name = split[1];
-			
+
 			NBTBase tag = NBTBase.newTag(type, name);
-			switch(type)
+			switch (type)
 			{
 			case 1:
 				((NBTTagByte) tag).data = (byte) top.getInt(key);

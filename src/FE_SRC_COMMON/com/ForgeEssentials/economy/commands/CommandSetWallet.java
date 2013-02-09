@@ -36,11 +36,9 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(Localization.get(Localization.WALLET_SET_TARGET) + Wallet.getWallet(player) + " "
-							+ Wallet.currency(Wallet.getWallet(player)));
+					sender.sendChatToPlayer(Localization.get(Localization.WALLET_SET_TARGET) + Wallet.getWallet(player) + " " + Wallet.currency(Wallet.getWallet(player)));
 				}
-				player.sendChatToPlayer(Localization.get(Localization.WALLET_SET_SELF) + Wallet.getWallet(player) + " "
-						+ Wallet.currency(Wallet.getWallet(player)));
+				player.sendChatToPlayer(Localization.get(Localization.WALLET_SET_SELF) + Wallet.getWallet(player) + " " + Wallet.currency(Wallet.getWallet(player)));
 			}
 		}
 		else
@@ -66,10 +64,8 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 			{
 				Wallet.setWallet(amountToSet, player);
 
-				sender.sendChatToPlayer(Localization.get(Localization.WALLET_SET_TARGET) + Wallet.getWallet(player) + " "
-						+ Wallet.currency(Wallet.getWallet(player)));
-				player.sendChatToPlayer(Localization.get(Localization.WALLET_SET_SELF) + Wallet.getWallet(player) + " "
-						+ Wallet.currency(Wallet.getWallet(player)));
+				sender.sendChatToPlayer(Localization.get(Localization.WALLET_SET_TARGET) + Wallet.getWallet(player) + " " + Wallet.currency(Wallet.getWallet(player)));
+				player.sendChatToPlayer(Localization.get(Localization.WALLET_SET_SELF) + Wallet.getWallet(player) + " " + Wallet.currency(Wallet.getWallet(player)));
 			}
 		}
 		else

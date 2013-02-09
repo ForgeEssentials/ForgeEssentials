@@ -28,13 +28,15 @@ public class CommandPl extends ForgeEssentialsCommandBase
 	@Override
 	public List getCommandAliases()
 	{
-		return Arrays.asList(new String[] {"pl"});
+		return Arrays.asList(new String[]
+		{ "pl" });
 	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(sender.worldObj.isRemote) return;
+		if (sender.worldObj.isRemote)
+			return;
 		if (args.length == 0)
 		{
 			sender.sendChatToPlayer("You must use /pl get");
@@ -51,7 +53,7 @@ public class CommandPl extends ForgeEssentialsCommandBase
 			sender.getEntityData().setInteger("lb_limit", limit);
 			sender.sendChatToPlayer("Click a block and you will get the last " + limit + " changes.");
 		}
-		
+
 		// TODO add further stuff.
 	}
 
@@ -72,7 +74,7 @@ public class CommandPl extends ForgeEssentialsCommandBase
 	{
 		return "";
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

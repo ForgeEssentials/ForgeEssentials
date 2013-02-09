@@ -83,26 +83,27 @@ public abstract class AreaBase
 			newZ1 = p1.z;
 			newZ2 = p2.z;
 		}
-		return new Point[] { new Point(newX1, newY1, newZ1), new Point(newX2, newY2, newZ2) };
+		return new Point[]
+		{ new Point(newX1, newY1, newZ1), new Point(newX2, newY2, newZ2) };
 	}
 
 	/**
 	 * Determines if a given point is within the bounds of an area.
 	 * 
-	 * @param p Point to check against the Area
+	 * @param p
+	 *            Point to check against the Area
 	 * @return True, if the Point p is inside the area.
 	 */
 	public boolean contains(Point p)
 	{
-		return  (high.isGreaterThan(p) || high.equals(p))
-				&& (low.isLessThan(p) || low.equals(p));
+		return (high.isGreaterThan(p) || high.equals(p)) && (low.isLessThan(p) || low.equals(p));
 	}
 
 	/**
 	 * checks if this area contains with another
 	 * 
 	 * @param area
-	 * to check against this area
+	 *            to check against this area
 	 * @return True, AreaBAse area is completely within this area
 	 */
 	public boolean contains(AreaBase area)
@@ -116,7 +117,7 @@ public abstract class AreaBase
 	 * checks if this area is overlapping with another
 	 * 
 	 * @param area
-	 * to check against this area
+	 *            to check against this area
 	 * @return True, if the given area overlaps with this one.
 	 */
 	public boolean intersectsWith(AreaBase area)
@@ -129,8 +130,9 @@ public abstract class AreaBase
 	/**
 	 * 
 	 * @param area
-	 * The area to be checked.
-	 * @return NULL if the areas to do not intersect. Argument if this area completely contains the argument.
+	 *            The area to be checked.
+	 * @return NULL if the areas to do not intersect. Argument if this area
+	 *         completely contains the argument.
 	 */
 	public AreaBase getIntersection(AreaBase area)
 	{
@@ -160,7 +162,7 @@ public abstract class AreaBase
 	/**
 	 * 
 	 * @param area
-	 * The area to be checked.
+	 *            The area to be checked.
 	 * @return NULL if the areas to do not make a cuboid together.
 	 */
 	public AreaBase getUnity(AreaBase area)

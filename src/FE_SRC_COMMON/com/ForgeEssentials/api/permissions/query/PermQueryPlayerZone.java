@@ -16,7 +16,7 @@ import com.ForgeEssentials.api.permissions.ZoneManager;
 @HasResult
 public class PermQueryPlayerZone extends PermQueryPlayer
 {
-	public final Zone toCheck;
+	public final Zone	toCheck;
 
 	public PermQueryPlayerZone(EntityPlayer player, String permission, String zoneID)
 	{

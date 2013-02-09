@@ -4,10 +4,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
 
 public class PlayerInvChest extends InventoryBasic
-{	
-	public EntityPlayerMP vieuwer;
-	public EntityPlayerMP owner;
-	public boolean allowUpdate;
+{
+	public EntityPlayerMP	vieuwer;
+	public EntityPlayerMP	owner;
+	public boolean			allowUpdate;
 
 	public PlayerInvChest(EntityPlayerMP owner, EntityPlayerMP vieuwer)
 	{
@@ -40,20 +40,20 @@ public class PlayerInvChest extends InventoryBasic
 		onInventoryChanged();
 		super.closeChest();
 	}
-	
+
 	public void onInventoryChanged()
-    {
+	{
 		super.onInventoryChanged();
-		if(allowUpdate)
+		if (allowUpdate)
 		{
 			for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
 			{
 				owner.inventory.mainInventory[id] = getStackInSlot(id);
 			}
 		}
-    }
-	
-	public void update() 
+	}
+
+	public void update()
 	{
 		allowUpdate = false;
 		for (int id = 0; id < owner.inventory.mainInventory.length; ++id)

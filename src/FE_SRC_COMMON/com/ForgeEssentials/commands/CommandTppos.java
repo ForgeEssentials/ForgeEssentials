@@ -21,7 +21,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase
 {
 
 	/** Spawn point for each dimension */
-	public static HashMap<Integer, Point> spawnPoints = new HashMap<Integer, Point>();
+	public static HashMap<Integer, Point>	spawnPoints	= new HashMap<Integer, Point>();
 
 	@Override
 	public String getCommandName()

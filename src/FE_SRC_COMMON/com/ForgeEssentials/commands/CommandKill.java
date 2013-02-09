@@ -50,7 +50,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
 		if (args.length >= 1)
 		{
 			EntityPlayer victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}

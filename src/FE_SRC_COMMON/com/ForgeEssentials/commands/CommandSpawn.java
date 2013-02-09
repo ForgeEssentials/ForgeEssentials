@@ -25,7 +25,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 {
 
 	/** Spawn point for each dimension */
-	public static HashMap<Integer, Point> spawnPoints = new HashMap<Integer, Point>();
+	public static HashMap<Integer, Point>	spawnPoints	= new HashMap<Integer, Point>();
 
 	@Override
 	public String getCommandName()
@@ -38,19 +38,19 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 				return;
 			}
 			EntityPlayer player = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
 			if (player != null)
 			{
-//				NBTTagCompound spawn = DataStorage.getData("spawn");
+				// NBTTagCompound spawn = DataStorage.getData("spawn");
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 
 				WarpPoint spawn;
@@ -65,26 +65,28 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 				return;
 			}
 		}
-		if(args.length == 0)
+		if (args.length == 0)
 		{
-//			NBTTagCompound data = DataStorage.getData("spawn");
+			// NBTTagCompound data = DataStorage.getData("spawn");
 			WarpPoint spawn;
-//			if(!(data == null))
-//			{
-//				spawn = new WarpPoint(data.getInteger("dim"), data.getDouble("x"), data.getDouble("y"),
-//						data.getDouble("z"), data.getFloat("pitch"), data.getFloat("yaw"));
-//			}
-//			else
-//			{
-				ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
-				spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, sender.rotationPitch, sender.rotationYaw);
-//			}
-//			if (spawn != null)
-//			{
-				PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
-				TeleportCenter.addToTpQue(spawn, sender);
-				sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
-//			}
+			// if(!(data == null))
+			// {
+			// spawn = new WarpPoint(data.getInteger("dim"),
+			// data.getDouble("x"), data.getDouble("y"),
+			// data.getDouble("z"), data.getFloat("pitch"),
+			// data.getFloat("yaw"));
+			// }
+			// else
+			// {
+			ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
+			spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, sender.rotationPitch, sender.rotationYaw);
+			// }
+			// if (spawn != null)
+			// {
+			PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
+			TeleportCenter.addToTpQue(spawn, sender);
+			sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
+			// }
 		}
 	}
 
@@ -94,7 +96,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 		if (args.length >= 1)
 		{
 			EntityPlayer player = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}

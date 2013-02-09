@@ -24,8 +24,7 @@ public class knockback implements IEffect
 
 		if (player.ridingEntity != null)
 		{
-			player.ridingEntity.setLocationAndAngles(vecp.x, player.ridingEntity.prevPosY, vecp.y, player.ridingEntity.rotationYaw,
-					player.ridingEntity.rotationPitch);
+			player.ridingEntity.setLocationAndAngles(vecp.x, player.ridingEntity.prevPosY, vecp.y, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
 			player.playerNetServerHandler.setPlayerLocation(vecp.x, player.prevPosY, vecp.y, player.rotationYaw, player.rotationPitch);
 		}
 		else

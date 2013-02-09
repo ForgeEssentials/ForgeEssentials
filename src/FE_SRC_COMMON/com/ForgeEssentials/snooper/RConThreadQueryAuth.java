@@ -7,22 +7,22 @@ import java.util.Random;
 class RConThreadQueryAuth
 {
 	/** The creation timestamp for this auth */
-	private long timestamp;
+	private long			timestamp;
 
 	/** A random challenge */
-	private int randomChallenge;
+	private int				randomChallenge;
 
 	/** A client-provided request ID associated with this query */
-	private byte[] requestId;
+	private byte[]			requestId;
 
 	/** A unique string of bytes used to verify client auth */
-	private byte[] challengeValue;
+	private byte[]			challengeValue;
 
 	/** The request ID stored as a String */
-	private String requestIdAsString;
+	private String			requestIdAsString;
 
 	/** The RConThreadQuery that this is probably an inner class of */
-	final RConQueryThread queryThread;
+	final RConQueryThread	queryThread;
 
 	public RConThreadQueryAuth(RConQueryThread rConQueryThread, DatagramPacket par2DatagramPacket)
 	{
@@ -36,11 +36,13 @@ class RConThreadQueryAuth
 		requestId[3] = var3[6];
 		requestIdAsString = new String(requestId);
 		randomChallenge = (new Random()).nextInt(16777216);
-		challengeValue = String.format("\t%s%d\u0000", new Object[] { requestIdAsString, Integer.valueOf(randomChallenge) }).getBytes();
+		challengeValue = String.format("\t%s%d\u0000", new Object[]
+		{ requestIdAsString, Integer.valueOf(randomChallenge) }).getBytes();
 	}
 
 	/**
-	 * Returns true if the auth's creation timestamp is less than the given time, otherwise false
+	 * Returns true if the auth's creation timestamp is less than the given
+	 * time, otherwise false
 	 */
 	public Boolean hasExpired(long par1)
 	{

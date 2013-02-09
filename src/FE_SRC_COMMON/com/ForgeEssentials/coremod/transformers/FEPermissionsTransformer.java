@@ -42,8 +42,7 @@ import cpw.mods.fml.relauncher.IClassTransformer;
 public class FEPermissionsTransformer implements IClassTransformer
 {
 	public FEPermissionsTransformer()
-	{
-	}
+	{}
 
 	@Override
 	public byte[] transform(String name, byte[] bytes)
@@ -136,7 +135,9 @@ public class FEPermissionsTransformer implements IClassTransformer
 		}
 
 		/*
-		 * Add: protected void setup() { super.setup(); if (LISTENER_LIST != NULL) { return; } LISTENER_LIST = new ListenerList(super.getListenerList()); }
+		 * Add: protected void setup() { super.setup(); if (LISTENER_LIST !=
+		 * NULL) { return; } LISTENER_LIST = new
+		 * ListenerList(super.getListenerList()); }
 		 */
 		method = new MethodNode(ASM4, ACC_PROTECTED, "setup", getMethodDescriptor(VOID_TYPE), null, null);
 		method.instructions.add(new VarInsnNode(ALOAD, 0));
@@ -157,7 +158,8 @@ public class FEPermissionsTransformer implements IClassTransformer
 		classNode.methods.add(method);
 
 		/*
-		 * Add: public ListenerList getListenerList() { return this.LISTENER_LIST; }
+		 * Add: public ListenerList getListenerList() { return
+		 * this.LISTENER_LIST; }
 		 */
 		method = new MethodNode(ASM4, ACC_PUBLIC, "getListenerList", getMethodDescriptor(tList), null, null);
 		method.instructions.add(new FieldInsnNode(GETSTATIC, classNode.name, "LISTENER_LIST", tList.getDescriptor()));

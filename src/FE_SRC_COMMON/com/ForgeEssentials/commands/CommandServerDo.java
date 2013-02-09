@@ -42,7 +42,8 @@ public class CommandServerDo extends ForgeEssentialsCommandBase
 	}
 
 	/**
-	 * Restricts the usage of this command to ops so random jerkbags can't op themselves. Once our permissions system gets working, we can use
+	 * Restricts the usage of this command to ops so random jerkbags can't op
+	 * themselves. Once our permissions system gets working, we can use
 	 * canPlayerUseCommand instead.
 	 */
 	@Override

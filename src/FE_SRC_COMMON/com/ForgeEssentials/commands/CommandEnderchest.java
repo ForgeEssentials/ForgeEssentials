@@ -16,7 +16,7 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
  * 
  */
 public class CommandEnderchest extends ForgeEssentialsCommandBase
-{	
+{
 	@Override
 	public String getCommandName()
 	{
@@ -26,9 +26,10 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
 	@Override
 	public String[] getDefaultAliases()
 	{
-		return new String[] {"echest"};
+		return new String[]
+		{ "echest" };
 	}
-	
+
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
@@ -48,8 +49,7 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-	}
+	{}
 
 	@Override
 	public boolean canConsoleUseCommand()

@@ -6,11 +6,11 @@ import net.minecraftforge.event.EventPriority;
 
 public class FEListenerList
 {
-	private static ArrayList<FEListenerList> allLists = new ArrayList<FEListenerList>();
-	private static int maxSize = 0;
+	private static ArrayList<FEListenerList>	allLists	= new ArrayList<FEListenerList>();
+	private static int							maxSize		= 0;
 
-	private FEListenerList parent;
-	private FEListenerListInst[] lists = new FEListenerListInst[0];
+	private FEListenerList						parent;
+	private FEListenerListInst[]				lists		= new FEListenerListInst[0];
 
 	public FEListenerList()
 	{
@@ -108,10 +108,10 @@ public class FEListenerList
 
 	private class FEListenerListInst
 	{
-		private boolean rebuild = true;
-		private IQueryListener[] listeners;
-		private ArrayList<ArrayList<IQueryListener>> priorities;
-		private FEListenerListInst parent;
+		private boolean									rebuild	= true;
+		private IQueryListener[]						listeners;
+		private ArrayList<ArrayList<IQueryListener>>	priorities;
+		private FEListenerListInst						parent;
 
 		private FEListenerListInst()
 		{
@@ -142,9 +142,11 @@ public class FEListenerList
 		}
 
 		/**
-		 * Returns a ArrayList containing all listeners for this event, and all parent events for the specified priority.
+		 * Returns a ArrayList containing all listeners for this event, and all
+		 * parent events for the specified priority.
 		 * 
-		 * The list is returned with the listeners for the children events first.
+		 * The list is returned with the listeners for the children events
+		 * first.
 		 * 
 		 * @param priority
 		 *            The Priority to get
@@ -161,11 +163,13 @@ public class FEListenerList
 		}
 
 		/**
-		 * Returns a full list of all listeners for all priority levels. Including all parent listeners.
+		 * Returns a full list of all listeners for all priority levels.
+		 * Including all parent listeners.
 		 * 
 		 * List is returned in proper priority order.
 		 * 
-		 * Automatically rebuilds the internal Array cache if its information is out of date.
+		 * Automatically rebuilds the internal Array cache if its information is
+		 * out of date.
 		 * 
 		 * @return Array containing listeners
 		 */
@@ -184,7 +188,8 @@ public class FEListenerList
 		}
 
 		/**
-		 * Rebuild the local Array of listeners, returns early if there is no work to do.
+		 * Rebuild the local Array of listeners, returns early if there is no
+		 * work to do.
 		 */
 		private void buildCache()
 		{

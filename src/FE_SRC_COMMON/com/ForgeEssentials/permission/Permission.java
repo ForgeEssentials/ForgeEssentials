@@ -5,9 +5,9 @@ package com.ForgeEssentials.permission;
  */
 public class Permission extends PermissionChecker
 {
-	public static final String ALL = "_ALL_";
+	public static final String	ALL	= "_ALL_";
 
-	public boolean allowed;
+	public boolean				allowed;
 
 	public Permission(String qualifiedName, Boolean allowed)
 	{

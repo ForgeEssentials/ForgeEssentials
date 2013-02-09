@@ -44,7 +44,8 @@ public class Point implements Serializable, Comparable<Point>
 	/**
 	 * This is calculated by the whichever has higher coords.
 	 * 
-	 * @return Posotive number if this Point is larger. 0 if they are equal. Negative if the provided point is larger.
+	 * @return Posotive number if this Point is larger. 0 if they are equal.
+	 *         Negative if the provided point is larger.
 	 */
 	@Override
 	public int compareTo(Point point)
@@ -117,21 +118,21 @@ public class Point implements Serializable, Comparable<Point>
 	{
 		return x == p.x || y == p.y || z == p.z;
 	}
-	
+
 	public boolean isGreaterThan(Point p)
 	{
 		if (equals(p))
 			return false;
-		
-		return x >= p.x && y >= p.y && z >= p.z;  
+
+		return x >= p.x && y >= p.y && z >= p.z;
 	}
-	
+
 	public boolean isLessThan(Point p)
 	{
 		if (equals(p))
 			return false;
-		
-		return x <= p.x && y <= p.y && z <= p.z;  
+
+		return x <= p.x && y <= p.y && z <= p.z;
 	}
 
 	/**
@@ -146,7 +147,8 @@ public class Point implements Serializable, Comparable<Point>
 	}
 
 	/**
-	 * ensures the Point is valid. Just floors the Y axis to 0. Y can't be negative.
+	 * ensures the Point is valid. Just floors the Y axis to 0. Y can't be
+	 * negative.
 	 */
 	public void validate()
 	{

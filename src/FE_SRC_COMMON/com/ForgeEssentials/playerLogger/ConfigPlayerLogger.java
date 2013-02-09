@@ -9,8 +9,8 @@ import com.ForgeEssentials.api.modules.ModuleConfigBase;
 
 public class ConfigPlayerLogger extends ModuleConfigBase
 {
-	public Configuration config;
-	
+	public Configuration	config;
+
 	public ConfigPlayerLogger(File file)
 	{
 		super(file);
@@ -43,29 +43,31 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 		EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
 
 		String subcat2 = subcat + ".commands";
-		
+
 		EventLogger.logCommands_Player = config.get(subcat2, "Enable_Player", true).getBoolean(true);
 		EventLogger.logCommands_Block = config.get(subcat2, "Enable_CmdBlock", true).getBoolean(true);
 		EventLogger.logCommands_rest = config.get(subcat2, "Enable_Rest", true).getBoolean(true);
-		
+
 		subcat2 = subcat + ".blockChanges";
-		
+
 		EventLogger.logBlockChanges = config.get(subcat2, "Enable", true).getBoolean(true);
 		EventLogger.BlockChange_WhiteList_Use = config.get(subcat2, "UseWhitelist", false, "If true, only log in dimensions that are in the whitelist.").getBoolean(false);
-		
-		int[] intArray1 = config.get(subcat2, "WhiteList", new int[] {0, 1, -1}, "WhiteList overrides blacklist!").getIntList();
-		for(int i : intArray1) EventLogger.BlockChange_WhiteList.add(i);
-		
+
+		int[] intArray1 = config.get(subcat2, "WhiteList", new int[]
+		{ 0, 1, -1 }, "WhiteList overrides blacklist!").getIntList();
+		for (int i : intArray1)
+			EventLogger.BlockChange_WhiteList.add(i);
+
 		int[] intArray2 = config.get(subcat2, "BlackList", new int[] {}, "Don't make logs in these dimensions.").getIntList();
-		for(int i : intArray2) EventLogger.BlockChange_BlackList.add(i);
-		
+		for (int i : intArray2)
+			EventLogger.BlockChange_BlackList.add(i);
+
 		config.save();
 	}
 
 	@Override
 	public void forceSave()
-	{
-	}
+	{}
 
 	@Override
 	public void forceLoad(ICommandSender sender)
@@ -94,21 +96,24 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 		EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
 
 		String subcat2 = subcat + ".commands";
-		
+
 		EventLogger.logCommands_Player = config.get(subcat2, "Enable_Player", true).getBoolean(true);
 		EventLogger.logCommands_Block = config.get(subcat2, "Enable_CmdBlock", true).getBoolean(true);
 		EventLogger.logCommands_rest = config.get(subcat2, "Enable_Rest", true).getBoolean(true);
-		
+
 		subcat2 = subcat + ".blockChanges";
-		
+
 		EventLogger.logBlockChanges = config.get(subcat2, "Enable", true).getBoolean(true);
 		EventLogger.BlockChange_WhiteList_Use = config.get(subcat2, "UseWhitelist", false, "If true: Only log in dimensions that are in the whitelist.").getBoolean(false);
-		
-		int[] intArray1 = config.get(subcat2, "WhiteList", new int[] {0, 1, -1}, "WhiteList overrides blacklist!").getIntList();
-		for(int i : intArray1) EventLogger.BlockChange_WhiteList.add(i);
-		
+
+		int[] intArray1 = config.get(subcat2, "WhiteList", new int[]
+		{ 0, 1, -1 }, "WhiteList overrides blacklist!").getIntList();
+		for (int i : intArray1)
+			EventLogger.BlockChange_WhiteList.add(i);
+
 		int[] intArray2 = config.get(subcat2, "BlackList", new int[] {}, "Don't make logs in these dimensions.").getIntList();
-		for(int i : intArray2) EventLogger.BlockChange_BlackList.add(i);
+		for (int i : intArray2)
+			EventLogger.BlockChange_BlackList.add(i);
 		config.save();
 	}
 }

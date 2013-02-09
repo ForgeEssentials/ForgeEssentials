@@ -8,8 +8,8 @@ import java.util.List;
 
 public class commandLog extends logEntry
 {
-	public String username;
-	public String command;
+	public String	username;
+	public String	command;
 
 	public commandLog(String sender, String command)
 	{
@@ -32,8 +32,7 @@ public class commandLog extends logEntry
 	@Override
 	public String getTableCreateSQL()
 	{
-		return "CREATE TABLE IF NOT EXISTS " + getName()
-				+ "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), sender CHAR(64), command CHAR(128), time DATETIME)";
+		return "CREATE TABLE IF NOT EXISTS " + getName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), sender CHAR(64), command CHAR(128), time DATETIME)";
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class commandLog extends logEntry
 		while (i.hasNext())
 		{
 			logEntry obj = i.next();
-			if(obj instanceof commandLog)
+			if (obj instanceof commandLog)
 			{
 				commandLog log = (commandLog) obj;
 				ps.setString(1, log.username);

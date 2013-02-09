@@ -39,8 +39,7 @@ public class CommandFEDebug extends ForgeEssentialsCommandBase
 			else
 			{
 				sender.sendChatToPlayer("The custom event 'PlayerBlockBreak' was NOT added. Some functions might not work!");
-				sender.sendChatToPlayer("The classname should be '" + FEeventAdder.isHMob.get("className") + "' but is '" + ItemInWorldManager.class.getName()
-						+ "'.");
+				sender.sendChatToPlayer("The classname should be '" + FEeventAdder.isHMob.get("className") + "' but is '" + ItemInWorldManager.class.getName() + "'.");
 			}
 		}
 		catch (Exception ex)

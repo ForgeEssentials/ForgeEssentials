@@ -11,14 +11,13 @@ public abstract class DataDriver implements IDataDriver
 {
 
 	public DataDriver()
-	{
-	}
+	{}
 
 	public void onClassRegistered(TypeTagger tagger)
 	{
 
 	}
-	
+
 	public final String getName()
 	{
 		return this.getClass().getSimpleName().replace(DataDriver.class.getSimpleName(), "");
@@ -85,6 +84,6 @@ public abstract class DataDriver implements IDataDriver
 	abstract protected TaggedClass[] loadAll(Class type);
 
 	abstract protected boolean deleteData(Class type, Object uniqueObjectKey);
-	
+
 	abstract public EnumDriverType getType();
 }

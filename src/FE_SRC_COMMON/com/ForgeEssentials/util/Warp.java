@@ -12,10 +12,10 @@ public class Warp
 {
 	@UniqueLoadingKey
 	@SaveableField
-	private String name;
+	private String		name;
 
 	@SaveableField
-	private WarpPoint point;
+	private WarpPoint	point;
 
 	public Warp(String name, WarpPoint point)
 	{

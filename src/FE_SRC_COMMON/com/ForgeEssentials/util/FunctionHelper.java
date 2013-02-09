@@ -55,18 +55,18 @@ public final class FunctionHelper
 		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
-	
+
 	public static String[] dropFirstString(String[] par0ArrayOfStr)
-    {
-        String[] var1 = new String[par0ArrayOfStr.length - 1];
+	{
+		String[] var1 = new String[par0ArrayOfStr.length - 1];
 
-        for (int var2 = 1; var2 < par0ArrayOfStr.length; ++var2)
-        {
-            var1[var2 - 1] = par0ArrayOfStr[var2];
-        }
+		for (int var2 = 1; var2 < par0ArrayOfStr.length; ++var2)
+		{
+			var1[var2 - 1] = par0ArrayOfStr[var2];
+		}
 
-        return var1;
-    }
+		return var1;
+	}
 
 	public static String getZoneWorldString(World world)
 	{
@@ -80,6 +80,7 @@ public final class FunctionHelper
 
 	/**
 	 * Use WorldPoint(Entity)
+	 * 
 	 * @param entity
 	 * @return
 	 */
@@ -110,11 +111,12 @@ public final class FunctionHelper
 	}
 
 	/**
-	 * does NOT check if its a valid BlockID and stuff.. this may be used for items.
+	 * does NOT check if its a valid BlockID and stuff.. this may be used for
+	 * items.
 	 * 
 	 * @return never NULL. always {0, -1}. Meta by default is -1.
 	 * @throws RuntimeException
-	 * the message is a formatted chat string.
+	 *             the message is a formatted chat string.
 	 */
 	public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly) throws RuntimeException
 	{
@@ -159,7 +161,8 @@ public final class FunctionHelper
 
 		// try checking if its just an ID
 
-		return new int[] { ID, meta };
+		return new int[]
+		{ ID, meta };
 	}
 
 	public static int getItemIDFromName(String name, boolean blockOnly)
@@ -268,9 +271,10 @@ public final class FunctionHelper
 		}
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Uses & as identifier
+	 * 
 	 * @param message
 	 * @return
 	 */
@@ -287,9 +291,10 @@ public final class FunctionHelper
 		}
 		return new String(b);
 	}
-	
+
 	/**
 	 * Uses the % char as identifier
+	 * 
 	 * @param format
 	 * @return
 	 */
@@ -304,7 +309,7 @@ public final class FunctionHelper
 		format = replaceAllIgnoreCase(format, "%heart", "\u2661");
 		format = replaceAllIgnoreCase(format, "%female", "\u2640");
 		format = replaceAllIgnoreCase(format, "%male", "\u2642");
-		
+
 		// replace colors
 		format = replaceAllIgnoreCase(format, "%red", FEChatFormatCodes.RED.toString());
 		format = replaceAllIgnoreCase(format, "%yellow", FEChatFormatCodes.YELLOW.toString());
@@ -330,10 +335,10 @@ public final class FunctionHelper
 		format = replaceAllIgnoreCase(format, "%underline", FEChatFormatCodes.UNDERLINE.toString());
 		format = replaceAllIgnoreCase(format, "%italics", FEChatFormatCodes.ITALICS.toString());
 		format = replaceAllIgnoreCase(format, "%reset", FEChatFormatCodes.RESET.toString());
-		
+
 		return format;
 	}
-	
+
 	public static void setPlayer(EntityPlayerMP player, WarpPoint p)
 	{
 		player.playerNetServerHandler.setPlayerLocation(p.xd, p.yd, p.zd, p.yaw, p.pitch);

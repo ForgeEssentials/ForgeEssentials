@@ -17,7 +17,7 @@ public class Selection extends AreaBase
 	{
 		return start;
 	}
-	
+
 	public Point getEnd()
 	{
 		return end;

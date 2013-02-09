@@ -23,16 +23,16 @@ import cpw.mods.fml.common.ModContainer;
 
 public class ServerInfo extends Response
 {
-	LinkedHashMap<String, String> data = new LinkedHashMap();
-	private boolean sendWB;
-	private boolean sendMotd;
-	private boolean sendIP;
-	private String overrideIPValue;
-	private boolean sendMods;
-	private int[] TPSList;
-	private boolean overrideIP;
-	public static Integer ServerID = 0;
-	public static String serverHash = "";
+	LinkedHashMap<String, String>	data		= new LinkedHashMap();
+	private boolean					sendWB;
+	private boolean					sendMotd;
+	private boolean					sendIP;
+	private String					overrideIPValue;
+	private boolean					sendMods;
+	private int[]					TPSList;
+	private boolean					overrideIP;
+	public static Integer			ServerID	= 0;
+	public static String			serverHash	= "";
 
 	@Override
 	public String getResponceString(DatagramPacket packet)
@@ -99,8 +99,7 @@ public class ServerInfo extends Response
 			}
 		}
 		catch (Exception e)
-		{
-		}
+		{}
 
 		return dataString = TextFormatter.toJSON(data);
 	}
@@ -120,7 +119,8 @@ public class ServerInfo extends Response
 		overrideIP = config.get(category, "overrideIP", true).getBoolean(true);
 		overrideIPValue = config.get(category, "overrideIPValue", "").value;
 		sendMods = config.get(category, "sendMods", true).getBoolean(true);
-		TPSList = config.get(category, "TPS_dim", new int[] { -1, 0, 1 }, "Dimensions to send TPS of").getIntList();
+		TPSList = config.get(category, "TPS_dim", new int[]
+		{ -1, 0, 1 }, "Dimensions to send TPS of").getIntList();
 		ServerID = config.get(category, "ServerID", 0, "This is here to make it easy for other sites (server lists) to help authenticate the server.").getInt();
 		serverHash = config.get(category, "serverHash", "", "This is here to make it easy for other sites (server lists) to help authenticate the server.").value;
 	}
@@ -134,8 +134,7 @@ public class ServerInfo extends Response
 		config.get(category, "overrideIP", true).value = "" + overrideIP;
 		config.get(category, "overrideIPValue", "").value = overrideIPValue;
 		config.get(category, "sendMods", true).value = "" + sendMods;
-		config.get(category, "ServerID", 0, "This is here to make it easy for other sites (server lists) to help authenticate the server.").value = ""
-				+ ServerID;
+		config.get(category, "ServerID", 0, "This is here to make it easy for other sites (server lists) to help authenticate the server.").value = "" + ServerID;
 		config.get(category, "serverHash", "", "This is here to make it easy for other sites (server lists) to help authenticate the server.").value = serverHash;
 
 		String[] list = new String[TPSList.length];
@@ -143,7 +142,8 @@ public class ServerInfo extends Response
 		{
 			list[i] = "" + TPSList[i];
 		}
-		config.get(category, "TPS_dim", new int[] { -1, 0, 1 }, "Dimensions to send TPS of").valueList = list;
+		config.get(category, "TPS_dim", new int[]
+		{ -1, 0, 1 }, "Dimensions to send TPS of").valueList = list;
 	}
 
 	public String getUptime()
@@ -174,7 +174,8 @@ public class ServerInfo extends Response
 		}
 		catch (Exception e)
 		{
-			return TextFormatter.toJSON(new String[] {""});
+			return TextFormatter.toJSON(new String[]
+			{ "" });
 		}
 	}
 
@@ -182,7 +183,7 @@ public class ServerInfo extends Response
 	 * TPS needed functions
 	 */
 
-	private static final DecimalFormat DF = new DecimalFormat("########0.000");
+	private static final DecimalFormat	DF	= new DecimalFormat("########0.000");
 
 	/**
 	 * 

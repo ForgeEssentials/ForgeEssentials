@@ -19,23 +19,23 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class TickTaskReplaceSelection implements ITickTask
 {
-	private BackupArea backup;
-	private EntityPlayer player;
-	private int changed;
-	private int ticks;
-	private ArrayList<AreaBase> applicable;
+	private BackupArea			backup;
+	private EntityPlayer		player;
+	private int					changed;
+	private int					ticks;
+	private ArrayList<AreaBase>	applicable;
 
 	// Stores our actual task.
-	private int targetId;
-	private int targetMeta;
-	private int newId;
-	private int newMeta;
+	private int					targetId;
+	private int					targetMeta;
+	private int					newId;
+	private int					newMeta;
 
 	// Defines our bounds and current position
-	private Point high;
-	private Point current;
-	private Point first;
-	private boolean isComplete;
+	private Point				high;
+	private Point				current;
+	private Point				first;
+	private boolean				isComplete;
 
 	public TickTaskReplaceSelection(EntityPlayer player, int firstID, int firstMeta, int secondID, int secondMeta, BackupArea backupArea, Selection selection)
 	{
@@ -52,8 +52,7 @@ public class TickTaskReplaceSelection implements ITickTask
 		this.player = player;
 	}
 
-	public TickTaskReplaceSelection(EntityPlayer player, int firstID, int firstMeta, int secondID, int secondMeta, BackupArea backupArea, Selection selection,
-			ArrayList<AreaBase> applicable)
+	public TickTaskReplaceSelection(EntityPlayer player, int firstID, int firstMeta, int secondID, int secondMeta, BackupArea backupArea, Selection selection, ArrayList<AreaBase> applicable)
 	{
 		this(player, firstID, firstMeta, secondID, secondMeta, backupArea, selection);
 		this.applicable = applicable;

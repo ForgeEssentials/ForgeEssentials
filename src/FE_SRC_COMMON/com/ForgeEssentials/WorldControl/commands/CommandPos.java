@@ -14,7 +14,7 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class CommandPos extends WorldControlCommandBase
 {
-	private int type;
+	private int	type;
 
 	public CommandPos(int type)
 	{

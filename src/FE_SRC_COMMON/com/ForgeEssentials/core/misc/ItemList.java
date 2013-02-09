@@ -11,10 +11,10 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class ItemList
 {
-	private HashMap<String, Item> itemMap = new HashMap<String, Item>();
-	private HashMap<String, Block> blockMap = new HashMap<String, Block>();
+	private HashMap<String, Item>	itemMap		= new HashMap<String, Item>();
+	private HashMap<String, Block>	blockMap	= new HashMap<String, Block>();
 
-	private static ItemList instance;
+	private static ItemList			instance;
 
 	public ItemList()
 	{

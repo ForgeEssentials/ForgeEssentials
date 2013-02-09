@@ -18,12 +18,12 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class PlayerInfoResonce extends Response
 {
-	private boolean sendhome;
-	private boolean sendpotions;
-	private boolean sendXP;
-	private boolean sendArmorAndHealth;
-	private boolean sendFood;
-	private boolean sendCapabilities;
+	private boolean	sendhome;
+	private boolean	sendpotions;
+	private boolean	sendXP;
+	private boolean	sendArmorAndHealth;
+	private boolean	sendFood;
+	private boolean	sendCapabilities;
 
 	@Override
 	public String getResponceString(DatagramPacket packet)
@@ -100,8 +100,7 @@ public class PlayerInfoResonce extends Response
 			PlayerData.put("group", group.name);
 		}
 		catch (Exception e)
-		{
-		}
+		{}
 
 		return dataString = TextFormatter.toJSON(PlayerData);
 	}

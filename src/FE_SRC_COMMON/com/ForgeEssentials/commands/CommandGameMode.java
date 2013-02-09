@@ -29,7 +29,8 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	@Override
 	public String[] getDefaultAliases()
 	{
-		return new String[] {"gm"};
+		return new String[]
+		{ "gm" };
 	}
 
 	@Override
@@ -39,23 +40,20 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 1)
 			{
-				if(args[0].equals("0") || args[0].equals("1") || args[0].equals("2")
-						|| args[0].equalsIgnoreCase(EnumGameType.CREATIVE.getName())
-						|| args[0].equalsIgnoreCase(EnumGameType.SURVIVAL.getName())
-						|| args[0].equalsIgnoreCase(EnumGameType.ADVENTURE.getName())
-						|| args[0].equalsIgnoreCase("a") || args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("s"))
+				if (args[0].equals("0") || args[0].equals("1") || args[0].equals("2") || args[0].equalsIgnoreCase(EnumGameType.CREATIVE.getName()) || args[0].equalsIgnoreCase(EnumGameType.SURVIVAL.getName())
+						|| args[0].equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) || args[0].equalsIgnoreCase("a") || args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("s"))
 				{
 					sender.setGameType(getGameTypeFromString(sender, args[0]));
 				}
-				else if(FunctionHelper.getPlayerFromPartialName(args[0]) != null || PlayerSelector.matchOnePlayer(sender, args[0]) != null)
+				else if (FunctionHelper.getPlayerFromPartialName(args[0]) != null || PlayerSelector.matchOnePlayer(sender, args[0]) != null)
 				{
-					if(!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 					{
 						OutputHandler.chatError(sender, "You do not have permission to do that.");
 						return;
 					}
 					EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
-					if(PlayerSelector.hasArguments(args[0]))
+					if (PlayerSelector.hasArguments(args[0]))
 					{
 						victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 					}
@@ -94,13 +92,13 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			if(!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
 				OutputHandler.chatError(sender, "You do not have permission to do that.");
 				return;
 			}
 			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
@@ -130,7 +128,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		if (args.length <= 2)
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
@@ -141,8 +139,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 			else
 			{
 				EnumGameType gm;
-				if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType() == EnumGameType.SURVIVAL ||
-						((EntityPlayerMP) victim).theItemInWorldManager.getGameType() == EnumGameType.ADVENTURE)
+				if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType() == EnumGameType.SURVIVAL || ((EntityPlayerMP) victim).theItemInWorldManager.getGameType() == EnumGameType.ADVENTURE)
 				{
 					gm = EnumGameType.CREATIVE;
 				}
@@ -163,11 +160,8 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
 	public EnumGameType getGameTypeFromString(ICommandSender sender, String string)
 	{
-		return !string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) && !string.equalsIgnoreCase("s") ? (!string.equalsIgnoreCase(EnumGameType.CREATIVE
-				.getName()) && !string.equalsIgnoreCase("c") ? (!string.equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) && !string.equalsIgnoreCase("a") ? WorldSettings
-				.getGameTypeById(parseIntBounded(sender, string, 0, 2)) : EnumGameType.ADVENTURE)
-				: EnumGameType.CREATIVE)
-				: EnumGameType.SURVIVAL;
+		return !string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) && !string.equalsIgnoreCase("s") ? (!string.equalsIgnoreCase(EnumGameType.CREATIVE.getName()) && !string.equalsIgnoreCase("c") ? (!string
+				.equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) && !string.equalsIgnoreCase("a") ? WorldSettings.getGameTypeById(parseIntBounded(sender, string, 0, 2)) : EnumGameType.ADVENTURE) : EnumGameType.CREATIVE) : EnumGameType.SURVIVAL;
 	}
 
 	@Override
@@ -187,14 +181,16 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			return getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure" });
+			return getListOfStringsMatchingLastWord(args, new String[]
+			{ "survival", "creative", "adventure" });
 		}
 		else if (args.length == 1)
 		{
 			List match = getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 			if (match == null)
 			{
-				match = getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure" });
+				match = getListOfStringsMatchingLastWord(args, new String[]
+				{ "survival", "creative", "adventure" });
 			}
 			return match;
 		}

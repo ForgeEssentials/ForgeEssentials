@@ -27,7 +27,7 @@ public class Chat
 {
 	public static List<String>	bannedWords	= new ArrayList<String>();
 	public static boolean		censor;
-	public static String censorSymbol;
+	public static String		censorSymbol;
 
 	@ForgeSubscribe
 	public void chatEvent(ServerChatEvent event)
@@ -42,7 +42,7 @@ public class Chat
 			event.player.sendChatToPlayer("You are muted.");
 			return;
 		}
-		
+
 		if (CommandPm.isMessagePersistent(event.player.getCommandSenderName()))
 		{
 			event.setCanceled(true);
@@ -57,18 +57,18 @@ public class Chat
 			for (String word : bannedWords)
 			{
 				Pattern p = Pattern.compile("(?i)\\b" + word + "\\b");
-				Matcher m   = p.matcher(message);
-				
-				while(m.find())
-				{	
+				Matcher m = p.matcher(message);
+
+				while (m.find())
+				{
 					int startIndex = m.start();
 					int endIndex = m.end();
 
-					int length = endIndex - startIndex;	
+					int length = endIndex - startIndex;
 					String replaceWith = Strings.repeat(censorSymbol, length);
 
-					message = m.replaceAll(replaceWith);					
-				}			
+					message = m.replaceAll(replaceWith);
+				}
 			}
 		}
 
@@ -121,9 +121,8 @@ public class Chat
 		format = ConfigChat.chatFormat == null || ConfigChat.chatFormat.trim().isEmpty() ? "<%username>%message" : ConfigChat.chatFormat;
 
 		/*
-		 * if(enable_chat%){
-		 * format = replaceAllIngnoreCase(format, "%message", message);
-		 * }
+		 * if(enable_chat%){ format = replaceAllIngnoreCase(format, "%message",
+		 * message); }
 		 */
 		// replace group, zone, and rank
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%rank", rank);
@@ -138,7 +137,8 @@ public class Chat
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%playerSuffix", playerSuffix);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%username", nickname);
-		// if(!enable_chat%){ //whereas enable chat is a boolean that can be set in the config or whatever
+		// if(!enable_chat%){ //whereas enable chat is a boolean that can be set
+		// in the config or whatever
 		// //allowing the use of %codes in chat
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%message", message);
 		// }
@@ -161,7 +161,7 @@ public class Chat
 			{
 				if (temp.length() != 0)
 					temp.append("&r");
-				
+
 				temp.append(g.name);
 			}
 
@@ -187,11 +187,11 @@ public class Chat
 			{
 				if (g.prefix.trim().isEmpty())
 					continue;
-				
+
 				if (temp.length() == 0)
 					temp.append(g.prefix);
 				else
-					temp.insert(0,g.prefix + "&r");
+					temp.insert(0, g.prefix + "&r");
 			}
 
 			end = match.replaceFirst(temp.toString());
@@ -216,7 +216,7 @@ public class Chat
 			{
 				if (g.suffix.trim().isEmpty())
 					continue;
-				
+
 				temp.append("&r").append(g.suffix);
 			}
 

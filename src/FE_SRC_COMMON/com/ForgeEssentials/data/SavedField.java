@@ -7,8 +7,7 @@ public class SavedField
 	public Class	type;
 
 	public SavedField()
-	{
-	}
+	{}
 
 	public SavedField(String name, Object value)
 	{

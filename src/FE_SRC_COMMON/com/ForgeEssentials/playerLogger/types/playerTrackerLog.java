@@ -11,10 +11,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 public class playerTrackerLog extends logEntry
 {
-	public playerTrackerLogCategory cat;
-	public String username;
-	public String extra;
-	public String ip;
+	public playerTrackerLogCategory	cat;
+	public String					username;
+	public String					extra;
+	public String					ip;
 
 	public playerTrackerLog(playerTrackerLogCategory cat, EntityPlayer player)
 	{
@@ -38,8 +38,7 @@ public class playerTrackerLog extends logEntry
 	@Override
 	public String getTableCreateSQL()
 	{
-		return "CREATE TABLE IF NOT EXISTS " + getName()
-				+ "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), disciption CHAR(128), time DATETIME, ip CHAR(16))";
+		return "CREATE TABLE IF NOT EXISTS " + getName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), disciption CHAR(128), time DATETIME, ip CHAR(16))";
 	}
 
 	@Override
@@ -56,7 +55,7 @@ public class playerTrackerLog extends logEntry
 		while (i.hasNext())
 		{
 			logEntry obj = i.next();
-			if(obj instanceof playerTrackerLog)
+			if (obj instanceof playerTrackerLog)
 			{
 				playerTrackerLog log = (playerTrackerLog) obj;
 				ps.setString(1, log.username);
@@ -65,7 +64,7 @@ public class playerTrackerLog extends logEntry
 				ps.setTimestamp(4, log.time);
 				ps.setString(5, log.ip);
 				ps.execute();
-				ps.clearParameters();	
+				ps.clearParameters();
 			}
 		}
 		ps.close();

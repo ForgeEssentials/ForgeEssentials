@@ -8,12 +8,12 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class AFKdata
 {
-	public EntityPlayerMP player;
-	private WorldPoint lastPos;
-	private WorldPoint currentPos;
-	int waittime;
-	public boolean needstowait;
-	
+	public EntityPlayerMP	player;
+	private WorldPoint		lastPos;
+	private WorldPoint		currentPos;
+	int						waittime;
+	public boolean			needstowait;
+
 	public AFKdata(EntityPlayerMP player)
 	{
 		this.player = player;
@@ -21,22 +21,22 @@ public class AFKdata
 		lastPos = new WarpPoint(player);
 		needstowait = true;
 	}
-	
+
 	public void count()
 	{
-		if(player == null)
+		if (player == null)
 		{
 			TickHandlerCommands.afkListToRemove.add(this);
 			return;
 		}
-		
+
 		currentPos = new WarpPoint(player);
 		if (!lastPos.equals(currentPos))
 		{
 			CommandAFK.abort(this);
 		}
-		
-		if(needstowait)
+
+		if (needstowait)
 		{
 			if (waittime == 0)
 			{

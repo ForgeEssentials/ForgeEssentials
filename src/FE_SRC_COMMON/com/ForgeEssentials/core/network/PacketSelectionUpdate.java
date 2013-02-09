@@ -15,9 +15,9 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class PacketSelectionUpdate implements IForgeEssentialsPacket
 {
-	public static final byte packetID = 0;
+	public static final byte		packetID	= 0;
 
-	private Packet250CustomPayload packet;
+	private Packet250CustomPayload	packet;
 
 	public PacketSelectionUpdate(PlayerInfo info)
 	{

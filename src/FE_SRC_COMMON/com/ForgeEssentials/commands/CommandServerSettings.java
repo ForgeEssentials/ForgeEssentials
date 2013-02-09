@@ -13,28 +13,30 @@ import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandServerSettings extends ForgeEssentialsCommandBase 
+public class CommandServerSettings extends ForgeEssentialsCommandBase
 {
-	public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MOTD", "onlineMode");
+	public static List<String>	options	= Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MOTD", "onlineMode");
+
 	@Override
-	public String getCommandName() 
+	public String getCommandName()
 	{
 		return "serversettings";
 	}
-	
+
 	public String[] getDefaultAliases()
 	{
-		return new String[] {"ss"};
+		return new String[]
+		{ "ss" };
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args) 
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		doStuff(sender, args);
 	}
-	
+
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args) 
+	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		doStuff(sender, args);
 	}
@@ -42,16 +44,16 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 	public void doStuff(ICommandSender sender, String[] args)
 	{
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		if(args.length == 0)
+		if (args.length == 0)
 		{
 			sender.sendChatToPlayer("Available options:");
 			sender.sendChatToPlayer(options.toString());
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("allowFlight"))
+
+		if (args[0].equalsIgnoreCase("allowFlight"))
 		{
-			if(args.length == 1)
+			if (args.length == 1)
 			{
 				OutputHandler.chatConfirmation(sender, "allowFlight: " + server.isFlightAllowed());
 			}
@@ -62,10 +64,10 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 			}
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("allowPVP"))
+
+		if (args[0].equalsIgnoreCase("allowPVP"))
 		{
-			if(args.length == 1)
+			if (args.length == 1)
 			{
 				OutputHandler.chatConfirmation(sender, "allowPVP: " + server.isPVPEnabled());
 			}
@@ -76,10 +78,10 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 			}
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("buildLimit"))
+
+		if (args[0].equalsIgnoreCase("buildLimit"))
 		{
-			if(args.length == 1)
+			if (args.length == 1)
 			{
 				OutputHandler.chatConfirmation(sender, "buildLimit: " + server.getBuildLimit());
 			}
@@ -90,17 +92,17 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 			}
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("MOTD"))
+
+		if (args[0].equalsIgnoreCase("MOTD"))
 		{
-			if(args.length == 1)
+			if (args.length == 1)
 			{
 				OutputHandler.chatConfirmation(sender, "MOTD: " + server.getMOTD());
 			}
 			else
 			{
 				String msg = "";
-				for(String var : FunctionHelper.dropFirstString(args))
+				for (String var : FunctionHelper.dropFirstString(args))
 				{
 					msg += " " + var;
 				}
@@ -110,24 +112,23 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 			return;
 		}
 	}
-	
+
 	@Override
-	public boolean canConsoleUseCommand() 
+	public boolean canConsoleUseCommand()
 	{
 		return true;
 	}
 
 	@Override
-	public String getCommandPerm() 
+	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
-
 	@Override
 	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
 	{
-		if(args.length == 1)
+		if (args.length == 1)
 			return getListOfStringsFromIterableMatchingLastWord(args, options);
 		else
 			return null;

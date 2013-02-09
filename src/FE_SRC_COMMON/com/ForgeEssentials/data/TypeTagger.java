@@ -17,21 +17,22 @@ import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
- * Responsible for transforming a particular type (class) into a TaggedClass for easier storage via DataDrivers, and eventually converts a TaggedClass into the
- * original Object (More or less.)
+ * Responsible for transforming a particular type (class) into a TaggedClass for
+ * easier storage via DataDrivers, and eventually converts a TaggedClass into
+ * the original Object (More or less.)
  * 
  * @author MysteriousAges
  * 
  */
 public class TypeTagger
 {
-	protected Class forType;
-	protected boolean isUniqueKeyField;
-	protected boolean inLine;
-	protected String uniqueKey;
-	protected String reconstructorMethod;
-	protected String[] savedFields;
-	protected HashMap<String, Class> fieldToTypeMap;
+	protected Class						forType;
+	protected boolean					isUniqueKeyField;
+	protected boolean					inLine;
+	protected String					uniqueKey;
+	protected String					reconstructorMethod;
+	protected String[]					savedFields;
+	protected HashMap<String, Class>	fieldToTypeMap;
 
 	public TypeTagger(Class type)
 	{
@@ -56,8 +57,7 @@ public class TypeTagger
 					if (f.isAnnotationPresent(UniqueLoadingKey.class))
 					{
 						assert uniqueKey == null : new RuntimeException("Each class may only have 1 UniqueLoadingKey");
-						assert f.getType().isPrimitive() || f.getType().equals(String.class) : new RuntimeException(
-								"The UniqueLoadingKey must be a primitive or a string");
+						assert f.getType().isPrimitive() || f.getType().equals(String.class) : new RuntimeException("The UniqueLoadingKey must be a primitive or a string");
 						isUniqueKeyField = true;
 						uniqueKey = f.getName();
 					}
@@ -85,8 +85,7 @@ public class TypeTagger
 				assert Modifier.isStatic(m.getModifiers()) : new RuntimeException("The reconstructor method must be static!");
 				assert m.getReturnType().equals(type) : new RuntimeException("The reconstructor method must return " + type);
 				assert m.getParameterTypes().length == 1 : new RuntimeException("The reconstructor method must have exactly 1 paremeter/argument");
-				assert m.getParameterTypes()[0].equals(ITaggedClass.class) : new RuntimeException("The reconstructor method must have a " + ITaggedClass.class
-						+ " parameter");
+				assert m.getParameterTypes()[0].equals(ITaggedClass.class) : new RuntimeException("The reconstructor method must have a " + ITaggedClass.class + " parameter");
 
 				reconstructorMethod = m.getName();
 			}
@@ -94,8 +93,7 @@ public class TypeTagger
 			{
 				assert uniqueKey == null : new RuntimeException("Each class may only have 1 UniqueLoadingKey");
 				assert m.getParameterTypes().length == 0 : new RuntimeException("The reconstructor method must have no paremeters");
-				assert (m.getReturnType().isPrimitive() && m.getReturnType().equals(Void.class)) || m.getReturnType().equals(String.class) : new RuntimeException(
-						"The UniqueLoadingKey method must return a primitive or a string");
+				assert (m.getReturnType().isPrimitive() && m.getReturnType().equals(Void.class)) || m.getReturnType().equals(String.class) : new RuntimeException("The UniqueLoadingKey method must return a primitive or a string");
 
 				uniqueKey = m.getName();
 				isUniqueKeyField = false;
@@ -254,14 +252,14 @@ public class TypeTagger
 	/**
 	 * @param t
 	 *            Type of object to check
-	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save the object.
+	 * @return True if TypeTagger must create a nested TaggedClass to allow
+	 *         DataDrivers to correctly save the object.
 	 */
 	public static boolean isTypeComplex(Object obj)
 	{
 		boolean flag = true;
 
-		if (obj instanceof Integer || obj instanceof int[] || obj instanceof Float || obj instanceof Double || obj instanceof double[]
-				|| obj instanceof Boolean || obj instanceof boolean[] || obj instanceof String || obj instanceof String[])
+		if (obj instanceof Integer || obj instanceof int[] || obj instanceof Float || obj instanceof Double || obj instanceof double[] || obj instanceof Boolean || obj instanceof boolean[] || obj instanceof String || obj instanceof String[])
 		{
 			flag = false;
 		}
@@ -272,14 +270,14 @@ public class TypeTagger
 	/**
 	 * @param t
 	 *            class check
-	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.
+	 * @return True if TypeTagger must create a nested TaggedClass to allow
+	 *         DataDrivers to correctly save this type of object.
 	 */
 	public static boolean isTypeComplex(Class obj)
 	{
 		boolean flag = true;
-		if (obj.isPrimitive() || obj.equals(Integer.class) || obj.equals(int[].class) || obj.equals(Float.class) || obj.equals(Double.class)
-				|| obj.equals(double[].class) || obj.equals(Boolean.class) || obj.equals(boolean[].class) || obj.equals(String.class)
-				|| obj.equals(String[].class))
+		if (obj.isPrimitive() || obj.equals(Integer.class) || obj.equals(int[].class) || obj.equals(Float.class) || obj.equals(Double.class) || obj.equals(double[].class) || obj.equals(Boolean.class) || obj.equals(boolean[].class)
+				|| obj.equals(String.class) || obj.equals(String[].class))
 		{
 			flag = false;
 		}

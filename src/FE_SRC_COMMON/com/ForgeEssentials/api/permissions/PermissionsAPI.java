@@ -12,9 +12,9 @@ import com.ForgeEssentials.api.permissions.query.PermissionQueryBus;
 
 public abstract class PermissionsAPI
 {
-	public static final PermissionQueryBus QUERY_BUS = new PermissionQueryBus();
-	public static IPermissionsHelper manager;
-	
+	public static final PermissionQueryBus	QUERY_BUS	= new PermissionQueryBus();
+	public static IPermissionsHelper		manager;
+
 	public static boolean checkPermAllowed(PermQuery query)
 	{
 		QUERY_BUS.post(query);
@@ -26,42 +26,42 @@ public abstract class PermissionsAPI
 		QUERY_BUS.post(query);
 		return query.getResult();
 	}
-	
+
 	public static Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority)
 	{
 		return manager.createGroupInZone(groupName, zoneName, prefix, suffix, parent, priority);
 	}
-	
+
 	public static String setPlayerPermission(String username, String permission, boolean allow, String zoneID)
 	{
 		return manager.setPlayerPermission(username, permission, allow, zoneID);
 	}
-	
+
 	public static String setGroupPermission(String group, String permission, boolean allow, String zoneID)
 	{
 		return manager.setGroupPermission(group, permission, allow, zoneID);
 	}
-	
+
 	public static ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
 		return manager.getApplicableGroups(player, includeDefaults);
 	}
-	
+
 	public static ArrayList<Group> getApplicableGroups(String player, boolean includeDefaults, String zoneID)
 	{
 		return manager.getApplicableGroups(player, includeDefaults, zoneID);
 	}
-	
+
 	public static Group getGroupForName(String name)
 	{
 		return manager.getGroupForName(name);
 	}
-	
+
 	public static Group getHighestGroup(EntityPlayer player)
 	{
 		return manager.getHighestGroup(player);
 	}
-	
+
 	public static String setPlayerGroup(String group, String player, String zone)
 	{
 		return manager.setPlayerGroup(group, player, zone);
@@ -106,7 +106,7 @@ public abstract class PermissionsAPI
 	{
 		return manager.getPermissionForGroup(target, zone, perm);
 	}
-	
+
 	public static ArrayList getPlayerPermissions(String target, String zone)
 	{
 		return manager.getPlayerPermissions(target, zone);

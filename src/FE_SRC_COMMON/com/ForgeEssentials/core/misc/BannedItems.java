@@ -29,37 +29,37 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
 public class BannedItems
 {
-	private static final String BYPASS = "ForgeEssentials.BannedItems.override";
-	
-	HashMultimap<Integer, Integer> noUse = HashMultimap.create();
-	List<String> noCraft = new ArrayList<String>();
-	
+	private static final String		BYPASS	= "ForgeEssentials.BannedItems.override";
+
+	HashMultimap<Integer, Integer>	noUse	= HashMultimap.create();
+	List<String>					noCraft	= new ArrayList<String>();
+
 	@PermRegister(ident = "FE-Core-bannedItems")
 	public void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(BYPASS, RegGroup.OWNERS);
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST, receiveCanceled = true)
 	public void click(PlayerInteractEvent e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		if (PermissionsAPI.checkPermAllowed(new PermQueryPlayerZone(e.entityPlayer, BYPASS, ZoneManager.getWhichZoneIn(new WorldPoint(e.entityPlayer)))))
 			return;
-		
+
 		ItemStack is = e.entityPlayer.inventory.getCurrentItem();
-		if(is != null)
-		{	
-			if(noUse.containsKey(is.itemID))
+		if (is != null)
+		{
+			if (noUse.containsKey(is.itemID))
 			{
-				if(noUse.get(is.itemID).contains(is.getItemDamage()))
+				if (noUse.get(is.itemID).contains(is.getItemDamage()))
 				{
 					e.entityPlayer.sendChatToPlayer("That item is banned.");
 					e.setCanceled(true);
 				}
-				if(noUse.get(is.itemID).contains(-1))
+				if (noUse.get(is.itemID).contains(-1))
 				{
 					e.entityPlayer.sendChatToPlayer("That item is banned.");
 					e.setCanceled(true);
@@ -67,22 +67,22 @@ public class BannedItems
 			}
 		}
 	}
-	
+
 	public void postLoad(FMLPostInitializationEvent e)
 	{
 		Configuration config = new Configuration(new File(ForgeEssentials.FEDIR, "banneditems.cfg"));
-		
+
 		config.addCustomCategoryComment("NoCraft", "Configuration options to remove an item's crafting recipe.");
 		config.addCustomCategoryComment("NoUse", "Configuration options to make an item unusable.");
-		
+
 		noCraft = Arrays.asList(config.get("NoCraft", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").valueList);
 		List<String> temp = Arrays.asList(config.get("NoUse", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").valueList);
-		
+
 		config.save();
 		int id;
 		int meta;
-		
-		for(String s : temp)
+
+		for (String s : temp)
 		{
 			id = meta = 0;
 			String[] tmp = s.split(":");
@@ -114,7 +114,7 @@ public class BannedItems
 				noUse.put(id, meta);
 			}
 		}
-		
+
 		ArrayList<ItemStack> items = new ArrayList();
 		// Decompose list into (item ID, Meta) pairs.
 		for (String s : noCraft)

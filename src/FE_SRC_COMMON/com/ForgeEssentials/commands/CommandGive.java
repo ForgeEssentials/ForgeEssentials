@@ -41,7 +41,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			{
 				dam = Integer.parseInt(args[3]);
 			}
-			catch(NumberFormatException e)
+			catch (NumberFormatException e)
 			{
 				OutputHandler.chatError(sender, "Damage value is not a number: " + args[3]);
 			}
@@ -64,7 +64,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 				dam = idAndMeta[1];
 			}
 			receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
@@ -98,7 +98,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			{
 				dam = Integer.parseInt(args[4]);
 			}
-			catch(NumberFormatException e)
+			catch (NumberFormatException e)
 			{
 				sender.sendChatToPlayer("Damage value is not a number: " + args[4]);
 			}
@@ -119,14 +119,13 @@ public class CommandGive extends ForgeEssentialsCommandBase
 		if (args.length > 1)
 		{
 			receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
-			
-	
+
 			amount = parseIntBounded(sender, args[2], 0, 64);
-	
+
 			ItemStack stack = new ItemStack(id, amount, dam);
 
 			String name = Item.itemsList[id].func_77653_i(stack);

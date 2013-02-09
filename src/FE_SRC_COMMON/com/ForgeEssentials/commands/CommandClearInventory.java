@@ -27,7 +27,8 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 	@Override
 	public String[] getDefaultAliases()
 	{
-		return new String[] {"ci"};
+		return new String[]
+		{ "ci" };
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
@@ -63,16 +64,13 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
 			int var6 = victim.inventory.clearInventory(-1, -1);
 			victim.inventoryContainer.detectAndSendChanges();
-			String senderName = (sender instanceof TileEntityCommandBlock ? 
-					"CommandBlock @ (" + ((TileEntityCommandBlock)sender).xCoord + ","
-					+ ((TileEntityCommandBlock)sender).yCoord + ","
-					+ ((TileEntityCommandBlock)sender).zCoord + ")."
+			String senderName = (sender instanceof TileEntityCommandBlock ? "CommandBlock @ (" + ((TileEntityCommandBlock) sender).xCoord + "," + ((TileEntityCommandBlock) sender).yCoord + "," + ((TileEntityCommandBlock) sender).zCoord + ")."
 					: "the console");
 			victim.sendChatToPlayer("Inventory cleared by " + senderName);
 			sender.sendChatToPlayer("Cleared inventory of " + victim.username);

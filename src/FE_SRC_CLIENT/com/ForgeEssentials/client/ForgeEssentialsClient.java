@@ -14,7 +14,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = com.ForgeEssentials.client.network.PacketHandler.class))
+@NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels =
+{ "ForgeEssentials" }, packetHandler = com.ForgeEssentials.client.network.PacketHandler.class))
 @Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = "@VERSION@")
 public class ForgeEssentialsClient
 {
@@ -28,7 +29,7 @@ public class ForgeEssentialsClient
 		if (FMLCommonHandler.instance().getSide().isServer() && ObfuscationReflectionHelper.obfuscation)
 			throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	@Init
 	public void load(FMLInitializationEvent e)

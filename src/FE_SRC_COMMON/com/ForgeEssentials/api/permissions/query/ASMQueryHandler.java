@@ -23,13 +23,13 @@ import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 
 public class ASMQueryHandler implements IQueryListener
 {
-	private static int IDs = 0;
-	private static final String HANDLER_DESC = Type.getInternalName(IQueryListener.class);
-	private static final String HANDLER_FUNC_DESC = Type.getMethodDescriptor(IQueryListener.class.getDeclaredMethods()[0]);
-	private static final FEASMClassLoader LOADER = new FEASMClassLoader();
+	private static int						IDs					= 0;
+	private static final String				HANDLER_DESC		= Type.getInternalName(IQueryListener.class);
+	private static final String				HANDLER_FUNC_DESC	= Type.getMethodDescriptor(IQueryListener.class.getDeclaredMethods()[0]);
+	private static final FEASMClassLoader	LOADER				= new FEASMClassLoader();
 
-	private final IQueryListener handler;
-	private final PermSubscribe subInfo;
+	private final IQueryListener			handler;
+	private final PermSubscribe				subInfo;
 
 	public ASMQueryHandler(Object target, Method method) throws Exception
 	{
@@ -76,7 +76,8 @@ public class ASMQueryHandler implements IQueryListener
 		String instType = Type.getInternalName(callback.getDeclaringClass());
 		String eventType = Type.getInternalName(callback.getParameterTypes()[0]);
 
-		cw.visit(V1_6, ACC_PUBLIC | ACC_SUPER, desc, null, "java/lang/Object", new String[] { HANDLER_DESC });
+		cw.visit(V1_6, ACC_PUBLIC | ACC_SUPER, desc, null, "java/lang/Object", new String[]
+		{ HANDLER_DESC });
 
 		cw.visitSource(".dynamic", null);
 		{
@@ -113,8 +114,7 @@ public class ASMQueryHandler implements IQueryListener
 
 	private String getUniqueName(Method callback)
 	{
-		return String.format("%s_%d_%s_%s_%s", getClass().getName(), IDs++, callback.getDeclaringClass().getSimpleName(), callback.getName(),
-				callback.getParameterTypes()[0].getSimpleName());
+		return String.format("%s_%d_%s_%s_%s", getClass().getName(), IDs++, callback.getDeclaringClass().getSimpleName(), callback.getName(), callback.getParameterTypes()[0].getSimpleName());
 	}
 
 	private static class FEASMClassLoader extends ClassLoader

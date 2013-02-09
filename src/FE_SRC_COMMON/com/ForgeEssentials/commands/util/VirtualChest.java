@@ -11,7 +11,7 @@ import com.ForgeEssentials.commands.CommandVirtualchest;
 
 public class VirtualChest extends InventoryBasic
 {
-	private EntityPlayerMP owner;
+	private EntityPlayerMP	owner;
 
 	public VirtualChest(EntityPlayerMP player)
 	{

@@ -18,10 +18,12 @@ import com.ForgeEssentials.util.AreaSelector.AreaBase;
 
 /**
  * 
- * This is the default catcher of all the ForgeEssentials Permission checks. Mods can inherit from any of the ForgeEssentials Permissions and specify more
+ * This is the default catcher of all the ForgeEssentials Permission checks.
+ * Mods can inherit from any of the ForgeEssentials Permissions and specify more
  * specific catchers to get first crack at handling them.
  * 
- * The handling performed here is limited to basic area permission checks, and is not aware of anything else other mods add to the system.
+ * The handling performed here is limited to basic area permission checks, and
+ * is not aware of anything else other mods add to the system.
  * 
  * @author AbrarSyed
  * 
@@ -35,7 +37,8 @@ public final class PermissionsHandler
 		event.setResult(isOp ? PermResult.ALLOW : PermResult.UNKNOWN);
 	}
 
-	@PermSubscribe(priority = EventPriority.HIGH, handleResult = { PermResult.UNKNOWN })
+	@PermSubscribe(priority = EventPriority.HIGH, handleResult =
+	{ PermResult.UNKNOWN })
 	public void checkPlayerSupers(PermQueryPlayer event)
 	{
 		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.getSUPER().getZoneName(), event.checkForward);
@@ -43,7 +46,8 @@ public final class PermissionsHandler
 			event.setResult(result);
 	}
 
-	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
+	@PermSubscribe(priority = EventPriority.NORMAL, handleResult =
+	{ PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayer event)
 	{
 		// ensures its a permPlayerQuery before checking...
@@ -55,14 +59,16 @@ public final class PermissionsHandler
 		}
 	}
 
-	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
+	@PermSubscribe(priority = EventPriority.NORMAL, handleResult =
+	{ PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayerZone event)
 	{
 		PermResult result = getResultFromZone(event.toCheck, event);
 		event.setResult(result);
 	}
 
-	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
+	@PermSubscribe(priority = EventPriority.NORMAL, handleResult =
+	{ PermResult.UNKNOWN })
 	public void handleQuery(PermQueryPlayerArea event)
 	{
 		if (event.allOrNothing)
@@ -91,9 +97,12 @@ public final class PermissionsHandler
 
 	/**
 	 * 
-	 * @param zone Zone to check permissions in.
-	 * @param perm The permission to check.
-	 * @param player Player to check/
+	 * @param zone
+	 *            Zone to check permissions in.
+	 * @param perm
+	 *            The permission to check.
+	 * @param player
+	 *            Player to check/
 	 * @return the result for the perm.
 	 */
 	private PermResult getResultFromZone(Zone zone, PermQueryPlayer event)
@@ -104,7 +113,8 @@ public final class PermissionsHandler
 		Group group;
 		while (result.equals(PermResult.UNKNOWN))
 		{
-			// get the permissions... Tis automatically checks permision parents...
+			// get the permissions... Tis automatically checks permision
+			// parents...
 			result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, tempZone.getZoneName(), event.checkForward);
 
 			// if its unknown still
@@ -112,7 +122,7 @@ public final class PermissionsHandler
 			{
 				// get all the players groups here.
 				groups = PermissionsAPI.getApplicableGroups(event.doer, false);
-				
+
 				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
 				{
@@ -121,7 +131,7 @@ public final class PermissionsHandler
 					{
 						// checks the permissions for the group.
 						result = SqlHelper.getPermissionResult(group.name, true, event.checker, tempZone.getZoneName(), event.checkForward);
-						
+
 						// sets the group to its parent.
 						group = SqlHelper.getGroupForName(group.parent);
 					}

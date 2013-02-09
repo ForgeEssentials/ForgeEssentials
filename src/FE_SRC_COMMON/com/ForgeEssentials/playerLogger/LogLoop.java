@@ -12,8 +12,8 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class LogLoop implements Runnable
 {
-	private boolean run = true;
-	public List<logEntry> buffer = Collections.synchronizedList(new ArrayList<logEntry>());
+	private boolean			run		= true;
+	public List<logEntry>	buffer	= Collections.synchronizedList(new ArrayList<logEntry>());
 
 	@Override
 	public void run()

@@ -23,7 +23,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 {
 
 	/** Spawn point for each dimension */
-	public static HashMap<Integer, Point> spawnPoints = new HashMap<Integer, Point>();
+	public static HashMap<Integer, Point>	spawnPoints	= new HashMap<Integer, Point>();
 
 	@Override
 	public String getCommandName()
@@ -37,7 +37,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
@@ -56,12 +56,12 @@ public class CommandTp extends ForgeEssentialsCommandBase
 		else if (args.length == 2)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
 			EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[1]);
-			if(PlayerSelector.hasArguments(args[1]))
+			if (PlayerSelector.hasArguments(args[1]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[1]);
 			}
@@ -153,7 +153,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 					return;
 				}
 				EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
-				if(PlayerSelector.hasArguments(args[0]))
+				if (PlayerSelector.hasArguments(args[0]))
 				{
 					player = PlayerSelector.matchOnePlayer(sender, args[0]);
 				}
@@ -185,12 +185,12 @@ public class CommandTp extends ForgeEssentialsCommandBase
 		if (args.length == 2)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
 			EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[1]);
-			if(PlayerSelector.hasArguments(args[1]))
+			if (PlayerSelector.hasArguments(args[1]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[1]);
 			}
@@ -212,7 +212,8 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				}
 				return;
 			}
-		}else if (args.length == 4)
+		}
+		else if (args.length == 4)
 		{
 
 			int x = 0, y = 0, z = 0;
@@ -244,7 +245,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 				return;
 			}
 			EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}

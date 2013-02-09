@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 
 public class Vector3 extends Vector2 implements Cloneable
 {
-	public double z;
+	public double	z;
 
 	public Vector3()
 	{

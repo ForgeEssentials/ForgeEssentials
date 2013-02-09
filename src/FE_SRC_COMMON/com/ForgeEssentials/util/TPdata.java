@@ -19,11 +19,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TPdata
 {
-	private WarpPoint point;
-	private EntityPlayer player;
-	private WorldPoint lastPos;
-	private WorldPoint currentPos;
-	int waittime;
+	private WarpPoint		point;
+	private EntityPlayer	player;
+	private WorldPoint		lastPos;
+	private WorldPoint		currentPos;
+	int						waittime;
 
 	public TPdata(WarpPoint point, EntityPlayer player)
 	{

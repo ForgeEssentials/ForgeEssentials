@@ -59,7 +59,7 @@ public class MobTypeLoader
 				MobTypeRegistry.addMob(type, className);
 				continue;
 			}
-			
+
 			// continue cuz its a tameable...
 
 			if (EntityTameable.class.isAssignableFrom(c))

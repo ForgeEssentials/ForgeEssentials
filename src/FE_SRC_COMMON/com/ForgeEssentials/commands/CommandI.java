@@ -9,7 +9,8 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 
-public class CommandI extends ForgeEssentialsCommandBase {
+public class CommandI extends ForgeEssentialsCommandBase
+{
 
 	@Override
 	public String getCommandName()
@@ -20,7 +21,8 @@ public class CommandI extends ForgeEssentialsCommandBase {
 	@Override
 	public String[] getDefaultAliases()
 	{
-		return new String[] {"item"};
+		return new String[]
+		{ "item" };
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class CommandI extends ForgeEssentialsCommandBase {
 		int amount = 64;
 		int dam = 0;
 		EntityPlayer receiver = sender;
-		
+
 		if (args.length == 2)
 		{
 			amount = parseIntBounded(sender, args[1], 0, 64);

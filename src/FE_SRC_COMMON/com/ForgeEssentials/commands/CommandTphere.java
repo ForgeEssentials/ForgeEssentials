@@ -23,7 +23,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 {
 
 	/** Spawn point for each dimension */
-	public static HashMap<Integer, Point> spawnPoints = new HashMap<Integer, Point>();
+	public static HashMap<Integer, Point>	spawnPoints	= new HashMap<Integer, Point>();
 
 	@Override
 	public String getCommandName()
@@ -37,7 +37,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				player = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}

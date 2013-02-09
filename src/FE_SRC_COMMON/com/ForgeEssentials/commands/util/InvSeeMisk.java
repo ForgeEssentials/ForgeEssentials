@@ -11,24 +11,24 @@ import cpw.mods.fml.common.TickType;
 
 public class InvSeeMisk implements ITickHandler
 {
-	public static HashMultimap<EntityPlayer, PlayerInvChest> map = HashMultimap.create();
-	
-	public static void register(PlayerInvChest inv) 
+	public static HashMultimap<EntityPlayer, PlayerInvChest>	map	= HashMultimap.create();
+
+	public static void register(PlayerInvChest inv)
 	{
 		map.put(inv.owner, inv);
 	}
-	
-	public static void remove(PlayerInvChest inv) 
+
+	public static void remove(PlayerInvChest inv)
 	{
 		map.remove(inv.owner, inv);
 	}
-	
+
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) 
+	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		if(map.containsKey(tickData[0]))
+		if (map.containsKey(tickData[0]))
 		{
-			for(PlayerInvChest inv : map.get((EntityPlayer) tickData[0]))
+			for (PlayerInvChest inv : map.get((EntityPlayer) tickData[0]))
 			{
 				inv.update();
 			}
@@ -36,16 +36,17 @@ public class InvSeeMisk implements ITickHandler
 	}
 
 	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData) {}
+	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	{}
 
 	@Override
-	public EnumSet<TickType> ticks() 
+	public EnumSet<TickType> ticks()
 	{
 		return EnumSet.of(TickType.PLAYER);
 	}
 
 	@Override
-	public String getLabel() 
+	public String getLabel()
 	{
 		return "invSee ticker";
 	}

@@ -34,6 +34,7 @@ public class MobTypeRegistry
 
 	/**
 	 * Internally checks for if the mob is tameable...
+	 * 
 	 * @param mob
 	 * @return
 	 */
@@ -48,7 +49,7 @@ public class MobTypeRegistry
 				Class c = mob.getClass();
 				String obj = tameableChecks.get(c.getName());
 				boolean isMethod = obj.endsWith("()");
-				obj = obj.replace("()", "");  // the () is just to mark it..
+				obj = obj.replace("()", ""); // the () is just to mark it..
 
 				if (isMethod)
 				{

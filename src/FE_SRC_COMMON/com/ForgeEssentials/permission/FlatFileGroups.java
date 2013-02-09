@@ -41,7 +41,7 @@ public class FlatFileGroups
 				continue;
 
 			split = e.getKey().split("\\" + Configuration.CATEGORY_SPLITTER);
-			
+
 			if (split[1].equalsIgnoreCase("_ladders_"))
 			{
 				for (Property prop : e.getValue().getValues().values())
@@ -51,7 +51,7 @@ public class FlatFileGroups
 				}
 				continue;
 			}
-			
+
 			prefix = config.get(e.getKey(), "prefix", " ").value;
 			suffix = config.get(e.getKey(), "suffix", " ").value;
 			parent = config.get(e.getKey(), "parent", "").value;
@@ -62,9 +62,9 @@ public class FlatFileGroups
 
 			g = new Group(split[1], prefix, suffix, parent, split[0], priority);
 			groups.add(g);
-			
+
 			// now for the player things...
-			players  = config.get(e.getKey(), "playersInGroup", new String[] {}).valueList;
+			players = config.get(e.getKey(), "playersInGroup", new String[] {}).valueList;
 			playerMap = connector.get(split[0]);
 			if (playerMap == null)
 			{
@@ -95,7 +95,7 @@ public class FlatFileGroups
 		{
 			if (g.name.equals(PermissionsAPI.getDEFAULT().name))
 				continue;
-			
+
 			cat = g.zoneName + "." + g.name;
 			config.get(cat, "prefix", g.prefix);
 			config.get(cat, "suffix", g.suffix);

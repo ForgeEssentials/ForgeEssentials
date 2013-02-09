@@ -20,7 +20,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandPotion extends ForgeEssentialsCommandBase
 {
-	public static HashMap<String, Integer> names;
+	public static HashMap<String, Integer>	names;
 	static
 	{
 		names = new HashMap<String, Integer>();
@@ -78,10 +78,10 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		{
 			target = (EntityPlayerMP) sender;
 		}
-		else if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			target = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if(PlayerSelector.hasArguments(args[0]))
+			if (PlayerSelector.hasArguments(args[0]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
@@ -100,7 +100,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		dur = parseIntWithMin(sender, args[2], 0) * 20;
 
 		PotionEffect eff = new PotionEffect(ID, dur, ampl);
-		if(target != null)
+		if (target != null)
 		{
 			target.addPotionEffect(eff);
 		}
@@ -125,11 +125,11 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		}
 
 		target = FunctionHelper.getPlayerFromPartialName(args[0]);
-		if(PlayerSelector.hasArguments(args[0]))
+		if (PlayerSelector.hasArguments(args[0]))
 		{
 			target = PlayerSelector.matchOnePlayer(sender, args[0]);
 		}
-		
+
 		if (names.containsKey(args[1]))
 		{
 			ID = names.get(args[1]);

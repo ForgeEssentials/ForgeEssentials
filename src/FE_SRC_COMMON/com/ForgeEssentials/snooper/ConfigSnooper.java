@@ -9,9 +9,9 @@ import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.api.snooper.Response;
 
 public class ConfigSnooper extends ModuleConfigBase
-{	
-	private Configuration config;
-	
+{
+	private Configuration	config;
+
 	public ConfigSnooper(File file)
 	{
 		super(file);

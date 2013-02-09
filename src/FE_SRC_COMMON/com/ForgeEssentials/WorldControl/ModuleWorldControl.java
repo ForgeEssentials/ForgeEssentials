@@ -31,8 +31,8 @@ import com.ForgeEssentials.util.OutputHandler;
 public class ModuleWorldControl
 {
 	// implicit constructor WorldControl()
-	public static int defaultWandID;
-	public static ArrayList<WorldControlCommandBase> needsCompleteCommands = new ArrayList<WorldControlCommandBase>();
+	public static int									defaultWandID;
+	public static ArrayList<WorldControlCommandBase>	needsCompleteCommands	= new ArrayList<WorldControlCommandBase>();
 
 	// preload.
 	@PreInit
@@ -65,6 +65,6 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandTopManipulate("snow", Mode.SNOW));
 		e.registerServerCommand(new CommandTopManipulate("till", Mode.TILL));
 		e.registerServerCommand(new CommandTopManipulate("untill", Mode.UNTILL));
-		//WEIntegration.serverStarting(e);
+		// WEIntegration.serverStarting(e);
 	}
 }

@@ -67,11 +67,12 @@ public class WarpPoint extends WorldPoint
 		pitch = sender.rotationPitch;
 		yaw = sender.rotationYaw;
 	}
-	
+
 	/**
 	 * This is calculated by the whichever has higher coords.
 	 * 
-	 * @return Posotive number if this Point is larger. 0 if they are equal. Negative if the provided point is larger.
+	 * @return Posotive number if this Point is larger. 0 if they are equal.
+	 *         Negative if the provided point is larger.
 	 */
 	public int compareTo(WarpPoint point)
 	{
@@ -128,7 +129,8 @@ public class WarpPoint extends WorldPoint
 	}
 
 	/**
-	 * ensures the Point is valid. Just floors the Y axis to 0. Y can't be negative.
+	 * ensures the Point is valid. Just floors the Y axis to 0. Y can't be
+	 * negative.
 	 */
 	@Override
 	public void validate()

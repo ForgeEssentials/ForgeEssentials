@@ -16,8 +16,9 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Rollback command. WIP!
+ * 
  * @author Dries007
- *
+ * 
  */
 
 public class CommandRollback extends ForgeEssentialsCommandBase
@@ -28,11 +29,12 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	{
 		return "rollback";
 	}
-	
+
 	@Override
 	public List getCommandAliases()
 	{
-		return Arrays.asList(new String[] {"rb"});
+		return Arrays.asList(new String[]
+		{ "rb" });
 	}
 
 	@Override
@@ -40,22 +42,23 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	{
 		doRollback(sender, args);
 	}
-	
+
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		doRollback(sender, args);
 	}
+
 	/*
 	 * We want: /rollback <username> [undo|clear]
 	 */
 	private void doRollback(ICommandSender sender, String[] args)
 	{
-		if(args.length == 0)
+		if (args.length == 0)
 		{
-			//CMD usage
+			// CMD usage
 		}
-		else if(args.length == 1)
+		else if (args.length == 1)
 		{
 			try
 			{
@@ -68,12 +71,12 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 				e.printStackTrace();
 			}
 		}
-		else if(args.length == 2 && args[1].equalsIgnoreCase("undo"))
+		else if (args.length == 2 && args[1].equalsIgnoreCase("undo"))
 		{
 			try
 			{
 				TickTaskHandler.addTask(new TickTaskRollback(sender, args[0], true));
-				sender.sendChatToPlayer("Starting rollback of rollback.");	
+				sender.sendChatToPlayer("Starting rollback of rollback.");
 			}
 			catch (Exception e)
 			{
@@ -81,7 +84,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 				e.printStackTrace();
 			}
 		}
-		else if(args.length == 2 && args[1].equalsIgnoreCase("clear"))
+		else if (args.length == 2 && args[1].equalsIgnoreCase("clear"))
 		{
 			try
 			{
@@ -109,13 +112,13 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	{
 		return true;
 	}
-	
+
 	@Override
 	public String getCommandPerm()
 	{
 		return "";
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

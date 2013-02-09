@@ -14,13 +14,13 @@ import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 public class Point implements Serializable, Comparable<Point>
 {
 	@SaveableField
-	public double x;
-	
+	public double	x;
+
 	@SaveableField
-	public double y;
-	
+	public double	y;
+
 	@SaveableField
-	public double z;
+	public double	z;
 
 	public Point(double x, double y, double z)
 	{
@@ -29,7 +29,7 @@ public class Point implements Serializable, Comparable<Point>
 		this.z = z;
 	}
 
-	public Point(EntityPlayer player) 
+	public Point(EntityPlayer player)
 	{
 		this.x = player.posX;
 		this.y = player.posY;
@@ -38,23 +38,24 @@ public class Point implements Serializable, Comparable<Point>
 
 	public int getX()
 	{
-		return (int)Math.floor(x);
+		return (int) Math.floor(x);
 	}
 
 	public int getY()
 	{
-		return (int)Math.floor(y);
+		return (int) Math.floor(y);
 	}
 
 	public int getZ()
 	{
-		return (int)Math.floor(z);
+		return (int) Math.floor(z);
 	}
 
 	/**
 	 * This is calculated by the whichever has higher coords.
 	 * 
-	 * @return Posotive number if this Point is larger. 0 if they are equal. Negative if the provided point is larger.
+	 * @return Posotive number if this Point is larger. 0 if they are equal.
+	 *         Negative if the provided point is larger.
 	 */
 	@Override
 	public int compareTo(Point point)
@@ -85,7 +86,7 @@ public class Point implements Serializable, Comparable<Point>
 		else if (negatives > positives)
 			return -1;
 		else
-			return (int)((x - point.x) + (y - point.y) + (z - point.z));
+			return (int) ((x - point.x) + (y - point.y) + (z - point.z));
 	}
 
 	@Override
@@ -128,32 +129,34 @@ public class Point implements Serializable, Comparable<Point>
 	}
 
 	/**
-	 * ensures the Point is valid. Just floors the Y axis to 0. Y can't be negative.
+	 * ensures the Point is valid. Just floors the Y axis to 0. Y can't be
+	 * negative.
 	 */
 	public static Point validate(Point point)
 	{
 		if (point.y < 0)
 		{
 			return new Point(point.x, 0, point.z);
-		} else
+		}
+		else
 			return point;
 	}
-	
+
 	@Reconstructor()
 	public static Point reconstruct(ITaggedClass tag)
 	{
-		float x = (Float)tag.getFieldValue("x");
-		float y = (Float)tag.getFieldValue("y");
-		float z = (Float)tag.getFieldValue("z");
+		float x = (Float) tag.getFieldValue("x");
+		float y = (Float) tag.getFieldValue("y");
+		float z = (Float) tag.getFieldValue("z");
 		return new Point(x, y, z);
 	}
-	
+
 	@UniqueLoadingKey()
 	private String getLoadingField()
 	{
-		return "point_"+x+"_"+y+"_"+z;
+		return "point_" + x + "_" + y + "_" + z;
 	}
-	
+
 	@Override
 	public String toString()
 	{

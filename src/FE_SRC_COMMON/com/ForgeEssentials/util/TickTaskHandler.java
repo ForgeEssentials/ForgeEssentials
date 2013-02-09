@@ -9,8 +9,8 @@ import cpw.mods.fml.common.TickType;
 
 public final class TickTaskHandler implements ITickHandler
 {
-	public static final int MAX_BLOCK_UPDATES = 10;
-	private static ConcurrentLinkedQueue<ITickTask> tasks = new ConcurrentLinkedQueue<ITickTask>();
+	public static final int							MAX_BLOCK_UPDATES	= 10;
+	private static ConcurrentLinkedQueue<ITickTask>	tasks				= new ConcurrentLinkedQueue<ITickTask>();
 
 	public static void addTask(ITickTask task)
 	{

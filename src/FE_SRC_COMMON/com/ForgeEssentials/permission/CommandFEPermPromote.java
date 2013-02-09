@@ -16,51 +16,52 @@ public class CommandFEPermPromote
 
 		if (args.length == 0)
 		{
-			//Not possible
-			//OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
+			// Not possible
+			// OutputHandler.chatError(sender,
+			// Localization.get(Localization.ERROR_BADSYNTAX) + "");
 			return;
 		}
-		
+
 		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
 		if (player == null)
 		{
 			// No such player!
 		}
-		if (args.length == 1) // display user-specific settings & there values for this player
+		if (args.length == 1) // display user-specific settings & there values
+								// for this player
 		{
 			// default ladder
 			return;
 		}
-		if(!args[1].equalsIgnoreCase("from"))
+		if (!args[1].equalsIgnoreCase("from"))
 		{
 			// Ladder specified.
 			// Ladder = arg 1
-			if(args.length >= 3)
+			if (args.length >= 3)
 			{
-				if(args.length == 4)
+				if (args.length == 4)
 				{
-					//Zone set.
+					// Zone set.
 					// arg 3 = zone
 				}
 			}
 			return;
 		}
-		if(args[1].equalsIgnoreCase("from"))
+		if (args[1].equalsIgnoreCase("from"))
 		{
 			// Ladder specified.
 			// Ladder = arg 1
-			if(args.length >= 3)
+			if (args.length >= 3)
 			{
-				if(args.length == 4)
+				if (args.length == 4)
 				{
-					//Zone set.
+					// Zone set.
 					// arg 3 = zone
 				}
 			}
 			return;
 		}
-		
-		
+
 		OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
 	}
 

@@ -20,7 +20,8 @@ public class CommandJump extends ForgeEssentialsCommandBase
 	@Override
 	public String[] getDefaultAliases()
 	{
-		return new String[] {"j"};
+		return new String[]
+		{ "j" };
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import com.ForgeEssentials.util.FunctionHelper;
 
 public class message implements IEffect
 {
-	private String message = "You passed the world border!";
+	private String	message	= "You passed the world border!";
 
 	@Override
 	public void registerConfig(Configuration config, String category)

@@ -11,14 +11,14 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandPing extends ForgeEssentialsCommandBase
 {
-	String response = "Pong! %time";
-	
+	String	response	= "Pong! %time";
+
 	@Override
 	public void doConfig(Configuration config, String category)
 	{
 		response = config.get(category, "response", "Pong! %time").value;
 	}
-	
+
 	@Override
 	public String getCommandName()
 	{

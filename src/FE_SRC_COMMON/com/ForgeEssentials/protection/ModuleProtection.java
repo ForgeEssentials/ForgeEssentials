@@ -21,19 +21,19 @@ import cpw.mods.fml.common.FMLCommonHandler;
 /**
  * @author Dries007
  */
-@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true, configClass=ConfigProtection.class)
+@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true, configClass = ConfigProtection.class)
 public class ModuleProtection
 {
-	public final static String PERM_EDITS = "ForgeEssentials.Protection.allowEdits";
-	public final static String PERM_INTERACT_BLOCK = "ForgeEssentials.Protection.allowBlockInteractions";
-	public final static String PERM_INTERACT_ENTITY = "ForgeEssentials.Protection.allowEntityInteractions";
-	public final static String PERM_OVERRIDE = "ForgeEssentials.Protection.overrideProtection";
+	public final static String									PERM_EDITS				= "ForgeEssentials.Protection.allowEdits";
+	public final static String									PERM_INTERACT_BLOCK		= "ForgeEssentials.Protection.allowBlockInteractions";
+	public final static String									PERM_INTERACT_ENTITY	= "ForgeEssentials.Protection.allowEntityInteractions";
+	public final static String									PERM_OVERRIDE			= "ForgeEssentials.Protection.overrideProtection";
 
 	@Config
-	public static ConfigProtection config;
-	public static boolean enable = false;
+	public static ConfigProtection								config;
+	public static boolean										enable					= false;
 
-	public static HashMap<String, HashMap<RegGroup, Boolean>> permissions = new HashMap<String, HashMap<RegGroup, Boolean>>();
+	public static HashMap<String, HashMap<RegGroup, Boolean>>	permissions				= new HashMap<String, HashMap<RegGroup, Boolean>>();
 
 	public ModuleProtection()
 	{
@@ -68,7 +68,7 @@ public class ModuleProtection
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
-	@PermRegister(ident="FE-Core-Protection")
+	@PermRegister(ident = "FE-Core-Protection")
 	public void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(PERM_EDITS, RegGroup.MEMBERS);

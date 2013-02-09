@@ -23,11 +23,17 @@ public class DBConnector
 	private HashMap<EnumDBType, HashMap<String, Property>>	data;
 
 	/**
-	 * @param name a name for the DB connector. to be used in Logging.
-	 * @param fallback The DBConnector from which to take information for a given type if loading that type from this config fails.
-	 * @param dType the default database type to use
-	 * @param dbDefault the default name for remote databases
-	 * @param dbFileDefault the default path for file databases. Relative to FEDIR 
+	 * @param name
+	 *            a name for the DB connector. to be used in Logging.
+	 * @param fallback
+	 *            The DBConnector from which to take information for a given
+	 *            type if loading that type from this config fails.
+	 * @param dType
+	 *            the default database type to use
+	 * @param dbDefault
+	 *            the default name for remote databases
+	 * @param dbFileDefault
+	 *            the default path for file databases. Relative to FEDIR
 	 * @paramuseFallbac if the Fallback should be used for remote Databases
 	 */
 	public DBConnector(String name, DBConnector fallback, EnumDBType dType, String dbDefault, String dbFileDefault, boolean useFallback)
@@ -42,9 +48,13 @@ public class DBConnector
 	}
 
 	/**
-	 * Forcibly writes everything to the config. the config's save() method is not called.
+	 * Forcibly writes everything to the config. the config's save() method is
+	 * not called.
+	 * 
 	 * @param config
-	 * @param category the category where everything regarding this connector will be.
+	 * @param category
+	 *            the category where everything regarding this connector will
+	 *            be.
 	 */
 	public void write(Configuration config, String cat)
 	{
@@ -80,9 +90,13 @@ public class DBConnector
 	}
 
 	/**
-	 * Loads the the connector from the config for use. config load method is not called.
+	 * Loads the the connector from the config for use. config load method is
+	 * not called.
+	 * 
 	 * @param config
-	 * @param category the category where everything regarding this connector will be.
+	 * @param category
+	 *            the category where everything regarding this connector will
+	 *            be.
 	 */
 	public void loadOrGenerate(Configuration config, String cat)
 	{
@@ -122,9 +136,8 @@ public class DBConnector
 			{
 				props.put("database", config.get(newcat, "database", dbFileDefault, "this may be a file path as well."));
 			}
-			
-		}
 
+		}
 
 		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" "));
 		config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.");
@@ -202,7 +215,7 @@ public class DBConnector
 				return DriverManager.getConnection(connect);
 			}
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			OutputHandler.info("CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
 			Throwables.propagate(e);
@@ -212,14 +225,16 @@ public class DBConnector
 	}
 
 	/**
-	 * @param type Only use this for remote types.
+	 * @param type
+	 *            Only use this for remote types.
 	 * @return NULL if some error occurred.
-	 * @throws IllegalArgumentException if the type is not remote
+	 * @throws IllegalArgumentException
+	 *             if the type is not remote
 	 */
 	private Connection getSpecificConnection(EnumDBType type) throws IllegalArgumentException
 	{
 		if (!type.isRemote)
-			throw new IllegalArgumentException("Non remote type "+type+" is asking for parent config!");
+			throw new IllegalArgumentException("Non remote type " + type + " is asking for parent config!");
 
 		try
 		{

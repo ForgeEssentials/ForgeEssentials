@@ -1,4 +1,5 @@
 package com.ForgeEssentials.data;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -13,14 +14,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class BinaryDataDriver extends DataDriver
 {
-	protected File baseFile;
-	protected String extension;
+	protected File		baseFile;
+	protected String	extension;
 
 	@Override
 	public final void parseConfigs(Configuration config, String category, String worldName) throws Exception
 	{
 		Property prop;
-		
+
 		String cat = category.substring(0, category.lastIndexOf('.'));
 
 		prop = config.get(cat, "useFEDataDir", false);
@@ -30,7 +31,7 @@ public abstract class BinaryDataDriver extends DataDriver
 
 		if (useFEDir)
 		{
-			baseFile = new File(ForgeEssentials.FEDIR, "saves/"+getName()+"/" + worldName + "/");
+			baseFile = new File(ForgeEssentials.FEDIR, "saves/" + getName() + "/" + worldName + "/");
 		}
 		else
 		{
@@ -40,26 +41,27 @@ public abstract class BinaryDataDriver extends DataDriver
 				parent = new File(FunctionHelper.getBaseDir(), "saves/");
 			}
 
-			baseFile = new File(parent, worldName + "/FEData/"+getName()+"/");
+			baseFile = new File(parent, worldName + "/FEData/" + getName() + "/");
 		}
 
 		config.save();
 	}
-	 
+
 	protected final File getTypePath(Class type)
 	{
 		return new File(baseFile, type.getSimpleName() + "/");
 	}
-	
+
 	/**
 	 * always uses the .dat extension
+	 * 
 	 * @return
 	 */
-	protected  File getFilePath(Class type, Object uniqueKey)
+	protected File getFilePath(Class type, Object uniqueKey)
 	{
 		return new File(getTypePath(type).getPath(), uniqueKey.toString() + extension);
 	}
-	
+
 	@Override
 	protected TaggedClass[] loadAll(Class type)
 	{
@@ -79,7 +81,7 @@ public abstract class BinaryDataDriver extends DataDriver
 
 		return data.toArray(new TaggedClass[] {});
 	}
-	
+
 	@Override
 	protected final boolean deleteData(Class type, Object uniqueObjectKey)
 	{

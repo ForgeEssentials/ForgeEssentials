@@ -2,13 +2,8 @@ package com.ForgeEssentials.api.commands;
 
 public enum EnumMobType
 {
-	BOSS,
-	GOLEM,
-	HOSTILE,
-	PASSIVE,
-	VILLAGER,
-	TAMEABLE;
-	
+	BOSS, GOLEM, HOSTILE, PASSIVE, VILLAGER, TAMEABLE;
+
 	public static boolean isMobType(String type)
 	{
 		try
@@ -16,7 +11,7 @@ public enum EnumMobType
 			EnumMobType.valueOf(type.toUpperCase());
 			return true;
 		}
-		catch(IllegalArgumentException e)
+		catch (IllegalArgumentException e)
 		{
 			return false;
 		}

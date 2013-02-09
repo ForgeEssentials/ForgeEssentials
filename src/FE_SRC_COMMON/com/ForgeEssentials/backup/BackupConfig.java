@@ -24,8 +24,7 @@ public class BackupConfig extends ModuleConfigBase
 		config = new Configuration(file);
 
 		config.addCustomCategoryComment("Backups", "Configure the backup system.");
-		BackupThread.backupName = config.get("Backups", "name", "%world-%year-%month-%day_%hour-%min",
-				"The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world").value;
+		BackupThread.backupName = config.get("Backups", "name", "%world-%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %world").value;
 
 		backupDir = config.get("Backups", "backupsDir", "", "The path to the backup folder. If left blank, it will assume ./ForgeEssentials/Backup/").value;
 		isRelative = config.get("Backups", "isRelative", true, "If this is false, the backupsDir path will be treated as an absolute path. Otherwise it is relative to the ForgeEssentials/Backups folder.").getBoolean(true);

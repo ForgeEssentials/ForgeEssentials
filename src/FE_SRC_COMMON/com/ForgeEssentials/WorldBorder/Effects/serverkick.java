@@ -7,7 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public class serverkick implements IEffect
 {
-	private String message = "You passed the world border!";
+	private String	message	= "You passed the world border!";
 
 	@Override
 	public void registerConfig(Configuration config, String category)

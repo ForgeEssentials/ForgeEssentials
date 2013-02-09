@@ -21,7 +21,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		LoginMessage.sendLoginMessage(sender);
-		if(args.length > 0 && args[0].equalsIgnoreCase("reload"))
+		if (args.length > 0 && args[0].equalsIgnoreCase("reload"))
 		{
 			LoginMessage.loadFile();
 		}
@@ -31,7 +31,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		LoginMessage.sendLoginMessage(sender);
-		if(args.length > 0 && args[0].equalsIgnoreCase("reload"))
+		if (args.length > 0 && args[0].equalsIgnoreCase("reload"))
 		{
 			LoginMessage.loadFile();
 		}
@@ -48,7 +48,7 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

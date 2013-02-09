@@ -2,7 +2,7 @@ package com.ForgeEssentials.util;
 
 public enum FEChatFormatCodes
 {
-	
+
 	BLACK
 	{
 		@Override

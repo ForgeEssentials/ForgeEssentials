@@ -52,11 +52,11 @@ public class ModuleLauncher
 					else if (temp.mod == ForgeEssentials.instance && other.doesOverride)
 						continue;
 					else
-						throw new RuntimeException("{FE-Module-Launcher} "+temp.name+" is conflicting with "+other.name);
+						throw new RuntimeException("{FE-Module-Launcher} " + temp.name + " is conflicting with " + other.name);
 				}
 				else
 					containerMap.put(temp.name, temp);
-				
+
 				temp.createAndPopulate();
 				OutputHandler.info("Loaded " + temp.name);
 			}

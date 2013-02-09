@@ -65,9 +65,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				clearReply("server");
 				addReply(sender.getCommandSenderName(), "server");
 				addReply("server", sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] "
-						+ FEChatFormatCodes.GREY;
-				String receiverMessage =  FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
+				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.GREY;
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
 				for (int i = 0; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -93,10 +92,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				clearReply(receiver.getCommandSenderName());
 				addReply(sender.getCommandSenderName(), receiver.getCommandSenderName());
 				addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD
-						+ "] " + FEChatFormatCodes.WHITE;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD
-						+ " -> me ] " + FEChatFormatCodes.WHITE;
+				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.WHITE;
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.WHITE;
 				for (int i = 1; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -141,8 +138,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				addReply(receiver.getCommandSenderName(), "server");
 				addReply("server", receiver.getCommandSenderName());
 				String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] "
-						+ FEChatFormatCodes.GREY;
+				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.GREY;
 				for (int i = 1; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -181,7 +177,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	{
 		return playerReply.get(player);
 	}
-	
+
 	public static void clearReply(String player)
 	{
 		if (playerReply.containsKey(player))
@@ -189,7 +185,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 			playerReply.remove(player);
 		}
 	}
-	
+
 	public static void addReply(String player, String target)
 	{
 		playerReply.put(player, target);

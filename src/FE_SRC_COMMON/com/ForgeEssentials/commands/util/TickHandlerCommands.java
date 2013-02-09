@@ -13,7 +13,8 @@ import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 
 /**
- * Use for all commands that need a cooldown, except for warp systems, see TeleportCenter.
+ * Use for all commands that need a cooldown, except for warp systems, see
+ * TeleportCenter.
  * 
  * @author Dries007
  * 
@@ -24,15 +25,15 @@ public class TickHandlerCommands implements IScheduledTickHandler
 	/*
 	 * For AFK system
 	 */
-	
-	public static List<AFKdata> afkList = new ArrayList<AFKdata>();
-	public static List<AFKdata> afkListToAdd = new ArrayList<AFKdata>();
-	public static List<AFKdata> afkListToRemove = new ArrayList<AFKdata>();
-	
+
+	public static List<AFKdata>	afkList				= new ArrayList<AFKdata>();
+	public static List<AFKdata>	afkListToAdd		= new ArrayList<AFKdata>();
+	public static List<AFKdata>	afkListToRemove		= new ArrayList<AFKdata>();
+
 	/*
 	 * For kit command
 	 */
-	public static final String BYPASS_KIT_COOLDOWN = "ForgeEssentials.TickHandlerCommands.BypassKitCooldown";
+	public static final String	BYPASS_KIT_COOLDOWN	= "ForgeEssentials.TickHandlerCommands.BypassKitCooldown";
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
@@ -41,10 +42,10 @@ public class TickHandlerCommands implements IScheduledTickHandler
 		{
 			PlayerInfo.getPlayerInfo((EntityPlayer) player).KitCooldownTick();
 		}
-		
+
 		afkList.addAll(afkListToAdd);
 		afkListToAdd.clear();
-		for(AFKdata data : afkList)
+		for (AFKdata data : afkList)
 		{
 			data.count();
 		}

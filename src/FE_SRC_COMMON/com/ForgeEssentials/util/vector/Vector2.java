@@ -4,8 +4,8 @@ import net.minecraft.util.MathHelper;
 
 public class Vector2 implements Cloneable
 {
-	public double x;
-	public double y;
+	public double	x;
+	public double	y;
 
 	public Vector2()
 	{
