@@ -165,7 +165,7 @@ public class SqlHelper
 
 	/**
 	 * Create all the prepared statements.
-	 * @param db The datbase to compile the statements against.
+	 * @param db The database to compile the statements against.
 	 */
 	private void prepareStatements(Connection db)
 	{
@@ -511,7 +511,9 @@ public class SqlHelper
 		}
 	}
 
-	// create tables.
+	/**
+	 * Create the tables needed.
+	 */
 	private void generate()
 	{
 		try

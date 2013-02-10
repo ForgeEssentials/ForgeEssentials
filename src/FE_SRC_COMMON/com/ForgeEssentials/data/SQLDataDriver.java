@@ -190,10 +190,11 @@ public class SQLDataDriver extends DataDriver
 	{
 		TypeTagger rootTagger = DataStorageManager.getTaggerForType(type);
 		TypeTagger taggerCursor;
-		TaggedClass value = new TaggedClass();
-		value.type = type;
+		TaggedClass tClass = TaggedClass.getTaggedClass(type);
+		TaggedClass value = new TaggedClass(type);
 		TaggedClass cursor = null;
 		SavedField tmpField = null;
+		Class tmpClass;
 
 		for (Entry<String, Object> entry : result.entrySet())
 		{
@@ -221,8 +222,8 @@ public class SQLDataDriver extends DataDriver
 					if (fieldHeiarchy.length > i + 1)
 					{
 						// An object lives here.
-						tmpField.value = cursor = new TaggedClass();
-						tmpField.type = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
+						tmpClass = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
+						tmpField.value = cursor = new TaggedClass(tmpClass);
 						taggerCursor = DataStorageManager.getTaggerForType(tmpField.type);
 					}
 					else

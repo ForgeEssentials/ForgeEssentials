@@ -111,9 +111,7 @@ public class NBTDataDriver extends BinaryDataDriver
 			return null;
 		}
 
-		TypeTagger tag = DataStorageManager.getTaggerForType(type);
-
-		return readClassFromTag(nbt, tag);
+		return readClassFromTag(nbt, type);
 	}
 
 	private void writeClassToTag(NBTTagCompound tag, TaggedClass tClass)
@@ -124,9 +122,10 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 	}
 
-	private TaggedClass readClassFromTag(NBTTagCompound tag, TypeTagger tagger)
+	private TaggedClass readClassFromTag(NBTTagCompound tag, Class type)
 	{
-		TaggedClass tClass = new TaggedClass();
+		TaggedClass tClass = TaggedClass.getTaggedClass(type);
+		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
 
 		// not gonna load it if its the method...
 		if (tagger.isUniqueKeyField)
@@ -291,7 +290,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		else if (field.type.equals(ITaggedClass.class))
 		{
 			NBTTagCompound compound = new NBTTagCompound();
-			return readClassFromTag(compound, DataStorageManager.getTaggerForType(tagger.getTypeOfField(field.name)));
+			return readClassFromTag(compound, tagger.getTypeOfField(field.name));
 		}
 		else
 		{

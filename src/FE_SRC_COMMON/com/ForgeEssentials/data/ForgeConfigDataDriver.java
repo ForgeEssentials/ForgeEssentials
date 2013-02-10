@@ -56,7 +56,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		cfg.load();
 		TypeTagger tag = DataStorageManager.getTaggerForType(type);
 
-		TaggedClass data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), tag);
+		TaggedClass data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), type);
 		data.addField(new SavedField(tag.uniqueKey, uniqueKey));
 
 		return data;
@@ -185,9 +185,10 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		}
 	}
 
-	private TaggedClass readClassFromProperty(Configuration cfg, ConfigCategory cat, TypeTagger tag)
+	private TaggedClass readClassFromProperty(Configuration cfg, ConfigCategory cat, Class type)
 	{
-		TaggedClass data = new TaggedClass();
+		TaggedClass data = TaggedClass.getTaggedClass(type);
+		TypeTagger tag = DataStorageManager.getTaggerForType(type);
 
 		if (cat != null)
 		{
@@ -226,7 +227,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 						continue;
 					}
 
-					field.value = readClassFromProperty(cfg, child, DataStorageManager.getTaggerForType(field.type));
+					field.value = readClassFromProperty(cfg, child, field.type);
 					data.addField(field);
 				}
 			}

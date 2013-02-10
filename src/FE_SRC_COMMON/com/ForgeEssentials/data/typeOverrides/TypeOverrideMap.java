@@ -5,7 +5,7 @@ import java.util.Map;
 import com.ForgeEssentials.api.data.SaveableObject;
 
 @SaveableObject
-public class TypeOverrideMap<T extends Map> extends TypeOverrideBase
+public class TypeOverrideMap<T extends Map> extends TypeOverride
 {
 
 	public TypeOverrideMap(Map map)
@@ -17,6 +17,13 @@ public class TypeOverrideMap<T extends Map> extends TypeOverrideBase
 	public String getTypeName()
 	{
 		return "JavaMap";
+	}
+
+	@Override
+	public Object reconstruct()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

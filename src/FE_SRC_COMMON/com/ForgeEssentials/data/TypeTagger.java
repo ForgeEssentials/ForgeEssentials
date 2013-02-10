@@ -119,8 +119,8 @@ public class TypeTagger
 
 	public TaggedClass getTaggedClassFromObject(Object objectSaved)
 	{
-		TaggedClass data = new TaggedClass();
-		Class c = data.type = objectSaved.getClass();
+		Class c = objectSaved.getClass();
+		TaggedClass data = TaggedClass.getTaggedClass(c);
 		Field f;
 		Object obj;
 

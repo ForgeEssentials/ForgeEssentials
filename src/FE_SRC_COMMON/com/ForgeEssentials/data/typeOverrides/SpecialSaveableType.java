@@ -7,11 +7,9 @@ public final class SpecialSaveableType
 	/**
 	 * In order to stop people from trying to instantiate
 	 */
-	private SpecialSaveableType()
-	{
-	}
+	private SpecialSaveableType() {}
 
-	private static final HashMap<Class, Class<? extends TypeOverrideBase>>	typeMap	= new HashMap<Class, Class<? extends TypeOverrideBase>>();
+	private static final HashMap<Class, Class<? extends TypeOverride>>	typeMap	= new HashMap<Class, Class<? extends TypeOverride>>();
 
 	static
 	{
@@ -29,7 +27,7 @@ public final class SpecialSaveableType
 	 * @return NULL if neither the class nor any of its SuperClasses have an
 	 * override counterpart registered
 	 */
-	public static Class<? extends TypeOverrideBase> getOverrideType(Class c)
+	public static Class<? extends TypeOverride> getOverrideType(Class c)
 	{
 		Class override = typeMap.get(c);
 		while (override == null && c != null)
@@ -76,7 +74,7 @@ public final class SpecialSaveableType
 	 * @param others
 	 * The classes which the provided override should be mapped to.
 	 */
-	public static void registerOverride(Class<? extends TypeOverrideBase> override, Class... others)
+	public static void registerOverride(Class<? extends TypeOverride> override, Class... others)
 	{
 		for (Class c : others)
 			typeMap.put(override, c);
