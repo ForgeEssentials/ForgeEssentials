@@ -92,7 +92,7 @@ public class ModuleCommands
 	@PermRegister(ident = "ModuleBasicCommands")
 	public static void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel("ForgeEssentials.BasicCommands._ALL_", RegGroup.MEMBERS);
+		event.registerPermissionLevel("ForgeEssentials.BasicCommands._ALL_", RegGroup.OWNERS);
 
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.compass", RegGroup.MEMBERS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.afk", RegGroup.MEMBERS);
