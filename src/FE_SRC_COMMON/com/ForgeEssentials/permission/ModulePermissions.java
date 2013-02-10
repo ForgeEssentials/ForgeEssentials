@@ -52,8 +52,6 @@ public class ModulePermissions
 
 	// permission registrations here...
 	protected HashMultimap				regPerms;
-	
-	protected AutoPromote				autoPromoteGlobal;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -99,7 +97,11 @@ public class ModulePermissions
 	@ServerPostInit()
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		autoPromoteGlobal = new AutoPromote(FMLCommonHandler.instance().getMinecraftServerInstance(), ZoneManager.getGLOBAL().getZoneName());
+		for(Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(AutoPromote.class))
+		{
+			AutoPromote.map.put(((AutoPromote) obj).zone, ((AutoPromote) obj));
+		}
+		new AutoPromote(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
 
 	@PermRegister(ident = "ModulePermissions")
@@ -127,6 +129,8 @@ public class ModulePermissions
 				continue;
 			data.saveObject(zone);
 		}
+		
+		AutoPromote.saveAll();
 	}
 
 }
