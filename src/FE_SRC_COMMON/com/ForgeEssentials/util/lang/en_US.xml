@@ -304,6 +304,11 @@
     <entry key="command.pay.syntax.console">&lt;player> &lt;amount></entry>
     <entry key="command.pay.info.console">Play the player the specified amount.</entry>
     
+    <entry key="command.requestpayment.syntax.player">&lt;player> &lt;amount></entry>
+    <entry key="command.requestpayment.info.player">Request 'player' to pay that amount.</entry>
+    <entry key="command.requestpayment.syntax.console">&lt;player> &lt;amount></entry>
+    <entry key="command.requestpayment.info.console">Request 'player' to pay that amount.</entry>
+    
         <!-- Some localization for Kits -->
     <entry key="command.kit.syntax.player">[name] OR [name] [set|del] &lt;cooldown></entry>
     <entry key="command.kit.info.player">Get free kits pre-defined by the server owner</entry>
