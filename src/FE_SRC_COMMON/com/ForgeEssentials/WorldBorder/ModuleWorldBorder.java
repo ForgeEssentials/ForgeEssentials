@@ -135,6 +135,22 @@ public class ModuleWorldBorder
 				}
 			}
 		}
+
+		public int getETA()
+		{
+			if (equals(square))
+			{
+				 int var = maxX - minX;
+				 var = var * var;
+				 return var;
+			}
+			if (equals(round))
+			{
+				int var = (int) (rad * rad * Math.PI);
+				return var;
+			}
+			return 0;
+		}
 	}
 
 	/*
