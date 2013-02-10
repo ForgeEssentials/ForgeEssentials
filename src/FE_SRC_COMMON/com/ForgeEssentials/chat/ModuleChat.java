@@ -17,14 +17,17 @@ import com.ForgeEssentials.api.modules.FEModule.PostInit;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerPostInit;
+import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.chat.commands.CommandMail;
 import com.ForgeEssentials.chat.commands.CommandMsg;
 import com.ForgeEssentials.chat.commands.CommandMute;
 import com.ForgeEssentials.chat.commands.CommandNickname;
@@ -35,6 +38,7 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class, configClass = ConfigChat.class)
@@ -45,6 +49,8 @@ public class ModuleChat
 
 	@ModuleDir
 	public static File			moduleDir;
+
+	private MailSystem	mailsystem;
 
 	public ModuleChat()
 	{
@@ -67,6 +73,7 @@ public class ModuleChat
 	@PostInit
 	public void postLoad(FEModulePostInitEvent e)
 	{
+		
 	}
 
 	@ServerInit
@@ -78,6 +85,7 @@ public class ModuleChat
 		e.registerServerCommand(new CommandPm());
 		e.registerServerCommand(new CommandMute());
 		e.registerServerCommand(new CommandUnmute());
+		e.registerServerCommand(new CommandMail());
 	}
 
 	@ServerPostInit()
@@ -85,6 +93,15 @@ public class ModuleChat
 	{
 		removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
 		new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
+		mailsystem = new MailSystem();
+		mailsystem.LoadAll();
+		GameRegistry.registerPlayerTracker(mailsystem);
+	}
+	
+	@ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
+	{
+		mailsystem.SaveAll();
 	}
 
 	@PermRegister(ident = "ModuleChat")
@@ -92,6 +109,7 @@ public class ModuleChat
 	{
 		event.registerPermissionLevel("ForgeEssentials.Chat.r", RegGroup.GUESTS);
 		event.registerPermissionLevel("ForgeEssentials.Chat.msg", RegGroup.GUESTS);
+		event.registerPermissionLevel("ForgeEssentials.Chat.mail", RegGroup.GUESTS);
 
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.nickname", RegGroup.MEMBERS);
 
