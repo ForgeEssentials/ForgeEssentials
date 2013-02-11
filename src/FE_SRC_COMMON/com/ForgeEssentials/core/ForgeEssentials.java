@@ -1,14 +1,17 @@
 package com.ForgeEssentials.core;
 
 import java.io.File;
+import java.util.LinkedHashMap;
+
+import net.minecraftforge.common.MinecraftForge;
 
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 import org.mcstats.Metrics.Plotter;
 
-import net.minecraftforge.common.MinecraftForge;
-
+import com.ForgeEssentials.api.IServerStats;
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEDebug;
 import com.ForgeEssentials.core.commands.CommandFEReload;
@@ -64,7 +67,7 @@ import cpw.mods.fml.relauncher.Side;
 @NetworkMod(clientSideRequired = false, serverSideRequired = false, serverPacketHandlerSpec = @SidedPacketHandler(channels =
 { "ForgeEssentials" }, packetHandler = PacketHandler.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "@VERSION@")
-public class ForgeEssentials
+public class ForgeEssentials implements IServerStats
 {
 
 	@Instance(value = "ForgeEssentials")
@@ -87,7 +90,7 @@ public class ForgeEssentials
 
 	private MiscEventHandler		miscEventHandler;
 
-	public String					version;
+	public static String			version;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -142,6 +145,7 @@ public class ForgeEssentials
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		TickRegistry.registerTickHandler(factory, Side.SERVER);
 		GameRegistry.registerPlayerTracker(factory);
+		ServerStats.registerStats(this);
 	}
 
 	@PostInit
@@ -179,34 +183,7 @@ public class ForgeEssentials
 		mdlaunch.serverStarted(e);
 		DuplicateCommandRemoval.remove();
 		
-		try 
-		{
-			if(this.mcstats)
-			{
-				Metrics metrics = new Metrics("ForgeEssentials", version);
-			    Graph graph = metrics.createGraph("Modules used");
-			    
-			    for(String module : ModuleLauncher.getModuleList())
-			    {
-			    	//System.out.println("Module: " + module);
-			    	Plotter plotter = new Plotter(module)
-			    	{
-						@Override
-						public int getValue()
-						{
-							return 1;
-						} 
-					};
-			    	graph.addPlotter(plotter);
-			    }
-			    
-			    metrics.start();
-			}
-		}
-		catch (Exception ex) 
-		{
-		    ex.printStackTrace();
-		}
+		ServerStats.doMCStats();
 	}
 
 	@ServerStopping
@@ -221,4 +198,29 @@ public class ForgeEssentials
 		return true;
 	}
 
+	@Override
+	public void makeGraphs(Metrics metrics)
+	{
+		Graph graph = metrics.createGraph("Modules used");
+		for(String module : ModuleLauncher.getModuleList())
+		{
+			Plotter plotter = new Plotter(module)
+			{
+				@Override
+				public int getValue()
+				{
+					return 1;
+				}
+			};
+			graph.addPlotter(plotter);
+		}
+	}
+
+	@Override
+	public LinkedHashMap<String, String> addToServerInfo()
+	{
+		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+		map.put("FEmodules", TextFormatter.toJSON(ModuleLauncher.getModuleList()));
+		return map;
+	}
 }
