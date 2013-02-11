@@ -188,7 +188,7 @@ public class ForgeEssentials
 			    
 			    for(String module : ModuleLauncher.getModuleList())
 			    {
-			    	System.out.println("Module: " + module);
+			    	//System.out.println("Module: " + module);
 			    	Plotter plotter = new Plotter(module)
 			    	{
 						@Override
