@@ -143,6 +143,24 @@ public class Chat
 			format = FunctionHelper.replaceAllIgnoreCase(format, "%gm", gmCode);
 		}
 		
+		if(format.contains("%healthcolor"))
+		{
+			String c = "";
+			if(event.player.getHealth() < 6)
+			{
+				c = "%red";
+			}
+			else if(event.player.getHealth() < 12)
+			{
+				c = "%yellow";
+			}
+			else
+			{
+				c = "%green";
+			}
+			format = FunctionHelper.replaceAllIgnoreCase(format, "%healthcolor", c);
+		}
+		
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%rank", rank);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%zone", zoneID);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%groupPrefix", gPrefix);

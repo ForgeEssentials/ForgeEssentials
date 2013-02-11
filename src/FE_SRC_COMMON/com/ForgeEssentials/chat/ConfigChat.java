@@ -33,7 +33,8 @@ public class ConfigChat extends ModuleConfigBase
 		largeComment_chatFormat += "\nIf you want both a color and special formatcodes, the color needs to be first before the special code";
 		largeComment_chatFormat += "\nExamples: '%red%username' '%red%bold%username'\nNot OK:'%bold%gold%underline%username' In this example you would get the username in gold and underline but without bold";
 		largeComment_chatFormat += "\nList of possible variables:";
-		largeComment_chatFormat += "\nFor the username: %username The health of the player can be used with %health. The variable, you need for the message:%message ";
+		largeComment_chatFormat += "\nFor the username: %username The health of the player can be used with %health, %healthcolor will be a variable color depending on health.";
+		largeComment_chatFormat += "\nThe variable, you need for the message:%message ";
 		largeComment_chatFormat += "\nFor the player prefix and sufix use %playerPrefix and %playerSuffix";
 		largeComment_chatFormat += "\nColors:%black,%darkblue,%darkgreen,%darkaqua,%darkred,%purple,%gold,%grey,%darkgrey,%indigo,\n       %green,%aqua,%red,%pink,%yellow,%white";
 		largeComment_chatFormat += "\nSpecial formatcodes: %random,%bold,%strike,%underline,%italics";
