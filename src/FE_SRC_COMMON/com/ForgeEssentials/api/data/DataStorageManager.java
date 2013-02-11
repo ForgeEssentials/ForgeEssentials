@@ -22,8 +22,7 @@ public abstract class DataStorageManager
 	 * Should only be done before the server starts. May override existing
 	 * Driver types.
 	 * 
-	 * @param name
-	 * Name to be used in configs
+	 * @param name Name to be used in configs
 	 * @param c
 	 */
 	public static void registerDriver(String name, Class<? extends DataDriver> c)
@@ -40,20 +39,30 @@ public abstract class DataStorageManager
 	{
 		return manager.getDriverOfType(type);
 	}
+	
+	public static void registerSaveableType(Class<? extends ITypeInfo> infoType, Class type)
+	{
+		manager.registerSaveableClass(infoType, type);
+	}
 
 	public static void registerSaveableType(Class type)
 	{
-		manager.hasMapping(type);
+		manager.registerSaveableClass(type);
 	}
 
-	public static boolean hasMapping(Class type)
+	public static ITypeInfo getInfoForType(Class type)
 	{
-		return manager.hasMapping(type);
+		return manager.getInfoForType(type);
 	}
-
-	public static TypeInfo getTaggerForType(Class type)
+	
+	public static AbstractTypeData getDataForType(Class type)
 	{
-		return manager.getTaggerForType(type);
+		return manager.getDataForType(type);
+	}
+	
+	public static AbstractTypeData getDataForObject(Object obj)
+	{
+		return manager.getDataForObject(obj);
 	}
 
 	public static DBConnector getCoreDBConnector()

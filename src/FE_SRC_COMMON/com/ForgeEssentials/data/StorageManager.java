@@ -173,7 +173,7 @@ public class StorageManager implements IStorageManager
 		return taggerList.containsKey(type);
 	}
 
-	public TypeInfo getTaggerForType(Class type)
+	public TypeInfo getInfoForType(Class type)
 	{
 		TypeInfo tagged;
 		if (!hasMapping(type))

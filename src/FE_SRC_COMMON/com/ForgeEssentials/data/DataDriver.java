@@ -29,7 +29,7 @@ public abstract class DataDriver implements IDataDriver
 		boolean flag = false;
 
 		TypeInfo t;
-		if ((t = DataStorageManager.getTaggerForType(o.getClass())) != null)
+		if ((t = DataStorageManager.getInfoForType(o.getClass())) != null)
 		{
 			flag = true;
 			saveData(o.getClass(), t.getTypeDataFromObject(o));

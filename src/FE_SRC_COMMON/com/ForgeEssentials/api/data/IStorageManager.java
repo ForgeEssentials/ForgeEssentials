@@ -12,12 +12,16 @@ public interface IStorageManager
 	DataDriver getReccomendedDriver();
 
 	DataDriver getDriverOfType(EnumDriverType type);
-
+	
+	void registerSaveableClass(Class<? extends ITypeInfo> infoType, Class type);
+	
 	void registerSaveableClass(Class type);
 
-	boolean hasMapping(Class type);
-
-	TypeInfo getTaggerForType(Class type);
+	ITypeInfo getInfoForType(Class type);
+	
+	AbstractTypeData getDataForType(Class type);
+	
+	AbstractTypeData getDataForObject(Object obj);
 
 	DBConnector getCoreDBConnector();
 }

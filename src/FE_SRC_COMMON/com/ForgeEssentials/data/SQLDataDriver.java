@@ -189,7 +189,7 @@ public class SQLDataDriver extends DataDriver
 
 	private TypeData createTaggedClassFromResult(Class type, HashMap<String, Object> result)
 	{
-		TypeInfo rootTagger = DataStorageManager.getTaggerForType(type);
+		TypeInfo rootTagger = DataStorageManager.getInfoForType(type);
 		TypeInfo taggerCursor;
 		TypeData tClass = TypeData.getTaggedClass(type);
 		TypeData value = new TypeData(type);
@@ -225,7 +225,7 @@ public class SQLDataDriver extends DataDriver
 						// An object lives here.
 						tmpClass = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
 						tmpField.value = cursor = new TypeData(tmpClass);
-						taggerCursor = DataStorageManager.getTaggerForType(tmpField.type);
+						taggerCursor = DataStorageManager.getInfoForType(tmpField.type);
 					}
 					else
 					{
@@ -245,7 +245,7 @@ public class SQLDataDriver extends DataDriver
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM " + type.getSimpleName() + " WHERE ");
-		TypeInfo tagger = DataStorageManager.getTaggerForType(type);
+		TypeInfo tagger = DataStorageManager.getInfoForType(type);
 		if (tagger.isUniqueKeyField)
 		{
 			builder.append(tagger.uniqueKey + " = ");
@@ -274,7 +274,7 @@ public class SQLDataDriver extends DataDriver
 		if (uniqueObjectKey != null)
 		{
 			builder.append(" WHERE ");
-			TypeInfo tagger = DataStorageManager.getTaggerForType(type);
+			TypeInfo tagger = DataStorageManager.getInfoForType(type);
 			if (tagger.isUniqueKeyField)
 			{
 				builder.append(tagger.uniqueKey);
@@ -317,7 +317,7 @@ public class SQLDataDriver extends DataDriver
 		values.append('(');
 
 		// Deal with unique field
-		TypeInfo tagger = DataStorageManager.getTaggerForType(type);
+		TypeInfo tagger = DataStorageManager.getInfoForType(type);
 		if (tagger.isUniqueKeyField)
 		{
 			fields.append(fieldList.uniqueKey.name);
@@ -372,7 +372,7 @@ public class SQLDataDriver extends DataDriver
 	{
 		boolean isSuccess = false;
 
-		TypeInfo tagger = DataStorageManager.getTaggerForType(type);
+		TypeInfo tagger = DataStorageManager.getInfoForType(type);
 		HashMap<String, Class> fields = tagger.getFieldToTypeMap();
 		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
 		String keyClause = null;
@@ -463,7 +463,7 @@ public class SQLDataDriver extends DataDriver
 		else
 		{
 			// Complex type we can't handle.
-			TypeInfo tagger = DataStorageManager.getTaggerForType(type);
+			TypeInfo tagger = DataStorageManager.getInfoForType(type);
 			Iterator<Entry<String, Class>> iterator = tagger.fieldToTypeMap.entrySet().iterator();
 
 			// Iterate over the stored fields. Recurse if nessecary.

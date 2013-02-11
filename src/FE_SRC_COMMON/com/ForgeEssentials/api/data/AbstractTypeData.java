@@ -9,7 +9,7 @@ public abstract class AbstractTypeData implements IReconstructData
 	private final Class type;
 	private String uniqueKey;
 	
-	public AbstractTypeData(Class type)
+	protected AbstractTypeData(Class type)
 	{
 		this.type = type;
 	}

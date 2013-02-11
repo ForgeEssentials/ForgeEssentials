@@ -195,7 +195,7 @@ public class TypeInfo implements ITypeInfo
 					{
 						// This object is not a primitive. Call this function on
 						// the appropriate TypeTagger.
-						obj = DataStorageManager.getTaggerForType(obj.getClass()).getTypeDataFromObject(obj);
+						obj = DataStorageManager.getInfoForType(obj.getClass()).getTypeDataFromObject(obj);
 					}
 					data.addField(new SavedField(savedFields[i], obj));
 				}
@@ -238,7 +238,7 @@ public class TypeInfo implements ITypeInfo
 		{
 			if (field.value instanceof IReconstructData)
 			{
-				field.value = DataStorageManager.getTaggerForType(getTypeOfField(field.name)).createFromFields((TypeData) field.value);
+				field.value = DataStorageManager.getInfoForType(getTypeOfField(field.name)).createFromFields((TypeData) field.value);
 			}
 		}
 

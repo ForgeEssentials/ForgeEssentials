@@ -7,7 +7,7 @@ import com.ForgeEssentials.data.TypeInfo;
 
 public interface IDataDriver
 {
-	void onClassRegistered(TypeInfo tagger);
+	void onClassRegistered(ITypeInfo tagger);
 
 	String getName();
 

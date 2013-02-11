@@ -126,7 +126,7 @@ public class NBTDataDriver extends BinaryDataDriver
 	private TypeData readClassFromTag(NBTTagCompound tag, Class type)
 	{
 		TypeData tClass = TypeData.getTaggedClass(type);
-		TypeInfo tagger = DataStorageManager.getTaggerForType(type);
+		TypeInfo tagger = DataStorageManager.getInfoForType(type);
 
 		// not gonna load it if its the method...
 		if (tagger.isUniqueKeyField)
