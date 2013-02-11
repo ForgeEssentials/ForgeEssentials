@@ -29,6 +29,10 @@ public class CoreConfig
 		prop.comment = "Check for newer versions of ForgeEssentials on load?";
 		ForgeEssentials.verCheck = prop.getBoolean(true);
 
+		prop = config.get("Core", "mcstats", true);
+		prop.comment = "If you don't want to send feedback to MCstats, Set to false.";
+		ForgeEssentials.mcstats = prop.getBoolean(true);
+		
 		prop = config.get("Core", "modlistLocation", "modlist.txt");
 		prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
 		ForgeEssentials.modlistLocation = prop.value;

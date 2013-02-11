@@ -2,6 +2,10 @@ package com.ForgeEssentials.core;
 
 import java.io.File;
 
+import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
+import org.mcstats.Metrics.Plotter;
+
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
@@ -76,14 +80,19 @@ public class ForgeEssentials
 
 	public static File				FEDIR;
 
+	public static boolean			mcstats;
+
 	public BannedItems				bannedItems;
 	private ItemList				itemList;
 
 	private MiscEventHandler		miscEventHandler;
 
+	public String					version;
+
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		version = e.getModMetadata().version;
 		// setup fedir stuff
 		if (FMLCommonHandler.instance().getSide().isClient())
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials-CLIENT");
@@ -169,6 +178,35 @@ public class ForgeEssentials
 	{
 		mdlaunch.serverStarted(e);
 		DuplicateCommandRemoval.remove();
+		
+		try 
+		{
+			if(this.mcstats)
+			{
+				Metrics metrics = new Metrics("ForgeEssentials", version);
+			    Graph graph = metrics.createGraph("Modules used");
+			    
+			    for(String module : ModuleLauncher.getModuleList())
+			    {
+			    	System.out.println("Module: " + module);
+			    	Plotter plotter = new Plotter(module)
+			    	{
+						@Override
+						public int getValue()
+						{
+							return 1;
+						} 
+					};
+			    	graph.addPlotter(plotter);
+			    }
+			    
+			    metrics.start();
+			}
+		}
+		catch (Exception ex) 
+		{
+		    ex.printStackTrace();
+		}
 	}
 
 	@ServerStopping
