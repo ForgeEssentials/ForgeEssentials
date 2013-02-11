@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.ForgeEssentials.api.data.AbstractTypeData;
+import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.SavedField;
@@ -32,17 +33,16 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	@Override
 	public AbstractTypeData getTypeDataFromObject(ItemStack stack)
 	{
-		// TODO: make this actually be implemented by the DataStorageManager
-		AbstractTypeData data = TypeData.getTaggedClass(stack);
+		AbstractTypeData data = DataStorageManager.getDataForType(ItemStack.class);
 		
 		SavedField field = new SavedField(SIZE, stack.stackSize);
-		data.addField(field);
+		data.putField(SIZE, stack.stackSize);
 		
 		field = new SavedField(ITEM, stack.itemID);
-		data.addField(field);
+		data.putField(ITEM, stack.itemID);
 		
 		field = new SavedField(DAMAGE, stack.getItemDamage());
-		data.addField(field);
+		data.putField(DAMAGE, stack.getItemDamage());
 		
 		//field = new SavedField(COMPOUND, stack.getTagCompound());
 		//data.addField(field);

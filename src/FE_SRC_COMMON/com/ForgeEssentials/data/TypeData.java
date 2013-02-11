@@ -16,78 +16,30 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class TypeData extends AbstractTypeData
 {
-	private HashMap<String, SavedField>	members;
+	private HashMap<String, Object>	members;
 
 	protected TypeData(Class c)
 	{
 		super(c);
-		members = new HashMap<String, SavedField>();
+		members = new HashMap<String, Object>();
 	}
-
+	
 	@Override
-	public void addField(SavedField field)
+	public void putField(String name, Object value)
 	{
-		members.put(field.name, field);
+		SavedField field = new SavedField(name, value);
+		members.put(name, field);
 	}
 
 	@Override
 	public Object getFieldValue(String name)
 	{
-		if (members.containsKey(name))
-				return members.get(name).value;
-		else
-			return null;
+		return members.get(name);
 	}
 	
 	@Override
-	public Set<SavedField> getAllFields()
+	public Set<Entry<String, Object>> getAllFields()
 	{
-		Set<SavedField> set = new HashSet<SavedField>();
-		set.addAll(members.values());
-		return set;
-	}
-	
-	public static AbstractTypeData getTaggedClass(Object obj)
-	{
-		if (SpecialSaveableData.hasOverrideType(obj.getClass(), true))
-		{
-			Class override = SpecialSaveableData.getOverrideType(obj.getClass());
-
-			Constructor c;
-			try
-			{
-				c = override.getConstructor(new Class[] { obj.getClass() });
-				TypeData tagged = (TypeData) c.newInstance(obj);
-				return tagged;
-			}
-			catch (Exception e)
-			{
-				OutputHandler.exception(Level.SEVERE, "Error invoking construction of TypeOverride for " + obj.getClass().getCanonicalName(), e);
-			}
-		}
-
-		return new TypeData(obj.getClass());
-	}
-
-	public static AbstractTypeData getTaggedClass(Class c)
-	{
-		if (SpecialSaveableData.hasOverrideType(c, true))
-		{
-			Class override = SpecialSaveableData.getOverrideType(c);
-
-			Constructor constructor;
-			try
-			{
-				constructor = override.getConstructor(new Class[] { Class.class });
-				TypeData tagged = (TypeData) constructor.newInstance(c);
-				return tagged;
-			}
-			catch (Exception e)
-			{
-				OutputHandler.exception(Level.SEVERE, "Error invoking construction of TypeOverride for " + c.getCanonicalName(), e);
-			}
-		}
-
-		return new TypeData(c);
+		return members.entrySet();
 	}
 }

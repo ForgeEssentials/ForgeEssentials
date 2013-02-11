@@ -14,7 +14,7 @@ public abstract class DataDriver implements IDataDriver
 	{
 	}
 
-	public void onClassRegistered(TypeInfo tagger)
+	public void onClassRegistered(TypeInfoWrapper tagger)
 	{
 
 	}
@@ -28,7 +28,7 @@ public abstract class DataDriver implements IDataDriver
 	{
 		boolean flag = false;
 
-		TypeInfo t;
+		TypeInfoWrapper t;
 		if ((t = DataStorageManager.getInfoForType(o.getClass())) != null)
 		{
 			flag = true;

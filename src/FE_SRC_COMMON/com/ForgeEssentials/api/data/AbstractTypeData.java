@@ -1,10 +1,11 @@
 package com.ForgeEssentials.api.data;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 import java.util.Map.Entry;
 
-public abstract class AbstractTypeData implements IReconstructData
+public abstract class AbstractTypeData implements IReconstructData, Serializable
 {
 	private final Class type;
 	private String uniqueKey;
@@ -14,9 +15,9 @@ public abstract class AbstractTypeData implements IReconstructData
 		this.type = type;
 	}
 	
-	public abstract void addField(SavedField field);
+	public abstract void putField(String name, Object value);
 
-	public abstract Set<SavedField> getAllFields();
+	public abstract Set<Entry<String, Object>> getAllFields();
 
 	public void setUniqueKey(String key)
 	{
@@ -36,8 +37,8 @@ public abstract class AbstractTypeData implements IReconstructData
 		s.append("unique=").append(uniqueKey).append(", ");
 
 		s.append("[");
-		for (SavedField field : getAllFields())
-			s.append(field.name).append("=").append(field.value).append(", ");
+		for (Entry<String, Object> field : getAllFields())
+			s.append(field.getKey()).append("=").append(field.getValue()).append(", ");
 		s.replace(s.length() - 2, s.length(), "]");
 
 		s.append("}");

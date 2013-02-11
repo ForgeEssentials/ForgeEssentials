@@ -126,7 +126,7 @@ public class NBTDataDriver extends BinaryDataDriver
 	private TypeData readClassFromTag(NBTTagCompound tag, Class type)
 	{
 		TypeData tClass = TypeData.getTaggedClass(type);
-		TypeInfo tagger = DataStorageManager.getInfoForType(type);
+		TypeInfoWrapper tagger = DataStorageManager.getInfoForType(type);
 
 		// not gonna load it if its the method...
 		if (tagger.isUniqueKeyField)
@@ -225,7 +225,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 	}
 
-	private Object readFieldFromTag(NBTTagCompound tag, SavedField field, TypeInfo tagger)
+	private Object readFieldFromTag(NBTTagCompound tag, SavedField field, TypeInfoWrapper tagger)
 	{
 		if (field == null || field.type == null || field.value == null)
 		{

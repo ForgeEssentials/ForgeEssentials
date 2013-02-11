@@ -55,7 +55,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	{
 		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
 		cfg.load();
-		TypeInfo tag = DataStorageManager.getInfoForType(type);
+		TypeInfoWrapper tag = DataStorageManager.getInfoForType(type);
 
 		TypeData data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), type);
 		data.addField(new SavedField(tag.uniqueKey, uniqueKey));
@@ -189,7 +189,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	private TypeData readClassFromProperty(Configuration cfg, ConfigCategory cat, Class type)
 	{
 		TypeData data = (TypeData) TypeData.getTaggedClass(type);
-		TypeInfo tag = DataStorageManager.getInfoForType(type);
+		TypeInfoWrapper tag = DataStorageManager.getInfoForType(type);
 
 		if (cat != null)
 		{
