@@ -40,6 +40,7 @@ public class ConfigChat extends ModuleConfigBase
 		largeComment_chatFormat += "\nTo reset all formatcodes, you can use %reset";
 		largeComment_chatFormat += "\nUse %rank to display a users rank as specified, %zone to specify there current zone";
 		largeComment_chatFormat += "\nUse %groupPrefix and %groupSuffix to display the group prefixes and suffixes as specified";
+		largeComment_chatFormat += "\n'%gm' is a variable formatcode. It changes depending on wich gamemode the player is in. Set the value below.";
 
 		largeComment_Cat_Groups += "You may put enything here that you want displaed as part of the group prefixes, suffixes, or ranks.";
 		largeComment_Cat_Groups += "\n {ladderName<:>Zone} will display the data for the highest priority group that the player is in that is part of the specified ladder and specified zone.";
@@ -69,6 +70,11 @@ public class ConfigChat extends ModuleConfigBase
 		AutoMessage.enable = config.get("Automessage", "enable", true).getBoolean(true);
 
 		chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat).value;
+		
+		config.addCustomCategoryComment("Chat.gm", "\"%gm\" gets replaced by the values below");
+		Chat.gmS = config.get("Chat.gm", "Survival", "[Sur]").value;
+		Chat.gmC = config.get("Chat.gm", "Creative", "[Cre]").value;
+		Chat.gmA = config.get("Chat.gm", "Adventure", "[Adv]").value;
 
 		Chat.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
 		Chat.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]

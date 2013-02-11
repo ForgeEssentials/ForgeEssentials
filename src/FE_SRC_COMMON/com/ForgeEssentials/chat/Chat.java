@@ -29,6 +29,10 @@ public class Chat
 	public static boolean		censor;
 	public static String		censorSymbol;
 
+	public static String		gmS;
+	public static String		gmC;
+	public static String		gmA;
+	
 	@ForgeSubscribe
 	public void chatEvent(ServerChatEvent event)
 	{
@@ -125,6 +129,20 @@ public class Chat
 		 * message); }
 		 */
 		// replace group, zone, and rank
+		
+		if(format.contains("%gm"))
+		{
+			String gmCode = "";
+			if(event.player.theItemInWorldManager.getGameType().isCreative())
+				gmCode = gmC;
+			else if(event.player.theItemInWorldManager.getGameType().isAdventure())
+				gmCode = gmA;
+			else 
+				gmCode = gmS;
+			
+			format = FunctionHelper.replaceAllIgnoreCase(format, "%gm", gmCode);
+		}
+		
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%rank", rank);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%zone", zoneID);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%groupPrefix", gPrefix);
@@ -132,7 +150,8 @@ public class Chat
 
 		// random nice things...
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%health", "" + event.player.getHealth());
-
+		
+		
 		format = FunctionHelper.format(format);
 
 		// essentials
