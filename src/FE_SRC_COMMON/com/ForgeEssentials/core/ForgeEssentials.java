@@ -105,10 +105,10 @@ public class ForgeEssentials
 			DataStorageManager.registerDriver("SQL_DB", SQLDataDriver.class);
 
 			// Register saveables..
-			DataStorageManager.registerSaveableClass(PlayerInfo.class);
-			DataStorageManager.registerSaveableClass(Point.class);
-			DataStorageManager.registerSaveableClass(WorldPoint.class);
-			DataStorageManager.registerSaveableClass(WarpPoint.class);
+			DataStorageManager.registerSaveableType(PlayerInfo.class);
+			DataStorageManager.registerSaveableType(Point.class);
+			DataStorageManager.registerSaveableType(WorldPoint.class);
+			DataStorageManager.registerSaveableType(WarpPoint.class);
 		}
 
 		// setup modules AFTER data stuff...

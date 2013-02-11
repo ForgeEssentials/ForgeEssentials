@@ -8,6 +8,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.SavedField;
 
 /**
  * Storage driver for filesystem (flat-file) persistence.
@@ -25,7 +26,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	}
 
 	@Override
-	protected boolean saveData(Class type, TaggedClass objectData)
+	protected boolean saveData(Class type, TypeData objectData)
 	{
 		boolean wasSuccessful = false;
 
@@ -50,23 +51,23 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	}
 
 	@Override
-	protected TaggedClass loadData(Class type, Object uniqueKey)
+	protected TypeData loadData(Class type, Object uniqueKey)
 	{
 		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
 		cfg.load();
-		TypeTagger tag = DataStorageManager.getTaggerForType(type);
+		TypeInfo tag = DataStorageManager.getTaggerForType(type);
 
-		TaggedClass data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), type);
+		TypeData data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), type);
 		data.addField(new SavedField(tag.uniqueKey, uniqueKey));
 
 		return data;
 	}
 
 	@Override
-	protected TaggedClass[] loadAll(Class type)
+	protected TypeData[] loadAll(Class type)
 	{
 		File[] files = getTypePath(type).listFiles();
-		ArrayList<TaggedClass> data = new ArrayList<TaggedClass>();
+		ArrayList<TypeData> data = new ArrayList<TypeData>();
 
 		if (files != null)
 		{
@@ -79,7 +80,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 			}
 		}
 
-		return data.toArray(new TaggedClass[] {});
+		return data.toArray(new TypeData[] {});
 	}
 
 	private void writeFieldToProperty(Configuration cfg, String category, SavedField field)
@@ -124,9 +125,9 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		{
 			cfg.get(category, field.name, (String[]) field.value);
 		}
-		else if (field.type.equals(TaggedClass.class))
+		else if (field.type.equals(TypeData.class))
 		{
-			TaggedClass tag = (TaggedClass) field.value;
+			TypeData tag = (TypeData) field.value;
 			String newcat = category + "." + field.name;
 
 			for (SavedField f : tag.TaggedMembers.values())
@@ -185,10 +186,10 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		}
 	}
 
-	private TaggedClass readClassFromProperty(Configuration cfg, ConfigCategory cat, Class type)
+	private TypeData readClassFromProperty(Configuration cfg, ConfigCategory cat, Class type)
 	{
-		TaggedClass data = TaggedClass.getTaggedClass(type);
-		TypeTagger tag = DataStorageManager.getTaggerForType(type);
+		TypeData data = (TypeData) TypeData.getTaggedClass(type);
+		TypeInfo tag = DataStorageManager.getTaggerForType(type);
 
 		if (cat != null)
 		{

@@ -1,21 +1,21 @@
-package com.ForgeEssentials.data.typeOverrides;
+package com.ForgeEssentials.data.typeData;
 
 import java.util.HashMap;
 
-public final class SpecialSaveableType
+public final class SpecialSaveableData
 {
 	/**
 	 * In order to stop people from trying to instantiate
 	 */
-	private SpecialSaveableType() {}
+	private SpecialSaveableData() {}
 
-	private static final HashMap<Class, Class<? extends TypeOverride>>	typeMap	= new HashMap<Class, Class<? extends TypeOverride>>();
+	private static final HashMap<Class, Class<? extends TypeDataOverride>>	typeMap	= new HashMap<Class, Class<? extends TypeDataOverride>>();
 
 	static
 	{
-		registerOverride(TypeOverrideMap.class, java.util.Map.class);
-		registerOverride(TypeOverrideMap.class, java.util.HashMap.class);
-		registerOverride(TypeOverrideMap.class, java.util.TreeMap.class);
+		registerOverride(TypeDataOverrideMap.class, java.util.Map.class);
+		registerOverride(TypeDataOverrideMap.class, java.util.HashMap.class);
+		registerOverride(TypeDataOverrideMap.class, java.util.TreeMap.class);
 	}
 
 	/**
@@ -27,11 +27,12 @@ public final class SpecialSaveableType
 	 * @return NULL if neither the class nor any of its SuperClasses have an
 	 * override counterpart registered
 	 */
-	public static Class<? extends TypeOverride> getOverrideType(Class c)
+	public static Class<? extends TypeDataOverride> getOverrideType(Class c)
 	{
 		Class override = typeMap.get(c);
 		while (override == null && c != null)
 		{
+			//TODO: check interfaces...
 			c = c.getSuperclass();
 			override = typeMap.get(c);
 		}
@@ -54,6 +55,7 @@ public final class SpecialSaveableType
 		boolean hasOverride = typeMap.containsValue(c);
 		while (parentCheck && hasOverride == false && c != null)
 		{
+			// TODO: check interfaces
 			c = c.getSuperclass();
 			hasOverride = typeMap.containsValue(c);
 		}
@@ -74,7 +76,7 @@ public final class SpecialSaveableType
 	 * @param others
 	 * The classes which the provided override should be mapped to.
 	 */
-	public static void registerOverride(Class<? extends TypeOverride> override, Class... others)
+	public static void registerOverride(Class<? extends TypeDataOverride> override, Class... others)
 	{
 		for (Class c : others)
 			typeMap.put(override, c);

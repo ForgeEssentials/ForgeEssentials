@@ -1,14 +1,14 @@
-package com.ForgeEssentials.data.typeOverrides;
+package com.ForgeEssentials.data.typeData;
 
 import java.util.Map;
 
 import com.ForgeEssentials.api.data.SaveableObject;
 
 @SaveableObject
-public class TypeOverrideMap<T extends Map> extends TypeOverrideMultiVal
+public class TypeDataOverrideMap<T extends Map> extends TypeDataOverrideMultiVal
 {
 
-	public TypeOverrideMap(Map map)
+	public TypeDataOverrideMap(Map map)
 	{
 		super(map);
 	}

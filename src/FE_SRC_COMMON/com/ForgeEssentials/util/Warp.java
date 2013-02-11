@@ -1,6 +1,6 @@
 package com.ForgeEssentials.util;
 
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
@@ -34,7 +34,7 @@ public class Warp
 	}
 
 	@Reconstructor
-	private static Warp reconstruct(ITaggedClass tag)
+	private static Warp reconstruct(IReconstructData tag)
 	{
 		return new Warp((String) tag.getFieldValue("name"), (WarpPoint) tag.getFieldValue("point"));
 	}

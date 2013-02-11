@@ -1,4 +1,4 @@
-package com.ForgeEssentials.data;
+package com.ForgeEssentials.api.data;
 
 public class SavedField
 {

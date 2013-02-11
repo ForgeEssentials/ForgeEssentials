@@ -6,7 +6,7 @@ import java.util.Stack;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
@@ -60,7 +60,7 @@ public class PlayerInfo
 	}
 
 	@Reconstructor()
-	public static PlayerInfo reconstruct(ITaggedClass tag)
+	public static PlayerInfo reconstruct(IReconstructData tag)
 	{
 		String username = (String) tag.getFieldValue("username");
 

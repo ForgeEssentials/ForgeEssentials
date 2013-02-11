@@ -1,16 +1,18 @@
-package com.ForgeEssentials.data.typeOverrides;
+package com.ForgeEssentials.data.typeInfo;
 
 import java.rmi.server.UID;
 
-public abstract class TypeOverrideMultiVal<T> extends TypeOverride<T>
+import com.ForgeEssentials.api.data.ITypeInfo;
+
+public abstract class TypeDataOverrideMultiVal<T> extends ITypeInfo<T>
 {
 
-	public TypeOverrideMultiVal(Class<? extends T> type)
+	public TypeDataOverrideMultiVal(Class<? extends T> type)
 	{
 		super(type);
 	}
 	
-	public TypeOverrideMultiVal(T obj)
+	public TypeDataOverrideMultiVal(T obj)
 	{
 		super(obj);
 	}

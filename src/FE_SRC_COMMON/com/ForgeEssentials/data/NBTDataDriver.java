@@ -17,14 +17,15 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.SavedField;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class NBTDataDriver extends BinaryDataDriver
 {
 
 	@Override
-	protected boolean saveData(Class type, TaggedClass fieldList)
+	protected boolean saveData(Class type, TypeData fieldList)
 	{
 		boolean successful = true;
 
@@ -102,7 +103,7 @@ public class NBTDataDriver extends BinaryDataDriver
 	}
 
 	@Override
-	protected TaggedClass loadData(Class type, Object uniqueKey)
+	protected TypeData loadData(Class type, Object uniqueKey)
 	{
 		NBTTagCompound nbt = readNBT(getFilePath(type, uniqueKey));
 
@@ -114,7 +115,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		return readClassFromTag(nbt, type);
 	}
 
-	private void writeClassToTag(NBTTagCompound tag, TaggedClass tClass)
+	private void writeClassToTag(NBTTagCompound tag, TypeData tClass)
 	{
 		for (SavedField field : tClass.TaggedMembers.values())
 		{
@@ -122,10 +123,10 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 	}
 
-	private TaggedClass readClassFromTag(NBTTagCompound tag, Class type)
+	private TypeData readClassFromTag(NBTTagCompound tag, Class type)
 	{
-		TaggedClass tClass = TaggedClass.getTaggedClass(type);
-		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+		TypeData tClass = TypeData.getTaggedClass(type);
+		TypeInfo tagger = DataStorageManager.getTaggerForType(type);
 
 		// not gonna load it if its the method...
 		if (tagger.isUniqueKeyField)
@@ -137,7 +138,7 @@ public class NBTDataDriver extends BinaryDataDriver
 			tClass.uniqueKey = unique;
 		}
 
-		for (String name : tagger.savedFields)
+		for (String name : tagger.fieldToTypeMap.keySet())
 		{
 			SavedField field = new SavedField();
 			field.name = name;
@@ -212,10 +213,10 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			tag.setTag(field.name, list);
 		}
-		else if (field.type.equals(ITaggedClass.class))
+		else if (field.type.equals(IReconstructData.class))
 		{
 			NBTTagCompound compound = new NBTTagCompound();
-			writeClassToTag(compound, (TaggedClass) field.value);
+			writeClassToTag(compound, (TypeData) field.value);
 			tag.setCompoundTag(field.name, compound);
 		}
 		else
@@ -224,7 +225,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 	}
 
-	private Object readFieldFromTag(NBTTagCompound tag, SavedField field, TypeTagger tagger)
+	private Object readFieldFromTag(NBTTagCompound tag, SavedField field, TypeInfo tagger)
 	{
 		if (field == null || field.type == null || field.value == null)
 		{
@@ -287,7 +288,7 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			return array;
 		}
-		else if (field.type.equals(ITaggedClass.class))
+		else if (field.type.equals(IReconstructData.class))
 		{
 			NBTTagCompound compound = new NBTTagCompound();
 			return readClassFromTag(compound, tagger.getTypeOfField(field.name));
@@ -300,10 +301,10 @@ public class NBTDataDriver extends BinaryDataDriver
 	}
 
 	@Override
-	protected TaggedClass[] loadAll(Class type)
+	protected TypeData[] loadAll(Class type)
 	{
 		File[] files = getTypePath(type).listFiles();
-		ArrayList<ITaggedClass> data = new ArrayList<ITaggedClass>();
+		ArrayList<IReconstructData> data = new ArrayList<IReconstructData>();
 
 		for (File file : files)
 		{
@@ -313,6 +314,6 @@ public class NBTDataDriver extends BinaryDataDriver
 			}
 		}
 
-		return data.toArray(new TaggedClass[] {});
+		return data.toArray(new TypeData[] {});
 	}
 }

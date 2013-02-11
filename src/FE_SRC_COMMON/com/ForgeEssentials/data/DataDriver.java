@@ -14,7 +14,7 @@ public abstract class DataDriver implements IDataDriver
 	{
 	}
 
-	public void onClassRegistered(TypeTagger tagger)
+	public void onClassRegistered(TypeInfo tagger)
 	{
 
 	}
@@ -28,11 +28,11 @@ public abstract class DataDriver implements IDataDriver
 	{
 		boolean flag = false;
 
-		TypeTagger t;
+		TypeInfo t;
 		if ((t = DataStorageManager.getTaggerForType(o.getClass())) != null)
 		{
 			flag = true;
-			saveData(o.getClass(), t.getTaggedClassFromObject(o));
+			saveData(o.getClass(), t.getTypeDataFromObject(o));
 		}
 
 		return flag;
@@ -41,7 +41,7 @@ public abstract class DataDriver implements IDataDriver
 	public Object loadObject(Class type, Object loadingKey)
 	{
 		Object newObject = null;
-		TaggedClass data = loadData(type, loadingKey);
+		TypeData data = loadData(type, loadingKey);
 
 		if (data != null)
 		{
@@ -54,14 +54,14 @@ public abstract class DataDriver implements IDataDriver
 	public Object[] loadAllObjects(Class type)
 	{
 		ArrayList<Object> list = new ArrayList<Object>();
-		TaggedClass[] objectData = loadAll(type);
+		TypeData[] objectData = loadAll(type);
 
 		// Each element of the field array represents an object, stored as an
 		// array of fields.
 		Object tmp;
 		if (objectData != null && objectData.length > 0)
 		{
-			for (TaggedClass tag : objectData)
+			for (TypeData tag : objectData)
 			{
 				tmp = StorageManager.taggerList.get(type).createFromFields(tag);
 				list.add(tmp);
@@ -78,11 +78,11 @@ public abstract class DataDriver implements IDataDriver
 
 	abstract public void parseConfigs(Configuration config, String category, String worldName) throws Exception;
 
-	abstract protected boolean saveData(Class type, TaggedClass fieldList);
+	abstract protected boolean saveData(Class type, TypeData fieldList);
 
-	abstract protected TaggedClass loadData(Class type, Object uniqueKey);
+	abstract protected TypeData loadData(Class type, Object uniqueKey);
 
-	abstract protected TaggedClass[] loadAll(Class type);
+	abstract protected TypeData[] loadAll(Class type);
 
 	abstract protected boolean deleteData(Class type, Object uniqueObjectKey);
 

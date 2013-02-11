@@ -2,7 +2,7 @@ package com.ForgeEssentials.api.data;
 
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.EnumDriverType;
-import com.ForgeEssentials.data.TypeTagger;
+import com.ForgeEssentials.data.TypeInfo;
 import com.ForgeEssentials.util.DBConnector;
 
 /**
@@ -41,7 +41,7 @@ public abstract class DataStorageManager
 		return manager.getDriverOfType(type);
 	}
 
-	public static void registerSaveableClass(Class type)
+	public static void registerSaveableType(Class type)
 	{
 		manager.hasMapping(type);
 	}
@@ -51,7 +51,7 @@ public abstract class DataStorageManager
 		return manager.hasMapping(type);
 	}
 
-	public static TypeTagger getTaggerForType(Class type)
+	public static TypeInfo getTaggerForType(Class type)
 	{
 		return manager.getTaggerForType(type);
 	}

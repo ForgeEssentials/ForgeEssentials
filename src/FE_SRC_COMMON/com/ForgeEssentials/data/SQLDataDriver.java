@@ -13,7 +13,8 @@ import java.util.Map.Entry;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.SavedField;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
@@ -44,19 +45,19 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	@Override
-	public void onClassRegistered(TypeTagger tagger)
+	public void onClassRegistered(TypeInfo tagger)
 	{
 		// If this is the first time registering a class that is NOT saved
 		// inline,
 		// attempt to create a table.
-		if (!(tagger.inLine || classTableChecked.containsKey(tagger.forType)))
+		if (!(tagger.inLine || classTableChecked.containsKey(tagger.type)))
 		{
-			createTable(tagger.forType);
+			createTable(tagger.type);
 		}
 	}
 
 	@Override
-	protected boolean saveData(Class type, TaggedClass fieldList)
+	protected boolean saveData(Class type, TypeData fieldList)
 	{
 		boolean isSuccess = false;
 
@@ -78,9 +79,9 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	@Override
-	protected TaggedClass loadData(Class type, Object uniqueKey)
+	protected TypeData loadData(Class type, Object uniqueKey)
 	{
-		TaggedClass reconstructed = null;
+		TypeData reconstructed = null;
 
 		try
 		{
@@ -103,9 +104,9 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	@Override
-	protected TaggedClass[] loadAll(Class type)
+	protected TypeData[] loadAll(Class type)
 	{
-		ArrayList<ITaggedClass> values = new ArrayList<ITaggedClass>();
+		ArrayList<IReconstructData> values = new ArrayList<IReconstructData>();
 
 		try
 		{
@@ -123,7 +124,7 @@ public class SQLDataDriver extends DataDriver
 			e.printStackTrace();
 		}
 
-		return values.toArray(new TaggedClass[values.size()]);
+		return values.toArray(new TypeData[values.size()]);
 	}
 
 	@Override
@@ -186,13 +187,13 @@ public class SQLDataDriver extends DataDriver
 		return map;
 	}
 
-	private TaggedClass createTaggedClassFromResult(Class type, HashMap<String, Object> result)
+	private TypeData createTaggedClassFromResult(Class type, HashMap<String, Object> result)
 	{
-		TypeTagger rootTagger = DataStorageManager.getTaggerForType(type);
-		TypeTagger taggerCursor;
-		TaggedClass tClass = TaggedClass.getTaggedClass(type);
-		TaggedClass value = new TaggedClass(type);
-		TaggedClass cursor = null;
+		TypeInfo rootTagger = DataStorageManager.getTaggerForType(type);
+		TypeInfo taggerCursor;
+		TypeData tClass = TypeData.getTaggedClass(type);
+		TypeData value = new TypeData(type);
+		TypeData cursor = null;
 		SavedField tmpField = null;
 		Class tmpClass;
 
@@ -223,7 +224,7 @@ public class SQLDataDriver extends DataDriver
 					{
 						// An object lives here.
 						tmpClass = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
-						tmpField.value = cursor = new TaggedClass(tmpClass);
+						tmpField.value = cursor = new TypeData(tmpClass);
 						taggerCursor = DataStorageManager.getTaggerForType(tmpField.type);
 					}
 					else
@@ -244,7 +245,7 @@ public class SQLDataDriver extends DataDriver
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM " + type.getSimpleName() + " WHERE ");
-		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+		TypeInfo tagger = DataStorageManager.getTaggerForType(type);
 		if (tagger.isUniqueKeyField)
 		{
 			builder.append(tagger.uniqueKey + " = ");
@@ -273,7 +274,7 @@ public class SQLDataDriver extends DataDriver
 		if (uniqueObjectKey != null)
 		{
 			builder.append(" WHERE ");
-			TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+			TypeInfo tagger = DataStorageManager.getTaggerForType(type);
 			if (tagger.isUniqueKeyField)
 			{
 				builder.append(tagger.uniqueKey);
@@ -297,7 +298,7 @@ public class SQLDataDriver extends DataDriver
 		return builder.toString();
 	}
 
-	private String createInsertStatement(Class type, TaggedClass fieldList)
+	private String createInsertStatement(Class type, TypeData fieldList)
 	{
 		ArrayList<Pair<String, String>> fieldValueMap = new ArrayList<Pair<String, String>>();
 		// Iterate through fields and build up name=>value pair list.
@@ -316,7 +317,7 @@ public class SQLDataDriver extends DataDriver
 		values.append('(');
 
 		// Deal with unique field
-		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+		TypeInfo tagger = DataStorageManager.getTaggerForType(type);
 		if (tagger.isUniqueKeyField)
 		{
 			fields.append(fieldList.uniqueKey.name);
@@ -371,7 +372,7 @@ public class SQLDataDriver extends DataDriver
 	{
 		boolean isSuccess = false;
 
-		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+		TypeInfo tagger = DataStorageManager.getTaggerForType(type);
 		HashMap<String, Class> fields = tagger.getFieldToTypeMap();
 		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
 		String keyClause = null;
@@ -433,7 +434,7 @@ public class SQLDataDriver extends DataDriver
 	{
 		ArrayList<Pair<String, String>> fields = new ArrayList<Pair<String, String>>();
 
-		if (!TypeTagger.isTypeComplex(type))
+		if (!TypeInfo.isTypeComplex(type))
 		{
 			if (type.equals(int.class) || type.equals(Integer.class) || type.equals(boolean.class) || type.equals(Boolean.class))
 			{
@@ -462,7 +463,7 @@ public class SQLDataDriver extends DataDriver
 		else
 		{
 			// Complex type we can't handle.
-			TypeTagger tagger = DataStorageManager.getTaggerForType(type);
+			TypeInfo tagger = DataStorageManager.getTaggerForType(type);
 			Iterator<Entry<String, Class>> iterator = tagger.fieldToTypeMap.entrySet().iterator();
 
 			// Iterate over the stored fields. Recurse if nessecary.
@@ -539,10 +540,10 @@ public class SQLDataDriver extends DataDriver
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
-		else if (type.equals(TaggedClass.class))
+		else if (type.equals(TypeData.class))
 		{
 			// Tricky business involving recursion.
-			TaggedClass tc = (TaggedClass) value;
+			TypeData tc = (TypeData) value;
 
 			for (SavedField f : tc.TaggedMembers.values())
 			{

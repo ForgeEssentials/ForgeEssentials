@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.FunctionHelper;
 
@@ -63,10 +63,10 @@ public abstract class TextDataDriver extends DataDriver
 	protected abstract String getExtension();
 
 	@Override
-	protected TaggedClass[] loadAll(Class type)
+	protected TypeData[] loadAll(Class type)
 	{
 		File[] files = getTypePath(type).listFiles();
-		ArrayList<ITaggedClass> data = new ArrayList<ITaggedClass>();
+		ArrayList<IReconstructData> data = new ArrayList<IReconstructData>();
 
 		if (files != null)
 		{
@@ -79,7 +79,7 @@ public abstract class TextDataDriver extends DataDriver
 			}
 		}
 
-		return data.toArray(new TaggedClass[] {});
+		return data.toArray(new TypeData[] {});
 	}
 
 	@Override

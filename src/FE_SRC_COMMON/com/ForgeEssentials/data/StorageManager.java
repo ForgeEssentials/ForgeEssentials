@@ -34,7 +34,7 @@ public class StorageManager implements IStorageManager
 
 	private boolean													loaded			= false;
 
-	protected static ConcurrentHashMap<Class, TypeTagger>			taggerList		= new ConcurrentHashMap<Class, TypeTagger>();
+	protected static ConcurrentHashMap<Class, TypeInfo>			taggerList		= new ConcurrentHashMap<Class, TypeInfo>();
 
 	public StorageManager(Configuration config)
 	{
@@ -92,7 +92,7 @@ public class StorageManager implements IStorageManager
 				entry.getValue().parseConfigs(config, "Data." + entry.getValue().getType() + "." + entry.getValue().getName(), worldName);
 
 				// register tagged classes...
-				for (TypeTagger tag : taggerList.values())
+				for (TypeInfo tag : taggerList.values())
 				{
 					entry.getValue().onClassRegistered(tag);
 				}
@@ -160,9 +160,12 @@ public class StorageManager implements IStorageManager
 
 	public void registerSaveableClass(Class type)
 	{
+		// maybe not....  TODO: fix..
 		if (!type.isAnnotationPresent(SaveableObject.class))
 			throw new IllegalArgumentException("Only classes that have the @SaveableObject annotation may be registered!");
-		taggerList.put(type, new TypeTagger(type));
+		
+		
+		taggerList.put(type, TypeInfo.getTaggerForType(type));
 	}
 
 	public boolean hasMapping(Class type)
@@ -170,9 +173,9 @@ public class StorageManager implements IStorageManager
 		return taggerList.containsKey(type);
 	}
 
-	public TypeTagger getTaggerForType(Class type)
+	public TypeInfo getTaggerForType(Class type)
 	{
-		TypeTagger tagged;
+		TypeInfo tagged;
 		if (!hasMapping(type))
 		{
 			registerSaveableClass(type);

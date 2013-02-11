@@ -2,7 +2,7 @@ package com.ForgeEssentials.api.data;
 
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.EnumDriverType;
-import com.ForgeEssentials.data.TypeTagger;
+import com.ForgeEssentials.data.TypeInfo;
 import com.ForgeEssentials.util.DBConnector;
 
 public interface IStorageManager
@@ -17,7 +17,7 @@ public interface IStorageManager
 
 	boolean hasMapping(Class type);
 
-	TypeTagger getTaggerForType(Class type);
+	TypeInfo getTaggerForType(Class type);
 
 	DBConnector getCoreDBConnector();
 }

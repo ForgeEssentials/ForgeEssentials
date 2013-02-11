@@ -1,11 +1,10 @@
 package com.ForgeEssentials.api.data;
 
-public interface ITaggedClass
+public interface IReconstructData
 {
 	public Object getFieldValue(String name);
-
-	@Override
-	public String toString();
-
+	
+	public String getUniqueKey();
+	
 	public Class getType();
 }

@@ -1,10 +1,10 @@
-package com.ForgeEssentials.data.typeOverrides;
+package com.ForgeEssentials.data.typeData;
 
 import java.rmi.server.UID;
 
-import com.ForgeEssentials.data.TaggedClass;
+import com.ForgeEssentials.data.TypeData;
 
-public abstract class TypeOverride<T> extends TaggedClass
+public abstract class TypeDataOverride<T> extends TypeData
 {
 	T object;
 
@@ -13,7 +13,7 @@ public abstract class TypeOverride<T> extends TaggedClass
 	 * It will be used to create a TaggedClass from this object.
 	 * @param object
 	 */
-	public TypeOverride(T object)
+	public TypeDataOverride(T object)
 	{
 		super(object.getClass());
 		this.object = object;
@@ -24,7 +24,7 @@ public abstract class TypeOverride<T> extends TaggedClass
 	 * It will be used to create a TaggedClass from this object.
 	 * @param object
 	 */
-	public TypeOverride(Class<? extends T> type)
+	public TypeDataOverride(Class<? extends T> type)
 	{
 		super(type);
 	}

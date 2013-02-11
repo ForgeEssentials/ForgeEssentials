@@ -3,11 +3,11 @@ package com.ForgeEssentials.api.data;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.data.EnumDriverType;
-import com.ForgeEssentials.data.TypeTagger;
+import com.ForgeEssentials.data.TypeInfo;
 
 public interface IDataDriver
 {
-	void onClassRegistered(TypeTagger tagger);
+	void onClassRegistered(TypeInfo tagger);
 
 	String getName();
 
