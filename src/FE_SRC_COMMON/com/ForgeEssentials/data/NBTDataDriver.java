@@ -18,7 +18,6 @@ import net.minecraft.nbt.NBTTagString;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;
-import com.ForgeEssentials.api.data.SavedField;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class NBTDataDriver extends BinaryDataDriver
@@ -126,7 +125,7 @@ public class NBTDataDriver extends BinaryDataDriver
 	private TypeData readClassFromTag(NBTTagCompound tag, Class type)
 	{
 		TypeData tClass = TypeData.getTaggedClass(type);
-		TypeInfoWrapper tagger = DataStorageManager.getInfoForType(type);
+		TypeInfoHandler tagger = DataStorageManager.getInfoForType(type);
 
 		// not gonna load it if its the method...
 		if (tagger.isUniqueKeyField)
@@ -225,7 +224,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 	}
 
-	private Object readFieldFromTag(NBTTagCompound tag, SavedField field, TypeInfoWrapper tagger)
+	private Object readFieldFromTag(NBTTagCompound tag, SavedField field, TypeInfoHandler tagger)
 	{
 		if (field == null || field.type == null || field.value == null)
 		{

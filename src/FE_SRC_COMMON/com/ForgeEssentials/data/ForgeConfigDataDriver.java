@@ -8,7 +8,6 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.SavedField;
 
 /**
  * Storage driver for filesystem (flat-file) persistence.
@@ -55,7 +54,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	{
 		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
 		cfg.load();
-		TypeInfoWrapper tag = DataStorageManager.getInfoForType(type);
+		TypeInfoHandler tag = DataStorageManager.getInfoForType(type);
 
 		TypeData data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), type);
 		data.addField(new SavedField(tag.uniqueKey, uniqueKey));
@@ -189,7 +188,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	private TypeData readClassFromProperty(Configuration cfg, ConfigCategory cat, Class type)
 	{
 		TypeData data = (TypeData) TypeData.getTaggedClass(type);
-		TypeInfoWrapper tag = DataStorageManager.getInfoForType(type);
+		TypeInfoHandler tag = DataStorageManager.getInfoForType(type);
 
 		if (cat != null)
 		{

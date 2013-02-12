@@ -18,7 +18,7 @@ import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.data.TypeInfoWrapper;
+import com.ForgeEssentials.data.TypeInfoHandler;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
@@ -157,7 +157,7 @@ public class TypeInfoStandard<T> implements ITypeInfo<T>
 
 				if (obj != null)
 				{
-					if (TypeInfoWrapper.isTypeComplex(obj))
+					if (TypeInfoHandler.isTypeComplex(obj))
 					{
 						// This object is not a primitive. Call this function on the appropriate TypeTagger.
 						obj = DataStorageManager.getInfoForType(obj.getClass()).getTypeDataFromObject(obj);

@@ -3,7 +3,7 @@ package com.ForgeEssentials.api.data;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.data.EnumDriverType;
-import com.ForgeEssentials.data.TypeInfoWrapper;
+import com.ForgeEssentials.data.TypeInfoHandler;
 
 public interface IDataDriver
 {

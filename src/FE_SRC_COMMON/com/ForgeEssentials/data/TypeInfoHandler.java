@@ -17,7 +17,6 @@ import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.api.data.SavedField;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
@@ -26,17 +25,19 @@ import com.ForgeEssentials.util.OutputHandler;
  * the original Object (More or less.)
  * @author MysteriousAges
  */
-public class TypeInfoWrapper
+public abstract class TypeInfoHandler
 {
-	public static TypeInfoWrapper getTaggerForType(Class c)
+	private TypeInfoHandler(){}
+	
+	protected static TypeInfoHandler getTaggerForType(Class c)
 	{
-		TypeInfoWrapper tagger;
+		TypeInfoHandler tagger;
 
 		// if the Annotaton exists
 		if (c.isAnnotationPresent(SaveableObject.class))
 		{
 			// build it the standard way.
-			tagger = new TypeInfoWrapper(c, false);
+			tagger = new TypeInfoHandler(c, false);
 			HashMap<String, Class> map = new HashMap<String, Class>();
 			tagger.build(map);
 			return tagger;

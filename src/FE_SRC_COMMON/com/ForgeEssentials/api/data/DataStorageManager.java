@@ -2,7 +2,7 @@ package com.ForgeEssentials.api.data;
 
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.data.EnumDriverType;
-import com.ForgeEssentials.data.TypeInfoWrapper;
+import com.ForgeEssentials.data.TypeInfoHandler;
 import com.ForgeEssentials.util.DBConnector;
 
 /**

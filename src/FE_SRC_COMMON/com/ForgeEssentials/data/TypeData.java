@@ -10,7 +10,6 @@ import java.util.logging.Level;
 
 import com.ForgeEssentials.api.data.AbstractTypeData;
 import com.ForgeEssentials.api.data.AbstractTypeData;
-import com.ForgeEssentials.api.data.SavedField;
 import com.ForgeEssentials.data.typeData.SpecialSaveableData;
 import com.ForgeEssentials.util.OutputHandler;
 

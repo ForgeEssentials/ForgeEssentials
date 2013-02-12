@@ -7,7 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.data.AbstractTypeData;
 import com.ForgeEssentials.api.data.IStorageManager;
+import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.OutputHandler;
@@ -19,22 +21,14 @@ public class StorageManager implements IStorageManager
 	// just keeps an instance of the config for future use.
 	private Configuration											config;
 	private static final String										configCategory	= "data";
-
 	public static final EnumDriverType								defaultDriver	= EnumDriverType.TEXT;
 	private EnumDriverType											chosen			= defaultDriver;
-
-	private ConcurrentHashMap<EnumDriverType, String>				typeChosens;													// the
-																																	// defaults...
-	private ConcurrentHashMap<String, Class<? extends DataDriver>>	classMap;														// registered
-																																	// ones...
-	private ConcurrentHashMap<String, DataDriver>					instanceMap;													// instantiated
-																																	// ones
-
+	private ConcurrentHashMap<EnumDriverType, String>				typeChosens;																	// the defaults...
+	private ConcurrentHashMap<String, Class<? extends DataDriver>>	classMap;																		// registered ones...
+	private ConcurrentHashMap<String, DataDriver>					instanceMap;																	// instantiated ones
 	private static StorageManager									instance;
-
 	private boolean													loaded			= false;
-
-	protected static ConcurrentHashMap<Class, TypeInfoWrapper>			taggerList		= new ConcurrentHashMap<Class, TypeInfoWrapper>();
+	private ConcurrentHashMap<Class, ITypeInfo>						taggerList		= new ConcurrentHashMap<Class, ITypeInfo>();
 
 	public StorageManager(Configuration config)
 	{
@@ -70,7 +64,6 @@ public class StorageManager implements IStorageManager
 	 * Parses the ForgeEssentials config file and determines which Driver to
 	 * use. This will be loaded up with the lazy method. only the chosen ones
 	 * will be loaded...
-	 * 
 	 * @param Config
 	 */
 	public void setupManager(FMLServerStartingEvent event)
@@ -92,7 +85,7 @@ public class StorageManager implements IStorageManager
 				entry.getValue().parseConfigs(config, "Data." + entry.getValue().getType() + "." + entry.getValue().getName(), worldName);
 
 				// register tagged classes...
-				for (TypeInfoWrapper tag : taggerList.values())
+				for (ITypeInfo tag : taggerList.values())
 				{
 					entry.getValue().onClassRegistered(tag);
 				}
@@ -111,9 +104,7 @@ public class StorageManager implements IStorageManager
 	/**
 	 * Should only be done before the server starts. May override existing
 	 * Driver types.
-	 * 
-	 * @param name
-	 * Name to be used in configs
+	 * @param name Name to be used in configs
 	 * @param c
 	 */
 	public void registerDriver(String name, Class<? extends DataDriver> c)
@@ -160,23 +151,28 @@ public class StorageManager implements IStorageManager
 
 	public void registerSaveableClass(Class type)
 	{
-		// maybe not....  TODO: fix..
 		if (!type.isAnnotationPresent(SaveableObject.class))
 			throw new IllegalArgumentException("Only classes that have the @SaveableObject annotation may be registered!");
+
+		taggerList.put(type, getInfoForType(type));
+	}
+	
+	@Override
+	public void registerSaveableClass(Class<? extends ITypeInfo> infoType, Class type)
+	{
+		// TODO Auto-generated method stub
 		
-		
-		taggerList.put(type, TypeInfoWrapper.getTaggerForType(type));
 	}
 
-	public boolean hasMapping(Class type)
+	public boolean isClassRegisterred(Class type)
 	{
 		return taggerList.containsKey(type);
 	}
 
-	public TypeInfoWrapper getInfoForType(Class type)
+	public ITypeInfo getInfoForType(Class type)
 	{
-		TypeInfoWrapper tagged;
-		if (!hasMapping(type))
+		ITypeInfo tagged;
+		if (!isClassRegisterred(type))
 		{
 			registerSaveableClass(type);
 			tagged = taggerList.get(type);
@@ -192,5 +188,19 @@ public class StorageManager implements IStorageManager
 	public DBConnector getCoreDBConnector()
 	{
 		return ((SQLDataDriver) instance.getDriverOfType(EnumDriverType.SQL)).connector;
+	}
+
+	@Override
+	public AbstractTypeData getDataForType(Class type)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AbstractTypeData getDataForObject(Object obj)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
