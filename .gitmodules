@@ -1,3 +1,0 @@
-[submodule "lang"]
-	path = src/FE_SRC_COMMON/com/ForgeEssentials/util/lang
-	url = git://github.com/ForgeEssentials/FELocalizations.git
