@@ -7,4 +7,4 @@ worldedit-5.4.6-SNAPSHOT.jar: de96549f9c31aa9268f649fc6757e7b68b180549
 
 H2DB.jar: 32f12e53b4dab80b721525c01d766b95d22129bb
 
-Metrics.jar: 47a1fc60cc5a16f0e125ca525daa596fd7ac0c3a
+Metrics-FE-r2.jar: fd25f4d2ec961ac61d2019a2b7de8a3b22b75165

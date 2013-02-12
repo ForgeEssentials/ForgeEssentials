@@ -80,6 +80,9 @@ public class CompatMCStats implements IServerStats
 	public static int getPlayers(){
 		return MinecraftServer.getServer().getCurrentPlayerCount();
 	}
+	public static String getMCVer(){
+		return MinecraftServer.getServer().getMinecraftVersion();
+	}
 	
 	@Override
 	public void makeGraphs(Metrics metrics)
