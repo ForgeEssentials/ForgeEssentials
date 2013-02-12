@@ -1,6 +1,6 @@
 ForgeEssentialsMain
 ===================
-The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating WorldEdit and WorldGuard functionality. More info can be found <a href="https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/About-ForgeEssentials">here</a> or on our IRC channel (#forgeessentials on EsperNet).
+The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality. More info can be found <a href="https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/About-ForgeEssentials">here</a> or on our IRC channel (#forgeessentials on EsperNet).
 
 Setup
 =====
