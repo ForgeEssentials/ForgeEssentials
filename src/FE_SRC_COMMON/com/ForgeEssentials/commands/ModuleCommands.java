@@ -55,7 +55,7 @@ public class ModuleCommands
 
 	public static EventHandler	eventHandler	= new EventHandler();
 	public static DataDriver	data;
-	private static MCStatsHelper mcstats;
+	private static MCStatsHelper mcstats = new MCStatsHelper();
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)

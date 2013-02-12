@@ -28,7 +28,14 @@ public class CompatMCStats implements IServerStats
 	
 	public static void registerStats(IServerStats generator)
 	{
-		handlers.add(generator);
+		if(generator != null)
+		{
+			handlers.add(generator);
+		}
+		else
+		{
+			throw new RuntimeException("Why would you register null?");
+		}
 	}
 	
 	public static void doMCStats()
