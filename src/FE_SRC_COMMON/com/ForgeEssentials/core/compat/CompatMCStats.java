@@ -76,21 +76,6 @@ public class CompatMCStats implements IServerStats
 		return map;
 	}
 	
-	public static boolean isOnlineMode(){
-		return MinecraftServer.getServer().isServerInOnlineMode();
-	}
-	
-	public static boolean isDediServer(){
-		return MinecraftServer.getServer().isDedicatedServer();
-	}
-	
-	public static int getPlayers(){
-		return MinecraftServer.getServer().getCurrentPlayerCount();
-	}
-	public static String getMCVer(){
-		return MinecraftServer.getServer().getMinecraftVersion();
-	}
-	
 	@Override
 	public void makeGraphs(Metrics metrics)
 	{
