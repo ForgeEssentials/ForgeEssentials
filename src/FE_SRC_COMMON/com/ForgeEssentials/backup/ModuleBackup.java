@@ -2,7 +2,10 @@ package com.ForgeEssentials.backup;
 
 import java.io.File;
 
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -19,6 +22,8 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup
 {
@@ -27,7 +32,7 @@ public class ModuleBackup
 
 	@ModuleDir
 	public static File			moduleDir;
-	
+
 	public static File			baseFolder;
 
 	@PreInit
@@ -52,5 +57,17 @@ public class ModuleBackup
 	public void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel("ForgeEssentials.backup", RegGroup.OWNERS);
+	}
+
+	@ForgeSubscribe
+	public void worldUnload(WorldEvent.Unload e)
+	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			if (config.backupIfUnloaded)
+			{
+				new Backup((WorldServer) e.world, false);
+			}
+		}
 	}
 }

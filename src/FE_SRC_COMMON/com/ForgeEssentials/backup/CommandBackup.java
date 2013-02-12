@@ -5,10 +5,6 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.WorldServer;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -30,15 +26,15 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(args.length != 1)
+		if (args.length != 1)
 		{
-			new Backup();
+			new Backup(true);
 		}
 		else
 		{
-			if(isInteger(args[0]))
+			if (isInteger(args[0]))
 			{
-				new Backup(this.parseInt(sender, args[0]));
+				new Backup(this.parseInt(sender, args[0]), true);
 			}
 			else
 			{
@@ -50,15 +46,15 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if(args.length != 1)
+		if (args.length != 1)
 		{
-			new Backup();
+			new Backup(true);
 		}
 		else
 		{
-			if(isInteger(args[0]))
+			if (isInteger(args[0]))
 			{
-				new Backup(this.parseInt(sender, args[0]));
+				new Backup(this.parseInt(sender, args[0]), true);
 			}
 			else
 			{
@@ -84,14 +80,18 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.backup";
 	}
-	
-	public static boolean isInteger(String s) {
-	    try { 
-	        Integer.parseInt(s); 
-	    } catch(NumberFormatException e) { 
-	        return false; 
-	    }
-	    // only got here if we didn't return false
-	    return true;
+
+	public static boolean isInteger(String s)
+	{
+		try
+		{
+			Integer.parseInt(s);
+		}
+		catch (NumberFormatException e)
+		{
+			return false;
+		}
+		// only got here if we didn't return false
+		return true;
 	}
 }

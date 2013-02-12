@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+
+import com.ForgeEssentials.util.FEChatFormatCodes;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class Backup implements Runnable
 {
@@ -25,24 +25,43 @@ public class Backup implements Runnable
 	private WorldServer		world;
 	private boolean			isWorld;
 	private String			name;
-	private File			basefolder = ModuleBackup.baseFolder;
+	private File			basefolder	= ModuleBackup.baseFolder;
 	private File			folder;
 	private List<String>	fileList;
 	private File			source;
 	private String			backupName;
+	private boolean			worldSave;
 
-	public Backup()
+	public Backup(boolean worldSave)
 	{
-		for(int i : DimensionManager.getIDs())
+		for (int i : DimensionManager.getIDs())
 		{
-			new Backup(i);
+			new Backup(i, worldSave);
 		}
 	}
-	
-	public Backup(int dim)
+
+	public Backup(int dim, boolean worldSave)
 	{
 		this.isWorld = true;
-		this.world = MinecraftServer.getServer().worldServerForDimension(dim);
+		this.worldSave = worldSave;
+		this.world = DimensionManager.getWorld(dim);
+
+		if (BackupConfig.backupIfUnloaded)
+		{
+			if (world == null)
+			{
+				DimensionManager.initDimension(dim);
+				this.world = DimensionManager.getWorld(dim);
+			}
+		}
+		else
+		{
+			if (world == null)
+			{
+				return;
+			}
+		}
+
 		this.name = world.getWorldInfo().getWorldName() + " DIM " + dim;
 		this.source = world.getChunkSaveLocation();
 		this.folder = new File(this.basefolder, name.replaceAll(" ", "_"));
@@ -51,7 +70,22 @@ public class Backup implements Runnable
 		thread = new Thread(this, "ForgeEssentials - Backup - " + this.name);
 		thread.start();
 	}
-	
+
+	public Backup(WorldServer world, boolean worldSave)
+	{
+		this.isWorld = true;
+		this.worldSave = worldSave;
+		this.world = world;
+
+		this.name = world.getWorldInfo().getWorldName() + " DIM " + world.provider.dimensionId;
+		this.source = world.getChunkSaveLocation();
+		this.folder = new File(this.basefolder, name.replaceAll(" ", "_"));
+		this.backupName = getFilename() + ".zip";
+
+		thread = new Thread(this, "ForgeEssentials - Backup - " + this.name);
+		thread.start();
+	}
+
 	public Backup(File folder)
 	{
 		this.isWorld = false;
@@ -59,11 +93,11 @@ public class Backup implements Runnable
 		this.source = folder;
 		this.folder = new File(this.basefolder, name.replaceAll(" ", "_"));
 		this.backupName = getFilename() + ".zip";
-		
+
 		thread = new Thread(this, "ForgeEssentials - Backup - " + this.name);
 		thread.start();
 	}
-	
+
 	@Override
 	public void run()
 	{
@@ -73,12 +107,12 @@ public class Backup implements Runnable
 		{
 			folder.mkdirs();
 		}
-		
-		if(isWorld)
-		{
-			boolean canNotSave = world.canNotSave;
-			world.canNotSave = false;
 
+		boolean canNotSave = true;
+		if (isWorld && worldSave)
+		{
+			canNotSave = world.canNotSave;
+			world.canNotSave = false;
 			try
 			{
 				world.saveAllChunks(true, (IProgressUpdate) null);
@@ -89,15 +123,17 @@ public class Backup implements Runnable
 				e.printStackTrace();
 				msg("Error while making backup of " + name);
 				msg(e.toString());
-			}	
+			}
+		}
+
+		doFolder(source);
+
+		if (isWorld && worldSave)
+		{
 			world.canNotSave = canNotSave;
 		}
-		else
-		{
-			doFolder(source);
-		}
-		
-		msg("Backup done.");
+
+		msg("Backup of " + name + " done.");
 	}
 
 	public void msg(String msg)
@@ -128,7 +164,7 @@ public class Backup implements Runnable
 				.replaceAll("%min", min.toString())
 				.replaceAll("%name", name.replaceAll(" ", "_"));
 	}
-	
+
 	/**
 	 * make a folder backup
 	 * @param folder
@@ -159,7 +195,7 @@ public class Backup implements Runnable
 			String[] subNote = node.list();
 			for (String filename : subNote)
 			{
-				if(!filename.startsWith("DIM"))
+				if (!filename.startsWith("DIM"))
 				{
 					generateFileList(dir, new File(node, filename));
 				}
@@ -207,7 +243,6 @@ public class Backup implements Runnable
 			}
 
 			zos.closeEntry();
-			//remember close it
 			zos.close();
 		}
 		catch (Exception ex)
