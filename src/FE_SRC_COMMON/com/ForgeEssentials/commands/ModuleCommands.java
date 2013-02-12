@@ -2,15 +2,9 @@ package com.ForgeEssentials.commands;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
-import org.mcstats.Metrics.Plotter;
-
-import com.ForgeEssentials.api.IServerStats;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -31,6 +25,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.CommandRegistrar;
 import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
+import com.ForgeEssentials.commands.util.MCStatsHelper;
 import com.ForgeEssentials.commands.util.MobTypeLoader;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
@@ -50,7 +45,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @FEModule(configClass = ConfigCmd.class, name = "CommandsModule", parentMod = ForgeEssentials.class)
-public class ModuleCommands implements IServerStats
+public class ModuleCommands
 {
 	@Config
 	public static ConfigCmd		conf;
@@ -60,6 +55,7 @@ public class ModuleCommands implements IServerStats
 
 	public static EventHandler	eventHandler	= new EventHandler();
 	public static DataDriver	data;
+	private static MCStatsHelper mcstats;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -76,7 +72,7 @@ public class ModuleCommands implements IServerStats
 		GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
 		NetworkRegistry.instance().registerChatListener(eventHandler);
 		CommandRegistrar.commandConfigs(conf.config);
-		CompatMCStats.registerStats(this);
+		CompatMCStats.registerStats(mcstats);
 	}
 
 	@ServerInit
@@ -159,38 +155,5 @@ public class ModuleCommands implements IServerStats
 		}
 	}
 
-	@Override
-	public void makeGraphs(Metrics metrics)
-	{
-		Graph graph = metrics.createGraph("ModuleCommands");
-		
-		Plotter plotter = new Plotter("Warps")
-		{
-			@Override
-			public int getValue()
-			{
-				return TeleportCenter.warps.size();
-			}
-		};
-		
-		plotter = new Plotter("Kits")
-		{
-			@Override
-			public int getValue()
-			{
-				return DataStorage.getData("kitdata").getTags().size();
-			}
-		};
-		
-		graph.addPlotter(plotter);
-	}
-
-	@Override
-	public LinkedHashMap<String, String> addToServerInfo()
-	{
-		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		map.put("Warps", "" + TeleportCenter.warps.size());
-		map.put("Kits", "" + DataStorage.getData("kitdata").getTags().size());
-		return map;
-	}
+	
 }

@@ -7,27 +7,21 @@ import java.util.List;
 import java.util.UUID;
 
 import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
+import org.mcstats.Metrics.Plotter;
 
-import com.ForgeEssentials.api.IServerStats;
+import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.Configuration;
 
 // Obfuscated code handler for MCStats
-public class CompatMCStats
+public class CompatMCStats implements IServerStats
 {
-	public void initConfig(){
-		Configuration configuration;
-		configuration = new Configuration(new File(ForgeEssentials.FEDIR, "mcstats.cfg"));
-
-        // Get values, and add some defaults, if needed
-        configuration.get(Configuration.CATEGORY_GENERAL, "opt-out", false,
-                "Set to true to disable all reporting");
-        Metrics.guid = configuration.get(Configuration.CATEGORY_GENERAL, "guid", UUID
-                .randomUUID().toString(), "Server unique ID").value;
-    
-        configuration.save();
+	public void load(){
+		registerStats(this);
 	}
 	private static List<IServerStats> handlers = new ArrayList();
 	private static Metrics metrics;
@@ -74,14 +68,43 @@ public class CompatMCStats
 		
 		return map;
 	}
+	
 	public static boolean isOnlineMode(){
 		return MinecraftServer.getServer().isServerInOnlineMode();
 	}
+	
 	public static boolean isDediServer(){
 		return MinecraftServer.getServer().isDedicatedServer();
 	}
+	
 	public static int getPlayers(){
 		return MinecraftServer.getServer().getCurrentPlayerCount();
+	}
+	
+	@Override
+	public void makeGraphs(Metrics metrics)
+	{
+		Graph graph = metrics.createGraph("Modules used");
+		for(String module : ModuleLauncher.getModuleList())
+		{
+			Plotter plotter = new Plotter(module)
+			{
+				@Override
+				public int getValue()
+				{
+					return 1;
+				}
+			};
+			graph.addPlotter(plotter);
+		}
+	}
+
+	@Override
+	public LinkedHashMap<String, String> addToServerInfo()
+	{
+		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+		map.put("FEmodules", TextFormatter.toJSON(ModuleLauncher.getModuleList()));
+		return map;
 	}
 
 }

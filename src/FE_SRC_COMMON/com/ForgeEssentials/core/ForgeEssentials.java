@@ -9,7 +9,6 @@ import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 import org.mcstats.Metrics.Plotter;
 
-import com.ForgeEssentials.api.IServerStats;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.commands.CommandFECredits;
@@ -18,6 +17,7 @@ import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
+import com.ForgeEssentials.core.compat.IServerStats;
 import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
@@ -68,7 +68,7 @@ import cpw.mods.fml.relauncher.Side;
 @NetworkMod(clientSideRequired = false, serverSideRequired = false, serverPacketHandlerSpec = @SidedPacketHandler(channels =
 { "ForgeEssentials" }, packetHandler = PacketHandler.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "@VERSION@")
-public class ForgeEssentials implements IServerStats
+public class ForgeEssentials
 {
 
 	@Instance(value = "ForgeEssentials")
@@ -92,6 +92,8 @@ public class ForgeEssentials implements IServerStats
 	private MiscEventHandler		miscEventHandler;
 
 	public static String			version;
+	
+	private CompatMCStats mcstatscompat;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -106,6 +108,7 @@ public class ForgeEssentials implements IServerStats
 		OutputHandler.init(e.getModLog());
 
 		config = new CoreConfig();
+		mcstatscompat = new CompatMCStats();
 
 		// Data API stuff
 		{
@@ -146,7 +149,7 @@ public class ForgeEssentials implements IServerStats
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		TickRegistry.registerTickHandler(factory, Side.SERVER);
 		GameRegistry.registerPlayerTracker(factory);
-		CompatMCStats.registerStats(this);
+		mcstatscompat.load();
 	}
 
 	@PostInit
@@ -199,29 +202,5 @@ public class ForgeEssentials implements IServerStats
 		return true;
 	}
 
-	@Override
-	public void makeGraphs(Metrics metrics)
-	{
-		Graph graph = metrics.createGraph("Modules used");
-		for(String module : ModuleLauncher.getModuleList())
-		{
-			Plotter plotter = new Plotter(module)
-			{
-				@Override
-				public int getValue()
-				{
-					return 1;
-				}
-			};
-			graph.addPlotter(plotter);
-		}
-	}
-
-	@Override
-	public LinkedHashMap<String, String> addToServerInfo()
-	{
-		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		map.put("FEmodules", TextFormatter.toJSON(ModuleLauncher.getModuleList()));
-		return map;
-	}
+	
 }

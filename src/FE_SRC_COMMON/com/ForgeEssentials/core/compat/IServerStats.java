@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api;
+package com.ForgeEssentials.core.compat;
 
 import java.util.LinkedHashMap;
 
