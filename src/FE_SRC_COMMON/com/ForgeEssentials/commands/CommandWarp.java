@@ -69,44 +69,41 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			if (true)
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
 			{
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "admin")))
+				if (args[0].equalsIgnoreCase("set"))
 				{
-					if (args[0].equalsIgnoreCase("set"))
+					if (TeleportCenter.warps.containsKey(args[1].toLowerCase()))
 					{
-						if (TeleportCenter.warps.containsKey(args[1].toLowerCase()))
-						{
-							OutputHandler.chatError(sender, Localization.get("command.warp.alreadyexists"));
-						}
-						else
-						{
-							TeleportCenter.warps.put(args[1].toLowerCase(), new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
-
-							OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
-						}
-					}
-					else if (args[0].equalsIgnoreCase("del"))
-					{
-						if (TeleportCenter.warps.containsKey(args[1].toLowerCase()))
-						{
-							TeleportCenter.warps.remove(args[1].toLowerCase());
-							OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
-						}
-						else
-						{
-							OutputHandler.chatError(sender, Localization.get("command.warp.notfound"));
-						}
+						OutputHandler.chatError(sender, Localization.get("command.warp.alreadyexists"));
 					}
 					else
 					{
-						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+						TeleportCenter.warps.put(args[1].toLowerCase(), new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
+
+						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
+					}
+				}
+				else if (args[0].equalsIgnoreCase("del"))
+				{
+					if (TeleportCenter.warps.containsKey(args[1].toLowerCase()))
+					{
+						TeleportCenter.warps.remove(args[1].toLowerCase());
+						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
+					}
+					else
+					{
+						OutputHandler.chatError(sender, Localization.get("command.warp.notfound"));
 					}
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 				}
+			}
+			else
+			{
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 			}
 		}
 	}
