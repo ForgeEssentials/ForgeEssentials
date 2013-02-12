@@ -161,7 +161,9 @@ public class StorageManager implements IStorageManager
 	{
 		if (!type.isAnnotationPresent(SaveableObject.class))
 			throw new IllegalArgumentException("Only classes that have the @SaveableObject annotation may be registered!");
-
+		
+		TypeInfoStandard standard = new TypeInfoStandard(type);
+		standard.build(map)
 		taggerList.put(type, getInfoForType(type));
 	}
 
@@ -186,11 +188,9 @@ public class StorageManager implements IStorageManager
 					}
 				}
 				
-				if (con == null)
-				{
-					OutputHandler.severe(infoType.getCanonicalName()+" doesn't have a useable constructor! "+type.getCanonicalName()+" will not be registerred.");
-					return;
-				}
+				ITypeInfo created;
+				
+				if (con != null)
 				
 			}
 			catch (SecurityException e)
