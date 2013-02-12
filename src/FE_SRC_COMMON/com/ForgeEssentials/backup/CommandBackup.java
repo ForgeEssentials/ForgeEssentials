@@ -1,5 +1,6 @@
 package com.ForgeEssentials.backup;
 
+import java.io.File;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -29,68 +30,41 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		// saving world.
-		sender.sendChatToPlayer("Starting worldsave... You may experience server lag while this is being done.");
-		MinecraftServer server = MinecraftServer.getServer();
-		if (server.getConfigurationManager() != null)
+		if(args.length != 1)
 		{
-			server.getConfigurationManager().saveAllPlayerData();
+			new Backup();
 		}
-		try
+		else
 		{
-			for (WorldServer worldServer : server.worldServers)
+			if(isInteger(args[0]))
 			{
-				if (worldServer != null)
-				{
-					WorldServer var5 = worldServer;
-					boolean var6 = var5.canNotSave;
-					var5.canNotSave = false;
-					var5.saveAllChunks(true, (IProgressUpdate) null);
-					var5.canNotSave = var6;
-				}
+				new Backup(this.parseInt(sender, args[0]));
+			}
+			else
+			{
+				new Backup(new File(args[0]));
 			}
 		}
-		catch (MinecraftException var7)
-		{
-			sender.sendChatToPlayer("Could not save world.");
-		}
-
-		// backing up.
-		ModuleBackup.thread = new BackupThread(sender, server);
-		ModuleBackup.thread.run();
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		// saving world.
-		sender.sendChatToPlayer("Starting worldsave... You may experience server lag while this is being done.");
-		MinecraftServer server = MinecraftServer.getServer();
-		if (server.getConfigurationManager() != null)
+		if(args.length != 1)
 		{
-			server.getConfigurationManager().saveAllPlayerData();
+			new Backup();
 		}
-		try
+		else
 		{
-			for (WorldServer worldServer : server.worldServers)
+			if(isInteger(args[0]))
 			{
-				if (worldServer != null)
-				{
-					WorldServer var5 = worldServer;
-					boolean var6 = var5.canNotSave;
-					var5.canNotSave = false;
-					var5.saveAllChunks(true, (IProgressUpdate) null);
-					var5.canNotSave = var6;
-				}
+				new Backup(this.parseInt(sender, args[0]));
+			}
+			else
+			{
+				new Backup(new File(args[0]));
 			}
 		}
-		catch (MinecraftException var7)
-		{
-			sender.sendChatToPlayer("Could not save world.");
-		}
-
-		// backing up.
-		ModuleBackup.thread = new BackupThread(sender, server);
 	}
 
 	@Override
@@ -110,5 +84,14 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.backup";
 	}
-
+	
+	public static boolean isInteger(String s) {
+	    try { 
+	        Integer.parseInt(s); 
+	    } catch(NumberFormatException e) { 
+	        return false; 
+	    }
+	    // only got here if we didn't return false
+	    return true;
+	}
 }

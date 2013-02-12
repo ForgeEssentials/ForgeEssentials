@@ -27,8 +27,8 @@ public class ModuleBackup
 
 	@ModuleDir
 	public static File			moduleDir;
-
-	public static BackupThread	thread;
+	
+	public static File			baseFolder;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
