@@ -14,6 +14,7 @@ import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.snooper.API;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.snooper.response.MCstatsInfo;
 import com.ForgeEssentials.snooper.response.PlayerArmor;
 import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
 import com.ForgeEssentials.snooper.response.PlayerInv;
@@ -43,6 +44,7 @@ public class ModuleSnooper
 
 		API.registerResponce(0, new ServerInfo());
 		API.registerResponce(1, new PlayerList());
+		API.registerResponce(2, new MCstatsInfo());
 
 		API.registerResponce(5, new PlayerInfoResonce());
 		API.registerResponce(6, new PlayerArmor());

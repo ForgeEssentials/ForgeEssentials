@@ -2,9 +2,15 @@ package com.ForgeEssentials.commands;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
+import org.mcstats.Metrics.Plotter;
+
+import com.ForgeEssentials.api.IServerStats;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -29,6 +35,7 @@ import com.ForgeEssentials.commands.util.MobTypeLoader;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.ServerStats;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.OutputHandler;
@@ -43,7 +50,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @FEModule(configClass = ConfigCmd.class, name = "CommandsModule", parentMod = ForgeEssentials.class)
-public class ModuleCommands
+public class ModuleCommands implements IServerStats
 {
 	@Config
 	public static ConfigCmd		conf;
@@ -69,6 +76,7 @@ public class ModuleCommands
 		GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
 		NetworkRegistry.instance().registerChatListener(eventHandler);
 		CommandRegistrar.commandConfigs(conf.config);
+		ServerStats.registerStats(this);
 	}
 
 	@ServerInit
@@ -92,7 +100,7 @@ public class ModuleCommands
 	@PermRegister(ident = "ModuleBasicCommands")
 	public static void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel("ForgeEssentials.BasicCommands._ALL_", RegGroup.MEMBERS);
+		event.registerPermissionLevel("ForgeEssentials.BasicCommands._ALL_", RegGroup.OWNERS);
 
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.compass", RegGroup.MEMBERS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.afk", RegGroup.MEMBERS);
@@ -149,5 +157,40 @@ public class ModuleCommands
 			map.put(warp.getName(), warp);
 			TeleportCenter.pwMap.put(warp.getUsername(), map);
 		}
+	}
+
+	@Override
+	public void makeGraphs(Metrics metrics)
+	{
+		Graph graph = metrics.createGraph("ModuleCommands");
+		
+		Plotter plotter = new Plotter("Warps")
+		{
+			@Override
+			public int getValue()
+			{
+				return TeleportCenter.warps.size();
+			}
+		};
+		
+		plotter = new Plotter("Kits")
+		{
+			@Override
+			public int getValue()
+			{
+				return DataStorage.getData("kitdata").getTags().size();
+			}
+		};
+		
+		graph.addPlotter(plotter);
+	}
+
+	@Override
+	public LinkedHashMap<String, String> addToServerInfo()
+	{
+		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+		map.put("Warps", "" + TeleportCenter.warps.size());
+		map.put("Kits", "" + DataStorage.getData("kitdata").getTags().size());
+		return map;
 	}
 }

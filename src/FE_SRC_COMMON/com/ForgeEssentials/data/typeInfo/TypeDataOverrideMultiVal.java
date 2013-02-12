@@ -2,8 +2,6 @@ package com.ForgeEssentials.data.typeInfo;
 
 import java.rmi.server.UID;
 
-import com.ForgeEssentials.api.data.ITypeInfo;
-
 public abstract class TypeDataOverrideMultiVal<T> implements TypeInfoHandler
 {
 

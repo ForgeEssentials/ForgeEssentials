@@ -26,7 +26,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandWB extends ForgeEssentialsCommandBase
 {
-	public static Filler	taskGooing	= null;
+	public static TickTaskFill	taskGooing	= null;
 
 	@Override
 	public String getCommandName()
@@ -46,6 +46,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
+		
 		boolean set = ModuleWorldBorder.set;
 		// Info
 		if (args.length == 0)
@@ -95,7 +96,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					taskGooing = new Filler(world, ModuleWorldBorder.shape, true);
+					taskGooing = new TickTaskFill(world);
 				}
 				return;
 			}
@@ -110,13 +111,25 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					taskGooing = new Filler(world, ModuleWorldBorder.shape, false);
+					taskGooing = new TickTaskFill(world);
 				}
 				return;
 			}
 			if (args[1].equalsIgnoreCase("cancel"))
 			{
 				taskGooing.stop();
+				return;
+			}
+			if(args[1].equalsIgnoreCase("message"))
+			{
+				if(args[2].equalsIgnoreCase("off") || args[2].equalsIgnoreCase("false"))
+				{
+					taskGooing.enablemsg = false;
+				}
+				else
+				{
+					taskGooing.enablemsg = true;
+				}
 				return;
 			}
 		}
@@ -206,7 +219,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 					}
 					else
 					{
-						taskGooing = new Filler(world, ModuleWorldBorder.shape, true);
+						taskGooing = new TickTaskFill(world);
 					}
 				}
 				else
@@ -233,13 +246,25 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					taskGooing = new Filler(world, ModuleWorldBorder.shape, false);
+					taskGooing = new TickTaskFill(world);
 				}
 				return;
 			}
 			if (args[1].equalsIgnoreCase("cancel"))
 			{
 				taskGooing.stop();
+				return;
+			}
+			if(args[1].equalsIgnoreCase("message"))
+			{
+				if(args[2].equalsIgnoreCase("off") || args[2].equalsIgnoreCase("false"))
+				{
+					taskGooing.enablemsg = false;
+				}
+				else
+				{
+					taskGooing.enablemsg = true;
+				}
 				return;
 			}
 		}
@@ -288,7 +313,11 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		}
 		if (args.length == 2 && args[0].equalsIgnoreCase("fill"))
 		{
-			return getListOfStringsMatchingLastWord(args, "start", "continue", "cancel");
+			return getListOfStringsMatchingLastWord(args, "start", "continue", "cancel", "message");
+		}
+		if (args.length == 3 && args[0].equalsIgnoreCase("fill") && args[1].equalsIgnoreCase("message"))
+		{
+			return getListOfStringsMatchingLastWord(args, "off", "on");
 		}
 		return null;
 	}

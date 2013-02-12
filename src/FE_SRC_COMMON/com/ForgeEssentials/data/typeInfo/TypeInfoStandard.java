@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import org.w3c.dom.TypeInfo;
-
 import com.ForgeEssentials.api.data.AbstractTypeData;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;

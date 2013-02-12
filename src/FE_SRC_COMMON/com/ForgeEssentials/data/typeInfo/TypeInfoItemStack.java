@@ -1,17 +1,14 @@
 package com.ForgeEssentials.data.typeInfo;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 import com.ForgeEssentials.api.data.AbstractTypeData;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.data.SavedField;
-import com.ForgeEssentials.data.TypeData;
 
 public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 {

@@ -148,4 +148,9 @@ public class ModuleLauncher
 			module.runReload(sender);
 		}
 	}
+	
+	public static String[] getModuleList()
+	{
+		return containerMap.keySet().toArray(new String[] {});
+	}
 }

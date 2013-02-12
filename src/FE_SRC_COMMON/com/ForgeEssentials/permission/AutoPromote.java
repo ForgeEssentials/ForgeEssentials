@@ -109,9 +109,10 @@ public class AutoPromote implements Runnable
 		}
 		this.server = server;
 
-		thread = new Thread(this, "ForgeEssentials - Permssions - autoPromote");
+		thread = new Thread(this, "ForgeEssentials - Permissions - autoPromote");
 		thread.start();
-		
+		//hashmaps are not synchronized...
+		//watch out for rogue threads and conccurent modifications.
 		if(!map.containsKey(ZoneManager.getGLOBAL().getZoneName()))
 		{
 			map.put(ZoneManager.getGLOBAL().getZoneName(), new AutoPromote(ZoneManager.getGLOBAL().getZoneName(), false));
