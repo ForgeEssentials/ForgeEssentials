@@ -10,9 +10,9 @@ public class Data
 {
 
 	protected static String[]	libraries		=
-												{ "mysql-connector-java-bin.jar", "H2DB.jar", "worldedit-5.4.6-SNAPSHOT.jar" };
+												{ "mysql-connector-java-bin.jar", "H2DB.jar", "worldedit-5.4.6-SNAPSHOT.jar", "Metrics.jar" };
 	protected static String[]	checksums		=
-												{ "3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15", "32f12e53b4dab80b721525c01d766b95d22129bb", "de96549f9c31aa9268f649fc6757e7b68b180549" };
+												{ "3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15", "32f12e53b4dab80b721525c01d766b95d22129bb", "de96549f9c31aa9268f649fc6757e7b68b180549", "47a1fc60cc5a16f0e125ca525daa596fd7ac0c3a" };
 	protected static String[]	transformers	=
 												{ "com.ForgeEssentials.coremod.transformers.FEPermissionsTransformer", "com.ForgeEssentials.coremod.transformers.FEAccessTransformer", "com.ForgeEssentials.coremod.transformers.FEeventAdder" };
 }
