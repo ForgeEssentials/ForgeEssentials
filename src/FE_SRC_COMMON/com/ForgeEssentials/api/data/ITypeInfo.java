@@ -5,7 +5,9 @@ import java.util.HashMap;
 
 /**
  * The constructor for a class that implements this should take either the class or nothing.
- * the class should be the same as the parameter.
+ * The class taken in the constructor should be compatible with the parameter.
+ * A class implementing that should ONLY have 1 constructor, the constructor will be used to instantiate via reflection.
+ * Having more than one constructor may result in the wrong one bieng used.
  * @author AbrarSyed
  * @param <T> The class this will be the TypeOverride for.
  */

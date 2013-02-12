@@ -1,5 +1,6 @@
 package com.ForgeEssentials.data;
 
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,8 +12,10 @@ import com.ForgeEssentials.api.data.AbstractTypeData;
 import com.ForgeEssentials.api.data.IStorageManager;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.data.typeInfo.TypeInfoStandard;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.OutputHandler;
+import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
@@ -23,9 +26,9 @@ public class StorageManager implements IStorageManager
 	private static final String										configCategory	= "data";
 	public static final EnumDriverType								defaultDriver	= EnumDriverType.TEXT;
 	private EnumDriverType											chosen			= defaultDriver;
-	private ConcurrentHashMap<EnumDriverType, String>				typeChosens;																	// the defaults...
-	private ConcurrentHashMap<String, Class<? extends DataDriver>>	classMap;																		// registered ones...
-	private ConcurrentHashMap<String, DataDriver>					instanceMap;																	// instantiated ones
+	private ConcurrentHashMap<EnumDriverType, String>				typeChosens;													// the defaults...
+	private ConcurrentHashMap<String, Class<? extends DataDriver>>	classMap;														// registered ones...
+	private ConcurrentHashMap<String, DataDriver>					instanceMap;													// instantiated ones
 	private static StorageManager									instance;
 	private boolean													loaded			= false;
 	private ConcurrentHashMap<Class, ITypeInfo>						taggerList		= new ConcurrentHashMap<Class, ITypeInfo>();
@@ -52,7 +55,9 @@ public class StorageManager implements IStorageManager
 		for (EnumDriverType type : EnumDriverType.values())
 		{
 			if (type == EnumDriverType.SQL)
+			{
 				continue;
+			}
 			cat = "Data." + type;
 			config.get(cat, "chosenDriver", typeChosens.get(type));
 		}
@@ -72,7 +77,6 @@ public class StorageManager implements IStorageManager
 		if (classMap.get(typeChosens.get(defaultDriver)) == null)
 			throw new RuntimeException("{ForgeEssentials} Default DataDriver is invalid! Valid types: " + Arrays.toString(classMap.values().toArray()));
 
-		DataDriver driver;
 		for (Entry<String, DataDriver> entry : instanceMap.entrySet())
 		{
 			try
@@ -107,6 +111,7 @@ public class StorageManager implements IStorageManager
 	 * @param name Name to be used in configs
 	 * @param c
 	 */
+	@Override
 	public void registerDriver(String name, Class<? extends DataDriver> c)
 	{
 		try
@@ -125,11 +130,13 @@ public class StorageManager implements IStorageManager
 		}
 	}
 
+	@Override
 	public DataDriver getReccomendedDriver()
 	{
 		return getDriverOfType(chosen);
 	}
 
+	@Override
 	public DataDriver getDriverOfType(EnumDriverType type)
 	{
 		return getDriverOfName(instance.typeChosens.get(type));
@@ -149,6 +156,7 @@ public class StorageManager implements IStorageManager
 		return d;
 	}
 
+	@Override
 	public void registerSaveableClass(Class type)
 	{
 		if (!type.isAnnotationPresent(SaveableObject.class))
@@ -156,12 +164,41 @@ public class StorageManager implements IStorageManager
 
 		taggerList.put(type, getInfoForType(type));
 	}
-	
+
 	@Override
 	public void registerSaveableClass(Class<? extends ITypeInfo> infoType, Class type)
 	{
-		// TODO Auto-generated method stub
-		
+		if (infoType.equals(TypeInfoStandard.class))
+			registerSaveableClass(type);
+		else
+		{
+			try
+			{
+				Constructor[] constructors = infoType.getConstructors();
+				Constructor<? extends ITypeInfo> con = null;
+				
+				for (Constructor c : constructors)
+				{
+					if (c.getParameterTypes().length == 0 && c.getParameterTypes()[0].isAssignableFrom(type))
+					{
+						con = c;
+						break;
+					}
+				}
+				
+				if (con == null)
+				{
+					OutputHandler.severe(infoType.getCanonicalName()+" doesn't have a useable constructor! "+type.getCanonicalName()+" will not be registerred.");
+					return;
+				}
+				
+			}
+			catch (SecurityException e)
+			{
+				OutputHandler.severe(infoType.getCanonicalName()+" must have useable constructors! See the ITypeInfo documentation!");
+				Throwables.propagate(e);
+			}
+		}
 	}
 
 	public boolean isClassRegisterred(Class type)
@@ -169,6 +206,7 @@ public class StorageManager implements IStorageManager
 		return taggerList.containsKey(type);
 	}
 
+	@Override
 	public ITypeInfo getInfoForType(Class type)
 	{
 		ITypeInfo tagged;
@@ -177,14 +215,19 @@ public class StorageManager implements IStorageManager
 			registerSaveableClass(type);
 			tagged = taggerList.get(type);
 			if (instance.loaded)
+			{
 				for (DataDriver driver : instance.instanceMap.values())
+				{
 					driver.onClassRegistered(tagged);
+				}
+			}
 
 			return tagged;
 		}
 		return taggerList.get(type);
 	}
 
+	@Override
 	public DBConnector getCoreDBConnector()
 	{
 		return ((SQLDataDriver) instance.getDriverOfType(EnumDriverType.SQL)).connector;
