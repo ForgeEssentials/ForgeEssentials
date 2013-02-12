@@ -16,6 +16,7 @@ import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEDebug;
 import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
+import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.ItemList;
@@ -145,7 +146,7 @@ public class ForgeEssentials implements IServerStats
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		TickRegistry.registerTickHandler(factory, Side.SERVER);
 		GameRegistry.registerPlayerTracker(factory);
-		ServerStats.registerStats(this);
+		CompatMCStats.registerStats(this);
 	}
 
 	@PostInit
@@ -183,7 +184,7 @@ public class ForgeEssentials implements IServerStats
 		mdlaunch.serverStarted(e);
 		DuplicateCommandRemoval.remove();
 		
-		ServerStats.doMCStats();
+		CompatMCStats.doMCStats();
 	}
 
 	@ServerStopping

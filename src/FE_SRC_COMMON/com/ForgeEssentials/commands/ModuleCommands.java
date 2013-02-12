@@ -35,7 +35,7 @@ import com.ForgeEssentials.commands.util.MobTypeLoader;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.ServerStats;
+import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.OutputHandler;
@@ -76,7 +76,7 @@ public class ModuleCommands implements IServerStats
 		GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
 		NetworkRegistry.instance().registerChatListener(eventHandler);
 		CommandRegistrar.commandConfigs(conf.config);
-		ServerStats.registerStats(this);
+		CompatMCStats.registerStats(this);
 	}
 
 	@ServerInit

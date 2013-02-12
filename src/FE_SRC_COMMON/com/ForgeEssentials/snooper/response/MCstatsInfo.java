@@ -7,7 +7,7 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.api.snooper.TextFormatter;
-import com.ForgeEssentials.core.ServerStats;
+import com.ForgeEssentials.core.compat.CompatMCStats;
 
 public class MCstatsInfo extends Response
 {
@@ -16,7 +16,7 @@ public class MCstatsInfo extends Response
 	@Override
 	public String getResponceString(DatagramPacket packet)
 	{
-		data.putAll(ServerStats.doSnooperStats());
+		data.putAll(CompatMCStats.doSnooperStats());
 		return dataString = TextFormatter.toJSON(data);
 	}
 
