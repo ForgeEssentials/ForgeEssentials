@@ -5,17 +5,22 @@ import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 @Cancelable
 public class PlayerChangedZone extends PlayerEvent
 {
-	public final Zone	before;
-	public final Zone	after;
+	public final Zone	beforeZone;
+	public final Zone	afterZone;
+	public final WarpPoint	afterPoint;
+	public final WarpPoint	beforePoint;
 
-	public PlayerChangedZone(EntityPlayer player, Zone before, Zone after)
+	public PlayerChangedZone(EntityPlayer player, Zone beforeZone, Zone afterZone, WarpPoint beforePoint, WarpPoint afterPoint)
 	{
 		super(player);
-		this.before = before;
-		this.after = after;
+		this.beforeZone = beforeZone;
+		this.afterZone = afterZone;
+		this.beforePoint = beforePoint;
+		this.afterPoint = afterPoint;
 	}
 }

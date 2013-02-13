@@ -98,7 +98,9 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 		
 		if(before != after)
 		{
-			MinecraftForge.EVENT_BUS.post(new PlayerChangedZone(e.entityPlayer, before, after));
+			PlayerChangedZone event = new PlayerChangedZone(e.entityPlayer, before, after, e.before, e.after);
+			MinecraftForge.EVENT_BUS.post(event);
+			e.setCanceled(event.isCanceled());
 		}
 	}
 }
