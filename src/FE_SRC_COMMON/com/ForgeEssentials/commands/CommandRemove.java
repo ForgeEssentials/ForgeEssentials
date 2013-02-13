@@ -170,7 +170,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.commands." + getCommandName();
+		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
 }
