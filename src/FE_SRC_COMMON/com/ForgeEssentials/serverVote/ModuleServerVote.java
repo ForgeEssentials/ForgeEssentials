@@ -10,7 +10,9 @@ import net.minecraftforge.event.ForgeSubscribe;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
+import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.snooper.API;
 import com.ForgeEssentials.api.snooper.VoteEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -47,6 +49,21 @@ public class ModuleServerVote
 		catch (Exception e1)
 		{
 			FMLLog.severe("Error initializing Votifier compat.");
+			FMLLog.severe(e.toString());
+			e1.printStackTrace();
+		}
+	}
+	
+	@ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
+	{
+		try
+		{
+			votifier.shutdown();
+		}
+		catch (Exception e1)
+		{
+			FMLLog.severe("Error closing Votifier compat thread.");
 			FMLLog.severe(e.toString());
 			e1.printStackTrace();
 		}
