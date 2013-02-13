@@ -78,7 +78,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.backup";
+		return "ForgeEssentials.backup.command";
 	}
 
 	public static boolean isInteger(String s)
@@ -91,7 +91,6 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 		{
 			return false;
 		}
-		// only got here if we didn't return false
 		return true;
 	}
 }

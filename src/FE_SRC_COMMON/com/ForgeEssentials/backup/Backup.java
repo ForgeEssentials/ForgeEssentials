@@ -31,12 +31,13 @@ public class Backup implements Runnable
 	private File			source;
 	private String			backupName;
 	private boolean			worldSave;
+	private boolean			done = false;
 
 	public Backup(boolean worldSave)
 	{
 		for (int i : DimensionManager.getIDs())
 		{
-			new Backup(i, worldSave);
+			Backup backup = new Backup(i, worldSave);
 		}
 	}
 
@@ -46,7 +47,7 @@ public class Backup implements Runnable
 		this.worldSave = worldSave;
 		this.world = DimensionManager.getWorld(dim);
 
-		if (BackupConfig.backupIfUnloaded)
+		if (BackupConfig.backupIfUnloaded || BackupConfig.whitelist.contains(dim))
 		{
 			if (world == null)
 			{
@@ -101,13 +102,17 @@ public class Backup implements Runnable
 	@Override
 	public void run()
 	{
-		msg("Starting backup of " + name);
+		ModuleBackup.msg("Starting backup of " + name);
 
 		if (!folder.exists())
 		{
 			folder.mkdirs();
 		}
 
+		/*
+		 * Only needed when making a world backup.
+		 * Saves the world to disk and turns off saving.
+		 */
 		boolean canNotSave = true;
 		if (isWorld && worldSave)
 		{
@@ -121,28 +126,26 @@ public class Backup implements Runnable
 			catch (Exception e)
 			{
 				e.printStackTrace();
-				msg("Error while making backup of " + name);
-				msg(e.toString());
+				ModuleBackup.msg("Error while making backup of " + name);
+				ModuleBackup.msg(e.toString());
 			}
 		}
 
+		/*
+		 * Does actual backup
+		 */
 		doFolder(source);
 
+		/*
+		 * Turns worls save back on if it was on.
+		 */
 		if (isWorld && worldSave)
 		{
 			world.canNotSave = canNotSave;
 		}
 
-		msg("Backup of " + name + " done.");
-	}
-
-	public void msg(String msg)
-	{
-		MinecraftServer.logger.info(msg);
-		for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
-		{
-			((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
-		}
+		ModuleBackup.msg("Backup of " + name + " done.");
+		done = true;
 	}
 
 	/**
@@ -249,5 +252,10 @@ public class Backup implements Runnable
 		{
 			ex.printStackTrace();
 		}
+	}
+
+	public boolean isDone()
+	{
+		return done;
 	}
 }

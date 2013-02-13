@@ -2,6 +2,8 @@ package com.ForgeEssentials.backup;
 
 import java.io.File;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -20,6 +22,7 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -34,6 +37,8 @@ public class ModuleBackup
 	public static File			moduleDir;
 
 	public static File			baseFolder;
+	public static AutoBackup	autoBackup;
+	public static AutoWorldSave	autoWorldSave;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -51,6 +56,8 @@ public class ModuleBackup
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandBackup());
+		autoBackup = new AutoBackup();
+		autoWorldSave = new AutoWorldSave();
 	}
 
 	@PermRegister(ident = "ModuleBackups")
@@ -68,6 +75,27 @@ public class ModuleBackup
 			{
 				new Backup((WorldServer) e.world, false);
 			}
+		}
+	}
+	
+	@ForgeSubscribe
+	public void worldUnload(WorldEvent.Load e)
+	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			if(config.worldSaveing)
+			{
+				((WorldServer) e.world).canNotSave = !config.worldSaveing;
+			}
+		}
+	}
+	
+	public static void msg(String msg)
+	{
+		MinecraftServer.logger.info(msg);
+		for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
+		{
+			((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
 		}
 	}
 }
