@@ -1,23 +1,16 @@
 package com.ForgeEssentials.core;
 
 import java.io.File;
-import java.util.LinkedHashMap;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
-import org.mcstats.Metrics.Plotter;
-
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEDebug;
 import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
-import com.ForgeEssentials.core.compat.IServerStats;
 import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
@@ -149,6 +142,7 @@ public class ForgeEssentials
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		TickRegistry.registerTickHandler(factory, Side.SERVER);
 		GameRegistry.registerPlayerTracker(factory);
+		MinecraftForge.EVENT_BUS.register(factory);
 		mcstatscompat.load();
 	}
 

@@ -1,7 +1,5 @@
 package com.ForgeEssentials.data.typeOverrides;
 
-import java.rmi.server.UID;
-
 import com.ForgeEssentials.data.TaggedClass;
 
 public abstract class TypeOverride<T> extends TaggedClass

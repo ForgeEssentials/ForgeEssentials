@@ -1,6 +1,5 @@
 package com.ForgeEssentials.permission;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 import net.minecraft.server.MinecraftServer;
@@ -11,14 +10,10 @@ import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.commands.CommandAFK;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.PWarp;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 @SaveableObject
 public class AutoPromote implements Runnable

@@ -1,7 +1,6 @@
 package com.ForgeEssentials.data;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;

@@ -1,10 +1,8 @@
 package com.ForgeEssentials.core.compat;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
@@ -13,9 +11,6 @@ import org.mcstats.Metrics.Plotter;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
-
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.Configuration;
 
 // Obfuscated code handler for MCStats
 public class CompatMCStats implements IServerStats

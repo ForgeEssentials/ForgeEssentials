@@ -3,10 +3,8 @@ package com.ForgeEssentials.chat;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.permission.AutoPromote;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.IPlayerTracker;

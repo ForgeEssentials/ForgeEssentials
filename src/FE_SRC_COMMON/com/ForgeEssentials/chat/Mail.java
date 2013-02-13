@@ -2,7 +2,6 @@ package com.ForgeEssentials.chat;
 
 import java.rmi.server.UID;
 
-import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.ITaggedClass;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;

@@ -6,7 +6,10 @@ import java.util.HashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
@@ -85,5 +88,17 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 	@Override
 	public void onPlayerRespawn(EntityPlayer player)
 	{
+	}
+	
+	@ForgeSubscribe
+	public void playerMove(PlayerMoveEvent e)
+	{
+		Zone before = ZoneManager.getWhichZoneIn(e.before);
+		Zone after = ZoneManager.getWhichZoneIn(e.after);
+		
+		if(before != after)
+		{
+			MinecraftForge.EVENT_BUS.post(new PlayerChangedZone(e.entityPlayer, before, after));
+		}
 	}
 }

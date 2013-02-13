@@ -5,10 +5,10 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ForgeEssentials.util.OutputHandler;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.DimensionManager;
+
+import com.ForgeEssentials.util.OutputHandler;
 
 public class AutoBackup implements Runnable
 {

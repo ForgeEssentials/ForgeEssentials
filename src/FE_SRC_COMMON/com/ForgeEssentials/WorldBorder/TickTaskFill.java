@@ -1,15 +1,8 @@
 package com.ForgeEssentials.WorldBorder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IProgressUpdate;
-import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -17,7 +10,6 @@ import net.minecraft.world.chunk.Chunk;
 
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
 import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;

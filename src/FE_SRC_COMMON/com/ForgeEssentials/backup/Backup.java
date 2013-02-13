@@ -9,15 +9,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-
-import com.ForgeEssentials.util.FEChatFormatCodes;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class Backup implements Runnable
 {
