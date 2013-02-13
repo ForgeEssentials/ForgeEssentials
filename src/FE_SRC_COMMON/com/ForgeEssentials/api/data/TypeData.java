@@ -2,22 +2,39 @@ package com.ForgeEssentials.api.data;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.Map.Entry;
 
-public abstract class AbstractTypeData implements IReconstructData, Serializable
+import com.ForgeEssentials.data.SavedField;
+
+public class TypeData implements IReconstructData, Serializable
 {
 	private final Class type;
 	private String uniqueKey;
-	
-	protected AbstractTypeData(Class type)
+	private HashMap<String, Object>	members;
+
+	public TypeData(Class type)
 	{
 		this.type = type;
+		members = new HashMap<String, Object>();
 	}
 	
-	public abstract void putField(String name, Object value);
+	public void putField(String name, Object value)
+	{
+		SavedField field = new SavedField(name, value);
+		members.put(name, field);
+	}
 
-	public abstract Set<Entry<String, Object>> getAllFields();
+	public Object getFieldValue(String name)
+	{
+		return members.get(name);
+	}
+	
+	public Set<Entry<String, Object>> getAllFields()
+	{
+		return members.entrySet();
+	}
 
 	public void setUniqueKey(String key)
 	{

@@ -4,10 +4,10 @@ import java.util.HashMap;
 
 import net.minecraft.item.ItemStack;
 
-import com.ForgeEssentials.api.data.AbstractTypeData;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.ITypeInfo;
+import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.data.SavedField;
 
 public class TypeInfoItemStack implements ITypeInfo<ItemStack>
@@ -29,9 +29,9 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	}
 
 	@Override
-	public AbstractTypeData getTypeDataFromObject(ItemStack stack)
+	public TypeData getTypeDataFromObject(ItemStack stack)
 	{
-		AbstractTypeData data = DataStorageManager.getDataForType(ItemStack.class);
+		TypeData data = DataStorageManager.getDataForType(ItemStack.class);
 		
 		SavedField field = new SavedField(SIZE, stack.stackSize);
 		data.putField(SIZE, stack.stackSize);

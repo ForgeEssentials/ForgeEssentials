@@ -13,8 +13,10 @@ import java.util.Map.Entry;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.ITypeInfo;
+import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
@@ -189,8 +191,8 @@ public class SQLDataDriver extends DataDriver
 
 	private TypeData createTaggedClassFromResult(Class type, HashMap<String, Object> result)
 	{
-		TypeInfoHandler rootTagger = DataStorageManager.getInfoForType(type);
-		TypeInfoHandler taggerCursor;
+		ITypeInfo rootTagger = DataStorageManager.getInfoForType(type);
+		ITypeInfo taggerCursor;
 		TypeData tClass = TypeData.getTaggedClass(type);
 		TypeData value = new TypeData(type);
 		TypeData cursor = null;
@@ -245,7 +247,7 @@ public class SQLDataDriver extends DataDriver
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM " + type.getSimpleName() + " WHERE ");
-		TypeInfoHandler tagger = DataStorageManager.getInfoForType(type);
+		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
 		if (tagger.isUniqueKeyField)
 		{
 			builder.append(tagger.uniqueKey + " = ");
@@ -274,7 +276,7 @@ public class SQLDataDriver extends DataDriver
 		if (uniqueObjectKey != null)
 		{
 			builder.append(" WHERE ");
-			TypeInfoHandler tagger = DataStorageManager.getInfoForType(type);
+			ITypeInfo tagger = DataStorageManager.getInfoForType(type);
 			if (tagger.isUniqueKeyField)
 			{
 				builder.append(tagger.uniqueKey);
@@ -317,7 +319,7 @@ public class SQLDataDriver extends DataDriver
 		values.append('(');
 
 		// Deal with unique field
-		TypeInfoHandler tagger = DataStorageManager.getInfoForType(type);
+		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
 		if (tagger.isUniqueKeyField)
 		{
 			fields.append(fieldList.uniqueKey.name);
@@ -372,7 +374,7 @@ public class SQLDataDriver extends DataDriver
 	{
 		boolean isSuccess = false;
 
-		TypeInfoHandler tagger = DataStorageManager.getInfoForType(type);
+		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
 		HashMap<String, Class> fields = tagger.getFieldToTypeMap();
 		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
 		String keyClause = null;
@@ -434,7 +436,7 @@ public class SQLDataDriver extends DataDriver
 	{
 		ArrayList<Pair<String, String>> fields = new ArrayList<Pair<String, String>>();
 
-		if (!TypeInfoHandler.isTypeComplex(type))
+		if (!ITypeInfo.isTypeComplex(type))
 		{
 			if (type.equals(int.class) || type.equals(Integer.class) || type.equals(boolean.class) || type.equals(Boolean.class))
 			{
@@ -463,7 +465,7 @@ public class SQLDataDriver extends DataDriver
 		else
 		{
 			// Complex type we can't handle.
-			TypeInfoHandler tagger = DataStorageManager.getInfoForType(type);
+			ITypeInfo tagger = DataStorageManager.getInfoForType(type);
 			Iterator<Entry<String, Class>> iterator = tagger.fieldToTypeMap.entrySet().iterator();
 
 			// Iterate over the stored fields. Recurse if nessecary.

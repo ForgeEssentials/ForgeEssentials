@@ -7,7 +7,7 @@ import java.util.HashMap;
  * The constructor for a class that implements this should take either the class or nothing.
  * The class taken in the constructor should be compatible with the parameter.
  * A class implementing that should ONLY have 1 constructor, the constructor will be used to instantiate via reflection.
- * Having more than one constructor may result in the wrong one bieng used.
+ * Having more than one constructor may result in the wrong one being used.
  * @author AbrarSyed
  * @param <T> The class this will be the TypeOverride for.
  */
@@ -29,11 +29,11 @@ public interface ITypeInfo<T>
 	public void build(HashMap<String, Class> map);
 
 	/**
-	 * This should return a fully populated AbstractTypeData instance.
+	 * This should return a fully populated TypeData instance.
 	 * This instance may be a specially created implementation, or be obtained via the DataStorageManager.
 	 * DON'T FORGET THE UNIQUE KEY!
 	 */
-	 public AbstractTypeData getTypeDataFromObject(T objectSaved);
+	 public TypeData getTypeDataFromObject(T obj);
 
 	/**
 	 * This method will be used to create an object from

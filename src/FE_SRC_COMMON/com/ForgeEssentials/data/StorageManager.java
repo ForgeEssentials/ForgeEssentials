@@ -8,10 +8,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.api.data.AbstractTypeData;
+import com.ForgeEssentials.api.data.TypeData;
+import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IStorageManager;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.TypeInfoHandler;
 import com.ForgeEssentials.data.typeInfo.TypeInfoStandard;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.OutputHandler;
@@ -26,12 +28,12 @@ public class StorageManager implements IStorageManager
 	private static final String										configCategory	= "data";
 	public static final EnumDriverType								defaultDriver	= EnumDriverType.TEXT;
 	private EnumDriverType											chosen			= defaultDriver;
-	private ConcurrentHashMap<EnumDriverType, String>				typeChosens;													// the defaults...
-	private ConcurrentHashMap<String, Class<? extends DataDriver>>	classMap;														// registered ones...
-	private ConcurrentHashMap<String, DataDriver>					instanceMap;													// instantiated ones
+	private ConcurrentHashMap<EnumDriverType, String>				typeChosens;														// the defaults...
+	private ConcurrentHashMap<String, Class<? extends DataDriver>>	classMap;															// registered ones...
+	private ConcurrentHashMap<String, DataDriver>					instanceMap;														// instantiated ones
 	private static StorageManager									instance;
 	private boolean													loaded			= false;
-	private ConcurrentHashMap<Class, ITypeInfo>						taggerList		= new ConcurrentHashMap<Class, ITypeInfo>();
+	private ConcurrentHashMap<Class, TypeInfoHandler>				taggerList		= new ConcurrentHashMap<Class, TypeInfoHandler>();
 
 	public StorageManager(Configuration config)
 	{
@@ -89,7 +91,7 @@ public class StorageManager implements IStorageManager
 				entry.getValue().parseConfigs(config, "Data." + entry.getValue().getType() + "." + entry.getValue().getName(), worldName);
 
 				// register tagged classes...
-				for (ITypeInfo tag : taggerList.values())
+				for (TypeInfoHandler tag : taggerList.values())
 				{
 					entry.getValue().onClassRegistered(tag);
 				}
@@ -161,10 +163,11 @@ public class StorageManager implements IStorageManager
 	{
 		if (!type.isAnnotationPresent(SaveableObject.class))
 			throw new IllegalArgumentException("Only classes that have the @SaveableObject annotation may be registered!");
-		
+
 		TypeInfoStandard standard = new TypeInfoStandard(type);
-		standard.build(map)
-		taggerList.put(type, getInfoForType(type));
+		TypeInfoHandler handler = new TypeInfoHandler(standard);
+		handler.build();
+		taggerList.put(type, handler);
 	}
 
 	@Override
@@ -178,7 +181,7 @@ public class StorageManager implements IStorageManager
 			{
 				Constructor[] constructors = infoType.getConstructors();
 				Constructor<? extends ITypeInfo> con = null;
-				
+
 				for (Constructor c : constructors)
 				{
 					if (c.getParameterTypes().length == 0 && c.getParameterTypes()[0].isAssignableFrom(type))
@@ -187,15 +190,16 @@ public class StorageManager implements IStorageManager
 						break;
 					}
 				}
-				
+
 				ITypeInfo created;
-				
-				if (con != null)
-				
+
+				//if (con != null)
+				// TODO: finish!!!
+
 			}
 			catch (SecurityException e)
 			{
-				OutputHandler.severe(infoType.getCanonicalName()+" must have useable constructors! See the ITypeInfo documentation!");
+				OutputHandler.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
 				Throwables.propagate(e);
 			}
 		}
@@ -207,24 +211,28 @@ public class StorageManager implements IStorageManager
 	}
 
 	@Override
-	public ITypeInfo getInfoForType(Class type)
+	public TypeInfoHandler getHandlerForType(Class type)
 	{
-		ITypeInfo tagged;
+		TypeInfoHandler tagged = taggerList.get(type);
 		if (!isClassRegisterred(type))
 		{
 			registerSaveableClass(type);
 			tagged = taggerList.get(type);
 			if (instance.loaded)
-			{
 				for (DataDriver driver : instance.instanceMap.values())
-				{
 					driver.onClassRegistered(tagged);
-				}
-			}
 
 			return tagged;
 		}
+
 		return taggerList.get(type);
+	}
+
+	@Override
+	public ITypeInfo getInfoForType(Class type)
+	{
+		TypeInfoHandler tagged = taggerList.get(type);
+		return tagged.info;
 	}
 
 	@Override
@@ -234,16 +242,17 @@ public class StorageManager implements IStorageManager
 	}
 
 	@Override
-	public AbstractTypeData getDataForType(Class type)
+	public TypeData getDataForType(Class type)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (type.isArray())
+			;// TODO: return array stuff
+
+		return new TypeData(type);
 	}
 
 	@Override
-	public AbstractTypeData getDataForObject(Object obj)
+	public TypeData getDataForObject(Object obj)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return getInfoForType(obj.getClass()).getTypeDataFromObject(obj);
 	}
 }

@@ -8,6 +8,8 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.TypeData;
+import com.ForgeEssentials.api.data.TypeInfoHandler;
 
 /**
  * Storage driver for filesystem (flat-file) persistence.

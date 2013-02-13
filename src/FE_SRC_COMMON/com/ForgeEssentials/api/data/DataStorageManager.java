@@ -1,8 +1,6 @@
 package com.ForgeEssentials.api.data;
 
 import com.ForgeEssentials.data.DataDriver;
-import com.ForgeEssentials.data.EnumDriverType;
-import com.ForgeEssentials.data.TypeInfoHandler;
 import com.ForgeEssentials.util.DBConnector;
 
 /**
@@ -55,12 +53,17 @@ public abstract class DataStorageManager
 		return manager.getInfoForType(type);
 	}
 	
-	public static AbstractTypeData getDataForType(Class type)
+	public static TypeInfoHandler getHandlerForType(Class type)
+	{
+		return manager.getHandlerForType(type);
+	}
+	
+	public static TypeData getDataForType(Class type)
 	{
 		return manager.getDataForType(type);
 	}
 	
-	public static AbstractTypeData getDataForObject(Object obj)
+	public static TypeData getDataForObject(Object obj)
 	{
 		return manager.getDataForObject(obj);
 	}

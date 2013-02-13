@@ -5,30 +5,31 @@ import java.util.ArrayList;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IDataDriver;
+import com.ForgeEssentials.api.data.ITypeInfo;
+import com.ForgeEssentials.api.data.TypeData;
+import com.ForgeEssentials.api.data.TypeInfoHandler;
 
 public abstract class DataDriver implements IDataDriver
 {
-
-	public DataDriver()
-	{
-	}
-
+	@Override
 	public void onClassRegistered(TypeInfoHandler tagger)
 	{
-
 	}
 
+	@Override
 	public final String getName()
 	{
 		return this.getClass().getSimpleName().replace(DataDriver.class.getSimpleName(), "");
 	}
 
+	@Override
 	public boolean saveObject(Object o)
 	{
 		boolean flag = false;
 
-		TypeInfoHandler t;
+		ITypeInfo t;
 		if ((t = DataStorageManager.getInfoForType(o.getClass())) != null)
 		{
 			flag = true;
@@ -38,19 +39,21 @@ public abstract class DataDriver implements IDataDriver
 		return flag;
 	}
 
-	public Object loadObject(Class type, Object loadingKey)
+	@Override
+	public Object loadObject(Class type, String loadingKey)
 	{
 		Object newObject = null;
 		TypeData data = loadData(type, loadingKey);
 
 		if (data != null)
 		{
-			newObject = StorageManager.taggerList.get(type).createFromFields(data);
+			newObject = DataStorageManager.getHandlerForType(type).createFromFields(data);
 		}
 
 		return newObject;
 	}
 
+	@Override
 	public Object[] loadAllObjects(Class type)
 	{
 		ArrayList<Object> list = new ArrayList<Object>();
@@ -61,9 +64,9 @@ public abstract class DataDriver implements IDataDriver
 		Object tmp;
 		if (objectData != null && objectData.length > 0)
 		{
-			for (TypeData tag : objectData)
+			for (TypeData data : objectData)
 			{
-				tmp = StorageManager.taggerList.get(type).createFromFields(tag);
+				tmp = DataStorageManager.getHandlerForType(type).createFromFields(data);
 				list.add(tmp);
 			}
 		}
@@ -71,20 +74,23 @@ public abstract class DataDriver implements IDataDriver
 		return list.toArray(new Object[list.size()]);
 	}
 
-	public boolean deleteObject(Class type, Object loadingKey)
+	@Override
+	public boolean deleteObject(Class type, String loadingKey)
 	{
 		return deleteData(type, loadingKey);
 	}
 
+	@Override
 	abstract public void parseConfigs(Configuration config, String category, String worldName) throws Exception;
 
 	abstract protected boolean saveData(Class type, TypeData fieldList);
 
-	abstract protected TypeData loadData(Class type, Object uniqueKey);
+	abstract protected TypeData loadData(Class type, String uniqueKey);
 
 	abstract protected TypeData[] loadAll(Class type);
 
-	abstract protected boolean deleteData(Class type, Object uniqueObjectKey);
+	abstract protected boolean deleteData(Class type, String uniqueObjectKey);
 
+	@Override
 	abstract public EnumDriverType getType();
 }

@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.FunctionHelper;
 
@@ -51,13 +53,13 @@ public abstract class TextDataDriver extends DataDriver
 		return new File(baseFile, type.getSimpleName() + "/");
 	}
 
-	protected File getFilePath(Class type, Object uniqueKey)
+	protected File getFilePath(Class type, String uniqueKey)
 	{
-		return new File(getTypePath(type).getPath(), uniqueKey.toString() + "." + getExtension());
+		return new File(getTypePath(type).getPath(), uniqueKey + "." + getExtension());
 	}
 
 	/**
-	 * @return extension of the file. ommit the preceding period, its
+	 * @return extension of the file. omit the preceding period, its
 	 * automatically added. eg txt, cfg, dat, yml, etc...
 	 */
 	protected abstract String getExtension();
@@ -83,7 +85,7 @@ public abstract class TextDataDriver extends DataDriver
 	}
 
 	@Override
-	protected final boolean deleteData(Class type, Object uniqueObjectKey)
+	protected final boolean deleteData(Class type, String uniqueObjectKey)
 	{
 		boolean isSuccess = false;
 		File f = getFilePath(type, uniqueObjectKey);
