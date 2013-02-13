@@ -21,7 +21,7 @@ public class AutoWorldSave implements Runnable
 	{
 		while(MinecraftServer.getServer().isServerRunning() && BackupConfig.worldSaveInterval != 0)
 		{
-			try {thread.sleep(BackupConfig.worldSaveInterval * 1000);}
+			try {thread.sleep(BackupConfig.worldSaveInterval * 1000 * 60);}
 			catch (InterruptedException e) {e.printStackTrace();}
 			
 			while(AutoBackup.isBackingUp)
