@@ -16,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.CompatReiMinimap;
 import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -80,11 +81,7 @@ public class LoginMessage
 				pw.println("# ");
 				pw.println("# If you would like more codes, you can make an issue on https://github.com/ForgeEssentials/ForgeEssentialsMain/issues");
 				pw.println("");
-				pw.println("Welcome %playername%, to a server running ForgeEssentials."); // personal
-																							// welcome
-																							// is
-																							// nicer
-																							// :)
+				pw.println("Welcome %playername%, to a server running ForgeEssentials."); 
 				pw.println("There are %players% players online, and we have had %uniqueplayers% unique players.");
 				pw.println("Server time: %time%. Uptime: %uptime%");
 
@@ -101,29 +98,13 @@ public class LoginMessage
 
 	public static void sendLoginMessage(ICommandSender sender)
 	{
-		for (int id = 0; id < messageList.size(); id++)// String line :
-														// messageList)
+		for (int id = 0; id < messageList.size(); id++)
 		{
 			if (id == 0)
 			{
 				if (sender instanceof EntityPlayer)
 				{
-					sender.sendChatToPlayer(CompatReiMinimap.reimotd((EntityPlayer) sender) + Format(messageList.get(id), sender.getCommandSenderName()));// only
-																																							// sending
-																																							// the
-																																							// name
-																																							// of
-																																							// the
-																																							// player,
-																																							// going
-																																							// to
-																																							// fix
-																																							// this
-																																							// later
-																																							// so
-																																							// I'm
-																																							// sending
-																																							// everything
+					sender.sendChatToPlayer(CompatReiMinimap.reimotd((EntityPlayer) sender) + Format(messageList.get(id), sender.getCommandSenderName()));
 				}
 				else
 				{
@@ -145,9 +126,7 @@ public class LoginMessage
 	 * 
 	 */
 
-	private static String Format(String line, String playerName) // replaces the
-																	// variables
-																	// with data
+	private static String Format(String line, String playerName)
 	{
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(playerName);
 		Date now = new Date();
@@ -190,15 +169,11 @@ public class LoginMessage
 		return "" + logins;
 	}
 
-	private static String getUptime()
+	public static String getUptime()
 	{
 		String uptime = "";
 		RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
 		int secsIn = (int) (rb.getUptime() / 1000);
-		int hours = secsIn / 3600, remainder = secsIn % 3600, minutes = remainder / 60, seconds = remainder % 60;
-
-		uptime += ((hours < 10 ? "0" : "") + hours + " h " + (minutes < 10 ? "0" : "") + minutes + " min " + (seconds < 10 ? "0" : "") + seconds + " sec.");
-
-		return uptime;
+		return FunctionHelper.parseTime(secsIn);
 	}
 }

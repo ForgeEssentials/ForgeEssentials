@@ -15,6 +15,7 @@ import net.minecraftforge.common.Configuration;
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.api.snooper.TextFormatter;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLLog;
@@ -152,11 +153,7 @@ public class ServerInfo extends Response
 		String uptime = "";
 		RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
 		int secsIn = (int) (rb.getUptime() / 1000);
-		int hours = secsIn / 3600, remainder = secsIn % 3600, minutes = remainder / 60, seconds = remainder % 60;
-
-		uptime += ((hours < 10 ? "0" : "") + hours + " h " + (minutes < 10 ? "0" : "") + minutes + " min " + (seconds < 10 ? "0" : "") + seconds + " sec.");
-
-		return uptime;
+		return FunctionHelper.parseTime(secsIn);
 	}
 
 	public String getTPS()

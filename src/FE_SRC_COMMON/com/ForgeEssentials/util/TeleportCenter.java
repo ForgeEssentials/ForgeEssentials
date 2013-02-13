@@ -41,7 +41,7 @@ public class TeleportCenter implements IScheduledTickHandler
 	{
 		if (PlayerInfo.getPlayerInfo(player).TPcooldown != 0 && !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
 		{
-			player.sendChatToPlayer(Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", "" + PlayerInfo.getPlayerInfo(player).TPcooldown));
+			player.sendChatToPlayer(Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).TPcooldown)));
 		}
 		else
 		{
@@ -53,7 +53,7 @@ public class TeleportCenter implements IScheduledTickHandler
 			}
 			else
 			{
-				player.sendChatToPlayer(Localization.get(Localization.TC_WARMUP).replaceAll("%w", "" + tpWarmup));
+				player.sendChatToPlayer(Localization.get(Localization.TC_WARMUP).replaceAll("%w", "" + FunctionHelper.parseTime(tpWarmup)));
 				que.add(data);
 			}
 		}

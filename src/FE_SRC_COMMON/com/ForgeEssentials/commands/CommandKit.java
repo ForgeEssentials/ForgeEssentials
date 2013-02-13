@@ -16,6 +16,7 @@ import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.DataStorage;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -88,7 +89,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 				{
 					int cooldown = parseIntWithMin(sender, args[2], 0);
 					makeKit(sender, args[0].toLowerCase(), cooldown);
-					sender.sendChatToPlayer(Localization.get(Localization.KIT_MADE).replaceAll("%c", "" + cooldown));
+					sender.sendChatToPlayer(Localization.get(Localization.KIT_MADE).replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
 				}
 				else
 				{
@@ -168,7 +169,7 @@ public class CommandKit extends ForgeEssentialsCommandBase
 	{
 		if (PlayerInfo.getPlayerInfo(player.username).kitCooldown.containsKey(kit.getName()))
 		{
-			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c", "" + PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName())));
+			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName()))));
 		}
 		else
 		{
