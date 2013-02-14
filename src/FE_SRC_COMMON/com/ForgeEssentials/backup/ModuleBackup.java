@@ -1,6 +1,7 @@
 package com.ForgeEssentials.backup;
 
 import java.io.File;
+import java.io.PrintWriter;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -58,6 +59,7 @@ public class ModuleBackup
 		e.registerServerCommand(new CommandBackup());
 		autoBackup = new AutoBackup();
 		autoWorldSave = new AutoWorldSave();
+		makeReadme();
 	}
 
 	@PermRegister(ident = "ModuleBackups")
@@ -96,6 +98,34 @@ public class ModuleBackup
 		for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
 		{
 			((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
+		}
+	}
+	
+	private void makeReadme()
+	{
+		try
+		{
+			File file = new File(baseFolder, "README");
+			if (file.exists()) return;
+			PrintWriter pw = new PrintWriter(file);
+			
+			pw.println("############");
+			pw.println("## WARING ##");
+			pw.println("############");
+			pw.println("");
+			pw.println("DON'T CHANGE ANYTHING IN THIS FOLDER.");
+			pw.println("IF YOU DO, AUTOREMOVE WILL SCREW UP.");
+			pw.println("");
+			pw.println("If you have problems with this, report an issue and don't put:");
+			pw.println("\"Yes, I read the readme\" in the issue or your message on github,");
+			pw.println("YOU WILL BE IGNORED.");
+			pw.println("~Dries007");
+			
+			pw.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 }
