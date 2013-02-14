@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -15,7 +16,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandServerSettings extends ForgeEssentialsCommandBase
 {
-	public static List<String>	options	= Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MOTD", "onlineMode");
+	public static List<String>	options	= Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MOTD", "onlineMode", "spawnProtection");
 
 	@Override
 	public String getCommandName()
@@ -43,7 +44,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 
 	public void doStuff(ICommandSender sender, String[] args)
 	{
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		if(!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) return;
+		DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
 		if (args.length == 0)
 		{
 			sender.sendChatToPlayer("Available options:");
@@ -60,6 +62,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 			else
 			{
 				server.setAllowFlight(Boolean.parseBoolean(args[1]));
+				server.setProperty("allow-flight", Boolean.parseBoolean(args[1]));
+				server.saveProperties();
 				OutputHandler.chatConfirmation(sender, "allowFlight: " + server.isFlightAllowed());
 			}
 			return;
@@ -74,6 +78,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 			else
 			{
 				server.setAllowPvp(Boolean.parseBoolean(args[1]));
+				server.setProperty("pvp", Boolean.parseBoolean(args[1]));
+				server.saveProperties();
 				OutputHandler.chatConfirmation(sender, "allowPVP: " + server.isPVPEnabled());
 			}
 			return;
@@ -88,6 +94,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 			else
 			{
 				server.setBuildLimit(this.parseIntWithMin(sender, args[1], 0));
+				server.setProperty("max-build-height", this.parseIntWithMin(sender, args[1], 0));
+				server.saveProperties();
 				OutputHandler.chatConfirmation(sender, "buildLimit: " + server.getBuildLimit());
 			}
 			return;
@@ -107,7 +115,24 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 					msg += " " + var;
 				}
 				server.setMOTD(msg.substring(1));
+				server.setProperty("motd", msg.substring(1));
+				server.saveProperties();
 				OutputHandler.chatConfirmation(sender, "MOTD: " + server.getMOTD());
+			}
+			return;
+		}
+		
+		if(args[0].equalsIgnoreCase("spawnProtection"))
+		{
+			if (args.length == 1)
+			{
+				OutputHandler.chatConfirmation(sender, "spawnProtection: " + server.getSpawnProtectionSize());
+			}
+			else
+			{
+				server.setProperty("spawn-protection", this.parseIntWithMin(sender, args[1], 0));
+				server.saveProperties();
+				OutputHandler.chatConfirmation(sender, "spawnProtection: " + server.getSpawnProtectionSize());
 			}
 			return;
 		}
