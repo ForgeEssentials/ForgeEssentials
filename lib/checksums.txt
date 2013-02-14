@@ -6,5 +6,3 @@ mysql-connector-java-bin.jar: 3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15
 worldedit-5.4.6-SNAPSHOT.jar: de96549f9c31aa9268f649fc6757e7b68b180549
 
 H2DB.jar: 32f12e53b4dab80b721525c01d766b95d22129bb
-
-metrics-R6.jar: db3624292308f3f8a7ba65c1ab3ee3436e967b25
