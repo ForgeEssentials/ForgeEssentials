@@ -27,6 +27,7 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.chat.commands.CommandAutoMessage;
 import com.ForgeEssentials.chat.commands.CommandMail;
 import com.ForgeEssentials.chat.commands.CommandMsg;
 import com.ForgeEssentials.chat.commands.CommandMute;
@@ -86,6 +87,7 @@ public class ModuleChat
 		e.registerServerCommand(new CommandMute());
 		e.registerServerCommand(new CommandUnmute());
 		e.registerServerCommand(new CommandMail());
+		e.registerServerCommand(new CommandAutoMessage());
 	}
 
 	@ServerPostInit()

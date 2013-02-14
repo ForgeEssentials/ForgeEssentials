@@ -63,9 +63,9 @@ public class ConfigChat extends ModuleConfigBase
 		{ "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be chenged there too!\"" }, "Each line is 1 message. You can use collor coldes. YOU MUST USE DOUBLE QUOTES").valueList.clone();
 		for (int i = 0; i < msg.length; i++)
 		{
-			msg[i] = FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1)));
+			AutoMessage.msg.add(FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1))));
 		}
-		AutoMessage.msg = msg;
+		
 		AutoMessage.random = config.get("Automessage", "random", false, "Randomize the oreder of messages").getBoolean(false);
 		AutoMessage.waittime = config.get("Automessage", "inverval", 1, "Time inbetween each message in minutes").getInt();
 		AutoMessage.enable = config.get("Automessage", "enable", true).getBoolean(true);
@@ -97,10 +97,22 @@ public class ConfigChat extends ModuleConfigBase
 		config = new Configuration(file, true);
 
 		config.addCustomCategoryComment("Chat", "Chatconfigs");
+		config.addCustomCategoryComment("Automessage", "Automated spamm");
 
 		Property prop = config.get("Chat", "chatformat", "%groupPrefix%playerPrefix<%username>%playerSuffix%groupSuffix %reset%message", largeComment_chatFormat);
 		prop.value = chatFormat;
-
+		
+		String[] msg = AutoMessage.msg.toArray(new String[0]);
+		for(int i = 0; i < msg.length; i++)
+		{
+			msg[i] = "\"" + msg[i] + "\"";
+		}
+		
+		config.get("Automessage", "messages", new String[] {}, "Each line is 1 message. You can use collor coldes. YOU MUST USE DOUBLE QUOTES").valueList = msg;
+		config.get("Automessage", "random", false, "Randomize the oreder of messages").value = AutoMessage.random + "";
+		config.get("Automessage", "inverval", 1, "Time inbetween each message in minutes").value = AutoMessage.waittime + "";
+		config.get("Automessage", "enable", true).value = AutoMessage.enable + "";
+		
 		config.get("BannedWords", "censor", true, "censor the words in the censorList").value = "" + Chat.censor;
 		config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").valueList = Chat.bannedWords.toArray(new String[Chat.bannedWords.size()]);
 
@@ -125,9 +137,9 @@ public class ConfigChat extends ModuleConfigBase
 		{ "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be chenged there too!\"" }, "Each line is 1 message. You can use collor coldes. YOU MUST USE DOUBLE QUOTES").valueList.clone();
 		for (int i = 0; i < msg.length; i++)
 		{
-			msg[i] = FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1)));
+			AutoMessage.msg.add(FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1))));
 		}
-		AutoMessage.msg = msg;
+		
 		AutoMessage.random = config.get("Automessage", "random", false, "Randomize the oreder of messages").getBoolean(false);
 		AutoMessage.waittime = config.get("Automessage", "inverval", 1, "Time inbetween each message in minutes").getInt();
 		AutoMessage.enable = config.get("Automessage", "enable", true).getBoolean(true);

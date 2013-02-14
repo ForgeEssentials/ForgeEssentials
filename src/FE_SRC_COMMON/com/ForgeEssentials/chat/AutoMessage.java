@@ -1,24 +1,26 @@
 package com.ForgeEssentials.chat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.server.MinecraftServer;
 
 public class AutoMessage implements Runnable
 {
-	private static Thread	thread;
-	public static int		waittime;
-	public static boolean	random;
-	public static String[]	msg;
-	public static boolean	enable;
+	private static Thread			thread;
+	public static int				waittime;
+	public static boolean			random;
+	public static ArrayList<String>	msg = new ArrayList<String> ();
+	public static boolean			enable;
 
-	MinecraftServer			server;
-	int						currentMsgID;
+	MinecraftServer					server;
+	public static int				currentMsgID;
 
 	public AutoMessage(MinecraftServer server)
 	{
 		this.server = server;
-		this.currentMsgID = 0;
+		this.currentMsgID = new Random().nextInt(msg.size());
 
 		thread = new Thread(this, "ForgeEssentials - Chat - automessage");
 		thread.start();
@@ -38,22 +40,22 @@ public class AutoMessage implements Runnable
 				e.printStackTrace();
 			}
 
+			server.getConfigurationManager().sendChatMsg(msg.get(currentMsgID));
+			
 			if (enable && server.getAllUsernames().length != 0)
 			{
 				if (random)
 				{
-					currentMsgID = new Random().nextInt(msg.length);
+					currentMsgID = new Random().nextInt(msg.size());
 				}
 				else
 				{
 					currentMsgID++;
-					if (currentMsgID >= msg.length)
+					if (currentMsgID >= msg.size())
 					{
 						currentMsgID = 0;
 					}
 				}
-
-				server.getConfigurationManager().sendChatMsg(msg[currentMsgID]);
 			}
 		}
 	}
