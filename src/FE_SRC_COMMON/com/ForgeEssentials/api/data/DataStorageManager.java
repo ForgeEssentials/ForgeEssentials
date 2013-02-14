@@ -53,11 +53,6 @@ public abstract class DataStorageManager
 		return manager.getInfoForType(type);
 	}
 	
-	public static TypeInfoHandler getHandlerForType(Class type)
-	{
-		return manager.getHandlerForType(type);
-	}
-	
 	public static TypeData getDataForType(Class type)
 	{
 		return manager.getDataForType(type);

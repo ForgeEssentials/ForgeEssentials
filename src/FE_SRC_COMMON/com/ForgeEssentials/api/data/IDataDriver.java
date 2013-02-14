@@ -5,7 +5,7 @@ import net.minecraftforge.common.Configuration;
 
 public interface IDataDriver
 {
-	void onClassRegistered(TypeInfoHandler tagger);
+	void onClassRegistered(ITypeInfo tagger);
 
 	String getName();
 

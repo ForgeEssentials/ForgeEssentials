@@ -3,6 +3,7 @@ package com.ForgeEssentials.data.typeInfo;
 import java.util.HashMap;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;
@@ -12,41 +13,49 @@ import com.ForgeEssentials.data.SavedField;
 
 public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 {
-
 	private static final String	SIZE		= "stackSize";
 	private static final String	ITEM		= "itemID";
 	private static final String	DAMAGE		= "damage";
 	private static final String	COMPOUND	= "compound";
 	
 	@Override
-	public void build(HashMap<String, Class> map)
-	{
-		map.put(SIZE, int.class);
-		map.put(ITEM, int.class);
-		map.put(DAMAGE, int.class);
-		//map.put(COMPOUND, NBTTagCompound.class);
-		// TODO: when NBT's are saveable..
-	}
+	public void build(){}
 
 	@Override
 	public TypeData getTypeDataFromObject(ItemStack stack)
 	{
 		TypeData data = DataStorageManager.getDataForType(ItemStack.class);
 		
-		SavedField field = new SavedField(SIZE, stack.stackSize);
 		data.putField(SIZE, stack.stackSize);
-		
-		field = new SavedField(ITEM, stack.itemID);
 		data.putField(ITEM, stack.itemID);
-		
-		field = new SavedField(DAMAGE, stack.getItemDamage());
 		data.putField(DAMAGE, stack.getItemDamage());
-		
-		//field = new SavedField(COMPOUND, stack.getTagCompound());
-		//data.addField(field);
-		// TODO: when NBTs are saveab;e
+		data.putField(COMPOUND, stack.getTagCompound());
 
 		return data;
+	}
+	
+	@Override
+	public Class getTypeOfField(String field)
+	{
+		if (field == null)
+			return null;
+		else if (field.equalsIgnoreCase(SIZE) || field.equalsIgnoreCase(DAMAGE) || field.equalsIgnoreCase(ITEM))
+			return int.class;
+		else if (field.equalsIgnoreCase(COMPOUND))
+			return NBTTagCompound.class;
+		else
+			return null;
+	}
+	
+	@Override
+	public String[] getFieldList()
+	{
+		return new String[] {
+			SIZE,
+			ITEM,
+			DAMAGE,
+			COMPOUND
+		};
 	}
 
 	@Override
@@ -59,8 +68,8 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 		ItemStack stack = new ItemStack(item, size, damage);
 
 		// TODO: when NBTs are saveable
-		//NBTTagCompound nbt = (NBTTagCompound) data.getFieldValue(COMPOUND);
-		//stack.setTagCompound(nbt);
+		NBTTagCompound nbt = (NBTTagCompound) data.getFieldValue(COMPOUND);
+		stack.setTagCompound(nbt);
 
 		return stack;
 	}

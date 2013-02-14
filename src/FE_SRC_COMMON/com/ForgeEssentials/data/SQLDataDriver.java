@@ -30,6 +30,8 @@ public class SQLDataDriver extends DataDriver
 	protected HashMap<Class, Boolean>	classTableChecked	= new HashMap<Class, Boolean>();
 	protected DBConnector				connector;
 
+	private final String				UNIQUE				= "uniqueIdentifier";
+
 	// Default constructor is good enough for us.
 
 	public SQLDataDriver()
@@ -81,7 +83,7 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	@Override
-	protected TypeData loadData(Class type, Object uniqueKey)
+	protected TypeData loadData(Class type, String uniqueKey)
 	{
 		TypeData reconstructed = null;
 
@@ -130,7 +132,7 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	@Override
-	protected boolean deleteData(Class type, Object uniqueObjectKey)
+	protected boolean deleteData(Class type, String uniqueObjectKey)
 	{
 		boolean isSuccess = false;
 
@@ -193,11 +195,13 @@ public class SQLDataDriver extends DataDriver
 	{
 		ITypeInfo rootTagger = DataStorageManager.getInfoForType(type);
 		ITypeInfo taggerCursor;
-		TypeData tClass = TypeData.getTaggedClass(type);
+		TypeData tClass = DataStorageManager.getDataForType(type);
 		TypeData value = new TypeData(type);
 		TypeData cursor = null;
 		SavedField tmpField = null;
 		Class tmpClass;
+
+		Object tempVal;
 
 		for (Entry<String, Object> entry : result.entrySet())
 		{
@@ -212,14 +216,14 @@ public class SQLDataDriver extends DataDriver
 				for (int i = 0; i < fieldHeiarchy.length; ++i)
 				{
 					// Grab the next item
-					tmpField = cursor.TaggedMembers.get(fieldHeiarchy[i]);
+					tmpField = getSavedFieldFromName(cursor, fieldHeiarchy[i]);
 
 					if (tmpField == null)
 					{
 						// Create a new node for this position.
 						tmpField = new SavedField();
 						tmpField.name = fieldHeiarchy[i];
-						cursor.addField(tmpField);
+						cursor.putField(tmpField.name, null);
 					}
 
 					if (fieldHeiarchy.length > i + 1)
@@ -243,19 +247,35 @@ public class SQLDataDriver extends DataDriver
 		return value;
 	}
 
-	private String createDeleteStatement(Class type, Object uniqueObjectKey)
+	/**
+	 * if the field exists, but has no value. An empty field is returned.
+	 * if the field does not exist, NULL is returned
+	 * otherwise a field is constructed and returned.
+	 * @param data
+	 */
+	private SavedField getSavedFieldFromName(TypeData data, String name)
+	{
+		SavedField field = new SavedField();
+
+		if (!data.hasField(name))
+			return null;
+		else
+		{
+			Object val;
+			val = data.getFieldValue(name);
+			if (val == null)
+				return field;
+			else
+				return new SavedField(name, val);
+		}
+	}
+
+	private String createDeleteStatement(Class type, String uniqueObjectKey)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM " + type.getSimpleName() + " WHERE ");
 		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
-		if (tagger.isUniqueKeyField)
-		{
-			builder.append(tagger.uniqueKey + " = ");
-		}
-		else
-		{
-			builder.append("uniqueIdentifier = ");
-		}
+		builder.append(UNIQUE).append(" = ");
 		builder.append(uniqueObjectKey.toString());
 
 		return builder.toString();
@@ -277,24 +297,9 @@ public class SQLDataDriver extends DataDriver
 		{
 			builder.append(" WHERE ");
 			ITypeInfo tagger = DataStorageManager.getInfoForType(type);
-			if (tagger.isUniqueKeyField)
-			{
-				builder.append(tagger.uniqueKey);
-			}
-			else
-			{
-				builder.append("uniqueIdentifier");
-			}
+			builder.append(UNIQUE);
 			builder.append(" = ");
-
-			if (uniqueObjectKey instanceof String)
-			{
-				builder.append("'").append((String) uniqueObjectKey).append("'");
-			}
-			else
-			{
-				builder.append(uniqueObjectKey.toString());
-			}
+			builder.append('\'').append(uniqueObjectKey).append('\'');
 		}
 
 		return builder.toString();
@@ -304,9 +309,9 @@ public class SQLDataDriver extends DataDriver
 	{
 		ArrayList<Pair<String, String>> fieldValueMap = new ArrayList<Pair<String, String>>();
 		// Iterate through fields and build up name=>value pair list.
-		for (SavedField field : fieldList.TaggedMembers.values())
+		for (Entry<String, Object> entry : fieldList.getAllFields())
 		{
-			fieldValueMap.addAll(fieldToValues(field.name, field.type, field.value));
+			fieldValueMap.addAll(fieldToValues(entry.getKey(), entry.getValue() == null ? null : entry.getValue().getClass(), entry.getValue()));
 		}
 
 		// Build up update statement.
@@ -320,22 +325,8 @@ public class SQLDataDriver extends DataDriver
 
 		// Deal with unique field
 		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
-		if (tagger.isUniqueKeyField)
-		{
-			fields.append(fieldList.uniqueKey.name);
-		}
-		else
-		{
-			fields.append("uniqueIdentifier");
-		}
-		if (fieldList.uniqueKey.type.equals(String.class))
-		{
-			values.append("'" + fieldList.uniqueKey.value + "'");
-		}
-		else
-		{
-			values.append(fieldList.uniqueKey.value);
-		}
+		fields.append(UNIQUE);
+		values.append('\'').append(fieldList.getUniqueKey()).append('\'');
 
 		Iterator<Pair<String, String>> itr = fieldValueMap.iterator();
 		Pair<String, String> pair;
@@ -366,7 +357,6 @@ public class SQLDataDriver extends DataDriver
 	 * only be top-level types that need to be stored, such as PlayerInfo and
 	 * Zones. Points, WorldPoints and other "simple" types that are contained
 	 * within the top-level types will be unrolled automatically.
-	 * 
 	 * @param type
 	 * @return
 	 */
@@ -375,25 +365,18 @@ public class SQLDataDriver extends DataDriver
 		boolean isSuccess = false;
 
 		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
-		HashMap<String, Class> fields = tagger.getFieldToTypeMap();
+		String[] fields = tagger.getFieldList();
 		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
 		String keyClause = null;
 
-		for (Entry<String, Class> entry : fields.entrySet())
+		for (String name : fields)
 		{
-			tableFields.addAll(fieldToColumns(entry.getKey(), entry.getValue()));
+			tableFields.addAll(fieldToColumns(name, tagger.getTypeOfField(name)));
 		}
 
-		if (tagger.isUniqueKeyField)
-		{
-			keyClause = "PRIMARY KEY (" + tagger.uniqueKey + ")";
-		}
-		else
-		{
-			// Is a method. Extra field required.
-			tableFields.add(new Pair<String, String>("uniqueIdentifier", "TEXT"));
-			keyClause = "PRIMARY KEY (uniqueIdentifier)";
-		}
+		// Is a method. Extra field required.
+		tableFields.add(new Pair<String, String>(UNIQUE, "VARCHAR(100)"));
+		keyClause = "PRIMARY KEY ("+UNIQUE+")";
 
 		// Build up the create statement
 		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + type.getSimpleName() + " (");
@@ -425,18 +408,17 @@ public class SQLDataDriver extends DataDriver
 	 * pairs, ideal for creating new tables with. Complex type fields are broken
 	 * down into constituent primitives in the form of:
 	 * "parentField_childFieldName"
-	 * 
 	 * @param fieldName
-	 * Name of saved field
+	 *            Name of saved field
 	 * @param type
-	 * Type of saved field
+	 *            Type of saved field
 	 * @return Array of field => H2 type names.
 	 */
 	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, Class type)
 	{
 		ArrayList<Pair<String, String>> fields = new ArrayList<Pair<String, String>>();
 
-		if (!ITypeInfo.isTypeComplex(type))
+		if (!StorageManager.isTypeComplex(type))
 		{
 			if (type.equals(int.class) || type.equals(Integer.class) || type.equals(boolean.class) || type.equals(Boolean.class))
 			{
@@ -466,13 +448,12 @@ public class SQLDataDriver extends DataDriver
 		{
 			// Complex type we can't handle.
 			ITypeInfo tagger = DataStorageManager.getInfoForType(type);
-			Iterator<Entry<String, Class>> iterator = tagger.fieldToTypeMap.entrySet().iterator();
+			String[] fieldList = tagger.getFieldList();
 
 			// Iterate over the stored fields. Recurse if nessecary.
-			while (iterator.hasNext())
+			for (String name : fieldList)
 			{
-				Entry<String, Class> entry = iterator.next();
-				fields.addAll(fieldToColumns(fieldName + separationString + entry.getKey(), entry.getValue()));
+				fields.addAll(fieldToColumns(fieldName + separationString + name, tagger.getTypeOfField(name)));
 			}
 		}
 
@@ -482,11 +463,10 @@ public class SQLDataDriver extends DataDriver
 	/**
 	 * Generates an array of fieldname => String(Value) pairs, useful for
 	 * Inserts, Updates, or Deletes.
-	 * 
 	 * @param fieldName
-	 * Name of the field in the H2 DB
+	 *            Name of the field in the H2 DB
 	 * @param type
-	 * Type of field (Java)
+	 *            Type of field (Java)
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */
@@ -547,9 +527,9 @@ public class SQLDataDriver extends DataDriver
 			// Tricky business involving recursion.
 			TypeData tc = (TypeData) value;
 
-			for (SavedField f : tc.TaggedMembers.values())
+			for (Entry<String, Object> f : tc.getAllFields())
 			{
-				data.addAll(fieldToValues(fieldName + separationString + f.name, f.type, f.value));
+				data.addAll(fieldToValues(fieldName + separationString + f.getKey(), f.getKey() == null ? null : f.getValue().getClass(), f.getValue()));
 			}
 		}
 		else

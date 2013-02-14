@@ -31,6 +31,11 @@ public class TypeData implements IReconstructData, Serializable
 		return members.get(name);
 	}
 	
+	public boolean hasField(String field)
+	{
+		return members.keySet().contains(field);
+	}
+	
 	public Set<Entry<String, Object>> getAllFields()
 	{
 		return members.entrySet();

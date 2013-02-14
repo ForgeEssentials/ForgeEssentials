@@ -13,7 +13,7 @@ import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IStorageManager;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.SaveableObject;
-import com.ForgeEssentials.api.data.TypeInfoHandler;
+import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.data.typeInfo.TypeInfoStandard;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.OutputHandler;
@@ -28,12 +28,12 @@ public class StorageManager implements IStorageManager
 	private static final String										configCategory	= "data";
 	public static final EnumDriverType								defaultDriver	= EnumDriverType.TEXT;
 	private EnumDriverType											chosen			= defaultDriver;
-	private ConcurrentHashMap<EnumDriverType, String>				typeChosens;														// the defaults...
-	private ConcurrentHashMap<String, Class<? extends DataDriver>>	classMap;															// registered ones...
-	private ConcurrentHashMap<String, DataDriver>					instanceMap;														// instantiated ones
+	private ConcurrentHashMap<EnumDriverType, String>				typeChosens;													// the defaults...
+	private ConcurrentHashMap<String, Class<? extends DataDriver>>	classMap;														// registered ones...
+	private ConcurrentHashMap<String, DataDriver>					instanceMap;													// instantiated ones
 	private static StorageManager									instance;
 	private boolean													loaded			= false;
-	private ConcurrentHashMap<Class, TypeInfoHandler>				taggerList		= new ConcurrentHashMap<Class, TypeInfoHandler>();
+	private ConcurrentHashMap<Class, ITypeInfo>						taggerList		= new ConcurrentHashMap<Class, ITypeInfo>();
 
 	public StorageManager(Configuration config)
 	{
@@ -91,7 +91,7 @@ public class StorageManager implements IStorageManager
 				entry.getValue().parseConfigs(config, "Data." + entry.getValue().getType() + "." + entry.getValue().getName(), worldName);
 
 				// register tagged classes...
-				for (TypeInfoHandler tag : taggerList.values())
+				for (ITypeInfo tag : taggerList.values())
 				{
 					entry.getValue().onClassRegistered(tag);
 				}
@@ -165,9 +165,8 @@ public class StorageManager implements IStorageManager
 			throw new IllegalArgumentException("Only classes that have the @SaveableObject annotation may be registered!");
 
 		TypeInfoStandard standard = new TypeInfoStandard(type);
-		TypeInfoHandler handler = new TypeInfoHandler(standard);
-		handler.build();
-		taggerList.put(type, handler);
+		standard.build();
+		taggerList.put(type, standard);
 	}
 
 	@Override
@@ -211,9 +210,9 @@ public class StorageManager implements IStorageManager
 	}
 
 	@Override
-	public TypeInfoHandler getHandlerForType(Class type)
+	public ITypeInfo getInfoForType(Class type)
 	{
-		TypeInfoHandler tagged = taggerList.get(type);
+		ITypeInfo tagged = taggerList.get(type);
 		if (!isClassRegisterred(type))
 		{
 			registerSaveableClass(type);
@@ -226,13 +225,6 @@ public class StorageManager implements IStorageManager
 		}
 
 		return taggerList.get(type);
-	}
-
-	@Override
-	public ITypeInfo getInfoForType(Class type)
-	{
-		TypeInfoHandler tagged = taggerList.get(type);
-		return tagged.info;
 	}
 
 	@Override
@@ -254,5 +246,21 @@ public class StorageManager implements IStorageManager
 	public TypeData getDataForObject(Object obj)
 	{
 		return getInfoForType(obj.getClass()).getTypeDataFromObject(obj);
+	}
+	
+	/**
+	 * @param t class check
+	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.
+	 */
+	public static boolean isTypeComplex(Class obj)
+	{
+		boolean flag = true;
+		if (obj.isPrimitive() || obj.equals(Integer.class) || obj.equals(int[].class) || obj.equals(Float.class) || obj.equals(Double.class) || obj.equals(double[].class) || obj.equals(Boolean.class) || obj.equals(boolean[].class)
+				|| obj.equals(String.class) || obj.equals(String[].class))
+		{
+			flag = false;
+		}
+
+		return flag;
 	}
 }

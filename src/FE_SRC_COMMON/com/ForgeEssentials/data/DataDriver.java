@@ -1,6 +1,7 @@
 package com.ForgeEssentials.data;
 
 import java.util.ArrayList;
+import java.util.Map.Entry;
 
 import net.minecraftforge.common.Configuration;
 
@@ -9,12 +10,12 @@ import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IDataDriver;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
-import com.ForgeEssentials.api.data.TypeInfoHandler;
+import com.ForgeEssentials.api.data.ITypeInfo;
 
 public abstract class DataDriver implements IDataDriver
 {
 	@Override
-	public void onClassRegistered(TypeInfoHandler tagger)
+	public void onClassRegistered(ITypeInfo tagger)
 	{
 	}
 
@@ -47,7 +48,7 @@ public abstract class DataDriver implements IDataDriver
 
 		if (data != null)
 		{
-			newObject = DataStorageManager.getHandlerForType(type).createFromFields(data);
+			newObject = createFromFields(data);
 		}
 
 		return newObject;
@@ -66,7 +67,7 @@ public abstract class DataDriver implements IDataDriver
 		{
 			for (TypeData data : objectData)
 			{
-				tmp = DataStorageManager.getHandlerForType(type).createFromFields(data);
+				tmp = createFromFields(data);
 				list.add(tmp);
 			}
 		}
@@ -78,6 +79,31 @@ public abstract class DataDriver implements IDataDriver
 	public boolean deleteObject(Class type, String loadingKey)
 	{
 		return deleteData(type, loadingKey);
+	}
+
+	private Object createFromFields(TypeData data)
+	{
+		ITypeInfo info = DataStorageManager.getInfoForType(data.getType());
+		Object val;
+		// loops through all fields of this class.
+		for (Entry<String, Object> entry : data.getAllFields())
+		{
+			// if it needs reconstructing before this class...
+			if (entry.getValue() instanceof TypeData)
+			{
+				// reconstruct the class...
+				val = createFromFields((TypeData) entry.getValue());
+
+				// re-add it to the map.
+				data.putField(entry.getKey(), val);
+			}
+		}
+
+		// actually reconstruct this class
+		val = info.reconstruct(data);
+
+		// return the reconstructed value.
+		return val;
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package com.ForgeEssentials.data.typeInfo;
 
 import java.rmi.server.UID;
 
-public abstract class TypeDataOverrideMultiVal<T> implements TypeInfoHandler
+public abstract class TypeDataOverrideMultiVal<T> implements ITypeInfo
 {
 
 	public TypeDataOverrideMultiVal(Class<? extends T> type)

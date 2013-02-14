@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -16,6 +17,7 @@ import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.api.data.TypeData;
+import com.ForgeEssentials.data.StorageManager;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**
@@ -26,20 +28,21 @@ import com.ForgeEssentials.util.OutputHandler;
  */
 public class TypeInfoStandard<T> implements ITypeInfo<T>
 {
-	Class<? extends T>	type;
-	private boolean		isUniqueKeyField;
-	private boolean		inLine;
-	private String		uniqueKey;
-	private String		reconstructorMethod;
-	private String[]	fields;
+	Class<? extends T>				type;
+	private boolean					isUniqueKeyField;
+	private boolean					inLine;
+	private String					uniqueKey;
+	private String					reconstructorMethod;
+	private HashMap<String, Class>	fields;
 
 	public TypeInfoStandard(Class<? extends T> type)
 	{
 		this.type = type;
+		fields = new HashMap<String, Class>();
 	}
 
 	@Override
-	public void build(HashMap<String, Class> map)
+	public void build()
 	{
 		SaveableObject AObj = (SaveableObject) type.getAnnotation(SaveableObject.class);
 		inLine = AObj.SaveInline();
@@ -55,7 +58,7 @@ public class TypeInfoStandard<T> implements ITypeInfo<T>
 			{
 				// if its a saveable field
 				if (f.isAnnotationPresent(SaveableField.class))
-					map.put(f.getName(), f.getType());
+					fields.put(f.getName(), f.getType());
 
 				// check for UniqueKey
 				if (f.isAnnotationPresent(UniqueLoadingKey.class))
@@ -105,9 +108,15 @@ public class TypeInfoStandard<T> implements ITypeInfo<T>
 				isUniqueKeyField = false;
 			}
 		}
-
-		// unsures that the FieldToType stuff is saved here.
-		fields = map.keySet().toArray(new String[map.size()]);
+	}
+	
+	@Override
+	public Class getTypeOfField(String field)
+	{
+		if (field == null)
+			return null;
+		
+		return fields.get(field);
 	}
 
 	@Override
@@ -143,24 +152,25 @@ public class TypeInfoStandard<T> implements ITypeInfo<T>
 			OutputHandler.exception(Level.SEVERE, "Reflection error trying to get UniqueLoadingKey from " + objectSaved.getClass() + ". FE will continue without saving this.", e);
 		}
 
+		String[] keys = fields.keySet().toArray(new String[fields.size()]);
 		Class currentClass = c;
 		// Iterate over the object grabbing the fields we want to examine.
-		for (int i = 0; i < fields.length; ++i)
+		for (int i = 0; i < keys.length; ++i)
 		{
 			try
 			{
-				f = currentClass.getDeclaredField(fields[i]);
+				f = currentClass.getDeclaredField(keys[i]);
 				f.setAccessible(true);
 				obj = f.get(objectSaved);
 
 				if (obj != null)
 				{
-					if (isTypeComplex(obj))
+					if (StorageManager.isTypeComplex(obj.getClass()))
 					{
 						// This object is not a primitive. Call this function on the appropriate TypeTagger.
 						obj = DataStorageManager.getInfoForType(obj.getClass()).getTypeDataFromObject(obj);
 					}
-					data.putField(fields[i], obj);
+					data.putField(keys[i], obj);
 				}
 				// Ensure we reset the currentClass after trying this. It may have been altered by a previous attempt.
 				currentClass = c;
@@ -184,6 +194,12 @@ public class TypeInfoStandard<T> implements ITypeInfo<T>
 		}
 
 		return data;
+	}
+	
+	@Override
+	public String[] getFieldList()
+	{
+		return fields.keySet().toArray(new String[fields.size()]);
 	}
 
 	@Override
@@ -213,39 +229,6 @@ public class TypeInfoStandard<T> implements ITypeInfo<T>
 	public Class<? extends T> getType()
 	{
 		return type;
-	}
-	
-	/**
-	 * @param t Type of object to check
-	 * @return True if TypeTagger must create a nested TaggedClass to allow
-	 *         DataDrivers to correctly save the object.
-	 */
-	public static boolean isTypeComplex(Object obj)
-	{
-		boolean flag = true;
-
-		if (obj.getClass().isPrimitive() || obj instanceof Integer || obj instanceof int[] || obj instanceof Float || obj instanceof Double || obj instanceof double[] || obj instanceof Boolean || obj instanceof boolean[] || obj instanceof String || obj instanceof String[])
-		{
-			flag = false;
-		}
-
-		return flag;
-	}
-
-	/**
-	 * @param t class check
-	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.
-	 */
-	public static boolean isTypeComplex(Class obj)
-	{
-		boolean flag = true;
-		if (obj.isPrimitive() || obj.equals(Integer.class) || obj.equals(int[].class) || obj.equals(Float.class) || obj.equals(Double.class) || obj.equals(double[].class) || obj.equals(Boolean.class) || obj.equals(boolean[].class)
-				|| obj.equals(String.class) || obj.equals(String[].class))
-		{
-			flag = false;
-		}
-
-		return flag;
 	}
 
 }

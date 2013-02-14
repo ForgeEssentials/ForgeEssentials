@@ -21,12 +21,21 @@ public interface ITypeInfo<T>
 	public boolean canSaveInline();
 	
 	/**
-	 * Should populate the given map with FieldNames and their types.
-	 * These don't necessarily have to be the real names,
-	 * as long as the same names are used to reconstruct the object
-	 * a well as used to create the TypeData
+	 * A place to do initialization stuff that is not in the constructor.
 	 */
-	public void build(HashMap<String, Class> map);
+	public void build();
+	
+	/**
+	 * Should return the type of the field. NULL if th field does not exist, or is undefined in this type.
+	 * @param field Name of the field.
+	 * @return The type of the field as a class.
+	 */
+	Class getTypeOfField(String field);
+	
+	/**
+	 * @return A list of all the field names in this type.
+	 */
+	String[] getFieldList();
 
 	/**
 	 * This should return a fully populated TypeData instance.

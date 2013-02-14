@@ -19,14 +19,13 @@ import net.minecraft.nbt.NBTTagString;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;
-import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
-import com.ForgeEssentials.api.data.TypeInfoHandler;
+import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class NBTDataDriver extends BinaryDataDriver
 {
-	private static final String UNIQUE = "__UNIQUE__";
+	private static final String	UNIQUE	= "__UNIQUE__";
 
 	@Override
 	protected boolean saveData(Class type, TypeData fieldList)
@@ -78,9 +77,7 @@ public class NBTDataDriver extends BinaryDataDriver
 			}
 
 			if (file.exists())
-			{
 				throw new IOException("Failed to delete " + file);
-			}
 			else
 			{
 				temp.renameTo(file);
@@ -112,9 +109,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		NBTTagCompound nbt = readNBT(getFilePath(type, uniqueKey));
 
 		if (nbt == null)
-		{
 			return null;
-		}
 
 		return readClassFromTag(nbt, type);
 	}
@@ -130,10 +125,10 @@ public class NBTDataDriver extends BinaryDataDriver
 
 	private TypeData readClassFromTag(NBTTagCompound tag, Class type)
 	{
-		TypeData tClass = (TypeData) DataStorageManager.getDataForType(type);
+		TypeData tClass = DataStorageManager.getDataForType(type);
 		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
-		
-		String unique = readFieldFromTag(tag, unique, tagger);
+
+		readFieldFromTag(tag, UNIQUE, tagger).toString();
 
 		return tClass;
 	}
@@ -141,13 +136,11 @@ public class NBTDataDriver extends BinaryDataDriver
 	private void writeFieldToTag(NBTTagCompound tag, String name, Object obj)
 	{
 		if (name == null || obj == null)
-		{
 			// ignore.
 			return;
-		}
-		
+
 		Class type = obj.getClass();
-		
+
 		if (type.equals(Integer.class))
 		{
 			tag.setInteger(name, (Integer) obj);
@@ -212,39 +205,27 @@ public class NBTDataDriver extends BinaryDataDriver
 			tag.setCompoundTag(name, compound);
 		}
 		else
-		{
 			throw new IllegalArgumentException("Cannot save object type.");
-		}
 	}
 
-	private Object readFieldFromTag(NBTTagCompound tag, String name, TypeInfoHandler tagger)
+	private Object readFieldFromTag(NBTTagCompound tag, String name, ITypeInfo tagger)
 	{
 		if (name == null || tagger == null)
-		{
 			return null;
-		}
-		
+
 		Class type = tagger.getTypeOfField(name);
-		
-		if (field.type.equals(int.class))
+
+		if (type.equals(int.class))
+			return tag.getInteger(name);
+		else if (type.equals(int[].class))
+			return tag.getIntArray(name);
+		else if (type.equals(float.class))
+			return tag.getFloat(name);
+		else if (type.equals(double.class))
+			return tag.getDouble(name);
+		else if (type.equals(double[].class))
 		{
-			return tag.getInteger(field.name);
-		}
-		else if (field.type.equals(int[].class))
-		{
-			return tag.getIntArray(field.name);
-		}
-		else if (field.type.equals(float.class))
-		{
-			return tag.getFloat(field.name);
-		}
-		else if (field.type.equals(double.class))
-		{
-			return tag.getDouble(field.name);
-		}
-		else if (field.type.equals(double[].class))
-		{
-			NBTTagList list = tag.getTagList(field.name);
+			NBTTagList list = tag.getTagList(name);
 			double[] array = new double[list.tagCount()];
 			for (int i = 0; i < array.length; i++)
 			{
@@ -253,13 +234,11 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			return array;
 		}
-		else if (field.type.equals(boolean.class))
+		else if (type.equals(boolean.class))
+			return tag.getBoolean(name);
+		else if (type.equals(boolean[].class))
 		{
-			return tag.getBoolean(field.name);
-		}
-		else if (field.type.equals(boolean[].class))
-		{
-			NBTTagList list = tag.getTagList(field.name);
+			NBTTagList list = tag.getTagList(name);
 			boolean[] array = new boolean[list.tagCount()];
 			for (int i = 0; i < array.length; i++)
 			{
@@ -268,13 +247,11 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			return array;
 		}
-		else if (field.type.equals(String.class))
+		else if (type.equals(String.class))
+			return tag.getString(name);
+		else if (type.equals(String[].class))
 		{
-			return tag.getString(field.name);
-		}
-		else if (field.type.equals(String[].class))
-		{
-			NBTTagList list = tag.getTagList(field.name);
+			NBTTagList list = tag.getTagList(name);
 			String[] array = new String[list.tagCount()];
 			for (int i = 0; i < array.length; i++)
 			{
@@ -283,16 +260,14 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			return array;
 		}
-		else if (field.type.equals(IReconstructData.class))
+		else if (type.equals(IReconstructData.class))
 		{
 			NBTTagCompound compound = new NBTTagCompound();
-			return readClassFromTag(compound, tagger.getTypeOfField(field.name));
+			return readClassFromTag(compound, tagger.getTypeOfField(name));
 		}
 		else
-		{
 			// this should never happen...
 			return null;
-		}
 	}
 
 	@Override
@@ -311,4 +286,5 @@ public class NBTDataDriver extends BinaryDataDriver
 
 		return data.toArray(new TypeData[] {});
 	}
+
 }

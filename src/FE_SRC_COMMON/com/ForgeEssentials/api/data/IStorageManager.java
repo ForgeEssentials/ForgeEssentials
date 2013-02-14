@@ -26,8 +26,6 @@ public interface IStorageManager
 	void registerSaveableClass(Class type);
 
 	ITypeInfo getInfoForType(Class type);
-	
-	TypeInfoHandler getHandlerForType(Class type);
 
 	TypeData getDataForType(Class type);
 

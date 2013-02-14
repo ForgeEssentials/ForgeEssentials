@@ -85,10 +85,10 @@ public abstract class BinaryDataDriver extends DataDriver
 	}
 
 	@Override
-	protected final boolean deleteData(Class type, Object uniqueObjectKey)
+	protected final boolean deleteData(Class type, String uniqueKey)
 	{
 		boolean isSuccess = false;
-		File f = getFilePath(type, uniqueObjectKey);
+		File f = getFilePath(type, uniqueKey);
 
 		if (f.exists())
 		{
