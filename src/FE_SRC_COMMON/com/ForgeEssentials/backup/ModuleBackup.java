@@ -110,7 +110,7 @@ public class ModuleBackup
 			PrintWriter pw = new PrintWriter(file);
 			
 			pw.println("############");
-			pw.println("## WARING ##");
+			pw.println("## WARNING ##");
 			pw.println("############");
 			pw.println("");
 			pw.println("DON'T CHANGE ANYTHING IN THIS FOLDER.");
@@ -119,7 +119,7 @@ public class ModuleBackup
 			pw.println("If you have problems with this, report an issue and don't put:");
 			pw.println("\"Yes, I read the readme\" in the issue or your message on github,");
 			pw.println("YOU WILL BE IGNORED.");
-			pw.println("~Dries007");
+			pw.println("- The FE Team");
 			
 			pw.close();
 		}
