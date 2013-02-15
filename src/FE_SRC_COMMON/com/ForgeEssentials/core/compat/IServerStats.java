@@ -2,7 +2,7 @@ package com.ForgeEssentials.core.compat;
 
 import java.util.LinkedHashMap;
 
-import org.mcstats.Metrics;
+import com.ForgeEssentials.lib.mcstats.Metrics;
 
 public interface IServerStats
 {

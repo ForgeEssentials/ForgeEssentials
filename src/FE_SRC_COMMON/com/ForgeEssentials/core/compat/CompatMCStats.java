@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
-import org.mcstats.Metrics.Plotter;
 
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
+import com.ForgeEssentials.lib.mcstats.Metrics;
+import com.ForgeEssentials.lib.mcstats.Metrics.Graph;
+import com.ForgeEssentials.lib.mcstats.Metrics.Plotter;
 
 // Obfuscated code handler for MCStats
 public class CompatMCStats implements IServerStats

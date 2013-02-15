@@ -27,7 +27,7 @@
  * either expressed or implied, of anybody else.
  */
 
-package org.mcstats;
+package com.ForgeEssentials.lib.mcstats;
 
 import java.io.BufferedReader;
 import java.io.File;

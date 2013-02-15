@@ -2,11 +2,11 @@ package com.ForgeEssentials.commands.util;
 
 import java.util.LinkedHashMap;
 
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
-import org.mcstats.Metrics.Plotter;
 
 import com.ForgeEssentials.core.compat.IServerStats;
+import com.ForgeEssentials.lib.mcstats.Metrics;
+import com.ForgeEssentials.lib.mcstats.Metrics.Graph;
+import com.ForgeEssentials.lib.mcstats.Metrics.Plotter;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.TeleportCenter;
 
