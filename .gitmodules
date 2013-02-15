@@ -1,3 +1,6 @@
 [submodule "src/FE_SRC_COMMON/com/ForgeEssentials/util/lang"]
 	path = src/FE_SRC_COMMON/com/ForgeEssentials/util/lang
 	url = git://github.com/ForgeEssentials/FELocalizations.git
+[submodule "src/FE_SRC_LIBS/WorldControl"]
+	path = src/FE_SRC_LIBS/WorldControl
+	url = git://github.com/ForgeEssentials/WorldControl.git
