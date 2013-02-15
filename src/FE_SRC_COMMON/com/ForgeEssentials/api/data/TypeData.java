@@ -22,8 +22,7 @@ public class TypeData implements IReconstructData, Serializable
 	
 	public void putField(String name, Object value)
 	{
-		SavedField field = new SavedField(name, value);
-		members.put(name, field);
+		members.put(name, value);
 	}
 
 	public Object getFieldValue(String name)

@@ -46,7 +46,7 @@ public abstract class DataDriver implements IDataDriver
 		Object newObject = null;
 		TypeData data = loadData(type, loadingKey);
 
-		if (data != null)
+		if (data != null && data.getAllFields().size() > 0)
 		{
 			newObject = createFromFields(data);
 		}
