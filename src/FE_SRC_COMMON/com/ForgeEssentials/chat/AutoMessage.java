@@ -20,7 +20,15 @@ public class AutoMessage implements Runnable
 	public AutoMessage(MinecraftServer server)
 	{
 		this.server = server;
-		this.currentMsgID = new Random().nextInt(msg.size());
+		
+		if(msg.isEmpty())
+		{
+			this.currentMsgID = 0;
+		}
+		else
+		{
+			this.currentMsgID = new Random().nextInt(msg.size());
+		}
 
 		thread = new Thread(this, "ForgeEssentials - Chat - automessage");
 		thread.start();
@@ -34,13 +42,10 @@ public class AutoMessage implements Runnable
 			try {thread.sleep(1000 * 60 * waittime);}
 			catch (InterruptedException e) {break;}
 			
-			if(enable)
+			if (server.getAllUsernames().length != 0 && enable && !msg.isEmpty())
 			{
 				server.getConfigurationManager().sendChatMsg(msg.get(currentMsgID));
-			}
-			
-			if (server.getAllUsernames().length != 0)
-			{
+				
 				if (random)
 				{
 					currentMsgID = new Random().nextInt(msg.size());
