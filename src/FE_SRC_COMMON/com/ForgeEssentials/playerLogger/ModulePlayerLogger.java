@@ -139,6 +139,7 @@ public class ModulePlayerLogger
 		catch (Exception ex)
 		{
 			OutputHandler.info("WARNING! MySQLConnector for playerLogger failed!");
+			ex.printStackTrace();
 		}
 	}
 
