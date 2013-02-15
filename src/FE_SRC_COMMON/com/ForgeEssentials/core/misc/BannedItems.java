@@ -56,13 +56,19 @@ public class BannedItems
 			{
 				if (noUse.get(is.itemID).contains(is.getItemDamage()))
 				{
-					e.entityPlayer.sendChatToPlayer("That item is banned.");
-					e.setCanceled(true);
+					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerZone(e.entityPlayer, BYPASS + "." + is.itemID + ":" + is.getItemDamage(), ZoneManager.getWhichZoneIn(new WorldPoint(e.entityPlayer)))))
+					{
+						e.entityPlayer.sendChatToPlayer("That item is banned.");
+						e.setCanceled(true);
+					}
 				}
 				if (noUse.get(is.itemID).contains(-1))
 				{
-					e.entityPlayer.sendChatToPlayer("That item is banned.");
-					e.setCanceled(true);
+					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerZone(e.entityPlayer, BYPASS + "." + is.itemID + ":-1", ZoneManager.getWhichZoneIn(new WorldPoint(e.entityPlayer)))))
+					{
+						e.entityPlayer.sendChatToPlayer("That item is banned.");
+						e.setCanceled(true);	
+					}
 				}
 			}
 		}
