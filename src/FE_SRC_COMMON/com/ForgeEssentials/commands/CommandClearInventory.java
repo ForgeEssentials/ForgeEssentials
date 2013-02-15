@@ -40,14 +40,44 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 			sender.inventoryContainer.detectAndSendChanges();
 			sender.sendChatToPlayer("Cleared inventory.");
 		}
-		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		else if (args.length >= 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if (PlayerSelector.hasArguments(args[0]))
 			{
 				PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
-			int var6 = victim.inventory.clearInventory(-1, -1);
+
+			int clearPar1 = -1, clearPar2 = -1;
+			boolean paramsValid = true;
+			if (args.length >= 2)
+			{
+				try
+				{
+					clearPar1 = Integer.parseInt(args[1]);
+				}
+				catch (NumberFormatException e)
+				{
+					sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+					paramsValid = false;
+				}
+				if (args.length >= 3)
+				{
+					try
+					{
+						clearPar2 = Integer.parseInt(args[2]);
+					}
+					catch (NumberFormatException e)
+					{
+						sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+						paramsValid = false;
+					}
+				}
+			}
+			if (paramsValid)
+			{
+				int var6 = victim.inventory.clearInventory(clearPar1, clearPar2);
+			}
 			victim.inventoryContainer.detectAndSendChanges();
 			victim.sendChatToPlayer("Inventory cleared by " + sender.username);
 			sender.sendChatToPlayer("Cleared inventory of " + victim.username);
@@ -61,16 +91,48 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length == 1)
+		if (args.length >= 1)
 		{
 			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if (PlayerSelector.hasArguments(args[0]))
 			{
 				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 			}
-			int var6 = victim.inventory.clearInventory(-1, -1);
+			int clearPar1 = -1, clearPar2 = -1;
+			boolean paramsValid = true;
+			if (args.length >= 2)
+			{
+				try
+				{
+					clearPar1 = Integer.parseInt(args[1]);
+				}
+				catch (NumberFormatException e)
+				{
+					sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+					paramsValid = false;
+				}
+				if (args.length >= 3)
+				{
+					try
+					{
+						clearPar2 = Integer.parseInt(args[2]);
+					}
+					catch (NumberFormatException e)
+					{
+						sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+						paramsValid = false;
+					}
+				}
+			}
+			if (paramsValid)
+			{
+				int var6 = victim.inventory.clearInventory(clearPar1, clearPar2);
+			}
 			victim.inventoryContainer.detectAndSendChanges();
-			String senderName = (sender instanceof TileEntityCommandBlock ? "CommandBlock @ (" + ((TileEntityCommandBlock) sender).xCoord + "," + ((TileEntityCommandBlock) sender).yCoord + "," + ((TileEntityCommandBlock) sender).zCoord + ")."
+			String senderName = (sender instanceof TileEntityCommandBlock ?
+					"CommandBlock @ (" + ((TileEntityCommandBlock) sender).xCoord + ","
+							+ ((TileEntityCommandBlock) sender).yCoord + ","
+							+ ((TileEntityCommandBlock) sender).zCoord + ")."
 					: "the console");
 			victim.sendChatToPlayer("Inventory cleared by " + senderName);
 			sender.sendChatToPlayer("Cleared inventory of " + victim.username);
