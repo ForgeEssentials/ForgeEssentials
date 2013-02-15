@@ -78,6 +78,8 @@ public class ForgeEssentials
 	public static File				FEDIR;
 
 	public static boolean			mcstats;
+	
+	public static boolean bukkitcheck;
 
 	public BannedItems				bannedItems;
 	private ItemList				itemList;
@@ -87,11 +89,18 @@ public class ForgeEssentials
 	public static String			version;
 	
 	private CompatMCStats mcstatscompat;
+	
+	private BukkitChecker bc;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		if (bukkitcheck){
+			bc = new BukkitChecker();
+		}
+		
 		version = e.getModMetadata().version;
+		
 		// setup fedir stuff
 		if (FMLCommonHandler.instance().getSide().isClient())
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials-CLIENT");
