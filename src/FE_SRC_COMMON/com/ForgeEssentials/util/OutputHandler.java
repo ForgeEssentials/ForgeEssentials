@@ -84,6 +84,36 @@ public final class OutputHandler
 	{
 		felog.finest(msg.toString());
 	}
+	
+	public static void severe(String msg)
+	{
+		felog.severe(msg);
+	}
+
+	public static void warning(String msg)
+	{
+		felog.warning(msg);
+	}
+
+	public static void info(String msg)
+	{
+		felog.info(msg);
+	}
+
+	public static void fine(String msg)
+	{
+		felog.fine(msg);
+	}
+
+	public static void finer(String msg)
+	{
+		felog.finer(msg);
+	}
+
+	public static void finest(String msg)
+	{
+		felog.finest(msg);
+	}
 
 	/**
 	 * Use this to throw errors that can continue without crashing the server.

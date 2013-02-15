@@ -60,7 +60,6 @@ public class ModuleChat
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		OutputHandler.info("Chat module is enabled. Loading...");
 	}
 
 	@Init

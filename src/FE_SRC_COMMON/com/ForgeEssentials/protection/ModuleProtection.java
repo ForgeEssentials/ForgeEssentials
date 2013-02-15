@@ -55,7 +55,6 @@ public class ModuleProtection
 		{
 			return;
 		}
-		OutputHandler.info("Protection module is enabled. Loading...");
 	}
 
 	@Init

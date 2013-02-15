@@ -38,7 +38,6 @@ public class ModuleWorldControl
 	@PreInit
 	public void preLoad(FEModulePreInitEvent event)
 	{
-		OutputHandler.info("WorldControl module is enabled. Loading...");
 	}
 
 	// load.

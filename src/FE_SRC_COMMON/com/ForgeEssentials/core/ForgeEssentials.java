@@ -95,6 +95,8 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		OutputHandler.init(e.getModLog());
+		
 		bc = new BukkitChecker();
 		bc.run();
 		
@@ -105,8 +107,6 @@ public class ForgeEssentials
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials-CLIENT");
 		else
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
-
-		OutputHandler.init(e.getModLog());
 
 		config = new CoreConfig();
 		mcstatscompat = new CompatMCStats();

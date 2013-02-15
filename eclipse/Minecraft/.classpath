@@ -27,5 +27,6 @@
 	<classpathentry kind="lib" path="lib/worldedit-5.4.6-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-bin.jar"/>
 	<classpathentry kind="lib" path="lib/H2DB.jar"/>
+	<classpathentry kind="lib" path="lib/metrics-R6-FEmod.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -60,7 +60,7 @@ public class ModuleCommands
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		OutputHandler.info("Commands module is enabled. Loading...");
+		
 		MobTypeLoader.preLoad(e);
 	}
 

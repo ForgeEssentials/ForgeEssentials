@@ -38,7 +38,7 @@ public class ModuleQuestioner
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		OutputHandler.debug("Questioner module is enabled. Loading...");
+		
 	}
 
 	@Init

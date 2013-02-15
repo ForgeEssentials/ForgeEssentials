@@ -56,7 +56,6 @@ public class ModulePermissions
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		OutputHandler.info("Permissions module is enabled. Loading...");
 		ZoneManager.manager = new ZoneHelper();
 		PermissionsAPI.manager = new PermissionsHelper();
 

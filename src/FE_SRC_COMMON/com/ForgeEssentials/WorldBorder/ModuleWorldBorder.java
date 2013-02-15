@@ -52,7 +52,7 @@ public class ModuleWorldBorder
 	public ModuleWorldBorder()
 	{
 		WBenabled = true;
-		OutputHandler.info("WorldBorder module is enabled. Loading...");
+		
 	}
 
 	@ServerInit

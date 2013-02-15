@@ -13,17 +13,18 @@ public class BukkitChecker
 		else{
 		// Check for BukkitForge
 		if (Loader.isModLoaded("BukkitForge")){
-			OutputHandler.severe("Detected BukkitForge, stopping server for your safety.");
+			OutputHandler.severe("Sanity check failed: Detected BukkitForge, stopping server for your safety.");
 			throw new RuntimeException("ForgeEssentials: Please do not use FE with BukkitForge, bad things may happen to your server. You were warned.");
 		}
 		else{
 			// Check for MCPC+ or LavaBukkit
 			try{
 				Class.forName("org.bukkit.craftbukkit.CraftServer", false, getClass().getClassLoader());
-				OutputHandler.severe("Detected a ForgeBukkit server implementation, stopping server for your safety.");
+				OutputHandler.severe("Sanity check failed: Detected a ForgeBukkit server implementation, stopping server for your safety.");
 				throw new RuntimeException("ForgeEssentials: Please do not use FE with any ForgeBukkit server implementation, bad things may happen to your server. You were warned.");
 			}catch (ClassNotFoundException e){
-			//safe
+				OutputHandler.info("Sanity check passed: No Bukkit server implementations found, starting server.");
+			
 			}
 		}
 		}

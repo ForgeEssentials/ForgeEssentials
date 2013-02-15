@@ -44,7 +44,7 @@ public class ModuleBackup
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		OutputHandler.info("Backup module is enabled. Loading...");
+		
 	}
 
 	@Init
@@ -94,7 +94,7 @@ public class ModuleBackup
 	
 	public static void msg(String msg)
 	{
-		MinecraftServer.logger.info(msg);
+		OutputHandler.info(msg);
 		for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
 		{
 			((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
