@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import net.minecraft.server.MinecraftServer;
+
 
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -95,6 +97,23 @@ public class CompatMCStats implements IServerStats
 		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
 		map.put("FEmodules", TextFormatter.toJSON(ModuleLauncher.getModuleList()));
 		return map;
+	}
+	
+	// leave this here, it's to remove the need to obf mcstats
+	public static boolean isOnlineMode(){
+		return MinecraftServer.getServer().isServerInOnlineMode();
+	}
+
+	public static boolean isDediServer(){
+		return MinecraftServer.getServer().isDedicatedServer();
+	}
+
+	public static int getPlayers(){
+		return MinecraftServer.getServer().getCurrentPlayerCount();
+	}
+	
+	public static String getMCVer(){
+		return MinecraftServer.getServer().getMinecraftVersion();
 	}
 
 }
