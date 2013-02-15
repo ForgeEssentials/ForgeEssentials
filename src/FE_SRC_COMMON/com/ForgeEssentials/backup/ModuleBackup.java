@@ -119,7 +119,8 @@ public class ModuleBackup
 	{
 		try
 		{
-			File file = new File(baseFolder, "README");
+			if(!baseFolder.exists()) baseFolder.mkdirs();
+			File file = new File(baseFolder, "README.txt");
 			if (file.exists()) return;
 			PrintWriter pw = new PrintWriter(file);
 			
