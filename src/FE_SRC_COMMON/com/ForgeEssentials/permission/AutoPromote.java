@@ -3,6 +3,7 @@ package com.ForgeEssentials.permission;
 import java.util.HashMap;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.ITaggedClass;
@@ -11,6 +12,7 @@ import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.chat.MailSystem;
 import com.ForgeEssentials.commands.CommandAFK;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.OutputHandler;
@@ -94,14 +96,6 @@ public class AutoPromote implements Runnable
 	
 	public AutoPromote(MinecraftServer server)
 	{
-		if(thread != null)
-		{
-			OutputHandler.severe("##################################");
-			OutputHandler.severe("### AutoPromote thread != null ###");
-			OutputHandler.severe("###           dafuq?           ###");
-			OutputHandler.severe("##################################");
-			return;
-		}
 		this.server = server;
 
 		thread = new Thread(this, "ForgeEssentials - Permissions - autoPromote");
@@ -125,7 +119,7 @@ public class AutoPromote implements Runnable
 			}
 			catch (InterruptedException e)
 			{
-				e.printStackTrace();
+				break;
 			}
 
 			for (String player : server.getConfigurationManager().getAllUsernames())
@@ -152,6 +146,8 @@ public class AutoPromote implements Runnable
 				}
 			}
 		}
+		
+		System.gc();
 	}
 
 	public static void saveAll()
@@ -161,4 +157,10 @@ public class AutoPromote implements Runnable
 			obj.save();
 		}
 	}
+	
+	public void interrupt()
+	{
+		thread.interrupt();
+	}
+
 }

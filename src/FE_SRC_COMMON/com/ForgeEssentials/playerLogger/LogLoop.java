@@ -28,14 +28,16 @@ public class LogLoop implements Runnable
 				{
 					Thread.sleep(1000);
 				}
-				catch (final InterruptedException e)
+				catch (InterruptedException e)
 				{
-					e.printStackTrace();
+					break;
 				}
 				i++;
 			}
 			sendLogs();
 		}
+		
+		System.gc();
 	}
 
 	public void sendLogs()

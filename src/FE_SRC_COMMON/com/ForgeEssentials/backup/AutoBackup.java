@@ -7,6 +7,8 @@ import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -16,7 +18,7 @@ public class AutoBackup implements Runnable
 	public static boolean	isBackingUp = false;
 	
 	public AutoBackup()
-	{	
+	{
 		thread = new Thread(this, "ForgeEssentials - AutoBackup");
 		thread.start();
 	}
@@ -27,12 +29,12 @@ public class AutoBackup implements Runnable
 		while(MinecraftServer.getServer().isServerRunning() && BackupConfig.autoInterval != 0)
 		{
 			try {thread.sleep(BackupConfig.autoInterval * 1000 * 60);}
-			catch (InterruptedException e) {e.printStackTrace();}
+			catch (InterruptedException e) {break;}
 			
 			while(AutoWorldSave.isSaving)
 			{
 				try {thread.sleep(1000);}
-				catch (InterruptedException e) {e.printStackTrace();}
+				catch (InterruptedException e) {break;}
 			}
 			
 			isBackingUp = true;
@@ -57,7 +59,7 @@ public class AutoBackup implements Runnable
 				while(!backup.isDone())
 				{
 					try {thread.sleep(1000);}
-					catch (InterruptedException e) {e.printStackTrace();}
+					catch (InterruptedException e) {break;}
 				}
 			}
 			
@@ -67,7 +69,7 @@ public class AutoBackup implements Runnable
 				while(!backup.isDone())
 				{
 					try {thread.sleep(1000);}
-					catch (InterruptedException e) {e.printStackTrace();}
+					catch (InterruptedException e) {break;}
 				}
 			}
 			
@@ -89,6 +91,8 @@ public class AutoBackup implements Runnable
 				}
 			}
 		}
+		
+		System.gc();
 	}
 	
 	public static void checkMaxFBackupLifespan()
@@ -181,5 +185,10 @@ public class AutoBackup implements Runnable
 			}
 		}
 		return choise;
+	}
+
+	public void interrupt()
+	{
+		thread.interrupt();
 	}
 }

@@ -16,9 +16,11 @@ import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
+import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
@@ -61,6 +63,13 @@ public class ModuleBackup
 		autoWorldSave = new AutoWorldSave();
 		makeReadme();
 	}
+	
+	@ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
+	{
+		autoBackup.interrupt();
+		autoWorldSave.interrupt();
+	}
 
 	@PermRegister(ident = "ModuleBackups")
 	public void registerPermissions(IPermRegisterEvent event)
@@ -95,10 +104,15 @@ public class ModuleBackup
 	public static void msg(String msg)
 	{
 		OutputHandler.info(msg);
-		for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
+		try
 		{
-			((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
+			for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
+			{
+				((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
+			}
 		}
+		catch (Exception e)
+		{}
 	}
 	
 	private void makeReadme()

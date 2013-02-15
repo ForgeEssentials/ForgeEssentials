@@ -31,18 +31,15 @@ public class AutoMessage implements Runnable
 	{
 		while (server.isServerRunning())
 		{
-			try
-			{
-				thread.sleep(1000 * 60 * waittime);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-
-			server.getConfigurationManager().sendChatMsg(msg.get(currentMsgID));
+			try {thread.sleep(1000 * 60 * waittime);}
+			catch (InterruptedException e) {break;}
 			
-			if (enable && server.getAllUsernames().length != 0)
+			if(enable)
+			{
+				server.getConfigurationManager().sendChatMsg(msg.get(currentMsgID));
+			}
+			
+			if (server.getAllUsernames().length != 0)
 			{
 				if (random)
 				{
@@ -58,5 +55,12 @@ public class AutoMessage implements Runnable
 				}
 			}
 		}
+		
+		System.gc();
+	}
+	
+	public void interrupt()
+	{
+		thread.interrupt();
 	}
 }

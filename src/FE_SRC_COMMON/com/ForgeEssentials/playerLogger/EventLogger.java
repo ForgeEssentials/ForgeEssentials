@@ -30,7 +30,7 @@ public class EventLogger implements IPlayerTracker
 	public EventLogger()
 	{
 		logLoop = new LogLoop();
-		Thread thread = new Thread(logLoop, "MySQL Connection Thread - PlayerLogger");
+		Thread thread = new Thread(logLoop, "ForgeEssentials - MySQL Connection Thread - PlayerLogger");
 		thread.start();
 
 		MinecraftForge.EVENT_BUS.register(this);

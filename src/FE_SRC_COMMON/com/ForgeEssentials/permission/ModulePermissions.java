@@ -52,6 +52,7 @@ public class ModulePermissions
 
 	// permission registrations here...
 	protected HashMultimap				regPerms;
+	private AutoPromote	autoPromote;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -100,7 +101,7 @@ public class ModulePermissions
 		{
 			AutoPromote.map.put(((AutoPromote) obj).zone, ((AutoPromote) obj));
 		}
-		new AutoPromote(FMLCommonHandler.instance().getMinecraftServerInstance());
+		autoPromote = new AutoPromote(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
 
 	@PermRegister(ident = "ModulePermissions")
@@ -129,7 +130,8 @@ public class ModulePermissions
 			data.saveObject(zone);
 		}
 		
-		AutoPromote.saveAll();
+		autoPromote.saveAll();
+		autoPromote.interrupt();
 	}
 
 }
