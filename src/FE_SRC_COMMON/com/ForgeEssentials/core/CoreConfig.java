@@ -30,14 +30,20 @@ public class CoreConfig
 		ForgeEssentials.verCheck = prop.getBoolean(true);
 
 		prop = config.get("Core", "mcstats", true);
-		prop.comment = "If you don't want to send feedback to MCstats, Set to false.";
+		prop.comment = "If you don't want to send feedback to MCstats, set to false. Optionally, use the opt-out setting located in PluginMetrics.cfg in your minecraft folder.";
 		ForgeEssentials.mcstats = prop.getBoolean(true);
 		
 		prop = config.get("Core", "modlistLocation", "modlist.txt");
 		prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
 		ForgeEssentials.modlistLocation = prop.value;
+		
+		prop = config.get("Core", "enablebukkitchecks", true);
+		prop.comment = "For advanced users only: If you wish to run FE on a bukkit server (not recommended, not supported), set this to false.";
+		ForgeEssentials.bukkitcheck = prop.getBoolean(true);
 
-		DuplicateCommandRemoval.removeDuplicateCommands = config.get("general", "removeDuplicateCommands", true, "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
+		prop = config.get("general", "removeDuplicateCommands", true);
+		prop.comment = ("Remove commands from the list if they already exist outside of FE.");
+		DuplicateCommandRemoval.removeDuplicateCommands  = prop.getBoolean(true);
 
 		prop = config.get("Core", "verbose", false);
 		prop.comment = "Specify if Verbose mode is enabled. Only useful in debugging.";
