@@ -37,7 +37,7 @@ public class CoreConfig
 		prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
 		ForgeEssentials.modlistLocation = prop.value;
 		
-		prop = config.get("Core", "enablebukkitchecks", true);
+		prop = config.get("Core", "sanitychecks", true);
 		prop.comment = "For advanced users only: If you wish to run FE on a bukkit server (not recommended, not supported), set this to false.";
 		ForgeEssentials.bukkitcheck = prop.getBoolean(true);
 
@@ -45,9 +45,6 @@ public class CoreConfig
 		prop.comment = ("Remove commands from the list if they already exist outside of FE.");
 		DuplicateCommandRemoval.removeDuplicateCommands  = prop.getBoolean(true);
 
-		prop = config.get("Core", "verbose", false);
-		prop.comment = "Specify if Verbose mode is enabled. Only useful in debugging.";
-		OutputHandler.verbose = prop.getBoolean(false);
 
 		prop = config.get("Core.Misc", "tpWarmup", 5);
 		prop.comment = "The amount of time you need to stand still to TP.";

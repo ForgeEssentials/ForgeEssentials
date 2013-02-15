@@ -33,7 +33,6 @@ public class ModuleLauncher
 	public void preLoad(FMLPreInitializationEvent e)
 	{
 		OutputHandler.info("Discovering and loading modules...");
-		OutputHandler.info("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
 
 		// started ASM handling for the module loading.
 		Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());

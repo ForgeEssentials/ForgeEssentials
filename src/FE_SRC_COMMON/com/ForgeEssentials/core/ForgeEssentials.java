@@ -95,9 +95,8 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		if (bukkitcheck){
-			bc = new BukkitChecker();
-		}
+		bc = new BukkitChecker();
+		bc.run();
 		
 		version = e.getModMetadata().version;
 		

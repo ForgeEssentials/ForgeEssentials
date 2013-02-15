@@ -9,8 +9,6 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 public final class OutputHandler
 {
 
-	public static boolean	verbose;
-
 	public static Logger	felog;
 
 	public static void init(Logger logger)
