@@ -3,4 +3,4 @@
 	url = git://github.com/ForgeEssentials/FELocalizations.git
 [submodule "src/FE_SRC_LIBS/WorldControl"]
 	path = src/FE_SRC_LIBS/WorldControl
-	url = git://github.com/ForgeEssentials/WorldControl.git
+	url = https://github.com/ForgeEssentials/WorldControl.git
