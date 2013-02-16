@@ -3,7 +3,6 @@ package com.ForgeEssentials.permission;
 import java.util.HashMap;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.ITaggedClass;
@@ -12,10 +11,8 @@ import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.chat.MailSystem;
 import com.ForgeEssentials.commands.CommandAFK;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.OutputHandler;
 
 @SaveableObject
 public class AutoPromote implements Runnable

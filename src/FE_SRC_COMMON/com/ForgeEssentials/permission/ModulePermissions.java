@@ -27,7 +27,6 @@ import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.permission.mcoverride.OverrideManager;
-import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.google.common.collect.HashMultimap;
 

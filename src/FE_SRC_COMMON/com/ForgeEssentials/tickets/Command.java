@@ -15,8 +15,6 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public class Command extends ForgeEssentialsCommandBase
 {
 	@Override

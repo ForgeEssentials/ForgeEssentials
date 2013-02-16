@@ -7,8 +7,6 @@ import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.util.OutputHandler;
 

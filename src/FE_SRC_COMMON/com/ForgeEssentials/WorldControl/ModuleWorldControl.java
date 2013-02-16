@@ -23,7 +23,6 @@ import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.util.OutputHandler;
 //import com.ForgeEssentials.WorldControl.weintegration.WEIntegration;
 
 // central class for all the WorldControl stuff

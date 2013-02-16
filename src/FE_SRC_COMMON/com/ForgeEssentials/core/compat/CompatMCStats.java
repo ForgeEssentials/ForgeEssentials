@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
 
-
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;

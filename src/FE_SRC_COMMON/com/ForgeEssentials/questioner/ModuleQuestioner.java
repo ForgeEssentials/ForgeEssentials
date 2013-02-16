@@ -22,7 +22,6 @@ import com.ForgeEssentials.api.permissions.events.PermissionSetEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.DataStorage;
-import com.ForgeEssentials.util.OutputHandler;
 
 @FEModule(configClass = ConfigQuestioner.class, name = "QuestionerModule", parentMod = ForgeEssentials.class)
 public class ModuleQuestioner

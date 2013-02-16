@@ -2,7 +2,6 @@ package com.ForgeEssentials.commands.util;
 
 import java.util.LinkedHashMap;
 
-
 import com.ForgeEssentials.core.compat.IServerStats;
 import com.ForgeEssentials.lib.mcstats.Metrics;
 import com.ForgeEssentials.lib.mcstats.Metrics.Graph;
