@@ -90,14 +90,14 @@ public class ForgeEssentials
 	
 	private CompatMCStats mcstatscompat;
 	
-	private BukkitChecker bc;
+	private SanityChecker bc;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		OutputHandler.init(e.getModLog());
 		
-		bc = new BukkitChecker();
+		bc = new SanityChecker();
 		bc.run();
 		
 		version = e.getModMetadata().version;
