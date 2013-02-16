@@ -19,7 +19,7 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
-public class CommandTPA extends ForgeEssentialsCommandBase
+public class CommandTPAhere extends ForgeEssentialsCommandBase
 {
 	/*
 	 * Config
@@ -29,13 +29,13 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 	@Override
 	public void doConfig(Configuration config, String category)
 	{
-		timeout = config.get(category, "timeout", 25, "Amount of sec a user has to accept a TPA request").getInt();
+		timeout = config.get(category, "timeout", 25, "Amount of sec a user has to accept a TPAhere request").getInt();
 	}
 	
 	@Override
 	public String getCommandName()
 	{
-		return "tpa";
+		return "tpahere";
 	}
 
 	@Override
@@ -51,14 +51,14 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 		{
 			for(TPAdata data : TickHandlerCommands.tpaList)
 			{
-				if(!data.tphere)
+				if(data.tphere)
 				{
 					if(data.receiver == sender)
 					{
-						data.sender.sendChatToPlayer("TPA accepted.");
-						data.receiver.sendChatToPlayer("TPA accepted.");
+						data.sender.sendChatToPlayer("TPAhere accepted.");
+						data.receiver.sendChatToPlayer("TPAhere accepted.");
 						TickHandlerCommands.tpaListToRemove.add(data);
-						TeleportCenter.addToTpQue(new WarpPoint(data.receiver), data.sender);
+						TeleportCenter.addToTpQue(new WarpPoint(data.sender), data.receiver);
 						return;
 					}
 				}
@@ -70,12 +70,12 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 		{
 			for(TPAdata data : TickHandlerCommands.tpaList)
 			{
-				if(!data.tphere)
+				if(data.tphere)
 				{
 					if(data.receiver == sender)
 					{
-						data.sender.sendChatToPlayer("TPA declined.");
-						data.receiver.sendChatToPlayer("TPA declined.");
+						data.sender.sendChatToPlayer("TPAhere declined.");
+						data.receiver.sendChatToPlayer("TPAhere declined.");
 						TickHandlerCommands.tpaListToRemove.add(data);
 						return;
 					}
@@ -91,10 +91,10 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			TickHandlerCommands.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, false));
+			TickHandlerCommands.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
 			
-			sender.sendChatToPlayer("Send a TPA request to " + receiver.username);
-			receiver.sendChatToPlayer("Got a TPA request from " + sender.username);	
+			sender.sendChatToPlayer("Send a TPAhere request to " + receiver.username);
+			receiver.sendChatToPlayer("Got a TPAhere request from " + sender.username);	
 		}
 	}
 

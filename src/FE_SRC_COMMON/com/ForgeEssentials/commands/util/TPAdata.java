@@ -9,13 +9,15 @@ public class TPAdata
 	public EntityPlayerMP	sender;
 	public EntityPlayerMP	receiver;
 	int						timeout;
+	public boolean			tphere;
 
-	public TPAdata(EntityPlayerMP sender, EntityPlayerMP receiver)
+	public TPAdata(EntityPlayerMP sender, EntityPlayerMP receiver, boolean tpaHere)
 	{
 		this.sender = sender;
 		this.receiver = receiver;
 		
-		timeout = CommandTPA.timeout;
+		this.timeout = CommandTPA.timeout;
+		this.tphere = tpaHere;
 	}
 
 	public void count()
@@ -35,8 +37,16 @@ public class TPAdata
 		if (timeout == 0)
 		{
 			TickHandlerCommands.tpaListToRemove.add(this);
-			this.receiver.sendChatToPlayer(	"TPA from " + 	this.sender.username 	+ " timed out");
-			this.sender.sendChatToPlayer(	"TPA to " + 	this.receiver.username 	+ " timed out");
+			if(tphere)
+			{
+				this.receiver.sendChatToPlayer(	"TPAhere from " + 	this.sender.username 	+ " timed out");
+				this.sender.sendChatToPlayer(	"TPAhere to " + 	this.receiver.username 	+ " timed out");
+			}
+			else
+			{
+				this.receiver.sendChatToPlayer(	"TPA from " + 	this.sender.username 	+ " timed out");
+				this.sender.sendChatToPlayer(	"TPA to " + 	this.receiver.username 	+ " timed out");
+			}
 		}
 		timeout--;
 	}
