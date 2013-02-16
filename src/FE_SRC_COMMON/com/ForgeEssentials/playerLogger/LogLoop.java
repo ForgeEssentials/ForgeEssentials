@@ -28,14 +28,16 @@ public class LogLoop implements Runnable
 				{
 					Thread.sleep(1000);
 				}
-				catch (final InterruptedException e)
+				catch (InterruptedException e)
 				{
-					e.printStackTrace();
+					break;
 				}
 				i++;
 			}
 			sendLogs();
 		}
+		
+		System.gc();
 	}
 
 	public void sendLogs()
@@ -47,7 +49,14 @@ public class LogLoop implements Runnable
 			List<logEntry> temp = new ArrayList<logEntry>(buffer);
 			for (logEntry type : ModulePlayerLogger.logTypes)
 			{
-				type.makeEntries(connection, temp);
+				try
+				{
+					type.makeEntries(connection, temp);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 			buffer.removeAll(temp);
 			connection.close();

@@ -134,10 +134,12 @@ public class ModulePlayerLogger
 		{
 			eLogger.logLoop.sendLogs();
 			eLogger.logLoop.end();
+			eLogger.thread.interrupt();
 		}
 		catch (Exception ex)
 		{
 			OutputHandler.info("WARNING! MySQLConnector for playerLogger failed!");
+			ex.printStackTrace();
 		}
 	}
 

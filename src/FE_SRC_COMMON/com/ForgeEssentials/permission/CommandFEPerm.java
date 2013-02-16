@@ -78,8 +78,8 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
 	{
-		PermResult result = PermissionsAPI.checkPermResult(new PermQueryBlanketSpot(new WorldPoint(block.worldObj, block.xCoord, block.yCoord, block.zCoord), getCommandPerm(), true));
-		return result.equals(PermResult.DENY) ? false : true;
+		// You have to be OP to change the cmd anyways.
+		return true;
 	}
 
 	@Override

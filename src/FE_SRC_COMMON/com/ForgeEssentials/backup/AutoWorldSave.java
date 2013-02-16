@@ -22,12 +22,12 @@ public class AutoWorldSave implements Runnable
 		while(MinecraftServer.getServer().isServerRunning() && BackupConfig.worldSaveInterval != 0)
 		{
 			try {thread.sleep(BackupConfig.worldSaveInterval * 1000 * 60);}
-			catch (InterruptedException e) {e.printStackTrace();}
+			catch (InterruptedException e) {break;}
 			
 			while(AutoBackup.isBackingUp)
 			{
 				try {thread.sleep(1000);}
-				catch (InterruptedException e) {e.printStackTrace();}
+				catch (InterruptedException e) {break;}
 			}
 			
 			ModuleBackup.msg("Saving all loaded worlds.");
@@ -52,5 +52,12 @@ public class AutoWorldSave implements Runnable
 			isSaving = false;
 			ModuleBackup.msg("The sever has saved the worlds.");
 		}
+		
+		System.gc();
+	}
+
+	public void interrupt()
+	{
+		thread.interrupt();
 	}
 }

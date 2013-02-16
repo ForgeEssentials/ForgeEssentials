@@ -33,7 +33,6 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.data.DataDriver;
 import com.ForgeEssentials.util.DataStorage;
-import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.PWarp;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Warp;

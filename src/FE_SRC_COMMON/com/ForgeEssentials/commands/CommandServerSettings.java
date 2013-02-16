@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;

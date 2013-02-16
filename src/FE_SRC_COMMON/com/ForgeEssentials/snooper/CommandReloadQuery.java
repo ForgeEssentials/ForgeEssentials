@@ -31,6 +31,7 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase
 		sender.sendChatToPlayer("Killing old one....");
 		ModuleSnooper.theThread.closeAllSockets_do(true);
 		ModuleSnooper.theThread.running = false;
+		ModuleSnooper.theThread.interrupt();
 		sender.sendChatToPlayer("Making new one....");
 		ModuleSnooper.startQuery();
 	}

@@ -20,7 +20,15 @@ public class AutoMessage implements Runnable
 	public AutoMessage(MinecraftServer server)
 	{
 		this.server = server;
-		this.currentMsgID = new Random().nextInt(msg.size());
+		
+		if(msg.isEmpty())
+		{
+			this.currentMsgID = 0;
+		}
+		else
+		{
+			this.currentMsgID = new Random().nextInt(msg.size());
+		}
 
 		thread = new Thread(this, "ForgeEssentials - Chat - automessage");
 		thread.start();
@@ -31,19 +39,13 @@ public class AutoMessage implements Runnable
 	{
 		while (server.isServerRunning())
 		{
-			try
-			{
-				thread.sleep(1000 * 60 * waittime);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-
-			server.getConfigurationManager().sendChatMsg(msg.get(currentMsgID));
+			try {thread.sleep(1000 * 60 * waittime);}
+			catch (InterruptedException e) {break;}
 			
-			if (enable && server.getAllUsernames().length != 0)
+			if (server.getAllUsernames().length != 0 && enable && !msg.isEmpty())
 			{
+				server.getConfigurationManager().sendChatMsg(msg.get(currentMsgID));
+				
 				if (random)
 				{
 					currentMsgID = new Random().nextInt(msg.size());
@@ -58,5 +60,12 @@ public class AutoMessage implements Runnable
 				}
 			}
 		}
+		
+		System.gc();
+	}
+	
+	public void interrupt()
+	{
+		thread.interrupt();
 	}
 }

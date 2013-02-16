@@ -119,6 +119,7 @@ public class VoteReceiver extends Thread
 		{
 			FMLLog.severe("Unable to shut down vote receiver cleanly.");
 		}
+		System.gc();
 	}
 
 	@Override
@@ -195,6 +196,8 @@ public class VoteReceiver extends Thread
 				ex.printStackTrace();
 			}
 		}
+		
+		System.gc();
 	}
 
 	/**

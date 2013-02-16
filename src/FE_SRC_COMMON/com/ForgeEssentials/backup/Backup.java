@@ -140,6 +140,8 @@ public class Backup implements Runnable
 
 		ModuleBackup.msg("Backup of " + name + " done.");
 		done = true;
+		
+		System.gc();
 	}
 
 	/**

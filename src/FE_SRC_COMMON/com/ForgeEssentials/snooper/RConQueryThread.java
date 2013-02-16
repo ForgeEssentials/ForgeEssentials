@@ -524,4 +524,10 @@ public class RConQueryThread implements Runnable
 			ModuleSnooper.startQuery();
 		}
 	}
+
+	public void interrupt()
+	{
+		rconThread.interrupt();
+		System.gc();
+	}
 }

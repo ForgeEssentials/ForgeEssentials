@@ -71,6 +71,8 @@ public class ModuleSnooper
 			{
 				ModuleSnooper.theThread.closeAllSockets_do(true);
 				ModuleSnooper.theThread.running = false;
+				theThread.interrupt();
+				System.gc();
 			}
 			if (enable)
 			{

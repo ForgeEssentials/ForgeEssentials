@@ -35,14 +35,28 @@ public class TickHandlerCommands implements IScheduledTickHandler
 	 */
 	public static final String	BYPASS_KIT_COOLDOWN	= "ForgeEssentials.TickHandlerCommands.BypassKitCooldown";
 
+	/*
+	 * For TPA system
+	 */
+	
+	public static List<TPAdata>	tpaList				= new ArrayList<TPAdata>();
+	public static List<TPAdata>	tpaListToAdd		= new ArrayList<TPAdata>();
+	public static List<TPAdata>	tpaListToRemove		= new ArrayList<TPAdata>();
+	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
+		/*
+		 * Kit system
+		 */
 		for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
 		{
 			PlayerInfo.getPlayerInfo((EntityPlayer) player).KitCooldownTick();
 		}
 
+		/*
+		 * AFK system
+		 */
 		afkList.addAll(afkListToAdd);
 		afkListToAdd.clear();
 		for (AFKdata data : afkList)
@@ -51,6 +65,19 @@ public class TickHandlerCommands implements IScheduledTickHandler
 		}
 		afkList.removeAll(afkListToRemove);
 		afkListToRemove.clear();
+		
+		/*
+		 * TPA system
+		 */
+		
+		tpaList.addAll(tpaListToAdd);
+		tpaListToAdd.clear();
+		for (TPAdata data : tpaList)
+		{
+			data.count();
+		}
+		tpaList.removeAll(tpaListToRemove);
+		tpaListToRemove.clear();
 	}
 
 	@Override

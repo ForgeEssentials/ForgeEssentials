@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +26,7 @@ public class blockChangeLog extends logEntry
 	public int						y;
 	public int						z;
 	public String					block;
-	public String					te	= "";
+	public java.sql.Blob			te;
 
 	public blockChangeLog(blockChangeLogCategory cat, EntityPlayer player, String block, int X, int Y, int Z, TileEntity te)
 	{
@@ -43,10 +44,15 @@ public class blockChangeLog extends logEntry
 			te.writeToNBT(nbt);
 			HashMap<String, String> data = new HashMap();
 			data.put(te.getClass().getName(), TextFormatter.toJSONnbtComp(nbt));
-			this.te = TextFormatter.toJSON(data);
-			OutputHandler.finer(te.getClass().getSimpleName());
-			OutputHandler.finer(this.te);
-			OutputHandler.finer(this.te.length());
+			try
+			{
+				this.te = new SerialBlob(TextFormatter.toJSON(data).getBytes());
+			}
+			catch (Exception e)
+			{
+				OutputHandler.severe(e);
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -64,7 +70,7 @@ public class blockChangeLog extends logEntry
 	@Override
 	public String getTableCreateSQL()
 	{
-		return "CREATE TABLE IF NOT EXISTS " + getName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player VARCHAR(32), category VARCHAR(32), block VARCHAR(32), Dim INT, X INT, Y INT, Z INT, time DATETIME, te BLOB)";
+		return "CREATE TABLE IF NOT EXISTS " + getName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player VARCHAR(32), category VARCHAR(32), block VARCHAR(32), Dim INT, X INT, Y INT, Z INT, time DATETIME, te LONGBLOB)";
 	}
 
 	@Override
@@ -92,15 +98,7 @@ public class blockChangeLog extends logEntry
 				ps.setInt(6, log.y);
 				ps.setInt(7, log.z);
 				ps.setTimestamp(8, log.time);
-				if (log.te.equals(""))
-				{
-					ps.setNull(9, java.sql.Types.BLOB);
-				}
-				else
-				{
-					java.sql.Blob blob = new SerialBlob(log.te.getBytes());
-					ps.setBlob(9, blob);
-				}
+				ps.setBlob(9, log.te);
 				ps.execute();
 				ps.clearParameters();
 			}

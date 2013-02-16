@@ -26,7 +26,7 @@ public final class OutputHandler
 	 */
 	public static void chatError(ICommandSender sender, String msg)
 	{
-		sender.sendChatToPlayer(FEChatFormatCodes.DARKRED + FunctionHelper.formatColors(msg));
+		sender.sendChatToPlayer(FEChatFormatCodes.RED + FunctionHelper.formatColors(msg));
 	}
 
 	/**
