@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public abstract class TypeMultiValInfo<T> implements ITypeInfo<T>
+public abstract class TypeMultiValInfo implements ITypeInfo
 {
 	protected ClassContainer container;
 	protected HashMap<String, Class> fields;
@@ -42,7 +42,7 @@ public abstract class TypeMultiValInfo<T> implements ITypeInfo<T>
 	}
 
 	@Override
-	public Class<? extends T> getType()
+	public Class getType()
 	{
 		return container.type;
 	}
@@ -61,9 +61,9 @@ public abstract class TypeMultiValInfo<T> implements ITypeInfo<T>
 	}
 
 	@Override
-	public TypeData getTypeDataFromObject(T obj)
+	public TypeData getTypeDataFromObject(Object obj)
 	{
-		Set<TypeData> datas = getTypeDatasFromObject();
+		Set<TypeData> datas = getTypeDatasFromObject(obj);
 		TypeData data = DataStorageManager.getDataForType(container);
 		int i = 0;
 		for (TypeData dat : datas)
@@ -71,10 +71,10 @@ public abstract class TypeMultiValInfo<T> implements ITypeInfo<T>
 		return data;
 	}
 	
-	public abstract Set<TypeData> getTypeDatasFromObject();
+	public abstract Set<TypeData> getTypeDatasFromObject(Object obj);
 
 	@Override
-	public T reconstruct(IReconstructData data)
+	public Object reconstruct(IReconstructData data)
 	{
 		Collection values = data.getAllValues();
 		TypeData[] datas = new TypeData[values.size()];
@@ -86,7 +86,15 @@ public abstract class TypeMultiValInfo<T> implements ITypeInfo<T>
 		return reconstruct(datas);
 	}
 	
-	public abstract T reconstruct(TypeData[] data);
+	public abstract Object reconstruct(TypeData[] data);
 	
-	public abstract TypeEntryInfo getEntryInfo();
+	public TypeEntryInfo getEntryInfo()
+	{
+		return new TypeEntryInfo(fields);
+	}
+	
+	protected TypeData getEntryData()
+	{
+		return new TypeData(Map.Entry.class);
+	}
 }
