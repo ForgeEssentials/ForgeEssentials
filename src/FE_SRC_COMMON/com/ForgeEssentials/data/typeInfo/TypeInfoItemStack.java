@@ -18,6 +18,8 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	private static final String	DAMAGE		= "damage";
 	private static final String	COMPOUND	= "compound";
 	
+	public TypeInfoItemStack() {};
+	
 	@Override
 	public void build(){}
 
@@ -84,6 +86,12 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	public Class<? extends ItemStack> getType()
 	{
 		return ItemStack.class;
+	}
+
+	@Override
+	public Class[] getGenericTypes()
+	{
+		return null;
 	}
 
 }

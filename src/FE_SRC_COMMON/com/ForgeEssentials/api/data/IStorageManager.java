@@ -16,18 +16,18 @@ public interface IStorageManager
 	 * @param infoType
 	 * @param type
 	 */
-	void registerSaveableClass(Class<? extends ITypeInfo> infoType, Class type);
+	void registerSaveableClass(Class<? extends ITypeInfo> infoType, ClassContainer type);
 
 	/**
 	 * Registers the class as a SaveableClass to be read with the Annotations.
 	 * This method should only be used for classes that use the default ITypeInfo and have the annotations.
 	 * @param type The class to register
 	 */
-	void registerSaveableClass(Class type);
+	void registerSaveableClass(ClassContainer type);
 
-	ITypeInfo getInfoForType(Class type);
+	ITypeInfo getInfoForType(ClassContainer type);
 
-	TypeData getDataForType(Class type);
+	TypeData getDataForType(ClassContainer type);
 
 	TypeData getDataForObject(Object obj);
 

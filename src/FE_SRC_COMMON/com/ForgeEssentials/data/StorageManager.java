@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IStorageManager;
@@ -33,7 +34,7 @@ public class StorageManager implements IStorageManager
 	private ConcurrentHashMap<String, DataDriver>					instanceMap;													// instantiated ones
 	private static StorageManager									instance;
 	private boolean													loaded			= false;
-	private ConcurrentHashMap<Class, ITypeInfo>						taggerList		= new ConcurrentHashMap<Class, ITypeInfo>();
+	private ConcurrentHashMap<ClassContainer, ITypeInfo>						taggerList		= new ConcurrentHashMap<ClassContainer, ITypeInfo>();
 
 	public StorageManager(Configuration config)
 	{
@@ -159,18 +160,18 @@ public class StorageManager implements IStorageManager
 	}
 
 	@Override
-	public void registerSaveableClass(Class type)
+	public void registerSaveableClass(ClassContainer type)
 	{
-		if (!type.isAnnotationPresent(SaveableObject.class))
+		if (!type.type.isAnnotationPresent(SaveableObject.class))
 			throw new IllegalArgumentException("Only classes that have the @SaveableObject annotation may be registered!");
 
-		TypeInfoStandard standard = new TypeInfoStandard(type);
+		TypeInfoStandard standard = new TypeInfoStandard(type.type);
 		standard.build();
 		taggerList.put(type, standard);
 	}
 
 	@Override
-	public void registerSaveableClass(Class<? extends ITypeInfo> infoType, Class type)
+	public void registerSaveableClass(Class<? extends ITypeInfo> infoType, ClassContainer type)
 	{
 		if (infoType.equals(TypeInfoStandard.class))
 			registerSaveableClass(type);
@@ -183,7 +184,7 @@ public class StorageManager implements IStorageManager
 
 				for (Constructor c : constructors)
 				{
-					if (c.getParameterTypes().length == 0 && c.getParameterTypes()[0].isAssignableFrom(type))
+					if (c.getParameterTypes().length == 0 && c.getParameterTypes()[0].isAssignableFrom(type.type))
 					{
 						con = c;
 						break;
@@ -204,13 +205,13 @@ public class StorageManager implements IStorageManager
 		}
 	}
 
-	public boolean isClassRegisterred(Class type)
+	public boolean isClassRegisterred(ClassContainer type)
 	{
 		return taggerList.containsKey(type);
 	}
 
 	@Override
-	public ITypeInfo getInfoForType(Class type)
+	public ITypeInfo getInfoForType(ClassContainer type)
 	{
 		ITypeInfo tagged = taggerList.get(type);
 		if (!isClassRegisterred(type))
@@ -234,18 +235,18 @@ public class StorageManager implements IStorageManager
 	}
 
 	@Override
-	public TypeData getDataForType(Class type)
+	public TypeData getDataForType(ClassContainer type)
 	{
 		if (type.isArray())
 			;// TODO: return array stuff
 
-		return new TypeData(type);
+		return new TypeData(type.type);
 	}
 
 	@Override
 	public TypeData getDataForObject(Object obj)
 	{
-		return getInfoForType(obj.getClass()).getTypeDataFromObject(obj);
+		return getInfoForType(new ClassContainer(obj.getClass())).getTypeDataFromObject(obj);
 	}
 	
 	/**

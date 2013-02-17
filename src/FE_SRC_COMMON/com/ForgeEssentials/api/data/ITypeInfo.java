@@ -2,9 +2,8 @@ package com.ForgeEssentials.api.data;
 
 import java.util.HashMap;
 
-
 /**
- * The constructor for a class that implements this should take either the class or nothing.
+ * The constructor for a class that implements this should take either the class, ClassContainer or nothing.
  * The class taken in the constructor should be compatible with the parameter.
  * A class implementing that should ONLY have 1 constructor, the constructor will be used to instantiate via reflection.
  * Having more than one constructor may result in the wrong one being used.
@@ -19,19 +18,19 @@ public interface ITypeInfo<T>
 	 * @return
 	 */
 	public boolean canSaveInline();
-	
+
 	/**
 	 * A place to do initialization stuff that is not in the constructor.
 	 */
 	public void build();
-	
+
 	/**
 	 * Should return the type of the field. NULL if th field does not exist, or is undefined in this type.
 	 * @param field Name of the field.
 	 * @return The type of the field as a class.
 	 */
 	Class getTypeOfField(String field);
-	
+
 	/**
 	 * @return A list of all the field names in this type.
 	 */
@@ -42,17 +41,23 @@ public interface ITypeInfo<T>
 	 * This instance may be a specially created implementation, or be obtained via the DataStorageManager.
 	 * DON'T FORGET THE UNIQUE KEY!
 	 */
-	 public TypeData getTypeDataFromObject(T obj);
+	public TypeData getTypeDataFromObject(T obj);
 
 	/**
 	 * This method will be used to create an object from
 	 * @param data If this class has a TypeDataOverride, you can cast it.
 	 * @return a reconstructed Object
 	 */
-	 public T reconstruct(IReconstructData data);
-	 
-	 /**
-	  * @return The class object this specific TypeInfo is representing.
-	  */
-	 public Class<? extends T> getType();
+	public T reconstruct(IReconstructData data);
+
+	/**
+	 * @return The class object this specific TypeInfo is representing.
+	 */
+	public Class<? extends T> getType();
+
+	/**
+	 * This shouldn't be any longer than 2 for Maps, and 1 for anything else.
+	 * @return NULL if this type is not parameterized
+	 */
+	public Class[] getGenericTypes();
 }

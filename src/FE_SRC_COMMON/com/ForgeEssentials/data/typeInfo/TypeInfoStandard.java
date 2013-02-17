@@ -26,16 +26,16 @@ import com.ForgeEssentials.util.OutputHandler;
  * @author AbrarSyed
  * @param <T> This would be set to Object, but subclasses may want to have TypeInfo's for very specific classes.
  */
-public class TypeInfoStandard<T> implements ITypeInfo<T>
+public class TypeInfoStandard implements ITypeInfo
 {
-	Class<? extends T>				type;
+	Class			type;
 	private boolean					isUniqueKeyField;
 	private boolean					inLine;
 	private String					uniqueKey;
 	private String					reconstructorMethod;
 	private HashMap<String, Class>	fields;
 
-	public TypeInfoStandard(Class<? extends T> type)
+	public TypeInfoStandard(Class type)
 	{
 		this.type = type;
 		fields = new HashMap<String, Class>();
@@ -120,7 +120,7 @@ public class TypeInfoStandard<T> implements ITypeInfo<T>
 	}
 
 	@Override
-	public TypeData getTypeDataFromObject(T objectSaved)
+	public TypeData getTypeDataFromObject(Object objectSaved)
 	{
 		Class c = objectSaved.getClass();
 		TypeData data = DataStorageManager.getDataForType(type);
@@ -203,13 +203,13 @@ public class TypeInfoStandard<T> implements ITypeInfo<T>
 	}
 
 	@Override
-	public T reconstruct(IReconstructData data)
+	public Object reconstruct(IReconstructData data)
 	{
 		try
 		{
 			Method reconstructor = type.getDeclaredMethod(reconstructorMethod, IReconstructData.class);
 			reconstructor.setAccessible(true);
-			return (T) reconstructor.invoke(null, data);
+			return reconstructor.invoke(null, data);
 		}
 		catch (Throwable thrown)
 		{
@@ -226,9 +226,15 @@ public class TypeInfoStandard<T> implements ITypeInfo<T>
 	}
 
 	@Override
-	public Class<? extends T> getType()
+	public Class getType()
 	{
 		return type;
+	}
+
+	@Override
+	public Class[] getGenericTypes()
+	{
+		return null;
 	}
 
 }

@@ -39,6 +39,12 @@ public class TypeData implements IReconstructData, Serializable
 	{
 		return members.entrySet();
 	}
+	
+	@Override
+	public Collection getAllValues()
+	{
+		return members.values();
+	}
 
 	public void setUniqueKey(String key)
 	{
