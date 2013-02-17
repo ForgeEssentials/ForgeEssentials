@@ -1,4 +1,4 @@
-package com.ForgeEssentials.coremod;
+package com.ForgeEssentials.core.preloader;
 
 import cpw.mods.fml.relauncher.ILibrarySet;
 

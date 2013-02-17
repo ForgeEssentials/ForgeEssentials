@@ -1,4 +1,4 @@
-package com.ForgeEssentials.coremod;
+package com.ForgeEssentials.core.preloader;
 
 import java.io.File;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 	public String[] getLibraryRequestClass()
 	{
 		return new String[]
-		{ "com.ForgeEssentials.coremod.Downloader" };
+		{ "com.ForgeEssentials.core.preloader.Downloader" };
 	}
 
 	@Override
@@ -30,13 +30,13 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 	@Override
 	public String getModContainerClass()
 	{
-		return "com.ForgeEssentials.coremod.FEModContainer";
+		return "com.ForgeEssentials.core.preloader.FEModContainer";
 	}
 
 	@Override
 	public String getSetupClass()
 	{
-		return "com.ForgeEssentials.coremod.FEPreLoader";
+		return "com.ForgeEssentials.core.preloader.FEPreLoader";
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.ForgeEssentials.coremod.transformers;
+package com.ForgeEssentials.core.preloader.asm;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

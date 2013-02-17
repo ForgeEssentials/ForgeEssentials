@@ -1,4 +1,4 @@
-package com.ForgeEssentials.coremod.transformers;
+package com.ForgeEssentials.core.preloader.asm;
 
 import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
 import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;

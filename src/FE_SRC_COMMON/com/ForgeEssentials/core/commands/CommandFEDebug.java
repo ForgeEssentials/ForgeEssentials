@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.item.ItemStack;
 
-import com.ForgeEssentials.coremod.transformers.FEeventAdder;
+import com.ForgeEssentials.core.preloader.asm.FEeventAdder;
 
 public class CommandFEDebug extends ForgeEssentialsCommandBase
 {
