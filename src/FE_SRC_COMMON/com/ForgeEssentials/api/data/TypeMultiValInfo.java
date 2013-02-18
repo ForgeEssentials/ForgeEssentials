@@ -45,7 +45,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	@Override
 	public Class getType()
 	{
-		return container.type;
+		return container.getType();
 	}
 
 	@Override

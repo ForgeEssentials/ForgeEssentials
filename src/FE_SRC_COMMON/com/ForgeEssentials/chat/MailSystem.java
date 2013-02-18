@@ -28,7 +28,7 @@ public class MailSystem implements IPlayerTracker
 	
 	public static void LoadAll()
 	{
-		for(Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(MailSystem.class))
+		for(Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(Mail.class))
 		{
 			Mail mail = (Mail) obj;
 			map.put(mail.getReceiver(), mail);

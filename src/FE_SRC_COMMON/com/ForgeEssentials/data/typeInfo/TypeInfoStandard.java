@@ -39,9 +39,6 @@ public class TypeInfoStandard implements ITypeInfo
 	{
 		this.type = type;
 		fields = new HashMap<String, Class>();
-		
-		if (!type.isAnnotationPresent(SaveableObject.class))
-			throw new IllegalArgumentException("TypeInfoStandard can only be created with classes that have the @SaveableObject annotation!");
 	}
 
 	@Override

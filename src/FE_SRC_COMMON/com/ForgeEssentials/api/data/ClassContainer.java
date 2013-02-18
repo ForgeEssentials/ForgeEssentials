@@ -4,63 +4,98 @@ import java.util.Arrays;
 
 public class ClassContainer
 {
-	public final Class type;
-	Class[] parameters;
+	private final String	className;
+	Class[]					parameters;
 
 	public ClassContainer(Class type, Class... parameters)
 	{
-		this.type = type;
+		className = type.getName();
 		this.parameters = parameters;
 	}
-	
+
 	public ClassContainer(Class type)
 	{
-		this.type = type;
+		className = type.getName();
 		this.parameters = new Class[] {};
 	}
-	
+
+	public Class getType()
+	{
+		try
+		{
+			return Class.forName(className);
+		}
+		catch (ClassNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public boolean isAssignableFrom(Class type)
 	{
-		return type.isAssignableFrom(this.type);
+		return getType().isAssignableFrom(type);
 	}
-	
+
 	public boolean isInterface()
 	{
-		return type.isInterface();
+		return getType().isInterface();
 	}
-	
+
 	public boolean isEnum()
 	{
-		return type.isEnum();
+		return getType().isEnum();
 	}
-	
+
 	public boolean isArray()
 	{
-		return type.isArray();
+		return getType().isArray();
 	}
-	
-	public boolean isEqual(Object obj)
+
+	@Override
+	public boolean equals(Object obj)
 	{
 		if (obj instanceof Class)
 		{
-			return type.getCanonicalName().equals(((Class) obj).getCanonicalName());
+			return className.equals(((Class)obj).getName());
 		}
 		else if (obj instanceof ClassContainer)
 		{
-			return type.getCanonicalName().equals(((Class) obj).getCanonicalName()) && Arrays.equals(parameters, ((ClassContainer)obj).parameters);
+			return className.equals(((ClassContainer) obj).className) && Arrays.equals(parameters, ((ClassContainer) obj).parameters);
 		}
 		else
 			return false;
 	}
-	
+
 	public Class[] getParameters()
 	{
 		return parameters;
 	}
-	
+
 	public boolean hasParameters()
 	{
-		return parameters.length == 0;
+		return parameters.length > 0;
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append(getType().getCanonicalName());
+		builder.append('<');
+
+		for (int i = 0; i < parameters.length; i++)
+		{
+			builder.append(parameters[i].getCanonicalName());
+			if (i < parameters.length - 1)
+				builder.append(", ");
+		}
+
+		builder.append(">");
+
+		return builder.toString();
 	}
 
 }

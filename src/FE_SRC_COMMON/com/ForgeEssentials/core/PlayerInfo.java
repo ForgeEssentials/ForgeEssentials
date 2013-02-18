@@ -40,7 +40,6 @@ public class PlayerInfo
 		if (info == null)
 		{
 			// Attempt to populate this info with some data from our storage.
-			// TODO: get the actual config-given choice...
 			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(PlayerInfo.class, username);
 
 			if (info == null)

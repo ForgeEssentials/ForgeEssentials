@@ -33,12 +33,12 @@ public class StorageManager implements IStorageManager
 	private static final String												configCategory	= "data";
 	public static final EnumDriverType										defaultDriver	= EnumDriverType.TEXT;
 	private EnumDriverType													chosen			= defaultDriver;
-	private ConcurrentHashMap<EnumDriverType, String>						typeChosens;															// the defaults...
-	private ConcurrentHashMap<String, Class<? extends AbstractDataDriver>>	classMap;																// registered ones...
-	private ConcurrentHashMap<String, AbstractDataDriver>					instanceMap;															// instantiated ones
+	private ConcurrentHashMap<EnumDriverType, String>						typeChosens;													// the defaults...
+	private ConcurrentHashMap<String, Class<? extends AbstractDataDriver>>	classMap;														// registered ones...
+	private ConcurrentHashMap<String, AbstractDataDriver>					instanceMap;													// instantiated ones
 	private static StorageManager											instance;
 	private boolean															loaded			= false;
-	private ConcurrentHashMap<ClassContainer, ITypeInfo>					taggerList		= new ConcurrentHashMap<ClassContainer, ITypeInfo>();
+	private ConcurrentHashMap<String, ITypeInfo>							taggerList		= new ConcurrentHashMap<String, ITypeInfo>();
 
 	public StorageManager(Configuration config)
 	{
@@ -168,15 +168,18 @@ public class StorageManager implements IStorageManager
 	{
 		ITypeInfo info = null;
 
-		if (type.isArray() && (!type.type.getComponentType().isPrimitive() && !String.class.isAssignableFrom(type.type.getComponentType())))
-			info = new TypeInfoArray(new ClassContainer(type.type, type.type.getComponentType()));
-		else if (Serializable.class.isAssignableFrom(type.type))
+		if (type.isArray() && (!type.getType().getComponentType().isPrimitive() && !String.class.isAssignableFrom(type.getType().getComponentType())))
+			info = new TypeInfoArray(new ClassContainer(type.getType(), type.getType().getComponentType()));
+		else if (type.getType().isAnnotationPresent(SaveableObject.class))
+			info = new TypeInfoStandard(type.getType());
+		else if (Serializable.class.isAssignableFrom(type.getType()))
 			info = new TypeInfoSerialize(type);
-		else if (type.type.isAnnotationPresent(SaveableObject.class))
-			info = new TypeInfoStandard(type.type);
+		
+		if (info == null)
+			return;
 
 		info.build();
-		taggerList.put(type, info);
+		taggerList.put(type.toString(), info);
 	}
 
 	@Override
@@ -231,7 +234,7 @@ public class StorageManager implements IStorageManager
 							created = con.newInstance();
 							break;
 						case 1:
-							created = con.newInstance(type.type);
+							created = con.newInstance(type.getType());
 							break;
 						case 2:
 							created = con.newInstance(type);
@@ -239,7 +242,7 @@ public class StorageManager implements IStorageManager
 					}
 
 				created.build();
-				taggerList.put(type, created);
+				taggerList.put(type.toString(), created);
 			}
 			catch (SecurityException e)
 			{
@@ -271,13 +274,18 @@ public class StorageManager implements IStorageManager
 
 	public boolean isClassRegisterred(ClassContainer type)
 	{
-		return taggerList.containsKey(type);
+		if (type == null)
+			return false;
+		return taggerList.containsKey(type.toString());
 	}
 
 	@Override
 	public ITypeInfo getInfoForType(ClassContainer type)
 	{
-		ITypeInfo tagged = taggerList.get(type);
+		ITypeInfo tagged = taggerList.get(type.toString());
+
+		if (tagged != null)
+			return tagged;
 
 		ClassContainer tempType = type;
 
@@ -286,27 +294,27 @@ public class StorageManager implements IStorageManager
 			if (tempType == null)
 				break;
 			else if (tempType.hasParameters())
-				tempType = new ClassContainer(type.type);
-			else if (tempType.type.getSuperclass() != null)
-				tempType = new ClassContainer(tempType.type.getSuperclass(), type.getParameters());
-			else if (tempType.type.getSuperclass() == null)
+				tempType = new ClassContainer(type.getType());
+			else if (tempType.getType().getSuperclass() != null)
+				tempType = new ClassContainer(tempType.getType().getSuperclass(), type.getParameters());
+			else if (tempType.getType().getSuperclass() == null)
 				tempType = null;
 		}
 
 		if (tempType == null)
 		{
-			for (Class inter : type.type.getInterfaces())
+			for (Class inter : type.getType().getInterfaces())
 			{
 				tempType = new ClassContainer(inter, type.getParameters());
-						
+
 				if (isClassRegisterred(tempType))
 					break;
-				
+
 				tempType = new ClassContainer(inter);
-				
+
 				if (isClassRegisterred(tempType))
 					break;
-				
+
 				tempType = null;
 			}
 		}
@@ -314,13 +322,12 @@ public class StorageManager implements IStorageManager
 		if (tempType == null)
 		{
 			registerSaveableClass(type);
-			tagged = taggerList.get(type);
+			tagged = taggerList.get(type.toString());
 			if (instance.loaded)
 				for (AbstractDataDriver driver : instance.instanceMap.values())
 					driver.onClassRegistered(tagged);
 			return tagged;
 		}
-		 
 
 		return taggerList.get(tempType);
 	}

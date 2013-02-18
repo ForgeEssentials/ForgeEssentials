@@ -10,6 +10,7 @@ import org.mcstats.Metrics.Graph;
 import org.mcstats.Metrics.Plotter;
 
 import com.ForgeEssentials.api.IServerStats;
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.commands.CommandFECredits;
@@ -64,8 +65,10 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false, serverPacketHandlerSpec = @SidedPacketHandler(channels =
-{ "ForgeEssentials" }, packetHandler = PacketHandler.class))
+@NetworkMod(
+		clientSideRequired = false,
+		serverSideRequired = false,
+		serverPacketHandlerSpec = @SidedPacketHandler(channels ={ "ForgeEssentials" }, packetHandler = PacketHandler.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "@VERSION@")
 public class ForgeEssentials implements IServerStats
 {

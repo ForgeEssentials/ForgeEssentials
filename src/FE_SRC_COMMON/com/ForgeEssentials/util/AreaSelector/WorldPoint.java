@@ -19,10 +19,6 @@ import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 @SaveableObject(SaveInline = true)
 public class WorldPoint extends Point
 {
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= -3743470804433969687L;
 	@SaveableField
 	public int					dim;
 

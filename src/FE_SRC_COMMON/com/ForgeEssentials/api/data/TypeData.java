@@ -75,7 +75,7 @@ public class TypeData implements IReconstructData, Serializable
 
 	public Class getType()
 	{
-		return type.type;
+		return type.getType();
 	}
 	
 	public ClassContainer getContainer()

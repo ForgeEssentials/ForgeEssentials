@@ -42,7 +42,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 	@Override
 	public void build()
 	{
-		Class currentType = container.type;
+		Class currentType = container.getType();
 		
 		do
 		{
@@ -70,7 +70,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		} while ((currentType = currentType.getSuperclass()) != null);
 		
 		// find reconstructor method
-		for (Method m : container.type.getDeclaredMethods())
+		for (Method m : container.getType().getDeclaredMethods())
 		{
 			// catches the UniqueLoadingKey method variant
 			if (m.isAnnotationPresent(UniqueLoadingKey.class))
@@ -191,7 +191,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 	{
 		try
 		{
-			Object obj = container.type.newInstance();
+			Object obj = container.getType().newInstance();
 			Class currentType = data.getType();
 			
 			do
@@ -220,7 +220,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 	@Override
 	public Class<? extends T> getType()
 	{
-		return container.type;
+		return container.getType();
 	}
 
 	@Override

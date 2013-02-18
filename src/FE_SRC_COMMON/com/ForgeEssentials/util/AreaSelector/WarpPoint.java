@@ -12,10 +12,6 @@ import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 @SaveableObject(SaveInline = true)
 public class WarpPoint extends WorldPoint
 {
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= 80554580553264238L;
 
 	@SaveableField
 	public float				pitch;
