@@ -14,6 +14,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	public TypeMultiValInfo(ClassContainer container)
 	{
 		this.container = container;
+		fields = new HashMap<String, Class>();
 	}
 	
 	@Override
