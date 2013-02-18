@@ -60,4 +60,11 @@ public interface ITypeInfo<T>
 	 * @return NULL if this type is not parameterized
 	 */
 	public Class[] getGenericTypes();
+	
+	/**
+	 * This may return null for primitive types.
+	 * This will probably return 
+	 * @return
+	 */
+	public ITypeInfo getInfoForField(String field);
 }

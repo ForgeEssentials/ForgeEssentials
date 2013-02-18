@@ -10,11 +10,11 @@ import com.ForgeEssentials.data.SavedField;
 
 public class TypeData implements IReconstructData, Serializable
 {
-	private final Class type;
+	private final ClassContainer type;
 	private String uniqueKey;
 	private HashMap<String, Object>	members;
 
-	public TypeData(Class type)
+	public TypeData(ClassContainer type)
 	{
 		this.type = type;
 		members = new HashMap<String, Object>();
@@ -74,6 +74,11 @@ public class TypeData implements IReconstructData, Serializable
 	}
 
 	public Class getType()
+	{
+		return type.type;
+	}
+	
+	public ClassContainer getContainer()
 	{
 		return type;
 	}

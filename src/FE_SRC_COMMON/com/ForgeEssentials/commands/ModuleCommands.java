@@ -36,7 +36,7 @@ import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.ServerStats;
-import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.PWarp;
@@ -59,7 +59,7 @@ public class ModuleCommands implements IServerStats
 	public static File			cmddir;
 
 	public static EventHandler	eventHandler	= new EventHandler();
-	public static DataDriver	data;
+	public static AbstractDataDriver	data;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)

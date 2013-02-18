@@ -68,4 +68,10 @@ public class TypeEntryInfo implements ITypeInfo
 		return types.values().toArray(new Class[types.size()]);
 	}
 
+	@Override
+	public ITypeInfo getInfoForField(String field)
+	{
+		return DataStorageManager.getInfoForType(getTypeOfField(field));
+	}
+
 }

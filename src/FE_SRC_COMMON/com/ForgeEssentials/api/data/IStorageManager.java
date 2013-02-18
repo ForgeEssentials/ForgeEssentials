@@ -1,15 +1,15 @@
 package com.ForgeEssentials.api.data;
 
-import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.util.DBConnector;
 
 public interface IStorageManager
 {
-	void registerDriver(String name, Class<? extends DataDriver> c);
+	void registerDriver(String name, Class<? extends AbstractDataDriver> c);
 
-	DataDriver getReccomendedDriver();
+	AbstractDataDriver getReccomendedDriver();
 
-	DataDriver getDriverOfType(EnumDriverType type);
+	AbstractDataDriver getDriverOfType(EnumDriverType type);
 
 	/**
 	 * Registers the class and registers the provided TypeInfo for it.

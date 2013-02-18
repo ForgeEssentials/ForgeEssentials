@@ -14,7 +14,7 @@ import com.ForgeEssentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public abstract class TextDataDriver extends DataDriver
+public abstract class TextDataDriver extends AbstractDataDriver
 {
 	protected File	baseFile;
 

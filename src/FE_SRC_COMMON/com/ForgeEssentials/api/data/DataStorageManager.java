@@ -1,6 +1,6 @@
 package com.ForgeEssentials.api.data;
 
-import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.util.DBConnector;
 
 /**
@@ -20,17 +20,17 @@ public abstract class DataStorageManager
 	 * @param name Name to be used in configs
 	 * @param c
 	 */
-	public static void registerDriver(String name, Class<? extends DataDriver> c)
+	public static void registerDriver(String name, Class<? extends AbstractDataDriver> c)
 	{
 		manager.registerDriver(name, c);
 	}
 
-	public static DataDriver getReccomendedDriver()
+	public static AbstractDataDriver getReccomendedDriver()
 	{
 		return manager.getReccomendedDriver();
 	}
 
-	public static DataDriver getDriverOfType(EnumDriverType type)
+	public static AbstractDataDriver getDriverOfType(EnumDriverType type)
 	{
 		return manager.getDriverOfType(type);
 	}

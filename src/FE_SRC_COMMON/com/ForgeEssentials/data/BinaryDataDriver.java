@@ -14,10 +14,10 @@ import com.ForgeEssentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public abstract class BinaryDataDriver extends DataDriver
+public abstract class BinaryDataDriver extends AbstractDataDriver
 {
 	protected File		baseFile;
-	protected String	extension;
+	protected static final String	EXT = ".dat";
 
 	@Override
 	public final void parseConfigs(Configuration config, String category, String worldName) throws Exception
@@ -61,7 +61,7 @@ public abstract class BinaryDataDriver extends DataDriver
 	 */
 	protected File getFilePath(Class type, Object uniqueKey)
 	{
-		return new File(getTypePath(type).getPath(), uniqueKey.toString() + extension);
+		return new File(getTypePath(type).getPath(), uniqueKey.toString() + EXT);
 	}
 
 	@Override
@@ -74,9 +74,9 @@ public abstract class BinaryDataDriver extends DataDriver
 		{
 			for (File file : files)
 			{
-				if (!file.isDirectory() && file.getName().endsWith(extension))
+				if (!file.isDirectory() && file.getName().endsWith(EXT))
 				{
-					data.add(loadData(type, file.getName().replace(extension, "")));
+					data.add(loadData(type, file.getName().replace(EXT, "")));
 				}
 			}
 		}

@@ -23,9 +23,9 @@ import com.ForgeEssentials.util.EnumDBType;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.Pair;
 
-public class SQLDataDriver extends DataDriver
+public class SQLDataDriver extends AbstractDataDriver
 {
-	protected static String				separationString	= "__";
+	protected static final String		SEPERATOR			= "__";
 	private Connection					dbConnection;
 	protected HashMap<Class, Boolean>	classTableChecked	= new HashMap<Class, Boolean>();
 	protected DBConnector				connector;
@@ -61,7 +61,7 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	@Override
-	protected boolean saveData(Class type, TypeData fieldList)
+	protected boolean saveData(Class type, TypeData data)
 	{
 		boolean isSuccess = false;
 
@@ -69,7 +69,7 @@ public class SQLDataDriver extends DataDriver
 		{
 			Statement s;
 			s = dbConnection.createStatement();
-			int count = s.executeUpdate(createInsertStatement(type, fieldList));
+			int count = s.executeUpdate(createInsertStatement(type, data));
 
 			isSuccess = true;
 		}
@@ -85,7 +85,8 @@ public class SQLDataDriver extends DataDriver
 	@Override
 	protected TypeData loadData(Class type, String uniqueKey)
 	{
-		TypeData reconstructed = null;
+		TypeData reconstructed = DataStorageManager.getDataForType(type);
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
 
 		try
 		{
@@ -96,7 +97,7 @@ public class SQLDataDriver extends DataDriver
 			if (result.next())
 			{
 				// Should only be one item in this set.
-				reconstructed = createTaggedClassFromResult(type, resultRowToMap(result));
+				createTaggedClassFromResult(resultRowToMap(result), info, reconstructed);
 			}
 		}
 		catch (SQLException e)
@@ -110,17 +111,22 @@ public class SQLDataDriver extends DataDriver
 	@Override
 	protected TypeData[] loadAll(Class type)
 	{
-		ArrayList<IReconstructData> values = new ArrayList<IReconstructData>();
-
+		ArrayList<TypeData> values = new ArrayList<TypeData>();
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		
 		try
 		{
 			Statement s = dbConnection.createStatement();
 			ResultSet result = s.executeQuery(createSelectAllStatement(type));
+			TypeData temp;
 
 			while (result.next())
 			{
+				temp = DataStorageManager.getDataForType(type);
+				
 				// Continue reading rows as they exist.
-				values.add(createTaggedClassFromResult(type, resultRowToMap(result)));
+				createTaggedClassFromResult(resultRowToMap(result), info, temp);
+				values.add(temp);
 			}
 		}
 		catch (SQLException e)
@@ -191,12 +197,9 @@ public class SQLDataDriver extends DataDriver
 		return map;
 	}
 
-	private TypeData createTaggedClassFromResult(Class type, HashMap<String, Object> result)
+	private void createTaggedClassFromResult(HashMap<String, Object> result, ITypeInfo info, TypeData data)
 	{
-		ITypeInfo rootTagger = DataStorageManager.getInfoForType(type);
 		ITypeInfo taggerCursor;
-		TypeData tClass = DataStorageManager.getDataForType(type);
-		TypeData value = new TypeData(type);
 		TypeData cursor = null;
 		SavedField tmpField = null;
 		Class tmpClass;
@@ -205,10 +208,10 @@ public class SQLDataDriver extends DataDriver
 
 		for (Entry<String, Object> entry : result.entrySet())
 		{
-			cursor = value;
-			taggerCursor = rootTagger;
+			cursor = data;
+			taggerCursor = info;
 
-			String[] fieldHeiarchy = entry.getKey().split(separationString);
+			String[] fieldHeiarchy = entry.getKey().split(SEPERATOR);
 			if (fieldHeiarchy != null)
 			{
 				// Iterate over the list of items in the heiarchy to rebuild the
@@ -230,8 +233,8 @@ public class SQLDataDriver extends DataDriver
 					{
 						// An object lives here.
 						tmpClass = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
-						tmpField.value = cursor = new TypeData(tmpClass);
-						taggerCursor = DataStorageManager.getInfoForType(tmpField.type);
+						tmpField.value = cursor = DataStorageManager.getDataForType(tmpClass);
+						taggerCursor = taggerCursor.getInfoForField(fieldHeiarchy[i]);
 					}
 					else
 					{
@@ -243,8 +246,6 @@ public class SQLDataDriver extends DataDriver
 				}
 			}
 		}
-
-		return value;
 	}
 
 	/**
@@ -376,7 +377,7 @@ public class SQLDataDriver extends DataDriver
 
 		// Is a method. Extra field required.
 		tableFields.add(new Pair<String, String>(UNIQUE, "VARCHAR(100)"));
-		keyClause = "PRIMARY KEY ("+UNIQUE+")";
+		keyClause = "PRIMARY KEY (" + UNIQUE + ")";
 
 		// Build up the create statement
 		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + type.getSimpleName() + " (");
@@ -453,7 +454,7 @@ public class SQLDataDriver extends DataDriver
 			// Iterate over the stored fields. Recurse if nessecary.
 			for (String name : fieldList)
 			{
-				fields.addAll(fieldToColumns(fieldName + separationString + name, tagger.getTypeOfField(name)));
+				fields.addAll(fieldToColumns(fieldName + SEPERATOR + name, tagger.getTypeOfField(name)));
 			}
 		}
 
@@ -463,10 +464,8 @@ public class SQLDataDriver extends DataDriver
 	/**
 	 * Generates an array of fieldname => String(Value) pairs, useful for
 	 * Inserts, Updates, or Deletes.
-	 * @param fieldName
-	 *            Name of the field in the H2 DB
-	 * @param type
-	 *            Type of field (Java)
+	 * @param fieldName Name of the field in the H2 DB
+	 * @param type Type of field (Java)
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */
@@ -529,7 +528,7 @@ public class SQLDataDriver extends DataDriver
 
 			for (Entry<String, Object> f : tc.getAllFields())
 			{
-				data.addAll(fieldToValues(fieldName + separationString + f.getKey(), f.getKey() == null ? null : f.getValue().getClass(), f.getValue()));
+				data.addAll(fieldToValues(fieldName + SEPERATOR + f.getKey(), f.getKey() == null ? null : f.getValue().getClass(), f.getValue()));
 			}
 		}
 		else

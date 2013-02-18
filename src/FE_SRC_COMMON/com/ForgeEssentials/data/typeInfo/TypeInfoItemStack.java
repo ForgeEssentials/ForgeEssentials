@@ -93,5 +93,11 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	{
 		return null;
 	}
+	
+	@Override
+	public ITypeInfo getInfoForField(String field)
+	{
+		return DataStorageManager.getInfoForType(getTypeOfField(field));
+	}
 
 }

@@ -35,67 +35,8 @@ public class TypeInfoArray extends TypeMultiValInfo
 		HashSet<TypeData> datas = new HashSet<TypeData>();
 
 		List list = new ArrayList();
-
-		if (obj instanceof Object[])
-		{
-			list = Arrays.asList((Object[]) obj);
-		}
-		else if (obj instanceof byte[])
-		{
-			for (byte i : (byte[]) obj)
-			{
-				list.add(i);
-			}
-		}
-		else if (obj instanceof short[])
-		{
-			for (short i : (short[]) obj)
-			{
-				list.add(i);
-			}
-		}
-		else if (obj instanceof int[])
-		{
-			for (int i : (int[]) obj)
-			{
-				list.add(i);
-			}
-		}
-		else if (obj instanceof float[])
-		{
-			for (float i : (float[]) obj)
-			{
-				list.add(i);
-			}
-		}
-		else if (obj instanceof double[])
-		{
-			for (double i : (double[]) obj)
-			{
-				list.add(i);
-			}
-		}
-		else if (obj instanceof char[])
-		{
-			for (char i : (char[]) obj)
-			{
-				list.add(i);
-			}
-		}
-		else if (obj instanceof long[])
-		{
-			for (long i : (long[]) obj)
-			{
-				list.add(i);
-			}
-		}
-		else if (obj instanceof boolean[])
-		{
-			for (boolean i : (boolean[]) obj)
-			{
-				list.add(i);
-			}
-		}
+		
+		list = Arrays.asList((Object[]) obj);
 
 		int i = 0;
 		TypeData data;

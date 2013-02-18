@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
 import net.minecraft.nbt.CompressedStreamTools;
@@ -28,15 +29,15 @@ public class NBTDataDriver extends BinaryDataDriver
 	private static final String	UNIQUE	= "__UNIQUE__";
 
 	@Override
-	protected boolean saveData(Class type, TypeData fieldList)
+	protected boolean saveData(Class type, TypeData data)
 	{
 		boolean successful = true;
 
 		// Create file object
-		File file = new File(baseFile + fieldList.getUniqueKey() + ".dat");
+		File file = this.getFilePath(type, data.getUniqueKey());
 
 		NBTTagCompound compound = new NBTTagCompound();
-		writeClassToTag(compound, fieldList);
+		writeClassToTag(compound, data);
 		writeNBT(compound, file);
 
 		return successful;
@@ -70,7 +71,7 @@ public class NBTDataDriver extends BinaryDataDriver
 				stream.close();
 			}
 
-			// change from temp to real
+			// delete old file
 			if (file.exists())
 			{
 				file.delete();
@@ -80,6 +81,7 @@ public class NBTDataDriver extends BinaryDataDriver
 				throw new IOException("Failed to delete " + file);
 			else
 			{
+				// change from temp to real
 				temp.renameTo(file);
 			}
 		}
@@ -98,6 +100,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 		catch (Exception e)
 		{
+			OutputHandler.exception(Level.FINE, "Error tryong to read NBT frole from "+file, e);
 			e.printStackTrace();
 			return null;
 		}
@@ -110,27 +113,31 @@ public class NBTDataDriver extends BinaryDataDriver
 
 		if (nbt == null)
 			return null;
-
-		return readClassFromTag(nbt, type);
+		
+		TypeData data = DataStorageManager.getDataForType(type);
+		data.setUniqueKey(uniqueKey);
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		readClassFromTag(nbt, data, info);
+		
+		return data;
 	}
 
-	private void writeClassToTag(NBTTagCompound tag, TypeData fieldList)
+	private void writeClassToTag(NBTTagCompound tag, TypeData data)
 	{
-		writeFieldToTag(tag, UNIQUE, fieldList.getUniqueKey());
-		for (Entry<String, Object> entry : fieldList.getAllFields())
+		writeFieldToTag(tag, UNIQUE, data.getUniqueKey());
+		for (Entry<String, Object> entry : data.getAllFields())
 		{
 			writeFieldToTag(tag, entry.getKey(), entry.getValue());
 		}
 	}
 
-	private TypeData readClassFromTag(NBTTagCompound tag, Class type)
+	private void readClassFromTag(NBTTagCompound tag, TypeData data, ITypeInfo info)
 	{
-		TypeData tClass = DataStorageManager.getDataForType(type);
-		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
+		for (String field : info.getFieldList())
+			data.putField(field, readFieldFromTag(tag, field, info.getInfoForField(field)));
 
-		readFieldFromTag(tag, UNIQUE, tagger).toString();
-
-		return tClass;
+		// read unique
+		readFieldFromTag(tag, UNIQUE, info).toString();
 	}
 
 	private void writeFieldToTag(NBTTagCompound tag, String name, Object obj)
@@ -208,12 +215,15 @@ public class NBTDataDriver extends BinaryDataDriver
 			throw new IllegalArgumentException("Cannot save object type.");
 	}
 
-	private Object readFieldFromTag(NBTTagCompound tag, String name, ITypeInfo tagger)
+	private Object readFieldFromTag(NBTTagCompound tag, String name, ITypeInfo info)
 	{
-		if (name == null || tagger == null)
+		if (name == null || info == null)
 			return null;
 
-		Class type = tagger.getTypeOfField(name);
+		Class type = info.getTypeOfField(name);
+		
+		if (type == null)
+			return null;
 
 		if (type.equals(int.class))
 			return tag.getInteger(name);
@@ -260,14 +270,13 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			return array;
 		}
-		else if (type.equals(IReconstructData.class))
-		{
-			NBTTagCompound compound = new NBTTagCompound();
-			return readClassFromTag(compound, tagger.getTypeOfField(name));
-		}
 		else
-			// this should never happen...
-			return null;
+		{
+			NBTTagCompound compound = tag.getCompoundTag(name);
+			TypeData data = DataStorageManager.getDataForType(type);
+			readClassFromTag(compound, data, info.getInfoForField(name));
+			return data;
+		}
 	}
 
 	@Override

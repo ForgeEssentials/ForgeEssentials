@@ -9,6 +9,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 {
 	protected ClassContainer container;
 	protected HashMap<String, Class> fields;
+	private TypeEntryInfo entryInfo;
 
 	public TypeMultiValInfo(ClassContainer container)
 	{
@@ -19,6 +20,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	public final void build()
 	{
 		build(fields);
+		entryInfo = new TypeEntryInfo(fields);
 	}
 	
 	/**
@@ -37,8 +39,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	public Class getTypeOfField(String field)
 	{
 		// will prolly never be called.
-		// everything with this will be done from the EntryInfo
-		return null;
+		return fields.get(field);
 	}
 
 	@Override
@@ -88,13 +89,19 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	
 	public abstract Object reconstruct(TypeData[] data);
 	
+	@Override
+	public final ITypeInfo getInfoForField(String field)
+	{
+		return getEntryInfo();
+	}
+	
 	public TypeEntryInfo getEntryInfo()
 	{
-		return new TypeEntryInfo(fields);
+		return entryInfo;
 	}
 	
 	protected TypeData getEntryData()
 	{
-		return new TypeData(Map.Entry.class);
+		return new TypeData(new ClassContainer(Map.Entry.class, container.parameters));
 	}
 }

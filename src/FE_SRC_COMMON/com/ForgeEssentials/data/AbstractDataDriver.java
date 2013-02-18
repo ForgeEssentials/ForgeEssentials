@@ -11,8 +11,9 @@ import com.ForgeEssentials.api.data.IDataDriver;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.ITypeInfo;
+import com.ForgeEssentials.api.data.TypeMultiValInfo;
 
-public abstract class DataDriver implements IDataDriver
+public abstract class AbstractDataDriver implements IDataDriver
 {
 	@Override
 	public void onClassRegistered(ITypeInfo tagger)
@@ -22,7 +23,7 @@ public abstract class DataDriver implements IDataDriver
 	@Override
 	public final String getName()
 	{
-		return this.getClass().getSimpleName().replace(DataDriver.class.getSimpleName(), "");
+		return this.getClass().getSimpleName().replace(AbstractDataDriver.class.getSimpleName(), "");
 	}
 
 	@Override
@@ -45,10 +46,11 @@ public abstract class DataDriver implements IDataDriver
 	{
 		Object newObject = null;
 		TypeData data = loadData(type, loadingKey);
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
 
 		if (data != null && data.getAllFields().size() > 0)
 		{
-			newObject = createFromFields(data);
+			newObject = createFromFields(data, info);
 		}
 
 		return newObject;
@@ -59,6 +61,7 @@ public abstract class DataDriver implements IDataDriver
 	{
 		ArrayList<Object> list = new ArrayList<Object>();
 		TypeData[] objectData = loadAll(type);
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
 
 		// Each element of the field array represents an object, stored as an
 		// array of fields.
@@ -67,7 +70,7 @@ public abstract class DataDriver implements IDataDriver
 		{
 			for (TypeData data : objectData)
 			{
-				tmp = createFromFields(data);
+				tmp = createFromFields(data, info);
 				list.add(tmp);
 			}
 		}
@@ -81,9 +84,8 @@ public abstract class DataDriver implements IDataDriver
 		return deleteData(type, loadingKey);
 	}
 
-	private Object createFromFields(TypeData data)
+	private Object createFromFields(TypeData data, ITypeInfo info)
 	{
-		ITypeInfo info = DataStorageManager.getInfoForType(data.getType());
 		Object val;
 		// loops through all fields of this class.
 		for (Entry<String, Object> entry : data.getAllFields())
@@ -92,7 +94,7 @@ public abstract class DataDriver implements IDataDriver
 			if (entry.getValue() instanceof TypeData)
 			{
 				// reconstruct the class...
-				val = createFromFields((TypeData) entry.getValue());
+				val = createFromFields((TypeData) entry.getValue(), info.getInfoForField(entry.getKey()));
 
 				// re-add it to the map.
 				data.putField(entry.getKey(), val);
@@ -116,7 +118,4 @@ public abstract class DataDriver implements IDataDriver
 	abstract protected TypeData[] loadAll(Class type);
 
 	abstract protected boolean deleteData(Class type, String uniqueObjectKey);
-
-	@Override
-	abstract public EnumDriverType getType();
 }

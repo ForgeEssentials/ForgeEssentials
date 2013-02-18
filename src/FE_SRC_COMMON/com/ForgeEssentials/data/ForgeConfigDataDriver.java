@@ -42,6 +42,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 
 		Configuration cfg = new Configuration(file, true);
 
+		// write each and every field to the config file.
 		for (Entry<String, Object> entry : objectData.getAllFields())
 			writeFieldToProperty(cfg, type.getSimpleName(), entry.getKey(), entry.getValue());
 
@@ -55,9 +56,9 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	{
 		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
 		cfg.load();
-		ITypeInfo tag = DataStorageManager.getInfoForType(type);
-
-		TypeData data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), type);
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		TypeData data = DataStorageManager.getDataForType(type);
+		readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), data, info);
 		data.setUniqueKey(uniqueKey);
 
 		return data;
@@ -131,10 +132,10 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		}
 		else if (type.equals(TypeData.class))
 		{
-			TypeData tag = (TypeData) obj;
+			TypeData data = (TypeData) obj;
 			String newcat = category + "." + name;
 			
-			for (Entry<String, Object> entry : tag.getAllFields())
+			for (Entry<String, Object> entry : data.getAllFields())
 				writeFieldToProperty(cfg, newcat, entry.getKey(), entry.getValue());
 		}
 		else
@@ -188,20 +189,20 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		}
 	}
 
-	private TypeData readClassFromProperty(Configuration cfg, ConfigCategory cat, Class type)
+	private void readClassFromProperty(Configuration cfg, ConfigCategory cat, TypeData data, ITypeInfo info)
 	{
-		TypeData data = DataStorageManager.getDataForType(type);
-		ITypeInfo tag = DataStorageManager.getInfoForType(type);
 
 		if (cat != null)
 		{
 			String name;
 			Class newType;
+			ITypeInfo newInfo;
+			TypeData newData;
 			Object value;
 			for (Property prop : cat.getValues().values())
 			{
 				name = prop.getName();
-				newType = tag.getTypeOfField(name);
+				newType = info.getTypeOfField(name);
 				value = readFieldFromProperty(cfg, cat.getQualifiedName(), name, newType);
 				data.putField(name, value);
 			}
@@ -212,19 +213,18 @@ public class ForgeConfigDataDriver extends TextDataDriver
 															// of ==
 				{
 					name = child.getQualifiedName().replace(cat.getQualifiedName() + ".", "");
-					newType = tag.getTypeOfField(name);
+					newInfo = info.getInfoForField(name);
+					newData = DataStorageManager.getDataForType(info.getType());
 
-					if (newType == null)
+					if (newData == null || newInfo == null)
 					{
 						continue;
 					}
-
-					value = readClassFromProperty(cfg, child, newType);
+					readClassFromProperty(cfg, child, newData, newInfo);
+					value = newData;
 					data.putField(name, value);
 				}
 			}
 		}
-
-		return data;
 	}
 }

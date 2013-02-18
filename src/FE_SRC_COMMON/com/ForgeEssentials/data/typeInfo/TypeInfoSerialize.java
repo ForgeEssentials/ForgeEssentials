@@ -1,66 +1,56 @@
 package com.ForgeEssentials.data.typeInfo;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.ITypeInfo;
-import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.data.StorageManager;
 import com.ForgeEssentials.util.OutputHandler;
 
-/**
- * This is the standard TypeInfo class for all classes that don't have the override.
- * The Build Method will throw an exception if its not correct.
- * @author AbrarSyed
- * @param <T> This would be set to Object, but subclasses may want to have TypeInfo's for very specific classes.
- */
-public class TypeInfoStandard implements ITypeInfo
+public class TypeInfoSerialize<T> implements ITypeInfo<T>
 {
-	Class							type;
-	private boolean					isUniqueKeyField;
-	private boolean					inLine;
-	private String					uniqueKey;
-	private String					reconstructorMethod;
+	private final ClassContainer container;
 	private HashMap<String, Class>	fields;
+	String uniqueKey;
+	boolean hasUniqueKey = false;
+	boolean isUniqueKeyField;
 
-	public TypeInfoStandard(Class type)
+	public TypeInfoSerialize(ClassContainer container)
 	{
-		this.type = type;
+		this.container = container;
 		fields = new HashMap<String, Class>();
 		
-		if (!type.isAnnotationPresent(SaveableObject.class))
-			throw new IllegalArgumentException("TypeInfoStandard can only be created with classes that have the @SaveableObject annotation!");
+	}
+
+	@Override
+	public boolean canSaveInline()
+	{
+		return true;
 	}
 
 	@Override
 	public void build()
 	{
-		SaveableObject AObj = (SaveableObject) type.getAnnotation(SaveableObject.class);
-		inLine = AObj.SaveInline();
-
-		Class currentType = type;
-		Annotation a;
-
-		// Iterate through this class and superclass's and get saveable fields
+		Class currentType = container.type;
+		
 		do
 		{
 			// Locate all members that are saveable.
 			for (Field f : currentType.getDeclaredFields())
 			{
 				// if its a saveable field
-				if (f.isAnnotationPresent(SaveableField.class))
+				if (!Modifier.isTransient(f.getModifiers()) && !Modifier.isStatic(f.getModifiers()))
 					fields.put(f.getName(), f.getType());
 
 				// check for UniqueKey
@@ -73,30 +63,17 @@ public class TypeInfoStandard implements ITypeInfo
 
 					isUniqueKeyField = true;
 					uniqueKey = f.getName();
+					hasUniqueKey = true;
 				}
 
 			}
 		} while ((currentType = currentType.getSuperclass()) != null);
-
+		
 		// find reconstructor method
-		for (Method m : type.getDeclaredMethods())
+		for (Method m : container.type.getDeclaredMethods())
 		{
-			// catches the Reconsutructor
-			if (m.isAnnotationPresent(Reconstructor.class))
-			{
-				if (reconstructorMethod != null)
-					throw new RuntimeException("Each class may only have 1 reconstructor method");
-				if (!Modifier.isStatic(m.getModifiers()))
-					throw new RuntimeException("The reconstructor method must be static!");
-				if (!m.getReturnType().equals(type))
-					throw new RuntimeException("The reconstructor method must return " + type);
-				if (!Arrays.equals(m.getParameterTypes(), new Class[] { IReconstructData.class }))
-					throw new RuntimeException("The reconstructor method must have exactly 1 " + IReconstructData.class + "paremeter!");
-
-				reconstructorMethod = m.getName();
-			}
 			// catches the UniqueLoadingKey method variant
-			else if (m.isAnnotationPresent(UniqueLoadingKey.class))
+			if (m.isAnnotationPresent(UniqueLoadingKey.class))
 			{
 				if (uniqueKey != null)
 					throw new RuntimeException("Each class may only have 1 UniqueLoadingKey");
@@ -109,6 +86,7 @@ public class TypeInfoStandard implements ITypeInfo
 
 				uniqueKey = m.getName();
 				isUniqueKeyField = false;
+				hasUniqueKey = true;
 			}
 		}
 	}
@@ -123,36 +101,45 @@ public class TypeInfoStandard implements ITypeInfo
 	}
 
 	@Override
-	public TypeData getTypeDataFromObject(Object objectSaved)
+	public String[] getFieldList()
 	{
-		Class c = objectSaved.getClass();
-		TypeData data = DataStorageManager.getDataForType(type);
+		return fields.keySet().toArray(new String[fields.size()]);
+	}
+
+	@Override
+	public TypeData getTypeDataFromObject(T obj)
+	{
+		Class c = obj.getClass();
+		TypeData data = DataStorageManager.getDataForType(c);
 		Field f;
-		Object obj;
+		Object temp;
 
 		// do Unique key stuff
 		try
 		{
-			if (isUniqueKeyField)
+			if (isUniqueKeyField && hasUniqueKey)
 			{
 				f = c.getDeclaredField(uniqueKey);
 				f.setAccessible(true);
-				data.setUniqueKey(f.get(objectSaved).toString());
+				data.setUniqueKey(f.get(obj).toString());
+			}
+			else if (hasUniqueKey)
+			{
+				Method m;
+				m = c.getDeclaredMethod(uniqueKey, new Class[] {});
+				m.setAccessible(true);
+				Object val = m.invoke(obj, new Object[] {});
+				data.setUniqueKey(val.toString());
+
 			}
 			else
 			{
-				Method m;
-				String methodName = uniqueKey.replace("()", "");
-				m = c.getDeclaredMethod(methodName, new Class[] {});
-				m.setAccessible(true);
-				Object val = m.invoke(objectSaved, new Object[] {});
-				data.setUniqueKey(val.toString());
-
+				data.setUniqueKey(obj.toString());
 			}
 		}
 		catch (Exception e)
 		{
-			OutputHandler.exception(Level.SEVERE, "Reflection error trying to get UniqueLoadingKey from " + objectSaved.getClass() + ". FE will continue without saving this.", e);
+			OutputHandler.exception(Level.SEVERE, "Reflection error trying to get UniqueLoadingKey from " + obj.getClass() + ". FE will continue without saving this.", e);
 		}
 
 		String[] keys = fields.keySet().toArray(new String[fields.size()]);
@@ -164,16 +151,16 @@ public class TypeInfoStandard implements ITypeInfo
 			{
 				f = currentClass.getDeclaredField(keys[i]);
 				f.setAccessible(true);
-				obj = f.get(objectSaved);
+				temp = f.get(obj);
 
-				if (obj != null)
+				if (temp != null)
 				{
-					if (StorageManager.isTypeComplex(obj.getClass()))
+					if (StorageManager.isTypeComplex(temp.getClass()))
 					{
 						// This object is not a primitive. Call this function on the appropriate TypeTagger.
-						obj = DataStorageManager.getInfoForType(obj.getClass()).getTypeDataFromObject(obj);
+						temp = DataStorageManager.getInfoForType(temp.getClass()).getTypeDataFromObject(temp);
 					}
-					data.putField(keys[i], obj);
+					data.putField(keys[i], temp);
 				}
 				// Ensure we reset the currentClass after trying this. It may have been altered by a previous attempt.
 				currentClass = c;
@@ -185,14 +172,14 @@ public class TypeInfoStandard implements ITypeInfo
 				if (currentClass == null)
 				{
 					// Unless this happens. (Note: This shouldn't happen.)
-					OutputHandler.exception(Level.SEVERE, "Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.", e);
+					OutputHandler.exception(Level.SEVERE, "Reflection error trying to save " + obj.getClass() + ". FE will continue without saving this.", e);
 				}
 				--i;
 			}
 			catch (Exception e)
 			{
 				// This... Should not happen. Unless something stupid.
-				OutputHandler.exception(Level.SEVERE, "Reflection error trying to save " + objectSaved.getClass() + ". FE will continue without saving this.", e);
+				OutputHandler.exception(Level.SEVERE, "Reflection error trying to save " + obj.getClass() + ". FE will continue without saving this.", e);
 			}
 		}
 
@@ -200,44 +187,46 @@ public class TypeInfoStandard implements ITypeInfo
 	}
 
 	@Override
-	public String[] getFieldList()
-	{
-		return fields.keySet().toArray(new String[fields.size()]);
-	}
-
-	@Override
-	public Object reconstruct(IReconstructData data)
+	public T reconstruct(IReconstructData data)
 	{
 		try
 		{
-			Method reconstructor = type.getDeclaredMethod(reconstructorMethod, IReconstructData.class);
-			reconstructor.setAccessible(true);
-			return reconstructor.invoke(null, data);
+			Object obj = container.type.newInstance();
+			Class currentType = data.getType();
+			
+			do
+			{
+				// Locate all members that are saveable.
+				for (Field f : currentType.getDeclaredFields())
+				{
+					// if its a saveable field
+					if (!Modifier.isTransient(f.getModifiers()) && !Modifier.isStatic(f.getModifiers()))
+					{
+						f.set(obj, data.getFieldValue(f.getName()));
+					}
+
+				}
+			} while ((currentType = currentType.getSuperclass()) != null);
+			
 		}
 		catch (Throwable thrown)
 		{
 			OutputHandler.exception(Level.SEVERE, "Error loading " + data.getType() + " with name " + data.getUniqueKey(), thrown);
 		}
-
+		
 		return null;
 	}
 
 	@Override
-	public boolean canSaveInline()
+	public Class<? extends T> getType()
 	{
-		return inLine;
-	}
-
-	@Override
-	public Class getType()
-	{
-		return type;
+		return container.type;
 	}
 
 	@Override
 	public Class[] getGenericTypes()
 	{
-		return null;
+		return container.getParameters();
 	}
 
 	@Override

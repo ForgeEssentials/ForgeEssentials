@@ -25,7 +25,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.permission.mcoverride.OverrideManager;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -48,7 +48,7 @@ public class ModulePermissions
 	@ModuleDir
 	public static File					permsFolder;
 
-	protected static DataDriver			data;
+	protected static AbstractDataDriver			data;
 
 	// permission registrations here...
 	protected HashMultimap				regPerms;
