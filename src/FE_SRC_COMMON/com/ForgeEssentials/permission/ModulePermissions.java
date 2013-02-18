@@ -76,6 +76,9 @@ public class ModulePermissions
 
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
+		
+		DataStorageManager.registerSaveableType(Zone.class);
+		DataStorageManager.registerSaveableType(AutoPromote.class);
 	}
 
 	@ServerInit

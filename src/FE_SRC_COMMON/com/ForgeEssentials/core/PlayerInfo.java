@@ -77,6 +77,10 @@ public class PlayerInfo
 		info.suffix = (String) tag.getFieldValue("suffix");
 
 		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
+		
+		// TEST
+		info.tester = (Point[]) tag.getFieldValue("tester");
+		
 		return info;
 	}
 
@@ -107,6 +111,10 @@ public class PlayerInfo
 
 	@SaveableField(nullableField = true)
 	public WarpPoint				back;
+	
+	// TESTING!!
+	@SaveableField()
+	public Point[] tester = new Point[] { new Point(1, 2, 3), new Point(5, 5, 5), new Point(0, 0, 0)};
 
 	@SaveableField()
 	public String					prefix;
