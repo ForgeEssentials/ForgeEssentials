@@ -1,5 +1,8 @@
 package com.ForgeEssentials.permission.mcoverride;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.command.CommandServerList;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,6 +12,15 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 
 public class CommandList extends CommandServerList
 {
+	@Override
+    public List getCommandAliases()
+    {
+		ArrayList list = new ArrayList();
+		list.add("who");
+		list.add("online");
+		list.add("players");
+        return list;
+    }
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
