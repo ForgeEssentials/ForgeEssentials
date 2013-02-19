@@ -27,6 +27,7 @@ public class ModuleProtection
 	public final static String									PERM_INTERACT_BLOCK		= "ForgeEssentials.Protection.allowBlockInteractions";
 	public final static String									PERM_INTERACT_ENTITY	= "ForgeEssentials.Protection.allowEntityInteractions";
 	public final static String									PERM_OVERRIDE			= "ForgeEssentials.Protection.overrideProtection";
+	public final static String									PERM_PVP				= "ForgeEssentials.Protection.pvp";
 
 	@Config
 	public static ConfigProtection								config;
@@ -69,6 +70,7 @@ public class ModuleProtection
 	@PermRegister(ident = "FE-Core-Protection")
 	public void registerPermissions(IPermRegisterEvent event)
 	{
+		event.registerPermissionLevel(PERM_PVP, RegGroup.GUESTS);
 		event.registerPermissionLevel(PERM_EDITS, RegGroup.MEMBERS);
 		event.registerPermissionLevel(PERM_INTERACT_BLOCK, RegGroup.MEMBERS);
 		event.registerPermissionLevel(PERM_INTERACT_ENTITY, RegGroup.MEMBERS);

@@ -116,6 +116,8 @@ public class ModulePermissions
 
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
+		
+		event.registerPermissionLevel("ForgeEssentials.BasicCommands.list", RegGroup.GUESTS);
 	}
 
 	@ServerStop

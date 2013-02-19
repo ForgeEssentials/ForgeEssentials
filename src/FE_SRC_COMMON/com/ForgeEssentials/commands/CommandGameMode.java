@@ -57,6 +57,11 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 					{
 						victim = PlayerSelector.matchOnePlayer(sender, args[0]);
 					}
+					if(victim == null)
+					{
+						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+						return;
+					}
 					EnumGameType gm;
 					if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType().isCreative())
 					{
@@ -68,7 +73,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 					}
 
 					victim.setGameType(gm);
-					OutputHandler.chatConfirmation(sender, "Gamemode changed for " + victim.username);
+					OutputHandler.chatConfirmation(sender, "Gamemode changed for " + victim.username + " to " + gm.getName());
 				}
 				else
 				{
@@ -97,23 +102,42 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, "You do not have permission to do that.");
 				return;
 			}
-			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if (PlayerSelector.hasArguments(args[0]))
-			{
-				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
-			}
 			EnumGameType gm;
-			if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType().isSurvivalOrAdventure())
+			EntityPlayer victim = null;
+			if (args[0].equals("0") || args[0].equals("1") || args[0].equals("2") || args[0].equalsIgnoreCase(EnumGameType.CREATIVE.getName()) || args[0].equalsIgnoreCase(EnumGameType.SURVIVAL.getName())
+					|| args[0].equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) || args[0].equalsIgnoreCase("a") || args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("s"))
 			{
-				gm = EnumGameType.CREATIVE;
+				gm = getGameTypeFromString(sender, args[0]);
+
+				victim = FunctionHelper.getPlayerFromPartialName(args[1]);
+				if (PlayerSelector.hasArguments(args[1]))
+				{
+					victim = PlayerSelector.matchOnePlayer(sender, args[1]);
+				}
+				if(victim == null)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[1]));
+					return;
+				}
 			}
 			else
 			{
-				gm = EnumGameType.SURVIVAL;
+				gm = getGameTypeFromString(sender, args[1]);
+				
+				victim = FunctionHelper.getPlayerFromPartialName(args[0]);
+				if (PlayerSelector.hasArguments(args[0]))
+				{
+					victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+				}
+				if(victim == null)
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+					return;
+				}
 			}
 
 			victim.setGameType(gm);
-			OutputHandler.chatConfirmation(sender, "Gamemode changed for " + victim.username);
+			OutputHandler.chatConfirmation(sender, "Gamemode changed for " + victim.username + " to " + gm.getName());
 		}
 		else
 		{
