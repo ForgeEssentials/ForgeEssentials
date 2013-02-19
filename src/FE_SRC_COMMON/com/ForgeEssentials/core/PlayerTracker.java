@@ -52,8 +52,6 @@ public class PlayerTracker implements IPlayerTracker
 	@Override
 	public void onPlayerLogout(EntityPlayer player)
 	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
-		info.save();
 		PlayerInfo.discardInfo(player.username);
 	}
 

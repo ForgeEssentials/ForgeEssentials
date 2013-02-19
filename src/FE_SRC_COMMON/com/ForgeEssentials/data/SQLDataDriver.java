@@ -40,7 +40,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	}
 
 	@Override
-	public void parseConfigs(Configuration config, String category, String worldName) throws SQLException, ClassNotFoundException
+	public void loadFromConfigs(Configuration config, String category, String worldName) throws SQLException, ClassNotFoundException
 	{
 		String cat = category.substring(0, category.lastIndexOf('.'));
 

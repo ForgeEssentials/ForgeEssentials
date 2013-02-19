@@ -19,7 +19,7 @@ public abstract class TextDataDriver extends AbstractDataDriver
 	protected File	baseFile;
 
 	@Override
-	public final void parseConfigs(Configuration config, String category, String worldName) throws Exception
+	public final void loadFromConfigs(Configuration config, String category, String worldName) throws Exception
 	{
 		Property prop;
 

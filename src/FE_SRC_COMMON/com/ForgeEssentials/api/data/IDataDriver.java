@@ -20,4 +20,6 @@ public interface IDataDriver
 	void parseConfigs(Configuration config, String category, String worldName) throws Exception;
 
 	EnumDriverType getType();
+	
+	public boolean hasLoaded();
 }

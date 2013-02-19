@@ -20,7 +20,7 @@ public abstract class BinaryDataDriver extends AbstractDataDriver
 	protected static final String	EXT = ".dat";
 
 	@Override
-	public final void parseConfigs(Configuration config, String category, String worldName) throws Exception
+	public final void loadFromConfigs(Configuration config, String category, String worldName) throws Exception
 	{
 		Property prop;
 

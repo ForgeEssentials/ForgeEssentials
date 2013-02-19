@@ -88,18 +88,11 @@ public class StorageManager implements IStorageManager
 		{
 			try
 			{
-
 				// tried and tested method of getting the worldName
 				String worldName = event.getServer().getFolderName();
 
 				// things MAY error here as well...
 				entry.getValue().parseConfigs(config, "Data." + entry.getValue().getType() + "." + entry.getValue().getName(), worldName);
-
-				// register tagged classes...
-				for (ITypeInfo tag : taggerList.values())
-				{
-					entry.getValue().onClassRegistered(tag);
-				}
 			}
 			catch (Exception e)
 			{

@@ -12,9 +12,15 @@ import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeMultiValInfo;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 public abstract class AbstractDataDriver implements IDataDriver
 {
+	private HashMultimap<String, String> classRegister = HashMultimap.create();
+	private boolean hasLoaded;
+	
 	@Override
 	public void onClassRegistered(ITypeInfo tagger)
 	{
@@ -30,6 +36,12 @@ public abstract class AbstractDataDriver implements IDataDriver
 	public boolean saveObject(Object o)
 	{
 		boolean flag = false;
+		
+		if (!classRegister.containsEntry(getName(), o.getClass().getName()))
+		{
+			this.onClassRegistered(DataStorageManager.getInfoForType(o.getClass()));
+			classRegister.put(getName(), o.getClass().getName());
+		}
 
 		ITypeInfo t;
 		if ((t = DataStorageManager.getInfoForType(o.getClass())) != null)
@@ -107,9 +119,21 @@ public abstract class AbstractDataDriver implements IDataDriver
 		// return the reconstructed value.
 		return val;
 	}
-
+	
 	@Override
-	abstract public void parseConfigs(Configuration config, String category, String worldName) throws Exception;
+	public void parseConfigs(Configuration config, String category, String worldName) throws Exception
+	{
+		loadFromConfigs(config, category, worldName);
+		hasLoaded = true;
+	}
+	
+	@Override
+	public boolean hasLoaded()
+	{
+		return hasLoaded;
+	}
+
+	abstract public void loadFromConfigs(Configuration config, String category, String worldName) throws Exception;
 
 	abstract protected boolean saveData(Class type, TypeData fieldList);
 
