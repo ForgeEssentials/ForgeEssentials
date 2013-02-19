@@ -2,6 +2,8 @@ ForgeEssentialsMain
 ===================
 The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality. More info can be found <a href="https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/About-ForgeEssentials">here</a> or on our IRC channel (#forgeessentials on EsperNet).
 
+More information can be found at the wiki.
+
 Setup
 =====
 See README-Developing.txt for setting up FE with MCP.
@@ -14,15 +16,13 @@ Eclipse cleanup profile: <a href="https://dl.dropbox.com/u/31042110/eclipse%20Fo
 
 Builds: <a href="http://files.minecraftforge.net/ForgeEssentials/">Jenkins Build System</a>
 
-Libraries (extract into /lib) http://www.mediafire.com/download.php?k31dnyye5f62vv8
-
 FE Team Members:
 ================
 <a href="https://github.com/AbrarSyed">AbrarSyed</a>  
 
-<a href="https://github.com/Bob-A-Red-Dino">Bob A Red Dino</a>  
+<a href="https://github.com/Bob-A-Red-Dino">Bob A Red Dino</a>  (inactive)
 
-<a href="https://github.com/bspkrs">bspkrs</a>
+<a href="https://github.com/bspkrs">bspkrs</a> (inactive)
 
 <a href="https://github.com/MysteriousAges">MysteriousAges</a>
 
@@ -30,7 +30,9 @@ FE Team Members:
 
 <a href="https://github.com/dries007">Dries007</a>
 
-<a href="https://github.com/Weneg">Weneg</a>
+<a href="https://github.com/Weneg">Weneg</a> (inactive)
 
 <a href="https://github.com/Malkerian">Malkerian</a>
+
+<a href="https://github.com/maximumtech">UnknownCoder</a>
 
