@@ -48,7 +48,6 @@ sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/core/mcmod.info
 sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/client/mcmod.info
 sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt
 sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/FEReadme.txt
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/version.xml
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/core/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/client/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt
@@ -102,7 +101,7 @@ cd ${WORKSPACE}/output
 cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
 cp -f ${WORKSPACE}/LICENSE.TXT .
 cp -rf ${WORKSPACE}/A1-zipStuff/HowToGetFEsupport.txt .
-cp -rf ${WORKSPACE}/A1-zipStuff/update.sql .
+
 
 mkdir mods
 mkdir coremods
@@ -120,7 +119,7 @@ cp -rf "${WORKSPACE}/output/${JOB_NAME}-servervote-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-tickets-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./mods/
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt LICENSE.TXT update.sql
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt LICENSE.TXT
 
 echo "Cleaning up"
 rm -rf ./mods/*
@@ -146,7 +145,6 @@ echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
 cp -f ${WORKSPACE}/LICENSE.TXT .
 cp -rf ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt .
-cp -rf ${WORKSPACE}/A1-zipStuff/API/update.sql .
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt LICENSE.TXT update.sql
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt LICENSE.TXT
 
 #upload
