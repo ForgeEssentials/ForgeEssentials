@@ -316,9 +316,6 @@ public class StorageManager implements IStorageManager
 		{
 			registerSaveableClass(type);
 			tagged = taggerList.get(type.toString());
-			if (instance.loaded)
-				for (AbstractDataDriver driver : instance.instanceMap.values())
-					driver.onClassRegistered(tagged);
 			return tagged;
 		}
 

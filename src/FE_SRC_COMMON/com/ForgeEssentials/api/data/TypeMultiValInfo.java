@@ -69,7 +69,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 		TypeData data = DataStorageManager.getDataForType(container);
 		int i = 0;
 		for (TypeData dat : datas)
-			data.putField("arbitraty Num "+(i++), dat);
+			data.putField("DataVal"+(i++), dat);
 		return data;
 	}
 	

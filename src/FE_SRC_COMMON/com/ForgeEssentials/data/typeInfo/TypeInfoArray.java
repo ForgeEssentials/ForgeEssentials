@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ForgeEssentials.api.data.ClassContainer;
+import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.TypeMultiValInfo;
 
@@ -44,7 +45,7 @@ public class TypeInfoArray extends TypeMultiValInfo
 		{
 			data = getEntryData();
 			data.putField(POS, i);
-			data.putField(ELEMENT, element);
+			data.putField(ELEMENT, DataStorageManager.getDataForObject(element));
 			datas.add(data);
 		}
 

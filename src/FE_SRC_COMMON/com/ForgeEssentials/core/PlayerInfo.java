@@ -156,7 +156,6 @@ public class PlayerInfo
 	 */
 	public void save()
 	{
-		// TODO: get the actual config-given choice...
 		DataStorageManager.getReccomendedDriver().saveObject(this);
 	}
 
