@@ -34,10 +34,6 @@ public class EventHandler
 				EntityPlayer source = (EntityPlayer) e.source.getEntity();
 				EntityPlayer receiver = (EntityPlayer) e.entityLiving;
 				
-				System.out.println("####");
-				System.out.println(source);
-				System.out.println(receiver);
-				
 				boolean sourceB = !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(source, ModuleProtection.PERM_PVP));
 				boolean receiverB = !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(receiver, ModuleProtection.PERM_PVP));
 				
