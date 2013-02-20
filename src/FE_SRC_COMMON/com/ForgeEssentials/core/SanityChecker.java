@@ -27,8 +27,8 @@ public class SanityChecker
 			// Safe!
 			}
 		}
-		}
-		OutputHandler.info("Sanity check passed: No Bukkit server implementations found, starting server.");
+		OutputHandler.fine("Sanity check passed, it's all good to go!");
+		
 	}
-
+		
 }
