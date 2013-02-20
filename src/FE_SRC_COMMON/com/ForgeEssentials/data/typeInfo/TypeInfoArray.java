@@ -26,7 +26,7 @@ public class TypeInfoArray extends TypeMultiValInfo
 	@Override
 	public void build(HashMap<String, Class> fields)
 	{
-		fields.put(POS, byte.class);
+		fields.put(POS, int.class);
 		fields.put(ELEMENT, container.getType().getComponentType());
 	}
 
@@ -55,7 +55,7 @@ public class TypeInfoArray extends TypeMultiValInfo
 	@Override
 	public Object reconstruct(TypeData[] data)
 	{
-		Object array = Array.newInstance(getType(), data.length);
+		Object array = Array.newInstance(getType().getComponentType(), data.length);
 
 		for (TypeData dat : data)
 		{

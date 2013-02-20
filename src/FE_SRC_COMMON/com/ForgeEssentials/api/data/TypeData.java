@@ -60,7 +60,7 @@ public class TypeData implements IReconstructData, Serializable
 	public String toString()
 	{
 		StringBuilder s = new StringBuilder("{");
-		s.append("type=").append(getType()).append(", ");
+		s.append("type=").append(getType().getCanonicalName()).append(", ");
 		s.append("unique=").append(uniqueKey).append(", ");
 
 		s.append("[");

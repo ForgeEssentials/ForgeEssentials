@@ -214,7 +214,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 				{
 					name = child.getQualifiedName().replace(cat.getQualifiedName() + ".", "");
 					newInfo = info.getInfoForField(name);
-					newData = DataStorageManager.getDataForType(info.getType());
+					newData = DataStorageManager.getDataForType(newInfo.getType());
 
 					if (newData == null || newInfo == null)
 					{

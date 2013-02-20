@@ -39,7 +39,10 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	@Override
 	public Class getTypeOfField(String field)
 	{
+		
 		// will prolly never be called.
+		if (field.toLowerCase().contains("dataval"))
+			return entryInfo.getType();
 		return fields.get(field);
 	}
 

@@ -30,7 +30,7 @@ public class TypeEntryInfo implements ITypeInfo
 	public Class getTypeOfField(String field)
 	{
 		// TODO Auto-generated method stub
-		return types.get(types);
+		return types.get(field);
 	}
 
 	@Override
