@@ -1,4 +1,4 @@
-VERSION="1.1.1"
+VERSION="1.2.0"
 MC="1.4.7"
 
 #in case we arnt there already
