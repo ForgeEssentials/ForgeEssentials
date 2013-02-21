@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintWriter;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -22,7 +23,9 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermRegister;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
@@ -42,12 +45,6 @@ public class ModuleBackup
 	public static AutoBackup	autoBackup;
 	public static AutoWorldSave	autoWorldSave;
 
-	@PreInit
-	public void preLoad(FEModulePreInitEvent e)
-	{
-		
-	}
-
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
@@ -62,7 +59,7 @@ public class ModuleBackup
 		autoWorldSave = new AutoWorldSave();
 		makeReadme();
 	}
-	
+
 	@ServerStop
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
@@ -73,6 +70,7 @@ public class ModuleBackup
 	@PermRegister(ident = "ModuleBackups")
 	public void registerPermissions(IPermRegisterEvent event)
 	{
+		event.registerPermissionLevel("ForgeEssentials.backup.msg", RegGroup.GUESTS);
 		event.registerPermissionLevel("ForgeEssentials.backup", RegGroup.OWNERS);
 	}
 
@@ -87,42 +85,53 @@ public class ModuleBackup
 			}
 		}
 	}
-	
+
 	@ForgeSubscribe
 	public void worldUnload(WorldEvent.Load e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if(config.worldSaveing)
+			if (config.worldSaveing)
 			{
 				((WorldServer) e.world).canNotSave = !config.worldSaveing;
 			}
 		}
 	}
-	
+
 	public static void msg(String msg)
 	{
 		OutputHandler.info(msg);
+		if (!config.enableMsg)
+		{
+			return;
+		}
 		try
 		{
-			for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
+			ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
+			for (String username : server.getAllUsernames())
 			{
-				((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
+				EntityPlayerMP player = server.getPlayerForUsername(username);
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
+				{
+					player.sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
+				}
 			}
 		}
 		catch (Exception e)
 		{}
 	}
-	
+
 	private void makeReadme()
 	{
 		try
 		{
-			if(!baseFolder.exists()) baseFolder.mkdirs();
+			if (!baseFolder.exists())
+				baseFolder.mkdirs();
 			File file = new File(baseFolder, "README.txt");
-			if (file.exists()) return;
+			if (file.exists())
+				return;
 			PrintWriter pw = new PrintWriter(file);
-			
+
 			pw.println("############");
 			pw.println("## WARNING ##");
 			pw.println("############");
@@ -134,7 +143,7 @@ public class ModuleBackup
 			pw.println("\"Yes, I read the readme\" in the issue or your message on github,");
 			pw.println("YOU WILL BE IGNORED.");
 			pw.println("- The FE Team");
-			
+
 			pw.close();
 		}
 		catch (Exception e)

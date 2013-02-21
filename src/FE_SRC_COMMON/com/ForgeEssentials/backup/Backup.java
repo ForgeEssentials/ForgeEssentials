@@ -25,7 +25,7 @@ public class Backup implements Runnable
 	private File			source;
 	private String			backupName;
 	private boolean			worldSave;
-	private boolean			done = false;
+	private boolean			done		= false;
 
 	public Backup(boolean worldSave)
 	{
@@ -140,7 +140,7 @@ public class Backup implements Runnable
 
 		ModuleBackup.msg("Backup of " + name + " done.");
 		done = true;
-		
+
 		System.gc();
 	}
 
