@@ -11,10 +11,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StringTranslate;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -55,6 +57,18 @@ public final class FunctionHelper
 		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
+	
+	public static String getNameFromItemStack(ItemStack is) {
+		return ("" + StringTranslate.getInstance().translateNamedKey(is.getItem().getLocalItemName(is))).trim();
+	}
+	
+	public static MovingObjectPosition rayTrace(double par1, EntityPlayer player) // par1=distance Copied & Based off of EntityLiving.rayTrace(double, float)
+    {
+        Vec3 var4 = player.worldObj.getWorldVec3Pool().getVecFromPool(player.posX, player.posY, player.posZ);
+        Vec3 var5 = player.getLook(1F);
+        Vec3 var6 = var4.addVector(var5.xCoord * par1, var5.yCoord * par1, var5.zCoord * par1);
+        return player.worldObj.rayTraceBlocks(var4, var6);
+    }
 	
 	public static String parseTime(int timeInSec)
 	{

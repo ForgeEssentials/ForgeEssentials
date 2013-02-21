@@ -1,157 +1,80 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
-//Depreciated
 import java.util.ArrayList;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
+import com.ForgeEssentials.WorldControl.BlockArrayBackup;
+import com.ForgeEssentials.WorldControl.BlockInfo;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.BackupArea;
-import com.ForgeEssentials.util.BlockSaveable;
-import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.Selection;
 
-public class TickTaskSetSelection implements ITickTask
+public class TickTaskSetSelection extends TickTaskLoadBlocks
 {
-	// stuff needed
-	private final int			blockID;
-	private final int			metadata;
-	private BackupArea			back;
-	private EntityPlayer		player;
 	private ArrayList<AreaBase>	applicable;
 
-	// actually used
-	private Point				first;
-	private Point				last;
-	private Point				current;
-	private int					changed;
-	private boolean				isComplete;
+	BlockInfo to;
 
-	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata, BackupArea back, AreaBase area)
+	private Point current;
+
+	public TickTaskSetSelection(EntityPlayer player, AreaBase sel, BlockInfo to)
 	{
-		this.player = player;
-		this.blockID = blockID;
-		this.metadata = metadata;
-		this.back = back;
-		last = area.getHighPoint();
-		first = current = area.getLowPoint();
-
-		isComplete = false;
+		super(player, sel);
+		this.to=to;
+		current = sel.getLowPoint();
 	}
 
-	public TickTaskSetSelection(EntityPlayer player, int blockID, int metadata, BackupArea back, AreaBase area, ArrayList<AreaBase> appliccable)
+	public TickTaskSetSelection(EntityPlayer player, AreaBase sel, BlockInfo to, ArrayList<AreaBase> applicable)
 	{
-		this(player, blockID, metadata, back, area);
-		applicable = appliccable;
+		this(player, sel, to);
+		this.applicable = applicable;
 	}
-
-	@Override
-	public void tick()
-	{
-		int currentTickChanged = 0;
-		boolean continueFlag = true;
-
-		int x = current.x;
-		int y = current.y;
-		int z = current.z;
-
-		while (continueFlag)
+	
+	protected void runTick() {
+		x = current.x;
+		y = current.y;
+		z = current.z;
+	}
+	
+	private int x;
+	private int y;
+	private int z;
+	
+	protected boolean placeBlock() {
+		boolean ret = false;
+		ret = place(x, y, z, to.randomBlock());
+		x++;
+		if (x > sel.getHighPoint().x)
 		{
-			if (metadata == -1)
+			// Reset y, increment z.
+			x = sel.getLowPoint().x;
+			z++;
+			if (z > sel.getHighPoint().z)
 			{
-				if (blockID != player.worldObj.getBlockId(x, y, z) && isApplicable(x, y, z))
+				// Reset z, increment x.
+				z = sel.getLowPoint().z;
+				y++;
+				// Check stop condition
+				if (y > sel.getHighPoint().y)
 				{
-					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
-					player.worldObj.setBlock(x, y, z, blockID);
-					back.after.add(new BlockSaveable(player.worldObj, x, y, z));
-					currentTickChanged++;
+					setComplete();
+					return ret;
 				}
 			}
-			else
-			{
-				if ((blockID != player.worldObj.getBlockId(x, y, z) || metadata != player.worldObj.getBlockMetadata(x, y, z)) && isApplicable(x, y, z))
-				{
-					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
-					player.worldObj.setBlockAndMetadata(x, y, z, blockID, metadata);
-					back.after.add(new BlockSaveable(player.worldObj, x, y, z));
-					currentTickChanged++;
-				}
-			}
-
-			y++;
-			// Bounds checking comes first to avoid fencepost errors.
-			if (y > last.y)
-			{
-				// Reset y, increment z.
-				y = first.y;
-				z++;
-
-				if (z > last.z)
-				{
-					// Reset z, increment x.
-					z = first.z;
-					x++;
-
-					// Check stop condition
-					if (x > last.x)
-					{
-						isComplete = true;
-					}
-				}
-			}
-
-			if (isComplete || currentTickChanged >= ConfigWorldControl.blocksPerTick)
-			{
-				// Stop running this tick.
-				changed += currentTickChanged;
-				current = new Point(x, y, z);
-				continueFlag = false;
-			}
 		}
+		return ret;
 	}
-
-	@Override
-	public void onComplete()
-	{
-		PlayerInfo.getPlayerInfo(player).addUndoAction(back);
-		String blockName = blockID + ":" + metadata;
-
-		if (blockID == 0)
-		{
-			blockName = Localization.get("tile.air.name");
-		}
-		else
-		{
-			try
-			{
-				blockName = new ItemStack(blockID, 1, metadata).getDisplayName();
-			}
-			catch (Exception e)
-			{
-				blockName = blockID + ":" + metadata;
-				OutputHandler.info("Could not retrieve the name of the block represented by ID " + blockID + " with meta " + metadata
-						+ ". This is a problem in the mod that provides the block, caused by not supporting getDisplayName for their block.");
-			}
-		}
-
-		OutputHandler.chatConfirmation(player, Localization.format("message.wc.setConfirmBlocksChanged", changed, blockName));
-	}
-
-	@Override
-	public boolean isComplete()
-	{
-		return isComplete;
-	}
-
-	@Override
-	public boolean editsBlocks()
-	{
-		return true;
+	
+	protected void endTick() {
+		current = new Point(x, y, z);
 	}
 
 	private boolean isApplicable(int x, int y, int z)

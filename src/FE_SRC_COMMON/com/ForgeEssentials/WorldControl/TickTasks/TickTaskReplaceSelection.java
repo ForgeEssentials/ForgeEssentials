@@ -5,178 +5,82 @@ import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
+import com.ForgeEssentials.WorldControl.BlockArrayBackup;
+import com.ForgeEssentials.WorldControl.BlockInfo;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.BackupArea;
-import com.ForgeEssentials.util.BlockSaveable;
-import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
-public class TickTaskReplaceSelection implements ITickTask
+public class TickTaskReplaceSelection extends TickTaskLoadBlocks
 {
-	private BackupArea			backup;
-	private EntityPlayer		player;
-	private int					changed;
-	private int					ticks;
 	private ArrayList<AreaBase>	applicable;
 
-	// Stores our actual task.
-	private int					targetId;
-	private int					targetMeta;
-	private int					newId;
-	private int					newMeta;
+	BlockInfo from;
+	BlockInfo to;
 
-	// Defines our bounds and current position
-	private Point				high;
-	private Point				current;
-	private Point				first;
-	private boolean				isComplete;
+	private Point current;
 
-	public TickTaskReplaceSelection(EntityPlayer player, int firstID, int firstMeta, int secondID, int secondMeta, BackupArea backupArea, Selection selection)
+	public TickTaskReplaceSelection(EntityPlayer player, AreaBase sel, BlockInfo from, BlockInfo to)
 	{
-		targetId = firstID;
-		targetMeta = firstMeta;
-		newId = secondID;
-		newMeta = secondMeta;
-
-		changed = 0;
-		high = selection.getHighPoint();
-		first = current = selection.getLowPoint();
-
-		backup = backupArea;
-		this.player = player;
+		super(player, sel);
+		this.from=from;
+		this.to=to;
+		current = sel.getLowPoint();
 	}
 
-	public TickTaskReplaceSelection(EntityPlayer player, int firstID, int firstMeta, int secondID, int secondMeta, BackupArea backupArea, Selection selection, ArrayList<AreaBase> applicable)
+	public TickTaskReplaceSelection(EntityPlayer player, AreaBase sel, BlockInfo from, BlockInfo to, ArrayList<AreaBase> applicable)
 	{
-		this(player, firstID, firstMeta, secondID, secondMeta, backupArea, selection);
+		this(player, sel, from, to);
 		this.applicable = applicable;
 	}
-
-	@Override
-	public void tick()
-	{
-		ticks++;
-		int currentTickChanged = 0;
-		boolean continueFlag = true;
-
-		int x = current.x;
-		int y = current.y;
-		int z = current.z;
-
-		while (continueFlag)
+	
+	protected void runTick() {
+		x = current.x;
+		y = current.y;
+		z = current.z;
+	}
+	
+	private int x;
+	private int y;
+	private int z;
+	
+	protected boolean placeBlock() {
+		int id = world.getBlockId(x, y, z);
+		int m = world.getBlockMetadata(x, y, z);
+		boolean ret = false;
+		if (from.compare(new BlockInfo.SingularBlockInfo(Block.blocksList[id], m, null)) && isApplicable(x, y, z))
 		{
-			if (targetMeta == -1)
+			ret = place(x, y, z, to.randomBlock());
+		}
+		x++;
+		if (x > sel.getHighPoint().x)
+		{
+			// Reset y, increment z.
+			x = sel.getLowPoint().x;
+			z++;
+			if (z > sel.getHighPoint().z)
 			{
-				if (targetId == player.worldObj.getBlockId(x, y, z) && isApplicable(x, y, z))
+				// Reset z, increment x.
+				z = sel.getLowPoint().z;
+				y++;
+				// Check stop condition
+				if (y > sel.getHighPoint().y)
 				{
-					doReplace(x, y, z);
-					currentTickChanged++;
+					return ret;
 				}
 			}
-			else
-			{
-				if (targetId == player.worldObj.getBlockId(x, y, z) && targetMeta == player.worldObj.getBlockMetadata(x, y, z) && isApplicable(x, y, z))
-				{
-					doReplace(x, y, z);
-					currentTickChanged++;
-				}
-			}
-
-			y++;
-			if (y > high.y)
-			{
-				// Reset y, increment z.
-				y = first.y;
-				z++;
-
-				if (z > high.z)
-				{
-					// Reset z, increment x.
-					z = first.z;
-					x++;
-
-					// Check stop condition
-					if (x > high.x)
-					{
-						isComplete = true;
-					}
-				}
-			}
-
-			if (isComplete || currentTickChanged >= ConfigWorldControl.blocksPerTick)
-			{
-				// Stop running this tick.
-				changed += currentTickChanged;
-				current = new Point(x, y, z);
-				continueFlag = false;
-			}
 		}
+		return ret;
 	}
-
-	private void doReplace(int x, int y, int z)
-	{
-		backup.before.add(new BlockSaveable(player.worldObj, x, y, z));
-		player.worldObj.setBlockAndMetadata(x, y, z, newId, newMeta);
-		backup.after.add(new BlockSaveable(player.worldObj, x, y, z));
-	}
-
-	@Override
-	public void onComplete()
-	{
-		PlayerInfo.getPlayerInfo(player.username).addUndoAction(backup);
-		String targetName;
-		// Determine the target block name
-		if (targetId == 0)
-		{
-			targetName = Localization.get("tile.air.name");
-		}
-		else
-		{
-			if (targetMeta == -1)
-			{
-				targetName = new ItemStack(Block.blocksList[targetId]).getDisplayName();
-			}
-			else
-			{
-				targetName = new ItemStack(targetId, 1, targetMeta).getDisplayName();
-			}
-		}
-		String newName;
-		// Determine the new block name.
-		if (newId == 0)
-		{
-			newName = Localization.get("tile.air.name");
-		}
-		else
-		{
-			if (newMeta == -1)
-			{
-				newName = new ItemStack(Block.blocksList[newId]).getDisplayName();
-			}
-			else
-			{
-				newName = new ItemStack(newId, 1, newMeta).getDisplayName();
-			}
-		}
-		OutputHandler.chatConfirmation(player, Localization.format("message.wc.replaceConfirmBlocksChanged", changed, targetName, newName));
-	}
-
-	@Override
-	public boolean isComplete()
-	{
-		return isComplete;
-	}
-
-	@Override
-	public boolean editsBlocks()
-	{
-		return true;
+	
+	protected void endTick() {
+		current = new Point(x, y, z);
 	}
 
 	private boolean isApplicable(int x, int y, int z)

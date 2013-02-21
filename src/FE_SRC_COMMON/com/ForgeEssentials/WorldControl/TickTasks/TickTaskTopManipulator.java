@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
+import com.ForgeEssentials.WorldControl.BlockArrayBackup;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
@@ -26,7 +27,7 @@ public class TickTaskTopManipulator implements ITickTask
 
 	// Data that is determined at start and does not change.
 	private EntityPlayer	player;
-	private BackupArea		backup;
+	private BlockArrayBackup		backup;
 	private Point			effectOrigin;
 	private int				effectRadius;
 	private Mode			effectMode;
@@ -37,7 +38,7 @@ public class TickTaskTopManipulator implements ITickTask
 	private boolean			isComplete;
 	private Point			currentPos;
 
-	public TickTaskTopManipulator(EntityPlayer play, BackupArea back, Point origin, int radius, Mode mode)
+	public TickTaskTopManipulator(EntityPlayer play, BlockArrayBackup back, Point origin, int radius, Mode mode)
 	{
 		player = play;
 		backup = back;
@@ -87,17 +88,17 @@ public class TickTaskTopManipulator implements ITickTask
 							if (blockID == Block.ice.blockID)
 							{
 								// Replace ice with water.
-								backup.before.add(new BlockSaveable(world, x, y, z));
+								backup.before.addBlock(world, x, y, z, true);
 								world.setBlock(x, y, z, Block.waterMoving.blockID);
-								backup.after.add(new BlockSaveable(world, x, y, z));
+								backup.after.addBlock(world, x, y, z, true);
 								currentBlocksChanged++;
 							}
 							else if (blockID == Block.snow.blockID)
 							{
 								// Remove snow.
-								backup.before.add(new BlockSaveable(world, x, y, z));
+								backup.before.addBlock(world, x, y, z, true);
 								world.setBlock(x, y, z, 0);
-								backup.after.add(new BlockSaveable(world, x, y, z));
+								backup.after.addBlock(world, x, y, z, true);
 								currentBlocksChanged++;
 							}
 							break;
@@ -105,9 +106,9 @@ public class TickTaskTopManipulator implements ITickTask
 							if (blockID == Block.waterMoving.blockID || blockID == Block.waterStill.blockID)
 							{
 								// Both water types become ice.
-								backup.before.add(new BlockSaveable(world, x, y, z));
+								backup.before.addBlock(world, x, y, z, true);
 								world.setBlock(x, y, z, Block.ice.blockID);
-								backup.after.add(new BlockSaveable(world, x, y, z));
+								backup.after.addBlock(world, x, y, z, true);
 								currentBlocksChanged++;
 							}
 							break;
@@ -115,27 +116,27 @@ public class TickTaskTopManipulator implements ITickTask
 							if (Block.isNormalCube(world.getBlockId(x, y, z)) || Block.blocksList[blockID].isLeaves(world, x, y, z))
 							{
 								// Add snow covering to the block above.
-								backup.before.add(new BlockSaveable(world, x, y + 1, z));
+								backup.before.addBlock(world, x, y+1, z, true);
 								world.setBlock(x, y + 1, z, Block.snow.blockID);
-								backup.after.add(new BlockSaveable(world, x, y + 1, z));
+								backup.after.addBlock(world, x, y+1, z, true);
 								currentBlocksChanged++;
 							}
 							break;
 						case TILL:
 							if (blockID == Block.dirt.blockID || blockID == Block.grass.blockID)
 							{
-								backup.before.add(new BlockSaveable(world, x, y, z));
+								backup.before.addBlock(world, x, y, z, true);
 								world.setBlock(x, y, z, Block.tilledField.blockID);
-								backup.after.add(new BlockSaveable(world, x, y, z));
+								backup.after.addBlock(world, x, y, z, true);
 								currentBlocksChanged++;
 							}
 							break;
 						case UNTILL:
 							if (blockID == Block.tilledField.blockID)
 							{
-								backup.before.add(new BlockSaveable(world, x, y, z));
+								backup.before.addBlock(world, x, y, z, true);
 								world.setBlock(x, y, z, Block.dirt.blockID);
-								backup.after.add(new BlockSaveable(world, x, y, z));
+								backup.after.addBlock(world, x, y, z, true);
 								currentBlocksChanged++;
 							}
 							break;

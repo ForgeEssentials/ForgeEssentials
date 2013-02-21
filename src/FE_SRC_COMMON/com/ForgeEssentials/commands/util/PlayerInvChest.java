@@ -33,9 +33,12 @@ public class PlayerInvChest extends InventoryBasic
 	public void closeChest()
 	{
 		InvSeeMisk.remove(this);
-		for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
+		if (allowUpdate)
 		{
-			owner.inventory.mainInventory[id] = getStackInSlot(id);
+			for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
+			{
+				owner.inventory.mainInventory[id] = getStackInSlot(id);
+			}
 		}
 		onInventoryChanged();
 		super.closeChest();

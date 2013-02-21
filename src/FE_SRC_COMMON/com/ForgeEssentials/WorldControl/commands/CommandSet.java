@@ -8,6 +8,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
+import com.ForgeEssentials.WorldControl.BlockArray;
+import com.ForgeEssentials.WorldControl.BlockArrayBackup;
+import com.ForgeEssentials.WorldControl.BlockInfo;
+import com.ForgeEssentials.WorldControl.TickTasks.TickTaskReplaceSelection;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
@@ -43,45 +47,27 @@ public class CommandSet extends WorldControlCommandBase
 
 		if (args.length == 1)
 		{
-			int[] data = FunctionHelper.parseIdAndMetaFromString(args[0], true);
-			ID = data[0];
-			metadata = data[1];
-
-			if (ID >= Block.blocksList.length)
+			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
+			if (info.getSelection() == null)
 			{
-				error(player, Localization.format("message.wc.blockIdOutOfRange", Block.blocksList.length));
+				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
+				return;
 			}
-			else if (ID != 0 && Block.blocksList[ID] == null)
-			{
-				error(player, Localization.format("message.wc.invalidBlockId", ID));
-			}
-			else
-			{
-				PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
-				if (info.getSelection() == null)
-				{
-					OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
-					return;
-				}
-				World world = player.worldObj;
-				Selection sel = info.getSelection();
-				BackupArea back = new BackupArea();
+			BlockInfo to = new BlockInfo();
+			to.parseText(player, args[0]);
+			Selection sel = info.getSelection();
 
-				PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
-				PermResult result = PermissionsAPI.checkPermResult(query);
+			PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
+			PermResult result = PermissionsAPI.checkPermResult(query);
 
-				switch (result)
-					{
-						case ALLOW:
-							TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
-							return;
-						case PARTIAL:
-							TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel, query.applicable));
-						default:
-							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
-							return;
-					}
+			if(result==PermResult.ALLOW) {
+				TickTaskHandler.addTask(new TickTaskSetSelection(player, sel, to));
+			}else if(result==PermResult.PARTIAL) {
+				TickTaskHandler.addTask(new TickTaskSetSelection(player, sel, to, query.applicable));
+			}else{
+				OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 			}
+
 			player.sendChatToPlayer("Working on set.");
 		}
 		else

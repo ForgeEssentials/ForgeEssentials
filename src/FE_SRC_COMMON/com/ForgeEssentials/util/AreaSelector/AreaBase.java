@@ -25,7 +25,7 @@ public abstract class AreaBase
 		high = points[1];
 	}
 
-	public int xLength()
+	public int getXLength()
 	{
 		return high.x - low.x + 1;
 	}

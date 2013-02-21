@@ -3,6 +3,8 @@ package com.ForgeEssentials.WorldControl.commands;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
+import com.ForgeEssentials.WorldControl.BlockArray;
+import com.ForgeEssentials.WorldControl.BlockArrayBackup;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
@@ -79,7 +81,7 @@ public class CommandTopManipulate extends WorldControlCommandBase
 			if (radius != -1 && effectPosition != null)
 			{
 				World world = player.worldObj;
-				BackupArea back = new BackupArea();
+				BlockArrayBackup back = new BlockArrayBackup(new BlockArray(0, 0, 0, true, radius, 255, radius), new BlockArray(0, 0, 0, true, radius, 255, radius));
 				// For some reason, player.posX is out.
 
 				TickTaskHandler.addTask(new TickTaskTopManipulator(player, back, effectPosition, radius, manipulateMode));
