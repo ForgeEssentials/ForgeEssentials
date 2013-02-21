@@ -20,7 +20,7 @@ import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.google.common.base.Strings;
 
 public class Chat
@@ -106,7 +106,7 @@ public class Chat
 		String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
 		String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
 
-		Zone zone = ZoneManager.getWhichZoneIn(new Point(event.player), event.player.worldObj);
+		Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(event.player));
 		zoneID = zone.getZoneName();
 
 		// Group stuff!!! DO NOT TOUCH!!!

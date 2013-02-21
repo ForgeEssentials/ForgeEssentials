@@ -15,6 +15,7 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
 import com.ForgeEssentials.api.permissions.query.PermSubscribe;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 /**
  * 
@@ -53,7 +54,7 @@ public final class PermissionsHandler
 		// ensures its a permPlayerQuery before checking...
 		if (event.getClass().equals(PermQueryPlayer.class))
 		{
-			Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(event.doer), event.doer.worldObj);
+			Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(event.doer), event.doer.worldObj);
 			PermResult result = getResultFromZone(zone, event);
 			event.setResult(result);
 		}

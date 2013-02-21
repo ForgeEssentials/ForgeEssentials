@@ -170,8 +170,14 @@ public class ZoneHelper implements IZoneManager
 
 	public Zone getWhichZoneIn(Point p1, World world)
 	{
+		return getWhichZoneIn(new WorldPoint(world, p1.x, p1.y, p1.z));
+	}
+	
+	public Zone getWhichZoneIn(WorldPoint p)
+	{
 		// check cache..
-		Zone end = getFromCache(new WorldPoint(world, p1.x, p1.y, p1.z));
+		World world = FunctionHelper.getDimension(p.dim);
+		Zone end = getFromCache(p);
 		if (end != null)
 		{
 			return end;
@@ -183,7 +189,7 @@ public class ZoneHelper implements IZoneManager
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 		{
-			if (worldZone.isParentOf(zone) && zone.contains(p1))
+			if (worldZone.isParentOf(zone) && zone.contains(p))
 			{
 				zones.add(zone);
 			}
@@ -219,7 +225,7 @@ public class ZoneHelper implements IZoneManager
 					}
 			}
 
-		putCache(new WorldPoint(world, p1.x, p1.y, p1.z), end.getZoneName());
+		putCache(new WorldPoint(world, p.x, p.y, p.z), end.getZoneName());
 		return end;
 	}
 

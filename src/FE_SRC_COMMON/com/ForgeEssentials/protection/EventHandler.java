@@ -27,6 +27,9 @@ public class EventHandler
 	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void playerAttack(AttackEntityEvent e)
 	{
+		if (e.target == null)
+			return;
+		
 		if (e.target instanceof EntityPlayer)
 		{
 			// stopping pvp damage
