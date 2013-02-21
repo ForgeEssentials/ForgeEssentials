@@ -2,7 +2,10 @@ package com.ForgeEssentials.api.data;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+
+import com.ForgeEssentials.data.StorageManager;
 
 
 public abstract class TypeMultiValInfo implements ITypeInfo
@@ -72,7 +75,13 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 		TypeData data = DataStorageManager.getDataForType(container);
 		int i = 0;
 		for (TypeData dat : datas)
+		{
+			for (Entry<String, Object> e : dat.getAllFields())
+				if (!(e.getValue() instanceof TypeData) && !(StorageManager.isTypeComplex(e.getValue().getClass())))
+					data.putField(e.getKey(), DataStorageManager.getDataForObject(e.getValue()));
+			
 			data.putField("DataVal"+(i++), dat);
+		}
 		return data;
 	}
 	

@@ -45,7 +45,7 @@ public class TypeInfoArray extends TypeMultiValInfo
 		{
 			data = getEntryData();
 			data.putField(POS, i);
-			data.putField(ELEMENT, DataStorageManager.getDataForObject(element));
+			data.putField(ELEMENT, element);
 			datas.add(data);
 		}
 
