@@ -20,7 +20,7 @@ You do not need to download the repo if you merely want to use the API, that can
 
 There should be 3 linked sources under the Minecraft project, namely src (minecraft code), FE_SRC_COMMON (FE common/server code), and FE_SRC_CLIENT (client addon code)
 
-3. Setting up Eclipse
+3. Setting up Eclipse (only if you launch MC and you crash with a java.lang.IllegalAccessError)
 
 3.1: Load Eclipse and click on the down arrow next to the green play button. Under it, select Run Configurations.
 

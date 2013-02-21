@@ -1,10 +1,10 @@
 package com.ForgeEssentials.protection;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EntityDamageSource;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -24,28 +24,40 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class EventHandler
 {
-	@ForgeSubscribe(priority = EventPriority.HIGH)
-	public void antiPVP(LivingHurtEvent e)
-	{	
-		if(e.entityLiving instanceof EntityPlayer)
+	@ForgeSubscribe(priority = EventPriority.LOW)
+	public void playerAttack(AttackEntityEvent e)
+	{
+		if (e.target instanceof EntityPlayer)
 		{
-			if(e.source.getEntity() instanceof EntityPlayer)
+			// stopping pvp damage
+			EntityPlayer receiver = (EntityPlayer) e.target;
+
+			boolean sourceB = !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, ModuleProtection.PERM_PVP));
+			boolean receiverB = !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, ModuleProtection.PERM_PVP));
+
+			if (sourceB || receiverB)
 			{
-				EntityPlayer source = (EntityPlayer) e.source.getEntity();
-				EntityPlayer receiver = (EntityPlayer) e.entityLiving;
-				
-				boolean sourceB = !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(source, ModuleProtection.PERM_PVP));
-				boolean receiverB = !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(receiver, ModuleProtection.PERM_PVP));
-				
-				if(sourceB || receiverB)
-				{
-					e.setCanceled(true);
-				}
+				e.setCanceled(true);
 			}
 		}
+		else
+		{
+			// stopping entity damage
+
+			PermQuery query = new PermQueryPlayer(e.entityPlayer, ModuleProtection.PERM_OVERRIDE);
+			Boolean result = PermissionsAPI.checkPermAllowed(query);
+
+			if (!result)
+			{
+				query = new PermQueryPlayer(e.entityPlayer, ModuleProtection.PERM_INTERACT_ENTITY);
+				result = PermissionsAPI.checkPermAllowed(query);
+			}
+
+			e.setCanceled(!result);
+		}
 	}
-	
-	@ForgeSubscribe(priority = EventPriority.HIGH)
+
+	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void breakEvent(PlayerBlockBreak e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -64,7 +76,7 @@ public class EventHandler
 		e.setCanceled(!result);
 	}
 
-	@ForgeSubscribe(priority = EventPriority.HIGH)
+	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void placeEvent(PlayerBlockPlace e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -83,7 +95,7 @@ public class EventHandler
 		e.setCanceled(!result);
 	}
 
-	@ForgeSubscribe(priority = EventPriority.HIGH)
+	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void playerInteractEvent(PlayerInteractEvent e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -105,7 +117,7 @@ public class EventHandler
 		}
 	}
 
-	@ForgeSubscribe(priority = EventPriority.HIGH)
+	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void entityInteractEvent(EntityInteractEvent e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -123,7 +135,7 @@ public class EventHandler
 			result = PermissionsAPI.checkPermAllowed(query);
 		}
 
-		OutputHandler.finer("entityInteractEvent in zone: " + zone.getZoneName() + " result: " + result);
+		OutputHandler.finest("entityInteractEvent in zone: " + zone.getZoneName() + " result: " + result);
 
 		e.setCanceled(!result);
 	}

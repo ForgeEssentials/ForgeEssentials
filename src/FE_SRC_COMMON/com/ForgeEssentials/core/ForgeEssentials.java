@@ -78,8 +78,6 @@ public class ForgeEssentials
 	public static File				FEDIR;
 
 	public static boolean			mcstats;
-	
-	public static boolean bukkitcheck;
 
 	public BannedItems				bannedItems;
 	private ItemList				itemList;

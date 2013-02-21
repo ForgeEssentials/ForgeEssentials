@@ -142,11 +142,11 @@ public class Zone extends WorldArea implements Comparable
 		Zone zone = (Zone) o;
 		if (zone.isParentOf(this))
 		{
-			return -100;
+			return 100;
 		}
 		else if (isParentOf(zone))
 		{
-			return 100;
+			return -100;
 		}
 		else
 		{

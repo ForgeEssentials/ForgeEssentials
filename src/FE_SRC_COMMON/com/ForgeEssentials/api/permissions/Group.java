@@ -51,7 +51,7 @@ public class Group implements Comparable
 
 		if (end == 0)
 		{
-			return priority - their.priority;
+			return priority - g.priority;
 		}
 
 		return end;

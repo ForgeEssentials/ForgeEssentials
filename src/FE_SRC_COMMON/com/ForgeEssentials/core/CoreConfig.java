@@ -36,10 +36,6 @@ public class CoreConfig
 		prop = config.get("Core", "modlistLocation", "modlist.txt");
 		prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
 		ForgeEssentials.modlistLocation = prop.value;
-		
-		prop = config.get("Core", "sanitychecks", true);
-		prop.comment = "For advanced users only: If you wish to run FE on a bukkit server (not recommended, not supported), set this to false.";
-		ForgeEssentials.bukkitcheck = prop.getBoolean(true);
 
 		prop = config.get("general", "removeDuplicateCommands", true);
 		prop.comment = ("Remove commands from the list if they already exist outside of FE.");
