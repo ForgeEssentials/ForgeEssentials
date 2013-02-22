@@ -101,7 +101,7 @@ public class CommandPos extends WorldControlCommandBase
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/" + getCommandName() + " [<x> <y> <z]";
+		return "/" + getCommandName() + " [<x> <y> <z>]";
 	}
 
 	@Override
