@@ -40,8 +40,10 @@ public class TickTaskReplaceSelection extends TickTaskLoadBlocks
 	protected boolean placeBlock() {
 		int id = world.getBlockId(x, y, z);
 		int m = world.getBlockMetadata(x, y, z);
+		System.out.println(id+ ", "+x+", "+z);
 		if (from.compare(new BlockInfo.SingularBlockInfo(Block.blocksList[id], m, null)) && isApplicable(x, y, z))
 		{
+			System.out.println("k, good");
 			return place(x, y, z, to.randomBlock());
 		}
 		return false;

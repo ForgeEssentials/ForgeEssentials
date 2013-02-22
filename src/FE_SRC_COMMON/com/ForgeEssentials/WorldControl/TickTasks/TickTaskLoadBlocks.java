@@ -1,6 +1,7 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -8,6 +9,7 @@ import com.ForgeEssentials.WorldControl.BlockArray;
 import com.ForgeEssentials.WorldControl.BlockArrayBackup;
 import com.ForgeEssentials.WorldControl.BlockInfo;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
+import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
@@ -30,7 +32,7 @@ public class TickTaskLoadBlocks implements ITickTask {
 		BlockInfo.SingularBlockInfo inf = info.randomBlock();
 		if(inf==null)return false;
 		if(inf.meta<0)return false;
-		backup.before.addBlock(world, x, y, z, true);
+		if(requiresBackup())backup.before.addBlock(world, x, y, z, true);
 		world.setBlock(x, y, z, 0);
 		boolean canPlace = (inf==null||inf.block==null);
 		if(!canPlace)canPlace = inf==null||inf.block.canPlaceBlockAt(world, x, y, z);
@@ -42,14 +44,14 @@ public class TickTaskLoadBlocks implements ITickTask {
 			inf.nbt.setInteger("z", z);
 			world.getBlockTileEntity(x, y, z).readFromNBT(inf.nbt);
 		}
-		backup.after.addBlock(world, x, y, z, true);
+		if(requiresBackup())backup.after.addBlock(world, x, y, z, true);
 		return true;
 	}
 	
 	protected boolean place(int x, int y, int z, BlockInfo.SingularBlockInfo inf) {
 		if(inf==null)return false;
 		if(inf.meta<0)return false;
-		backup.before.addBlock(world, x, y, z, true);
+		if(requiresBackup())backup.before.addBlock(world, x, y, z, true);
 		world.setBlock(x, y, z, 0);
 		boolean canPlace = (inf==null||inf.block==null);
 		if(!canPlace)canPlace = inf==null||inf.block.canPlaceBlockAt(world, x, y, z);
@@ -61,7 +63,26 @@ public class TickTaskLoadBlocks implements ITickTask {
 			inf.nbt.setInteger("z", z);
 			world.getBlockTileEntity(x, y, z).readFromNBT(inf.nbt);
 		}
-		backup.after.addBlock(world, x, y, z, true);
+		if(requiresBackup())backup.after.addBlock(world, x, y, z, true);
+		return true;
+	}
+	
+	protected boolean place(int x, int y, int z, BlockArray.LoadingBlock inf) {
+		if(inf==null)return false;
+		if(inf.meta<0)return false;
+		if(requiresBackup())backup.before.addBlock(world, x, y, z, true);
+		world.setBlock(x, y, z, 0);
+		boolean canPlace = (inf==null||Block.blocksList[inf.id]==null);
+		if(!canPlace)canPlace = inf==null||Block.blocksList[inf.id].canPlaceBlockAt(world, x, y, z);
+		if(!canPlace)return false;
+		world.setBlockAndMetadataWithNotify(x, y, z, Block.blocksList[inf.id]==null?0:inf.id, inf.meta);
+		if(inf.TEData!=null && world.getBlockTileEntity(x, y, z)!=null) {
+			inf.TEData.setInteger("x", x);
+			inf.TEData.setInteger("y", y);
+			inf.TEData.setInteger("z", z);
+			world.getBlockTileEntity(x, y, z).readFromNBT(inf.TEData);
+		}
+		if(requiresBackup())backup.after.addBlock(world, x, y, z, true);
 		return true;
 	}
 	
@@ -93,6 +114,10 @@ public class TickTaskLoadBlocks implements ITickTask {
 	protected int x;
 	protected int y;
 	protected int z;
+	
+	protected boolean usesCoordsSystem() {
+		return true;
+	}
 
 	@Override
 	public void tick()
@@ -100,7 +125,7 @@ public class TickTaskLoadBlocks implements ITickTask {
 		ticks++;
 		int changed = 0;
 		runTick();
-		if(editsBlocks()&&currentBlock!=null) {
+		if(editsBlocks()&&currentBlock!=null&&usesCoordsSystem()) {
 			x = currentBlock.x;
 			y = currentBlock.y;
 			z = currentBlock.z;
@@ -112,12 +137,12 @@ public class TickTaskLoadBlocks implements ITickTask {
 				if(current==last)onCompleted();
 				return;
 			}else{
-				current++;
 				if(placeBlock()) {
 					this.changed++;
 					changed++;
-					updatePosition();
 				}
+				updatePosition();
+				current++;
 			}
 		}
 		endTick();
@@ -125,7 +150,7 @@ public class TickTaskLoadBlocks implements ITickTask {
 	}
 	
 	private void updatePosition() {
-		if(editsBlocks()) {
+		if(editsBlocks()&&usesCoordsSystem()) {
 			x++;
 			if (x > sel.getHighPoint().x)
 			{
@@ -147,10 +172,15 @@ public class TickTaskLoadBlocks implements ITickTask {
 			currentBlock = new Point(x, y, z);
 		}
 	}
+	
+	protected boolean requiresBackup() {
+		return true;
+	}
 
 	@Override
 	public void onComplete()
 	{
+		if(requiresBackup())PlayerInfo.getPlayerInfo(player.username).addUndoAction(backup);
 		OutputHandler.chatConfirmation(player, "" + changed + " blocks changed in "+(double)ticks/20D+" seconds");
 	}
 	
