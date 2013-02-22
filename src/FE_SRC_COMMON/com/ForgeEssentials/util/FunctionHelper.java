@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
@@ -56,6 +57,25 @@ public final class FunctionHelper
 		}
 		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
+	}
+	
+	public static int[] getBIFromName(String name, boolean hasMeta) {
+		String revised = name.toLowerCase().replace(" ", "").replace(".",""); // Oak Wood Planks = oakwoodplanks
+		if(name.equals("air"))return new int[]{0, 0};
+		for(int i = 0;i<Item.itemsList.length;i++) {
+			Item item = Item.itemsList[i];
+			if(item==null)continue;
+			if(!(item instanceof ItemBlock))continue;
+			Block block = Block.blocksList[((ItemBlock)item).getBlockID()];
+			if(block==null)continue;
+			if(Item.itemsList[block.blockID]==null)continue;
+			for(int m = 0;m<(hasMeta?16:1);m++) {
+				ItemStack is = new ItemStack(block, 0, m);
+				String nam = FunctionHelper.getNameFromItemStack(is).toLowerCase().replace(" ", "").replace(".","");
+				if(nam.equals(revised))return new int[]{block.blockID, m};
+			}
+		}
+		return null;
 	}
 	
 	public static String getNameFromItemStack(ItemStack is) {
