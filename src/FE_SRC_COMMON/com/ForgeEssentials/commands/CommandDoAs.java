@@ -28,7 +28,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
 			cmd.append(" ");
 		}
 		EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-		target.sendChatToPlayer("Player " + sender.username + "is attempting to issue a command as you.");// hook
+		target.sendChatToPlayer("Player " + sender.username + " is attempting to issue a command as you.");// hook
 		// into
 		// questioner
 		FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(target, cmd.toString());
