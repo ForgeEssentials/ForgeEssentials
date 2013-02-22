@@ -59,7 +59,7 @@ public final class FunctionHelper
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
 	
-	public static int[] getBIFromName(String name, boolean hasMeta) {
+	public static int[] getBlockInfoFromName(String name, boolean hasMeta) {
 		String revised = name.toLowerCase().replace(" ", "").replace(".",""); // Oak Wood Planks = oakwoodplanks
 		if(name.equals("air"))return new int[]{0, 0};
 		for(int i = 0;i<Item.itemsList.length;i++) {
