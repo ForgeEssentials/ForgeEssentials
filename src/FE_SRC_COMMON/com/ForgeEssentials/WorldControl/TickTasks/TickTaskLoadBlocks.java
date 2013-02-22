@@ -11,6 +11,7 @@ import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
+import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class TickTaskLoadBlocks implements ITickTask {
@@ -20,6 +21,7 @@ public class TickTaskLoadBlocks implements ITickTask {
 	AreaBase sel;
 	int last=0;
 	int	current=0;
+	Point currentBlock = null;
 	int	changed=0;
 	BlockArrayBackup backup;
 	int ticks = 0;
@@ -61,6 +63,7 @@ public class TickTaskLoadBlocks implements ITickTask {
 		this.player = player;
 		this.world = player.worldObj;
 		this.sel = sel;
+		currentBlock = sel.getLowPoint();
 		this.backup = new BlockArrayBackup(new BlockArray(sel.getLowPoint().x, sel.getLowPoint().y, sel.getLowPoint().z, false, sel.getXLength()-1, sel.getYLength()-1, sel.getZLength()-1), new BlockArray(sel.getLowPoint().x, sel.getLowPoint().y, sel.getLowPoint().z, false, sel.getXLength()-1, sel.getYLength()-1, sel.getZLength()-1));
 		last = sel.getXLength() * sel.getYLength() * sel.getZLength();
 	}
@@ -80,6 +83,10 @@ public class TickTaskLoadBlocks implements ITickTask {
 	protected void onCompleted() {
 		
 	}
+	
+	protected int x;
+	protected int y;
+	protected int z;
 
 	@Override
 	public void tick()
@@ -87,18 +94,52 @@ public class TickTaskLoadBlocks implements ITickTask {
 		ticks++;
 		int changed = 0;
 		runTick();
+		if(editsBlocks()&&currentBlock!=null) {
+			x = currentBlock.x;
+			y = currentBlock.y;
+			z = currentBlock.z;
+		}
 		for(int c = current;c<last;c++) {
 			if(changed>=ConfigWorldControl.blocksPerTick) {
 				changed = 0;
 				endTick();
 				if(current==last)onCompleted();
 				return;
+			}else{
+				current++;
+				if(placeBlock()) {
+					this.changed++;
+					changed++;
+					updatePosition();
+				}
 			}
-			current++;
-			if(placeBlock())this.changed++;
 		}
 		endTick();
 		onCompleted();
+	}
+	
+	private void updatePosition() {
+		if(editsBlocks()) {
+			x++;
+			if (x > sel.getHighPoint().x)
+			{
+				// Reset y, increment z.
+				x = sel.getLowPoint().x;
+				z++;
+				if (z > sel.getHighPoint().z)
+				{
+					// Reset z, increment x.
+					z = sel.getLowPoint().z;
+					y++;
+					// Check stop condition
+					if (y > sel.getHighPoint().y)
+					{
+						setComplete();
+					}
+				}
+			}
+			currentBlock = new Point(x, y, z);
+		}
 	}
 
 	@Override
