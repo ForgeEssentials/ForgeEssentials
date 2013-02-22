@@ -81,10 +81,6 @@ public class PlayerInfo
 		info.suffix = (String) tag.getFieldValue("suffix");
 
 		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
-		
-		// more testing
-		info.tester = (Point[]) tag.getFieldValue("tester");
-		info.testStack = (ItemStack) tag.getFieldValue("testStack");
 
 		return info;
 	}
@@ -116,14 +112,6 @@ public class PlayerInfo
 
 	@SaveableField(nullableField = true)
 	public WarpPoint				back;
-
-	// TESTING!!
-	@SaveableField()
-	public Point[]					tester		= new Point[] { new Point(1, 2, 3), new Point(5, 5, 5), new Point(0, 0, 0) };
-
-	//TESTING
-	@SaveableField()
-	public ItemStack				testStack	= new ItemStack(Block.blockGold);
 
 	@SaveableField()
 	public String					prefix;
@@ -157,13 +145,6 @@ public class PlayerInfo
 
 		prefix = "";
 		suffix = "";
-
-		// TESTING
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setByte("testByte", (byte) 123);
-		nbt.setString("testString", "lalalal----lalalalla");
-		nbt.setIntArray("testIntArray", new int[] { 123, 456, 789, 5, 4, 3, 2, 1 });
-		testStack.setTagCompound(nbt);
 	}
 
 	/**
