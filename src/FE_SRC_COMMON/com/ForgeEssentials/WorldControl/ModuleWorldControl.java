@@ -25,6 +25,9 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 //import com.ForgeEssentials.WorldControl.weintegration.WEIntegration;
 
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
+
 // central class for all the WorldControl stuff
 @FEModule(name = "WorldControl", parentMod = ForgeEssentials.class, configClass = ConfigWorldControl.class)
 public class ModuleWorldControl
@@ -43,7 +46,8 @@ public class ModuleWorldControl
 	@Init
 	public void load(FEModuleInitEvent event)
 	{
-		MinecraftForge.EVENT_BUS.register(new WandController());
+		MinecraftForge.EVENT_BUS.register(WandController.instance);
+		TickRegistry.registerTickHandler(WandController.instance, Side.SERVER);
 	}
 
 	// serverStart.
