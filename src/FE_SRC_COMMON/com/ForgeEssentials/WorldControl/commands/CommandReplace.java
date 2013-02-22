@@ -43,11 +43,8 @@ public class CommandReplace extends WorldControlCommandBase
 				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
 				return;
 			}
-			BlockInfo from = new BlockInfo();
-			BlockInfo to = new BlockInfo();
-
-			from.parseText(player, args[0]);
-			to.parseText(player, args[1]);
+			BlockInfo from = BlockInfo.parseAll(args[0], player);
+			BlockInfo to = BlockInfo.parseAll(args[1], player);
 			Selection sel = info.getSelection();
 
 			PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);

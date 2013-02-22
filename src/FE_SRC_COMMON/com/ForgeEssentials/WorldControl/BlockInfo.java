@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,9 +26,16 @@ public class BlockInfo
 			this.meta=meta;
 			this.nbt=nbt;
 		}
-		public boolean compare(SingularBlockInfo inf) {
-			return inf.block.blockID==block.blockID&&(inf.meta==-1||meta==-1||inf.meta==meta);
+		public int getBlockID() {
+			return block==null?0:block.blockID;
 		}
+		public boolean compare(SingularBlockInfo inf) {
+			return inf.getBlockID()==getBlockID()&&(inf.meta==-1||meta==-1||inf.meta==meta);
+		}
+	}
+	
+	public void merge(BlockInfo bi) {
+		blocks.addAll(bi.blocks);
 	}
 	
 	public boolean compare(SingularBlockInfo inf) {
@@ -80,45 +88,83 @@ public class BlockInfo
 		return true;
 	}
 	
-	public static boolean isIDMetaCombo(String str) {
-		if(str.contains(":")) {
+	public static BlockInfo parse(String str, EntityPlayer player) {
+		BlockInfo bi = new BlockInfo();
+		SingularBlockInfo name = getBlockInfoFromName(str, true);
+		if(str.contains(":")&& !str.contains("-") && !str.contains("_")) {
 			String[] strs = str.split(":");
 			if(strs.length==2) {
-				if(isValidBlockID(strs[0])) {
-					return true;
-				}
-			}
-		}else if(isValidBlockID(str)){
-			return true;
-		}
-		return false;
-	}
-	
-	public void parseText(EntityPlayer ep, String text) {
-		blocks = new ArrayList<SingularBlockInfo>();
-		for(String str : text.split(",")) {
-			boolean isIDCombo = isIDMetaCombo(str);
-			if(!isIDCombo) {
-				SingularBlockInfo bi = getBIFromName(str);
-				if(bi!=null) {
-					blocks.add(bi);
+				boolean isint = isInt(strs[1]);
+				SingularBlockInfo named = getBlockInfoFromName(strs[0], false);
+				if(isValidBlockID(strs[0]) && isint) {
+					bi.blocks.add(new SingularBlockInfo(Block.blocksList[Integer.parseInt(strs[0])], Integer.parseInt(strs[1]), null));
+				}else if(named!=null && isint) {
+					bi.blocks.add(new SingularBlockInfo(named.block, Integer.parseInt(strs[1]), null));
 				}else{
-					ep.sendChatToPlayer("Invalid name: "+str+" Ignoring...");
+					OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" The ID field must either be a valid block ID, or a name of a base block.");
+					return bi;
 				}
 			}else{
-				try{
-					SingularBlockInfo bi = text.contains(":")?new SingularBlockInfo(Block.blocksList[Integer.parseInt(text.substring(0, text.indexOf(":")))], Integer.parseInt(text.substring(text.indexOf(":")+1)), null):new SingularBlockInfo(Block.blocksList[Integer.parseInt(text)], 0, null);
-				}catch(Exception e) {
-					ep.sendChatToPlayer("Invalid id: "+str+" Ignoring...");
-				}
+				OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" You may not have more than two values in a combo.");
+				return bi;
 			}
+		}else if(isValidBlockID(str)) {
+			bi.blocks.add(new SingularBlockInfo(Block.blocksList[Integer.parseInt(str)], 0, null));
+		}else if(name!=null) {
+			bi.blocks.add(name);
+		}else if(str.contains("-")) {
+			String begin = str.substring(0, str.indexOf("-"));
+			String end = str.substring(str.indexOf("-")+1);
+			if(begin.contains(":")&& !begin.contains("-") && !begin.contains("_")) {
+				SingularBlockInfo first = parse(begin, player).blocks.get(0);
+				if(!isInt(end)) {
+					OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" Metadata must be a number.");
+					return bi;
+				}
+				int em = Integer.parseInt(end);
+				if(first.meta>=em||first.meta>15||em>15||first.meta<-1||em<-1) {
+					OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" Metadata cannot be larger than 15, smaller than -1, or be smaller in the second parameter.");
+					return bi;
+				}
+				for(int meta = first.meta;meta<em;meta++) {
+					bi.blocks.add(new SingularBlockInfo(first.block, meta, null));
+				}
+			}else{
+				OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" You cannot have ranges inside ranges, and you must specify a beginning metadata (Example: 35:0-15).");
+				return bi;
+			}
+		}else if(str.contains("_")) {
+			String begin = str.substring(0, str.indexOf("_"));
+			String end = str.substring(str.indexOf("_")+1);
+			if(isInt(begin) && isInt(end)) {
+				int first = Integer.parseInt(begin);
+				int last = Integer.parseInt(end);
+				for(int id = first;id<last;id++) {
+					bi.blocks.add(new SingularBlockInfo(Block.blocksList[id], 0, null));
+				}
+			}else{
+				OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" Both IDs must be numbers.");
+				return bi;
+			}
+		}else{
+			OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+"");
+			return bi;
 		}
+		//OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+"");
+		return bi;
 	}
 	
-	public static SingularBlockInfo getBIFromName(String name) {
+	public static BlockInfo parseAll(String str, EntityPlayer player) {
+		BlockInfo info = new BlockInfo();
+		for(String inf : str.split(",")) {
+			info.merge(parse(inf, player));
+		}
+		return info;
+	}
+	
+	public static SingularBlockInfo getBlockInfoFromName(String name, boolean hasMeta) {
 		String revised = name.toLowerCase().replace(" ", "").replace(".","");
 		if(name.equals("air"))return new SingularBlockInfo((Block)null, 0, null);
-		if(name.equals("ironshovel"))return new SingularBlockInfo((Block)null, 0, null);
 		for(int i = 0;i<Item.itemsList.length;i++) {
 			Item item = Item.itemsList[i];
 			if(item==null)continue;
@@ -126,8 +172,8 @@ public class BlockInfo
 			Block block = Block.blocksList[((ItemBlock)item).getBlockID()];
 			if(block==null)continue;
 			if(Item.itemsList[block.blockID]==null)continue;
-			for(int m = 0;m<16;m++) {
-				ItemStack is = new ItemStack(block, m);
+			for(int m = 0;m<(hasMeta?16:1);m++) {
+				ItemStack is = new ItemStack(block, 0, m);
 				String nam = FunctionHelper.getNameFromItemStack(is).toLowerCase().replace(" ", "").replace(".","");
 				if(nam.equals(revised))return new SingularBlockInfo(block, m, null);
 			}

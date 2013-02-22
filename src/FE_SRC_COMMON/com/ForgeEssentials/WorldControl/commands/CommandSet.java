@@ -53,8 +53,7 @@ public class CommandSet extends WorldControlCommandBase
 				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
 				return;
 			}
-			BlockInfo to = new BlockInfo();
-			to.parseText(player, args[0]);
+			BlockInfo to = BlockInfo.parseAll(args[0], player);
 			Selection sel = info.getSelection();
 
 			PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);

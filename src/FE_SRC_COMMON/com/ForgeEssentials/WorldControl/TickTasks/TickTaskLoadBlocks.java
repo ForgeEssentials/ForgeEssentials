@@ -28,9 +28,14 @@ public class TickTaskLoadBlocks implements ITickTask {
 	
 	protected boolean place(int x, int y, int z, BlockInfo info) {
 		BlockInfo.SingularBlockInfo inf = info.randomBlock();
-		if(!inf.block.canPlaceBlockAt(world, x, y, z))return false;
+		if(inf==null)return false;
+		if(inf.meta<0)return false;
 		backup.before.addBlock(world, x, y, z, true);
-		world.setBlockAndMetadataWithNotify(x, y, z, inf.meta, inf.block.blockID);
+		world.setBlock(x, y, z, 0);
+		boolean canPlace = (inf==null||inf.block==null);
+		if(!canPlace)canPlace = inf==null||inf.block.canPlaceBlockAt(world, x, y, z);
+		if(!canPlace)return false;
+		world.setBlockAndMetadataWithNotify(x, y, z, inf.block==null?0:inf.block.blockID, inf.meta);
 		if(inf.nbt!=null && world.getBlockTileEntity(x, y, z)!=null) {
 			inf.nbt.setInteger("x", x);
 			inf.nbt.setInteger("y", y);
@@ -42,8 +47,9 @@ public class TickTaskLoadBlocks implements ITickTask {
 	}
 	
 	protected boolean place(int x, int y, int z, BlockInfo.SingularBlockInfo inf) {
-		backup.before.addBlock(world, x, y, z, true);
 		if(inf==null)return false;
+		if(inf.meta<0)return false;
+		backup.before.addBlock(world, x, y, z, true);
 		world.setBlock(x, y, z, 0);
 		boolean canPlace = (inf==null||inf.block==null);
 		if(!canPlace)canPlace = inf==null||inf.block.canPlaceBlockAt(world, x, y, z);
