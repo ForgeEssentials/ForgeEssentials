@@ -64,8 +64,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	@Override
 	public String[] getFieldList()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return fields.keySet().toArray(new String[fields.size()]);
 	}
 
 	@Override
@@ -77,8 +76,8 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 		for (TypeData dat : datas)
 		{
 			for (Entry<String, Object> e : dat.getAllFields())
-				if (!(e.getValue() instanceof TypeData) && !(StorageManager.isTypeComplex(e.getValue().getClass())))
-					data.putField(e.getKey(), DataStorageManager.getDataForObject(e.getValue()));
+				if (e.getValue() != null && !(e.getValue() instanceof TypeData) && StorageManager.isTypeComplex(e.getValue().getClass()))
+					dat.putField(e.getKey(), DataStorageManager.getDataForObject(e.getValue()));
 			
 			data.putField("DataVal"+(i++), dat);
 		}

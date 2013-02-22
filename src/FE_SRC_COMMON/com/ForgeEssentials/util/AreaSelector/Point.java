@@ -170,7 +170,7 @@ public class Point implements Serializable, Comparable<Point>
 	@UniqueLoadingKey()
 	private String getLoadingField()
 	{
-		return "Point" + this;
+		return this.toString();
 	}
 
 	@Override

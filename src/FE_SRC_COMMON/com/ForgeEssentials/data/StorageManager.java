@@ -11,6 +11,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.api.data.ClassContainer;
+import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IStorageManager;
@@ -167,7 +168,7 @@ public class StorageManager implements IStorageManager
 			info = new TypeInfoStandard(type.getType());
 		else if (Serializable.class.isAssignableFrom(type.getType()))
 			info = new TypeInfoSerialize(type);
-		
+
 		if (info == null)
 			return;
 
@@ -337,7 +338,13 @@ public class StorageManager implements IStorageManager
 	@Override
 	public TypeData getDataForObject(Object obj)
 	{
-		return getInfoForType(new ClassContainer(obj.getClass())).getTypeDataFromObject(obj);
+		TypeData data = getInfoForType(new ClassContainer(obj.getClass())).getTypeDataFromObject(obj);
+		
+		for (Entry<String, Object> e : data.getAllFields())
+			if (e.getValue() != null && !(e.getValue() instanceof TypeData) && StorageManager.isTypeComplex(e.getValue().getClass()))
+				data.putField(e.getKey(), DataStorageManager.getDataForObject(e.getValue()));
+
+		return data;
 	}
 
 	/**
@@ -347,10 +354,17 @@ public class StorageManager implements IStorageManager
 	public static boolean isTypeComplex(Class obj)
 	{
 		boolean flag = true;
-		if (obj.isPrimitive() || obj.equals(Integer.class) || obj.equals(int[].class) || obj.equals(Float.class) || obj.equals(Double.class) || obj.equals(double[].class) || obj.equals(Boolean.class) || obj.equals(boolean[].class)
-				|| obj.equals(String.class) || obj.equals(String[].class))
+		if (obj.isPrimitive() || obj.equals(Integer.class) || obj.equals(Float.class) ||
+				obj.equals(Double.class) || obj.equals(Boolean.class) || obj.equals(String.class) ||
+				obj.equals(Byte.class))
 		{
 			flag = false;
+		}
+		else if (obj.isArray())
+		{
+			return !(obj.getComponentType().isPrimitive() || obj.getComponentType().equals(Integer.class) || obj.getComponentType().equals(Float.class) ||
+					obj.getComponentType().equals(Double.class) || obj.getComponentType().equals(Boolean.class) || obj.getComponentType().equals(String.class) ||
+					obj.equals(Byte.class));
 		}
 
 		return flag;

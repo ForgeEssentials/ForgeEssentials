@@ -3,6 +3,8 @@ package com.ForgeEssentials.core;
 import java.io.File;
 import java.util.LinkedHashMap;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
 import org.mcstats.Metrics;
@@ -28,6 +30,8 @@ import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLDataDriver;
 import com.ForgeEssentials.data.StorageManager;
+import com.ForgeEssentials.data.typeInfo.TypeInfoItemStack;
+import com.ForgeEssentials.data.typeInfo.TypeInfoNBTCompound;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.MiscEventHandler;
@@ -121,9 +125,13 @@ public class ForgeEssentials implements IServerStats
 
 			// Register saveables..
 			DataStorageManager.registerSaveableType(PlayerInfo.class);
+			
 			DataStorageManager.registerSaveableType(Point.class);
 			DataStorageManager.registerSaveableType(WorldPoint.class);
 			DataStorageManager.registerSaveableType(WarpPoint.class);
+			
+			DataStorageManager.registerSaveableType(TypeInfoItemStack.class, new ClassContainer(ItemStack.class));
+			DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
 		}
 
 		// setup modules AFTER data stuff...

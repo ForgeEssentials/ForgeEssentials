@@ -98,9 +98,22 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		{
 			cfg.get(category, name, ((Integer) obj).intValue());
 		}
+		else if (type.equals(Byte.class))
+		{
+			cfg.get(category, name, ((Byte) obj).intValue());
+		}
 		else if (type.equals(int[].class))
 		{
 			cfg.get(category, name, (int[]) obj);
+		}
+		else if (type.equals(byte[].class))
+		{
+			int[] array = new int[((byte[])obj).length];
+			
+			for (int i = 0 ; i < ((byte[])obj).length; i++)
+				array[i] = ((byte[])obj)[i];
+			
+			cfg.get(category, name, array);
 		}
 		else if (type.equals(Float.class))
 		{
@@ -140,7 +153,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		}
 		else
 		{
-			throw new IllegalArgumentException("Cannot save object type.");
+			throw new IllegalArgumentException("Cannot save object type. "+obj.getClass()+"  instance: "+obj);
 		}
 	}
 
@@ -150,9 +163,22 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		{
 			return cfg.get(category, name, 0).getInt();
 		}
+		if (type.equals(byte.class))
+		{
+			return (byte)cfg.get(category, name, 0).getInt();
+		}
 		else if (type.equals(int[].class))
 		{
 			return cfg.get(category, name, new int[] {}).getIntList();
+		}
+		else if (type.equals(byte[].class))
+		{
+			int[] array = cfg.get(category, name, new int[] {}).getIntList();
+			byte[] bArray = new byte[array.length];
+			
+			for (int i = 0; i < array.length; i++)
+				bArray[i] = (byte) array[i];
+			return bArray;
 		}
 		else if (type.equals(float.class))
 		{

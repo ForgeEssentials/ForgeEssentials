@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 
 import com.ForgeEssentials.api.data.ClassContainer;
@@ -18,8 +20,9 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 	public static final String	KEY			= "name";
 	public static final String	TYPE		= "type";
 	public static final String	PRIMITIVE	= "value";
-	public static final String	LIST		= "list";
 	public static final String	COMPOUND	= "compound";
+	public static final String	B_ARRAY		= "byteArray";
+	public static final String	I_ARRAY		= "intArray";
 
 	public TypeInfoNBTCompound(ClassContainer container)
 	{
@@ -30,29 +33,63 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 	public void build(HashMap<String, Class> fields)
 	{
 		fields.put(KEY, String.class);
-		//fields.put(VALUE, );
+		fields.put(TYPE, int.class);
+		fields.put(PRIMITIVE, String.class);
+		fields.put(COMPOUND, NBTTagCompound.class);
+		fields.put(B_ARRAY, byte[].class);
+		fields.put(I_ARRAY, int[].class);
 	}
 
 	@Override
 	public Set<TypeData> getTypeDatasFromObject(Object obj)
 	{
 		HashSet<TypeData> datas = new HashSet<TypeData>();
-		
+
 		NBTTagCompound nbt = (NBTTagCompound) obj;
-		
+
 		TypeData data;
 		for (NBTBase tag : (Collection<NBTBase>) nbt.getTags())
 		{
 			data = new TypeData(new ClassContainer(tag.getClass()));
 			data.putField(TYPE, tag.getId());
 			data.putField(KEY, tag.getName());
-			
+
 			if (tag instanceof NBTTagCompound)
 				data.putField(COMPOUND, tag);
-			else if (tag instanceof NBTTagList)
-				data.putField(LIST, tag);
+			else if (tag instanceof NBTTagIntArray)
+				data.putField(I_ARRAY, ((NBTTagIntArray)tag).intArray);
+			else if (tag instanceof NBTTagByteArray)
+				data.putField(B_ARRAY, ((NBTTagByteArray)tag).byteArray);
 			else
-				data.putField(PRIMITIVE, tag);
+			{
+				String val = null;
+				switch (tag.getId())
+					{
+						case 1:
+							val = "" + nbt.getByte(tag.getName());
+							break;
+						case 2:
+							val = "" + nbt.getShort(tag.getName());
+							break;
+						case 3:
+							val = "" + nbt.getInteger(tag.getName());
+							break;
+						case 4:
+							val = "" + nbt.getLong(tag.getName());
+							break;
+						case 5:
+							val = "" + nbt.getFloat(tag.getName());
+							break;
+						case 6:
+							val = "" + nbt.getDouble(tag.getName());
+							break;
+						case 8:
+							val = "" + nbt.getString(tag.getName());
+							break;
+					}
+
+				data.putField(PRIMITIVE, val);
+			}
 			datas.add(data);
 		}
 
@@ -75,62 +112,38 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 			switch (type)
 				{
 					case 1:
-						nbt.setByte(name, (Byte) dat.getFieldValue(PRIMITIVE));
+						nbt.setByte(name, Byte.parseByte(dat.getFieldValue(PRIMITIVE).toString()));
 						break;
 					case 2:
-						nbt.setShort(name, (Short) dat.getFieldValue(PRIMITIVE));
+						nbt.setShort(name, Short.parseShort(dat.getFieldValue(PRIMITIVE).toString()));
 						break;
 					case 3:
-						nbt.setInteger(name, (Integer) dat.getFieldValue(PRIMITIVE));
+						nbt.setInteger(name, Integer.parseInt(dat.getFieldValue(PRIMITIVE).toString()));
 						break;
 					case 4:
-						nbt.setLong(name, (Long) dat.getFieldValue(PRIMITIVE));
+						nbt.setLong(name, Long.parseLong(dat.getFieldValue(PRIMITIVE).toString()));
 						break;
 					case 5:
-						nbt.setFloat(name, (Float) dat.getFieldValue(PRIMITIVE));
+						nbt.setFloat(name, Float.parseFloat(dat.getFieldValue(PRIMITIVE).toString()));
 						break;
 					case 6:
-						nbt.setDouble(name, (Double) dat.getFieldValue(PRIMITIVE));
+						nbt.setDouble(name, Double.parseDouble(dat.getFieldValue(PRIMITIVE).toString()));
 						break;
 					case 7:
-						nbt.setByteArray(name, unboxArray((Byte[]) dat.getFieldValue(PRIMITIVE)));
+						nbt.setByteArray(name, (byte[]) dat.getFieldValue(B_ARRAY));
 						break;
 					case 8:
 						nbt.setString(name, (String) dat.getFieldValue(PRIMITIVE));
-						break;
-					case 9:
-						nbt.setTag(name, (NBTTagList) dat.getFieldValue(LIST));
 						break;
 					case 10:
 						nbt.setCompoundTag(name, (NBTTagCompound) dat.getFieldValue(COMPOUND));
 						break;
 					case 11:
-						nbt.setIntArray(name, unboxArray((Integer[]) dat.getFieldValue(PRIMITIVE)));
+						nbt.setIntArray(name, (int[]) dat.getFieldValue(I_ARRAY));
 						break;
 				}
 		}
 
 		return nbt;
 	}
-
-	private static int[] unboxArray(Integer[] array)
-	{
-		int[] newArray = new int[array.length];
-
-		for (int i = 0; i < array.length; i++)
-			newArray[i] = array[i];
-
-		return newArray;
-	}
-
-	private static byte[] unboxArray(Byte[] array)
-	{
-		byte[] newArray = new byte[array.length];
-
-		for (int i = 0; i < array.length; i++)
-			newArray[i] = array[i];
-
-		return newArray;
-	}
-
 }
