@@ -64,37 +64,38 @@ public class CommandPos extends WorldControlCommandBase
 
 			OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
 			return;
+		}else{
+
+			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player, false);
+
+			if (mop == null)
+			{
+				OutputHandler.chatError(player, Localization.get(Localization.ERROR_TARGET));
+				return;
+			}
+
+			x = mop.blockX;
+			y = mop.blockY;
+			z = mop.blockZ;
+
+			Point point = new Point(x, y, z);
+			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, getCommandPerm(), point)))
+			{
+				OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+				return;
+			}
+
+			if (type == 1)
+			{
+				PlayerInfo.getPlayerInfo(player.username).setPoint1(point);
+			}
+			else
+			{
+				PlayerInfo.getPlayerInfo(player.username).setPoint2(point);
+			}
+
+			OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
 		}
-
-		MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player, true);
-
-		if (mop == null)
-		{
-			OutputHandler.chatError(player, Localization.get(Localization.ERROR_TARGET));
-			return;
-		}
-
-		x = mop.blockX;
-		y = mop.blockY;
-		z = mop.blockZ;
-
-		Point point = new Point(x, y, z);
-		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, getCommandPerm(), point)))
-		{
-			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
-			return;
-		}
-
-		if (type == 1)
-		{
-			PlayerInfo.getPlayerInfo(player.username).setPoint1(point);
-		}
-		else
-		{
-			PlayerInfo.getPlayerInfo(player.username).setPoint2(point);
-		}
-
-		OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
 		return;
 	}
 

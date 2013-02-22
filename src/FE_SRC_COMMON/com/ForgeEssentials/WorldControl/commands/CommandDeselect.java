@@ -12,7 +12,7 @@ public class CommandDeselect extends WorldControlCommandBase
 	public CommandDeselect()
 	{
 		super(true);
-		aliasList.add("/sel");
+		aliasList.add("/desel");
 	}
 
 	@Override
