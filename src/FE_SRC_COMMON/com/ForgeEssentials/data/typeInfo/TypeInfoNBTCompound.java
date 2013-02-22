@@ -50,7 +50,7 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 		TypeData data;
 		for (NBTBase tag : (Collection<NBTBase>) nbt.getTags())
 		{
-			data = new TypeData(new ClassContainer(tag.getClass()));
+			data = getEntryData();
 			data.putField(TYPE, tag.getId());
 			data.putField(KEY, tag.getName());
 
@@ -94,6 +94,11 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 		}
 
 		return datas;
+	}
+	
+	protected String getEntryName()
+	{
+		return "NBTTag";
 	}
 
 	@Override

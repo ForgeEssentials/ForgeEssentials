@@ -59,7 +59,7 @@ public class ClassContainer
 	{
 		if (obj instanceof Class)
 		{
-			return className.equals(((Class)obj).getName());
+			return className.equals(((Class) obj).getName());
 		}
 		else if (obj instanceof ClassContainer)
 		{
@@ -79,8 +79,7 @@ public class ClassContainer
 		return parameters.length > 0;
 	}
 
-	@Override
-	public String toString()
+	public String getName()
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append(getType().getCanonicalName());
@@ -96,6 +95,34 @@ public class ClassContainer
 		builder.append(">");
 
 		return builder.toString();
+	}
+
+	public String getSimpleName()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append(getType().getSimpleName());
+
+		if (parameters.length > 0)
+		{
+			builder.append('<');
+
+			for (int i = 0; i < parameters.length; i++)
+			{
+				builder.append(parameters[i].getSimpleName());
+				if (i < parameters.length - 1)
+					builder.append(", ");
+			}
+
+			builder.append(">");
+		}
+
+		return builder.toString();
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName();
 	}
 
 }

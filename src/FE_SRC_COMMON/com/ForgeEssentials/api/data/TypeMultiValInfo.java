@@ -1,4 +1,5 @@
 package com.ForgeEssentials.api.data;
+import java.rmi.server.UID;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	{
 		
 		// will prolly never be called.
-		if (field.toLowerCase().contains("dataval"))
+		if (getEntryName().toLowerCase().contains("dataval"))
 			return entryInfo.getType();
 		return fields.get(field);
 	}
@@ -81,7 +82,20 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 			
 			data.putField("DataVal"+(i++), dat);
 		}
+		data.setUniqueKey(getUnique());
 		return data;
+	}
+	
+	protected String getEntryName()
+	{
+		return "DataVal";
+	}
+	
+	private String getUnique()
+	{
+		String id = (new UID()).toString();
+		id = id.replace(" ", "_");
+		return container.getSimpleName()+id;
 	}
 	
 	public abstract Set<TypeData> getTypeDatasFromObject(Object obj);
