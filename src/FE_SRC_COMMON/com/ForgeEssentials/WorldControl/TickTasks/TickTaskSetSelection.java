@@ -7,10 +7,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.WorldControl.BlockArrayBackup;
-import com.ForgeEssentials.WorldControl.BlockInfo;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.BlockArrayBackup;
+import com.ForgeEssentials.util.BlockInfo;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;

@@ -4,14 +4,14 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.WorldControl.BlockArray;
-import com.ForgeEssentials.WorldControl.BlockArrayBackup;
-import com.ForgeEssentials.WorldControl.BlockInfo;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskReplaceSelection;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.BlockArray;
+import com.ForgeEssentials.util.BlockArrayBackup;
+import com.ForgeEssentials.util.BlockInfo;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;

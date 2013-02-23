@@ -4,10 +4,10 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.WorldControl.BlockArrayBackup;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.BlockArrayBackup;
 import com.ForgeEssentials.util.BlockSaveable;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
@@ -62,7 +62,7 @@ public class TickTaskTopManipulator extends TickTaskLoadBlocks
 				break;
 			case SNOW:
 				if (blockID == 0) {
-					if(blockBelow && (!Block.blocksList[belowID].isOpaqueCube() || Block.blocksList[belowID].isLeaves(world, x, y, z))) {
+					if(blockBelow) {// && (!Block.blocksList[belowID].isOpaqueCube() || Block.blocksList[belowID].isLeaves(world, x, y, z))) {
 						return place(x, y, z, Block.snow.blockID, 0);
 					}
 				}

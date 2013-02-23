@@ -1,10 +1,8 @@
-package com.ForgeEssentials.WorldControl;
+package com.ForgeEssentials.util;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.OutputHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -65,23 +63,8 @@ public class BlockInfo
 		addBlock(null, 0, null);
 	}
 	
-	private static String nums = "1234567890";
-	
-	public static boolean isInt(String str) {
-		for(int chr = 0;chr<str.length();chr++) {
-			boolean isGood = false;
-			for(int num = 0;num<nums.length();num++) {
-				if(str.substring(chr, chr+1).equals(nums.substring(num, num+1))||(num==0&&str.substring(chr, chr+1).equals("-"))) {
-					isGood = true;
-				}
-			}
-			if(!isGood)return false;
-		}
-		return true;
-	}
-	
 	public static boolean isValidBlockID(String id) {
-		boolean isint = isInt(id);
+		boolean isint = FunctionHelper.isInt(id);
 		if(!isint)return false;
 		int nt = Integer.parseInt(id);
 		if(nt<0||nt>4095) return false;
@@ -91,10 +74,10 @@ public class BlockInfo
 	public static BlockInfo parse(String str, EntityPlayer player) {
 		BlockInfo bi = new BlockInfo();
 		SingularBlockInfo name = getBlockInfoFromName(str, true);
-		if(str.contains(":")&& isInt(str.substring(str.indexOf(":")+1))) {
+		if(str.contains(":")&& FunctionHelper.isInt(str.substring(str.indexOf(":")+1))) {
 			String[] strs = str.split(":");
 			if(strs.length==2) {
-				boolean isint = isInt(strs[1]);
+				boolean isint = FunctionHelper.isInt(strs[1]);
 				SingularBlockInfo named = getBlockInfoFromName(strs[0], false);
 				if(isValidBlockID(strs[0]) && isint) {
 					bi.blocks.add(new SingularBlockInfo(Block.blocksList[Integer.parseInt(strs[0])], Integer.parseInt(strs[1]), null));
@@ -117,7 +100,7 @@ public class BlockInfo
 			String end = str.substring(str.indexOf("-")+1);
 			if(begin.contains(":")&& !begin.contains("-") && !begin.contains("_")) {
 				SingularBlockInfo first = parse(begin, player).blocks.get(0);
-				if(!isInt(end)) {
+				if(!FunctionHelper.isInt(end)) {
 					OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" Metadata must be a number.");
 					return bi;
 				}
@@ -136,7 +119,7 @@ public class BlockInfo
 		}else if(str.contains("_")) {
 			String begin = str.substring(0, str.indexOf("_"));
 			String end = str.substring(str.indexOf("_")+1);
-			if(isInt(begin) && isInt(end)) {
+			if(FunctionHelper.isInt(begin) && FunctionHelper.isInt(end)) {
 				int first = Integer.parseInt(begin);
 				int last = Integer.parseInt(end);
 				for(int id = first;id<last;id++) {
