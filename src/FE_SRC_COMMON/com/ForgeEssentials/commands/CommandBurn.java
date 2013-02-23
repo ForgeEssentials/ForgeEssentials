@@ -1,10 +1,12 @@
 package com.ForgeEssentials.commands;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -29,22 +31,25 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			if (args[0].toLowerCase().equals("me") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".me")))
+			if (args[0].toLowerCase().equals("me"))
 			{
 				sender.setFire(15);
 				OutputHandler.chatError(sender, Localization.get(Localization.BURN_SELF));
 			}
-			else
+			else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
+				List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 				if (PlayerSelector.hasArguments(args[0]))
 				{
-					victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 				}
-				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
+				if (players.size() != 0)
 				{
-					victim.setFire(15);
 					OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
+					for (EntityPlayer player : players)
+					{
+						player.setFire(15);
+					}
 				}
 				else
 				{
@@ -54,7 +59,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			if (args[0].toLowerCase().equals("me") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".me")))
+			if (args[0].toLowerCase().equals("me"))
 			{
 				try
 				{
@@ -66,23 +71,27 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
 				}
 			}
-			else
+			else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
+				List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 				if (PlayerSelector.hasArguments(args[0]))
 				{
-					victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 				}
-				if (victim != null && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0])))
+				if (players.size() != 0)
 				{
-					try
+					for (EntityPlayer player : players)
 					{
-						victim.setFire(Integer.parseInt(args[1]));
-						OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
-					}
-					catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+						try
+						{
+							player.setFire(Integer.parseInt(args[1]));
+							OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
+						}
+						catch (NumberFormatException e)
+						{
+							OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+							break;
+						}
 					}
 				}
 				else
@@ -102,18 +111,17 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
+			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			}
-			if (PlayerSelector.hasArguments(args[0]))
+			if (players.size() != 0)
 			{
-				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
-			}
-			if (victim != null)
-			{
-				victim.setFire(Integer.parseInt(args[1]));
+				for (EntityPlayer player : players)
+				{
+					player.setFire(Integer.parseInt(args[1]));
+				}
 				sender.sendChatToPlayer(Localization.get(Localization.BURN_PLAYER));
 			}
 			else

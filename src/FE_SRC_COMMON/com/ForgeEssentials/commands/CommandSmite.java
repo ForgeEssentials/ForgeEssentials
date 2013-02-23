@@ -1,11 +1,13 @@
 package com.ForgeEssentials.commands;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
@@ -36,15 +38,18 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
+				List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 				if (PlayerSelector.hasArguments(args[0]))
 				{
-					victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 				}
-				if (victim != null)
+				if (players.size() != 0)
 				{
-					victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
-					sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
+					for (EntityPlayer victim : players)
+					{
+						victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
+						sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
+					}
 				}
 				else
 				{
@@ -72,19 +77,22 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayer victim = FunctionHelper.getPlayerFromPartialName(args[0]);
+			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				victim = PlayerSelector.matchOnePlayer(sender, args[0]);
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			}
-			if (victim != null)
+			if (players.size() != 0)
 			{
-				victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
-				sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
+				for (EntityPlayer victim : players)
+				{
+					victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
+					sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
+				}
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
 		else

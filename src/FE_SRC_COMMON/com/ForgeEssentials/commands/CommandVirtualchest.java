@@ -12,9 +12,7 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 /**
  * Opens a configurable virtual chest
- * 
  * @author Dries007
- * 
  */
 public class CommandVirtualchest extends ForgeEssentialsCommandBase
 {

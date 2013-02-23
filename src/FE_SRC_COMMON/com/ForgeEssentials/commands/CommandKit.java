@@ -22,7 +22,6 @@ import com.ForgeEssentials.util.OutputHandler;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
- * 
  * @author Dries007
  */
 

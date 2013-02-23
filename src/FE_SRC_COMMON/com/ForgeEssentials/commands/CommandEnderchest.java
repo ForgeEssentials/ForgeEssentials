@@ -11,9 +11,7 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 /**
  * Opens your enderchest.
- * 
  * @author Dries007
- * 
  */
 public class CommandEnderchest extends ForgeEssentialsCommandBase
 {

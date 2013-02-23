@@ -33,7 +33,6 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 	private static final DecimalFormat	DF	= new DecimalFormat("########0.000");
 
 	/**
-	 * 
 	 * @param par1ArrayOfLong
 	 * @return amount of time for 1 tick in ms
 	 */

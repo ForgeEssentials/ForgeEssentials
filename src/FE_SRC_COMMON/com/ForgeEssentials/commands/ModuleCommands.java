@@ -47,19 +47,19 @@ import cpw.mods.fml.relauncher.Side;
 public class ModuleCommands
 {
 	@Config
-	public static ConfigCmd		conf;
+	public static ConfigCmd			conf;
 
 	@ModuleDir
-	public static File			cmddir;
+	public static File				cmddir;
 
-	public static EventHandler	eventHandler	= new EventHandler();
-	public static DataDriver	data;
-	private static MCStatsHelper mcstats = new MCStatsHelper();
+	public static EventHandler		eventHandler	= new EventHandler();
+	public static DataDriver		data;
+	private static MCStatsHelper	mcstats			= new MCStatsHelper();
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		
+
 		MobTypeLoader.preLoad(e);
 	}
 
@@ -154,5 +154,4 @@ public class ModuleCommands
 		}
 	}
 
-	
 }
