@@ -59,6 +59,25 @@ public final class FunctionHelper
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
 	
+	public static Direction getInverseDirection(Direction dir) {
+		switch(dir) {
+			case NORTH:
+				return Direction.SOUTH;
+			case SOUTH:
+				return Direction.NORTH;
+			case EAST:
+				return Direction.WEST;
+			case WEST:
+				return Direction.EAST;
+			case UP:
+				return Direction.DOWN;
+			case DOWN:
+				return Direction.UP;
+			default:
+				return null;
+		}
+	}
+	
 	public static Direction getDirectionFromString(String str) {
 		String text = str.toLowerCase();
 		if(text.equals("n")) {
@@ -89,10 +108,11 @@ public final class FunctionHelper
 	public static Direction getFacingDirection(EntityPlayer player) {
 		int diri = MathHelper.floor_double((double)(player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3; // south, west, north, east
 		Direction dir = diri==0?Direction.SOUTH:diri==1?Direction.WEST:diri==2?Direction.NORTH:Direction.EAST;
-		float rotation = (int)MathHelper.wrapAngleTo180_float(player.rotationYaw);
-		if(rotation<22.5F) {
+		float rotation = (int)MathHelper.wrapAngleTo180_float(player.rotationPitch);
+		System.out.println(rotation);
+		if(rotation>67.5) {
 			dir = Direction.DOWN;
-		}else if(rotation>157.5) {
+		}else if(rotation<-67.5) {
 			dir = Direction.UP;
 		}
 		return dir;

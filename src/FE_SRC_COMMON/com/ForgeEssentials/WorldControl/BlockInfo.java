@@ -65,13 +65,13 @@ public class BlockInfo
 		addBlock(null, 0, null);
 	}
 	
-	private static String nums = "0123456789";
+	private static String nums = "1234567890";
 	
 	public static boolean isInt(String str) {
-		for(int chr = 0;chr<str.length()-1;chr++) {
+		for(int chr = 0;chr<str.length();chr++) {
 			boolean isGood = false;
-			for(int num = 0;num<nums.length()-1;num++) {
-				if(str.substring(chr, chr+1).equals(nums.substring(num, num+1))) {
+			for(int num = 0;num<nums.length();num++) {
+				if(str.substring(chr, chr+1).equals(nums.substring(num, num+1))||(num==0&&str.substring(chr, chr+1).equals("-"))) {
 					isGood = true;
 				}
 			}
@@ -91,7 +91,7 @@ public class BlockInfo
 	public static BlockInfo parse(String str, EntityPlayer player) {
 		BlockInfo bi = new BlockInfo();
 		SingularBlockInfo name = getBlockInfoFromName(str, true);
-		if(str.contains(":")&& !str.contains("-") && !str.contains("_")) {
+		if(str.contains(":")&& isInt(str.substring(str.indexOf(":")+1))) {
 			String[] strs = str.split(":");
 			if(strs.length==2) {
 				boolean isint = isInt(strs[1]);

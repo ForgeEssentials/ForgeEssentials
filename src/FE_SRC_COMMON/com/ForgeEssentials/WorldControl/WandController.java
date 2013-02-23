@@ -4,11 +4,14 @@ package com.ForgeEssentials.WorldControl;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -96,7 +99,7 @@ public class WandController implements ITickHandler
 				return true;
 			}else if(item.getItem() instanceof ItemBlock&&!inReach) {
 				ItemBlock block = (ItemBlock) item.getItem();
-				if(block.canPlaceItemBlockOnSide(player.worldObj, x, y, z, side, player, item) && player.capabilities.isCreativeMode) {
+				if(canPlaceItemBlockOnSide(player.worldObj, x, y, z, side, player, item, block) && player.capabilities.isCreativeMode) {
 					if(block.placeBlockAt(item, player, player.worldObj, ix, iy, iz, side, x, y, z, item.getItemDamage())){
 						if(!player.capabilities.isCreativeMode) {
 							player.inventory.consumeInventoryItem(item.itemID);
@@ -135,6 +138,51 @@ public class WandController implements ITickHandler
 		}
 		return false;
 	}
+	
+	public static boolean canPlaceItemBlockOnSide(World par1World, int par2, int par3, int par4, int par5, EntityPlayer par6EntityPlayer, ItemStack par7ItemStack, ItemBlock ib)
+    {
+        int var8 = par1World.getBlockId(par2, par3, par4);
+
+        if (var8 == Block.snow.blockID)
+        {
+            par5 = 1;
+        }
+        else if (var8 != Block.vine.blockID && var8 != Block.tallGrass.blockID && var8 != Block.deadBush.blockID
+                && (Block.blocksList[var8] == null || !Block.blocksList[var8].isBlockReplaceable(par1World, par2, par3, par4)))
+        {
+            if (par5 == 0)
+            {
+                --par3;
+            }
+
+            if (par5 == 1)
+            {
+                ++par3;
+            }
+
+            if (par5 == 2)
+            {
+                --par4;
+            }
+
+            if (par5 == 3)
+            {
+                ++par4;
+            }
+
+            if (par5 == 4)
+            {
+                --par2;
+            }
+
+            if (par5 == 5)
+            {
+                ++par2;
+            }
+        }
+
+        return par1World.canPlaceEntityOnSide(ib.getBlockID(), par2, par3, par4, false, par5, (Entity)null);
+    }
 	
 	private static HashMap<String, Boolean> isSwinging = new HashMap<String, Boolean>();
 

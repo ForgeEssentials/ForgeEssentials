@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
+import com.ForgeEssentials.WorldControl.commands.CommandChunk;
+import com.ForgeEssentials.WorldControl.commands.CommandContract;
 import com.ForgeEssentials.WorldControl.commands.CommandDeselect;
+import com.ForgeEssentials.WorldControl.commands.CommandExpand;
 import com.ForgeEssentials.WorldControl.commands.CommandPos;
 import com.ForgeEssentials.WorldControl.commands.CommandRedo;
 import com.ForgeEssentials.WorldControl.commands.CommandReplace;
@@ -68,6 +71,9 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandTopManipulate("till", Mode.TILL));
 		e.registerServerCommand(new CommandTopManipulate("untill", Mode.UNTILL));
 		e.registerServerCommand(new CommandTopManipulate("green", Mode.GREEN));
+		e.registerServerCommand(new CommandChunk());
+		e.registerServerCommand(new CommandExpand());
+		e.registerServerCommand(new CommandContract());
 		// WEIntegration.serverStarting(e);
 	}
 }
