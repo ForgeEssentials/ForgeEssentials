@@ -6,6 +6,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
+import com.ForgeEssentials.core.misc.DeathChest;
 import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -53,6 +54,10 @@ public class CoreConfig
 		prop = config.get("Core.Misc", "MajoritySleep", true);
 		prop.comment = "If +50% of players sleep, make it day.";
 		MiscEventHandler.MajoritySleep = prop.getBoolean(true);
+		
+		prop = config.get("Core.Misc", "DeathChest", true);
+		prop.comment = "Players with permission ForgeEssentials.DeathChest will get a deathchest instead of droping items.";
+		DeathChest.enable = prop.getBoolean(true);
 
 		config.addCustomCategoryComment("Core.VIP", "Permission \n" + PlayerTracker.PERMISSION);
 
