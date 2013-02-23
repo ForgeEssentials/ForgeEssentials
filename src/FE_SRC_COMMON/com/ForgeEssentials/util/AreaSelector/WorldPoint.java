@@ -35,6 +35,7 @@ public class WorldPoint extends Point
 	public WorldPoint(World world, int x, int y, int z)
 	{
 		super(x, y, z);
+		if(world==null)dim = 0;
 		dim = world.getWorldInfo().getDimension();
 	}
 
