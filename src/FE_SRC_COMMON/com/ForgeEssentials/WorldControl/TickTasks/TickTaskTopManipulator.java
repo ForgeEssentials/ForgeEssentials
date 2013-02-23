@@ -61,9 +61,10 @@ public class TickTaskTopManipulator extends TickTaskLoadBlocks
 				}
 				break;
 			case SNOW:
-				if (blockID == 0 && blockBelow && (!Block.blocksList[belowID].isOpaqueCube() || Block.blocksList[belowID].isLeaves(world, x, y, z)))
-				{
-					return place(x, y, z, Block.snow.blockID, 0);
+				if (blockID == 0) {
+					if(blockBelow && (!Block.blocksList[belowID].isOpaqueCube() || Block.blocksList[belowID].isLeaves(world, x, y, z))) {
+						return place(x, y, z, Block.snow.blockID, 0);
+					}
 				}
 				break;
 			case TILL:
