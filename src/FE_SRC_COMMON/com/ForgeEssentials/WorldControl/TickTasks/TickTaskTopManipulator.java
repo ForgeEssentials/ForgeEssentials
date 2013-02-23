@@ -37,50 +37,53 @@ public class TickTaskTopManipulator extends TickTaskLoadBlocks
 	protected boolean placeBlock() {
 		int blockID = world.getBlockId(x, y, z);
 		int aboveID = world.getBlockId(x, y+1, z);
-		if(Block.blocksList[aboveID]==null||Block.blocksList[aboveID].isOpaqueCube()) {
+		int belowID = world.getBlockId(x, y-1, z);
+		boolean blockAbove = false;
+		boolean blockBelow = false;
+		if(Block.blocksList[aboveID]!=null&&!Block.blocksList[aboveID].isOpaqueCube())  blockAbove = true;
+		if(Block.blocksList[belowID]!=null&&!Block.blocksList[belowID].isOpaqueCube())  blockBelow = true;
 		switch (effectMode)
 		{
 			case THAW:
 				if (blockID == Block.ice.blockID)
 				{
-					place(x, y, z, Block.waterMoving.blockID, 0);
+					return place(x, y, z, Block.waterMoving.blockID, 0);
 				}
 				else if (blockID == Block.snow.blockID)
 				{
-					place(x, y, z, 0, 0);
+					return place(x, y, z, 0, 0);
 				}
 				break;
 			case FREEZE:
-				if (blockID == Block.waterMoving.blockID || blockID == Block.waterStill.blockID)
+				if (blockID == Block.waterMoving.blockID || blockID == Block.waterStill.blockID && !blockAbove)
 				{
-					place(x, y, z, Block.ice.blockID, 0);
+					return place(x, y, z, Block.ice.blockID, 0);
 				}
 				break;
 			case SNOW:
-				if (Block.isNormalCube(world.getBlockId(x, y, z)) || (Block.blocksList[blockID] == null || Block.blocksList[blockID].isLeaves(world, x, y, z)))
+				if (blockID == 0 && blockBelow && (!Block.blocksList[belowID].isOpaqueCube() || Block.blocksList[belowID].isLeaves(world, x, y, z)))
 				{
-					place(x, y, z, Block.snow.blockID, 0);
+					return place(x, y, z, Block.snow.blockID, 0);
 				}
 				break;
 			case TILL:
-				if (blockID == Block.dirt.blockID || blockID == Block.grass.blockID)
+				if ((blockID == Block.dirt.blockID || blockID == Block.grass.blockID) && !blockAbove)
 				{
-					place(x, y, z, Block.tilledField.blockID, 0);
+					return place(x, y, z, Block.tilledField.blockID, 0);
 				}
 				break;
 			case UNTILL:
 				if (blockID == Block.tilledField.blockID)
 				{
-					place(x, y, z, Block.dirt.blockID, 0);
+					return place(x, y, z, Block.dirt.blockID, 0);
 				}
 				break;
 			case GREEN:
-				if (blockID == Block.dirt.blockID)
+				if (blockID == Block.dirt.blockID && !blockAbove)
 				{
-					place(x, y, z, Block.grass.blockID, 0);
+					return place(x, y, z, Block.grass.blockID, 0);
 				}
 				break;
-		}
 		}
 		return false;
 	}
