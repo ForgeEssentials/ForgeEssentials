@@ -65,12 +65,12 @@ public class BlockInfo
 		addBlock(null, 0, null);
 	}
 	
-	private static String nums = "0123456789";
+	private static String nums = "-1234567890";
 	
 	public static boolean isInt(String str) {
-		for(int chr = 0;chr<str.length()-1;chr++) {
+		for(int chr = 0;chr<str.length();chr++) {
 			boolean isGood = false;
-			for(int num = 0;num<nums.length()-1;num++) {
+			for(int num = 0;num<nums.length();num++) {
 				if(str.substring(chr, chr+1).equals(nums.substring(num, num+1))) {
 					isGood = true;
 				}
