@@ -5,12 +5,14 @@ import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.BlockArray;
 import com.ForgeEssentials.WorldControl.BlockArrayBackup;
+import com.ForgeEssentials.WorldControl.BlockInfo;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
+import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class CommandTopManipulate extends WorldControlCommandBase
@@ -35,57 +37,26 @@ public class CommandTopManipulate extends WorldControlCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		if (args.length == 1 || args.length == 3)
+		if (args.length == 0 || args.length == 1)
 		{
+			AreaBase area = new AreaBase();
 			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
-			if (info.getSelection() == null)
-			{
-				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
-				return;
-			}
-			int radius = -1;
-			Point effectPosition = null;
-
-			try
-			{
-				radius = Integer.parseInt(args[0]);
-			}
-			catch (Exception e)
-			{
-				error(player);
-				radius = -1;
-			}
-
-			if (args.length == 1)
-			{
-				effectPosition = new Point((int) player.posX - 1, (int) player.posY, (int) player.posZ);
-			}
-			else
-			{
-				int x;
-				int z;
-
-				try
-				{
-					x = Integer.parseInt(args[1]);
-					z = Integer.parseInt(args[2]);
-
-					effectPosition = new Point(x, 0, z);
+			if(args.length == 0) {
+				if(info.getSelection()==null) {
+					OutputHandler.chatError(player, "You must have a selection set.");
+					return;
 				}
-				catch (Exception e)
-				{
-					error(player);
-				}
-			}
-
-			if (radius != -1 && effectPosition != null)
+				area = info.getSelection();
+			}else if (args.length == 1)
 			{
-				World world = player.worldObj;
-				BlockArrayBackup back = new BlockArrayBackup(new BlockArray(0, 0, 0, true, radius, 255, radius), new BlockArray(0, 0, 0, true, radius, 255, radius));
-				// For some reason, player.posX is out.
-
-				TickTaskHandler.addTask(new TickTaskTopManipulator(player, back, effectPosition, radius, manipulateMode));
+				if(!BlockInfo.isInt(args[0])) {
+					OutputHandler.chatError(player, "Radius is not a number.");
+					return;
+				}
+				int radius = Integer.parseInt(args[0]);
+				area.setPoints(new Point((int) player.posX - 1 - radius/2, (int) player.posY - radius/2, (int) player.posZ - radius/2), new Point((int) player.posX - 1 + radius/2, (int) player.posY + radius/2, (int) player.posZ + radius/2));
 			}
+			TickTaskHandler.addTask(new TickTaskTopManipulator(player, area, manipulateMode));
 			player.sendChatToPlayer("Working on " + name + ".");
 		}
 		else
