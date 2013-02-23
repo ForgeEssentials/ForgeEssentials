@@ -67,6 +67,7 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandTopManipulate("snow", Mode.SNOW));
 		e.registerServerCommand(new CommandTopManipulate("till", Mode.TILL));
 		e.registerServerCommand(new CommandTopManipulate("untill", Mode.UNTILL));
+		e.registerServerCommand(new CommandTopManipulate("green", Mode.GREEN));
 		// WEIntegration.serverStarting(e);
 	}
 }
