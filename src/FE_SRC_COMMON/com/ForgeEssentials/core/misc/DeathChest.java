@@ -26,6 +26,7 @@ public class DeathChest
 {
 	private static final String		PERM	= "ForgeEssentials.DeathChest";
 	public static DeathChest 		instance;
+	public static boolean			enable;
 	
 	public DeathChest()
 	{
@@ -35,6 +36,7 @@ public class DeathChest
 	@ForgeSubscribe()
 	public void deathEvent(PlayerDropsEvent e)
 	{
+		if(!enable) return;
 		if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, PERM)))
 		{
 			int id = e.entityPlayer.worldObj.getBlockId((int) e.entityPlayer.posX, (int) e.entityPlayer.posY, (int) e.entityPlayer.posZ);
