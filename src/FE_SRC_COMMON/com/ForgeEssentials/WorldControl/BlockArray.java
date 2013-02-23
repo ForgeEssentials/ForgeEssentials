@@ -235,7 +235,7 @@ public class BlockArray implements Serializable // UC
 			if(world.getBlockTileEntity(x, y, z)!=null) {
 				blocks.add(new BlockInfoTES(world, x, y, z));
 			}else{
-				bi = meta==0?new BlockInfoNTES(lid, x, y, z):new BlockInfoNTEMS(lid, meta, x, y, z);
+				bi = meta==0?new BlockInfoNTES(id, x, y, z):new BlockInfoNTEMS(id, meta, x, y, z);
 			}
 		}else{
 			if(world.getBlockTileEntity(x, y, z)!=null) {
@@ -244,11 +244,11 @@ public class BlockArray implements Serializable // UC
 				repeats++;
 				return;
 			}else if(repeats>1) {
-				bi = meta==0?new BlockInfoNTEC(lid, repeats):new BlockInfoNTEMC(lid, meta, repeats);
+				bi = meta==0?new BlockInfoNTEC(id, repeats):new BlockInfoNTEMC(id, meta, repeats);
 				repeats = 0;
 			}else{
 				repeats = 0;
-				bi = meta==0?new BlockInfoNTE(lid):new BlockInfoNTEM(lid, meta);
+				bi = meta==0?new BlockInfoNTE(id):new BlockInfoNTEM(id, meta);
 			}
 		}
 		if(bi != null)blocks.add(bi);
