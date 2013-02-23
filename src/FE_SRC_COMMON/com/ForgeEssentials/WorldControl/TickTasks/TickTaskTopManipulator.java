@@ -12,9 +12,10 @@ import com.ForgeEssentials.util.BlockSaveable;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
-public class TickTaskTopManipulator implements ITickTask
+public class TickTaskTopManipulator extends TickTaskLoadBlocks
 {
 	public enum Mode
 	{
@@ -22,185 +23,70 @@ public class TickTaskTopManipulator implements ITickTask
 		FREEZE, // Replaces exposed water with ice.
 		SNOW, // Adds a dusting of snow to exposed non-liquid blocks.
 		TILL, // Transforms exposed grass & dirt into tilled farmland.
-		UNTILL, // Replaces farmland with bare dirt
+		UNTILL, // Replaces farmland with bare dirt.
+		GREEN, // Turns dirt into grass.
 	}
-
-	// Data that is determined at start and does not change.
-	private EntityPlayer	player;
-	private BlockArrayBackup		backup;
-	private Point			effectOrigin;
-	private int				effectRadius;
 	private Mode			effectMode;
 
-	// State info
-	private int				changed;
-	private int				ticks;
-	private boolean			isComplete;
-	private Point			currentPos;
-
-	public TickTaskTopManipulator(EntityPlayer play, BlockArrayBackup back, Point origin, int radius, Mode mode)
+	public TickTaskTopManipulator(EntityPlayer player, AreaBase area, Mode mode)
 	{
-		player = play;
-		backup = back;
-		effectOrigin = origin;
-		effectRadius = radius;
+		super(player, area);
 		effectMode = mode;
-
-		ticks = 0;
-		changed = 0;
-		isComplete = false;
-
-		currentPos = new Point(effectOrigin.x - effectRadius, 0, effectOrigin.z - effectRadius);
 	}
-
-	@Override
-	public void tick()
-	{
-		ticks++;
-		int currentBlocksChanged = 0;
-		boolean continueFlag = true;
-		World world = player.worldObj;
-
-		// Only store the X and Z, since we're considering columns only.
-		int x = currentPos.x;
-		int z = currentPos.z;
-		int y = 0;
-		int blockID;
-
-		while (continueFlag)
-		{
-			// Find the y coord of the first exposed, non-air block.
-			y = world.getActualHeight();
-			while (world.isAirBlock(x, y, z) && y >= 0)
-			{
-				y--;
-			}
-
-			// If Y goes under the world base, skip this column. (The End, I'm
-			// looking at you.)
-			if (0 <= y && y <= world.getActualHeight())
-			{
-				blockID = world.getBlockId(x, y, z);
-
-				switch (effectMode)
-					{
-						case THAW:
-							if (blockID == Block.ice.blockID)
-							{
-								// Replace ice with water.
-								backup.before.addBlock(world, x, y, z, true);
-								world.setBlock(x, y, z, Block.waterMoving.blockID);
-								backup.after.addBlock(world, x, y, z, true);
-								currentBlocksChanged++;
-							}
-							else if (blockID == Block.snow.blockID)
-							{
-								// Remove snow.
-								backup.before.addBlock(world, x, y, z, true);
-								world.setBlock(x, y, z, 0);
-								backup.after.addBlock(world, x, y, z, true);
-								currentBlocksChanged++;
-							}
-							break;
-						case FREEZE:
-							if (blockID == Block.waterMoving.blockID || blockID == Block.waterStill.blockID)
-							{
-								// Both water types become ice.
-								backup.before.addBlock(world, x, y, z, true);
-								world.setBlock(x, y, z, Block.ice.blockID);
-								backup.after.addBlock(world, x, y, z, true);
-								currentBlocksChanged++;
-							}
-							break;
-						case SNOW:
-							if (Block.isNormalCube(world.getBlockId(x, y, z)) || Block.blocksList[blockID].isLeaves(world, x, y, z))
-							{
-								// Add snow covering to the block above.
-								backup.before.addBlock(world, x, y+1, z, true);
-								world.setBlock(x, y + 1, z, Block.snow.blockID);
-								backup.after.addBlock(world, x, y+1, z, true);
-								currentBlocksChanged++;
-							}
-							break;
-						case TILL:
-							if (blockID == Block.dirt.blockID || blockID == Block.grass.blockID)
-							{
-								backup.before.addBlock(world, x, y, z, true);
-								world.setBlock(x, y, z, Block.tilledField.blockID);
-								backup.after.addBlock(world, x, y, z, true);
-								currentBlocksChanged++;
-							}
-							break;
-						case UNTILL:
-							if (blockID == Block.tilledField.blockID)
-							{
-								backup.before.addBlock(world, x, y, z, true);
-								world.setBlock(x, y, z, Block.dirt.blockID);
-								backup.after.addBlock(world, x, y, z, true);
-								currentBlocksChanged++;
-							}
-							break;
-					}
-			}
-
-			z++;
-
-			if (z > (effectOrigin.z + effectRadius))
-			{
-				x++;
-				z = effectOrigin.z - effectRadius;
-				if (x > (effectOrigin.x + effectRadius))
-				{
-					isComplete = true;
-				}
-			}
-
-			if (isComplete || currentBlocksChanged >= ConfigWorldControl.blocksPerTick)
-			{
-				changed += currentBlocksChanged;
-				currentPos = new Point(x, 0, z);
-				continueFlag = false;
-			}
-		}
-	}
-
-	@Override
-	public void onComplete()
-	{
-		PlayerInfo.getPlayerInfo(player).addUndoAction(backup);
-
-		String confirmMessage = "";
+	
+	protected boolean placeBlock() {
+		int blockID = world.getBlockId(x, y, z);
+		int aboveID = world.getBlockId(x, y+1, z);
+		int belowID = world.getBlockId(x, y-1, z);
+		boolean blockAbove = false;
+		boolean blockBelow = false;
+		if(Block.blocksList[aboveID]!=null&&!Block.blocksList[aboveID].isOpaqueCube())  blockAbove = true;
+		if(Block.blocksList[belowID]!=null&&!Block.blocksList[belowID].isOpaqueCube())  blockBelow = true;
 		switch (effectMode)
-			{
-				case THAW:
-					confirmMessage = "thaw";
-					break;
-				case FREEZE:
-					confirmMessage = "freeze";
-					break;
-				case SNOW:
-					confirmMessage = "snow";
-					break;
-				case TILL:
-					confirmMessage = "till";
-					break;
-				case UNTILL:
-					confirmMessage = "untill";
-					break;
-			}
-		OutputHandler.chatConfirmation(player, Localization.format("message.wc." + confirmMessage + "Confirm", changed));
-	}
-
-	@Override
-	public boolean isComplete()
-	{
-		return isComplete;
-	}
-
-	@Override
-	public boolean editsBlocks()
-	{
-		return true;
+		{
+			case THAW:
+				if (blockID == Block.ice.blockID)
+				{
+					return place(x, y, z, Block.waterMoving.blockID, 0);
+				}
+				else if (blockID == Block.snow.blockID)
+				{
+					return place(x, y, z, 0, 0);
+				}
+				break;
+			case FREEZE:
+				if (blockID == Block.waterMoving.blockID || blockID == Block.waterStill.blockID && !blockAbove)
+				{
+					return place(x, y, z, Block.ice.blockID, 0);
+				}
+				break;
+			case SNOW:
+				if (blockID == 0) {
+					if(blockBelow && (!Block.blocksList[belowID].isOpaqueCube() || Block.blocksList[belowID].isLeaves(world, x, y, z))) {
+						return place(x, y, z, Block.snow.blockID, 0);
+					}
+				}
+				break;
+			case TILL:
+				if ((blockID == Block.dirt.blockID || blockID == Block.grass.blockID) && !blockAbove)
+				{
+					return place(x, y, z, Block.tilledField.blockID, 0);
+				}
+				break;
+			case UNTILL:
+				if (blockID == Block.tilledField.blockID)
+				{
+					return place(x, y, z, Block.dirt.blockID, 0);
+				}
+				break;
+			case GREEN:
+				if (blockID == Block.dirt.blockID && !blockAbove)
+				{
+					return place(x, y, z, Block.grass.blockID, 0);
+				}
+				break;
+		}
+		return false;
 	}
 
 }

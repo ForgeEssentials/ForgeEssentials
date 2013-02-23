@@ -4,11 +4,13 @@ package com.ForgeEssentials.WorldControl.TickTasks;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.BlockArray;
 import com.ForgeEssentials.WorldControl.BlockArrayBackup;
 import com.ForgeEssentials.WorldControl.BlockInfo;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
+import com.ForgeEssentials.WorldControl.EventWCCommand;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.OutputHandler;
@@ -31,6 +33,25 @@ public class TickTaskLoadBlocks implements ITickTask {
 	protected boolean place(int x, int y, int z, BlockInfo info) {
 		BlockInfo.SingularBlockInfo inf = info.randomBlock();
 		if(inf==null)return false;
+		if(inf.meta<0)return false;
+		if(requiresBackup())backup.before.addBlock(world, x, y, z, true);
+		world.setBlock(x, y, z, 0);
+		boolean canPlace = (inf==null||inf.block==null);
+		if(!canPlace)canPlace = inf==null||inf.block.canPlaceBlockAt(world, x, y, z);
+		if(!canPlace)return false;
+		world.setBlockAndMetadataWithNotify(x, y, z, inf.block==null?0:inf.block.blockID, inf.meta);
+		if(inf.nbt!=null && world.getBlockTileEntity(x, y, z)!=null) {
+			inf.nbt.setInteger("x", x);
+			inf.nbt.setInteger("y", y);
+			inf.nbt.setInteger("z", z);
+			world.getBlockTileEntity(x, y, z).readFromNBT(inf.nbt);
+		}
+		if(requiresBackup())backup.after.addBlock(world, x, y, z, true);
+		return true;
+	}
+	
+	protected boolean place(int x, int y, int z, int id, int meta) {
+		BlockInfo.SingularBlockInfo inf = new BlockInfo.SingularBlockInfo(Block.blocksList[id], meta, null);
 		if(inf.meta<0)return false;
 		if(requiresBackup())backup.before.addBlock(world, x, y, z, true);
 		world.setBlock(x, y, z, 0);
@@ -118,10 +139,19 @@ public class TickTaskLoadBlocks implements ITickTask {
 	protected boolean usesCoordsSystem() {
 		return true;
 	}
+	
+	private boolean canRun = true;
 
 	@Override
 	public void tick()
 	{
+		if(canRun) {
+			boolean run = MinecraftForge.EVENT_BUS.post(new EventWCCommand(player, sel));
+			if(run) {
+				setComplete(false);
+			}
+			canRun = false;
+		}
 		ticks++;
 		int changed = 0;
 		runTick();
@@ -181,13 +211,25 @@ public class TickTaskLoadBlocks implements ITickTask {
 	public void onComplete()
 	{
 		if(requiresBackup())PlayerInfo.getPlayerInfo(player.username).addUndoAction(backup);
-		OutputHandler.chatConfirmation(player, "" + changed + " blocks changed in "+(double)ticks/20D+" seconds");
+		if(showMessage) {
+			OutputHandler.chatConfirmation(player, "" + changed + " blocks changed in "+(double)ticks/20D+" seconds");
+		}else{
+			OutputHandler.chatError(player, "Unable to complete, chunks not loaded.");
+		}
 	}
 	
 	private boolean forceComplete = false;
+	private boolean showMessage = true;
 	
 	protected void setComplete() {
+		setComplete(true);
+	}
+	
+	protected void setComplete(boolean showMessage) {
 		forceComplete = true;
+		if(!showMessage) {
+			this.showMessage = false;
+		}
 	}
 
 	@Override

@@ -41,4 +41,10 @@ public class CommandDeselect extends WorldControlCommandBase
 	{
 		return "Clears the currently selected area";
 	}
+	
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.WorldControl.commands.pos";
+	}
 }

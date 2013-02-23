@@ -217,18 +217,25 @@ public class BlockArray implements Serializable // UC
 	private byte meta = 0;
 	private short lid = 0;
 	private byte lmeta = 0;
+	boolean first = true;
 	
 	public void addBlock(World world, int x, int y, int z, boolean isSensitive) {
-		lid = id;
-		lmeta = meta;
-		id = (short)world.getBlockId(x, y, z);
-		meta = (byte)world.getBlockMetadata(x, y, z);
+		if(first) {
+			id = (short)world.getBlockId(x, y, z);
+			meta = (byte)world.getBlockMetadata(x, y, z);
+			first = false;
+		}else{
+			lid = id;
+			lmeta = meta;
+			id = (short)world.getBlockId(x, y, z);
+			meta = (byte)world.getBlockMetadata(x, y, z);
+		}
 		BlockInfo bi = null;
 		if(isSensitive) {
 			if(world.getBlockTileEntity(x, y, z)!=null) {
 				blocks.add(new BlockInfoTES(world, x, y, z));
 			}else{
-				bi = meta==0?new BlockInfoNTES(lid, x, y, z):new BlockInfoNTEMS(lid, meta, x, y, z);
+				bi = meta==0?new BlockInfoNTES(id, x, y, z):new BlockInfoNTEMS(id, meta, x, y, z);
 			}
 		}else{
 			if(world.getBlockTileEntity(x, y, z)!=null) {
@@ -237,11 +244,11 @@ public class BlockArray implements Serializable // UC
 				repeats++;
 				return;
 			}else if(repeats>1) {
-				bi = meta==0?new BlockInfoNTEC(lid, repeats):new BlockInfoNTEMC(lid, meta, repeats);
+				bi = meta==0?new BlockInfoNTEC(id, repeats):new BlockInfoNTEMC(id, meta, repeats);
 				repeats = 0;
 			}else{
 				repeats = 0;
-				bi = meta==0?new BlockInfoNTE(lid):new BlockInfoNTEM(lid, meta);
+				bi = meta==0?new BlockInfoNTE(id):new BlockInfoNTEM(id, meta);
 			}
 		}
 		if(bi != null)blocks.add(bi);

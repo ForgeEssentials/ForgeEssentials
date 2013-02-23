@@ -85,7 +85,7 @@ public class WandController implements ITickHandler
 		ItemStack item = player.getCurrentEquippedItem();
 		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, "WorldControl.commands.pos", new Point(x, y, z))))
 		{
-			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+			//OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 			return false;
 		}
 		if(item!=null) {
@@ -119,7 +119,7 @@ public class WandController implements ITickHandler
 		ItemStack item = player.getCurrentEquippedItem();
 		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, "WorldControl.commands.pos", new Point(x, y, z))))
 		{
-			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+			//OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 			return false;
 		}
 		if(item!=null) {
