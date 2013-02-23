@@ -25,6 +25,17 @@ public class AreaBase
 		high = points[1];
 	}
 
+	public AreaBase()
+	{
+		
+	}
+	
+	public void setPoints(Point start, Point end) {
+		Point[] points = getAlignedPoints(start, end);
+		low = points[0];
+		high = points[1];
+	}
+
 	public int getXLength()
 	{
 		return high.x - low.x + 1;
