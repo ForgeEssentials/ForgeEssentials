@@ -189,7 +189,7 @@ public class ZoneHelper implements IZoneManager
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 		{
-			if (worldZone.isParentOf(zone) && zone.contains(p))
+			if (zone.contains(p))
 			{
 				zones.add(zone);
 			}
@@ -247,11 +247,12 @@ public class ZoneHelper implements IZoneManager
 
 		Zone worldZone = getWorldZone(world);
 		ArrayList<Zone> zones = new ArrayList<Zone>();
+		int worldDim = world.getWorldInfo().getDimension();
 
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 		{
-			if (zone.contains(area) && worldZone.isParentOf(zone) && world.getWorldInfo().getDimension() == zone.dim)
+			if (worldDim == zone.dim && zone.contains(area) && worldZone.isParentOf(zone))
 			{
 				zones.add(zone);
 			}
