@@ -29,7 +29,7 @@ public class CommandChunk extends WorldControlCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		int x = ((int)((int)player.posX)/16)*16;
+		int x = ((int)((int)player.posX)/16-1)*16;
 		int z = ((int)((int)player.posZ)/16)*16;
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 		info.setPoint1(new Point(x, 0, z));
