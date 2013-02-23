@@ -66,17 +66,17 @@ public class CommandPos extends WorldControlCommandBase
 			return;
 		}else{
 
-			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player, false);
+			//MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player, false);
 
-			if (mop == null)
-			{
-				OutputHandler.chatError(player, Localization.get(Localization.ERROR_TARGET));
-				return;
-			}
+			//if (mop == null)
+			//{
+			//	OutputHandler.chatError(player, Localization.get(Localization.ERROR_TARGET));
+			//	return;
+			//}
 
-			x = mop.blockX;
-			y = mop.blockY;
-			z = mop.blockZ;
+			x = (int)player.posX-1;
+			y = (int)player.posY;
+			z = (int)player.posZ;
 
 			Point point = new Point(x, y, z);
 			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, getCommandPerm(), point)))
