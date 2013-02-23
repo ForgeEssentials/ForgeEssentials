@@ -108,10 +108,11 @@ public final class FunctionHelper
 	public static Direction getFacingDirection(EntityPlayer player) {
 		int diri = MathHelper.floor_double((double)(player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3; // south, west, north, east
 		Direction dir = diri==0?Direction.SOUTH:diri==1?Direction.WEST:diri==2?Direction.NORTH:Direction.EAST;
-		float rotation = (int)MathHelper.wrapAngleTo180_float(player.rotationYaw);
-		if(rotation<22.5F) {
+		float rotation = (int)MathHelper.wrapAngleTo180_float(player.rotationPitch);
+		System.out.println(rotation);
+		if(rotation>67.5) {
 			dir = Direction.DOWN;
-		}else if(rotation>157.5) {
+		}else if(rotation<-67.5) {
 			dir = Direction.UP;
 		}
 		return dir;
