@@ -42,9 +42,7 @@ public class TickTaskLoadBlockArray extends TickTaskLoadBlocks
 			
 		}else{
 			BlockArray.LoadingBlock block = blocksToLoad.get(current);
-			System.out.println(block.x+", "+block.z);
 			boolean bool = place(block.x, block.y, block.z, block);
-			System.out.println(bool + ", " + world.getBlockId(block.x, block.y, block.z));
 			return bool;
 		}
 		return false;
