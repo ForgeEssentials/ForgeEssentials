@@ -35,13 +35,21 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
 		EntityPlayerMP player = (EntityPlayerMP) tickData[0];
-
+		
 		WarpPoint before = befores.get(player.username);
 		WarpPoint current = new WarpPoint(player);
 
+		// obviously.. if there IS no before.. don't worry about it.
 		if (before == null)
 		{
 			befores.put(player.username, current);
+			return;
+		}
+		
+		// no respawn stuff or respawn stuff
+		if (player.isDead || player.worldObj == null || before.dim != current.dim)
+		{
+			befores.remove(player.username);
 			return;
 		}
 

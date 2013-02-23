@@ -19,10 +19,6 @@ import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 @SaveableObject(SaveInline = true)
 public class WorldPoint extends Point
 {
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= -3743470804433969687L;
 	@SaveableField
 	public int					dim;
 
@@ -35,7 +31,6 @@ public class WorldPoint extends Point
 	public WorldPoint(World world, int x, int y, int z)
 	{
 		super(x, y, z);
-		if(world==null)dim = 0;
 		dim = world.getWorldInfo().getDimension();
 	}
 
