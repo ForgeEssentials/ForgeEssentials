@@ -1,6 +1,7 @@
 package com.ForgeEssentials.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -8,6 +9,8 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -18,9 +21,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Allows you to modify a bunch of interesting stuff...
- * 
  * @author Dries007
- * 
  */
 
 public class CommandCapabilities extends ForgeEssentialsCommandBase
@@ -80,100 +81,132 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 1)
 		{
-			EntityPlayerMP target = FunctionHelper.getPlayerFromPartialName(args[0]);
+			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				target = PlayerSelector.matchOnePlayer(sender, args[0]);
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			}
-			sender.sendChatToPlayer(FEChatFormatCodes.GREEN + "Capabilities for " + target.username); // made
-																										// this
-																										// green
-																										// because
-																										// its
-																										// a
-																										// massive
-																										// wall
-																										// of
-																										// text,
-																										// and
-																										// unclear
-																										// whats
-																										// going
-																										// on
-			sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
-			sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
-			sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
-			sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
-			sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
+			if (players.size() != 0)
+			{
+				for (EntityPlayer target : players)
+				{
+					sender.sendChatToPlayer(FEChatFormatCodes.GREEN + "Capabilities for " + target.username);
+					sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
+					sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
+					sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
+					sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
+					sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
+				}
+			}
+			else
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
 		}
 		else if (args.length == 2)
 		{
-			EntityPlayerMP target = FunctionHelper.getPlayerFromPartialName(args[0]);
+			if (sender instanceof EntityPlayer)
+			{
+				if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
+				{
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+					return;
+				}
+			}
+			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				target = PlayerSelector.matchOnePlayer(sender, args[0]);
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			}
-			if (args[1].equalsIgnoreCase(names.get(0)))
+			if (players.size() != 0)
 			{
-				sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
-			}
-			else if (args[1].equalsIgnoreCase(names.get(1)))
-			{
-				sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
-			}
-			else if (args[1].equalsIgnoreCase(names.get(2)))
-			{
-				sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
-			}
-			else if (args[1].equalsIgnoreCase(names.get(3)))
-			{
-				sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
-			}
-			else if (args[1].equalsIgnoreCase(names.get(4)))
-			{
-				sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
+				for (EntityPlayer target : players)
+				{
+					if (args[1].equalsIgnoreCase(names.get(0)))
+					{
+						sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
+					}
+					else if (args[1].equalsIgnoreCase(names.get(1)))
+					{
+						sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
+					}
+					else if (args[1].equalsIgnoreCase(names.get(2)))
+					{
+						sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
+					}
+					else if (args[1].equalsIgnoreCase(names.get(3)))
+					{
+						sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
+					}
+					else if (args[1].equalsIgnoreCase(names.get(4)))
+					{
+						sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
+					}
+					else
+					{
+						OutputHandler.chatError(sender, "Capability " + args[1] + " unknown.");
+						break;
+					}
+				}
 			}
 		}
 		else if (args.length == 3)
 		{
-			EntityPlayerMP target = FunctionHelper.getPlayerFromPartialName(args[0]);
+			if (sender instanceof EntityPlayer)
+			{
+				if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
+				{
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+					return;
+				}
+			}
+			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				target = PlayerSelector.matchOnePlayer(sender, args[0]);
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			}
-			if (args[1].equalsIgnoreCase(names.get(0)))
+			if (players.size() != 0)
 			{
-				boolean bln = Boolean.parseBoolean(args[2]);
-				target.capabilities.disableDamage = bln;
-				sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
+				for (EntityPlayer target : players)
+				{
+					if (args[1].equalsIgnoreCase(names.get(0)))
+					{
+						boolean bln = Boolean.parseBoolean(args[2]);
+						target.capabilities.disableDamage = bln;
+						sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
+					}
+					else if (args[1].equalsIgnoreCase(names.get(1)))
+					{
+						boolean bln = Boolean.parseBoolean(args[2]);
+						target.capabilities.isFlying = bln;
+						sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
+					}
+					else if (args[1].equalsIgnoreCase(names.get(2)))
+					{
+						boolean bln = Boolean.parseBoolean(args[2]);
+						target.capabilities.allowFlying = bln;
+						sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
+					}
+					else if (args[1].equalsIgnoreCase(names.get(3)))
+					{
+						boolean bln = Boolean.parseBoolean(args[2]);
+						target.capabilities.isCreativeMode = bln;
+						sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
+					}
+					else if (args[1].equalsIgnoreCase(names.get(4)))
+					{
+						boolean bln = Boolean.parseBoolean(args[2]);
+						target.capabilities.allowEdit = bln;
+						sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
+					}
+					else
+					{
+						OutputHandler.chatError(sender, "Capability " + args[1] + " unknown.");
+						break;
+					}
+					target.sendPlayerAbilities();
+				}
 			}
-			else if (args[1].equalsIgnoreCase(names.get(1)))
-			{
-				boolean bln = Boolean.parseBoolean(args[2]);
-				target.capabilities.isFlying = bln;
-				sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
-			}
-			else if (args[1].equalsIgnoreCase(names.get(2)))
-			{
-				boolean bln = Boolean.parseBoolean(args[2]);
-				target.capabilities.allowFlying = bln;
-				sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
-			}
-			else if (args[1].equalsIgnoreCase(names.get(3)))
-			{
-				boolean bln = Boolean.parseBoolean(args[2]);
-				target.capabilities.isCreativeMode = bln;
-				sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
-			}
-			else if (args[1].equalsIgnoreCase(names.get(4)))
-			{
-				boolean bln = Boolean.parseBoolean(args[2]);
-				target.capabilities.allowEdit = bln;
-				sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
-			}
-
-			// important!
-			target.sendPlayerAbilities();
 		}
 	}
 

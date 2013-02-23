@@ -1,11 +1,17 @@
 package com.ForgeEssentials.commands;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -45,28 +51,25 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
 			cmd.append(args[i]);
 			cmd.append(" ");
 		}
-		EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+		List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 		if (PlayerSelector.hasArguments(args[0]))
 		{
-			target = PlayerSelector.matchOnePlayer(sender, args[0]);
+			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 		}
-		String senderName = (sender instanceof TileEntityCommandBlock ? "CommandBlock @ (" + ((TileEntityCommandBlock) sender).xCoord + "," + ((TileEntityCommandBlock) sender).yCoord + "," + ((TileEntityCommandBlock) sender).zCoord + ")."
-				: "The console");
-		target.sendChatToPlayer(senderName + " is attempting to issue a command as you.");// hook
-																							// into
-																							// questioner
-		FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(target, cmd.toString());// Problem
-																															// is,
-																															// things
-																															// like
-																															// motd
-																															// go
-																															// to
-																															// the
-																															// player.
-		if (!(sender instanceof TileEntityCommandBlock))
+		if (players.size() != 0)
 		{
+			for (EntityPlayer target : players)
+			{
+				String senderName = (sender instanceof TileEntityCommandBlock ? "CommandBlock @ (" + ((TileEntityCommandBlock) sender).xCoord + "," + ((TileEntityCommandBlock) sender).yCoord + "," + ((TileEntityCommandBlock) sender).zCoord + ")."
+						: "The console");
+				target.sendChatToPlayer(senderName + " is attempting to issue a command as you.");
+				FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(target, cmd.toString());
+			}
 			sender.sendChatToPlayer("Successfully issued command as " + args[0]);
+		}
+		else
+		{
+			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		}
 	}
 

@@ -43,7 +43,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 
 	public void doStuff(ICommandSender sender, String[] args)
 	{
-		if(!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) return;
+		if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+			return;
 		DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
 		if (args.length == 0)
 		{
@@ -120,8 +121,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 			}
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("spawnProtection"))
+
+		if (args[0].equalsIgnoreCase("spawnProtection"))
 		{
 			if (args.length == 1)
 			{

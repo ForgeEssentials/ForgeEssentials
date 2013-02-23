@@ -1,10 +1,12 @@
 package com.ForgeEssentials.commands;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
@@ -20,9 +22,7 @@ import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 /**
  * Now uses TeleportCenter. TODO get rid of DataStorage
- * 
  * @author Dries007
- * 
  */
 
 public class CommandWarp extends ForgeEssentialsCommandBase
@@ -115,14 +115,24 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		{
 			if (TeleportCenter.warps.containsKey(args[0].toLowerCase()))
 			{
-				EntityPlayer player = FunctionHelper.getPlayerFromPartialName(args[0]);
+				List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 				if (PlayerSelector.hasArguments(args[0]))
 				{
-					player = PlayerSelector.matchOnePlayer(sender, args[0]);
+					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 				}
-				Warp warp = TeleportCenter.warps.get(args[1].toLowerCase());
-				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-				TeleportCenter.addToTpQue(warp.getPoint(), player);
+				if (players.size() != 0)
+				{
+					for (EntityPlayer player : players)
+					{
+						Warp warp = TeleportCenter.warps.get(args[1].toLowerCase());
+						PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+						TeleportCenter.addToTpQue(warp.getPoint(), player);
+					}
+				}
+				else
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				}
 			}
 			else
 			{

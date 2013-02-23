@@ -44,37 +44,40 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 		System.out.print(sender);
 		if (args.length >= 3)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
+			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				player = PlayerSelector.matchOnePlayer(sender, args[0]);
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			}
-			if (player == null)
+			if (players.size() != 0)
 			{
-				sender.sendChatToPlayer(args[0] + " not found!");
+				for(EntityPlayer player : players)
+				{
+					int amount = this.parseIntWithMin(sender, args[1], 0);
+					if (Wallet.getWallet(player) >= amount)
+					{
+						Wallet.removeFromWallet(amount, player);
+						// Do command in name of player
+
+						StringBuilder cmd = new StringBuilder(args.toString().length());
+						for (int i = 2; i < args.length; i++)
+						{
+							cmd.append(args[i]);
+							cmd.append(" ");
+						}
+
+						FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, "" + cmd.toString());
+						OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + Wallet.currency(amount));
+					}
+					else
+					{
+						OutputHandler.chatError(player, "You can't afford that!!");
+					}
+				}
 			}
 			else
 			{
-				int amount = this.parseIntWithMin(sender, args[1], 0);
-				if (Wallet.getWallet(player) >= amount)
-				{
-					Wallet.removeFromWallet(amount, player);
-					// Do command in name of player
-
-					StringBuilder cmd = new StringBuilder(args.toString().length());
-					for (int i = 2; i < args.length; i++)
-					{
-						cmd.append(args[i]);
-						cmd.append(" ");
-					}
-
-					FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, "" + cmd.toString());
-					OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + Wallet.currency(amount));
-				}
-				else
-				{
-					OutputHandler.chatError(player, "You can't afford that!!");
-				}
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
 		else

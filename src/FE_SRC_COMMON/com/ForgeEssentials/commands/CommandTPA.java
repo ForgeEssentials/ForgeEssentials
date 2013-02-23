@@ -31,7 +31,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 	{
 		timeout = config.get(category, "timeout", 25, "Amount of sec a user has to accept a TPA request").getInt();
 	}
-	
+
 	@Override
 	public String getCommandName()
 	{
@@ -41,19 +41,19 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(args.length == 0)
+		if (args.length == 0)
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("accept"))
+
+		if (args[0].equalsIgnoreCase("accept"))
 		{
-			for(TPAdata data : TickHandlerCommands.tpaList)
+			for (TPAdata data : TickHandlerCommands.tpaList)
 			{
-				if(!data.tphere)
+				if (!data.tphere)
 				{
-					if(data.receiver == sender)
+					if (data.receiver == sender)
 					{
 						data.sender.sendChatToPlayer("TPA accepted.");
 						data.receiver.sendChatToPlayer("TPA accepted.");
@@ -65,14 +65,14 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 			}
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("decline"))
+
+		if (args[0].equalsIgnoreCase("decline"))
 		{
-			for(TPAdata data : TickHandlerCommands.tpaList)
+			for (TPAdata data : TickHandlerCommands.tpaList)
 			{
-				if(!data.tphere)
+				if (!data.tphere)
 				{
-					if(data.receiver == sender)
+					if (data.receiver == sender)
 					{
 						data.sender.sendChatToPlayer("TPA declined.");
 						data.receiver.sendChatToPlayer("TPA declined.");
@@ -83,25 +83,25 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 			}
 			return;
 		}
-		
+
 		EntityPlayerMP receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
-		if(receiver == null)
+		if (receiver == null)
 		{
 			sender.sendChatToPlayer(args[0] + " not found.");
 		}
 		else
 		{
 			TickHandlerCommands.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, false));
-			
+
 			sender.sendChatToPlayer("Send a TPA request to " + receiver.username);
-			receiver.sendChatToPlayer("Got a TPA request from " + sender.username);	
+			receiver.sendChatToPlayer("Got a TPA request from " + sender.username);
 		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		
+
 	}
 
 	@Override
@@ -115,10 +115,10 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
-	{	
+	{
 		if (args.length == 1)
 		{
 			ArrayList<String> list = new ArrayList<String>();

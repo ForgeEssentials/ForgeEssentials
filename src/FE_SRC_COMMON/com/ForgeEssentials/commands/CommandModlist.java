@@ -34,7 +34,7 @@ public class CommandModlist extends ForgeEssentialsCommandBase
 	{
 		int size = Loader.instance().getModList().size();
 		int perPage = 7;
-		int pages = (int)Math.ceil(size / (float)perPage);
+		int pages = (int) Math.ceil(size / (float) perPage);
 
 		int page = args.length == 0 ? 0 : (parseIntBounded(sender, args[0], 1, pages) - 1);
 		int min = Math.min(page * perPage, size);

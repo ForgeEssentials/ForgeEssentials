@@ -1,5 +1,7 @@
 package com.ForgeEssentials.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -59,7 +61,6 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		EntityPlayerMP target = null;
 		int ID = 0;
 		int dur = 0;
 		int ampl = 0;
@@ -72,19 +73,6 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		{
 			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
 			return;
-		}
-
-		if (args[0].equalsIgnoreCase("me"))
-		{
-			target = (EntityPlayerMP) sender;
-		}
-		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
-		{
-			target = FunctionHelper.getPlayerFromPartialName(args[0]);
-			if (PlayerSelector.hasArguments(args[0]))
-			{
-				target = PlayerSelector.matchOnePlayer(sender, args[0]);
-			}
 		}
 
 		if (names.containsKey(args[1]))
@@ -100,16 +88,35 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		dur = parseIntWithMin(sender, args[2], 0) * 20;
 
 		PotionEffect eff = new PotionEffect(ID, dur, ampl);
-		if (target != null)
+		List<EntityPlayerMP> players = new ArrayList();
+		if (args[0].equalsIgnoreCase("me"))
 		{
-			target.addPotionEffect(eff);
+			players.add((EntityPlayerMP) sender);
+		}
+		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		{
+			players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+			if (PlayerSelector.hasArguments(args[0]))
+			{
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
+			}
+			if (players.size() != 0)
+			{
+				for (EntityPlayer player : players)
+				{
+					player.addPotionEffect(eff);
+				}
+			}
+			else
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
 		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		EntityPlayerMP target;
 		int ID = 0;
 		int dur = 0;
 		int ampl = 0;
@@ -124,26 +131,25 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 			return;
 		}
 
-		target = FunctionHelper.getPlayerFromPartialName(args[0]);
+		dur = parseIntWithMin(sender, args[2], 0) * 20;
+		PotionEffect eff = new PotionEffect(ID, dur, ampl);
+
+		List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 		if (PlayerSelector.hasArguments(args[0]))
 		{
-			target = PlayerSelector.matchOnePlayer(sender, args[0]);
+			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 		}
-
-		if (names.containsKey(args[1]))
+		if (players.size() != 0)
 		{
-			ID = names.get(args[1]);
+			for (EntityPlayer target : players)
+			{
+				target.addPotionEffect(eff);
+			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.POTIONEFFECTNOTFOUND));
-			return;
+			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		}
-
-		dur = parseIntWithMin(sender, args[2], 0) * 20;
-
-		PotionEffect eff = new PotionEffect(ID, dur, ampl);
-		target.addPotionEffect(eff);
 	}
 
 	@Override

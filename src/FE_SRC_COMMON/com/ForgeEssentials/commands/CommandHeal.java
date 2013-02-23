@@ -1,14 +1,17 @@
 package com.ForgeEssentials.commands;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -32,11 +35,17 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-
-			if (target != null)
+			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+			if (PlayerSelector.hasArguments(args[0]))
 			{
-				heal(target);
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
+			}
+			if (players.size() != 0)
+			{
+				for (EntityPlayer target : players)
+				{
+					heal(target);
+				}
 			}
 			else
 			{
@@ -54,15 +63,17 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				target = PlayerSelector.matchOnePlayer(sender, args[0]);
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			}
-
-			if (target != null)
+			if (players.size() != 0)
 			{
-				heal(target);
+				for (EntityPlayer target : players)
+				{
+					heal(target);
+				}
 			}
 			else
 			{

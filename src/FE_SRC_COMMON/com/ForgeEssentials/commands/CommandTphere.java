@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,17 +37,20 @@ public class CommandTphere extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
+			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				player = PlayerSelector.matchOnePlayer(sender, args[0]);
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			}
-			if (player != null)
+			if (players.size() != 0)
 			{
-				EntityPlayerMP target = (EntityPlayerMP) sender;
-				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
-				playerInfo.back = new WarpPoint(player);
-				TeleportCenter.addToTpQue(new WarpPoint(target), player);
+				for (EntityPlayer player : players)
+				{
+					EntityPlayerMP target = (EntityPlayerMP) sender;
+					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+					playerInfo.back = new WarpPoint(player);
+					TeleportCenter.addToTpQue(new WarpPoint(target), player);
+				}
 			}
 			else
 			{

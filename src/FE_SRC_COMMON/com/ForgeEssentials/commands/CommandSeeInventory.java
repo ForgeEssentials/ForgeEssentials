@@ -16,9 +16,7 @@ import cpw.mods.fml.relauncher.Side;
 
 /**
  * Opens other player inventory.
- * 
  * @author Dries007
- * 
  */
 public class CommandSeeInventory extends ForgeEssentialsCommandBase
 {
