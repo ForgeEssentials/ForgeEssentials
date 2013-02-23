@@ -59,6 +59,45 @@ public final class FunctionHelper
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
 	
+	public static Direction getDirectionFromString(String str) {
+		String text = str.toLowerCase();
+		if(text.equals("n")) {
+			return Direction.NORTH;
+		}else if(text.equals("s")) {
+			return Direction.SOUTH;
+		}else if(text.equals("e")) {
+			return Direction.EAST;
+		}else if(text.equals("w")) {
+			return Direction.WEST;
+		}else if(text.equals("u")) {
+			return Direction.UP;
+		}else if(text.equals("d")) {
+			return Direction.DOWN;
+		}
+		return null;
+	}
+	
+	public static enum Direction {
+		NORTH,
+		SOUTH,
+		EAST,
+		WEST,
+		UP,
+		DOWN;
+	}
+	
+	public static Direction getFacingDirection(EntityPlayer player) {
+		int diri = MathHelper.floor_double((double)(player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3; // south, west, north, east
+		Direction dir = diri==0?Direction.SOUTH:diri==1?Direction.WEST:diri==2?Direction.NORTH:Direction.EAST;
+		float rotation = (int)MathHelper.wrapAngleTo180_float(player.rotationYaw);
+		if(rotation<22.5F) {
+			dir = Direction.DOWN;
+		}else if(rotation>157.5) {
+			dir = Direction.UP;
+		}
+		return dir;
+	}
+	
 	public static int[] getBlockInfoFromName(String name, boolean hasMeta) {
 		String revised = name.toLowerCase().replace(" ", "").replace(".",""); // Oak Wood Planks = oakwoodplanks
 		if(name.equals("air"))return new int[]{0, 0};
