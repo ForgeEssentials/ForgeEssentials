@@ -73,7 +73,7 @@ public class WandController implements ITickHandler
 			int y = mouseOverBlock.blockY;
 			int z = mouseOverBlock.blockZ;
 			int side = mouseOverBlock.sideHit;
-			if(player.getDistance(x, y, z)>=4.8F)leftClick(player, x, y, z, side, false);
+			if(player.getDistance(x, y, z)<=4.8F)leftClick(player, x, y, z, side, false);
 		}
 
 	}
@@ -131,7 +131,7 @@ public class WandController implements ITickHandler
 				info.setPoint1(new Point(x, y, z));
 				player.addChatMessage(FEChatFormatCodes.PURPLE + "Pos1 set to " + x + ", " + y + ", " + z);
 				return true;
-			}else if(player.capabilities.isCreativeMode&&!inReach){
+			}else if(player.capabilities.isCreativeMode&&inReach){
 				player.worldObj.setBlockWithNotify(x, y, z, 0);
 				return true;
 			}
