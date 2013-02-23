@@ -59,6 +59,25 @@ public final class FunctionHelper
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
 	
+	public static Direction getInverseDirection(Direction dir) {
+		switch(dir) {
+			case NORTH:
+				return Direction.SOUTH;
+			case SOUTH:
+				return Direction.NORTH;
+			case EAST:
+				return Direction.WEST;
+			case WEST:
+				return Direction.EAST;
+			case UP:
+				return Direction.DOWN;
+			case DOWN:
+				return Direction.UP;
+			default:
+				return null;
+		}
+	}
+	
 	public static Direction getDirectionFromString(String str) {
 		String text = str.toLowerCase();
 		if(text.equals("n")) {
