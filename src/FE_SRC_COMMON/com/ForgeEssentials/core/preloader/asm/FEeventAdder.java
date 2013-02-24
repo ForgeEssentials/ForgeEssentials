@@ -42,15 +42,6 @@ public class FEeventAdder implements IClassTransformer
 	public static HashMap<String, String>	isHMob			= makeisHMob();
 	public static HashMap<String, String>	isHMdev			= makeisHMdev();
 
-	public static HashMap<String, String>	mcsHM			= makemcsHM();
-
-	public static HashMap<String, String>	cbrHM			= makecbrHM();
-
-	public static boolean					serverbranded	= false;
-	public static boolean					clientbranded	= false;
-
-	private static final String				SERVERBRAND		= "forge,fml, ForgeEssentials";
-
 	public static boolean					addedBreak		= false;
 	public static boolean					addedPlace		= false;
 
@@ -121,27 +112,6 @@ public class FEeventAdder implements IClassTransformer
 		return isHMdev;
 	}
 
-	public static HashMap makemcsHM()
-	{
-		HashMap mcsHM = new HashMap<String, String>();
-
-		mcsHM.put("className", "net.minecraft.server.MinecraftServer");
-		mcsHM.put("javaClassName", "net/minecraft/server/MinecraftServer");
-		mcsHM.put("targetMethodName", "getServerModName");
-
-		return mcsHM;
-	}
-
-	public static HashMap makecbrHM()
-	{
-		HashMap cbrHM = new HashMap<String, String>();
-
-		cbrHM.put("className", "net.minecraft.client.ClientBrandRetriever");
-		cbrHM.put("javaClassName", "net/minecraft/client/ClientBrandRetriever");
-		cbrHM.put("targetMethodName", "getClientModName");
-
-		return cbrHM;
-	}
 
 	@Override
 	public byte[] transform(String name, byte[] bytes)
@@ -168,18 +138,6 @@ public class FEeventAdder implements IClassTransformer
 		{
 			// ItemStack, NOT Obfuscated
 			return transformItemStack(bytes, isHMdev);
-		}
-
-		if (name.equals(mcsHM.get("className")))
-		{
-			// MinecraftServer, NOT Obfuscated
-			return transformBranding(bytes, mcsHM);
-		}
-		if (FMLRelauncher.side().equals("CLIENT"))
-		{
-			if (name.equals(cbrHM.get("className")))
-				// ClientBrandRetriever, NOT obfuscated
-				return transformBranding(bytes, cbrHM);
 		}
 		return bytes;
 	}
@@ -330,44 +288,6 @@ public class FEeventAdder implements IClassTransformer
 						break;
 					}
 				}
-			}
-		}
-
-		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		classNode.accept(writer);
-		return writer.toByteArray();
-	}
-
-	private byte[] transformBranding(byte[] bytes, HashMap<String, String> hm)
-	{
-		msg("[FE coremod] Patching MinecraftServer...");
-
-		ClassNode classNode = new ClassNode();
-		ClassReader classReader = new ClassReader(bytes);
-		classReader.accept(classNode, 0);
-		Iterator<MethodNode> methods = classNode.methods.iterator();
-		while (methods.hasNext())
-		{
-			MethodNode m = methods.next();
-			if (m.name.equals(hm.get("targetMethodName")))
-			{
-				msg("[FE coremod] Found target method " + m.name + m.desc + "!");
-
-				int offset = 0;
-				while (m.instructions.get(offset).getOpcode() != LDC)
-				{
-					offset++;
-				}
-
-				InsnList toInject = new InsnList();
-
-				toInject.add(new LdcInsnNode(SERVERBRAND));
-
-				m.instructions.insertBefore(m.instructions.get(offset), toInject);
-				m.instructions.remove(m.instructions.get(offset + 1));
-
-				serverbranded = true;
-				break;
 			}
 		}
 
