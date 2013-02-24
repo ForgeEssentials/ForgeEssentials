@@ -252,7 +252,7 @@ public class ZoneHelper implements IZoneManager
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 		{
-			if (worldDim == zone.dim && zone.contains(area) && worldZone.isParentOf(zone))
+			if (worldDim == zone.dim && zone.contains(area))
 			{
 				zones.add(zone);
 			}

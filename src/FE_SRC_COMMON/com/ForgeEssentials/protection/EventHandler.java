@@ -127,18 +127,15 @@ public class EventHandler
 			return;
 
 		WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
-		Zone zone = ZoneManager.getWhichZoneIn(point);
 
-		PermQuery query = new PermQueryPlayerZone(e.entityPlayer, ModuleProtection.PERM_OVERRIDE, zone);
+		PermQuery query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_OVERRIDE, point);
 		Boolean result = PermissionsAPI.checkPermAllowed(query);
 
 		if (!result)
 		{
-			query = new PermQueryPlayerZone(e.entityPlayer, ModuleProtection.PERM_INTERACT_ENTITY, zone);
+			query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_INTERACT_ENTITY, point);
 			result = PermissionsAPI.checkPermAllowed(query);
 		}
-
-		OutputHandler.finest("entityInteractEvent in zone: " + zone.getZoneName() + " result: " + result);
 
 		e.setCanceled(!result);
 	}

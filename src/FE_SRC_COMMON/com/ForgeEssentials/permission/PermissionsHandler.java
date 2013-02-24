@@ -54,7 +54,7 @@ public final class PermissionsHandler
 		// ensures its a permPlayerQuery before checking...
 		if (event.getClass().equals(PermQueryPlayer.class))
 		{
-			Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(event.doer), event.doer.worldObj);
+			Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(event.doer));
 			PermResult result = getResultFromZone(zone, event);
 			event.setResult(result);
 		}
