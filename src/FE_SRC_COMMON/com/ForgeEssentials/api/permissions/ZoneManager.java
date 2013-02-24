@@ -12,60 +12,65 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class ZoneManager
 {
+	//fihgu:
+	//TEMP made these infinite loop breeder to return a Fake Zone;
+	public static Zone fakeZone = new Zone("Fake Zone");
+	
 	public static IZoneManager	manager;
 
 	public static Zone getWorldZone(World world)
 	{
-		return manager.getWorldZone(world);
+		return fakeZone;
 	}
 
 	public static void deleteZone(String zoneID)
 	{
-		manager.deleteZone(zoneID);
+		
 	}
 
 	public static boolean doesZoneExist(String zoneID)
 	{
-		return manager.doesZoneExist(zoneID);
+		return false;
 	}
 
 	public static Zone getZone(String zoneID)
 	{
-		return manager.getZone(zoneID);
+		return fakeZone;
 	}
 
 	public static boolean createZone(String zoneID, Selection sel, World world)
 	{
-		return manager.createZone(zoneID, sel, world);
+		return false;
 	}
 
 	public static Zone getWhichZoneIn(Point p, World world)
 	{
-		return manager.getWhichZoneIn(p, world);
+		return fakeZone;
 	}
 
 	public static Zone getWhichZoneIn(WorldPoint point)
 	{
-		return getWhichZoneIn(point);
+		return fakeZone;
 	}
 
 	public static Zone getWhichZoneIn(AreaBase area, World world)
 	{
-		return manager.getWhichZoneIn(area, world);
+		return fakeZone;
 	}
 
 	public static ArrayList<Zone> getZoneList()
 	{
-		return manager.getZoneList();
+		ArrayList<Zone> list = new ArrayList<Zone>();
+		return list;
 	}
 
 	public static Zone getGLOBAL()
 	{
-		return manager.getGLOBAL();
+		return fakeZone;
 	}
 
 	public static Zone getSUPER()
 	{
-		return manager.getSUPER();
+		return fakeZone;
 	}
 }
