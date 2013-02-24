@@ -12,6 +12,7 @@ public class SanityChecker
 		if (ForgeEssentials.sanitycheck = false)
 		{
 			OutputHandler.severe("Sanity checking has been disabled. Do not bug the FE team with issues running FE on a bukkit server, or with any other server mod.");
+			return;
 		}
 
 		// Check for BukkitForge
