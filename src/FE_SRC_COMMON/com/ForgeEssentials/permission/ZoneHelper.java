@@ -48,7 +48,9 @@ public class ZoneHelper implements IZoneManager
 
 			exists = SqlHelper.doesZoneExist(temp.getZoneName());
 			if (!exists)
+			{
 				SqlHelper.createZone(temp.getZoneName());
+			}
 		}
 	}
 
@@ -74,10 +76,13 @@ public class ZoneHelper implements IZoneManager
 
 			boolean exists = SqlHelper.doesZoneExist(zone.getZoneName());
 			if (!exists)
+			{
 				SqlHelper.createZone(zone.getZoneName());
+			}
 		}
 	}
 
+	@Override
 	public Zone getWorldZone(World world)
 	{
 		String worldString = FunctionHelper.getZoneWorldString(world);
@@ -103,6 +108,7 @@ public class ZoneHelper implements IZoneManager
 	/**
 	 * WorldZones are not included here.
 	 */
+	@Override
 	public void deleteZone(String zoneID)
 	{
 		Zone deleted = zoneMap.remove(zoneID);
@@ -111,55 +117,40 @@ public class ZoneHelper implements IZoneManager
 		ModulePermissions.data.deleteObject(Zone.class, zoneID);
 	}
 
+	@Override
 	public boolean doesZoneExist(String zoneID)
 	{
 		if (zoneID.equals(GLOBAL.getZoneName()))
-		{
 			return true;
-		}
 		else if (zoneID.equals(SUPER))
-		{
 			return true;
-		}
 		else
-		{
 			return SqlHelper.doesZoneExist(zoneID);
-		}
 	}
 
+	@Override
 	public Zone getZone(String zoneID)
 	{
 		if (zoneID == null)
-		{
 			return null;
-		}
 		else if (zoneID.equalsIgnoreCase(GLOBAL.getZoneName()))
-		{
 			return GLOBAL;
-		}
 		else if (zoneID.equalsIgnoreCase(SUPER.getZoneName()))
-		{
 			return SUPER;
-		}
 		else if (zoneID.startsWith("WORLD_") || zoneID.startsWith("world_"))
-		{
 			return worldZoneMap.get(zoneID);
-		}
 		else
-		{
 			return zoneMap.get(zoneID);
-		}
 	}
 
 	/**
 	 * WorldZones are not included here.
 	 */
+	@Override
 	public boolean createZone(String zoneID, Selection sel, World world)
 	{
 		if (zoneMap.containsKey(zoneID))
-		{
 			return false;
-		}
 
 		Zone created = new Zone(zoneID, sel, world);
 		zoneMap.put(zoneID, created);
@@ -168,20 +159,14 @@ public class ZoneHelper implements IZoneManager
 		return true;
 	}
 
-	public Zone getWhichZoneIn(Point p1, World world)
-	{
-		return getWhichZoneIn(new WorldPoint(world, p1.x, p1.y, p1.z));
-	}
-	
+	@Override
 	public Zone getWhichZoneIn(WorldPoint p)
 	{
 		// check cache..
 		World world = FunctionHelper.getDimension(p.dim);
 		Zone end = getFromCache(p);
 		if (end != null)
-		{
 			return end;
-		}
 
 		Zone worldZone = getWorldZone(world);
 		ArrayList<Zone> zones = new ArrayList<Zone>();
@@ -231,19 +216,17 @@ public class ZoneHelper implements IZoneManager
 
 	/**
 	 * used for AllorNothing areas..
-	 * 
 	 * @param area
 	 * @param world
 	 * @return
 	 */
+	@Override
 	public Zone getWhichZoneIn(AreaBase area, World world)
 	{
 		// check cache..
 		Zone end = getFromCache(new WorldArea(world, area));
 		if (end != null)
-		{
 			return end;
-		}
 
 		Zone worldZone = getWorldZone(world);
 		ArrayList<Zone> zones = new ArrayList<Zone>();
@@ -312,26 +295,18 @@ public class ZoneHelper implements IZoneManager
 	{
 		String zoneID = pointCache.get(p);
 		if (zoneID == null)
-		{
 			return null;
-		}
 		else
-		{
 			return getZone(zoneID);
-		}
 	}
 
 	private Zone getFromCache(WorldArea a)
 	{
 		String zoneID = areaCache.get(a);
 		if (zoneID == null)
-		{
 			return null;
-		}
 		else
-		{
 			return getZone(zoneID);
-		}
 	}
 
 	private void onZoneCreated(Zone created)
@@ -372,6 +347,7 @@ public class ZoneHelper implements IZoneManager
 		}
 	}
 
+	@Override
 	public ArrayList<Zone> getZoneList()
 	{
 		ArrayList<Zone> zones = new ArrayList<Zone>();
@@ -383,11 +359,13 @@ public class ZoneHelper implements IZoneManager
 		return zones;
 	}
 
+	@Override
 	public Zone getGLOBAL()
 	{
 		return GLOBAL;
 	}
 
+	@Override
 	public Zone getSUPER()
 	{
 		return SUPER;

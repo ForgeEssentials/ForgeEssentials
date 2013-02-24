@@ -39,14 +39,9 @@ public class ZoneManager
 		return manager.createZone(zoneID, sel, world);
 	}
 
-	public static Zone getWhichZoneIn(Point p, World world)
-	{
-		return manager.getWhichZoneIn(p, world);
-	}
-
 	public static Zone getWhichZoneIn(WorldPoint point)
 	{
-		return manager.getWhichZoneIn(point, FunctionHelper.getDimension(point.dim));
+		return manager.getWhichZoneIn(point);
 	}
 
 	public static Zone getWhichZoneIn(AreaBase area, World world)

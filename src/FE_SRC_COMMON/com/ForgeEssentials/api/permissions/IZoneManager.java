@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public interface IZoneManager
 {
@@ -20,8 +21,8 @@ public interface IZoneManager
 	Zone getZone(String zoneID);
 
 	boolean createZone(String zoneID, Selection sel, World world);
-
-	Zone getWhichZoneIn(Point p, World world);
+	
+	Zone getWhichZoneIn(WorldPoint point);
 
 	Zone getWhichZoneIn(AreaBase area, World world);
 
