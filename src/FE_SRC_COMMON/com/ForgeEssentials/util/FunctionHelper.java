@@ -39,7 +39,7 @@ public final class FunctionHelper
 		for(int chr = 0;chr<str.length();chr++) {
 			boolean isGood = false;
 			for(int num = 0;num<nums.length();num++) {
-				if(str.substring(chr, chr+1).equals(nums.substring(num, num+1))||(num==0&&str.substring(chr, chr+1).equals("-"))) {
+				if(str.substring(chr, chr+1).equals(nums.substring(num, num+1))||(num==0&&str.startsWith("-"))) {
 					isGood = true;
 				}
 			}

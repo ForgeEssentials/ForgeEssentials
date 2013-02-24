@@ -105,8 +105,8 @@ public class BlockInfo
 					return bi;
 				}
 				int em = Integer.parseInt(end);
-				if(first.meta>=em||first.meta>15||em>15||first.meta<-1||em<-1) {
-					OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" Metadata cannot be larger than 15, smaller than -1, or be smaller in the second parameter.");
+				if(first.meta>=em||first.meta<-1||em<-1) {
+					OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" Metadata cannot be smaller in the second parameter.");
 					return bi;
 				}
 				for(int meta = first.meta;meta<em;meta++) {
