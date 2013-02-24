@@ -198,7 +198,7 @@ public class TypeInfoStandard implements ITypeInfo
 					if (StorageManager.isTypeComplex(obj.getClass()))
 					{
 						// This object is not a primitive. Call this function on the appropriate TypeTagger.
-						obj = DataStorageManager.getDataForObject(obj);
+						obj = DataStorageManager.getDataForObject(fields.get(keys[i]), obj);
 					}
 					data.putField(keys[i], obj);
 				}

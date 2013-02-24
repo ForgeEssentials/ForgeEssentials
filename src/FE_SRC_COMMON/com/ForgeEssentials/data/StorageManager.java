@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraftforge.common.Configuration;
@@ -12,14 +15,16 @@ import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IStorageManager;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.SaveableObject;
-import com.ForgeEssentials.api.data.ITypeInfo;
+import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.data.typeInfo.TypeInfoArray;
+import com.ForgeEssentials.data.typeInfo.TypeInfoList;
+import com.ForgeEssentials.data.typeInfo.TypeInfoMap;
 import com.ForgeEssentials.data.typeInfo.TypeInfoSerialize;
+import com.ForgeEssentials.data.typeInfo.TypeInfoSet;
 import com.ForgeEssentials.data.typeInfo.TypeInfoStandard;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.OutputHandler;
@@ -164,6 +169,12 @@ public class StorageManager implements IStorageManager
 
 		if (type.isArray() && (!type.getType().getComponentType().isPrimitive() && !String.class.isAssignableFrom(type.getType().getComponentType())))
 			info = new TypeInfoArray(new ClassContainer(type.getType(), type.getType().getComponentType()));
+		else if (Map.class.isAssignableFrom(type.getType()))
+			info = new TypeInfoMap(type);
+		else if (Set.class.isAssignableFrom(type.getType()))
+			info = new TypeInfoSet(type);
+		else if (List.class.isAssignableFrom(type.getType()))
+			info = new TypeInfoList(type);
 		else if (type.getType().isAnnotationPresent(SaveableObject.class))
 			info = new TypeInfoStandard(type.getType());
 		else if (Serializable.class.isAssignableFrom(type.getType()))
@@ -288,7 +299,7 @@ public class StorageManager implements IStorageManager
 			if (tempType == null)
 				break;
 			else if (tempType.hasParameters())
-				tempType = new ClassContainer(type.getType());
+				tempType = new ClassContainer(tempType.getType());
 			else if (tempType.getType().getSuperclass() != null)
 				tempType = new ClassContainer(tempType.getType().getSuperclass(), type.getParameters());
 			else if (tempType.getType().getSuperclass() == null)
@@ -336,13 +347,22 @@ public class StorageManager implements IStorageManager
 	}
 
 	@Override
-	public TypeData getDataForObject(Object obj)
+	public TypeData getDataForObject(ClassContainer container, Object obj)
 	{
-		TypeData data = getInfoForType(new ClassContainer(obj.getClass())).getTypeDataFromObject(obj);
+		ITypeInfo info = getInfoForType(container);
+		TypeData data = info.getTypeDataFromObject(obj);
 		
+		
+		ITypeInfo tempInfo;
 		for (Entry<String, Object> e : data.getAllFields())
+		{
 			if (e.getValue() != null && !(e.getValue() instanceof TypeData) && StorageManager.isTypeComplex(e.getValue().getClass()))
-				data.putField(e.getKey(), DataStorageManager.getDataForObject(e.getValue()));
+			{
+				tempInfo = info.getInfoForField(e.getKey());
+				data.putField(e.getKey(), DataStorageManager.getDataForObject(tempInfo.getTypeOfField(e.getKey()), e.getValue()));
+			}
+		}
+		
 
 		return data;
 	}

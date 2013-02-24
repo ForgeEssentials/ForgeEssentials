@@ -186,7 +186,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 					if (StorageManager.isTypeComplex(temp.getClass()))
 					{
 						// This object is not a primitive. Call this function on the appropriate TypeTagger.
-						temp = DataStorageManager.getDataForObject(temp);
+						temp = DataStorageManager.getDataForObject(fields.get(keys[i]), temp);
 					}
 					data.putField(keys[i], temp);
 				}

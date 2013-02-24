@@ -73,12 +73,21 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	{
 		Set<TypeData> datas = getTypeDatasFromObject(obj);
 		TypeData data = DataStorageManager.getDataForType(container);
+		
+		ITypeInfo entry = getEntryInfo();
+		ITypeInfo tempInfo;
+		
 		int i = 0;
 		for (TypeData dat : datas)
 		{
 			for (Entry<String, Object> e : dat.getAllFields())
+			{
 				if (e.getValue() != null && !(e.getValue() instanceof TypeData) && StorageManager.isTypeComplex(e.getValue().getClass()))
-					dat.putField(e.getKey(), DataStorageManager.getDataForObject(e.getValue()));
+				{
+					tempInfo = entry.getInfoForField(e.getKey());
+					dat.putField(e.getKey(), DataStorageManager.getDataForObject(tempInfo.getType(), e.getValue()));
+				}
+			}
 			
 			data.putField("DataVal"+(i++), dat);
 		}

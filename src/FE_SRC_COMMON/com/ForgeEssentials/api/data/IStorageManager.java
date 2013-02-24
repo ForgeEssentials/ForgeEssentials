@@ -29,7 +29,7 @@ public interface IStorageManager
 
 	TypeData getDataForType(ClassContainer type);
 
-	TypeData getDataForObject(Object obj);
+	TypeData getDataForObject(ClassContainer container, Object obj);
 
 	DBConnector getCoreDBConnector();
 }
