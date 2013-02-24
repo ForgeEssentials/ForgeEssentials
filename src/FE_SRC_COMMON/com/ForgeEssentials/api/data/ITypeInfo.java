@@ -29,7 +29,7 @@ public interface ITypeInfo<T>
 	 * @param field Name of the field.
 	 * @return The type of the field as a class.
 	 */
-	Class getTypeOfField(String field);
+	ClassContainer getTypeOfField(String field);
 
 	/**
 	 * @return A list of all the field names in this type.
@@ -53,7 +53,7 @@ public interface ITypeInfo<T>
 	/**
 	 * @return The class object this specific TypeInfo is representing.
 	 */
-	public Class<? extends T> getType();
+	public ClassContainer getType();
 
 	/**
 	 * This shouldn't be any longer than 2 for Maps, and 1 for anything else.

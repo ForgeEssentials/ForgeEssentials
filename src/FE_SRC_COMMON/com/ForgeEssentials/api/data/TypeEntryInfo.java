@@ -7,9 +7,9 @@ import java.util.Map.Entry;
 
 public class TypeEntryInfo implements ITypeInfo
 {
-	private HashMap<String, Class> types;
+	private HashMap<String, ClassContainer> types;
 
-	public TypeEntryInfo(HashMap<String, Class> types)
+	public TypeEntryInfo(HashMap<String, ClassContainer> types)
 	{
 		this.types = types;
 	}
@@ -27,9 +27,8 @@ public class TypeEntryInfo implements ITypeInfo
 	}
 
 	@Override
-	public Class getTypeOfField(String field)
+	public ClassContainer getTypeOfField(String field)
 	{
-		// TODO Auto-generated method stub
 		return types.get(field);
 	}
 
@@ -55,10 +54,10 @@ public class TypeEntryInfo implements ITypeInfo
 	}
 
 	@Override
-	public Class getType()
+	public ClassContainer getType()
 	{
 		// why not? :)  better than void.class  .
-		return Map.Entry.class;
+		return new ClassContainer(Map.Entry.class);
 	}
 
 	@Override

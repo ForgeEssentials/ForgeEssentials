@@ -12,13 +12,13 @@ import com.ForgeEssentials.data.StorageManager;
 public abstract class TypeMultiValInfo implements ITypeInfo
 {
 	protected ClassContainer container;
-	protected HashMap<String, Class> fields;
+	protected HashMap<String, ClassContainer> fields;
 	private TypeEntryInfo entryInfo;
 
 	public TypeMultiValInfo(ClassContainer container)
 	{
 		this.container = container;
-		fields = new HashMap<String, Class>();
+		fields = new HashMap<String, ClassContainer>();
 	}
 	
 	@Override
@@ -32,7 +32,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	 * the actual tyoes that this holds. An Entry class will be created for wach elemnt of this.
 	 * @param fields
 	 */
-	public abstract void build(HashMap<String, Class> fields);
+	public abstract void build(HashMap<String, ClassContainer> fields);
 
 	@Override
 	public boolean canSaveInline()
@@ -41,7 +41,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	}
 
 	@Override
-	public Class getTypeOfField(String field)
+	public ClassContainer getTypeOfField(String field)
 	{
 		
 		// will prolly never be called.
@@ -51,9 +51,9 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	}
 
 	@Override
-	public Class getType()
+	public ClassContainer getType()
 	{
-		return container.getType();
+		return container;
 	}
 
 	@Override

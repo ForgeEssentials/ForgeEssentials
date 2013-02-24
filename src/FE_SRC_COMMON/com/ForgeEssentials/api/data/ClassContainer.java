@@ -4,34 +4,24 @@ import java.util.Arrays;
 
 public class ClassContainer
 {
-	private final String	className;
+	private final Class heldClass;
 	Class[]					parameters;
 
 	public ClassContainer(Class type, Class... parameters)
 	{
-		className = type.getName();
+		heldClass = type;
 		this.parameters = parameters;
 	}
 
 	public ClassContainer(Class type)
 	{
-		className = type.getName();
+		heldClass = type;
 		this.parameters = new Class[] {};
 	}
 
 	public Class getType()
 	{
-		try
-		{
-			return Class.forName(className);
-		}
-		catch (ClassNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+		return heldClass;
 	}
 
 	public boolean isAssignableFrom(Class type)
@@ -59,11 +49,11 @@ public class ClassContainer
 	{
 		if (obj instanceof Class)
 		{
-			return className.equals(((Class) obj).getName());
+			return heldClass.getName().equals(((Class) obj).getName());
 		}
 		else if (obj instanceof ClassContainer)
 		{
-			return className.equals(((ClassContainer) obj).className) && Arrays.equals(parameters, ((ClassContainer) obj).parameters);
+			return heldClass.getName().equals(((ClassContainer) obj).heldClass.getName()) && Arrays.equals(parameters, ((ClassContainer) obj).parameters);
 		}
 		else
 			return false;

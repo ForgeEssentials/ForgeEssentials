@@ -3,6 +3,8 @@ package com.ForgeEssentials.data.typeInfo;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -21,7 +23,7 @@ import com.ForgeEssentials.util.OutputHandler;
 public class TypeInfoSerialize<T> implements ITypeInfo<T>
 {
 	private final ClassContainer container;
-	private HashMap<String, Class>	fields;
+	private HashMap<String, ClassContainer>	fields;
 	String uniqueKey;
 	boolean hasUniqueKey = false;
 	boolean isUniqueKeyField;
@@ -29,7 +31,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 	public TypeInfoSerialize(ClassContainer container)
 	{
 		this.container = container;
-		fields = new HashMap<String, Class>();
+		fields = new HashMap<String, ClassContainer>();
 		
 	}
 
@@ -43,6 +45,9 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 	public void build()
 	{
 		Class currentType = container.getType();
+		Class tempType;
+		Type aTempType;
+		ClassContainer tempContainer;
 		
 		do
 		{
@@ -51,7 +56,30 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 			{
 				// if its a saveable field
 				if (!Modifier.isTransient(f.getModifiers()) && !Modifier.isStatic(f.getModifiers()))
-					fields.put(f.getName(), f.getType());
+				{
+					tempType = f.getType();
+					aTempType = f.getGenericType();
+					if (aTempType instanceof ParameterizedType)
+					{
+						Type[] types = ((ParameterizedType) aTempType).getActualTypeArguments();
+						Class[] params =  new Class[types.length];
+						for (int i = 0; i < types.length; i++)
+						{
+							if (types[i] instanceof Class)
+								params[i] = (Class) types[i];
+							else if (types[i] instanceof ParameterizedType)
+								params[i] = (Class) ((ParameterizedType) types[i]).getRawType();
+						}
+						
+						tempContainer = new ClassContainer(tempType, params);
+						fields.put(f.getName(), tempContainer);
+					}
+					else
+					{
+						tempContainer = new ClassContainer(tempType);
+						fields.put(f.getName(), tempContainer);
+					}
+				}
 
 				// check for UniqueKey
 				if (f.isAnnotationPresent(UniqueLoadingKey.class))
@@ -92,7 +120,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 	}
 
 	@Override
-	public Class getTypeOfField(String field)
+	public ClassContainer getTypeOfField(String field)
 	{
 		if (field == null)
 			return null;
@@ -218,9 +246,9 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 	}
 
 	@Override
-	public Class<? extends T> getType()
+	public ClassContainer getType()
 	{
-		return container.getType();
+		return container;
 	}
 
 	@Override

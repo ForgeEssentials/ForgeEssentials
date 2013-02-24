@@ -220,7 +220,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		if (name == null || info == null)
 			return null;
 
-		Class type = info.getTypeOfField(name);
+		Class type = info.getTypeOfField(name).getType();
 		
 		if (type == null)
 			return null;

@@ -369,4 +369,13 @@ public class StorageManager implements IStorageManager
 
 		return flag;
 	}
+	
+	/**
+	 * @param t class check
+	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.
+	 */
+	public static boolean isTypeComplex(ClassContainer obj)
+	{
+		return isTypeComplex(obj.getType());
+	}
 }

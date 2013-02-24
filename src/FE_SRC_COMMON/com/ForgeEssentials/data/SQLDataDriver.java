@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IReconstructData;
@@ -202,7 +203,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		ITypeInfo taggerCursor;
 		TypeData cursor = null;
 		SavedField tmpField = null;
-		Class tmpClass;
+		ClassContainer tmpClass;
 
 		Object tempVal;
 
@@ -239,9 +240,9 @@ public class SQLDataDriver extends AbstractDataDriver
 					else
 					{
 						// Primitive type.
-						Class fieldType = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
-						tmpField.value = valueToField(taggerCursor.getTypeOfField(fieldHeiarchy[i]), result.get(fieldHeiarchy[i]));
-						tmpField.type = fieldType;
+						ClassContainer fieldType = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
+						tmpField.value = valueToField(fieldType.getType(), result.get(fieldHeiarchy[i]));
+						tmpField.type = fieldType.getType();
 					}
 				}
 			}
@@ -361,7 +362,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	 * @param type
 	 * @return
 	 */
-	private boolean createTable(Class type)
+	private boolean createTable(ClassContainer type)
 	{
 		boolean isSuccess = false;
 
@@ -415,7 +416,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	 *            Type of saved field
 	 * @return Array of field => H2 type names.
 	 */
-	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, Class type)
+	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, ClassContainer type)
 	{
 		ArrayList<Pair<String, String>> fields = new ArrayList<Pair<String, String>>();
 

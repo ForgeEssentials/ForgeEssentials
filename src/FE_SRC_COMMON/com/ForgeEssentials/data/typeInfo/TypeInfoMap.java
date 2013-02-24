@@ -26,10 +26,10 @@ public class TypeInfoMap extends TypeMultiValInfo
 	}
 
 	@Override
-	public void build(HashMap<String, Class> fields)
+	public void build(HashMap<String, ClassContainer> fields)
 	{
-		fields.put(KEY, container.getParameters()[0]);
-		fields.put(VAL, container.getParameters()[1]);
+		fields.put(KEY, new ClassContainer(container.getParameters()[0]));
+		fields.put(VAL, new ClassContainer(container.getParameters()[1]));
 	}
 
 	@Override

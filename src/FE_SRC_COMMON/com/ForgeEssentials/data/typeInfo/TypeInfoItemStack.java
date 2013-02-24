@@ -5,6 +5,7 @@ import java.util.HashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.ITypeInfo;
@@ -37,14 +38,14 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	}
 	
 	@Override
-	public Class getTypeOfField(String field)
+	public ClassContainer getTypeOfField(String field)
 	{
 		if (field == null)
 			return null;
 		else if (field.equalsIgnoreCase(SIZE) || field.equalsIgnoreCase(DAMAGE) || field.equalsIgnoreCase(ITEM))
-			return int.class;
+			return new ClassContainer(int.class);
 		else if (field.equalsIgnoreCase(COMPOUND))
-			return NBTTagCompound.class;
+			return new ClassContainer(NBTTagCompound.class);
 		else
 			return null;
 	}
@@ -83,9 +84,9 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	}
 
 	@Override
-	public Class<? extends ItemStack> getType()
+	public ClassContainer getType()
 	{
-		return ItemStack.class;
+		return new ClassContainer(ItemStack.class);
 	}
 
 	@Override

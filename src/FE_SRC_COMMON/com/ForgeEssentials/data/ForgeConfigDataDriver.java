@@ -8,6 +8,7 @@ import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.ITypeInfo;
@@ -221,7 +222,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		if (cat != null)
 		{
 			String name;
-			Class newType;
+			ClassContainer newType;
 			ITypeInfo newInfo;
 			TypeData newData;
 			Object value;
@@ -229,7 +230,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 			{
 				name = prop.getName();
 				newType = info.getTypeOfField(name);
-				value = readFieldFromProperty(cfg, cat.getQualifiedName(), name, newType);
+				value = readFieldFromProperty(cfg, cat.getQualifiedName(), name, newType.getType());
 				data.putField(name, value);
 			}
 

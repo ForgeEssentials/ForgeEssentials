@@ -86,8 +86,7 @@ public class PlayerInfo
 	}
 
 	// -------------------------------------------------------------------------------------------
-	// ---------------------------------- Actual Class Starts Now
-	// --------------------------------
+	// ---------------------------------- Actual Class Starts Now --------------------------------
 	// -------------------------------------------------------------------------------------------
 	@UniqueLoadingKey()
 	@SaveableField()
@@ -125,6 +124,12 @@ public class PlayerInfo
 
 	@SaveableField()
 	public int						timePlayed;
+	
+	// TESTING ----------------
+	
+	
+	
+	// TESTING ----------------
 
 	// undo and redo stuff
 	private Stack<BackupArea>		undos;

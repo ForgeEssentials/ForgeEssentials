@@ -27,10 +27,10 @@ public class TypeInfoList extends TypeMultiValInfo
 	}
 
 	@Override
-	public void build(HashMap<String, Class> fields)
+	public void build(HashMap<String, ClassContainer> fields)
 	{
-		fields.put(POS, int.class);
-		fields.put(ELEMENT, container.getParameters()[0]);
+		fields.put(POS, new ClassContainer(int.class));
+		fields.put(ELEMENT, new ClassContainer(container.getParameters()[0]));
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class TypeInfoList extends TypeMultiValInfo
 	@Override
 	public Object reconstruct(TypeData[] data)
 	{
-		Object array = Array.newInstance(getType(), data.length);
+		Object array = Array.newInstance(container.getType(), data.length);
 
 		for (TypeData dat : data)
 		{

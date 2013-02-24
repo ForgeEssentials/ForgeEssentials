@@ -30,14 +30,14 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 	}
 
 	@Override
-	public void build(HashMap<String, Class> fields)
+	public void build(HashMap<String, ClassContainer> fields)
 	{
-		fields.put(KEY, String.class);
-		fields.put(TYPE, int.class);
-		fields.put(PRIMITIVE, String.class);
-		fields.put(COMPOUND, NBTTagCompound.class);
-		fields.put(B_ARRAY, byte[].class);
-		fields.put(I_ARRAY, int[].class);
+		fields.put(KEY, new ClassContainer(String.class));
+		fields.put(TYPE, new ClassContainer(int.class));
+		fields.put(PRIMITIVE, new ClassContainer(String.class));
+		fields.put(COMPOUND, new ClassContainer(NBTTagCompound.class));
+		fields.put(B_ARRAY, new ClassContainer(byte[].class));
+		fields.put(I_ARRAY, new ClassContainer(int[].class));
 	}
 
 	@Override
