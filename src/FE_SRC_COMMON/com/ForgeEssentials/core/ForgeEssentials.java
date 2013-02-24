@@ -11,6 +11,7 @@ import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
+import com.ForgeEssentials.core.compat.SanityChecker;
 import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.DeathChest;
 import com.ForgeEssentials.core.misc.ItemList;
@@ -86,21 +87,22 @@ public class ForgeEssentials
 	private MiscEventHandler		miscEventHandler;
 
 	public static String			version;
-	
-	private CompatMCStats mcstatscompat;
-	
-	private SanityChecker bc;
+
+	private CompatMCStats			mcstatscompat;
+
+	private SanityChecker			bc;
+	public static boolean			sanitycheck;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		OutputHandler.init(e.getModLog());
-		
+
 		bc = new SanityChecker();
 		bc.run();
-		
+
 		version = e.getModMetadata().version;
-		
+
 		// setup fedir stuff
 		if (FMLCommonHandler.instance().getSide().isClient())
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials-CLIENT");
@@ -150,9 +152,9 @@ public class ForgeEssentials
 		TickRegistry.registerTickHandler(factory, Side.SERVER);
 		GameRegistry.registerPlayerTracker(factory);
 		MinecraftForge.EVENT_BUS.register(factory);
-		
+
 		MinecraftForge.EVENT_BUS.register(new DeathChest());
-		
+
 		mcstatscompat.load();
 	}
 
@@ -190,7 +192,7 @@ public class ForgeEssentials
 	{
 		mdlaunch.serverStarted(e);
 		DuplicateCommandRemoval.remove();
-		
+
 		CompatMCStats.doMCStats();
 	}
 
@@ -206,5 +208,4 @@ public class ForgeEssentials
 		return true;
 	}
 
-	
 }

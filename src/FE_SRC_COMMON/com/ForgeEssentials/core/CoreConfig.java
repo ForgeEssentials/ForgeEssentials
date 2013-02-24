@@ -41,6 +41,13 @@ public class CoreConfig
 		prop = config.get("general", "removeDuplicateCommands", true);
 		prop.comment = ("Remove commands from the list if they already exist outside of FE.");
 		DuplicateCommandRemoval.removeDuplicateCommands  = prop.getBoolean(true);
+		
+		// sanity check.
+		
+		prop = config.get("Core", "sanitychecks", true);
+		prop.comment = "For advanced users only: If you wish to run FE on a bukkit server or on a server with Fihgu's mod (not recommended, not supported), set this to false.";
+		ForgeEssentials.sanitycheck = prop.getBoolean(true);
+
 
 
 		prop = config.get("Core.Misc", "tpWarmup", 5);
