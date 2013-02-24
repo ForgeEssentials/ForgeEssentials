@@ -78,10 +78,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.WorldControl.commands." + getName();
-	}
+	public abstract String getCommandPerm();
 
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

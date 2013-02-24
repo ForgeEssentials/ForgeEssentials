@@ -4,10 +4,10 @@ package com.ForgeEssentials.WorldControl.commands;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 
-import com.ForgeEssentials.WorldControl.BlockInfo;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.BlockInfo;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -52,7 +52,7 @@ public class CommandExpand extends WorldControlCommandBase
 					OutputHandler.chatConfirmation(player, "Expanded vertically!");
 					return;
 				}else{
-					if(BlockInfo.isInt(args[0])) {
+					if(FunctionHelper.isInt(args[0])) {
 						amount = Integer.parseInt(args[0]);
 					}else{
 						OutputHandler.chatError(player, "Invalid Argument: "+args[0]);
@@ -61,13 +61,13 @@ public class CommandExpand extends WorldControlCommandBase
 				}
 			}
 			if(args.length>=2) {
-				if(BlockInfo.isInt(args[0])) {
+				if(FunctionHelper.isInt(args[0])) {
 					amount = Integer.parseInt(args[0]);
 				}else{
 					OutputHandler.chatError(player, "Amount must be a number!");
 					return;
 				}
-				if(BlockInfo.isInt(args[1])) {
+				if(FunctionHelper.isInt(args[1])) {
 					reverse = Integer.parseInt(args[1]);
 				}else{
 					FunctionHelper.Direction dirt = FunctionHelper.getDirectionFromString(args[1]);
@@ -261,7 +261,7 @@ public class CommandExpand extends WorldControlCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.commands.selectionmanipulate";
+		return "ForgeEssentials.WorldControl.selection";
 	}
 
 }

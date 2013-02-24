@@ -3,12 +3,13 @@ package com.ForgeEssentials.WorldControl.commands;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.WorldControl.BlockArray;
-import com.ForgeEssentials.WorldControl.BlockArrayBackup;
-import com.ForgeEssentials.WorldControl.BlockInfo;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.BlockArray;
+import com.ForgeEssentials.util.BlockArrayBackup;
+import com.ForgeEssentials.util.BlockInfo;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
@@ -20,6 +21,12 @@ public class CommandTopManipulate extends WorldControlCommandBase
 
 	private String						name;
 	private TickTaskTopManipulator.Mode	manipulateMode;
+	
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.WorldControl.topmanipulate";
+	}
 
 	public CommandTopManipulate(String cmdName, TickTaskTopManipulator.Mode mode)
 	{
@@ -31,7 +38,7 @@ public class CommandTopManipulate extends WorldControlCommandBase
 	@Override
 	public String getName()
 	{
-		return name;
+		return "/"+name;
 	}
 
 	@Override
@@ -49,7 +56,7 @@ public class CommandTopManipulate extends WorldControlCommandBase
 				area = info.getSelection();
 			}else if (args.length == 1)
 			{
-				if(!BlockInfo.isInt(args[0])) {
+				if(!FunctionHelper.isInt(args[0])) {
 					OutputHandler.chatError(player, "Radius is not a number.");
 					return;
 				}

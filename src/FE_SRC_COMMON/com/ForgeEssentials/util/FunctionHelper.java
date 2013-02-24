@@ -32,6 +32,22 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public final class FunctionHelper
 {
+	
+	private static String nums = "1234567890";
+	
+	public static boolean isInt(String str) {
+		for(int chr = 0;chr<str.length();chr++) {
+			boolean isGood = false;
+			for(int num = 0;num<nums.length();num++) {
+				if(str.substring(chr, chr+1).equals(nums.substring(num, num+1))||(num==0&&str.substring(chr, chr+1).equals("-"))) {
+					isGood = true;
+				}
+			}
+			if(!isGood)return false;
+		}
+		return true;
+	}
+	
 	/**
 	 * stolen from Item class
 	 */
@@ -79,7 +95,7 @@ public final class FunctionHelper
 	}
 	
 	public static Direction getDirectionFromString(String str) {
-		String text = str.toLowerCase();
+		String text = str.toLowerCase().substring(0, 1);
 		if(text.equals("n")) {
 			return Direction.NORTH;
 		}else if(text.equals("s")) {

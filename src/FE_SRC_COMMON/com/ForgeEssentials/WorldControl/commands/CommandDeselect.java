@@ -45,6 +45,6 @@ public class CommandDeselect extends WorldControlCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.commands.pos";
+		return "ForgeEssentials.WorldControl.selection";
 	}
 }

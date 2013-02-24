@@ -114,7 +114,7 @@ public class CommandPos extends WorldControlCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.commands.pos";
+		return "ForgeEssentials.WorldControl.selection";
 	}
 
 }

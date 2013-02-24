@@ -6,8 +6,6 @@ import java.util.Stack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 
-import com.ForgeEssentials.WorldControl.BlockArray;
-import com.ForgeEssentials.WorldControl.BlockArrayBackup;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.ITaggedClass;
 import com.ForgeEssentials.api.data.SaveableObject;
@@ -16,6 +14,8 @@ import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.core.network.PacketSelectionUpdate;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.BlockArray;
+import com.ForgeEssentials.util.BlockArrayBackup;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;

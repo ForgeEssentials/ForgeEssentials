@@ -6,12 +6,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.ForgeEssentials.WorldControl.BlockArray;
-import com.ForgeEssentials.WorldControl.BlockArrayBackup;
-import com.ForgeEssentials.WorldControl.BlockInfo;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.WorldControl.EventWCCommand;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.BlockArray;
+import com.ForgeEssentials.util.BlockArrayBackup;
+import com.ForgeEssentials.util.BlockInfo;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;

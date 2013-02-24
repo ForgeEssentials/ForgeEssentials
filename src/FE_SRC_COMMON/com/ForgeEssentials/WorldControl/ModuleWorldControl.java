@@ -25,6 +25,9 @@ import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermRegister;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 //import com.ForgeEssentials.WorldControl.weintegration.WEIntegration;
 
@@ -51,6 +54,23 @@ public class ModuleWorldControl
 	{
 		MinecraftForge.EVENT_BUS.register(WandController.instance);
 		TickRegistry.registerTickHandler(WandController.instance, Side.SERVER);
+	}
+	
+	@PermRegister(ident = "ModuleWorldControl")
+	public static void registerPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel("ForgeEssentials.WorldControl._ALL_", RegGroup.OWNERS);
+		for(String str : permsToRegister) {
+			event.registerPermissionLevel("ForgeEssentials.WorldControl._ALL_", RegGroup.OWNERS);
+		}
+		event.registerPermissionLevel("ForgeEssentials.WorldControl.longreach", RegGroup.OWNERS);
+	}
+	
+	private static ArrayList<String> permsToRegister = new ArrayList<String>();
+	
+	public void registerCommand(FEModuleServerInitEvent e, WorldControlCommandBase command) {
+		e.registerServerCommand(command);
+		permsToRegister.add(command.getCommandPerm());
 	}
 
 	// serverStart.
