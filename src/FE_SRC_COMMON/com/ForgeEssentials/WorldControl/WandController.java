@@ -77,7 +77,11 @@ public class WandController implements ITickHandler
 			int z = mouseOverBlock.blockZ;
 			int side = mouseOverBlock.sideHit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(player.getDistance(x, y, z)<=4.8F)leftClick(player, x, y, z, side, false);
+=======
+			if(player.getDistance(x, y, z)>=5F)leftClick(player, x, y, z, side, false);
+>>>>>>> origin/WorldControl
 =======
 			if(player.getDistance(x, y, z)>=5F)leftClick(player, x, y, z, side, false);
 >>>>>>> origin/WorldControl
@@ -152,9 +156,12 @@ public class WandController implements ITickHandler
 				player.addChatMessage(FEChatFormatCodes.PURPLE + "Pos1 set to " + x + ", " + y + ", " + z);
 				return true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			}else if(player.capabilities.isCreativeMode&&inReach){
 				player.worldObj.setBlockWithNotify(x, y, z, 0);
 =======
+=======
+>>>>>>> origin/WorldControl
 			}else if(player.capabilities.isCreativeMode&&!inReach){
 				PermQueryPlayerArea query = new PermQueryPlayerArea(player, "ForgeEssentials.WorldControl.longreach", new AreaBase(new Point(x, y, z), new Point(x, y, z)), false);
 				PermResult result = PermissionsAPI.checkPermResult(query);
@@ -165,6 +172,9 @@ public class WandController implements ITickHandler
 						player.worldObj.setBlockWithNotify(x, y, z, 0);
 					}
 				}
+<<<<<<< HEAD
+>>>>>>> origin/WorldControl
+=======
 >>>>>>> origin/WorldControl
 				return true;
 			}
