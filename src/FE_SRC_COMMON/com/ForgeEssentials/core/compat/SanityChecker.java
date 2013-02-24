@@ -25,7 +25,7 @@ public class SanityChecker
 		else if (Loader.isModLoaded("fihgu's Core Mod"))
 		{
 			OutputHandler.severe("Sanity check failed: Detected Fihgu's mods, stopping server for your safety.");
-			throw new RuntimeException("ForgeEssentials: Please DO NOT use FE with Fihgu's mods, bad things WILL happen. Trust us. You were warned,");
+			//throw new RuntimeException("ForgeEssentials: Please DO NOT use FE with Fihgu's mods, bad things WILL happen. Trust us. You were warned,");
 		}
 
 		else
