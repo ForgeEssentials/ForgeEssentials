@@ -46,8 +46,7 @@ public class ZoneManager
 
 	public static Zone getWhichZoneIn(WorldPoint point)
 	{
-		World world = FunctionHelper.getDimension(point.dim);
-		return getWhichZoneIn(point, world);
+		return getWhichZoneIn(point);
 	}
 
 	public static Zone getWhichZoneIn(AreaBase area, World world)

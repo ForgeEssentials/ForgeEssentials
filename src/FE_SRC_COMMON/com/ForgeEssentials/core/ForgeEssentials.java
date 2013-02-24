@@ -98,9 +98,6 @@ public class ForgeEssentials
 	{
 		OutputHandler.init(e.getModLog());
 
-		bc = new SanityChecker();
-		bc.run();
-
 		version = e.getModMetadata().version;
 
 		// setup fedir stuff
@@ -110,6 +107,10 @@ public class ForgeEssentials
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
 
 		config = new CoreConfig();
+		
+		bc = new SanityChecker();
+		bc.run();
+		
 		mcstatscompat = new CompatMCStats();
 
 		// Data API stuff
