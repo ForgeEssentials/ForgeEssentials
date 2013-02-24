@@ -32,6 +32,12 @@ public class CommandSet extends WorldControlCommandBase
 	{
 		super(true);
 	}
+	
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.WorldControl.blockmanipulation";
+	}
 
 	@Override
 	public String getName()

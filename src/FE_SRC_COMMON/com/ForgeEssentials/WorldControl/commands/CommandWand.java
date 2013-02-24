@@ -142,4 +142,10 @@ public class CommandWand extends WorldControlCommandBase
 			return checkCommandPerm(player);
 		}
 	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.WorldControl.selection";
+	}
 }

@@ -21,6 +21,12 @@ public class CommandTopManipulate extends WorldControlCommandBase
 
 	private String						name;
 	private TickTaskTopManipulator.Mode	manipulateMode;
+	
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.WorldControl.topmanipulate";
+	}
 
 	public CommandTopManipulate(String cmdName, TickTaskTopManipulator.Mode mode)
 	{

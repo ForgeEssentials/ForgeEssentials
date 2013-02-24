@@ -250,7 +250,7 @@ public class CommandContract extends WorldControlCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.commands.selectionmanipulate";
+		return "ForgeEssentials.WorldControl.selection";
 	}
 
 }
