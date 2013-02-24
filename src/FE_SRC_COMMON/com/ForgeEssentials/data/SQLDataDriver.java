@@ -15,7 +15,6 @@ import net.minecraftforge.common.Configuration;
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.EnumDriverType;
-import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -62,7 +61,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	}
 
 	@Override
-	protected boolean saveData(Class type, TypeData data)
+	protected boolean saveData(ClassContainer type, TypeData data)
 	{
 		boolean isSuccess = false;
 
@@ -84,7 +83,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	}
 
 	@Override
-	protected TypeData loadData(Class type, String uniqueKey)
+	protected TypeData loadData(ClassContainer type, String uniqueKey)
 	{
 		TypeData reconstructed = DataStorageManager.getDataForType(type);
 		ITypeInfo info = DataStorageManager.getInfoForType(type);
@@ -110,11 +109,11 @@ public class SQLDataDriver extends AbstractDataDriver
 	}
 
 	@Override
-	protected TypeData[] loadAll(Class type)
+	protected TypeData[] loadAll(ClassContainer type)
 	{
 		ArrayList<TypeData> values = new ArrayList<TypeData>();
 		ITypeInfo info = DataStorageManager.getInfoForType(type);
-		
+
 		try
 		{
 			Statement s = dbConnection.createStatement();
@@ -124,7 +123,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			while (result.next())
 			{
 				temp = DataStorageManager.getDataForType(type);
-				
+
 				// Continue reading rows as they exist.
 				createTaggedClassFromResult(resultRowToMap(result), info, temp);
 				values.add(temp);
@@ -139,7 +138,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	}
 
 	@Override
-	protected boolean deleteData(Class type, String uniqueObjectKey)
+	protected boolean deleteData(ClassContainer type, String uniqueObjectKey)
 	{
 		boolean isSuccess = false;
 
@@ -233,7 +232,7 @@ public class SQLDataDriver extends AbstractDataDriver
 					if (fieldHeiarchy.length > i + 1)
 					{
 						// An object lives here.
-						tmpClass = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
+						tmpClassContainer = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
 						tmpField.value = cursor = DataStorageManager.getDataForType(tmpClass);
 						taggerCursor = taggerCursor.getInfoForField(fieldHeiarchy[i]);
 					}
@@ -272,7 +271,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		}
 	}
 
-	private String createDeleteStatement(Class type, String uniqueObjectKey)
+	private String createDeleteStatement(ClassContainer type, String uniqueObjectKey)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM " + type.getSimpleName() + " WHERE ");
@@ -283,12 +282,12 @@ public class SQLDataDriver extends AbstractDataDriver
 		return builder.toString();
 	}
 
-	private String createSelectAllStatement(Class type)
+	private String createSelectAllStatement(ClassContainer type)
 	{
 		return createSelectStatement(type, null);
 	}
 
-	private String createSelectStatement(Class type, Object uniqueObjectKey)
+	private String createSelectStatement(ClassContainer type, Object uniqueObjectKey)
 	{
 		StringBuilder builder = new StringBuilder();
 
@@ -307,7 +306,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		return builder.toString();
 	}
 
-	private String createInsertStatement(Class type, TypeData fieldList)
+	private String createInsertStatement(ClassContainer type, TypeData fieldList)
 	{
 		ArrayList<Pair<String, String>> fieldValueMap = new ArrayList<Pair<String, String>>();
 		// Iterate through fields and build up name=>value pair list.
@@ -470,7 +469,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */
-	private ArrayList<Pair<String, String>> fieldToValues(String fieldName, Class type, Object value)
+	private ArrayList<Pair<String, String>> fieldToValues(String fieldName, ClassContainer type, Object value)
 	{
 		ArrayList<Pair<String, String>> data = new ArrayList<Pair<String, String>>();
 
@@ -541,7 +540,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	}
 
 	// Transforms the raw DB type back into a Java object.
-	private Object valueToField(Class targetType, Object dbValue)
+	private Object valueToField(ClassContainer targetType, Object dbValue)
 	{
 		Object value = null;
 		if (targetType.equals(int.class))

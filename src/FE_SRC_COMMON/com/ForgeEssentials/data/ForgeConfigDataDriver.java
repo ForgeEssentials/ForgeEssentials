@@ -1,6 +1,7 @@
 package com.ForgeEssentials.data;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
@@ -29,7 +30,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	}
 
 	@Override
-	protected boolean saveData(Class type, TypeData objectData)
+	protected boolean saveData(ClassContainer type, TypeData objectData)
 	{
 		boolean wasSuccessful = false;
 
@@ -45,7 +46,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 
 		// write each and every field to the config file.
 		for (Entry<String, Object> entry : objectData.getAllFields())
-			writeFieldToProperty(cfg, type.getSimpleName(), entry.getKey(), entry.getValue());
+			writeFieldToProperty(cfg, type.getFileSafeName(), entry.getKey(), entry.getValue());
 
 		cfg.save();
 
@@ -53,20 +54,25 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	}
 
 	@Override
-	protected TypeData loadData(Class type, String uniqueKey)
+	protected TypeData loadData(ClassContainer type, String uniqueKey)
 	{
-		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
+		File file = getFilePath(type, uniqueKey);
+		
+		if (!file.exists())
+			return null;
+		
+		Configuration cfg = new Configuration(file, true);
 		cfg.load();
 		ITypeInfo info = DataStorageManager.getInfoForType(type);
 		TypeData data = DataStorageManager.getDataForType(type);
-		readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), data, info);
+		readClassFromProperty(cfg, cfg.categories.get(type.getFileSafeName()), data, info);
 		data.setUniqueKey(uniqueKey);
 
 		return data;
 	}
 
 	@Override
-	protected TypeData[] loadAll(Class type)
+	protected TypeData[] loadAll(ClassContainer type)
 	{
 		File[] files = getTypePath(type).listFiles();
 		ArrayList<TypeData> data = new ArrayList<TypeData>();

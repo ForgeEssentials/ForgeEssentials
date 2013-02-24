@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IDataDriver;
@@ -33,28 +34,28 @@ public abstract class AbstractDataDriver implements IDataDriver
 	}
 
 	@Override
-	public boolean saveObject(Object o)
+	public boolean saveObject(ClassContainer type, Object o)
 	{
 		boolean flag = false;
 		
-		if (!classRegister.containsEntry(getName(), o.getClass().getName()))
+		if (!classRegister.containsEntry(getName(), type.getName()))
 		{
 			this.onClassRegistered(DataStorageManager.getInfoForType(o.getClass()));
-			classRegister.put(getName(), o.getClass().getName());
+			classRegister.put(getName(), type.getName());
 		}
 
 		ITypeInfo t;
 		if ((t = DataStorageManager.getInfoForType(o.getClass())) != null)
 		{
 			flag = true;
-			saveData(o.getClass(), t.getTypeDataFromObject(o));
+			saveData(type, t.getTypeDataFromObject(o));
 		}
 
 		return flag;
 	}
 
 	@Override
-	public Object loadObject(Class type, String loadingKey)
+	public Object loadObject(ClassContainer type, String loadingKey)
 	{
 		Object newObject = null;
 		TypeData data = loadData(type, loadingKey);
@@ -69,7 +70,7 @@ public abstract class AbstractDataDriver implements IDataDriver
 	}
 
 	@Override
-	public Object[] loadAllObjects(Class type)
+	public Object[] loadAllObjects(ClassContainer type)
 	{
 		ArrayList<Object> list = new ArrayList<Object>();
 		TypeData[] objectData = loadAll(type);
@@ -91,7 +92,7 @@ public abstract class AbstractDataDriver implements IDataDriver
 	}
 
 	@Override
-	public boolean deleteObject(Class type, String loadingKey)
+	public boolean deleteObject(ClassContainer type, String loadingKey)
 	{
 		return deleteData(type, loadingKey);
 	}
@@ -135,11 +136,11 @@ public abstract class AbstractDataDriver implements IDataDriver
 
 	abstract public void loadFromConfigs(Configuration config, String category, String worldName) throws Exception;
 
-	abstract protected boolean saveData(Class type, TypeData fieldList);
+	abstract protected boolean saveData(ClassContainer type, TypeData fieldList);
 
-	abstract protected TypeData loadData(Class type, String uniqueKey);
+	abstract protected TypeData loadData(ClassContainer type, String uniqueKey);
 
-	abstract protected TypeData[] loadAll(Class type);
+	abstract protected TypeData[] loadAll(ClassContainer type);
 
-	abstract protected boolean deleteData(Class type, String uniqueObjectKey);
+	abstract protected boolean deleteData(ClassContainer type, String uniqueObjectKey);
 }

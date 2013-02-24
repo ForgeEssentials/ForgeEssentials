@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.TypeData;
@@ -49,9 +50,9 @@ public abstract class BinaryDataDriver extends AbstractDataDriver
 		config.save();
 	}
 
-	protected final File getTypePath(Class type)
+	protected final File getTypePath(ClassContainer type)
 	{
-		return new File(baseFile, type.getSimpleName() + "/");
+		return new File(baseFile, type.getFileSafeName() + "/");
 	}
 
 	/**
@@ -59,13 +60,13 @@ public abstract class BinaryDataDriver extends AbstractDataDriver
 	 * 
 	 * @return
 	 */
-	protected File getFilePath(Class type, Object uniqueKey)
+	protected File getFilePath(ClassContainer type, Object uniqueKey)
 	{
 		return new File(getTypePath(type).getPath(), uniqueKey.toString() + EXT);
 	}
 
 	@Override
-	protected TypeData[] loadAll(Class type)
+	protected TypeData[] loadAll(ClassContainer type)
 	{
 		File[] files = getTypePath(type).listFiles();
 		ArrayList<IReconstructData> data = new ArrayList<IReconstructData>();
@@ -85,7 +86,7 @@ public abstract class BinaryDataDriver extends AbstractDataDriver
 	}
 
 	@Override
-	protected final boolean deleteData(Class type, String uniqueKey)
+	protected final boolean deleteData(ClassContainer type, String uniqueKey)
 	{
 		boolean isSuccess = false;
 		File f = getFilePath(type, uniqueKey);

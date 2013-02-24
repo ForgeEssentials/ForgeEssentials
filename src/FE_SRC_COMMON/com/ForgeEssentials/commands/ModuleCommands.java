@@ -11,6 +11,7 @@ import org.mcstats.Metrics.Graph;
 import org.mcstats.Metrics.Plotter;
 
 import com.ForgeEssentials.api.IServerStats;
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -124,30 +125,32 @@ public class ModuleCommands implements IServerStats
 
 	public static void saveWarps()
 	{
+		ClassContainer con = new ClassContainer(Warp.class);
 		for (Warp warp : TeleportCenter.warps.values())
 		{
-			data.saveObject(warp);
+			data.saveObject(con, warp);
 		}
 
+		con = new ClassContainer(PWarp.class);
 		for (HashMap<String, PWarp> pws : TeleportCenter.pwMap.values())
 		{
 			for (PWarp warp : pws.values())
 			{
-				data.saveObject(warp);
+				data.saveObject(con, warp);
 			}
 		}
 	}
 
 	public static void loadWarps()
 	{
-		Object[] objs = data.loadAllObjects(Warp.class);
+		Object[] objs = data.loadAllObjects(new ClassContainer(Warp.class));
 		for (Object obj : objs)
 		{
 			Warp warp = ((Warp) obj);
 			TeleportCenter.warps.put(warp.getName(), warp);
 		}
 
-		objs = data.loadAllObjects(PWarp.class);
+		objs = data.loadAllObjects(new ClassContainer(PWarp.class));
 		for (Object obj : objs)
 		{
 			PWarp warp = ((PWarp) obj);

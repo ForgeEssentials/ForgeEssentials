@@ -2,11 +2,10 @@ package com.ForgeEssentials.chat;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.permission.AutoPromote;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.IPlayerTracker;
@@ -18,7 +17,7 @@ public class MailSystem implements IPlayerTracker
 	public static void AddMail(Mail mail)
 	{
 		map.put(mail.getReceiver(), mail);
-		DataStorageManager.getReccomendedDriver().saveObject(mail);
+		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(Mail.class), mail);
 		
 		if(FunctionHelper.getPlayerFromPartialName(mail.getReceiver()) != null)
 		{
@@ -28,7 +27,7 @@ public class MailSystem implements IPlayerTracker
 	
 	public static void LoadAll()
 	{
-		for(Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(Mail.class))
+		for(Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(new ClassContainer(Mail.class)))
 		{
 			Mail mail = (Mail) obj;
 			map.put(mail.getReceiver(), mail);
@@ -39,7 +38,7 @@ public class MailSystem implements IPlayerTracker
 	{
 		for(Mail mail : map.values())
 		{
-			DataStorageManager.getReccomendedDriver().saveObject(mail);
+			DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(Mail.class), mail);
 		}
 	}
 	
@@ -51,7 +50,7 @@ public class MailSystem implements IPlayerTracker
 			for(Mail mail : map.get(receiver.username))
 			{
 				receiver.sendChatToPlayer(FEChatFormatCodes.GREEN + "{" + mail.getSender() + "} " + FEChatFormatCodes.WHITE + mail.getMessage());
-					DataStorageManager.getReccomendedDriver().deleteObject(Mail.class, mail.getKey());
+					DataStorageManager.getReccomendedDriver().deleteObject(new ClassContainer(Mail.class) , mail.getKey());
 			}
 			receiver.sendChatToPlayer(FEChatFormatCodes.GREEN + "--- End of mail ---");
 		}

@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent.Load;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.permissions.IZoneManager;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -38,7 +39,7 @@ public class ZoneHelper implements IZoneManager
 
 	protected void loadZones()
 	{
-		Object[] objs = ModulePermissions.data.loadAllObjects(Zone.class);
+		Object[] objs = ModulePermissions.data.loadAllObjects(new ClassContainer(Zone.class));
 		Zone temp;
 		boolean exists;
 		for (Object obj : objs)
@@ -108,7 +109,7 @@ public class ZoneHelper implements IZoneManager
 		Zone deleted = zoneMap.remove(zoneID);
 		onZoneDeleted(deleted);
 		SqlHelper.delZone(zoneID);
-		ModulePermissions.data.deleteObject(Zone.class, zoneID);
+		ModulePermissions.data.deleteObject(new ClassContainer(Zone.class), zoneID);
 	}
 
 	public boolean doesZoneExist(String zoneID)

@@ -9,13 +9,13 @@ public interface IDataDriver
 
 	String getName();
 
-	boolean saveObject(Object o);
+	boolean saveObject(ClassContainer type, Object o);
 
-	Object loadObject(Class type, String loadingKey);
+	Object loadObject(ClassContainer type, String loadingKey);
 
-	Object[] loadAllObjects(Class type);
+	Object[] loadAllObjects(ClassContainer type);
 
-	boolean deleteObject(Class type, String loadingKey);
+	boolean deleteObject(ClassContainer type, String loadingKey);
 
 	void parseConfigs(Configuration config, String category, String worldName) throws Exception;
 

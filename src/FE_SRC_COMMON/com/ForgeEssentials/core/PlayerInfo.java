@@ -8,7 +8,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
@@ -43,7 +45,7 @@ public class PlayerInfo
 		if (info == null)
 		{
 			// Attempt to populate this info with some data from our storage.
-			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(PlayerInfo.class, username);
+			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), username);
 
 			if (info == null)
 			{
@@ -164,7 +166,7 @@ public class PlayerInfo
 	 */
 	public void save()
 	{
-		DataStorageManager.getReccomendedDriver().saveObject(this);
+		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
 	}
 
 	// ----------------------------------------------

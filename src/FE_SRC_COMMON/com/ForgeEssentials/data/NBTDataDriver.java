@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.TypeData;
@@ -29,7 +30,7 @@ public class NBTDataDriver extends BinaryDataDriver
 	private static final String	UNIQUE	= "__UNIQUE__";
 
 	@Override
-	protected boolean saveData(Class type, TypeData data)
+	protected boolean saveData(ClassContainer type, TypeData data)
 	{
 		boolean successful = true;
 
@@ -100,14 +101,13 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 		catch (Exception e)
 		{
-			OutputHandler.exception(Level.FINE, "Error tryong to read NBT frole from "+file, e);
-			e.printStackTrace();
+			OutputHandler.exception(Level.FINEST, "Error tryong to read NBT frole from "+file, e);
 			return null;
 		}
 	}
 
 	@Override
-	protected TypeData loadData(Class type, String uniqueKey)
+	protected TypeData loadData(ClassContainer type, String uniqueKey)
 	{
 		NBTTagCompound nbt = readNBT(getFilePath(type, uniqueKey));
 
@@ -205,14 +205,14 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			tag.setTag(name, list);
 		}
-		else if (type.equals(IReconstructData.class))
+		else if (IReconstructData.class.isAssignableFrom(type))
 		{
 			NBTTagCompound compound = new NBTTagCompound();
 			writeClassToTag(compound, (TypeData) obj);
 			tag.setCompoundTag(name, compound);
 		}
 		else
-			throw new IllegalArgumentException("Cannot save object type.");
+			throw new IllegalArgumentException("Cannot save object type: "+type.getCanonicalName());
 	}
 
 	private Object readFieldFromTag(NBTTagCompound tag, String name, ITypeInfo info)
@@ -280,7 +280,7 @@ public class NBTDataDriver extends BinaryDataDriver
 	}
 
 	@Override
-	protected TypeData[] loadAll(Class type)
+	protected TypeData[] loadAll(ClassContainer type)
 	{
 		File[] files = getTypePath(type).listFiles();
 		ArrayList<IReconstructData> data = new ArrayList<IReconstructData>();

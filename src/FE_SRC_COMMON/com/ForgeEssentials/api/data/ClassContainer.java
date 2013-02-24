@@ -108,6 +108,15 @@ public class ClassContainer
 
 		return builder.toString();
 	}
+	
+	public String getFileSafeName()
+	{
+		String temp = getSimpleName();
+		temp = temp.replace('<', '(');
+		temp = temp.replace('>', ')');
+		temp.replace(", ", "_H_");
+		return temp;
+	}
 
 	@Override
 	public String toString()
