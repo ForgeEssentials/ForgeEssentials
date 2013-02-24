@@ -20,7 +20,7 @@ public class CommandWand extends WorldControlCommandBase
 	@Override
 	public String getName()
 	{
-		return "fewand";
+		return "wand";
 	}
 
 	@Override

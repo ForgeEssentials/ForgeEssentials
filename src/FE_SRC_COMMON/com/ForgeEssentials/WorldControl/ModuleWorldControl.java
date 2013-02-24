@@ -14,6 +14,7 @@ import com.ForgeEssentials.WorldControl.commands.CommandPos;
 import com.ForgeEssentials.WorldControl.commands.CommandRedo;
 import com.ForgeEssentials.WorldControl.commands.CommandReplace;
 import com.ForgeEssentials.WorldControl.commands.CommandSet;
+import com.ForgeEssentials.WorldControl.commands.CommandShift;
 import com.ForgeEssentials.WorldControl.commands.CommandTopManipulate;
 import com.ForgeEssentials.WorldControl.commands.CommandUndo;
 import com.ForgeEssentials.WorldControl.commands.CommandWand;
@@ -70,7 +71,7 @@ public class ModuleWorldControl
 	
 	public void registerCommand(FEModuleServerInitEvent e, WorldControlCommandBase command) {
 		e.registerServerCommand(command);
-		permsToRegister.add(command.getCommandPerm());
+		if(!permsToRegister.contains(command.getCommandPerm()))permsToRegister.add(command.getCommandPerm());
 	}
 
 	// serverStart.
@@ -94,6 +95,7 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandChunk());
 		e.registerServerCommand(new CommandExpand());
 		e.registerServerCommand(new CommandContract());
+		e.registerServerCommand(new CommandShift());
 		// WEIntegration.serverStarting(e);
 	}
 }
