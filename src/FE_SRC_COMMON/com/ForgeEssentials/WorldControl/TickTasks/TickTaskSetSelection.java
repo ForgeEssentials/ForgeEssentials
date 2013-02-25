@@ -36,7 +36,8 @@ public class TickTaskSetSelection extends TickTaskLoadBlocks
 	}
 	
 	protected boolean placeBlock() {
-		return place(x, y, z, to.randomBlock());
+		if(isApplicable(x, y, z))return place(x, y, z, to.randomBlock());
+		return false;
 	}
 
 	private boolean isApplicable(int x, int y, int z)

@@ -90,6 +90,7 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandWalls());
 		e.registerServerCommand(new CommandRoof());
 		e.registerServerCommand(new CommandFloor());
+		e.registerServerCommand(new CommandOverlay());
 		// WEIntegration.serverStarting(e);
 	}
 }

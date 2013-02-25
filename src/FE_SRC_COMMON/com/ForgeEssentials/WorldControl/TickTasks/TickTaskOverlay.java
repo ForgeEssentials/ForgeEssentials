@@ -17,29 +17,29 @@ import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
-public class TickTaskFloor extends TickTaskLoadBlocks
+public class TickTaskOverlay extends TickTaskLoadBlocks
 {
 	private ArrayList<AreaBase>	applicable;
 
 	BlockInfo to;
 
-	public TickTaskFloor(EntityPlayer player, AreaBase sel, BlockInfo to)
+	public TickTaskOverlay(EntityPlayer player, AreaBase sel, BlockInfo to)
 	{
 		super(player, sel);
 		this.to=to;
 	}
 
-	public TickTaskFloor(EntityPlayer player, AreaBase sel, BlockInfo to, ArrayList<AreaBase> applicable)
+	public TickTaskOverlay(EntityPlayer player, AreaBase sel, BlockInfo to, ArrayList<AreaBase> applicable)
 	{
 		this(player, sel, to);
 		this.applicable = applicable;
 	}
 	
 	protected boolean placeBlock() {
-		if(y==sel.getLowPoint().y) {
-			if(isApplicable(x, y, z))return place(x, y, z, to);
+		if(((Block.blocksList[world.getBlockId(x, y, z)]==null||Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z)) && isApplicable(x, y, z)) && world.getBlockId(x, y-1, z)>0) {
+			return place(x, y, z, to.randomBlock());
 		}
-		return false;
+		return true;
 	}
 
 	private boolean isApplicable(int x, int y, int z)
