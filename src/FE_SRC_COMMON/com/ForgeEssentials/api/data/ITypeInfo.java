@@ -63,7 +63,6 @@ public interface ITypeInfo<T>
 	
 	/**
 	 * This may return null for primitive types.
-	 * This will probably return 
 	 * @return
 	 */
 	public ITypeInfo getInfoForField(String field);

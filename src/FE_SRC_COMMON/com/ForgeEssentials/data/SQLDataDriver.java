@@ -7,8 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import net.minecraftforge.common.Configuration;
 
@@ -17,6 +19,7 @@ import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
+import com.ForgeEssentials.api.data.TypeMultiValInfo;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
@@ -25,12 +28,12 @@ import com.ForgeEssentials.util.Pair;
 
 public class SQLDataDriver extends AbstractDataDriver
 {
-	protected static final String		SEPERATOR			= "__";
-	private Connection					dbConnection;
-	protected HashMap<Class, Boolean>	classTableChecked	= new HashMap<Class, Boolean>();
-	protected DBConnector				connector;
+	protected static final String	SEPERATOR			= "__";
+	private Connection				dbConnection;
+	private HashSet<String>			classTableChecked	= new HashSet<String>();
+	protected DBConnector			connector;
 
-	private final String				UNIQUE				= "uniqueIdentifier";
+	private final String			UNIQUE				= "uniqueIdentifier";
 
 	// Default constructor is good enough for us.
 
@@ -51,11 +54,11 @@ public class SQLDataDriver extends AbstractDataDriver
 	@Override
 	public void onClassRegistered(ITypeInfo tagger)
 	{
-		// If this is the first time registering a class that is NOT saved
-		// inline,
+		// If this is the first time registering a class that is NOT saved inline,
 		// attempt to create a table.
-		if (!(tagger.canSaveInline() || classTableChecked.containsKey(tagger.getType())))
+		if (!(tagger.canSaveInline() || classTableChecked.contains(tagger.getType().getName())))
 		{
+			// automatically adds done classes to the set
 			createTable(tagger.getType());
 		}
 	}
@@ -63,23 +66,19 @@ public class SQLDataDriver extends AbstractDataDriver
 	@Override
 	protected boolean saveData(ClassContainer type, TypeData data)
 	{
-		boolean isSuccess = false;
-
 		try
 		{
 			Statement s;
 			s = dbConnection.createStatement();
-			int count = s.executeUpdate(createInsertStatement(type, data));
-
-			isSuccess = true;
+			generateInsertBatch(type, data, s);
+			s.executeBatch();
+			return true;
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("Couldn't save object of type " + type.getSimpleName() + " to " + connector.getChosenType() + " DB. Server will continue running.");
-			e.printStackTrace();
+			OutputHandler.exception(Level.INFO, "Couldn't save object of type " + type.getSimpleName() + " to " + connector.getChosenType() + " DB. Server will continue running.", e);
+			return false;
 		}
-
-		return isSuccess;
 	}
 
 	@Override
@@ -305,6 +304,39 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		return builder.toString();
 	}
+	
+	private void generateInsertBatch(ClassContainer type, TypeData fieldList, Statement s)
+	{
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		
+		ArrayList<Pair<String, String>> fieldValueMap = new ArrayList<Pair<String, String>>();
+		
+		// Iterate through fields and build up name=>value pair list.
+		for (Entry<String, Object> entry : fieldList.getAllFields())
+		{
+			fieldValueMap.addAll(fieldToValues(entry.getKey(), info.getTypeOfField(entry.getKey()), entry.getValue()));
+		}
+		
+		// iterrate looking for MultiVals.
+		// TODO: get MultiVal types in a map.
+		ITypeInfo tempInfo;
+		ClassContainer tempClass;
+		for (Entry<String, Object> entry : fieldList.getAllFields())
+		{
+			tempInfo = info.getInfoForField(entry.getKey());
+			if (info == null)
+				continue;
+			else if (!info.canSaveInline())
+			{
+				// FOUND A MULTIVAL!!!!
+				
+			}
+			else
+			{
+				
+			}
+		}
+	}
 
 	private String createInsertStatement(ClassContainer type, TypeData fieldList)
 	{
@@ -363,24 +395,34 @@ public class SQLDataDriver extends AbstractDataDriver
 	 */
 	private boolean createTable(ClassContainer type)
 	{
-		boolean isSuccess = false;
+		if (classTableChecked.contains(type.getName()))
+			return false;
 
 		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
 		String[] fields = tagger.getFieldList();
 		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
 		String keyClause = null;
+		
+		boolean isMulti = tagger instanceof TypeMultiValInfo;
+		
+		//if its multi, add the UID thing. 
+		if (isMulti)
+			tableFields.add(new Pair<String, String>("UID", "VARCHAR(255)"));
 
 		for (String name : fields)
 		{
 			tableFields.addAll(fieldToColumns(name, tagger.getTypeOfField(name)));
 		}
 
-		// Is a method. Extra field required.
-		tableFields.add(new Pair<String, String>(UNIQUE, "VARCHAR(100)"));
-		keyClause = "PRIMARY KEY (" + UNIQUE + ")";
+		// no saving the UniqueKey if its a MultiVal thing.
+		if (!isMulti)
+		{
+			tableFields.add(new Pair<String, String>(UNIQUE, "VARCHAR(100)"));
+			keyClause = "PRIMARY KEY (" + UNIQUE + ")";
+		}
 
 		// Build up the create statement
-		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + type.getSimpleName() + " (");
+		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + type.getFileSafeName() + " (");
 		for (Pair<String, String> pair : tableFields)
 		{
 			tableCreate.append(pair.getFirst() + " " + pair.getSecond() + ", ");
@@ -393,15 +435,17 @@ public class SQLDataDriver extends AbstractDataDriver
 			// Attempt to execute the statement.
 			Statement s = dbConnection.createStatement();
 			s.execute(tableCreate.toString());
-
-			isSuccess = true;
 		}
 		catch (Exception e)
 		{
+			OutputHandler.exception(Level.SEVERE, "Failed to create table for " + type.getName(), e);
 			e.printStackTrace();
+			return false;
 		}
+		
+		classTableChecked.add(type.getName());
 
-		return isSuccess;
+		return true;
 	}
 
 	/**
@@ -409,10 +453,8 @@ public class SQLDataDriver extends AbstractDataDriver
 	 * pairs, ideal for creating new tables with. Complex type fields are broken
 	 * down into constituent primitives in the form of:
 	 * "parentField_childFieldName"
-	 * @param fieldName
-	 *            Name of saved field
-	 * @param type
-	 *            Type of saved field
+	 * @param fieldName Name of saved field
+	 * @param type Type of saved field
 	 * @return Array of field => H2 type names.
 	 */
 	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, ClassContainer type)
@@ -449,12 +491,22 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			// Complex type we can't handle.
 			ITypeInfo tagger = DataStorageManager.getInfoForType(type);
-			String[] fieldList = tagger.getFieldList();
 
-			// Iterate over the stored fields. Recurse if nessecary.
-			for (String name : fieldList)
+			if (tagger instanceof TypeMultiValInfo)
 			{
-				fields.addAll(fieldToColumns(fieldName + SEPERATOR + name, tagger.getTypeOfField(name)));
+				// special stuff for Multivals. this will be a key going to a different table.
+				createTable(type);
+				fields.add(new Pair<String, String>(fieldName, "VARCHAR(255)"));
+			}
+			else
+			{
+
+				String[] fieldList = tagger.getFieldList();
+
+				// Iterate over the stored fields. Recurse if nessecary.
+				for (String name : fieldList)
+					fields.addAll(fieldToColumns(fieldName + SEPERATOR + name, tagger.getTypeOfField(name)));
+
 			}
 		}
 
