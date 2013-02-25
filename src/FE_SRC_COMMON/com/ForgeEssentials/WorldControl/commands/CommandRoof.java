@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskReplaceSelection;
+import com.ForgeEssentials.WorldControl.TickTasks.TickTaskRoof;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
@@ -25,10 +26,10 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
-public class CommandSet extends WorldControlCommandBase
+public class CommandRoof extends WorldControlCommandBase
 {
 
-	public CommandSet()
+	public CommandRoof()
 	{
 		super(true);
 	}
@@ -42,15 +43,12 @@ public class CommandSet extends WorldControlCommandBase
 	@Override
 	public String getName()
 	{
-		return "set";
+		return "roof";
 	}
 
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		int ID = 0;
-		int metadata = 0;
-
 		if (args.length == 1)
 		{
 			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
@@ -66,14 +64,14 @@ public class CommandSet extends WorldControlCommandBase
 			PermResult result = PermissionsAPI.checkPermResult(query);
 
 			if(result==PermResult.ALLOW) {
-				TickTaskHandler.addTask(new TickTaskSetSelection(player, sel, to));
+				TickTaskHandler.addTask(new TickTaskRoof(player, sel, to));
 			}else if(result==PermResult.PARTIAL) {
-				TickTaskHandler.addTask(new TickTaskSetSelection(player, sel, to, query.applicable));
+				TickTaskHandler.addTask(new TickTaskRoof(player, sel, to, query.applicable));
 			}else{
 				OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 			}
 
-			player.sendChatToPlayer("Working on set.");
+			player.sendChatToPlayer("Working on roof.");
 		}
 		else
 		{
