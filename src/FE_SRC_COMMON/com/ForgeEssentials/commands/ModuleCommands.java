@@ -67,9 +67,7 @@ public class ModuleCommands
 	public void load(FEModuleInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(eventHandler);
-		MinecraftForge.EVENT_BUS.register(this); // for the permissions.
-		GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
-		NetworkRegistry.instance().registerChatListener(eventHandler);
+		//GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());  useless...
 		CommandRegistrar.commandConfigs(conf.config);
 		CompatMCStats.registerStats(mcstats);
 	}

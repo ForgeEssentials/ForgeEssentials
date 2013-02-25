@@ -24,7 +24,7 @@ import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IChatListener;
 
-public class EventHandler implements IChatListener
+public class EventHandler
 {
 	@ForgeSubscribe()
 	public void playerInteractEvent(PlayerInteractEvent e)
@@ -108,19 +108,7 @@ public class EventHandler implements IChatListener
 
 		if (e.entity instanceof EntityPlayer)
 		{
-			PlayerInfo.getPlayerInfo((EntityPlayer) e.entity).back = new WarpPoint((EntityPlayer) e.entity);
+			PlayerInfo.getPlayerInfo(((EntityPlayer) e.entity).username).back = new WarpPoint((EntityPlayer) e.entity);
 		}
-	}
-
-	@Override
-	public Packet3Chat serverChat(NetHandler handler, Packet3Chat message)
-	{
-		return message;
-	}
-
-	@Override
-	public Packet3Chat clientChat(NetHandler handler, Packet3Chat message)
-	{
-		return message;
 	}
 }
