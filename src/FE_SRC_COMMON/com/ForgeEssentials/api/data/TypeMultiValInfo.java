@@ -45,7 +45,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	{
 		
 		// will prolly never be called.
-		if (getEntryName().toLowerCase().contains("dataval"))
+		if (field.toLowerCase().contains("dataval"))
 			return entryInfo.getType();
 		return fields.get(field);
 	}

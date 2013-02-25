@@ -153,7 +153,7 @@ public class TypeInfoStandard implements ITypeInfo
 	public TypeData getTypeDataFromObject(Object objectSaved)
 	{
 		Class c = objectSaved.getClass();
-		TypeData data = DataStorageManager.getDataForType(type);
+		TypeData data = DataStorageManager.getDataForType(new ClassContainer(type));
 		Field f;
 		Object obj;
 

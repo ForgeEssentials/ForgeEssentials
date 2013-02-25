@@ -371,20 +371,20 @@ public class StorageManager implements IStorageManager
 	 * @param t class check
 	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.
 	 */
-	public static boolean isTypeComplex(Class obj)
+	public static boolean isTypeComplex(Class type)
 	{
 		boolean flag = true;
-		if (obj.isPrimitive() || obj.equals(Integer.class) || obj.equals(Float.class) ||
-				obj.equals(Double.class) || obj.equals(Boolean.class) || obj.equals(String.class) ||
-				obj.equals(Byte.class))
+		if (type.isPrimitive() || type.equals(Integer.class) || type.equals(Float.class) ||
+				type.equals(Double.class) || type.equals(Boolean.class) || type.equals(String.class) ||
+				type.equals(Byte.class))
 		{
 			flag = false;
 		}
-		else if (obj.isArray())
+		else if (type.isArray())
 		{
-			return !(obj.getComponentType().isPrimitive() || obj.getComponentType().equals(Integer.class) || obj.getComponentType().equals(Float.class) ||
-					obj.getComponentType().equals(Double.class) || obj.getComponentType().equals(Boolean.class) || obj.getComponentType().equals(String.class) ||
-					obj.equals(Byte.class));
+			return !(type.getComponentType().isPrimitive() || type.getComponentType().equals(Integer.class) || type.getComponentType().equals(Float.class) ||
+					type.getComponentType().equals(Double.class) || type.getComponentType().equals(Boolean.class) || type.getComponentType().equals(String.class) ||
+					type.equals(Byte.class));
 		}
 
 		return flag;
@@ -394,8 +394,11 @@ public class StorageManager implements IStorageManager
 	 * @param t class check
 	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.
 	 */
-	public static boolean isTypeComplex(ClassContainer obj)
+	public static boolean isTypeComplex(ClassContainer type)
 	{
-		return isTypeComplex(obj.getType());
+		if (type.hasParameters())
+			return true;
+		else
+			return isTypeComplex(type.getType());
 	}
 }
