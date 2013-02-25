@@ -154,7 +154,11 @@ public final class FunctionHelper
 	}
 	
 	public static String getNameFromItemStack(ItemStack is) {
-		return ("" + StringTranslate.getInstance().translateNamedKey(is.getItem().getLocalItemName(is))).trim();
+		try{
+			return ("" + StringTranslate.getInstance().translateNamedKey(is.getItem().getLocalItemName(is))).trim();
+		}catch(IndexOutOfBoundsException e){
+			return "Unknown Item";
+		}
 	}
 	
 	public static MovingObjectPosition rayTrace(double par1, EntityPlayer player) // par1=distance Copied & Based off of EntityLiving.rayTrace(double, float)

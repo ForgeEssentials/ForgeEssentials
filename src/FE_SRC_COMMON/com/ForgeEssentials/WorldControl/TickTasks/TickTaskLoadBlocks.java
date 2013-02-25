@@ -212,14 +212,18 @@ public class TickTaskLoadBlocks implements ITickTask {
 	{
 		if(requiresBackup())PlayerInfo.getPlayerInfo(player.username).addUndoAction(backup);
 		if(showMessage) {
-			OutputHandler.chatConfirmation(player, "" + changed + " blocks changed in "+(double)ticks/20D+" seconds");
+			sendCompleteMessage();
 		}else{
-			OutputHandler.chatError(player, "Unable to complete, chunks not loaded.");
+			OutputHandler.chatError(player, "Unable to complete, event rejected.");
 		}
 	}
 	
 	private boolean forceComplete = false;
 	private boolean showMessage = true;
+	
+	protected void sendCompleteMessage() {
+		OutputHandler.chatConfirmation(player, "" + changed + " blocks changed in "+(double)ticks/20D+" seconds");
+	}
 	
 	protected void setComplete() {
 		setComplete(true);
