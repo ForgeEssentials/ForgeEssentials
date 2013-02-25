@@ -130,7 +130,7 @@ public class CommandContract extends WorldControlCommandBase
 							info.setPoint2(pt);
 						}
 					}else{
-						if(dir==FunctionHelper.Direction.WEST) {
+						if(dir==FunctionHelper.Direction.EAST) {
 							Point pt = info.getPoint2();
 							pt.x-=amount;
 							info.setPoint2(pt);
@@ -153,7 +153,7 @@ public class CommandContract extends WorldControlCommandBase
 							info.setPoint2(pt);
 						}
 					}else{
-						if(dir==FunctionHelper.Direction.DOWN) {
+						if(dir==FunctionHelper.Direction.UP) {
 							Point pt = info.getPoint2();
 							pt.y-=amount;
 							info.setPoint2(pt);
