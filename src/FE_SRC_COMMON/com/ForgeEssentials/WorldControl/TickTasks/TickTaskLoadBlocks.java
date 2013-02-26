@@ -26,6 +26,7 @@ public class TickTaskLoadBlocks implements ITickTask {
 	AreaBase sel;
 	int last=0;
 	int	current=0;
+	int	currentIter=0;
 	Point currentBlock = null;
 	int	changed=0;
 	BlockArrayBackup backup;
@@ -176,15 +177,16 @@ public class TickTaskLoadBlocks implements ITickTask {
 			if(changed>=ConfigWorldControl.blocksPerTick) {
 				changed = 0;
 				endTick();
-				if(current==last)onCompleted();
+				if(current>=last)onCompleted();
 				return;
 			}else{
 				if(placeBlock()) {
 					this.changed++;
 					changed++;
 				}
-				updatePosition();
 				current++;
+				currentIter++;
+				updatePosition();
 			}
 		}
 		endTick();
@@ -212,6 +214,7 @@ public class TickTaskLoadBlocks implements ITickTask {
 					if (y > sel.getHighPoint().y)
 					{
 						iter++;
+						currentIter = 0;
 						changeIteration();
 						if(iter>=getIterations()) {
 							setComplete();

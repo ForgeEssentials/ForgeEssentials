@@ -23,8 +23,9 @@ public class TickTaskCopy extends TickTaskLoadBlocks
 	private ArrayList<AreaBase>	applicable;
 	BlockArray blocks;
 	String name = "";
+	BlockInfo fill;
 
-	public TickTaskCopy(EntityPlayer player, AreaBase sel, String name)
+	public TickTaskCopy(EntityPlayer player, AreaBase sel, String name, BlockInfo fill)
 	{
 		super(player, sel);
 		if(info.copies.containsKey(name)) {
@@ -35,6 +36,7 @@ public class TickTaskCopy extends TickTaskLoadBlocks
 		int offZ = sel.getLowPoint().z - (int)player.posZ;
 		info.copies.put(name, new BlockArray(offX, offY, offZ, true, sel.getXLength()-1, sel.getYLength()-1, sel.getZLength()-1));
 		blocks = info.copies.get(name);
+		this.fill = fill;
 		this.name = name;
 	}
 	
@@ -43,15 +45,16 @@ public class TickTaskCopy extends TickTaskLoadBlocks
 		info.copies.put(name, blocks);
 	}
 
-	public TickTaskCopy(EntityPlayer player, AreaBase sel, String name, ArrayList<AreaBase> applicable)
+	public TickTaskCopy(EntityPlayer player, AreaBase sel, String name, BlockInfo fill, ArrayList<AreaBase> applicable)
 	{
-		this(player, sel, name);
+		this(player, sel, name, fill);
 		this.applicable = applicable;
 	}
 	
 	protected boolean placeBlock() {
 		if(isApplicable(x, y, z)) {
 			blocks.addBlock(world, x, y, z, false);
+			if(fill!=null)place(x, y, z, fill);
 			return true;
 		}else{
 			blocks.addBlock(world, x, y, z, (short)0, (byte)0);

@@ -21,6 +21,7 @@ public class CommandExpand extends WorldControlCommandBase
 	public CommandExpand()
 	{
 		super(true);
+		this.aliasList.add("/extend");
 	}
 
 	@Override
