@@ -40,12 +40,12 @@ public abstract class AbstractDataDriver implements IDataDriver
 		
 		if (!classRegister.containsEntry(getName(), type.getName()))
 		{
-			this.onClassRegistered(DataStorageManager.getInfoForType(o.getClass()));
+			this.onClassRegistered(DataStorageManager.getInfoForType(type));
 			classRegister.put(getName(), type.getName());
 		}
 
 		ITypeInfo t;
-		if ((t = DataStorageManager.getInfoForType(o.getClass())) != null)
+		if ((t = DataStorageManager.getInfoForType(type)) != null)
 		{
 			flag = true;
 			saveData(type, t.getTypeDataFromObject(o));

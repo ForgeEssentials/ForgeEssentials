@@ -19,6 +19,7 @@ import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
+import com.ForgeEssentials.api.data.TypeEntryInfo;
 import com.ForgeEssentials.api.data.TypeMultiValInfo;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.DBConnector;
@@ -34,6 +35,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	protected DBConnector			connector;
 
 	private final String			UNIQUE				= "uniqueIdentifier";
+	private final String			MULTI_MARKER		= "MultiValUID";
 
 	// Default constructor is good enough for us.
 
@@ -69,8 +71,12 @@ public class SQLDataDriver extends AbstractDataDriver
 		try
 		{
 			Statement s;
+			ArrayList<String> statements = generateInsertBatch(DataStorageManager.getInfoForType(type), data);
 			s = dbConnection.createStatement();
-			generateInsertBatch(type, data, s);
+
+			for (String statement : statements)
+				s.addBatch(statement);
+
 			s.executeBatch();
 			return true;
 		}
@@ -304,85 +310,95 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		return builder.toString();
 	}
-	
-	private void generateInsertBatch(ClassContainer type, TypeData fieldList, Statement s)
+
+	private ArrayList<String> generateInsertBatch(ITypeInfo info, TypeData data)
 	{
-		ITypeInfo info = DataStorageManager.getInfoForType(type);
-		
+		ClassContainer type = info.getType();
+
 		ArrayList<Pair<String, String>> fieldValueMap = new ArrayList<Pair<String, String>>();
-		
+		ArrayList<String> statements = new ArrayList<String>();
+
+		// MultiVal list
+		ArrayList<Pair<String, TypeData>> multiVals = new ArrayList<Pair<String, TypeData>>();
+
 		// Iterate through fields and build up name=>value pair list.
-		for (Entry<String, Object> entry : fieldList.getAllFields())
+		ArrayList<Pair> temp;
+		for (Entry<String, Object> entry : data.getAllFields())
 		{
-			fieldValueMap.addAll(fieldToValues(entry.getKey(), info.getTypeOfField(entry.getKey()), entry.getValue()));
-		}
-		
-		// iterrate looking for MultiVals.
-		// TODO: get MultiVal types in a map.
-		ITypeInfo tempInfo;
-		ClassContainer tempClass;
-		for (Entry<String, Object> entry : fieldList.getAllFields())
-		{
-			tempInfo = info.getInfoForField(entry.getKey());
-			if (info == null)
-				continue;
-			else if (!info.canSaveInline())
+			temp = fieldToValues(entry.getKey(), info.getTypeOfField(entry.getKey()), entry.getValue());
+
+			// catch multivals and add them to a different list.
+			for (Pair p : temp)
 			{
-				// FOUND A MULTIVAL!!!!
-				
-			}
-			else
-			{
-				
+				if (((String) p.getFirst()).contains(MULTI_MARKER) && p.getSecond() instanceof TypeData)
+					multiVals.add(p);
+				else
+					fieldValueMap.add(p);
 			}
 		}
+
+		// create the insert statement for the normal fields.
+		{
+			StringBuilder query = new StringBuilder();
+			query.append("INSERT OR REPLACE INTO " + type.getFileSafeName() + ' ');
+
+			StringBuilder fields = new StringBuilder();
+			StringBuilder values = new StringBuilder();
+			fields.append('(');
+			values.append('(');
+
+			// Deal with unique field. No uniqueFields for these...
+			if (!(info instanceof TypeEntryInfo))
+			{
+				fields.append(UNIQUE);
+				values.append('\'').append(data.getUniqueKey()).append('\'');
+			}
+
+			Iterator<Pair<String, String>> itr = fieldValueMap.iterator();
+			Pair<String, String> pair;
+			while (itr.hasNext())
+			{
+				pair = itr.next();
+				fields.append(", " + pair.getFirst());
+				values.append(", ");
+				if (pair.getSecond().getClass().equals(String.class))
+				{
+					values.append("'" + pair.getSecond() + "'");
+				}
+				else
+				{
+					values.append(pair.getSecond());
+				}
+			}
+			fields.append(')');
+			values.append(')');
+
+			query.append(fields.toString() + " VALUES " + values.toString());
+
+			// add statement to list.
+			statements.add(query.toString());
+		}
+
+		ArrayList<String> tempStatements;
+		for (Pair<String, TypeData> p : multiVals)
+		{
+			tempStatements = generateMultiValInsertBatch(p.getSecond());
+		}
+
+		return statements;
 	}
 
-	private String createInsertStatement(ClassContainer type, TypeData fieldList)
+	private ArrayList<String> generateMultiValInsertBatch(TypeData data)
 	{
-		ArrayList<Pair<String, String>> fieldValueMap = new ArrayList<Pair<String, String>>();
-		// Iterate through fields and build up name=>value pair list.
-		for (Entry<String, Object> entry : fieldList.getAllFields())
-		{
-			fieldValueMap.addAll(fieldToValues(entry.getKey(), entry.getValue() == null ? null : entry.getValue().getClass(), entry.getValue()));
-		}
+		ArrayList<String> statements = new ArrayList<String>();
 
-		// Build up update statement.
-		StringBuilder query = new StringBuilder();
-		query.append("INSERT OR REPLACE INTO " + type.getSimpleName() + ' ');
+		TypeMultiValInfo info = (TypeMultiValInfo) DataStorageManager.getInfoForType(data.getContainer());
+		ITypeInfo entryInfo = info.getEntryInfo();
 
-		StringBuilder fields = new StringBuilder();
-		StringBuilder values = new StringBuilder();
-		fields.append('(');
-		values.append('(');
+		for (Object dat : data.getAllValues())
+			statements.addAll(generateInsertBatch(entryInfo, (TypeData) dat));
 
-		// Deal with unique field
-		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
-		fields.append(UNIQUE);
-		values.append('\'').append(fieldList.getUniqueKey()).append('\'');
-
-		Iterator<Pair<String, String>> itr = fieldValueMap.iterator();
-		Pair<String, String> pair;
-		while (itr.hasNext())
-		{
-			pair = itr.next();
-			fields.append(", " + pair.getFirst());
-			values.append(", ");
-			if (pair.getSecond().getClass().equals(String.class))
-			{
-				values.append("'" + pair.getSecond() + "'");
-			}
-			else
-			{
-				values.append(pair.getSecond());
-			}
-		}
-		fields.append(')');
-		values.append(')');
-
-		query.append(fields.toString() + " VALUES " + values.toString());
-
-		return query.toString();
+		return statements;
 	}
 
 	/**
@@ -402,12 +418,12 @@ public class SQLDataDriver extends AbstractDataDriver
 		String[] fields = tagger.getFieldList();
 		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
 		String keyClause = null;
-		
-		boolean isMulti = tagger instanceof TypeMultiValInfo;
-		
+
+		boolean isMulti = tagger instanceof TypeMultiValInfo || !tagger.canSaveInline();
+
 		//if its multi, add the UID thing. 
 		if (isMulti)
-			tableFields.add(new Pair<String, String>("UID", "VARCHAR(255)"));
+			tableFields.add(new Pair<String, String>(MULTI_MARKER, "VARCHAR(100)"));
 
 		for (String name : fields)
 		{
@@ -442,7 +458,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		classTableChecked.add(type.getName());
 
 		return true;
@@ -463,19 +479,31 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		if (!StorageManager.isTypeComplex(type))
 		{
-			if (type.equals(int.class) || type.equals(Integer.class) || type.equals(boolean.class) || type.equals(Boolean.class))
+			if (type.equals(int.class) || type.equals(Integer.class))
 			{
 				fields.add(new Pair<String, String>(fieldName, "INT"));
 			}
-			else if (type.equals(float.class) || type.equals(Float.class) || type.equals(double.class) || type.equals(Double.class))
+			if (type.equals(byte.class) || type.equals(Byte.class))
+			{
+				fields.add(new Pair<String, String>(fieldName, "TINYINT"));
+			}
+			if (type.equals(boolean.class) || type.equals(Boolean.class))
+			{
+				fields.add(new Pair<String, String>(fieldName, "BOOLEAN"));
+			}
+			else if (type.equals(double.class) || type.equals(Double.class))
 			{
 				fields.add(new Pair<String, String>(fieldName, "DOUBLE"));
+			}
+			else if (type.equals(float.class) || type.equals(Float.class))
+			{
+				fields.add(new Pair<String, String>(fieldName, "FLOAT"));
 			}
 			else if (type.equals(String.class))
 			{
 				fields.add(new Pair<String, String>(fieldName, "VARCHAR(255)"));
 			}
-			else if (type.equals(double[].class) || type.equals(int[].class) || type.equals(boolean[].class) || type.equals(String[].class))
+			else if (type.equals(double[].class) || type.equals(int[].class) || type.equals(boolean[].class) || type.equals(String[].class) || type.equals(Byte[].class))
 			{
 				// We are going to roll arrays up into arbitrary long text
 				// fields.
@@ -492,15 +520,15 @@ public class SQLDataDriver extends AbstractDataDriver
 			// Complex type we can't handle.
 			ITypeInfo tagger = DataStorageManager.getInfoForType(type);
 
-			if (tagger instanceof TypeMultiValInfo)
+			if (tagger instanceof TypeMultiValInfo || !tagger.canSaveInline())
 			{
 				// special stuff for Multivals. this will be a key going to a different table.
 				createTable(type);
-				fields.add(new Pair<String, String>(fieldName, "VARCHAR(255)"));
+				fields.add(new Pair<String, String>(fieldName + "_" + MULTI_MARKER, "VARCHAR(255)"));
 			}
 			else
 			{
-
+				// some other complex type.
 				String[] fieldList = tagger.getFieldList();
 
 				// Iterate over the stored fields. Recurse if nessecary.
@@ -517,19 +545,21 @@ public class SQLDataDriver extends AbstractDataDriver
 	 * Generates an array of fieldname => String(Value) pairs, useful for
 	 * Inserts, Updates, or Deletes.
 	 * @param fieldName Name of the field in the H2 DB
-	 * @param type Type of field (Java)
+	 * @param cType Type of field (Java)
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */
-	private ArrayList<Pair<String, String>> fieldToValues(String fieldName, ClassContainer type, Object value)
+	private ArrayList<Pair> fieldToValues(String fieldName, ClassContainer type, Object value)
 	{
-		ArrayList<Pair<String, String>> data = new ArrayList<Pair<String, String>>();
+		ArrayList<Pair> data = new ArrayList<Pair>();
 
-		if (type.equals(Integer.class) || type.equals(Boolean.class) || type.equals(Float.class) || type.equals(Double.class) || type.equals(String.class))
+		Class cType = type.getType();
+
+		if (cType.equals(Integer.class) || cType.equals(Boolean.class) || cType.equals(Float.class) || cType.equals(Double.class) || cType.equals(String.class))
 		{
 			data.add(new Pair(fieldName, value.toString()));
 		}
-		else if (type.equals(double[].class) && ((double[]) value).length > 0)
+		else if (cType.equals(double[].class) && ((double[]) value).length > 0)
 		{
 			double[] arr = (double[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -540,7 +570,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
-		else if (type.equals(int[].class) && ((int[]) value).length > 0)
+		else if (cType.equals(int[].class) && ((int[]) value).length > 0)
 		{
 			int[] arr = (int[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -551,7 +581,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
-		else if (type.equals(boolean[].class) && ((boolean[]) value).length > 0)
+		else if (cType.equals(boolean[].class) && ((boolean[]) value).length > 0)
 		{
 			boolean[] arr = (boolean[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -562,7 +592,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
-		else if (type.equals(String[].class) && ((String[]) value).length > 0)
+		else if (cType.equals(String[].class) && ((String[]) value).length > 0)
 		{
 			String[] arr = (String[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -573,14 +603,27 @@ public class SQLDataDriver extends AbstractDataDriver
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
-		else if (type.equals(TypeData.class))
+		else if (cType.equals(TypeData.class))
 		{
 			// Tricky business involving recursion.
 			TypeData tc = (TypeData) value;
+			ITypeInfo info = DataStorageManager.getInfoForType(type);
 
-			for (Entry<String, Object> f : tc.getAllFields())
+			if (info instanceof TypeMultiValInfo || !info.canSaveInline())
 			{
-				data.addAll(fieldToValues(fieldName + SEPERATOR + f.getKey(), f.getKey() == null ? null : f.getValue().getClass(), f.getValue()));
+				// special stuff for Multivals. this will be a key going to a different table.
+				data.add(new Pair(fieldName, value.toString()));
+				data.add(new Pair(fieldName + "_" + MULTI_MARKER, tc.getUniqueKey()));
+
+				// this will be removed what all the MultiVal ones are collected.
+				data.add(new Pair(fieldName + "_" + MULTI_MARKER, tc));
+			}
+			else
+			{
+				for (Entry<String, Object> f : tc.getAllFields())
+				{
+					data.addAll(fieldToValues(fieldName + SEPERATOR + f.getKey(), info.getTypeOfField(f.getKey()), f.getValue()));
+				}
 			}
 		}
 		else
@@ -598,7 +641,12 @@ public class SQLDataDriver extends AbstractDataDriver
 		if (targetType.equals(int.class))
 		{
 			// DB Value is an integer
-			value = dbValue;
+			value = (Integer)dbValue;
+		}
+		if (targetType.equals(byte.class))
+		{
+			// DB Value is an Integer
+			value = ((Integer)dbValue).byteValue();
 		}
 		else if (targetType.equals(double.class))
 		{
@@ -608,7 +656,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		else if (targetType.equals(float.class))
 		{
 			// DB value is a Double.
-			value = ((Double) dbValue).floatValue();
+			value = dbValue;
 		}
 		else if (targetType.equals(String.class))
 		{
@@ -643,6 +691,19 @@ public class SQLDataDriver extends AbstractDataDriver
 			for (int i = 0; i < values.length; ++i)
 			{
 				result[i] = Integer.valueOf(values[i]).intValue();
+			}
+			value = result;
+		}
+		else if (targetType.equals(byte[].class))
+		{
+			// DB value is a string representing an array of integers, separated
+			// by ','
+			String[] values = ((String) dbValue).split(",");
+			byte[] result = new byte[values.length];
+
+			for (int i = 0; i < values.length; ++i)
+			{
+				result[i] = Byte.valueOf(values[i]).byteValue();
 			}
 			value = result;
 		}

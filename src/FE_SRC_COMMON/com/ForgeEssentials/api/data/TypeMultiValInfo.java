@@ -14,11 +14,14 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	protected ClassContainer container;
 	protected HashMap<String, ClassContainer> fields;
 	private TypeEntryInfo entryInfo;
+	
+	public static final String UID = "_$EntryID$_";
 
 	public TypeMultiValInfo(ClassContainer container)
 	{
 		this.container = container;
 		fields = new HashMap<String, ClassContainer>();
+		fields.put(UID, new ClassContainer(String.class));
 	}
 	
 	@Override
@@ -29,7 +32,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	}
 	
 	/**
-	 * the actual tyoes that this holds. An Entry class will be created for wach elemnt of this.
+	 * the actual types that this holds. An Entry class will be created for which element of this.
 	 * @param fields
 	 */
 	public abstract void build(HashMap<String, ClassContainer> fields);
@@ -43,8 +46,6 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	@Override
 	public ClassContainer getTypeOfField(String field)
 	{
-		
-		// will prolly never be called.
 		if (field.toLowerCase().contains("dataval"))
 			return entryInfo.getType();
 		return fields.get(field);
@@ -69,13 +70,16 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	}
 
 	@Override
-	public TypeData getTypeDataFromObject(Object obj)
+	public final TypeData getTypeDataFromObject(Object obj)
 	{
 		Set<TypeData> datas = getTypeDatasFromObject(obj);
 		TypeData data = DataStorageManager.getDataForType(container);
 		
 		ITypeInfo entry = getEntryInfo();
 		ITypeInfo tempInfo;
+		
+		String id = (new UID()).toString();
+		String unique = container.getFileSafeName()+id;
 		
 		int i = 0;
 		for (TypeData dat : datas)
@@ -89,9 +93,10 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 				}
 			}
 			
+			dat.putField(UID, id);
 			data.putField("DataVal"+(i++), dat);
 		}
-		data.setUniqueKey(getUnique());
+		data.setUniqueKey(unique);
 		return data;
 	}
 	
@@ -100,17 +105,15 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 		return "DataVal";
 	}
 	
-	private String getUnique()
+	public static String getUIDFromUnique(String unique)
 	{
-		String id = (new UID()).toString();
-		id = id.replace(" ", "_");
-		return container.getSimpleName()+id;
+		return unique.substring(unique.lastIndexOf('_'));
 	}
 	
 	public abstract Set<TypeData> getTypeDatasFromObject(Object obj);
 
 	@Override
-	public Object reconstruct(IReconstructData data)
+	public final Object reconstruct(IReconstructData data)
 	{
 		Collection values = data.getAllValues();
 		TypeData[] datas = new TypeData[values.size()];
