@@ -18,12 +18,12 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 public class TickTaskLoadBlockArray extends TickTaskLoadBlocks
 {
 
-	private BlockArray back;
-	private ArrayList<BlockArray.LoadingBlock> blocksToLoad;
+	protected BlockArray back;
+	protected ArrayList<BlockArray.LoadingBlock> blocksToLoad;
 
 	public TickTaskLoadBlockArray(EntityPlayer player, BlockArray back)
 	{
-		super(player, new AreaBase(new Point(back.offX, back.offY, back.offZ), new Point(back.offX + back.sizeX, back.offY + back.sizeY, back.offZ + back.sizeZ)));
+		super(player, back.isRelative?new AreaBase(new Point((int)player.posX + back.offX, (int)player.posY + back.offY, (int)player.posZ + back.offZ), new Point((int)player.posX + back.offX + back.sizeX, (int)player.posY + back.offY + back.sizeY, (int)player.posZ + back.offZ + back.sizeZ)):new AreaBase(new Point(back.offX, back.offY, back.offZ), new Point(back.offX + back.sizeX, back.offY + back.sizeY, back.offZ + back.sizeZ)));
 		this.back = back;
 		blocksToLoad = this.back.getBlocksToLoad();
 		last = blocksToLoad.size();
@@ -39,13 +39,12 @@ public class TickTaskLoadBlockArray extends TickTaskLoadBlocks
 
 	protected boolean placeBlock() {
 		if(back.isRelative) {
-			
+			BlockArray.LoadingBlock block = blocksToLoad.get(current);
+			return place(x, y, z, block);
 		}else{
 			BlockArray.LoadingBlock block = blocksToLoad.get(current);
-			boolean bool = place(block.x, block.y, block.z, block);
-			return bool;
+			return place(block.x, block.y, block.z, block);
 		}
-		return false;
 	}
 	
 }

@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 
 public class BlockArray implements Serializable // UC
 {
-	
+
 	private ArrayList<BlockInfo> blocks = new ArrayList<BlockInfo>();
 	public int offX = 0;
 	public int offY = 0;
@@ -19,7 +19,7 @@ public class BlockArray implements Serializable // UC
 	public int sizeY = 0;
 	public int sizeZ = 0;
 	public boolean isRelative = true;
-	
+
 	public BlockArray(int x, int y, int z, boolean relative, int sizeX, int sizeY, int sizeZ) {
 		offX = x;
 		offY = y;
@@ -29,7 +29,7 @@ public class BlockArray implements Serializable // UC
 		this.sizeY = sizeY;
 		this.sizeZ = sizeZ;
 	}
-	
+
 	public ArrayList<LoadingBlock> getBlocksToLoad() {
 		ArrayList<LoadingBlock> blox = new ArrayList<LoadingBlock>();
 		for(BlockInfo block : blocks) {
@@ -64,7 +64,7 @@ public class BlockArray implements Serializable // UC
 		}
 		return blox;
 	}
-	
+
 	public static class LoadingBlock { // used for loading into world
 		public short id = 0;
 		public byte meta = 0;
@@ -74,23 +74,23 @@ public class BlockArray implements Serializable // UC
 		public int y=0;
 		public int z=0;
 		public boolean hasSetCoords = false;
-		
+
 		public LoadingBlock(short id, byte meta, boolean isTE, NBTTagCompound TEData) {
 			this.id=id;
 			this.meta=meta;
 			this.isTE=isTE;
 			this.TEData = TEData;
 		}
-		
+
 		public LoadingBlock(short id, byte meta) {
 			this.id=id;
 			this.meta=meta;
 		}
-		
+
 		public LoadingBlock(short id) {
 			this.id=id;
 		}
-		
+
 		public LoadingBlock addCoords(int x, int y, int z) {
 			this.x=x;
 			this.y=y;
@@ -98,7 +98,7 @@ public class BlockArray implements Serializable // UC
 			hasSetCoords = true;
 			return this;
 		}
-		
+
 		public boolean placeBlock(World world, int x, int y, int z) { // loads a block & respectful tile entity
 			boolean place = true;
 			Block block = Block.blocksList[id];
@@ -117,11 +117,11 @@ public class BlockArray implements Serializable // UC
 			return place;
 		}
 	}
-	
+
 	public static abstract class BlockInfo implements Serializable { // base block storage class, no data saved
-		
+
 	}
-	
+
 	public static class BlockInfoNTEM extends BlockInfo implements Serializable { // basic block w/ meta
 		public short id;
 		public byte meta;
@@ -130,7 +130,7 @@ public class BlockArray implements Serializable // UC
 			this.meta=meta;
 		}
 	}
-	
+
 	public static class BlockInfoNTEMC extends BlockInfoNTEM implements Serializable { // array of blocks w/ meta
 		public int repeat = 0;
 		public BlockInfoNTEMC(short id, byte meta, int repeats) {
@@ -138,14 +138,14 @@ public class BlockArray implements Serializable // UC
 			repeat=repeats;
 		}
 	}
-	
+
 	public static class BlockInfoNTE extends BlockInfo implements Serializable { // simple block, no meta
 		public short id;
 		public BlockInfoNTE(short id) {
 			this.id=id;
 		}
 	}
-	
+
 	public static class BlockInfoNTEC extends BlockInfoNTE implements Serializable { // array of blocks w/ no meta
 		public int repeat = 0;
 		public BlockInfoNTEC(short id, int repeats) {
@@ -153,7 +153,7 @@ public class BlockArray implements Serializable // UC
 			repeat=repeats;
 		}
 	}
-	
+
 	public static class BlockInfoTE extends BlockInfo implements Serializable { // used for TE storage
 		NBTTagCompound nbt = new NBTTagCompound();
 		public BlockInfoTE(World world, int x, int y, int z) {
@@ -162,10 +162,10 @@ public class BlockArray implements Serializable // UC
 				te.writeToNBT(nbt);
 			}
 			nbt.setShort("bID", (short) world.getBlockId(x, y, z));
-			nbt.setShort("metad", (byte) world.getBlockMetadata(x, y, z));
+			nbt.setByte("metad", (byte) world.getBlockMetadata(x, y, z));
 		}
 	}
-	
+
 	public static class BlockInfoNTEMS extends BlockInfo implements Serializable { // basic block w/ meta S appendage is for coordinate sensitivity
 		public short id;
 		public byte meta;
@@ -180,7 +180,7 @@ public class BlockArray implements Serializable // UC
 			this.z=z;
 		}
 	}
-	
+
 	public static class BlockInfoNTES extends BlockInfo implements Serializable { // simple block, no meta
 		public short id;
 		public int x;
@@ -193,7 +193,7 @@ public class BlockArray implements Serializable // UC
 			this.z=z;
 		}
 	}
-	
+
 	public static class BlockInfoTES extends BlockInfo implements Serializable { // used for TE storage
 		NBTTagCompound nbt = new NBTTagCompound();
 		public BlockInfoTES(World world, int x, int y, int z) {
@@ -211,14 +211,15 @@ public class BlockArray implements Serializable // UC
 		public int y;
 		public int z;
 	}
-	
+
 	private int repeats = 0;
 	private short id = 0;
 	private byte meta = 0;
 	private short lid = 0;
 	private byte lmeta = 0;
 	boolean first = true;
-	
+	BlockInfo bi = null;
+
 	public void addBlock(World world, int x, int y, int z, boolean isSensitive) {
 		if(first) {
 			id = (short)world.getBlockId(x, y, z);
@@ -230,7 +231,7 @@ public class BlockArray implements Serializable // UC
 			id = (short)world.getBlockId(x, y, z);
 			meta = (byte)world.getBlockMetadata(x, y, z);
 		}
-		BlockInfo bi = null;
+		if(repeats==0)bi=null;
 		if(isSensitive) {
 			if(world.getBlockTileEntity(x, y, z)!=null) {
 				blocks.add(new BlockInfoTES(world, x, y, z));
@@ -239,16 +240,60 @@ public class BlockArray implements Serializable // UC
 			}
 		}else{
 			if(world.getBlockTileEntity(x, y, z)!=null) {
+				if(repeats>0&&(lid!=id||lmeta!=meta)) {
+					blocks.add(meta==0?new BlockInfoNTEC(id, repeats):new BlockInfoNTEMC(id, meta, repeats));
+					repeats=0;
+				}
 				blocks.add(new BlockInfoTE(world, x, y, z));
-			}else if(lid==id&&lmeta==meta) {
-				repeats++;
-				return;
-			}else if(repeats>1) {
-				bi = meta==0?new BlockInfoNTEC(id, repeats):new BlockInfoNTEMC(id, meta, repeats);
-				repeats = 0;
 			}else{
-				repeats = 0;
+				if(lid==id&&lmeta==meta) {
+					repeats++;
+				}else if(repeats>0) {
+					bi = meta==0?new BlockInfoNTEC(lid, repeats+1):new BlockInfoNTEMC(lid, lmeta, repeats);
+					repeats=0;
+				}else{
+					bi = meta==0?new BlockInfoNTE(id):new BlockInfoNTEM(id, meta);
+					repeats=0;
+				}
+			}
+		}
+		if(bi != null && repeats==0)blocks.add(bi);
+	}
+	
+	public void finishAdding() {
+		if(repeats>0) {
+			blocks.add(meta==0?new BlockInfoNTEC(lid, repeats+1):new BlockInfoNTEMC(lid, lmeta, repeats));
+			repeats=0;
+		}
+	}
+
+	public void addBlock(World world, int x, int y, int z, short id, byte meta) {
+		if(first) {
+			this.id = id;
+			this.meta = meta;
+			first = false;
+		}else{
+			lid = id;
+			lmeta = meta;
+			this.id = id;
+			this.meta = meta;
+		}
+		bi=null;
+		if(world.getBlockTileEntity(x, y, z)!=null) {
+			if(repeats>0&&(lid!=id||lmeta!=meta)) {
+				blocks.add(meta==0?new BlockInfoNTEC(id, repeats):new BlockInfoNTEMC(id, meta, repeats));
+				repeats=0;
+			}
+			blocks.add(new BlockInfoTE(world, x, y, z));
+		}else{
+			if(lid==id&&lmeta==meta) {
+				repeats++;
+			}else if(repeats>0) {
+				bi = meta==0?new BlockInfoNTEC(id, repeats):new BlockInfoNTEMC(id, meta, repeats);
+				repeats=0;
+			}else{
 				bi = meta==0?new BlockInfoNTE(id):new BlockInfoNTEM(id, meta);
+				repeats=0;
 			}
 		}
 		if(bi != null)blocks.add(bi);

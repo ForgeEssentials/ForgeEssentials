@@ -131,6 +131,7 @@ public class PlayerInfo
 	// undo and redo stuff
 	public Stack<BlockArrayBackup> undos = new Stack<BlockArrayBackup>();
 	public Stack<BlockArrayBackup> redos = new Stack<BlockArrayBackup>();
+	public HashMap<String, BlockArray> copies = new HashMap<String, BlockArray>();
 
 	public int						TPcooldown	= 0;
 	public HashMap<String, Integer>	kitCooldown	= new HashMap<String, Integer>();
