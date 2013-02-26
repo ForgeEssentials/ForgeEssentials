@@ -55,7 +55,7 @@ public class WandController implements ITickHandler
 				int y = mouseOverBlock.blockY;
 				int z = mouseOverBlock.blockZ;
 				int side = mouseOverBlock.sideHit;
-				event.setCanceled(rightClick(player, x, y, z, side, player.getDistance(x, y, z)<5F?true:false));
+				event.setCanceled(rightClick(player, x, y, z, side, player.getDistanceSq(x, y, z)<=25F?true:false));
 			}
 		}
 		if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
@@ -76,7 +76,7 @@ public class WandController implements ITickHandler
 			int y = mouseOverBlock.blockY;
 			int z = mouseOverBlock.blockZ;
 			int side = mouseOverBlock.sideHit;
-			if(player.getDistance(x, y, z)>=5F)leftClick(player, x, y, z, side, false);
+			if(player.getDistanceSq(x, y, z)>25F)leftClick(player, x, y, z, side, false);
 		}
 
 	}
@@ -231,6 +231,7 @@ public class WandController implements ITickHandler
     }
 	
 	private static HashMap<String, Boolean> isSwinging = new HashMap<String, Boolean>();
+	private static HashMap<String, Integer> lastSwingProgress = new HashMap<String, Integer>();
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
@@ -238,14 +239,16 @@ public class WandController implements ITickHandler
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
 		EntityPlayer player = (EntityPlayer)tickData[0];
 		if(!delay.containsKey(player.username))delay.put(player.username, 0);
+		if(!lastSwingProgress.containsKey(player.username))lastSwingProgress.put(player.username, player.swingProgressInt);
 		if(delay.get(player.username)>0)delay.put(player.username, delay.get(player.username)-1);
 		if(!isSwinging.containsKey(player.username))isSwinging.put(player.username, false);
-		if(player.isSwingInProgress&&!isSwinging.get(player.username)) {
+		if(player.swingProgressInt==-1&&!isSwinging.get(player.username)) {
 			isSwinging.put(player.username, true);
 			swingItem(player);
-		}else if(!player.isSwingInProgress&&isSwinging.get(player.username)) {
+		}else if(player.swingProgressInt==0&&isSwinging.get(player.username)) {
 			isSwinging.put(player.username, false);
 		}
+		lastSwingProgress.put(player.username, player.swingProgressInt);
 	}
 
 	@Override
