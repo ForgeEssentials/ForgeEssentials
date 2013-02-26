@@ -96,7 +96,7 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 		return datas;
 	}
 	
-	protected String getEntryName()
+	public String getEntryName()
 	{
 		return "NBTTag";
 	}

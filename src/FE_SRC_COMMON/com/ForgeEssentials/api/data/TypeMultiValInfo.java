@@ -46,7 +46,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	@Override
 	public ClassContainer getTypeOfField(String field)
 	{
-		if (field.toLowerCase().contains("dataval"))
+		if (field.toLowerCase().contains(getEntryName().toLowerCase()))
 			return entryInfo.getType();
 		return fields.get(field);
 	}
@@ -94,13 +94,13 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 			}
 			
 			dat.putField(UID, id);
-			data.putField("DataVal"+(i++), dat);
+			data.putField(getEntryName()+(i++), dat);
 		}
 		data.setUniqueKey(unique);
 		return data;
 	}
 	
-	protected String getEntryName()
+	public String getEntryName()
 	{
 		return "DataVal";
 	}

@@ -27,7 +27,7 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	@Override
 	public TypeData getTypeDataFromObject(ItemStack stack)
 	{
-		TypeData data = DataStorageManager.getDataForType(ItemStack.class);
+		TypeData data = DataStorageManager.getDataForType(new ClassContainer(ItemStack.class));
 		
 		data.putField(SIZE, stack.stackSize);
 		data.putField(ITEM, stack.itemID);

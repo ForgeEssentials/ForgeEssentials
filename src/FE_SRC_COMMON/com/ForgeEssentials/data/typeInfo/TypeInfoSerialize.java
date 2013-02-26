@@ -138,7 +138,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 	public TypeData getTypeDataFromObject(T obj)
 	{
 		Class c = obj.getClass();
-		TypeData data = DataStorageManager.getDataForType(c);
+		TypeData data = DataStorageManager.getDataForType(container);
 		Field f;
 		Object temp;
 

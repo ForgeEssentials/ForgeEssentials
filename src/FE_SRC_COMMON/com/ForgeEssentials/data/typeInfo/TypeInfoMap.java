@@ -52,7 +52,7 @@ public class TypeInfoMap extends TypeMultiValInfo
 		return datas;
 	}
 	
-	protected String getEntryName()
+	public String getEntryName()
 	{
 		return "Entry";
 	}

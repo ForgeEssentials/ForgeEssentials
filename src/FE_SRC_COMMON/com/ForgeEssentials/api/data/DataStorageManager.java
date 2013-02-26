@@ -63,16 +63,6 @@ public abstract class DataStorageManager
 		return manager.getDataForType(type);
 	}
 
-	/**
-	 * Alias that constructs a ClassContainer with no parameters.
-	 * When possible, please use the version that takes a ClassContainer
-	 */
-	@Deprecated
-	public static TypeData getDataForType(Class type)
-	{
-		return manager.getDataForType(new ClassContainer(type));
-	}
-
 	public static TypeData getDataForObject(ClassContainer container, Object obj)
 	{
 		return manager.getDataForObject(container, obj);

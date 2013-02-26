@@ -26,6 +26,7 @@ import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.Pair;
+import com.google.common.collect.HashMultimap;
 
 public class SQLDataDriver extends AbstractDataDriver
 {
@@ -82,7 +83,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.exception(Level.INFO, "Couldn't save object of type " + type.getSimpleName() + " to " + connector.getChosenType() + " DB. Server will continue running.", e);
+			OutputHandler.exception(Level.WARNING, "Couldn't save object of type " + type.getSimpleName() + " to " + connector.getChosenType() + " DB. Server will continue running.", e);
 			return false;
 		}
 	}
@@ -145,26 +146,30 @@ public class SQLDataDriver extends AbstractDataDriver
 	@Override
 	protected boolean deleteData(ClassContainer type, String uniqueObjectKey)
 	{
-		boolean isSuccess = false;
-
 		try
 		{
+			ArrayList<String> statements = createDeleteStatement(type, uniqueObjectKey);
 			Statement s = dbConnection.createStatement();
-			s.execute(createDeleteStatement(type, uniqueObjectKey));
 
-			isSuccess = true;
+			for (String statement : statements)
+				s.addBatch(statement);
+
+			s.executeBatch();
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.severe("Problem deleting data from " + connector.getChosenType() + " DB (May not actually be a critical error):");
-			e.printStackTrace();
+			OutputHandler.exception(Level.SEVERE, "Problem deleting data from " + connector.getChosenType() + " DB (May not actually be a critical error):", e);
+			return false;
 		}
 
-		return isSuccess;
+		return true;
 	}
 
-	// Transforms a ResultSet row into a HashMap. Assumes a valid result is
-	// currently selected.
+	/**
+	 * Transforms a ResultSet row into a HashMap. Assumes a valid result is
+	 * @param result currently selected.
+	 * @return
+	 */
 	private HashMap<String, Object> resultRowToMap(ResultSet result)
 	{
 		HashMap<String, Object> map = new HashMap();
@@ -202,7 +207,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		return map;
 	}
 
-	private void createTaggedClassFromResult(HashMap<String, Object> result, ITypeInfo info, TypeData data)
+	private void createTaggedClassFromResult(HashMap<String, Object> result, ITypeInfo info, TypeData data) throws SQLException
 	{
 		ITypeInfo taggerCursor;
 		TypeData cursor = null;
@@ -237,7 +242,7 @@ public class SQLDataDriver extends AbstractDataDriver
 					if (fieldHeiarchy.length > i + 1)
 					{
 						// An object lives here.
-						tmpClassContainer = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
+						tmpClass = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
 						tmpField.value = cursor = DataStorageManager.getDataForType(tmpClass);
 						taggerCursor = taggerCursor.getInfoForField(fieldHeiarchy[i]);
 					}
@@ -245,7 +250,7 @@ public class SQLDataDriver extends AbstractDataDriver
 					{
 						// Primitive type.
 						ClassContainer fieldType = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
-						tmpField.value = valueToField(fieldType.getType(), result.get(fieldHeiarchy[i]));
+						tmpField.value = valueToField(fieldType, result.get(fieldHeiarchy[i]));
 						tmpField.type = fieldType.getType();
 					}
 				}
@@ -276,15 +281,69 @@ public class SQLDataDriver extends AbstractDataDriver
 		}
 	}
 
-	private String createDeleteStatement(ClassContainer type, String uniqueObjectKey)
+	private ArrayList<String> createDeleteStatement(ClassContainer type, String unique) throws SQLException
 	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("DELETE FROM " + type.getSimpleName() + " WHERE ");
-		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
-		builder.append(UNIQUE).append(" = ");
-		builder.append(uniqueObjectKey.toString());
+		ArrayList<String> list = new ArrayList<String>();
+		
+		// normal class delete thing.
+		String statement = "DELETE FROM "+type.getFileSafeName()+" WHERE "+UNIQUE+"='"+unique+"'";
+		list.add(statement);
+		
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		TypeData data = DataStorageManager.getDataForType(type);
+		
+		ResultSet set = dbConnection.createStatement().executeQuery(createSelectStatement(type, unique));
+		if (set.next())
+			createTaggedClassFromResult(resultRowToMap(set), info, data);
+		
+		// container to UIDs
+		HashMultimap<ClassContainer, String> multiMap = HashMultimap.create();
+		collectMultiVals(info, data, multiMap);
+		
+		// create delete things for it.
+		
+		boolean isFirst = false;
+		for (ClassContainer key : multiMap.keySet())
+		{
+			statement = "DELETE FROM "+key.getFileSafeName()+" WHERE "+TypeMultiValInfo.UID+"='";
+			isFirst = false;
+			for (String valID : multiMap.get(key))
+			{
+				if (isFirst)
+					statement += valID+"'";
+				else
+					statement += " OR "+TypeMultiValInfo.UID+"='"+valID+"'";
+			}
+			list.add(statement);
+		}
 
-		return builder.toString();
+		return list;
+	}
+	
+	private void collectMultiVals(ITypeInfo info, TypeData data, HashMultimap<ClassContainer, String> map)
+	{
+		HashMultimap<ClassContainer, String> multiMap = HashMultimap.create();
+		
+		ITypeInfo tempInfo;
+		ClassContainer tempType;
+		String id;
+		for (Entry<String, Object> e : data.getAllFields())
+		{
+			tempType = info.getTypeOfField(e.getKey());
+			tempInfo = info.getInfoForField(e.getKey());
+			
+			if (tempInfo == null)
+				continue;
+			else if (!tempInfo.canSaveInline())
+			{
+				id = e.getValue().toString();
+				map.put(tempInfo.getType(), id);
+			}
+			else if (e.getValue() instanceof TypeData)
+			{
+				collectMultiVals(info, (TypeData) e.getValue(), map);
+			}
+		}
 	}
 
 	private String createSelectAllStatement(ClassContainer type)
@@ -292,20 +351,20 @@ public class SQLDataDriver extends AbstractDataDriver
 		return createSelectStatement(type, null);
 	}
 
-	private String createSelectStatement(ClassContainer type, Object uniqueObjectKey)
+	private String createSelectStatement(ClassContainer type, String unique)
 	{
 		StringBuilder builder = new StringBuilder();
 
 		// Basic SELECT syntax
-		builder.append("SELECT * FROM " + type.getSimpleName());
+		builder.append("SELECT * FROM " + type.getFileSafeName());
 		// Conditional
-		if (uniqueObjectKey != null)
+		if (unique != null)
 		{
 			builder.append(" WHERE ");
 			ITypeInfo tagger = DataStorageManager.getInfoForType(type);
 			builder.append(UNIQUE);
 			builder.append(" = ");
-			builder.append('\'').append(uniqueObjectKey).append('\'');
+			builder.append('\'').append(unique).append('\'');
 		}
 
 		return builder.toString();
@@ -635,40 +694,41 @@ public class SQLDataDriver extends AbstractDataDriver
 	}
 
 	// Transforms the raw DB type back into a Java object.
-	private Object valueToField(ClassContainer targetType, Object dbValue)
+	private Object valueToField(ClassContainer targetType, Object dbValue) throws SQLException
 	{
 		Object value = null;
-		if (targetType.equals(int.class))
+		Class type = targetType.getType();
+		if (type.equals(int.class))
 		{
 			// DB Value is an integer
 			value = (Integer)dbValue;
 		}
-		if (targetType.equals(byte.class))
+		if (type.equals(byte.class))
 		{
 			// DB Value is an Integer
 			value = ((Integer)dbValue).byteValue();
 		}
-		else if (targetType.equals(double.class))
+		else if (type.equals(double.class))
 		{
 			// DB Value is a double
 			value = dbValue;
 		}
-		else if (targetType.equals(float.class))
+		else if (type.equals(float.class))
 		{
 			// DB value is a Double.
 			value = dbValue;
 		}
-		else if (targetType.equals(String.class))
+		else if (type.equals(String.class))
 		{
 			// DB Value is a string
 			value = dbValue;
 		}
-		else if (targetType.equals(boolean.class))
+		else if (type.equals(boolean.class))
 		{
 			// DB Value is an integer (1=true, 0=false)
 			value = ((Integer) dbValue).equals(1);
 		}
-		else if (targetType.equals(double[].class))
+		else if (type.equals(double[].class))
 		{
 			// DB value is a string representing an array of doubles, separated
 			// by ','
@@ -681,7 +741,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			}
 			value = result;
 		}
-		else if (targetType.equals(int[].class))
+		else if (type.equals(int[].class))
 		{
 			// DB value is a string representing an array of integers, separated
 			// by ','
@@ -694,7 +754,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			}
 			value = result;
 		}
-		else if (targetType.equals(byte[].class))
+		else if (type.equals(byte[].class))
 		{
 			// DB value is a string representing an array of integers, separated
 			// by ','
@@ -707,7 +767,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			}
 			value = result;
 		}
-		else if (targetType.equals(boolean[].class))
+		else if (type.equals(boolean[].class))
 		{
 			// DB value is a string representing an array of booleans, separated
 			// by ','
@@ -720,7 +780,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			}
 			value = result;
 		}
-		else if (targetType.equals(String[].class))
+		else if (type.equals(String[].class))
 		{
 			// DB value is a string representing an array of strings, separated
 			// by '!??!'
@@ -733,6 +793,39 @@ public class SQLDataDriver extends AbstractDataDriver
 				values[i] = values[i].replaceAll("\"\"", "'");
 			}
 			value = values;
+		}
+		else
+		{
+			// for small things like this...
+			ITypeInfo info = DataStorageManager.getInfoForType(targetType);
+			if (!info.canSaveInline())
+			{
+				TypeMultiValInfo multiInfo = (TypeMultiValInfo) info;
+				String ID = dbValue.toString();
+				ID = TypeMultiValInfo.getUIDFromUnique(ID);
+				
+				Statement s = dbConnection.createStatement();
+				ResultSet result = s.executeQuery("SELECT * FROM "+targetType.getFileSafeName()+" WHERE "+MULTI_MARKER+"='"+ID+"'");
+				
+				TypeData data = DataStorageManager.getDataForType(targetType);
+				
+				TypeEntryInfo entryInfo = multiInfo.getEntryInfo();
+				String connector = multiInfo.getEntryName();
+				
+				// ResultSet initially sits just before first result.
+				TypeData temp;
+				int i = 0;
+				while (result.next())
+				{
+					temp = DataStorageManager.getDataForType(info.getType());
+					createTaggedClassFromResult(resultRowToMap(result), entryInfo, data);
+					data.putField(connector+(i++), temp);
+				}
+				
+				value = data;
+			}
+			
+			// anything else?
 		}
 		return value;
 	}
