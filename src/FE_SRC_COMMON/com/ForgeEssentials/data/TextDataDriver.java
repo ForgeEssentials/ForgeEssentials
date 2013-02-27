@@ -6,18 +6,21 @@ import java.util.ArrayList;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.ClassContainer;
+import com.ForgeEssentials.api.data.EnumDriverType;
+import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public abstract class TextDataDriver extends DataDriver
+public abstract class TextDataDriver extends AbstractDataDriver
 {
 	protected File	baseFile;
 
 	@Override
-	public final void parseConfigs(Configuration config, String category, String worldName) throws Exception
+	public final void loadFromConfigs(Configuration config, String category, String worldName) throws Exception
 	{
 		Property prop;
 
@@ -46,27 +49,27 @@ public abstract class TextDataDriver extends DataDriver
 		config.save();
 	}
 
-	protected final File getTypePath(Class type)
+	protected final File getTypePath(ClassContainer type)
 	{
-		return new File(baseFile, type.getSimpleName() + "/");
+		return new File(baseFile, type.getFileSafeName() + "/");
 	}
 
-	protected File getFilePath(Class type, Object uniqueKey)
+	protected File getFilePath(ClassContainer type, String uniqueKey)
 	{
-		return new File(getTypePath(type).getPath(), uniqueKey.toString() + "." + getExtension());
+		return new File(getTypePath(type).getPath(), uniqueKey + "." + getExtension());
 	}
 
 	/**
-	 * @return extension of the file. ommit the preceding period, its
+	 * @return extension of the file. omit the preceding period, its
 	 * automatically added. eg txt, cfg, dat, yml, etc...
 	 */
 	protected abstract String getExtension();
 
 	@Override
-	protected TaggedClass[] loadAll(Class type)
+	protected TypeData[] loadAll(ClassContainer type)
 	{
 		File[] files = getTypePath(type).listFiles();
-		ArrayList<ITaggedClass> data = new ArrayList<ITaggedClass>();
+		ArrayList<IReconstructData> data = new ArrayList<IReconstructData>();
 
 		if (files != null)
 		{
@@ -79,14 +82,14 @@ public abstract class TextDataDriver extends DataDriver
 			}
 		}
 
-		return data.toArray(new TaggedClass[] {});
+		return data.toArray(new TypeData[] {});
 	}
 
 	@Override
-	protected final boolean deleteData(Class type, Object uniqueObjectKey)
+	protected final boolean deleteData(ClassContainer type, String uniqueKey)
 	{
 		boolean isSuccess = false;
-		File f = getFilePath(type, uniqueObjectKey);
+		File f = getFilePath(type, uniqueKey);
 
 		if (f.exists())
 		{

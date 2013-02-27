@@ -6,6 +6,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
 import net.minecraft.nbt.CompressedStreamTools;
@@ -13,26 +16,31 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.ITypeInfo;
+import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class NBTDataDriver extends BinaryDataDriver
 {
+	private static final String	UNIQUE	= "__UNIQUE__";
 
 	@Override
-	protected boolean saveData(Class type, TaggedClass fieldList)
+	protected boolean saveData(ClassContainer type, TypeData data)
 	{
 		boolean successful = true;
 
 		// Create file object
-		File file = new File(baseFile + fieldList.uniqueKey.toString() + ".dat");
+		File file = getFilePath(type, data.getUniqueKey());
 
 		NBTTagCompound compound = new NBTTagCompound();
-		writeClassToTag(compound, fieldList);
+		writeClassToTag(compound, data);
 		writeNBT(compound, file);
 
 		return successful;
@@ -66,18 +74,17 @@ public class NBTDataDriver extends BinaryDataDriver
 				stream.close();
 			}
 
-			// change from temp to real
+			// delete old file
 			if (file.exists())
 			{
 				file.delete();
 			}
 
 			if (file.exists())
-			{
 				throw new IOException("Failed to delete " + file);
-			}
 			else
 			{
+				// change from temp to real
 				temp.renameTo(file);
 			}
 		}
@@ -96,159 +103,186 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			OutputHandler.exception(Level.FINEST, "Error tryong to read NBT frole from " + file, e);
 			return null;
 		}
 	}
 
 	@Override
-	protected TaggedClass loadData(Class type, Object uniqueKey)
+	protected TypeData loadData(ClassContainer type, String uniqueKey)
 	{
 		NBTTagCompound nbt = readNBT(getFilePath(type, uniqueKey));
 
 		if (nbt == null)
-		{
 			return null;
-		}
 
-		return readClassFromTag(nbt, type);
+		TypeData data = DataStorageManager.getDataForType(type);
+		data.setUniqueKey(uniqueKey);
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		readClassFromTag(nbt, data, info);
+
+		return data;
 	}
 
-	private void writeClassToTag(NBTTagCompound tag, TaggedClass tClass)
+	private void writeClassToTag(NBTTagCompound tag, TypeData data)
 	{
-		for (SavedField field : tClass.TaggedMembers.values())
+		for (Entry<String, Object> entry : data.getAllFields())
 		{
-			writeFieldToTag(tag, field);
+			writeFieldToTag(tag, entry.getKey(), entry.getValue());
 		}
 	}
 
-	private TaggedClass readClassFromTag(NBTTagCompound tag, Class type)
+	private void readClassFromTag(NBTTagCompound tag, TypeData data, ITypeInfo info)
 	{
-		TaggedClass tClass = TaggedClass.getTaggedClass(type);
-		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
-
-		// not gonna load it if its the method...
-		if (tagger.isUniqueKeyField)
+		String name;
+		ClassContainer tempType;
+		Object val;
+		for (NBTBase child : (Collection<NBTBase>) tag.getTags())
 		{
-			SavedField unique = new SavedField();
-			unique.name = tagger.uniqueKey;
-			unique.type = tagger.getTypeOfField(unique.name);
-			unique.value = readFieldFromTag(tag, unique, tagger);
-			tClass.uniqueKey = unique;
+			name = child.getName();
+			tempType = info.getTypeOfField(name);
+			
+			if (StorageManager.isTypeComplex(tempType))
+			{
+				NBTTagCompound compound = tag.getCompoundTag(name);
+				TypeData tempData = DataStorageManager.getDataForType(tempType);
+				readClassFromTag(compound, tempData, info.getInfoForField(name));
+				val = tempData;
+			}
+			else
+			{
+				val = readPrimitiveFromTag(tag, name, tempType.getType());
+			}
+			
+			data.putField(name, val);
 		}
-
-		for (String name : tagger.savedFields)
-		{
-			SavedField field = new SavedField();
-			field.name = name;
-			field.type = tagger.getTypeOfField(name);
-			field.value = readFieldFromTag(tag, field, tagger);
-			tClass.addField(field);
-		}
-
-		return tClass;
 	}
 
-	private void writeFieldToTag(NBTTagCompound tag, SavedField field)
+	private void writeFieldToTag(NBTTagCompound tag, String name, Object obj)
 	{
-		if (field == null || field.type == null || field.value == null)
-		{
+		if (name == null || obj == null)
 			// ignore.
-		}
-		else if (field.type.equals(Integer.class))
+			return;
+
+		Class type = obj.getClass();
+
+		if (type.equals(Integer.class))
 		{
-			tag.setInteger(field.name, (Integer) field.value);
+			tag.setInteger(name, (Integer) obj);
 		}
-		else if (field.type.equals(int[].class))
+		else if (type.equals(int[].class))
 		{
-			tag.setIntArray(field.name, (int[]) field.value);
+			tag.setIntArray(name, (int[]) obj);
 		}
-		else if (field.type.equals(Float.class))
+		else if (type.equals(Byte.class))
 		{
-			tag.setFloat(field.name, (Float) field.value);
+			tag.setByte(name, (Byte) obj);
 		}
-		else if (field.type.equals(Double.class))
+		else if (type.equals(byte[].class))
 		{
-			tag.setDouble(field.name, (Double) field.value);
+			tag.setByteArray(name, (byte[]) obj);
 		}
-		else if (field.type.equals(double[].class))
+		else if (type.equals(Float.class))
+		{
+			tag.setFloat(name, (Float) obj);
+		}
+		else if (type.equals(float[].class))
 		{
 			NBTTagList list = new NBTTagList();
-			double[] array = (double[]) field.value;
+			float[] array = (float[]) obj;
 			for (int i = 0; i < array.length; i++)
 			{
-				list.appendTag(new NBTTagDouble(field.name + "_" + i, array[i]));
+				list.appendTag(new NBTTagFloat(name + "_" + i, array[i]));
 			}
 
-			tag.setTag(field.name, list);
+			tag.setTag(name, list);
 		}
-		else if (field.type.equals(Boolean.class))
+		else if (type.equals(Double.class))
 		{
-			tag.setBoolean(field.name, (Boolean) field.value);
+			tag.setDouble(name, (Double) obj);
 		}
-		else if (field.type.equals(boolean[].class))
+		else if (type.equals(double[].class))
 		{
 			NBTTagList list = new NBTTagList();
-			boolean[] array = (boolean[]) field.value;
+			double[] array = (double[]) obj;
 			for (int i = 0; i < array.length; i++)
 			{
-				list.appendTag(new NBTTagByte(field.name + "_" + i, (byte) (array[i] ? 1 : 0)));
+				list.appendTag(new NBTTagDouble(name + "_" + i, array[i]));
 			}
 
-			tag.setTag(field.name, list);
+			tag.setTag(name, list);
 		}
-		else if (field.type.equals(String.class))
+		else if (type.equals(Boolean.class))
 		{
-			tag.setString(field.name, (String) field.value);
+			tag.setBoolean(name, (Boolean) obj);
 		}
-		else if (field.type.equals(String[].class))
+		else if (type.equals(boolean[].class))
 		{
 			NBTTagList list = new NBTTagList();
-			String[] array = (String[]) field.value;
+			boolean[] array = (boolean[]) obj;
 			for (int i = 0; i < array.length; i++)
 			{
-				list.appendTag(new NBTTagString(field.name + "_" + i, array[i]));
+				list.appendTag(new NBTTagByte(name + "_" + i, (byte) (array[i] ? 1 : 0)));
 			}
 
-			tag.setTag(field.name, list);
+			tag.setTag(name, list);
 		}
-		else if (field.type.equals(ITaggedClass.class))
+		else if (type.equals(String.class))
+		{
+			tag.setString(name, (String) obj);
+		}
+		else if (type.equals(String[].class))
+		{
+			NBTTagList list = new NBTTagList();
+			String[] array = (String[]) obj;
+			for (int i = 0; i < array.length; i++)
+			{
+				list.appendTag(new NBTTagString(name + "_" + i, array[i]));
+			}
+
+			tag.setTag(name, list);
+		}
+		else if (IReconstructData.class.isAssignableFrom(type))
 		{
 			NBTTagCompound compound = new NBTTagCompound();
-			writeClassToTag(compound, (TaggedClass) field.value);
-			tag.setCompoundTag(field.name, compound);
+			writeClassToTag(compound, (TypeData) obj);
+			tag.setCompoundTag(name, compound);
 		}
 		else
-		{
-			throw new IllegalArgumentException("Cannot save object type.");
-		}
+			throw new IllegalArgumentException("Cannot save object type: " + type.getCanonicalName());
 	}
 
-	private Object readFieldFromTag(NBTTagCompound tag, SavedField field, TypeTagger tagger)
+	private Object readPrimitiveFromTag(NBTTagCompound tag, String name, Class type)
 	{
-		if (field == null || field.type == null || field.value == null)
-		{
+		if (name == null || type == null)
 			return null;
-		}
-		else if (field.type.equals(int.class))
+
+		if (type.equals(int.class))
+			return tag.getInteger(name);
+		else if (type.equals(int[].class))
+			return tag.getIntArray(name);
+		else if (type.equals(byte.class))
+			return tag.getByte(name);
+		else if (type.equals(byte[].class))
+			return tag.getByteArray(name);
+		else if (type.equals(float.class))
+			return tag.getFloat(name);
+		else if (type.equals(float[].class))
 		{
-			return tag.getInteger(field.name);
+			NBTTagList list = tag.getTagList(name);
+			float[] array = new float[list.tagCount()];
+			for (int i = 0; i < array.length; i++)
+			{
+				array[i] = ((NBTTagFloat) list.tagAt(i)).data;
+			}
+
+			return array;
 		}
-		else if (field.type.equals(int[].class))
+		else if (type.equals(double.class))
+			return tag.getDouble(name);
+		else if (type.equals(double[].class))
 		{
-			return tag.getIntArray(field.name);
-		}
-		else if (field.type.equals(float.class))
-		{
-			return tag.getFloat(field.name);
-		}
-		else if (field.type.equals(double.class))
-		{
-			return tag.getDouble(field.name);
-		}
-		else if (field.type.equals(double[].class))
-		{
-			NBTTagList list = tag.getTagList(field.name);
+			NBTTagList list = tag.getTagList(name);
 			double[] array = new double[list.tagCount()];
 			for (int i = 0; i < array.length; i++)
 			{
@@ -257,13 +291,11 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			return array;
 		}
-		else if (field.type.equals(boolean.class))
+		else if (type.equals(boolean.class))
+			return tag.getBoolean(name);
+		else if (type.equals(boolean[].class))
 		{
-			return tag.getBoolean(field.name);
-		}
-		else if (field.type.equals(boolean[].class))
-		{
-			NBTTagList list = tag.getTagList(field.name);
+			NBTTagList list = tag.getTagList(name);
 			boolean[] array = new boolean[list.tagCount()];
 			for (int i = 0; i < array.length; i++)
 			{
@@ -272,13 +304,11 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			return array;
 		}
-		else if (field.type.equals(String.class))
+		else if (type.equals(String.class))
+			return tag.getString(name);
+		else if (type.equals(String[].class))
 		{
-			return tag.getString(field.name);
-		}
-		else if (field.type.equals(String[].class))
-		{
-			NBTTagList list = tag.getTagList(field.name);
+			NBTTagList list = tag.getTagList(name);
 			String[] array = new String[list.tagCount()];
 			for (int i = 0; i < array.length; i++)
 			{
@@ -287,23 +317,15 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			return array;
 		}
-		else if (field.type.equals(ITaggedClass.class))
-		{
-			NBTTagCompound compound = new NBTTagCompound();
-			return readClassFromTag(compound, tagger.getTypeOfField(field.name));
-		}
-		else
-		{
-			// this should never happen...
-			return null;
-		}
+
+		throw new IllegalArgumentException("NON PRIMITIVE TYPE! " + type);
 	}
 
 	@Override
-	protected TaggedClass[] loadAll(Class type)
+	protected TypeData[] loadAll(ClassContainer type)
 	{
 		File[] files = getTypePath(type).listFiles();
-		ArrayList<ITaggedClass> data = new ArrayList<ITaggedClass>();
+		ArrayList<IReconstructData> data = new ArrayList<IReconstructData>();
 
 		for (File file : files)
 		{
@@ -313,6 +335,7 @@ public class NBTDataDriver extends BinaryDataDriver
 			}
 		}
 
-		return data.toArray(new TaggedClass[] {});
+		return data.toArray(new TypeData[] {});
 	}
+
 }

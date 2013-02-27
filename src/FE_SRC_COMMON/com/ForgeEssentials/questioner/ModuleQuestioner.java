@@ -20,7 +20,7 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.events.PermissionSetEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.util.DataStorage;
 
 @FEModule(configClass = ConfigQuestioner.class, name = "QuestionerModule", parentMod = ForgeEssentials.class)
@@ -32,7 +32,7 @@ public class ModuleQuestioner
 	@ModuleDir
 	public static File				cmddir;
 
-	public DataDriver				data;
+	public AbstractDataDriver				data;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)

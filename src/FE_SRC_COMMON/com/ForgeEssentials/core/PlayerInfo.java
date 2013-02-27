@@ -3,10 +3,15 @@ package com.ForgeEssentials.core;
 import java.util.HashMap;
 import java.util.Stack;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.EnumDriverType;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
@@ -40,8 +45,7 @@ public class PlayerInfo
 		if (info == null)
 		{
 			// Attempt to populate this info with some data from our storage.
-			// TODO: get the actual config-given choice...
-			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(PlayerInfo.class, username);
+			info = (PlayerInfo) DataStorageManager.getDriverOfType(EnumDriverType.SQL).loadObject(new ClassContainer(PlayerInfo.class), username);
 
 			if (info == null)
 			{
@@ -56,11 +60,12 @@ public class PlayerInfo
 
 	public static void discardInfo(String username)
 	{
-		playerInfoMap.remove(username);
+		PlayerInfo info = playerInfoMap.remove(username);
+		info.save();
 	}
 
 	@Reconstructor()
-	public static PlayerInfo reconstruct(ITaggedClass tag)
+	public static PlayerInfo reconstruct(IReconstructData tag)
 	{
 		String username = (String) tag.getFieldValue("username");
 
@@ -78,12 +83,12 @@ public class PlayerInfo
 		info.suffix = (String) tag.getFieldValue("suffix");
 
 		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
+
 		return info;
 	}
 
 	// -------------------------------------------------------------------------------------------
-	// ---------------------------------- Actual Class Starts Now
-	// --------------------------------
+	// ---------------------------------- Actual Class Starts Now --------------------------------
 	// -------------------------------------------------------------------------------------------
 	@UniqueLoadingKey()
 	@SaveableField()
@@ -148,8 +153,7 @@ public class PlayerInfo
 	 */
 	public void save()
 	{
-		// TODO: get the actual config-given choice...
-		DataStorageManager.getReccomendedDriver().saveObject(this);
+		DataStorageManager.getDriverOfType(EnumDriverType.SQL).saveObject(new ClassContainer(PlayerInfo.class), this);
 	}
 
 	// ----------------------------------------------

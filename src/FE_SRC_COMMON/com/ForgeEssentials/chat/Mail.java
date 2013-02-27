@@ -2,7 +2,7 @@ package com.ForgeEssentials.chat;
 
 import java.rmi.server.UID;
 
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
@@ -60,7 +60,7 @@ public class Mail
 	}
 
 	@Reconstructor
-	private static Mail reconstruct(ITaggedClass tag)
+	private static Mail reconstruct(IReconstructData tag)
 	{
 		return new Mail((String)tag.getFieldValue("key"), (String)tag.getFieldValue("sender"), (String)tag.getFieldValue("receiver"), (String)tag.getFieldValue("message"));
 	}

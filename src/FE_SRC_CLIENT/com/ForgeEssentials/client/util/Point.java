@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
@@ -143,7 +143,7 @@ public class Point implements Serializable, Comparable<Point>
 	}
 
 	@Reconstructor()
-	public static Point reconstruct(ITaggedClass tag)
+	public static Point reconstruct(IReconstructData tag)
 	{
 		float x = (Float) tag.getFieldValue("x");
 		float y = (Float) tag.getFieldValue("y");

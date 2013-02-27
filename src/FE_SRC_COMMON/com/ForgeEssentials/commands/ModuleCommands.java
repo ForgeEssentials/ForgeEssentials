@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -27,19 +28,16 @@ import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.MCStatsHelper;
 import com.ForgeEssentials.commands.util.MobTypeLoader;
-import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.CompatMCStats;
-import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.PWarp;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.Warp;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -52,8 +50,8 @@ public class ModuleCommands
 	@ModuleDir
 	public static File				cmddir;
 
-	public static EventHandler		eventHandler	= new EventHandler();
-	public static DataDriver		data;
+	public static EventHandler	eventHandler	= new EventHandler();
+	public static AbstractDataDriver	data;
 	private static MCStatsHelper	mcstats			= new MCStatsHelper();
 
 	@PreInit
@@ -117,30 +115,32 @@ public class ModuleCommands
 
 	public static void saveWarps()
 	{
+		ClassContainer con = new ClassContainer(Warp.class);
 		for (Warp warp : TeleportCenter.warps.values())
 		{
-			data.saveObject(warp);
+			data.saveObject(con, warp);
 		}
 
+		con = new ClassContainer(PWarp.class);
 		for (HashMap<String, PWarp> pws : TeleportCenter.pwMap.values())
 		{
 			for (PWarp warp : pws.values())
 			{
-				data.saveObject(warp);
+				data.saveObject(con, warp);
 			}
 		}
 	}
 
 	public static void loadWarps()
 	{
-		Object[] objs = data.loadAllObjects(Warp.class);
+		Object[] objs = data.loadAllObjects(new ClassContainer(Warp.class));
 		for (Object obj : objs)
 		{
 			Warp warp = ((Warp) obj);
 			TeleportCenter.warps.put(warp.getName(), warp);
 		}
 
-		objs = data.loadAllObjects(PWarp.class);
+		objs = data.loadAllObjects(new ClassContainer(PWarp.class));
 		for (Object obj : objs)
 		{
 			PWarp warp = ((PWarp) obj);

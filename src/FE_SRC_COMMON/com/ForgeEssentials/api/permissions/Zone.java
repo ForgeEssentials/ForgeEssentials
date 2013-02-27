@@ -2,7 +2,7 @@ package com.ForgeEssentials.api.permissions;
 
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
@@ -167,7 +167,7 @@ public class Zone extends WorldArea implements Comparable
 	}
 
 	@Reconstructor
-	private static Zone reconstruct(ITaggedClass tag)
+	private static Zone reconstruct(IReconstructData tag)
 	{
 		Point high = (Point) tag.getFieldValue("high");
 		Point low = (Point) tag.getFieldValue("low");

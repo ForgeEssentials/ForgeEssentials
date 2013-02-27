@@ -2,24 +2,24 @@ package com.ForgeEssentials.api.data;
 
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.data.EnumDriverType;
-import com.ForgeEssentials.data.TypeTagger;
 
 public interface IDataDriver
 {
-	void onClassRegistered(TypeTagger tagger);
+	void onClassRegistered(ITypeInfo tagger);
 
 	String getName();
 
-	boolean saveObject(Object o);
+	boolean saveObject(ClassContainer type, Object o);
 
-	Object loadObject(Class type, Object loadingKey);
+	Object loadObject(ClassContainer type, String loadingKey);
 
-	Object[] loadAllObjects(Class type);
+	Object[] loadAllObjects(ClassContainer type);
 
-	boolean deleteObject(Class type, Object loadingKey);
+	boolean deleteObject(ClassContainer type, String loadingKey);
 
 	void parseConfigs(Configuration config, String category, String worldName) throws Exception;
 
 	EnumDriverType getType();
+	
+	public boolean hasLoaded();
 }

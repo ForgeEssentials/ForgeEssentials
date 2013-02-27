@@ -3,7 +3,7 @@ package com.ForgeEssentials.util.AreaSelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
@@ -62,7 +62,7 @@ public class WorldPoint extends Point
 	}
 
 	@Reconstructor()
-	public static WorldPoint reconstruct(ITaggedClass tag)
+	public static WorldPoint reconstruct(IReconstructData tag)
 	{
 		int x = (Integer) tag.getFieldValue("x");
 		int y = (Integer) tag.getFieldValue("y");

@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.PWarp;
@@ -73,7 +74,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 			{
 				if (map.containsKey(args[1]))
 				{
-					ModuleCommands.data.deleteObject(PWarp.class, map.get(args[1]).getFilename());
+					ModuleCommands.data.deleteObject(new ClassContainer(PWarp.class), map.get(args[1]).getFilename());
 					map.remove(args[1]);
 					sender.sendChatToPlayer("PW removed.");
 				}

@@ -4,8 +4,9 @@ import java.util.HashMap;
 
 import net.minecraft.server.MinecraftServer;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
@@ -40,7 +41,7 @@ public class AutoPromote implements Runnable
 	}
 	
 	@Reconstructor
-	private static AutoPromote reconstruct(ITaggedClass tag)
+	private static AutoPromote reconstruct(IReconstructData tag)
 	{
 		AutoPromote data = new AutoPromote((String) tag.getFieldValue("zone"), (Boolean) tag.getFieldValue("enable"));
 		//data.promotemap = (HashMap<Integer, String>) tag.getFieldValue("promotemap");
@@ -49,7 +50,7 @@ public class AutoPromote implements Runnable
 	
 	public void save()
 	{
-		DataStorageManager.getReccomendedDriver().saveObject(this);
+		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(this.getClass()), this);
 	}
 	
 	public void count(String player, int time)

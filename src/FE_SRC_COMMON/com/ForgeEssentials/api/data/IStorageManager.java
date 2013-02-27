@@ -1,23 +1,35 @@
 package com.ForgeEssentials.api.data;
 
-import com.ForgeEssentials.data.DataDriver;
-import com.ForgeEssentials.data.EnumDriverType;
-import com.ForgeEssentials.data.TypeTagger;
+import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.util.DBConnector;
 
 public interface IStorageManager
 {
-	void registerDriver(String name, Class<? extends DataDriver> c);
+	void registerDriver(String name, Class<? extends AbstractDataDriver> c);
 
-	DataDriver getReccomendedDriver();
+	AbstractDataDriver getReccomendedDriver();
 
-	DataDriver getDriverOfType(EnumDriverType type);
+	AbstractDataDriver getDriverOfType(EnumDriverType type);
 
-	void registerSaveableClass(Class type);
+	/**
+	 * Registers the class and registers the provided TypeInfo for it.
+	 * @param infoType
+	 * @param type
+	 */
+	void registerSaveableClass(Class<? extends ITypeInfo> infoType, ClassContainer type);
 
-	boolean hasMapping(Class type);
+	/**
+	 * Registers the class as a SaveableClass to be read with the Annotations.
+	 * This method should only be used for classes that use the default ITypeInfo and have the annotations.
+	 * @param type The class to register
+	 */
+	void registerSaveableClass(ClassContainer type);
 
-	TypeTagger getTaggerForType(Class type);
+	ITypeInfo getInfoForType(ClassContainer type);
+
+	TypeData getDataForType(ClassContainer type);
+
+	TypeData getDataForObject(ClassContainer container, Object obj);
 
 	DBConnector getCoreDBConnector();
 }

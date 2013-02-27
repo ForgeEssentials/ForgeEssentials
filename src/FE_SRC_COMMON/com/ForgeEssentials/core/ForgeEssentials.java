@@ -2,8 +2,11 @@ package com.ForgeEssentials.core;
 
 import java.io.File;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEDebug;
@@ -23,6 +26,8 @@ import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLDataDriver;
 import com.ForgeEssentials.data.StorageManager;
+import com.ForgeEssentials.data.typeInfo.TypeInfoItemStack;
+import com.ForgeEssentials.data.typeInfo.TypeInfoNBTCompound;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.MiscEventHandler;
@@ -60,8 +65,10 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false, serverPacketHandlerSpec = @SidedPacketHandler(channels =
-{ "ForgeEssentials" }, packetHandler = PacketHandler.class))
+@NetworkMod(
+		clientSideRequired = false,
+		serverSideRequired = false,
+		serverPacketHandlerSpec = @SidedPacketHandler(channels ={ "ForgeEssentials" }, packetHandler = PacketHandler.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "@VERSION@")
 public class ForgeEssentials
 {
@@ -124,10 +131,14 @@ public class ForgeEssentials
 			DataStorageManager.registerDriver("SQL_DB", SQLDataDriver.class);
 
 			// Register saveables..
-			DataStorageManager.registerSaveableClass(PlayerInfo.class);
-			DataStorageManager.registerSaveableClass(Point.class);
-			DataStorageManager.registerSaveableClass(WorldPoint.class);
-			DataStorageManager.registerSaveableClass(WarpPoint.class);
+			DataStorageManager.registerSaveableType(PlayerInfo.class);
+			
+			DataStorageManager.registerSaveableType(Point.class);
+			DataStorageManager.registerSaveableType(WorldPoint.class);
+			DataStorageManager.registerSaveableType(WarpPoint.class);
+			
+			DataStorageManager.registerSaveableType(TypeInfoItemStack.class, new ClassContainer(ItemStack.class));
+			DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
 		}
 
 		// setup modules AFTER data stuff...

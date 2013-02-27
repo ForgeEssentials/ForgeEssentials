@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -43,6 +44,8 @@ public class ModuleTickets
 	public static int				currentID;
 
 	private PlayerTracker	playerTracker;
+	
+	private static ClassContainer ticketContainer = new ClassContainer(Ticket.class);
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -106,7 +109,7 @@ public class ModuleTickets
 
 	public static void loadAll()
 	{
-		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(Ticket.class))
+		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(ticketContainer))
 		{
 			ticketList.add((Ticket) obj);
 		}
@@ -116,7 +119,7 @@ public class ModuleTickets
 	{
 		for (Ticket ticket : ticketList)
 		{
-			DataStorageManager.getReccomendedDriver().saveObject(ticket);
+			DataStorageManager.getReccomendedDriver().saveObject(ticketContainer, ticket);
 		}
 	}
 	

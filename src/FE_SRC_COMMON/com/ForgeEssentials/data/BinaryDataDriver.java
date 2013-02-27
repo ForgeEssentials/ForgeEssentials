@@ -6,19 +6,22 @@ import java.util.ArrayList;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.ClassContainer;
+import com.ForgeEssentials.api.data.EnumDriverType;
+import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public abstract class BinaryDataDriver extends DataDriver
+public abstract class BinaryDataDriver extends AbstractDataDriver
 {
 	protected File		baseFile;
-	protected String	extension;
+	protected static final String	EXT = ".dat";
 
 	@Override
-	public final void parseConfigs(Configuration config, String category, String worldName) throws Exception
+	public final void loadFromConfigs(Configuration config, String category, String worldName) throws Exception
 	{
 		Property prop;
 
@@ -47,9 +50,9 @@ public abstract class BinaryDataDriver extends DataDriver
 		config.save();
 	}
 
-	protected final File getTypePath(Class type)
+	protected final File getTypePath(ClassContainer type)
 	{
-		return new File(baseFile, type.getSimpleName() + "/");
+		return new File(baseFile, type.getFileSafeName() + "/");
 	}
 
 	/**
@@ -57,36 +60,36 @@ public abstract class BinaryDataDriver extends DataDriver
 	 * 
 	 * @return
 	 */
-	protected File getFilePath(Class type, Object uniqueKey)
+	protected File getFilePath(ClassContainer type, Object uniqueKey)
 	{
-		return new File(getTypePath(type).getPath(), uniqueKey.toString() + extension);
+		return new File(getTypePath(type).getPath(), uniqueKey.toString() + EXT);
 	}
 
 	@Override
-	protected TaggedClass[] loadAll(Class type)
+	protected TypeData[] loadAll(ClassContainer type)
 	{
 		File[] files = getTypePath(type).listFiles();
-		ArrayList<ITaggedClass> data = new ArrayList<ITaggedClass>();
+		ArrayList<IReconstructData> data = new ArrayList<IReconstructData>();
 
 		if (files != null)
 		{
 			for (File file : files)
 			{
-				if (!file.isDirectory() && file.getName().endsWith(extension))
+				if (!file.isDirectory() && file.getName().endsWith(EXT))
 				{
-					data.add(loadData(type, file.getName().replace(extension, "")));
+					data.add(loadData(type, file.getName().replace(EXT, "")));
 				}
 			}
 		}
 
-		return data.toArray(new TaggedClass[] {});
+		return data.toArray(new TypeData[] {});
 	}
 
 	@Override
-	protected final boolean deleteData(Class type, Object uniqueObjectKey)
+	protected final boolean deleteData(ClassContainer type, String uniqueKey)
 	{
 		boolean isSuccess = false;
-		File f = getFilePath(type, uniqueObjectKey);
+		File f = getFilePath(type, uniqueKey);
 
 		if (f.exists())
 		{

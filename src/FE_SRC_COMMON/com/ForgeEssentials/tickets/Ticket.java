@@ -3,7 +3,7 @@ package com.ForgeEssentials.tickets;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
@@ -48,7 +48,7 @@ public class Ticket
 	}
 
 	@Reconstructor
-	private static Ticket reconstruct(ITaggedClass tag)
+	private static Ticket reconstruct(IReconstructData tag)
 	{
 		return new Ticket(Integer.parseInt((String) tag.getFieldValue("id")), (String) tag.getFieldValue("creator"), (String) tag.getFieldValue("category"), (String) tag.getFieldValue("message"), (WarpPoint) tag.getFieldValue("point"));
 	}

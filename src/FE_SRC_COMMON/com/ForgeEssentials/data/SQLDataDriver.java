@@ -7,25 +7,36 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.ITaggedClass;
+import com.ForgeEssentials.api.data.EnumDriverType;
+import com.ForgeEssentials.api.data.ITypeInfo;
+import com.ForgeEssentials.api.data.TypeData;
+import com.ForgeEssentials.api.data.TypeEntryInfo;
+import com.ForgeEssentials.api.data.TypeMultiValInfo;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.Pair;
+import com.google.common.collect.HashMultimap;
 
-public class SQLDataDriver extends DataDriver
+public class SQLDataDriver extends AbstractDataDriver
 {
-	protected static String				separationString	= "__";
-	private Connection					dbConnection;
-	protected HashMap<Class, Boolean>	classTableChecked	= new HashMap<Class, Boolean>();
-	protected DBConnector				connector;
+	protected static final String	SEPERATOR			= "__";
+	private Connection				dbConnection;
+	private HashSet<String>			classTableChecked	= new HashSet<String>();
+	protected DBConnector			connector;
+
+	private final String			UNIQUE				= "uniqueIdentifier";
+	private final String			MULTI_MARKER		= "MultiValUID";
 
 	// Default constructor is good enough for us.
 
@@ -35,7 +46,7 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	@Override
-	public void parseConfigs(Configuration config, String category, String worldName) throws SQLException, ClassNotFoundException
+	public void loadFromConfigs(Configuration config, String category, String worldName) throws SQLException, ClassNotFoundException
 	{
 		String cat = category.substring(0, category.lastIndexOf('.'));
 
@@ -44,43 +55,44 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	@Override
-	public void onClassRegistered(TypeTagger tagger)
+	public void onClassRegistered(ITypeInfo tagger)
 	{
-		// If this is the first time registering a class that is NOT saved
-		// inline,
+		// If this is the first time registering a class that is NOT saved inline,
 		// attempt to create a table.
-		if (!(tagger.inLine || classTableChecked.containsKey(tagger.forType)))
+		if (!(tagger.canSaveInline() || classTableChecked.contains(tagger.getType().getName())))
 		{
-			createTable(tagger.forType);
+			// automatically adds done classes to the set
+			createTable(tagger.getType());
 		}
 	}
 
 	@Override
-	protected boolean saveData(Class type, TaggedClass fieldList)
+	protected boolean saveData(ClassContainer type, TypeData data)
 	{
-		boolean isSuccess = false;
-
 		try
 		{
 			Statement s;
+			ArrayList<String> statements = generateInsertBatch(DataStorageManager.getInfoForType(type), data);
 			s = dbConnection.createStatement();
-			int count = s.executeUpdate(createInsertStatement(type, fieldList));
 
-			isSuccess = true;
+			for (String statement : statements)
+				s.addBatch(statement);
+
+			s.executeBatch();
+			return true;
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("Couldn't save object of type " + type.getSimpleName() + " to " + connector.getChosenType() + " DB. Server will continue running.");
-			e.printStackTrace();
+			OutputHandler.exception(Level.WARNING, "Couldn't save object of type " + type.getSimpleName() + " to " + connector.getChosenType() + " DB. Server will continue running.", e);
+			return false;
 		}
-
-		return isSuccess;
 	}
 
 	@Override
-	protected TaggedClass loadData(Class type, Object uniqueKey)
+	protected TypeData loadData(ClassContainer type, String uniqueKey)
 	{
-		TaggedClass reconstructed = null;
+		TypeData reconstructed = DataStorageManager.getDataForType(type);
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
 
 		try
 		{
@@ -91,64 +103,74 @@ public class SQLDataDriver extends DataDriver
 			if (result.next())
 			{
 				// Should only be one item in this set.
-				reconstructed = createTaggedClassFromResult(type, resultRowToMap(result));
+				createTaggedClassFromResult(resultRowToMap(result), info, reconstructed);
 			}
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			OutputHandler.exception(Level.FINE, "Couldn't load object of type " + type.getSimpleName() + " from " + connector.getChosenType() + " DB.", e);
+			return null;
 		}
 
 		return reconstructed;
 	}
 
 	@Override
-	protected TaggedClass[] loadAll(Class type)
+	protected TypeData[] loadAll(ClassContainer type)
 	{
-		ArrayList<ITaggedClass> values = new ArrayList<ITaggedClass>();
+		ArrayList<TypeData> values = new ArrayList<TypeData>();
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
 
 		try
 		{
 			Statement s = dbConnection.createStatement();
 			ResultSet result = s.executeQuery(createSelectAllStatement(type));
+			TypeData temp;
 
 			while (result.next())
 			{
+				temp = DataStorageManager.getDataForType(type);
+
 				// Continue reading rows as they exist.
-				values.add(createTaggedClassFromResult(type, resultRowToMap(result)));
+				createTaggedClassFromResult(resultRowToMap(result), info, temp);
+				values.add(temp);
 			}
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			OutputHandler.exception(Level.FINE, "Couldn't load objects of type " + type.getSimpleName() + " from " + connector.getChosenType() + " DB.", e);
 		}
 
-		return values.toArray(new TaggedClass[values.size()]);
+		return values.toArray(new TypeData[values.size()]);
 	}
 
 	@Override
-	protected boolean deleteData(Class type, Object uniqueObjectKey)
+	protected boolean deleteData(ClassContainer type, String uniqueObjectKey)
 	{
-		boolean isSuccess = false;
-
 		try
 		{
+			ArrayList<String> statements = createDeleteStatement(type, uniqueObjectKey);
 			Statement s = dbConnection.createStatement();
-			s.execute(createDeleteStatement(type, uniqueObjectKey));
 
-			isSuccess = true;
+			for (String statement : statements)
+				s.addBatch(statement);
+
+			s.executeBatch();
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.severe("Problem deleting data from " + connector.getChosenType() + " DB (May not actually be a critical error):");
-			e.printStackTrace();
+			OutputHandler.exception(Level.SEVERE, "Problem deleting data from " + connector.getChosenType() + " DB (May not actually be a critical error):", e);
+			return false;
 		}
 
-		return isSuccess;
+		return true;
 	}
 
-	// Transforms a ResultSet row into a HashMap. Assumes a valid result is
-	// currently selected.
+	/**
+	 * Transforms a ResultSet row into a HashMap. Assumes a valid result is
+	 * @param result currently selected.
+	 * @return
+	 */
 	private HashMap<String, Object> resultRowToMap(ResultSet result)
 	{
 		HashMap<String, Object> map = new HashMap();
@@ -186,22 +208,21 @@ public class SQLDataDriver extends DataDriver
 		return map;
 	}
 
-	private TaggedClass createTaggedClassFromResult(Class type, HashMap<String, Object> result)
+	private void createTaggedClassFromResult(HashMap<String, Object> result, ITypeInfo info, TypeData data) throws SQLException
 	{
-		TypeTagger rootTagger = DataStorageManager.getTaggerForType(type);
-		TypeTagger taggerCursor;
-		TaggedClass tClass = TaggedClass.getTaggedClass(type);
-		TaggedClass value = new TaggedClass(type);
-		TaggedClass cursor = null;
+		ITypeInfo taggerCursor;
+		TypeData cursor = null;
 		SavedField tmpField = null;
-		Class tmpClass;
+		ClassContainer tmpClass;
+
+		Object tempVal;
 
 		for (Entry<String, Object> entry : result.entrySet())
 		{
-			cursor = value;
-			taggerCursor = rootTagger;
+			cursor = data;
+			taggerCursor = info;
 
-			String[] fieldHeiarchy = entry.getKey().split(separationString);
+			String[] fieldHeiarchy = entry.getKey().split(SEPERATOR);
 			if (fieldHeiarchy != null)
 			{
 				// Iterate over the list of items in the heiarchy to rebuild the
@@ -209,153 +230,275 @@ public class SQLDataDriver extends DataDriver
 				for (int i = 0; i < fieldHeiarchy.length; ++i)
 				{
 					// Grab the next item
-					tmpField = cursor.TaggedMembers.get(fieldHeiarchy[i]);
+					tmpField = getSavedFieldFromName(cursor, fieldHeiarchy[i]);
 
 					if (tmpField == null)
 					{
 						// Create a new node for this position.
 						tmpField = new SavedField();
 						tmpField.name = fieldHeiarchy[i];
-						cursor.addField(tmpField);
+						cursor.putField(tmpField.name, null);
 					}
 
 					if (fieldHeiarchy.length > i + 1)
 					{
 						// An object lives here.
 						tmpClass = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
-						tmpField.value = cursor = new TaggedClass(tmpClass);
-						taggerCursor = DataStorageManager.getTaggerForType(tmpField.type);
+						tmpField.value = cursor = DataStorageManager.getDataForType(tmpClass);
+						taggerCursor = taggerCursor.getInfoForField(fieldHeiarchy[i]);
 					}
 					else
 					{
+						String name = fieldHeiarchy[i];
+
+						if (name.contains(MULTI_MARKER))
+							name = name.replace("_" + MULTI_MARKER, "");
+
 						// Primitive type.
-						Class fieldType = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
-						tmpField.value = valueToField(taggerCursor.getTypeOfField(fieldHeiarchy[i]), result.get(fieldHeiarchy[i]));
-						tmpField.type = fieldType;
+						ClassContainer fieldType = taggerCursor.getTypeOfField(name);
+						tmpField.value = valueToField(fieldType, result.get(name));
+						tmpField.type = fieldType.getType();
 					}
 				}
 			}
 		}
-
-		return value;
 	}
 
-	private String createDeleteStatement(Class type, Object uniqueObjectKey)
+	/**
+	 * if the field exists, but has no value. An empty field is returned.
+	 * if the field does not exist, NULL is returned
+	 * otherwise a field is constructed and returned.
+	 * @param data
+	 */
+	private SavedField getSavedFieldFromName(TypeData data, String name)
 	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("DELETE FROM " + type.getSimpleName() + " WHERE ");
-		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
-		if (tagger.isUniqueKeyField)
-		{
-			builder.append(tagger.uniqueKey + " = ");
-		}
+		SavedField field = new SavedField();
+
+		if (!data.hasField(name))
+			return null;
 		else
 		{
-			builder.append("uniqueIdentifier = ");
+			Object val;
+			val = data.getFieldValue(name);
+			if (val == null)
+				return field;
+			else
+				return new SavedField(name, val);
 		}
-		builder.append(uniqueObjectKey.toString());
-
-		return builder.toString();
 	}
 
-	private String createSelectAllStatement(Class type)
+	private ArrayList<String> createDeleteStatement(ClassContainer type, String unique) throws SQLException
+	{
+		ArrayList<String> list = new ArrayList<String>();
+
+		// normal class delete thing.
+		String statement = "DELETE FROM " + type.getFileSafeName() + " WHERE " + UNIQUE + "='" + unique + "'";
+		list.add(statement);
+
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		TypeData data = DataStorageManager.getDataForType(type);
+
+		ResultSet set = dbConnection.createStatement().executeQuery(createSelectStatement(type, unique));
+		if (set.next())
+			createTaggedClassFromResult(resultRowToMap(set), info, data);
+
+		// container to UIDs
+		HashMultimap<ClassContainer, String> multiMap = HashMultimap.create();
+		collectMultiVals(info, data, multiMap);
+
+		// create delete things for it.
+
+		boolean isFirst = false;
+		for (ClassContainer key : multiMap.keySet())
+		{
+			statement = "DELETE FROM " + key.getFileSafeName() + " WHERE " + TypeMultiValInfo.UID + "='";
+			isFirst = false;
+			for (String valID : multiMap.get(key))
+			{
+				if (isFirst)
+					statement += valID + "'";
+				else
+					statement += " OR " + TypeMultiValInfo.UID + "='" + valID + "'";
+			}
+			list.add(statement);
+		}
+
+		return list;
+	}
+
+	private void collectMultiVals(ITypeInfo info, TypeData data, HashMultimap<ClassContainer, String> map)
+	{
+		HashMultimap<ClassContainer, String> multiMap = HashMultimap.create();
+
+		ITypeInfo tempInfo;
+		ClassContainer tempType;
+		String id;
+		for (Entry<String, Object> e : data.getAllFields())
+		{
+			tempType = info.getTypeOfField(e.getKey());
+			tempInfo = info.getInfoForField(e.getKey());
+
+			if (tempInfo == null)
+				continue;
+			else if (!tempInfo.canSaveInline())
+			{
+				id = e.getValue().toString();
+				map.put(tempInfo.getType(), id);
+			}
+			else if (e.getValue() instanceof TypeData)
+			{
+				collectMultiVals(info, (TypeData) e.getValue(), map);
+			}
+		}
+	}
+
+	private String createSelectAllStatement(ClassContainer type)
 	{
 		return createSelectStatement(type, null);
 	}
 
-	private String createSelectStatement(Class type, Object uniqueObjectKey)
+	private String createSelectStatement(ClassContainer type, String unique)
 	{
 		StringBuilder builder = new StringBuilder();
 
 		// Basic SELECT syntax
-		builder.append("SELECT * FROM " + type.getSimpleName());
+		builder.append("SELECT * FROM " + type.getFileSafeName());
 		// Conditional
-		if (uniqueObjectKey != null)
+		if (unique != null)
 		{
 			builder.append(" WHERE ");
-			TypeTagger tagger = DataStorageManager.getTaggerForType(type);
-			if (tagger.isUniqueKeyField)
-			{
-				builder.append(tagger.uniqueKey);
-			}
-			else
-			{
-				builder.append("uniqueIdentifier");
-			}
+			ITypeInfo tagger = DataStorageManager.getInfoForType(type);
+			builder.append(UNIQUE);
 			builder.append(" = ");
-
-			if (uniqueObjectKey instanceof String)
-			{
-				builder.append("'").append((String) uniqueObjectKey).append("'");
-			}
-			else
-			{
-				builder.append(uniqueObjectKey.toString());
-			}
+			builder.append('\'').append(unique).append('\'');
 		}
 
 		return builder.toString();
 	}
 
-	private String createInsertStatement(Class type, TaggedClass fieldList)
+	private ArrayList<String> generateInsertBatch(ITypeInfo info, TypeData data)
 	{
+		ClassContainer type = info.getType();
+
 		ArrayList<Pair<String, String>> fieldValueMap = new ArrayList<Pair<String, String>>();
+		ArrayList<String> statements = new ArrayList<String>();
+
+		// MultiVal list
+		ArrayList<Pair<String, TypeData>> multiVals = new ArrayList<Pair<String, TypeData>>();
+
 		// Iterate through fields and build up name=>value pair list.
-		for (SavedField field : fieldList.TaggedMembers.values())
+		ArrayList<Pair> temp;
+		for (Entry<String, Object> entry : data.getAllFields())
 		{
-			fieldValueMap.addAll(fieldToValues(field.name, field.type, field.value));
+			temp = fieldToValues(entry.getKey(), info.getTypeOfField(entry.getKey()), entry.getValue());
+
+			// catch multivals and add them to a different list.
+			for (Pair p : temp)
+			{
+				if (((String) p.getFirst()).contains(MULTI_MARKER) && p.getSecond() instanceof TypeData)
+					multiVals.add(p);
+				else
+					fieldValueMap.add(p);
+			}
 		}
 
-		// Build up update statement.
+		String table = type.getFileSafeName();
+		boolean isEntry = false;
+
+		// Deal with unique field. No uniqueFields for these...
+		if (!(info instanceof TypeEntryInfo))
+		{
+			fieldValueMap.add(0, new Pair(UNIQUE, data.getUniqueKey()));
+		}
+		else
+		{
+			table = ((TypeEntryInfo) info).getParentType().getFileSafeName();
+			isEntry = true;
+		}
+
+		String query = getInsertStatement(fieldValueMap, table, isEntry);
+		statements.add(query.toString());
+
+		ArrayList<String> tempStatements;
+		for (Pair<String, TypeData> p : multiVals)
+		{
+			tempStatements = generateMultiValInsertBatch(p.getSecond());
+			statements.addAll(tempStatements);
+		}
+
+		return statements;
+	}
+
+	private String getInsertStatement(ArrayList<Pair<String, String>> list, String table, boolean isEntry)
+	{
+		EnumDBType db = connector.getChosenType();
+
 		StringBuilder query = new StringBuilder();
-		query.append("INSERT OR REPLACE INTO " + type.getSimpleName() + ' ');
+
+		if (isEntry)
+			query.append("INSERT INTO " + table + ' ');
+		else
+		{
+			switch (db)
+				{
+					case H2_FILE:
+						query.append("MERGE INTO " + table + ' ');
+						break;
+					case MySQL:
+						query.append("REPLACE INTO " + table + ' ');
+						break;
+				}
+		}
 
 		StringBuilder fields = new StringBuilder();
 		StringBuilder values = new StringBuilder();
 		fields.append('(');
 		values.append('(');
 
-		// Deal with unique field
-		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
-		if (tagger.isUniqueKeyField)
-		{
-			fields.append(fieldList.uniqueKey.name);
-		}
-		else
-		{
-			fields.append("uniqueIdentifier");
-		}
-		if (fieldList.uniqueKey.type.equals(String.class))
-		{
-			values.append("'" + fieldList.uniqueKey.value + "'");
-		}
-		else
-		{
-			values.append(fieldList.uniqueKey.value);
-		}
-
-		Iterator<Pair<String, String>> itr = fieldValueMap.iterator();
+		Iterator<Pair<String, String>> itr = list.iterator();
 		Pair<String, String> pair;
+		boolean isfirst = true;
 		while (itr.hasNext())
 		{
 			pair = itr.next();
-			fields.append(", " + pair.getFirst());
-			values.append(", ");
-			if (pair.getSecond().getClass().equals(String.class))
+
+			if (isfirst)
 			{
-				values.append("'" + pair.getSecond() + "'");
+				isfirst = !isfirst;
+				fields.append("\""+pair.getFirst()+"\"");
 			}
 			else
 			{
-				values.append(pair.getSecond());
+				fields.append(", \"" + pair.getFirst()+"\"");
+				values.append(", ");
 			}
+
+			if (pair.getSecond().getClass().equals(String.class))
+				values.append("'" + pair.getSecond() + "'");
+			else
+				values.append(pair.getSecond());
+
 		}
 		fields.append(')');
 		values.append(')');
 
 		query.append(fields.toString() + " VALUES " + values.toString());
 
+		// add statement to list.
 		return query.toString();
+	}
+
+	private ArrayList<String> generateMultiValInsertBatch(TypeData data)
+	{
+		ArrayList<String> statements = new ArrayList<String>();
+
+		TypeMultiValInfo info = (TypeMultiValInfo) DataStorageManager.getInfoForType(data.getContainer());
+		ITypeInfo entryInfo = info.getEntryInfo();
+
+		for (Object dat : data.getAllValues())
+			statements.addAll(generateInsertBatch(entryInfo, (TypeData) dat));
+
+		return statements;
 	}
 
 	/**
@@ -363,58 +506,77 @@ public class SQLDataDriver extends DataDriver
 	 * only be top-level types that need to be stored, such as PlayerInfo and
 	 * Zones. Points, WorldPoints and other "simple" types that are contained
 	 * within the top-level types will be unrolled automatically.
-	 * 
 	 * @param type
 	 * @return
 	 */
-	private boolean createTable(Class type)
+	private boolean createTable(ClassContainer type)
 	{
-		boolean isSuccess = false;
+		if (classTableChecked.contains(type.getName()))
+			return false;
 
-		TypeTagger tagger = DataStorageManager.getTaggerForType(type);
-		HashMap<String, Class> fields = tagger.getFieldToTypeMap();
+		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
+		String[] fields = tagger.getFieldList();
 		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
-		String keyClause = null;
+		String keyClause = "";
 
-		for (Entry<String, Class> entry : fields.entrySet())
-		{
-			tableFields.addAll(fieldToColumns(entry.getKey(), entry.getValue()));
-		}
+		boolean isMulti = tagger instanceof TypeMultiValInfo;
 
-		if (tagger.isUniqueKeyField)
+		//if its multi, add the UID thing. 
+		if (isMulti)
 		{
-			keyClause = "PRIMARY KEY (" + tagger.uniqueKey + ")";
+			tableFields.add(new Pair<String, String>(MULTI_MARKER, "VARCHAR(100)"));
+
+			TypeEntryInfo info = ((TypeMultiValInfo) tagger).getEntryInfo();
+
+			for (String name : fields)
+			{
+				tableFields.addAll(fieldToColumns(info, name, name));
+			}
 		}
 		else
 		{
-			// Is a method. Extra field required.
-			tableFields.add(new Pair<String, String>("uniqueIdentifier", "TEXT"));
-			keyClause = "PRIMARY KEY (uniqueIdentifier)";
+			for (String name : fields)
+			{
+				tableFields.addAll(fieldToColumns(tagger, name, name));
+			}
+		}
+
+		// no saving the UniqueKey if its a MultiVal thing.
+		if (!isMulti)
+		{
+			tableFields.add(new Pair<String, String>(UNIQUE, "VARCHAR(100)"));
+			keyClause = "PRIMARY KEY (\"" + UNIQUE + "\")";
 		}
 
 		// Build up the create statement
-		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + type.getSimpleName() + " (");
+		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + type.getFileSafeName() + " (");
 		for (Pair<String, String> pair : tableFields)
 		{
-			tableCreate.append(pair.getFirst() + " " + pair.getSecond() + ", ");
+			tableCreate.append("\""+pair.getFirst() + "\" " + pair.getSecond() + ", ");
 		}
-		// Add primary key clause.
-		tableCreate.append(keyClause + ")");
+
+		if (isMulti)
+			tableCreate.replace(tableCreate.lastIndexOf(","), tableCreate.length(), ")");
+		else
+			// Add primary key clause.
+			tableCreate.append(keyClause + ")");
 
 		try
 		{
 			// Attempt to execute the statement.
 			Statement s = dbConnection.createStatement();
 			s.execute(tableCreate.toString());
-
-			isSuccess = true;
 		}
 		catch (Exception e)
 		{
+			OutputHandler.exception(Level.SEVERE, "Failed to create table for " + type.getName(), e);
 			e.printStackTrace();
+			return false;
 		}
 
-		return isSuccess;
+		classTableChecked.add(type.getName());
+
+		return true;
 	}
 
 	/**
@@ -422,54 +584,74 @@ public class SQLDataDriver extends DataDriver
 	 * pairs, ideal for creating new tables with. Complex type fields are broken
 	 * down into constituent primitives in the form of:
 	 * "parentField_childFieldName"
-	 * 
-	 * @param fieldName
-	 * Name of saved field
-	 * @param type
-	 * Type of saved field
+	 * @param columnName Name of saved field
+	 * @param type Type of saved field
 	 * @return Array of field => H2 type names.
 	 */
-	private ArrayList<Pair<String, String>> fieldToColumns(String fieldName, Class type)
+	private ArrayList<Pair<String, String>> fieldToColumns(ITypeInfo info, String columnName, String field)
 	{
 		ArrayList<Pair<String, String>> fields = new ArrayList<Pair<String, String>>();
+		ClassContainer con = info.getTypeOfField(field);
+		Class type = con.getType();
 
-		if (!TypeTagger.isTypeComplex(type))
+		if (!StorageManager.isTypeComplex(con))
 		{
-			if (type.equals(int.class) || type.equals(Integer.class) || type.equals(boolean.class) || type.equals(Boolean.class))
+			if (type.equals(int.class) || type.equals(Integer.class))
 			{
-				fields.add(new Pair<String, String>(fieldName, "INT"));
+				fields.add(new Pair<String, String>(columnName, "INT"));
 			}
-			else if (type.equals(float.class) || type.equals(Float.class) || type.equals(double.class) || type.equals(Double.class))
+			else if (type.equals(byte.class) || type.equals(Byte.class))
 			{
-				fields.add(new Pair<String, String>(fieldName, "DOUBLE"));
+				fields.add(new Pair<String, String>(columnName, "TINYINT"));
+			}
+			else if (type.equals(boolean.class) || type.equals(Boolean.class))
+			{
+				fields.add(new Pair<String, String>(columnName, "BOOLEAN"));
+			}
+			else if (type.equals(double.class) || type.equals(Double.class))
+			{
+				fields.add(new Pair<String, String>(columnName, "DOUBLE"));
+			}
+			else if (type.equals(float.class) || type.equals(Float.class))
+			{
+				fields.add(new Pair<String, String>(columnName, "FLOAT"));
 			}
 			else if (type.equals(String.class))
 			{
-				fields.add(new Pair<String, String>(fieldName, "VARCHAR(255)"));
+				fields.add(new Pair<String, String>(columnName, "VARCHAR(255)"));
 			}
-			else if (type.equals(double[].class) || type.equals(int[].class) || type.equals(boolean[].class) || type.equals(String[].class))
+			else if (type.equals(double[].class) || type.equals(int[].class) || type.equals(boolean[].class) || type.equals(String[].class) || type.equals(Byte[].class))
 			{
 				// We are going to roll arrays up into arbitrary long text
 				// fields.
-				fields.add(new Pair<String, String>(fieldName, "TEXT"));
+				fields.add(new Pair<String, String>(columnName, "TEXT"));
 			}
 			else
 			{
 				// Unsupported. This will probably be crazy.
-				fields.add(new Pair<String, String>(fieldName, "BLOB"));
+				fields.add(new Pair<String, String>(columnName, "BLOB"));
 			}
 		}
 		else
 		{
 			// Complex type we can't handle.
-			TypeTagger tagger = DataStorageManager.getTaggerForType(type);
-			Iterator<Entry<String, Class>> iterator = tagger.fieldToTypeMap.entrySet().iterator();
+			ITypeInfo tagger = info.getInfoForField(field);
 
-			// Iterate over the stored fields. Recurse if nessecary.
-			while (iterator.hasNext())
+			if (tagger instanceof TypeMultiValInfo || !tagger.canSaveInline())
 			{
-				Entry<String, Class> entry = iterator.next();
-				fields.addAll(fieldToColumns(fieldName + separationString + entry.getKey(), entry.getValue()));
+				// special stuff for Multivals. this will be a key going to a different table.
+				createTable(con);
+				fields.add(new Pair<String, String>(columnName + "_" + MULTI_MARKER, "VARCHAR(255)"));
+			}
+			else
+			{
+				// some other complex type.
+				String[] fieldList = tagger.getFieldList();
+
+				// Iterate over the stored fields. Recurse if nessecary.
+				for (String name : fieldList)
+					fields.addAll(fieldToColumns(tagger, columnName + SEPERATOR + name, name));
+
 			}
 		}
 
@@ -479,23 +661,22 @@ public class SQLDataDriver extends DataDriver
 	/**
 	 * Generates an array of fieldname => String(Value) pairs, useful for
 	 * Inserts, Updates, or Deletes.
-	 * 
-	 * @param fieldName
-	 * Name of the field in the H2 DB
-	 * @param type
-	 * Type of field (Java)
+	 * @param fieldName Name of the field in the H2 DB
+	 * @param cType Type of field (Java)
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */
-	private ArrayList<Pair<String, String>> fieldToValues(String fieldName, Class type, Object value)
+	private ArrayList<Pair> fieldToValues(String fieldName, ClassContainer type, Object value)
 	{
-		ArrayList<Pair<String, String>> data = new ArrayList<Pair<String, String>>();
+		ArrayList<Pair> data = new ArrayList<Pair>();
 
-		if (type.equals(Integer.class) || type.equals(Boolean.class) || type.equals(Float.class) || type.equals(Double.class) || type.equals(String.class))
+		Class cType = type.getType();
+
+		if (cType.equals(Integer.class) || cType.equals(Boolean.class) || cType.equals(Float.class) || cType.equals(Double.class) || cType.equals(String.class))
 		{
 			data.add(new Pair(fieldName, value.toString()));
 		}
-		else if (type.equals(double[].class) && ((double[]) value).length > 0)
+		else if (cType.equals(double[].class) && ((double[]) value).length > 0)
 		{
 			double[] arr = (double[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -506,7 +687,7 @@ public class SQLDataDriver extends DataDriver
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
-		else if (type.equals(int[].class) && ((int[]) value).length > 0)
+		else if (cType.equals(int[].class) && ((int[]) value).length > 0)
 		{
 			int[] arr = (int[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -517,7 +698,7 @@ public class SQLDataDriver extends DataDriver
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
-		else if (type.equals(boolean[].class) && ((boolean[]) value).length > 0)
+		else if (cType.equals(boolean[].class) && ((boolean[]) value).length > 0)
 		{
 			boolean[] arr = (boolean[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -528,7 +709,7 @@ public class SQLDataDriver extends DataDriver
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
-		else if (type.equals(String[].class) && ((String[]) value).length > 0)
+		else if (cType.equals(String[].class) && ((String[]) value).length > 0)
 		{
 			String[] arr = (String[]) value;
 			StringBuilder tempStr = new StringBuilder();
@@ -539,14 +720,26 @@ public class SQLDataDriver extends DataDriver
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
-		else if (type.equals(TaggedClass.class))
+		else if (value.getClass().equals(TypeData.class))
 		{
 			// Tricky business involving recursion.
-			TaggedClass tc = (TaggedClass) value;
+			TypeData tc = (TypeData) value;
+			ITypeInfo info = DataStorageManager.getInfoForType(type);
 
-			for (SavedField f : tc.TaggedMembers.values())
+			if (info instanceof TypeMultiValInfo || !info.canSaveInline())
 			{
-				data.addAll(fieldToValues(fieldName + separationString + f.name, f.type, f.value));
+				// special stuff for Multivals. this will be a key going to a different table.
+				data.add(new Pair(fieldName + "_" + MULTI_MARKER, tc.getUniqueKey()));
+
+				// this will be removed what all the MultiVal ones are collected.
+				data.add(new Pair(fieldName + "_" + MULTI_MARKER, tc));
+			}
+			else
+			{
+				for (Entry<String, Object> f : tc.getAllFields())
+				{
+					data.addAll(fieldToValues(fieldName + SEPERATOR + f.getKey(), info.getTypeOfField(f.getKey()), f.getValue()));
+				}
 			}
 		}
 		else
@@ -558,35 +751,45 @@ public class SQLDataDriver extends DataDriver
 	}
 
 	// Transforms the raw DB type back into a Java object.
-	private Object valueToField(Class targetType, Object dbValue)
+	private Object valueToField(ClassContainer targetType, Object dbValue) throws SQLException
 	{
 		Object value = null;
-		if (targetType.equals(int.class))
+
+		if (targetType == null)
+			return null;
+
+		Class type = targetType.getType();
+		if (type.equals(int.class))
 		{
 			// DB Value is an integer
-			value = dbValue;
+			value = (Integer) dbValue;
 		}
-		else if (targetType.equals(double.class))
+		if (type.equals(byte.class))
+		{
+			// DB Value is an Integer
+			value = ((Integer) dbValue).byteValue();
+		}
+		else if (type.equals(double.class))
 		{
 			// DB Value is a double
 			value = dbValue;
 		}
-		else if (targetType.equals(float.class))
+		else if (type.equals(float.class))
 		{
 			// DB value is a Double.
-			value = ((Double) dbValue).floatValue();
+			value = dbValue;
 		}
-		else if (targetType.equals(String.class))
+		else if (type.equals(String.class))
 		{
 			// DB Value is a string
 			value = dbValue;
 		}
-		else if (targetType.equals(boolean.class))
+		else if (type.equals(boolean.class))
 		{
 			// DB Value is an integer (1=true, 0=false)
 			value = ((Integer) dbValue).equals(1);
 		}
-		else if (targetType.equals(double[].class))
+		else if (type.equals(double[].class))
 		{
 			// DB value is a string representing an array of doubles, separated
 			// by ','
@@ -599,7 +802,7 @@ public class SQLDataDriver extends DataDriver
 			}
 			value = result;
 		}
-		else if (targetType.equals(int[].class))
+		else if (type.equals(int[].class))
 		{
 			// DB value is a string representing an array of integers, separated
 			// by ','
@@ -612,7 +815,20 @@ public class SQLDataDriver extends DataDriver
 			}
 			value = result;
 		}
-		else if (targetType.equals(boolean[].class))
+		else if (type.equals(byte[].class))
+		{
+			// DB value is a string representing an array of integers, separated
+			// by ','
+			String[] values = ((String) dbValue).split(",");
+			byte[] result = new byte[values.length];
+
+			for (int i = 0; i < values.length; ++i)
+			{
+				result[i] = Byte.valueOf(values[i]).byteValue();
+			}
+			value = result;
+		}
+		else if (type.equals(boolean[].class))
 		{
 			// DB value is a string representing an array of booleans, separated
 			// by ','
@@ -625,7 +841,7 @@ public class SQLDataDriver extends DataDriver
 			}
 			value = result;
 		}
-		else if (targetType.equals(String[].class))
+		else if (type.equals(String[].class))
 		{
 			// DB value is a string representing an array of strings, separated
 			// by '!??!'
@@ -638,6 +854,39 @@ public class SQLDataDriver extends DataDriver
 				values[i] = values[i].replaceAll("\"\"", "'");
 			}
 			value = values;
+		}
+		else
+		{
+			// for small things like this...
+			ITypeInfo info = DataStorageManager.getInfoForType(targetType);
+			if (!info.canSaveInline())
+			{
+				TypeMultiValInfo multiInfo = (TypeMultiValInfo) info;
+				String ID = dbValue.toString();
+				ID = TypeMultiValInfo.getUIDFromUnique(ID);
+
+				Statement s = dbConnection.createStatement();
+				ResultSet result = s.executeQuery("SELECT * FROM " + targetType.getFileSafeName() + " WHERE " + MULTI_MARKER + "='" + ID + "'");
+
+				TypeData data = DataStorageManager.getDataForType(targetType);
+
+				TypeEntryInfo entryInfo = multiInfo.getEntryInfo();
+				String connector = multiInfo.getEntryName();
+
+				// ResultSet initially sits just before first result.
+				TypeData temp;
+				int i = 0;
+				while (result.next())
+				{
+					temp = DataStorageManager.getDataForType(info.getType());
+					createTaggedClassFromResult(resultRowToMap(result), entryInfo, data);
+					data.putField(connector + (i++), temp);
+				}
+
+				value = data;
+			}
+
+			// anything else?
 		}
 		return value;
 	}

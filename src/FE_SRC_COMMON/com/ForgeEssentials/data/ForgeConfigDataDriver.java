@@ -1,13 +1,18 @@
 package com.ForgeEssentials.data;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 
 import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.TypeData;
+import com.ForgeEssentials.api.data.ITypeInfo;
 
 /**
  * Storage driver for filesystem (flat-file) persistence.
@@ -25,11 +30,11 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	}
 
 	@Override
-	protected boolean saveData(Class type, TaggedClass objectData)
+	protected boolean saveData(ClassContainer type, TypeData objectData)
 	{
 		boolean wasSuccessful = false;
 
-		File file = getFilePath(type, objectData.uniqueKey.value);
+		File file = getFilePath(type, objectData.getUniqueKey());
 
 		// Wipe existing Forge Configuration file - they don't take new data.
 		if (file.exists())
@@ -39,10 +44,9 @@ public class ForgeConfigDataDriver extends TextDataDriver
 
 		Configuration cfg = new Configuration(file, true);
 
-		for (SavedField field : objectData.TaggedMembers.values())
-		{
-			writeFieldToProperty(cfg, type.getSimpleName(), field);
-		}
+		// write each and every field to the config file.
+		for (Entry<String, Object> entry : objectData.getAllFields())
+			writeFieldToProperty(cfg, type.getFileSafeName(), entry.getKey(), entry.getValue());
 
 		cfg.save();
 
@@ -50,23 +54,28 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	}
 
 	@Override
-	protected TaggedClass loadData(Class type, Object uniqueKey)
+	protected TypeData loadData(ClassContainer type, String uniqueKey)
 	{
-		Configuration cfg = new Configuration(getFilePath(type, uniqueKey), true);
+		File file = getFilePath(type, uniqueKey);
+		
+		if (!file.exists())
+			return null;
+		
+		Configuration cfg = new Configuration(file, true);
 		cfg.load();
-		TypeTagger tag = DataStorageManager.getTaggerForType(type);
-
-		TaggedClass data = readClassFromProperty(cfg, cfg.categories.get(type.getSimpleName()), type);
-		data.addField(new SavedField(tag.uniqueKey, uniqueKey));
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		TypeData data = DataStorageManager.getDataForType(type);
+		readClassFromProperty(cfg, cfg.categories.get(type.getFileSafeName()), data, info);
+		data.setUniqueKey(uniqueKey);
 
 		return data;
 	}
 
 	@Override
-	protected TaggedClass[] loadAll(Class type)
+	protected TypeData[] loadAll(ClassContainer type)
 	{
 		File[] files = getTypePath(type).listFiles();
-		ArrayList<TaggedClass> data = new ArrayList<TaggedClass>();
+		ArrayList<TypeData> data = new ArrayList<TypeData>();
 
 		if (files != null)
 		{
@@ -79,104 +88,132 @@ public class ForgeConfigDataDriver extends TextDataDriver
 			}
 		}
 
-		return data.toArray(new TaggedClass[] {});
+		return data.toArray(new TypeData[] {});
 	}
 
-	private void writeFieldToProperty(Configuration cfg, String category, SavedField field)
+	private void writeFieldToProperty(Configuration cfg, String category, String name, Object obj)
 	{
-		if (field == null || field.type == null)
+		if (name == null || obj == null)
 		{
-			// ignore.
+			// ignore...
+			return;
 		}
-		else if (field.type.equals(Integer.class))
+		
+		Class type = obj.getClass();
+		
+		if (type.equals(Integer.class))
 		{
-			cfg.get(category, field.name, ((Integer) field.value).intValue());
+			cfg.get(category, name, ((Integer) obj).intValue());
 		}
-		else if (field.type.equals(int[].class))
+		else if (type.equals(Byte.class))
 		{
-			cfg.get(category, field.name, (int[]) field.value);
+			cfg.get(category, name, ((Byte) obj).intValue());
 		}
-		else if (field.type.equals(Float.class))
+		else if (type.equals(int[].class))
 		{
-			cfg.get(category, field.name, ((Float) field.value).floatValue());
+			cfg.get(category, name, (int[]) obj);
 		}
-		else if (field.type.equals(Double.class))
+		else if (type.equals(byte[].class))
 		{
-			cfg.get(category, field.name, ((Double) field.value).doubleValue());
+			int[] array = new int[((byte[])obj).length];
+			
+			for (int i = 0 ; i < ((byte[])obj).length; i++)
+				array[i] = ((byte[])obj)[i];
+			
+			cfg.get(category, name, array);
 		}
-		else if (field.type.equals(double[].class))
+		else if (type.equals(Float.class))
 		{
-			cfg.get(category, field.name, (double[]) field.value);
+			cfg.get(category, name, ((Float) obj).floatValue());
 		}
-		else if (field.type.equals(Boolean.class))
+		else if (type.equals(Double.class))
 		{
-			cfg.get(category, field.name, ((Boolean) field.value).booleanValue());
+			cfg.get(category, name, ((Double) obj).doubleValue());
 		}
-		else if (field.type.equals(boolean[].class))
+		else if (type.equals(double[].class))
 		{
-			cfg.get(category, field.name, (boolean[]) field.value);
+			cfg.get(category, name, (double[]) obj);
 		}
-		else if (field.type.equals(String.class))
+		else if (type.equals(Boolean.class))
 		{
-			cfg.get(category, field.name, (String) field.value);
+			cfg.get(category, name, ((Boolean) obj).booleanValue());
 		}
-		else if (field.type.equals(String[].class))
+		else if (type.equals(boolean[].class))
 		{
-			cfg.get(category, field.name, (String[]) field.value);
+			cfg.get(category, name, (boolean[]) obj);
 		}
-		else if (field.type.equals(TaggedClass.class))
+		else if (type.equals(String.class))
 		{
-			TaggedClass tag = (TaggedClass) field.value;
-			String newcat = category + "." + field.name;
-
-			for (SavedField f : tag.TaggedMembers.values())
-			{
-				writeFieldToProperty(cfg, newcat, f);
-			}
+			cfg.get(category, name, (String) obj);
+		}
+		else if (type.equals(String[].class))
+		{
+			cfg.get(category, name, (String[]) obj);
+		}
+		else if (type.equals(TypeData.class))
+		{
+			TypeData data = (TypeData) obj;
+			String newcat = category + "." + name;
+			
+			for (Entry<String, Object> entry : data.getAllFields())
+				writeFieldToProperty(cfg, newcat, entry.getKey(), entry.getValue());
 		}
 		else
 		{
-			throw new IllegalArgumentException("Cannot save object type.");
+			throw new IllegalArgumentException("Cannot save object type. "+obj.getClass()+"  instance: "+obj);
 		}
 	}
 
-	private Object readFieldFromProperty(Configuration cfg, String category, SavedField field)
+	private Object readFieldFromProperty(Configuration cfg, String category, String name, Class type)
 	{
-		if (field.type.equals(int.class))
+		if (type.equals(int.class))
 		{
-			return cfg.get(category, field.name, 0).getInt();
+			return cfg.get(category, name, 0).getInt();
 		}
-		else if (field.type.equals(int[].class))
+		if (type.equals(byte.class))
 		{
-			return cfg.get(category, field.name, new int[] {}).getIntList();
+			return (byte)cfg.get(category, name, 0).getInt();
 		}
-		else if (field.type.equals(float.class))
+		else if (type.equals(int[].class))
 		{
-			return (float) cfg.get(category, field.name, 0d).getDouble(0);
+			return cfg.get(category, name, new int[] {}).getIntList();
 		}
-		else if (field.type.equals(double.class))
+		else if (type.equals(byte[].class))
 		{
-			return cfg.get(category, field.name, 0d).getDouble(0);
+			int[] array = cfg.get(category, name, new int[] {}).getIntList();
+			byte[] bArray = new byte[array.length];
+			
+			for (int i = 0; i < array.length; i++)
+				bArray[i] = (byte) array[i];
+			return bArray;
 		}
-		else if (field.type.equals(double[].class))
+		else if (type.equals(float.class))
 		{
-			return cfg.get(category, field.name, new double[] {}).getDoubleList();
+			return (float) cfg.get(category, name, 0d).getDouble(0);
 		}
-		else if (field.type.equals(boolean.class))
+		else if (type.equals(double.class))
 		{
-			return cfg.get(category, field.name, false).getBoolean(false);
+			return cfg.get(category, name, 0d).getDouble(0);
 		}
-		else if (field.type.equals(boolean[].class))
+		else if (type.equals(double[].class))
 		{
-			return cfg.get(category, field.name, new boolean[] {}).getBooleanList();
+			return cfg.get(category, name, new double[] {}).getDoubleList();
 		}
-		else if (field.type.equals(String.class))
+		else if (type.equals(boolean.class))
 		{
-			return cfg.get(category, field.name, "").value;
+			return cfg.get(category, name, false).getBoolean(false);
 		}
-		else if (field.type.equals(String[].class))
+		else if (type.equals(boolean[].class))
 		{
-			return cfg.get(category, field.name, new String[] {}).valueList;
+			return cfg.get(category, name, new boolean[] {}).getBooleanList();
+		}
+		else if (type.equals(String.class))
+		{
+			return cfg.get(category, name, "").value;
+		}
+		else if (type.equals(String[].class))
+		{
+			return cfg.get(category, name, new String[] {}).valueList;
 		}
 		else
 		{
@@ -185,32 +222,22 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		}
 	}
 
-	private TaggedClass readClassFromProperty(Configuration cfg, ConfigCategory cat, Class type)
+	private void readClassFromProperty(Configuration cfg, ConfigCategory cat, TypeData data, ITypeInfo info)
 	{
-		TaggedClass data = TaggedClass.getTaggedClass(type);
-		TypeTagger tag = DataStorageManager.getTaggerForType(type);
 
 		if (cat != null)
 		{
-			SavedField field;
-
+			String name;
+			ClassContainer newType;
+			ITypeInfo newInfo;
+			TypeData newData;
+			Object value;
 			for (Property prop : cat.getValues().values())
 			{
-				if (tag.isUniqueKeyField && prop.getName().equals(tag.uniqueKey))
-				{
-					field = new SavedField();
-					field.name = tag.uniqueKey;
-					field.type = tag.getTypeOfField(field.name);
-					field.value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
-					data.uniqueKey = field;
-					continue;
-				}
-
-				field = new SavedField();
-				field.name = prop.getName();
-				field.type = tag.getTypeOfField(field.name);
-				field.value = readFieldFromProperty(cfg, cat.getQualifiedName(), field);
-				data.addField(field);
+				name = prop.getName();
+				newType = info.getTypeOfField(name);
+				value = readFieldFromProperty(cfg, cat.getQualifiedName(), name, newType.getType());
+				data.putField(name, value);
 			}
 
 			for (ConfigCategory child : cfg.categories.values())
@@ -218,21 +245,19 @@ public class ForgeConfigDataDriver extends TextDataDriver
 				if (child.isChild() && child.parent == cat) // intentional use
 															// of ==
 				{
-					field = new SavedField();
-					field.name = child.getQualifiedName().replace(cat.getQualifiedName() + ".", "");
-					field.type = tag.getTypeOfField(field.name);
+					name = child.getQualifiedName().replace(cat.getQualifiedName() + ".", "");
+					newInfo = info.getInfoForField(name);
+					newData = DataStorageManager.getDataForType(newInfo.getType());
 
-					if (field.type == null)
+					if (newData == null || newInfo == null)
 					{
 						continue;
 					}
-
-					field.value = readClassFromProperty(cfg, child, field.type);
-					data.addField(field);
+					readClassFromProperty(cfg, child, newData, newInfo);
+					value = newData;
+					data.putField(name, value);
 				}
 			}
 		}
-
-		return data;
 	}
 }

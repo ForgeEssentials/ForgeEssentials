@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
@@ -25,7 +26,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.data.DataDriver;
+import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.permission.mcoverride.OverrideManager;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.google.common.collect.HashMultimap;
@@ -47,7 +48,7 @@ public class ModulePermissions
 	@ModuleDir
 	public static File					permsFolder;
 
-	protected static DataDriver			data;
+	protected static AbstractDataDriver			data;
 
 	// permission registrations here...
 	protected HashMultimap				regPerms;
@@ -75,6 +76,9 @@ public class ModulePermissions
 
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
+		
+		DataStorageManager.registerSaveableType(Zone.class);
+		DataStorageManager.registerSaveableType(AutoPromote.class);
 	}
 
 	@ServerInit
@@ -96,7 +100,7 @@ public class ModulePermissions
 	@ServerPostInit()
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		for(Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(AutoPromote.class))
+		for(Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(new ClassContainer(AutoPromote.class)))
 		{
 			AutoPromote.map.put(((AutoPromote) obj).zone, ((AutoPromote) obj));
 		}
@@ -124,11 +128,12 @@ public class ModulePermissions
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		// save all the zones
+		ClassContainer con = new ClassContainer(Zone.class);
 		for (Zone zone : ZoneManager.getZoneList())
 		{
 			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
 				continue;
-			data.saveObject(zone);
+			data.saveObject(con, zone);
 		}
 		
 		autoPromote.saveAll();
