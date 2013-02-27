@@ -4,7 +4,7 @@ import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 
 @SaveableObject
-public class AreaBase
+public abstract class AreaBase
 {
 	// used for pretty much everything else.
 	@SaveableField
@@ -20,17 +20,6 @@ public class AreaBase
 	 */
 	public AreaBase(Point start, Point end)
 	{
-		Point[] points = getAlignedPoints(start, end);
-		low = points[0];
-		high = points[1];
-	}
-
-	public AreaBase()
-	{
-		
-	}
-	
-	public void setPoints(Point start, Point end) {
 		Point[] points = getAlignedPoints(start, end);
 		low = points[0];
 		high = points[1];
