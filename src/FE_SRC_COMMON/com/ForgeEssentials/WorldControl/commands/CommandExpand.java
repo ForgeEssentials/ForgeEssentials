@@ -261,7 +261,7 @@ public class CommandExpand extends WorldControlCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.selection";
+		return "ForgeEssentials.WorldControl.commands.selectionmanipulate";
 	}
 
 }

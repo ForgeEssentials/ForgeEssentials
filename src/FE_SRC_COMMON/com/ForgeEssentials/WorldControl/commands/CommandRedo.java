@@ -17,12 +17,6 @@ public class CommandRedo extends WorldControlCommandBase
 	{
 		super(true);
 	}
-	
-	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.WorldControl.backup";
-	}
 
 	@Override
 	public String getName()

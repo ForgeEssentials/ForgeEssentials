@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
+import com.ForgeEssentials.WorldControl.BlockArray;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.util.BackupArea;
-import com.ForgeEssentials.util.BlockArray;
 import com.ForgeEssentials.util.BlockSaveable;
 import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.OutputHandler;

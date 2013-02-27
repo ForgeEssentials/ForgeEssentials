@@ -1,7 +1,6 @@
 package com.ForgeEssentials.WorldControl;
 
 //Depreciated
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
@@ -19,13 +18,11 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -55,7 +52,7 @@ public class WandController implements ITickHandler
 				int y = mouseOverBlock.blockY;
 				int z = mouseOverBlock.blockZ;
 				int side = mouseOverBlock.sideHit;
-				event.setCanceled(rightClick(player, x, y, z, side, player.getDistance(x, y, z)<5F?true:false));
+				event.setCanceled(rightClick(player, x, y, z, side, player.getDistance(x, y, z)<4.8F?true:false));
 			}
 		}
 		if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
@@ -76,7 +73,7 @@ public class WandController implements ITickHandler
 			int y = mouseOverBlock.blockY;
 			int z = mouseOverBlock.blockZ;
 			int side = mouseOverBlock.sideHit;
-			if(player.getDistance(x, y, z)>=5F)leftClick(player, x, y, z, side, false);
+			if(player.getDistance(x, y, z)<=4.8F)leftClick(player, x, y, z, side, false);
 		}
 
 	}
@@ -103,23 +100,10 @@ public class WandController implements ITickHandler
 			}else if(item.getItem() instanceof ItemBlock&&!inReach) {
 				ItemBlock block = (ItemBlock) item.getItem();
 				if(canPlaceItemBlockOnSide(player.worldObj, x, y, z, side, player, item, block) && player.capabilities.isCreativeMode) {
-					PermQueryPlayerArea query = new PermQueryPlayerArea(player, "ForgeEssentials.WorldControl.longreach", new AreaBase(new Point(x, y, z), new Point(x, y, z)), false);
-					PermResult result = PermissionsAPI.checkPermResult(query);
-					if(result==PermResult.ALLOW) {
-						if(block.placeBlockAt(item, player, player.worldObj, ix, iy, iz, side, x, y, z, item.getItemDamage())){
-							if(!player.capabilities.isCreativeMode) {
-								player.inventory.consumeInventoryItem(item.itemID);
-								return true;
-							}
-						}
-					}else if(result==PermResult.PARTIAL) {
-						if(isApplicable(x, y, z, query.applicable)) {
-							if(block.placeBlockAt(item, player, player.worldObj, ix, iy, iz, side, x, y, z, item.getItemDamage())){
-								if(!player.capabilities.isCreativeMode) {
-									player.inventory.consumeInventoryItem(item.itemID);
-									return true;
-								}
-							}
+					if(block.placeBlockAt(item, player, player.worldObj, ix, iy, iz, side, x, y, z, item.getItemDamage())){
+						if(!player.capabilities.isCreativeMode) {
+							player.inventory.consumeInventoryItem(item.itemID);
+							return true;
 						}
 					}
 				}
@@ -147,42 +131,12 @@ public class WandController implements ITickHandler
 				info.setPoint1(new Point(x, y, z));
 				player.addChatMessage(FEChatFormatCodes.PURPLE + "Pos1 set to " + x + ", " + y + ", " + z);
 				return true;
-			}else if(player.capabilities.isCreativeMode&&!inReach){
-				PermQueryPlayerArea query = new PermQueryPlayerArea(player, "ForgeEssentials.WorldControl.longreach", new AreaBase(new Point(x, y, z), new Point(x, y, z)), false);
-				PermResult result = PermissionsAPI.checkPermResult(query);
-				if(result==PermResult.ALLOW) {
-					player.worldObj.setBlockWithNotify(x, y, z, 0);
-				}else if(result==PermResult.PARTIAL) {
-					if(isApplicable(x, y, z, query.applicable)) {
-						player.worldObj.setBlockWithNotify(x, y, z, 0);
-					}
-				}
+			}else if(player.capabilities.isCreativeMode&&inReach){
+				player.worldObj.setBlockWithNotify(x, y, z, 0);
 				return true;
 			}
 		}
 		return false;
-	}
-	
-	private static boolean isApplicable(int x, int y, int z, ArrayList<AreaBase> applicable)
-	{
-		Point p = new Point(x, y, z);
-		if (applicable == null)
-		{
-			return true;
-		}
-
-		boolean contains = false;
-
-		for (AreaBase area : applicable)
-		{
-			contains = area.contains(p);
-			if (contains)
-			{
-				return true;
-			}
-		}
-
-		return contains;
 	}
 	
 	public static boolean canPlaceItemBlockOnSide(World par1World, int par2, int par3, int par4, int par5, EntityPlayer par6EntityPlayer, ItemStack par7ItemStack, ItemBlock ib)

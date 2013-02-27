@@ -52,7 +52,7 @@ public class CommandChunk extends WorldControlCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.selection";
+		return "ForgeEssentials.WorldControl.commands.pos";
 	}
 
 }

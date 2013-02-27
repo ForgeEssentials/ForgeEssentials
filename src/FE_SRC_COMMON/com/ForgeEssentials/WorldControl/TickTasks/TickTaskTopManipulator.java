@@ -40,12 +40,8 @@ public class TickTaskTopManipulator extends TickTaskLoadBlocks
 		int belowID = world.getBlockId(x, y-1, z);
 		boolean blockAbove = false;
 		boolean blockBelow = false;
-		if(Block.blocksList[aboveID]!=null)  blockAbove = true;
-		if(Block.blocksList[belowID]!=null)  blockBelow = true;
-		boolean blockAboveOpaque = blockAbove;
-		boolean blockBelowOpaque = blockBelow;
-		if(blockAbove && Block.blocksList[aboveID].isOpaqueCube())  blockAboveOpaque = true;
-		if(blockBelow && Block.blocksList[belowID].isOpaqueCube())  blockBelowOpaque = true;
+		if(Block.blocksList[aboveID]!=null&&!Block.blocksList[aboveID].isOpaqueCube())  blockAbove = true;
+		if(Block.blocksList[belowID]!=null&&!Block.blocksList[belowID].isOpaqueCube())  blockBelow = true;
 		switch (effectMode)
 		{
 			case THAW:
@@ -59,20 +55,20 @@ public class TickTaskTopManipulator extends TickTaskLoadBlocks
 				}
 				break;
 			case FREEZE:
-				if (blockID == Block.waterMoving.blockID || blockID == Block.waterStill.blockID && (!blockAboveOpaque && aboveID!=9 && aboveID!=10))
+				if (blockID == Block.waterMoving.blockID || blockID == Block.waterStill.blockID && !blockAbove)
 				{
 					return place(x, y, z, Block.ice.blockID, 0);
 				}
 				break;
 			case SNOW:
 				if (blockID == 0) {
-					if(blockBelow && (blockBelowOpaque || Block.blocksList[belowID].isLeaves(world, x, y, z))) {
+					if(blockBelow) {// && (!Block.blocksList[belowID].isOpaqueCube() || Block.blocksList[belowID].isLeaves(world, x, y, z))) {
 						return place(x, y, z, Block.snow.blockID, 0);
 					}
 				}
 				break;
 			case TILL:
-				if ((blockID == Block.dirt.blockID || blockID == Block.grass.blockID) && !blockAboveOpaque)
+				if ((blockID == Block.dirt.blockID || blockID == Block.grass.blockID) && !blockAbove)
 				{
 					return place(x, y, z, Block.tilledField.blockID, 0);
 				}
@@ -84,7 +80,7 @@ public class TickTaskTopManipulator extends TickTaskLoadBlocks
 				}
 				break;
 			case GREEN:
-				if (blockID == Block.dirt.blockID && !blockAboveOpaque)
+				if (blockID == Block.dirt.blockID && !blockAbove)
 				{
 					return place(x, y, z, Block.grass.blockID, 0);
 				}
