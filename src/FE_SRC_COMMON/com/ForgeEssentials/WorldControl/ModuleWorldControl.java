@@ -8,10 +8,7 @@ import net.minecraftforge.common.MinecraftForge;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
 import com.ForgeEssentials.WorldControl.commands.CommandChunk;
 import com.ForgeEssentials.WorldControl.commands.CommandContract;
-import com.ForgeEssentials.WorldControl.commands.CommandCount;
 import com.ForgeEssentials.WorldControl.commands.CommandDeselect;
-import com.ForgeEssentials.WorldControl.commands.CommandDim;
-import com.ForgeEssentials.WorldControl.commands.CommandDistr;
 import com.ForgeEssentials.WorldControl.commands.CommandExpand;
 import com.ForgeEssentials.WorldControl.commands.CommandPos;
 import com.ForgeEssentials.WorldControl.commands.CommandRedo;
@@ -33,10 +30,10 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
+//import com.ForgeEssentials.WorldControl.weintegration.WEIntegration;
 
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
-//import com.ForgeEssentials.WorldControl.weintegration.WEIntegration;
 
 // central class for all the WorldControl stuff
 @FEModule(name = "WorldControl", parentMod = ForgeEssentials.class, configClass = ConfigWorldControl.class)
@@ -99,9 +96,6 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandExpand());
 		e.registerServerCommand(new CommandContract());
 		e.registerServerCommand(new CommandShift());
-		e.registerServerCommand(new CommandCount());
-		e.registerServerCommand(new CommandDistr());
-		e.registerServerCommand(new CommandDim());
 		// WEIntegration.serverStarting(e);
 	}
 }
