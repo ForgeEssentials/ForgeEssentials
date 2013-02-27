@@ -157,12 +157,8 @@ public class BlockInfo
 			if(Item.itemsList[block.blockID]==null)continue;
 			for(int m = 0;m<(hasMeta?16:1);m++) {
 				ItemStack is = new ItemStack(block, 0, m);
-				try{
-					String nam = FunctionHelper.getNameFromItemStack(is).toLowerCase().replace(" ", "").replace(".","");
-					if(nam.equals(revised))return new SingularBlockInfo(block, m, null);
-				}catch(IndexOutOfBoundsException e){
-					
-				}
+				String nam = FunctionHelper.getNameFromItemStack(is).toLowerCase().replace(" ", "").replace(".","");
+				if(nam.equals(revised))return new SingularBlockInfo(block, m, null);
 			}
 		}
 		return null;
