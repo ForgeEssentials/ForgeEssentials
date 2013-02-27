@@ -14,7 +14,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName()
 	{
-		return "deselect";
+		return "fedesel";
 	}
 
 	@Override

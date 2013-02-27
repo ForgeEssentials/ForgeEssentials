@@ -12,6 +12,7 @@ import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEDebug;
 import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
+import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.core.commands.selections.CommandDeselect;
 import com.ForgeEssentials.core.commands.selections.CommandPos;
 import com.ForgeEssentials.core.commands.selections.CommandWand;
@@ -103,6 +104,8 @@ public class ForgeEssentials
 
 	private SanityChecker			bc;
 	public static boolean			sanitycheck;
+	
+	private CoreCommands cmds;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -194,15 +197,9 @@ public class ForgeEssentials
 
 		// Central TP system
 		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
-
-		e.registerServerCommand(new CommandFEVersion());
-		e.registerServerCommand(new CommandFECredits());
-		e.registerServerCommand(new CommandFEReload());
-		e.registerServerCommand(new CommandFEDebug());
-		e.registerServerCommand(new CommandPos(1));
-		e.registerServerCommand(new CommandPos(2));
-		e.registerServerCommand(new CommandWand());
-		e.registerServerCommand(new CommandDeselect());
+		
+		cmds = new CoreCommands();
+		cmds.load(e);
 
 		// do modules last... just in case...
 		mdlaunch.serverStarting(e);
