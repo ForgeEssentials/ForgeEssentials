@@ -72,13 +72,10 @@ public class TickTaskDistribution extends TickTaskLoadBlocks
 	}
 	
 	protected boolean placeBlock() {
-		if(isApplicable(x, y, z)) {
-			int id = world.getBlockId(x, y, z);
-			int m = world.getBlockMetadata(x, y, z);
-			PooledInfo.addToPool(id, m);
-			return true;
-		}
-		return false;
+		int id = world.getBlockId(x, y, z);
+		int m = world.getBlockMetadata(x, y, z);
+		PooledInfo.addToPool(id, m);
+		return true;
 	}
 	
 	protected void sendCompleteMessage() {

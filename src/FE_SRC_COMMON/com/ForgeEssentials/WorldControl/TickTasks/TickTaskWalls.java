@@ -37,7 +37,7 @@ public class TickTaskWalls extends TickTaskLoadBlocks
 	
 	protected boolean placeBlock() {
 		if(x==sel.getLowPoint().x||x==sel.getHighPoint().x||z==sel.getLowPoint().z||z==sel.getHighPoint().z) {
-			if(isApplicable(x, y, z))return place(x, y, z, to);
+			return place(x, y, z, to);
 		}
 		return false;
 	}

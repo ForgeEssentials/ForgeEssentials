@@ -37,7 +37,7 @@ public class TickTaskRoof extends TickTaskLoadBlocks
 	
 	protected boolean placeBlock() {
 		if(y==sel.getHighPoint().y) {
-			if(isApplicable(x, y, z))return place(x, y, z, to);
+			return place(x, y, z, to);
 		}
 		return false;
 	}

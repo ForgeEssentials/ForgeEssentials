@@ -38,9 +38,9 @@ public class TickTaskCountSelection extends TickTaskLoadBlocks
 	protected boolean placeBlock() {
 		int id = world.getBlockId(x, y, z);
 		int m = world.getBlockMetadata(x, y, z);
-		if (from.compare(new BlockInfo.SingularBlockInfo(Block.blocksList[id], m, null)))
+		if (from.compare(new BlockInfo.SingularBlockInfo(Block.blocksList[id], m, null)) && isApplicable(x, y, z))
 		{
-			if(isApplicable(x, y, z))return true;
+			return true;
 		}
 		return false;
 	}

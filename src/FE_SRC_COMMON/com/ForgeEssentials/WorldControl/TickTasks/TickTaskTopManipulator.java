@@ -1,7 +1,5 @@
 package com.ForgeEssentials.WorldControl.TickTasks;
 
-import java.util.ArrayList;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -36,18 +34,7 @@ public class TickTaskTopManipulator extends TickTaskLoadBlocks
 		effectMode = mode;
 	}
 	
-	private ArrayList<AreaBase> applicable;
-	
-	public TickTaskTopManipulator(EntityPlayer player, AreaBase area, Mode mode, ArrayList<AreaBase> applicable)
-	{
-		this(player, area, mode);
-		this.applicable = applicable;
-	}
-	
 	protected boolean placeBlock() {
-		if(!isApplicable(x, y, z)) {
-			return false;
-		}
 		int blockID = world.getBlockId(x, y, z);
 		int aboveID = world.getBlockId(x, y+1, z);
 		int belowID = world.getBlockId(x, y-1, z);
@@ -104,28 +91,6 @@ public class TickTaskTopManipulator extends TickTaskLoadBlocks
 				break;
 		}
 		return false;
-	}
-	
-	private boolean isApplicable(int x, int y, int z)
-	{
-		Point p = new Point(x, y, z);
-		if (applicable == null)
-		{
-			return true;
-		}
-
-		boolean contains = false;
-
-		for (AreaBase area : applicable)
-		{
-			contains = area.contains(p);
-			if (contains)
-			{
-				return true;
-			}
-		}
-
-		return contains;
 	}
 
 }
