@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.ITaggedClass;
@@ -14,8 +13,6 @@ import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.core.network.PacketSelectionUpdate;
 import com.ForgeEssentials.util.BackupArea;
-import com.ForgeEssentials.util.BlockArray;
-import com.ForgeEssentials.util.BlockArrayBackup;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
@@ -93,12 +90,9 @@ public class PlayerInfo
 	public final String				username;
 
 	// wand stuff
-	@SaveableField()
-	public int						wandID		= Item.axeWood.itemID;
-	@SaveableField()
-	public int						wandDmg		= 0; // -1 specifies any metadata
-	@SaveableField()
-	public boolean					wandEnabled	= true;
+	public int						wandID		= 0;
+	public int						wandDmg		= 0;
+	public boolean					wandEnabled	= false;
 
 	// selection stuff
 	@SaveableField(nullableField = true)
@@ -129,8 +123,8 @@ public class PlayerInfo
 	public int						timePlayed;
 
 	// undo and redo stuff
-	public Stack<BlockArrayBackup> undos = new Stack<BlockArrayBackup>();
-	public Stack<BlockArrayBackup> redos = new Stack<BlockArrayBackup>();
+	private Stack<BackupArea>		undos;
+	private Stack<BackupArea>		redos;
 
 	public int						TPcooldown	= 0;
 	public HashMap<String, Integer>	kitCooldown	= new HashMap<String, Integer>();
@@ -141,6 +135,9 @@ public class PlayerInfo
 		sel2 = null;
 		selection = null;
 		this.username = username;
+
+		undos = new Stack<BackupArea>();
+		redos = new Stack<BackupArea>();
 
 		prefix = "";
 		suffix = "";
@@ -257,33 +254,34 @@ public class PlayerInfo
 	// ------------ Undo/Redo stuff -----------------
 	// ----------------------------------------------
 
-	public void addUndoAction(BlockArrayBackup backup)
+	public void addUndoAction(BackupArea backup)
 	{
 		undos.push(backup);
+		redos.clear();
 	}
 
-	public BlockArray getNextUndo()
+	public BackupArea getNextUndo()
 	{
 		if (undos.empty())
 		{
 			return null;
 		}
 
-		BlockArrayBackup back = undos.pop();
+		BackupArea back = undos.pop();
 		redos.push(back);
-		return back.before;
+		return back;
 	}
 
-	public BlockArray getNextRedo()
+	public BackupArea getNextRedo()
 	{
 		if (redos.empty())
 		{
 			return null;
 		}
 
-		BlockArrayBackup back = redos.pop();
+		BackupArea back = redos.pop();
 		undos.push(back);
-		return back.after;
+		return back;
 	}
 
 	public void clearSelection()
