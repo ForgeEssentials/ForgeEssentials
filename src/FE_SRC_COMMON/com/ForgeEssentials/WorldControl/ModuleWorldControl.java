@@ -6,7 +6,22 @@ import java.util.ArrayList;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
-import com.ForgeEssentials.WorldControl.commands.*;
+import com.ForgeEssentials.WorldControl.commands.CommandChunk;
+import com.ForgeEssentials.WorldControl.commands.CommandContract;
+import com.ForgeEssentials.WorldControl.commands.CommandCount;
+import com.ForgeEssentials.WorldControl.commands.CommandDeselect;
+import com.ForgeEssentials.WorldControl.commands.CommandDim;
+import com.ForgeEssentials.WorldControl.commands.CommandDistr;
+import com.ForgeEssentials.WorldControl.commands.CommandExpand;
+import com.ForgeEssentials.WorldControl.commands.CommandPos;
+import com.ForgeEssentials.WorldControl.commands.CommandRedo;
+import com.ForgeEssentials.WorldControl.commands.CommandReplace;
+import com.ForgeEssentials.WorldControl.commands.CommandSet;
+import com.ForgeEssentials.WorldControl.commands.CommandShift;
+import com.ForgeEssentials.WorldControl.commands.CommandTopManipulate;
+import com.ForgeEssentials.WorldControl.commands.CommandUndo;
+import com.ForgeEssentials.WorldControl.commands.CommandWand;
+import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
@@ -87,9 +102,6 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandCount());
 		e.registerServerCommand(new CommandDistr());
 		e.registerServerCommand(new CommandDim());
-		e.registerServerCommand(new CommandWalls());
-		e.registerServerCommand(new CommandRoof());
-		e.registerServerCommand(new CommandFloor());
 		// WEIntegration.serverStarting(e);
 	}
 }

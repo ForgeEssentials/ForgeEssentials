@@ -52,9 +52,7 @@ public class CommandDistr extends WorldControlCommandBase
 				TickTaskHandler.addTask(new TickTaskDistribution(player, sel, query.applicable));
 			}else{
 				OutputHandler.chatError(player, "You do not have permission!");
-				return;
 			}
-			OutputHandler.chatConfirmation(player, "Starting distribution check.");
 			return;
 		}else{
 			OutputHandler.chatError(player, "Does not take arguments!");

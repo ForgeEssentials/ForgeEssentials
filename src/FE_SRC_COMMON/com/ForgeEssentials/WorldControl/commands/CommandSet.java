@@ -77,7 +77,7 @@ public class CommandSet extends WorldControlCommandBase
 		}
 		else
 		{
-			OutputHandler.chatError(player, "Must specify block identifiers!");
+			error(player);
 		}
 	}
 
