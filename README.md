@@ -34,5 +34,3 @@ FE Team Members:
 
 <a href="https://github.com/Malkerian">Malkerian</a>
 
-<a href="https://github.com/maximumtech">UnknownCoder</a>
-
