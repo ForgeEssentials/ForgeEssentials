@@ -24,7 +24,7 @@ FE Team Members:
 
 <a href="https://github.com/bspkrs">bspkrs</a> (inactive)
 
-<a href="https://github.com/MysteriousAges">MysteriousAges</a>
+<a href="https://github.com/MysteriousAges">MysteriousAges</a> (inactive)
 
 <a href="https://github.com/luacs1998">luacs1998</a>
 
