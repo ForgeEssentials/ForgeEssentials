@@ -21,7 +21,6 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 public class TickTaskLoadBlocks implements ITickTask {
 	
 	EntityPlayer player;
-	PlayerInfo info;
 	World world;
 	AreaBase sel;
 	int last=0;
@@ -110,7 +109,6 @@ public class TickTaskLoadBlocks implements ITickTask {
 	
 	public TickTaskLoadBlocks(EntityPlayer player, AreaBase sel) {
 		this.player = player;
-		this.info = PlayerInfo.getPlayerInfo(player);
 		this.world = player.worldObj;
 		this.sel = sel;
 		currentBlock = sel.getLowPoint();
