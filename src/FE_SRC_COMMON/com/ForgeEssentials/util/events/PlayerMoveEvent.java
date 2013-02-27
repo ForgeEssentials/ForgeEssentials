@@ -1,4 +1,4 @@
-package com.ForgeEssentials.util.event;
+package com.ForgeEssentials.util.events;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.Cancelable;

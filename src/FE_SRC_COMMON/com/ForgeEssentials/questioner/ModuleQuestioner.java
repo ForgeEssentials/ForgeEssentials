@@ -18,10 +18,10 @@ import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
-import com.ForgeEssentials.api.permissions.events.PermissionSetEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.util.DataStorage;
+import com.ForgeEssentials.util.events.PermissionSetEvent;
 
 @FEModule(configClass = ConfigQuestioner.class, name = "QuestionerModule", parentMod = ForgeEssentials.class)
 public class ModuleQuestioner

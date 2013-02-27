@@ -11,9 +11,9 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
-import com.ForgeEssentials.core.customEvents.PlayerBlockBreak;
-import com.ForgeEssentials.core.customEvents.PlayerBlockPlace;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.util.events.PlayerBlockBreak;
+import com.ForgeEssentials.util.events.PlayerBlockPlace;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core.customEvents;
+package com.ForgeEssentials.util.events;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;

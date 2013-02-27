@@ -42,7 +42,7 @@ import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-import com.ForgeEssentials.util.event.ForgeEssentialsEventFactory;
+import com.ForgeEssentials.util.events.ForgeEssentialsEventFactory;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;

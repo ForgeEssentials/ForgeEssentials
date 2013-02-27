@@ -178,7 +178,7 @@ public class FEeventAdder implements IClassTransformer
 				toInject.add(new VarInsnNode(FLOAD, 7));
 				toInject.add(new VarInsnNode(FLOAD, 8));
 				toInject.add(new VarInsnNode(FLOAD, 9));
-				toInject.add(new MethodInsnNode(INVOKESTATIC, "com/ForgeEssentials/core/CustomEventFactory", "onBlockPlace", "(L" + hm.get("itemstackJavaClassName") + ";L" + hm.get("entityPlayerJavaClassName") + ";L" + hm.get("worldJavaClassName")
+				toInject.add(new MethodInsnNode(INVOKESTATIC, "com/ForgeEssentials/util/events/ForgeEssentialsEventFactory", "onBlockPlace", "(L" + hm.get("itemstackJavaClassName") + ";L" + hm.get("entityPlayerJavaClassName") + ";L" + hm.get("worldJavaClassName")
 						+ ";IIIIFFF)Z"));
 				toInject.add(new JumpInsnNode(IFNE, lmm2Node));
 				toInject.add(new InsnNode(ICONST_0));
@@ -271,7 +271,7 @@ public class FEeventAdder implements IClassTransformer
 						toInject.add(new VarInsnNode(ILOAD, mdIndex));
 						toInject.add(new VarInsnNode(ALOAD, 0));
 						toInject.add(new FieldInsnNode(GETFIELD, hm.get("javaClassName"), hm.get("entityPlayerFieldName"), "L" + hm.get("entityPlayerMPJavaClassName") + ";"));
-						toInject.add(new MethodInsnNode(INVOKESTATIC, "com/ForgeEssentials/core/CustomEventFactory", "onBlockHarvested", "(L" + hm.get("worldJavaClassName") + ";IIIL" + hm.get("blockJavaClassName") + ";IL"
+						toInject.add(new MethodInsnNode(INVOKESTATIC, "com/ForgeEssentials/util/events/ForgeEssentialsEventFactory", "onBlockHarvested", "(L" + hm.get("worldJavaClassName") + ";IIIL" + hm.get("blockJavaClassName") + ";IL"
 								+ hm.get("entityPlayerJavaClassName") + ";)Z"));
 						toInject.add(new JumpInsnNode(IFNE, lmm2Node));
 						toInject.add(new InsnNode(ICONST_0));

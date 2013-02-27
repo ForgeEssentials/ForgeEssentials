@@ -11,9 +11,9 @@ import com.ForgeEssentials.api.permissions.IPermissionsHelper;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.api.permissions.events.PermissionSetEvent;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.events.PermissionSetEvent;
 
 public class PermissionsHelper implements IPermissionsHelper
 {

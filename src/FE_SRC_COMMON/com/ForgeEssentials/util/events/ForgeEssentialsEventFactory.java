@@ -1,10 +1,13 @@
-package com.ForgeEssentials.util.event;
+package com.ForgeEssentials.util.events;
 
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -19,6 +22,8 @@ import cpw.mods.fml.common.TickType;
 
 public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 {
+	// TICK STUFF 
+	
 	private HashMap<String, WarpPoint>	befores;
 
 	public ForgeEssentialsEventFactory()
@@ -64,6 +69,8 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 		else
 			befores.put(player.username, current);
 	}
+	
+	// PLAYER TRACKER STUFF
 
 	@Override
 	public void onPlayerLogout(EntityPlayer player)
@@ -98,6 +105,7 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 	{
 	}
 	
+	// ZONE STUFF
 	@ForgeSubscribe
 	public void playerMove(PlayerMoveEvent e)
 	{
@@ -110,5 +118,21 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 			MinecraftForge.EVENT_BUS.post(event);
 			e.setCanceled(event.isCanceled());
 		}
+	}
+	
+	// BLOCK STUFF
+	
+	public static boolean onBlockHarvested(World world, int x, int y, int z, Block block, int metadata, EntityPlayer player)
+	{
+		PlayerBlockBreak ev = new PlayerBlockBreak(world, x, y, z, player);
+		MinecraftForge.EVENT_BUS.post(ev);
+		return !ev.isCanceled();
+	}
+
+	public static boolean onBlockPlace(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitx, float hity, float hitz)
+	{
+		PlayerBlockPlace ev = new PlayerBlockPlace(itemStack, player, world, x, y, z, side, hitx, hity, hitz);
+		MinecraftForge.EVENT_BUS.post(ev);
+		return !ev.isCanceled();
 	}
 }

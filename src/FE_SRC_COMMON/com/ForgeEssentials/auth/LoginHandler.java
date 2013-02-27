@@ -7,7 +7,7 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.event.PlayerMoveEvent;
+import com.ForgeEssentials.util.events.PlayerMoveEvent;
 
 import cpw.mods.fml.common.IPlayerTracker;
 

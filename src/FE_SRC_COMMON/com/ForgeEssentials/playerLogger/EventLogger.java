@@ -10,11 +10,11 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import com.ForgeEssentials.core.customEvents.PlayerBlockBreak;
-import com.ForgeEssentials.core.customEvents.PlayerBlockPlace;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
+import com.ForgeEssentials.util.events.PlayerBlockBreak;
+import com.ForgeEssentials.util.events.PlayerBlockPlace;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;

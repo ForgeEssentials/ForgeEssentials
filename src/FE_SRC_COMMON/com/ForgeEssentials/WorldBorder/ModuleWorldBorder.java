@@ -13,7 +13,7 @@ import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.event.PlayerMoveEvent;
+import com.ForgeEssentials.util.events.PlayerMoveEvent;
 import com.ForgeEssentials.util.vector.Vector2;
 
 /**
