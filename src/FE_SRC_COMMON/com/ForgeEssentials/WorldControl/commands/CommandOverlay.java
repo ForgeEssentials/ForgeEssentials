@@ -24,8 +24,6 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TickTaskHandler;
-import com.ForgeEssentials.util.AreaSelector.AreaBase;
-import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class CommandOverlay extends WorldControlCommandBase
@@ -64,29 +62,6 @@ public class CommandOverlay extends WorldControlCommandBase
 			}
 			BlockInfo to = BlockInfo.parseAll(args[0], player);
 			Selection sel = info.getSelection();
-
-			PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
-			PermResult result = PermissionsAPI.checkPermResult(query);
-
-			if(result==PermResult.ALLOW) {
-				TickTaskHandler.addTask(new TickTaskOverlay(player, sel, to));
-			}else if(result==PermResult.PARTIAL) {
-				TickTaskHandler.addTask(new TickTaskOverlay(player, sel, to, query.applicable));
-			}else{
-				OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
-			}
-
-			player.sendChatToPlayer("Working on overlay.");
-		}else if (args.length == 2)
-		{
-			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
-			BlockInfo to = BlockInfo.parseAll(args[0], player);
-			if(!FunctionHelper.isInt(args[0])) {
-				OutputHandler.chatError(player, "Radius is not a number.");
-				return;
-			}
-			int radius = Integer.parseInt(args[0]);
-			AreaBase sel = new AreaBase(new Point((int) player.posX - 1 - radius/2, (int) player.posY - radius/2, (int) player.posZ - radius/2), new Point((int) player.posX - 1 + radius/2, (int) player.posY + radius/2, (int) player.posZ + radius/2));
 
 			PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
 			PermResult result = PermissionsAPI.checkPermResult(query);

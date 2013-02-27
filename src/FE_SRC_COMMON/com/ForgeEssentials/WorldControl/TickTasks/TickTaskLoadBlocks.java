@@ -113,20 +113,11 @@ public class TickTaskLoadBlocks implements ITickTask {
 		this.sel = sel;
 		currentBlock = sel.getLowPoint();
 		this.backup = new BlockArrayBackup(new BlockArray(sel.getLowPoint().x, sel.getLowPoint().y, sel.getLowPoint().z, false, sel.getXLength()-1, sel.getYLength()-1, sel.getZLength()-1), new BlockArray(sel.getLowPoint().x, sel.getLowPoint().y, sel.getLowPoint().z, false, sel.getXLength()-1, sel.getYLength()-1, sel.getZLength()-1));
-		last = sel.getXLength() * sel.getYLength() * sel.getZLength() * getIterations();
-		beginTask();
-	}
-	
-	protected int getIterations() {
-		return 1;
+		last = sel.getXLength() * sel.getYLength() * sel.getZLength();
 	}
 	
 	protected boolean placeBlock() {
 		return false;
-	}
-	
-	protected void beginTask() {
-		
 	}
 	
 	protected void runTick() {
@@ -144,7 +135,6 @@ public class TickTaskLoadBlocks implements ITickTask {
 	protected int x;
 	protected int y;
 	protected int z;
-	protected int iter = 0;
 	
 	protected boolean usesCoordsSystem() {
 		return true;
@@ -189,10 +179,6 @@ public class TickTaskLoadBlocks implements ITickTask {
 		onCompleted();
 	}
 	
-	protected void changeIteration() {
-		
-	}
-	
 	private void updatePosition() {
 		if(editsBlocks()&&usesCoordsSystem()) {
 			x++;
@@ -209,13 +195,7 @@ public class TickTaskLoadBlocks implements ITickTask {
 					// Check stop condition
 					if (y > sel.getHighPoint().y)
 					{
-						iter++;
-						changeIteration();
-						if(iter>=getIterations()) {
-							setComplete();
-						}else{
-							y = sel.getLowPoint().y;
-						}
+						setComplete();
 					}
 				}
 			}
