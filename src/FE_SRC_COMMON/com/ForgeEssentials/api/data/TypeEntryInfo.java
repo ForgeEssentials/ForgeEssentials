@@ -2,7 +2,6 @@ package com.ForgeEssentials.api.data;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 
 public class TypeEntryInfo implements ITypeInfo

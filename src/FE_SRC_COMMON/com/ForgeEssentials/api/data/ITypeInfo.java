@@ -1,6 +1,5 @@
 package com.ForgeEssentials.api.data;
 
-import java.util.HashMap;
 
 /**
  * The constructor for a class that implements this should take either the class, ClassContainer or nothing.

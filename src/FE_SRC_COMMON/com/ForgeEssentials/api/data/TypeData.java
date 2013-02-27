@@ -3,10 +3,8 @@ package com.ForgeEssentials.api.data;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Map.Entry;
-
-import com.ForgeEssentials.data.SavedField;
+import java.util.Set;
 
 public class TypeData implements IReconstructData, Serializable
 {

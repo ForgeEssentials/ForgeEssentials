@@ -1,24 +1,21 @@
-package com.ForgeEssentials.WorldControl.commands;
+package com.ForgeEssentials.core.commands.selections;
 
 //Depreciated
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandWand extends WorldControlCommandBase
+public class CommandWand extends ForgeEssentialsCommandBase
 {
 
-	public CommandWand()
-	{
-		super(true);
-	}
-
 	@Override
-	public String getName()
+	public String getCommandName()
 	{
 		return "fewand";
 	}
@@ -141,5 +138,25 @@ public class CommandWand extends WorldControlCommandBase
 		{
 			return checkCommandPerm(player);
 		}
+	}
+
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean canConsoleUseCommand()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands.wand";
 	}
 }

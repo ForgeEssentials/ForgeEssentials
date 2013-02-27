@@ -7,15 +7,10 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IDataDriver;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
-import com.ForgeEssentials.api.data.ITypeInfo;
-import com.ForgeEssentials.api.data.TypeMultiValInfo;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 public abstract class AbstractDataDriver implements IDataDriver
 {

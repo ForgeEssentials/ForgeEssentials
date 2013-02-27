@@ -3,17 +3,12 @@ package com.ForgeEssentials.WorldControl;
 //Depreciated
 import java.util.ArrayList;
 
-import net.minecraftforge.common.MinecraftForge;
-
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
-import com.ForgeEssentials.WorldControl.commands.CommandDeselect;
-import com.ForgeEssentials.WorldControl.commands.CommandPos;
 import com.ForgeEssentials.WorldControl.commands.CommandRedo;
 import com.ForgeEssentials.WorldControl.commands.CommandReplace;
 import com.ForgeEssentials.WorldControl.commands.CommandSet;
 import com.ForgeEssentials.WorldControl.commands.CommandTopManipulate;
 import com.ForgeEssentials.WorldControl.commands.CommandUndo;
-import com.ForgeEssentials.WorldControl.commands.CommandWand;
 import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Init;
@@ -23,7 +18,6 @@ import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
-//import com.ForgeEssentials.WorldControl.weintegration.WEIntegration;
 
 // central class for all the WorldControl stuff
 @FEModule(name = "WorldControl", parentMod = ForgeEssentials.class, configClass = ConfigWorldControl.class)
@@ -43,17 +37,13 @@ public class ModuleWorldControl
 	@Init
 	public void load(FEModuleInitEvent event)
 	{
-		MinecraftForge.EVENT_BUS.register(new WandController());
+		
 	}
 
 	// serverStart.
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
-		e.registerServerCommand(new CommandWand());
-		e.registerServerCommand(new CommandDeselect());
-		e.registerServerCommand(new CommandPos(1));
-		e.registerServerCommand(new CommandPos(2));
 		e.registerServerCommand(new CommandSet());
 		e.registerServerCommand(new CommandRedo());
 		e.registerServerCommand(new CommandUndo());

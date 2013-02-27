@@ -1,4 +1,4 @@
-package com.ForgeEssentials.WorldControl;
+package com.ForgeEssentials.core.misc;
 
 //Depreciated
 import net.minecraft.entity.player.EntityPlayer;

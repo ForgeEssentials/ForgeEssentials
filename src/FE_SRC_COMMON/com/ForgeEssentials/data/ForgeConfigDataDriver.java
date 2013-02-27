@@ -1,7 +1,6 @@
 package com.ForgeEssentials.data;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
@@ -11,8 +10,8 @@ import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.ITypeInfo;
+import com.ForgeEssentials.api.data.TypeData;
 
 /**
  * Storage driver for filesystem (flat-file) persistence.

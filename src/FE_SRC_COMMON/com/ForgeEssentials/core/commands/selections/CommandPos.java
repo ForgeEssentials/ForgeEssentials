@@ -1,29 +1,30 @@
-package com.ForgeEssentials.WorldControl.commands;
+package com.ForgeEssentials.core.commands.selections;
 
 //Depreciated
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
-public class CommandPos extends WorldControlCommandBase
+public class CommandPos extends ForgeEssentialsCommandBase
 {
 	private int	type;
 
 	public CommandPos(int type)
 	{
-		super(true);
 		this.type = type;
 	}
 
 	@Override
-	public String getName()
+	public String getCommandName()
 	{
 		return "pos" + type;
 	}
@@ -113,7 +114,21 @@ public class CommandPos extends WorldControlCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.commands.pos";
+		return "ForgeEssentials.BasicCommands.pos";
+	}
+	
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean canConsoleUseCommand()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

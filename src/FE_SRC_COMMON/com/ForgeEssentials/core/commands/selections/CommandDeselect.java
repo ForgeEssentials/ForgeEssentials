@@ -1,22 +1,18 @@
-package com.ForgeEssentials.WorldControl.commands;
+package com.ForgeEssentials.core.commands.selections;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandDeselect extends WorldControlCommandBase
+public class CommandDeselect extends ForgeEssentialsCommandBase
 {
 
-	public CommandDeselect()
-	{
-		super(true);
-		aliasList.add("/sel");
-	}
-
 	@Override
-	public String getName()
+	public String getCommandName()
 	{
 		return "deselect";
 	}
@@ -40,5 +36,24 @@ public class CommandDeselect extends WorldControlCommandBase
 	public String getInfoPlayer(EntityPlayer player)
 	{
 		return "Clears the currently selected area";
+	}
+
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+	}
+
+	@Override
+	public boolean canConsoleUseCommand()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		// TODO Auto-generated method stub
+		return "ForgeEssentials.BasicCommands.deselect";
 	}
 }

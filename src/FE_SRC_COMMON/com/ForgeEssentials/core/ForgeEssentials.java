@@ -12,6 +12,9 @@ import com.ForgeEssentials.core.commands.CommandFECredits;
 import com.ForgeEssentials.core.commands.CommandFEDebug;
 import com.ForgeEssentials.core.commands.CommandFEReload;
 import com.ForgeEssentials.core.commands.CommandFEVersion;
+import com.ForgeEssentials.core.commands.selections.CommandDeselect;
+import com.ForgeEssentials.core.commands.selections.CommandPos;
+import com.ForgeEssentials.core.commands.selections.CommandWand;
 import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.core.compat.SanityChecker;
@@ -20,6 +23,7 @@ import com.ForgeEssentials.core.misc.DeathChest;
 import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
+import com.ForgeEssentials.core.misc.WandController;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
@@ -166,6 +170,7 @@ public class ForgeEssentials
 		MinecraftForge.EVENT_BUS.register(factory);
 
 		MinecraftForge.EVENT_BUS.register(new DeathChest());
+		MinecraftForge.EVENT_BUS.register(new WandController());
 
 		mcstatscompat.load();
 	}
@@ -194,6 +199,10 @@ public class ForgeEssentials
 		e.registerServerCommand(new CommandFECredits());
 		e.registerServerCommand(new CommandFEReload());
 		e.registerServerCommand(new CommandFEDebug());
+		e.registerServerCommand(new CommandPos(1));
+		e.registerServerCommand(new CommandPos(2));
+		e.registerServerCommand(new CommandWand());
+		e.registerServerCommand(new CommandDeselect());
 
 		// do modules last... just in case...
 		mdlaunch.serverStarting(e);
