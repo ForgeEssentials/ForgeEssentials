@@ -83,9 +83,6 @@ public class PlayerInfo
 		info.suffix = (String) tag.getFieldValue("suffix");
 
 		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
-		
-		// TESTING
-		info.testMap = (HashMap) tag.getFieldValue("testMap");
 
 		return info;
 	}
@@ -129,13 +126,6 @@ public class PlayerInfo
 
 	@SaveableField()
 	public int						timePlayed;
-	
-	// TESTING ----------------
-	
-	@SaveableField()
-	public HashMap<Point, String> testMap = new HashMap<Point, String>();
-	
-	// TESTING ----------------
 
 	// undo and redo stuff
 	private Stack<BackupArea>		undos;
@@ -156,9 +146,6 @@ public class PlayerInfo
 
 		prefix = "";
 		suffix = "";
-		
-		testMap.put(new Point(1, 2, 3), "Point 123 TEST");
-		testMap.put(new Point(5, 5, 5), "Point 555 TEST");
 	}
 
 	/**

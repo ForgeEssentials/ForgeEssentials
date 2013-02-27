@@ -25,7 +25,8 @@ public interface ITypeInfo<T>
 	public void build();
 
 	/**
-	 * Should return the type of the field. NULL if th field does not exist, or is undefined in this type.
+	 * Should return the type of the field. NULL if the field does not exist, or is undefined in this type.
+	 * Must be case insensative!
 	 * @param field Name of the field.
 	 * @return The type of the field as a class.
 	 */

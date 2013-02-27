@@ -28,7 +28,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	public final void build()
 	{
 		build(fields);
-		entryInfo = new TypeEntryInfo(fields);
+		entryInfo = new TypeEntryInfo(fields, container);
 	}
 	
 	/**

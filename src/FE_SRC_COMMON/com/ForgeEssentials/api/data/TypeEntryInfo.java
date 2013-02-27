@@ -7,10 +7,12 @@ import java.util.Map.Entry;
 
 public class TypeEntryInfo implements ITypeInfo
 {
+	private ClassContainer parent;
 	private HashMap<String, ClassContainer> types;
 
-	public TypeEntryInfo(HashMap<String, ClassContainer> types)
+	public TypeEntryInfo(HashMap<String, ClassContainer> types, ClassContainer parent)
 	{
+		this.parent = parent;
 		this.types = types;
 	}
 
@@ -58,6 +60,11 @@ public class TypeEntryInfo implements ITypeInfo
 	{
 		// why not? :)  better than void.class  .
 		return new ClassContainer(Map.Entry.class);
+	}
+	
+	public ClassContainer getParentType()
+	{
+		return parent;
 	}
 
 	@Override
