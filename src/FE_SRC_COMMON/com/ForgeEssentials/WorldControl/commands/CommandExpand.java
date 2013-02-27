@@ -141,7 +141,7 @@ public class CommandExpand extends WorldControlCommandBase
 							info.setPoint2(pt);
 						}
 					}else{
-						if(dir==FunctionHelper.Direction.EAST) {
+						if(dir==FunctionHelper.Direction.WEST) {
 							Point pt = info.getPoint2();
 							pt.x+=amount;
 							info.setPoint2(pt);
@@ -164,7 +164,7 @@ public class CommandExpand extends WorldControlCommandBase
 							info.setPoint2(pt);
 						}
 					}else{
-						if(dir==FunctionHelper.Direction.UP) {
+						if(dir==FunctionHelper.Direction.DOWN) {
 							Point pt = info.getPoint2();
 							pt.y+=amount;
 							info.setPoint2(pt);
