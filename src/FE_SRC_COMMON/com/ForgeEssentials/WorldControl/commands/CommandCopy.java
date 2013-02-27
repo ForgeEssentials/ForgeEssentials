@@ -34,8 +34,8 @@ public class CommandCopy extends WorldControlCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		if(args.length>2) {
-			OutputHandler.chatError(player, "You must have less than three arguments!");
+		if(args.length>1) {
+			OutputHandler.chatError(player, "You must have less than two arguments!");
 			return;
 		}
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player);
@@ -46,16 +46,11 @@ public class CommandCopy extends WorldControlCommandBase
 		}
 		PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
 		PermResult result = PermissionsAPI.checkPermResult(query);
-		
-		BlockInfo fill = null;
-		if(args.length==2) {
-			fill = BlockInfo.parseAll(args[1], player);
-		}
 
 		if(result==PermResult.ALLOW) {
-			TickTaskHandler.addTask(new TickTaskCopy(player, sel, args.length==0?"default":args[0], fill));
+			TickTaskHandler.addTask(new TickTaskCopy(player, sel, args.length==0?"default":args[0]));
 		}else if(result==PermResult.PARTIAL) {
-			TickTaskHandler.addTask(new TickTaskCopy(player, sel, args.length==0?"default":args[0], fill, query.applicable));
+			TickTaskHandler.addTask(new TickTaskCopy(player, sel, args.length==0?"default":args[0], query.applicable));
 		}else{
 			OutputHandler.chatError(player, "You do not have permission!");
 		}
@@ -64,19 +59,19 @@ public class CommandCopy extends WorldControlCommandBase
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/" + getCommandName() + " [name(default)] [filler]";
+		return "/" + getCommandName() + " [name(default)]";
 	}
 
 	@Override
 	public String getInfoPlayer(EntityPlayer player)
 	{
-		return "Copies selection to clipboard";
+		return "Expand Selection Positions";
 	}
 
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.clipboard";
+		return "ForgeEssentials.WorldControl.selection";
 	}
 
 }

@@ -20,7 +20,6 @@ public class CommandPos extends WorldControlCommandBase
 	{
 		super(true);
 		this.type = type;
-		this.aliasList.add("/p"+type);
 	}
 
 	@Override

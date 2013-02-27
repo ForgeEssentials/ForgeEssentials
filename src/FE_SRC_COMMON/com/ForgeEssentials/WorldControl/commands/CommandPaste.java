@@ -73,13 +73,13 @@ public class CommandPaste extends WorldControlCommandBase
 	@Override
 	public String getInfoPlayer(EntityPlayer player)
 	{
-		return "Paste item from clipboard";
+		return "Expand Selection Positions";
 	}
 
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.clipboard";
+		return "ForgeEssentials.WorldControl.selection";
 	}
 
 }

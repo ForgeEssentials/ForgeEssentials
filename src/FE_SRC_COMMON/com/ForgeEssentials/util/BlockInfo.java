@@ -74,50 +74,66 @@ public class BlockInfo
 	public static BlockInfo parse(String str, EntityPlayer player) {
 		BlockInfo bi = new BlockInfo();
 		SingularBlockInfo name = getBlockInfoFromName(str, true);
-		if(true) {
+		if(str.contains(":")&& FunctionHelper.isInt(str.substring(str.indexOf(":")+1))) {
 			String[] strs = str.split(":");
 			if(strs.length==2) {
-				boolean isint1 = FunctionHelper.isInt(strs[0].replace("-", ""));
-				boolean isint2 = FunctionHelper.isInt(strs[1].replace("-", ""));
-				String id = strs[0];
-				String meta = strs[1];
-				int beginID = isint1?(id.contains("-")?Integer.parseInt(id.substring(0, id.indexOf("-"))):Integer.parseInt(id)):-1;
-				int beginMeta = meta.contains("-")?Integer.parseInt(meta.substring(0, meta.indexOf("-"))):Integer.parseInt(meta);
-				int endID = isint1?(id.contains("-")?Integer.parseInt(id.substring(id.indexOf("-")+1)):beginID+1):-1;
-				int endMeta = meta.contains("-")?Integer.parseInt(meta.substring(meta.indexOf("-")+1)):beginMeta+1;
-				if(beginMeta>endMeta)endMeta=beginMeta+1;
-				if(beginID>endID)endID=beginID+1;
+				boolean isint = FunctionHelper.isInt(strs[1]);
 				SingularBlockInfo named = getBlockInfoFromName(strs[0], false);
-				if(isValidBlockID(strs[0]) && isint1 && isint2) {
-					for(int i = beginID;i<endID;i++) {
-						for(int m = beginMeta;m<endMeta;m++) {
-							bi.blocks.add(new SingularBlockInfo(Block.blocksList[i], m, null));
-						}
-					}
-				}else if(named!=null && isint2) {
-					for(int m = beginMeta;m<endMeta;m++) {
-						bi.blocks.add(new SingularBlockInfo(named.block, m, null));
-					}
+				if(isValidBlockID(strs[0]) && isint) {
+					bi.blocks.add(new SingularBlockInfo(Block.blocksList[Integer.parseInt(strs[0])], Integer.parseInt(strs[1]), null));
+				}else if(named!=null && isint) {
+					bi.blocks.add(new SingularBlockInfo(named.block, Integer.parseInt(strs[1]), null));
 				}else{
 					OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" The ID field must either be a valid block ID, or a name of a base block.");
 					return bi;
 				}
-			}else if(strs.length==1) {
-				if(FunctionHelper.isInt(str.replace("-", ""))) {
-					boolean isint = FunctionHelper.isInt(str.replace("-", ""));
-					int beginID = isint?(str.contains("-")?Integer.parseInt(str.substring(0, str.indexOf("-"))):Integer.parseInt(str)):-1;
-					int endID = isint?(str.contains("-")?Integer.parseInt(str.substring(str.indexOf("-")+1)):beginID+1):-1;
-					for(int i = beginID;i<endID;i++) {
-						bi.blocks.add(new SingularBlockInfo(Block.blocksList[i], 0, null));
-					}
-				}else if(name!=null) {
-					bi.blocks.add(name);
-				}
 			}else{
-				OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str);
+				OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" You may not have more than two values in a combo.");
 				return bi;
 			}
+		}else if(isValidBlockID(str)) {
+			bi.blocks.add(new SingularBlockInfo(Block.blocksList[Integer.parseInt(str)], 0, null));
+		}else if(name!=null) {
+			bi.blocks.add(name);
+		}else if(str.contains("-")) {
+			String begin = str.substring(0, str.indexOf("-"));
+			String end = str.substring(str.indexOf("-")+1);
+			if(begin.contains(":")&& !begin.contains("-") && !begin.contains("_")) {
+				SingularBlockInfo first = parse(begin, player).blocks.get(0);
+				if(!FunctionHelper.isInt(end)) {
+					OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" Metadata must be a number.");
+					return bi;
+				}
+				int em = Integer.parseInt(end);
+				if(first.meta>=em||first.meta<-1||em<-1) {
+					OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" Metadata cannot be smaller in the second parameter.");
+					return bi;
+				}
+				for(int meta = first.meta;meta<em;meta++) {
+					bi.blocks.add(new SingularBlockInfo(first.block, meta, null));
+				}
+			}else{
+				OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" You cannot have ranges inside ranges, and you must specify a beginning metadata (Example: 35:0-15).");
+				return bi;
+			}
+		}else if(str.contains("_")) {
+			String begin = str.substring(0, str.indexOf("_"));
+			String end = str.substring(str.indexOf("_")+1);
+			if(FunctionHelper.isInt(begin) && FunctionHelper.isInt(end)) {
+				int first = Integer.parseInt(begin);
+				int last = Integer.parseInt(end);
+				for(int id = first;id<last;id++) {
+					bi.blocks.add(new SingularBlockInfo(Block.blocksList[id], 0, null));
+				}
+			}else{
+				OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+" Both IDs must be numbers.");
+				return bi;
+			}
+		}else{
+			OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+"");
+			return bi;
 		}
+		//OutputHandler.chatWarning(player, "Please input a valid block identifier. "+str+"");
 		return bi;
 	}
 	

@@ -94,8 +94,8 @@ public class WandController implements ITickHandler
 			//OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 			return false;
 		}
-		if(item!=null||info.wandID==0) {
-			if ((info.wandID==0&&item==null)||(item.itemID == info.wandID && info.wandEnabled && (info.wandDmg>-1?item.getItemDamage() == info.wandDmg:true)))
+		if(item!=null) {
+			if (item.itemID == info.wandID && info.wandEnabled && (info.wandDmg>-1?item.getItemDamage() == info.wandDmg:true))
 			{
 				info.setPoint2(new Point(x, y, z));
 				player.addChatMessage(FEChatFormatCodes.PURPLE + "Pos2 set to " + x + ", " + y + ", " + z);
@@ -106,7 +106,7 @@ public class WandController implements ITickHandler
 					PermQueryPlayerArea query = new PermQueryPlayerArea(player, "ForgeEssentials.WorldControl.longreach", new AreaBase(new Point(x, y, z), new Point(x, y, z)), false);
 					PermResult result = PermissionsAPI.checkPermResult(query);
 					if(result==PermResult.ALLOW) {
-						if(block.placeBlockAt(item, player, player.worldObj, ix, iy, iz, side, x, y, z, item.getItemDamage())) {
+						if(block.placeBlockAt(item, player, player.worldObj, ix, iy, iz, side, x, y, z, item.getItemDamage())){
 							if(!player.capabilities.isCreativeMode) {
 								player.inventory.consumeInventoryItem(item.itemID);
 								return true;
