@@ -38,7 +38,6 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer(Localization.get("command.warp.list"));
 			String msg = "";
 			for (String warp : TeleportCenter.warps.keySet())
 			{
