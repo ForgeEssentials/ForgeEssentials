@@ -67,7 +67,7 @@ public class BannedItems
 					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerZone(e.entityPlayer, BYPASS + "." + is.itemID + ":-1", ZoneManager.getWhichZoneIn(new WorldPoint(e.entityPlayer)))))
 					{
 						e.entityPlayer.sendChatToPlayer("That item is banned.");
-						e.setCanceled(true);	
+						e.setCanceled(true);
 					}
 				}
 			}

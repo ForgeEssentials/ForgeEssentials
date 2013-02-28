@@ -20,7 +20,7 @@ public interface IZoneManager
 	Zone getZone(String zoneID);
 
 	boolean createZone(String zoneID, Selection sel, World world);
-	
+
 	Zone getWhichZoneIn(WorldPoint point);
 
 	Zone getWhichZoneIn(AreaBase area, World world);

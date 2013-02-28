@@ -60,8 +60,8 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
 		{
 			for (EntityPlayer target : players)
 			{
-				String senderName = (sender instanceof TileEntityCommandBlock ? "CommandBlock @ (" + ((TileEntityCommandBlock) sender).xCoord + "," + ((TileEntityCommandBlock) sender).yCoord + "," + ((TileEntityCommandBlock) sender).zCoord + ")."
-						: "The console");
+				String senderName = sender instanceof TileEntityCommandBlock ? "CommandBlock @ (" + ((TileEntityCommandBlock) sender).xCoord + "," + ((TileEntityCommandBlock) sender).yCoord + "," + ((TileEntityCommandBlock) sender).zCoord + ")."
+						: "The console";
 				target.sendChatToPlayer(senderName + " is attempting to issue a command as you.");
 				FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(target, cmd.toString());
 			}

@@ -11,7 +11,6 @@ import com.ForgeEssentials.api.json.JSONObject;
 /**
  * Event triggered when the snooper gets a vote from a service. If you cancel
  * the event, the service will receive "Failed".
- * 
  * @author Dries007
  */
 
@@ -31,7 +30,7 @@ public class VoteEvent extends Event
 		this.serviceName = serviceName;
 		this.ip = ip;
 		this.timeStamp = timeStamp;
-		this.sane = true;
+		sane = true;
 	}
 
 	public VoteEvent(String decoded)
@@ -39,11 +38,11 @@ public class VoteEvent extends Event
 		try
 		{
 			JSONObject json = new JSONObject(decoded);
-			this.player = json.getString("player");
-			this.serviceName = json.getString("serviceName");
-			this.ip = json.getString("ip");
-			this.timeStamp = json.getJSONObject("timeStamp").getString("date");
-			this.sane = true;
+			player = json.getString("player");
+			serviceName = json.getString("serviceName");
+			ip = json.getString("ip");
+			timeStamp = json.getJSONObject("timeStamp").getString("date");
+			sane = true;
 		}
 		catch (Exception e)
 		{

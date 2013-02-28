@@ -95,12 +95,8 @@ public class CommandTppos extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1 || args.length == 2)
-		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
 		else
-		{
 			return null;
-		}
 	}
 }

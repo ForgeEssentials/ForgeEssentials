@@ -76,7 +76,9 @@ public class SQLDataDriver extends AbstractDataDriver
 			s = dbConnection.createStatement();
 
 			for (String statement : statements)
+			{
 				s.addBatch(statement);
+			}
 
 			s.executeBatch();
 			return true;
@@ -153,7 +155,9 @@ public class SQLDataDriver extends AbstractDataDriver
 			Statement s = dbConnection.createStatement();
 
 			for (String statement : statements)
+			{
 				s.addBatch(statement);
+			}
 
 			s.executeBatch();
 		}
@@ -215,8 +219,6 @@ public class SQLDataDriver extends AbstractDataDriver
 		SavedField tmpField = null;
 		ClassContainer tmpClass;
 
-		Object tempVal;
-
 		for (Entry<String, Object> entry : result.entrySet())
 		{
 			cursor = data;
@@ -252,7 +254,9 @@ public class SQLDataDriver extends AbstractDataDriver
 						String name = fieldHeiarchy[i];
 
 						if (name.contains(MULTI_MARKER))
+						{
 							name = name.replace("_" + MULTI_MARKER, "");
+						}
 
 						// Primitive type.
 						ClassContainer fieldType = taggerCursor.getTypeOfField(name);
@@ -300,7 +304,9 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		ResultSet set = dbConnection.createStatement().executeQuery(createSelectStatement(type, unique));
 		if (set.next())
+		{
 			createTaggedClassFromResult(resultRowToMap(set), info, data);
+		}
 
 		// container to UIDs
 		HashMultimap<ClassContainer, String> multiMap = HashMultimap.create();
@@ -316,9 +322,13 @@ public class SQLDataDriver extends AbstractDataDriver
 			for (String valID : multiMap.get(key))
 			{
 				if (isFirst)
+				{
 					statement += valID + "'";
+				}
 				else
+				{
 					statement += " OR " + TypeMultiValInfo.UID + "='" + valID + "'";
+				}
 			}
 			list.add(statement);
 		}
@@ -328,18 +338,19 @@ public class SQLDataDriver extends AbstractDataDriver
 
 	private void collectMultiVals(ITypeInfo info, TypeData data, HashMultimap<ClassContainer, String> map)
 	{
-		HashMultimap<ClassContainer, String> multiMap = HashMultimap.create();
+		HashMultimap.create();
 
 		ITypeInfo tempInfo;
-		ClassContainer tempType;
 		String id;
 		for (Entry<String, Object> e : data.getAllFields())
 		{
-			tempType = info.getTypeOfField(e.getKey());
+			info.getTypeOfField(e.getKey());
 			tempInfo = info.getInfoForField(e.getKey());
 
 			if (tempInfo == null)
+			{
 				continue;
+			}
 			else if (!tempInfo.canSaveInline())
 			{
 				id = e.getValue().toString();
@@ -367,7 +378,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		if (unique != null)
 		{
 			builder.append(" WHERE ");
-			ITypeInfo tagger = DataStorageManager.getInfoForType(type);
+			DataStorageManager.getInfoForType(type);
 			builder.append(UNIQUE);
 			builder.append(" = ");
 			builder.append('\'').append(unique).append('\'');
@@ -396,9 +407,13 @@ public class SQLDataDriver extends AbstractDataDriver
 			for (Pair p : temp)
 			{
 				if (((String) p.getFirst()).contains(MULTI_MARKER) && p.getSecond() instanceof TypeData)
+				{
 					multiVals.add(p);
+				}
 				else
+				{
 					fieldValueMap.add(p);
+				}
 			}
 		}
 
@@ -436,7 +451,9 @@ public class SQLDataDriver extends AbstractDataDriver
 		StringBuilder query = new StringBuilder();
 
 		if (isEntry)
+		{
 			query.append("INSERT INTO " + table + ' ');
+		}
 		else
 		{
 			switch (db)
@@ -465,18 +482,22 @@ public class SQLDataDriver extends AbstractDataDriver
 			if (isfirst)
 			{
 				isfirst = !isfirst;
-				fields.append("\""+pair.getFirst()+"\"");
+				fields.append("\"" + pair.getFirst() + "\"");
 			}
 			else
 			{
-				fields.append(", \"" + pair.getFirst()+"\"");
+				fields.append(", \"" + pair.getFirst() + "\"");
 				values.append(", ");
 			}
 
 			if (pair.getSecond().getClass().equals(String.class))
+			{
 				values.append("'" + pair.getSecond() + "'");
+			}
 			else
+			{
 				values.append(pair.getSecond());
+			}
 
 		}
 		fields.append(')');
@@ -496,7 +517,9 @@ public class SQLDataDriver extends AbstractDataDriver
 		ITypeInfo entryInfo = info.getEntryInfo();
 
 		for (Object dat : data.getAllValues())
+		{
 			statements.addAll(generateInsertBatch(entryInfo, (TypeData) dat));
+		}
 
 		return statements;
 	}
@@ -552,14 +575,18 @@ public class SQLDataDriver extends AbstractDataDriver
 		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + type.getFileSafeName() + " (");
 		for (Pair<String, String> pair : tableFields)
 		{
-			tableCreate.append("\""+pair.getFirst() + "\" " + pair.getSecond() + ", ");
+			tableCreate.append("\"" + pair.getFirst() + "\" " + pair.getSecond() + ", ");
 		}
 
 		if (isMulti)
+		{
 			tableCreate.replace(tableCreate.lastIndexOf(","), tableCreate.length(), ")");
+		}
 		else
+		{
 			// Add primary key clause.
 			tableCreate.append(keyClause + ")");
+		}
 
 		try
 		{
@@ -650,7 +677,9 @@ public class SQLDataDriver extends AbstractDataDriver
 
 				// Iterate over the stored fields. Recurse if nessecary.
 				for (String name : fieldList)
+				{
 					fields.addAll(fieldToColumns(tagger, columnName + SEPERATOR + name, name));
+				}
 
 			}
 		}
@@ -762,7 +791,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		if (type.equals(int.class))
 		{
 			// DB Value is an integer
-			value = (Integer) dbValue;
+			value = dbValue;
 		}
 		if (type.equals(byte.class))
 		{
@@ -880,7 +909,7 @@ public class SQLDataDriver extends AbstractDataDriver
 				{
 					temp = DataStorageManager.getDataForType(info.getType());
 					createTaggedClassFromResult(resultRowToMap(result), entryInfo, data);
-					data.putField(connector + (i++), temp);
+					data.putField(connector + i++, temp);
 				}
 
 				value = data;

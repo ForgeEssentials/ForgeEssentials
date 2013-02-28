@@ -55,7 +55,7 @@ public final class FunctionHelper
 		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
-	
+
 	public static String parseTime(int timeInSec)
 	{
 		String uptime = "";
@@ -67,29 +67,29 @@ public final class FunctionHelper
 		remainder = timeInSec % 3600;
 		int minutes = remainder / 60;
 		int seconds = remainder % 60;
-		
-		if(weeks != 0)
+
+		if (weeks != 0)
 		{
 			uptime += weeks + " weeks ";
 		}
-		
-		if(days != 0)
+
+		if (days != 0)
 		{
-			uptime += ((days < 10 ? "0" : "") + days + " days ");
+			uptime += (days < 10 ? "0" : "") + days + " days ";
 		}
-		
-		if(hours != 0)
+
+		if (hours != 0)
 		{
-			uptime += ((hours < 10 ? "0" : "") + hours + " h ");
+			uptime += (hours < 10 ? "0" : "") + hours + " h ";
 		}
-		
-		if(minutes != 0)
+
+		if (minutes != 0)
 		{
-			uptime += ((minutes < 10 ? "0" : "") + minutes + " min ");
+			uptime += (minutes < 10 ? "0" : "") + minutes + " min ";
 		}
-		
-		uptime += ((seconds < 10 ? "0" : "") + seconds + " sec.");
-		
+
+		uptime += (seconds < 10 ? "0" : "") + seconds + " sec.";
+
 		return uptime;
 	}
 
@@ -117,7 +117,6 @@ public final class FunctionHelper
 
 	/**
 	 * Use WorldPoint(Entity)
-	 * 
 	 * @param entity
 	 * @return
 	 */
@@ -129,7 +128,6 @@ public final class FunctionHelper
 
 	public static EntityPlayerMP getPlayerFromPartialName(String username)
 	{
-		EntityPlayerMP target;
 		List possibles = new LinkedList<EntityPlayer>();
 		ArrayList<EntityPlayerMP> temp = (ArrayList<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList;
 		for (EntityPlayerMP player : temp)
@@ -138,22 +136,21 @@ public final class FunctionHelper
 				return player;
 
 			if (player.username.toLowerCase().contains(username.toLowerCase()))
+			{
 				possibles.add(player);
+			}
 		}
 		if (possibles.size() == 1)
-		{
 			return (EntityPlayerMP) possibles.toArray()[0];
-		}
 		return null;
 	}
 
 	/**
 	 * does NOT check if its a valid BlockID and stuff.. this may be used for
 	 * items.
-	 * 
 	 * @return never NULL. always {0, -1}. Meta by default is -1.
 	 * @throws RuntimeException
-	 * the message is a formatted chat string.
+	 *             the message is a formatted chat string.
 	 */
 	public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly) throws RuntimeException
 	{
@@ -208,25 +205,17 @@ public final class FunctionHelper
 		{
 			Block block = ItemList.instance().getBlockForName(name);
 			if (block == null)
-			{
 				return 0;
-			}
 			else
-			{
 				return block.blockID;
-			}
 		}
 		else
 		{
 			Item item = ItemList.instance().getItemForName(name);
 			if (item == null)
-			{
 				return 0;
-			}
 			else
-			{
 				return item.itemID;
-			}
 		}
 	}
 
@@ -238,9 +227,7 @@ public final class FunctionHelper
 			return Minecraft.getMinecraftDir();
 		}
 		else
-		{
 			return new File(".");
-		}
 	}
 
 	public static boolean isPlayerOp(String player)
@@ -251,9 +238,7 @@ public final class FunctionHelper
 		if (server.isSinglePlayer())
 		{
 			if (server instanceof IntegratedServer && server.getServerOwner().equalsIgnoreCase(player))
-			{
 				return true;
-			}
 		}
 
 		// SMP
@@ -277,17 +262,12 @@ public final class FunctionHelper
 		double tps = (double) var2 / (double) var5 * 1.0E-6D;
 
 		if (tps < 50)
-		{
 			return 20;
-		}
 		else
-		{
 			return 1000 / tps;
-		}
 	}
 
 	/**
-	 * 
 	 * @param text
 	 * @param search
 	 * @param replacement
@@ -311,7 +291,6 @@ public final class FunctionHelper
 
 	/**
 	 * Uses & as identifier
-	 * 
 	 * @param message
 	 * @return
 	 */
@@ -331,7 +310,6 @@ public final class FunctionHelper
 
 	/**
 	 * Uses the % char as identifier
-	 * 
 	 * @param format
 	 * @return
 	 */

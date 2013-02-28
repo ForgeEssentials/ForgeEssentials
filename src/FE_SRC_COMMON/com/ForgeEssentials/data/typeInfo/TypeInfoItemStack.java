@@ -15,17 +15,21 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	private static final String	ITEM		= "itemID";
 	private static final String	DAMAGE		= "damage";
 	private static final String	COMPOUND	= "compound";
-	
-	public TypeInfoItemStack() {};
-	
+
+	public TypeInfoItemStack()
+	{
+	};
+
 	@Override
-	public void build(){}
+	public void build()
+	{
+	}
 
 	@Override
 	public TypeData getTypeDataFromObject(ItemStack stack)
 	{
 		TypeData data = DataStorageManager.getDataForType(new ClassContainer(ItemStack.class));
-		
+
 		data.putField(SIZE, stack.stackSize);
 		data.putField(ITEM, stack.itemID);
 		data.putField(DAMAGE, stack.getItemDamage());
@@ -33,7 +37,7 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 
 		return data;
 	}
-	
+
 	@Override
 	public ClassContainer getTypeOfField(String field)
 	{
@@ -46,15 +50,15 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 		else
 			return null;
 	}
-	
+
 	@Override
 	public String[] getFieldList()
 	{
 		return new String[] {
-			SIZE,
-			ITEM,
-			DAMAGE,
-			COMPOUND
+				SIZE,
+				ITEM,
+				DAMAGE,
+				COMPOUND
 		};
 	}
 
@@ -91,7 +95,7 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	{
 		return null;
 	}
-	
+
 	@Override
 	public ITypeInfo getInfoForField(String field)
 	{

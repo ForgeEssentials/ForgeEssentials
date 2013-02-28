@@ -23,7 +23,7 @@ import cpw.mods.fml.common.TickType;
 public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 {
 	// TICK STUFF 
-	
+
 	private HashMap<String, WarpPoint>	befores;
 
 	public ForgeEssentialsEventFactory()
@@ -40,7 +40,7 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
 		EntityPlayerMP player = (EntityPlayerMP) tickData[0];
-		
+
 		WarpPoint before = befores.get(player.username);
 		WarpPoint current = new WarpPoint(player);
 
@@ -50,7 +50,7 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 			befores.put(player.username, current);
 			return;
 		}
-		
+
 		// no respawn stuff or respawn stuff
 		if (player.isDead || player.worldObj == null || before.dim != current.dim)
 		{
@@ -65,11 +65,15 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 		MinecraftForge.EVENT_BUS.post(event);
 
 		if (event.isCanceled())
+		{
 			FunctionHelper.setPlayer(player, before);
+		}
 		else
+		{
 			befores.put(player.username, current);
+		}
 	}
-	
+
 	// PLAYER TRACKER STUFF
 
 	@Override
@@ -104,24 +108,24 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 	public void onPlayerRespawn(EntityPlayer player)
 	{
 	}
-	
+
 	// ZONE STUFF
 	@ForgeSubscribe
 	public void playerMove(PlayerMoveEvent e)
 	{
 		Zone before = ZoneManager.getWhichZoneIn(e.before);
 		Zone after = ZoneManager.getWhichZoneIn(e.after);
-		
-		if(before != after)
+
+		if (before != after)
 		{
 			PlayerChangedZone event = new PlayerChangedZone(e.entityPlayer, before, after, e.before, e.after);
 			MinecraftForge.EVENT_BUS.post(event);
 			e.setCanceled(event.isCanceled());
 		}
 	}
-	
+
 	// BLOCK STUFF
-	
+
 	public static boolean onBlockHarvested(World world, int x, int y, int z, Block block, int metadata, EntityPlayer player)
 	{
 		PlayerBlockBreak ev = new PlayerBlockBreak(world, x, y, z, player);

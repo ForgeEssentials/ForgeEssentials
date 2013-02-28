@@ -33,11 +33,11 @@ public class TypeInfoSet extends TypeMultiValInfo
 	public Set<TypeData> getTypeDatasFromObject(Object obj)
 	{
 		HashSet<TypeData> datas = new HashSet<TypeData>();
-		
+
 		Set set = (Set) obj;
-		
+
 		Iterator itt = set.iterator();
-		
+
 		TypeData data;
 		int i = 0;
 		Object temp;
@@ -63,7 +63,7 @@ public class TypeInfoSet extends TypeMultiValInfo
 		{
 			Array.set(array, (Integer) dat.getFieldValue(POS), dat.getFieldValue(ELEMENT));
 		}
-		
+
 		Set set = new HashSet(data.length);
 		try
 		{
@@ -71,13 +71,15 @@ public class TypeInfoSet extends TypeMultiValInfo
 		}
 		catch (Exception e)
 		{
-			OutputHandler.exception(Level.SEVERE, "Error instantiating "+container.getType().getCanonicalName()+"!", e);
+			OutputHandler.exception(Level.SEVERE, "Error instantiating " + container.getType().getCanonicalName() + "!", e);
 			return null;
 		}
-		
+
 		for (int i = 0; i < data.length; i++)
-			set.add(Array.get(array, i));		
-		
+		{
+			set.add(Array.get(array, i));
+		}
+
 		return set;
 	}
 

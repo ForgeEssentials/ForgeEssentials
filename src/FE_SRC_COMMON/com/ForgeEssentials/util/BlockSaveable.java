@@ -9,16 +9,19 @@ import net.minecraft.world.World;
 
 public class BlockSaveable implements Serializable
 {
-	private int				x;
-	private int				y;
-	private int				z;
-	private short			blockID;
-	private byte			metadata;
-	private NBTTagCompound	tile;
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 7134842755892862662L;
+	private int					x;
+	private int					y;
+	private int					z;
+	private short				blockID;
+	private byte				metadata;
+	private NBTTagCompound		tile;
 
 	/**
 	 * generates the block from the world.
-	 * 
 	 * @param world
 	 * @param x
 	 * @param y
@@ -42,8 +45,7 @@ public class BlockSaveable implements Serializable
 				tile = compound;
 			}
 			catch (Exception e)
-			{
-			}
+			{}
 		}
 	}
 
@@ -65,9 +67,7 @@ public class BlockSaveable implements Serializable
 	public boolean setinWorld(World world)
 	{
 		if (equals(new BlockSaveable(world, x, y, z)))
-		{
 			return false;
-		}
 
 		world.setBlockAndMetadata(x, y, z, blockID, metadata);
 		TileEntity entity = world.getBlockTileEntity(x, y, z);

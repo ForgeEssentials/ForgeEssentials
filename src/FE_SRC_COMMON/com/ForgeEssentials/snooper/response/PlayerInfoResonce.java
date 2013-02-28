@@ -30,14 +30,12 @@ public class PlayerInfoResonce extends Response
 	{
 		LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
 		LinkedHashMap<String, String> tempMap = new LinkedHashMap();
-		ArrayList<String> tempArgs = new ArrayList();
+		new ArrayList();
 
 		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
 		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
 		if (player == null)
-		{
 			return "";
-		}
 
 		PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
 		if (pi != null && sendhome)
@@ -100,8 +98,7 @@ public class PlayerInfoResonce extends Response
 			PlayerData.put("group", group.name);
 		}
 		catch (Exception e)
-		{
-		}
+		{}
 
 		return dataString = TextFormatter.toJSON(PlayerData);
 	}

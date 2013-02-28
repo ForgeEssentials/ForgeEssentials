@@ -14,9 +14,9 @@ import com.google.common.collect.HashMultimap;
 
 public abstract class AbstractDataDriver implements IDataDriver
 {
-	private HashMultimap<String, String> classRegister = HashMultimap.create();
-	private boolean hasLoaded;
-	
+	private HashMultimap<String, String>	classRegister	= HashMultimap.create();
+	private boolean							hasLoaded;
+
 	@Override
 	public void onClassRegistered(ITypeInfo tagger)
 	{
@@ -32,10 +32,10 @@ public abstract class AbstractDataDriver implements IDataDriver
 	public boolean saveObject(ClassContainer type, Object o)
 	{
 		boolean flag = false;
-		
+
 		if (!classRegister.containsEntry(getName(), type.getName()))
 		{
-			this.onClassRegistered(DataStorageManager.getInfoForType(type));
+			onClassRegistered(DataStorageManager.getInfoForType(type));
 			classRegister.put(getName(), type.getName());
 		}
 
@@ -115,14 +115,14 @@ public abstract class AbstractDataDriver implements IDataDriver
 		// return the reconstructed value.
 		return val;
 	}
-	
+
 	@Override
 	public void parseConfigs(Configuration config, String category, String worldName) throws Exception
 	{
 		loadFromConfigs(config, category, worldName);
 		hasLoaded = true;
 	}
-	
+
 	@Override
 	public boolean hasLoaded()
 	{

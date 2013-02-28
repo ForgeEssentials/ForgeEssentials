@@ -16,6 +16,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
 		return "locate";
 	}
 
+	@Override
 	public String[] getDefaultAliases()
 	{
 		return new String[]

@@ -34,7 +34,6 @@ public class MobTypeRegistry
 
 	/**
 	 * Internally checks for if the mob is tameable...
-	 * 
 	 * @param mob
 	 * @return
 	 */

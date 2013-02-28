@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core.misc;
+package com.ForgeEssentials.core.commands.selections;
 
 //Depreciated
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,9 +37,7 @@ public class WandController
 		}
 
 		if (id != info.wandID || !info.wandEnabled || damage != info.wandDmg)
-		{
 			return; // wand does not activate
-		}
 
 		Point point = new Point(event.x, event.y, event.z);
 

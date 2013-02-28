@@ -15,7 +15,7 @@ public class MCStatsHelper implements IServerStats
 	public void makeGraphs(Metrics metrics)
 	{
 		Graph graph = metrics.createGraph("ModuleCommands");
-		
+
 		Plotter plotter = new Plotter("Warps")
 		{
 			@Override
@@ -24,7 +24,7 @@ public class MCStatsHelper implements IServerStats
 				return TeleportCenter.warps.size();
 			}
 		};
-		
+
 		plotter = new Plotter("Kits")
 		{
 			@Override
@@ -33,7 +33,7 @@ public class MCStatsHelper implements IServerStats
 				return DataStorage.getData("kitdata").getTags().size();
 			}
 		};
-		
+
 		graph.addPlotter(plotter);
 	}
 

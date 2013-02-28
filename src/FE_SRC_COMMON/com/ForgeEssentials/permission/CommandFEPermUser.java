@@ -33,7 +33,6 @@ public class CommandFEPermUser
 			return;
 		}
 
-		boolean playerExists = true;
 		String playerName = args[0];
 		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
 		if (playerName.equalsIgnoreCase("_ME_"))
@@ -45,7 +44,6 @@ public class CommandFEPermUser
 		{
 			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			OutputHandler.chatConfirmation(sender, args[0] + " will be used, but may be inaccurate.");
-			playerExists = false;
 		}
 		else
 		{
@@ -117,10 +115,8 @@ public class CommandFEPermUser
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("get"))
-				{
 					// Get current state.
 					return;
-				}
 
 			}
 		}
@@ -395,14 +391,12 @@ public class CommandFEPermUser
 			return;
 		}
 
-		boolean playerExists = true;
 		String playerName = args[0];
 		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
 		if (player == null)
 		{
 			sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			sender.sendChatToPlayer(args[0] + " will be used, but may be inaccurate.");
-			playerExists = false;
 		}
 		else
 		{
@@ -474,10 +468,8 @@ public class CommandFEPermUser
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("get"))
-				{
 					// Get current state.
 					return;
-				}
 
 			}
 		}

@@ -34,7 +34,7 @@ public class TypeInfoList extends TypeMultiValInfo
 	public Set<TypeData> getTypeDatasFromObject(Object obj)
 	{
 		HashSet<TypeData> datas = new HashSet<TypeData>();
-		
+
 		List list = (List) obj;
 
 		TypeData data;
@@ -58,7 +58,7 @@ public class TypeInfoList extends TypeMultiValInfo
 		{
 			Array.set(array, (Integer) dat.getFieldValue(POS), dat.getFieldValue(ELEMENT));
 		}
-		
+
 		List list = new ArrayList(data.length);
 		try
 		{
@@ -66,13 +66,15 @@ public class TypeInfoList extends TypeMultiValInfo
 		}
 		catch (Exception e)
 		{
-			OutputHandler.exception(Level.SEVERE, "Error instantiating "+container.getType().getCanonicalName()+"!", e);
+			OutputHandler.exception(Level.SEVERE, "Error instantiating " + container.getType().getCanonicalName() + "!", e);
 			return null;
 		}
-		
+
 		for (int i = 0; i < data.length; i++)
-			list.add(Array.get(array, i));		
-		
+		{
+			list.add(Array.get(array, i));
+		}
+
 		return list;
 	}
 

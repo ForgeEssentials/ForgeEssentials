@@ -2,9 +2,7 @@ package com.ForgeEssentials.data;
 
 /**
  * Internal class for managing @SaveableField instances within a DataAdapter.
- * 
  * @author MysteriousAges
- * 
  */
 class FieldInfo
 {

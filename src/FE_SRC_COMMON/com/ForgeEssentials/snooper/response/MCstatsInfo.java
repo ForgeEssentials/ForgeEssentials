@@ -11,8 +11,8 @@ import com.ForgeEssentials.core.compat.CompatMCStats;
 
 public class MCstatsInfo extends Response
 {
-	LinkedHashMap<String, String>	data		= new LinkedHashMap();
-	
+	LinkedHashMap<String, String>	data	= new LinkedHashMap();
+
 	@Override
 	public String getResponceString(DatagramPacket packet)
 	{
@@ -29,13 +29,13 @@ public class MCstatsInfo extends Response
 	@Override
 	public void readConfig(String category, Configuration config)
 	{
-		
+
 	}
 
 	@Override
 	public void writeConfig(String category, Configuration config)
 	{
-		
+
 	}
 
 }

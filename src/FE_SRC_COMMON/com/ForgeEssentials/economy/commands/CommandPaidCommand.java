@@ -51,9 +51,9 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 			}
 			if (players.size() != 0)
 			{
-				for(EntityPlayer player : players)
+				for (EntityPlayer player : players)
 				{
-					int amount = this.parseIntWithMin(sender, args[1], 0);
+					int amount = parseIntWithMin(sender, args[1], 0);
 					if (Wallet.getWallet(player) >= amount)
 					{
 						Wallet.removeFromWallet(amount, player);

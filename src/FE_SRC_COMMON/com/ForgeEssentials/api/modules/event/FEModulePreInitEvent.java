@@ -21,7 +21,6 @@ public class FEModulePreInitEvent extends FEModuleEvent
 	/**
 	 * Get a logger instance configured to write to the FE Log as a parent,
 	 * identified by ModuleName. Handy for module logging!
-	 * 
 	 * @return A logger
 	 */
 	public Logger getModLog()

@@ -100,8 +100,7 @@ public class ServerInfo extends Response
 			}
 		}
 		catch (Exception e)
-		{
-		}
+		{}
 
 		return dataString = TextFormatter.toJSON(data);
 	}
@@ -150,7 +149,6 @@ public class ServerInfo extends Response
 
 	public String getUptime()
 	{
-		String uptime = "";
 		RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
 		int secsIn = (int) (rb.getUptime() / 1000);
 		return FunctionHelper.parseTime(secsIn);
@@ -184,7 +182,6 @@ public class ServerInfo extends Response
 	private static final DecimalFormat	DF	= new DecimalFormat("########0.000");
 
 	/**
-	 * 
 	 * @param par1ArrayOfLong
 	 * @return amount of time for 1 tick in ms
 	 */
@@ -200,20 +197,16 @@ public class ServerInfo extends Response
 			var2 += var7;
 		}
 
-		return (((double) var2 / (double) par1ArrayOfLong.length) * 1.0E-6D);
+		return (double) var2 / (double) par1ArrayOfLong.length * 1.0E-6D;
 	}
 
 	public static String getTPSFromData(long[] par1ArrayOfLong)
 	{
-		double tps = (func_79015_a(par1ArrayOfLong));
+		double tps = func_79015_a(par1ArrayOfLong);
 		if (tps < 50)
-		{
 			return "20";
-		}
 		else
-		{
-			return DF.format((1000 / tps));
-		}
+			return DF.format(1000 / tps);
 	}
 
 	public String getIP()

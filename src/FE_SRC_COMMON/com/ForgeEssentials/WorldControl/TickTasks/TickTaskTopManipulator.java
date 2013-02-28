@@ -15,6 +15,11 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class TickTaskTopManipulator implements ITickTask
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 2082312959792877136L;
+
 	public enum Mode
 	{
 		THAW, // Removes top snow/ice block. Replaces ice with water.
@@ -144,11 +149,11 @@ public class TickTaskTopManipulator implements ITickTask
 
 			z++;
 
-			if (z > (effectOrigin.z + effectRadius))
+			if (z > effectOrigin.z + effectRadius)
 			{
 				x++;
 				z = effectOrigin.z - effectRadius;
-				if (x > (effectOrigin.x + effectRadius))
+				if (x > effectOrigin.x + effectRadius)
 				{
 					isComplete = true;
 				}

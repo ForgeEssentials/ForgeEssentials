@@ -13,7 +13,7 @@ public class PromotionLadder
 	 * @param name
 	 * @param zoneID
 	 * @param list
-	 * this list must be in order. 0 bieng the top.
+	 *            this list must be in order. 0 bieng the top.
 	 */
 	public PromotionLadder(String name, String zoneID, String[] list)
 	{
@@ -27,7 +27,7 @@ public class PromotionLadder
 	 * @param name
 	 * @param zoneID
 	 * @param list
-	 * this list must be in order. 0 bieng the top.
+	 *            this list must be in order. 0 bieng the top.
 	 */
 	public PromotionLadder(String name, String zoneID, ArrayList<String> list)
 	{
@@ -49,19 +49,13 @@ public class PromotionLadder
 	public String getPromotion(String group)
 	{
 		if (!groupsList.contains(group))
-		{
 			return null;
-		}
 
 		int index = groupsList.indexOf(group);
 		if (index == 0)
-		{
 			return null;
-		}
 		else
-		{
 			return groupsList.get(index - 1);
-		}
 	}
 
 	/**
@@ -71,19 +65,13 @@ public class PromotionLadder
 	public String getDemotion(String group)
 	{
 		if (!groupsList.contains(group))
-		{
 			return null;
-		}
 
 		int index = groupsList.indexOf(group);
 		if (index == groupsList.size() - 1)
-		{
 			return null;
-		}
 		else
-		{
 			return groupsList.get(index - 1);
-		}
 	}
 
 	/**

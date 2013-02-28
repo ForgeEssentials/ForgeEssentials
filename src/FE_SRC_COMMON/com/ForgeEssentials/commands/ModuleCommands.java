@@ -45,14 +45,14 @@ import cpw.mods.fml.relauncher.Side;
 public class ModuleCommands
 {
 	@Config
-	public static ConfigCmd			conf;
+	public static ConfigCmd				conf;
 
 	@ModuleDir
-	public static File				cmddir;
+	public static File					cmddir;
 
-	public static EventHandler	eventHandler	= new EventHandler();
+	public static EventHandler			eventHandler	= new EventHandler();
 	public static AbstractDataDriver	data;
-	private static MCStatsHelper	mcstats			= new MCStatsHelper();
+	private static MCStatsHelper		mcstats			= new MCStatsHelper();
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -136,17 +136,19 @@ public class ModuleCommands
 		Object[] objs = data.loadAllObjects(new ClassContainer(Warp.class));
 		for (Object obj : objs)
 		{
-			Warp warp = ((Warp) obj);
+			Warp warp = (Warp) obj;
 			TeleportCenter.warps.put(warp.getName(), warp);
 		}
 
 		objs = data.loadAllObjects(new ClassContainer(PWarp.class));
 		for (Object obj : objs)
 		{
-			PWarp warp = ((PWarp) obj);
+			PWarp warp = (PWarp) obj;
 			HashMap<String, PWarp> map = TeleportCenter.pwMap.get(warp.getUsername());
 			if (map == null)
+			{
 				map = new HashMap<String, PWarp>();
+			}
 			map.put(warp.getName(), warp);
 			TeleportCenter.pwMap.put(warp.getUsername(), map);
 		}

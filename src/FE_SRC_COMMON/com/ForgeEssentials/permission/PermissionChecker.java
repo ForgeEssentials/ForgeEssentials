@@ -10,7 +10,6 @@ public class PermissionChecker
 
 	/**
 	 * should only be used for temporary Perm checking.
-	 * 
 	 * @param qualifiedName
 	 * @param allowed
 	 */
@@ -21,7 +20,9 @@ public class PermissionChecker
 			isAll = true;
 			name = qualifiedName;
 			if (name.contains("."))
+			{
 				name = name.replace("." + Permission.ALL, "");
+			}
 		}
 		else
 		{
@@ -32,8 +33,8 @@ public class PermissionChecker
 
 	/**
 	 * @return the qualified full name of the parent of this permission's
-	 * parent. returns "_ALL_" if there is no parent. NULL if this
-	 * permission is already _ALL_
+	 *         parent. returns "_ALL_" if there is no parent. NULL if this
+	 *         permission is already _ALL_
 	 */
 	public String getImmediateParent()
 	{
@@ -48,8 +49,8 @@ public class PermissionChecker
 
 	/**
 	 * @return the fully qualified name of the parent + _ALL_. unless this perm
-	 * has no parent, in which case it returns _ALL_. NULL if this
-	 * permission is already _ALL_
+	 *         has no parent, in which case it returns _ALL_. NULL if this
+	 *         permission is already _ALL_
 	 */
 	public String getAllParent()
 	{
@@ -62,7 +63,7 @@ public class PermissionChecker
 
 	/**
 	 * @return the modID of the mod that added this permission. returns "" if
-	 * there is none.
+	 *         there is none.
 	 */
 	public String getMod()
 	{
@@ -79,7 +80,7 @@ public class PermissionChecker
 
 	/**
 	 * @return if this Permission is a child of the given Permission. Only works
-	 * for ALL permisisons.
+	 *         for ALL permisisons.
 	 */
 	public boolean isChildOf(PermissionChecker perm)
 	{
@@ -90,9 +91,7 @@ public class PermissionChecker
 		String[] there = perm.name.split(".");
 
 		if (here.length <= there.length)
-		{
 			return false;
-		}
 
 		boolean worked = true;
 		for (int i = 0; i < there.length; i++)
@@ -115,33 +114,24 @@ public class PermissionChecker
 	public boolean equals(Object object)
 	{
 		if (object instanceof PermissionChecker)
-		{
 			return name.equals(((PermissionChecker) object).name);
-		}
 		else if (object instanceof String)
-		{
 			return object.equals(name);
-		}
 		return false;
 	}
 
 	/**
 	 * checks if this Permission can determine the result of the given
 	 * Permission AKA: checks this permission AND parents.
-	 * 
 	 * @param perm
 	 * @return True if THIS can determine the result of the given permission
 	 */
 	public boolean matches(PermissionChecker perm)
 	{
 		if (equals(perm))
-		{
 			return true;
-		}
 		else if (perm.isChildOf(this))
-		{
 			return true;
-		}
 
 		return false;
 	}

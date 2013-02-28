@@ -141,7 +141,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		{
 			name = child.getName();
 			tempType = info.getTypeOfField(name);
-			
+
 			if (StorageManager.isTypeComplex(tempType))
 			{
 				NBTTagCompound compound = tag.getCompoundTag(name);
@@ -153,7 +153,7 @@ public class NBTDataDriver extends BinaryDataDriver
 			{
 				val = readPrimitiveFromTag(tag, name, tempType.getType());
 			}
-			
+
 			data.putField(name, val);
 		}
 	}

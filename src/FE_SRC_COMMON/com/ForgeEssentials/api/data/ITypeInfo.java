@@ -1,6 +1,5 @@
 package com.ForgeEssentials.api.data;
 
-
 /**
  * The constructor for a class that implements this should take either the class, ClassContainer or nothing.
  * The class taken in the constructor should be compatible with the parameter.
@@ -60,7 +59,7 @@ public interface ITypeInfo<T>
 	 * @return NULL if this type is not parameterized
 	 */
 	public Class[] getGenericTypes();
-	
+
 	/**
 	 * This may return null for primitive types.
 	 * @return

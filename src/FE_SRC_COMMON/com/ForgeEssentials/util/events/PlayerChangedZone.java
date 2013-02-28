@@ -10,8 +10,8 @@ import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 @Cancelable
 public class PlayerChangedZone extends PlayerEvent
 {
-	public final Zone	beforeZone;
-	public final Zone	afterZone;
+	public final Zone		beforeZone;
+	public final Zone		afterZone;
 	public final WarpPoint	afterPoint;
 	public final WarpPoint	beforePoint;
 

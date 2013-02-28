@@ -152,7 +152,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
 					return;
 				}
-				String result = PermissionsAPI.setPlayerGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
+				PermissionsAPI.setPlayerGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
 				sender.sendChatToPlayer("Default group set to " + PermissionsAPI.getGroupForName(args[2]).name + " in zone " + zone.getZoneName());
 			}
 			else if (args.length > 2 && args[1].equalsIgnoreCase("add"))
@@ -162,7 +162,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
 					return;
 				}
-				String result = PermissionsAPI.addPlayerToGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
+				PermissionsAPI.addPlayerToGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
 				OutputHandler.chatConfirmation(sender, "Group " + PermissionsAPI.getGroupForName(args[2]).name + " in zone " + zone.getZoneName() + " added to defaults.");
 			}
 			else if (args.length == 1)
@@ -256,7 +256,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 					sender.sendChatToPlayer("ERROR: " + args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
 					return;
 				}
-				String result = PermissionsAPI.setPlayerGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
+				PermissionsAPI.setPlayerGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
 				sender.sendChatToPlayer("Default group set to " + PermissionsAPI.getGroupForName(args[2]).name + " in zone " + zone.getZoneName());
 			}
 			else if (args.length > 2 && args[1].equalsIgnoreCase("add"))
@@ -266,7 +266,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 					sender.sendChatToPlayer("ERROR: " + args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
 					return;
 				}
-				String result = PermissionsAPI.addPlayerToGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
+				PermissionsAPI.addPlayerToGroup(args[2], "_ENTRY_PLAYER_", zone.getZoneName());
 				sender.sendChatToPlayer("Group " + PermissionsAPI.getGroupForName(args[2]).name + " in zone " + zone.getZoneName() + " added to defaults.");
 			}
 			else if (args.length == 1)
@@ -302,13 +302,11 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		return result.equals(PermResult.DENY) ? false : true;
 	}
 
+	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsMatchingLastWord(args, args2);
-		}
-
 		else
 		{
 
@@ -332,13 +330,9 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 					break;
 				case 3:
 					if (args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player"))
-					{
 						return getListOfStringsMatchingLastWord(args, playerargs);
-					}
 					else if (args[0].equalsIgnoreCase("group") && !args[1].equalsIgnoreCase("create"))
-					{
 						return getListOfStringsMatchingLastWord(args, groupargs);
-					}
 					break;
 			}
 		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

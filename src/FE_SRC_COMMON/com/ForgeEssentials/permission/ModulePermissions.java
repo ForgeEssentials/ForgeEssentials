@@ -48,11 +48,11 @@ public class ModulePermissions
 	@ModuleDir
 	public static File					permsFolder;
 
-	protected static AbstractDataDriver			data;
+	protected static AbstractDataDriver	data;
 
 	// permission registrations here...
 	protected HashMultimap				regPerms;
-	private AutoPromote	autoPromote;
+	private AutoPromote					autoPromote;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -76,7 +76,7 @@ public class ModulePermissions
 
 		pHandler = new PermissionsHandler();
 		PermissionsAPI.QUERY_BUS.register(pHandler);
-		
+
 		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);
 	}
@@ -89,7 +89,9 @@ public class ModulePermissions
 		((ZoneHelper) ZoneManager.manager).loadZones();
 
 		if (config.importBool)
+		{
 			sql.importPerms(config.importDir);
+		}
 
 		// init perms and vMC command overrides
 		e.registerServerCommand(new CommandZone());
@@ -100,9 +102,9 @@ public class ModulePermissions
 	@ServerPostInit()
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		for(Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(new ClassContainer(AutoPromote.class)))
+		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(new ClassContainer(AutoPromote.class)))
 		{
-			AutoPromote.map.put(((AutoPromote) obj).zone, ((AutoPromote) obj));
+			AutoPromote.map.put(((AutoPromote) obj).zone, (AutoPromote) obj);
 		}
 		autoPromote = new AutoPromote(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
@@ -120,7 +122,7 @@ public class ModulePermissions
 
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
-		
+
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.list", RegGroup.GUESTS);
 	}
 
@@ -132,11 +134,13 @@ public class ModulePermissions
 		for (Zone zone : ZoneManager.getZoneList())
 		{
 			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
+			{
 				continue;
+			}
 			data.saveObject(con, zone);
 		}
-		
-		autoPromote.saveAll();
+
+		AutoPromote.saveAll();
 		autoPromote.interrupt();
 	}
 

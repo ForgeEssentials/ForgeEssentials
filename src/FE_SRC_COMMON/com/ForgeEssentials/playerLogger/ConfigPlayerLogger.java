@@ -56,11 +56,15 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 		int[] intArray1 = config.get(subcat2, "WhiteList", new int[]
 		{ 0, 1, -1 }, "WhiteList overrides blacklist!").getIntList();
 		for (int i : intArray1)
+		{
 			EventLogger.BlockChange_WhiteList.add(i);
+		}
 
 		int[] intArray2 = config.get(subcat2, "BlackList", new int[] {}, "Don't make logs in these dimensions.").getIntList();
 		for (int i : intArray2)
+		{
 			EventLogger.BlockChange_BlackList.add(i);
+		}
 
 		config.save();
 	}
@@ -110,11 +114,15 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 		int[] intArray1 = config.get(subcat2, "WhiteList", new int[]
 		{ 0, 1, -1 }, "WhiteList overrides blacklist!").getIntList();
 		for (int i : intArray1)
+		{
 			EventLogger.BlockChange_WhiteList.add(i);
+		}
 
 		int[] intArray2 = config.get(subcat2, "BlackList", new int[] {}, "Don't make logs in these dimensions.").getIntList();
 		for (int i : intArray2)
+		{
 			EventLogger.BlockChange_BlackList.add(i);
+		}
 		config.save();
 	}
 }

@@ -51,9 +51,9 @@ public class ModuleChat
 	@ModuleDir
 	public static File			moduleDir;
 
-	private MailSystem	mailsystem;
+	private MailSystem			mailsystem;
 
-	private AutoMessage	autoMessage;
+	private AutoMessage			autoMessage;
 
 	public ModuleChat()
 	{
@@ -95,15 +95,15 @@ public class ModuleChat
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
-		autoMessage = new  AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
-		mailsystem.LoadAll();
+		autoMessage = new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
+		MailSystem.LoadAll();
 		GameRegistry.registerPlayerTracker(mailsystem);
 	}
-	
+
 	@ServerStop()
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
-		mailsystem.SaveAll();
+		MailSystem.SaveAll();
 		autoMessage.interrupt();
 	}
 

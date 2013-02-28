@@ -30,7 +30,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	/**
 	 * Override if you want config interaction.
-	 * 
 	 * @param config
 	 * @param category
 	 */
@@ -52,7 +51,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public boolean usefullCmdBlock()
 	{
-		return this.canConsoleUseCommand();
+		return canConsoleUseCommand();
 	}
 
 	public boolean usefullPlayer()
@@ -114,9 +113,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 			return usage;
 		}
 		else if (sender instanceof TileEntityCommandBlock)
-		{
 			return getSyntaxCommandBlock((TileEntityCommandBlock) sender);
-		}
 		else
 		{
 			String usage;
@@ -135,33 +132,23 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public String getCommandInfo(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
-		{
 			return getInfoPlayer((EntityPlayer) sender);
-		}
 		else
-		{
 			return getInfoConsole();
-		}
 	}
 
 	public String getCommandSyntax(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
-		{
 			return getSyntaxPlayer((EntityPlayer) sender);
-		}
 		else
-		{
 			return getSyntaxConsole();
-		}
 	}
 
 	public String getSyntaxConsole()
 	{
 		if (canConsoleUseCommand())
-		{
 			return Localization.get("command." + getCommandName() + ".syntax.console");
-		}
 		return null;
 	}
 
@@ -173,27 +160,21 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
 		if (canPlayerUseCommand(player))
-		{
 			return Localization.get("command." + getCommandName() + ".syntax.player");
-		}
 		return null;
 	}
 
 	public String getInfoConsole()
 	{
 		if (canConsoleUseCommand())
-		{
 			return Localization.get("command." + getCommandName() + ".info.console");
-		}
 		return null;
 	}
 
 	public String getInfoPlayer(EntityPlayer player)
 	{
 		if (canPlayerUseCommand(player))
-		{
 			return Localization.get("command." + getCommandName() + ".info.player");
-		}
 		return null;
 	}
 
@@ -246,9 +227,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	/**
 	 * Simply prints a usage message to the sender of the command.
-	 * 
 	 * @param sender
-	 * Object that issued the command
+	 *            Object that issued the command
 	 */
 	public void error(ICommandSender sender)
 	{
@@ -257,17 +237,16 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	/**
 	 * Prints an error message to the sender of the command.
-	 * 
 	 * @param sender
-	 * Object that issued the command
+	 *            Object that issued the command
 	 * @param message
-	 * Error message
+	 *            Error message
 	 */
 	public void error(ICommandSender sender, String message)
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			OutputHandler.chatError((EntityPlayer) sender, message);
+			OutputHandler.chatError(sender, message);
 		}
 		else
 		{
@@ -280,16 +259,13 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
+	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 0)
-		{
 			return getListOfStringsFromIterableMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getPossibleCommands(sender));
-		}
 		else
-		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
 	}
 
 	public abstract String getCommandPerm();

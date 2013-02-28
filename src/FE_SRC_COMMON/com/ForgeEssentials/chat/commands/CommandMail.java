@@ -48,7 +48,7 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	{
 		return true;
 	}
-	
+
 	@Override
 	public String getCommandPerm()
 	{

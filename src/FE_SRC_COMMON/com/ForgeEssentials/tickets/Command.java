@@ -40,38 +40,47 @@ public class Command extends ForgeEssentialsCommandBase
 	{
 		doStuff(sender, args);
 	}
-	
+
 	public void doStuff(ICommandSender sender, String[] args)
 	{
 		String c = FEChatFormatCodes.DARKAQUA.toString();
-		if(args.length == 0)
+		if (args.length == 0)
 		{
 			String usage = "list|new|view";
-			if(permcheck(sender, "tp")) usage += "|tp <id>";
-			if(permcheck(sender, "admin")) usage += "|del <id>";
+			if (permcheck(sender, "tp"))
+			{
+				usage += "|tp <id>";
+			}
+			if (permcheck(sender, "admin"))
+			{
+				usage += "|del <id>";
+			}
 			OutputHandler.chatError(sender, "Usage: /ticket <" + usage + ">");
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("view") && permcheck(sender, "view"))
+
+		if (args[0].equalsIgnoreCase("view") && permcheck(sender, "view"))
 		{
-			if(args.length != 2)
+			if (args.length != 2)
 			{
 				OutputHandler.chatError(sender, "Usage: /ticket view <id>");
 				return;
 			}
-			int id = this.parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
+			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
 			Ticket t = ModuleTickets.getID(id);
 			sender.sendChatToPlayer(c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
 		}
-		
-		if(args[0].equalsIgnoreCase("list") && permcheck(sender, "view"))
+
+		if (args[0].equalsIgnoreCase("list") && permcheck(sender, "view"))
 		{
 			int page = 0;
-			int pages = (ModuleTickets.ticketList.size() / 7);
-			if(args.length == 2) page = this.parseIntBounded(sender, args[1], 0, pages);
+			int pages = ModuleTickets.ticketList.size() / 7;
+			if (args.length == 2)
+			{
+				page = parseIntBounded(sender, args[1], 0, pages);
+			}
 			sender.sendChatToPlayer(c + "--- Ticket List ---");
-			for(int i = page * 7; i < (page + 1) * 7; i ++)
+			for (int i = page * 7; i < (page + 1) * 7; i++)
 			{
 				try
 				{
@@ -86,15 +95,15 @@ public class Command extends ForgeEssentialsCommandBase
 			sender.sendChatToPlayer(c + "--- Page " + page + " of " + pages + " ---");
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("new") && permcheck(sender, "new"))
+
+		if (args[0].equalsIgnoreCase("new") && permcheck(sender, "new"))
 		{
-			if(args.length < 3)
+			if (args.length < 3)
 			{
 				OutputHandler.chatError(sender, "Usage: /ticket new <category> <message ...>");
 				return;
 			}
-			if(!ModuleTickets.categories.contains(args[1]))
+			if (!ModuleTickets.categories.contains(args[1]))
 			{
 				OutputHandler.chatError(sender, "That category doesn't exist!");
 				return;
@@ -110,26 +119,26 @@ public class Command extends ForgeEssentialsCommandBase
 			sender.sendChatToPlayer(c + "Your ticket has been posted. ID: " + t.id);
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("tp") && permcheck(sender, "tp"))
+
+		if (args[0].equalsIgnoreCase("tp") && permcheck(sender, "tp"))
 		{
-			if(args.length != 2)
+			if (args.length != 2)
 			{
 				OutputHandler.chatError(sender, "Usage: /ticket tp <id>");
 				return;
 			}
-			int id = this.parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
+			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
 			TeleportCenter.addToTpQue(ModuleTickets.getID(id).point, (EntityPlayer) sender);
 		}
-		
-		if(args[0].equalsIgnoreCase("del") && permcheck(sender, "admin"))
+
+		if (args[0].equalsIgnoreCase("del") && permcheck(sender, "admin"))
 		{
-			if(args.length != 2)
+			if (args.length != 2)
 			{
 				OutputHandler.chatError(sender, "Usage: /ticket del <id>");
 				return;
 			}
-			int id = this.parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
+			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
 			ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
 			sender.sendChatToPlayer(c + "Ticket removed.");
 		}
@@ -146,32 +155,33 @@ public class Command extends ForgeEssentialsCommandBase
 	{
 		return ModuleTickets.PERMBASE + ".command";
 	}
+
+	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-			return this.getListOfStringsMatchingLastWord(args, "list", "new", "view", "tp", "del");
-		
+			return getListOfStringsMatchingLastWord(args, "list", "new", "view", "tp", "del");
+
 		if (args.length == 2 && args[0].equalsIgnoreCase("new"))
 			return getListOfStringsFromIterableMatchingLastWord(args, ModuleTickets.categories);
-		
+
 		if (args.length == 2 && (args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("del")))
 		{
 			List<String> list = new ArrayList();
-			for(Ticket t : ModuleTickets.ticketList) list.add("" + t.id);
+			for (Ticket t : ModuleTickets.ticketList)
+			{
+				list.add("" + t.id);
+			}
 			return getListOfStringsFromIterableMatchingLastWord(args, list);
 		}
 		return null;
 	}
-	
+
 	public boolean permcheck(ICommandSender sender, String perm)
 	{
-		if(sender instanceof EntityPlayer)
-		{
+		if (sender instanceof EntityPlayer)
 			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm));
-		}
 		else
-		{
 			return true;
-		}
 	}
 }

@@ -35,7 +35,6 @@ public class PermQueryBlanketZone extends PermQuery
 
 	/**
 	 * uses the WorldZone for the specified world
-	 * 
 	 * @param world
 	 */
 	public PermQueryBlanketZone(String permission, World world)

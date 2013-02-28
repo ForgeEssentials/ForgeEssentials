@@ -15,9 +15,7 @@ import cpw.mods.fml.common.TickType;
 /**
  * Use for all commands that need a cooldown, except for warp systems, see
  * TeleportCenter.
- * 
  * @author Dries007
- * 
  */
 
 public class TickHandlerCommands implements IScheduledTickHandler
@@ -38,11 +36,11 @@ public class TickHandlerCommands implements IScheduledTickHandler
 	/*
 	 * For TPA system
 	 */
-	
+
 	public static List<TPAdata>	tpaList				= new ArrayList<TPAdata>();
 	public static List<TPAdata>	tpaListToAdd		= new ArrayList<TPAdata>();
 	public static List<TPAdata>	tpaListToRemove		= new ArrayList<TPAdata>();
-	
+
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
@@ -65,11 +63,11 @@ public class TickHandlerCommands implements IScheduledTickHandler
 		}
 		afkList.removeAll(afkListToRemove);
 		afkListToRemove.clear();
-		
+
 		/*
 		 * TPA system
 		 */
-		
+
 		tpaList.addAll(tpaListToAdd);
 		tpaListToAdd.clear();
 		for (TPAdata data : tpaList)

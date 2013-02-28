@@ -19,44 +19,47 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Does the actual filling, with limited chuncks per tick.
- * 
  * @author Dries007
- * 
  */
 
 public class TickTaskFill implements ITickTask
 {
-	protected boolean				isComplete;
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -8026130653577241537L;
 
-	protected WorldServer			world;
-	protected int					dim;
+	protected boolean			isComplete;
 
-	protected int					minX;
-	protected int					minZ;
+	protected WorldServer		world;
+	protected int				dim;
 
-	protected int					maxX;
-	protected int					maxZ;
+	protected int				minX;
+	protected int				minZ;
 
-	protected int					centerX;
-	protected int					centerZ;
-	protected int					rad;
+	protected int				maxX;
+	protected int				maxZ;
 
-	protected int					tps			= 20;
+	protected int				centerX;
+	protected int				centerZ;
+	protected int				rad;
 
-	protected Long					ticks		= 0L;
+	protected int				tps					= 20;
 
-	public static boolean			enablemsg	= true;
+	protected Long				ticks				= 0L;
 
-	public static boolean			debug;
+	public static boolean		enablemsg			= true;
 
-	protected MinecraftServer		server		= FMLCommonHandler.instance().getMinecraftServerInstance();
+	public static boolean		debug;
 
-	private int						X;
+	protected MinecraftServer	server				= FMLCommonHandler.instance().getMinecraftServerInstance();
 
-	private int						Z;
+	private int					X;
 
-	private int	eta;
-	
+	private int					Z;
+
+	private int					eta;
+
 	public TickTaskFill(World world)
 	{
 		isComplete = false;
@@ -68,28 +71,28 @@ public class TickTaskFill implements ITickTask
 		centerX = ModuleWorldBorder.X / 16;
 		centerZ = ModuleWorldBorder.Z / 16;
 		rad = (ModuleWorldBorder.rad + ModuleWorldBorder.overGenerate) / 16;
-		
+
 		TickTaskHandler.addTask(this);
-		
+
 		System.out.println("MinX=" + minX + " MaxX=" + maxX);
 		System.out.println("MinZ=" + minZ + " MaxZ=" + maxZ);
-		
+
 		eta = ModuleWorldBorder.shape.getETA();
-		
+
 		warnEveryone(Localization.get(Localization.WB_FILL_START));
 		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
-		
+
 	}
 
 	public String getETA()
-	{ 
-		return (int) (eta/10) + " ticks.";
+	{
+		return eta / 10 + " ticks.";
 	}
 
 	public void warnEveryone(String msg)
 	{
 		OutputHandler.info("#### " + msg);
-		if(enablemsg)
+		if (enablemsg)
 		{
 			for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
 			{
@@ -102,13 +105,13 @@ public class TickTaskFill implements ITickTask
 	public void tick()
 	{
 		ticks++;
-		eta --;
-		
+		eta--;
+
 		if (ticks % 250 == 0)
 		{
 			warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
 		}
-		
+
 		try
 		{
 			Chunk chunk = world.theChunkProviderServer.loadChunk(X, Z);
@@ -116,27 +119,27 @@ public class TickTaskFill implements ITickTask
 			world.theChunkProviderServer.safeSaveChunk(chunk);
 			world.theChunkProviderServer.unload100OldestChunks();
 			world.theChunkProviderServer.unloadChunksIfNotNearSpawn(X, Z);
-			
+
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-			
+
 		next();
 	}
-	
+
 	private void next()
 	{
-		if(ModuleWorldBorder.shape.equals(BorderShape.square))
+		if (ModuleWorldBorder.shape.equals(BorderShape.square))
 		{
-			if(X <= maxX)
+			if (X <= maxX)
 			{
 				X++;
 			}
 			else
 			{
-				if(Z <= maxZ)
+				if (Z <= maxZ)
 				{
 					X = minX;
 					Z++;
@@ -147,17 +150,17 @@ public class TickTaskFill implements ITickTask
 				}
 			}
 		}
-		else if(ModuleWorldBorder.shape.equals(BorderShape.round))
+		else if (ModuleWorldBorder.shape.equals(BorderShape.round))
 		{
-			while(true)
+			while (true)
 			{
-				if(X <= maxX)
+				if (X <= maxX)
 				{
 					X++;
 				}
 				else
 				{
-					if(Z <= maxZ)
+					if (Z <= maxZ)
 					{
 						X = minX;
 						Z++;
@@ -167,7 +170,7 @@ public class TickTaskFill implements ITickTask
 						isComplete = true;
 					}
 				}
-				
+
 				if (rad >= ModuleWorldBorder.getDistanceRound(centerX, centerZ, X, Z))
 				{
 					break;
@@ -175,9 +178,7 @@ public class TickTaskFill implements ITickTask
 			}
 		}
 		else
-		{
 			throw new RuntimeException("WTF?");
-		}
 	}
 
 	@Override

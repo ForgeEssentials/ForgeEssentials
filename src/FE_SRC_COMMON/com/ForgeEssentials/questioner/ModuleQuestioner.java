@@ -32,12 +32,12 @@ public class ModuleQuestioner
 	@ModuleDir
 	public static File				cmddir;
 
-	public AbstractDataDriver				data;
+	public AbstractDataDriver		data;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		
+
 	}
 
 	@Init

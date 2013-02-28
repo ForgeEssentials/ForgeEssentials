@@ -32,7 +32,7 @@ public class Chat
 	public static String		gmS;
 	public static String		gmC;
 	public static String		gmA;
-	
+
 	@ForgeSubscribe
 	public void chatEvent(ServerChatEvent event)
 	{
@@ -129,28 +129,34 @@ public class Chat
 		 * message); }
 		 */
 		// replace group, zone, and rank
-		
-		if(format.contains("%gm"))
+
+		if (format.contains("%gm"))
 		{
 			String gmCode = "";
-			if(event.player.theItemInWorldManager.getGameType().isCreative())
+			if (event.player.theItemInWorldManager.getGameType().isCreative())
+			{
 				gmCode = gmC;
-			else if(event.player.theItemInWorldManager.getGameType().isAdventure())
+			}
+			else if (event.player.theItemInWorldManager.getGameType().isAdventure())
+			{
 				gmCode = gmA;
-			else 
+			}
+			else
+			{
 				gmCode = gmS;
-			
+			}
+
 			format = FunctionHelper.replaceAllIgnoreCase(format, "%gm", gmCode);
 		}
-		
-		if(format.contains("%healthcolor"))
+
+		if (format.contains("%healthcolor"))
 		{
 			String c = "";
-			if(event.player.getHealth() < 6)
+			if (event.player.getHealth() < 6)
 			{
 				c = "%red";
 			}
-			else if(event.player.getHealth() < 12)
+			else if (event.player.getHealth() < 12)
 			{
 				c = "%yellow";
 			}
@@ -160,7 +166,7 @@ public class Chat
 			}
 			format = FunctionHelper.replaceAllIgnoreCase(format, "%healthcolor", c);
 		}
-		
+
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%rank", rank);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%zone", zoneID);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%groupPrefix", gPrefix);
@@ -168,8 +174,7 @@ public class Chat
 
 		// random nice things...
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%health", "" + event.player.getHealth());
-		
-		
+
 		format = FunctionHelper.format(format);
 
 		// essentials
@@ -199,7 +204,9 @@ public class Chat
 			for (Group g : set)
 			{
 				if (temp.length() != 0)
+				{
 					temp.append("&r");
+				}
 
 				temp.append(g.name);
 			}
@@ -225,12 +232,18 @@ public class Chat
 			for (Group g : set)
 			{
 				if (g.prefix.trim().isEmpty())
+				{
 					continue;
+				}
 
 				if (temp.length() == 0)
+				{
 					temp.append(g.prefix);
+				}
 				else
+				{
 					temp.insert(0, g.prefix + "&r");
+				}
 			}
 
 			end = match.replaceFirst(temp.toString());
@@ -254,7 +267,9 @@ public class Chat
 			for (Group g : set)
 			{
 				if (g.suffix.trim().isEmpty())
+				{
 					continue;
+				}
 
 				temp.append("&r").append(g.suffix);
 			}

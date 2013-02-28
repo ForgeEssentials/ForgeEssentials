@@ -41,11 +41,8 @@ import cpw.mods.fml.common.FMLLog;
 
 /**
  * Like 90% copied from Votifier github: https://github.com/vexsoftware/votifier
- * 
  * I only changed the init code and the event stuff.
- * 
  * @author Dries007
- * 
  */
 public class VoteReceiver extends Thread
 {
@@ -108,9 +105,7 @@ public class VoteReceiver extends Thread
 	{
 		running = false;
 		if (server == null)
-		{
 			return;
-		}
 		try
 		{
 			server.close();
@@ -153,10 +148,8 @@ public class VoteReceiver extends Thread
 				String opcode = readString(block, position);
 				position += opcode.length() + 1;
 				if (!opcode.equals("VOTE"))
-				{
 					// Something went wrong in RSA.
 					throw new Exception("Unable to decode RSA");
-				}
 
 				// Parse the block.
 				String serviceName = readString(block, position);
@@ -196,15 +189,14 @@ public class VoteReceiver extends Thread
 				ex.printStackTrace();
 			}
 		}
-		
+
 		System.gc();
 	}
 
 	/**
 	 * Reads a string from a block of data.
-	 * 
 	 * @param data
-	 * The data to read from
+	 *            The data to read from
 	 * @return The string
 	 */
 	private String readString(byte[] data, int offset)
@@ -213,7 +205,9 @@ public class VoteReceiver extends Thread
 		for (int i = offset; i < data.length; i++)
 		{
 			if (data[i] == '\n')
+			{
 				break; // Delimiter reached.
+			}
 			builder.append((char) data[i]);
 		}
 		return builder.toString();

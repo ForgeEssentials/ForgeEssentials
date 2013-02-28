@@ -43,7 +43,9 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 	public void injectData(Map<String, Object> data)
 	{
 		if (data.containsKey("coremodLocation"))
+		{
 			location = (File) data.get("coremodLocation");
+		}
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public class ModuleWorldControl
 	@Init
 	public void load(FEModuleInitEvent event)
 	{
-		
+
 	}
 
 	// serverStart.

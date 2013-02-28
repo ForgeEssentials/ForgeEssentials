@@ -8,8 +8,12 @@ import java.util.Set;
 
 public class TypeData implements IReconstructData, Serializable
 {
-	private final ClassContainer type;
-	private String uniqueKey;
+	/**
+	 * 
+	 */
+	private static final long		serialVersionUID	= -6666385032827386610L;
+	private final ClassContainer	type;
+	private String					uniqueKey;
 	private HashMap<String, Object>	members;
 
 	public TypeData(ClassContainer type)
@@ -17,27 +21,28 @@ public class TypeData implements IReconstructData, Serializable
 		this.type = type;
 		members = new HashMap<String, Object>();
 	}
-	
+
 	public void putField(String name, Object value)
 	{
 		members.put(name, value);
 	}
 
+	@Override
 	public Object getFieldValue(String name)
 	{
 		return members.get(name);
 	}
-	
+
 	public boolean hasField(String field)
 	{
 		return members.keySet().contains(field);
 	}
-	
+
 	public Set<Entry<String, Object>> getAllFields()
 	{
 		return members.entrySet();
 	}
-	
+
 	@Override
 	public Collection getAllValues()
 	{
@@ -49,6 +54,7 @@ public class TypeData implements IReconstructData, Serializable
 		uniqueKey = key;
 	}
 
+	@Override
 	public String getUniqueKey()
 	{
 		return uniqueKey;
@@ -63,7 +69,9 @@ public class TypeData implements IReconstructData, Serializable
 
 		s.append("[");
 		for (Entry<String, Object> field : getAllFields())
+		{
 			s.append(field.getKey()).append("=").append(field.getValue()).append(", ");
+		}
 		s.replace(s.length() - 2, s.length(), "]");
 
 		s.append("}");
@@ -71,11 +79,12 @@ public class TypeData implements IReconstructData, Serializable
 		return s.toString();
 	}
 
+	@Override
 	public Class getType()
 	{
 		return type.getType();
 	}
-	
+
 	public ClassContainer getContainer()
 	{
 		return type;

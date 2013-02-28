@@ -24,12 +24,9 @@ public class EventHandler
 	{
 		if (e.target == null)
 			return;
-		
+
 		if (e.target instanceof EntityPlayer)
 		{
-			// stopping pvp damage
-			EntityPlayer receiver = (EntityPlayer) e.target;
-
 			boolean sourceB = !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, ModuleProtection.PERM_PVP));
 			boolean receiverB = !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, ModuleProtection.PERM_PVP));
 

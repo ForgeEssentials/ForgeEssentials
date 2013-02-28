@@ -13,9 +13,7 @@ import com.ForgeEssentials.util.OutputHandler;
 
 /**
  * This generates the configuration structure
- * 
  * @author Dries007
- * 
  */
 
 public class ConfigWorldBorder extends ModuleConfigBase
@@ -29,7 +27,6 @@ public class ConfigWorldBorder extends ModuleConfigBase
 
 	/**
 	 * Does penalty part on config
-	 * 
 	 * @param config
 	 */
 	public static void penaltiesConfig(Configuration config)
@@ -84,7 +81,6 @@ public class ConfigWorldBorder extends ModuleConfigBase
 
 	/**
 	 * Does all the rest of the config
-	 * 
 	 * @param config
 	 */
 	public static void commonConfig(Configuration config)

@@ -54,9 +54,7 @@ public class ASMQueryHandler implements IQueryListener
 		for (PermResult r : subInfo.handleResult())
 		{
 			if (r.equals(result))
-			{
 				return true;
-			}
 		}
 		return false;
 	}

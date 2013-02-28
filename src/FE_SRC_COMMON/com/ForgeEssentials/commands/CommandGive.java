@@ -77,7 +77,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 					ItemStack stack = new ItemStack(id, amount, dam);
 
 					String name = Item.itemsList[id].func_77653_i(stack);
-					String uname = (receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()) ? "you" : receiver.username);
+					String uname = receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()) ? "you" : receiver.username;
 					sender.sendChatToPlayer("Giving " + uname + " " + amount + " " + name);
 					receiver.inventory.addItemStackToInventory(stack);
 				}
@@ -142,7 +142,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 					ItemStack stack = new ItemStack(id, amount, dam);
 
 					String name = Item.itemsList[id].func_77653_i(stack);
-					String uname = (receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()) ? "you" : receiver.username);
+					String uname = receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()) ? "you" : receiver.username;
 					sender.sendChatToPlayer("Giving " + uname + " " + amount + " " + name);
 					receiver.inventory.addItemStackToInventory(stack);
 				}
@@ -174,16 +174,10 @@ public class CommandGive extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getItemList());
-		}
 		else if (args.length == 3)
-		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
 		else
-		{
 			return null;
-		}
 	}
 }

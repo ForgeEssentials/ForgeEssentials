@@ -30,9 +30,8 @@ public class PermQueryBlanketArea extends PermQuery
 	 * set DEFAULT if the applicable regions list is to be used. set DENY if the
 	 * permissions is completely denied throughout the requested area. set ALLOW
 	 * if the permission is completely allowed throughout the requested area.
-	 * 
 	 * @param value
-	 * The new result
+	 *            The new result
 	 */
 	@Override
 	public void setResult(PermResult value)

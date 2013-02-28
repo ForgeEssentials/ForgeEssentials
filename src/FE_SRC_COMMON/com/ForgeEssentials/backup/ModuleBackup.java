@@ -77,7 +77,7 @@ public class ModuleBackup
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if (config.backupIfUnloaded)
+			if (BackupConfig.backupIfUnloaded)
 			{
 				new Backup((WorldServer) e.world, false);
 			}
@@ -89,9 +89,9 @@ public class ModuleBackup
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if (config.worldSaveing)
+			if (BackupConfig.worldSaveing)
 			{
-				((WorldServer) e.world).canNotSave = !config.worldSaveing;
+				((WorldServer) e.world).canNotSave = !BackupConfig.worldSaveing;
 			}
 		}
 	}
@@ -99,10 +99,8 @@ public class ModuleBackup
 	public static void msg(String msg)
 	{
 		OutputHandler.info(msg);
-		if (!config.enableMsg)
-		{
+		if (!BackupConfig.enableMsg)
 			return;
-		}
 		try
 		{
 			ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
@@ -124,7 +122,9 @@ public class ModuleBackup
 		try
 		{
 			if (!baseFolder.exists())
+			{
 				baseFolder.mkdirs();
+			}
 			File file = new File(baseFolder, "README.txt");
 			if (file.exists())
 				return;

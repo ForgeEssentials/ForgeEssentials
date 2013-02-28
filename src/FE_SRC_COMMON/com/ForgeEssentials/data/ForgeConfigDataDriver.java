@@ -15,9 +15,7 @@ import com.ForgeEssentials.api.data.TypeData;
 
 /**
  * Storage driver for filesystem (flat-file) persistence.
- * 
  * @author AbrarSyed
- * 
  */
 public class ForgeConfigDataDriver extends TextDataDriver
 {
@@ -45,7 +43,9 @@ public class ForgeConfigDataDriver extends TextDataDriver
 
 		// write each and every field to the config file.
 		for (Entry<String, Object> entry : objectData.getAllFields())
+		{
 			writeFieldToProperty(cfg, type.getFileSafeName(), entry.getKey(), entry.getValue());
+		}
 
 		cfg.save();
 
@@ -56,10 +56,10 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	protected TypeData loadData(ClassContainer type, String uniqueKey)
 	{
 		File file = getFilePath(type, uniqueKey);
-		
+
 		if (!file.exists())
 			return null;
-		
+
 		Configuration cfg = new Configuration(file, true);
 		cfg.load();
 		ITypeInfo info = DataStorageManager.getInfoForType(type);
@@ -93,13 +93,11 @@ public class ForgeConfigDataDriver extends TextDataDriver
 	private void writeFieldToProperty(Configuration cfg, String category, String name, Object obj)
 	{
 		if (name == null || obj == null)
-		{
 			// ignore...
 			return;
-		}
-		
+
 		Class type = obj.getClass();
-		
+
 		if (type.equals(Integer.class))
 		{
 			cfg.get(category, name, ((Integer) obj).intValue());
@@ -114,11 +112,13 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		}
 		else if (type.equals(byte[].class))
 		{
-			int[] array = new int[((byte[])obj).length];
-			
-			for (int i = 0 ; i < ((byte[])obj).length; i++)
-				array[i] = ((byte[])obj)[i];
-			
+			int[] array = new int[((byte[]) obj).length];
+
+			for (int i = 0; i < ((byte[]) obj).length; i++)
+			{
+				array[i] = ((byte[]) obj)[i];
+			}
+
 			cfg.get(category, name, array);
 		}
 		else if (type.equals(Float.class))
@@ -153,72 +153,52 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		{
 			TypeData data = (TypeData) obj;
 			String newcat = category + "." + name;
-			
+
 			for (Entry<String, Object> entry : data.getAllFields())
+			{
 				writeFieldToProperty(cfg, newcat, entry.getKey(), entry.getValue());
+			}
 		}
 		else
-		{
-			throw new IllegalArgumentException("Cannot save object type. "+obj.getClass()+"  instance: "+obj);
-		}
+			throw new IllegalArgumentException("Cannot save object type. " + obj.getClass() + "  instance: " + obj);
 	}
 
 	private Object readFieldFromProperty(Configuration cfg, String category, String name, Class type)
 	{
 		if (type.equals(int.class))
-		{
 			return cfg.get(category, name, 0).getInt();
-		}
 		if (type.equals(byte.class))
-		{
-			return (byte)cfg.get(category, name, 0).getInt();
-		}
+			return (byte) cfg.get(category, name, 0).getInt();
 		else if (type.equals(int[].class))
-		{
 			return cfg.get(category, name, new int[] {}).getIntList();
-		}
 		else if (type.equals(byte[].class))
 		{
 			int[] array = cfg.get(category, name, new int[] {}).getIntList();
 			byte[] bArray = new byte[array.length];
-			
+
 			for (int i = 0; i < array.length; i++)
+			{
 				bArray[i] = (byte) array[i];
+			}
 			return bArray;
 		}
 		else if (type.equals(float.class))
-		{
 			return (float) cfg.get(category, name, 0d).getDouble(0);
-		}
 		else if (type.equals(double.class))
-		{
 			return cfg.get(category, name, 0d).getDouble(0);
-		}
 		else if (type.equals(double[].class))
-		{
 			return cfg.get(category, name, new double[] {}).getDoubleList();
-		}
 		else if (type.equals(boolean.class))
-		{
 			return cfg.get(category, name, false).getBoolean(false);
-		}
 		else if (type.equals(boolean[].class))
-		{
 			return cfg.get(category, name, new boolean[] {}).getBooleanList();
-		}
 		else if (type.equals(String.class))
-		{
 			return cfg.get(category, name, "").value;
-		}
 		else if (type.equals(String[].class))
-		{
 			return cfg.get(category, name, new String[] {}).valueList;
-		}
 		else
-		{
 			// this should never happen...
 			return null;
-		}
 	}
 
 	private void readClassFromProperty(Configuration cfg, ConfigCategory cat, TypeData data, ITypeInfo info)

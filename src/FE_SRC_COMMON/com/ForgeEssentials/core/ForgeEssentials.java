@@ -8,14 +8,8 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.core.commands.CommandFECredits;
-import com.ForgeEssentials.core.commands.CommandFEDebug;
-import com.ForgeEssentials.core.commands.CommandFEReload;
-import com.ForgeEssentials.core.commands.CommandFEVersion;
 import com.ForgeEssentials.core.commands.CoreCommands;
-import com.ForgeEssentials.core.commands.selections.CommandDeselect;
-import com.ForgeEssentials.core.commands.selections.CommandPos;
-import com.ForgeEssentials.core.commands.selections.CommandWand;
+import com.ForgeEssentials.core.commands.selections.WandController;
 import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.core.compat.SanityChecker;
@@ -24,7 +18,6 @@ import com.ForgeEssentials.core.misc.DeathChest;
 import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
-import com.ForgeEssentials.core.misc.WandController;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
@@ -73,7 +66,7 @@ import cpw.mods.fml.relauncher.Side;
 @NetworkMod(
 		clientSideRequired = false,
 		serverSideRequired = false,
-		serverPacketHandlerSpec = @SidedPacketHandler(channels ={ "ForgeEssentials" }, packetHandler = PacketHandler.class))
+		serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = PacketHandler.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "@VERSION@")
 public class ForgeEssentials
 {
@@ -104,8 +97,8 @@ public class ForgeEssentials
 
 	private SanityChecker			bc;
 	public static boolean			sanitycheck;
-	
-	private CoreCommands cmds;
+
+	private CoreCommands			cmds;
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
@@ -116,15 +109,19 @@ public class ForgeEssentials
 
 		// setup fedir stuff
 		if (FMLCommonHandler.instance().getSide().isClient())
+		{
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials-CLIENT");
+		}
 		else
+		{
 			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
+		}
 
 		config = new CoreConfig();
-		
+
 		bc = new SanityChecker();
 		bc.run();
-		
+
 		mcstatscompat = new CompatMCStats();
 
 		// Data API stuff
@@ -139,11 +136,11 @@ public class ForgeEssentials
 
 			// Register saveables..
 			DataStorageManager.registerSaveableType(PlayerInfo.class);
-			
+
 			DataStorageManager.registerSaveableType(Point.class);
 			DataStorageManager.registerSaveableType(WorldPoint.class);
 			DataStorageManager.registerSaveableType(WarpPoint.class);
-			
+
 			DataStorageManager.registerSaveableType(TypeInfoItemStack.class, new ClassContainer(ItemStack.class));
 			DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
 		}
@@ -197,7 +194,7 @@ public class ForgeEssentials
 
 		// Central TP system
 		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
-		
+
 		cmds = new CoreCommands();
 		cmds.load(e);
 

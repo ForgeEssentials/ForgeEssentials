@@ -27,7 +27,7 @@ class RConThreadQueryAuth
 	public RConThreadQueryAuth(RConQueryThread rConQueryThread, DatagramPacket par2DatagramPacket)
 	{
 		queryThread = rConQueryThread;
-		timestamp = (new Date()).getTime();
+		timestamp = new Date().getTime();
 		byte[] var3 = par2DatagramPacket.getData();
 		requestId = new byte[4];
 		requestId[0] = var3[3];
@@ -35,7 +35,7 @@ class RConThreadQueryAuth
 		requestId[2] = var3[5];
 		requestId[3] = var3[6];
 		requestIdAsString = new String(requestId);
-		randomChallenge = (new Random()).nextInt(16777216);
+		randomChallenge = new Random().nextInt(16777216);
 		challengeValue = String.format("\t%s%d\u0000", new Object[]
 		{ requestIdAsString, Integer.valueOf(randomChallenge) }).getBytes();
 	}

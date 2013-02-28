@@ -34,7 +34,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 		{
 			if (isInteger(args[0]))
 			{
-				new Backup(this.parseInt(sender, args[0]), true);
+				new Backup(parseInt(sender, args[0]), true);
 			}
 			else
 			{
@@ -54,7 +54,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 		{
 			if (isInteger(args[0]))
 			{
-				new Backup(this.parseInt(sender, args[0]), true);
+				new Backup(parseInt(sender, args[0]), true);
 			}
 			else
 			{

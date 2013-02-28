@@ -53,7 +53,9 @@ public class CommandBed extends ForgeEssentialsCommandBase
 							player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 						}
 						else
+						{
 							player.sendChatToPlayer(Localization.get(Localization.NOROOM));
+						}
 					}
 				}
 			}
@@ -74,7 +76,9 @@ public class CommandBed extends ForgeEssentialsCommandBase
 					sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 				}
 				else
+				{
 					sender.sendChatToPlayer(Localization.get(Localization.NOROOM));
+				}
 			}
 		}
 	}
@@ -103,7 +107,9 @@ public class CommandBed extends ForgeEssentialsCommandBase
 							player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 						}
 						else
+						{
 							player.sendChatToPlayer(Localization.get(Localization.NOROOM));
+						}
 					}
 				}
 			}
@@ -130,12 +136,8 @@ public class CommandBed extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
 		else
-		{
 			return null;
-		}
 	}
 }

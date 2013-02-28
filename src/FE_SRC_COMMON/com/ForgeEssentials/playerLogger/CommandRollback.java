@@ -16,9 +16,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Rollback command. WIP!
- * 
  * @author Dries007
- * 
  */
 
 public class CommandRollback extends ForgeEssentialsCommandBase
@@ -123,16 +121,10 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getAvailablePlayerDat());
-		}
 		else if (args.length == 2)
-		{
 			return getListOfStringsMatchingLastWord(args, "undo", "clear");
-		}
 		else
-		{
 			return null;
-		}
 	}
 }

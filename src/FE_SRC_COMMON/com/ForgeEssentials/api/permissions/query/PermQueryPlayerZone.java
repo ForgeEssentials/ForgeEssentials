@@ -9,9 +9,7 @@ import com.ForgeEssentials.api.permissions.ZoneManager;
 
 /**
  * Reuslts are: default, allow, deny.
- * 
  * @author AbrarSyed
- * 
  */
 @HasResult
 public class PermQueryPlayerZone extends PermQueryPlayer
@@ -32,7 +30,6 @@ public class PermQueryPlayerZone extends PermQueryPlayer
 
 	/**
 	 * uses the WorldZone for the specified world
-	 * 
 	 * @param world
 	 */
 	public PermQueryPlayerZone(EntityPlayer player, String permission, World world)

@@ -14,7 +14,6 @@ public abstract class AreaBase
 
 	/**
 	 * Points are inclusive.
-	 * 
 	 * @param start
 	 * @param end
 	 */
@@ -89,9 +88,8 @@ public abstract class AreaBase
 
 	/**
 	 * Determines if a given point is within the bounds of an area.
-	 * 
 	 * @param p
-	 * Point to check against the Area
+	 *            Point to check against the Area
 	 * @return True, if the Point p is inside the area.
 	 */
 	public boolean contains(Point p)
@@ -101,9 +99,8 @@ public abstract class AreaBase
 
 	/**
 	 * checks if this area contains with another
-	 * 
 	 * @param area
-	 * to check against this area
+	 *            to check against this area
 	 * @return True, AreaBAse area is completely within this area
 	 */
 	public boolean contains(AreaBase area)
@@ -115,9 +112,8 @@ public abstract class AreaBase
 
 	/**
 	 * checks if this area is overlapping with another
-	 * 
 	 * @param area
-	 * to check against this area
+	 *            to check against this area
 	 * @return True, if the given area overlaps with this one.
 	 */
 	public boolean intersectsWith(AreaBase area)
@@ -128,11 +124,10 @@ public abstract class AreaBase
 	}
 
 	/**
-	 * 
 	 * @param area
-	 * The area to be checked.
+	 *            The area to be checked.
 	 * @return NULL if the areas to do not intersect. Argument if this area
-	 * completely contains the argument.
+	 *         completely contains the argument.
 	 */
 	public AreaBase getIntersection(AreaBase area)
 	{
@@ -160,9 +155,8 @@ public abstract class AreaBase
 	}
 
 	/**
-	 * 
 	 * @param area
-	 * The area to be checked.
+	 *            The area to be checked.
 	 * @return NULL if the areas to do not make a cuboid together.
 	 */
 	public AreaBase getUnity(AreaBase area)

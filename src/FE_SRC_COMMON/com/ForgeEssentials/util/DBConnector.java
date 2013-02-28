@@ -24,16 +24,16 @@ public class DBConnector
 
 	/**
 	 * @param name
-	 * a name for the DB connector. to be used in Logging.
+	 *            a name for the DB connector. to be used in Logging.
 	 * @param fallback
-	 * The DBConnector from which to take information for a given
-	 * type if loading that type from this config fails.
+	 *            The DBConnector from which to take information for a given
+	 *            type if loading that type from this config fails.
 	 * @param dType
-	 * the default database type to use
+	 *            the default database type to use
 	 * @param dbDefault
-	 * the default name for remote databases
+	 *            the default name for remote databases
 	 * @param dbFileDefault
-	 * the default path for file databases. Relative to FEDIR
+	 *            the default path for file databases. Relative to FEDIR
 	 * @paramuseFallbac if the Fallback should be used for remote Databases
 	 */
 	public DBConnector(String name, DBConnector fallback, EnumDBType dType, String dbDefault, String dbFileDefault, boolean useFallback)
@@ -50,18 +50,19 @@ public class DBConnector
 	/**
 	 * Forcibly writes everything to the config. the config's save() method is
 	 * not called.
-	 * 
 	 * @param config
 	 * @param category
-	 * the category where everything regarding this connector will
-	 * be.
+	 *            the category where everything regarding this connector will
+	 *            be.
 	 */
 	public void write(Configuration config, String cat)
 	{
 		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" ")).value = type.toString();
 
 		if (fallback != null)
+		{
 			config.get(cat, "checkParent", useFallback, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.").value = "" + useFallback;
+		}
 
 		String newcat;
 		HashMap<String, Property> props;
@@ -71,7 +72,9 @@ public class DBConnector
 
 			props = data.get(type);
 			if (props == null)
+			{
 				continue;
+			}
 
 			if (type.isRemote)
 			{
@@ -92,19 +95,20 @@ public class DBConnector
 	/**
 	 * Loads the the connector from the config for use. config load method is
 	 * not called.
-	 * 
 	 * @param config
 	 * @param category
-	 * the category where everything regarding this connector will
-	 * be.
+	 *            the category where everything regarding this connector will
+	 *            be.
 	 */
 	public void loadOrGenerate(Configuration config, String cat)
 	{
 		try
 		{
-			type = type.valueOf(config.get(cat, "chosenType", dType.toString()).value);
+			type = EnumDBType.valueOf(config.get(cat, "chosenType", dType.toString()).value);
 			if (fallback != null)
+			{
 				useFallback = config.get(cat, "checkParent", false).getBoolean(false);
+			}
 		}
 		catch (Exception e)
 		{
@@ -160,7 +164,9 @@ public class DBConnector
 					if (con != null)
 						return con;
 					else
+					{
 						OutputHandler.info("Fallback check and parent check failed, going to in-house.");
+					}
 				}
 
 				// continue with stuff
@@ -226,10 +232,10 @@ public class DBConnector
 
 	/**
 	 * @param type
-	 * Only use this for remote types.
+	 *            Only use this for remote types.
 	 * @return NULL if some error occurred.
 	 * @throws IllegalArgumentException
-	 * if the type is not remote
+	 *             if the type is not remote
 	 */
 	private Connection getSpecificConnection(EnumDBType type) throws IllegalArgumentException
 	{

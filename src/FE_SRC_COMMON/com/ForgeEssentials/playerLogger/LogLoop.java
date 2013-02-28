@@ -36,7 +36,7 @@ public class LogLoop implements Runnable
 			}
 			sendLogs();
 		}
-		
+
 		System.gc();
 	}
 

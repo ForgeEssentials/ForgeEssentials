@@ -52,15 +52,19 @@ public class ExportThread extends Thread
 		players.save((ArrayList<String>) obj1);
 
 		output("Export Complete");
-		
+
 		System.gc();
 	}
 
 	private void output(String msg)
 	{
 		if (user instanceof EntityPlayer)
+		{
 			user.sendChatToPlayer("[PermSQL]" + msg);
+		}
 		else
+		{
 			OutputHandler.info("[PermSQL]" + msg);
+		}
 	}
 }

@@ -5,7 +5,6 @@ package com.ForgeEssentials.api.permissions;
  * It is simply an output format for the data that is saved in the DataBase. The
  * fields here are not fnal in order to save memory and CPU when editing and
  * sending the instance back in to update.
- * 
  * @author AbrarSyed
  */
 public class Group implements Comparable
@@ -33,16 +32,12 @@ public class Group implements Comparable
 	public int compareTo(Object obj)
 	{
 		if (!(obj instanceof Group))
-		{
 			return Integer.MIN_VALUE;
-		}
 
 		Group g = (Group) obj;
 
 		if (equals(g))
-		{
 			return 0;
-		}
 
 		Zone my = ZoneManager.getZone(zoneName);
 		Zone their = ZoneManager.getZone(g.zoneName);
@@ -50,9 +45,7 @@ public class Group implements Comparable
 		int end = my.compareTo(their);
 
 		if (end == 0)
-		{
 			return priority - g.priority;
-		}
 
 		return end;
 	}

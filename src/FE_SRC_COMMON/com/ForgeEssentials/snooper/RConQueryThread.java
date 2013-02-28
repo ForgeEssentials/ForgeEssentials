@@ -120,7 +120,7 @@ public class RConQueryThread implements Runnable
 		field_72644_p = new HashMap();
 
 		queryClients = new HashMap();
-		time = (new Date()).getTime();
+		time = new Date().getTime();
 	}
 
 	/**
@@ -163,9 +163,7 @@ public class RConQueryThread implements Runnable
 				{
 					Response response = ResponseRegistry.getResponse(var2[2]);
 					if (response == null)
-					{
 						return false;
-					}
 					byte[] bt = response.getResponceByte(getRequestId(par1DatagramPacket.getSocketAddress()), par1DatagramPacket);
 					sendResponsePacket(bt, par1DatagramPacket);
 					logDebug("Case " + var2[2] + " [" + var4 + "] ");
@@ -196,9 +194,7 @@ public class RConQueryThread implements Runnable
 		SocketAddress var2 = par1DatagramPacket.getSocketAddress();
 
 		if (!queryClients.containsKey(var2))
-		{
 			return Boolean.valueOf(false);
-		}
 		else
 		{
 			byte[] var3 = par1DatagramPacket.getData();
@@ -406,9 +402,7 @@ public class RConQueryThread implements Runnable
 		logDebug("closeSocket: " + par1DatagramSocket);
 
 		if (null == par1DatagramSocket)
-		{
 			return false;
-		}
 		else
 		{
 			boolean var3 = false;
@@ -444,9 +438,7 @@ public class RConQueryThread implements Runnable
 		logDebug("closeSocket: " + par1ServerSocket);
 
 		if (null == par1ServerSocket)
-		{
 			return false;
-		}
 		else
 		{
 			boolean var3 = false;

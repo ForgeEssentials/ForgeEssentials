@@ -19,18 +19,22 @@ import com.ForgeEssentials.util.ITickTask;
 
 public class TickTaskRollback implements ITickTask
 {
-	private boolean			isComplete	= false;
-	private ICommandSender	sender;
-	private ResultSet		rs;
-	private int				changed		= 0;
-	private boolean			undo;
-	private WorldServer		world;
-	private int				X;
-	private int				Y;
-	private int				Z;
-	private String			username;
-	private Connection		connection;
-	private Statement		st;
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 8344437854405195194L;
+	private boolean				isComplete			= false;
+	private ICommandSender		sender;
+	private ResultSet			rs;
+	private int					changed				= 0;
+	private boolean				undo;
+	private WorldServer			world;
+	private int					X;
+	private int					Y;
+	private int					Z;
+	private String				username;
+	private Connection			connection;
+	private Statement			st;
 
 	public TickTaskRollback(ICommandSender sender, String username, boolean undo) throws SQLException
 	{
@@ -48,7 +52,7 @@ public class TickTaskRollback implements ITickTask
 		{
 			st.execute("SELECT * FROM  `blockChange` WHERE  `player` LIKE  '" + username + "' ORDER BY time DESC");
 		}
-		this.rs = st.getResultSet();
+		rs = st.getResultSet();
 	}
 
 	@Override
@@ -72,16 +76,24 @@ public class TickTaskRollback implements ITickTask
 					if (rs.getString("category").equalsIgnoreCase(blockChangeLog.blockChangeLogCategory.placed.toString()))
 					{
 						if (undo)
+						{
 							place();
+						}
 						else
+						{
 							remove();
+						}
 					}
 					else if (rs.getString("category").equalsIgnoreCase(blockChangeLog.blockChangeLogCategory.broke.toString()))
 					{
 						if (undo)
+						{
 							remove();
+						}
 						else
+						{
 							place();
+						}
 					}
 					currentTickChanged++;
 					world.markBlockForUpdate(X, Y, Z);

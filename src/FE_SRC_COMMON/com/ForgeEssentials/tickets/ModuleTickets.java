@@ -34,23 +34,23 @@ public class ModuleTickets
 	@Config
 	public static ConfigTickets		config;
 
-	public static final String		PERMBASE	= "ForgeEssentials.Tickets";
+	public static final String		PERMBASE		= "ForgeEssentials.Tickets";
 
 	@ModuleDir
 	public static File				moduleDir;
-	public static ArrayList<Ticket>	ticketList	= new ArrayList<Ticket>();
-	public static List<String>		categories	= new ArrayList<String>();
-	
+	public static ArrayList<Ticket>	ticketList		= new ArrayList<Ticket>();
+	public static List<String>		categories		= new ArrayList<String>();
+
 	public static int				currentID;
 
-	private PlayerTracker	playerTracker;
-	
-	private static ClassContainer ticketContainer = new ClassContainer(Ticket.class);
+	private PlayerTracker			playerTracker;
+
+	private static ClassContainer	ticketContainer	= new ClassContainer(Ticket.class);
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		
+
 	}
 
 	@Init
@@ -63,7 +63,7 @@ public class ModuleTickets
 	@PostInit
 	public void postLoad(FEModulePostInitEvent e)
 	{
-		
+
 	}
 
 	@ServerInit
@@ -76,7 +76,7 @@ public class ModuleTickets
 	@ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		
+
 	}
 
 	@ServerStop
@@ -122,12 +122,12 @@ public class ModuleTickets
 			DataStorageManager.getReccomendedDriver().saveObject(ticketContainer, ticket);
 		}
 	}
-	
+
 	public static Ticket getID(int i)
 	{
 		for (Ticket ticket : ticketList)
 		{
-			if(ticket.id == i)
+			if (ticket.id == i)
 				return ticket;
 		}
 		return null;

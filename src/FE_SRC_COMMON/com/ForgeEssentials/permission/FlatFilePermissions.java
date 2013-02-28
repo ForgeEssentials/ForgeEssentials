@@ -29,18 +29,21 @@ public class FlatFilePermissions
 
 		PermissionHolder holder;
 		String catName;
-		boolean allowed;
 		String[] split;
 		for (ConfigCategory cat : config.categories.values())
 		{
 			if (!cat.isChild())
+			{
 				continue;
+			}
 
 			catName = cat.getQualifiedName();
 
 			// ensures that the player and group catNameegories don't get in.
 			if (catName.indexOf('.') == catName.lastIndexOf('.'))
+			{
 				continue;
+			}
 
 			split = splitCat(catName);
 
@@ -72,7 +75,9 @@ public class FlatFilePermissions
 	{
 		// clear it.
 		if (file.exists())
+		{
 			file.delete();
+		}
 
 		Configuration config = new Configuration(file);
 

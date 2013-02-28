@@ -61,7 +61,7 @@ public abstract class TextDataDriver extends AbstractDataDriver
 
 	/**
 	 * @return extension of the file. omit the preceding period, its
-	 * automatically added. eg txt, cfg, dat, yml, etc...
+	 *         automatically added. eg txt, cfg, dat, yml, etc...
 	 */
 	protected abstract String getExtension();
 

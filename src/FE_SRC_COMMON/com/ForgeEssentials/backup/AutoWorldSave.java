@@ -23,7 +23,7 @@ public class AutoWorldSave implements Runnable
 		{
 			try
 			{
-				thread.sleep(BackupConfig.worldSaveInterval * 1000 * 60);
+				Thread.sleep(BackupConfig.worldSaveInterval * 1000 * 60);
 			}
 			catch (InterruptedException e)
 			{
@@ -34,7 +34,7 @@ public class AutoWorldSave implements Runnable
 			{
 				try
 				{
-					thread.sleep(1000);
+					Thread.sleep(1000);
 				}
 				catch (InterruptedException e)
 				{

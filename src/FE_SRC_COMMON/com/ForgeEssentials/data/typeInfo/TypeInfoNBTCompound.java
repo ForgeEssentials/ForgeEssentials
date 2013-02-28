@@ -54,11 +54,17 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 			data.putField(KEY, tag.getName());
 
 			if (tag instanceof NBTTagCompound)
+			{
 				data.putField(COMPOUND, tag);
+			}
 			else if (tag instanceof NBTTagIntArray)
-				data.putField(I_ARRAY, ((NBTTagIntArray)tag).intArray);
+			{
+				data.putField(I_ARRAY, ((NBTTagIntArray) tag).intArray);
+			}
 			else if (tag instanceof NBTTagByteArray)
-				data.putField(B_ARRAY, ((NBTTagByteArray)tag).byteArray);
+			{
+				data.putField(B_ARRAY, ((NBTTagByteArray) tag).byteArray);
+			}
 			else
 			{
 				String val = null;
@@ -94,7 +100,8 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 
 		return datas;
 	}
-	
+
+	@Override
 	public String getEntryName()
 	{
 		return "NBTTag";
@@ -107,7 +114,6 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 
 		int type;
 		String name;
-		Object val;
 		for (TypeData dat : data)
 		{
 			type = (Integer) dat.getFieldValue(TYPE);

@@ -120,11 +120,17 @@ public class CommandRegistrar
 			for (ForgeEssentialsCommandBase fecmd : cmdList)
 			{
 				if (fecmd.usefullCmdBlock())
+				{
 					config.get("CommandBlock", fecmd.getCommandName(), fecmd.enableCmdBlock);
+				}
 				if (fecmd.usefullPlayer())
+				{
 					config.get("Player", fecmd.getCommandName(), fecmd.enablePlayer);
+				}
 				if (fecmd.canConsoleUseCommand())
+				{
 					config.get("Console", fecmd.getCommandName(), fecmd.enableConsole);
+				}
 
 				String category = "commands." + fecmd.getCommandName();
 				config.addCustomCategoryComment(category, fecmd.getCommandPerm());

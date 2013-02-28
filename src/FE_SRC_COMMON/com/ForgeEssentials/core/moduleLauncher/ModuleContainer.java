@@ -470,7 +470,6 @@ public class ModuleContainer implements Comparable
 
 	/**
 	 * May be null if the module has no config
-	 * 
 	 * @return
 	 */
 	public ModuleConfigBase getConfig()
@@ -525,7 +524,9 @@ public class ModuleContainer implements Comparable
 		modid = contain.getModId() + "--" + contain.getVersion();
 
 		if (modClasses.add(c))
+		{
 			OutputHandler.info("Modules from " + modid + " are being loaded");
+		}
 		return obj;
 	}
 }

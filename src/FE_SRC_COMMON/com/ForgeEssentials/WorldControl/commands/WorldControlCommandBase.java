@@ -15,7 +15,6 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	protected boolean	usesExtraSlash;
 
 	/**
-	 * 
 	 * @param doubleSlashCommand
 	 */
 	WorldControlCommandBase(boolean doubleSlashCommand)
@@ -27,13 +26,9 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	public final String getCommandName()
 	{
 		if (usesExtraSlash)
-		{
 			return "/" + getName();
-		}
 		else
-		{
 			return getName();
-		}
 	}
 
 	public abstract String getName();
@@ -83,6 +78,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 		return "ForgeEssentials.WorldControl.commands." + getName();
 	}
 
+	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getBlockList());

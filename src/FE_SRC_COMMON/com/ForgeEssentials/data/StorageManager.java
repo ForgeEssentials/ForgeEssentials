@@ -167,18 +167,30 @@ public class StorageManager implements IStorageManager
 	{
 		ITypeInfo info = null;
 
-		if (type.isArray() && (!type.getType().getComponentType().isPrimitive() && !String.class.isAssignableFrom(type.getType().getComponentType())))
+		if (type.isArray() && !type.getType().getComponentType().isPrimitive() && !String.class.isAssignableFrom(type.getType().getComponentType()))
+		{
 			info = new TypeInfoArray(new ClassContainer(type.getType(), type.getType().getComponentType()));
+		}
 		else if (Map.class.isAssignableFrom(type.getType()))
+		{
 			info = new TypeInfoMap(type);
+		}
 		else if (Set.class.isAssignableFrom(type.getType()))
+		{
 			info = new TypeInfoSet(type);
+		}
 		else if (List.class.isAssignableFrom(type.getType()))
+		{
 			info = new TypeInfoList(type);
+		}
 		else if (type.getType().isAnnotationPresent(SaveableObject.class))
+		{
 			info = new TypeInfoStandard(type.getType());
+		}
 		else if (Serializable.class.isAssignableFrom(type.getType()))
+		{
 			info = new TypeInfoSerialize(type);
+		}
 
 		if (info == null)
 			return;
@@ -191,7 +203,9 @@ public class StorageManager implements IStorageManager
 	public void registerSaveableClass(Class<? extends ITypeInfo> infoType, ClassContainer type)
 	{
 		if (infoType.equals(TypeInfoStandard.class))
+		{
 			registerSaveableClass(type);
+		}
 		else
 		{
 			try
@@ -297,13 +311,21 @@ public class StorageManager implements IStorageManager
 		while (!isClassRegisterred(tempType))
 		{
 			if (tempType == null)
+			{
 				break;
+			}
 			else if (tempType.hasParameters())
+			{
 				tempType = new ClassContainer(tempType.getType());
+			}
 			else if (tempType.getType().getSuperclass() != null)
+			{
 				tempType = new ClassContainer(tempType.getType().getSuperclass(), type.getParameters());
+			}
 			else if (tempType.getType().getSuperclass() == null)
+			{
 				tempType = null;
+			}
 		}
 
 		if (tempType == null)
@@ -313,12 +335,16 @@ public class StorageManager implements IStorageManager
 				tempType = new ClassContainer(inter, type.getParameters());
 
 				if (isClassRegisterred(tempType))
+				{
 					break;
+				}
 
 				tempType = new ClassContainer(inter);
 
 				if (isClassRegisterred(tempType))
+				{
 					break;
+				}
 
 				tempType = null;
 			}
@@ -351,8 +377,7 @@ public class StorageManager implements IStorageManager
 	{
 		ITypeInfo info = getInfoForType(container);
 		TypeData data = info.getTypeDataFromObject(obj);
-		
-		
+
 		ITypeInfo tempInfo;
 		for (Entry<String, Object> e : data.getAllFields())
 		{
@@ -362,7 +387,6 @@ public class StorageManager implements IStorageManager
 				data.putField(e.getKey(), DataStorageManager.getDataForObject(tempInfo.getTypeOfField(e.getKey()), e.getValue()));
 			}
 		}
-		
 
 		return data;
 	}
@@ -381,15 +405,12 @@ public class StorageManager implements IStorageManager
 			flag = false;
 		}
 		else if (type.isArray())
-		{
 			return !(type.getComponentType().isPrimitive() || type.getComponentType().equals(Integer.class) || type.getComponentType().equals(Float.class) ||
-					type.getComponentType().equals(Double.class) || type.getComponentType().equals(Boolean.class) || type.getComponentType().equals(String.class) ||
-					type.equals(Byte.class));
-		}
+					type.getComponentType().equals(Double.class) || type.getComponentType().equals(Boolean.class) || type.getComponentType().equals(String.class) || type.equals(Byte.class));
 
 		return flag;
 	}
-	
+
 	/**
 	 * @param t class check
 	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.

@@ -31,65 +31,63 @@ public class Backup implements Runnable
 	{
 		for (int i : DimensionManager.getIDs())
 		{
-			Backup backup = new Backup(i, worldSave);
+			new Backup(i, worldSave);
 		}
 	}
 
 	public Backup(int dim, boolean worldSave)
 	{
-		this.isWorld = true;
+		isWorld = true;
 		this.worldSave = worldSave;
-		this.world = DimensionManager.getWorld(dim);
+		world = DimensionManager.getWorld(dim);
 
 		if (BackupConfig.backupIfUnloaded || BackupConfig.whitelist.contains(dim))
 		{
 			if (world == null)
 			{
 				DimensionManager.initDimension(dim);
-				this.world = DimensionManager.getWorld(dim);
+				world = DimensionManager.getWorld(dim);
 			}
 		}
 		else
 		{
 			if (world == null)
-			{
 				return;
-			}
 		}
 
-		this.name = world.getWorldInfo().getWorldName() + " DIM " + dim;
-		this.source = world.getChunkSaveLocation();
-		this.folder = new File(this.basefolder, name.replaceAll(" ", "_"));
-		this.backupName = getFilename() + ".zip";
+		name = world.getWorldInfo().getWorldName() + " DIM " + dim;
+		source = world.getChunkSaveLocation();
+		folder = new File(basefolder, name.replaceAll(" ", "_"));
+		backupName = getFilename() + ".zip";
 
-		thread = new Thread(this, "ForgeEssentials - Backup - " + this.name);
+		thread = new Thread(this, "ForgeEssentials - Backup - " + name);
 		thread.start();
 	}
 
 	public Backup(WorldServer world, boolean worldSave)
 	{
-		this.isWorld = true;
+		isWorld = true;
 		this.worldSave = worldSave;
 		this.world = world;
 
-		this.name = world.getWorldInfo().getWorldName() + " DIM " + world.provider.dimensionId;
-		this.source = world.getChunkSaveLocation();
-		this.folder = new File(this.basefolder, name.replaceAll(" ", "_"));
-		this.backupName = getFilename() + ".zip";
+		name = world.getWorldInfo().getWorldName() + " DIM " + world.provider.dimensionId;
+		source = world.getChunkSaveLocation();
+		folder = new File(basefolder, name.replaceAll(" ", "_"));
+		backupName = getFilename() + ".zip";
 
-		thread = new Thread(this, "ForgeEssentials - Backup - " + this.name);
+		thread = new Thread(this, "ForgeEssentials - Backup - " + name);
 		thread.start();
 	}
 
 	public Backup(File folder)
 	{
-		this.isWorld = false;
-		this.name = folder.getName();
-		this.source = folder;
-		this.folder = new File(this.basefolder, name.replaceAll(" ", "_"));
-		this.backupName = getFilename() + ".zip";
+		isWorld = false;
+		name = folder.getName();
+		source = folder;
+		this.folder = new File(basefolder, name.replaceAll(" ", "_"));
+		backupName = getFilename() + ".zip";
 
-		thread = new Thread(this, "ForgeEssentials - Backup - " + this.name);
+		thread = new Thread(this, "ForgeEssentials - Backup - " + name);
 		thread.start();
 	}
 

@@ -2,7 +2,6 @@ package com.ForgeEssentials.api.data;
 
 import net.minecraftforge.common.Configuration;
 
-
 public interface IDataDriver
 {
 	void onClassRegistered(ITypeInfo tagger);
@@ -20,6 +19,6 @@ public interface IDataDriver
 	void parseConfigs(Configuration config, String category, String worldName) throws Exception;
 
 	EnumDriverType getType();
-	
+
 	public boolean hasLoaded();
 }

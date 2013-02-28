@@ -34,16 +34,12 @@ public class PermissionQueryBus
 					{
 						Class<?>[] parameterTypes = method.getParameterTypes();
 						if (parameterTypes.length != 1)
-						{
 							throw new IllegalArgumentException("Method " + method + " has @PermSubscribe annotation, but requires " + parameterTypes.length + " arguments.  PermQuery handler methods must require a single argument.");
-						}
 
 						Class<?> eventType = parameterTypes[0];
 
 						if (!PermQuery.class.isAssignableFrom(eventType))
-						{
 							throw new IllegalArgumentException("Method " + method + " has @PermSubscribe annotation, but takes a argument that is not a PermQuery " + eventType);
-						}
 
 						register(eventType, target, method);
 						break;

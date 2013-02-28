@@ -53,7 +53,7 @@ public class ModuleServerVote
 			e1.printStackTrace();
 		}
 	}
-	
+
 	@ServerStop
 	public void serverStopping(FEModuleServerStopEvent e)
 	{

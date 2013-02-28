@@ -32,17 +32,21 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandButcherTickTask implements ITickTask
 {
-	double			MAX_ENTITY_RADIUS;
-	boolean			isComplete;
-	AxisAlignedBB	aabb;
-	EntityPlayer	player;
-	ICommandSender	sender;
-	boolean			playerCommand;
-	String			mobType;
-	int				counter, radius, tempCount;
-	int				var4, var5, var6, var7;
-	int				var9temp, var10temp;
-	World			world;
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 3714974149390562215L;
+	double						MAX_ENTITY_RADIUS;
+	boolean						isComplete;
+	AxisAlignedBB				aabb;
+	EntityPlayer				player;
+	ICommandSender				sender;
+	boolean						playerCommand;
+	String						mobType;
+	int							counter, radius, tempCount;
+	int							var4, var5, var6, var7;
+	int							var9temp, var10temp;
+	World						world;
 
 	public CommandButcherTickTask(EntityPlayer sender, String mobType, AxisAlignedBB aabb, int radius)
 	{
@@ -87,7 +91,7 @@ public class CommandButcherTickTask implements ITickTask
 	@Override
 	public void tick()
 	{
-		Set<String> typeSet, tameableSet;
+		Set<String> typeSet;
 		if (radius == -1)
 		{
 			for (Object entity : world.loadedEntityList)
@@ -159,26 +163,26 @@ public class CommandButcherTickTask implements ITickTask
 								{
 									part.setDead();
 								}
-								((EntityLiving) entity).setDead();
+								entity.setDead();
 								counter++;
 								tempCount++;
 							}
 							else if (entity instanceof EntityWither)
 							{
-								((EntityLiving) entity).setDead();
+								entity.setDead();
 								counter++;
 								tempCount++;
 							}
 							else if (typeSet.contains(entity.getClass().getName()))
 							{
-								((EntityLiving) entity).setDead();
+								entity.setDead();
 								counter++;
 								tempCount++;
 							}
 						}
-						else if (shouldKill((EntityLiving) entity))
+						else if (shouldKill(entity))
 						{
-							((EntityLiving) entity).setDead();
+							entity.setDead();
 							counter++;
 							tempCount++;
 						}
@@ -204,13 +208,9 @@ public class CommandButcherTickTask implements ITickTask
 		{
 			typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.HOSTILE);
 			if (entity instanceof EntityMob || entity instanceof EntitySlime || entity instanceof EntityGhast)
-			{
 				return true;
-			}
 			else if (typeSet.contains(entity.getClass().getName()))
-			{
 				return true;
-			}
 		}
 		else if (mobType.equalsIgnoreCase("passive"))
 		{
@@ -225,50 +225,36 @@ public class CommandButcherTickTask implements ITickTask
 			}
 			else if (tameableSet.contains(entity.getClass().getName()))
 			{
-				if (MobTypeRegistry.isTamed((EntityLiving) entity))
+				if (MobTypeRegistry.isTamed(entity))
 					return false;
 				else
 					return true;
 			}
 			else if (typeSet.contains(entity.getClass().getName()))
-			{
 				return true;
-			}
 		}
 		else if (mobType.equalsIgnoreCase("villager"))
 		{
 			typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.VILLAGER);
 			if (entity instanceof EntityVillager)
-			{
 				return true;
-			}
 			else if (typeSet.contains(entity.getClass().getName()))
-			{
 				return true;
-			}
 		}
 		else if (mobType.equalsIgnoreCase("golem"))
 		{
 			typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.GOLEM);
 			if (entity instanceof EntityGolem)
-			{
 				return true;
-			}
 			else if (typeSet.contains(entity.getClass().getName()))
-			{
 				return true;
-			}
 		}
 		else if (mobType.equalsIgnoreCase("tamed"))
 		{
 			if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed())
-			{
 				return true;
-			}
-			if (MobTypeRegistry.isTamed((EntityLiving) entity))
-			{
+			if (MobTypeRegistry.isTamed(entity))
 				return true;
-			}
 		}
 
 		return false;

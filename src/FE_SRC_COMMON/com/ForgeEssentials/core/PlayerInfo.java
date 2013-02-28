@@ -214,7 +214,7 @@ public class PlayerInfo
 
 		// send packets.
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(this)).getPayload(), (Player) player);
+		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
 	}
 
 	public Point getPoint2()
@@ -243,7 +243,7 @@ public class PlayerInfo
 
 		// send packets.
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(this)).getPayload(), (Player) player);
+		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
 	}
 
 	public Selection getSelection()
@@ -264,9 +264,7 @@ public class PlayerInfo
 	public BackupArea getNextUndo()
 	{
 		if (undos.empty())
-		{
 			return null;
-		}
 
 		BackupArea back = undos.pop();
 		redos.push(back);
@@ -276,9 +274,7 @@ public class PlayerInfo
 	public BackupArea getNextRedo()
 	{
 		if (redos.empty())
-		{
 			return null;
-		}
 
 		BackupArea back = redos.pop();
 		undos.push(back);
@@ -291,6 +287,6 @@ public class PlayerInfo
 		sel1 = null;
 		sel2 = null;
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-		PacketDispatcher.sendPacketToPlayer((new PacketSelectionUpdate(this)).getPayload(), (Player) player);
+		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
 	}
 }

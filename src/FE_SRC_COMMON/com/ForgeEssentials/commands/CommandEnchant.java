@@ -26,22 +26,16 @@ public class CommandEnchant extends ForgeEssentialsCommandBase
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
-		{
 			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
-		}
 		else
-		{
 			return true;
-		}
 	}
 
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
 		if (args.length == 2)
 		{
 			ArrayList<String> temp = new ArrayList<String>();
@@ -64,6 +58,7 @@ public class CommandEnchant extends ForgeEssentialsCommandBase
 		return null;
 	}
 
+	@Override
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
@@ -79,9 +74,7 @@ public class CommandEnchant extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		if (args.length < 2)
-		{
 			throw new WrongUsageException("commands.enchant.usage", new Object[0]);
-		}
 		else
 		{
 			EntityPlayerMP var3 = func_82359_c(sender, args[0]);
@@ -121,9 +114,7 @@ public class CommandEnchant extends ForgeEssentialsCommandBase
 			else
 			{
 				if (var7 == null)
-				{
 					throw new NumberInvalidException("commands.enchant.notFound", new Object[] {});
-				}
 				else if (!var7.func_92089_a(var6))
 				{
 					notifyAdmins(sender, "commands.enchant.cantEnchant", new Object[0]);

@@ -37,7 +37,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayerMP player = ((EntityPlayerMP) sender);
+				EntityPlayerMP player = (EntityPlayerMP) sender;
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(home, player);
@@ -69,13 +69,9 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsMatchingLastWord(args, "here");
-		}
 		else
-		{
 			return null;
-		}
 	}
 
 	@Override

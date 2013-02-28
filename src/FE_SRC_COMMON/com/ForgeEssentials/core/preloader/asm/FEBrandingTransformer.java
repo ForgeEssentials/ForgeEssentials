@@ -17,12 +17,12 @@ import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class FEBrandingTransformer implements IClassTransformer
 {
-	public static HashMap<String, String>	mcsHM			= makemcsHM();
+	public static HashMap<String, String>	mcsHM		= makemcsHM();
 
-	public static HashMap<String, String>	cbrHM			= makecbrHM();
-	
-	private static final String				SERVERBRAND		= "forge,fml, ForgeEssentials";
-	
+	public static HashMap<String, String>	cbrHM		= makecbrHM();
+
+	private static final String				SERVERBRAND	= "forge,fml, ForgeEssentials";
+
 	public static HashMap makemcsHM()
 	{
 		HashMap mcsHM = new HashMap<String, String>();
@@ -44,14 +44,13 @@ public class FEBrandingTransformer implements IClassTransformer
 
 		return cbrHM;
 	}
+
 	@Override
 	public byte[] transform(String name, byte[] bytes)
 	{
 		if (name.equals(mcsHM.get("className")))
-		{
 			// MinecraftServer, NOT Obfuscated
 			return transformBranding(bytes, mcsHM);
-		}
 		if (FMLRelauncher.side().equals("CLIENT"))
 		{
 			if (name.equals(cbrHM.get("className")))
@@ -60,6 +59,7 @@ public class FEBrandingTransformer implements IClassTransformer
 		}
 		return bytes;
 	}
+
 	private byte[] transformBranding(byte[] bytes, HashMap<String, String> hm)
 	{
 		System.out.println("[FE coremod] Patching MinecraftServer or ClientBrandRetriever...");

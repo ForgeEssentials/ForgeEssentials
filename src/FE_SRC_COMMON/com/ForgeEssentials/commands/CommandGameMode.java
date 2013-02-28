@@ -217,8 +217,8 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
 	public EnumGameType getGameTypeFromString(ICommandSender sender, String string)
 	{
-		return !string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) && !string.equalsIgnoreCase("s") ? (!string.equalsIgnoreCase(EnumGameType.CREATIVE.getName()) && !string.equalsIgnoreCase("c") ? (!string
-				.equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) && !string.equalsIgnoreCase("a") ? WorldSettings.getGameTypeById(parseIntBounded(sender, string, 0, 2)) : EnumGameType.ADVENTURE) : EnumGameType.CREATIVE) : EnumGameType.SURVIVAL;
+		return !string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) && !string.equalsIgnoreCase("s") ? !string.equalsIgnoreCase(EnumGameType.CREATIVE.getName()) && !string.equalsIgnoreCase("c") ? !string
+				.equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) && !string.equalsIgnoreCase("a") ? WorldSettings.getGameTypeById(parseIntBounded(sender, string, 0, 2)) : EnumGameType.ADVENTURE : EnumGameType.CREATIVE : EnumGameType.SURVIVAL;
 	}
 
 	@Override
@@ -237,10 +237,8 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 2)
-		{
 			return getListOfStringsMatchingLastWord(args, new String[]
 			{ "survival", "creative", "adventure" });
-		}
 		else if (args.length == 1)
 		{
 			List match = getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -252,8 +250,6 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 			return match;
 		}
 		else
-		{
 			return null;
-		}
 	}
 }

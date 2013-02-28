@@ -33,14 +33,14 @@ import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class FEeventAdder implements IClassTransformer
 {
-	public static HashMap<String, String>	iiwmHMob		= makeiiwmHMob();
-	public static HashMap<String, String>	iiwmHMdev		= makeiiwmHMdev();
+	public static HashMap<String, String>	iiwmHMob	= makeiiwmHMob();
+	public static HashMap<String, String>	iiwmHMdev	= makeiiwmHMdev();
 
-	public static HashMap<String, String>	isHMob			= makeisHMob();
-	public static HashMap<String, String>	isHMdev			= makeisHMdev();
+	public static HashMap<String, String>	isHMob		= makeisHMob();
+	public static HashMap<String, String>	isHMdev		= makeisHMdev();
 
-	public static boolean					addedBreak		= false;
-	public static boolean					addedPlace		= false;
+	public static boolean					addedBreak	= false;
+	public static boolean					addedPlace	= false;
 
 	public static HashMap makeiiwmHMob()
 	{
@@ -109,33 +109,24 @@ public class FEeventAdder implements IClassTransformer
 		return isHMdev;
 	}
 
-
 	@Override
 	public byte[] transform(String name, byte[] bytes)
 	{
 		if (name.equals(iiwmHMob.get("className")))
-		{
 			// ItemInWorldManager, Obfuscated
 			return transformItemInWorldManager(bytes, iiwmHMob);
-		}
 
 		if (name.equals(iiwmHMdev.get("className")))
-		{
 			// ItemInWorldManager, NOT Obfuscated
 			return transformItemInWorldManager(bytes, iiwmHMdev);
-		}
 
 		if (name.equals(isHMob.get("className")))
-		{
 			// ItemStack, Obfuscated
 			return transformItemStack(bytes, isHMob);
-		}
 
 		if (name.equals(isHMdev.get("className")))
-		{
 			// ItemStack, NOT Obfuscated
 			return transformItemStack(bytes, isHMdev);
-		}
 		return bytes;
 	}
 

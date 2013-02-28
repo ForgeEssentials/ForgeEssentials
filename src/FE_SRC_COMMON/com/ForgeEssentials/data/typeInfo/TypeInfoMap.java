@@ -14,8 +14,8 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class TypeInfoMap extends TypeMultiValInfo
 {
-	public static final String	KEY			= "key";
-	public static final String	VAL			= "value";
+	public static final String	KEY	= "key";
+	public static final String	VAL	= "value";
 
 	public TypeInfoMap(ClassContainer container)
 	{
@@ -33,10 +33,9 @@ public class TypeInfoMap extends TypeMultiValInfo
 	public Set<TypeData> getTypeDatasFromObject(Object obj)
 	{
 		HashSet<TypeData> datas = new HashSet<TypeData>();
-		
-		Set<Entry> list = ((Map)obj).entrySet();
 
-		int i = 0;
+		Set<Entry> list = ((Map) obj).entrySet();
+
 		TypeData data;
 		for (Entry e : list)
 		{
@@ -48,7 +47,8 @@ public class TypeInfoMap extends TypeMultiValInfo
 
 		return datas;
 	}
-	
+
+	@Override
 	public String getEntryName()
 	{
 		return "Entry";
@@ -64,14 +64,15 @@ public class TypeInfoMap extends TypeMultiValInfo
 		}
 		catch (Exception e)
 		{
-			OutputHandler.exception(Level.SEVERE, "Error instantiating "+container.getType().getCanonicalName()+"!", e);
+			OutputHandler.exception(Level.SEVERE, "Error instantiating " + container.getType().getCanonicalName() + "!", e);
 			return null;
 		}
-		
+
 		for (TypeData dat : data)
+		{
 			map.put(dat.getFieldValue(KEY), dat.getFieldValue(VAL));
-		
-		
+		}
+
 		return map;
 	}
 

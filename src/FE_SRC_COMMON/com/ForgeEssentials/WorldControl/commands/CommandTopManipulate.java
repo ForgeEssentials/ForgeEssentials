@@ -1,7 +1,6 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator;
 import com.ForgeEssentials.core.PlayerInfo;
@@ -78,7 +77,6 @@ public class CommandTopManipulate extends WorldControlCommandBase
 
 			if (radius != -1 && effectPosition != null)
 			{
-				World world = player.worldObj;
 				BackupArea back = new BackupArea();
 				// For some reason, player.posX is out.
 

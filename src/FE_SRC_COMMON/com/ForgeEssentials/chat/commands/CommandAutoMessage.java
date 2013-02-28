@@ -15,7 +15,7 @@ import com.ForgeEssentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandAutoMessage extends ForgeEssentialsCommandBase
-{	
+{
 	@Override
 	public String getCommandName()
 	{
@@ -27,7 +27,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 	{
 		return Arrays.asList("am");
 	}
-	
+
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
@@ -39,47 +39,47 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 	{
 		doStuff(sender, args);
 	}
-	
+
 	public void doStuff(ICommandSender sender, String[] args)
 	{
-		if(args.length == 0)
+		if (args.length == 0)
 		{
 			OutputHandler.chatConfirmation(sender, "Possible options: select, broadcast, add, del.");
 			return;
 		}
-		
-		if(args[0].equalsIgnoreCase("select"))
+
+		if (args[0].equalsIgnoreCase("select"))
 		{
 			try
 			{
-				int id = this.parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
+				int id = parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
 				AutoMessage.currentMsgID = id;
 				OutputHandler.chatConfirmation(sender, "You have selected \"" + AutoMessage.msg.get(id) + "\" as the next message.");
 				return;
 			}
 			catch (Exception e)
-			{	
+			{
 				OutputHandler.chatError(sender, "You have to select a message to broadcast next. Options: " + AutoMessage.msg.size());
 				return;
 			}
 		}
-		
-		if(args[0].equalsIgnoreCase("broadcast"))
+
+		if (args[0].equalsIgnoreCase("broadcast"))
 		{
 			try
 			{
-				int id = this.parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
+				int id = parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
 				FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendChatMsg(AutoMessage.msg.get(id));
 				return;
 			}
 			catch (Exception e)
-			{	
+			{
 				OutputHandler.chatError(sender, "You have to select a message to broadcast. Options: " + AutoMessage.msg.size());
 				return;
 			}
 		}
-		
-		if(args[0].equalsIgnoreCase("add"))
+
+		if (args[0].equalsIgnoreCase("add"))
 		{
 			try
 			{
@@ -100,18 +100,18 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 				return;
 			}
 		}
-		
-		if(args[0].equalsIgnoreCase("del"))
+
+		if (args[0].equalsIgnoreCase("del"))
 		{
 			try
 			{
-				int id = this.parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
+				int id = parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
 				OutputHandler.chatConfirmation(sender, "Message \"" + AutoMessage.msg.get(id) + "\" removed.");
 				AutoMessage.msg.remove(id);
 				return;
 			}
 			catch (Exception e)
-			{	
+			{
 				OutputHandler.chatError(sender, "You have to select a message to remove. Options: " + AutoMessage.msg.size());
 				return;
 			}
@@ -129,7 +129,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.Chat." + getCommandName();
 	}
-	
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
 	{

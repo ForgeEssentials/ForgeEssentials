@@ -41,7 +41,6 @@ public class Zone extends WorldArea implements Comparable
 
 	/**
 	 * used to construct Global and World zones.
-	 * 
 	 * @param name
 	 */
 	public Zone(String name, int dimension)
@@ -53,7 +52,6 @@ public class Zone extends WorldArea implements Comparable
 
 	/**
 	 * special one just for the SUPER and GLOBAL zones
-	 * 
 	 * @param name
 	 */
 	public Zone(String name)
@@ -65,7 +63,6 @@ public class Zone extends WorldArea implements Comparable
 
 	/**
 	 * used for reconstruct method only.
-	 * 
 	 * @param sel
 	 * @param dim
 	 */
@@ -77,29 +74,17 @@ public class Zone extends WorldArea implements Comparable
 	public boolean isParentOf(Zone zone)
 	{
 		if (parent == null)
-		{
 			return true;
-		}
 		else if (zone == null)
-		{
 			return false;
-		}
 		else if (zone.parent == null)
-		{
 			return false;
-		}
 		else if (zoneID.equals(zone.parent))
-		{
 			return true;
-		}
 		else if (zone.parent.equals(ZoneManager.getGLOBAL().zoneID))
-		{
 			return false;
-		}
 		else
-		{
 			return isParentOf(ZoneManager.getZone(zone.parent));
-		}
 	}
 
 	/**
@@ -108,21 +93,13 @@ public class Zone extends WorldArea implements Comparable
 	public boolean isChildOf(Zone zone)
 	{
 		if (zone.parent == null)
-		{
 			return false;
-		}
 		else if (zone.parent.equals(ZoneManager.getGLOBAL().zoneID))
-		{
 			return dim == zone.dim;
-		}
 		else if (zone.zoneID.equals(parent))
-		{
 			return true;
-		}
 		else
-		{
 			return ZoneManager.getZone(parent).isChildOf(zone);
-		}
 	}
 
 	/**
@@ -141,17 +118,11 @@ public class Zone extends WorldArea implements Comparable
 
 		Zone zone = (Zone) o;
 		if (zone.isParentOf(this))
-		{
 			return 100;
-		}
 		else if (isParentOf(zone))
-		{
 			return -100;
-		}
 		else
-		{
 			return priority - zone.priority;
-		}
 	}
 
 	public boolean isGlobalZone()

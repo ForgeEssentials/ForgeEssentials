@@ -16,67 +16,67 @@ import com.ForgeEssentials.lib.mcstats.Metrics.Plotter;
 // Obfuscated code handler for MCStats
 public class CompatMCStats implements IServerStats
 {
-	public void load(){
+	public void load()
+	{
 		registerStats(this);
 	}
-	private static List<IServerStats> handlers = new ArrayList();
-	private static Metrics metrics;
-	
+
+	private static List<IServerStats>	handlers	= new ArrayList();
+	private static Metrics				metrics;
+
 	public static void registerStats(IServerStats generator)
 	{
-		if(generator != null)
+		if (generator != null)
 		{
 			handlers.add(generator);
 		}
 		else
-		{
 			throw new RuntimeException("Why would you register null?");
-		}
 	}
-	
+
 	public static void doMCStats()
 	{
 		try
 		{
 			metrics = new Metrics("ForgeEssentials", ForgeEssentials.version);
-			
-			for(IServerStats obj : handlers)
+
+			for (IServerStats obj : handlers)
 			{
 				obj.makeGraphs(metrics);
 			}
-			
-			if(ForgeEssentials.mcstats)
+
+			if (ForgeEssentials.mcstats)
 			{
 				metrics.start();
 			}
 		}
-		catch (Exception ex) 
+		catch (Exception ex)
 		{
-		    ex.printStackTrace();
+			ex.printStackTrace();
 		}
 	}
-	
+
 	public static LinkedHashMap<String, String> doSnooperStats()
 	{
 		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		
-		for(IServerStats obj : handlers)
+
+		for (IServerStats obj : handlers)
 		{
 			LinkedHashMap<String, String> temp = obj.addToServerInfo();
-			if(map != null)
+			if (map != null)
 			{
 				map.putAll(temp);
 			}
 		}
-		
+
 		return map;
 	}
-	
+
 	@Override
 	public void makeGraphs(Metrics metrics)
 	{
 		Graph graph = metrics.createGraph("Modules used");
-		for(String module : ModuleLauncher.getModuleList())
+		for (String module : ModuleLauncher.getModuleList())
 		{
 			Plotter plotter = new Plotter(module)
 			{
@@ -97,21 +97,25 @@ public class CompatMCStats implements IServerStats
 		map.put("FEmodules", TextFormatter.toJSON(ModuleLauncher.getModuleList()));
 		return map;
 	}
-	
+
 	// leave this here, it's to remove the need to obf mcstats
-	public static boolean isOnlineMode(){
+	public static boolean isOnlineMode()
+	{
 		return MinecraftServer.getServer().isServerInOnlineMode();
 	}
 
-	public static boolean isDediServer(){
+	public static boolean isDediServer()
+	{
 		return MinecraftServer.getServer().isDedicatedServer();
 	}
 
-	public static int getPlayers(){
+	public static int getPlayers()
+	{
 		return MinecraftServer.getServer().getCurrentPlayerCount();
 	}
-	
-	public static String getMCVer(){
+
+	public static String getMCVer()
+	{
 		return MinecraftServer.getServer().getMinecraftVersion();
 	}
 

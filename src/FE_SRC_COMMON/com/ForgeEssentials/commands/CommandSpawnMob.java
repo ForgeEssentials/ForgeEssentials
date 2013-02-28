@@ -230,13 +230,9 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsFromIterableMatchingLastWord(args, mobNames.keySet());
-		}
 		else
-		{
 			return null;
-		}
 	}
 
 }

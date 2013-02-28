@@ -28,6 +28,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 		return "getcommandbook";
 	}
 
+	@Override
 	public String[] getDefaultAliases()
 	{
 		return new String[]

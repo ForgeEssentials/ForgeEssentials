@@ -18,9 +18,7 @@ import cpw.mods.fml.common.TickType;
 /**
  * Use this for all TPs. This system does it all for you: warmup, cooldown,
  * bypass for both, going between dimensions.
- * 
  * @author Dries007
- * 
  */
 
 public class TeleportCenter implements IScheduledTickHandler

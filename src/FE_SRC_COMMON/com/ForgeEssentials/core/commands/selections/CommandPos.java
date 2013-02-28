@@ -116,12 +116,12 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.BasicCommands.pos";
 	}
-	
+
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

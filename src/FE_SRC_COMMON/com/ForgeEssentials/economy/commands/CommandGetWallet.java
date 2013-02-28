@@ -27,7 +27,7 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 
 			if (player == null)
 			{
-				OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_NOPLAYER)));
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPLAYER));
 			}
 			else
 			{
@@ -42,7 +42,7 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 	}
 

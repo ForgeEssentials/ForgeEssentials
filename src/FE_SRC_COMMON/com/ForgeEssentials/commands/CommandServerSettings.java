@@ -23,6 +23,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 		return "serversettings";
 	}
 
+	@Override
 	public String[] getDefaultAliases()
 	{
 		return new String[]
@@ -93,8 +94,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				server.setBuildLimit(this.parseIntWithMin(sender, args[1], 0));
-				server.setProperty("max-build-height", this.parseIntWithMin(sender, args[1], 0));
+				server.setBuildLimit(parseIntWithMin(sender, args[1], 0));
+				server.setProperty("max-build-height", parseIntWithMin(sender, args[1], 0));
 				server.saveProperties();
 				OutputHandler.chatConfirmation(sender, "buildLimit: " + server.getBuildLimit());
 			}
@@ -130,7 +131,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				server.setProperty("spawn-protection", this.parseIntWithMin(sender, args[1], 0));
+				server.setProperty("spawn-protection", parseIntWithMin(sender, args[1], 0));
 				server.saveProperties();
 				OutputHandler.chatConfirmation(sender, "spawnProtection: " + server.getSpawnProtectionSize());
 			}

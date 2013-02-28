@@ -6,6 +6,10 @@ import java.util.ArrayList;
 
 public class BackupArea implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long		serialVersionUID	= -6482215360941545829L;
 	public ArrayList<BlockSaveable>	before;
 	public ArrayList<BlockSaveable>	after;
 
@@ -19,9 +23,7 @@ public class BackupArea implements Serializable
 	public boolean equals(Object obj)
 	{
 		if (obj instanceof BackupArea)
-		{
 			return before.equals(((BackupArea) obj).before);
-		}
 		return false;
 	}
 

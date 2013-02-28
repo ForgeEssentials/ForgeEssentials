@@ -20,9 +20,7 @@ public class PlayerArmor extends Response
 		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
 		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
 		if (player == null)
-		{
 			return "";
-		}
 
 		for (int i = 0; i < 3; i++)
 		{

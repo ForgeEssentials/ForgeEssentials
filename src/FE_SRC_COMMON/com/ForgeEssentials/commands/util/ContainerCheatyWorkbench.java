@@ -74,30 +74,22 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
 			if (par2 == 0)
 			{
 				if (!mergeItemStack(var5, 10, 46, true))
-				{
 					return null;
-				}
 
 				var4.onSlotChange(var5, var3);
 			}
 			else if (par2 >= 10 && par2 < 37)
 			{
 				if (!mergeItemStack(var5, 37, 46, false))
-				{
 					return null;
-				}
 			}
 			else if (par2 >= 37 && par2 < 46)
 			{
 				if (!mergeItemStack(var5, 10, 37, false))
-				{
 					return null;
-				}
 			}
 			else if (!mergeItemStack(var5, 10, 46, false))
-			{
 				return null;
-			}
 
 			if (var5.stackSize == 0)
 			{
@@ -109,9 +101,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
 			}
 
 			if (var5.stackSize == var3.stackSize)
-			{
 				return null;
-			}
 
 			var4.onPickupFromSlot(par1EntityPlayer, var5);
 		}

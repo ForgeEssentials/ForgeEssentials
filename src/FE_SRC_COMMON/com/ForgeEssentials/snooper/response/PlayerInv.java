@@ -20,9 +20,7 @@ public class PlayerInv extends Response
 		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
 		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
 		if (player == null)
-		{
 			return "";
-		}
 
 		LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
 		ArrayList<String> tempArgs = new ArrayList();

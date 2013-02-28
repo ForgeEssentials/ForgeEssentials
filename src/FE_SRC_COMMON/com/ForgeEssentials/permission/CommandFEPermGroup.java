@@ -43,11 +43,6 @@ public class CommandFEPermGroup
 				return;
 			}
 			Zone zone = ZoneManager.getGLOBAL();
-			String prefix = "";
-			String suffix = "";
-			String parent = null;
-			int priority = 0;
-
 			if (args.length > 2)
 			{
 
@@ -138,7 +133,9 @@ public class CommandFEPermGroup
 				groups += ((Group) groupObj).name;
 				i++;
 				if (i != list.size())
+				{
 					groups += ", ";
+				}
 			}
 			OutputHandler.chatConfirmation(sender, "Groups available in zone " + zone.getZoneName() + ":");
 			OutputHandler.chatConfirmation(sender, groups);
@@ -206,9 +203,13 @@ public class CommandFEPermGroup
 			// args[2] must contian "set"
 			{
 				if (args.length == 3)
+				{
 					group.prefix = " ";
+				}
 				else
+				{
 					group.prefix = args[3];
+				}
 				boolean result = PermissionsAPI.updateGroup(group);
 				if (result)
 				{
@@ -232,9 +233,13 @@ public class CommandFEPermGroup
 			// args[2] must contian "set"
 			{
 				if (args.length == 3)
+				{
 					group.suffix = " ";
+				}
 				else
+				{
 					group.suffix = args[3];
+				}
 				boolean result = PermissionsAPI.updateGroup(group);
 				if (result)
 				{
@@ -261,9 +266,13 @@ public class CommandFEPermGroup
 			// args[2] must contian "set"
 			{
 				if (args.length == 3)
+				{
 					group.parent = null;
+				}
 				else
+				{
 					group.parent = args[3];
+				}
 				boolean result = PermissionsAPI.updateGroup(group);
 				if (result)
 				{
@@ -290,8 +299,11 @@ public class CommandFEPermGroup
 			// args[2] must contian "set"
 			{
 				if (args.length == 3)
+				{
 					group.priority = 0;
+				}
 				else
+				{
 					try
 					{
 						group.priority = Integer.parseInt(args[3]);
@@ -300,6 +312,7 @@ public class CommandFEPermGroup
 					{
 						OutputHandler.chatError(sender, args[3] + "");
 					}
+				}
 				boolean result = PermissionsAPI.updateGroup(group);
 				if (result)
 				{
@@ -466,11 +479,6 @@ public class CommandFEPermGroup
 				return;
 			}
 			Zone zone = ZoneManager.getGLOBAL();
-			String prefix = "";
-			String suffix = "";
-			String parent = null;
-			int priority = 0;
-
 			if (args.length > 2)
 			{
 
@@ -539,7 +547,9 @@ public class CommandFEPermGroup
 				groups += ((Group) groupObj).name;
 				i++;
 				if (i != list.size())
+				{
 					groups += ", ";
+				}
 			}
 			sender.sendChatToPlayer("Groups available in zone " + zone.getZoneName() + ":");
 			sender.sendChatToPlayer(groups);
@@ -599,9 +609,13 @@ public class CommandFEPermGroup
 			// args[2] must contian "set"
 			{
 				if (args.length == 3)
+				{
 					group.prefix = " ";
+				}
 				else
+				{
 					group.prefix = args[3];
+				}
 				boolean result = PermissionsAPI.updateGroup(group);
 				if (result)
 				{
@@ -625,9 +639,13 @@ public class CommandFEPermGroup
 			// args[2] must contian "set"
 			{
 				if (args.length == 3)
+				{
 					group.suffix = " ";
+				}
 				else
+				{
 					group.suffix = args[3];
+				}
 				boolean result = PermissionsAPI.updateGroup(group);
 				if (result)
 				{
@@ -654,9 +672,13 @@ public class CommandFEPermGroup
 			// args[2] must contian "set"
 			{
 				if (args.length == 3)
+				{
 					group.parent = null;
+				}
 				else
+				{
 					group.parent = args[3];
+				}
 				boolean result = PermissionsAPI.updateGroup(group);
 				if (result)
 				{
@@ -683,8 +705,11 @@ public class CommandFEPermGroup
 			// args[2] must contian "set"
 			{
 				if (args.length == 3)
+				{
 					group.priority = 0;
+				}
 				else
+				{
 					try
 					{
 						group.priority = Integer.parseInt(args[3]);
@@ -693,6 +718,7 @@ public class CommandFEPermGroup
 					{
 						sender.sendChatToPlayer(args[3] + "");
 					}
+				}
 				boolean result = PermissionsAPI.updateGroup(group);
 				if (result)
 				{

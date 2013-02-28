@@ -36,12 +36,12 @@ public class CommandModlist extends ForgeEssentialsCommandBase
 		int perPage = 7;
 		int pages = (int) Math.ceil(size / (float) perPage);
 
-		int page = args.length == 0 ? 0 : (parseIntBounded(sender, args[0], 1, pages) - 1);
+		int page = args.length == 0 ? 0 : parseIntBounded(sender, args[0], 1, pages) - 1;
 		int min = Math.min(page * perPage, size);
 
 		sender.sendChatToPlayer("\u00a72" + Localization.get("command.modlist.header").replaceAll("%p", "" + (page + 1)).replaceAll("%t", "" + pages));
 
-		for (int i = (page) * perPage; i < min + perPage; i++)
+		for (int i = page * perPage; i < min + perPage; i++)
 		{
 			if (i >= size)
 			{

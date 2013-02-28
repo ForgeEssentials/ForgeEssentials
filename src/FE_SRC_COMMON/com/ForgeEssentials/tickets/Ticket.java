@@ -15,7 +15,7 @@ public class Ticket
 {
 	@UniqueLoadingKey
 	@SaveableField
-	public int		id;
+	public int			id;
 
 	@SaveableField
 	public String		creator;
@@ -31,14 +31,17 @@ public class Ticket
 
 	public Ticket(ICommandSender sender, String category, String message)
 	{
-		this.id = ModuleTickets.getNextID();
-		this.creator = sender.getCommandSenderName();
-		if(sender instanceof EntityPlayer) this.point = new WarpPoint((EntityPlayer) sender);
+		id = ModuleTickets.getNextID();
+		creator = sender.getCommandSenderName();
+		if (sender instanceof EntityPlayer)
+		{
+			point = new WarpPoint((EntityPlayer) sender);
+		}
 		this.category = category;
 		this.message = message;
 	}
-	
-	private Ticket (int id, String creator, String category, String message, WarpPoint point)
+
+	private Ticket(int id, String creator, String category, String message, WarpPoint point)
 	{
 		this.id = id;
 		this.creator = creator;

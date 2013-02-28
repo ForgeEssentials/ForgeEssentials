@@ -47,21 +47,27 @@ public class ModuleLauncher
 				{
 					other = containerMap.get(temp.name);
 					if (temp.doesOverride && other.mod == ForgeEssentials.instance)
+					{
 						containerMap.put(temp.name, temp);
+					}
 					else if (temp.mod == ForgeEssentials.instance && other.doesOverride)
+					{
 						continue;
+					}
 					else
 						throw new RuntimeException("{FE-Module-Launcher} " + temp.name + " is conflicting with " + other.name);
 				}
 				else
+				{
 					containerMap.put(temp.name, temp);
+				}
 
 				temp.createAndPopulate();
 				OutputHandler.info("Loaded " + temp.name);
 			}
 		}
 
-		Collection<ModuleContainer> modules = (Collection<ModuleContainer>) containerMap.values();
+		Collection<ModuleContainer> modules = containerMap.values();
 
 		// run the preinits.
 		for (ModuleContainer module : modules)
@@ -143,11 +149,13 @@ public class ModuleLauncher
 		{
 			config = module.getConfig();
 			if (config != null)
+			{
 				config.forceLoad(sender);
+			}
 			module.runReload(sender);
 		}
 	}
-	
+
 	public static String[] getModuleList()
 	{
 		return containerMap.keySet().toArray(new String[] {});

@@ -31,14 +31,14 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				int amount = this.parseIntWithMin(sender, args[1], 0);
+				int amount = parseIntWithMin(sender, args[1], 0);
 				OutputHandler.chatConfirmation(sender, "You have requested " + amount + Wallet.currency(amount) + " from " + player.username + ".");
 				OutputHandler.chatConfirmation(player, "You been requested to play " + amount + Wallet.currency(amount) + " by " + player.username + ".");
 			}
 		}
 		else
 		{
-			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 	}
 
@@ -54,7 +54,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				int amount = this.parseIntWithMin(sender, args[1], 0);
+				int amount = parseIntWithMin(sender, args[1], 0);
 				OutputHandler.chatConfirmation(sender, "You have requested " + amount + Wallet.currency(amount) + " from " + player.username + ".");
 				OutputHandler.chatConfirmation(player, "You been requested to play " + amount + Wallet.currency(amount) + " by " + player.username + ".");
 			}

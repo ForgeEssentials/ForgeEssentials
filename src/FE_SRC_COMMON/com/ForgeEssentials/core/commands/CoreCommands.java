@@ -8,8 +8,8 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class CoreCommands
 {
-	public void load(FMLServerStartingEvent e){
-
+	public void load(FMLServerStartingEvent e)
+	{
 
 		e.registerServerCommand(new CommandFEVersion());
 		e.registerServerCommand(new CommandFECredits());

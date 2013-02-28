@@ -15,9 +15,9 @@ public class TPAdata
 	{
 		this.sender = sender;
 		this.receiver = receiver;
-		
-		this.timeout = CommandTPA.timeout;
-		this.tphere = tpaHere;
+
+		timeout = CommandTPA.timeout;
+		tphere = tpaHere;
 	}
 
 	public void count()
@@ -27,25 +27,25 @@ public class TPAdata
 			TickHandlerCommands.tpaListToRemove.add(this);
 			return;
 		}
-		
+
 		if (receiver == null)
 		{
 			TickHandlerCommands.tpaListToRemove.add(this);
 			return;
 		}
-		
+
 		if (timeout == 0)
 		{
 			TickHandlerCommands.tpaListToRemove.add(this);
-			if(tphere)
+			if (tphere)
 			{
-				this.receiver.sendChatToPlayer(	"TPAhere from " + 	this.sender.username 	+ " timed out");
-				this.sender.sendChatToPlayer(	"TPAhere to " + 	this.receiver.username 	+ " timed out");
+				receiver.sendChatToPlayer("TPAhere from " + sender.username + " timed out");
+				sender.sendChatToPlayer("TPAhere to " + receiver.username + " timed out");
 			}
 			else
 			{
-				this.receiver.sendChatToPlayer(	"TPA from " + 	this.sender.username 	+ " timed out");
-				this.sender.sendChatToPlayer(	"TPA to " + 	this.receiver.username 	+ " timed out");
+				receiver.sendChatToPlayer("TPA from " + sender.username + " timed out");
+				sender.sendChatToPlayer("TPA to " + receiver.username + " timed out");
 			}
 		}
 		timeout--;

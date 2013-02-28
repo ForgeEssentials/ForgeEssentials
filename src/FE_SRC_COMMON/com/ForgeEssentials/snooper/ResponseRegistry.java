@@ -12,20 +12,15 @@ public class ResponseRegistry
 
 	/**
 	 * Register a response for an ID. Use the API!
-	 * 
 	 * @param ID
 	 * @param response
 	 */
 	public static void registerResponse(Integer ID, Response response)
 	{
 		if (ID == 9)
-		{
 			return;
-		}
 		if (map.containsKey(ID))
-		{
 			throw new RuntimeException("You are attempting to register a response on an used ID: " + ID);
-		}
 		else
 		{
 			OutputHandler.finer("Response " + response.getName() + " ID: " + ID + " registered!");
@@ -35,25 +30,19 @@ public class ResponseRegistry
 
 	/**
 	 * Used to build the response.
-	 * 
 	 * @param ID
 	 * @return
 	 */
 	public static Response getResponse(byte ID)
 	{
 		if (map.containsKey((int) ID))
-		{
 			return map.get((int) ID);
-		}
 		else
-		{
 			return null;
-		}
 	}
 
 	/**
 	 * Used by config
-	 * 
 	 * @return
 	 */
 	public static Collection<Response> getAllresponses()

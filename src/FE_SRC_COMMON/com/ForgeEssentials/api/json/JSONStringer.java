@@ -47,7 +47,6 @@ import java.io.StringWriter;
  * The first method called must be <code>array</code> or <code>object</code>. There are no methods for adding commas or colons. JSONStringer adds them for you. Objects and arrays can be nested up to 20 levels deep.
  * <p>
  * This can sometimes be easier than using a JSONObject to build a string.
- * 
  * @author JSON.org
  * @version 2008-09-18
  */
@@ -65,11 +64,11 @@ public class JSONStringer extends JSONWriter
 	 * Return the JSON text. This method is used to obtain the product of the
 	 * JSONStringer instance. It will return <code>null</code> if there was a
 	 * problem in the construction of the JSON text (such as the calls to <code>array</code> were not properly balanced with calls to <code>endArray</code>).
-	 * 
 	 * @return The JSON text.
 	 */
+	@Override
 	public String toString()
 	{
-		return this.mode == 'd' ? this.writer.toString() : null;
+		return mode == 'd' ? writer.toString() : null;
 	}
 }

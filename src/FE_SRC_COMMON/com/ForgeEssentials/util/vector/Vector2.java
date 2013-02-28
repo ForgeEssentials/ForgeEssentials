@@ -96,7 +96,7 @@ public class Vector2 implements Cloneable
 
 	public void normalize()
 	{
-		double dist = Math.sqrt((x * x) + (y * y));
+		double dist = Math.sqrt(x * x + y * y);
 		x = x / dist;
 		y = y / dist;
 	}

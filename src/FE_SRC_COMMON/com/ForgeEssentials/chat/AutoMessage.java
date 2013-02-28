@@ -10,7 +10,7 @@ public class AutoMessage implements Runnable
 	private static Thread			thread;
 	public static int				waittime;
 	public static boolean			random;
-	public static ArrayList<String>	msg = new ArrayList<String> ();
+	public static ArrayList<String>	msg	= new ArrayList<String>();
 	public static boolean			enable;
 
 	MinecraftServer					server;
@@ -19,14 +19,14 @@ public class AutoMessage implements Runnable
 	public AutoMessage(MinecraftServer server)
 	{
 		this.server = server;
-		
-		if(msg.isEmpty())
+
+		if (msg.isEmpty())
 		{
-			this.currentMsgID = 0;
+			currentMsgID = 0;
 		}
 		else
 		{
-			this.currentMsgID = new Random().nextInt(msg.size());
+			currentMsgID = new Random().nextInt(msg.size());
 		}
 
 		thread = new Thread(this, "ForgeEssentials - Chat - automessage");
@@ -38,13 +38,19 @@ public class AutoMessage implements Runnable
 	{
 		while (server.isServerRunning())
 		{
-			try {thread.sleep(1000 * 60 * waittime);}
-			catch (InterruptedException e) {break;}
-			
+			try
+			{
+				Thread.sleep(1000 * 60 * waittime);
+			}
+			catch (InterruptedException e)
+			{
+				break;
+			}
+
 			if (server.getAllUsernames().length != 0 && enable && !msg.isEmpty())
 			{
 				server.getConfigurationManager().sendChatMsg(msg.get(currentMsgID));
-				
+
 				if (random)
 				{
 					currentMsgID = new Random().nextInt(msg.size());
@@ -59,10 +65,10 @@ public class AutoMessage implements Runnable
 				}
 			}
 		}
-		
+
 		System.gc();
 	}
-	
+
 	public void interrupt()
 	{
 		thread.interrupt();

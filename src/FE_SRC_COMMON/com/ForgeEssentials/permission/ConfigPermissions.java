@@ -37,7 +37,9 @@ public class ConfigPermissions extends ModuleConfigBase
 		importDir = config.get("stuff", "importDir", "import", "file from wich permissions should be imported").value;
 
 		if (importBool == true)
+		{
 			config.get("stuff", "import", false).value = "" + false;
+		}
 
 		connector.loadOrGenerate(config, "database");
 

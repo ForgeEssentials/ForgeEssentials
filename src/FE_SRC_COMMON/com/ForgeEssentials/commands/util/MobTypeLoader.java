@@ -28,8 +28,6 @@ public class MobTypeLoader
 
 		String className;
 		EnumMobType type;
-		boolean isTameable = false;
-		boolean hasTameableAnnot = false;
 		for (ASMData asm : data)
 		{
 			Class c = null;
@@ -48,9 +46,7 @@ public class MobTypeLoader
 
 			FEMob annot = (FEMob) c.getAnnotation(FEMob.class);
 			if (annot == null)
-			{
 				throw new IllegalArgumentException(c.getName() + " doesn't have the @FEMob annotation!");
-			}
 
 			type = annot.type();
 			if (type != EnumMobType.TAMEABLE)
@@ -63,8 +59,10 @@ public class MobTypeLoader
 			// continue cuz its a tameable...
 
 			if (EntityTameable.class.isAssignableFrom(c))
+			{
 				// do NOT add to the map.. its unnecessary...
 				continue;
+			}
 
 			String isTameableName = null;
 

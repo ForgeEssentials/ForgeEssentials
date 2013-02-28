@@ -18,16 +18,12 @@ import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 /**
- * 
  * This is the default catcher of all the ForgeEssentials Permission checks.
  * Mods can inherit from any of the ForgeEssentials Permissions and specify more
  * specific catchers to get first crack at handling them.
- * 
  * The handling performed here is limited to basic area permission checks, and
  * is not aware of anything else other mods add to the system.
- * 
  * @author AbrarSyed
- * 
  */
 public final class PermissionsHandler
 {
@@ -44,7 +40,9 @@ public final class PermissionsHandler
 	{
 		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.getSUPER().getZoneName(), event.checkForward);
 		if (!result.equals(PermResult.UNKNOWN))
+		{
 			event.setResult(result);
+		}
 	}
 
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult =
@@ -97,13 +95,12 @@ public final class PermissionsHandler
 	}
 
 	/**
-	 * 
 	 * @param zone
-	 * Zone to check permissions in.
+	 *            Zone to check permissions in.
 	 * @param perm
-	 * The permission to check.
+	 *            The permission to check.
 	 * @param player
-	 * Player to check/
+	 *            Player to check/
 	 * @return the result for the perm.
 	 */
 	private PermResult getResultFromZone(Zone zone, PermQueryPlayer event)
@@ -174,7 +171,9 @@ public final class PermissionsHandler
 		for (Zone zone : ZoneManager.getZoneList())
 		{
 			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
+			{
 				continue;
+			}
 			if (zone.intersectsWith(doneTo) && worldZone.isParentOf(zone))
 			{
 				zones.add(zone);
@@ -188,26 +187,18 @@ public final class PermissionsHandler
 					{
 						PermResult result = getResultFromZone(worldZone, event);
 						if (result.equals(PermResult.ALLOW))
-						{
 							return applicable;
-						}
 						else
-						{
 							return null;
-						}
 					}
 				// only 1 usable Zone? use it.
 				case 1:
 					{
 						PermResult result = getResultFromZone(zones.get(0), event);
 						if (result.equals(PermResult.ALLOW))
-						{
 							return applicable;
-						}
 						else
-						{
 							return null;
-						}
 					}
 				// else.. get the applicable states.
 				default:

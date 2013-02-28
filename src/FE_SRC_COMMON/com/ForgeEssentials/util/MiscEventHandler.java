@@ -41,14 +41,14 @@ public class MiscEventHandler
 			int playersS = 1;
 			for (Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
 			{
-				EntityPlayerMP player = ((EntityPlayerMP) obj);
+				EntityPlayerMP player = (EntityPlayerMP) obj;
 				if (player.isPlayerSleeping())
 				{
 					playersS++;
 				}
 			}
 
-			float percent = (playersS * 100.0f) / playersT;
+			float percent = playersS * 100.0f / playersT;
 			OutputHandler.finer("Players sleeping: " + percent + "%");
 			if (percent > 50)
 			{

@@ -18,6 +18,10 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class TickTaskSetSelection implements ITickTask
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -3702650235724756111L;
 	// stuff needed
 	private final int			blockID;
 	private final int			metadata;
@@ -158,9 +162,7 @@ public class TickTaskSetSelection implements ITickTask
 	{
 		Point p = new Point(x, y, z);
 		if (applicable == null)
-		{
 			return true;
-		}
 
 		boolean contains = false;
 
@@ -168,9 +170,7 @@ public class TickTaskSetSelection implements ITickTask
 		{
 			contains = area.contains(p);
 			if (contains)
-			{
 				return true;
-			}
 		}
 
 		return contains;

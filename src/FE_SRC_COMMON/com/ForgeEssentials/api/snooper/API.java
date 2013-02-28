@@ -9,7 +9,6 @@ public class API
 	/**
 	 * Use this method to register your responses. DON'T ID 9. That is used for
 	 * challenge.
-	 * 
 	 * @param ID
 	 * @param response
 	 */

@@ -37,9 +37,7 @@ public class TextFormatter
 	public static String toJSON(HashMap<String, String> data)
 	{
 		if (data.isEmpty())
-		{
 			return "{}";
-		}
 		String toSend = "{";
 
 		for (Entry<String, String> set : data.entrySet())
@@ -63,9 +61,7 @@ public class TextFormatter
 	public static String toJSON(String[] data)
 	{
 		if (data.length == 0)
-		{
 			return "[]";
-		}
 		String toSend = "[";
 
 		for (String value : data)
@@ -89,9 +85,7 @@ public class TextFormatter
 	public static String toJSON(int[] data)
 	{
 		if (data.length == 0)
-		{
 			return "[]";
-		}
 		String toSend = "[";
 
 		for (int value : data)
@@ -108,9 +102,7 @@ public class TextFormatter
 	public static String toJSON(byte[] data)
 	{
 		if (data.length == 0)
-		{
 			return "[]";
-		}
 		String toSend = "[";
 
 		for (int value : data)
@@ -192,7 +184,7 @@ public class TextFormatter
 		while (i.hasNext())
 		{
 			Object obj = i.next();
-			PotionEffect effect = ((PotionEffect) obj);
+			PotionEffect effect = (PotionEffect) obj;
 			data[id] = translatePotion(effect);
 			id++;
 		}
@@ -222,9 +214,7 @@ public class TextFormatter
 	public static String toJSON(List<String> data)
 	{
 		if (data.size() == 0)
-		{
 			return "[]";
-		}
 		String toSend = "[";
 
 		for (String value : data)
@@ -262,15 +252,25 @@ public class TextFormatter
 		String data;
 
 		if (nbt instanceof NBTTagCompound)
+		{
 			data = toJSONnbtComp((NBTTagCompound) nbt);
+		}
 		else if (nbt instanceof NBTTagByteArray)
+		{
 			data = toJSONnbtBtArray((NBTTagByteArray) nbt);
+		}
 		else if (nbt instanceof NBTTagIntArray)
+		{
 			data = toJSONnbtIntArray((NBTTagIntArray) nbt);
+		}
 		else if (nbt instanceof NBTTagList)
+		{
 			data = toJSONnbtTagList((NBTTagList) nbt);
+		}
 		else
+		{
 			data = nbt.toString();
+		}
 
 		map.put(nbt.getId() + "~" + nbt.getName(), data);
 		return toJSON(map);
@@ -301,7 +301,7 @@ public class TextFormatter
 		try
 		{
 			JSONObject top = new JSONObject(JSON);
-			String className = top.getNames(top)[0];
+			String className = JSONObject.getNames(top)[0];
 			// OutputHandler.debug("RECONSTRUCT: " + className);
 			TileEntity te = (TileEntity) Class.forName(className).newInstance();
 			JSONArray dataArray = top.getJSONArray(className);

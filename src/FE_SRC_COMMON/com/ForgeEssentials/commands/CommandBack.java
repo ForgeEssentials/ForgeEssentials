@@ -27,7 +27,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 		{
 			WarpPoint death = info.back;
 			info.back = new WarpPoint(sender);
-			EntityPlayerMP player = ((EntityPlayerMP) sender);
+			EntityPlayerMP player = (EntityPlayerMP) sender;
 			TeleportCenter.addToTpQue(death, player);
 		}
 		else

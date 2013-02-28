@@ -13,20 +13,20 @@ public class Mail
 {
 	@UniqueLoadingKey
 	@SaveableField
-	private String key;
-	
+	private String	key;
+
 	@SaveableField
-	private String sender;
-	
+	private String	sender;
+
 	@SaveableField
-	private String receiver;
-	
+	private String	receiver;
+
 	@SaveableField
-	private String message;
-	
+	private String	message;
+
 	public Mail(String key, String sender, String receiver, String message)
 	{
-		if(key.equals(""))
+		if (key.equals(""))
 		{
 			this.key = new UID().toString().replaceAll(":", "_");
 		}
@@ -43,17 +43,17 @@ public class Mail
 	{
 		return key;
 	}
-	
+
 	public String getSender()
 	{
 		return sender;
 	}
-	
+
 	public String getReceiver()
 	{
 		return receiver;
 	}
-	
+
 	public String getMessage()
 	{
 		return message;
@@ -62,6 +62,6 @@ public class Mail
 	@Reconstructor
 	private static Mail reconstruct(IReconstructData tag)
 	{
-		return new Mail((String)tag.getFieldValue("key"), (String)tag.getFieldValue("sender"), (String)tag.getFieldValue("receiver"), (String)tag.getFieldValue("message"));
+		return new Mail((String) tag.getFieldValue("key"), (String) tag.getFieldValue("sender"), (String) tag.getFieldValue("receiver"), (String) tag.getFieldValue("message"));
 	}
 }

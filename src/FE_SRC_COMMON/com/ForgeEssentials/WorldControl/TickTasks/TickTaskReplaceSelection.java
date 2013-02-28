@@ -19,6 +19,10 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 
 public class TickTaskReplaceSelection implements ITickTask
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -50878383585509101L;
 	private BackupArea			backup;
 	private EntityPlayer		player;
 	private int					changed;
@@ -183,9 +187,7 @@ public class TickTaskReplaceSelection implements ITickTask
 	{
 		Point p = new Point(x, y, z);
 		if (applicable == null)
-		{
 			return true;
-		}
 
 		boolean contains = false;
 
@@ -193,9 +195,7 @@ public class TickTaskReplaceSelection implements ITickTask
 		{
 			contains = area.contains(p);
 			if (contains)
-			{
 				return true;
-			}
 		}
 
 		return contains;

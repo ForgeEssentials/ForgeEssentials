@@ -7,7 +7,6 @@ import net.minecraft.command.ICommandSender;
 /**
  * The constructor of this should only set the file. Any creation of a Forge
  * COnfiguration class will throw everything off. DO NOT DO IT.
- * 
  * @author AbrarSyed
  */
 public abstract class ModuleConfigBase
@@ -22,7 +21,7 @@ public abstract class ModuleConfigBase
 
 	public void setGenerate(boolean generate)
 	{
-		this.genrate = generate;
+		genrate = generate;
 	}
 
 	/**

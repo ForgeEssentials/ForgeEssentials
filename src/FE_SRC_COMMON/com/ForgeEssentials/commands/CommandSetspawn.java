@@ -30,12 +30,11 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 			int x;
 			int y;
 			int z;
-			int dim = sender.dimension;
 			if (args.length == 4)
 			{
 				try
 				{
-					dim = Integer.parseInt(args[3]);
+					Integer.parseInt(args[3]);
 				}
 				catch (NumberFormatException e)
 				{

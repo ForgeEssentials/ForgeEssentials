@@ -191,12 +191,11 @@ public class Vector3 extends Vector2 implements Cloneable
 	 */
 	public boolean isEqual(Vector3 vector3)
 	{
-		return (x == vector3.x && y == vector3.y && z == vector3.z);
+		return x == vector3.x && y == vector3.y && z == vector3.z;
 	}
 
 	/**
 	 * Gets the distance between two vectors
-	 * 
 	 * @return The distance
 	 */
 	public static double distance(Vector3 par1, Vector3 par2)
@@ -288,11 +287,10 @@ public class Vector3 extends Vector2 implements Cloneable
 
 	/**
 	 * Saves this Vector3 to disk
-	 * 
 	 * @param prefix
-	 * - The prefix of this save. Use some unique string.
+	 *            - The prefix of this save. Use some unique string.
 	 * @param par1NBTTagCompound
-	 * - The NBT compound object to save the data in
+	 *            - The NBT compound object to save the data in
 	 */
 	public void writeToNBT(String prefix, NBTTagCompound par1NBTTagCompound)
 	{

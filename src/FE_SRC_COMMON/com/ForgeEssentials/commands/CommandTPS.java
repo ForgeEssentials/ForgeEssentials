@@ -48,25 +48,21 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 			var2 += var7;
 		}
 
-		return (((double) var2 / (double) par1ArrayOfLong.length) * 1.0E-6D);
+		return (double) var2 / (double) par1ArrayOfLong.length * 1.0E-6D;
 	}
 
 	public String getTPS(long[] par1ArrayOfLong)
 	{
-		double tps = (func_79015_a(par1ArrayOfLong));
+		double tps = func_79015_a(par1ArrayOfLong);
 		if (tps < 50)
-		{
 			return "20";
-		}
 		else
-		{
-			return DF.format((1000 / tps));
-		}
+			return DF.format(1000 / tps);
 	}
 
 	private String getTickTime(long[] par1ArrayOfLong)
 	{
-		double tps = (func_79015_a(par1ArrayOfLong));
+		double tps = func_79015_a(par1ArrayOfLong);
 		return "" + DF.format(tps);
 	}
 
@@ -75,7 +71,7 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 	{
 		if (!doCommand(sender, args))
 		{
-			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 	}
 
@@ -84,7 +80,7 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 	{
 		if (!doCommand(sender, args))
 		{
-			sender.sendChatToPlayer((Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
@@ -103,11 +99,9 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 
 			if (server.worldServers != null)
 			{
-				int x = 0;
 				for (Integer id : DimensionManager.getIDs())
 				{
 					sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + getTickTime(server.worldTickTimes.get(id)) + "ms");
-					x++;
 				}
 			}
 			return true;
@@ -118,18 +112,16 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 			{
 				if (server.worldServers != null)
 				{
-					int x = 0;
 					for (Integer id : DimensionManager.getIDs())
 					{
 						sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
-						x++;
 					}
 				}
 				return true;
 			}
 			else
 			{
-				int id = parseIntBounded(sender, args[0], DimensionManager.getIDs()[0], (DimensionManager.getNextFreeDimId() - 1));
+				int id = parseIntBounded(sender, args[0], DimensionManager.getIDs()[0], DimensionManager.getNextFreeDimId() - 1);
 				sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
 			}
 			return true;

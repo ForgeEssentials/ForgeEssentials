@@ -33,11 +33,9 @@ public class DuplicateCommandRemoval
 				OutputHandler.finer("commandSet size: " + cmdList.size());
 
 				ICommand keep;
-				boolean worked;
 				for (ICommand cmd : cmdList)
 				{
 					keep = initials.put(cmd.getCommandName(), cmd);
-					worked = false;
 					if (keep != null)
 					{
 						OutputHandler.finer("Duplicate command found! Name:" + keep.getCommandName());
@@ -71,7 +69,9 @@ public class DuplicateCommandRemoval
 								duplicates.remove(name, cmd);
 							}
 							else
+							{
 								keep = cmd;
+							}
 
 							continue;
 						}

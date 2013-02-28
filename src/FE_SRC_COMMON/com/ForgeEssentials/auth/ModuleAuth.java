@@ -87,9 +87,13 @@ public class ModuleAuth
 			if (bln != FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode())
 			{
 				if (bln)
+				{
 					OutputHandler.warning("Server set to Online mode!");
+				}
 				else
+				{
 					OutputHandler.warning("Server set to Offline mode!");
+				}
 			}
 
 			FMLCommonHandler.instance().getMinecraftServerInstance().setOnlineMode(bln);

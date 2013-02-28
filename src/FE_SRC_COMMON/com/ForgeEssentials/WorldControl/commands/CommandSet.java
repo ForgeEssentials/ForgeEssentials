@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
@@ -63,7 +62,6 @@ public class CommandSet extends WorldControlCommandBase
 					OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
 					return;
 				}
-				World world = player.worldObj;
 				Selection sel = info.getSelection();
 				BackupArea back = new BackupArea();
 
@@ -94,9 +92,7 @@ public class CommandSet extends WorldControlCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getBlockList());
-		}
 		return null;
 	}
 }

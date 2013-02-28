@@ -30,7 +30,7 @@ public class TypeInfoArray extends TypeMultiValInfo
 	public Set<TypeData> getTypeDatasFromObject(Object obj)
 	{
 		HashSet<TypeData> datas = new HashSet<TypeData>();
-		
+
 		Object[] array = (Object[]) obj;
 
 		int i = 0;

@@ -29,7 +29,9 @@ public class FlatFilePlayers
 		for (String cat : config.categories.keySet())
 		{
 			if (cat.contains("."))
+			{
 				continue;
+			}
 			else if (cat.equalsIgnoreCase(PermissionsAPI.getEntryPlayer()))
 			{
 				PermissionsAPI.setEPPrefix(config.get(cat, "prefix", " ").value);
@@ -56,7 +58,9 @@ public class FlatFilePlayers
 	{
 		// clear it.
 		if (file.exists())
+		{
 			file.delete();
+		}
 
 		String[] allPlayers = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getAllUsernames();
 

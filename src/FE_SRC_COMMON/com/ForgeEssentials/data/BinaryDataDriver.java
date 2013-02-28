@@ -17,8 +17,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class BinaryDataDriver extends AbstractDataDriver
 {
-	protected File		baseFile;
-	protected static final String	EXT = ".dat";
+	protected File					baseFile;
+	protected static final String	EXT	= ".dat";
 
 	@Override
 	public final void loadFromConfigs(Configuration config, String category, String worldName) throws Exception
@@ -57,7 +57,6 @@ public abstract class BinaryDataDriver extends AbstractDataDriver
 
 	/**
 	 * always uses the .dat extension
-	 * 
 	 * @return
 	 */
 	protected File getFilePath(ClassContainer type, Object uniqueKey)

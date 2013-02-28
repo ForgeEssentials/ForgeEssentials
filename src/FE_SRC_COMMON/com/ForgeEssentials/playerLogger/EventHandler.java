@@ -27,7 +27,7 @@ public class EventHandler
 			{
 				int limit = e.entityPlayer.getEntityData().getInteger("lb_limit");
 				Date date = new Date();
-				Timestamp time = new Timestamp(date.getTime());
+				new Timestamp(date.getTime());
 				Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
 				Statement st = connection.createStatement();
 				st.execute("SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + e.x + " AND  `Y` = " + e.y + " AND  `Z` = " + e.z + " ORDER BY id DESC LIMIT " + limit);

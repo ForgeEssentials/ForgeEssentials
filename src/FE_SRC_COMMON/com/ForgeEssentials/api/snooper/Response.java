@@ -11,9 +11,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 /**
  * If you want your own query response, extend this file and override
  * getResponceString(DatagramPacket packet)
- * 
  * @author Dries007
- * 
  */
 
 public abstract class Response

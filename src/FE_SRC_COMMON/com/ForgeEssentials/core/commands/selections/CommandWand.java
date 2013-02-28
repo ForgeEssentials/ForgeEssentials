@@ -17,7 +17,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName()
 	{
-		return "fewand";
+		return "/fewand";
 	}
 
 	@Override
@@ -39,9 +39,13 @@ public class CommandWand extends ForgeEssentialsCommandBase
 		if (info.wandEnabled)
 		{
 			if (sender.getCurrentEquippedItem() == null || info.wandID == 0)
+			{
 				wandName = "your fists";
+			}
 			else
+			{
 				wandName = sender.getCurrentEquippedItem().getDisplayName();
+			}
 		}
 
 		if (args.length > 0)
@@ -131,20 +135,16 @@ public class CommandWand extends ForgeEssentialsCommandBase
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
 		if (info.wandEnabled)
-		{
 			return true;
-		}
 		else
-		{
 			return checkCommandPerm(player);
-		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

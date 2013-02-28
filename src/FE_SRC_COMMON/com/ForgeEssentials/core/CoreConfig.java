@@ -33,22 +33,20 @@ public class CoreConfig
 		prop = config.get("Core", "mcstats", true);
 		prop.comment = "If you don't want to send feedback to MCstats, set to false. Optionally, use the opt-out setting located in PluginMetrics.cfg in your minecraft folder.";
 		ForgeEssentials.mcstats = prop.getBoolean(true);
-		
+
 		prop = config.get("Core", "modlistLocation", "modlist.txt");
 		prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
 		ForgeEssentials.modlistLocation = prop.value;
 
 		prop = config.get("general", "removeDuplicateCommands", true);
-		prop.comment = ("Remove commands from the list if they already exist outside of FE.");
-		DuplicateCommandRemoval.removeDuplicateCommands  = prop.getBoolean(true);
-		
+		prop.comment = "Remove commands from the list if they already exist outside of FE.";
+		DuplicateCommandRemoval.removeDuplicateCommands = prop.getBoolean(true);
+
 		// sanity check.
-		
+
 		prop = config.get("Core", "sanitychecks", true);
 		prop.comment = "For advanced users only: If you wish to run FE on a bukkit server or on a server with Fihgu's mod (not recommended, not supported), set this to false.";
 		ForgeEssentials.sanitycheck = prop.getBoolean(true);
-
-
 
 		prop = config.get("Core.Misc", "tpWarmup", 5);
 		prop.comment = "The amount of time you need to stand still to TP.";
@@ -61,7 +59,7 @@ public class CoreConfig
 		prop = config.get("Core.Misc", "MajoritySleep", true);
 		prop.comment = "If +50% of players sleep, make it day.";
 		MiscEventHandler.MajoritySleep = prop.getBoolean(true);
-		
+
 		prop = config.get("Core.Misc", "DeathChest", true);
 		prop.comment = "Players with permission ForgeEssentials.DeathChest will get a deathchest instead of droping items.";
 		DeathChest.enable = prop.getBoolean(true);

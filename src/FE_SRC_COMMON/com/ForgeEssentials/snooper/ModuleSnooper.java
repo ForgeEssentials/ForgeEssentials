@@ -81,7 +81,6 @@ public class ModuleSnooper
 			}
 		}
 		catch (Exception e)
-		{
-		}
+		{}
 	}
 }

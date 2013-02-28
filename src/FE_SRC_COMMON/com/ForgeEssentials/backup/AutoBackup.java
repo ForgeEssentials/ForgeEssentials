@@ -28,7 +28,7 @@ public class AutoBackup implements Runnable
 		{
 			try
 			{
-				thread.sleep(BackupConfig.autoInterval * 1000 * 60);
+				Thread.sleep(BackupConfig.autoInterval * 1000 * 60);
 			}
 			catch (InterruptedException e)
 			{
@@ -39,7 +39,7 @@ public class AutoBackup implements Runnable
 			{
 				try
 				{
-					thread.sleep(1000);
+					Thread.sleep(1000);
 				}
 				catch (InterruptedException e)
 				{
@@ -70,7 +70,7 @@ public class AutoBackup implements Runnable
 				{
 					try
 					{
-						thread.sleep(1000);
+						Thread.sleep(1000);
 					}
 					catch (InterruptedException e)
 					{
@@ -86,7 +86,7 @@ public class AutoBackup implements Runnable
 				{
 					try
 					{
-						thread.sleep(1000);
+						Thread.sleep(1000);
 					}
 					catch (InterruptedException e)
 					{
@@ -127,7 +127,7 @@ public class AutoBackup implements Runnable
 		{
 			for (File file : folder.listFiles())
 			{
-				if (time > file.lastModified() + (BackupConfig.maxBackupLifespan * 3600000))
+				if (time > file.lastModified() + BackupConfig.maxBackupLifespan * 3600000)
 				{
 					OutputHandler.debug("Removed file: " + file.getAbsolutePath());
 					file.delete();
@@ -143,7 +143,7 @@ public class AutoBackup implements Runnable
 		for (File folder : folders)
 		{
 			int trys = 0;
-			while ((folder.list().length > BackupConfig.maxfilesperbackupfolder) && trys < 5)
+			while (folder.list().length > BackupConfig.maxfilesperbackupfolder && trys < 5)
 			{
 				trys++;
 				File file = lastFileModified(folder);
@@ -155,12 +155,12 @@ public class AutoBackup implements Runnable
 
 	public static void diskSpaceCheck()
 	{
-		if ((ModuleBackup.baseFolder.getFreeSpace() / 1024 / 1024 / 1024) < BackupConfig.minimunFreeSpace)
+		if (ModuleBackup.baseFolder.getFreeSpace() / 1024 / 1024 / 1024 < BackupConfig.minimunFreeSpace)
 		{
 			OutputHandler.warning("Low disk space. Removing old backups.");
 
 			int trys = 0;
-			while (((ModuleBackup.baseFolder.getFreeSpace() / 1024 / 1024 / 1024) < BackupConfig.minimunFreeSpace) && trys < 5)
+			while (ModuleBackup.baseFolder.getFreeSpace() / 1024 / 1024 / 1024 < BackupConfig.minimunFreeSpace && trys < 5)
 			{
 				trys++;
 				OutputHandler.debug("try " + trys);
@@ -180,6 +180,7 @@ public class AutoBackup implements Runnable
 	{
 		return baseFolder.listFiles(new FileFilter()
 		{
+			@Override
 			public boolean accept(File file)
 			{
 				return file.isDirectory();
@@ -191,6 +192,7 @@ public class AutoBackup implements Runnable
 	{
 		File[] files = folder.listFiles(new FileFilter()
 		{
+			@Override
 			public boolean accept(File file)
 			{
 				return file.isFile();

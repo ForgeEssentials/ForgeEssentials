@@ -110,14 +110,14 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsMatchingLastWord(args, "goto", "add", "remove");
-		}
 		if (args.length == 2)
 		{
 			if (TeleportCenter.pwMap.get(sender.getCommandSenderName()) == null)
+			{
 				TeleportCenter.pwMap.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
-			return this.getListOfStringsFromIterableMatchingLastWord(args, TeleportCenter.pwMap.get(sender.getCommandSenderName()).keySet());
+			}
+			return getListOfStringsFromIterableMatchingLastWord(args, TeleportCenter.pwMap.get(sender.getCommandSenderName()).keySet());
 		}
 		return null;
 	}

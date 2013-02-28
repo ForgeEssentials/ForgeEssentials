@@ -12,13 +12,15 @@ import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 /**
  * Almost exactly like a Point, except with an additional dimension member so we
  * can tell things apart. (So we can get back to The End or Nether using /back)
- * 
  * @author MysteriousAges
- * 
  */
 @SaveableObject(SaveInline = true)
 public class WorldPoint extends Point
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 5462406378573144189L;
 	@SaveableField
 	public int					dim;
 

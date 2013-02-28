@@ -15,9 +15,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * This needs replacing!
- * 
  * @author Dries007
- * 
  */
 
 public class DataStorage

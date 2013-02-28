@@ -1,4 +1,5 @@
 package com.ForgeEssentials.api.data;
+
 import java.rmi.server.UID;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,14 +9,13 @@ import java.util.Set;
 
 import com.ForgeEssentials.data.StorageManager;
 
-
 public abstract class TypeMultiValInfo implements ITypeInfo
 {
-	protected ClassContainer container;
-	protected HashMap<String, ClassContainer> fields;
-	private TypeEntryInfo entryInfo;
-	
-	public static final String UID = "_$EntryID$_";
+	protected ClassContainer					container;
+	protected HashMap<String, ClassContainer>	fields;
+	private TypeEntryInfo						entryInfo;
+
+	public static final String					UID	= "_$EntryID$_";
 
 	public TypeMultiValInfo(ClassContainer container)
 	{
@@ -23,14 +23,14 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 		fields = new HashMap<String, ClassContainer>();
 		fields.put(UID, new ClassContainer(String.class));
 	}
-	
+
 	@Override
 	public final void build()
 	{
 		build(fields);
 		entryInfo = new TypeEntryInfo(fields, container);
 	}
-	
+
 	/**
 	 * the actual types that this holds. An Entry class will be created for which element of this.
 	 * @param fields
@@ -74,13 +74,13 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	{
 		Set<TypeData> datas = getTypeDatasFromObject(obj);
 		TypeData data = DataStorageManager.getDataForType(container);
-		
+
 		ITypeInfo entry = getEntryInfo();
 		ITypeInfo tempInfo;
-		
-		String id = (new UID()).toString();
-		String unique = container.getFileSafeName()+id;
-		
+
+		String id = new UID().toString();
+		String unique = container.getFileSafeName() + id;
+
 		int i = 0;
 		for (TypeData dat : datas)
 		{
@@ -92,24 +92,24 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 					dat.putField(e.getKey(), DataStorageManager.getDataForObject(tempInfo.getType(), e.getValue()));
 				}
 			}
-			
+
 			dat.putField(UID, id);
-			data.putField(getEntryName()+(i++), dat);
+			data.putField(getEntryName() + i++, dat);
 		}
 		data.setUniqueKey(unique);
 		return data;
 	}
-	
+
 	public String getEntryName()
 	{
 		return "DataVal";
 	}
-	
+
 	public static String getUIDFromUnique(String unique)
 	{
 		return unique.substring(unique.lastIndexOf('_'));
 	}
-	
+
 	public abstract Set<TypeData> getTypeDatasFromObject(Object obj);
 
 	@Override
@@ -124,20 +124,20 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 		}
 		return reconstruct(datas);
 	}
-	
+
 	public abstract Object reconstruct(TypeData[] data);
-	
+
 	@Override
 	public final ITypeInfo getInfoForField(String field)
 	{
 		return getEntryInfo();
 	}
-	
+
 	public TypeEntryInfo getEntryInfo()
 	{
 		return entryInfo;
 	}
-	
+
 	protected TypeData getEntryData()
 	{
 		return new TypeData(new ClassContainer(Map.Entry.class, container.parameters));

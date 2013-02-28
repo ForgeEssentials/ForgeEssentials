@@ -12,9 +12,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Uses by TeleportCenter.
- * 
  * @author Dries007
- * 
  */
 
 public class TPdata

@@ -38,7 +38,9 @@ public class FlatFileGroups
 		for (Entry<String, ConfigCategory> e : config.categories.entrySet())
 		{
 			if (!e.getValue().isChild())
+			{
 				continue;
+			}
 
 			split = e.getKey().split("\\" + Configuration.CATEGORY_SPLITTER);
 
@@ -58,7 +60,9 @@ public class FlatFileGroups
 			priority = config.get(e.getKey(), "priority", 0).getInt();
 
 			if (parent.trim().isEmpty())
+			{
 				parent = null;
+			}
 
 			g = new Group(split[1], prefix, suffix, parent, split[0], priority);
 			groups.add(g);
@@ -85,7 +89,9 @@ public class FlatFileGroups
 	{
 		// clear it.
 		if (file.exists())
+		{
 			file.delete();
+		}
 
 		Configuration config = new Configuration(file);
 
@@ -94,7 +100,9 @@ public class FlatFileGroups
 		for (Group g : groups)
 		{
 			if (g.name.equals(PermissionsAPI.getDEFAULT().name))
+			{
 				continue;
+			}
 
 			cat = g.zoneName + "." + g.name;
 			config.get(cat, "prefix", g.prefix);

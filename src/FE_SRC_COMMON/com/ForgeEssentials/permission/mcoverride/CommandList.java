@@ -13,26 +13,22 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 public class CommandList extends CommandServerList
 {
 	@Override
-    public List getCommandAliases()
-    {
+	public List getCommandAliases()
+	{
 		ArrayList list = new ArrayList();
 		list.add("who");
 		list.add("online");
 		list.add("players");
-        return list;
-    }
+		return list;
+	}
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
-		{
 			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
-		}
 		else
-		{
 			return true;
-		}
 	}
 
 	public String getCommandPerm()

@@ -12,9 +12,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Main playerlogger command. Still WIP
- * 
  * @author Dries007
- * 
  */
 
 public class CommandPl extends ForgeEssentialsCommandBase
@@ -79,16 +77,10 @@ public class CommandPl extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsMatchingLastWord(args, "get", "rollback");
-		}
 		else if (args.length == 2)
-		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
 		else
-		{
 			return null;
-		}
 	}
 }

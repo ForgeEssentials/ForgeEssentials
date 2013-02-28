@@ -39,7 +39,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			int var6 = sender.inventory.clearInventory(-1, -1);
+			sender.inventory.clearInventory(-1, -1);
 			sender.inventoryContainer.detectAndSendChanges();
 			sender.sendChatToPlayer("Cleared inventory.");
 		}
@@ -82,7 +82,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 					}
 					if (paramsValid)
 					{
-						int var6 = victim.inventory.clearInventory(clearPar1, clearPar2);
+						victim.inventory.clearInventory(clearPar1, clearPar2);
 					}
 					else
 					{
@@ -147,14 +147,14 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 					}
 					if (paramsValid)
 					{
-						int var6 = victim.inventory.clearInventory(clearPar1, clearPar2);
+						victim.inventory.clearInventory(clearPar1, clearPar2);
 					}
 					victim.inventoryContainer.detectAndSendChanges();
-					String senderName = (sender instanceof TileEntityCommandBlock ?
+					String senderName = sender instanceof TileEntityCommandBlock ?
 							"CommandBlock @ (" + ((TileEntityCommandBlock) sender).xCoord + ","
 									+ ((TileEntityCommandBlock) sender).yCoord + ","
 									+ ((TileEntityCommandBlock) sender).zCoord + ")."
-							: "the console");
+							: "the console";
 					victim.sendChatToPlayer("Inventory cleared by " + senderName);
 				}
 				sender.sendChatToPlayer("Cleared inventory of " + args[0]);
@@ -186,16 +186,10 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getItemList());
-		}
 		else if (args.length == 3)
-		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
 		else
-		{
 			return null;
-		}
 	}
 }

@@ -49,9 +49,7 @@ public class FEPermissionsTransformer implements IClassTransformer
 	public byte[] transform(String name, byte[] bytes)
 	{
 		if (name.equals("com.ForgeEssentials.api.permissions.query.PermQuery") || name.startsWith("net.minecraft.") || name.indexOf('.') == -1)
-		{
 			return bytes;
-		}
 		ClassReader cr = new ClassReader(bytes);
 		ClassNode classNode = new ClassNode();
 		cr.accept(classNode, 0);
@@ -79,9 +77,7 @@ public class FEPermissionsTransformer implements IClassTransformer
 	{
 		Class<?> parent = this.getClass().getClassLoader().loadClass(classNode.superName.replace('/', '.'));
 		if (!com.ForgeEssentials.api.permissions.query.PermQuery.class.isAssignableFrom(parent))
-		{
 			return false;
-		}
 
 		boolean hasSetup = false;
 		boolean hasGetListenerList = false;
@@ -109,13 +105,9 @@ public class FEPermissionsTransformer implements IClassTransformer
 		if (hasSetup)
 		{
 			if (!hasGetListenerList)
-			{
 				throw new RuntimeException("Query class defines setup() but does not define getListenerList! " + classNode.name);
-			}
 			else
-			{
 				return false;
-			}
 		}
 
 		Type tSuper = Type.getType(classNode.superName);

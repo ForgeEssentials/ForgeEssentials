@@ -28,9 +28,7 @@ public class FEListenerList
 	public static void resize(int max)
 	{
 		if (max <= maxSize)
-		{
 			return;
-		}
 		for (FEListenerList list : allLists)
 		{
 			list.resizeLists(max);
@@ -46,9 +44,7 @@ public class FEListenerList
 		}
 
 		if (lists.length >= max)
-		{
 			return;
-		}
 
 		FEListenerListInst[] newList = new FEListenerListInst[max];
 		int x = 0;
@@ -144,12 +140,10 @@ public class FEListenerList
 		/**
 		 * Returns a ArrayList containing all listeners for this event, and all
 		 * parent events for the specified priority.
-		 * 
 		 * The list is returned with the listeners for the children events
 		 * first.
-		 * 
 		 * @param priority
-		 * The Priority to get
+		 *            The Priority to get
 		 * @return ArrayList containing listeners
 		 */
 		public ArrayList<IQueryListener> getListeners(EventPriority priority)
@@ -165,12 +159,9 @@ public class FEListenerList
 		/**
 		 * Returns a full list of all listeners for all priority levels.
 		 * Including all parent listeners.
-		 * 
 		 * List is returned in proper priority order.
-		 * 
 		 * Automatically rebuilds the internal Array cache if its information is
 		 * out of date.
-		 * 
 		 * @return Array containing listeners
 		 */
 		public IQueryListener[] getListeners()

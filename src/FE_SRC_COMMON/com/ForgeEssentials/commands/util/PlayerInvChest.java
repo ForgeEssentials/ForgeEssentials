@@ -44,6 +44,7 @@ public class PlayerInvChest extends InventoryBasic
 		super.closeChest();
 	}
 
+	@Override
 	public void onInventoryChanged()
 	{
 		super.onInventoryChanged();
@@ -61,7 +62,7 @@ public class PlayerInvChest extends InventoryBasic
 		allowUpdate = false;
 		for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
 		{
-			this.setInventorySlotContents(id, owner.inventory.mainInventory[id]);
+			setInventorySlotContents(id, owner.inventory.mainInventory[id]);
 		}
 		allowUpdate = true;
 		onInventoryChanged();

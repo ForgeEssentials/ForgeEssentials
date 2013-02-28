@@ -64,9 +64,7 @@ public class ModulePlayerLogger
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		if (!enable)
-		{
 			return;
-		}
 		OutputHandler.info("PlayerLogger module is enabled. Loading...");
 	}
 
@@ -74,12 +72,10 @@ public class ModulePlayerLogger
 	public void load(FEModuleInitEvent e)
 	{
 		if (!enable)
-		{
 			return;
-		}
 		try
 		{
-			Class mySQLclass = Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.jdbc.Driver");
 		}
 		catch (ClassNotFoundException error)
 		{
@@ -91,9 +87,7 @@ public class ModulePlayerLogger
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		if (!enable)
-		{
 			return;
-		}
 		e.registerServerCommand(new CommandPl());
 		e.registerServerCommand(new CommandRollback());
 		try
@@ -127,9 +121,7 @@ public class ModulePlayerLogger
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		if (!enable)
-		{
 			return;
-		}
 		try
 		{
 			eLogger.logLoop.sendLogs();

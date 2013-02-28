@@ -25,7 +25,6 @@ public class PermQuery
 	/**
 	 * Returns a FEListenerList object that contains all listeners that are
 	 * registered to this event.
-	 * 
 	 * @return Listener List
 	 */
 	public FEListenerList getListenerList()

@@ -31,7 +31,7 @@ public class CommandPay extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				int amount = this.parseIntWithMin(sender, args[1], 0);
+				int amount = parseIntWithMin(sender, args[1], 0);
 				if (Wallet.getWallet(sender) >= amount)
 				{
 					Wallet.removeFromWallet(amount, sender);
@@ -47,7 +47,7 @@ public class CommandPay extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 	}
 
@@ -67,7 +67,7 @@ public class CommandPay extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				int amount = this.parseIntWithMin(sender, args[1], 0);
+				int amount = parseIntWithMin(sender, args[1], 0);
 				Wallet.addToWallet(amount, player);
 				OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + Wallet.currency(amount));
 				OutputHandler.chatConfirmation(player, "You have been payed " + amount + " " + Wallet.currency(amount) + " by " + sender.getCommandSenderName());

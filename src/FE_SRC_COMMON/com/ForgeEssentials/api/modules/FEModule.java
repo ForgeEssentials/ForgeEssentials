@@ -31,7 +31,6 @@ public @interface FEModule
 
 	/**
 	 * Marks it as core. Core modules are loaded first.
-	 * 
 	 * @return
 	 */
 	boolean isCore() default false;
@@ -39,7 +38,6 @@ public @interface FEModule
 	/**
 	 * Allows a module to override another one. You can only override core
 	 * modules.
-	 * 
 	 * @return
 	 */
 	boolean doesOverride() default false;
@@ -47,7 +45,6 @@ public @interface FEModule
 	/**
 	 * For all built in modules, this had better be the ForgeEssentials class.
 	 * For everyone else, this should be your @mod file.
-	 * 
 	 * @return
 	 */
 	Class parentMod();

@@ -4,9 +4,7 @@ import com.ForgeEssentials.util.FEChatFormatCodes;
 
 /**
  * RegistrationGroups
- * 
  * @author AbrarSyed
- * 
  */
 public enum RegGroup
 {

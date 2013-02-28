@@ -19,17 +19,17 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class TypeInfoSerialize<T> implements ITypeInfo<T>
 {
-	private final ClassContainer container;
+	private final ClassContainer			container;
 	private HashMap<String, ClassContainer>	fields;
-	String uniqueKey;
-	boolean hasUniqueKey = false;
-	boolean isUniqueKeyField;
+	String									uniqueKey;
+	boolean									hasUniqueKey	= false;
+	boolean									isUniqueKeyField;
 
 	public TypeInfoSerialize(ClassContainer container)
 	{
 		this.container = container;
 		fields = new HashMap<String, ClassContainer>();
-		
+
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		Class tempType;
 		Type aTempType;
 		ClassContainer tempContainer;
-		
+
 		do
 		{
 			// Locate all members that are saveable.
@@ -59,15 +59,19 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 					if (aTempType instanceof ParameterizedType)
 					{
 						Type[] types = ((ParameterizedType) aTempType).getActualTypeArguments();
-						Class[] params =  new Class[types.length];
+						Class[] params = new Class[types.length];
 						for (int i = 0; i < types.length; i++)
 						{
 							if (types[i] instanceof Class)
+							{
 								params[i] = (Class) types[i];
+							}
 							else if (types[i] instanceof ParameterizedType)
+							{
 								params[i] = (Class) ((ParameterizedType) types[i]).getRawType();
+							}
 						}
-						
+
 						tempContainer = new ClassContainer(tempType, params);
 						fields.put(f.getName(), tempContainer);
 					}
@@ -93,7 +97,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 
 			}
 		} while ((currentType = currentType.getSuperclass()) != null);
-		
+
 		// find reconstructor method
 		for (Method m : container.getType().getDeclaredMethods())
 		{
@@ -104,7 +108,9 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 					throw new RuntimeException("Each class may only have 1 UniqueLoadingKey");
 
 				if (m.getParameterTypes().length > 0)
+				{
 					new RuntimeException("The reconstructor method must have no paremeters");
+				}
 
 				if (!m.getReturnType().isPrimitive() && !m.getReturnType().equals(String.class))
 					throw new RuntimeException("The UniqueLoadingKey method must return a primitive or a string");
@@ -218,7 +224,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		{
 			Object obj = container.getType().newInstance();
 			Class currentType = data.getType();
-			
+
 			do
 			{
 				// Locate all members that are saveable.
@@ -232,13 +238,13 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 
 				}
 			} while ((currentType = currentType.getSuperclass()) != null);
-			
+
 		}
 		catch (Throwable thrown)
 		{
 			OutputHandler.exception(Level.SEVERE, "Error loading " + data.getType() + " with name " + data.getUniqueKey(), thrown);
 		}
-		
+
 		return null;
 	}
 

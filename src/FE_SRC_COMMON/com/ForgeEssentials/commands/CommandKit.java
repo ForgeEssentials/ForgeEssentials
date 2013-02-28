@@ -244,13 +244,9 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		list.add("del");
 
 		if (args.length == 1)
-		{
 			return getListOfStringsFromIterableMatchingLastWord(args, list);
-		}
 		else
-		{
 			return null;
-		}
 	}
 
 }

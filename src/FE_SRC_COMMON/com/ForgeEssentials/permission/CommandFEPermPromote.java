@@ -15,24 +15,19 @@ public class CommandFEPermPromote
 		sender.sendChatToPlayer("TEST! Promote parsing");
 
 		if (args.length == 0)
-		{
 			// Not possible
 			// OutputHandler.chatError(sender,
 			// Localization.get(Localization.ERROR_BADSYNTAX) + "");
 			return;
-		}
 
 		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
 		if (player == null)
 		{
 			// No such player!
 		}
-		if (args.length == 1) // display user-specific settings & there values
-								// for this player
-		{
+		if (args.length == 1)
 			// default ladder
 			return;
-		}
 		if (!args[1].equalsIgnoreCase("from"))
 		{
 			// Ladder specified.

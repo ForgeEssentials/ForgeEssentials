@@ -23,7 +23,6 @@ public class FEModulePostInitEvent extends FEModuleEvent
 
 	/**
 	 * bouncer for FML event method
-	 * 
 	 * @param modId
 	 * @param className
 	 * @return

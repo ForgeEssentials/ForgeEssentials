@@ -19,9 +19,7 @@ import com.ForgeEssentials.util.vector.Vector2;
 /**
  * Bounces players back into the border if they pass it. No bypass permissions
  * available, If needed, tell me on github.
- * 
  * @author Dries007
- * 
  */
 @FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class, configClass = ConfigWorldBorder.class)
 public class ModuleWorldBorder
@@ -52,7 +50,7 @@ public class ModuleWorldBorder
 	public ModuleWorldBorder()
 	{
 		WBenabled = true;
-		
+
 	}
 
 	@ServerInit
@@ -82,26 +80,18 @@ public class ModuleWorldBorder
 		public byte getByte()
 		{
 			if (equals(round))
-			{
 				return 1;
-			}
 			if (equals(square))
-			{
 				return 2;
-			}
 			return 0;
 		}
 
 		public static BorderShape getFromByte(byte byte1)
 		{
 			if (byte1 == 1)
-			{
 				return BorderShape.round;
-			}
 			else if (byte1 == 2)
-			{
 				return BorderShape.square;
-			}
 			return null;
 		}
 
@@ -140,9 +130,9 @@ public class ModuleWorldBorder
 		{
 			if (equals(square))
 			{
-				 int var = maxX - minX;
-				 var = var * var;
-				 return var;
+				int var = maxX - minX;
+				var = var * var;
+				return var;
 			}
 			if (equals(round))
 			{
@@ -187,7 +177,7 @@ public class ModuleWorldBorder
 		int difX = centerX - X;
 		int difZ = centerZ - Z;
 
-		return Math.sqrt(((difX * difX) + (difZ * difZ)));
+		return Math.sqrt(difX * difX + difZ * difZ);
 	}
 
 	public static Vector2 getDirectionVector(EntityPlayerMP player)

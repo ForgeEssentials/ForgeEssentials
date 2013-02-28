@@ -12,6 +12,11 @@ import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 @SaveableObject(SaveInline = true)
 public class WarpPoint extends WorldPoint
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -1534182424702360150L;
+
 	@SaveableField
 	public float				pitch;
 
@@ -65,9 +70,8 @@ public class WarpPoint extends WorldPoint
 
 	/**
 	 * This is calculated by the whichever has higher coords.
-	 * 
 	 * @return Posotive number if this Point is larger. 0 if they are equal.
-	 * Negative if the provided point is larger.
+	 *         Negative if the provided point is larger.
 	 */
 	public int compareTo(WarpPoint point)
 	{
@@ -114,7 +118,6 @@ public class WarpPoint extends WorldPoint
 
 	/**
 	 * gets a new Point with the same data as the provided one.
-	 * 
 	 * @param point
 	 * @return
 	 */

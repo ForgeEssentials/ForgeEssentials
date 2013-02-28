@@ -27,9 +27,7 @@ public class LoginHandler implements IPlayerTracker
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		if (!ModuleAuth.enabled)
-		{
 			return;
-		}
 
 		if (unlogged.contains(event.entityPlayer.username))
 		{

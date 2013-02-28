@@ -152,7 +152,9 @@ public class SqlHelper
 		connect(config.connector);
 
 		if (generate)
+		{
 			generate();
+		}
 
 		prepareStatements(db);
 	}
@@ -470,7 +472,9 @@ public class SqlHelper
 			{
 				instance.connect(ModulePermissions.config.connector);
 				if (instance.generate)
+				{
 					instance.generate();
+				}
 				instance.prepareStatements(instance.db);
 				OutputHandler.fine("Permissions database connection closed. Connection succesfully reset.");
 			}
@@ -782,7 +786,9 @@ public class SqlHelper
 
 			// update groups with true parents..
 			for (Group group : (ArrayList<Group>) map.get("groups"))
+			{
 				updateGroup(group);
+			}
 			OutputHandler.info("[PermSQL] Imported groups");
 
 			// add groups to ladders and stuff

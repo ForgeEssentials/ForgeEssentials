@@ -48,22 +48,16 @@ public class ModuleProtection
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
 			return;
-		}
 		if (!enable)
-		{
 			return;
-		}
 	}
 
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
 		if (!enable)
-		{
 			return;
-		}
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 

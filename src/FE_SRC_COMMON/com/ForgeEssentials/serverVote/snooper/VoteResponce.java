@@ -25,7 +25,7 @@ public class VoteResponce extends Response
 
 			try
 			{
-				String encr = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
+				new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
 				Cipher cipher = Cipher.getInstance("RSA");
 				cipher.init(Cipher.DECRYPT_MODE, ModuleServerVote.config.privateKey);
 				byte[] decodedBytes = cipher.doFinal(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
@@ -61,15 +61,11 @@ public class VoteResponce extends Response
 			}
 
 			if (vote.isCanceled())
-			{
 				return TextFormatter.toJSON(new String[]
 				{ "Failed", TextFormatter.toJSON(vote.getFeedback()) });
-			}
 			else
-			{
 				return TextFormatter.toJSON(new String[]
 				{ "Success" });
-			}
 		}
 		catch (Exception e)
 		{

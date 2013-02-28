@@ -14,13 +14,9 @@ public class CommandDeop extends CommandServerDeop
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
-		{
 			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm()));
-		}
 		else
-		{
 			return true;
-		}
 	}
 
 	public String getCommandPerm()

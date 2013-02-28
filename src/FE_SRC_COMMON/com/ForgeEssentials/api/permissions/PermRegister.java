@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 /**
  * The annotation to register permissions.
- * 
  * @author AbrarSyed
  */
 @Retention(RetentionPolicy.RUNTIME)

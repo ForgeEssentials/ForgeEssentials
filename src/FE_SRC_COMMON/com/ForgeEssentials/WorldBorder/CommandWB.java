@@ -19,9 +19,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 /**
  * Used to check, set and fill the border. You need to activate the module
  * before this command is usable.
- * 
  * @author Dries007
- * 
  */
 
 public class CommandWB extends ForgeEssentialsCommandBase
@@ -46,7 +44,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		boolean set = ModuleWorldBorder.set;
 		// Info
 		if (args.length == 0)
@@ -120,15 +118,15 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				taskGooing.stop();
 				return;
 			}
-			if(args[1].equalsIgnoreCase("message"))
+			if (args[1].equalsIgnoreCase("message"))
 			{
-				if(args[2].equalsIgnoreCase("off") || args[2].equalsIgnoreCase("false"))
+				if (args[2].equalsIgnoreCase("off") || args[2].equalsIgnoreCase("false"))
 				{
-					taskGooing.enablemsg = false;
+					TickTaskFill.enablemsg = false;
 				}
 				else
 				{
-					taskGooing.enablemsg = true;
+					TickTaskFill.enablemsg = true;
 				}
 				return;
 			}
@@ -156,7 +154,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			}
 		}
 		// Command unknown
-		OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+		OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 	}
 
 	@Override
@@ -255,15 +253,15 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				taskGooing.stop();
 				return;
 			}
-			if(args[1].equalsIgnoreCase("message"))
+			if (args[1].equalsIgnoreCase("message"))
 			{
-				if(args[2].equalsIgnoreCase("off") || args[2].equalsIgnoreCase("false"))
+				if (args[2].equalsIgnoreCase("off") || args[2].equalsIgnoreCase("false"))
 				{
-					taskGooing.enablemsg = false;
+					TickTaskFill.enablemsg = false;
 				}
 				else
 				{
-					taskGooing.enablemsg = true;
+					TickTaskFill.enablemsg = true;
 				}
 				return;
 			}
@@ -285,7 +283,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			}
 		}
 		// Command unknown
-		sender.sendChatToPlayer((Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
+		sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 	}
 
 	@Override
@@ -304,21 +302,13 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsMatchingLastWord(args, "set", "fill");
-		}
 		if (args.length == 2 && args[0].equalsIgnoreCase("set"))
-		{
 			return getListOfStringsMatchingLastWord(args, "square", "round");
-		}
 		if (args.length == 2 && args[0].equalsIgnoreCase("fill"))
-		{
 			return getListOfStringsMatchingLastWord(args, "start", "continue", "cancel", "message");
-		}
 		if (args.length == 3 && args[0].equalsIgnoreCase("fill") && args[1].equalsIgnoreCase("message"))
-		{
 			return getListOfStringsMatchingLastWord(args, "off", "on");
-		}
 		return null;
 	}
 

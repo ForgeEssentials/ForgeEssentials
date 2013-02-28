@@ -52,7 +52,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 	{
 		if (args.length > 3)
 		{
-			OutputHandler.chatError(sender, (Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender)));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 			return;
 		}
 		execute(sender, args);
@@ -63,7 +63,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 	{
 		if (args.length > 3)
 		{
-			sender.sendChatToPlayer((Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole()));
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 			return;
 		}
 		execute(sender, args);
@@ -226,21 +226,13 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-		{
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		}
 		else if (args.length == 2)
-		{
 			return getListOfStringsFromIterableMatchingLastWord(args, names);
-		}
 		else if (args.length == 3)
-		{
 			return getListOfStringsMatchingLastWord(args, "true", "false");
-		}
 		else
-		{
 			return null;
-		}
 	}
 
 }

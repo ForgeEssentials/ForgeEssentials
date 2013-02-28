@@ -56,12 +56,8 @@ public class PermissionSetEvent extends Event
 	public String getCancelReason()
 	{
 		if (!isCanceled())
-		{
 			return "";
-		}
 		else
-		{
 			return reason;
-		}
 	}
 }

@@ -201,7 +201,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 				return;
 			}
 
-			sender.sendChatToPlayer(rules.get(this.parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+			sender.sendChatToPlayer(rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
 			return;
 		}
 
@@ -215,7 +215,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 
 		if (args[0].equalsIgnoreCase("remove"))
 		{
-			index = this.parseIntBounded(sender, args[1], 1, rules.size());
+			index = parseIntBounded(sender, args[1], 1, rules.size());
 
 			rules.remove(index - 1);
 			OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + " removed.");
@@ -233,11 +233,11 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		}
 		else if (args[0].equalsIgnoreCase("move"))
 		{
-			index = this.parseIntBounded(sender, args[1], 1, rules.size());
+			index = parseIntBounded(sender, args[1], 1, rules.size());
 
 			String temp = rules.remove(index - 1);
 
-			index = this.parseIntWithMin(sender, args[2], 1);
+			index = parseIntWithMin(sender, args[2], 1);
 
 			if (index < rules.size())
 			{
@@ -252,7 +252,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		}
 		else if (args[0].equalsIgnoreCase("change"))
 		{
-			index = this.parseIntBounded(sender, args[1], 1, rules.size());
+			index = parseIntBounded(sender, args[1], 1, rules.size());
 
 			String newRule = "";
 			for (int i = 2; i < args.length; i++)
@@ -293,7 +293,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 
 			}
 
-			sender.sendChatToPlayer(rules.get(this.parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+			sender.sendChatToPlayer(rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
 			return;
 		}
 
@@ -301,7 +301,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 
 		if (args[0].equalsIgnoreCase("remove"))
 		{
-			index = this.parseIntBounded(sender, args[1], 1, rules.size());
+			index = parseIntBounded(sender, args[1], 1, rules.size());
 
 			rules.remove(index - 1);
 			OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + " removed.");
@@ -319,11 +319,11 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		}
 		else if (args[0].equalsIgnoreCase("move"))
 		{
-			index = this.parseIntBounded(sender, args[1], 1, rules.size());
+			index = parseIntBounded(sender, args[1], 1, rules.size());
 
 			String temp = rules.remove(index - 1);
 
-			index = this.parseIntWithMin(sender, args[2], 1);
+			index = parseIntWithMin(sender, args[2], 1);
 
 			if (index < rules.size())
 			{
@@ -338,7 +338,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		}
 		else if (args[0].equalsIgnoreCase("change"))
 		{
-			index = this.parseIntBounded(sender, args[1], 1, rules.size());
+			index = parseIntBounded(sender, args[1], 1, rules.size());
 
 			String newRule = "";
 			for (int i = 2; i < args.length; i++)

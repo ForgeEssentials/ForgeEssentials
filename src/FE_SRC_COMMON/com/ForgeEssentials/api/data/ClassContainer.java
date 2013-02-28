@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class ClassContainer
 {
-	private final Class heldClass;
-	Class[]					parameters;
+	private final Class	heldClass;
+	Class[]				parameters;
 
 	public ClassContainer(Class type, Class... parameters)
 	{
@@ -16,7 +16,7 @@ public class ClassContainer
 	public ClassContainer(Class type)
 	{
 		heldClass = type;
-		this.parameters = new Class[] {};
+		parameters = new Class[] {};
 	}
 
 	public Class getType()
@@ -48,13 +48,9 @@ public class ClassContainer
 	public boolean equals(Object obj)
 	{
 		if (obj instanceof Class)
-		{
 			return heldClass.getName().equals(((Class) obj).getName());
-		}
 		else if (obj instanceof ClassContainer)
-		{
 			return heldClass.getName().equals(((ClassContainer) obj).heldClass.getName()) && Arrays.equals(parameters, ((ClassContainer) obj).parameters);
-		}
 		else
 			return false;
 	}
@@ -79,7 +75,9 @@ public class ClassContainer
 		{
 			builder.append(parameters[i].getCanonicalName());
 			if (i < parameters.length - 1)
+			{
 				builder.append(", ");
+			}
 		}
 
 		builder.append(">");
@@ -100,7 +98,9 @@ public class ClassContainer
 			{
 				builder.append(parameters[i].getSimpleName());
 				if (i < parameters.length - 1)
+				{
 					builder.append(", ");
+				}
 			}
 
 			builder.append(">");
@@ -108,13 +108,13 @@ public class ClassContainer
 
 		return builder.toString();
 	}
-	
+
 	public String getFileSafeName()
 	{
 		String temp = getSimpleName();
 		temp = temp.replace('<', '$');
 		temp = temp.replace('>', '$');
-		temp = temp.replaceAll("\\, "    ,    "_H_");
+		temp = temp.replaceAll("\\, ", "_H_");
 		return temp;
 	}
 
