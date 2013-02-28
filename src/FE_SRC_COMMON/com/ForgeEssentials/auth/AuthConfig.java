@@ -28,7 +28,7 @@ public class AuthConfig extends ModuleConfigBase
 		config.addCustomCategoryComment("main", "all the main important stuff");
 		ModuleAuth.enabled = ModuleAuth.forceEnabled = config.get(CATEGORY_MAIN, "forceEnable", false, "Forces the module to be loaded regardless of Minecraft auth services").getBoolean(false);
 		ModuleAuth.checkVanillaAuthStatus = config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the module if and when the Minecraft Auth servers go down.").getBoolean(false);
-		ModuleAuth.allowOfflineReg = config.get(CATEGORY_MAIN, "allowOfflineReg", false, "Allow registration while server is offline. Don't allow this.").getBoolean(false);
+		ModuleAuth.allowOfflineReg = config.get(CATEGORY_MAIN, "allowOfflineReg", false, "Allow peopls to register usernames while server is offline. Don't allow this for primarily Online servers.").getBoolean(false);
 
 		config.save();
 	}

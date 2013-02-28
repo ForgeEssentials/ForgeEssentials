@@ -13,13 +13,13 @@ import cpw.mods.fml.common.IPlayerTracker;
 
 public class LoginHandler implements IPlayerTracker
 {
-	ArrayList<String>	unlogged;
-	ArrayList<String>	notRegisted;
+	ArrayList<String>	unLogged;
+	ArrayList<String>	unRegisted;
 
 	public LoginHandler()
 	{
-		unlogged = new ArrayList<String>();
-		notRegisted = new ArrayList<String>();
+		unLogged = new ArrayList<String>();
+		unRegisted = new ArrayList<String>();
 		OutputHandler.info("FEauth initialized. Enabled: " + ModuleAuth.enabled);
 	}
 
@@ -29,13 +29,13 @@ public class LoginHandler implements IPlayerTracker
 		if (!ModuleAuth.enabled)
 			return;
 
-		if (unlogged.contains(event.entityPlayer.username))
+		if (unLogged.contains(event.entityPlayer.username))
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.entityPlayer, "Please use '/login <pwd>' to login");
 		}
 
-		if (notRegisted.contains(event.entityPlayer.username))
+		if (unRegisted.contains(event.entityPlayer.username))
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.entityPlayer, "Please use '/register <pwd>' to register");
@@ -45,15 +45,15 @@ public class LoginHandler implements IPlayerTracker
 	public void login(EntityPlayer player)
 	{
 		player.sendChatToPlayer("Successfully logged in.");
-		unlogged.remove(player.username);
-		notRegisted.remove(player.username);
+		unLogged.remove(player.username);
+		unRegisted.remove(player.username);
 	}
 
 	@Override
 	public void onPlayerLogout(EntityPlayer player)
 	{
-		unlogged.remove(player.username);
-		notRegisted.remove(player.username);
+		unLogged.remove(player.username);
+		unRegisted.remove(player.username);
 	}
 
 	@Override
@@ -64,13 +64,13 @@ public class LoginHandler implements IPlayerTracker
 			if (ModuleAuth.enabled)
 			{
 				player.sendChatToPlayer("Please use '/login <pwd>' to login");
-				unlogged.add(player.username);
+				unLogged.add(player.username);
 			}
 		}
 		else
 		{
 			player.sendChatToPlayer("You must '/register <pwd>'!");
-			notRegisted.add(player.username);
+			unRegisted.add(player.username);
 		}
 	}
 
