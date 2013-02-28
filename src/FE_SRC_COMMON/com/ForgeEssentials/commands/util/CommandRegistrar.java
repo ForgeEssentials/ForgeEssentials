@@ -44,6 +44,7 @@ import com.ForgeEssentials.commands.CommandSpawnMob;
 import com.ForgeEssentials.commands.CommandTPA;
 import com.ForgeEssentials.commands.CommandTPAhere;
 import com.ForgeEssentials.commands.CommandTPS;
+import com.ForgeEssentials.commands.CommandTop;
 import com.ForgeEssentials.commands.CommandTp;
 import com.ForgeEssentials.commands.CommandTphere;
 import com.ForgeEssentials.commands.CommandTppos;
@@ -103,6 +104,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandServerSettings());
 		cmdList.add(new CommandGetCommandBook());
 		cmdList.add(new CommandTPA());
+		cmdList.add(new CommandTop());
 		cmdList.add(new CommandTPAhere());
 	}
 
