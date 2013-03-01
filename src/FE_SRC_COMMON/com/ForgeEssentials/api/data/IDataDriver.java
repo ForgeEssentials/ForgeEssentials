@@ -1,5 +1,6 @@
 package com.ForgeEssentials.api.data;
 
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.Configuration;
 
 public interface IDataDriver
@@ -16,7 +17,9 @@ public interface IDataDriver
 
 	boolean deleteObject(ClassContainer type, String loadingKey);
 
-	void parseConfigs(Configuration config, String category, String worldName) throws Exception;
+	void parseConfigs(Configuration config, String category) throws Exception;
+	
+	void serverStart(FMLServerStartingEvent e);
 
 	EnumDriverType getType();
 

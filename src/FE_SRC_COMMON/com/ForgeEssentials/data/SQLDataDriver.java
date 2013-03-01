@@ -28,6 +28,8 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.Pair;
 import com.google.common.collect.HashMultimap;
 
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+
 public class SQLDataDriver extends AbstractDataDriver
 {
 	protected static final String	SEPERATOR			= "__";
@@ -37,6 +39,7 @@ public class SQLDataDriver extends AbstractDataDriver
 
 	private final String			UNIQUE				= "uniqueIdentifier";
 	private final String			MULTI_MARKER		= "MultiValUID";
+	private final String			FEDATA_PREFIX		= "FEDATA_";
 
 	// Default constructor is good enough for us.
 
@@ -46,11 +49,17 @@ public class SQLDataDriver extends AbstractDataDriver
 	}
 
 	@Override
-	public void loadFromConfigs(Configuration config, String category, String worldName) throws SQLException, ClassNotFoundException
+	public void loadFromConfigs(Configuration config, String category) throws SQLException, ClassNotFoundException
 	{
 		String cat = category.substring(0, category.lastIndexOf('.'));
 
 		connector.loadOrGenerate(config, cat);
+	}
+
+	@Override
+	public void serverStart(FMLServerStartingEvent e)
+	{
+		// actually start the connection.
 		dbConnection = connector.getChosenConnection();
 	}
 
@@ -85,7 +94,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.exception(Level.WARNING, "Couldn't save object of type " + type.getSimpleName() + " to " + connector.getChosenType() + " DB. Server will continue running.", e);
+			OutputHandler.exception(Level.WARNING, "Couldn't save object of type " + type.getSimpleName() + " to " + connector.getActiveType() + " DB. Server will continue running.", e);
 			return false;
 		}
 	}
@@ -110,7 +119,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.exception(Level.FINE, "Couldn't load object of type " + type.getSimpleName() + " from " + connector.getChosenType() + " DB.", e);
+			OutputHandler.exception(Level.FINE, "Couldn't load object of type " + type.getSimpleName() + " from " + connector.getActiveType() + " DB.", e);
 			return null;
 		}
 
@@ -140,7 +149,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.exception(Level.FINE, "Couldn't load objects of type " + type.getSimpleName() + " from " + connector.getChosenType() + " DB.", e);
+			OutputHandler.exception(Level.FINE, "Couldn't load objects of type " + type.getSimpleName() + " from " + connector.getActiveType() + " DB.", e);
 		}
 
 		return values.toArray(new TypeData[values.size()]);
@@ -163,7 +172,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.exception(Level.SEVERE, "Problem deleting data from " + connector.getChosenType() + " DB (May not actually be a critical error):", e);
+			OutputHandler.exception(Level.SEVERE, "Problem deleting data from " + connector.getActiveType() + " DB (May not actually be a critical error):", e);
 			return false;
 		}
 
@@ -296,7 +305,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		ArrayList<String> list = new ArrayList<String>();
 
 		// normal class delete thing.
-		String statement = "DELETE FROM " + type.getFileSafeName() + " WHERE " + UNIQUE + "='" + unique + "'";
+		String statement = "DELETE FROM " + FEDATA_PREFIX + type.getFileSafeName() + " WHERE " + UNIQUE + "='" + unique + "'";
 		list.add(statement);
 
 		ITypeInfo info = DataStorageManager.getInfoForType(type);
@@ -317,7 +326,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		boolean isFirst = false;
 		for (ClassContainer key : multiMap.keySet())
 		{
-			statement = "DELETE FROM " + key.getFileSafeName() + " WHERE " + TypeMultiValInfo.UID + "='";
+			statement = "DELETE FROM " + FEDATA_PREFIX + key.getFileSafeName() + " WHERE " + TypeMultiValInfo.UID + "='";
 			isFirst = false;
 			for (String valID : multiMap.get(key))
 			{
@@ -373,7 +382,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		StringBuilder builder = new StringBuilder();
 
 		// Basic SELECT syntax
-		builder.append("SELECT * FROM " + type.getFileSafeName());
+		builder.append("SELECT * FROM " + FEDATA_PREFIX + type.getFileSafeName());
 		// Conditional
 		if (unique != null)
 		{
@@ -446,7 +455,7 @@ public class SQLDataDriver extends AbstractDataDriver
 
 	private String getInsertStatement(ArrayList<Pair<String, String>> list, String table, boolean isEntry)
 	{
-		EnumDBType db = connector.getChosenType();
+		EnumDBType db = connector.getActiveType();
 
 		StringBuilder query = new StringBuilder();
 
@@ -572,7 +581,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		}
 
 		// Build up the create statement
-		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + type.getFileSafeName() + " (");
+		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + FEDATA_PREFIX + type.getFileSafeName() + " (");
 		for (Pair<String, String> pair : tableFields)
 		{
 			tableCreate.append("\"" + pair.getFirst() + "\" " + pair.getSecond() + ", ");
@@ -895,7 +904,7 @@ public class SQLDataDriver extends AbstractDataDriver
 				ID = TypeMultiValInfo.getUIDFromUnique(ID);
 
 				Statement s = dbConnection.createStatement();
-				ResultSet result = s.executeQuery("SELECT * FROM " + targetType.getFileSafeName() + " WHERE " + MULTI_MARKER + "='" + ID + "'");
+				ResultSet result = s.executeQuery("SELECT * FROM " + FEDATA_PREFIX + targetType.getFileSafeName() + " WHERE " + MULTI_MARKER + "='" + ID + "'");
 
 				TypeData data = DataStorageManager.getDataForType(targetType);
 

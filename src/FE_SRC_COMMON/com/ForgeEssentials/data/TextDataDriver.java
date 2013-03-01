@@ -14,13 +14,15 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public abstract class TextDataDriver extends AbstractDataDriver
 {
 	protected File	baseFile;
+	private boolean useFEBase = false;
 
 	@Override
-	public final void loadFromConfigs(Configuration config, String category, String worldName) throws Exception
+	public final void loadFromConfigs(Configuration config, String category) throws Exception
 	{
 		Property prop;
 
@@ -29,9 +31,16 @@ public abstract class TextDataDriver extends AbstractDataDriver
 		prop = config.get(cat, "useFEDataDir", false);
 		prop.comment = "Set to true to use the '.minecraft/ForgeEssentials/saves' directory instead of a world. Server owners may wish to set this to true.";
 
-		boolean useFEDir = prop.getBoolean(false);
+		useFEBase = prop.getBoolean(false);
 
-		if (useFEDir)
+		config.save();
+	}
+	
+	public final void serverStart(FMLServerStartingEvent e)
+	{
+		String worldName = e.getServer().getFolderName();
+		
+		if (useFEBase)
 		{
 			baseFile = new File(ForgeEssentials.FEDIR, "saves/" + getName() + "/" + worldName + "/");
 		}
@@ -45,8 +54,6 @@ public abstract class TextDataDriver extends AbstractDataDriver
 
 			baseFile = new File(parent, worldName + "/FEData/" + getName() + "/");
 		}
-
-		config.save();
 	}
 
 	protected final File getTypePath(ClassContainer type)

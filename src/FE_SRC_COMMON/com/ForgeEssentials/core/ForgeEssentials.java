@@ -159,8 +159,12 @@ public class ForgeEssentials
 	@Init
 	public void load(FMLInitializationEvent e)
 	{
+		// load up DataAPI
+		((StorageManager) DataStorageManager.manager).setupManager();
+		
 		mdlaunch.load(e);
 		localization.load();
+		
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
 		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
 
@@ -187,10 +191,9 @@ public class ForgeEssentials
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
 	{
+		// setup DataAPI for worldname..
+		
 		ModListFile.makeModList();
-
-		// Data API stuff
-		((StorageManager) DataStorageManager.manager).setupManager(e);
 
 		// Central TP system
 		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);

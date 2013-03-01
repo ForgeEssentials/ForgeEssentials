@@ -492,7 +492,7 @@ public class SqlHelper
 	{
 		try
 		{
-			dbType = connector.getChosenType();
+			dbType = connector.getActiveType();
 			db = connector.getChosenConnection();
 
 			DatabaseMetaData meta = db.getMetaData();

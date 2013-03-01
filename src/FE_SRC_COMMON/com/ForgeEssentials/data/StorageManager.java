@@ -16,6 +16,7 @@ import net.minecraftforge.common.Property;
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.EnumDriverType;
+import com.ForgeEssentials.api.data.IDataDriver;
 import com.ForgeEssentials.api.data.IStorageManager;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.SaveableObject;
@@ -84,7 +85,7 @@ public class StorageManager implements IStorageManager
 	 * will be loaded...
 	 * @param Config
 	 */
-	public void setupManager(FMLServerStartingEvent event)
+	public void setupManager()
 	{
 		// verify default driver...
 		if (classMap.get(typeChosens.get(defaultDriver)) == null)
@@ -94,11 +95,8 @@ public class StorageManager implements IStorageManager
 		{
 			try
 			{
-				// tried and tested method of getting the worldName
-				String worldName = event.getServer().getFolderName();
-
 				// things MAY error here as well...
-				entry.getValue().parseConfigs(config, "Data." + entry.getValue().getType() + "." + entry.getValue().getName(), worldName);
+				entry.getValue().parseConfigs(config, "Data." + entry.getValue().getType() + "." + entry.getValue().getName());
 			}
 			catch (Exception e)
 			{
@@ -109,6 +107,18 @@ public class StorageManager implements IStorageManager
 		}
 
 		loaded = true;
+	}
+	
+	/**
+	 * Passes the ServerStart event to the dataDrivers
+	 */
+	public void serverStart(FMLServerStartingEvent event)
+	{
+		for (IDataDriver driver: instanceMap.values())
+		{
+			// things MAY error here as well...
+			driver.serverStart(event);
+		}
 	}
 
 	/**

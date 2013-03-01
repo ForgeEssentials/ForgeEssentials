@@ -64,12 +64,14 @@ public class ModulePermissions
 		FMLPreInitializationEvent event = (FMLPreInitializationEvent) e.getFMLEvent();
 		PermRegLoader laoder = new PermRegLoader(event.getAsmData().getAll(PermRegister.class.getName()));
 		regPerms = laoder.loadAllPerms();
+		
+		DataStorageManager.registerSaveableType(new ClassContainer(AutoPromote.class));
+		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 	}
 
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
-
 		// setup SQL
 		sql = new SqlHelper(config);
 		sql.putRegistrationperms(regPerms);

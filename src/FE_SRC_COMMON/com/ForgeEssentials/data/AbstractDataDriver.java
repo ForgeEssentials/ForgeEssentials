@@ -7,10 +7,13 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IDataDriver;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.google.common.collect.HashMultimap;
+
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public abstract class AbstractDataDriver implements IDataDriver
 {
@@ -25,7 +28,7 @@ public abstract class AbstractDataDriver implements IDataDriver
 	@Override
 	public final String getName()
 	{
-		return this.getClass().getSimpleName().replace(AbstractDataDriver.class.getSimpleName(), "");
+		return this.getClass().getSimpleName().replaceAll("DataDriver", "");
 	}
 
 	@Override
@@ -117,9 +120,9 @@ public abstract class AbstractDataDriver implements IDataDriver
 	}
 
 	@Override
-	public void parseConfigs(Configuration config, String category, String worldName) throws Exception
+	public void parseConfigs(Configuration config, String category) throws Exception
 	{
-		loadFromConfigs(config, category, worldName);
+		loadFromConfigs(config, category);
 		hasLoaded = true;
 	}
 
@@ -129,7 +132,7 @@ public abstract class AbstractDataDriver implements IDataDriver
 		return hasLoaded;
 	}
 
-	abstract public void loadFromConfigs(Configuration config, String category, String worldName) throws Exception;
+	abstract public void loadFromConfigs(Configuration config, String category) throws Exception;
 
 	abstract protected boolean saveData(ClassContainer type, TypeData fieldList);
 

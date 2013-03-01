@@ -42,7 +42,7 @@ public class PlayerInfo
 		if (info == null)
 		{
 			// Attempt to populate this info with some data from our storage.
-			info = (PlayerInfo) DataStorageManager.getDriverOfType(EnumDriverType.SQL).loadObject(new ClassContainer(PlayerInfo.class), username);
+			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), username);
 
 			if (info == null)
 			{
@@ -150,7 +150,7 @@ public class PlayerInfo
 	 */
 	public void save()
 	{
-		DataStorageManager.getDriverOfType(EnumDriverType.SQL).saveObject(new ClassContainer(PlayerInfo.class), this);
+		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
 	}
 
 	// ----------------------------------------------
