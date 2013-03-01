@@ -95,7 +95,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		if (sender instanceof TileEntityCommandBlock)
 		{
 			TileEntityCommandBlock cb = (TileEntityCommandBlock) sender;
-			worldID = cb.worldObj.getWorldInfo().getDimension();
+			worldID = cb.worldObj.provider.dimensionId;
 			x = cb.xCoord;
 			y = cb.yCoord;
 			z = cb.zCoord;

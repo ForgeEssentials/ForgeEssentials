@@ -33,7 +33,7 @@ public class WorldPoint extends Point
 	public WorldPoint(World world, int x, int y, int z)
 	{
 		super(x, y, z);
-		dim = world.getWorldInfo().getDimension();
+		dim = world.provider.dimensionId;
 	}
 
 	public WorldPoint(Entity player)

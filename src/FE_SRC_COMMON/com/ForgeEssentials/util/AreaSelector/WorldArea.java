@@ -13,7 +13,7 @@ public class WorldArea extends AreaBase
 	public WorldArea(World world, Point start, Point end)
 	{
 		super(start, end);
-		dim = world.getWorldInfo().getDimension();
+		dim = world.provider.dimensionId;
 	}
 
 	public WorldArea(int dim, Point start, Point end)
@@ -31,7 +31,7 @@ public class WorldArea extends AreaBase
 	public WorldArea(World world, AreaBase area)
 	{
 		super(area.getHighPoint(), area.getLowPoint());
-		dim = world.getWorldInfo().getDimension();
+		dim = world.provider.dimensionId;
 	}
 
 	public boolean contains(WorldPoint p)

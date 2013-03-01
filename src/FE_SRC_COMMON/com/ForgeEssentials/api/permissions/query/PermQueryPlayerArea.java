@@ -8,6 +8,7 @@ import net.minecraftforge.event.Event.HasResult;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.WorldArea;
 
 /**
  * Reuslts are: default, allow, deny.
@@ -17,14 +18,14 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 public class PermQueryPlayerArea extends PermQueryPlayer
 {
 	public ArrayList<AreaBase>	applicable;
-	public final AreaBase		doneTo;
+	public final WorldArea		doneTo;
 	public final boolean		allOrNothing;
 
 	public PermQueryPlayerArea(EntityPlayer player, String permission, AreaBase doneTo, boolean allOrNothing)
 	{
 		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
-		this.doneTo = doneTo;
+		this.doneTo = new WorldArea(player.worldObj, doneTo);
 		this.allOrNothing = allOrNothing;
 		checkForward = false;
 	}
@@ -33,7 +34,7 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 	{
 		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
-		this.doneTo = new Selection(doneTo, doneTo);
+		this.doneTo = new WorldArea(player.worldObj, doneTo, doneTo);
 		allOrNothing = true;
 		checkForward = false;
 	}
@@ -42,7 +43,7 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 	{
 		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
-		this.doneTo = doneTo;
+		this.doneTo = new WorldArea(player.worldObj, doneTo);
 		this.allOrNothing = allOrNothing;
 		this.checkForward = checkForward;
 	}
@@ -51,7 +52,7 @@ public class PermQueryPlayerArea extends PermQueryPlayer
 	{
 		super(player, permission);
 		applicable = new ArrayList<AreaBase>();
-		this.doneTo = new Selection(doneTo, doneTo);
+		this.doneTo = new WorldArea(player.worldObj, doneTo, doneTo);
 		allOrNothing = true;
 		this.checkForward = checkForward;
 	}

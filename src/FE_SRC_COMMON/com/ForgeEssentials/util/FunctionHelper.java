@@ -232,6 +232,9 @@ public final class FunctionHelper
 
 	public static boolean isPlayerOp(String player)
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return true;
+		
 		MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
 
 		// SP and LAN

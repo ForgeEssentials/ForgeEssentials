@@ -91,7 +91,7 @@ public class ZoneHelper implements IZoneManager
 
 		if (zone == null)
 		{
-			zone = new Zone(worldString, world.getWorldInfo().getDimension());
+			zone = new Zone(worldString, world.provider.dimensionId);
 			worldZoneMap.put(worldString, zone);
 		}
 
@@ -224,18 +224,20 @@ public class ZoneHelper implements IZoneManager
 	public Zone getWhichZoneIn(AreaBase area, World world)
 	{
 		// check cache..
-		Zone end = getFromCache(new WorldArea(world, area));
+		WorldArea check = new WorldArea(world, area);
+		
+		Zone end = getFromCache(check);
 		if (end != null)
 			return end;
 
 		Zone worldZone = getWorldZone(world);
 		ArrayList<Zone> zones = new ArrayList<Zone>();
-		int worldDim = world.getWorldInfo().getDimension();
+		int worldDim = world.provider.dimensionId;
 
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 		{
-			if (worldDim == zone.dim && zone.contains(area))
+			if (zone.contains(check))
 			{
 				zones.add(zone);
 			}
