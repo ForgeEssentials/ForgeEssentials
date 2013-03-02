@@ -25,7 +25,6 @@ public class potion implements IEffect
 			String[] split = poisonEffect.split(":");
 			potionEffectsList.add(new PotionEffect(Integer.parseInt(split[0]), Integer.parseInt(split[1]) * 20, Integer.parseInt(split[2])));
 		}
-
 	}
 
 	@Override

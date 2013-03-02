@@ -14,7 +14,6 @@ import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.core.compat.SanityChecker;
 import com.ForgeEssentials.core.misc.BannedItems;
-import com.ForgeEssentials.core.misc.DeathChest;
 import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
@@ -179,7 +178,6 @@ public class ForgeEssentials
 		GameRegistry.registerPlayerTracker(factory);
 		MinecraftForge.EVENT_BUS.register(factory);
 
-		MinecraftForge.EVENT_BUS.register(new DeathChest());
 		MinecraftForge.EVENT_BUS.register(new WandController());
 
 		mcstatscompat.load();
