@@ -1,5 +1,6 @@
 package com.ForgeEssentials.data.typeInfo;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -7,6 +8,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.logging.Level;
 
 import com.ForgeEssentials.api.data.ClassContainer;
@@ -52,6 +54,9 @@ public class TypeInfoStandard implements ITypeInfo
 		Class tempType;
 		Type aTempType;
 		ClassContainer tempContainer;
+		SaveableField info;
+		
+		HashSet<String> overrides = new HashSet<String>();
 
 		// Iterate through this class and superclass's and get saveable fields
 		do
@@ -59,9 +64,22 @@ public class TypeInfoStandard implements ITypeInfo
 			// Locate all members that are saveable.
 			for (Field f : currentType.getDeclaredFields())
 			{
+				if (overrides.contains(f.getName()))
+				{
+					overrides.remove(f.getName());
+					continue;
+				}
+				
 				// if its a saveable field
 				if (f.isAnnotationPresent(SaveableField.class))
 				{
+					info = f.getAnnotation(SaveableField.class);
+					
+					// register ignoire classes....
+					if (info != null && !info.overrideParent().isEmpty())
+						overrides.add(info.overrideParent());
+						
+						
 					tempType = f.getType();
 					aTempType = f.getGenericType();
 					if (aTempType instanceof ParameterizedType)

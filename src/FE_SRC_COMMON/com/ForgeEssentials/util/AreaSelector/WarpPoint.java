@@ -23,13 +23,16 @@ public class WarpPoint extends WorldPoint
 	@SaveableField
 	public float				yaw;
 
-	@SaveableField
+	// stops the coords from Point to be saved.
+	@SaveableField(overrideParent = "x")
 	public double				xd;
 
-	@SaveableField
+	// stops the coords from Point to be saved.
+	@SaveableField(overrideParent = "y")
 	public double				yd;
 
-	@SaveableField
+	// stops the coords from Point to be saved.
+	@SaveableField(overrideParent = "z")
 	public double				zd;
 
 	public WarpPoint(int dimension, double x, double y, double z, float playerPitch, float playerYaw)

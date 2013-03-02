@@ -11,8 +11,7 @@ import java.lang.annotation.Target;
  * @author MysteriousAges
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(
-{ ElementType.TYPE })
+@Target({ElementType.TYPE })
 public @interface SaveableObject
 {
 	/**
@@ -30,7 +29,7 @@ public @interface SaveableObject
 	{ ElementType.FIELD })
 	public @interface SaveableField
 	{
-		boolean nullableField() default false;
+		String overrideParent() default "";
 	}
 
 	/**
