@@ -16,7 +16,7 @@
  * along with Votifier.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ForgeEssentials.serverVote;
+package com.ForgeEssentials.serverVote.Votifier;
 
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -34,8 +34,8 @@ import javax.crypto.Cipher;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.snooper.VoteEvent;
+import com.ForgeEssentials.serverVote.ModuleServerVote;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.tasks.IThreadTask;
 
 import cpw.mods.fml.common.FMLLog;
 
@@ -44,7 +44,7 @@ import cpw.mods.fml.common.FMLLog;
  * I only changed the init code and the event stuff.
  * @author Dries007
  */
-public class VoteReceiver implements IThreadTask
+public class VoteReceiver extends Thread
 {
 	/** The host to listen on. */
 	private final String	host;
@@ -101,7 +101,7 @@ public class VoteReceiver implements IThreadTask
 	/**
 	 * Shuts the vote receiver down cleanly.
 	 */
-	public void die()
+	public void shutdown()
 	{
 		running = false;
 		if (server == null)
@@ -120,77 +120,83 @@ public class VoteReceiver implements IThreadTask
 	@Override
 	public void run()
 	{
-		try
+		while (running)
 		{
-			Socket socket = server.accept();
-			socket.setSoTimeout(5000); // Don't hang on slow connections.
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-			InputStream in = socket.getInputStream();
+			try
+			{
+				Socket socket = server.accept();
+				socket.setSoTimeout(5000); // Don't hang on slow connections.
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+				InputStream in = socket.getInputStream();
 
-			// Send them our version.
-			writer.write("VOTIFIER FECOMPAT");
-			writer.newLine();
-			writer.flush();
+				// Send them our version.
+				writer.write("VOTIFIER FECOMPAT");
+				writer.newLine();
+				writer.flush();
 
-			// Read the 256 byte block.
-			byte[] block = new byte[256];
-			in.read(block, 0, block.length);
+				// Read the 256 byte block.
+				byte[] block = new byte[256];
+				in.read(block, 0, block.length);
 
-			// Decrypt the block.
-			Cipher cipher = Cipher.getInstance("RSA");
-			cipher.init(Cipher.DECRYPT_MODE, ModuleServerVote.config.privateKey);
-			block = cipher.doFinal(block);
-			int position = 0;
+				// Decrypt the block.
+				Cipher cipher = Cipher.getInstance("RSA");
+				cipher.init(Cipher.DECRYPT_MODE, ModuleServerVote.config.privateKey);
+				block = cipher.doFinal(block);
+				int position = 0;
 
-			// Perform the opcode check.
-			String opcode = readString(block, position);
-			position += opcode.length() + 1;
-			if (!opcode.equals("VOTE"))
-				// Something went wrong in RSA.
-				throw new Exception("Unable to decode RSA");
+				// Perform the opcode check.
+				String opcode = readString(block, position);
+				position += opcode.length() + 1;
+				if (!opcode.equals("VOTE"))
+					// Something went wrong in RSA.
+					throw new Exception("Unable to decode RSA");
 
-			// Parse the block.
-			String serviceName = readString(block, position);
-			position += serviceName.length() + 1;
-			String username = readString(block, position);
-			position += username.length() + 1;
-			String address = readString(block, position);
-			position += address.length() + 1;
-			String timeStamp = readString(block, position);
-			position += timeStamp.length() + 1;
+				// Parse the block.
+				String serviceName = readString(block, position);
+				position += serviceName.length() + 1;
+				String username = readString(block, position);
+				position += username.length() + 1;
+				String address = readString(block, position);
+				position += address.length() + 1;
+				String timeStamp = readString(block, position);
+				position += timeStamp.length() + 1;
 
-			// Create the vote.
-			VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
+				// Create the vote.
+				VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
 
-			FMLLog.fine("Received vote record -> " + vote);
+				FMLLog.fine("Received vote record -> " + vote);
 
-			MinecraftForge.EVENT_BUS.post(vote);
+				MinecraftForge.EVENT_BUS.post(vote);
 
-			// Clean up.
-			writer.close();
-			in.close();
-			socket.close();
+				// Clean up.
+				writer.close();
+				in.close();
+				socket.close();
+			}
+			catch (SocketException ex)
+			{
+				FMLLog.severe("Protocol error. Ignoring packet");
+				ex.printStackTrace();
+			}
+			catch (BadPaddingException ex)
+			{
+				FMLLog.severe("Unable to decrypt vote record. Make sure that that your public key matches the one you gave the server list.");
+				ex.printStackTrace();
+			}
+			catch (Exception ex)
+			{
+				FMLLog.severe("Exception caught while receiving a vote notification");
+				ex.printStackTrace();
+			}
 		}
-		catch (SocketException ex)
-		{
-			FMLLog.severe("Protocol error. Ignoring packet");
-			ex.printStackTrace();
-		}
-		catch (BadPaddingException ex)
-		{
-			FMLLog.severe("Unable to decrypt vote record. Make sure that that your public key matches the one you gave the server list.");
-			ex.printStackTrace();
-		}
-		catch (Exception ex)
-		{
-			FMLLog.severe("Exception caught while receiving a vote notification");
-			ex.printStackTrace();
-		}
+
+		System.gc();
 	}
 
 	/**
 	 * Reads a string from a block of data.
-	 * @param data The data to read from
+	 * @param data
+	 *            The data to read from
 	 * @return The string
 	 */
 	private String readString(byte[] data, int offset)
@@ -205,11 +211,5 @@ public class VoteReceiver implements IThreadTask
 			builder.append((char) data[i]);
 		}
 		return builder.toString();
-	}
-
-	@Override
-	public String getName()
-	{
-		return "VotifierReceive";
 	}
 }
