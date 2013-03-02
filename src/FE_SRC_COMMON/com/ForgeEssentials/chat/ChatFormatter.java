@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 
@@ -23,7 +24,7 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.google.common.base.Strings;
 
-public class Chat
+public class ChatFormatter
 {
 	public static List<String>	bannedWords	= new ArrayList<String>();
 	public static boolean		censor;
@@ -33,13 +34,10 @@ public class Chat
 	public static String		gmC;
 	public static String		gmA;
 
-	@ForgeSubscribe
+	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void chatEvent(ServerChatEvent event)
 	{
-		/*
-		 * Mute?
-		 */
-
+		// muting   this should probably be done elsewhere
 		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
 		{
 			event.setCanceled(true);
@@ -47,15 +45,18 @@ public class Chat
 			return;
 		}
 
+		// PMs
 		if (CommandPm.isMessagePersistent(event.player.getCommandSenderName()))
 		{
 			event.setCanceled(true);
 			CommandPm.processChat(event.player, event.message.split(" "));
 			return;
 		}
-
+		
 		String message = event.message;
 		String nickname = event.username;
+		
+		// censoring
 		if (censor)
 		{
 			for (String word : bannedWords)
@@ -76,6 +77,7 @@ public class Chat
 			}
 		}
 
+		
 		/*
 		 * Nickname
 		 */
@@ -85,10 +87,10 @@ public class Chat
 			nickname = event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
 		}
 
+		
 		/*
 		 * Colorize!
 		 */
-
 		if (event.message.contains("&"))
 		{
 			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
@@ -96,6 +98,8 @@ public class Chat
 				message = FunctionHelper.formatColors(event.message);
 			}
 		}
+		
+		// replacing stuff...
 
 		String rank = "";
 		String zoneID = "";

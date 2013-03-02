@@ -73,14 +73,14 @@ public class ConfigChat extends ModuleConfigBase
 		chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat).value;
 
 		config.addCustomCategoryComment("Chat.gm", "\"%gm\" gets replaced by the values below");
-		Chat.gmS = config.get("Chat.gm", "Survival", "[Sur]").value;
-		Chat.gmC = config.get("Chat.gm", "Creative", "[Cre]").value;
-		Chat.gmA = config.get("Chat.gm", "Adventure", "[Adv]").value;
+		ChatFormatter.gmS = config.get("Chat.gm", "Survival", "[Sur]").value;
+		ChatFormatter.gmC = config.get("Chat.gm", "Creative", "[Cre]").value;
+		ChatFormatter.gmA = config.get("Chat.gm", "Adventure", "[Adv]").value;
 
-		Chat.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
-		Chat.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
+		ChatFormatter.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
+		ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
 		{ "fuck", "ass", "bitch", "shit" }, "List of words to be censored").valueList);
-		Chat.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").value;
+		ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").value;
 
 		config.addCustomCategoryComment("Chat.groups", largeComment_Cat_Groups);
 
@@ -113,8 +113,8 @@ public class ConfigChat extends ModuleConfigBase
 		config.get("Automessage", "inverval", 1, "Time inbetween each message in minutes").value = AutoMessage.waittime + "";
 		config.get("Automessage", "enable", true).value = AutoMessage.enable + "";
 
-		config.get("BannedWords", "censor", true, "censor the words in the censorList").value = "" + Chat.censor;
-		config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").valueList = Chat.bannedWords.toArray(new String[Chat.bannedWords.size()]);
+		config.get("BannedWords", "censor", true, "censor the words in the censorList").value = "" + ChatFormatter.censor;
+		config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").valueList = ChatFormatter.bannedWords.toArray(new String[ChatFormatter.bannedWords.size()]);
 
 		config.addCustomCategoryComment("Chat.groups", largeComment_Cat_Groups);
 
@@ -146,10 +146,10 @@ public class ConfigChat extends ModuleConfigBase
 
 		chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat).value;
 
-		Chat.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
-		Chat.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
+		ChatFormatter.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
+		ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
 		{ "fuck", "ass", "bitch", "shit" }, "List of words to be censored").valueList);
-		Chat.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").value;
+		ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").value;
 
 		config.addCustomCategoryComment("Chat.groups", largeComment_Cat_Groups);
 
