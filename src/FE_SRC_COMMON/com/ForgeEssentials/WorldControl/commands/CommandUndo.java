@@ -8,7 +8,7 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TickTaskHandler;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class CommandUndo extends WorldControlCommandBase
 {
@@ -35,7 +35,7 @@ public class CommandUndo extends WorldControlCommandBase
 			return;
 		}
 
-		TickTaskHandler.addTask(new TickTaskSetBackup(player, back, false));
+		TaskRegistry.registerTask(new TickTaskSetBackup(player, back, false));
 
 		player.sendChatToPlayer("Working on undo.");
 	}

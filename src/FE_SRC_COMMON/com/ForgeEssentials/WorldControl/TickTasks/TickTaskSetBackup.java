@@ -8,8 +8,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.BlockSaveable;
-import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class TickTaskSetBackup implements ITickTask
 {

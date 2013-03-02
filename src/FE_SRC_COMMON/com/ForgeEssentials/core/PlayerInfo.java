@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;

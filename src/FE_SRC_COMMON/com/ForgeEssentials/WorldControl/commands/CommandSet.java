@@ -17,8 +17,8 @@ import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class CommandSet extends WorldControlCommandBase
 {
@@ -71,10 +71,10 @@ public class CommandSet extends WorldControlCommandBase
 				switch (result)
 					{
 						case ALLOW:
-							TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
+							TaskRegistry.registerTask(new TickTaskSetSelection(player, ID, metadata, back, sel));
 							return;
 						case PARTIAL:
-							TickTaskHandler.addTask(new TickTaskSetSelection(player, ID, metadata, back, sel, query.applicable));
+							TaskRegistry.registerTask(new TickTaskSetSelection(player, ID, metadata, back, sel, query.applicable));
 						default:
 							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 							return;

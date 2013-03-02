@@ -1,6 +1,5 @@
 package com.ForgeEssentials.api.data;
 
-import com.ForgeEssentials.util.EnumDBType;
 import com.google.common.base.Joiner;
 
 public enum EnumDriverType

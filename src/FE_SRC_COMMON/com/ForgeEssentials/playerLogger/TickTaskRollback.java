@@ -15,7 +15,7 @@ import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.ITickTask;
+import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class TickTaskRollback implements ITickTask
 {

@@ -26,9 +26,9 @@ import net.minecraft.world.World;
 
 import com.ForgeEssentials.api.commands.EnumMobType;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class CommandButcherTickTask implements ITickTask
 {

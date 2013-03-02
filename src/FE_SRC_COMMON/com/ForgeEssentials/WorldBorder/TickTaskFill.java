@@ -10,10 +10,10 @@ import net.minecraft.world.chunk.Chunk;
 
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
 import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.ITickTask;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TickTaskHandler;
+import com.ForgeEssentials.util.tasks.ITickTask;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -24,11 +24,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TickTaskFill implements ITickTask
 {
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= -8026130653577241537L;
-
 	protected boolean			isComplete;
 
 	protected WorldServer		world;
@@ -72,7 +67,7 @@ public class TickTaskFill implements ITickTask
 		centerZ = ModuleWorldBorder.Z / 16;
 		rad = (ModuleWorldBorder.rad + ModuleWorldBorder.overGenerate) / 16;
 
-		TickTaskHandler.addTask(this);
+		TaskRegistry.registerTask(this);
 
 		System.out.println("MinX=" + minX + " MaxX=" + maxX);
 		System.out.println("MinZ=" + minZ + " MaxZ=" + maxZ);

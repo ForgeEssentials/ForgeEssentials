@@ -1,7 +1,7 @@
 package com.ForgeEssentials.api.data;
 
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.Configuration;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public interface IDataDriver
 {

@@ -12,8 +12,8 @@ import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class CommandReplace extends WorldControlCommandBase
 {
@@ -96,10 +96,10 @@ public class CommandReplace extends WorldControlCommandBase
 				switch (result)
 					{
 						case ALLOW:
-							TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
+							TaskRegistry.registerTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
 							return;
 						case PARTIAL:
-							TickTaskHandler.addTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel, query.applicable));
+							TaskRegistry.registerTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel, query.applicable));
 						default:
 							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 							return;

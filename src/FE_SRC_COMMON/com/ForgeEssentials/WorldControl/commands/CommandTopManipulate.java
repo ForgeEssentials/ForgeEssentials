@@ -7,8 +7,8 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class CommandTopManipulate extends WorldControlCommandBase
 {
@@ -80,7 +80,7 @@ public class CommandTopManipulate extends WorldControlCommandBase
 				BackupArea back = new BackupArea();
 				// For some reason, player.posX is out.
 
-				TickTaskHandler.addTask(new TickTaskTopManipulator(player, back, effectPosition, radius, manipulateMode));
+				TaskRegistry.registerTask(new TickTaskTopManipulator(player, back, effectPosition, radius, manipulateMode));
 			}
 			player.sendChatToPlayer("Working on " + name + ".");
 		}

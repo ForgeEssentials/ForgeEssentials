@@ -7,13 +7,10 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.EnumDriverType;
 import com.ForgeEssentials.api.data.IDataDriver;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.google.common.collect.HashMultimap;
-
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public abstract class AbstractDataDriver implements IDataDriver
 {

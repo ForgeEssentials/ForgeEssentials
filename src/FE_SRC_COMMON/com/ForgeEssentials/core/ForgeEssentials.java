@@ -31,11 +31,12 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.TickTaskHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.ForgeEssentialsEventFactory;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
+import com.ForgeEssentials.util.tasks.TickTaskHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -100,6 +101,8 @@ public class ForgeEssentials
 
 	private CoreCommands			cmds;
 
+	private TaskRegistry			tasks;
+
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
@@ -161,12 +164,15 @@ public class ForgeEssentials
 	{
 		// load up DataAPI
 		((StorageManager) DataStorageManager.manager).setupManager();
-		
+
 		mdlaunch.load(e);
 		localization.load();
 		
+		// tasks
+		tasks = new TaskRegistry();
+
+		// other stuff
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
-		TickRegistry.registerTickHandler(new TickTaskHandler(), Side.SERVER);
 
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		TickRegistry.registerTickHandler(factory, Side.SERVER);
@@ -191,7 +197,7 @@ public class ForgeEssentials
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
 	{
-		// setup DataAPI for worldname..
+		tasks.serverStart();
 		
 		ModListFile.makeModList();
 
@@ -217,6 +223,7 @@ public class ForgeEssentials
 	@ServerStopping
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
+		tasks.serverStop();
 		mdlaunch.serverStopping(e);
 	}
 

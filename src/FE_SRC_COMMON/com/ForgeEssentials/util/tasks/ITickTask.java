@@ -1,9 +1,9 @@
-package com.ForgeEssentials.util;
+package com.ForgeEssentials.util.tasks;
 
 //Depreciated
 import java.io.Serializable;
 
-public interface ITickTask extends Serializable
+public interface ITickTask
 {
 	abstract void tick();
 

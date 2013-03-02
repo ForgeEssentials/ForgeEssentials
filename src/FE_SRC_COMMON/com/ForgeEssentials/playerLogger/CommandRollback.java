@@ -10,7 +10,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.TickTaskHandler;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -60,7 +60,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		{
 			try
 			{
-				TickTaskHandler.addTask(new TickTaskRollback(sender, args[0], false));
+				TaskRegistry.registerTask(new TickTaskRollback(sender, args[0], false));
 				sender.sendChatToPlayer("Starting rollback.");
 			}
 			catch (Exception e)
@@ -73,7 +73,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		{
 			try
 			{
-				TickTaskHandler.addTask(new TickTaskRollback(sender, args[0], true));
+				TaskRegistry.registerTask(new TickTaskRollback(sender, args[0], true));
 				sender.sendChatToPlayer("Starting rollback of rollback.");
 			}
 			catch (Exception e)
