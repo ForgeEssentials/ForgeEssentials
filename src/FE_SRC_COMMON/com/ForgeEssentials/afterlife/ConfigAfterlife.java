@@ -98,6 +98,8 @@ public class ConfigAfterlife extends ModuleConfigBase
 		{
 			config.get(subcat, ds.getDamageType(), gdm(ds)).value = gdm(ds);
 		}
+		
+		config.save();
 	}
 
 	@Override

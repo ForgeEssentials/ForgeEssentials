@@ -94,6 +94,7 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-servervote-${MC}-${VERSION}.zip" ./com/
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-tickets-${MC}-${VERSION}.zip" ./com/ForgeEssentials/tickets/* 
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldBorder/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl/*
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-afterlife-${MC}-${VERSION}.zip" ./com/ForgeEssentials/afterlife/*
 rm -rf ./*.info ./*.txt
 
 echo "Creating ServerComplete package"
@@ -119,6 +120,7 @@ cp -rf "${WORKSPACE}/output/${JOB_NAME}-servervote-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-tickets-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/${JOB_NAME}-afterlife-${MC}-${VERSION}.zip" ./mods/
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt LICENSE.TXT
 
 echo "Cleaning up"
@@ -137,6 +139,7 @@ rm -rf "${WORKSPACE}/output/${JOB_NAME}-snooper-${MC}-${VERSION}.zip"
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-tickets-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/${JOB_NAME}-afterlife-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/FEReadme.txt"
 rm -rf "${WORKSPACE}/output/HowToGetFEsupport.txt"
 rm -rf "${WORKSPACE}/output/LICENSE.TXT"
