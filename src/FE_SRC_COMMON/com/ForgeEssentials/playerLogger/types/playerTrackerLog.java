@@ -21,7 +21,8 @@ public class playerTrackerLog extends logEntry
 		super();
 		this.cat = cat;
 		username = player.username;
-		ip = ((EntityPlayerMP) player).playerNetServerHandler.netManager.getSocketAddress().toString();
+		ip = ((EntityPlayerMP) player).playerNetServerHandler.netManager.getSocketAddress().toString().substring(1);
+		ip = ip.substring(0, ip.lastIndexOf(":"));
 	}
 
 	public playerTrackerLog()
@@ -38,7 +39,7 @@ public class playerTrackerLog extends logEntry
 	@Override
 	public String getTableCreateSQL()
 	{
-		return "CREATE TABLE IF NOT EXISTS " + getName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), disciption CHAR(128), time DATETIME, ip CHAR(16))";
+		return "CREATE TABLE IF NOT EXISTS " + getName() + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player CHAR(16), category CHAR(16), disciption CHAR(128), time DATETIME, ip CHAR(40))";
 	}
 
 	@Override
