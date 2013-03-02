@@ -37,13 +37,13 @@ public class TeleportCenter implements IScheduledTickHandler
 
 	public static void addToTpQue(WarpPoint point, EntityPlayer player)
 	{
-		if (PlayerInfo.getPlayerInfo(player).TPcooldown != 0 && !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
+		if (PlayerInfo.getPlayerInfo(player.username).TPcooldown != 0 && !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
 		{
 			player.sendChatToPlayer(Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).TPcooldown)));
 		}
 		else
 		{
-			PlayerInfo.getPlayerInfo(player).TPcooldown = tpCooldown;
+			PlayerInfo.getPlayerInfo(player.username).TPcooldown = tpCooldown;
 			TPdata data = new TPdata(point, player);
 			if (tpWarmup == 0 || PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_WARMUP)))
 			{
@@ -80,7 +80,7 @@ public class TeleportCenter implements IScheduledTickHandler
 		removeQue.clear();
 		for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
 		{
-			PlayerInfo.getPlayerInfo((EntityPlayer) player).TPcooldownTick();
+			PlayerInfo.getPlayerInfo(((EntityPlayer) player).username).TPcooldownTick();
 		}
 	}
 

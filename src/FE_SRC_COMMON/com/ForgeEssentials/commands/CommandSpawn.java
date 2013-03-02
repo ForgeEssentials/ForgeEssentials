@@ -8,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChunkCoordinates;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
@@ -40,7 +41,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 				return;
@@ -52,14 +53,17 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			}
 			if (players.size() != 0)
 			{
+				ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
 				for (EntityPlayer player : players)
 				{
 					PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-
-					WarpPoint spawn;
-					ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
-					spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, sender.rotationPitch, sender.rotationYaw);
-					TeleportCenter.addToTpQue(spawn, player);
+					ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
+					
+					// teleport
+					server.transferPlayerToDimension((EntityPlayerMP) player, 0);
+					((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
+					
+					
 					player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 				}
 				return;
@@ -70,10 +74,10 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 				return;
 			}
 		}
-		if (args.length == 0)
+		else if (args.length == 0)
 		{
 			WarpPoint spawn;
-			ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
+			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
 			spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, sender.rotationPitch, sender.rotationYaw);
 			PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
 			TeleportCenter.addToTpQue(spawn, sender);

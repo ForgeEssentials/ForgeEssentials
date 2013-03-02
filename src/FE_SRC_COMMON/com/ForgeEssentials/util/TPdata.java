@@ -50,14 +50,14 @@ public class TPdata
 	{
 		try
 		{
-			PlayerInfo.getPlayerInfo(player).back = new WarpPoint(player);
+			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 			ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
 			if (player.dimension != point.dim)
 			{
 				server.transferPlayerToDimension((EntityPlayerMP) player, point.dim);
 			}
 			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y, point.z, point.yaw, point.pitch);
-			PlayerInfo.getPlayerInfo(player).TPcooldown = TeleportCenter.tpCooldown;
+			PlayerInfo.getPlayerInfo(player.username).TPcooldown = TeleportCenter.tpCooldown;
 			TeleportCenter.TPdone(this);
 		}
 		catch (Exception e)
