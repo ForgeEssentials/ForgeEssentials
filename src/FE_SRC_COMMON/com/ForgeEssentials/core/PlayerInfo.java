@@ -96,14 +96,18 @@ public class PlayerInfo
 	public boolean					wandEnabled	= false;
 
 	// selection stuff
+	@SaveableField()
 	private Point					sel1;
 
+	@SaveableField()
 	private Point					sel2;
 
 	private Selection				selection;
 
+	@SaveableField()
 	public WarpPoint				home;
 
+	@SaveableField()
 	public WarpPoint				back;
 
 	@SaveableField()
@@ -113,6 +117,7 @@ public class PlayerInfo
 	public String					suffix;
 
 	// 0: Normal 1: World spawn 2: Bed 3: Home
+	@SaveableField()
 	public int						spawnType;
 
 	@SaveableField()
