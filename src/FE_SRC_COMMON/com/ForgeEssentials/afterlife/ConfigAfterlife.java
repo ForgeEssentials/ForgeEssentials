@@ -146,10 +146,12 @@ public class ConfigAfterlife extends ModuleConfigBase
 	public void loadDM()
 	{
 		String subcat = cat + ".deathMessages";
+		config.addCustomCategoryComment(subcat, "This is a list of all DamageSources for Vanilla.");
 		for (DamageSource ds : dslist)
 		{
 			config.get(subcat, ds.getDamageType(), gdm(ds)).value = gdm(ds);
 		}
+		config.save();
 	}
 
 	public void sdm(DamageSource ds, String msg)
