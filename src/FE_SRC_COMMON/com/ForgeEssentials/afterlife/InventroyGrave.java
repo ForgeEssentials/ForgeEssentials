@@ -36,8 +36,9 @@ public class InventroyGrave extends InventoryBasic
 	public void closeChest()
 	{
 		List<ItemStack> list = new ArrayList<ItemStack>();
-		for (ItemStack is : inventoryContents)
+		for (int i = 0; i < getSizeInventory(); i++)
 		{
+			ItemStack is = getStackInSlot(i);
 			if (is != null)
 			{
 				list.add(is);
