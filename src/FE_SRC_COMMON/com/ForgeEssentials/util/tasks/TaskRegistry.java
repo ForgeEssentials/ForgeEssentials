@@ -11,6 +11,7 @@ public class TaskRegistry
 
 	public TaskRegistry()
 	{
+		instance = this;
 		threads = new ThreadTaskHandler();
 		ticks = new TickTaskHandler();
 		TickRegistry.registerTickHandler(ticks, Side.SERVER);
@@ -31,6 +32,10 @@ public class TaskRegistry
 		instance.threads.tasks.put(task.getName(), task);
 	}
 
+	/**
+	 * DO NOT call this onServerStop. Threads are automatically killed then. Instead, use this to kill the thread ahead of time if needed.
+	 * @param name
+	 */
 	public static void cancelThreadTask(String name)
 	{
 		instance.threads.cancelled.offer(name);

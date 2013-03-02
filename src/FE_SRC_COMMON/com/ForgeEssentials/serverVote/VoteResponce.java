@@ -1,4 +1,4 @@
-package com.ForgeEssentials.serverVote.snooper;
+package com.ForgeEssentials.serverVote;
 
 import java.net.DatagramPacket;
 import java.util.Arrays;
@@ -11,7 +11,6 @@ import net.minecraftforge.common.MinecraftForge;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.api.snooper.VoteEvent;
-import com.ForgeEssentials.serverVote.ModuleServerVote;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class VoteResponce extends Response

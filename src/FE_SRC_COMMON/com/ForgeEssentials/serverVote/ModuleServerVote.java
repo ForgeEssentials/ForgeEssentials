@@ -16,10 +16,9 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.snooper.API;
 import com.ForgeEssentials.api.snooper.VoteEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.serverVote.Votifier.VoteReceiver;
-import com.ForgeEssentials.serverVote.snooper.VoteResponce;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -44,7 +43,7 @@ public class ModuleServerVote
 		try
 		{
 			votifier = new VoteReceiver(config.hostname, config.port);
-			votifier.start();
+			TaskRegistry.registerTask(votifier);
 		}
 		catch (Exception e1)
 		{
@@ -57,16 +56,8 @@ public class ModuleServerVote
 	@ServerStop
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
-		try
-		{
-			votifier.shutdown();
-		}
-		catch (Exception e1)
-		{
-			FMLLog.severe("Error closing Votifier compat thread.");
-			FMLLog.severe(e.toString());
-			e1.printStackTrace();
-		}
+		// cleanup references..
+		votifier = null;
 	}
 
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
