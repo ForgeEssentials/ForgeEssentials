@@ -56,6 +56,25 @@ public class SQLDataDriver extends AbstractDataDriver
 		connector.loadOrGenerate(config, cat);
 	}
 
+	/**
+	 * To ensure that the connection stays connected when needed.
+	 * @return
+	 */
+	public Connection getDbConnection()
+	{
+		try
+		{
+			if (dbConnection == null || dbConnection.isClosed())
+				dbConnection = connector.getChosenConnection();
+		}
+		catch (Exception e)
+		{
+			OutputHandler.exception(Level.SEVERE, "DataDriver SQL conncetion could not be recreated!", e);
+		}
+
+		return dbConnection;
+	}
+
 	@Override
 	public void serverStart(FMLServerStartingEvent e)
 	{
@@ -82,7 +101,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			Statement s;
 			ArrayList<String> statements = generateInsertBatch(DataStorageManager.getInfoForType(type), data);
-			s = dbConnection.createStatement();
+			s = getDbConnection().createStatement();
 
 			for (String statement : statements)
 			{
@@ -107,7 +126,7 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		try
 		{
-			Statement s = dbConnection.createStatement();
+			Statement s = getDbConnection().createStatement();
 			ResultSet result = s.executeQuery(createSelectStatement(type, uniqueKey));
 
 			// ResultSet initially sits just before first result.
@@ -134,7 +153,7 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		try
 		{
-			Statement s = dbConnection.createStatement();
+			Statement s = getDbConnection().createStatement();
 			ResultSet result = s.executeQuery(createSelectAllStatement(type));
 			TypeData temp;
 
@@ -161,7 +180,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		try
 		{
 			ArrayList<String> statements = createDeleteStatement(type, uniqueObjectKey);
-			Statement s = dbConnection.createStatement();
+			Statement s = getDbConnection().createStatement();
 
 			for (String statement : statements)
 			{
@@ -311,7 +330,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		ITypeInfo info = DataStorageManager.getInfoForType(type);
 		TypeData data = DataStorageManager.getDataForType(type);
 
-		ResultSet set = dbConnection.createStatement().executeQuery(createSelectStatement(type, unique));
+		ResultSet set = getDbConnection().createStatement().executeQuery(createSelectStatement(type, unique));
 		if (set.next())
 		{
 			createTaggedClassFromResult(resultRowToMap(set), info, data);
@@ -600,7 +619,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		try
 		{
 			// Attempt to execute the statement.
-			Statement s = dbConnection.createStatement();
+			Statement s = getDbConnection().createStatement();
 			s.execute(tableCreate.toString());
 		}
 		catch (Exception e)
@@ -903,7 +922,7 @@ public class SQLDataDriver extends AbstractDataDriver
 				String ID = dbValue.toString();
 				ID = TypeMultiValInfo.getUIDFromUnique(ID);
 
-				Statement s = dbConnection.createStatement();
+				Statement s = getDbConnection().createStatement();
 				ResultSet result = s.executeQuery("SELECT * FROM " + FEDATA_PREFIX + targetType.getFileSafeName() + " WHERE " + MULTI_MARKER + "='" + ID + "'");
 
 				TypeData data = DataStorageManager.getDataForType(targetType);

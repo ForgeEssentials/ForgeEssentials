@@ -47,6 +47,7 @@ public abstract class TextDataDriver extends AbstractDataDriver
 		else
 		{
 			File parent = FunctionHelper.getBaseDir();
+			
 			if (FMLCommonHandler.instance().getSide().isClient())
 			{
 				parent = new File(FunctionHelper.getBaseDir(), "saves/");

@@ -197,6 +197,9 @@ public class ForgeEssentials
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e)
 	{
+		// load up DataAPI
+		((StorageManager) DataStorageManager.manager).serverStart(e);
+		
 		tasks.serverStart();
 		
 		ModListFile.makeModList();

@@ -222,10 +222,7 @@ public final class FunctionHelper
 	public static File getBaseDir()
 	{
 		if (FMLCommonHandler.instance().getSide().isClient())
-		{
-			FMLClientHandler.instance().getClient();
 			return Minecraft.getMinecraftDir();
-		}
 		else
 			return new File(".");
 	}
