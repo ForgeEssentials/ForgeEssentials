@@ -716,9 +716,14 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		Class cType = type.getType();
 
-		if (cType.equals(Integer.class) || cType.equals(Boolean.class) || cType.equals(Float.class) || cType.equals(Double.class) || cType.equals(String.class))
+		if (cType.equals(Integer.class) || cType.equals(Float.class) || cType.equals(Double.class) || cType.equals(String.class)
+			|| cType.equals(int.class) || cType.equals(float.class) || cType.equals(double.class))
 		{
 			data.add(new Pair(fieldName, value.toString()));
+		}
+		else if (cType.equals(Boolean.class) || cType.equals(boolean.class))
+		{
+			data.add(new Pair(fieldName, ""+ (Boolean.TRUE.equals(value) ? 1 : 0) ));
 		}
 		else if (cType.equals(double[].class) && ((double[]) value).length > 0)
 		{

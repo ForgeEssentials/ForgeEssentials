@@ -34,7 +34,7 @@ public class ChatFormatter
 	public static String		gmC;
 	public static String		gmA;
 
-	@ForgeSubscribe(priority = EventPriority.HIGHEST)
+	@ForgeSubscribe(priority = EventPriority.HIGH)
 	public void chatEvent(ServerChatEvent event)
 	{
 		// muting   this should probably be done elsewhere

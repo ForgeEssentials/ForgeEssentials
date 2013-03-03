@@ -59,17 +59,11 @@ public class ModuleChat
 	{
 	}
 
-	@PreInit
-	public void preLoad(FEModulePreInitEvent e)
-	{
-	}
-
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
 		ChatFormatter chat = new ChatFormatter();
 		MinecraftForge.EVENT_BUS.register(chat);
-		MinecraftForge.EVENT_BUS.register(this); // for the permissions.
 	}
 
 	@PostInit
