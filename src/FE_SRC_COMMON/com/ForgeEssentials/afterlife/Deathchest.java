@@ -79,7 +79,12 @@ public class Deathchest
 		{
 			e.setCanceled(true);
 
-			Grave grave = new Grave(point, e.entityPlayer, e.drops);
+			if(enableFencePost)
+			{
+				world.setBlock(point.x, point.y, point.z, Block.fence.blockID);
+				point.y++;
+			}
+			new Grave(point, e.entityPlayer, e.drops);
 
 			world.setBlockAndMetadata(point.x, point.y, point.z, Block.skull.blockID, 1);
 			TileEntitySkull te = (TileEntitySkull) ((BlockSkull) Block.skull).createNewTileEntity(world);
