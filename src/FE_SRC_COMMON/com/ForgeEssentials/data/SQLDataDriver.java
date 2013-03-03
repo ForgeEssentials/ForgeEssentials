@@ -809,7 +809,7 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		Class type = targetType.getType();
 		
-		if (type.equals(int.class))
+		if (type.equals(int.class) || type.equals(double.class) || type.equals(float.class) || type.equals(String.class)|| type.equals(boolean.class))
 		{
 			// DB Value is an integer
 			value = dbValue;
@@ -818,26 +818,6 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			// DB Value is an Integer
 			value = ((Integer) dbValue).byteValue();
-		}
-		else if (type.equals(double.class))
-		{
-			// DB Value is a double
-			value = dbValue;
-		}
-		else if (type.equals(float.class))
-		{
-			// DB value is a Double.
-			value = dbValue;
-		}
-		else if (type.equals(String.class))
-		{
-			// DB Value is a string
-			value = dbValue;
-		}
-		else if (type.equals(boolean.class))
-		{
-			// DB Value is an integer (1=true, 0=false)
-			value = ((Integer) dbValue).equals(1);
 		}
 		else if (type.equals(double[].class))
 		{
