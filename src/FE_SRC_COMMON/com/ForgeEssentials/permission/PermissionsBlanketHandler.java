@@ -10,6 +10,7 @@ import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketArea;
+import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketZone;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
@@ -30,21 +31,18 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
  */
 public final class PermissionsBlanketHandler
 {
-
-	@PermSubscribe(priority = EventPriority.HIGH, handleResult = { PermResult.UNKNOWN })
-	public void checkPlayerSupers(PermQueryPlayer event)
-	{
-		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.getSUPER().getZoneName(), event.checkForward);
-		if (!result.equals(PermResult.UNKNOWN))
-		{
-			event.setResult(result);
-		}
-	}
-
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
 	public void handleQuery(PermQueryBlanketZone event)
 	{
 		PermResult result = getResultFromZone(event.toCheck, event.checker, event.checkForward);
+		event.setResult(result);
+	}
+	
+	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
+	public void handleQuery(PermQueryBlanketSpot event)
+	{
+		Zone zone = ZoneManager.getWhichZoneIn(event.spot);
+		PermResult result = getResultFromZone(zone, event.checker, event.checkForward);
 		event.setResult(result);
 	}
 

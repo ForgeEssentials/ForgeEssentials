@@ -1,7 +1,9 @@
 package com.ForgeEssentials.protection;
 
 import java.util.HashMap;
+import java.util.Set;
 
+import net.minecraft.entity.EntityList;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.modules.FEModule;
@@ -28,7 +30,8 @@ public class ModuleProtection
 	public final static String									PERM_INTERACT_ENTITY	= "ForgeEssentials.Protection.allowEntityInteractions";
 	public final static String									PERM_OVERRIDE			= "ForgeEssentials.Protection.overrideProtection";
 	public final static String									PERM_PVP				= "ForgeEssentials.Protection.pvp";
-	public final static String									PERM_MOB_SPAWN			= "ForgeEssentials.Protection.mobSpawn";
+	public final static String									PERM_MOB_SPAWN_NATURAL	= "ForgeEssentials.Protection.mobSpawn.natural";
+	public final static String									PERM_MOB_SPAWN_FORCED	= "ForgeEssentials.Protection.mobSpawn.forced";
 
 	@Config
 	public static ConfigProtection								config;
@@ -70,7 +73,16 @@ public class ModuleProtection
 		event.registerPermissionLevel(PERM_INTERACT_BLOCK, RegGroup.MEMBERS);
 		event.registerPermissionLevel(PERM_INTERACT_ENTITY, RegGroup.MEMBERS);
 		event.registerPermissionLevel(PERM_OVERRIDE, RegGroup.OWNERS);
+
+		/*
+		for (String name : ((Set<String>)EntityList.stringToClassMapping.entrySet()))
+		{
+			event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + name, RegGroup.ZONE);
+			event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + name, RegGroup.ZONE);
+		}
+		*/
 		
-		event.registerPermissionLevel(PERM_MOB_SPAWN+"._ALL_", RegGroup.ZONE);
+		event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "._ALL_", RegGroup.ZONE);
+		event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "._ALL_", RegGroup.ZONE);
 	}
 }

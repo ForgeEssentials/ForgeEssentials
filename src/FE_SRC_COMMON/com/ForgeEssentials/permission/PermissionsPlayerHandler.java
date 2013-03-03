@@ -68,7 +68,7 @@ public final class PermissionsPlayerHandler
 	{
 		if (event.allOrNothing)
 		{
-			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo, event.doer.worldObj);
+			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo);
 			PermResult result = getResultFromZone(zone, event);
 			event.setResult(result);
 		}

@@ -8,6 +8,7 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -225,7 +226,23 @@ public class EventHandler
 		WorldPoint point = new WorldPoint(e.entityLiving);
 		String mobID = EntityList.getEntityString(e.entity);
 		
-		PermQueryBlanketSpot query = new PermQueryBlanketSpot(point, ModuleProtection.PERM_MOB_SPAWN+"."+mobID);
+		PermQueryBlanketSpot query = new PermQueryBlanketSpot(point, ModuleProtection.PERM_MOB_SPAWN_NATURAL+"."+mobID);
+		
+		if (!PermissionsAPI.checkPermAllowed(query))
+			e.setResult(Result.DENY);
+	}
+	
+	@ForgeSubscribe(priority = EventPriority.LOW)
+	public void handleSpawn(SpecialSpawn e)
+	{
+		// ignore players
+		if (e.entityLiving instanceof EntityPlayer)
+			return;
+		
+		WorldPoint point = new WorldPoint(e.entityLiving);
+		String mobID = EntityList.getEntityString(e.entity);
+		
+		PermQueryBlanketSpot query = new PermQueryBlanketSpot(point, ModuleProtection.PERM_MOB_SPAWN_FORCED+"."+mobID);
 		
 		if (!PermissionsAPI.checkPermAllowed(query))
 			e.setResult(Result.DENY);
