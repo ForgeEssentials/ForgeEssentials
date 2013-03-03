@@ -838,8 +838,7 @@ public class SqlHelper
 
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
-	// -------------------------------MAJOR ---- USAGE ---- METHODS
-	// --------------------------------------
+	// -------------------------------MAJOR ---- USAGE ---- METHODS --------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------
 
@@ -1387,7 +1386,7 @@ public class SqlHelper
 			// check permission existence...
 			getInstance().statementGetPermission.setInt(1, tID);
 			getInstance().statementGetPermission.setInt(2, isG);
-			getInstance().statementGetPermission.setString(3, perm.name);
+			getInstance().statementGetPermission.setString(3, perm.isAll ? perm.getAllParent() : perm.name);
 			getInstance().statementGetPermission.setInt(4, zID);
 			ResultSet set = getInstance().statementGetPermission.executeQuery();
 			getInstance().statementGetPermission.clearParameters();

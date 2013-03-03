@@ -1,5 +1,6 @@
 package com.ForgeEssentials.protection;
 
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.Event.Result;
@@ -222,7 +223,7 @@ public class EventHandler
 			return;
 		
 		WorldPoint point = new WorldPoint(e.entityLiving);
-		String mobID = e.entityLiving.getEntityName().replace(" ", "_");
+		String mobID = EntityList.getEntityString(e.entity);
 		
 		PermQueryBlanketSpot query = new PermQueryBlanketSpot(point, ModuleProtection.PERM_MOB_SPAWN+"."+mobID);
 		
