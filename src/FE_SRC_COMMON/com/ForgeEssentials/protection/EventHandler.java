@@ -2,15 +2,18 @@ package com.ForgeEssentials.protection;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQuery;
+import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -209,5 +212,21 @@ public class EventHandler
 		}
 
 		e.setCanceled(!result);
+	}
+	
+	@ForgeSubscribe(priority = EventPriority.LOW)
+	public void handleSpawn(CheckSpawn e)
+	{
+		// ignore players
+		if (e.entityLiving instanceof EntityPlayer)
+			return;
+		
+		WorldPoint point = new WorldPoint(e.entityLiving);
+		String mobID = e.entityLiving.getEntityName().replace(" ", "_");
+		
+		PermQueryBlanketSpot query = new PermQueryBlanketSpot(point, ModuleProtection.PERM_MOB_SPAWN+"."+mobID);
+		
+		if (!PermissionsAPI.checkPermAllowed(query))
+			e.setResult(Result.DENY);
 	}
 }
