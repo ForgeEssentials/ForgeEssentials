@@ -198,8 +198,6 @@ public class ForgeEssentials
 		// load up DataAPI
 		((StorageManager) DataStorageManager.manager).serverStart(e);
 		
-		tasks.serverStart();
-		
 		ModListFile.makeModList();
 
 		// Central TP system
@@ -224,7 +222,6 @@ public class ForgeEssentials
 	@ServerStopping
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		tasks.serverStop();
 		mdlaunch.serverStopping(e);
 	}
 
