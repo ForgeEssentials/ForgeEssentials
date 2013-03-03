@@ -27,6 +27,9 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PlayerBlockBreak;
 
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
+
 public class Deathchest
 {
 	/**
@@ -37,6 +40,7 @@ public class Deathchest
 	public static boolean			enable;
 	public static boolean			enableXP;
 	public static boolean			enableFencePost;
+	public static int				protectionTime;
 
 	public HashMap<String, Grave>	gravemap	= new HashMap<String, Grave>();
 	private ClassContainer			graveType	= new ClassContainer(Grave.class);
@@ -44,6 +48,7 @@ public class Deathchest
 	public Deathchest()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
+		TickRegistry.registerScheduledTickHandler(new GraveProtectionTicker(this), Side.SERVER);
 	}
 
 	public void load()
@@ -84,7 +89,7 @@ public class Deathchest
 				world.setBlock(point.x, point.y, point.z, Block.fence.blockID);
 				point.y++;
 			}
-			new Grave(point, e.entityPlayer, e.drops);
+			new Grave(point, e.entityPlayer, e.drops, this);
 
 			world.setBlockAndMetadata(point.x, point.y, point.z, Block.skull.blockID, 1);
 			TileEntitySkull te = (TileEntitySkull) ((BlockSkull) Block.skull).createNewTileEntity(world);

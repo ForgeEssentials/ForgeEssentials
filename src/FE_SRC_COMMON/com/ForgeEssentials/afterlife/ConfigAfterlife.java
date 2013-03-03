@@ -35,7 +35,8 @@ public class ConfigAfterlife extends ModuleConfigBase
 		Deathchest.enable = config.get(subcat, "Enable", true, "Enable the deathchest. Still need permission: ").getBoolean(true);
 		Deathchest.enableXP = config.get(subcat, "EnableXP", true, "Gives xp when the skull is destoyed or emplyed").getBoolean(true);
 		Deathchest.enableFencePost = config.get(subcat, "enableFencePost", true, "Put the skull on a spike.").getBoolean(true);
-
+		Deathchest.protectionTime = config.get(subcat, "protectionTime", 300, "Time in seconds a grave is protected. After this time anyone can take all stuff.").getInt();
+		
 		subcat = cat + ".respawnStats";
 		config.addCustomCategoryComment(subcat, "Bypass permission:\n" + RespawnDebuff.BYPASSSTATS);
 

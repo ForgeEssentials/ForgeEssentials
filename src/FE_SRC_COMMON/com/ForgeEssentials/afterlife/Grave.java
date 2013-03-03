@@ -35,9 +35,9 @@ public class Grave
 	public int			protTime;
 
 	@SaveableField
-	public boolean		protEnable;
+	public boolean		protEnable = true;
 
-	public Grave(WorldPoint point, EntityPlayer player, ArrayList<EntityItem> drops)
+	public Grave(WorldPoint point, EntityPlayer player, ArrayList<EntityItem> drops, Deathchest deathchest)
 	{
 		this.key = point.toString();
 		this.point = point;
@@ -56,7 +56,9 @@ public class Grave
 			inv[i] = drops.get(i).getEntityItem().copy();
 		}
 
-		MuduleAfterlife.instance.deathchest.gravemap.put(point.toString(), this);
+		this.protTime = Deathchest.protectionTime;
+		
+		deathchest.gravemap.put(point.toString(), this);
 	}
 
 	@Reconstructor
@@ -89,5 +91,17 @@ public class Grave
 		if (inv == null)
 			return 0;
 		return (inv.length % 9 == 0) ? inv.length : (((int) inv.length / 9) + 1) * 9;
+	}
+
+	public void tick()
+	{
+		if(protTime != 0)
+		{
+			protTime --;
+		}
+		else
+		{
+			protEnable = false;
+		}
 	}
 }
