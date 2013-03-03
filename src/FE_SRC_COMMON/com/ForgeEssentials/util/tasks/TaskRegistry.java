@@ -1,18 +1,20 @@
 package com.ForgeEssentials.util.tasks;
 
+import java.util.TimerTask;
+
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 public class TaskRegistry
 {
-	private ThreadTaskHandler	threads;
+	private TimeTaskHandler		timed;
 	private TickTaskHandler		ticks;
 	private static TaskRegistry	instance;
 
 	public TaskRegistry()
 	{
 		instance = this;
-		threads = new ThreadTaskHandler();
+		timed = new TimeTaskHandler();
 		ticks = new TickTaskHandler();
 		TickRegistry.registerTickHandler(ticks, Side.SERVER);
 	}
@@ -22,34 +24,65 @@ public class TaskRegistry
 		instance.ticks.tasks.offer(task);
 	}
 
-	/**
-	 * Thread tasks may be registered at any time, however all of them will terminate onServerStop
-	 * @param task
-	 */
-	public static void registerTask(IThreadTask task)
+	public static void registerSingleTask(TimerTask task, int hours, int minutes, int seconds, int milliseconds)
 	{
-		instance.threads.taskNames.offer(task.getName());
-		instance.threads.tasks.put(task.getName(), task);
-	}
-
-	/**
-	 * DO NOT call this onServerStop. Threads are automatically killed then. Instead, use this to kill the thread ahead of time if needed.
-	 * @param name
-	 */
-	public static void cancelThreadTask(String name)
-	{
-		instance.threads.cancelled.offer(name);
+		long time = getMillis(hours, minutes, seconds, milliseconds);
+		instance.timed.addTask(task, time);
 	}
 	
-	public void serverStart()
+	public static void registerSingleTask(Runnable task, int hours, int minutes, int seconds, int milliseconds)
 	{
-		threads = new ThreadTaskHandler();
-		threads.start();
+		TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
+		registerSingleTask(wrapper, hours, minutes, seconds, milliseconds);
 	}
 	
-	public void serverStop()
+	public static void registerRecurringTask(TimerTask task, int delayHrs, int delayMin, int delaySec, int delayMilli, int intervalHrs, int intervalMin, int intervalSec, int intervalMilli)
 	{
-		threads.interrupt();
-		threads = null;
+		long delay = getMillis(delayHrs, delayMin, delaySec, delayMilli);
+		long interval = getMillis(intervalHrs, intervalMin, intervalSec, intervalMilli);
+		
+		instance.timed.addRepetingTask(task, delay, interval);
 	}
+	
+	public static void registerRecurringTask(Runnable task, int hours, int minutes, int seconds, int milliseconds)
+	{
+		TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
+		registerRecurringTask(wrapper, hours, minutes, seconds, milliseconds);
+	}
+	
+	private static class TimedTaskWrapper extends TimerTask
+	{
+		private final Runnable runner;
+		
+		public TimedTaskWrapper(Runnable runner)
+		{
+			this.runner = runner;
+		}
+		
+		public void run()
+		{
+			runner.run();
+		}
+	}
+	
+	
+	private static long getMillis(int hrs, int min, int sec, int milli)
+	{
+		long time = 0;
+		
+		// all hours.
+		time = hrs;
+		
+		// all minutes
+		time = (time*60) + min;
+		
+		// all seconds
+		time = (time*60) + sec;
+		
+		// all milliseconds
+		time = (time*1000) + milli;
+		
+		return time;
+	}
+	
 }
