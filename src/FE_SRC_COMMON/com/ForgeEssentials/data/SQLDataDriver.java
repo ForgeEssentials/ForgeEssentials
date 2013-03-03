@@ -40,6 +40,8 @@ public class SQLDataDriver extends AbstractDataDriver
 	private final String			UNIQUE				= "uniqueIdentifier";
 	private final String			MULTI_MARKER		= "MultiValUID";
 	private final String			FEDATA_PREFIX		= "FEDATA_";
+	
+	private String SURROUNDER = "";
 
 	// Default constructor is good enough for us.
 
@@ -80,6 +82,10 @@ public class SQLDataDriver extends AbstractDataDriver
 	{
 		// actually start the connection.
 		dbConnection = connector.getChosenConnection();
+		if (connector.getActiveType().equals(EnumDBType.H2_FILE))
+			SURROUNDER = "\"";
+		else
+			SURROUNDER = "";
 	}
 
 	@Override
@@ -242,80 +248,59 @@ public class SQLDataDriver extends AbstractDataDriver
 
 	private void createTaggedClassFromResult(HashMap<String, Object> result, ITypeInfo info, TypeData data) throws SQLException
 	{
-		ITypeInfo taggerCursor;
-		TypeData cursor = null;
-		SavedField tmpField = null;
+		ITypeInfo infoCursor;
+		TypeData dataCursor = null;
 		ClassContainer tmpClass;
+		Object tempVal;
 
 		for (Entry<String, Object> entry : result.entrySet())
 		{
-			cursor = data;
-			taggerCursor = info;
+			dataCursor = data;
+			infoCursor = info;
 
 			String[] fieldHeiarchy = entry.getKey().split(SEPERATOR);
 			if (fieldHeiarchy != null)
 			{
-				// Iterate over the list of items in the heiarchy to rebuild the
+				// Iterate over the list of items in the hierarchy to rebuild the
 				// TaggedClass.
 				for (int i = 0; i < fieldHeiarchy.length; ++i)
 				{
+					String name = fieldHeiarchy[i];
+					
 					// Grab the next item
-					tmpField = getSavedFieldFromName(cursor, fieldHeiarchy[i]);
+					tmpClass = infoCursor.getTypeOfField(name);
 
-					if (tmpField == null)
-					{
-						// Create a new node for this position.
-						tmpField = new SavedField();
-						tmpField.name = fieldHeiarchy[i];
-						cursor.putField(tmpField.name, null);
-					}
-
+					// if its not the last one.
 					if (fieldHeiarchy.length > i + 1)
 					{
-						// An object lives here.
-						tmpClass = taggerCursor.getTypeOfField(fieldHeiarchy[i]);
-						tmpField.value = cursor = DataStorageManager.getDataForType(tmpClass);
-						taggerCursor = taggerCursor.getInfoForField(fieldHeiarchy[i]);
+						// An object lives here. Add a new taggedClass of this type.
+						tempVal = dataCursor.getFieldValue(name);
+						
+						if (tempVal == null)
+							tempVal = DataStorageManager.getDataForType(tmpClass);
+						
+						dataCursor.putField(name, tempVal);
+						
+						// change the cursor to the new object.
+						dataCursor = (TypeData) tempVal;
+						infoCursor = infoCursor.getInfoForField(name);
 					}
 					else
 					{
-						String name = fieldHeiarchy[i];
-
+						// account for multivals.
 						if (name.contains(MULTI_MARKER))
 						{
 							name = name.replace("_" + MULTI_MARKER, "");
+							// get tmpClass again with new name.
+							tmpClass = infoCursor.getTypeOfField(name);
 						}
 
 						// Primitive type.
-						ClassContainer fieldType = taggerCursor.getTypeOfField(name);
-						tmpField.value = valueToField(fieldType, result.get(name));
-						tmpField.type = fieldType.getType();
+						tempVal = valueToField(tmpClass, entry.getValue());
+						dataCursor.putField(name, tempVal);
 					}
 				}
 			}
-		}
-	}
-
-	/**
-	 * if the field exists, but has no value. An empty field is returned.
-	 * if the field does not exist, NULL is returned
-	 * otherwise a field is constructed and returned.
-	 * @param data
-	 */
-	private SavedField getSavedFieldFromName(TypeData data, String name)
-	{
-		SavedField field = new SavedField();
-
-		if (!data.hasField(name))
-			return null;
-		else
-		{
-			Object val;
-			val = data.getFieldValue(name);
-			if (val == null)
-				return field;
-			else
-				return new SavedField(name, val);
 		}
 	}
 
@@ -408,7 +393,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			builder.append(" WHERE ");
 			DataStorageManager.getInfoForType(type);
 			builder.append(UNIQUE);
-			builder.append(" = ");
+			builder.append("=");
 			builder.append('\'').append(unique).append('\'');
 		}
 
@@ -458,6 +443,8 @@ public class SQLDataDriver extends AbstractDataDriver
 			table = ((TypeEntryInfo) info).getParentType().getFileSafeName();
 			isEntry = true;
 		}
+		
+		table = FEDATA_PREFIX + table;
 
 		String query = getInsertStatement(fieldValueMap, table, isEntry);
 		statements.add(query.toString());
@@ -510,11 +497,11 @@ public class SQLDataDriver extends AbstractDataDriver
 			if (isfirst)
 			{
 				isfirst = !isfirst;
-				fields.append("\"" + pair.getFirst() + "\"");
+				fields.append(SURROUNDER + pair.getFirst() + SURROUNDER);
 			}
 			else
 			{
-				fields.append(", \"" + pair.getFirst() + "\"");
+				fields.append(", "+SURROUNDER + pair.getFirst() + SURROUNDER);
 				values.append(", ");
 			}
 
@@ -596,14 +583,14 @@ public class SQLDataDriver extends AbstractDataDriver
 		if (!isMulti)
 		{
 			tableFields.add(new Pair<String, String>(UNIQUE, "VARCHAR(100)"));
-			keyClause = "PRIMARY KEY (\"" + UNIQUE + "\")";
+			keyClause = "PRIMARY KEY ("+SURROUNDER + UNIQUE + SURROUNDER+")";
 		}
 
 		// Build up the create statement
 		StringBuilder tableCreate = new StringBuilder("CREATE TABLE IF NOT EXISTS " + FEDATA_PREFIX + type.getFileSafeName() + " (");
 		for (Pair<String, String> pair : tableFields)
 		{
-			tableCreate.append("\"" + pair.getFirst() + "\" " + pair.getSecond() + ", ");
+			tableCreate.append(SURROUNDER + pair.getFirst() + SURROUNDER + " " + pair.getSecond() + ", ");
 		}
 
 		if (isMulti)
@@ -653,7 +640,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			if (type.equals(int.class) || type.equals(Integer.class))
 			{
-				fields.add(new Pair<String, String>(columnName, "INT"));
+				fields.add(new Pair<String, String>(columnName, "INTEGER"));
 			}
 			else if (type.equals(byte.class) || type.equals(Byte.class))
 			{
@@ -816,12 +803,13 @@ public class SQLDataDriver extends AbstractDataDriver
 			return null;
 
 		Class type = targetType.getType();
+		
 		if (type.equals(int.class))
 		{
 			// DB Value is an integer
 			value = dbValue;
 		}
-		if (type.equals(byte.class))
+		else if (type.equals(byte.class))
 		{
 			// DB Value is an Integer
 			value = ((Integer) dbValue).byteValue();
@@ -916,12 +904,15 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			// for small things like this...
 			ITypeInfo info = DataStorageManager.getInfoForType(targetType);
+			
+			// multival styff
 			if (!info.canSaveInline())
 			{
 				TypeMultiValInfo multiInfo = (TypeMultiValInfo) info;
 				String ID = dbValue.toString();
 				ID = TypeMultiValInfo.getUIDFromUnique(ID);
 
+				// get the data for the MultiVals
 				Statement s = getDbConnection().createStatement();
 				ResultSet result = s.executeQuery("SELECT * FROM " + FEDATA_PREFIX + targetType.getFileSafeName() + " WHERE " + MULTI_MARKER + "='" + ID + "'");
 
@@ -930,7 +921,7 @@ public class SQLDataDriver extends AbstractDataDriver
 				TypeEntryInfo entryInfo = multiInfo.getEntryInfo();
 				String connector = multiInfo.getEntryName();
 
-				// ResultSet initially sits just before first result.
+				// create the MultiVal object
 				TypeData temp;
 				int i = 0;
 				while (result.next())
@@ -940,6 +931,7 @@ public class SQLDataDriver extends AbstractDataDriver
 					data.putField(connector + i++, temp);
 				}
 
+				// return the compelted MultiVal object
 				value = data;
 			}
 
