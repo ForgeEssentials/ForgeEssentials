@@ -39,7 +39,8 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 public class ModulePermissions
 {
 	// public static ConfigPermissions config;
-	public static PermissionsHandler	pHandler;
+	public static PermissionsPlayerHandler	ppHandler;
+	public static PermissionsBlanketHandler	pbHandler;
 	public static SqlHelper				sql;
 
 	@Config
@@ -76,8 +77,10 @@ public class ModulePermissions
 		sql = new SqlHelper(config);
 		sql.putRegistrationperms(regPerms);
 
-		pHandler = new PermissionsHandler();
-		PermissionsAPI.QUERY_BUS.register(pHandler);
+		ppHandler = new PermissionsPlayerHandler();
+		pbHandler = new PermissionsBlanketHandler();
+		PermissionsAPI.QUERY_BUS.register(ppHandler);
+		PermissionsAPI.QUERY_BUS.register(pbHandler);
 
 		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);

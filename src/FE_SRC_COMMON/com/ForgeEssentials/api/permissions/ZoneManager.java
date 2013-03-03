@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.Selection;
+import com.ForgeEssentials.util.AreaSelector.WorldArea;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class ZoneManager
@@ -42,9 +43,15 @@ public class ZoneManager
 		return manager.getWhichZoneIn(point);
 	}
 
+	@Deprecated
 	public static Zone getWhichZoneIn(AreaBase area, World world)
 	{
-		return manager.getWhichZoneIn(area, world);
+		return manager.getWhichZoneIn(new WorldArea(world, area));
+	}
+	
+	public static Zone getWhichZoneIn(WorldArea area)
+	{
+		return manager.getWhichZoneIn(area);
 	}
 
 	public static ArrayList<Zone> getZoneList()

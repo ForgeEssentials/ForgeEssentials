@@ -221,18 +221,16 @@ public class ZoneHelper implements IZoneManager
 	 * @return
 	 */
 	@Override
-	public Zone getWhichZoneIn(AreaBase area, World world)
+	public Zone getWhichZoneIn(WorldArea check)
 	{
-		// check cache..
-		WorldArea check = new WorldArea(world, area);
 		
 		Zone end = getFromCache(check);
 		if (end != null)
 			return end;
 
-		Zone worldZone = getWorldZone(world);
+		Zone worldZone = getWorldZone(FunctionHelper.getDimension(check.dim));
 		ArrayList<Zone> zones = new ArrayList<Zone>();
-		int worldDim = world.provider.dimensionId;
+		int worldDim = check.dim;
 
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())

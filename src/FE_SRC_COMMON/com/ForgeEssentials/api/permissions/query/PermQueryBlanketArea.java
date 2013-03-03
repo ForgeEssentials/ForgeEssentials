@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
+import com.ForgeEssentials.util.AreaSelector.WorldArea;
 
 public class PermQueryBlanketArea extends PermQuery
 {
 	public ArrayList<AreaBase>	applicable;
-	public final AreaBase		doneTo;
+	public final WorldArea		doneTo;
 	public final boolean		allOrNothing;
 
-	public PermQueryBlanketArea(String permission, AreaBase doneTo, World world, boolean allOrNothing)
+	public PermQueryBlanketArea(String permission, WorldArea doneTo, boolean allOrNothing)
 	{
 		applicable = new ArrayList<AreaBase>();
 		this.doneTo = doneTo;
@@ -20,9 +21,9 @@ public class PermQueryBlanketArea extends PermQuery
 		checkForward = false;
 	}
 
-	public PermQueryBlanketArea(String permission, AreaBase doneTo, World world, boolean allOrNothing, boolean checkForward)
+	public PermQueryBlanketArea(String permission, WorldArea doneTo, boolean allOrNothing, boolean checkForward)
 	{
-		this(permission, doneTo, world, allOrNothing);
+		this(permission, doneTo, allOrNothing);
 		this.checkForward = checkForward;
 	}
 
@@ -31,7 +32,7 @@ public class PermQueryBlanketArea extends PermQuery
 	 * permissions is completely denied throughout the requested area. set ALLOW
 	 * if the permission is completely allowed throughout the requested area.
 	 * @param value
-	 *            The new result
+	 * The new result
 	 */
 	@Override
 	public void setResult(PermResult value)
