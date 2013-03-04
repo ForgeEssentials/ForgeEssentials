@@ -220,7 +220,7 @@ public class EventHandler
 	public void handleSpawn(CheckSpawn e)
 	{
 		// ignore players
-		if (e.entityLiving instanceof EntityPlayer)
+		if (ModuleProtection.enableMobSpawns || e.entityLiving instanceof EntityPlayer)
 			return;
 		
 		WorldPoint point = new WorldPoint(e.entityLiving);
