@@ -36,6 +36,7 @@ public class ModuleProtection
 	@Config
 	public static ConfigProtection								config;
 	public static boolean										enable					= false;
+	public static boolean										enableMobSpawns			= false;
 
 	public static HashMap<String, HashMap<RegGroup, Boolean>>	permissions				= new HashMap<String, HashMap<RegGroup, Boolean>>();
 

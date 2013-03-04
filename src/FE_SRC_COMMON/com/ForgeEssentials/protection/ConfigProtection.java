@@ -28,6 +28,7 @@ public class ConfigProtection extends ModuleConfigBase
 
 		config.addCustomCategoryComment(cat, "You can override the default permission values in the permissions config. (or in the database.)");
 		ModuleProtection.enable = config.get(cat, "enable", true, "Guess what this does?").getBoolean(true);
+		ModuleProtection.enableMobSpawns = config.get(cat, "enableMobCheck", false, "If the mobSpawn checking should be done or not.").getBoolean(true);
 
 		config.save();
 	}
@@ -46,5 +47,6 @@ public class ConfigProtection extends ModuleConfigBase
 
 		config.addCustomCategoryComment(cat, "You can override the default permission values in the permissions config. (or in the database.)");
 		ModuleProtection.enable = config.get(cat, "enable", true, "Guess what this does?").getBoolean(true);
+		ModuleProtection.enableMobSpawns = config.get(cat, "enableMobCheck", true).getBoolean(true);
 	}
 }
