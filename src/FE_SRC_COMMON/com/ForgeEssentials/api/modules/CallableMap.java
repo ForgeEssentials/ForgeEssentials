@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar;
+import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
 import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 
@@ -32,6 +33,14 @@ public class CallableMap
 		{
 			FECallable call;
 			Class c = obj.getClass();
+			if (obj instanceof ModContainer)
+			{
+				c = ((ModContainer) obj).getMod().getClass();
+			}
+			else if (obj instanceof ModuleContainer)
+			{
+				c = ((ModuleContainer) obj).module.getClass();
+			}
 
 			for (Method m : c.getDeclaredMethods())
 			{
@@ -41,7 +50,10 @@ public class CallableMap
 					call = new FECallable(m, obj);
 
 				for (Annotation annot : m.getAnnotations())
-					callables.put(annot.getClass().getName(), call);
+				{
+					String name = annot.annotationType().getName();
+					callables.put(name, call);
+				}
 			}
 		}
 		catch (Exception e)
@@ -67,7 +79,10 @@ public class CallableMap
 				call = new FECallable(m);
 
 				for (Annotation annot : m.getAnnotations())
-					callables.put(annot.getClass().getName(), call);
+				{
+					String name = annot.annotationType().getName();
+					callables.put(name, call);
+				}
 			}
 		}
 		catch (Exception e)
@@ -75,12 +90,12 @@ public class CallableMap
 			OutputHandler.exception(Level.SEVERE, "Error stripping methods from class! " + c.getName(), e);
 		}
 	}
-	
+
 	public Set<FECallable> getCallable(Class<? extends Annotation> annot)
 	{
 		return callables.get(annot.getName());
 	}
-	
+
 	public Set<FECallable> getCallable(String annotName)
 	{
 		return callables.get(annotName);
@@ -100,6 +115,11 @@ public class CallableMap
 			{
 				this.instance = ((ModContainer) instance).getMod();
 				ident = ((ModContainer) instance).getModId();
+			}
+			else if (instance instanceof ModuleContainer)
+			{
+				this.instance = ((ModuleContainer) instance).module;
+				ident = ((ModuleContainer) instance).name;
 			}
 			else
 				this.instance = instance;

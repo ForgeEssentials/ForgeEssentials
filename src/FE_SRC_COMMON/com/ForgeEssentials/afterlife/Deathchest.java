@@ -195,9 +195,4 @@ public class Deathchest
 			}
 		}
 	}
-
-	public void registerPermissions(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel(PERMISSION, RegGroup.MEMBERS);
-	}
 }

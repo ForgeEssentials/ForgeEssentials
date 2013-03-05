@@ -63,8 +63,10 @@ public class ModuleAfterlife
 	public void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(BASEPERM, RegGroup.OWNERS);
-
-		deathchest.registerPermissions(event);
-		respawnDebuff.registerPermissions(event);
+		
+		event.registerPermissionLevel(RespawnDebuff.BYPASSPOTION, RegGroup.OWNERS);
+		event.registerPermissionLevel(RespawnDebuff.BYPASSSTATS, RegGroup.OWNERS);
+		
+		event.registerPermissionLevel(Deathchest.PERMISSION, RegGroup.MEMBERS);
 	}
 }

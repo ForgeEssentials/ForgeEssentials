@@ -10,11 +10,14 @@ import java.lang.annotation.Target;
  * @author AbrarSyed
  *
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
 public @interface ForgeEssentialsRegistrar
 {
 	String ident();
 	
 	/**
+	 * Called before Pre-Init
 	 * @param event IPermRegisterEvent
 	 */
 	@Retention(RetentionPolicy.RUNTIME)

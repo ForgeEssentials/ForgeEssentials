@@ -52,10 +52,4 @@ public class RespawnDebuff implements IPlayerTracker
 			player.setEntityHealth(hp);
 		}
 	}
-
-	public void registerPermissions(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel(BYPASSPOTION, RegGroup.OWNERS);
-		event.registerPermissionLevel(BYPASSSTATS, RegGroup.OWNERS);
-	}
 }

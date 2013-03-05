@@ -14,6 +14,7 @@ import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.InjectedModContainer;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
@@ -109,7 +110,10 @@ public class ModuleLauncher
 		}
 		
 		for (ModContainer container : Loader.instance().getModList())
-			map.scanObject(container);
+		{
+			if (container.getMod() != null)
+				map.scanObject(container);
+		}
 
 		// check modules for the CallableMap stuff.
 		for (ModuleContainer module : modules)
