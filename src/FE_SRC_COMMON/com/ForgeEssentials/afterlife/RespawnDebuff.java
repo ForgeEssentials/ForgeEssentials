@@ -3,11 +3,10 @@ package com.ForgeEssentials.afterlife;
 import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 
-import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
-import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 
 import cpw.mods.fml.common.IPlayerTracker;
@@ -36,8 +35,10 @@ public class RespawnDebuff implements IPlayerTracker
 	}
 
 	@Override
-	public void onPlayerRespawn(EntityPlayer player)
+	public void onPlayerRespawn(EntityPlayer player1)
 	{
+		if(player1.worldObj.isRemote) return;
+		EntityPlayer player = (EntityPlayerMP) player1;
 		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASSPOTION)))
 		{
 			for (PotionEffect effect : potionEffects)
@@ -47,8 +48,7 @@ public class RespawnDebuff implements IPlayerTracker
 		}
 		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASSSTATS)))
 		{
-			System.out.println(player.username + " " + food + " " + hp);
-			player.getFoodStats().setFoodLevel(food);
+			player.getFoodStats().addStats(-1 * food, 0);
 			player.setEntityHealth(hp);
 		}
 	}
