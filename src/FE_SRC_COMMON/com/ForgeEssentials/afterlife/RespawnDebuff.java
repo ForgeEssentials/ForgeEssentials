@@ -48,7 +48,7 @@ public class RespawnDebuff implements IPlayerTracker
 		}
 		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASSSTATS)))
 		{
-			player.getFoodStats().addStats(-1 * food, 0);
+			player.getFoodStats().addStats(-1 * (20 - food), 0);
 			player.setEntityHealth(hp);
 		}
 	}
