@@ -6,11 +6,11 @@ import java.util.List;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 
-public class InventroyGrave extends InventoryBasic
+public class InventoryGrave extends InventoryBasic
 {
 	private Grave	grave;
 
-	public InventroyGrave(Grave grave)
+	public InventoryGrave(Grave grave)
 	{
 		super(grave.owner + "'s grave.", grave.getSize());
 		this.grave = grave;
