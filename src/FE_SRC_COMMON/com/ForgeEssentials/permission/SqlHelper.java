@@ -633,7 +633,7 @@ public class SqlHelper
 				for (Permission perm : map.get(group))
 				{
 					statement.setInt(2, perm.allowed ? 1 : 0);
-					statement.setString(3, perm.name);
+					statement.setString(3, perm.getQualifiedname());
 					statement.executeUpdate();
 				}
 			}
@@ -1281,7 +1281,7 @@ public class SqlHelper
 			// initial check.
 			statement.setInt(1, tID);
 			statement.setInt(2, isG);
-			statement.setString(3, perm.name);
+			statement.setString(3, perm.getQualifiedname());
 			statement.setInt(4, zID);
 			set = statement.executeQuery();
 			statement.clearParameters();
@@ -1322,7 +1322,7 @@ public class SqlHelper
 				// params still set from initial
 				statement.setInt(1, tID);
 				statement.setInt(2, isG);
-				statement.setString(3, perm.name + (perm.isAll ? "._ALL_" : ""));
+				statement.setString(3, perm.getQualifiedname());
 				statement.setInt(4, zID);
 				set = statement.executeQuery();
 				statement.clearParameters();
@@ -1386,7 +1386,7 @@ public class SqlHelper
 			// check permission existence...
 			getInstance().statementGetPermission.setInt(1, tID);
 			getInstance().statementGetPermission.setInt(2, isG);
-			getInstance().statementGetPermission.setString(3, perm.isAll ? perm.getAllParent() : perm.name);
+			getInstance().statementGetPermission.setString(3, perm.getQualifiedname());
 			getInstance().statementGetPermission.setInt(4, zID);
 			ResultSet set = getInstance().statementGetPermission.executeQuery();
 			getInstance().statementGetPermission.clearParameters();
@@ -1404,7 +1404,7 @@ public class SqlHelper
 			use.setInt(1, allowed);
 			use.setInt(2, tID);
 			use.setInt(3, isG);
-			use.setString(4, perm.name);
+			use.setString(4, perm.getQualifiedname());
 			use.setInt(5, zID);
 			use.executeUpdate();
 			use.clearParameters();

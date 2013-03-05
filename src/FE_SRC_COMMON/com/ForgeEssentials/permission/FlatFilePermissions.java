@@ -83,12 +83,12 @@ public class FlatFilePermissions
 
 		for (PermissionHolder holder : players)
 		{
-			config.get(holder.zone + ".player." + holder.target, holder.name, holder.allowed);
+			config.get(holder.zone + ".player." + holder.target, holder.getQualifiedname(), holder.allowed);
 		}
 
 		for (PermissionHolder holder : groups)
 		{
-			config.get(holder.zone + ".group." + holder.target, holder.name, holder.allowed);
+			config.get(holder.zone + ".group." + holder.target, holder.getQualifiedname(), holder.allowed);
 		}
 
 		config.addCustomCategoryComment(ZoneManager.getGLOBAL().getZoneName() + ".group." + PermissionsAPI.getDEFAULT().name, "The group used to as a placeholder for zone flags and such.");

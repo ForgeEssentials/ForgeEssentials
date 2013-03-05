@@ -5,7 +5,7 @@ public class PermissionChecker
 	/**
 	 * fully qualified name in format ModName.parent1.parent2.parentN.name
 	 */
-	public String			name;
+	private String		name;
 	public final boolean	isAll;
 
 	/**
@@ -33,8 +33,8 @@ public class PermissionChecker
 
 	/**
 	 * @return the qualified full name of the parent of this permission's
-	 *         parent. returns "_ALL_" if there is no parent. NULL if this
-	 *         permission is already _ALL_
+	 * parent. returns "_ALL_" if there is no parent. NULL if this
+	 * permission is already _ALL_
 	 */
 	public String getImmediateParent()
 	{
@@ -49,8 +49,8 @@ public class PermissionChecker
 
 	/**
 	 * @return the fully qualified name of the parent + _ALL_. unless this perm
-	 *         has no parent, in which case it returns _ALL_. NULL if this
-	 *         permission is already _ALL_
+	 * has no parent, in which case it returns _ALL_. NULL if this
+	 * permission is already _ALL_
 	 */
 	public String getAllParent()
 	{
@@ -63,7 +63,7 @@ public class PermissionChecker
 
 	/**
 	 * @return the modID of the mod that added this permission. returns "" if
-	 *         there is none.
+	 * there is none.
 	 */
 	public String getMod()
 	{
@@ -80,7 +80,7 @@ public class PermissionChecker
 
 	/**
 	 * @return if this Permission is a child of the given Permission. Only works
-	 *         for ALL permisisons.
+	 * for ALL permisisons.
 	 */
 	public boolean isChildOf(PermissionChecker perm)
 	{
@@ -114,7 +114,7 @@ public class PermissionChecker
 	public boolean equals(Object object)
 	{
 		if (object instanceof PermissionChecker)
-			return name.equals(((PermissionChecker) object).name);
+			return name.equals(((PermissionChecker) object).name) && isAll == ((PermissionChecker) object).isAll;
 		else if (object instanceof String)
 			return object.equals(name);
 		return false;
@@ -135,6 +135,14 @@ public class PermissionChecker
 
 		return false;
 	}
+	
+	public String getQualifiedname()
+	{
+		if (isAll)
+			return name + "." + Permission.ALL;
+		else
+			return name;
+	}
 
 	@Override
 	public String toString()
@@ -143,10 +151,5 @@ public class PermissionChecker
 			return name + "." + Permission.ALL;
 		else
 			return name;
-	}
-
-	public String getAllVersion()
-	{
-		return name + "." + Permission.ALL;
 	}
 }

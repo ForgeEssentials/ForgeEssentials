@@ -9,7 +9,7 @@ public class Permission extends PermissionChecker
 
 	public boolean				allowed;
 
-	public Permission(String qualifiedName, Boolean allowed)
+	public Permission(String qualifiedName, boolean allowed)
 	{
 		super(qualifiedName);
 		this.allowed = allowed;
@@ -21,16 +21,15 @@ public class Permission extends PermissionChecker
 		if (object instanceof Permission)
 		{
 			Permission perm = (Permission) object;
-			return name.equals(perm.name) && allowed == perm.allowed;
+			return super.equals(object) && allowed == perm.allowed;
 		}
-		else if (object instanceof String)
-			return object.equals(name);
-		return false;
+		else
+			return super.equals(object);
 	}
 
 	@Override
 	public String toString()
 	{
-		return name + " : " + allowed;
+		return super.toString() + " : " + allowed;
 	}
 }
