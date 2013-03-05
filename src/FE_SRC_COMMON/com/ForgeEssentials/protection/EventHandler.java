@@ -18,6 +18,7 @@ import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PlayerBlockBreak;
 import com.ForgeEssentials.util.events.PlayerBlockPlace;
@@ -220,7 +221,7 @@ public class EventHandler
 	public void handleSpawn(CheckSpawn e)
 	{
 		// ignore players
-		if (ModuleProtection.enableMobSpawns || e.entityLiving instanceof EntityPlayer)
+		if (!ModuleProtection.enableMobSpawns || e.entityLiving instanceof EntityPlayer)
 			return;
 		
 		WorldPoint point = new WorldPoint(e.entityLiving);
@@ -229,14 +230,21 @@ public class EventHandler
 		PermQueryBlanketSpot query = new PermQueryBlanketSpot(point, ModuleProtection.PERM_MOB_SPAWN_NATURAL+"."+mobID);
 		
 		if (!PermissionsAPI.checkPermAllowed(query))
+		{
 			e.setResult(Result.DENY);
+			OutputHandler.debug(mobID+" : DENIED");
+		}
+		else
+		{
+			OutputHandler.debug(mobID+" : ALLOWED");
+		}
 	}
 	
 	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void handleSpawn(SpecialSpawn e)
 	{
 		// ignore players
-		if (ModuleProtection.enableMobSpawns || e.entityLiving instanceof EntityPlayer)
+		if (!ModuleProtection.enableMobSpawns || e.entityLiving instanceof EntityPlayer)
 			return;
 		
 		WorldPoint point = new WorldPoint(e.entityLiving);

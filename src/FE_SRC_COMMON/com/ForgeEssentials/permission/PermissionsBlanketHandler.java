@@ -87,7 +87,7 @@ public final class PermissionsBlanketHandler
 		Group group;
 		while (result.equals(PermResult.UNKNOWN))
 		{
-			result = SqlHelper.getPermissionResult(PermissionsAPI.getDEFAULT().name, true, checker, zone.getZoneName(), checkForward);
+			result = SqlHelper.getPermissionResult(PermissionsAPI.getDEFAULT().name, true, checker, tempZone.getZoneName(), checkForward);
 
 			// still unknown? check parent zones.
 			if (result.equals(PermResult.UNKNOWN))
