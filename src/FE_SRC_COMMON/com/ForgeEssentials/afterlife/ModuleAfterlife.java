@@ -21,13 +21,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
  */
 
 @FEModule(name = "Afterlife", parentMod = ForgeEssentials.class, configClass = ConfigAfterlife.class)
-public class MuduleAfterlife
+public class ModuleAfterlife
 {
 	public static final String		BASEPERM	= "ForgeEssentials.Afterlife";
 	@FEModule.Config
 	public static ConfigAfterlife	conf;
 	@FEModule.Instance
-	public static MuduleAfterlife	instance;
+	public static ModuleAfterlife	instance;
 	@FEModule.ModuleDir
 	public static File				moduleDir;
 	public Deathchest				deathchest;

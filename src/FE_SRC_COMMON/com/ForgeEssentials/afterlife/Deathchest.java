@@ -35,7 +35,7 @@ public class Deathchest
 	/**
 	 * This permission is needed to get the skull, Default = members.
 	 */
-	public static final String		PERMISSION	= MuduleAfterlife.BASEPERM + ".deathchest";
+	public static final String		PERMISSION	= ModuleAfterlife.BASEPERM + ".deathchest";
 
 	public static boolean			enable;
 	public static boolean			enableXP;

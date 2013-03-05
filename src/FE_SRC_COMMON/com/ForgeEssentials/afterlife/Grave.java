@@ -82,7 +82,7 @@ public class Grave
 	{
 		if (inv.length == 0)
 		{
-			MuduleAfterlife.instance.deathchest.removeGrave(this, true);
+			ModuleAfterlife.instance.deathchest.removeGrave(this, true);
 		}
 	}
 

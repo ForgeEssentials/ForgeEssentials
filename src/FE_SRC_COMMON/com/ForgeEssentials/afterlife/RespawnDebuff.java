@@ -14,8 +14,8 @@ import cpw.mods.fml.common.IPlayerTracker;
 
 public class RespawnDebuff implements IPlayerTracker
 {
-	public static final String				BYPASSPOTION	= MuduleAfterlife.BASEPERM + ".bypassPotions";
-	public static final String				BYPASSSTATS		= MuduleAfterlife.BASEPERM + ".bypassStats";
+	public static final String				BYPASSPOTION	= ModuleAfterlife.BASEPERM + ".bypassPotions";
+	public static final String				BYPASSSTATS		= ModuleAfterlife.BASEPERM + ".bypassStats";
 	public static ArrayList<PotionEffect>	potionEffects;
 	public static int						hp;
 	public static int						food;
