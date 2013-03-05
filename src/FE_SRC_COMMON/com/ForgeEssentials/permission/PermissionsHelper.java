@@ -13,6 +13,7 @@ import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
 
 public class PermissionsHelper implements IPermissionsHelper
@@ -117,7 +118,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
-		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
+		Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(player));
 
 		return getApplicableGroups(player.username, includeDefaults, zone.getZoneName());
 	}
@@ -147,7 +148,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public Group getHighestGroup(EntityPlayer player)
 	{
-		Zone zone = ZoneManager.getWhichZoneIn(FunctionHelper.getEntityPoint(player));
+		Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(player));
 		TreeSet<Group> list = new TreeSet<Group>();
 
 		ArrayList<Group> temp;
@@ -192,12 +193,14 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public String clearPlayerGroup(String group, String player, String zone)
 	{
+		SqlHelper.generatePlayer(player);
 		return SqlHelper.removePlayerGroup(group, player, zone);
 	}
 
 	@Override
 	public String clearPlayerPermission(String player, String node, String zone)
 	{
+		SqlHelper.generatePlayer(player);
 		return SqlHelper.removePermission(player, false, node, zone);
 	}
 

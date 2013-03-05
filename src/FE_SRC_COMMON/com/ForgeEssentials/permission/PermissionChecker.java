@@ -5,7 +5,7 @@ public class PermissionChecker
 	/**
 	 * fully qualified name in format ModName.parent1.parent2.parentN.name
 	 */
-	private String		name;
+	private String			name;
 	public final boolean	isAll;
 
 	/**
@@ -15,7 +15,12 @@ public class PermissionChecker
 	 */
 	public PermissionChecker(String qualifiedName)
 	{
-		if (qualifiedName.endsWith(Permission.ALL))
+		if (qualifiedName.startsWith(Permission.ALL))
+		{
+			name = qualifiedName;
+			isAll = false;
+		}
+		else if (qualifiedName.endsWith(Permission.ALL))
 		{
 			isAll = true;
 			name = qualifiedName;
@@ -135,7 +140,7 @@ public class PermissionChecker
 
 		return false;
 	}
-	
+
 	public String getQualifiedname()
 	{
 		if (isAll)

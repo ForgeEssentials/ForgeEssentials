@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandExport
+public class CommandFEPermExport
 {
 	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{

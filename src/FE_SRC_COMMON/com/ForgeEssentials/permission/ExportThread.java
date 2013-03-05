@@ -58,13 +58,6 @@ public class ExportThread extends Thread
 
 	private void output(String msg)
 	{
-		if (user instanceof EntityPlayer)
-		{
-			user.sendChatToPlayer("[PermSQL]" + msg);
-		}
-		else
-		{
-			OutputHandler.info("[PermSQL]" + msg);
-		}
+		user.sendChatToPlayer("[PermSQL]" + msg);
 	}
 }

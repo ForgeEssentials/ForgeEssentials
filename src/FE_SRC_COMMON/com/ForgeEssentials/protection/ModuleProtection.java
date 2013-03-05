@@ -1,7 +1,11 @@
 package com.ForgeEssentials.protection;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
@@ -73,15 +77,13 @@ public class ModuleProtection
 		event.registerPermissionLevel(PERM_INTERACT_ENTITY, RegGroup.MEMBERS);
 		event.registerPermissionLevel(PERM_OVERRIDE, RegGroup.OWNERS);
 
-		/*
-		for (String name : ((Set<String>)EntityList.stringToClassMapping.entrySet()))
+		for (Entry<String, Class> e : ((Set<Entry<String, Class>>) EntityList.stringToClassMapping.entrySet()))
 		{
-			event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + name, RegGroup.ZONE);
-			event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + name, RegGroup.ZONE);
+			if (EntityLiving.class.isAssignableFrom(e.getValue()))
+			{
+				event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + e.getKey(), RegGroup.ZONE);
+				event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + e.getKey(), RegGroup.ZONE);
+			}
 		}
-		*/
-		
-		event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "._ALL_", RegGroup.ZONE);
-		event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "._ALL_", RegGroup.ZONE);
 	}
 }

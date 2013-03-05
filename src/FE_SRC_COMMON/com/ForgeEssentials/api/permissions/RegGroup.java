@@ -13,7 +13,7 @@ public enum RegGroup
 	 * zone. All players are part of this group. This group is guaranteed
 	 * existence
 	 */
-	ZONE("_DEFAULT_", " ", " ", null, 0)
+	ZONE("_ZONE_", " ", " ", null, 0)
 	{
 		@Override
 		public Group getGroup()
