@@ -67,8 +67,8 @@ public class ConfigChat extends ModuleConfigBase
 		}
 
 		AutoMessage.random = config.get("Automessage", "random", false, "Randomize the oreder of messages").getBoolean(false);
-		AutoMessage.waittime = config.get("Automessage", "inverval", 1, "Time inbetween each message in minutes").getInt();
-		AutoMessage.enable = config.get("Automessage", "enable", true).getBoolean(true);
+		AutoMessage.waittime = config.get("Automessage", "inverval", 60, "Time inbetween each message in minutes").getInt();
+		AutoMessage.enable = config.get("Automessage", "enable", false).getBoolean(true);
 
 		chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat).value;
 
