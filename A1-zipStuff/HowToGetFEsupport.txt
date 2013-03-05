@@ -35,7 +35,7 @@ Make sure you follow all of these steps:
 			- If not: Go to step 2.
 			- Otherwise: Got to step 3.
 			
-	3) Open an IRC client and join the "#forgeessentials" channel on Esper.net. Webchat: http://webchat.esper.net/?nick=FEUser...&channels=forgeessentials&prompt=1
+	3) Open an IRC client and join the "#forgeessentials" channel on Esper.net.
 		a) Ask about your problem.
 		b) If told to "Make an issue on github.". Go to step 4.
 		c) If someone seems interested, give them the link to your pastebin.
