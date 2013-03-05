@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import net.minecraft.network.rcon.IServer;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.snooper.API;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -57,7 +57,7 @@ public class ModuleSnooper
 		e.registerServerCommand(new CommandReloadQuery());
 	}
 
-	@PermRegister(ident = "SnooperModule")
+	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel("ForgeEssentials.Snooper._ALL_", RegGroup.OWNERS);

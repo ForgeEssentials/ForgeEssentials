@@ -2,13 +2,13 @@ package com.ForgeEssentials.afterlife;
 
 import java.io.File;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 
@@ -59,7 +59,7 @@ public class MuduleAfterlife
 		deathchest.save();
 	}
 
-	@PermRegister(ident = "MuduleAfterlife")
+	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(BASEPERM, RegGroup.OWNERS);

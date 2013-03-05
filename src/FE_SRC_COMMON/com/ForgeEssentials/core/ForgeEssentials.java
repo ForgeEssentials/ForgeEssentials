@@ -35,7 +35,6 @@ import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.ForgeEssentialsEventFactory;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
-import com.ForgeEssentials.util.tasks.TickTaskHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;

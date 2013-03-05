@@ -2,6 +2,7 @@ package com.ForgeEssentials.api.modules.event;
 
 import java.util.logging.Logger;
 
+import com.ForgeEssentials.api.modules.CallableMap;
 import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -11,11 +12,13 @@ import cpw.mods.fml.common.event.FMLStateEvent;
 public class FEModulePreInitEvent extends FEModuleEvent
 {
 	private FMLPreInitializationEvent	event;
+	private CallableMap callables;
 
-	public FEModulePreInitEvent(ModuleContainer container, FMLPreInitializationEvent event)
+	public FEModulePreInitEvent(ModuleContainer container, FMLPreInitializationEvent event, CallableMap map)
 	{
 		super(container);
 		this.event = event;
+		callables = map;
 	}
 
 	/**
@@ -34,5 +37,10 @@ public class FEModulePreInitEvent extends FEModuleEvent
 	public FMLStateEvent getFMLEvent()
 	{
 		return event;
+	}
+	
+	public CallableMap getCallableMap()
+	{
+		return callables;
 	}
 }

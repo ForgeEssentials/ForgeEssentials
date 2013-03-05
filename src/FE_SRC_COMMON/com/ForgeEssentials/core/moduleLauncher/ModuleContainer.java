@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import net.minecraft.command.ICommandSender;
 
+import com.ForgeEssentials.api.modules.CallableMap;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Container;
@@ -324,12 +325,12 @@ public class ModuleContainer implements Comparable
 
 	// make the methods to run the events now...
 
-	public void runPreInit(FMLPreInitializationEvent fmlEvent)
+	public void runPreInit(FMLPreInitializationEvent fmlEvent, CallableMap map)
 	{
 		if (!isLoadable || preinit == null)
 			return;
 
-		FEModulePreInitEvent event = new FEModulePreInitEvent(this, fmlEvent);
+		FEModulePreInitEvent event = new FEModulePreInitEvent(this, fmlEvent, map);
 		try
 		{
 			Class c = Class.forName(className);

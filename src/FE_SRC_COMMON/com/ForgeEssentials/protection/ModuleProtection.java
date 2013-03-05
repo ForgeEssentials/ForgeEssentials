@@ -1,11 +1,10 @@
 package com.ForgeEssentials.protection;
 
 import java.util.HashMap;
-import java.util.Set;
 
-import net.minecraft.entity.EntityList;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Init;
@@ -13,7 +12,6 @@ import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 
@@ -66,7 +64,7 @@ public class ModuleProtection
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
-	@PermRegister(ident = "FE-Core-Protection")
+	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(PERM_PVP, RegGroup.GUESTS);

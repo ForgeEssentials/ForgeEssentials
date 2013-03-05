@@ -1,7 +1,6 @@
 package com.ForgeEssentials.util.tasks;
 
 //Depreciated
-import java.io.Serializable;
 
 public interface ITickTask
 {

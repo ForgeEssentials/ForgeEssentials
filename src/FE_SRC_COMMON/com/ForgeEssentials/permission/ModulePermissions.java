@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
@@ -20,7 +21,6 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
@@ -32,7 +32,6 @@ import com.ForgeEssentials.util.TeleportCenter;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
@@ -62,8 +61,7 @@ public class ModulePermissions
 		PermissionsAPI.manager = new PermissionsHelper();
 
 		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
-		FMLPreInitializationEvent event = (FMLPreInitializationEvent) e.getFMLEvent();
-		PermRegLoader laoder = new PermRegLoader(event.getAsmData().getAll(PermRegister.class.getName()));
+		PermRegLoader laoder = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));
 		regPerms = laoder.loadAllPerms();
 		
 		DataStorageManager.registerSaveableType(new ClassContainer(AutoPromote.class));
@@ -104,7 +102,7 @@ public class ModulePermissions
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
 	}
 
-	@ServerPostInit()
+	@ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(new ClassContainer(AutoPromote.class)))
@@ -114,7 +112,7 @@ public class ModulePermissions
 		autoPromote = new AutoPromote(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
 
-	@PermRegister(ident = "ModulePermissions")
+	@PermRegister
 	public static void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone.setparent", RegGroup.ZONE_ADMINS);

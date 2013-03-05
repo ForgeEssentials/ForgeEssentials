@@ -2,8 +2,6 @@ package com.ForgeEssentials.api.permissions.query;
 
 import java.util.ArrayList;
 
-import net.minecraft.world.World;
-
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.WorldArea;
 

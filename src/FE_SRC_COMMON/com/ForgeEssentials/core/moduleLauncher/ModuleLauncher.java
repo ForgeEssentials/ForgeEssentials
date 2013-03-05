@@ -7,11 +7,15 @@ import java.util.TreeMap;
 
 import net.minecraft.command.ICommandSender;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar;
+import com.ForgeEssentials.api.modules.CallableMap;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -37,6 +41,7 @@ public class ModuleLauncher
 		// started ASM handling for the module loading.
 		Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
 
+		// LOAD THE MODULES!
 		ModuleContainer temp, other;
 		for (ASMData asm : data)
 		{
@@ -69,10 +74,53 @@ public class ModuleLauncher
 
 		Collection<ModuleContainer> modules = containerMap.values();
 
+		CallableMap map = new CallableMap();
+
+		data = e.getAsmData().getAll(ForgeEssentialsRegistrar.class.getName());
+		Class c;
+		Object obj = null;
+		for (ASMData asm : data)
+		{
+			try
+			{
+				obj = null;
+				c = Class.forName(asm.getClassName());
+				
+				try
+				{
+					obj = c.newInstance();
+					map.scanObject(obj);
+					// this works?? skip everything else and go on to the next one.
+					continue;
+				}
+				catch (Exception e1)
+				{
+					// do nothing.
+				}
+				
+				// if this isn't skipped.. it grabs the class, and all static methods.
+				map.scanClass(c);
+				
+			}
+			catch (ClassNotFoundException e1)
+			{
+				// nothing needed.
+			}
+		}
+		
+		for (ModContainer container : Loader.instance().getModList())
+			map.scanObject(container);
+
+		// check modules for the CallableMap stuff.
+		for (ModuleContainer module : modules)
+		{
+			map.scanObject(module);
+		}
+
 		// run the preinits.
 		for (ModuleContainer module : modules)
 		{
-			module.runPreInit(e);
+			module.runPreInit(e, map);
 		}
 
 		// run the config init methods..

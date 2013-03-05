@@ -13,8 +13,8 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermRegister;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.ZoneManager;
@@ -34,7 +34,7 @@ public class BannedItems
 	HashMultimap<Integer, Integer>	noUse	= HashMultimap.create();
 	List<String>					noCraft	= new ArrayList<String>();
 
-	@PermRegister(ident = "FE-Core-bannedItems")
+	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(BYPASS, RegGroup.OWNERS);

@@ -1,27 +1,24 @@
 package com.ForgeEssentials.permission;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.ForgeEssentials.api.modules.CallableMap.FECallable;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 
-import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-
 public class PermRegLoader
 {
 	protected HashSet<String>	mods;
-	private Set<ASMData>		data;
+	private Set<FECallable>		data;
 
-	public PermRegLoader(Set<ASMData> asm)
+	public PermRegLoader(Set<FECallable> calls)
 	{
 		mods = new HashSet<String>();
-		data = asm;
+		data = calls;
 	}
 
 	protected HashMultimap<RegGroup, Permission> loadAllPerms()
@@ -31,51 +28,16 @@ public class PermRegLoader
 		Class c = null;
 		Method m = null;
 		String className, methodName, modid;
-		for (ASMData asm : data)
+		for (FECallable call : data)
 		{
-			className = asm.getClassName();
-			methodName = asm.getObjectName();
-			modid = asm.getAnnotationInfo().get("ident").toString();
+			modid = call.getIdent();
+			mods.add(modid);
 
 			try
 			{
-				c = Class.forName(className);
-				m = c.getDeclaredMethod(methodName, IPermRegisterEvent.class);
-				m.setAccessible(true);
-
-				if (!m.getReturnType().equals(void.class))
-					throw new RuntimeException(m.getName() + " must return void!");
-				if (!Modifier.isStatic(m.getModifiers()))
-					throw new RuntimeException(m.getName() + " must be static!");
-
-				m.invoke(null, event);
+				call.call(event);
 			}
-			catch (ClassNotFoundException e)
-			{
-				OutputHandler.severe("Error trying to load permissions from \"" + modid + "\"!");
-				e.printStackTrace();
-			}
-			catch (NoSuchMethodException e)
-			{
-				OutputHandler.severe("Error trying to load permissions from \"" + modid + "\"!");
-				e.printStackTrace();
-			}
-			catch (SecurityException e)
-			{
-				OutputHandler.severe("Error trying to load permissions from \"" + modid + "\"!");
-				e.printStackTrace();
-			}
-			catch (IllegalAccessException e)
-			{
-				OutputHandler.severe("Error trying to load permissions from \"" + modid + "\"!");
-				e.printStackTrace();
-			}
-			catch (IllegalArgumentException e)
-			{
-				OutputHandler.severe("Error trying to load permissions from \"" + modid + "\"!");
-				e.printStackTrace();
-			}
-			catch (InvocationTargetException e)
+			catch (Exception e)
 			{
 				OutputHandler.severe("Error trying to load permissions from \"" + modid + "\"!");
 				e.printStackTrace();
