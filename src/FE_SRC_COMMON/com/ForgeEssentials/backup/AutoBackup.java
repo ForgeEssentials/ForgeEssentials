@@ -5,37 +5,55 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class AutoBackup implements Runnable
 {
-	private Thread			thread;
 	public static boolean	isBackingUp	= false;
 
 	public AutoBackup()
 	{
-		thread = new Thread(this, "ForgeEssentials - AutoBackup");
-		thread.start();
+		TaskRegistry.registerRecurringTask(this, 0, BackupConfig.autoInterval, 0, 0);
 	}
 
 	@Override
 	public void run()
 	{
-		while (MinecraftServer.getServer().isServerRunning() && BackupConfig.autoInterval != 0)
+		while (AutoWorldSave.isSaving)
 		{
 			try
 			{
-				Thread.sleep(BackupConfig.autoInterval * 1000 * 60);
+				Thread.sleep(1000);
 			}
 			catch (InterruptedException e)
 			{
 				break;
 			}
+		}
 
-			while (AutoWorldSave.isSaving)
+		isBackingUp = true;
+		List<Integer> list = Arrays.asList(DimensionManager.getIDs());
+
+		for (int i : BackupConfig.blacklist)
+		{
+			list.remove(i);
+		}
+
+		for (int i : BackupConfig.whitelist)
+		{
+			if (!list.contains(i))
+			{
+				list.add(i);
+			}
+		}
+
+		for (int i : list)
+		{
+			Backup backup = new Backup(i, true);
+			while (!backup.isDone())
 			{
 				try
 				{
@@ -46,71 +64,39 @@ public class AutoBackup implements Runnable
 					break;
 				}
 			}
+		}
 
-			isBackingUp = true;
-			List<Integer> list = Arrays.asList(DimensionManager.getIDs());
-
-			for (int i : BackupConfig.blacklist)
+		for (String folder : BackupConfig.extraFolders)
+		{
+			Backup backup = new Backup(new File(folder));
+			while (!backup.isDone())
 			{
-				list.remove(i);
-			}
-
-			for (int i : BackupConfig.whitelist)
-			{
-				if (!list.contains(i))
+				try
 				{
-					list.add(i);
+					Thread.sleep(1000);
 				}
-			}
-
-			for (int i : list)
-			{
-				Backup backup = new Backup(i, true);
-				while (!backup.isDone())
+				catch (InterruptedException e)
 				{
-					try
-					{
-						Thread.sleep(1000);
-					}
-					catch (InterruptedException e)
-					{
-						break;
-					}
+					break;
 				}
 			}
+		}
 
-			for (String folder : BackupConfig.extraFolders)
+		isBackingUp = false;
+
+		if (BackupConfig.enableAutoRemove)
+		{
+			if (BackupConfig.minimunFreeSpace != -1)
 			{
-				Backup backup = new Backup(new File(folder));
-				while (!backup.isDone())
-				{
-					try
-					{
-						Thread.sleep(1000);
-					}
-					catch (InterruptedException e)
-					{
-						break;
-					}
-				}
+				diskSpaceCheck();
 			}
-
-			isBackingUp = false;
-
-			if (BackupConfig.enableAutoRemove)
+			if (BackupConfig.maxfilesperbackupfolder != -1)
 			{
-				if (BackupConfig.minimunFreeSpace != -1)
-				{
-					diskSpaceCheck();
-				}
-				if (BackupConfig.maxfilesperbackupfolder != -1)
-				{
-					checkMaxFilesPerFolder();
-				}
-				if (BackupConfig.maxBackupLifespan != -1)
-				{
-					checkMaxFBackupLifespan();
-				}
+				checkMaxFilesPerFolder();
+			}
+			if (BackupConfig.maxBackupLifespan != -1)
+			{
+				checkMaxFBackupLifespan();
 			}
 		}
 
@@ -209,10 +195,5 @@ public class AutoBackup implements Runnable
 			}
 		}
 		return choise;
-	}
-
-	public void interrupt()
-	{
-		thread.interrupt();
 	}
 }

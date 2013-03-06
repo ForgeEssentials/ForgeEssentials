@@ -16,10 +16,8 @@ import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
@@ -56,13 +54,6 @@ public class ModuleBackup
 		autoBackup = new AutoBackup();
 		autoWorldSave = new AutoWorldSave();
 		makeReadme();
-	}
-
-	@ServerStop
-	public void serverStopping(FEModuleServerStopEvent e)
-	{
-		autoBackup.interrupt();
-		autoWorldSave.interrupt();
 	}
 
 	@PermRegister
@@ -114,7 +105,8 @@ public class ModuleBackup
 			}
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 	}
 
 	private void makeReadme()
