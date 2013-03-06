@@ -97,18 +97,15 @@ public class CommandFEPermUser
 					OutputHandler.chatConfirmation(sender, playerName + " has been allowed " + args[3]);
 					return;
 				}
-				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove")) // remove
-																									// super
-																									// perm
-																									// settings
+				// remove super perm setting
+				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove"))
 				{
 					PermissionsAPI.clearPlayerPermission(playerName, args[3], zone.getZoneName());
 					OutputHandler.chatConfirmation(sender, playerName + "'s access to " + args[2] + " cleared");
 					return;
 				}
-				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny")) // deny
-																								// super
-																								// perm
+				// deny super perm
+				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny"))
 				{
 					PermissionsAPI.setPlayerPermission(playerName, args[3], false, zone.getZoneName());
 					OutputHandler.chatConfirmation(sender, playerName + " has been denied " + args[3]);
@@ -117,7 +114,6 @@ public class CommandFEPermUser
 				else if (args[2].equalsIgnoreCase("get"))
 					// Get current state.
 					return;
-
 			}
 		}
 		else if (args[1].equalsIgnoreCase("group")) // group management
@@ -264,6 +260,7 @@ public class CommandFEPermUser
 				}
 			}
 
+			// player permisisons
 			String zoneName = ZoneManager.getGLOBAL().getZoneName();
 			if (args.length == 4) // zone is set
 			{
@@ -278,9 +275,8 @@ public class CommandFEPermUser
 				}
 			}
 
-			if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow")) // allow
-																						// player
-																						// perm
+			// allow playerPerms
+			if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow"))
 			{
 				String result = PermissionsAPI.setPlayerPermission(playerName, args[2], true, zoneName);
 				if (result != null)
@@ -293,9 +289,8 @@ public class CommandFEPermUser
 				}
 				return;
 			}
-			else if (args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove")) // remove
-																								// perm
-																								// settings
+			// clear player perms
+			else if (args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("remove"))
 			{
 				String result = PermissionsAPI.clearPlayerPermission(playerName, args[2], zoneName);
 				if (result != null)
@@ -308,9 +303,8 @@ public class CommandFEPermUser
 				}
 				return;
 			}
-			else if (args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("deny")) // deny
-																							// player
-																							// perm
+			// deny player perms
+			else if (args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("deny"))
 			{
 				String result = PermissionsAPI.setPlayerPermission(playerName, args[2], false, zoneName);
 				if (result != null)
