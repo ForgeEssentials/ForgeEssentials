@@ -5,6 +5,8 @@ import java.util.Random;
 
 import net.minecraft.server.MinecraftServer;
 
+import com.ForgeEssentials.util.tasks.TaskRegistry;
+
 public class AutoMessage implements Runnable
 {
 	private static Thread			thread;
@@ -29,43 +31,29 @@ public class AutoMessage implements Runnable
 			currentMsgID = new Random().nextInt(msg.size());
 		}
 
-		thread = new Thread(this, "ForgeEssentials - Chat - automessage");
-		thread.start();
+		TaskRegistry.registerRecurringTask(this, 0, waittime, 0, 0, 0, waittime, 0, 0);
 	}
 
 	@Override
 	public void run()
 	{
-		while (server.isServerRunning())
+		if (server.getAllUsernames().length != 0 && enable && !msg.isEmpty())
 		{
-			try
-			{
-				Thread.sleep(1000 * 60 * waittime);
-			}
-			catch (InterruptedException e)
-			{
-				break;
-			}
+			server.getConfigurationManager().sendChatMsg(msg.get(currentMsgID));
 
-			if (server.getAllUsernames().length != 0 && enable && !msg.isEmpty())
+			if (random)
 			{
-				server.getConfigurationManager().sendChatMsg(msg.get(currentMsgID));
-
-				if (random)
+				currentMsgID = new Random().nextInt(msg.size());
+			}
+			else
+			{
+				currentMsgID++;
+				if (currentMsgID >= msg.size())
 				{
-					currentMsgID = new Random().nextInt(msg.size());
-				}
-				else
-				{
-					currentMsgID++;
-					if (currentMsgID >= msg.size())
-					{
-						currentMsgID = 0;
-					}
+					currentMsgID = 0;
 				}
 			}
 		}
-
 		System.gc();
 	}
 

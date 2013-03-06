@@ -12,7 +12,7 @@ public class AutoWorldSave implements Runnable
 
 	public AutoWorldSave()
 	{
-		TaskRegistry.registerRecurringTask(this, 0, BackupConfig.worldSaveInterval, 0, 0);
+		TaskRegistry.registerRecurringTask(this, 0, BackupConfig.worldSaveInterval, 0, 0, 0, BackupConfig.worldSaveInterval, 0, 0);
 	}
 
 	@Override

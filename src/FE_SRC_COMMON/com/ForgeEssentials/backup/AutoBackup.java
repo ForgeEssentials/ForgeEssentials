@@ -16,7 +16,7 @@ public class AutoBackup implements Runnable
 
 	public AutoBackup()
 	{
-		TaskRegistry.registerRecurringTask(this, 0, BackupConfig.autoInterval, 0, 0);
+		TaskRegistry.registerRecurringTask(this, 0, BackupConfig.autoInterval, 0, 0, 0, BackupConfig.autoInterval, 0, 0);
 	}
 
 	@Override

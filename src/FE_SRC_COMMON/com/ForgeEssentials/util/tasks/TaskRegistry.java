@@ -44,10 +44,10 @@ public class TaskRegistry
 		instance.timed.addRepetingTask(task, delay, interval);
 	}
 	
-	public static void registerRecurringTask(Runnable task, int hours, int minutes, int seconds, int milliseconds)
+	public static void registerRecurringTask(Runnable task, int delayHrs, int delayMin, int delaySec, int delayMilli, int intervalHrs, int intervalMin, int intervalSec, int intervalMilli)
 	{
 		TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
-		registerRecurringTask(wrapper, hours, minutes, seconds, milliseconds);
+		registerRecurringTask(wrapper, delayHrs, delayMin, delaySec, delayMilli, intervalHrs, intervalMin, intervalSec, intervalMilli);
 	}
 	
 	private static class TimedTaskWrapper extends TimerTask
