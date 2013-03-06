@@ -27,62 +27,45 @@ import com.ForgeEssentials.util.OutputHandler;
 public class RConQueryThread implements Runnable
 {
 	/** The time of the last client auth check */
-	private long			lastAuthCheckTime;
+	private long									lastAuthCheckTime;
 
 	/** The RCon query port */
-	private int				queryPort;
+	private int										queryPort;
 
 	/** Port the server is running on */
-	private int				serverPort;
-
-	/** The maximum number of players allowed on the server */
-	private int				maxPlayers;
-
-	/** The current server message of the day */
-	private String			serverMotd;
-
-	/** The name of the currently loaded world */
-	private String			worldName;
+	private int										serverPort;
 
 	/** The remote socket querying the server */
-	private DatagramSocket	querySocket			= null;
+	private DatagramSocket							querySocket			= null;
 
 	/** A buffer for incoming DatagramPackets */
-	private byte[]			buffer				= new byte[1460];
+	private byte[]									buffer				= new byte[1460];
 
 	/** Storage for incoming DatagramPackets */
-	private DatagramPacket	incomingPacket		= null;
-	private Map				field_72644_p;
-
+	private DatagramPacket							incomingPacket		= null;
 	/** The hostname of this query server */
-	private String			queryHostname;
+	private String									queryHostname;
 
 	/** The hostname of the running server */
-	private String			serverHostname;
+	private String									serverHostname;
 
 	/** A map of SocketAddress objects to RConThreadQueryAuth objects */
-	private Map				queryClients;
-
-	/**
-	 * The time that this RConThreadQuery was constructed, from (new
-	 * Date()).getTime()
-	 */
-	private long			time;
+	private Map<SocketAddress, RConThreadQueryAuth>	queryClients;
 
 	/** True if the Thread is running, false otherwise */
-	protected boolean		running				= false;
+	protected boolean								running				= false;
 
 	/** Thread for this runnable class */
-	protected Thread		rconThread;
-	protected int			field_72615_d		= 5;
+	protected Thread								rconThread;
+	protected int									field_72615_d		= 5;
 
 	/** A list of registered DatagramSockets */
-	protected List			socketList			= new ArrayList();
+	protected List<DatagramSocket>					socketList			= new ArrayList<DatagramSocket>();
 
 	/** A list of registered ServerSockets */
-	protected List			serverSocketList	= new ArrayList();
+	protected List<ServerSocket>					serverSocketList	= new ArrayList<ServerSocket>();
 
-	private IServer			server;
+	private IServer									server;
 
 	public RConQueryThread(IServer par1IServer)
 	{
@@ -117,10 +100,10 @@ public class RConQueryThread implements Runnable
 			logInfo("Setting default query port to " + queryPort);
 		}
 
-		field_72644_p = new HashMap();
+		new HashMap<Object, Object>();
 
-		queryClients = new HashMap();
-		time = new Date().getTime();
+		queryClients = new HashMap<SocketAddress, RConThreadQueryAuth>();
+		new Date().getTime();
 	}
 
 	/**
@@ -225,11 +208,11 @@ public class RConQueryThread implements Runnable
 			if (var1 >= lastAuthCheckTime + 30000L)
 			{
 				lastAuthCheckTime = var1;
-				Iterator var3 = queryClients.entrySet().iterator();
+				Iterator<?> var3 = queryClients.entrySet().iterator();
 
 				while (var3.hasNext())
 				{
-					Entry var4 = (Entry) var3.next();
+					Entry<?, ?> var4 = (Entry<?, ?>) var3.next();
 
 					if (((RConThreadQueryAuth) var4.getValue()).hasExpired(var1).booleanValue())
 					{
@@ -479,7 +462,7 @@ public class RConQueryThread implements Runnable
 	protected void closeAllSockets_do(boolean par1)
 	{
 		int var2 = 0;
-		Iterator var3 = socketList.iterator();
+		Iterator<DatagramSocket> var3 = socketList.iterator();
 
 		while (var3.hasNext())
 		{
@@ -492,11 +475,11 @@ public class RConQueryThread implements Runnable
 		}
 
 		socketList.clear();
-		var3 = serverSocketList.iterator();
+		Iterator<ServerSocket> var4 = serverSocketList.iterator();
 
-		while (var3.hasNext())
+		while (var4.hasNext())
 		{
-			ServerSocket var5 = (ServerSocket) var3.next();
+			ServerSocket var5 = (ServerSocket) var4.next();
 
 			if (closeServerSocket_do(var5, false))
 			{

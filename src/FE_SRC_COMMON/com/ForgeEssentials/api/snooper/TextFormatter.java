@@ -118,7 +118,7 @@ public class TextFormatter
 
 	public static String toJSON(Point point)
 	{
-		HashMap<String, String> data = new HashMap();
+		HashMap<String, String> data = new HashMap<String, String>();
 		data.put("x", "" + point.x);
 		data.put("y", "" + point.y);
 		data.put("z", "" + point.z);
@@ -137,7 +137,7 @@ public class TextFormatter
 
 	public static String toJSON(ItemStack stack, Boolean listEnch)
 	{
-		HashMap<String, String> data = new HashMap();
+		HashMap<String, String> data = new HashMap<String, String>();
 		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display") && stack.stackTagCompound.getCompoundTag("display").hasKey("Name"))
 		{
 			data.put("item", stack.getItemName().replaceAll("item.", "").replaceAll("tile.", ""));
@@ -155,7 +155,7 @@ public class TextFormatter
 
 		if (listEnch)
 		{
-			ArrayList<String> tempArgs = new ArrayList();
+			ArrayList<String> tempArgs = new ArrayList<String>();
 			NBTTagList var10 = stack.getEnchantmentTagList();
 			if (var10 != null)
 			{
@@ -179,7 +179,7 @@ public class TextFormatter
 	public static String toJSON(Collection<PotionEffect> collection)
 	{
 		String[] data = new String[collection.size()];
-		Iterator i = collection.iterator();
+		Iterator<PotionEffect> i = collection.iterator();
 		int id = 0;
 		while (i.hasNext())
 		{
@@ -248,7 +248,7 @@ public class TextFormatter
 
 	public static String toJSONnbtBase(NBTBase nbt)
 	{
-		HashMap<String, String> map = new HashMap();
+		HashMap<String, String> map = new HashMap<String, String>();
 		String data;
 
 		if (nbt instanceof NBTTagCompound)

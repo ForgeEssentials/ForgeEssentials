@@ -11,7 +11,7 @@ import com.ForgeEssentials.core.compat.CompatMCStats;
 
 public class MCstatsInfo extends Response
 {
-	LinkedHashMap<String, String>	data	= new LinkedHashMap();
+	LinkedHashMap<String, String>	data	= new LinkedHashMap<String, String>();
 
 	@Override
 	public String getResponceString(DatagramPacket packet)

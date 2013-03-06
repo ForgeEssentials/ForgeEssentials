@@ -3,9 +3,11 @@ package com.ForgeEssentials.snooper.response;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.permissions.Group;
@@ -28,16 +30,16 @@ public class PlayerInfoResonce extends Response
 	@Override
 	public String getResponceString(DatagramPacket packet)
 	{
-		LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
-		LinkedHashMap<String, String> tempMap = new LinkedHashMap();
-		new ArrayList();
+		LinkedHashMap<String, String> PlayerData = new LinkedHashMap<String, String>();
+		LinkedHashMap<String, String> tempMap = new LinkedHashMap<String, String>();
+		new ArrayList<Object>();
 
 		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
 		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
 		if (player == null)
 			return "";
 
-		PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+		PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
 		if (pi != null && sendhome)
 		{
 			if (pi.home != null)
@@ -63,7 +65,7 @@ public class PlayerInfoResonce extends Response
 
 		if (!player.getActivePotionEffects().isEmpty() && sendpotions)
 		{
-			PlayerData.put("potion", TextFormatter.toJSON(player.getActivePotionEffects()));
+			PlayerData.put("potion", TextFormatter.toJSON((Collection<PotionEffect>) player.getActivePotionEffects()));
 		}
 
 		if (sendXP)

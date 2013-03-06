@@ -16,7 +16,7 @@ public class PlayerArmor extends Response
 	@Override
 	public String getResponceString(DatagramPacket packet)
 	{
-		LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
+		LinkedHashMap<String, String> PlayerData = new LinkedHashMap<String, String>();
 		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
 		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
 		if (player == null)

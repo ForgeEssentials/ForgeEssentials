@@ -22,8 +22,8 @@ public class PlayerInv extends Response
 		if (player == null)
 			return "";
 
-		LinkedHashMap<String, String> PlayerData = new LinkedHashMap();
-		ArrayList<String> tempArgs = new ArrayList();
+		LinkedHashMap<String, String> PlayerData = new LinkedHashMap<String, String>();
+		ArrayList<String> tempArgs = new ArrayList<String>();
 		for (ItemStack stack : player.inventory.mainInventory)
 		{
 			if (stack != null)

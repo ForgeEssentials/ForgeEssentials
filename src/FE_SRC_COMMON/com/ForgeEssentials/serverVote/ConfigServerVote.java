@@ -32,7 +32,7 @@ public class ConfigServerVote extends ModuleConfigBase
 	public boolean				allowOfflineVotes;
 	public String				msgAll		= "";
 	public String				msgVoter	= "";
-	public List<ItemStack>		freeStuff	= new ArrayList();
+	public List<ItemStack>		freeStuff	= new ArrayList<ItemStack>();
 
 	public File					keyFolder;
 

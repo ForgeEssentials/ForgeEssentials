@@ -24,7 +24,7 @@ import cpw.mods.fml.common.ModContainer;
 
 public class ServerInfo extends Response
 {
-	LinkedHashMap<String, String>	data		= new LinkedHashMap();
+	LinkedHashMap<String, String>	data		= new LinkedHashMap<String, String>();
 	private boolean					sendWB;
 	private boolean					sendMotd;
 	private boolean					sendIP;
@@ -92,7 +92,7 @@ public class ServerInfo extends Response
 		{
 			if (sendWB && ModuleWorldBorder.WBenabled && ModuleWorldBorder.set)
 			{
-				LinkedHashMap<String, String> temp = new LinkedHashMap();
+				LinkedHashMap<String, String> temp = new LinkedHashMap<String, String>();
 				temp.put("Shape", ModuleWorldBorder.shape.name());
 				Point center = new Point(ModuleWorldBorder.X, 64, ModuleWorldBorder.Z);
 				temp.put("Center", TextFormatter.toJSON(center));
@@ -158,7 +158,7 @@ public class ServerInfo extends Response
 	{
 		try
 		{
-			LinkedHashMap<String, String> data = new LinkedHashMap();
+			LinkedHashMap<String, String> data = new LinkedHashMap<String, String>();
 			for (int id : TPSList)
 			{
 				if (server.worldTickTimes.containsKey(id))

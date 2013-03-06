@@ -1,7 +1,5 @@
 package com.ForgeEssentials.snooper;
 
-import java.util.ArrayList;
-
 import net.minecraft.network.rcon.IServer;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -27,16 +25,15 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class ModuleSnooper
 {
 	@Config
-	public static ConfigSnooper			configSnooper;
+	public static ConfigSnooper		configSnooper;
 
-	public static int					port;
-	public static String				hostname;
-	public static boolean				enable;
+	public static int				port;
+	public static String			hostname;
+	public static boolean			enable;
 
-	public static RConQueryThread		theThread;
-	private static ArrayList<String>	names;
+	public static RConQueryThread	theThread;
 
-	public static boolean				autoReboot;
+	public static boolean			autoReboot;
 
 	public ModuleSnooper()
 	{
@@ -81,6 +78,7 @@ public class ModuleSnooper
 			}
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 	}
 }
