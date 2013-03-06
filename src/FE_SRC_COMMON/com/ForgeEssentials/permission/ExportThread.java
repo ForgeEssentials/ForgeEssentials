@@ -58,6 +58,9 @@ public class ExportThread extends Thread
 
 	private void output(String msg)
 	{
-		user.sendChatToPlayer("[PermSQL]" + msg);
+		if (user != null)
+			user.sendChatToPlayer("[PermSQL]" + msg);
+		else
+			OutputHandler.finest(msg);
 	}
 }

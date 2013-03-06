@@ -9,7 +9,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 //In the event we need to mess with ASM and such, this is the place.
 //Kindly do not reference any FE classes outside the coremod package in this class.
 
-public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
+public class FEPreLoader implements IFMLLoadingPlugin
 {
 
 	public static File	location;
@@ -46,12 +46,6 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 		{
 			location = (File) data.get("coremodLocation");
 		}
-	}
-
-	@Override
-	public Void call() throws Exception
-	{
-		return null;
 	}
 
 }

@@ -10,32 +10,53 @@ public class CommandFEPermExport
 {
 	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length > 0)
+		String output = "export";
+		if (args.length > 1)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export");
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
 			return;
+		}
+		else if (args.length == 1)
+		{
+			if (args[0].equalsIgnoreCase("help"))
+			{
+				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+				return;
+			}
+			else
+				output = args[0];
 		}
 
 		OutputHandler.chatConfirmation(sender, " {PermSQL} Starting permission export...");
-		startThread(sender);
+		startThread(sender, output);
 	}
 
 	public static void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length > 0)
+		String output = "export";
+		if (args.length > 1)
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export");
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
 			return;
+		}
+		else if (args.length == 1)
+		{
+			if (args[0].equalsIgnoreCase("help"))
+			{
+				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+				return;
+			}
+			else
+				output = args[0];
 		}
 
 		sender.sendChatToPlayer(" {PermSQL} Starting permission export...");
-		startThread(sender);
+		startThread(sender, output);
 	}
 
-	private static void startThread(ICommandSender sender)
+	private static void startThread(ICommandSender sender, String output)
 	{
-		// TODO: make configureable.
-		ExportThread t = new ExportThread("export", sender);
+		ExportThread t = new ExportThread(output, sender);
 		t.run();
 	}
 

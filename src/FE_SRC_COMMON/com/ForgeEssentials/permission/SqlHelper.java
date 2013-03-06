@@ -686,6 +686,9 @@ public class SqlHelper
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
+		
+		ExportThread t = new ExportThread("generated", null);
+		t.run();
 	}
 
 	/**
