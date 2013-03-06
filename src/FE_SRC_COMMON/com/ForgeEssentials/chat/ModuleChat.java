@@ -119,7 +119,7 @@ public class ModuleChat
 		{
 			try
 			{
-				Set cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandSet", "b");
+				Set<?> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandSet", "b");
 
 				ICommand toRemove = null;
 				Class<?> cmdClass = null;
@@ -153,7 +153,7 @@ public class ModuleChat
 				}
 				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, "commandSet", "b");
 
-				Map cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandMap", "a");
+				Map<String, CommandMsg> cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandMap", "a");
 				if (cmds.containsKey("tell"))
 				{
 					OutputHandler.finer("Removing command tell from vanilla set.");

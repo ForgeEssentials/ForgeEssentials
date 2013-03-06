@@ -21,15 +21,12 @@ public class CommandPm extends ForgeEssentialsCommandBase
 {
 	private static Map<String, String>	persistentMessage;
 	private List<String>				aliasList;
-	private static CommandPm			instance;
-
 	public CommandPm()
 	{
 		super();
 		persistentMessage = new HashMap<String, String>();
 		aliasList = new LinkedList<String>();
 		aliasList.add("persistentmessage");
-		instance = this;
 	}
 
 	@Override
@@ -39,7 +36,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
 		return aliasList;
 	}

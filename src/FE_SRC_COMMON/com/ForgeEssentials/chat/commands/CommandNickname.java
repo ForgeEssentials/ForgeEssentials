@@ -25,7 +25,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
 		return Arrays.asList(new String[]
 		{ "nick" });

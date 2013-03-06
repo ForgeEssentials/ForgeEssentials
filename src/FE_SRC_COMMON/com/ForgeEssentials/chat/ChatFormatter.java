@@ -321,7 +321,7 @@ public class ChatFormatter
 	{
 		HashSet<Group> used = new HashSet<Group>();
 
-		for (TreeSet set : list)
+		for (TreeSet<Group> set : list)
 		{
 			for (Group g : used)
 			{

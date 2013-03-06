@@ -23,7 +23,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
 		return Arrays.asList("am");
 	}
@@ -131,7 +131,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, "select", "broadcast", "add", "del");
