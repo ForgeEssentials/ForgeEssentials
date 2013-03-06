@@ -47,7 +47,7 @@ public class ModulePlayerLogger
 	private Connection					connection;
 	public static EventLogger			eLogger;
 
-	public static List<logEntry>		logTypes	= new ArrayList();
+	public static List<logEntry>		logTypes	= new ArrayList<logEntry>();
 	static
 	{
 		logTypes.add(new playerTrackerLog());

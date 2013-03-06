@@ -41,7 +41,7 @@ public class blockChangeLog extends logEntry
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
 			te.writeToNBT(nbt);
-			HashMap<String, String> data = new HashMap();
+			HashMap<String, String> data = new HashMap<String, String>();
 			data.put(te.getClass().getName(), TextFormatter.toJSONnbtComp(nbt));
 			try
 			{
