@@ -45,14 +45,31 @@
     </dependency>
   </dependencies>
   <build>
-    <sourceDirectory>${basedir}/src</sourceDirectory>
+    <sourceDirectory>${basedir}/src/FE_SRC_COMMON</sourceDirectory>
     <resources>
       <resource>
-        <directory>${basedir}/resources</directory>
+        <directory>${basedir}/A1-zipStuff/core</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/FE_SRC_COMMON</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
     <plugins>
+      <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>2.1</version>
+            <configuration>
+                <classesDirectory>${basedir}/target/classes</classesDirectory>
+                <archive>
+                    <manifestEntries>
+                        <FMLCorePlugin>com.ForgeEssentials.core.preloader.FEPreLoader</FMLCorePlugin>
+                    </manifestEntries>
+                </archive>
+            </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
