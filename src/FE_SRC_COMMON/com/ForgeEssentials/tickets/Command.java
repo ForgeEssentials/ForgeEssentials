@@ -24,7 +24,7 @@ public class Command extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
 		return Arrays.asList("tickets");
 	}
@@ -157,7 +157,7 @@ public class Command extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, "list", "new", "view", "tp", "del");
@@ -167,7 +167,7 @@ public class Command extends ForgeEssentialsCommandBase
 
 		if (args.length == 2 && (args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("del")))
 		{
-			List<String> list = new ArrayList();
+			List<String> list = new ArrayList<String>();
 			for (Ticket t : ModuleTickets.ticketList)
 			{
 				list.add("" + t.id);

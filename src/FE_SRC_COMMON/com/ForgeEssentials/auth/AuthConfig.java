@@ -12,8 +12,6 @@ public class AuthConfig extends ModuleConfigBase
 	private Configuration		config;
 
 	private static final String	CATEGORY_MAIN		= "main";
-	private static final String	CATEGORY_DB			= "DatabaseStuff";
-	private static final String	CATEGORY_ENCRYPT	= "Encryption stuff";
 
 	public AuthConfig(File file)
 	{

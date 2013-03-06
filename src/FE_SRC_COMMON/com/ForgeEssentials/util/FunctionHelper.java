@@ -127,7 +127,7 @@ public final class FunctionHelper
 
 	public static EntityPlayerMP getPlayerFromPartialName(String username)
 	{
-		List possibles = new LinkedList<EntityPlayer>();
+		List<EntityPlayer> possibles = new LinkedList<EntityPlayer>();
 		ArrayList<EntityPlayerMP> temp = (ArrayList<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList;
 		for (EntityPlayerMP player : temp)
 		{

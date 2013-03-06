@@ -31,7 +31,7 @@ public class ModuleWorldBorder
 	public static ConfigWorldBorder				config;
 
 	public static BorderShape					shape;
-	public static HashMap<Integer, IEffect[]>	effectsList		= new HashMap();
+	public static HashMap<Integer, IEffect[]>	effectsList		= new HashMap<Integer, IEffect[]>();
 	public static int							overGenerate	= 345;
 	public static boolean						set				= false;
 
@@ -43,9 +43,6 @@ public class ModuleWorldBorder
 	public static int							maxZ;
 	public static int							minX;
 	public static int							minZ;
-
-	private int									ticks			= 0;
-	private int									players			= 1;
 
 	public ModuleWorldBorder()
 	{

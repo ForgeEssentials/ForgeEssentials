@@ -7,7 +7,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class AuthEvent extends PlayerEvent
 {
-	public final Map arguments;
+	public final Map<String, String> arguments;
 	
 	public AuthEvent(EntityPlayer player, Map<String, String> arguments)
 	{

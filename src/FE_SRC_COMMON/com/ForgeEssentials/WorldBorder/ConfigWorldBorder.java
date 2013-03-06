@@ -56,7 +56,7 @@ public class ConfigWorldBorder extends ModuleConfigBase
 			{
 				try
 				{
-					Class c = Class.forName(penaltyBasePackage + effect.toLowerCase());
+					Class<?> c = Class.forName(penaltyBasePackage + effect.toLowerCase());
 					try
 					{
 						IEffect pentalty = (IEffect) c.newInstance();

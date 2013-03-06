@@ -26,7 +26,6 @@ public class TickTaskReplaceSelection implements ITickTask
 	private BackupArea			backup;
 	private EntityPlayer		player;
 	private int					changed;
-	private int					ticks;
 	private ArrayList<AreaBase>	applicable;
 
 	// Stores our actual task.
@@ -65,7 +64,6 @@ public class TickTaskReplaceSelection implements ITickTask
 	@Override
 	public void tick()
 	{
-		ticks++;
 		int currentTickChanged = 0;
 		boolean continueFlag = true;
 

@@ -26,8 +26,8 @@ public class TeleportCenter implements IScheduledTickHandler
 	public static HashMap<String, Warp>						warps			= new HashMap<String, Warp>();
 	public static HashMap<String, HashMap<String, PWarp>>	pwMap			= new HashMap<String, HashMap<String, PWarp>>();
 
-	private static ArrayList<TPdata>						que				= new ArrayList();
-	private static ArrayList<TPdata>						removeQue		= new ArrayList();
+	private static ArrayList<TPdata>						que				= new ArrayList<TPdata>();
+	private static ArrayList<TPdata>						removeQue		= new ArrayList<TPdata>();
 
 	public static int										tpWarmup;
 	public static int										tpCooldown;

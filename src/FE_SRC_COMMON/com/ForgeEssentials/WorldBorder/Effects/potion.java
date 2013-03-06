@@ -9,7 +9,7 @@ import net.minecraftforge.common.Configuration;
 
 public class potion implements IEffect
 {
-	private List<PotionEffect>	potionEffectsList	= new ArrayList();
+	private List<PotionEffect>	potionEffectsList	= new ArrayList<PotionEffect>();
 
 	@Override
 	public void registerConfig(Configuration config, String category)
