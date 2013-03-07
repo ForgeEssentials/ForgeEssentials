@@ -38,8 +38,6 @@ public class ModuleBackup
 	public static File			moduleDir;
 
 	public static File			baseFolder;
-	public static AutoBackup	autoBackup;
-	public static AutoWorldSave	autoWorldSave;
 
 	@Init
 	public void load(FEModuleInitEvent e)
@@ -51,8 +49,10 @@ public class ModuleBackup
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandBackup());
-		autoBackup = new AutoBackup();
-		autoWorldSave = new AutoWorldSave();
+		if (BackupConfig.autoInterval != 0)
+			new AutoBackup();
+		if (BackupConfig.worldSaveInterval != 0)
+			new AutoWorldSave();
 		makeReadme();
 	}
 
