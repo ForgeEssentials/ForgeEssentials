@@ -6,44 +6,16 @@
   <name>ForgeEssentials</name>
   <url>https://github.com/ForgeEssentials/ForgeEssentialsMain></url>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <minecraft.version>1.4.7</minecraft.version>
-    <minecraft_version>1_4_7</minecraft_version>
-    <forge.version>6.6.2.534</forge.version>
-    <mcp.mappings>https://raw.github.com/MinecraftForge/FML/1bd6847bc80f51b06544068011f7df3218f13999/conf/</mcp.mappings>
+    <mod.at>${basedir}/src/FE_SRC_COMMON/forgeessentials_at.cfg</mod.at>
+    <forge.suffix>forgeessentials1</forge.suffix>
   </properties>
-  <dependencies>
-    <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-all</artifactId>
-        <version>4.1</version>
-    </dependency>
-    <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>12.0.1</version>
-        <type>jar</type>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.lwjgl.lwjgl</groupId>
-        <artifactId>lwjgl</artifactId>
-        <version>2.8.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.lwjgl.lwjgl</groupId>
-        <artifactId>lwjgl_util</artifactId>
-        <version>2.8.4</version>
-    </dependency>
-    <!-- If you get "is missing, no dependency information available" error, run: mvn initialize -->
-    <dependency>
-      <groupId>net.minecraftforge</groupId>
-      <artifactId>minecraft-forge</artifactId>
-      <version>${forge.version}+forgeessentials1</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-  </dependencies>
+
+  <parent>
+    <groupId>net.minecraftforge</groupId>
+    <artifactId>ForgeMod</artifactId>
+    <version>1.4.7-6.6.2</version>
+  </parent>
+ 
   <build>
     <sourceDirectory>${basedir}/src/FE_SRC_COMMON</sourceDirectory>
     <resources>
@@ -70,59 +42,6 @@
                 </archive>
             </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.0</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-      <plugin>
-            <groupId>net.md-5.SpecialSource</groupId>
-            <artifactId>specialsource-maven-plugin</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <executions>
-                <execution>
-                    <id>install-remapped-forge</id>
-                    <phase>initialize</phase>
-                    <goals>
-                        <goal>install-remapped-file</goal>
-                    </goals>
-                    <configuration>
-                        <groupId>net.minecraftforge</groupId>
-                        <artifactId>minecraft-forge</artifactId>
-                        <version>${forge.version}+forgeessentials1</version>
-                        <inJars>
-                            <param>http://assets.minecraft.net/${minecraft_version}/minecraft_server.jar</param>
-                            <param>http://assets.minecraft.net/${minecraft_version}/minecraft.jar</param>
-                            <param>http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-${minecraft.version}-${forge.version}.zip</param>
-                        </inJars>
-                        <srgIn>${mcp.mappings}</srgIn>
-                        <accessTransformers>
-                            <param>https://raw.github.com/MinecraftForge/FML/20337b6e8aec12d2793edb376bdf8dea119cba5f/common/fml_at.cfg</param>
-                            <param>https://raw.github.com/MinecraftForge/MinecraftForge/4299aa22ffcc7770499b5edc4ec330da042a5eb8/common/forge_at.cfg</param>
-                            <param>${basedir}/src/FE_SRC_COMMON/forgeessentials_at.cfg</param>
-                        </accessTransformers>
-                    </configuration>
-                </execution>
-                <execution>
-                    <id>reobfuscate</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>remap</goal>
-                    </goals>
-                    <configuration>
-                        <srgIn>${mcp.mappings}</srgIn>
-                        <reverse>true</reverse>
-                        <remappedDependencies>
-                            <param>net.minecraftforge:minecraft-forge:${forge.version}:jar</param>
-                        </remappedDependencies>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
     </plugins>
   </build>
 </project>
