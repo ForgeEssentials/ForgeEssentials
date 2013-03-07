@@ -96,7 +96,6 @@ public class ModuleChat
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		MailSystem.SaveAll();
-		autoMessage.interrupt();
 	}
 
 	@PermRegister

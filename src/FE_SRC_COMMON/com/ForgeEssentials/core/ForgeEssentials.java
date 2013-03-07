@@ -204,6 +204,8 @@ public class ForgeEssentials
 
 		cmds = new CoreCommands();
 		cmds.load(e);
+		
+		tasks.onServerStart();
 
 		// do modules last... just in case...
 		mdlaunch.serverStarting(e);
@@ -222,6 +224,7 @@ public class ForgeEssentials
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
 		mdlaunch.serverStopping(e);
+		tasks.onServerStop();
 	}
 
 	@VersionCheckHandler

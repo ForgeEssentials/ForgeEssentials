@@ -14,7 +14,6 @@ public class TaskRegistry
 	public TaskRegistry()
 	{
 		instance = this;
-		timed = new TimeTaskHandler();
 		ticks = new TickTaskHandler();
 		TickRegistry.registerTickHandler(ticks, Side.SERVER);
 	}
@@ -50,6 +49,17 @@ public class TaskRegistry
 		registerRecurringTask(wrapper, delayHrs, delayMin, delaySec, delayMilli, intervalHrs, intervalMin, intervalSec, intervalMilli);
 	}
 	
+	public void onServerStop()
+	{
+		instance.timed.kill();
+		instance.timed = null;
+	}
+	
+	public void onServerStart()
+	{
+		instance.timed = new TimeTaskHandler();
+	}
+	
 	private static class TimedTaskWrapper extends TimerTask
 	{
 		private final Runnable runner;
@@ -64,7 +74,6 @@ public class TaskRegistry
 			runner.run();
 		}
 	}
-	
 	
 	private static long getMillis(int hrs, int min, int sec, int milli)
 	{

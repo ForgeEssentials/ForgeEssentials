@@ -237,13 +237,30 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public ArrayList getPlayerPermissions(String target, String zone)
 	{
-		return SqlHelper.getAllPermissions(target, zone, 0);
+		ArrayList output = new ArrayList();
+		
+		if (zone == null)
+			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
+		else
+			output.addAll(SqlHelper.getAllPermissions(target, zone, false));
+		
+		return output;
 	}
 
 	@Override
 	public ArrayList getGroupPermissions(String target, String zone)
 	{
-		return SqlHelper.getAllPermissions(target, zone, 1);
+		ArrayList output = new ArrayList();
+		Group g = SqlHelper.getGroupForName(target);
+		
+		if (zone == null)
+			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
+		else if (g == null)
+			output.add(Localization.format("message.error.nogroup", target));
+		else
+			output.addAll(SqlHelper.getAllPermissions(target, zone, true));
+		
+		return output;
 	}
 
 	@Override

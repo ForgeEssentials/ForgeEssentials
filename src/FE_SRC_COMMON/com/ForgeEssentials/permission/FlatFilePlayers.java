@@ -3,6 +3,8 @@ package com.ForgeEssentials.permission;
 import java.io.File;
 import java.util.ArrayList;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
@@ -62,7 +64,10 @@ public class FlatFilePlayers
 			file.delete();
 		}
 
-		String[] allPlayers = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getAllUsernames();
+		String[] allPlayers = new String[0];
+		ServerConfigurationManager manager = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager();
+		if (manager != null)
+			allPlayers = manager.getAllUsernames();
 
 		Configuration config = new Configuration(file);
 

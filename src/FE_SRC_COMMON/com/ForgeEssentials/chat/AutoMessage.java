@@ -9,7 +9,6 @@ import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class AutoMessage implements Runnable
 {
-	private static Thread			thread;
 	public static int				waittime;
 	public static boolean			random;
 	public static ArrayList<String>	msg	= new ArrayList<String>();
@@ -55,10 +54,5 @@ public class AutoMessage implements Runnable
 			}
 		}
 		System.gc();
-	}
-
-	public void interrupt()
-	{
-		thread.interrupt();
 	}
 }

@@ -141,7 +141,7 @@ public class PermissionChecker
 		return false;
 	}
 
-	public String getQualifiedname()
+	public String getQualifiedName()
 	{
 		if (isAll)
 			return name + "." + Permission.ALL;
