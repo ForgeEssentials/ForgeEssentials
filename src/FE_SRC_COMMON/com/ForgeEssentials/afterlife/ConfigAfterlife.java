@@ -30,9 +30,9 @@ public class ConfigAfterlife extends ModuleConfigBase
 		config = new Configuration(file, true);
 
 		String subcat = cat + ".DeathChest";
-		config.addCustomCategoryComment(subcat, "Permission needed:\n" + Deathchest.PERMISSION);
+		config.addCustomCategoryComment(subcat, "Permission needed:\n" + Deathchest.PERMISSION_MAKE);
 
-		Deathchest.enable = config.get(subcat, "Enable", true, "Enable the deathchest. Still need permission: ").getBoolean(true);
+		Deathchest.enable = config.get(subcat, "Enable", true, "Enable the deathchest.").getBoolean(true);
 		Deathchest.enableXP = config.get(subcat, "EnableXP", true, "Gives xp when the skull is destoyed or emplyed").getBoolean(true);
 		Deathchest.enableFencePost = config.get(subcat, "enableFencePost", true, "Put the skull on a spike.").getBoolean(true);
 		Deathchest.protectionTime = config.get(subcat, "protectionTime", 300, "Time in seconds a grave is protected. After this time anyone can take all stuff.").getInt();
@@ -70,9 +70,9 @@ public class ConfigAfterlife extends ModuleConfigBase
 	public void forceSave()
 	{
 		String subcat = cat + ".DeathChest";
-		config.addCustomCategoryComment(subcat, "Permission needed:\n" + Deathchest.PERMISSION);
+		config.addCustomCategoryComment(subcat, "Permission needed:\n" + Deathchest.PERMISSION_MAKE);
 
-		config.get(subcat, "Enable", true, "Enable the deathchest. Still need permission: \"" + Deathchest.PERMISSION + "\"").value = Deathchest.enable + "";
+		config.get(subcat, "Enable", true, "Enable the deathchest.").value = Deathchest.enable + "";
 		config.get(subcat, "EnableXP", true, "Gives xp when the skull is destoyed or emplyed").value = Deathchest.enableXP + "";
 		config.get(subcat, "enableFencePost", true, "Put the skull on a spike.").value = Deathchest.enableFencePost + "";
 
@@ -109,9 +109,9 @@ public class ConfigAfterlife extends ModuleConfigBase
 		config.load();
 
 		String subcat = cat + ".DeathChest";
-		config.addCustomCategoryComment(subcat, "Permission needed:\n" + Deathchest.PERMISSION);
+		config.addCustomCategoryComment(subcat, "Permission needed:\n" + Deathchest.PERMISSION_MAKE);
 
-		Deathchest.enable = config.get(subcat, "Enable", true, "Enable the deathchest. Still need permission: \"" + Deathchest.PERMISSION + "\"").getBoolean(true);
+		Deathchest.enable = config.get(subcat, "Enable", true, "Enable the deathchest.").getBoolean(true);
 		Deathchest.enableXP = config.get(subcat, "EnableXP", true, "Gives xp when the skull is destoyed or emplyed").getBoolean(true);
 		Deathchest.enableFencePost = config.get(subcat, "enableFencePost", true, "Put the skull on a spike.").getBoolean(true);
 

@@ -67,6 +67,7 @@ public class ModuleAfterlife
 		event.registerPermissionLevel(RespawnDebuff.BYPASSPOTION, RegGroup.OWNERS);
 		event.registerPermissionLevel(RespawnDebuff.BYPASSSTATS, RegGroup.OWNERS);
 		
-		event.registerPermissionLevel(Deathchest.PERMISSION, RegGroup.MEMBERS);
+		event.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.MEMBERS);
+		event.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.OWNERS);
 	}
 }

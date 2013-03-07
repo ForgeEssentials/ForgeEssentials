@@ -11,6 +11,8 @@ import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 @SaveableObject
@@ -103,5 +105,17 @@ public class Grave
 		{
 			protEnable = false;
 		}
+	}
+
+	public boolean canOpen(EntityPlayer player)
+	{
+		if (!this.protEnable)
+			return true;
+		if (player.username.equals(point))
+			return true;
+		if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, Deathchest.PERMISSION_BYPASS)))
+			return true;
+		
+		return false;
 	}
 }

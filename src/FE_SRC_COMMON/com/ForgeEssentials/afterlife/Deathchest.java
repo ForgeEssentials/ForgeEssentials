@@ -33,7 +33,12 @@ public class Deathchest
 	/**
 	 * This permission is needed to get the skull, Default = members.
 	 */
-	public static final String		PERMISSION	= ModuleAfterlife.BASEPERM + ".deathchest";
+	public static final String		PERMISSION_MAKE	= ModuleAfterlife.BASEPERM + ".deathchest.make";
+	
+	/**
+	 * This is the permission that allows you to bypass the protection timer.
+	 */
+	public static final String		PERMISSION_BYPASS	= ModuleAfterlife.BASEPERM + ".deathchest.protectionBypass";
 
 	public static boolean			enable;
 	public static boolean			enableXP;
@@ -71,7 +76,7 @@ public class Deathchest
 	{
 		if (!enable)
 			return;
-		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, PERMISSION)))
+		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, PERMISSION_MAKE)))
 			return;
 		WorldPoint point = new WorldPoint(e.entityPlayer);
 		World world = e.entityPlayer.worldObj;
@@ -110,7 +115,7 @@ public class Deathchest
 				Grave grave = gravemap.get(point.toString());
 				if (e.entity.worldObj.getBlockId(e.x, e.y, e.z) == Block.skull.blockID)
 				{
-					if (grave.protEnable)
+					if (!grave.canOpen(e.entityPlayer))
 					{
 						e.entityPlayer.sendChatToPlayer("This grave is still under Notch's protection.");
 						e.setCanceled(true);
