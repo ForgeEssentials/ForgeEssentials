@@ -326,6 +326,9 @@ public class NBTDataDriver extends BinaryDataDriver
 	{
 		File[] files = getTypePath(type).listFiles();
 		ArrayList<IReconstructData> data = new ArrayList<IReconstructData>();
+		
+		if (files == null)
+			return new TypeData[0];
 
 		for (File file : files)
 		{
