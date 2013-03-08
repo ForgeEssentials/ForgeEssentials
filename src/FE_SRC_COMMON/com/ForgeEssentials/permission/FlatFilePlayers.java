@@ -65,9 +65,13 @@ public class FlatFilePlayers
 		}
 
 		String[] allPlayers = new String[0];
-		ServerConfigurationManager manager = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager();
-		if (manager != null)
-			allPlayers = manager.getAllUsernames();
+		MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
+		if (server != null)
+		{
+			ServerConfigurationManager manager = server.getConfigurationManager();
+			if (manager != null)
+				allPlayers = manager.getAllUsernames();
+		}
 
 		Configuration config = new Configuration(file);
 
