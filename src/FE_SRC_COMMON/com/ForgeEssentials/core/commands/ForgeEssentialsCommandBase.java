@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -270,4 +271,10 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public abstract String getCommandPerm();
 
+    // synthetic method (TODO: fix in SSMP, then remove here)
+    public int compareTo(Object par1Obj)
+    {
+        return this.compareNameTo((ICommand)par1Obj);
+    }
+    //
 }
