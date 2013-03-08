@@ -11,7 +11,7 @@
   </properties>
 
   <parent>
-    <groupId>net.minecraftforge</groupId>
+    <groupId>net.md-5</groupId>
     <artifactId>ForgeMod</artifactId>
     <version>1.4.7-6.6.2</version>
   </parent>
