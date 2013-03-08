@@ -6,25 +6,21 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.api.permissions.query.PermissionQueryBus;
 
 // This is a bouncer class for all Permissions API duties.
 
 public abstract class PermissionsAPI
 {
-	public static final PermissionQueryBus	QUERY_BUS	= new PermissionQueryBus();
 	public static IPermissionsHelper		manager;
 
 	public static boolean checkPermAllowed(PermQuery query)
 	{
-		QUERY_BUS.post(query);
-		return query.isAllowed();
+		return manager.checkPermAllowed(query);
 	}
 
 	public static PermResult checkPermResult(PermQuery query)
 	{
-		QUERY_BUS.post(query);
-		return query.getResult();
+		return manager.checkPermResult(query);
 	}
 
 	public static Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority)

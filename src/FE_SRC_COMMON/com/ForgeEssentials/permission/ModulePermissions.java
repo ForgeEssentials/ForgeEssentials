@@ -37,9 +37,6 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions
 {
-	// public static ConfigPermissions config;
-	public static PermissionsPlayerHandler	ppHandler;
-	public static PermissionsBlanketHandler	pbHandler;
 	public static SqlHelper				sql;
 
 	@Config
@@ -63,7 +60,7 @@ public class ModulePermissions
 		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
 		PermRegLoader laoder = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));
 		regPerms = laoder.loadAllPerms();
-		
+
 		DataStorageManager.registerSaveableType(new ClassContainer(AutoPromote.class));
 		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 	}
@@ -74,11 +71,6 @@ public class ModulePermissions
 		// setup SQL
 		sql = new SqlHelper(config);
 		sql.putRegistrationperms(regPerms);
-
-		ppHandler = new PermissionsPlayerHandler();
-		pbHandler = new PermissionsBlanketHandler();
-		PermissionsAPI.QUERY_BUS.register(ppHandler);
-		PermissionsAPI.QUERY_BUS.register(pbHandler);
 
 		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);

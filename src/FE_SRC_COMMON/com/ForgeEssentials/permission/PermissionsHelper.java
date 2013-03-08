@@ -11,7 +11,9 @@ import com.ForgeEssentials.api.permissions.IPermissionsHelper;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.api.permissions.query.PermQuery;
+import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
@@ -23,6 +25,28 @@ public class PermissionsHelper implements IPermissionsHelper
 	private String		EPSuffix	= "";
 	private Group		DEFAULT		= new Group(RegGroup.ZONE.toString(), " ", " ", null, ZoneManager.getGLOBAL().getZoneName(), 0);
 
+	@Override
+	public boolean checkPermAllowed(PermQuery query)
+	{
+		if (query instanceof PermQueryPlayer)
+			PermissionsPlayerHandler.parseQuery((PermQueryPlayer) query);
+		else
+			PermissionsBlanketHandler.parseQuery(query);
+		
+		return query.isAllowed();
+	}
+
+	@Override
+	public PermResult checkPermResult(PermQuery query)
+	{
+		if (query instanceof PermQueryPlayer)
+			PermissionsPlayerHandler.parseQuery((PermQueryPlayer) query);
+		else
+			PermissionsBlanketHandler.parseQuery(query);
+		
+		return query.getResult();
+	}
+	
 	@Override
 	public Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority)
 	{

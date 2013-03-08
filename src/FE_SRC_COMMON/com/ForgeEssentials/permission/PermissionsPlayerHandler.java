@@ -2,8 +2,6 @@ package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
 
-import net.minecraftforge.event.EventPriority;
-
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
@@ -12,7 +10,6 @@ import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
-import com.ForgeEssentials.api.permissions.query.PermSubscribe;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -27,15 +24,28 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
  */
 public final class PermissionsPlayerHandler
 {
-	@PermSubscribe(priority = EventPriority.HIGHEST)
-	public void doOpCheck(PermQueryPlayer event)
+	public static void parseQuery(PermQueryPlayer query)
+	{
+		doOpCheck(query);
+		
+		if (query.getResult().equals(PermResult.UNKNOWN))
+			return;
+		
+		checkPlayerSupers(query);
+		
+		if (query.getResult().equals(PermResult.UNKNOWN))
+			return;
+		
+		handleQuery(query);
+	}
+	
+	private static void doOpCheck(PermQueryPlayer event)
 	{
 		boolean isOp = FunctionHelper.isPlayerOp(event.doer.username.toLowerCase());
 		event.setResult(isOp ? PermResult.ALLOW : PermResult.UNKNOWN);
 	}
 
-	@PermSubscribe(priority = EventPriority.HIGH, handleResult = { PermResult.UNKNOWN })
-	public void checkPlayerSupers(PermQueryPlayer event)
+	private static void checkPlayerSupers(PermQueryPlayer event)
 	{
 		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.getSUPER().getZoneName(), event.checkForward);
 		if (!result.equals(PermResult.UNKNOWN))
@@ -44,8 +54,7 @@ public final class PermissionsPlayerHandler
 		}
 	}
 
-	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
-	public void handleQuery(PermQueryPlayer event)
+	private static void handleQuery(PermQueryPlayer event)
 	{
 		// ensures its a permPlayerQuery before checking...
 		if (event.getClass().equals(PermQueryPlayer.class))
@@ -56,15 +65,13 @@ public final class PermissionsPlayerHandler
 		}
 	}
 
-	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
-	public void handleQuery(PermQueryPlayerZone event)
+	private static void handleQuery(PermQueryPlayerZone event)
 	{
 		PermResult result = getResultFromZone(event.toCheck, event);
 		event.setResult(result);
 	}
 
-	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
-	public void handleQuery(PermQueryPlayerArea event)
+	private static void handleQuery(PermQueryPlayerArea event)
 	{
 		if (event.allOrNothing)
 		{
@@ -96,7 +103,7 @@ public final class PermissionsPlayerHandler
 	 * @param player Player to check/
 	 * @return the result for the perm.
 	 */
-	private PermResult getResultFromZone(Zone zone, PermQueryPlayer event)
+	private static PermResult getResultFromZone(Zone zone, PermQueryPlayer event)
 	{
 		ArrayList<Group> groups;
 		PermResult result = PermResult.UNKNOWN;
@@ -153,7 +160,7 @@ public final class PermissionsPlayerHandler
 		return result;
 	}
 
-	private ArrayList<AreaBase> getApplicableAreas(AreaBase doneTo, PermQueryPlayer event)
+	private static ArrayList<AreaBase> getApplicableAreas(AreaBase doneTo, PermQueryPlayer event)
 	{
 		ArrayList<AreaBase> applicable = new ArrayList<AreaBase>();
 
