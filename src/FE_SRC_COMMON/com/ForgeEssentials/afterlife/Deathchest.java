@@ -3,14 +3,12 @@ package com.ForgeEssentials.afterlife;
 import java.util.HashMap;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockSkull;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet100OpenWindow;
-import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,8 +31,8 @@ public class Deathchest
 	/**
 	 * This permission is needed to get the skull, Default = members.
 	 */
-	public static final String		PERMISSION_MAKE	= ModuleAfterlife.BASEPERM + ".deathchest.make";
-	
+	public static final String		PERMISSION_MAKE		= ModuleAfterlife.BASEPERM + ".deathchest.make";
+
 	/**
 	 * This is the permission that allows you to bypass the protection timer.
 	 */
@@ -45,11 +43,12 @@ public class Deathchest
 	public static boolean			enableFencePost;
 	public static int				protectionTime;
 
-	public HashMap<String, Grave>	gravemap	= new HashMap<String, Grave>();
-	private ClassContainer			graveType	= new ClassContainer(Grave.class);
+	public HashMap<String, Grave>	gravemap			= new HashMap<String, Grave>();
+	private ClassContainer			graveType			= new ClassContainer(Grave.class);
 
 	public Deathchest()
 	{
+		FEskullTe.addMapping(FEskullTe.class, "FESkull");
 		MinecraftForge.EVENT_BUS.register(this);
 		TickRegistry.registerScheduledTickHandler(new GraveProtectionTicker(this), Side.SERVER);
 	}
@@ -87,7 +86,7 @@ public class Deathchest
 		{
 			e.setCanceled(true);
 
-			if(enableFencePost)
+			if (enableFencePost)
 			{
 				world.setBlock(point.x, point.y, point.z, Block.fence.blockID);
 				point.y++;
@@ -95,7 +94,7 @@ public class Deathchest
 			new Grave(point, e.entityPlayer, e.drops, this);
 
 			world.setBlockAndMetadata(point.x, point.y, point.z, Block.skull.blockID, 1);
-			TileEntitySkull te = (TileEntitySkull) ((BlockSkull) Block.skull).createNewTileEntity(world);
+			FEskullTe te = new FEskullTe();
 			te.setSkullType(3, e.entityPlayer.username);
 			world.setBlockTileEntity(point.x, point.y, point.z, te);
 		}
@@ -122,23 +121,20 @@ public class Deathchest
 					}
 					else
 					{
-						if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+						EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
+
+						if (player.openContainer != player.inventoryContainer)
 						{
-							EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
-
-							if (player.openContainer != player.inventoryContainer)
-							{
-								player.closeScreen();
-							}
-							player.incrementWindowID();
-
-							InventoryGrave invGrave = new InventoryGrave(grave);
-							player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, invGrave.getInvName(), invGrave.getSizeInventory()));
-							player.openContainer = new ContainerChest(player.inventory, invGrave);
-							player.openContainer.windowId = player.currentWindowId;
-							player.openContainer.addCraftingToCrafters(player);
-							e.setCanceled(true);
+							player.closeScreen();
 						}
+						player.incrementWindowID();
+
+						InventoryGrave invGrave = new InventoryGrave(grave);
+						player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, invGrave.getInvName(), invGrave.getSizeInventory()));
+						player.openContainer = new ContainerChest(player.inventory, invGrave);
+						player.openContainer.windowId = player.currentWindowId;
+						player.openContainer.addCraftingToCrafters(player);
+						e.setCanceled(true);
 					}
 				}
 				else
@@ -164,6 +160,8 @@ public class Deathchest
 
 	public void removeGrave(Grave grave, boolean mined)
 	{
+		if (grave == null)
+			return;
 		DataStorageManager.getReccomendedDriver().deleteObject(graveType, grave.point.toString());
 		gravemap.remove(grave.point.toString());
 		if (mined)

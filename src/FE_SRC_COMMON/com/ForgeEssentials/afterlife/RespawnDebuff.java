@@ -37,7 +37,8 @@ public class RespawnDebuff implements IPlayerTracker
 	@Override
 	public void onPlayerRespawn(EntityPlayer player1)
 	{
-		if(player1.worldObj.isRemote) return;
+		if (player1.worldObj.isRemote)
+			return;
 		EntityPlayer player = (EntityPlayerMP) player1;
 		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASSPOTION)))
 		{

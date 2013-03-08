@@ -46,7 +46,7 @@ public class ModuleAfterlife
 		deathchest.load();
 		GameRegistry.registerPlayerTracker(respawnDebuff);
 	}
-	
+
 	@FEModule.ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
@@ -63,10 +63,10 @@ public class ModuleAfterlife
 	public void registerPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(BASEPERM, RegGroup.OWNERS);
-		
+
 		event.registerPermissionLevel(RespawnDebuff.BYPASSPOTION, RegGroup.OWNERS);
 		event.registerPermissionLevel(RespawnDebuff.BYPASSSTATS, RegGroup.OWNERS);
-		
+
 		event.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.MEMBERS);
 		event.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.OWNERS);
 	}

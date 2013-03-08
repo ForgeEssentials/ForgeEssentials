@@ -37,7 +37,7 @@ public class Grave
 	public int			protTime;
 
 	@SaveableField
-	public boolean		protEnable = true;
+	public boolean		protEnable		= true;
 
 	public Grave(WorldPoint point, EntityPlayer player, ArrayList<EntityItem> drops, Deathchest deathchest)
 	{
@@ -59,7 +59,7 @@ public class Grave
 		}
 
 		this.protTime = Deathchest.protectionTime;
-		
+
 		deathchest.gravemap.put(point.toString(), this);
 	}
 
@@ -97,9 +97,9 @@ public class Grave
 
 	public void tick()
 	{
-		if(protTime != 0)
+		if (protTime != 0)
 		{
-			protTime --;
+			protTime--;
 		}
 		else
 		{
@@ -115,7 +115,7 @@ public class Grave
 			return true;
 		if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, Deathchest.PERMISSION_BYPASS)))
 			return true;
-		
+
 		return false;
 	}
 }

@@ -13,11 +13,11 @@ public class GraveProtectionTicker implements IScheduledTickHandler
 	{
 		this.deathchest = deathchest;
 	}
-	
+
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		for(Grave grave : deathchest.gravemap.values())
+		for (Grave grave : deathchest.gravemap.values())
 		{
 			grave.tick();
 		}
