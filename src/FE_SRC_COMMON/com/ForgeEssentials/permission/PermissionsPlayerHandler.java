@@ -24,6 +24,11 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
  */
 public final class PermissionsPlayerHandler
 {
+	private PermissionsPlayerHandler()
+	{
+		// do nothing
+	}
+	
 	public static void parseQuery(PermQueryPlayer query)
 	{
 		doOpCheck(query);

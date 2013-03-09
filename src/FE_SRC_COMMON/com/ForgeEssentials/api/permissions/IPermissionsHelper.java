@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.api.permissions.query.PropQuery;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -12,6 +13,8 @@ public interface IPermissionsHelper
 	boolean checkPermAllowed(PermQuery query);
 
 	PermResult checkPermResult(PermQuery query);
+	
+	void getPermissionProp(PropQuery query);
 	
 	Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority);
 

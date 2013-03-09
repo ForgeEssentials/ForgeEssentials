@@ -14,6 +14,7 @@ import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.api.permissions.query.PropQuery;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
@@ -45,6 +46,13 @@ public class PermissionsHelper implements IPermissionsHelper
 			PermissionsBlanketHandler.parseQuery(query);
 		
 		return query.getResult();
+	}
+	
+
+	@Override
+	public void getPermissionProp(PropQuery query)
+	{
+		// TODO: handle this later....
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.permissions.query.PermQuery;
+import com.ForgeEssentials.api.permissions.query.PropQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 
 // This is a bouncer class for all Permissions API duties.
@@ -21,6 +22,14 @@ public abstract class PermissionsAPI
 	public static PermResult checkPermResult(PermQuery query)
 	{
 		return manager.checkPermResult(query);
+	}
+	
+	/**
+	 * populates the given PropQuery with a value.
+	 */
+	public static void getPermissionProp(PropQuery query)
+	{
+		manager.getPermissionProp(query);
 	}
 
 	public static Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority)

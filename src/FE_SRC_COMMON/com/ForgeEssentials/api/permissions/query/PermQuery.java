@@ -2,7 +2,7 @@ package com.ForgeEssentials.api.permissions.query;
 
 import com.ForgeEssentials.permission.PermissionChecker;
 
-public class PermQuery
+public abstract class PermQuery
 {
 	public enum PermResult
 	{
@@ -17,6 +17,11 @@ public class PermQuery
 	public PermQuery()
 	{
 		checkForward = false;
+	}
+	
+	public PermQuery(boolean checkForward)
+	{
+		this.checkForward = checkForward;
 	}
 
 	public PermResult getResult()
