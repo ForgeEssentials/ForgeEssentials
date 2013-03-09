@@ -6,7 +6,9 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 
@@ -54,6 +56,20 @@ public class Kit
 		}
 
 		CommandDataManager.addKit(this);
+	}
+	
+	public Kit(Object name, Object cooldown, Object items, Object armor)
+	{
+		this.name = (String) name;
+		this.cooldown = (Integer) cooldown;
+		this.items = (ItemStack[]) items;
+		this.armor = (ItemStack[]) armor;
+	}
+
+	@Reconstructor
+	private static Kit reconstruct(IReconstructData tag)
+	{
+		return new Kit(tag.getFieldValue("name"), tag.getFieldValue("cooldown"), tag.getFieldValue("items"), tag.getFieldValue("armor"));	
 	}
 
 	public String getName()
