@@ -38,11 +38,19 @@ public class ZoneHelper implements IZoneManager
 	protected void loadZones()
 	{
 		Object[] objs = ModulePermissions.data.loadAllObjects(new ClassContainer(Zone.class));
+		
+		if (objs == null)
+			return;
+		
 		Zone temp;
 		boolean exists;
 		for (Object obj : objs)
 		{
 			temp = (Zone) obj;
+			
+			if (temp == null || temp.getZoneName() == null || temp.getZoneName().isEmpty())
+				continue;
+			
 			zoneMap.put(temp.getZoneName(), temp);
 
 			exists = SqlHelper.doesZoneExist(temp.getZoneName());
