@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.ForgeEssentials.util.OutputHandler;
+
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
@@ -217,6 +219,12 @@ public class Backup implements Runnable
 	 */
 	private void zipIt(String dir)
 	{
+		if(fileList.isEmpty())
+		{
+			OutputHandler.info("No files to backup in " + dir);
+			return;
+		}
+		
 		byte[] buffer = new byte[1024];
 		try
 		{
