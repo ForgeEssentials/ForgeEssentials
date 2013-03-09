@@ -15,6 +15,7 @@ import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModContainer;
 
+@SuppressWarnings(value = { "rawtypes", "unchecked" })
 public class CallableMap
 {
 	private HashMultimap<String, FECallable>	callables;
@@ -32,7 +33,7 @@ public class CallableMap
 		try
 		{
 			FECallable call;
-			Class c = obj.getClass();
+			Class<?> c = obj.getClass();
 			if (obj instanceof ModContainer)
 			{
 				c = ((ModContainer) obj).getMod().getClass();
@@ -62,7 +63,7 @@ public class CallableMap
 		}
 	}
 
-	public void scanClass(Class c)
+	public void scanClass(Class<?> c)
 	{
 		if (c == null)
 			return;
@@ -130,7 +131,7 @@ public class CallableMap
 		{
 			method = m;
 
-			Class c = m.getDeclaringClass();
+			Class<?> c = m.getDeclaringClass();
 			if (c.isAnnotationPresent(Mod.class))
 			{
 				ident = ((Mod) c.getAnnotation(Mod.class)).modid();
@@ -159,12 +160,12 @@ public class CallableMap
 			return !method.getReturnType().equals(void.class);
 		}
 
-		public Class getReturn()
+		public Class<?> getReturn()
 		{
 			return method.getReturnType();
 		}
 
-		public Class[] getParameters()
+		public Class<?>[] getParameters()
 		{
 			return method.getParameterTypes();
 		}

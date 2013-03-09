@@ -51,8 +51,6 @@ public class ModuleChat
 
 	private MailSystem			mailsystem;
 
-	private AutoMessage			autoMessage;
-
 	public ModuleChat()
 	{
 	}
@@ -87,7 +85,7 @@ public class ModuleChat
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
-		autoMessage = new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
+		new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
 		MailSystem.LoadAll();
 		GameRegistry.registerPlayerTracker(mailsystem);
 	}

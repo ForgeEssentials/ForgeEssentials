@@ -22,7 +22,7 @@ public class VoteEvent extends Event
 	public String	ip;
 	public String	timeStamp;
 	private boolean	sane		= false;
-	List<String>	feedback	= new ArrayList();
+	List<String>	feedback	= new ArrayList<String>();
 
 	public VoteEvent(String player, String serviceName, String ip, String timeStamp)
 	{

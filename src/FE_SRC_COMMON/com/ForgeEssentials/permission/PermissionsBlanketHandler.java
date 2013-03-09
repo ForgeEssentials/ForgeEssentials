@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.minecraftforge.event.EventPriority;
 
-import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
@@ -33,7 +32,7 @@ public final class PermissionsBlanketHandler
 		PermResult result = getResultFromZone(event.toCheck, event.checker, event.checkForward);
 		event.setResult(result);
 	}
-	
+
 	@PermSubscribe(priority = EventPriority.NORMAL, handleResult = { PermResult.UNKNOWN })
 	public void handleQuery(PermQueryBlanketSpot event)
 	{
@@ -77,10 +76,8 @@ public final class PermissionsBlanketHandler
 	 */
 	private PermResult getResultFromZone(Zone zone, PermissionChecker checker, boolean checkForward)
 	{
-		ArrayList<Group> groups;
 		PermResult result = PermResult.UNKNOWN;
 		Zone tempZone = zone;
-		Group group;
 		while (result.equals(PermResult.UNKNOWN))
 		{
 			result = SqlHelper.getPermissionResult(PermissionsAPI.getDEFAULT().name, true, checker, tempZone.getZoneName(), checkForward);

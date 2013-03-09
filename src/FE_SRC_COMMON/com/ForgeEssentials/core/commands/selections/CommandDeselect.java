@@ -46,14 +46,12 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canConsoleUseCommand()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public String getCommandPerm()
 	{
-		// TODO Auto-generated method stub
 		return "ForgeEssentials.BasicCommands.deselect";
 	}
 }

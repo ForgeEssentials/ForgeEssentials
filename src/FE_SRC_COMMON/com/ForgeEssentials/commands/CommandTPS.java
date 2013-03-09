@@ -142,7 +142,7 @@ public class CommandTPS extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return getListOfStringsMatchingLastWord(args, "all");
 	}

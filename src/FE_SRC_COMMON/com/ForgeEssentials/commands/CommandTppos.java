@@ -63,7 +63,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase
 				return;
 			}
 			EntityPlayerMP player = (EntityPlayerMP) sender;
-			PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player);
+			PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 			playerInfo.back = new WarpPoint(player);
 			TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.cameraPitch, player.cameraYaw), player);
 		}
@@ -92,7 +92,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1 || args.length == 2)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

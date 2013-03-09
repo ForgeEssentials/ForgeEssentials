@@ -19,10 +19,6 @@ import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class TickTaskReplaceSelection implements ITickTask
 {
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= -50878383585509101L;
 	private BackupArea			backup;
 	private EntityPlayer		player;
 	private int					changed;

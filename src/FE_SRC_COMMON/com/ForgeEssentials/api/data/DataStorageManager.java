@@ -9,6 +9,7 @@ import com.ForgeEssentials.util.DBConnector;
  * forever. (Well, until next load, I suppose.)
  * @author MysteriousAges
  */
+@SuppressWarnings("rawtypes")
 public abstract class DataStorageManager
 {
 
@@ -48,12 +49,12 @@ public abstract class DataStorageManager
 	/**
 	 * Alias that constructs a ClassContainer with no parameters.
 	 */
-	public static void registerSaveableType(Class type)
+	public static void registerSaveableType(Class<?> type)
 	{
 		manager.registerSaveableClass(new ClassContainer(type));
 	}
 
-	public static ITypeInfo getInfoForType(ClassContainer type)
+	public static ITypeInfo<?> getInfoForType(ClassContainer type)
 	{
 		return manager.getInfoForType(type);
 	}

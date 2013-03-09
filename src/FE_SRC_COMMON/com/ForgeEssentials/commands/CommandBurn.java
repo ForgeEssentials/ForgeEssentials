@@ -148,7 +148,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

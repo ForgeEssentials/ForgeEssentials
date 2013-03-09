@@ -22,7 +22,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(sender);
+		PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
 		if (info.back != null)
 		{
 			WarpPoint death = info.back;

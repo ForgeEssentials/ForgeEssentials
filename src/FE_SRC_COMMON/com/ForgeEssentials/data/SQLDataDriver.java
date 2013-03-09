@@ -30,6 +30,7 @@ import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
+@SuppressWarnings("rawtypes")
 public class SQLDataDriver extends AbstractDataDriver
 {
 	protected static final String	SEPERATOR			= "__";
@@ -40,8 +41,8 @@ public class SQLDataDriver extends AbstractDataDriver
 	private final String			UNIQUE				= "uniqueIdentifier";
 	private final String			MULTI_MARKER		= "MultiValUID";
 	private final String			FEDATA_PREFIX		= "FEDATA_";
-	
-	private String SURROUNDER = "";
+
+	private String					SURROUNDER			= "";
 
 	// Default constructor is good enough for us.
 
@@ -211,13 +212,13 @@ public class SQLDataDriver extends AbstractDataDriver
 	 */
 	private HashMap<String, Object> resultRowToMap(ResultSet result)
 	{
-		HashMap<String, Object> map = new HashMap();
+		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		try
 		{
 			// Determine column names
 			ResultSetMetaData meta = result.getMetaData();
-			ArrayList<String> names = new ArrayList();
+			ArrayList<String> names = new ArrayList<String>();
 
 			// ResultSet columns start at 1. (Crazy, right?)
 			for (int i = 1; i < meta.getColumnCount(); ++i)
@@ -266,7 +267,7 @@ public class SQLDataDriver extends AbstractDataDriver
 				for (int i = 0; i < fieldHeiarchy.length; ++i)
 				{
 					String name = fieldHeiarchy[i];
-					
+
 					// Grab the next item
 					tmpClass = infoCursor.getTypeOfField(name);
 
@@ -275,12 +276,12 @@ public class SQLDataDriver extends AbstractDataDriver
 					{
 						// An object lives here. Add a new taggedClass of this type.
 						tempVal = dataCursor.getFieldValue(name);
-						
+
 						if (tempVal == null)
 							tempVal = DataStorageManager.getDataForType(tmpClass);
-						
+
 						dataCursor.putField(name, tempVal);
-						
+
 						// change the cursor to the new object.
 						dataCursor = (TypeData) tempVal;
 						infoCursor = infoCursor.getInfoForField(name);
@@ -400,6 +401,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		return builder.toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	private ArrayList<String> generateInsertBatch(ITypeInfo info, TypeData data)
 	{
 		ClassContainer type = info.getType();
@@ -443,7 +445,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			table = ((TypeEntryInfo) info).getParentType().getFileSafeName();
 			isEntry = true;
 		}
-		
+
 		table = FEDATA_PREFIX + table;
 
 		String query = getInsertStatement(fieldValueMap, table, isEntry);
@@ -501,7 +503,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			}
 			else
 			{
-				fields.append(", "+SURROUNDER + pair.getFirst() + SURROUNDER);
+				fields.append(", " + SURROUNDER + pair.getFirst() + SURROUNDER);
 				values.append(", ");
 			}
 
@@ -559,7 +561,7 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		boolean isMulti = tagger instanceof TypeMultiValInfo;
 
-		//if its multi, add the UID thing. 
+		// if its multi, add the UID thing.
 		if (isMulti)
 		{
 			tableFields.add(new Pair<String, String>(MULTI_MARKER, "VARCHAR(100)"));
@@ -583,7 +585,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		if (!isMulti)
 		{
 			tableFields.add(new Pair<String, String>(UNIQUE, "VARCHAR(100)"));
-			keyClause = "PRIMARY KEY ("+SURROUNDER + UNIQUE + SURROUNDER+")";
+			keyClause = "PRIMARY KEY (" + SURROUNDER + UNIQUE + SURROUNDER + ")";
 		}
 
 		// Build up the create statement
@@ -710,6 +712,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */
+	@SuppressWarnings({ "unchecked" })
 	private ArrayList<Pair> fieldToValues(String fieldName, ClassContainer type, Object value)
 	{
 		ArrayList<Pair> data = new ArrayList<Pair>();
@@ -717,13 +720,13 @@ public class SQLDataDriver extends AbstractDataDriver
 		Class cType = type.getType();
 
 		if (cType.equals(Integer.class) || cType.equals(Float.class) || cType.equals(Double.class) || cType.equals(String.class)
-			|| cType.equals(int.class) || cType.equals(float.class) || cType.equals(double.class))
+				|| cType.equals(int.class) || cType.equals(float.class) || cType.equals(double.class))
 		{
 			data.add(new Pair(fieldName, value.toString()));
 		}
 		else if (cType.equals(Boolean.class) || cType.equals(boolean.class))
 		{
-			data.add(new Pair(fieldName, ""+ (Boolean.TRUE.equals(value) ? 1 : 0) ));
+			data.add(new Pair(fieldName, "" + (Boolean.TRUE.equals(value) ? 1 : 0)));
 		}
 		else if (cType.equals(double[].class) && ((double[]) value).length > 0)
 		{
@@ -808,8 +811,8 @@ public class SQLDataDriver extends AbstractDataDriver
 			return null;
 
 		Class type = targetType.getType();
-		
-		if (type.equals(int.class) || type.equals(double.class) || type.equals(float.class) || type.equals(String.class)|| type.equals(boolean.class))
+
+		if (type.equals(int.class) || type.equals(double.class) || type.equals(float.class) || type.equals(String.class) || type.equals(boolean.class))
 		{
 			// DB Value is an integer
 			value = dbValue;
@@ -889,7 +892,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			// for small things like this...
 			ITypeInfo info = DataStorageManager.getInfoForType(targetType);
-			
+
 			// multival styff
 			if (!info.canSaveInline())
 			{

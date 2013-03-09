@@ -22,7 +22,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public boolean				enableConsole	= true;
 	public boolean				enablePlayer	= true;
 
-	public ArrayList<String>	aliasList		= new ArrayList();
+	public ArrayList<String>	aliasList		= new ArrayList<String>();
 
 	// ---------------------------
 	// config interaction
@@ -39,7 +39,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
 		return aliasList;
 	}
@@ -228,7 +228,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	/**
 	 * Simply prints a usage message to the sender of the command.
 	 * @param sender
-	 *            Object that issued the command
+	 * Object that issued the command
 	 */
 	public void error(ICommandSender sender)
 	{
@@ -238,9 +238,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	/**
 	 * Prints an error message to the sender of the command.
 	 * @param sender
-	 *            Object that issued the command
+	 * Object that issued the command
 	 * @param message
-	 *            Error message
+	 * Error message
 	 */
 	public void error(ICommandSender sender, String message)
 	{
@@ -260,7 +260,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 0)
 			return getListOfStringsFromIterableMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getPossibleCommands(sender));

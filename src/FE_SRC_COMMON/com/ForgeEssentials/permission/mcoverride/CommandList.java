@@ -13,9 +13,9 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 public class CommandList extends CommandServerList
 {
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
-		ArrayList list = new ArrayList();
+		ArrayList<String> list = new ArrayList<String>();
 		list.add("who");
 		list.add("online");
 		list.add("players");

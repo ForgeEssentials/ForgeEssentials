@@ -18,10 +18,6 @@ import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class TickTaskSetSelection implements ITickTask
 {
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= -3702650235724756111L;
 	// stuff needed
 	private final int			blockID;
 	private final int			metadata;

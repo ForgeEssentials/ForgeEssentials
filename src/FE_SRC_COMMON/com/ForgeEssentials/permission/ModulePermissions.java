@@ -34,25 +34,26 @@ import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
+@SuppressWarnings("rawtypes")
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions
 {
 	// public static ConfigPermissions config;
 	public static PermissionsPlayerHandler	ppHandler;
 	public static PermissionsBlanketHandler	pbHandler;
-	public static SqlHelper				sql;
+	public static SqlHelper					sql;
 
 	@Config
-	public static ConfigPermissions		config;
+	public static ConfigPermissions			config;
 
 	@ModuleDir
-	public static File					permsFolder;
+	public static File						permsFolder;
 
-	protected static AbstractDataDriver	data;
+	protected static AbstractDataDriver		data;
 
 	// permission registrations here...
-	protected HashMultimap				regPerms;
-	private AutoPromote					autoPromote;
+	protected HashMultimap					regPerms;
+	private AutoPromote						autoPromote;
 
 	@PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -63,11 +64,12 @@ public class ModulePermissions
 		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
 		PermRegLoader laoder = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));
 		regPerms = laoder.loadAllPerms();
-		
+
 		DataStorageManager.registerSaveableType(new ClassContainer(AutoPromote.class));
 		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Init
 	public void load(FEModuleInitEvent e)
 	{

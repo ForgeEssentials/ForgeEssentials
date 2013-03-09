@@ -37,7 +37,7 @@ public class Grave
 	public int			protTime;
 
 	@SaveableField
-	public boolean		protEnable		= true;
+	public boolean		protEnable	= true;
 
 	public Grave(WorldPoint point, EntityPlayer player, ArrayList<EntityItem> drops, Deathchest deathchest)
 	{

@@ -8,7 +8,7 @@ public interface IReconstructData
 
 	public String getUniqueKey();
 
-	public Class getType();
+	public Class<?> getType();
 
-	public Collection getAllValues();
+	public Collection<?> getAllValues();
 }

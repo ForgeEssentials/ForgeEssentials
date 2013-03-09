@@ -4,12 +4,9 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -131,15 +128,7 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[4]));
 				return;
 			}
-			Point point = new Point(x, y, z);
-			NBTTagCompound spawn = new NBTTagCompound();
-			spawn.setDouble("x", point.x);
-			spawn.setDouble("y", point.y);
-			spawn.setDouble("z", point.z);
-			spawn.setInteger("dim", 0);
-			DataStorage.setData("spawn", spawn);
-			DataStorage.save();
-			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.x, point.y, point.z);
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(x, y, z);
 			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
 		}
 		else
@@ -161,7 +150,7 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
 	}

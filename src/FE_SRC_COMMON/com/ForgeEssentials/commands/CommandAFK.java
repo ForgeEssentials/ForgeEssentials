@@ -14,7 +14,7 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandAFK extends ForgeEssentialsCommandBase
 {
-	public static List<String>	afkList	= new ArrayList();
+	public static List<String>	afkList	= new ArrayList<String>();
 
 	/*
 	 * Config

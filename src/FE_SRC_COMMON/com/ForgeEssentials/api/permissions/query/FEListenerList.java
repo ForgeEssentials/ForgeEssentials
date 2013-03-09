@@ -143,7 +143,7 @@ public class FEListenerList
 		 * The list is returned with the listeners for the children events
 		 * first.
 		 * @param priority
-		 *            The Priority to get
+		 * The Priority to get
 		 * @return ArrayList containing listeners
 		 */
 		public ArrayList<IQueryListener> getListeners(EventPriority priority)

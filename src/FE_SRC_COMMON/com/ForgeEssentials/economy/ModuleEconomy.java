@@ -35,7 +35,7 @@ public class ModuleEconomy implements IPlayerTracker
 	/**
 	 * Returns the player's economy instance
 	 * @param player
-	 *            target player
+	 * target player
 	 * @return the player's economy instance
 	 */
 	public static ModuleEconomy getPlayerInfo(EntityPlayer player)
@@ -55,7 +55,7 @@ public class ModuleEconomy implements IPlayerTracker
 	/**
 	 * Returns the player's economy instance
 	 * @param username
-	 *            target's username
+	 * target's username
 	 * @return the player's economy instance
 	 */
 	public static ModuleEconomy getPlayerInfo(String username)

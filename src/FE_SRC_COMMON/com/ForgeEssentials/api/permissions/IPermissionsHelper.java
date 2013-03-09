@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+@SuppressWarnings(value = { "rawtypes" })
 public interface IPermissionsHelper
 {
 	Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority);
@@ -34,7 +35,7 @@ public interface IPermissionsHelper
 
 	String clearGroupPermission(String name, String node, String zone);
 
-	ArrayList getGroupsInZone(String zoneName);
+	ArrayList<Group> getGroupsInZone(String zoneName);
 
 	String getPermissionForGroup(String target, String zone, String perm);
 

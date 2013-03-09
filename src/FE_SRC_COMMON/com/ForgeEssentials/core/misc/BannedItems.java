@@ -27,6 +27,7 @@ import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
+@SuppressWarnings("unchecked")
 public class BannedItems
 {
 	private static final String		BYPASS	= "ForgeEssentials.BannedItems.override";
@@ -121,7 +122,7 @@ public class BannedItems
 			}
 		}
 
-		ArrayList<ItemStack> items = new ArrayList();
+		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 		// Decompose list into (item ID, Meta) pairs.
 		for (String s : noCraft)
 		{

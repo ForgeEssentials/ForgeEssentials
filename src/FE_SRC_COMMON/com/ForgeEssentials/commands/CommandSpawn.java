@@ -58,12 +58,11 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 				{
 					PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 					ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
-					
+
 					// teleport
 					server.transferPlayerToDimension((EntityPlayerMP) player, 0);
 					((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
-					
-					
+
 					player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
 				}
 				return;
@@ -130,7 +129,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

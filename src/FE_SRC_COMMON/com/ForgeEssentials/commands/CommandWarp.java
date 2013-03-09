@@ -11,17 +11,18 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.commands.util.CommandDataManager;
+import com.ForgeEssentials.commands.util.Warp;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.Warp;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 /**
- * Now uses TeleportCenter. TODO get rid of DataStorage
+ * Now uses TeleportCenter.
  * @author Dries007
  */
 
@@ -39,19 +40,22 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 		if (args.length == 0)
 		{
 			String msg = "";
-			for (String warp : TeleportCenter.warps.keySet())
+			for (String warp : CommandDataManager.warps.keySet())
 			{
-				msg = warp + ", " + msg;
+				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+				{
+					msg = warp + ", " + msg;
+				}
 			}
 			sender.sendChatToPlayer(msg);
 		}
 		else if (args.length == 1)
 		{
-			if (TeleportCenter.warps.containsKey(args[0].toLowerCase()))
+			if (CommandDataManager.warps.containsKey(args[0].toLowerCase()))
 			{
 				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
-					Warp warp = TeleportCenter.warps.get(args[0].toLowerCase());
+					Warp warp = CommandDataManager.warps.get(args[0].toLowerCase());
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.username);
 					playerInfo.back = new WarpPoint(sender);
 					TeleportCenter.addToTpQue(warp.getPoint(), sender);
@@ -72,22 +76,21 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 			{
 				if (args[0].equalsIgnoreCase("set"))
 				{
-					if (TeleportCenter.warps.containsKey(args[1].toLowerCase()))
+					if (CommandDataManager.warps.containsKey(args[1].toLowerCase()))
 					{
 						OutputHandler.chatError(sender, Localization.get("command.warp.alreadyexists"));
 					}
 					else
 					{
-						TeleportCenter.warps.put(args[1].toLowerCase(), new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
-
+						CommandDataManager.addWarp(new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
 						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
 					}
 				}
 				else if (args[0].equalsIgnoreCase("del"))
 				{
-					if (TeleportCenter.warps.containsKey(args[1].toLowerCase()))
+					if (CommandDataManager.warps.containsKey(args[1].toLowerCase()))
 					{
-						TeleportCenter.warps.remove(args[1].toLowerCase());
+						CommandDataManager.removeWarp(CommandDataManager.warps.get(args[1]));
 						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
 					}
 					else
@@ -112,7 +115,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			if (TeleportCenter.warps.containsKey(args[0].toLowerCase()))
+			if (CommandDataManager.warps.containsKey(args[0].toLowerCase()))
 			{
 				List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 				if (PlayerSelector.hasArguments(args[0]))
@@ -123,7 +126,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 				{
 					for (EntityPlayer player : players)
 					{
-						Warp warp = TeleportCenter.warps.get(args[1].toLowerCase());
+						Warp warp = CommandDataManager.warps.get(args[1].toLowerCase());
 						PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 						TeleportCenter.addToTpQue(warp.getPoint(), player);
 					}
@@ -159,10 +162,10 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-			return getListOfStringsFromIterableMatchingLastWord(args, TeleportCenter.warps.keySet());
+			return getListOfStringsFromIterableMatchingLastWord(args, CommandDataManager.warps.keySet());
 		else if (args.length == 2)
 			return getListOfStringsMatchingLastWord(args, "set", "del");
 		else

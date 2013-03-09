@@ -27,6 +27,7 @@ public class PlayerInfoResonce extends Response
 	private boolean	sendFood;
 	private boolean	sendCapabilities;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String getResponceString(DatagramPacket packet)
 	{
@@ -100,7 +101,8 @@ public class PlayerInfoResonce extends Response
 			PlayerData.put("group", group.name);
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 
 		return dataString = TextFormatter.toJSON(PlayerData);
 	}

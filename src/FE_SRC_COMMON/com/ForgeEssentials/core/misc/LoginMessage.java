@@ -21,8 +21,6 @@ import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-//import com.ForgeEssentials.economy.Wallet;
-
 public class LoginMessage
 {
 	private static ArrayList<String>	messageList	= new ArrayList<String>();
@@ -121,9 +119,10 @@ public class LoginMessage
 	/**
 	 * Formats the chat, replacing given strings by their values
 	 * @param String
-	 *            to parse the amount to add to the wallet
+	 * to parse the amount to add to the wallet
 	 */
 
+	@SuppressWarnings("deprecation")
 	private static String Format(String line, String playerName)
 	{
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(playerName);
@@ -149,7 +148,8 @@ public class LoginMessage
 			online = server.getCurrentPlayerCount();
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 		return "" + online;
 	}
 
@@ -161,7 +161,8 @@ public class LoginMessage
 			logins = server.getConfigurationManager().getAvailablePlayerDat().length;
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 		return "" + logins;
 	}
 

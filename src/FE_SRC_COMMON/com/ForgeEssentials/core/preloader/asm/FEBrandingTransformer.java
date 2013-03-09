@@ -23,9 +23,9 @@ public class FEBrandingTransformer implements IClassTransformer
 
 	private static final String				SERVERBRAND	= "forge,fml, ForgeEssentials";
 
-	public static HashMap makemcsHM()
+	public static HashMap<String, String> makemcsHM()
 	{
-		HashMap mcsHM = new HashMap<String, String>();
+		HashMap<String, String> mcsHM = new HashMap<String, String>();
 
 		mcsHM.put("className", "net.minecraft.server.MinecraftServer");
 		mcsHM.put("javaClassName", "net/minecraft/server/MinecraftServer");
@@ -34,9 +34,9 @@ public class FEBrandingTransformer implements IClassTransformer
 		return mcsHM;
 	}
 
-	public static HashMap makecbrHM()
+	public static HashMap<String, String> makecbrHM()
 	{
-		HashMap cbrHM = new HashMap<String, String>();
+		HashMap<String, String> cbrHM = new HashMap<String, String>();
 
 		cbrHM.put("className", "net.minecraft.client.ClientBrandRetriever");
 		cbrHM.put("javaClassName", "net/minecraft/client/ClientBrandRetriever");
@@ -60,6 +60,7 @@ public class FEBrandingTransformer implements IClassTransformer
 		return bytes;
 	}
 
+	@SuppressWarnings("unchecked")
 	private byte[] transformBranding(byte[] bytes, HashMap<String, String> hm)
 	{
 		System.out.println("[FE coremod] Patching MinecraftServer or ClientBrandRetriever...");

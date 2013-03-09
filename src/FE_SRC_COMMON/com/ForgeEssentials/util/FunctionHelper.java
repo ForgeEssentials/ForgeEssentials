@@ -128,6 +128,7 @@ public final class FunctionHelper
 	public static EntityPlayerMP getPlayerFromPartialName(String username)
 	{
 		List<EntityPlayer> possibles = new LinkedList<EntityPlayer>();
+		@SuppressWarnings("unchecked")
 		ArrayList<EntityPlayerMP> temp = (ArrayList<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList;
 		for (EntityPlayerMP player : temp)
 		{
@@ -149,7 +150,7 @@ public final class FunctionHelper
 	 * items.
 	 * @return never NULL. always {0, -1}. Meta by default is -1.
 	 * @throws RuntimeException
-	 *             the message is a formatted chat string.
+	 * the message is a formatted chat string.
 	 */
 	public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly) throws RuntimeException
 	{
@@ -230,7 +231,7 @@ public final class FunctionHelper
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return true;
-		
+
 		MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
 
 		// SP and LAN

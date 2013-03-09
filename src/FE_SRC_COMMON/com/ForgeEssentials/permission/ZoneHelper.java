@@ -38,19 +38,19 @@ public class ZoneHelper implements IZoneManager
 	protected void loadZones()
 	{
 		Object[] objs = ModulePermissions.data.loadAllObjects(new ClassContainer(Zone.class));
-		
+
 		if (objs == null)
 			return;
-		
+
 		Zone temp;
 		boolean exists;
 		for (Object obj : objs)
 		{
 			temp = (Zone) obj;
-			
+
 			if (temp == null || temp.getZoneName() == null || temp.getZoneName().isEmpty())
 				continue;
-			
+
 			zoneMap.put(temp.getZoneName(), temp);
 
 			exists = SqlHelper.doesZoneExist(temp.getZoneName());
@@ -230,15 +230,13 @@ public class ZoneHelper implements IZoneManager
 	@Override
 	public Zone getWhichZoneIn(WorldArea check)
 	{
-		
+
 		Zone end = getFromCache(check);
 		if (end != null)
 			return end;
 
 		Zone worldZone = getWorldZone(FunctionHelper.getDimension(check.dim));
 		ArrayList<Zone> zones = new ArrayList<Zone>();
-		int worldDim = check.dim;
-
 		// add all zones this point is in...
 		for (Zone zone : zoneMap.values())
 		{
@@ -293,6 +291,7 @@ public class ZoneHelper implements IZoneManager
 		pointCache.put(p, zoneID);
 	}
 
+	@SuppressWarnings("unused")
 	private void putCache(WorldArea a, String zoneID)
 	{
 		areaCache.put(a, zoneID);

@@ -10,6 +10,7 @@ import com.ForgeEssentials.api.permissions.query.PermissionQueryBus;
 
 // This is a bouncer class for all Permissions API duties.
 
+@SuppressWarnings("unchecked")
 public abstract class PermissionsAPI
 {
 	public static final PermissionQueryBus	QUERY_BUS	= new PermissionQueryBus();
@@ -97,7 +98,7 @@ public abstract class PermissionsAPI
 		return manager.clearGroupPermission(name, node, zone);
 	}
 
-	public static ArrayList getGroupsInZone(String zoneName)
+	public static ArrayList<Group> getGroupsInZone(String zoneName)
 	{
 		return manager.getGroupsInZone(zoneName);
 	}
@@ -107,12 +108,12 @@ public abstract class PermissionsAPI
 		return manager.getPermissionForGroup(target, zone, perm);
 	}
 
-	public static ArrayList getPlayerPermissions(String target, String zone)
+	public static ArrayList<String> getPlayerPermissions(String target, String zone)
 	{
 		return manager.getPlayerPermissions(target, zone);
 	}
 
-	public static ArrayList getGroupPermissions(String target, String zone)
+	public static ArrayList<String> getGroupPermissions(String target, String zone)
 	{
 		return manager.getGroupPermissions(target, zone);
 	}

@@ -68,6 +68,7 @@ public class ModuleProtection
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
+	@SuppressWarnings("unchecked")
 	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{
@@ -77,7 +78,7 @@ public class ModuleProtection
 		event.registerPermissionLevel(PERM_INTERACT_ENTITY, RegGroup.MEMBERS);
 		event.registerPermissionLevel(PERM_OVERRIDE, RegGroup.OWNERS);
 
-		for (Entry<String, Class> e : ((Set<Entry<String, Class>>) EntityList.stringToClassMapping.entrySet()))
+		for (Entry<String, Class<?>> e : ((Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet()))
 		{
 			if (EntityLiving.class.isAssignableFrom(e.getValue()))
 			{

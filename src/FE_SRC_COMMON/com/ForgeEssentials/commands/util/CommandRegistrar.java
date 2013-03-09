@@ -56,7 +56,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class CommandRegistrar
 {
-	public static ArrayList<ForgeEssentialsCommandBase>	cmdList	= new ArrayList();
+	public static ArrayList<ForgeEssentialsCommandBase>	cmdList	= new ArrayList<ForgeEssentialsCommandBase>();
 
 	static
 	{

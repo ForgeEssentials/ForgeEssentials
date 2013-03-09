@@ -11,11 +11,11 @@ import com.ForgeEssentials.api.permissions.IPermissionsHelper;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
 
+@SuppressWarnings(value = { "rawtypes", "unchecked" })
 public class PermissionsHelper implements IPermissionsHelper
 {
 	public final String	EntryPlayer	= "_ENTRY_PLAYER_";
@@ -238,12 +238,12 @@ public class PermissionsHelper implements IPermissionsHelper
 	public ArrayList getPlayerPermissions(String target, String zone)
 	{
 		ArrayList output = new ArrayList();
-		
+
 		if (zone == null)
 			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
 		else
 			output.addAll(SqlHelper.getAllPermissions(target, zone, false));
-		
+
 		return output;
 	}
 
@@ -252,14 +252,14 @@ public class PermissionsHelper implements IPermissionsHelper
 	{
 		ArrayList output = new ArrayList();
 		Group g = SqlHelper.getGroupForName(target);
-		
+
 		if (zone == null)
 			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
 		else if (g == null)
 			output.add(Localization.format("message.error.nogroup", target));
 		else
 			output.addAll(SqlHelper.getAllPermissions(target, zone, true));
-		
+
 		return output;
 	}
 

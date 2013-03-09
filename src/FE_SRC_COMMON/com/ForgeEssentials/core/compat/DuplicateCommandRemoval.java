@@ -44,7 +44,7 @@ public class DuplicateCommandRemoval
 					}
 				}
 
-				Set<ICommand> toRemove = new HashSet();
+				Set<ICommand> toRemove = new HashSet<ICommand>();
 				keep = null;
 				Class<? extends ICommand> cmdClass;
 				int kept = -1, other = -1;

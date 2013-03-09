@@ -33,6 +33,7 @@ import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
+@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
 public class StorageManager implements IStorageManager
 {
 	// just keeps an instance of the config for future use.
@@ -110,13 +111,13 @@ public class StorageManager implements IStorageManager
 
 		loaded = true;
 	}
-	
+
 	/**
 	 * Passes the ServerStart event to the dataDrivers
 	 */
 	public void serverStart(FMLServerStartingEvent event)
 	{
-		for (IDataDriver driver: instanceMap.values())
+		for (IDataDriver driver : instanceMap.values())
 		{
 			// things MAY error here as well...
 			driver.serverStart(event);

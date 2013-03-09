@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * @author MysteriousAges
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE })
+@Target({ ElementType.TYPE })
 public @interface SaveableObject
 {
 	/**

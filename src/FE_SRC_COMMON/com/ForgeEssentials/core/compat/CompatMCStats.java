@@ -21,7 +21,7 @@ public class CompatMCStats implements IServerStats
 		registerStats(this);
 	}
 
-	private static List<IServerStats>	handlers	= new ArrayList();
+	private static List<IServerStats>	handlers	= new ArrayList<IServerStats>();
 	private static Metrics				metrics;
 
 	public static void registerStats(IServerStats generator)

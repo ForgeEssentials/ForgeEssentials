@@ -27,7 +27,7 @@ public class PlayerInfo
 {
 	private static HashMap<String, PlayerInfo>	playerInfoMap	= new HashMap<String, PlayerInfo>();
 
-	@Deprecated
+	// @Deprecated Why? it doesn't have to be removed?
 	public static PlayerInfo getPlayerInfo(EntityPlayer player)
 	{
 		return getPlayerInfo(player.username);

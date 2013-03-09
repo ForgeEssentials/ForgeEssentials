@@ -43,6 +43,7 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
+@SuppressWarnings(value = { "rawtypes", "unchecked" })
 public class ModuleContainer implements Comparable
 {
 	protected static HashSet<Class>				modClasses	= new HashSet<Class>();

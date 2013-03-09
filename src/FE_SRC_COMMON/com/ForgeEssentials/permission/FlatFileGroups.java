@@ -134,7 +134,7 @@ public class FlatFileGroups
 		if (map == null)
 			return new String[] {};
 
-		ArrayList list = map.get(name);
+		ArrayList<String> list = map.get(name);
 		if (list == null)
 			return new String[] {};
 

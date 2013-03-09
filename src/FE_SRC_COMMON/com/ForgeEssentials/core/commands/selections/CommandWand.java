@@ -143,14 +143,11 @@ public class CommandWand extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public boolean canConsoleUseCommand()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 

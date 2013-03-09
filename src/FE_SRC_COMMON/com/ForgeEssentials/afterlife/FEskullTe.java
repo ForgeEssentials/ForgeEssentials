@@ -11,7 +11,7 @@ public class FEskullTe extends TileEntitySkull
 	public void invalidate()
 	{
 		super.invalidate();
-		
+
 		WorldPoint point = new WorldPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord);
 		Grave grave = ModuleAfterlife.instance.deathchest.gravemap.get(point.toString());
 		if (grave == null)

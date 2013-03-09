@@ -14,7 +14,6 @@ import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
-import cpw.mods.fml.common.InjectedModContainer;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
@@ -78,7 +77,7 @@ public class ModuleLauncher
 		CallableMap map = new CallableMap();
 
 		data = e.getAsmData().getAll(ForgeEssentialsRegistrar.class.getName());
-		Class c;
+		Class<?> c;
 		Object obj = null;
 		for (ASMData asm : data)
 		{
@@ -86,7 +85,7 @@ public class ModuleLauncher
 			{
 				obj = null;
 				c = Class.forName(asm.getClassName());
-				
+
 				try
 				{
 					obj = c.newInstance();
@@ -98,17 +97,17 @@ public class ModuleLauncher
 				{
 					// do nothing.
 				}
-				
+
 				// if this isn't skipped.. it grabs the class, and all static methods.
 				map.scanClass(c);
-				
+
 			}
 			catch (ClassNotFoundException e1)
 			{
 				// nothing needed.
 			}
 		}
-		
+
 		for (ModContainer container : Loader.instance().getModList())
 		{
 			if (container.getMod() != null)

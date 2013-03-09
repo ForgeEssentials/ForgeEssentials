@@ -1,4 +1,4 @@
-package com.ForgeEssentials.util;
+package com.ForgeEssentials.commands.util;
 
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
@@ -8,7 +8,7 @@ import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 @SaveableObject
-public class Warp
+public class PWarp
 {
 	@UniqueLoadingKey
 	@SaveableField
@@ -17,15 +17,25 @@ public class Warp
 	@SaveableField
 	private WarpPoint	point;
 
-	public Warp(String name, WarpPoint point)
+	public PWarp(String username, String name, WarpPoint point)
 	{
-		this.name = name;
+		this.name = username + "$" + name;
 		this.point = point;
+	}
+
+	public String getFilename()
+	{
+		return name;
+	}
+
+	public String getUsername()
+	{
+		return name.split("$")[0];
 	}
 
 	public String getName()
 	{
-		return name;
+		return name.split("$")[1];
 	}
 
 	public WarpPoint getPoint()
@@ -34,8 +44,8 @@ public class Warp
 	}
 
 	@Reconstructor
-	private static Warp reconstruct(IReconstructData tag)
+	private static PWarp reconstruct(IReconstructData tag)
 	{
-		return new Warp((String) tag.getFieldValue("name"), (WarpPoint) tag.getFieldValue("point"));
+		return new PWarp(((String) tag.getFieldValue("name")).split("$")[0], ((String) tag.getFieldValue("name")).split("$")[1], (WarpPoint) tag.getFieldValue("point"));
 	}
 }

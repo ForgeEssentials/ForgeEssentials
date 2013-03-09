@@ -22,7 +22,7 @@ import cpw.mods.fml.common.TickType;
 
 public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 {
-	// TICK STUFF 
+	// TICK STUFF
 
 	private HashMap<String, WarpPoint>	befores;
 

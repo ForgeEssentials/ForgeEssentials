@@ -91,9 +91,9 @@ public class CommandTop extends ForgeEssentialsCommandBase
 	{
 		WarpPoint point = new WarpPoint(player);
 		point.y = player.worldObj.getActualHeight();
-		while(player.worldObj.getBlockId(point.x, point.y, point.z) == 0)
+		while (player.worldObj.getBlockId(point.x, point.y, point.z) == 0)
 		{
-			point.y --;
+			point.y--;
 		}
 		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y + 1, point.z, point.yaw, point.pitch);
 		player.sendChatToPlayer("*poof*");
@@ -112,7 +112,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

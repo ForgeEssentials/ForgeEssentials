@@ -29,6 +29,7 @@ public class TypeInfoSet extends TypeMultiValInfo
 		fields.put(ELEMENT, new ClassContainer(container.getParameters()[0]));
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Set<TypeData> getTypeDatasFromObject(Object obj)
 	{
@@ -54,6 +55,7 @@ public class TypeInfoSet extends TypeMultiValInfo
 		return datas;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Object reconstruct(TypeData[] data)
 	{

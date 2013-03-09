@@ -26,7 +26,7 @@ public class CommandPing extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
 		return null;
 	}

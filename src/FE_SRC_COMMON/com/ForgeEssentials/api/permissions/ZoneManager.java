@@ -48,7 +48,7 @@ public class ZoneManager
 	{
 		return manager.getWhichZoneIn(new WorldArea(world, area));
 	}
-	
+
 	public static Zone getWhichZoneIn(WorldArea area)
 	{
 		return manager.getWhichZoneIn(area);

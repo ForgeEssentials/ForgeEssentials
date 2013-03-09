@@ -25,7 +25,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("zn");

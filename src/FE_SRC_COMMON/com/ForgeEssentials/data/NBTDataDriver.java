@@ -27,10 +27,9 @@ import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.util.OutputHandler;
 
+@SuppressWarnings("rawtypes")
 public class NBTDataDriver extends BinaryDataDriver
 {
-	private static final String	UNIQUE	= "__UNIQUE__";
-
 	@Override
 	protected boolean saveData(ClassContainer type, TypeData data)
 	{
@@ -132,6 +131,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void readClassFromTag(NBTTagCompound tag, TypeData data, ITypeInfo info)
 	{
 		String name;
@@ -164,7 +164,7 @@ public class NBTDataDriver extends BinaryDataDriver
 			// ignore.
 			return;
 
-		Class type = obj.getClass();
+		Class<?> type = obj.getClass();
 
 		if (type.equals(Integer.class))
 		{
@@ -326,7 +326,7 @@ public class NBTDataDriver extends BinaryDataDriver
 	{
 		File[] files = getTypePath(type).listFiles();
 		ArrayList<IReconstructData> data = new ArrayList<IReconstructData>();
-		
+
 		if (files == null)
 			return new TypeData[0];
 

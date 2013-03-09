@@ -20,7 +20,6 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.AbstractDataDriver;
-import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
 
 @FEModule(configClass = ConfigQuestioner.class, name = "QuestionerModule", parentMod = ForgeEssentials.class)
@@ -52,8 +51,6 @@ public class ModuleQuestioner
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
-		DataStorage.load();
-
 		data = DataStorageManager.getReccomendedDriver();
 
 		// CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());

@@ -47,7 +47,7 @@ public @interface FEModule
 	 * For everyone else, this should be your @mod file.
 	 * @return
 	 */
-	Class parentMod();
+	Class<?> parentMod();
 
 	/**
 	 * Configs are instantiated before this.

@@ -37,7 +37,7 @@ public class ChatFormatter
 	@ForgeSubscribe(priority = EventPriority.NORMAL)
 	public void chatEvent(ServerChatEvent event)
 	{
-		// muting   this should probably be done elsewhere
+		// muting this should probably be done elsewhere
 		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
 		{
 			event.setCanceled(true);
@@ -52,10 +52,10 @@ public class ChatFormatter
 			CommandPm.processChat(event.player, event.message.split(" "));
 			return;
 		}
-		
+
 		String message = event.message;
 		String nickname = event.username;
-		
+
 		// censoring
 		if (censor)
 		{
@@ -77,7 +77,6 @@ public class ChatFormatter
 			}
 		}
 
-		
 		/*
 		 * Nickname
 		 */
@@ -87,7 +86,6 @@ public class ChatFormatter
 			nickname = event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
 		}
 
-		
 		/*
 		 * Colorize!
 		 */
@@ -98,7 +96,7 @@ public class ChatFormatter
 				message = FunctionHelper.formatColors(event.message);
 			}
 		}
-		
+
 		// replacing stuff...
 
 		String rank = "";

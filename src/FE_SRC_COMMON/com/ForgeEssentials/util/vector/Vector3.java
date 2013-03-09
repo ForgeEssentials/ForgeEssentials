@@ -288,9 +288,9 @@ public class Vector3 extends Vector2 implements Cloneable
 	/**
 	 * Saves this Vector3 to disk
 	 * @param prefix
-	 *            - The prefix of this save. Use some unique string.
+	 * - The prefix of this save. Use some unique string.
 	 * @param par1NBTTagCompound
-	 *            - The NBT compound object to save the data in
+	 * - The NBT compound object to save the data in
 	 */
 	public void writeToNBT(String prefix, NBTTagCompound par1NBTTagCompound)
 	{
@@ -314,6 +314,7 @@ public class Vector3 extends Vector2 implements Cloneable
 	/**
 	 * Gets all entities inside of this position in block space.
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Entity> getEntitiesWithin(World worldObj, Class<? extends Entity> par1Class)
 	{
 		return worldObj.getEntitiesWithinAABB(par1Class, AxisAlignedBB.getBoundingBox(intX(), intY(), intZ(), intX() + 1, intY() + 1, intZ() + 1));

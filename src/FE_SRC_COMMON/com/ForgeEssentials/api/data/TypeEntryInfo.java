@@ -3,6 +3,7 @@ package com.ForgeEssentials.api.data;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("rawtypes")
 public class TypeEntryInfo implements ITypeInfo
 {
 	private ClassContainer					parent;
@@ -56,7 +57,7 @@ public class TypeEntryInfo implements ITypeInfo
 	@Override
 	public ClassContainer getType()
 	{
-		// why not? :)  better than void.class  .
+		// why not? :) better than void.class .
 		return new ClassContainer(Map.Entry.class);
 	}
 

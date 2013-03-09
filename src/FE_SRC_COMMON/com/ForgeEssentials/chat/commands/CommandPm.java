@@ -21,6 +21,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 {
 	private static Map<String, String>	persistentMessage;
 	private List<String>				aliasList;
+
 	public CommandPm()
 	{
 		super();

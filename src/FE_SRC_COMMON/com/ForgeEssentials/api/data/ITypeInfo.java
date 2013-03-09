@@ -58,11 +58,12 @@ public interface ITypeInfo<T>
 	 * This shouldn't be any longer than 2 for Maps, and 1 for anything else.
 	 * @return NULL if this type is not parameterized
 	 */
-	public Class[] getGenericTypes();
+	public Class<?>[] getGenericTypes();
 
 	/**
 	 * This may return null for primitive types.
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	public ITypeInfo getInfoForField(String field);
 }

@@ -45,7 +45,7 @@ public class MobTypeRegistry
 		{
 			try
 			{
-				Class c = mob.getClass();
+				Class<? extends EntityLiving> c = mob.getClass();
 				String obj = tameableChecks.get(c.getName());
 				boolean isMethod = obj.endsWith("()");
 				obj = obj.replace("()", ""); // the () is just to mark it..

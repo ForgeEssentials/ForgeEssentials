@@ -207,10 +207,10 @@ public class Localization
 	 * into it. A wrapper for all the
 	 * "String.format(Localization.get(key), ...)" calls in commands.
 	 * @param localizationKey
-	 *            Key to get the appropriate entry in the current localization
-	 *            file.
+	 * Key to get the appropriate entry in the current localization
+	 * file.
 	 * @param args
-	 *            Arguments required to populate the localized string
+	 * Arguments required to populate the localized string
 	 * @return String String containing the localized, formatted string.
 	 */
 	public static String format(String localizationKey, Object... args)

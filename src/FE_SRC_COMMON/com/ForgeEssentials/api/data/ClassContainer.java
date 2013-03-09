@@ -4,27 +4,27 @@ import java.util.Arrays;
 
 public class ClassContainer
 {
-	private final Class	heldClass;
-	Class[]				parameters;
+	private final Class<?>	heldClass;
+	Class<?>[]				parameters;
 
-	public ClassContainer(Class type, Class... parameters)
+	public ClassContainer(Class<?> type, Class<?>... parameters)
 	{
 		heldClass = type;
 		this.parameters = parameters;
 	}
 
-	public ClassContainer(Class type)
+	public ClassContainer(Class<?> type)
 	{
 		heldClass = type;
 		parameters = new Class[] {};
 	}
 
-	public Class getType()
+	public Class<?> getType()
 	{
 		return heldClass;
 	}
 
-	public boolean isAssignableFrom(Class type)
+	public boolean isAssignableFrom(Class<?> type)
 	{
 		return getType().isAssignableFrom(type);
 	}
@@ -48,14 +48,14 @@ public class ClassContainer
 	public boolean equals(Object obj)
 	{
 		if (obj instanceof Class)
-			return heldClass.getName().equals(((Class) obj).getName());
+			return heldClass.getName().equals(((Class<?>) obj).getName());
 		else if (obj instanceof ClassContainer)
 			return heldClass.getName().equals(((ClassContainer) obj).heldClass.getName()) && Arrays.equals(parameters, ((ClassContainer) obj).parameters);
 		else
 			return false;
 	}
 
-	public Class[] getParameters()
+	public Class<?>[] getParameters()
 	{
 		return parameters;
 	}

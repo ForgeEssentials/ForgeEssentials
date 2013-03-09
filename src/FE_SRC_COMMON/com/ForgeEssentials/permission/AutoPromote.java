@@ -31,7 +31,7 @@ public class AutoPromote implements Runnable
 	@SaveableField
 	public boolean					enable;
 
-	public HashMap<Integer, String>	promotemap	= new HashMap();
+	public HashMap<Integer, String>	promotemap	= new HashMap<Integer, String>();
 
 	public AutoPromote(String zone, boolean enable)
 	{
@@ -43,7 +43,7 @@ public class AutoPromote implements Runnable
 	private static AutoPromote reconstruct(IReconstructData tag)
 	{
 		AutoPromote data = new AutoPromote((String) tag.getFieldValue("zone"), (Boolean) tag.getFieldValue("enable"));
-		//data.promotemap = (HashMap<Integer, String>) tag.getFieldValue("promotemap");
+		// data.promotemap = (HashMap<Integer, String>) tag.getFieldValue("promotemap");
 		return data;
 	}
 
@@ -54,7 +54,7 @@ public class AutoPromote implements Runnable
 
 	public void count(String player, int time)
 	{
-		//System.out.println(player + " counted in " + zone + " time: " + time);
+		// System.out.println(player + " counted in " + zone + " time: " + time);
 
 		/*
 		 * // if(map.containsKey(PlayerInfo.getPlayerInfo(player).timePlayed))
@@ -86,7 +86,7 @@ public class AutoPromote implements Runnable
 	private static Thread						thread;
 	public static MinecraftServer				server;
 	public static boolean						countAFK;
-	public static HashMap<String, AutoPromote>	map	= new HashMap();
+	public static HashMap<String, AutoPromote>	map	= new HashMap<String, AutoPromote>();
 
 	public AutoPromote(MinecraftServer server)
 	{
@@ -94,8 +94,8 @@ public class AutoPromote implements Runnable
 
 		thread = new Thread(this, "ForgeEssentials - Permissions - autoPromote");
 		thread.start();
-		//hashmaps are not synchronized...
-		//watch out for rogue threads and conccurent modifications.
+		// hashmaps are not synchronized...
+		// watch out for rogue threads and conccurent modifications.
 		if (!map.containsKey(ZoneManager.getGLOBAL().getZoneName()))
 		{
 			map.put(ZoneManager.getGLOBAL().getZoneName(), new AutoPromote(ZoneManager.getGLOBAL().getZoneName(), false));

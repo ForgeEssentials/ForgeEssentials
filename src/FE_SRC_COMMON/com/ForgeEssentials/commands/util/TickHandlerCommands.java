@@ -49,7 +49,7 @@ public class TickHandlerCommands implements IScheduledTickHandler
 		 */
 		for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
 		{
-			PlayerInfo.getPlayerInfo((EntityPlayer) player).KitCooldownTick();
+			PlayerInfo.getPlayerInfo(((EntityPlayer) player).username).KitCooldownTick();
 		}
 
 		/*

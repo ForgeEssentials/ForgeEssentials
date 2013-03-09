@@ -7,8 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
@@ -23,6 +23,7 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
 
+@SuppressWarnings("unused")
 public class SqlHelper
 {
 	private Connection			db;
@@ -106,7 +107,7 @@ public class SqlHelper
 	private PreparedStatement	statementGetGroupFromName;														// groupName >> Group
 	private PreparedStatement	statementGetGroupFromID;														// groupID >> Group
 	private PreparedStatement	statementGetGroupsForPlayerInZone;												// PlayerID, ZoneID >> Groups
-	private PreparedStatement	statementGetAllGroupsForPlayer;													// PlayerID >> all
+	private PreparedStatement	statementGetAllGroupsForPlayer;												// PlayerID >> all
 	private PreparedStatement	statementGetGroupsInZone;														// ZoneID
 	private PreparedStatement	statementPutGroup;																// $ name, prefix, suffix, parent, priority, zone
 	private PreparedStatement	statementUpdateGroup;															// $ name, prefix, suffix, parent, priority, zone
@@ -255,7 +256,7 @@ public class SqlHelper
 					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?")
 					.append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
 			statementGetGroupsForPlayerInZone = getInstance().db.prepareStatement(query.toString());
-			
+
 			// statementGetGroupsForPlayer
 			query = new StringBuilder("SELECT * ")
 					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
@@ -754,6 +755,7 @@ public class SqlHelper
 	 * HashMap<String, String[]>> DONE "ladders" >> arraylist<PromotionLadder>
 	 * DONE
 	 */
+	@SuppressWarnings("unchecked")
 	protected void importPerms(String importDir)
 	{
 		try
@@ -1548,11 +1550,13 @@ public class SqlHelper
 	 * HashMap<String, ArrayList<String>>> DONE "ladders" >>
 	 * arraylist<PromotionLadder> DONE
 	 */
+	@SuppressWarnings("unchecked")
 	protected static synchronized HashMap<String, Object> dump()
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		ResultSet set;
+		@SuppressWarnings("rawtypes")
 		ArrayList list;
 
 		// DUMP PLAYERS! ---------------------------------
@@ -1812,7 +1816,7 @@ public class SqlHelper
 					for (int zone : perms.keySet())
 					{
 						statement.setInt(5, zone);
-						for(Permission perm : perms.get(zone))
+						for (Permission perm : perms.get(zone))
 						{
 							statement.setBoolean(1, perm.allowed);
 							statement.setString(4, perm.getQualifiedName());
@@ -1821,19 +1825,19 @@ public class SqlHelper
 					}
 					statement.clearParameters();
 				}
-				
-				//copy groups
+
+				// copy groups
 				{
 					statement = getInstance().statementGetAllGroupsForPlayer;
 					HashMultimap<Integer, Integer> groups = HashMultimap.create();
-					
+
 					statement.setInt(1, player);
 					set = statement.executeQuery();
 					statement.clearParameters();
-					
-					while(set.next())
+
+					while (set.next())
 						groups.put(set.getInt(COLUMN_GROUP_CONNECTOR_ZONEID), set.getInt(COLUMN_GROUP_CONNECTOR_GROUPID));
-					
+
 					statement = getInstance().statementPutPlayerInGroup;
 					statement.setInt(2, player);
 					for (int zone : groups.keySet())
@@ -2174,7 +2178,7 @@ public class SqlHelper
 		}
 	}
 
-	public static synchronized ArrayList getGroupsInZone(String zoneName)
+	public static synchronized ArrayList<Group> getGroupsInZone(String zoneName)
 	{
 		try
 		{
@@ -2252,7 +2256,7 @@ public class SqlHelper
 		return null;
 	}
 
-	public static ArrayList<Permission> getAllPermissions(String target, String zone, boolean isGroup)
+	public static Collection<Permission> getAllPermissions(String target, String zone, boolean isGroup)
 	{
 		ArrayList<Permission> list = new ArrayList<Permission>();
 		PreparedStatement statement = getInstance().statementGetAllPermissionsInZone;

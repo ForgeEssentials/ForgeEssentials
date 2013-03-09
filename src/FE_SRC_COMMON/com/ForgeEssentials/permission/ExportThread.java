@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.util.OutputHandler;
@@ -21,6 +20,7 @@ public class ExportThread extends Thread
 		user = sender;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void run()
 	{

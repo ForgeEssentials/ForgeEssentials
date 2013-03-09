@@ -39,15 +39,15 @@ public class TickTaskFill implements ITickTask
 	protected int				centerZ;
 	protected int				rad;
 
-	protected int				tps					= 20;
+	protected int				tps			= 20;
 
-	protected Long				ticks				= 0L;
+	protected Long				ticks		= 0L;
 
-	public static boolean		enablemsg			= true;
+	public static boolean		enablemsg	= true;
 
 	public static boolean		debug;
 
-	protected MinecraftServer	server				= FMLCommonHandler.instance().getMinecraftServerInstance();
+	protected MinecraftServer	server		= FMLCommonHandler.instance().getMinecraftServerInstance();
 
 	private int					X;
 
