@@ -38,7 +38,7 @@ public class ConfigWorldBorder extends ModuleConfigBase
 
 		String[] stages =
 		{ "Stage1" };
-		stages = config.get("Penalties", "stages", stages, "If you add an item here, a subcategory will be generated.").valueList;
+		stages = config.get("Penalties", "stages", stages, "If you add an item here, a subcategory will be generated.").getStringList();
 
 		for (String stage : stages)
 		{

@@ -25,7 +25,7 @@ public class ConfigSnooper extends ModuleConfigBase
 		String cat = "Snooper";
 
 		ModuleSnooper.port = config.get(cat, "port", 25565, "The query port").getInt();
-		ModuleSnooper.hostname = config.get(cat, "hostname", "", "The query hostname/IP").value;
+		ModuleSnooper.hostname = config.get(cat, "hostname", "", "The query hostname/IP").getString();
 
 		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").getBoolean(true);
 		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);

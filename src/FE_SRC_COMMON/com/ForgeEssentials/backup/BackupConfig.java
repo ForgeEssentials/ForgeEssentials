@@ -52,8 +52,8 @@ public class BackupConfig extends ModuleConfigBase
 		 * Main cat
 		 */
 		config.addCustomCategoryComment(MAIN, "Configure the backup system.");
-		backupName = config.get(MAIN, "name", "%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").value;
-		backupDir = config.get(MAIN, "backupsDir", "Backup", "The path to the backup folder.").value;
+		backupName = config.get(MAIN, "name", "%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").getString();
+		backupDir = config.get(MAIN, "backupsDir", "Backup", "The path to the backup folder.").getString();
 		backupOnWorldUnload = config.get(MAIN, "backupOnWorldUnload", true, "Make a backup when a dim unloads.").getBoolean(true);
 		backupIfUnloaded = config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").getBoolean(true);
 		enableMsg = config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").getBoolean(true);
@@ -70,7 +70,7 @@ public class BackupConfig extends ModuleConfigBase
 		worldSaveing = config.get(AUTOBACKUP, "worldSaving", false, "If false, doesn't save wold continuesly.").getBoolean(false);
 		whitelist = Ints.asList(config.get(AUTOBACKUP, "whitelist", new int[] {}, "Always make a backup of these dims. Even when empty.").getIntList());
 		blacklist = Ints.asList(config.get(AUTOBACKUP, "blacklist", new int[] {}, "Don't make automatic backups of these dims. Can still be done via command.").getIntList());
-		extraFolders = Arrays.asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").valueList);
+		extraFolders = Arrays.asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").getStringList());
 
 		/*
 		 * Subcat autoRemove

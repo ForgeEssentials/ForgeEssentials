@@ -8,6 +8,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.StringTranslate;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.util.OutputHandler;
@@ -47,7 +48,7 @@ public class ConfigAfterlife extends ModuleConfigBase
 		config.addCustomCategoryComment(subcat, "Bypass permission:\n" + RespawnDebuff.BYPASSPOTION + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
 
 		RespawnDebuff.potionEffects = new ArrayList<PotionEffect>();
-		String[] array = config.get(subcat, "potionEffects", new String[] { "4:150:1" }, "Format like this: 'ID:duration:amplifier'").valueList;
+		String[] array = config.get(subcat, "potionEffects", new String[] { "4:150:1" }, "Format like this: 'ID:duration:amplifier'").getStringList();
 
 		for (String string : array)
 		{
@@ -60,7 +61,7 @@ public class ConfigAfterlife extends ModuleConfigBase
 
 		for (DamageSource ds : dslist)
 		{
-			sdm(ds, config.get(subcat, ds.getDamageType(), gdm(ds)).value);
+			sdm(ds, config.get(subcat, ds.getDamageType(), gdm(ds)).getString());
 		}
 
 		config.save();
@@ -75,7 +76,7 @@ public class ConfigAfterlife extends ModuleConfigBase
 		config.get(subcat, "Enable", true, "Enable the deathchest.").value = Deathchest.enable + "";
 		config.get(subcat, "EnableXP", true, "Gives xp when the skull is destoyed or emplyed").value = Deathchest.enableXP + "";
 		config.get(subcat, "enableFencePost", true, "Put the skull on a spike.").value = Deathchest.enableFencePost + "";
-
+		
 		subcat = cat + ".respawnStats";
 		config.addCustomCategoryComment(subcat, "Bypass permission:\n" + RespawnDebuff.BYPASSSTATS);
 
@@ -125,7 +126,7 @@ public class ConfigAfterlife extends ModuleConfigBase
 		config.addCustomCategoryComment(subcat, "Bypass permission:\n" + RespawnDebuff.BYPASSPOTION + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
 
 		RespawnDebuff.potionEffects = new ArrayList<PotionEffect>();
-		String[] array = config.get(subcat, "potionEffects", new String[] { "4:150:1" }, "Format like this: 'ID:duration:amplifier'").valueList;
+		String[] array = config.get(subcat, "potionEffects", new String[] { "4:150:1" }, "Format like this: 'ID:duration:amplifier'").getStringList();
 
 		for (String string : array)
 		{
@@ -138,7 +139,7 @@ public class ConfigAfterlife extends ModuleConfigBase
 
 		for (DamageSource ds : dslist)
 		{
-			sdm(ds, config.get(subcat, ds.getDamageType(), gdm(ds)).value);
+			sdm(ds, config.get(subcat, ds.getDamageType(), gdm(ds)).getString());
 		}
 
 		config.save();

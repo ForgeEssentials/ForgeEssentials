@@ -26,7 +26,7 @@ public class ConfigTickets extends ModuleConfigBase
 
 		String cat = "Tickets";
 
-		ModuleTickets.categories = Arrays.asList(config.get(cat, "categories", new String[] { "griefing", "overflow", "dispute" }).valueList);
+		ModuleTickets.categories = Arrays.asList(config.get(cat, "categories", new String[] { "griefing", "overflow", "dispute" }).getStringList());
 
 		String subcat = cat + ".DONT_CHANGE";
 		config.addCustomCategoryComment(subcat, "Don't change anythign in there.");
