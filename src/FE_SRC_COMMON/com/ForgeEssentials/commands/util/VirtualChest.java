@@ -15,7 +15,7 @@ public class VirtualChest extends InventoryBasic
 
 	public VirtualChest(EntityPlayerMP player)
 	{
-		super(CommandVirtualchest.name, CommandVirtualchest.size);
+		super(CommandVirtualchest.name, false, CommandVirtualchest.size);
 		owner = player;
 	}
 

@@ -33,7 +33,6 @@ public class ForgeEssentialsClient
 		else return false;
 	}
 	
-	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{

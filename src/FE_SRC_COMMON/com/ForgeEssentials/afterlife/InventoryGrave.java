@@ -12,7 +12,7 @@ public class InventoryGrave extends InventoryBasic
 
 	public InventoryGrave(Grave grave)
 	{
-		super(grave.owner + "'s grave.", grave.getSize());
+		super(grave.owner + "'s grave.", false, grave.getSize());
 		this.grave = grave;
 	}
 

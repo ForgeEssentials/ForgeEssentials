@@ -28,6 +28,6 @@ There should be 3 linked sources under the Minecraft project, namely src (minecr
 
 3.3: In VM Arguments, copy in the following code (without the double quotes) "-Dfml.coreMods.load=com.ForgeEssentials.core.preloader.FEPreLoader"
 
-3.4: Do the same, but for Server this time.
+3.4: Do the same, but for Server this time. This time, add "-Dforgeessentials.client.developermode=true" without the double quotes as well.
 
 You're good to go!
