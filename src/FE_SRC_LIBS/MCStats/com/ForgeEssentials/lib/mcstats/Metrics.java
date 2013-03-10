@@ -169,7 +169,7 @@ public class Metrics {
         configuration.get(Configuration.CATEGORY_GENERAL, "opt-out", false,
                 "Set to true to disable all reporting");
         guid = configuration.get(Configuration.CATEGORY_GENERAL, "guid", UUID
-                .randomUUID().toString(), "Server unique ID").value;
+                .randomUUID().toString(), "Server unique ID").getString();
         debug = configuration.get(Configuration.CATEGORY_GENERAL, "debug",
                 false, "Set to true for verbose debug").getBoolean(false);
         configuration.save();
