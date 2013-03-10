@@ -3,7 +3,6 @@ package com.ForgeEssentials.api.snooper;
 import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.json.JSONObject;
 
-import net.minecraft.network.rcon.RConOutputStream;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -16,11 +15,10 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class Response
 {
-	public int id;
-	protected RConOutputStream	output		= new RConOutputStream(1460);
+	public int					id;
 	protected MinecraftServer	server		= FMLCommonHandler.instance().getMinecraftServerInstance();
 	public boolean				allowed		= true;
-
+	
 	public abstract JSONObject getResponce(String input) throws JSONException;
 
 	public abstract String getName();

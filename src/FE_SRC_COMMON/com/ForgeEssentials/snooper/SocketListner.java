@@ -43,7 +43,7 @@ public class SocketListner implements Runnable
 			this.port = MinecraftServer.getServer().getPort();
 		}
 
-		thread = new Thread(this, "ForgeEssentials - Snooper - Socket");
+		thread = new Thread(this, "ForgeEssentials - Snooper - SocketListner");
 		thread.start();
 	}
 

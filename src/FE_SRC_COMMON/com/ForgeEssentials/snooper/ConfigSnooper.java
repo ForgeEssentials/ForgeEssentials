@@ -29,6 +29,8 @@ public class ConfigSnooper extends ModuleConfigBase
 		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").getBoolean(true);
 		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
 
+		ModuleSnooper.keysize = config.get(cat, "keysize", 256, "AES Keysize. Only affects new keys.").getInt();
+		
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
 			String subCat = cat + "." + response.getName();

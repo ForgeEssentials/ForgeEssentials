@@ -18,7 +18,7 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.snooper.API;
+import com.ForgeEssentials.api.snooper.snooperAPI;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.snooper.response.MCstatsInfo;
 import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
@@ -47,17 +47,19 @@ public class ModuleSnooper
 
 	public static String			key;
 
+	public static int				keysize;
+
 	public ModuleSnooper()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 
-		API.registerResponce(0, new Responces());
+		snooperAPI.registerResponce(0, new Responces());
 		
-		API.registerResponce(1, new ServerInfo());
-		API.registerResponce(2, new MCstatsInfo());
+		snooperAPI.registerResponce(1, new ServerInfo());
+		snooperAPI.registerResponce(2, new MCstatsInfo());
 
-		API.registerResponce(5, new PlayerInfoResonce());
-		API.registerResponce(6, new PlayerInv()); 
+		snooperAPI.registerResponce(5, new PlayerInfoResonce());
+		snooperAPI.registerResponce(6, new PlayerInv()); 
 	}
 
 	@ServerInit
@@ -86,7 +88,7 @@ public class ModuleSnooper
 				file.createNewFile();
 				FileOutputStream out = new FileOutputStream(file.getAbsoluteFile());
 				KeyGenerator kgen = KeyGenerator.getInstance("AES");
-				kgen.init(128);
+				kgen.init(keysize);
 				byte[] buffer  = kgen.generateKey().getEncoded();
 				out.write(buffer);
 				out.close();

@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 import cpw.mods.fml.common.FMLLog;
 
-public class API
+public class snooperAPI
 {
 	/**
 	 * Use this method to register your responses.

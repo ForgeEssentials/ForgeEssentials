@@ -30,11 +30,12 @@ public class CallableMap
 	{
 		if (obj == null)
 			return;
+		System.out.println(obj);
 
 		try
 		{
 			FECallable call;
-			Class<?> c = obj.getClass();
+			Class c = obj.getClass();
 			if (obj instanceof ModContainer)
 			{
 				c = ((ModContainer) obj).getMod().getClass();

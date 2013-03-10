@@ -20,7 +20,7 @@ public class SocketHandler extends Thread
 	{
 		this.listner = socketListner;
 		this.socket = socket;
-		this.setName("ForgeEssentials - Snooper - SocketHandler#" + ModuleSnooper.id());
+		this.setName("ForgeEssentials - Snooper - SocketHandler #" + ModuleSnooper.id());
 		this.start();
 	}
 
