@@ -32,7 +32,6 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, configClass = ConfigPlayerLogger.class)
 public class ModulePlayerLogger
 {
-	static final boolean				DEBUG		= !ObfuscationReflectionHelper.obfuscation;
 
 	@Config
 	public static ConfigPlayerLogger	config;

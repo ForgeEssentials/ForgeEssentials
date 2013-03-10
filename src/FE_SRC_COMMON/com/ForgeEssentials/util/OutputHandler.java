@@ -10,6 +10,8 @@ public final class OutputHandler
 {
 
 	public static Logger	felog;
+	
+	public static boolean debugmode;
 
 	public static void init(Logger logger)
 	{
@@ -129,8 +131,7 @@ public final class OutputHandler
 	 *            message to be outputted
 	 */
 	public static void debug(Object msg)
-	{
-		if (!ObfuscationReflectionHelper.obfuscation)
+	{if (debugmode)
 		{
 			System.out.println(" {DEBUG} >>>> " + msg);
 		}
