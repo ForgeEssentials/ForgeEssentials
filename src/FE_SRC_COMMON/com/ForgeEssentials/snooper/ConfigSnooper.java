@@ -1,7 +1,6 @@
 package com.ForgeEssentials.snooper;
 
 import java.io.File;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
@@ -36,8 +35,8 @@ public class ConfigSnooper extends ModuleConfigBase
 			response.allowed = config.get(subCat, "enable", true, "If false, this response won't be allowed on this server.").getBoolean(true);
 			response.readConfig(subCat, config);
 		}
+		
 		config.save();
-		ModuleSnooper.startQuery();
 	}
 
 	@Override
@@ -79,6 +78,5 @@ public class ConfigSnooper extends ModuleConfigBase
 			response.allowed = config.get(subCat, "enable", true, "If false, this response won't be allowed on this server.").getBoolean(true);
 			response.readConfig(subCat, config);
 		}
-		ModuleSnooper.startQuery();
 	}
 }

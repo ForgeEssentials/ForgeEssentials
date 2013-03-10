@@ -1,15 +1,13 @@
 package com.ForgeEssentials.serverVote.snooper;
 
-import java.net.DatagramPacket;
-import java.util.Arrays;
-
 import javax.crypto.Cipher;
 
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.json.JSONException;
+import com.ForgeEssentials.api.json.JSONObject;
 import com.ForgeEssentials.api.snooper.Response;
-import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.api.snooper.VoteEvent;
 import com.ForgeEssentials.serverVote.ModuleServerVote;
 import com.ForgeEssentials.util.OutputHandler;
@@ -17,7 +15,7 @@ import com.ForgeEssentials.util.OutputHandler;
 public class VoteResponce extends Response
 {
 	@Override
-	public String getResponceString(DatagramPacket packet)
+	public JSONObject getResponce(String input) throws JSONException
 	{
 		try
 		{
@@ -25,26 +23,21 @@ public class VoteResponce extends Response
 
 			try
 			{
-				new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
 				Cipher cipher = Cipher.getInstance("RSA");
 				cipher.init(Cipher.DECRYPT_MODE, ModuleServerVote.config.privateKey);
-				byte[] decodedBytes = cipher.doFinal(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
+				byte[] decodedBytes = cipher.doFinal(input.getBytes());
 				decoded = new String(decodedBytes);
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
-				return TextFormatter.toJSON(new String[]
-				{ "Failed", TextFormatter.toJSON(new String[]
-				{ "Encryption" }) });
+				return new JSONObject().put(this.getName(), "");
 			}
 
 			VoteEvent vote = new VoteEvent(decoded);
 
 			if (!vote.isSane())
-				return TextFormatter.toJSON(new String[]
-				{ "Failed", TextFormatter.toJSON(new String[]
-				{ "notSane" }) });
+				return new JSONObject().put(this.getName(), "");
 
 			OutputHandler.fine("Vote: " + vote);
 
@@ -55,17 +48,13 @@ public class VoteResponce extends Response
 			catch (Exception e)
 			{
 				e.printStackTrace();
-				return TextFormatter.toJSON(new String[]
-				{ "Failed", TextFormatter.toJSON(new String[]
-				{ e.getMessage() }) });
+				return new JSONObject().put(this.getName(), "");
 			}
 
 			if (vote.isCanceled())
-				return TextFormatter.toJSON(new String[]
-				{ "Failed", TextFormatter.toJSON(vote.getFeedback()) });
+				return new JSONObject().put(this.getName(), "");
 			else
-				return TextFormatter.toJSON(new String[]
-				{ "Success" });
+				return new JSONObject().put(this.getName(), "");
 		}
 		catch (Exception e)
 		{

@@ -1,7 +1,7 @@
 package com.ForgeEssentials.commands.util;
 
-import java.util.LinkedHashMap;
-
+import com.ForgeEssentials.api.json.JSONException;
+import com.ForgeEssentials.api.json.JSONObject;
 import com.ForgeEssentials.core.compat.IServerStats;
 import com.ForgeEssentials.lib.mcstats.Metrics;
 import com.ForgeEssentials.lib.mcstats.Metrics.Graph;
@@ -36,12 +36,12 @@ public class MCStatsHelper implements IServerStats
 	}
 
 	@Override
-	public LinkedHashMap<String, String> addToServerInfo()
+	public JSONObject addToServerInfo() throws JSONException
 	{
-		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		map.put("Warps", "" + CommandDataManager.warps.size());
-		map.put("Kits", "" + CommandDataManager.kits.size());
-		return map;
+		JSONObject data = new JSONObject();
+		data.put("Warps", CommandDataManager.warps.size());
+		data.put("Kits", CommandDataManager.kits.size());
+		return data;
 	}
 
 }

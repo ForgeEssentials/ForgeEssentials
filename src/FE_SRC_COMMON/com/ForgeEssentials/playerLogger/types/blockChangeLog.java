@@ -3,7 +3,6 @@ package com.ForgeEssentials.playerLogger.types;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
+import com.ForgeEssentials.api.json.JSONObject;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -41,11 +41,10 @@ public class blockChangeLog extends logEntry
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
 			te.writeToNBT(nbt);
-			HashMap<String, String> data = new HashMap<String, String>();
-			data.put(te.getClass().getName(), TextFormatter.toJSONnbtComp(nbt));
+			
 			try
 			{
-				this.te = new SerialBlob(TextFormatter.toJSON(data).getBytes());
+				this.te = new SerialBlob(new JSONObject().put(te.getClass().getName(), TextFormatter.toJSONnbtComp(nbt).toString()).toString().getBytes());
 			}
 			catch (Exception e)
 			{

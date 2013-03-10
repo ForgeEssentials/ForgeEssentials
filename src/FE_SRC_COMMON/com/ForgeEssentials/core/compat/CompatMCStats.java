@@ -1,12 +1,12 @@
 package com.ForgeEssentials.core.compat;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
 
-import com.ForgeEssentials.api.snooper.TextFormatter;
+import com.ForgeEssentials.api.json.JSONException;
+import com.ForgeEssentials.api.json.JSONObject;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.lib.mcstats.Metrics;
@@ -56,20 +56,20 @@ public class CompatMCStats implements IServerStats
 		}
 	}
 
-	public static LinkedHashMap<String, String> doSnooperStats()
+	public static JSONObject doSnooperStats() throws JSONException
 	{
-		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+		JSONObject data = new JSONObject();
 
 		for (IServerStats obj : handlers)
 		{
-			LinkedHashMap<String, String> temp = obj.addToServerInfo();
-			if (map != null)
+			JSONObject temp = obj.addToServerInfo();
+			for (String name : JSONObject.getNames(temp))
 			{
-				map.putAll(temp);
+				data.put(name, temp.get(name));
 			}
 		}
 
-		return map;
+		return data;
 	}
 
 	@Override
@@ -91,11 +91,9 @@ public class CompatMCStats implements IServerStats
 	}
 
 	@Override
-	public LinkedHashMap<String, String> addToServerInfo()
+	public JSONObject addToServerInfo() throws JSONException
 	{
-		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		map.put("FEmodules", TextFormatter.toJSON(ModuleLauncher.getModuleList()));
-		return map;
+		return new JSONObject().put("FEmodules", ModuleLauncher.getModuleList());
 	}
 
 	// leave this here, it's to remove the need to obf mcstats

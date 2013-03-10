@@ -9,6 +9,8 @@ import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.api.json.JSONException;
+import com.ForgeEssentials.api.json.JSONObject;
 
 @SaveableObject(SaveInline = true)
 public class Point implements Serializable, Comparable<Point>
@@ -174,5 +176,24 @@ public class Point implements Serializable, Comparable<Point>
 	public String toString()
 	{
 		return "Point[" + x + ", " + y + ", " + z + "]";
+	}
+	
+	public JSONObject toJSON() throws JSONException
+	{
+		JSONObject data = new JSONObject();
+		data.put("x", "" + this.x);
+		data.put("y", "" + this.y);
+		data.put("z", "" + this.z);
+		if (this instanceof WorldPoint)
+		{
+			data.put("dim", "" + ((WorldPoint) this).dim);
+		}
+		if (this instanceof WarpPoint)
+		{
+			data.put("dim", "" + ((WarpPoint) this).dim);
+			data.put("pitch", "" + ((WarpPoint) this).pitch);
+			data.put("yaw", "" + ((WarpPoint) this).yaw);
+		}
+		return data;
 	}
 }

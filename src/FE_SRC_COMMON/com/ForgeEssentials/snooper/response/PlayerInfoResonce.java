@@ -1,15 +1,13 @@
 package com.ForgeEssentials.snooper.response;
 
-import java.net.DatagramPacket;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.json.JSONException;
+import com.ForgeEssentials.api.json.JSONObject;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.snooper.Response;
@@ -29,27 +27,25 @@ public class PlayerInfoResonce extends Response
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public String getResponceString(DatagramPacket packet)
+	public JSONObject getResponce(String input) throws JSONException
 	{
-		LinkedHashMap<String, String> PlayerData = new LinkedHashMap<String, String>();
-		LinkedHashMap<String, String> tempMap = new LinkedHashMap<String, String>();
-		new ArrayList<Object>();
+		JSONObject PlayerData = new JSONObject();
+		JSONObject tempMap = new JSONObject();
 
-		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
-		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
+		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input);
 		if (player == null)
-			return "";
+			return new JSONObject().put(this.getName(), "");
 
 		PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
 		if (pi != null && sendhome)
 		{
 			if (pi.home != null)
 			{
-				PlayerData.put("home", TextFormatter.toJSON(pi.home));
+				PlayerData.put("home", pi.home.toJSON());
 			}
 			if (pi.back != null)
 			{
-				PlayerData.put("back", TextFormatter.toJSON(pi.back));
+				PlayerData.put("back", pi.back.toJSON());
 			}
 		}
 
@@ -60,7 +56,7 @@ public class PlayerInfoResonce extends Response
 		}
 
 		PlayerData.put("wallet", "" + Wallet.getWallet(player));
-		PlayerData.put("pos", TextFormatter.toJSON(new WorldPoint(player)));
+		PlayerData.put("pos", new WorldPoint(player).toJSON());
 		PlayerData.put("ping", "" + player.ping);
 		PlayerData.put("gm", player.theItemInWorldManager.getGameType().getName());
 
@@ -71,29 +67,29 @@ public class PlayerInfoResonce extends Response
 
 		if (sendXP)
 		{
-			tempMap.clear();
+			tempMap = new JSONObject();
 			tempMap.put("lvl", "" + player.experienceLevel);
 			tempMap.put("bar", "" + player.experience);
-			PlayerData.put("xp", TextFormatter.toJSON(tempMap));
+			PlayerData.put("xp", tempMap);
 		}
 
 		if (sendFood)
 		{
-			tempMap.clear();
+			tempMap = new JSONObject();
 			tempMap.put("food", "" + player.getFoodStats().getFoodLevel());
 			tempMap.put("saturation", "" + player.getFoodStats().getSaturationLevel());
-			PlayerData.put("foodStats", TextFormatter.toJSON(tempMap));
+			PlayerData.put("foodStats", tempMap);
 		}
 
 		if (sendCapabilities)
 		{
-			tempMap.clear();
+			tempMap = new JSONObject();
 			tempMap.put("edit", "" + player.capabilities.allowEdit);
 			tempMap.put("allowFly", "" + player.capabilities.allowFlying);
 			tempMap.put("isFly", "" + player.capabilities.isFlying);
 			tempMap.put("noDamage", "" + player.capabilities.disableDamage);
 		}
-		PlayerData.put("cap", TextFormatter.toJSON(tempMap));
+		PlayerData.put("cap", tempMap);
 
 		try
 		{
@@ -104,7 +100,7 @@ public class PlayerInfoResonce extends Response
 		{
 		}
 
-		return dataString = TextFormatter.toJSON(PlayerData);
+		return new JSONObject().put(this.getName(), PlayerData);
 	}
 
 	@Override
