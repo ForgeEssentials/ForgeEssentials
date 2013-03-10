@@ -26,8 +26,9 @@ public class ForgeEssentialsClient
 	@SideOnly(Side.CLIENT)
 	private static PlayerInfoClient	info;
 
-	private boolean getDevOverride() {
-		if (System.getProperty("forgeessentials.client.developermode") == "true") // FOR DEVS ONLY! THAT IS WHY IT IS A PROPERTY!!!
+	private boolean getDevOverride() 
+	{
+		if (System.getProperty("forgeessentials.client.developermode").equals("true")) // FOR DEVS ONLY! THAT IS WHY IT IS A PROPERTY!!!
 		return true;
 		else return false;
 	}
