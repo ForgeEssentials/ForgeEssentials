@@ -12,8 +12,10 @@ import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
 import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SuppressWarnings(value = { "rawtypes", "unchecked" })
 public class CallableMap
@@ -42,9 +44,17 @@ public class CallableMap
 			{
 				c = ((ModuleContainer) obj).module.getClass();
 			}
+			
 
 			for (Method m : c.getDeclaredMethods())
 			{
+				if (m.isAnnotationPresent(SideOnly.class))
+				{
+					SideOnly annot = m.getAnnotation(SideOnly.class);
+					if (!annot.value().equals(FMLCommonHandler.instance().getSide()));
+						continue;
+				}
+				
 				if (Modifier.isStatic(m.getModifiers()))
 					call = new FECallable(m);
 				else
@@ -74,6 +84,13 @@ public class CallableMap
 
 			for (Method m : c.getDeclaredMethods())
 			{
+				if (m.isAnnotationPresent(SideOnly.class))
+				{
+					SideOnly annot = m.getAnnotation(SideOnly.class);
+					if (!annot.value().equals(FMLCommonHandler.instance().getSide()));
+						continue;
+				}
+				
 				if (!Modifier.isStatic(m.getModifiers()))
 					continue;
 
