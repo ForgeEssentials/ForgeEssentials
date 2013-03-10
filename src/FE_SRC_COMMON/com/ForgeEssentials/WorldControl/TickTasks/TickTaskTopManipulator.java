@@ -15,11 +15,6 @@ import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class TickTaskTopManipulator implements ITickTask
 {
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= 2082312959792877136L;
-
 	public enum Mode
 	{
 		THAW, // Removes top snow/ice block. Replaces ice with water.
@@ -38,7 +33,6 @@ public class TickTaskTopManipulator implements ITickTask
 
 	// State info
 	private int				changed;
-	private int				ticks;
 	private boolean			isComplete;
 	private Point			currentPos;
 
@@ -50,7 +44,6 @@ public class TickTaskTopManipulator implements ITickTask
 		effectRadius = radius;
 		effectMode = mode;
 
-		ticks = 0;
 		changed = 0;
 		isComplete = false;
 
@@ -60,7 +53,6 @@ public class TickTaskTopManipulator implements ITickTask
 	@Override
 	public void tick()
 	{
-		ticks++;
 		int currentBlocksChanged = 0;
 		boolean continueFlag = true;
 		World world = player.worldObj;
@@ -171,7 +163,7 @@ public class TickTaskTopManipulator implements ITickTask
 	@Override
 	public void onComplete()
 	{
-		PlayerInfo.getPlayerInfo(player).addUndoAction(backup);
+		PlayerInfo.getPlayerInfo(player.username).addUndoAction(backup);
 
 		String confirmMessage = "";
 		switch (effectMode)

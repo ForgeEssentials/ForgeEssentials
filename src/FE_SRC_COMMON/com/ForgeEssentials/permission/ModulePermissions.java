@@ -51,7 +51,7 @@ public class ModulePermissions
 	protected static AbstractDataDriver	data;
 
 	// permission registrations here...
-	protected HashMultimap				regPerms;
+	protected HashMultimap<RegGroup, Permission>				regPerms;
 	private AutoPromote					autoPromote;
 
 	@PreInit

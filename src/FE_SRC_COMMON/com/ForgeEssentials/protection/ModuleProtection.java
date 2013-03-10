@@ -68,6 +68,7 @@ public class ModuleProtection
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{

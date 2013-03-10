@@ -30,6 +30,7 @@ import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class SQLDataDriver extends AbstractDataDriver
 {
 	protected static final String	SEPERATOR			= "__";
@@ -87,7 +88,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		else
 			SURROUNDER = "";
 	}
-
+	
 	@Override
 	public void onClassRegistered(ITypeInfo tagger)
 	{
@@ -128,7 +129,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	protected TypeData loadData(ClassContainer type, String uniqueKey)
 	{
 		TypeData reconstructed = DataStorageManager.getDataForType(type);
-		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		ITypeInfo<?> info = DataStorageManager.getInfoForType(type);
 
 		try
 		{
@@ -155,7 +156,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	protected TypeData[] loadAll(ClassContainer type)
 	{
 		ArrayList<TypeData> values = new ArrayList<TypeData>();
-		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		ITypeInfo<?> info = DataStorageManager.getInfoForType(type);
 
 		try
 		{
@@ -211,13 +212,13 @@ public class SQLDataDriver extends AbstractDataDriver
 	 */
 	private HashMap<String, Object> resultRowToMap(ResultSet result)
 	{
-		HashMap<String, Object> map = new HashMap();
+		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		try
 		{
 			// Determine column names
 			ResultSetMetaData meta = result.getMetaData();
-			ArrayList<String> names = new ArrayList();
+			ArrayList<String> names = new ArrayList<String>();
 
 			// ResultSet columns start at 1. (Crazy, right?)
 			for (int i = 1; i < meta.getColumnCount(); ++i)
@@ -246,9 +247,9 @@ public class SQLDataDriver extends AbstractDataDriver
 		return map;
 	}
 
-	private void createTaggedClassFromResult(HashMap<String, Object> result, ITypeInfo info, TypeData data) throws SQLException
+	private void createTaggedClassFromResult(HashMap<String, Object> result, ITypeInfo<?> info, TypeData data) throws SQLException
 	{
-		ITypeInfo infoCursor;
+		ITypeInfo<?> infoCursor;
 		TypeData dataCursor = null;
 		ClassContainer tmpClass;
 		Object tempVal;
@@ -312,7 +313,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		String statement = "DELETE FROM " + FEDATA_PREFIX + type.getFileSafeName() + " WHERE " + UNIQUE + "='" + unique + "'";
 		list.add(statement);
 
-		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		ITypeInfo<?> info = DataStorageManager.getInfoForType(type);
 		TypeData data = DataStorageManager.getDataForType(type);
 
 		ResultSet set = getDbConnection().createStatement().executeQuery(createSelectStatement(type, unique));
@@ -349,11 +350,11 @@ public class SQLDataDriver extends AbstractDataDriver
 		return list;
 	}
 
-	private void collectMultiVals(ITypeInfo info, TypeData data, HashMultimap<ClassContainer, String> map)
+	private void collectMultiVals(ITypeInfo<?> info, TypeData data, HashMultimap<ClassContainer, String> map)
 	{
 		HashMultimap.create();
 
-		ITypeInfo tempInfo;
+		ITypeInfo<?> tempInfo;
 		String id;
 		for (Entry<String, Object> e : data.getAllFields())
 		{
@@ -400,7 +401,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		return builder.toString();
 	}
 
-	private ArrayList<String> generateInsertBatch(ITypeInfo info, TypeData data)
+	private ArrayList<String> generateInsertBatch(ITypeInfo<?> info, TypeData data)
 	{
 		ClassContainer type = info.getType();
 
@@ -436,7 +437,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		// Deal with unique field. No uniqueFields for these...
 		if (!(info instanceof TypeEntryInfo))
 		{
-			fieldValueMap.add(0, new Pair(UNIQUE, data.getUniqueKey()));
+			fieldValueMap.add(0, new Pair<String, String>(UNIQUE, data.getUniqueKey()));
 		}
 		else
 		{
@@ -529,7 +530,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		ArrayList<String> statements = new ArrayList<String>();
 
 		TypeMultiValInfo info = (TypeMultiValInfo) DataStorageManager.getInfoForType(data.getContainer());
-		ITypeInfo entryInfo = info.getEntryInfo();
+		ITypeInfo<?> entryInfo = info.getEntryInfo();
 
 		for (Object dat : data.getAllValues())
 		{
@@ -552,7 +553,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		if (classTableChecked.contains(type.getName()))
 			return false;
 
-		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
+		ITypeInfo<?> tagger = DataStorageManager.getInfoForType(type);
 		String[] fields = tagger.getFieldList();
 		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
 		String keyClause = "";
@@ -630,11 +631,11 @@ public class SQLDataDriver extends AbstractDataDriver
 	 * @param type Type of saved field
 	 * @return Array of field => H2 type names.
 	 */
-	private ArrayList<Pair<String, String>> fieldToColumns(ITypeInfo info, String columnName, String field)
+	private ArrayList<Pair<String, String>> fieldToColumns(ITypeInfo<?> info, String columnName, String field)
 	{
 		ArrayList<Pair<String, String>> fields = new ArrayList<Pair<String, String>>();
 		ClassContainer con = info.getTypeOfField(field);
-		Class type = con.getType();
+		Class<?> type = con.getType();
 
 		if (!StorageManager.isTypeComplex(con))
 		{
@@ -677,7 +678,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		else
 		{
 			// Complex type we can't handle.
-			ITypeInfo tagger = info.getInfoForField(field);
+			ITypeInfo<?> tagger = info.getInfoForField(field);
 
 			if (tagger instanceof TypeMultiValInfo || !tagger.canSaveInline())
 			{
@@ -714,16 +715,16 @@ public class SQLDataDriver extends AbstractDataDriver
 	{
 		ArrayList<Pair> data = new ArrayList<Pair>();
 
-		Class cType = type.getType();
+		Class<?> cType = type.getType();
 
 		if (cType.equals(Integer.class) || cType.equals(Float.class) || cType.equals(Double.class) || cType.equals(String.class)
 			|| cType.equals(int.class) || cType.equals(float.class) || cType.equals(double.class))
 		{
-			data.add(new Pair(fieldName, value.toString()));
+			data.add(new Pair<String, Object>(fieldName, value.toString()));
 		}
 		else if (cType.equals(Boolean.class) || cType.equals(boolean.class))
 		{
-			data.add(new Pair(fieldName, ""+ (Boolean.TRUE.equals(value) ? 1 : 0) ));
+			data.add(new Pair<String, Object>(fieldName, ""+ (Boolean.TRUE.equals(value) ? 1 : 0) ));
 		}
 		else if (cType.equals(double[].class) && ((double[]) value).length > 0)
 		{
@@ -734,7 +735,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			{
 				tempStr.append("," + String.valueOf(arr[i]));
 			}
-			data.add(new Pair(fieldName, tempStr.append("'").toString()));
+			data.add(new Pair<String, Object>(fieldName, tempStr.append("'").toString()));
 		}
 		else if (cType.equals(int[].class) && ((int[]) value).length > 0)
 		{
@@ -745,7 +746,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			{
 				tempStr.append("," + String.valueOf(arr[i]));
 			}
-			data.add(new Pair(fieldName, tempStr.append("'").toString()));
+			data.add(new Pair<String, Object>(fieldName, tempStr.append("'").toString()));
 		}
 		else if (cType.equals(boolean[].class) && ((boolean[]) value).length > 0)
 		{
@@ -756,7 +757,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			{
 				tempStr.append("," + String.valueOf(arr[i]));
 			}
-			data.add(new Pair(fieldName, tempStr.append("'").toString()));
+			data.add(new Pair<String, Object>(fieldName, tempStr.append("'").toString()));
 		}
 		else if (cType.equals(String[].class) && ((String[]) value).length > 0)
 		{
@@ -767,21 +768,21 @@ public class SQLDataDriver extends AbstractDataDriver
 			{
 				tempStr.append("!??!" + String.valueOf(arr[i]).replace("'", "\"\""));
 			}
-			data.add(new Pair(fieldName, tempStr.append("'").toString()));
+			data.add(new Pair<String, Object>(fieldName, tempStr.append("'").toString()));
 		}
 		else if (value.getClass().equals(TypeData.class))
 		{
 			// Tricky business involving recursion.
 			TypeData tc = (TypeData) value;
-			ITypeInfo info = DataStorageManager.getInfoForType(type);
+			ITypeInfo<?> info = DataStorageManager.getInfoForType(type);
 
 			if (info instanceof TypeMultiValInfo || !info.canSaveInline())
 			{
 				// special stuff for Multivals. this will be a key going to a different table.
-				data.add(new Pair(fieldName + "_" + MULTI_MARKER, tc.getUniqueKey()));
+				data.add(new Pair<String, Object>(fieldName + "_" + MULTI_MARKER, tc.getUniqueKey()));
 
 				// this will be removed what all the MultiVal ones are collected.
-				data.add(new Pair(fieldName + "_" + MULTI_MARKER, tc));
+				data.add(new Pair<String, Object>(fieldName + "_" + MULTI_MARKER, tc));
 			}
 			else
 			{
@@ -794,7 +795,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		else
 		// What the fuck? This will be unpredictable.
 		{
-			data.add(new Pair(fieldName, value.toString()));
+			data.add(new Pair<String, Object>(fieldName, value.toString()));
 		}
 		return data;
 	}
@@ -807,7 +808,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		if (targetType == null)
 			return null;
 
-		Class type = targetType.getType();
+		Class<?> type = targetType.getType();
 		
 		if (type.equals(int.class) || type.equals(double.class) || type.equals(float.class) || type.equals(String.class)|| type.equals(boolean.class))
 		{
@@ -888,7 +889,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		else
 		{
 			// for small things like this...
-			ITypeInfo info = DataStorageManager.getInfoForType(targetType);
+			ITypeInfo<?> info = DataStorageManager.getInfoForType(targetType);
 			
 			// multival styff
 			if (!info.canSaveInline())

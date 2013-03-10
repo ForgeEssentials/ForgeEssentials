@@ -38,11 +38,12 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return true;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void build()
 	{
-		Class currentType = container.getType();
-		Class tempType;
+		Class<?> currentType = container.getType();
+		Class<?> tempType;
 		Type aTempType;
 		ClassContainer tempContainer;
 
@@ -64,11 +65,11 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 						{
 							if (types[i] instanceof Class)
 							{
-								params[i] = (Class) types[i];
+								params[i] = (Class<?>) types[i];
 							}
 							else if (types[i] instanceof ParameterizedType)
 							{
-								params[i] = (Class) ((ParameterizedType) types[i]).getRawType();
+								params[i] = (Class<?>) ((ParameterizedType) types[i]).getRawType();
 							}
 						}
 
@@ -140,7 +141,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 	@Override
 	public TypeData getTypeDataFromObject(T obj)
 	{
-		Class c = obj.getClass();
+		Class<?> c = obj.getClass();
 		TypeData data = DataStorageManager.getDataForType(container);
 		Field f;
 		Object temp;
@@ -174,7 +175,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		}
 
 		String[] keys = fields.keySet().toArray(new String[fields.size()]);
-		Class currentClass = c;
+		Class<?> currentClass = c;
 		// Iterate over the object grabbing the fields we want to examine.
 		for (int i = 0; i < keys.length; ++i)
 		{
@@ -223,7 +224,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		try
 		{
 			Object obj = container.getType().newInstance();
-			Class currentType = data.getType();
+			Class<?> currentType = data.getType();
 
 			do
 			{
@@ -254,6 +255,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return container;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Class[] getGenericTypes()
 	{
@@ -261,7 +263,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 	}
 
 	@Override
-	public ITypeInfo getInfoForField(String field)
+	public ITypeInfo<?> getInfoForField(String field)
 	{
 		return DataStorageManager.getInfoForType(getTypeOfField(field));
 	}

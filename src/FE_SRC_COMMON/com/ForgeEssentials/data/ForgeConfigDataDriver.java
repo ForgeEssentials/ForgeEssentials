@@ -62,9 +62,9 @@ public class ForgeConfigDataDriver extends TextDataDriver
 
 		Configuration cfg = new Configuration(file, true);
 		cfg.load();
-		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		ITypeInfo<?> info = DataStorageManager.getInfoForType(type);
 		TypeData data = DataStorageManager.getDataForType(type);
-		readClassFromProperty(cfg, cfg.categories.get(type.getFileSafeName()), data, info);
+		readClassFromProperty(cfg, cfg.getCategory(type.getFileSafeName()), data, info);
 		data.setUniqueKey(uniqueKey);
 
 		return data;
@@ -96,7 +96,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 			// ignore...
 			return;
 
-		Class type = obj.getClass();
+		Class<? extends Object> type = obj.getClass();
 
 		if (type.equals(Integer.class))
 		{
@@ -163,7 +163,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 			throw new IllegalArgumentException("Cannot save object type. " + obj.getClass() + "  instance: " + obj);
 	}
 
-	private Object readFieldFromProperty(Configuration cfg, String category, String name, Class type)
+	private Object readFieldFromProperty(Configuration cfg, String category, String name, Class<?> type)
 	{
 		if (type.equals(int.class))
 			return cfg.get(category, name, 0).getInt();
@@ -193,22 +193,22 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		else if (type.equals(boolean[].class))
 			return cfg.get(category, name, new boolean[] {}).getBooleanList();
 		else if (type.equals(String.class))
-			return cfg.get(category, name, "").value;
+			return cfg.get(category, name, "").getString();
 		else if (type.equals(String[].class))
-			return cfg.get(category, name, new String[] {}).valueList;
+			return cfg.get(category, name, new String[] {}).getStringList();
 		else
 			// this should never happen...
 			return null;
 	}
 
-	private void readClassFromProperty(Configuration cfg, ConfigCategory cat, TypeData data, ITypeInfo info)
+	private void readClassFromProperty(Configuration cfg, ConfigCategory cat, TypeData data, ITypeInfo<?> info)
 	{
 
 		if (cat != null)
 		{
 			String name;
 			ClassContainer newType;
-			ITypeInfo newInfo;
+			ITypeInfo<?> newInfo;
 			TypeData newData;
 			Object value;
 			for (Property prop : cat.getValues().values())
@@ -219,8 +219,9 @@ public class ForgeConfigDataDriver extends TextDataDriver
 				data.putField(name, value);
 			}
 
-			for (ConfigCategory child : cfg.categories.values())
+			for (String childName : cfg.getCategoryNames())
 			{
+				ConfigCategory child = cfg.getCategory(childName);
 				if (child.isChild() && child.parent == cat) // intentional use
 															// of ==
 				{

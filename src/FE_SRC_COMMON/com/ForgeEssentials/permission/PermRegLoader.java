@@ -1,6 +1,5 @@
 package com.ForgeEssentials.permission;
 
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,9 +24,7 @@ public class PermRegLoader
 	{
 		PermissionRegistrationEvent event = new PermissionRegistrationEvent();
 
-		Class c = null;
-		Method m = null;
-		String className, methodName, modid;
+		String modid;
 		for (FECallable call : data)
 		{
 			modid = call.getIdent();

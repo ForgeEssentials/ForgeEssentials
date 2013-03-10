@@ -35,7 +35,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	@Override
 	public void doConfig(Configuration config, String category)
 	{
-		rulesFile = new File(ForgeEssentials.FEDIR, config.get(category, "filename", "rules.txt").value);
+		rulesFile = new File(ForgeEssentials.FEDIR, config.get(category, "filename", "rules.txt").getString());
 		rules = loadRules();
 	}
 
@@ -369,7 +369,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, autocomargs);

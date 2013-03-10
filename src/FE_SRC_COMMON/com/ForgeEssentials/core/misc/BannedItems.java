@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -29,6 +30,11 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
 public class BannedItems
 {
+	public BannedItems()
+	{
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+	
 	private static final String		BYPASS	= "ForgeEssentials.BannedItems.override";
 
 	HashMultimap<Integer, Integer>	noUse	= HashMultimap.create();
@@ -121,7 +127,7 @@ public class BannedItems
 			}
 		}
 
-		ArrayList<ItemStack> items = new ArrayList();
+		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 		// Decompose list into (item ID, Meta) pairs.
 		for (String s : noCraft)
 		{
@@ -158,6 +164,7 @@ public class BannedItems
 
 		// Iterate over recipe list, and remove a recipe when its output matches
 		// one of our ItemStacks.
+		@SuppressWarnings("unchecked")
 		List<IRecipe> minecraftRecipes = CraftingManager.getInstance().getRecipeList();
 		ItemStack result;
 		for (int i = 0; i < minecraftRecipes.size(); ++i)

@@ -112,7 +112,7 @@ public class TickTaskFill implements ITickTask
 			Chunk chunk = world.theChunkProviderServer.loadChunk(X, Z);
 			chunk.setChunkModified();
 			world.theChunkProviderServer.safeSaveChunk(chunk);
-			world.theChunkProviderServer.unload100OldestChunks();
+			world.theChunkProviderServer.unloadQueuedChunks();
 			world.theChunkProviderServer.unloadChunksIfNotNearSpawn(X, Z);
 
 		}

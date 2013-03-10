@@ -27,7 +27,6 @@ import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, configClass = ConfigPlayerLogger.class)
 public class ModulePlayerLogger

@@ -13,10 +13,6 @@ import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class TickTaskSetBackup implements ITickTask
 {
-	/**
-	 * 
-	 */
-	private static final long			serialVersionUID	= 9090893570755746522L;
 	// stuff needed
 	private final EntityPlayer			player;
 	// actually used

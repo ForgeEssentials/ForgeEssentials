@@ -27,6 +27,7 @@ public class PlayerInfoResonce extends Response
 	private boolean	sendFood;
 	private boolean	sendCapabilities;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String getResponceString(DatagramPacket packet)
 	{
@@ -125,11 +126,11 @@ public class PlayerInfoResonce extends Response
 	@Override
 	public void writeConfig(String category, Configuration config)
 	{
-		config.get(category, "sendHome", true).value = "" + sendhome;
-		config.get(category, "sendpotions", true).value = "" + sendpotions;
-		config.get(category, "sendXP", true).value = "" + sendXP;
-		config.get(category, "sendArmorAndHealth", true).value = "" + sendArmorAndHealth;
-		config.get(category, "sendFood", true).value = "" + sendFood;
-		config.get(category, "sendCapabilities", true).value = "" + sendCapabilities;
+		config.get(category, "sendHome", true).set(sendhome);
+		config.get(category, "sendpotions", true).set(sendpotions);
+		config.get(category, "sendXP", true).set(sendXP);
+		config.get(category, "sendArmorAndHealth", true).set(sendArmorAndHealth);
+		config.get(category, "sendFood", true).set(sendFood);
+		config.get(category, "sendCapabilities", true).set(sendCapabilities);
 	}
 }

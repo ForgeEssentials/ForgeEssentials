@@ -88,7 +88,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		dur = parseIntWithMin(sender, args[2], 0) * 20;
 
 		PotionEffect eff = new PotionEffect(ID, dur, ampl);
-		List<EntityPlayerMP> players = new ArrayList();
+		List<EntityPlayerMP> players = new ArrayList<EntityPlayerMP>();
 		if (args[0].equalsIgnoreCase("me"))
 		{
 			players.add((EntityPlayerMP) sender);
@@ -165,7 +165,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

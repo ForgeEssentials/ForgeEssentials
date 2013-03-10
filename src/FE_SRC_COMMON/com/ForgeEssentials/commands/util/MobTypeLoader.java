@@ -30,7 +30,7 @@ public class MobTypeLoader
 		EnumMobType type;
 		for (ASMData asm : data)
 		{
-			Class c = null;
+			Class<?> c = null;
 			className = asm.getClassName();
 
 			try

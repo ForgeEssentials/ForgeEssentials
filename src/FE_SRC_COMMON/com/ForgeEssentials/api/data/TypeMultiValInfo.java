@@ -9,7 +9,7 @@ import java.util.Set;
 
 import com.ForgeEssentials.data.StorageManager;
 
-public abstract class TypeMultiValInfo implements ITypeInfo
+public abstract class TypeMultiValInfo implements ITypeInfo<Object>
 {
 	protected ClassContainer					container;
 	protected HashMap<String, ClassContainer>	fields;
@@ -57,6 +57,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 		return container;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Class[] getGenericTypes()
 	{
@@ -75,8 +76,8 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 		Set<TypeData> datas = getTypeDatasFromObject(obj);
 		TypeData data = DataStorageManager.getDataForType(container);
 
-		ITypeInfo entry = getEntryInfo();
-		ITypeInfo tempInfo;
+		ITypeInfo<?> entry = getEntryInfo();
+		ITypeInfo<?> tempInfo;
 
 		String id = new UID().toString();
 		String unique = container.getFileSafeName() + id;
@@ -115,7 +116,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	@Override
 	public final Object reconstruct(IReconstructData data)
 	{
-		Collection values = data.getAllValues();
+		Collection<?> values = data.getAllValues();
 		TypeData[] datas = new TypeData[values.size()];
 		int i = 0;
 		for (Object obj : values)
@@ -128,7 +129,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	public abstract Object reconstruct(TypeData[] data);
 
 	@Override
-	public final ITypeInfo getInfoForField(String field)
+	public final ITypeInfo<?> getInfoForField(String field)
 	{
 		return getEntryInfo();
 	}

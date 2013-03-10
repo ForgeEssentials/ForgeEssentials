@@ -15,6 +15,7 @@ import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModContainer;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class CallableMap
 {
 	private HashMultimap<String, FECallable>	callables;

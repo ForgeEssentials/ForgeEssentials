@@ -11,7 +11,7 @@ import cpw.mods.fml.common.asm.transformers.AccessTransformer;
 public class FEAccessTransformer extends AccessTransformer
 {
 	private static FEAccessTransformer	instance;
-	private static List					mapFiles	= new LinkedList();
+	private static List<String>					mapFiles	= new LinkedList<String>();
 
 	public FEAccessTransformer() throws IOException
 	{
@@ -19,7 +19,7 @@ public class FEAccessTransformer extends AccessTransformer
 		instance = this;
 		// add your access transformers here!
 		mapFiles.add("forgeessentials_at.cfg");
-		Iterator it = mapFiles.iterator();
+		Iterator<String> it = mapFiles.iterator();
 		while (it.hasNext())
 		{
 			String file = (String) it.next();

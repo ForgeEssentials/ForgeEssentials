@@ -66,7 +66,7 @@ public class CommandFEPermUser
 			if (args.length == 2) // display user super perms
 			{
 				Zone zone = ZoneManager.getSUPER();
-				ArrayList list = PermissionsAPI.getPlayerPermissions(playerName, zone.getZoneName());
+				ArrayList<String> list = PermissionsAPI.getPlayerPermissions(playerName, zone.getZoneName());
 				boolean error = false;
 				for (Object lineObj : list)
 				{
@@ -413,7 +413,7 @@ public class CommandFEPermUser
 			if (args.length == 2) // display user super perms
 			{
 				Zone zone = ZoneManager.getSUPER();
-				ArrayList list = PermissionsAPI.getPlayerPermissions(playerName, zone.getZoneName());
+				ArrayList<String> list = PermissionsAPI.getPlayerPermissions(playerName, zone.getZoneName());
 				boolean error = false;
 				for (Object lineObj : list)
 				{

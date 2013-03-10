@@ -29,9 +29,9 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 		subcat = cat + ".DB";
 		config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
 
-		ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").value;
-		ModulePlayerLogger.username = config.get(subcat, "username", "root").value;
-		ModulePlayerLogger.password = config.get(subcat, "password", "root").value;
+		ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").getString();
+		ModulePlayerLogger.username = config.get(subcat, "username", "root").getString();
+		ModulePlayerLogger.password = config.get(subcat, "password", "root").getString();
 		ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
 		ModulePlayerLogger.interval = config.get(subcat, "interval", 300, "Amount of time (in sec.) between database saves.").getInt();
 
@@ -87,9 +87,9 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 		subcat = cat + ".DB";
 		config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
 
-		ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").value;
-		ModulePlayerLogger.username = config.get(subcat, "username", "root").value;
-		ModulePlayerLogger.password = config.get(subcat, "password", "root").value;
+		ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").getString();
+		ModulePlayerLogger.username = config.get(subcat, "username", "root").getString();
+		ModulePlayerLogger.password = config.get(subcat, "password", "root").getString();
 		ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
 		ModulePlayerLogger.interval = config.get(subcat, "interval", 300, "Amount of time (in sec.) between database saves.").getInt();
 

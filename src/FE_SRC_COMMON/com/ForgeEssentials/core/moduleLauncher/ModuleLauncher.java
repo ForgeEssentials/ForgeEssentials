@@ -14,7 +14,6 @@ import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
-import cpw.mods.fml.common.InjectedModContainer;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
@@ -78,7 +77,7 @@ public class ModuleLauncher
 		CallableMap map = new CallableMap();
 
 		data = e.getAsmData().getAll(ForgeEssentialsRegistrar.class.getName());
-		Class c;
+		Class<?> c;
 		Object obj = null;
 		for (ASMData asm : data)
 		{

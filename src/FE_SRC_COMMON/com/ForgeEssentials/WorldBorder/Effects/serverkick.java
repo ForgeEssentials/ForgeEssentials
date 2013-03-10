@@ -12,7 +12,7 @@ public class serverkick implements IEffect
 	@Override
 	public void registerConfig(Configuration config, String category)
 	{
-		message = config.get(category, "Message", message, "Message to send to the player on the kick screen.").value;
+		message = config.get(category, "Message", message, "Message to send to the player on the kick screen.").getString();
 	}
 
 	@Override

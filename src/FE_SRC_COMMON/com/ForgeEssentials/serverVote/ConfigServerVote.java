@@ -56,14 +56,14 @@ public class ConfigServerVote extends ModuleConfigBase
 		String subcat = category + ".Votifier";
 		config.addCustomCategoryComment(subcat, "This is for votifier compatibility only.");
 
-		hostname = config.get(subcat, "hostname", "").value;
+		hostname = config.get(subcat, "hostname", "").getString();
 		port = config.get(subcat, "port", "8192").getInt();
 
 		allowOfflineVotes = config.get(category, "allowOfflineVotes", true, "If false, votes of offline players will be canceled.").getBoolean(true);
-		msgAll = config.get(category, "msgAll", "%player has voted for this server on %service.", "You can use color codes (&), %player and %service").value;
-		msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").value;
+		msgAll = config.get(category, "msgAll", "%player has voted for this server on %service.", "You can use color codes (&), %player and %service").getString();
+		msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").getString();
 
-		String[] tempArray = config.get(category, "rewards", new String[] {}, "Format is like this: [amount]x<id>[:meta]").valueList;
+		String[] tempArray = config.get(category, "rewards", new String[] {}, "Format is like this: [amount]x<id>[:meta]").getStringList();
 
 		for (String temp : tempArray)
 		{
@@ -108,8 +108,8 @@ public class ConfigServerVote extends ModuleConfigBase
 	{
 		config.load();
 		allowOfflineVotes = config.get(category, "allowOfflineVotes", true, "If false, votes of offline players will be canceled.").getBoolean(true);
-		msgAll = config.get(category, "msgAll", "%player has voted for this server on %service.", "You can use color codes (&), %player and %service").value;
-		msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").value;
+		msgAll = config.get(category, "msgAll", "%player has voted for this server on %service.", "You can use color codes (&), %player and %service").getString();
+		msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").getString();
 
 		loadKeys();
 	}

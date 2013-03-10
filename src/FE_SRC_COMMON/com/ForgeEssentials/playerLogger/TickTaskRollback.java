@@ -19,10 +19,6 @@ import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class TickTaskRollback implements ITickTask
 {
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= 8344437854405195194L;
 	private boolean				isComplete			= false;
 	private ICommandSender		sender;
 	private ResultSet			rs;

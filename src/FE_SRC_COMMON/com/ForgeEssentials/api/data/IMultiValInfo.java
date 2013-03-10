@@ -12,6 +12,7 @@ public abstract class IMultiValInfo<T> implements ITypeInfo<T>
 	 * This shouldn't be any longer than 2 for Maps, and 1 for anything else.
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public abstract Class[] getGenericTypes();
 }

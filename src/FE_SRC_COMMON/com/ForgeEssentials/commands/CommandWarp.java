@@ -159,7 +159,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsFromIterableMatchingLastWord(args, TeleportCenter.warps.keySet());

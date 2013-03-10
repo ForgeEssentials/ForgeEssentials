@@ -35,7 +35,7 @@ public class TypeInfoList extends TypeMultiValInfo
 	{
 		HashSet<TypeData> datas = new HashSet<TypeData>();
 
-		List list = (List) obj;
+		List<?> list = (List<?>) obj;
 
 		TypeData data;
 		for (int i = 0; i < list.size(); i++)
@@ -49,6 +49,7 @@ public class TypeInfoList extends TypeMultiValInfo
 		return datas;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object reconstruct(TypeData[] data)
 	{
@@ -59,10 +60,10 @@ public class TypeInfoList extends TypeMultiValInfo
 			Array.set(array, (Integer) dat.getFieldValue(POS), dat.getFieldValue(ELEMENT));
 		}
 
-		List list = new ArrayList(data.length);
+		List<Object> list = new ArrayList<Object>(data.length);
 		try
 		{
-			list = (List) container.getType().newInstance();
+			list = (List<Object>) container.getType().newInstance();
 		}
 		catch (Exception e)
 		{

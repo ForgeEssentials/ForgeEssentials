@@ -100,7 +100,7 @@ public class ConfigChat extends ModuleConfigBase
 		config.addCustomCategoryComment("Automessage", "Automated spamm");
 
 		Property prop = config.get("Chat", "chatformat", "%groupPrefix%playerPrefix<%username>%playerSuffix%groupSuffix %reset%message", largeComment_chatFormat);
-		prop.value = chatFormat;
+		prop.set(chatFormat);
 
 		String[] msg = AutoMessage.msg.toArray(new String[0]);
 		for (int i = 0; i < msg.length; i++)
@@ -108,19 +108,19 @@ public class ConfigChat extends ModuleConfigBase
 			msg[i] = "\"" + msg[i] + "\"";
 		}
 
-		config.get("Automessage", "messages", new String[] {}, "Each line is 1 message. You can use collor coldes. YOU MUST USE DOUBLE QUOTES").valueList = msg;
-		config.get("Automessage", "random", false, "Randomize the oreder of messages").value = AutoMessage.random + "";
-		config.get("Automessage", "inverval", 1, "Time inbetween each message in minutes").value = AutoMessage.waittime + "";
-		config.get("Automessage", "enable", true).value = AutoMessage.enable + "";
+		config.get("Automessage", "messages", new String[] {}, "Each line is 1 message. You can use collor coldes. YOU MUST USE DOUBLE QUOTES").set(msg);
+		config.get("Automessage", "random", false, "Randomize the oreder of messages").set(AutoMessage.random);
+		config.get("Automessage", "inverval", 1, "Time inbetween each message in minutes").set(AutoMessage.waittime);
+		config.get("Automessage", "enable", true).set(AutoMessage.enable);
 
-		config.get("BannedWords", "censor", true, "censor the words in the censorList").value = "" + ChatFormatter.censor;
-		config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").valueList = ChatFormatter.bannedWords.toArray(new String[ChatFormatter.bannedWords.size()]);
+		config.get("BannedWords", "censor", true, "censor the words in the censorList").set(ChatFormatter.censor);
+		config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").set(ChatFormatter.bannedWords.toArray(new String[ChatFormatter.bannedWords.size()]));
 
 		config.addCustomCategoryComment("Chat.groups", largeComment_Cat_Groups);
 
-		config.get("Chat.groups", "groupPrefix", "").value = groupPrefixFormat;
-		config.get("Chat.groups", "groupSuffix", "").value = groupSuffixFormat;
-		config.get("Chat.groups", "rank", "").value = groupRankFormat;
+		config.get("Chat.groups", "groupPrefix", "").set(groupPrefixFormat);
+		config.get("Chat.groups", "groupSuffix", "").set(groupSuffixFormat);
+		config.get("Chat.groups", "rank", "").set(groupRankFormat);
 
 		config.save();
 	}
@@ -134,7 +134,7 @@ public class ConfigChat extends ModuleConfigBase
 		config.addCustomCategoryComment("Automessage", "Automated spamm");
 
 		String[] msg = config.get("Automessage", "messages", new String[]
-		{ "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be chenged there too!\"" }, "Each line is 1 message. You can use collor coldes. YOU MUST USE DOUBLE QUOTES").valueList.clone();
+		{ "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be chenged there too!\"" }, "Each line is 1 message. You can use collor coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
 		for (int i = 0; i < msg.length; i++)
 		{
 			AutoMessage.msg.add(FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1))));
@@ -144,18 +144,18 @@ public class ConfigChat extends ModuleConfigBase
 		AutoMessage.waittime = config.get("Automessage", "inverval", 1, "Time inbetween each message in minutes").getInt();
 		AutoMessage.enable = config.get("Automessage", "enable", true).getBoolean(true);
 
-		chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat).value;
+		chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat).getString();
 
 		ChatFormatter.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
 		ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
-		{ "fuck", "ass", "bitch", "shit" }, "List of words to be censored").valueList);
-		ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").value;
+		{ "fuck", "ass", "bitch", "shit" }, "List of words to be censored").getStringList());
+		ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").getString();
 
 		config.addCustomCategoryComment("Chat.groups", largeComment_Cat_Groups);
 
-		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").value;
-		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").value;
-		groupRankFormat = config.get("Chat.groups", "rank", "[{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}]").value;
+		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
+		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
+		groupRankFormat = config.get("Chat.groups", "rank", "[{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}]").getString();
 
 		config.save();
 	}

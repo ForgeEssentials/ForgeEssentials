@@ -234,14 +234,14 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 2)
 			return getListOfStringsMatchingLastWord(args, new String[]
 			{ "survival", "creative", "adventure" });
 		else if (args.length == 1)
 		{
-			List match = getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+			List<?> match = getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 			if (match == null)
 			{
 				match = getListOfStringsMatchingLastWord(args, new String[]

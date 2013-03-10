@@ -35,6 +35,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 		{ "cmdb", "gcmdb" };
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
@@ -44,7 +45,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 		NBTTagCompound tag = new NBTTagCompound();
 		NBTTagList pages = new NBTTagList();
 
-		HashMap<String, String> map = new HashMap();
+		HashMap<String, String> map = new HashMap<String, String>();
 
 		for (Object cmdObj : cmdList)
 		{
@@ -126,7 +127,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
 	}

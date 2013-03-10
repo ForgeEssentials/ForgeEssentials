@@ -29,8 +29,6 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class NBTDataDriver extends BinaryDataDriver
 {
-	private static final String	UNIQUE	= "__UNIQUE__";
-
 	@Override
 	protected boolean saveData(ClassContainer type, TypeData data)
 	{
@@ -118,7 +116,7 @@ public class NBTDataDriver extends BinaryDataDriver
 
 		TypeData data = DataStorageManager.getDataForType(type);
 		data.setUniqueKey(uniqueKey);
-		ITypeInfo info = DataStorageManager.getInfoForType(type);
+		ITypeInfo<?> info = DataStorageManager.getInfoForType(type);
 		readClassFromTag(nbt, data, info);
 
 		return data;
@@ -132,7 +130,8 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 	}
 
-	private void readClassFromTag(NBTTagCompound tag, TypeData data, ITypeInfo info)
+	@SuppressWarnings("unchecked")
+	private void readClassFromTag(NBTTagCompound tag, TypeData data, ITypeInfo<?> info)
 	{
 		String name;
 		ClassContainer tempType;
@@ -164,7 +163,7 @@ public class NBTDataDriver extends BinaryDataDriver
 			// ignore.
 			return;
 
-		Class type = obj.getClass();
+		Class<? extends Object> type = obj.getClass();
 
 		if (type.equals(Integer.class))
 		{
@@ -252,7 +251,7 @@ public class NBTDataDriver extends BinaryDataDriver
 			throw new IllegalArgumentException("Cannot save object type: " + type.getCanonicalName());
 	}
 
-	private Object readPrimitiveFromTag(NBTTagCompound tag, String name, Class type)
+	private Object readPrimitiveFromTag(NBTTagCompound tag, String name, Class<?> type)
 	{
 		if (name == null || type == null)
 			return null;

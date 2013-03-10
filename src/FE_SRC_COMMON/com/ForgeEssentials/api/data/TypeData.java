@@ -44,7 +44,7 @@ public class TypeData implements IReconstructData, Serializable
 	}
 
 	@Override
-	public Collection getAllValues()
+	public Collection<Object> getAllValues()
 	{
 		return members.values();
 	}
@@ -80,7 +80,7 @@ public class TypeData implements IReconstructData, Serializable
 	}
 
 	@Override
-	public Class getType()
+	public Class<?> getType()
 	{
 		return type.getType();
 	}

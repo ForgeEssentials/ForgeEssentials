@@ -13,7 +13,7 @@ public class executecommand implements IEffect
 	@Override
 	public void registerConfig(Configuration config, String category)
 	{
-		command = config.get(category, "Command", command, "%p gets replaced with the players username").value;
+		command = config.get(category, "Command", command, "%p gets replaced with the players username").getString();
 	}
 
 	@Override

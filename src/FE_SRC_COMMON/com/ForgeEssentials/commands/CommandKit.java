@@ -229,10 +229,10 @@ public class CommandKit extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		NBTTagCompound warps = DataStorage.getData("kitdata");
-		Iterator warpsIt = warps.getTags().iterator();
+		Iterator<?> warpsIt = warps.getTags().iterator();
 		List<String> list = new ArrayList<String>();
 		while (warpsIt.hasNext())
 		{

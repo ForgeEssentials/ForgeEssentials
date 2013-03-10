@@ -33,6 +33,7 @@ import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
+@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 public class StorageManager implements IStorageManager
 {
 	// just keeps an instance of the config for future use.
@@ -177,7 +178,7 @@ public class StorageManager implements IStorageManager
 	@Override
 	public void registerSaveableClass(ClassContainer type)
 	{
-		ITypeInfo info = null;
+		ITypeInfo<Object> info = null;
 
 		if (type.isArray() && !type.getType().getComponentType().isPrimitive() && !String.class.isAssignableFrom(type.getType().getComponentType()))
 		{
@@ -201,7 +202,7 @@ public class StorageManager implements IStorageManager
 		}
 		else if (Serializable.class.isAssignableFrom(type.getType()))
 		{
-			info = new TypeInfoSerialize(type);
+			info = new TypeInfoSerialize<Object>(type);
 		}
 
 		if (info == null)
@@ -254,7 +255,7 @@ public class StorageManager implements IStorageManager
 					}
 				}
 
-				ITypeInfo created = null;
+				ITypeInfo<Object> created = null;
 
 				if (con == null)
 					throw new IllegalArgumentException(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
@@ -311,9 +312,9 @@ public class StorageManager implements IStorageManager
 	}
 
 	@Override
-	public ITypeInfo getInfoForType(ClassContainer type)
+	public ITypeInfo<Object> getInfoForType(ClassContainer type)
 	{
-		ITypeInfo tagged = taggerList.get(type.toString());
+		ITypeInfo<Object> tagged = taggerList.get(type.toString());
 
 		if (tagged != null)
 			return tagged;
@@ -342,7 +343,7 @@ public class StorageManager implements IStorageManager
 
 		if (tempType == null)
 		{
-			for (Class inter : type.getType().getInterfaces())
+			for (Class<?> inter : type.getType().getInterfaces())
 			{
 				tempType = new ClassContainer(inter, type.getParameters());
 
@@ -387,10 +388,10 @@ public class StorageManager implements IStorageManager
 	@Override
 	public TypeData getDataForObject(ClassContainer container, Object obj)
 	{
-		ITypeInfo info = getInfoForType(container);
+		ITypeInfo<Object> info = getInfoForType(container);
 		TypeData data = info.getTypeDataFromObject(obj);
 
-		ITypeInfo tempInfo;
+		ITypeInfo<?> tempInfo;
 		for (Entry<String, Object> e : data.getAllFields())
 		{
 			if (e.getValue() != null && !(e.getValue() instanceof TypeData) && StorageManager.isTypeComplex(e.getValue().getClass()))
@@ -407,7 +408,7 @@ public class StorageManager implements IStorageManager
 	 * @param t class check
 	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.
 	 */
-	public static boolean isTypeComplex(Class type)
+	public static boolean isTypeComplex(Class<?> type)
 	{
 		boolean flag = true;
 		if (type.isPrimitive() || type.equals(Integer.class) || type.equals(Float.class) ||

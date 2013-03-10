@@ -30,8 +30,9 @@ public class FlatFilePermissions
 		PermissionHolder holder;
 		String catName;
 		String[] split;
-		for (ConfigCategory cat : config.categories.values())
+		for (String catName2 : config.getCategoryNames())
 		{
+			ConfigCategory cat = config.getCategory(catName2);
 			if (!cat.isChild())
 			{
 				continue;

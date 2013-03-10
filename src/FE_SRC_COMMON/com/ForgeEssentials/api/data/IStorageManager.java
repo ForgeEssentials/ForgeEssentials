@@ -16,6 +16,7 @@ public interface IStorageManager
 	 * @param infoType
 	 * @param type
 	 */
+	@SuppressWarnings("rawtypes")
 	void registerSaveableClass(Class<? extends ITypeInfo> infoType, ClassContainer type);
 
 	/**
@@ -25,7 +26,7 @@ public interface IStorageManager
 	 */
 	void registerSaveableClass(ClassContainer type);
 
-	ITypeInfo getInfoForType(ClassContainer type);
+	ITypeInfo<?> getInfoForType(ClassContainer type);
 
 	TypeData getDataForType(ClassContainer type);
 

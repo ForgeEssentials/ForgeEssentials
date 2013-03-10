@@ -18,7 +18,7 @@ public class potion implements IEffect
 		{ "9:5:0" };
 
 		config.addCustomCategoryComment(category, "For more information, go to http://www.minecraftwiki.net/wiki/Potion_effects#Parameters");
-		potionEffects = config.get(category, "potionEffects", potionEffects, "Format like this: 'ID:duration:amplifier'").valueList;
+		potionEffects = config.get(category, "potionEffects", potionEffects, "Format like this: 'ID:duration:amplifier'").getStringList();
 
 		for (String poisonEffect : potionEffects)
 		{

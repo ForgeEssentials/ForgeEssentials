@@ -32,10 +32,6 @@ import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class CommandButcherTickTask implements ITickTask
 {
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= 3714974149390562215L;
 	double						MAX_ENTITY_RADIUS;
 	boolean						isComplete;
 	AxisAlignedBB				aabb;

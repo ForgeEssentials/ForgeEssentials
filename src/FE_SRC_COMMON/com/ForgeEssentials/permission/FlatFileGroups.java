@@ -35,7 +35,12 @@ public class FlatFileGroups
 		Group g;
 		PromotionLadder ladder;
 		HashMap<String, String[]> playerMap;
-		for (Entry<String, ConfigCategory> e : config.categories.entrySet())
+		HashMap<String, ConfigCategory> catList = new HashMap<String, ConfigCategory>();
+		for (String name : config.getCategoryNames())
+		{
+			catList.put(name, config.getCategory(name));
+		}
+		for (Entry<String, ConfigCategory> e : catList.entrySet())
 		{
 			if (!e.getValue().isChild())
 			{
@@ -134,7 +139,7 @@ public class FlatFileGroups
 		if (map == null)
 			return new String[] {};
 
-		ArrayList list = map.get(name);
+		ArrayList<?> list = map.get(name);
 		if (list == null)
 			return new String[] {};
 

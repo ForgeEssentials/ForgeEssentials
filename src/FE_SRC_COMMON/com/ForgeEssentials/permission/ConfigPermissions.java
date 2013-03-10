@@ -38,7 +38,7 @@ public class ConfigPermissions extends ModuleConfigBase
 
 		if (importBool == true)
 		{
-			config.get("stuff", "import", false).value = "" + false;
+			config.get("stuff", "import", false).set(false);
 		}
 
 		connector.loadOrGenerate(config, "database");

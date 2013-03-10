@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
@@ -23,6 +22,7 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
 
+@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 public class SqlHelper
 {
 	private Connection			db;
@@ -2174,7 +2174,7 @@ public class SqlHelper
 		}
 	}
 
-	public static synchronized ArrayList getGroupsInZone(String zoneName)
+	public static synchronized ArrayList<?> getGroupsInZone(String zoneName)
 	{
 		try
 		{

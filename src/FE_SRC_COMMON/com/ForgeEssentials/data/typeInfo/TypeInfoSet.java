@@ -34,9 +34,9 @@ public class TypeInfoSet extends TypeMultiValInfo
 	{
 		HashSet<TypeData> datas = new HashSet<TypeData>();
 
-		Set set = (Set) obj;
+		Set<?> set = (Set<?>) obj;
 
-		Iterator itt = set.iterator();
+		Iterator<?> itt = set.iterator();
 
 		TypeData data;
 		int i = 0;
@@ -54,6 +54,7 @@ public class TypeInfoSet extends TypeMultiValInfo
 		return datas;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object reconstruct(TypeData[] data)
 	{
@@ -64,10 +65,10 @@ public class TypeInfoSet extends TypeMultiValInfo
 			Array.set(array, (Integer) dat.getFieldValue(POS), dat.getFieldValue(ELEMENT));
 		}
 
-		Set set = new HashSet(data.length);
+		Set<Object> set = new HashSet<Object>(data.length);
 		try
 		{
-			set = (Set) container.getType().newInstance();
+			set = (Set<Object>) container.getType().newInstance();
 		}
 		catch (Exception e)
 		{

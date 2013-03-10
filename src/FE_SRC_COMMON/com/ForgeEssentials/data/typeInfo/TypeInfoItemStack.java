@@ -90,6 +90,7 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 		return new ClassContainer(ItemStack.class);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Class[] getGenericTypes()
 	{
@@ -97,7 +98,7 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 	}
 
 	@Override
-	public ITypeInfo getInfoForField(String field)
+	public ITypeInfo<?> getInfoForField(String field)
 	{
 		return DataStorageManager.getInfoForType(getTypeOfField(field));
 	}

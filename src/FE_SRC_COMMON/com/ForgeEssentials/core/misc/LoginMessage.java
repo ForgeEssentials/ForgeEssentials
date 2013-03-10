@@ -124,6 +124,7 @@ public class LoginMessage
 	 *            to parse the amount to add to the wallet
 	 */
 
+	@SuppressWarnings("deprecation")
 	private static String Format(String line, String playerName)
 	{
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(playerName);

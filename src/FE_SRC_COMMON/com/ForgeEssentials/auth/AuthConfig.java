@@ -34,9 +34,9 @@ public class AuthConfig extends ModuleConfigBase
 	@Override
 	public void forceSave()
 	{
-		config.get(CATEGORY_MAIN, "forceEnable", false, "Forces the module to be loaded regardless of Minecraft auth services").value = "" + ModuleAuth.forceEnabled;
-		config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the module if and when the Minecraft Auth servers go down.").value = "" + ModuleAuth.checkVanillaAuthStatus;
-		config.get(CATEGORY_MAIN, "allowOfflineReg", false, "Allow registration while server is offline. Don't allow this.").value = "" + ModuleAuth.allowOfflineReg;
+		config.get(CATEGORY_MAIN, "forceEnable", false, "Forces the module to be loaded regardless of Minecraft auth services").set(ModuleAuth.forceEnabled);
+		config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the module if and when the Minecraft Auth servers go down.").set(ModuleAuth.checkVanillaAuthStatus);
+		config.get(CATEGORY_MAIN, "allowOfflineReg", false, "Allow registration while server is offline. Don't allow this.").set(ModuleAuth.allowOfflineReg);
 
 		config.save();
 	}

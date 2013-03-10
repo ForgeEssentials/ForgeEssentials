@@ -104,7 +104,7 @@ public class ConfigWorldBorder extends ModuleConfigBase
 		int X = config.get(category, "X", 0).getInt();
 		int Z = config.get(category, "Z", 0).getInt();
 		int rad = config.get(category, "rad", 0).getInt();
-		BorderShape shape = BorderShape.valueOf(config.get(category, "shape", "square").value);
+		BorderShape shape = BorderShape.valueOf(config.get(category, "shape", "square").getString());
 		boolean set = config.get(category, "set", false, "True if the value is actually set.").getBoolean(false);
 
 		ModuleWorldBorder.setCenter(rad, X, Z, shape, set);
@@ -132,11 +132,11 @@ public class ConfigWorldBorder extends ModuleConfigBase
 	public void forceSave()
 	{
 		String category = "Point";
-		config.get(category, "X", 0).value = "" + ModuleWorldBorder.X;
-		config.get(category, "Z", 0).value = "" + ModuleWorldBorder.Z;
-		config.get(category, "rad", 0).value = "" + ModuleWorldBorder.rad;
-		config.get(category, "set", false, "True if the value is actually set.").value = "" + ModuleWorldBorder.set;
-		config.get(category, "shape", "square").value = ModuleWorldBorder.shape.toString();
+		config.get(category, "X", 0).set(ModuleWorldBorder.X);
+		config.get(category, "Z", 0).set(ModuleWorldBorder.Z);
+		config.get(category, "rad", 0).set(ModuleWorldBorder.rad);
+		config.get(category, "set", false, "True if the value is actually set.").set(ModuleWorldBorder.set);
+		config.get(category, "shape", "square").set(ModuleWorldBorder.shape.toString());
 		config.save();
 	}
 }

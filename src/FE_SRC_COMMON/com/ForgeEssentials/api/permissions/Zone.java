@@ -13,7 +13,7 @@ import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldArea;
 
 @SaveableObject
-public class Zone extends WorldArea implements Comparable
+public class Zone extends WorldArea implements Comparable<Object>
 {
 	@SaveableField
 	public int		priority;	// lowest priority is 0

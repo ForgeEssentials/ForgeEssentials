@@ -11,11 +11,11 @@ import com.ForgeEssentials.api.permissions.IPermissionsHelper;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class PermissionsHelper implements IPermissionsHelper
 {
 	public final String	EntryPlayer	= "_ENTRY_PLAYER_";

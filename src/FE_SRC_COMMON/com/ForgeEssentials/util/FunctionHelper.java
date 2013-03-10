@@ -125,6 +125,7 @@ public final class FunctionHelper
 		return new WorldPoint(entity);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static EntityPlayerMP getPlayerFromPartialName(String username)
 	{
 		List<EntityPlayer> possibles = new LinkedList<EntityPlayer>();

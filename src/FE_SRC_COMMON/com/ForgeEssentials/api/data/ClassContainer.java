@@ -2,6 +2,7 @@ package com.ForgeEssentials.api.data;
 
 import java.util.Arrays;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class ClassContainer
 {
 	private final Class	heldClass;

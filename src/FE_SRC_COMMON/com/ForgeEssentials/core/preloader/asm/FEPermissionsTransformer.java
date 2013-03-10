@@ -72,7 +72,6 @@ public class FEPermissionsTransformer implements IClassTransformer
 		return bytes;
 	}
 
-	@SuppressWarnings("unchecked")
 	private boolean buildEvents(ClassNode classNode) throws Exception
 	{
 		Class<?> parent = this.getClass().getClassLoader().loadClass(classNode.superName.replace('/', '.'));

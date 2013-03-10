@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.util.OutputHandler;
 
+@SuppressWarnings({ "unchecked" })
 public class ExportThread extends Thread
 {
 	File			exportDir;

@@ -12,6 +12,7 @@ import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.TypeMultiValInfo;
 import com.ForgeEssentials.util.OutputHandler;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class TypeInfoMap extends TypeMultiValInfo
 {
 	public static final String	KEY	= "key";
@@ -37,7 +38,7 @@ public class TypeInfoMap extends TypeMultiValInfo
 		Set<Entry> list = ((Map) obj).entrySet();
 
 		TypeData data;
-		for (Entry e : list)
+		for (Entry<?, ?> e : list)
 		{
 			data = getEntryData();
 			data.putField(KEY, e.getKey());
@@ -57,10 +58,10 @@ public class TypeInfoMap extends TypeMultiValInfo
 	@Override
 	public Object reconstruct(TypeData[] data)
 	{
-		Map map = new HashMap();
+		Map<Object, Object> map = new HashMap<Object, Object>();
 		try
 		{
-			map = (Map) container.getType().newInstance();
+			map = (Map<Object, Object>) container.getType().newInstance();
 		}
 		catch (Exception e)
 		{

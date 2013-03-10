@@ -49,7 +49,7 @@ public class CommandSeeInventory extends ForgeEssentialsCommandBase
 		player.incrementWindowID();
 
 		PlayerInvChest chest = new PlayerInvChest(victim, (EntityPlayerMP) sender);
-		player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, chest.getInvName(), chest.getSizeInventory()));
+		player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, chest.getInvName(), chest.getSizeInventory(), true));
 		player.openContainer = new ContainerChest(player.inventory, chest);
 		player.openContainer.windowId = player.currentWindowId;
 		player.openContainer.addCraftingToCrafters(player);

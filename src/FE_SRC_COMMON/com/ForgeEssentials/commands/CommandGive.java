@@ -74,6 +74,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			{
 				for (EntityPlayer player : players)
 				{
+					receiver = player;
 					ItemStack stack = new ItemStack(id, amount, dam);
 
 					String name = Item.itemsList[id].func_77653_i(stack);
@@ -171,7 +172,7 @@ public class CommandGive extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getItemList());

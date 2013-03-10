@@ -86,10 +86,7 @@ public class ForgeEssentials
 	public static boolean			mcstats;
 
 	public BannedItems				bannedItems;
-	private ItemList				itemList;
-
-	private MiscEventHandler		miscEventHandler;
-
+	
 	public static String			version;
 
 	private CompatMCStats			mcstatscompat;
@@ -147,9 +144,8 @@ public class ForgeEssentials
 		}
 
 		// setup modules AFTER data stuff...
-		miscEventHandler = new MiscEventHandler();
+		new MiscEventHandler();
 		bannedItems = new BannedItems();
-		MinecraftForge.EVENT_BUS.register(bannedItems);
 		LoginMessage.loadFile();
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
@@ -188,7 +184,7 @@ public class ForgeEssentials
 		mdlaunch.postLoad(e);
 		bannedItems.postLoad(e);
 
-		itemList = new ItemList();
+		new ItemList();
 	}
 
 	@ServerStarting

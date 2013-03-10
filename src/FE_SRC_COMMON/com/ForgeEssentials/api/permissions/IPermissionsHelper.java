@@ -34,13 +34,13 @@ public interface IPermissionsHelper
 
 	String clearGroupPermission(String name, String node, String zone);
 
-	ArrayList getGroupsInZone(String zoneName);
+	ArrayList<Group> getGroupsInZone(String zoneName);
 
 	String getPermissionForGroup(String target, String zone, String perm);
 
-	ArrayList getPlayerPermissions(String target, String zone);
+	ArrayList<String> getPlayerPermissions(String target, String zone);
 
-	ArrayList getGroupPermissions(String target, String zone);
+	ArrayList<String> getGroupPermissions(String target, String zone);
 
 	String getEPPrefix();
 

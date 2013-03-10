@@ -165,11 +165,6 @@ public class Vector3 extends Vector2 implements Cloneable
 		world.setBlockAndMetadataWithNotify(intX(), intY(), intZ(), id, metadata, 1);
 	}
 
-	public void setBlockWithNotify(World world, int id)
-	{
-		world.setBlockWithNotify(intX(), intY(), intZ(), id);
-	}
-
 	/**
 	 * Converts this Vector3 into a Vector2 by dropping the Y axis.
 	 */
@@ -314,6 +309,7 @@ public class Vector3 extends Vector2 implements Cloneable
 	/**
 	 * Gets all entities inside of this position in block space.
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Entity> getEntitiesWithin(World worldObj, Class<? extends Entity> par1Class)
 	{
 		return worldObj.getEntitiesWithinAABB(par1Class, AxisAlignedBB.getBoundingBox(intX(), intY(), intZ(), intX() + 1, intY() + 1, intZ() + 1));

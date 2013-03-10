@@ -28,7 +28,7 @@ public class FlatFilePlayers
 		Configuration config = new Configuration(file);
 
 		PlayerInfo info;
-		for (String cat : config.categories.keySet())
+		for (String cat : config.getCategoryNames())
 		{
 			if (cat.contains("."))
 			{

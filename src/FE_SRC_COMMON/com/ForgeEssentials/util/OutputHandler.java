@@ -4,7 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.minecraft.command.ICommandSender;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public final class OutputHandler
 {

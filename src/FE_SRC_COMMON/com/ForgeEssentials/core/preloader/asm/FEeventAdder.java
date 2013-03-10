@@ -42,9 +42,9 @@ public class FEeventAdder implements IClassTransformer
 	public static boolean					addedBreak	= false;
 	public static boolean					addedPlace	= false;
 
-	public static HashMap makeiiwmHMob()
+	public static HashMap<String, String> makeiiwmHMob()
 	{
-		HashMap iiwmHMob = new HashMap();
+		HashMap<String, String> iiwmHMob = new HashMap<String, String>();
 
 		iiwmHMob.put("className", "ir");
 		iiwmHMob.put("javaClassName", "ir");
@@ -61,9 +61,9 @@ public class FEeventAdder implements IClassTransformer
 		return iiwmHMob;
 	}
 
-	public static HashMap makeiiwmHMdev()
+	public static HashMap<String, String> makeiiwmHMdev()
 	{
-		HashMap iiwmHMdev = new HashMap<String, String>();
+		HashMap<String, String> iiwmHMdev = new HashMap<String, String>();
 
 		iiwmHMdev.put("className", "net.minecraft.item.ItemInWorldManager");
 		iiwmHMdev.put("javaClassName", "net/minecraft/item/ItemInWorldManager");
@@ -80,9 +80,9 @@ public class FEeventAdder implements IClassTransformer
 		return iiwmHMdev;
 	}
 
-	public static HashMap makeisHMob()
+	public static HashMap<String, String> makeisHMob()
 	{
-		HashMap isHMob = new HashMap();
+		HashMap<String, String> isHMob = new HashMap<String, String>();
 
 		isHMob.put("className", "ur");
 		isHMob.put("javaClassName", "ur");
@@ -94,9 +94,9 @@ public class FEeventAdder implements IClassTransformer
 		return isHMob;
 	}
 
-	public static HashMap makeisHMdev()
+	public static HashMap<String, String> makeisHMdev()
 	{
-		HashMap isHMdev = new HashMap<String, String>();
+		HashMap<String, String> isHMdev = new HashMap<String, String>();
 
 		isHMdev.put("className", "net.minecraft.item.ItemStack");
 		isHMdev.put("javaClassName", "net/minecraft/item/ItemStack");

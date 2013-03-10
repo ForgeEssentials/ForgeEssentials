@@ -28,29 +28,30 @@ import com.ForgeEssentials.util.OutputHandler;
  * @author AbrarSyed
  * @param <T> This would be set to Object, but subclasses may want to have TypeInfo's for very specific classes.
  */
-public class TypeInfoStandard implements ITypeInfo
+@SuppressWarnings("rawtypes")
+public class TypeInfoStandard implements ITypeInfo<Object>
 {
-	Class									type;
+	Class<?>									type;
 	private boolean							isUniqueKeyField;
 	private boolean							inLine;
 	private String							uniqueKey;
 	private String							reconstructorMethod;
 	private HashMap<String, ClassContainer>	fields;
 
-	public TypeInfoStandard(Class type)
+	public TypeInfoStandard(Class<?> type)
 	{
 		this.type = type;
 		fields = new HashMap<String, ClassContainer>();
 	}
-
+	
 	@Override
 	public void build()
 	{
 		SaveableObject AObj = (SaveableObject) type.getAnnotation(SaveableObject.class);
 		inLine = AObj.SaveInline();
 
-		Class currentType = type;
-		Class tempType;
+		Class<?> currentType = type;
+		Class<?> tempType;
 		Type aTempType;
 		ClassContainer tempContainer;
 		SaveableField info;
@@ -89,11 +90,11 @@ public class TypeInfoStandard implements ITypeInfo
 						{
 							if (types[i] instanceof Class)
 							{
-								params[i] = (Class) types[i];
+								params[i] = (Class<?>) types[i];
 							}
 							else if (types[i] instanceof ParameterizedType)
 							{
-								params[i] = (Class) ((ParameterizedType) types[i]).getRawType();
+								params[i] = (Class<?>) ((ParameterizedType) types[i]).getRawType();
 							}
 						}
 
@@ -171,7 +172,7 @@ public class TypeInfoStandard implements ITypeInfo
 	@Override
 	public TypeData getTypeDataFromObject(Object objectSaved)
 	{
-		Class c = objectSaved.getClass();
+		Class<?> c = objectSaved.getClass();
 		TypeData data = DataStorageManager.getDataForType(new ClassContainer(type));
 		Field f;
 		Object obj;
@@ -202,7 +203,7 @@ public class TypeInfoStandard implements ITypeInfo
 		}
 
 		String[] keys = fields.keySet().toArray(new String[fields.size()]);
-		Class currentClass = c;
+		Class<?> currentClass = c;
 		// Iterate over the object grabbing the fields we want to examine.
 		for (int i = 0; i < keys.length; ++i)
 		{
@@ -287,7 +288,7 @@ public class TypeInfoStandard implements ITypeInfo
 	}
 
 	@Override
-	public ITypeInfo getInfoForField(String field)
+	public ITypeInfo<?> getInfoForField(String field)
 	{
 		return DataStorageManager.getInfoForType(getTypeOfField(field));
 	}

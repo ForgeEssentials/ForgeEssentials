@@ -16,7 +16,7 @@ public class CommandPing extends ForgeEssentialsCommandBase
 	@Override
 	public void doConfig(Configuration config, String category)
 	{
-		response = config.get(category, "response", "Pong! %time").value;
+		response = config.get(category, "response", "Pong! %time").getString();
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class CommandPing extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
 		return null;
 	}

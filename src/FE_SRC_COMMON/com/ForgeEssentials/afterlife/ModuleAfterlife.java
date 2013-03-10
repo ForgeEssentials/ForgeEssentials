@@ -6,7 +6,6 @@ import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
@@ -45,12 +44,6 @@ public class ModuleAfterlife
 	{
 		deathchest.load();
 		GameRegistry.registerPlayerTracker(respawnDebuff);
-	}
-
-	@FEModule.ServerPostInit
-	public void serverStarted(FEModuleServerPostInitEvent e)
-	{
-		conf.loadDM();
 	}
 
 	@FEModule.ServerStop

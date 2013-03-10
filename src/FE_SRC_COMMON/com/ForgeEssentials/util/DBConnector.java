@@ -52,11 +52,11 @@ public class DBConnector
 	 */
 	public void write(Configuration config, String cat)
 	{
-		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" ")).value = type.toString();
+		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" ")).set(type.toString());
 
 		if (fallback != null)
 		{
-			config.get(cat, "checkParent", useParent, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.").value = "" + useParent;
+			config.get(cat, "checkParent", useParent, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.").set(useParent);
 		}
 
 		String newcat;
@@ -73,15 +73,15 @@ public class DBConnector
 
 			if (type.isRemote)
 			{
-				config.get(newcat, "host", "localhost").value = props.get("host").value;
-				config.get(newcat, "port", 3360).value = props.get("port").value;
-				config.get(newcat, "database", dbDefault).value = props.get("database").value;
-				config.get(newcat, "user", "FEUSER").value = props.get("user").value;
-				config.get(newcat, "pass", "password").value = props.get("pass").value;
+				config.get(newcat, "host", "localhost").set(props.get("host").getString());
+				config.get(newcat, "port", 3360).set(props.get("port").getString());
+				config.get(newcat, "database", dbDefault).set(props.get("database").getString());
+				config.get(newcat, "user", "FEUSER").set(props.get("user").getString());
+				config.get(newcat, "pass", "password").set(props.get("pass").getString());
 			}
 			else
 			{
-				config.get(newcat, "database", dbFileDefault, "this may be a file path as well.").value = props.get("database").value;
+				config.get(newcat, "database", dbFileDefault, "this may be a file path as well.").set(props.get("database").getString());
 			}
 
 		}
@@ -97,7 +97,7 @@ public class DBConnector
 	{
 		try
 		{
-			tempType = type = EnumDBType.valueOf(config.get(cat, "chosenType", dType.toString()).value);
+			tempType = type = EnumDBType.valueOf(config.get(cat, "chosenType", dType.toString()).getString());
 			if (fallback != null)
 			{
 				useParent = config.get(cat, "checkParent", false).getBoolean(false);
@@ -161,11 +161,11 @@ public class DBConnector
 				}
 
 				// continue with stuff
-				String host = props.get("host").value;
+				String host = props.get("host").getString();
 				int port = props.get("port").getInt();
-				String database = props.get("database").value;
-				String user = props.get("user").value;
-				String pass = props.get("pass").value;
+				String database = props.get("database").getString();
+				String user = props.get("user").getString();
+				String pass = props.get("pass").getString();
 
 				type.loadClass();
 				String connect = type.getConnectionString(host, port, database);
@@ -175,7 +175,7 @@ public class DBConnector
 			else
 			{
 				// nonremote connections
-				String database = props.get("database").value;
+				String database = props.get("database").getString();
 				String connect = type.getConnectionString(database);
 				con = DriverManager.getConnection(connect);
 				return con;
@@ -194,11 +194,11 @@ public class DBConnector
 			if (dType.isRemote)
 			{
 				// continue with stuff
-				String host = props.get("host").value;
+				String host = props.get("host").getString();
 				int port = props.get("port").getInt();
-				String database = props.get("database").value;
-				String user = props.get("user").value;
-				String pass = props.get("pass").value;
+				String database = props.get("database").getString();
+				String user = props.get("user").getString();
+				String pass = props.get("pass").getString();
 
 				dType.loadClass();
 				String connect = dType.getConnectionString(host, port, database);
@@ -207,7 +207,7 @@ public class DBConnector
 			else
 			{
 				// nonremote connections
-				String database = props.get("database").value;
+				String database = props.get("database").getString();
 				String connect = dType.getConnectionString(database);
 				return DriverManager.getConnection(connect);
 			}
@@ -235,11 +235,11 @@ public class DBConnector
 		{
 			
 			HashMap<String, Property> props = data.get(type);
-			String host = props.get("host").value;
+			String host = props.get("host").getString();
 			int port = props.get("port").getInt();
-			String database = props.get("database").value;
-			String user = props.get("user").value;
-			String pass = props.get("pass").value;
+			String database = props.get("database").getString();
+			String user = props.get("user").getString();
+			String pass = props.get("pass").getString();
 
 			type.loadClass();
 			String connect = type.getConnectionString(host, port, database);

@@ -5,7 +5,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public interface IDataDriver
 {
-	void onClassRegistered(ITypeInfo tagger);
+	void onClassRegistered(ITypeInfo<?> tagger);
 
 	String getName();
 

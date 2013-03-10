@@ -31,7 +31,7 @@ public class AutoPromote implements Runnable
 	@SaveableField
 	public boolean					enable;
 
-	public HashMap<Integer, String>	promotemap	= new HashMap();
+	public HashMap<Integer, String>	promotemap	= new HashMap<Integer, String>();
 
 	public AutoPromote(String zone, boolean enable)
 	{
@@ -86,7 +86,7 @@ public class AutoPromote implements Runnable
 	private static Thread						thread;
 	public static MinecraftServer				server;
 	public static boolean						countAFK;
-	public static HashMap<String, AutoPromote>	map	= new HashMap();
+	public static HashMap<String, AutoPromote>	map	= new HashMap<String, AutoPromote>();
 
 	public AutoPromote(MinecraftServer server)
 	{

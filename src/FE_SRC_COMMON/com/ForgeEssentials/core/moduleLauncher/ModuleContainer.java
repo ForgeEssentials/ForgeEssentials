@@ -43,8 +43,9 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-public class ModuleContainer implements Comparable
+public class ModuleContainer implements Comparable<Object>
 {
+	@SuppressWarnings("rawtypes")
 	protected static HashSet<Class>				modClasses	= new HashSet<Class>();
 
 	public Object								module, mod;
@@ -65,10 +66,11 @@ public class ModuleContainer implements Comparable
 	protected boolean							isValid		= true;
 	protected boolean							doesOverride;
 
+	@SuppressWarnings("rawtypes")
 	public ModuleContainer(ASMData data)
 	{
 		// get the class....
-		Class c = null;
+		Class<?> c = null;
 		className = data.getClassName();
 
 		try
@@ -241,7 +243,7 @@ public class ModuleContainer implements Comparable
 	protected void createAndPopulate()
 	{
 		Field f;
-		Class c;
+		Class<?> c;
 		// instantiate.
 		try
 		{
@@ -333,7 +335,7 @@ public class ModuleContainer implements Comparable
 		FEModulePreInitEvent event = new FEModulePreInitEvent(this, fmlEvent, map);
 		try
 		{
-			Class c = Class.forName(className);
+			Class<?> c = Class.forName(className);
 			Method m = c.getDeclaredMethod(preinit, new Class[]
 			{ FEModulePreInitEvent.class });
 			m.invoke(module, event);
@@ -353,7 +355,7 @@ public class ModuleContainer implements Comparable
 		FEModuleInitEvent event = new FEModuleInitEvent(this, fmlEvent);
 		try
 		{
-			Class c = Class.forName(className);
+			Class<?> c = Class.forName(className);
 			Method m = c.getDeclaredMethod(init, new Class[]
 			{ FEModuleInitEvent.class });
 			m.invoke(module, event);
@@ -373,7 +375,7 @@ public class ModuleContainer implements Comparable
 		FEModulePostInitEvent event = new FEModulePostInitEvent(this, fmlEvent);
 		try
 		{
-			Class c = Class.forName(className);
+			Class<?> c = Class.forName(className);
 			Method m = c.getDeclaredMethod(postinit, new Class[]
 			{ FEModulePostInitEvent.class });
 			m.invoke(module, event);
@@ -393,7 +395,7 @@ public class ModuleContainer implements Comparable
 		FEModuleServerInitEvent event = new FEModuleServerInitEvent(this, fmlEvent);
 		try
 		{
-			Class c = Class.forName(className);
+			Class<?> c = Class.forName(className);
 			Method m = c.getDeclaredMethod(serverinit, new Class[]
 			{ FEModuleServerInitEvent.class });
 			m.invoke(module, event);
@@ -413,7 +415,7 @@ public class ModuleContainer implements Comparable
 		FEModuleServerPostInitEvent event = new FEModuleServerPostInitEvent(this, fmlEvent);
 		try
 		{
-			Class c = Class.forName(className);
+			Class<?> c = Class.forName(className);
 			Method m = c.getDeclaredMethod(serverpostinit, new Class[]
 			{ FEModuleServerPostInitEvent.class });
 			m.invoke(module, event);
@@ -433,7 +435,7 @@ public class ModuleContainer implements Comparable
 		FEModuleServerStopEvent event = new FEModuleServerStopEvent(this, fmlEvent);
 		try
 		{
-			Class c = Class.forName(className);
+			Class<?> c = Class.forName(className);
 			Method m = c.getDeclaredMethod(serverstop, new Class[]
 			{ FEModuleServerStopEvent.class });
 			m.invoke(module, event);
@@ -452,7 +454,7 @@ public class ModuleContainer implements Comparable
 
 		try
 		{
-			Class c = Class.forName(className);
+			Class<?> c = Class.forName(className);
 			Method m = c.getDeclaredMethod(reload, new Class[]
 			{ ICommandSender.class });
 			m.invoke(module, user);
@@ -505,7 +507,7 @@ public class ModuleContainer implements Comparable
 		return isCore == c.isCore && name.equals(c.name) && className.equals(c.className);
 	}
 
-	private static Object handleMod(Class c)
+	private static Object handleMod(Class<?> c)
 	{
 		String modid;
 		Object obj = null;

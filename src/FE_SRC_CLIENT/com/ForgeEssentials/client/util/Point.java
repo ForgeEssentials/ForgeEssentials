@@ -13,6 +13,11 @@ import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 @SaveableObject(SaveInline = true)
 public class Point implements Serializable, Comparable<Point>
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 3003472204175937036L;
+
 	@SaveableField
 	public double	x;
 

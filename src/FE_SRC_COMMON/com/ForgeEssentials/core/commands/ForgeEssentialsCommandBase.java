@@ -22,7 +22,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public boolean				enableConsole	= true;
 	public boolean				enablePlayer	= true;
 
-	public ArrayList<String>	aliasList		= new ArrayList();
+	public ArrayList<String>	aliasList		= new ArrayList<String>();
 
 	// ---------------------------
 	// config interaction
@@ -39,7 +39,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
 		return aliasList;
 	}
@@ -260,7 +260,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 0)
 			return getListOfStringsFromIterableMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getPossibleCommands(sender));
