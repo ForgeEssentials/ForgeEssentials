@@ -136,7 +136,7 @@ public class CommandRegistrar
 
 				String category = "commands." + fecmd.getCommandName();
 				config.addCustomCategoryComment(category, fecmd.getCommandPerm());
-				for (String alias : config.get(category, "aliases", fecmd.getDefaultAliases()).valueList)
+				for (String alias : config.get(category, "aliases", fecmd.getDefaultAliases()).getStringList())
 				{
 					fecmd.aliasList.add(alias);
 				}

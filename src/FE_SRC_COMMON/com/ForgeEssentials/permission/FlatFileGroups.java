@@ -48,15 +48,15 @@ public class FlatFileGroups
 			{
 				for (Property prop : e.getValue().getValues().values())
 				{
-					ladder = new PromotionLadder(prop.getName(), split[0], prop.valueList);
+					ladder = new PromotionLadder(prop.getName(), split[0], prop.getStringList());
 					ladders.add(ladder);
 				}
 				continue;
 			}
 
-			prefix = config.get(e.getKey(), "prefix", " ").value;
-			suffix = config.get(e.getKey(), "suffix", " ").value;
-			parent = config.get(e.getKey(), "parent", "").value;
+			prefix = config.get(e.getKey(), "prefix", " ").getString();
+			suffix = config.get(e.getKey(), "suffix", " ").getString();
+			parent = config.get(e.getKey(), "parent", "").getString();
 			priority = config.get(e.getKey(), "priority", 0).getInt();
 
 			if (parent.trim().isEmpty())
@@ -68,7 +68,7 @@ public class FlatFileGroups
 			groups.add(g);
 
 			// now for the player things...
-			players = config.get(e.getKey(), "playersInGroup", new String[] {}).valueList;
+			players = config.get(e.getKey(), "playersInGroup", new String[] {}).getStringList();
 			playerMap = connector.get(split[0]);
 			if (playerMap == null)
 			{

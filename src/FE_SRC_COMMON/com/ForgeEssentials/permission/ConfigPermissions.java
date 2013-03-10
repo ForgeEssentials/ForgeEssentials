@@ -34,7 +34,7 @@ public class ConfigPermissions extends ModuleConfigBase
 		permDefault = config.get("stuff", "permissionDefault", false, "If a permission is not set anywhere, it will return this. True = allow. False = deny").getBoolean(false);
 
 		importBool = config.get("stuff", "import", false, "if permissions should be imported from the specified dir").getBoolean(false);
-		importDir = config.get("stuff", "importDir", "import", "file from wich permissions should be imported").value;
+		importDir = config.get("stuff", "importDir", "import", "file from wich permissions should be imported").getString();
 
 		if (importBool == true)
 		{

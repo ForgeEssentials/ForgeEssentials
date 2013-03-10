@@ -39,7 +39,7 @@ public class CoreConfig
 
 		prop = config.get("Core", "modlistLocation", "modlist.txt");
 		prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
-		ForgeEssentials.modlistLocation = prop.value;
+		ForgeEssentials.modlistLocation = prop.getString();
 
 		prop = config.get("Core", "removeDuplicateCommands", true);
 		prop.comment = "Remove commands from the list if they already exist outside of FE.";
@@ -69,7 +69,7 @@ public class CoreConfig
 
 		prop = config.get("Core.VIP", "kickMessage", "Sorry, this spot is for VIPs");
 		prop.comment = "Message you get when you log in and no VIP space is available";
-		PlayerTracker.kickMessage = prop.value;
+		PlayerTracker.kickMessage = prop.getString();
 
 		config.save();
 	}
@@ -81,6 +81,8 @@ public class CoreConfig
 	{
 		config.save();
 
-		config.get("general", "removeDuplicateCommands", true, "Remove commands from the list if they already exist outside of FE.").value = "" + DuplicateCommandRemoval.removeDuplicateCommands;
+		Property prop = config.get("general", "removeDuplicateCommands", true);
+		prop.comment = ("Remove commands from the list if they already exist outside of FE.");
+		DuplicateCommandRemoval.removeDuplicateCommands = prop.getBoolean(true);
 	}
 }

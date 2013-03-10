@@ -60,7 +60,7 @@ public class StorageManager implements IStorageManager
 		// generates the configs...
 		Property prop = config.get("Data", "storageType", defaultDriver.toString());
 		prop.comment = "Specifies the variety of data storage FE will use. Options: " + EnumDriverType.getAll(" ");
-		chosen = EnumDriverType.valueOf(prop.value);
+		chosen = EnumDriverType.valueOf(prop.getString());
 
 		typeChosens.put(EnumDriverType.TEXT, "ForgeConfig");
 		typeChosens.put(EnumDriverType.BINARY, "NBT");
@@ -75,7 +75,7 @@ public class StorageManager implements IStorageManager
 			}
 			cat = "Data." + type;
 			prop = config.get(cat, "chosenDriver", typeChosens.get(type));
-			typeChosens.put(type, prop.value);
+			typeChosens.put(type, prop.getString());
 		}
 
 		instance = this;

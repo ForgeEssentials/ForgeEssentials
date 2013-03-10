@@ -36,8 +36,8 @@ public class FlatFilePlayers
 			}
 			else if (cat.equalsIgnoreCase(PermissionsAPI.getEntryPlayer()))
 			{
-				PermissionsAPI.setEPPrefix(config.get(cat, "prefix", " ").value);
-				PermissionsAPI.setEPSuffix(config.get(cat, "suffix", " ").value);
+				PermissionsAPI.setEPPrefix(config.get(cat, "prefix", " ").getString());
+				PermissionsAPI.setEPSuffix(config.get(cat, "suffix", " ").getString());
 				continue;
 			}
 
@@ -45,8 +45,8 @@ public class FlatFilePlayers
 
 			if (info != null)
 			{
-				info.prefix = config.get(cat, "prefix", " ").value;
-				info.suffix = config.get(cat, "suffix", " ").value;
+				info.prefix = config.get(cat, "prefix", " ").getString();
+				info.suffix = config.get(cat, "suffix", " ").getString();
 			}
 
 			players.add(cat);

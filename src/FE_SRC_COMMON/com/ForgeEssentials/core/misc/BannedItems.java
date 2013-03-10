@@ -81,8 +81,8 @@ public class BannedItems
 		config.addCustomCategoryComment("NoCraft", "Configuration options to remove an item's crafting recipe.");
 		config.addCustomCategoryComment("NoUse", "Configuration options to make an item unusable.");
 
-		noCraft = Arrays.asList(config.get("NoCraft", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").valueList);
-		List<String> temp = Arrays.asList(config.get("NoUse", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").valueList);
+		noCraft = Arrays.asList(config.get("NoCraft", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").getStringList());
+		List<String> temp = Arrays.asList(config.get("NoUse", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").getStringList());
 
 		config.save();
 		int id;

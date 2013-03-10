@@ -48,7 +48,7 @@ public class ConfigWorldBorder extends ModuleConfigBase
 
 			String[] effects =
 			{ "message", "knockback", "damage" };
-			effects = config.get(cat, "effects", effects, "Get the list of possibilities in the example file").valueList;
+			effects = config.get(cat, "effects", effects, "Get the list of possibilities in the example file").getStringList();
 
 			IEffect[] effctList = new IEffect[effects.length];
 			int i = 0;
