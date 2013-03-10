@@ -131,7 +131,8 @@ public final class OutputHandler
 	 *            message to be outputted
 	 */
 	public static void debug(Object msg)
-	{if (debugmode)
+	{
+		if (debugmode)
 		{
 			System.out.println(" {DEBUG} >>>> " + msg);
 		}
