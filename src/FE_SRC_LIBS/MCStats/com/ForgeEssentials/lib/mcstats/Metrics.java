@@ -47,12 +47,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
-//import net.minecraft.server.MinecraftServer;
-
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.core.compat.CompatMCStats; // FE obfuscated code handler
+import com.ForgeEssentials.core.compat.CompatMCStats;
 
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IScheduledTickHandler;
@@ -357,9 +354,7 @@ public class Metrics {
     public void enable() throws IOException {
         // Check if the server owner has already set opt-out, if not, set it.
         if (isOptOut()) {
-            configuration.getCategory(Configuration.CATEGORY_GENERAL).set(
-                    "opt-out",
-                    new Property("opt-out", "false", Property.Type.BOOLEAN));
+            configuration.getCategory(Configuration.CATEGORY_GENERAL).get("opt-out").set(false);
             configuration.save();
         }
         // Enable Task, if it is not running
@@ -377,9 +372,7 @@ public class Metrics {
     public void disable() throws IOException {
         // Check if the server owner has already set opt-out, if not, set it.
         if (!isOptOut()) {
-            configuration.getCategory(Configuration.CATEGORY_GENERAL).set(
-                    "opt-out",
-                    new Property("opt-out", "true", Property.Type.BOOLEAN));
+            configuration.getCategory(Configuration.CATEGORY_GENERAL).get("opt-out").set(true);
             configuration.save();
         }
     }
