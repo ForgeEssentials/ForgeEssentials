@@ -46,7 +46,7 @@ public class FEPermissionsTransformer implements IClassTransformer
 	}
 
 	@Override
-	public byte[] transform(String name, byte[] bytes)
+	public byte[] transform(String name, String transformedName, byte[] bytes)
 	{
 		if (name.equals("com.ForgeEssentials.api.permissions.query.PermQuery") || name.startsWith("net.minecraft.") || name.indexOf('.') == -1)
 			return bytes;

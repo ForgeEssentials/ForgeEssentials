@@ -11,7 +11,7 @@ public class PlayerInvChest extends InventoryBasic
 
 	public PlayerInvChest(EntityPlayerMP owner, EntityPlayerMP vieuwer)
 	{
-		super(owner.username + "'s inventory", owner.inventory.mainInventory.length);
+		super(owner.username + "'s inventory", false, owner.inventory.mainInventory.length);
 		this.owner = owner;
 		this.vieuwer = vieuwer;
 	}

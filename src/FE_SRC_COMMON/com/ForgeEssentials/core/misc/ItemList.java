@@ -36,7 +36,7 @@ public class ItemList
 			{
 				try
 				{
-					itemMap.put(item.getItemName().toLowerCase().replaceAll("tile.", "").replaceAll("item.", ""), item);
+					itemMap.put(item.getUnlocalizedName().toLowerCase().replaceAll("tile.", "").replaceAll("item.", ""), item);
 				}
 				catch (Exception e)
 				{
@@ -52,7 +52,7 @@ public class ItemList
 				try
 				{
 
-					blockMap.put(block.getBlockName().toLowerCase().replaceAll("item.", "").replaceAll("tile.", ""), block);
+					blockMap.put(block.getUnlocalizedName().toLowerCase().replaceAll("item.", "").replaceAll("tile.", ""), block);
 				}
 				catch (Exception e)
 				{

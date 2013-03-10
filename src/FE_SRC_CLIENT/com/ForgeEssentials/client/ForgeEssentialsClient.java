@@ -23,13 +23,20 @@ public class ForgeEssentialsClient
 {
 
 	private boolean allowCUI;
+	
 	@SideOnly(Side.CLIENT)
 	private static PlayerInfoClient	info;
 
+	private boolean getDevOverride() {
+		if (System.getProperty("forgeessentials.client.developermode") == "true") // FOR DEVS ONLY! THAT IS WHY IT IS A PROPERTY!!!
+		return true;
+		else return false;
+	}
+	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		if (FMLCommonHandler.instance().getSide().isServer() && ObfuscationReflectionHelper.obfuscation)
+		if (FMLCommonHandler.instance().getSide().isServer() && getDevOverride() == false)
 			throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
 		Configuration config = new Configuration(e.getSuggestedConfigurationFile());
 		config.load();

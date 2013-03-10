@@ -82,7 +82,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		{
 
 		}
-		TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1),
+		TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, AxisAlignedBB.getAABBPool().getAABB(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1),
 				radius, sender.dimension));
 	}
 
@@ -169,7 +169,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 			}
 		}
 		WorldPoint center = new WorldPoint(worldID, x, y, z);
-		TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1,
+		TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, AxisAlignedBB.getAABBPool().getAABB(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1,
 				center.z + radius + 1), radius, worldID));
 	}
 

@@ -88,12 +88,12 @@ public class Deathchest
 
 			if (enableFencePost)
 			{
-				world.setBlock(point.x, point.y, point.z, Block.fence.blockID);
+				world.func_94575_c(point.x, point.y, point.z, Block.fence.blockID);
 				point.y++;
 			}
 			new Grave(point, e.entityPlayer, e.drops, this);
 
-			world.setBlockAndMetadata(point.x, point.y, point.z, Block.skull.blockID, 1);
+			world.setBlockAndMetadataWithNotify(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
 			FEskullTe te = new FEskullTe();
 			te.setSkullType(3, e.entityPlayer.username);
 			world.setBlockTileEntity(point.x, point.y, point.z, te);
