@@ -130,7 +130,7 @@ public class Deathchest
 						player.incrementWindowID();
 
 						InventoryGrave invGrave = new InventoryGrave(grave);
-						player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, invGrave.getInvName(), invGrave.getSizeInventory()));
+						player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, invGrave.getInvName(), invGrave.getSizeInventory(), true));
 						player.openContainer = new ContainerChest(player.inventory, invGrave);
 						player.openContainer.windowId = player.currentWindowId;
 						player.openContainer.addCraftingToCrafters(player);

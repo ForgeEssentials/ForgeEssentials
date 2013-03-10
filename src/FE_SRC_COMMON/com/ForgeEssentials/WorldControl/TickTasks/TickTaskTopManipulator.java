@@ -93,7 +93,7 @@ public class TickTaskTopManipulator implements ITickTask
 							{
 								// Replace ice with water.
 								backup.before.add(new BlockSaveable(world, x, y, z));
-								world.setBlock(x, y, z, Block.waterMoving.blockID);
+								world.func_94575_c(x, y, z, Block.waterMoving.blockID);
 								backup.after.add(new BlockSaveable(world, x, y, z));
 								currentBlocksChanged++;
 							}
@@ -101,7 +101,7 @@ public class TickTaskTopManipulator implements ITickTask
 							{
 								// Remove snow.
 								backup.before.add(new BlockSaveable(world, x, y, z));
-								world.setBlock(x, y, z, 0);
+								world.func_94575_c(x, y, z, 0);
 								backup.after.add(new BlockSaveable(world, x, y, z));
 								currentBlocksChanged++;
 							}
@@ -111,7 +111,7 @@ public class TickTaskTopManipulator implements ITickTask
 							{
 								// Both water types become ice.
 								backup.before.add(new BlockSaveable(world, x, y, z));
-								world.setBlock(x, y, z, Block.ice.blockID);
+								world.func_94575_c(x, y, z, Block.ice.blockID);
 								backup.after.add(new BlockSaveable(world, x, y, z));
 								currentBlocksChanged++;
 							}
@@ -121,7 +121,7 @@ public class TickTaskTopManipulator implements ITickTask
 							{
 								// Add snow covering to the block above.
 								backup.before.add(new BlockSaveable(world, x, y + 1, z));
-								world.setBlock(x, y + 1, z, Block.snow.blockID);
+								world.func_94575_c(x, y + 1, z, Block.snow.blockID);
 								backup.after.add(new BlockSaveable(world, x, y + 1, z));
 								currentBlocksChanged++;
 							}
@@ -130,7 +130,7 @@ public class TickTaskTopManipulator implements ITickTask
 							if (blockID == Block.dirt.blockID || blockID == Block.grass.blockID)
 							{
 								backup.before.add(new BlockSaveable(world, x, y, z));
-								world.setBlock(x, y, z, Block.tilledField.blockID);
+								world.func_94575_c(x, y, z, Block.tilledField.blockID);
 								backup.after.add(new BlockSaveable(world, x, y, z));
 								currentBlocksChanged++;
 							}
@@ -139,7 +139,7 @@ public class TickTaskTopManipulator implements ITickTask
 							if (blockID == Block.tilledField.blockID)
 							{
 								backup.before.add(new BlockSaveable(world, x, y, z));
-								world.setBlock(x, y, z, Block.dirt.blockID);
+								world.func_94575_c(x, y, z, Block.dirt.blockID);
 								backup.after.add(new BlockSaveable(world, x, y, z));
 								currentBlocksChanged++;
 							}

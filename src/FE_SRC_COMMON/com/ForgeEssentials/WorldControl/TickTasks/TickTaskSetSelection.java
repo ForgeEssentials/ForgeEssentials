@@ -71,7 +71,7 @@ public class TickTaskSetSelection implements ITickTask
 				if (blockID != player.worldObj.getBlockId(x, y, z) && isApplicable(x, y, z))
 				{
 					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
-					player.worldObj.setBlock(x, y, z, blockID);
+					player.worldObj.func_94575_c(x, y, z, blockID);
 					back.after.add(new BlockSaveable(player.worldObj, x, y, z));
 					currentTickChanged++;
 				}
@@ -81,7 +81,7 @@ public class TickTaskSetSelection implements ITickTask
 				if ((blockID != player.worldObj.getBlockId(x, y, z) || metadata != player.worldObj.getBlockMetadata(x, y, z)) && isApplicable(x, y, z))
 				{
 					back.before.add(new BlockSaveable(player.worldObj, x, y, z));
-					player.worldObj.setBlockAndMetadata(x, y, z, blockID, metadata);
+					player.worldObj.setBlockAndMetadataWithNotify(x, y, z, blockID, metadata, 3);
 					back.after.add(new BlockSaveable(player.worldObj, x, y, z));
 					currentTickChanged++;
 				}

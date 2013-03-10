@@ -22,7 +22,7 @@ public class CommandCraft extends ForgeEssentialsCommandBase
 	{
 		EntityPlayerMP player = (EntityPlayerMP) sender;
 		player.incrementWindowID();
-		player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 1, "Crafting", 9));
+		player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 1, "Crafting", 9, true));
 		player.openContainer = new ContainerCheatyWorkbench(player.inventory, player.worldObj);
 		player.openContainer.windowId = player.currentWindowId;
 		player.openContainer.addCraftingToCrafters(player);
