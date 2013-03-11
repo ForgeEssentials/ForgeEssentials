@@ -44,21 +44,26 @@ public class CallableMap
 			{
 				c = ((ModuleContainer) obj).module.getClass();
 			}
-			
 
 			for (Method m : c.getDeclaredMethods())
 			{
 				if (m.isAnnotationPresent(SideOnly.class))
 				{
 					SideOnly annot = m.getAnnotation(SideOnly.class);
-					if (!annot.value().equals(FMLCommonHandler.instance().getSide()));
+					if (!annot.value().equals(FMLCommonHandler.instance().getSide()))
+					{
 						continue;
+					}
 				}
-				
+
 				if (Modifier.isStatic(m.getModifiers()))
+				{
 					call = new FECallable(m);
+				}
 				else
+				{
 					call = new FECallable(m, obj);
+				}
 
 				for (Annotation annot : m.getAnnotations())
 				{
@@ -87,12 +92,16 @@ public class CallableMap
 				if (m.isAnnotationPresent(SideOnly.class))
 				{
 					SideOnly annot = m.getAnnotation(SideOnly.class);
-					if (!annot.value().equals(FMLCommonHandler.instance().getSide()));
+					if (!annot.value().equals(FMLCommonHandler.instance().getSide()))
+					{
 						continue;
+					}
 				}
-				
+
 				if (!Modifier.isStatic(m.getModifiers()))
+				{
 					continue;
+				}
 
 				call = new FECallable(m);
 
@@ -129,7 +138,11 @@ public class CallableMap
 		{
 			this(m);
 
-			if (instance instanceof ModContainer)
+			if (instance == null)
+			{
+				this.instance = instance;
+			}
+			else if (instance instanceof ModContainer)
 			{
 				this.instance = ((ModContainer) instance).getMod();
 				ident = ((ModContainer) instance).getModId();
@@ -140,7 +153,9 @@ public class CallableMap
 				ident = ((ModuleContainer) instance).name;
 			}
 			else
+			{
 				this.instance = instance;
+			}
 
 		}
 
@@ -151,15 +166,15 @@ public class CallableMap
 			Class<?> c = m.getDeclaringClass();
 			if (c.isAnnotationPresent(Mod.class))
 			{
-				ident = ((Mod) c.getAnnotation(Mod.class)).modid();
+				ident = c.getAnnotation(Mod.class).modid();
 			}
 			else if (c.isAnnotationPresent(FEModule.class))
 			{
-				ident = ((FEModule) c.getAnnotation(FEModule.class)).name();
+				ident = c.getAnnotation(FEModule.class).name();
 			}
 			else if (c.isAnnotationPresent(ForgeEssentialsRegistrar.class))
 			{
-				ident = ((ForgeEssentialsRegistrar) c.getAnnotation(ForgeEssentialsRegistrar.class)).ident();
+				ident = c.getAnnotation(ForgeEssentialsRegistrar.class).ident();
 			}
 			else
 			{
