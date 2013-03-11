@@ -1,0 +1,150 @@
+package com.ForgeEssentials.economy.commands;
+
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+
+public class CommandSellCommand extends ForgeEssentialsCommandBase
+{
+	@Override
+	public String getCommandName()
+	{
+		return "sellcommand";
+	}
+
+	@Override
+	public List<String> getCommandAliases()
+	{
+		return Arrays.asList("sc", "scmd");
+	}
+
+	@Override
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	{
+	}
+
+	/*
+	 * Expected structure: "/sellcommand <player> <['amount'x]item[:'meta']> <command [args]>"
+	 */
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+		System.out.print(sender);
+		if (args.length >= 3)
+		{
+			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+			if (PlayerSelector.hasArguments(args[0]))
+			{
+				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
+			}
+			if (players.size() != 0)
+			{
+				for (EntityPlayer player : players)
+				{
+					boolean found = false;
+					// Set needed parm
+					int amount = 1, item = 0, meta = -1;
+					ItemStack target = new ItemStack(item , amount, meta);
+					
+					if (args[1].contains("x"))
+					{
+						String[] split = args[1].split("x");
+						target.stackSize = amount = parseIntBounded(sender, split[0], 0, 64);
+						args[1] = split[1];
+					}
+					if (args[1].contains(":"))
+					{
+						String[] split = args[1].split(":");
+						target.setItemDamage(meta = parseInt(sender, split[1]));
+						args[1] = split[0];
+					}
+					target.itemID = item = parseIntWithMin(sender, args[1], 0);
+					// Loop though inv and find a stack big enough to support the sell cmd
+					for (int slot = 0; slot < player.inventory.mainInventory.length; slot ++)
+					{
+						ItemStack is = player.inventory.mainInventory[slot];
+						if(is != null)
+						{
+							if (is.itemID == item)
+							{
+								if (meta == -1 || meta == is.getItemDamage())
+								{
+									if (is.stackSize > amount)
+									{
+										is.stackSize = is.stackSize - amount;
+										found = true;
+										break;
+									}
+									else if (is.stackSize == amount)
+									{
+										is = null;
+										found = true;
+										break;
+									}
+								}
+							}	
+						}
+					}
+					if (found)
+					{
+						// Do command in name of player
+
+						StringBuilder cmd = new StringBuilder(args.toString().length());
+						for (int i = 2; i < args.length; i++)
+						{
+							cmd.append(args[i]);
+							cmd.append(" ");
+						}
+
+						FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, "" + cmd.toString());
+						OutputHandler.chatConfirmation(player, "That cost you " + amount + " x " + target.getDisplayName());
+					}
+					else
+					{
+						OutputHandler.chatError(player, "You can't afford that!!");
+					}
+				}
+			}
+			else
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else
+		{
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+		}
+	}
+
+	@Override
+	public boolean canConsoleUseCommand()
+	{
+		return true;
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "";
+	}
+
+	@Override
+	public boolean canPlayerUseCommand(EntityPlayer player)
+	{
+		return false;
+	}
+
+}
