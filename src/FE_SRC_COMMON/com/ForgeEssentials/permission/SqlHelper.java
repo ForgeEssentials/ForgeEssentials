@@ -140,11 +140,12 @@ public class SqlHelper
 	private PreparedStatement	statementDeletePermission;
 
 	// perm-props
-	private PreparedStatement	statementGetPermProp;													// target isgroup perm zone >> permProp
-	private PreparedStatement	statementUpdatePermProp;													// $ allowed, target, isgroup, perm, zone
+	private PreparedStatement	statementGetPermProp;															// target isgroup perm zone >> permProp
+	private PreparedStatement	statementPutPermProp;														// $ , value, target, isgroup, perm, zone
+	private PreparedStatement	statementUpdatePermProp;														// $ allowed, target, isgroup, perm, zone
 	private PreparedStatement	statementDeletePermProp;
 	private PreparedStatement	statementGetAllPermPropsInZone;												// target zone isgroup >> perm allowed
-	private PreparedStatement	statementGetAllPermProps;													// target isgroup >> perm allowed
+	private PreparedStatement	statementGetAllPermProps;														// target isgroup >> perm allowed
 
 	// dump statements... replace ALL ids with names...
 	private PreparedStatement	statementDumpGroups;
@@ -302,11 +303,11 @@ public class SqlHelper
 					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=?")
 					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=?");
 			statementUpdatePermission = db.prepareStatement(query.toString());
-			
+
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// PERM-PROP stuff
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
-			
+
 			// statementGetPermProp
 			query = new StringBuilder("SELECT ").append(COLUMN_PERMPROP_PROP)
 					.append(" FROM ").append(TABLE_PERMPROP)
@@ -315,7 +316,7 @@ public class SqlHelper
 					.append(" AND ").append(COLUMN_PERMPROP_PERM).append("=?")
 					.append(" AND ").append(COLUMN_PERMPROP_ZONEID).append("=?");
 			statementGetPermProp = db.prepareStatement(query.toString());
-			
+
 			// statementUpdatePermProp
 			query = new StringBuilder("UPDATE ").append(TABLE_PERMPROP)
 					.append(" SET ").append(COLUMN_PERMPROP_PROP).append("=?")
@@ -324,7 +325,7 @@ public class SqlHelper
 					.append(" AND ").append(COLUMN_PERMPROP_PERM).append("=?")
 					.append(" AND ").append(COLUMN_PERMPROP_ZONEID).append("=?");
 			statementUpdatePermProp = db.prepareStatement(query.toString());
-			
+
 			// statementDeletePermProp
 			query = new StringBuilder("DELETE FROM ").append(TABLE_PERMPROP)
 					.append(" WHERE ").append(COLUMN_PERMPROP_TARGET).append("=?")
@@ -332,7 +333,7 @@ public class SqlHelper
 					.append(" AND ").append(COLUMN_PERMPROP_PERM).append("=?")
 					.append(" AND ").append(COLUMN_PERMPROP_ZONEID).append("=?");
 			statementDeletePermProp = db.prepareStatement(query.toString());
-			
+
 			// statementGetAllPermProp
 			query = new StringBuilder("SELECT ")
 					.append(COLUMN_PERMPROP_PERM).append(", ").append(COLUMN_PERMPROP_PROP)
@@ -351,7 +352,7 @@ public class SqlHelper
 					.append(" WHERE ").append(COLUMN_PERMPROP_TARGET).append("=?")
 					.append(" AND ").append(COLUMN_PERMPROP_ISGROUP).append("=?");
 			statementGetAllPermProps = db.prepareStatement(query.toString());
-			
+
 			// statementPutPermProp
 			query = new StringBuilder("INSERT INTO ").append(TABLE_PERMPROP).append(" (")
 					.append(COLUMN_PERMPROP_PROP).append(", ")
@@ -360,8 +361,8 @@ public class SqlHelper
 					.append(COLUMN_PERMPROP_PERM).append(", ")
 					.append(COLUMN_PERMPROP_ZONEID).append(") ")
 					.append(" VALUES ").append(" (?, ?, ?, ?, ?) ");
-			statementPutPermission = db.prepareStatement(query.toString());
-			
+			statementPutPermProp = db.prepareStatement(query.toString());
+
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Get Statements
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -720,7 +721,7 @@ public class SqlHelper
 					.append(COLUMN_PERMISSION_ALLOWED).append(" BOOLEAN NOT NULL, ")
 					.append(COLUMN_PERMISSION_ZONEID).append(" INTEGER NOT NULL")
 					.append(")").toString();
-			
+
 			permPropTable = new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_PERMPROP).append("(")
 					.append(COLUMN_PERMPROP_TARGET).append(" INTEGER NOT NULL, ")
 					.append(COLUMN_PERMPROP_ISGROUP).append(" BOOLEAN NOT NULL, ")
@@ -772,9 +773,9 @@ public class SqlHelper
 	/**
 	 * If generation is enabled, puts the provided Registered permissions into
 	 * the DB.
-	 * @param map
+	 * @param regPerms
 	 */
-	protected synchronized void putRegistrationPerms(HashMultimap<RegGroup, Permission> map)
+	protected synchronized void putRegistrationPerms(HashMultimap<RegGroup, PermissionChecker> regPerms)
 	{
 		if (!generate)
 			return;
@@ -793,8 +794,18 @@ public class SqlHelper
 					.append(COLUMN_PERMISSION_PERM).append(", ")
 					.append(COLUMN_PERMISSION_ISGROUP).append(", ")
 					.append(COLUMN_PERMISSION_ZONEID).append(") ")
-					.append(" VALUES ").append(" (?, ?, ?, 1, ").append(GLOBAL_ID).append(")");
-			PreparedStatement statement = db.prepareStatement(query.toString());
+					.append(" VALUES ").append(" (?, ?, ?, TRUE, ").append(GLOBAL_ID).append(")");
+			PreparedStatement permStatement = db.prepareStatement(query.toString());
+
+			query = new StringBuilder("INSERT INTO ")
+					.append(TABLE_PERMPROP).append(" (")
+					.append(COLUMN_PERMPROP_TARGET).append(", ")
+					.append(COLUMN_PERMPROP_PROP).append(", ")
+					.append(COLUMN_PERMPROP_PERM).append(", ")
+					.append(COLUMN_PERMPROP_ISGROUP).append(", ")
+					.append(COLUMN_PERMPROP_ZONEID).append(") ")
+					.append(" VALUES ").append(" (?, ?, ?, TRUE, ").append(GLOBAL_ID).append(")");
+			PreparedStatement permPropStatement = db.prepareStatement(query.toString());
 
 			// create groups...
 			HashMap<RegGroup, Integer> groups = new HashMap<RegGroup, Integer>();
@@ -813,17 +824,27 @@ public class SqlHelper
 			}
 
 			// register permissions
-			for (RegGroup group : map.keySet())
+			for (RegGroup group : regPerms.keySet())
 			{
-				statement.setInt(1, groups.get(group));
-				for (Permission perm : map.get(group))
+				permStatement.setInt(1, groups.get(group));
+				permPropStatement.setInt(1, groups.get(group));
+				for (PermissionChecker perm : regPerms.get(group))
 				{
-					statement.setBoolean(2, perm.allowed);
-					statement.setString(3, perm.getQualifiedName());
-					statement.executeUpdate();
+					if (perm instanceof PermissionProp)
+					{
+						permPropStatement.setString(2, ((PermissionProp) perm).value);
+						permPropStatement.setString(3, perm.getQualifiedName());
+						permPropStatement.executeUpdate();
+					}
+					else
+					{
+						permStatement.setBoolean(2, ((Permission) perm).allowed);
+						permStatement.setString(3, perm.getQualifiedName());
+						permStatement.executeUpdate();
+					}
 				}
 			}
-			
+
 			// TODO: IMPORT PERMISSION PROPS
 
 			// put the EntryPlayer to GUESTS for the GLOBAL zone
@@ -1644,13 +1665,13 @@ public class SqlHelper
 			// allowed, target, isgroup, perm, zone
 			if (set.next())
 			{
-				use = getInstance().statementUpdatePermission; // exists
+				use = getInstance().statementUpdatePermProp; // exists
 			}
 			else
 			{
-				use = getInstance().statementPutPermission; // does not exist.
+				use = getInstance().statementPutPermProp; // does not exist.
 			}
-			
+
 			use.setString(1, perm.value);
 			use.setInt(2, tID);
 			use.setBoolean(3, isGroup);
@@ -2020,6 +2041,36 @@ public class SqlHelper
 					}
 					statement.clearParameters();
 				}
+				
+				// copy permProps
+				{
+					statement = getInstance().statementGetAllPermProps;
+					HashMultimap<Integer, PermissionProp> permProps = HashMultimap.create();
+
+					statement.setInt(1, player);
+					statement.setBoolean(2, false);
+					set = statement.executeQuery();
+					statement.clearParameters();
+
+					while (set.next())
+						permProps.put(set.getInt(3), new PermissionProp(set.getString(1), set.getString(2)));
+
+					// $ , allowed, target, isgroup, perm, zone
+					statement = getInstance().statementPutPermProp;
+					statement.setInt(2, player);
+					statement.setBoolean(3, false);
+					for (int zone : permProps.keySet())
+					{
+						statement.setInt(5, zone);
+						for (PermissionProp prop : permProps.get(zone))
+						{
+							statement.setString(1, prop.value);
+							statement.setString(4, prop.getQualifiedName());
+							statement.execute();
+						}
+					}
+					statement.clearParameters();
+				}
 
 				// copy groups
 				{
@@ -2356,7 +2407,7 @@ public class SqlHelper
 		}
 		return "Permission not removed.";
 	}
-	
+
 	public static synchronized String removePermissionProp(String target, boolean isGroup, String node, String zone)
 	{
 		try
@@ -2480,7 +2531,7 @@ public class SqlHelper
 		}
 		return null;
 	}
-	
+
 	public static String getPermissionProp(String target, boolean isGroup, String perm, String zone)
 	{
 		try
@@ -2552,7 +2603,7 @@ public class SqlHelper
 		}
 		return null;
 	}
-	
+
 	public static ArrayList<PermissionProp> getAllPermProps(String target, String zone, boolean isGroup)
 	{
 		ArrayList<PermissionProp> list = new ArrayList<PermissionProp>();

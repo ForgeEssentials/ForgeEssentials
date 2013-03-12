@@ -48,7 +48,6 @@ public class PermissionsHelper implements IPermissionsHelper
 		
 		return query.getResult();
 	}
-	
 
 	@Override
 	public void getPermissionProp(PropQuery query)

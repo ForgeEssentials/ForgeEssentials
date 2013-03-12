@@ -1,39 +1,25 @@
 package com.ForgeEssentials.api.permissions.query;
 
+import com.google.common.base.Strings;
+
 public abstract class PropQuery
 {
-	public enum PermPropType
-	{
-		/**
-		 * Integers...
-		 */
-		NUMBER,
-		
-		/**
-		 * floats.. NO doubles.. cast it if ya want...
-		 */
-		DECIMAL,
-		
-		/**
-		 * duh, strings. You may break objects down into strings if you wish.. 
-		 * but its not necessarily a good idea.
-		 */
-		TEXT;
-	}
-	
 	public final String perm;
-	public final PermPropType type;
 	protected String value;
 
-	public PropQuery(String permKey, PermPropType type)
+	public PropQuery(String permKey)
 	{
 		perm = permKey;
-		this.type = type;
 	}
 	
 	public void setValue(String value)
 	{
 		this.value = value;
+	}
+	
+	public boolean hasValue() 
+	{
+		return Strings.isNullOrEmpty(value);
 	}
 	
 	/**

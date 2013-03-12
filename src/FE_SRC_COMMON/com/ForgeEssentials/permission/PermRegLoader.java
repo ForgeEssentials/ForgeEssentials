@@ -21,7 +21,7 @@ public class PermRegLoader
 		data = calls;
 	}
 
-	protected HashMultimap<RegGroup, Permission> loadAllPerms()
+	protected HashMultimap<RegGroup, PermissionChecker> loadAllPerms()
 	{
 		PermissionRegistrationEvent event = new PermissionRegistrationEvent();
 
@@ -49,7 +49,7 @@ public class PermRegLoader
 
 	private class PermissionRegistrationEvent implements IPermRegisterEvent
 	{
-		protected HashMultimap<RegGroup, Permission>	perms;
+		protected HashMultimap<RegGroup, PermissionChecker>		perms;
 
 		protected PermissionRegistrationEvent()
 		{
@@ -59,7 +59,13 @@ public class PermRegLoader
 		@Override
 		public void registerPermissionLevel(String permission, RegGroup group)
 		{
-			Permission deny = new Permission(permission, group != null);
+			registerPermissionLevel(permission, group, false);
+		}
+		
+		@Override
+		public void registerPermissionLevel(String permission, RegGroup group, boolean alone)
+		{
+			Permission deny = new Permission(permission, false);
 			Permission allow = new Permission(permission, true);
 
 			if (group == null)
@@ -73,6 +79,10 @@ public class PermRegLoader
 			else
 			{
 				perms.put(group, allow);
+				
+				if (alone)
+					return;
+				
 				for (RegGroup g : getHigherGroups(group))
 				{
 					perms.put(g, allow);
@@ -119,6 +129,48 @@ public class PermRegLoader
 					default:
 						return new RegGroup[] {};
 				}
+		}
+
+		@Override
+		public void registerPermissionProp(String permission, String globalDefault)
+		{
+			PermissionProp prop = new PermissionProp(permission, globalDefault);
+			perms.put(RegGroup.ZONE, prop);
+		}
+
+		@Override
+		public void registerPermissionProp(String permission, int globalDefault)
+		{
+			PermissionProp prop = new PermissionProp(permission, ""+globalDefault);
+			perms.put(RegGroup.ZONE, prop);
+		}
+
+		@Override
+		public void registerPermissionProp(String permission, float globalDefault)
+		{
+			PermissionProp prop = new PermissionProp(permission, ""+globalDefault);
+			perms.put(RegGroup.ZONE, prop);
+		}
+
+		@Override
+		public void registerGroupPermissionprop(String permission, String value, RegGroup group)
+		{
+			PermissionProp prop = new PermissionProp(permission, ""+value);
+			perms.put(group, prop);
+		}
+
+		@Override
+		public void registerGroupPermissionprop(String permission, int value, RegGroup group)
+		{
+			PermissionProp prop = new PermissionProp(permission, ""+value);
+			perms.put(group, prop);
+		}
+
+		@Override
+		public void registerGroupPermissionprop(String permission, float value, RegGroup group)
+		{
+			PermissionProp prop = new PermissionProp(permission, ""+value);
+			perms.put(group, prop);
 		}
 	}
 }

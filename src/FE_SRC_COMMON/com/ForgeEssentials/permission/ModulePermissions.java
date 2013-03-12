@@ -48,7 +48,7 @@ public class ModulePermissions
 	protected static AbstractDataDriver	data;
 
 	// permission registrations here...
-	protected HashMultimap				regPerms;
+	protected HashMultimap<RegGroup, PermissionChecker>				regPerms;
 	private AutoPromote					autoPromote;
 
 	@PreInit
@@ -112,8 +112,6 @@ public class ModulePermissions
 		event.registerPermissionLevel("ForgeEssentials.perm._ALL_", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone", RegGroup.ZONE_ADMINS);
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone._ALL_", RegGroup.ZONE_ADMINS);
-
-		event.registerPermissionLevel("_ALL_", RegGroup.OWNERS);
 
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
