@@ -46,6 +46,16 @@ public abstract class PermissionsAPI
 	{
 		return manager.setGroupPermission(group, permission, allow, zoneID);
 	}
+	
+	public static String setPlayerPermissionProp(String username, String permission, String value, String zoneID)
+	{
+		return manager.setPlayerPermissionProp(username, permission, value, zoneID);
+	}
+	
+	public static String setGroupPermissionProp(String group, String permission, String value, String zoneID)
+	{
+		return manager.setGroupPermissionProp(group, permission, value, zoneID);
+	}
 
 	public static ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
@@ -87,6 +97,11 @@ public abstract class PermissionsAPI
 		return manager.clearPlayerPermission(player, node, zone);
 	}
 
+	public static String clearPlayerPermissionProp(String player, String node, String zone)
+	{
+		return manager.clearPlayerPermissionProp(player, node, zone);
+	}
+
 	public static void deleteGroupInZone(String group, String zone)
 	{
 		manager.deleteGroupInZone(group, zone);
@@ -101,6 +116,11 @@ public abstract class PermissionsAPI
 	{
 		return manager.clearGroupPermission(name, node, zone);
 	}
+	
+	public static String clearGroupPermissionProp(String name, String node, String zone)
+	{
+		return manager.clearGroupPermissionProp(name, node, zone);
+	}
 
 	public static ArrayList getGroupsInZone(String zoneName)
 	{
@@ -111,13 +131,28 @@ public abstract class PermissionsAPI
 	{
 		return manager.getPermissionForGroup(target, zone, perm);
 	}
+	
+	public static String getPermissionPropForGroup(String target, String zone, String perm)
+	{
+		return manager.getPermissionForGroup(target, zone, perm);
+	}
 
 	public static ArrayList getPlayerPermissions(String target, String zone)
 	{
 		return manager.getPlayerPermissions(target, zone);
 	}
+	
+	public static ArrayList getPlayerPermissionProps(String target, String zone)
+	{
+		return manager.getPlayerPermissions(target, zone);
+	}
 
 	public static ArrayList getGroupPermissions(String target, String zone)
+	{
+		return manager.getGroupPermissions(target, zone);
+	}
+	
+	public static ArrayList getGroupPermissionProps(String target, String zone)
 	{
 		return manager.getGroupPermissions(target, zone);
 	}

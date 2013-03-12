@@ -2356,6 +2356,36 @@ public class SqlHelper
 		}
 		return "Permission not removed.";
 	}
+	
+	public static synchronized String removePermissionProp(String target, boolean isGroup, String node, String zone)
+	{
+		try
+		{
+			int targetID = -5;
+			if (isGroup)
+			{
+				targetID = SqlHelper.getGroupIDFromGroupName(target);
+			}
+			else
+			{
+				targetID = SqlHelper.getPlayerIDFromPlayerName(target);
+			}
+			int zoneID = SqlHelper.getZoneIDFromZoneName(zone);
+
+			getInstance().statementDeletePermProp.setInt(1, targetID);
+			getInstance().statementDeletePermProp.setBoolean(2, isGroup);
+			getInstance().statementDeletePermProp.setString(3, node);
+			getInstance().statementDeletePermProp.setInt(4, zoneID);
+			getInstance().statementDeletePermProp.executeUpdate();
+			getInstance().statementDeletePermProp.clearParameters();
+			return null;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return "Permission not removed.";
+	}
 
 	public static synchronized void deleteGroupInZone(String group, String zone)
 	{
@@ -2442,7 +2472,47 @@ public class SqlHelper
 			statement.clearParameters();
 
 			if (set.next())
-				return set.getInt(COLUMN_PERMISSION_ALLOWED) == 1 ? "allowed" : "denied";
+				return set.getBoolean(COLUMN_PERMISSION_ALLOWED) ? "allowed" : "denied";
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static String getPermissionProp(String target, boolean isGroup, String perm, String zone)
+	{
+		try
+		{
+			int tID;
+			int zID = getZoneIDFromZoneName(zone);
+			int isG = isGroup ? 1 : 0;
+			PreparedStatement statement = getInstance().statementGetPermProp;
+			ResultSet set;
+
+			if (isGroup)
+			{
+				tID = getGroupIDFromGroupName(target);
+			}
+			else
+			{
+				tID = getPlayerIDFromPlayerName(target);
+			}
+
+			if (zID < -4 || tID < -4)
+				return "Zone or target invalid.";
+
+			// initial check.
+			statement.setInt(1, tID);
+			statement.setInt(2, isG);
+			statement.setString(3, perm);
+			statement.setInt(4, zID);
+			set = statement.executeQuery();
+			statement.clearParameters();
+
+			if (set.next())
+				return set.getString(COLUMN_PERMPROP_PROP);
 		}
 		catch (SQLException e)
 		{
