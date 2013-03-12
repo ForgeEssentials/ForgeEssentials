@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.economy.Wallet;
@@ -66,7 +67,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 							cmd.append(" ");
 						}
 
-						FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, "" + cmd.toString());
+						MinecraftServer.getServer().executeCommand(cmd.toString());
 						OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + Wallet.currency(amount));
 					}
 					else
