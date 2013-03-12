@@ -70,7 +70,7 @@ public class ModulePermissions
 	{
 		// setup SQL
 		sql = new SqlHelper(config);
-		sql.putRegistrationperms(regPerms);
+		sql.putRegistrationPerms(regPerms);
 
 		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);
