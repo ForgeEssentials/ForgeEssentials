@@ -36,8 +36,8 @@ public class CommandPay extends ForgeEssentialsCommandBase
 				{
 					Wallet.removeFromWallet(amount, sender);
 					Wallet.addToWallet(amount, player);
-					OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount);
-					OutputHandler.chatConfirmation(player, "You have been payed " + amount + " by " + sender.getCommandSenderName());
+					OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + Wallet.currency(amount));
+					OutputHandler.chatConfirmation(player, "You have been payed " + amount + " " + Wallet.currency(amount) + " by " + sender.getCommandSenderName());
 				}
 				else
 				{
