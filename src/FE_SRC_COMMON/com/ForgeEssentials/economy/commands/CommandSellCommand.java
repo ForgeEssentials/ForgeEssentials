@@ -8,6 +8,7 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.economy.Wallet;
@@ -82,15 +83,9 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 							{
 								if (meta == -1 || meta == is.getItemDamage())
 								{
-									if (is.stackSize > amount)
+									if (is.stackSize >= amount)
 									{
-										is.stackSize = is.stackSize - amount;
-										found = true;
-										break;
-									}
-									else if (is.stackSize == amount)
-									{
-										is = null;
+										player.inventory.decrStackSize(slot, amount);
 										found = true;
 										break;
 									}
@@ -108,8 +103,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 							cmd.append(args[i]);
 							cmd.append(" ");
 						}
-
-						FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, "" + cmd.toString());
+						MinecraftServer.getServer().executeCommand(cmd.toString());
 						OutputHandler.chatConfirmation(player, "That cost you " + amount + " x " + target.getDisplayName());
 					}
 					else
