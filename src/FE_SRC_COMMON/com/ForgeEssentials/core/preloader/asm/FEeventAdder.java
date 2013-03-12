@@ -29,104 +29,33 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import com.ForgeEssentials.core.preloader.Data;
+
 import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class FEeventAdder implements IClassTransformer
 {
-	public static HashMap<String, String>	iiwmHMob	= makeiiwmHMob();
-	public static HashMap<String, String>	iiwmHMdev	= makeiiwmHMdev();
-
-	public static HashMap<String, String>	isHMob		= makeisHMob();
-	public static HashMap<String, String>	isHMdev		= makeisHMdev();
-
 	public static boolean					addedBreak	= false;
 	public static boolean					addedPlace	= false;
-
-	public static HashMap<String, String> makeiiwmHMob()
-	{
-		HashMap<String, String> iiwmHMob = new HashMap<String, String>();
-
-		iiwmHMob.put("className", "ir");
-		iiwmHMob.put("javaClassName", "ir");
-		iiwmHMob.put("targetMethodName", "d");
-		iiwmHMob.put("worldFieldName", "a");
-		iiwmHMob.put("entityPlayerFieldName", "b");
-		iiwmHMob.put("worldJavaClassName", "yc");
-		iiwmHMob.put("getBlockMetadataMethodName", "h");
-		iiwmHMob.put("blockJavaClassName", "amq");
-		iiwmHMob.put("blocksListFieldName", "p");
-		iiwmHMob.put("entityPlayerJavaClassName", "qx");
-		iiwmHMob.put("entityPlayerMPJavaClassName", "iq");
-
-		return iiwmHMob;
-	}
-
-	public static HashMap<String, String> makeiiwmHMdev()
-	{
-		HashMap<String, String> iiwmHMdev = new HashMap<String, String>();
-
-		iiwmHMdev.put("className", "net.minecraft.item.ItemInWorldManager");
-		iiwmHMdev.put("javaClassName", "net/minecraft/item/ItemInWorldManager");
-		iiwmHMdev.put("targetMethodName", "removeBlock");
-		iiwmHMdev.put("worldFieldName", "theWorld");
-		iiwmHMdev.put("entityPlayerFieldName", "thisPlayerMP");
-		iiwmHMdev.put("worldJavaClassName", "net/minecraft/world/World");
-		iiwmHMdev.put("getBlockMetaiiwmHMdevMethodName", "getBlockMetaiiwmHMdev");
-		iiwmHMdev.put("blockJavaClassName", "net/minecraft/block/Block");
-		iiwmHMdev.put("blocksListFieldName", "blocksList");
-		iiwmHMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
-		iiwmHMdev.put("entityPlayerMPJavaClassName", "net/minecraft/entity/player/EntityPlayerMP");
-
-		return iiwmHMdev;
-	}
-
-	public static HashMap<String, String> makeisHMob()
-	{
-		HashMap<String, String> isHMob = new HashMap<String, String>();
-
-		isHMob.put("className", "ur");
-		isHMob.put("javaClassName", "ur");
-		isHMob.put("targetMethodName", "a");
-		isHMob.put("itemstackJavaClassName", "ur");
-		isHMob.put("entityPlayerJavaClassName", "qx");
-		isHMob.put("worldJavaClassName", "yc");
-
-		return isHMob;
-	}
-
-	public static HashMap<String, String> makeisHMdev()
-	{
-		HashMap<String, String> isHMdev = new HashMap<String, String>();
-
-		isHMdev.put("className", "net.minecraft.item.ItemStack");
-		isHMdev.put("javaClassName", "net/minecraft/item/ItemStack");
-		isHMdev.put("targetMethodName", "tryPlaceItemIntoWorld");
-
-		isHMdev.put("itemstackJavaClassName", "net/minecraft/item/ItemStack");
-		isHMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
-		isHMdev.put("worldJavaClassName", "net/minecraft/world/World");
-
-		return isHMdev;
-	}
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes)
 	{
-		if (name.equals(iiwmHMob.get("className")))
+		if (name.equals(Data.iiwmHMob.get("className")))
 			// ItemInWorldManager, Obfuscated
-			return transformItemInWorldManager(bytes, iiwmHMob);
+			return transformItemInWorldManager(bytes, Data.iiwmHMob);
 
-		if (name.equals(iiwmHMdev.get("className")))
+		if (name.equals(Data.iiwmHMdev.get("className")))
 			// ItemInWorldManager, NOT Obfuscated
-			return transformItemInWorldManager(bytes, iiwmHMdev);
+			return transformItemInWorldManager(bytes, Data.iiwmHMdev);
 
-		if (name.equals(isHMob.get("className")))
+		if (name.equals(Data.isHMob.get("className")))
 			// ItemStack, Obfuscated
-			return transformItemStack(bytes, isHMob);
+			return transformItemStack(bytes, Data.isHMob);
 
-		if (name.equals(isHMdev.get("className")))
+		if (name.equals(Data.isHMdev.get("className")))
 			// ItemStack, NOT Obfuscated
-			return transformItemStack(bytes, isHMdev);
+			return transformItemStack(bytes, Data.isHMdev);
 		return bytes;
 	}
 
