@@ -156,24 +156,24 @@ public class Localization
 	public static final String	UNIT_SECONDS					= "unit.seconds";
 
 	/*
-	 * Wallet
+	 * wallet
 	 */
 
-	public static final String	WALLET							= "message.wallet.walletname";
-	public static final String	WALLET_CURRENCY_SINGULAR		= "message.wallet.currencysingular";
-	public static final String	WALLET_CURRENCY_PLURAL			= "message.wallet.currencyplural";
-	public static final String	WALLET_SET						= "message.wallet.walletset";
-	public static final String	WALLET_SET_SELF					= "message.wallet.walletsetself";
-	public static final String	WALLET_SET_TARGET				= "message.wallet.walletsettarget";
-	public static final String	WALLET_ADD						= "message.wallet.walletadd";
-	public static final String	WALLET_ADD_SELF					= "message.wallet.walletaddself";
-	public static final String	WALLET_ADD_TARGET				= "message.wallet.walletaddtarget";
-	public static final String	WALLET_REMOVE					= "message.wallet.walletremove";
-	public static final String	WALLET_REMOVE_SELF				= "message.wallet.walletremoveself";
-	public static final String	WALLET_REMOVE_TARGET			= "message.wallet.walletremovetarget";
-	public static final String	WALLET_GET						= "message.wallet.walletget";
-	public static final String	WALLET_GET_SELF					= "message.wallet.walletgetself";
-	public static final String	WALLET_GET_TARGET				= "message.wallet.walletgettarget";
+	public static final String	wallet							= "message.wallet.walletname";
+	public static final String	wallet_CURRENCY_SINGULAR		= "message.wallet.currencysingular";
+	public static final String	wallet_CURRENCY_PLURAL			= "message.wallet.currencyplural";
+	public static final String	wallet_SET						= "message.wallet.walletset";
+	public static final String	wallet_SET_SELF					= "message.wallet.walletsetself";
+	public static final String	wallet_SET_TARGET				= "message.wallet.walletsettarget";
+	public static final String	wallet_ADD						= "message.wallet.walletadd";
+	public static final String	wallet_ADD_SELF					= "message.wallet.walletaddself";
+	public static final String	wallet_ADD_TARGET				= "message.wallet.walletaddtarget";
+	public static final String	wallet_REMOVE					= "message.wallet.walletremove";
+	public static final String	wallet_REMOVE_SELF				= "message.wallet.walletremoveself";
+	public static final String	wallet_REMOVE_TARGET			= "message.wallet.walletremovetarget";
+	public static final String	wallet_GET						= "message.wallet.walletget";
+	public static final String	wallet_GET_SELF					= "message.wallet.walletgetself";
+	public static final String	wallet_GET_TARGET				= "message.wallet.walletgettarget";
 
 	public static final String	COMMAND_DESELECT				= "message.wc.deselection";
 

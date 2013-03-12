@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -32,8 +32,8 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 			else
 			{
 				int amount = parseIntWithMin(sender, args[1], 0);
-				OutputHandler.chatConfirmation(sender, "You have requested " + amount + Wallet.currency(amount) + " from " + player.username + ".");
-				OutputHandler.chatConfirmation(player, "You been requested to play " + amount + Wallet.currency(amount) + " by " + player.username + ".");
+				OutputHandler.chatConfirmation(sender, "You have requested " + amount + WalletHandler.currency(amount) + " from " + player.username + ".");
+				OutputHandler.chatConfirmation(player, "You been requested to play " + amount + WalletHandler.currency(amount) + " by " + player.username + ".");
 			}
 		}
 		else
@@ -55,8 +55,8 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 			else
 			{
 				int amount = parseIntWithMin(sender, args[1], 0);
-				OutputHandler.chatConfirmation(sender, "You have requested " + amount + Wallet.currency(amount) + " from " + player.username + ".");
-				OutputHandler.chatConfirmation(player, "You been requested to play " + amount + Wallet.currency(amount) + " by " + player.username + ".");
+				OutputHandler.chatConfirmation(sender, "You have requested " + amount + WalletHandler.currency(amount) + " from " + player.username + ".");
+				OutputHandler.chatConfirmation(player, "You been requested to play " + amount + WalletHandler.currency(amount) + " by " + player.username + ".");
 			}
 		}
 		else

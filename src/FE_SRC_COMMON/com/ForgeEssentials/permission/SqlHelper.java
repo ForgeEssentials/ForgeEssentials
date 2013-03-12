@@ -23,7 +23,6 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
 
-@SuppressWarnings("unused")
 public class SqlHelper
 {
 	private Connection			db;

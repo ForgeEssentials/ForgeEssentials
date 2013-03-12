@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -32,12 +32,12 @@ public class CommandPay extends ForgeEssentialsCommandBase
 			else
 			{
 				int amount = parseIntWithMin(sender, args[1], 0);
-				if (Wallet.getWallet(sender) >= amount)
+				if (WalletHandler.getWallet(sender) >= amount)
 				{
-					Wallet.removeFromWallet(amount, sender);
-					Wallet.addToWallet(amount, player);
-					OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + Wallet.currency(amount));
-					OutputHandler.chatConfirmation(player, "You have been payed " + amount + " " + Wallet.currency(amount) + " by " + sender.getCommandSenderName());
+					WalletHandler.removeFromWallet(amount, sender);
+					WalletHandler.addToWallet(amount, player);
+					OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + WalletHandler.currency(amount));
+					OutputHandler.chatConfirmation(player, "You have been payed " + amount + " " + WalletHandler.currency(amount) + " by " + sender.getCommandSenderName());
 				}
 				else
 				{
@@ -68,9 +68,9 @@ public class CommandPay extends ForgeEssentialsCommandBase
 			else
 			{
 				int amount = parseIntWithMin(sender, args[1], 0);
-				Wallet.addToWallet(amount, player);
-				OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + Wallet.currency(amount));
-				OutputHandler.chatConfirmation(player, "You have been payed " + amount + " " + Wallet.currency(amount) + " by " + sender.getCommandSenderName());
+				WalletHandler.addToWallet(amount, player);
+				OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + WalletHandler.currency(amount));
+				OutputHandler.chatConfirmation(player, "You have been payed " + amount + " " + WalletHandler.currency(amount) + " by " + sender.getCommandSenderName());
 			}
 		}
 		else

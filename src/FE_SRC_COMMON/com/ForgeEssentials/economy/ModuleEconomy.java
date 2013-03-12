@@ -1,5 +1,6 @@
 package com.ForgeEssentials.economy;
 
+import java.io.File;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -7,7 +8,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.modules.FEModule;
+import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Init;
+import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
@@ -27,80 +30,25 @@ import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
- * Call the Wallet class when working with Economy
+ * Call the WalletHandler class when working with Economy
  */
-@FEModule(name = "Economy", parentMod = ForgeEssentials.class)
-public class ModuleEconomy implements IPlayerTracker
+@FEModule(name = "Economy", parentMod = ForgeEssentials.class, configClass = ConfigEconomy.class)
+public class ModuleEconomy
 {
+	@Config
+	public static ConfigEconomy	config;
+
+	@ModuleDir
+	public static File			moduleDir;
+	
 	private static HashMap<String, ModuleEconomy>	playerEconomyMap	= new HashMap<String, ModuleEconomy>();
 
-	/**
-	 * Returns the player's economy instance
-	 * @param player
-	 * target player
-	 * @return the player's economy instance
-	 */
-	public static ModuleEconomy getPlayerInfo(EntityPlayer player)
-	{
-		ModuleEconomy info = playerEconomyMap.get(player.username);
-
-		if (info == null)
-		{
-			info = new ModuleEconomy(player);
-
-			playerEconomyMap.put(player.username, info);
-		}
-
-		return info;
-	}
-
-	/**
-	 * Returns the player's economy instance
-	 * @param username
-	 * target's username
-	 * @return the player's economy instance
-	 */
-	public static ModuleEconomy getPlayerInfo(String username)
-	{
-		ModuleEconomy info = playerEconomyMap.get(username);
-
-		return info;
-	}
-
-	public int	wallet;
-
-	private ModuleEconomy(EntityPlayer player)
-	{
-	}
-
-	public ModuleEconomy()
-	{
-	}
-
-	public static void saveData(EntityPlayer player)
-	{
-		NBTTagCompound economyNBT = player.getEntityData();
-		economyNBT.setInteger("Economy-" + player.username, ModuleEconomy.getPlayerInfo(player).wallet);
-
-	}
-
-	public static void loadData(EntityPlayer player)
-	{
-		NBTTagCompound economyNBT = player.getEntityData();
-		ModuleEconomy.getPlayerInfo(player).wallet = economyNBT.getInteger("Economy-" + player.username);
-		Wallet.doesWalletExist(player);
-	}
-
-	@PreInit
-	public void preLoad(FEModulePreInitEvent e)
-	{
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
+	public static int			startbuget;
+	
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
-		GameRegistry.registerPlayerTracker(this);
+		GameRegistry.registerPlayerTracker(new WalletHandler());
 	}
 
 	@ServerInit
@@ -114,29 +62,5 @@ public class ModuleEconomy implements IPlayerTracker
 		e.registerServerCommand(new CommandPaidCommand());
 		e.registerServerCommand(new CommandSellCommand());
 		e.registerServerCommand(new CommandMoney());
-	}
-
-	@Override
-	public void onPlayerLogin(EntityPlayer player)
-	{
-		loadData(player);
-	}
-
-	@Override
-	public void onPlayerLogout(EntityPlayer player)
-	{
-		saveData(player);
-	}
-
-	@Override
-	public void onPlayerChangedDimension(EntityPlayer player)
-	{
-		saveData(player);
-	}
-
-	@Override
-	public void onPlayerRespawn(EntityPlayer player)
-	{
-		loadData(player);
 	}
 }

@@ -33,7 +33,7 @@ import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class StorageManager implements IStorageManager
 {
 	// just keeps an instance of the config for future use.

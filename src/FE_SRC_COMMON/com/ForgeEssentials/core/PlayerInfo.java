@@ -122,7 +122,7 @@ public class PlayerInfo
 
 	@SaveableField()
 	public int						timePlayed;
-
+	
 	// undo and redo stuff
 	private Stack<BackupArea>		undos;
 	private Stack<BackupArea>		redos;

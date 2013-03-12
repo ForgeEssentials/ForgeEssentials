@@ -13,7 +13,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class PlayerInfoResonce extends Response
@@ -55,7 +55,7 @@ public class PlayerInfoResonce extends Response
 			PlayerData.put("health", "" + player.getHealth());
 		}
 
-		PlayerData.put("wallet", "" + Wallet.getWallet(player));
+		PlayerData.put("WalletHandler", "" + WalletHandler.getWallet(player));
 		PlayerData.put("pos", new WorldPoint(player).toJSON());
 		PlayerData.put("ping", "" + player.ping);
 		PlayerData.put("gm", player.theItemInWorldManager.getGameType().getName());
