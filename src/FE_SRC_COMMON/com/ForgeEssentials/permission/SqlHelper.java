@@ -141,7 +141,7 @@ public class SqlHelper
 
 	// perm-props
 	private PreparedStatement	statementGetPermProp;															// target isgroup perm zone >> permProp
-	private PreparedStatement	statementPutPermProp;														// $ , value, target, isgroup, perm, zone
+	private PreparedStatement	statementPutPermProp;															// $ , value, target, isgroup, perm, zone
 	private PreparedStatement	statementUpdatePermProp;														// $ allowed, target, isgroup, perm, zone
 	private PreparedStatement	statementDeletePermProp;
 	private PreparedStatement	statementGetAllPermPropsInZone;												// target zone isgroup >> perm allowed
@@ -151,7 +151,9 @@ public class SqlHelper
 	private PreparedStatement	statementDumpGroups;
 	private PreparedStatement	statementDumpPlayers;
 	private PreparedStatement	statementDumpGroupPermissions;
+	private PreparedStatement	statementDumpGroupPermProps;
 	private PreparedStatement	statementDumpPlayerPermissions;
+	private PreparedStatement	statementDumpPlayerPermProps;
 	private PreparedStatement	statementDumpGroupConnector;
 	private PreparedStatement	statementDumpLadders;
 
@@ -528,17 +530,57 @@ public class SqlHelper
 					.append(COLUMN_ZONE_ZONEID);
 			statementDumpGroups = getInstance().db.prepareStatement(query.toString());
 
-			query = new StringBuilder("SELECT DISTINCT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_PERM).append(", ").append(TABLE_ZONE).append(".")
-					.append(COLUMN_ZONE_NAME).append(", ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
-					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_TARGET).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID).append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_PERMISSION)
-					.append(".").append(COLUMN_PERMISSION_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID).append(" WHERE ").append(COLUMN_PERMISSION_ISGROUP).append('=').append(1);
+			query = new StringBuilder("SELECT DISTINCT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_PERM).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ALLOWED)
+					.append(" FROM ").append(TABLE_PERMISSION)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_TARGET).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
+					.append(" WHERE ").append(COLUMN_PERMISSION_ISGROUP).append('=').append(true);
 			statementDumpGroupPermissions = getInstance().db.prepareStatement(query.toString());
 
-			query = new StringBuilder("SELECT DISTINCT ").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME).append(", ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_PERM).append(", ").append(TABLE_ZONE).append(".")
-					.append(COLUMN_ZONE_NAME).append(", ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" INNER JOIN ").append(TABLE_PLAYER).append(" ON ")
-					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_TARGET).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_PLAYERID).append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_PERMISSION)
-					.append(".").append(COLUMN_PERMISSION_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID).append(" WHERE ").append(COLUMN_PERMISSION_ISGROUP).append('=').append(0);
+			query = new StringBuilder("SELECT DISTINCT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_PERM).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_PROP)
+					.append(" FROM ").append(TABLE_PERMPROP)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_TARGET).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
+					.append(" WHERE ").append(COLUMN_PERMPROP_ISGROUP).append('=').append(true);
+			statementDumpGroupPermProps = getInstance().db.prepareStatement(query.toString());
+
+			query = new StringBuilder("SELECT DISTINCT ")
+					.append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_PERM).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ALLOWED)
+					.append(" FROM ").append(TABLE_PERMISSION)
+					.append(" INNER JOIN ").append(TABLE_PLAYER)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_TARGET).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_PLAYERID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
+					.append(" WHERE ").append(COLUMN_PERMISSION_ISGROUP).append('=').append(false);
 			statementDumpPlayerPermissions = getInstance().db.prepareStatement(query.toString());
+			
+			query = new StringBuilder("SELECT DISTINCT ")
+					.append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME).append(", ")
+					.append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_PERM).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_PROP)
+					.append(" FROM ").append(TABLE_PERMPROP)
+					.append(" INNER JOIN ").append(TABLE_PLAYER)
+					.append(" ON ").append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_TARGET).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_PLAYERID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
+					.append(" WHERE ").append(COLUMN_PERMPROP_ISGROUP).append('=').append(false);
+			statementDumpPlayerPermProps = getInstance().db.prepareStatement(query.toString());
 
 			query = new StringBuilder("SELECT ").append(COLUMN_PLAYER_USERNAME).append(" FROM ").append(TABLE_PLAYER);
 			statementDumpPlayers = getInstance().db.prepareStatement(query.toString());
@@ -922,6 +964,9 @@ public class SqlHelper
 
 			FlatFilePermissions pm = new FlatFilePermissions(file);
 			map.putAll(pm.load());
+			
+			FlatFilePermProps pmp = new FlatFilePermProps(file);
+			map.putAll(pmp.load());
 
 			OutputHandler.info("[PermSQL] Loaded Configs into ram");
 
@@ -1036,8 +1081,21 @@ public class SqlHelper
 			{
 				setPermission(perm.target, true, perm, perm.zone);
 			}
-
 			OutputHandler.info("[PermSQL] Imported permissions");
+			
+			// now the permissions
+			ArrayList<PermissionPropHolder> props = (ArrayList<PermissionPropHolder>) map.get("playerPermProps");
+			for (PermissionPropHolder perm : props)
+			{
+				setPermProp(perm.target, false, perm, perm.zone);
+			}
+
+			props = (ArrayList<PermissionPropHolder>) map.get("groupPermProps");
+			for (PermissionPropHolder perm : props)
+			{
+				setPermProp(perm.target, true, perm, perm.zone);
+			}
+			OutputHandler.info("[PermSQL] Imported permission properties");
 
 			OutputHandler.info("[PermSQL] Import successful!");
 		}
@@ -1887,6 +1945,62 @@ public class SqlHelper
 			list = null;
 		}
 
+		// DUMP PLAYER PERMPROPS PROPERTIES! ------------------------------
+		try
+		{
+			set = getInstance().statementDumpPlayerPermissions.executeQuery();
+
+			list = new ArrayList<PermissionPropHolder>();
+
+			String target, zone, perm, prop;
+			PermissionPropHolder holder;
+			while (set.next())
+			{
+				target = set.getString(COLUMN_PLAYER_USERNAME);
+				zone = set.getString(COLUMN_ZONE_NAME);
+				perm = set.getString(COLUMN_PERMPROP_PERM);
+				prop = set.getString(COLUMN_PERMPROP_PROP);
+				holder = new PermissionPropHolder(target, perm, prop, zone);
+				list.add(holder);
+			}
+
+			map.put("playerPermProps", list);
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.info("[PermSQL] Player Permission Property dump for export failed!");
+			e.printStackTrace();
+			list = null;
+		}
+
+		// DUMP GROUP PERMPROP PROPERTIES! ------------------------------
+		try
+		{
+			set = getInstance().statementDumpGroupPermissions.executeQuery();
+
+			list = new ArrayList<PermissionPropHolder>();
+
+			String target, zone, perm, prop;
+			PermissionPropHolder holder;
+			while (set.next())
+			{
+				target = set.getString(COLUMN_GROUP_NAME);
+				zone = set.getString(COLUMN_ZONE_NAME);
+				perm = set.getString(COLUMN_PERMPROP_PERM);
+				prop = set.getString(COLUMN_PERMPROP_PROP);
+				holder = new PermissionPropHolder(target, perm, prop, zone);
+				list.add(holder);
+			}
+
+			map.put("groupPermProps", list);
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.info("[PermSQL] Group Permission Property dump for export failed!");
+			e.printStackTrace();
+			list = null;
+		}
+
 		// DUMP GROUP CONNECTORS! ------------------------------
 		try
 		{
@@ -2041,7 +2155,7 @@ public class SqlHelper
 					}
 					statement.clearParameters();
 				}
-				
+
 				// copy permProps
 				{
 					statement = getInstance().statementGetAllPermProps;
