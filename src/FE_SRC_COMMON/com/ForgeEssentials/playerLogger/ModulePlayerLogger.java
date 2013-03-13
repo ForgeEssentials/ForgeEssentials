@@ -10,11 +10,6 @@ import java.util.List;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.PreInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
@@ -34,7 +29,7 @@ public class ModulePlayerLogger
 {
 	static final boolean				DEBUG		= !ObfuscationReflectionHelper.obfuscation;
 
-	@Config
+	@FEModule.Config
 	public static ConfigPlayerLogger	config;
 
 	public static String				url;
@@ -60,7 +55,7 @@ public class ModulePlayerLogger
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
-	@PreInit
+	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		if (!enable)
@@ -68,7 +63,7 @@ public class ModulePlayerLogger
 		OutputHandler.info("PlayerLogger module is enabled. Loading...");
 	}
 
-	@Init
+	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
 		if (!enable)
@@ -83,7 +78,7 @@ public class ModulePlayerLogger
 		}
 	}
 
-	@ServerInit
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		if (!enable)
@@ -117,7 +112,7 @@ public class ModulePlayerLogger
 		}
 	}
 
-	@ServerStop
+	@FEModule.ServerStop
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		if (!enable)

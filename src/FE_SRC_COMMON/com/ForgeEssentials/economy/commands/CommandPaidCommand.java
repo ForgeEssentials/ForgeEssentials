@@ -15,8 +15,6 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public class CommandPaidCommand extends ForgeEssentialsCommandBase
 {
 	@Override

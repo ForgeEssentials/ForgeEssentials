@@ -8,13 +8,6 @@ import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
-import com.ForgeEssentials.api.modules.FEModule.PreInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerPostInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
@@ -43,10 +36,10 @@ public class ModulePermissions
 	public static PermissionsBlanketHandler	pbHandler;
 	public static SqlHelper					sql;
 
-	@Config
+	@FEModule.Config
 	public static ConfigPermissions			config;
 
-	@ModuleDir
+	@FEModule.ModuleDir
 	public static File						permsFolder;
 
 	protected static AbstractDataDriver		data;
@@ -55,7 +48,7 @@ public class ModulePermissions
 	protected HashMultimap					regPerms;
 	private AutoPromote						autoPromote;
 
-	@PreInit
+	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		ZoneManager.manager = new ZoneHelper();
@@ -70,7 +63,7 @@ public class ModulePermissions
 	}
 
 	@SuppressWarnings("unchecked")
-	@Init
+	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
 		// setup SQL
@@ -86,7 +79,7 @@ public class ModulePermissions
 		DataStorageManager.registerSaveableType(AutoPromote.class);
 	}
 
-	@ServerInit
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		// load zones...
@@ -104,7 +97,7 @@ public class ModulePermissions
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
 	}
 
-	@ServerPostInit
+	@FEModule.ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(new ClassContainer(AutoPromote.class)))
@@ -131,7 +124,7 @@ public class ModulePermissions
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.list", RegGroup.GUESTS);
 	}
 
-	@ServerStop
+	@FEModule.ServerStop
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		// save all the zones

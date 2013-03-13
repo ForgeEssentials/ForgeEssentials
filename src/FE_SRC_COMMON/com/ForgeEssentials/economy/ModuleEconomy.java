@@ -3,18 +3,8 @@ package com.ForgeEssentials.economy;
 import java.io.File;
 import java.util.HashMap;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.MinecraftForge;
-
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
-import com.ForgeEssentials.api.modules.FEModule.PreInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.economy.commands.CommandAddToWallet;
@@ -26,7 +16,6 @@ import com.ForgeEssentials.economy.commands.CommandRemoveWallet;
 import com.ForgeEssentials.economy.commands.CommandSellCommand;
 import com.ForgeEssentials.economy.commands.CommandSetWallet;
 
-import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
@@ -35,23 +24,23 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @FEModule(name = "Economy", parentMod = ForgeEssentials.class, configClass = ConfigEconomy.class)
 public class ModuleEconomy
 {
-	@Config
+	@FEModule.Config
 	public static ConfigEconomy	config;
 
-	@ModuleDir
+	@FEModule.ModuleDir
 	public static File			moduleDir;
 	
 	private static HashMap<String, ModuleEconomy>	playerEconomyMap	= new HashMap<String, ModuleEconomy>();
 
 	public static int			startbuget;
 	
-	@Init
+	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
 		GameRegistry.registerPlayerTracker(new WalletHandler());
 	}
 
-	@ServerInit
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandAddToWallet());

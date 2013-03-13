@@ -6,13 +6,6 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
-import com.ForgeEssentials.api.modules.FEModule.PreInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerPostInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
@@ -25,21 +18,21 @@ import com.ForgeEssentials.util.events.PermissionSetEvent;
 @FEModule(configClass = ConfigQuestioner.class, name = "QuestionerModule", parentMod = ForgeEssentials.class)
 public class ModuleQuestioner
 {
-	@Config
+	@FEModule.Config
 	public static ConfigQuestioner	conf;
 
-	@ModuleDir
+	@FEModule.ModuleDir
 	public static File				cmddir;
 
 	public AbstractDataDriver		data;
 
-	@PreInit
+	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
 
 	}
 
-	@Init
+	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
 		// MinecraftForge.EVENT_BUS.register(new EventHandler());
@@ -48,7 +41,7 @@ public class ModuleQuestioner
 		// CommandRegistrar.commandConfigs(conf.config);
 	}
 
-	@ServerInit
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		data = DataStorageManager.getReccomendedDriver();
@@ -56,7 +49,7 @@ public class ModuleQuestioner
 		// CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
 	}
 
-	@ServerPostInit
+	@FEModule.ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 
@@ -81,7 +74,7 @@ public class ModuleQuestioner
 		// "ForgeEssentials.BasicCommands.modlist", true);
 	}
 
-	@ServerStop
+	@FEModule.ServerStop
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 

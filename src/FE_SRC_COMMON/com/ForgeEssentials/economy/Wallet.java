@@ -7,8 +7,6 @@ import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.tickets.Ticket;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 @SaveableObject
 public class Wallet

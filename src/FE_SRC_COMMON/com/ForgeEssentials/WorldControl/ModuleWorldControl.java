@@ -11,9 +11,6 @@ import com.ForgeEssentials.WorldControl.commands.CommandTopManipulate;
 import com.ForgeEssentials.WorldControl.commands.CommandUndo;
 import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.PreInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
@@ -28,20 +25,20 @@ public class ModuleWorldControl
 	public static ArrayList<WorldControlCommandBase>	needsCompleteCommands	= new ArrayList<WorldControlCommandBase>();
 
 	// preload.
-	@PreInit
+	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent event)
 	{
 	}
 
 	// load.
-	@Init
+	@FEModule.Init
 	public void load(FEModuleInitEvent event)
 	{
 
 	}
 
 	// serverStart.
-	@ServerInit
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandSet());

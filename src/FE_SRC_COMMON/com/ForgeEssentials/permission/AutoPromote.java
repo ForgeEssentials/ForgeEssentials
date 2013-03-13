@@ -12,8 +12,6 @@ import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.commands.CommandAFK;
-import com.ForgeEssentials.core.PlayerInfo;
 
 @SaveableObject
 public class AutoPromote implements Runnable

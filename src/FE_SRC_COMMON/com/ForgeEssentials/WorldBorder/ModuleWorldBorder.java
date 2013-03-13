@@ -8,8 +8,6 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
@@ -27,7 +25,7 @@ public class ModuleWorldBorder
 	public static boolean						WBenabled		= false;
 	public static boolean						logToConsole	= true;
 
-	@Config
+	@FEModule.Config
 	public static ConfigWorldBorder				config;
 
 	public static BorderShape					shape;
@@ -50,7 +48,7 @@ public class ModuleWorldBorder
 
 	}
 
-	@ServerInit
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandWB());

@@ -6,9 +6,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.tickets.Ticket;
-import com.ForgeEssentials.util.Localization;
 
 import cpw.mods.fml.common.IPlayerTracker;
 

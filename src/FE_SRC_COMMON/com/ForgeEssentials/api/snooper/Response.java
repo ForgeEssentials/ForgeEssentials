@@ -1,10 +1,11 @@
 package com.ForgeEssentials.api.snooper;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.Configuration;
+
 import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.json.JSONObject;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 /**

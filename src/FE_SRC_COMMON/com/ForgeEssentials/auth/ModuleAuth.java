@@ -3,10 +3,6 @@ package com.ForgeEssentials.auth;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
@@ -23,7 +19,7 @@ import cpw.mods.fml.relauncher.Side;
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, configClass = AuthConfig.class)
 public class ModuleAuth
 {
-	@Config
+	@FEModule.Config
 	public static AuthConfig				config;
 
 	public static boolean					forceEnabled;
@@ -39,7 +35,7 @@ public class ModuleAuth
 
 	public static boolean					allowOfflineReg;
 
-	@Init
+	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
 		// No Auth Plugin on client
@@ -52,7 +48,7 @@ public class ModuleAuth
 		pwdEnc = new PasswordEncryptionService();
 	}
 
-	@ServerInit
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandLogin());
@@ -129,7 +125,7 @@ public class ModuleAuth
 		}
 	}
 
-	@ServerStop
+	@FEModule.ServerStop
 	public void serverStop(FEModuleServerStopEvent e)
 	{
 		if (handler != null)

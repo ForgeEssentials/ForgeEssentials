@@ -6,13 +6,6 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
-import com.ForgeEssentials.api.modules.FEModule.PreInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerPostInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
@@ -37,23 +30,23 @@ import cpw.mods.fml.relauncher.Side;
 @FEModule(configClass = ConfigCmd.class, name = "CommandsModule", parentMod = ForgeEssentials.class)
 public class ModuleCommands
 {
-	@Config
+	@FEModule.Config
 	public static ConfigCmd			conf;
 
-	@ModuleDir
+	@FEModule.ModuleDir
 	public static File				cmddir;
 
 	public static EventHandler		eventHandler	= new EventHandler();
 	private static MCStatsHelper	mcstats			= new MCStatsHelper();
 
-	@PreInit
+	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
 
 		MobTypeLoader.preLoad(e);
 	}
 
-	@Init
+	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(eventHandler);
@@ -62,13 +55,13 @@ public class ModuleCommands
 		CompatMCStats.registerStats(mcstats);
 	}
 
-	@ServerInit
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
 	}
 
-	@ServerPostInit
+	@FEModule.ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
@@ -94,7 +87,7 @@ public class ModuleCommands
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.spawn", RegGroup.GUESTS);
 	}
 
-	@ServerStop
+	@FEModule.ServerStop
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		CommandDataManager.save();

@@ -8,7 +8,6 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.json.JSONObject;
-import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.api.snooper.TextFormatter;
