@@ -52,7 +52,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public void getPermissionProp(PropQuery query)
 	{
-		// TODO: handle this later....
+		PermissionsPropHandler.handleQuery(query);
 	}
 	
 	@Override

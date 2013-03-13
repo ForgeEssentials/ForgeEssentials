@@ -4,26 +4,14 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
-public class PropQueryPlayer extends PropQuerySpot
+public abstract class PropQueryPlayer extends PropQuery
 {
-	public final String username;
+	public final EntityPlayer player;
 
-	public PropQueryPlayer(EntityPlayer player, String permKey, PermPropType type)
+	public PropQueryPlayer(EntityPlayer player, String permKey)
 	{
-		super(new WorldPoint(player), permKey, type);
-		username = player.username;
-	}
-	
-	public PropQueryPlayer(EntityPlayer player, WorldPoint p, String permKey, PermPropType type)
-	{
-		super(p, permKey, type);
-		username = player.username;
-	}
-	
-	public PropQueryPlayer(String player, WorldPoint p, String permKey, PermPropType type)
-	{
-		super(p, permKey, type);
-		username = player;
+		super(permKey);
+		this.player = player;
 	}
 
 }
