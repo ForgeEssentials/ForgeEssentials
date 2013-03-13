@@ -94,7 +94,13 @@ public class SocketListner implements Runnable
 	{
 		for (SocketHandler handler : socketList)
 		{
-			handler.close();
+			try
+			{
+				handler.close();
+			}
+			catch(Exception e)
+			{
+			}
 		}
 		socketList.clear();
 	}

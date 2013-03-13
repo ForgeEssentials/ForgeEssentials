@@ -1,6 +1,7 @@
 package com.ForgeEssentials.snooper;
 
 import java.io.File;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
@@ -29,7 +30,7 @@ public class ConfigSnooper extends ModuleConfigBase
 		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").getBoolean(true);
 		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
 
-		ModuleSnooper.keysize = config.get(cat, "keysize", 256, "AES Keysize. Only affects new keys.").getInt();
+		ModuleSnooper.keysize = config.get(cat, "keysize", 128, "AES Keysize. Only affects new keys.").getInt();
 		
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
@@ -52,6 +53,8 @@ public class ConfigSnooper extends ModuleConfigBase
 		config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").value = "" + ModuleSnooper.autoReboot;
 		config.get(cat, "enable", false, "This one is obvious, don't you think?").value = "" + ModuleSnooper.enable;
 
+		config.get(cat, "keysize", 128, "AES Keysize. Only affects new keys.").value = ModuleSnooper.keysize + "";
+		
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
 			String subCat = cat + "." + response.getName();
@@ -74,6 +77,8 @@ public class ConfigSnooper extends ModuleConfigBase
 		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").getBoolean(true);
 		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
 
+		ModuleSnooper.keysize = config.get(cat, "keysize", 128, "AES Keysize. Only affects new keys.").getInt();
+		
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
 			String subCat = cat + "." + response.getName();

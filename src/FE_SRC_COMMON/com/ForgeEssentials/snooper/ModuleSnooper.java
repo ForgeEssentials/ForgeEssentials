@@ -6,14 +6,11 @@ import java.io.FileOutputStream;
 
 import javax.crypto.KeyGenerator;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
@@ -29,10 +26,10 @@ import com.ForgeEssentials.snooper.response.ServerInfo;
 @FEModule(name = "SnooperModule", parentMod = ForgeEssentials.class, configClass = ConfigSnooper.class)
 public class ModuleSnooper
 {
-	@Config
+	@FEModule.Config
 	public static ConfigSnooper		configSnooper;
 	
-	@ModuleDir
+	@FEModule.ModuleDir
 	public File						folder;
 
 	public static int				port;
@@ -62,7 +59,7 @@ public class ModuleSnooper
 		snooperAPI.registerResponce(6, new PlayerInv()); 
 	}
 
-	@ServerInit
+	@FEModule.ServerInit()
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		getKey();
@@ -102,10 +99,18 @@ public class ModuleSnooper
 		
 	}
 
-	@ServerStop
+	@FEModule.ServerStop()
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		stop();
+	}
+	
+	@FEModule.Reload()
+	public void reload(ICommandSender sender)
+	{
+		stop();
+		getKey();
+		start();
 	}
 
 	public static void start()
