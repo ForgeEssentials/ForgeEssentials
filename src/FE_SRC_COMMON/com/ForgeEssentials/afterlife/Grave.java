@@ -111,7 +111,7 @@ public class Grave
 	{
 		if (!this.protEnable)
 			return true;
-		if (player.username.equals(point))
+		if (player.username.equals(owner))
 			return true;
 		if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, Deathchest.PERMISSION_BYPASS)))
 			return true;
