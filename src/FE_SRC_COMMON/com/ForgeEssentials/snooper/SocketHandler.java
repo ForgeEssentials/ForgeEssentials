@@ -59,7 +59,6 @@ public class SocketHandler extends Thread
 		{
 			e.printStackTrace();
 		}
-		
 		close();
 	}
 
@@ -89,5 +88,6 @@ public class SocketHandler extends Thread
 		{
 			e.printStackTrace();
 		}
+		System.gc();
 	}
 }

@@ -36,8 +36,6 @@ public class ModuleSnooper
 	public static String			hostname;
 	public static boolean			enable;
 
-	public static boolean			autoReboot;
-
 	public static SocketListner		socketListner;
 
 	private static int				id = 0;
