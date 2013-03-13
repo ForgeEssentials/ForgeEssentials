@@ -5,7 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import com.ForgeEssentials.api.json.JSONArray;
 import com.ForgeEssentials.api.json.JSONException;
+import com.ForgeEssentials.api.json.JSONObject;
+import com.ForgeEssentials.api.json.JSONTokener;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -37,8 +40,18 @@ public class SocketHandler extends Thread
 			byte[] inBuffer = new byte[is.available()];
 			is.read(inBuffer);
 			String inString = new String(inBuffer);
-			String input = Security.decrypt(inString, ModuleSnooper.key);
-			String out = Security.encrypt(getResponce((byte) i, input), ModuleSnooper.key);
+			String inDecr = Security.decrypt(inString, ModuleSnooper.key);
+			
+			String out;
+			try
+			{
+				out = Security.encrypt(getResponce((byte) i, new JSONObject(inDecr)), ModuleSnooper.key);
+			}
+			catch (Exception e)
+			{
+				out = Security.encrypt(getResponce((byte) i, new JSONObject()), ModuleSnooper.key);
+			}
+			
 			os.write(out.getBytes());
 			os.flush();
 		}
@@ -50,7 +63,7 @@ public class SocketHandler extends Thread
 		close();
 	}
 
-	private String getResponce(byte i, String input)
+	private String getResponce(byte i, JSONObject input)
 	{
 		try
 		{

@@ -14,7 +14,6 @@ import com.ForgeEssentials.api.snooper.VoteEvent;
 import com.ForgeEssentials.api.snooper.snooperAPI;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.serverVote.Votifier.VoteReceiver;
-import com.ForgeEssentials.serverVote.snooper.VoteResponce;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -32,7 +31,6 @@ public class ModuleServerVote
 	public ModuleServerVote()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
-		snooperAPI.registerResponce(10, new VoteResponce());
 	}
 
 	@FEModule.ServerInit

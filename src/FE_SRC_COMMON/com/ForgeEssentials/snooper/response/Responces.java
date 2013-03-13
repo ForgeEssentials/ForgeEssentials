@@ -11,7 +11,7 @@ import com.ForgeEssentials.snooper.ResponseRegistry;
 public class Responces extends Response
 {
 	@Override
-	public JSONObject getResponce(String input) throws JSONException
+	public JSONObject getResponce(JSONObject input) throws JSONException
 	{
 		JSONArray data = new JSONArray();
 		for (Response responce : ResponseRegistry.getAllresponses())

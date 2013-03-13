@@ -20,7 +20,7 @@ public abstract class Response
 	protected MinecraftServer	server		= FMLCommonHandler.instance().getMinecraftServerInstance();
 	public boolean				allowed		= true;
 	
-	public abstract JSONObject getResponce(String input) throws JSONException;
+	public abstract JSONObject getResponce(JSONObject input) throws JSONException;
 
 	public abstract String getName();
 

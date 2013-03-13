@@ -23,50 +23,55 @@ public class PlayerInfoResonce extends Response
 	private boolean	sendArmorAndHealth;
 	private boolean	sendFood;
 	private boolean	sendCapabilities;
+	private boolean	sendMoney;
+	private boolean	sendPosition;
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject getResponce(String input) throws JSONException
+	public JSONObject getResponce(JSONObject input) throws JSONException
 	{
 		JSONObject PlayerData = new JSONObject();
 		JSONObject tempMap = new JSONObject();
 
-		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input);
+		if (!input.has("username"))
+			return new JSONObject().put(this.getName(), "This responce needs a username!");
+		
+		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input.getString("username"));
 		if (player == null)
-			return new JSONObject().put(this.getName(), "");
+			return new JSONObject().put(this.getName(), input.getString("username") + " not online!");
 
 		PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
 		if (pi != null && sendhome)
 		{
 			if (pi.home != null)
 			{
-				PlayerData.put("home", pi.home.toJSON());
+				PlayerData.put("Home", pi.home.toJSON());
 			}
 			if (pi.back != null)
 			{
-				PlayerData.put("back", pi.back.toJSON());
+				PlayerData.put("Back", pi.back.toJSON());
 			}
 		}
 
 		if (sendArmorAndHealth)
 		{
-			PlayerData.put("armor", "" + player.inventory.getTotalArmorValue());
-			PlayerData.put("health", "" + player.getHealth());
+			PlayerData.put("Armor", "" + player.inventory.getTotalArmorValue());
+			PlayerData.put("Health", "" + player.getHealth());
 		}
 		try
 		{
-			PlayerData.put("money", "" + WalletHandler.getWallet(player));
+			if(sendMoney) PlayerData.put("Money", "" + WalletHandler.getWallet(player));
 		}
 		catch (Exception e)
 		{
 		}
-		PlayerData.put("pos", new WorldPoint(player).toJSON());
-		PlayerData.put("ping", "" + player.ping);
-		PlayerData.put("gm", player.theItemInWorldManager.getGameType().getName());
+		if(sendPosition) PlayerData.put("Position", new WorldPoint(player).toJSON());
+		PlayerData.put("Ping", "" + player.ping);
+		PlayerData.put("Gamemode", player.theItemInWorldManager.getGameType().getName());
 
 		if (!player.getActivePotionEffects().isEmpty() && sendpotions)
 		{
-			PlayerData.put("potion", TextFormatter.toJSON((Collection<PotionEffect>) player.getActivePotionEffects()));
+			PlayerData.put("Potions", TextFormatter.toJSON((Collection<PotionEffect>) player.getActivePotionEffects()));
 		}
 
 		if (sendXP)
@@ -74,15 +79,15 @@ public class PlayerInfoResonce extends Response
 			tempMap = new JSONObject();
 			tempMap.put("lvl", "" + player.experienceLevel);
 			tempMap.put("bar", "" + player.experience);
-			PlayerData.put("xp", tempMap);
+			PlayerData.put("XP", tempMap);
 		}
 
 		if (sendFood)
 		{
 			tempMap = new JSONObject();
-			tempMap.put("food", "" + player.getFoodStats().getFoodLevel());
-			tempMap.put("saturation", "" + player.getFoodStats().getSaturationLevel());
-			PlayerData.put("foodStats", tempMap);
+			tempMap.put("Food", "" + player.getFoodStats().getFoodLevel());
+			tempMap.put("Saturation", "" + player.getFoodStats().getSaturationLevel());
+			PlayerData.put("FoodStats", tempMap);
 		}
 
 		if (sendCapabilities)
@@ -93,7 +98,7 @@ public class PlayerInfoResonce extends Response
 			tempMap.put("isFly", "" + player.capabilities.isFlying);
 			tempMap.put("noDamage", "" + player.capabilities.disableDamage);
 		}
-		PlayerData.put("cap", tempMap);
+		PlayerData.put("Capabilities", tempMap);
 
 		try
 		{
@@ -125,6 +130,8 @@ public class PlayerInfoResonce extends Response
 		sendArmorAndHealth = config.get(category, "sendArmorAndHealth", true).getBoolean(true);
 		sendFood = config.get(category, "sendFood", true).getBoolean(true);
 		sendCapabilities = config.get(category, "sendCapabilities", true).getBoolean(true);
+		sendMoney = config.get(category, "sendMoney", true).getBoolean(true);
+		sendPosition = config.get(category, "sendPosition", true).getBoolean(true);
 	}
 
 	@Override
@@ -136,5 +143,7 @@ public class PlayerInfoResonce extends Response
 		config.get(category, "sendArmorAndHealth", true).value = "" + sendArmorAndHealth;
 		config.get(category, "sendFood", true).value = "" + sendFood;
 		config.get(category, "sendCapabilities", true).value = "" + sendCapabilities;
+		config.get(category, "sendMoney", true).value = sendMoney + "";
+		config.get(category, "sendPosition", true).value = sendPosition + "";
 	}
 }

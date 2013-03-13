@@ -13,11 +13,14 @@ import com.ForgeEssentials.api.snooper.TextFormatter;
 public class PlayerInv extends Response
 {
 	@Override
-	public JSONObject getResponce(String input) throws JSONException
+	public JSONObject getResponce(JSONObject input) throws JSONException
 	{
-		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input);
+		if (!input.has("username"))
+			return new JSONObject().put(this.getName(), "This responce needs a username!");
+		
+		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input.getString("username"));
 		if (player == null)
-			return new JSONObject().put(this.getName(), "");
+			return new JSONObject().put(this.getName(), input.getString("username") + " not online!");
 
 		JSONObject PlayerData = new JSONObject();
 		JSONArray tempArgs = new JSONArray();
@@ -28,7 +31,7 @@ public class PlayerInv extends Response
 				tempArgs.put(TextFormatter.toJSON(stack, true));
 			}
 		}
-		PlayerData.put("inv", tempArgs);
+		PlayerData.put("Inventory", tempArgs);
 		
 		tempArgs = new JSONArray();
 		for (int i = 0; i < 3; i++)
@@ -39,7 +42,7 @@ public class PlayerInv extends Response
 				tempArgs.put(TextFormatter.toJSON(stack, true));
 			}
 		}
-		PlayerData.put("armor", tempArgs);
+		PlayerData.put("Armor", tempArgs);
 		
 		return new JSONObject().put(this.getName(), PlayerData);
 	}

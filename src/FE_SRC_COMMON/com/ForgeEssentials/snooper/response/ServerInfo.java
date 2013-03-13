@@ -36,7 +36,7 @@ public class ServerInfo extends Response
 	public static String	serverHash	= "";
 
 	@Override
-	public JSONObject getResponce(String input) throws JSONException
+	public JSONObject getResponce(JSONObject input) throws JSONException
 	{
 		if (sendMods)
 		{
@@ -49,44 +49,43 @@ public class ServerInfo extends Response
 				ModData.add(modlist.get(i).getDisplayVersion());
 				temp.put(ModData);
 			}
-			data.put("mods", temp);
+			data.put("Mods", temp);
 		}
 
 		if (sendIP)
 		{
 			if (overrideIP)
 			{
-				data.put("hostip", "" + overrideIPValue);
+				data.put("Hostname", "" + overrideIPValue + ":" + server.getPort());
 			}
 			else
 			{
-				data.put("hostip", getIP());
+				data.put("Hostname", getIP() + ":" + server.getPort());
 			}
-			data.put("hostport", "" + server.getPort());
 		}
-		data.put("version", server.getMinecraftVersion());
-		data.put("map", server.getFolderName());
-		data.put("maxplayers", "" + server.getMaxPlayers());
+		data.put("MCversion", server.getMinecraftVersion());
+		data.put("WorldName", server.getFolderName());
+		data.put("Slots", "" + server.getMaxPlayers());
 
 		if (ServerID != 0)
 		{
-			data.put("serverID", ServerID + "");
+			data.put("ServerID", ServerID + "");
 		}
 		if (!serverHash.equals(""))
 		{
-			data.put("serverHash", serverHash + "");
+			data.put("ServerHash", serverHash + "");
 		}
 
-		data.put("gm", server.getGameType().getName());
-		data.put("diff", "" + server.getDifficulty());
-		data.put("numplayers", "" + server.getCurrentPlayerCount());
+		data.put("Gamemode", server.getGameType().getName());
+		data.put("Difficulty", "" + server.getDifficulty());
+		data.put("OnlinePlayers", "" + server.getCurrentPlayerCount());
 		if (sendMotd)
 		{
-			data.put("motd", server.getServerMOTD());
+			data.put("MOTD", server.getServerMOTD());
 		}
 
-		data.put("uptime", getUptime());
-		data.put("tps", getTPS());
+		data.put("Uptime", getUptime());
+		data.put("TPS", getTPS());
 
 		try
 		{
@@ -95,14 +94,14 @@ public class ServerInfo extends Response
 				JSONObject temp = new JSONObject();
 				temp.put("Shape", ModuleWorldBorder.shape.name());
 				temp.put("Center", new Point(ModuleWorldBorder.X, 64, ModuleWorldBorder.Z).toJSON());
-				data.put("wb", temp);
+				data.put("WorldBorder", temp);
 			}
 		}
 		catch (Exception e)
 		{
 		}
 
-		data.put("players", server.getAllUsernames());
+		data.put("Players", server.getAllUsernames());
 		
 		return new JSONObject().put(this.getName(), data);
 	}
@@ -165,7 +164,7 @@ public class ServerInfo extends Response
 			{
 				if (server.worldTickTimes.containsKey(id))
 				{
-					data.put("dim " + id, "" + getTPSFromData(server.worldTickTimes.get(id)));
+					data.put("Dim " + id, "" + getTPSFromData(server.worldTickTimes.get(id)));
 				}
 			}
 			return data;

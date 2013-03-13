@@ -37,7 +37,7 @@ public class ResponseRegistry
 		if (map.containsKey((int) ID))
 			return map.get((int) ID);
 		else
-			return null;
+			return map.get(0);
 	}
 
 	/**
