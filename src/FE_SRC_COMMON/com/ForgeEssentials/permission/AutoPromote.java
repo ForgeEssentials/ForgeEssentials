@@ -105,45 +105,6 @@ public class AutoPromote implements Runnable
 	@Override
 	public void run()
 	{
-		while (server.isServerRunning())
-		{
-			try
-			{
-				Thread.sleep(1000 * 10);
-			}
-			catch (InterruptedException e)
-			{
-				break;
-			}
-
-			for (String player : server.getConfigurationManager().getAllUsernames())
-			{
-				try
-				{
-					if (CommandAFK.afkList.contains(player))
-					{
-						if (countAFK)
-						{
-							PlayerInfo.getPlayerInfo(player).timePlayed++;
-						}
-					}
-					else
-					{
-						PlayerInfo.getPlayerInfo(player).timePlayed++;
-					}
-				}
-				catch (Exception e)
-				{
-					PlayerInfo.getPlayerInfo(player).timePlayed++;
-				}
-
-				for (AutoPromote obj : map.values())
-				{
-					obj.count(player, PlayerInfo.getPlayerInfo(player).timePlayed);
-				}
-			}
-		}
-
 		System.gc();
 	}
 

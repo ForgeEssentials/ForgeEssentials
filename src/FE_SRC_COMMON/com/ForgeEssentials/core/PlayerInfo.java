@@ -2,6 +2,7 @@ package com.ForgeEssentials.core;
 
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.TimerTask;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -17,13 +18,14 @@ import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
 @SaveableObject
-public class PlayerInfo
+public class PlayerInfo extends TimerTask
 {
 	private static HashMap<String, PlayerInfo>	playerInfoMap	= new HashMap<String, PlayerInfo>();
 
@@ -79,7 +81,11 @@ public class PlayerInfo
 		info.suffix = (String) tag.getFieldValue("suffix");
 
 		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
+		
+		info.firstJoin = (Long) tag.getFieldValue("firstJoin");
 
+		TaskRegistry.registerRecurringTask(info, 0, 0, 0, 0, 0, 1, 0, 0);
+		
 		return info;
 	}
 
@@ -123,6 +129,9 @@ public class PlayerInfo
 	@SaveableField()
 	public int						timePlayed;
 	
+	@SaveableField()
+	private long					firstJoin;
+	
 	// undo and redo stuff
 	private Stack<BackupArea>		undos;
 	private Stack<BackupArea>		redos;
@@ -142,6 +151,8 @@ public class PlayerInfo
 
 		prefix = "";
 		suffix = "";
+		
+		firstJoin = System.currentTimeMillis();
 	}
 
 	/**
@@ -150,6 +161,12 @@ public class PlayerInfo
 	public void save()
 	{
 		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
+		TaskRegistry.removeTask(this);
+	}
+	
+	public long getFirstJoin()
+	{
+		return firstJoin;
 	}
 
 	// ----------------------------------------------
@@ -287,5 +304,17 @@ public class PlayerInfo
 		sel2 = null;
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
 		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
+	}
+
+	@Override
+	public void run()
+	{
+		try
+		{
+			this.timePlayed ++;
+		}
+		catch (Exception e)
+		{
+		}
 	}
 }

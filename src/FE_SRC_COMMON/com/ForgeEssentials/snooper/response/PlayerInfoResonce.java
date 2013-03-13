@@ -54,8 +54,13 @@ public class PlayerInfoResonce extends Response
 			PlayerData.put("armor", "" + player.inventory.getTotalArmorValue());
 			PlayerData.put("health", "" + player.getHealth());
 		}
-
-		PlayerData.put("WalletHandler", "" + WalletHandler.getWallet(player));
+		try
+		{
+			PlayerData.put("money", "" + WalletHandler.getWallet(player));
+		}
+		catch (Exception e)
+		{
+		}
 		PlayerData.put("pos", new WorldPoint(player).toJSON());
 		PlayerData.put("ping", "" + player.ping);
 		PlayerData.put("gm", player.theItemInWorldManager.getGameType().getName());
@@ -93,14 +98,17 @@ public class PlayerInfoResonce extends Response
 
 		try
 		{
-			Group group = PermissionsAPI.getHighestGroup(player);
-			PlayerData.put("group", group.name);
+			PlayerData.put("group", PermissionsAPI.getHighestGroup(player).name);
 		}
 		catch (Exception e)
 		{
 		}
-
+		
+		PlayerData.put("firstJoin", PlayerInfo.getPlayerInfo(player.username).getFirstJoin());
+		PlayerData.put("timePlayed", PlayerInfo.getPlayerInfo(player.username).timePlayed);
+		
 		return new JSONObject().put(this.getName(), PlayerData);
+		
 	}
 
 	@Override

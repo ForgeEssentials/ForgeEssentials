@@ -48,6 +48,17 @@ public class TaskRegistry
 		TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
 		registerRecurringTask(wrapper, delayHrs, delayMin, delaySec, delayMilli, intervalHrs, intervalMin, intervalSec, intervalMilli);
 	}
+	
+	public static void removeTask(TimerTask task)
+	{
+		instance.timed.removeTask(task);
+	}
+	
+	public static void removeTask(Runnable task)
+	{
+		TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
+		instance.timed.removeTask(wrapper);
+	}
 
 	public void onServerStop()
 	{
