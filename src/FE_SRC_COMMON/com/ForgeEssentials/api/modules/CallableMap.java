@@ -30,7 +30,6 @@ public class CallableMap
 	{
 		if (obj == null)
 			return;
-		System.out.println(obj);
 
 		try
 		{
@@ -72,9 +71,9 @@ public class CallableMap
 				}
 			}
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
-			OutputHandler.exception(Level.SEVERE, "Error stripping methods from class! " + obj.getClass().getName(), e);
+			OutputHandler.severe("Error stripping methods from class! " + obj.getClass().getName());
 		}
 	}
 
@@ -112,9 +111,9 @@ public class CallableMap
 				}
 			}
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
-			OutputHandler.exception(Level.SEVERE, "Error stripping methods from class! " + c.getName(), e);
+			OutputHandler.severe("Error stripping methods from class! " + c.getName());
 		}
 	}
 
