@@ -27,6 +27,10 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		if (args.length < 2)
+		{
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+		}
 		StringBuilder cmd = new StringBuilder(args.toString().length());
 		for (int i = 1; i < args.length; i++)
 		{
