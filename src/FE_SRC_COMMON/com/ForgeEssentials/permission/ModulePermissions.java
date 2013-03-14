@@ -20,8 +20,12 @@ import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.AbstractDataDriver;
+import com.ForgeEssentials.permission.autoPromote.AutoPromote;
+import com.ForgeEssentials.permission.autoPromote.AutoPromoteManager;
+import com.ForgeEssentials.permission.autoPromote.CommandAutoPromote;
 import com.ForgeEssentials.permission.mcoverride.OverrideManager;
 import com.ForgeEssentials.util.TeleportCenter;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -43,7 +47,7 @@ public class ModulePermissions
 
 	// permission registrations here...
 	protected HashMultimap<RegGroup, PermissionChecker>	regPerms;
-	private AutoPromote									autoPromote;
+	private AutoPromoteManager							autoPromoteManager;
 
 	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -55,7 +59,6 @@ public class ModulePermissions
 		PermRegLoader laoder = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));
 		regPerms = laoder.loadAllPerms();
 
-		DataStorageManager.registerSaveableType(new ClassContainer(AutoPromote.class));
 		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 	}
 
@@ -86,17 +89,10 @@ public class ModulePermissions
 		// init perms and vMC command overrides
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandFEPerm());
+		e.registerServerCommand(new CommandAutoPromote());
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
-	}
-
-	@FEModule.ServerPostInit
-	public void serverStarted(FEModuleServerPostInitEvent e)
-	{
-		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(new ClassContainer(AutoPromote.class)))
-		{
-			AutoPromote.map.put(((AutoPromote) obj).zone, (AutoPromote) obj);
-		}
-		autoPromote = new AutoPromote(FMLCommonHandler.instance().getMinecraftServerInstance());
+		
+		autoPromoteManager = new AutoPromoteManager();
 	}
 
 	@PermRegister
@@ -107,7 +103,9 @@ public class ModulePermissions
 		event.registerPermissionLevel("ForgeEssentials.perm._ALL_", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone", RegGroup.ZONE_ADMINS);
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone._ALL_", RegGroup.ZONE_ADMINS);
-
+		
+		event.registerPermissionLevel("ForgeEssentials.autoPromote", RegGroup.ZONE_ADMINS);
+		
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 
@@ -127,9 +125,8 @@ public class ModulePermissions
 			}
 			data.saveObject(con, zone);
 		}
-
-		AutoPromote.saveAll();
-		autoPromote.interrupt();
+		
+		autoPromoteManager.stop();
 	}
 
 }
