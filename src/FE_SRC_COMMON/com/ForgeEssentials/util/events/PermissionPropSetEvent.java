@@ -1,24 +1,25 @@
 package com.ForgeEssentials.util.events;
 
-import net.minecraftforge.event.Cancelable;
-import net.minecraftforge.event.Event;
-
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.permission.Permission;
+import com.ForgeEssentials.permission.PermissionProp;
+
+import net.minecraftforge.event.Cancelable;
+import net.minecraftforge.event.Event;
 
 @Cancelable
 /**
  * @author AbrarSyed
  * This is thrown after the permissions are checked but before the permission is actually sent.
  */
-public class PermissionSetEvent extends Event
+public class PermissionPropSetEvent extends Event
 {
-	public Permission	perm;
+	public PermissionProp	perm;
 	public Zone			zone;
 	public String		entity; // p:PlayerUsername or g:GroupName. the prefixes will be there.
 	private String		reason;
 
-	public PermissionSetEvent(Permission perm, Zone zone, String entity)
+	public PermissionPropSetEvent(PermissionProp perm, Zone zone, String entity)
 	{
 		this.perm = perm;
 		this.zone = zone;

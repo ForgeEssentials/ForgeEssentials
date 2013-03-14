@@ -38,6 +38,12 @@ public class ExportThread extends Thread
 		obj2 = map.get("groupPerms");
 		FlatFilePermissions permissions = new FlatFilePermissions(exportDir);
 		permissions.save((ArrayList<PermissionHolder>) obj1, (ArrayList<PermissionHolder>) obj2);
+		
+		output("Saving Permission Properties");
+		obj1 = map.get("playerPermProps");
+		obj2 = map.get("groupPermProps");
+		FlatFilePermProps permProps = new FlatFilePermProps(exportDir);
+		permProps.save((ArrayList<PermissionPropHolder>) obj1, (ArrayList<PermissionPropHolder>) obj2);
 
 		output("Saving Groups");
 		obj1 = map.get("groups");

@@ -5,27 +5,32 @@ import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.permissions.query.PermQuery;
+import com.ForgeEssentials.api.permissions.query.PropQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.api.permissions.query.PermissionQueryBus;
 
 // This is a bouncer class for all Permissions API duties.
 
 @SuppressWarnings("unchecked")
 public abstract class PermissionsAPI
 {
-	public static final PermissionQueryBus	QUERY_BUS	= new PermissionQueryBus();
 	public static IPermissionsHelper		manager;
 
 	public static boolean checkPermAllowed(PermQuery query)
 	{
-		QUERY_BUS.post(query);
-		return query.isAllowed();
+		return manager.checkPermAllowed(query);
 	}
 
 	public static PermResult checkPermResult(PermQuery query)
 	{
-		QUERY_BUS.post(query);
-		return query.getResult();
+		return manager.checkPermResult(query);
+	}
+	
+	/**
+	 * populates the given PropQuery with a value.
+	 */
+	public static void getPermissionProp(PropQuery query)
+	{
+		manager.getPermissionProp(query);
 	}
 
 	public static Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority)
@@ -41,6 +46,16 @@ public abstract class PermissionsAPI
 	public static String setGroupPermission(String group, String permission, boolean allow, String zoneID)
 	{
 		return manager.setGroupPermission(group, permission, allow, zoneID);
+	}
+	
+	public static String setPlayerPermissionProp(String username, String permission, String value, String zoneID)
+	{
+		return manager.setPlayerPermissionProp(username, permission, value, zoneID);
+	}
+	
+	public static String setGroupPermissionProp(String group, String permission, String value, String zoneID)
+	{
+		return manager.setGroupPermissionProp(group, permission, value, zoneID);
 	}
 
 	public static ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
@@ -83,6 +98,11 @@ public abstract class PermissionsAPI
 		return manager.clearPlayerPermission(player, node, zone);
 	}
 
+	public static String clearPlayerPermissionProp(String player, String node, String zone)
+	{
+		return manager.clearPlayerPermissionProp(player, node, zone);
+	}
+
 	public static void deleteGroupInZone(String group, String zone)
 	{
 		manager.deleteGroupInZone(group, zone);
@@ -97,6 +117,11 @@ public abstract class PermissionsAPI
 	{
 		return manager.clearGroupPermission(name, node, zone);
 	}
+	
+	public static String clearGroupPermissionProp(String name, String node, String zone)
+	{
+		return manager.clearGroupPermissionProp(name, node, zone);
+	}
 
 	public static ArrayList<Group> getGroupsInZone(String zoneName)
 	{
@@ -107,13 +132,28 @@ public abstract class PermissionsAPI
 	{
 		return manager.getPermissionForGroup(target, zone, perm);
 	}
+	
+	public static String getPermissionPropForGroup(String target, String zone, String perm)
+	{
+		return manager.getPermissionForGroup(target, zone, perm);
+	}
 
 	public static ArrayList<String> getPlayerPermissions(String target, String zone)
 	{
 		return manager.getPlayerPermissions(target, zone);
 	}
+	
+	public static ArrayList getPlayerPermissionProps(String target, String zone)
+	{
+		return manager.getPlayerPermissions(target, zone);
+	}
 
 	public static ArrayList<String> getGroupPermissions(String target, String zone)
+	{
+		return manager.getGroupPermissions(target, zone);
+	}
+	
+	public static ArrayList getGroupPermissionProps(String target, String zone)
 	{
 		return manager.getGroupPermissions(target, zone);
 	}

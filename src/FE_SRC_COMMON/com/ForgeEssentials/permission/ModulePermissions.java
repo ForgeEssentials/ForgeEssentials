@@ -31,22 +31,19 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions
 {
-	// public static ConfigPermissions config;
-	public static PermissionsPlayerHandler	ppHandler;
-	public static PermissionsBlanketHandler	pbHandler;
-	public static SqlHelper					sql;
+	public static SqlHelper								sql;
 
 	@FEModule.Config
-	public static ConfigPermissions			config;
+	public static ConfigPermissions						config;
 
 	@FEModule.ModuleDir
-	public static File						permsFolder;
+	public static File									permsFolder;
 
-	protected static AbstractDataDriver		data;
+	protected static AbstractDataDriver					data;
 
 	// permission registrations here...
-	protected HashMultimap					regPerms;
-	private AutoPromote						autoPromote;
+	protected HashMultimap<RegGroup, PermissionChecker>	regPerms;
+	private AutoPromote									autoPromote;
 
 	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -68,12 +65,7 @@ public class ModulePermissions
 	{
 		// setup SQL
 		sql = new SqlHelper(config);
-		sql.putRegistrationperms(regPerms);
-
-		ppHandler = new PermissionsPlayerHandler();
-		pbHandler = new PermissionsBlanketHandler();
-		PermissionsAPI.QUERY_BUS.register(ppHandler);
-		PermissionsAPI.QUERY_BUS.register(pbHandler);
+		sql.putRegistrationPerms(regPerms);
 
 		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);
@@ -115,8 +107,6 @@ public class ModulePermissions
 		event.registerPermissionLevel("ForgeEssentials.perm._ALL_", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone", RegGroup.ZONE_ADMINS);
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone._ALL_", RegGroup.ZONE_ADMINS);
-
-		event.registerPermissionLevel("_ALL_", RegGroup.OWNERS);
 
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
