@@ -1118,7 +1118,7 @@ public class SqlHelper
 	 * @param zoneName
 	 * @return NULL if no ladder in existence.
 	 */
-	protected static synchronized PromotionLadder getLadderForGroup(String group, String zone)
+	public static synchronized PromotionLadder getLadderForGroup(String group, String zone)
 	{
 		try
 		{
