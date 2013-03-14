@@ -1,5 +1,6 @@
 package com.ForgeEssentials.protection;
 
+import static net.minecraftforge.event.Event.Result.DENY;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -184,7 +185,7 @@ public class EventHandler
 		{
 			WorldPoint point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
 			PermQuery query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_OVERRIDE, point);
-			Boolean result = PermissionsAPI.checkPermAllowed(query);
+			boolean result = PermissionsAPI.checkPermAllowed(query);
 
 			if (!result)
 			{
@@ -192,7 +193,8 @@ public class EventHandler
 				result = PermissionsAPI.checkPermAllowed(query);
 			}
 
-			e.setCanceled(!result);
+			if (!result)
+				e.useBlock = DENY;
 		}
 	}
 

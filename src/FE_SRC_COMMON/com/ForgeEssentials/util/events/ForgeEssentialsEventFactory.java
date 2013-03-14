@@ -8,14 +8,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -135,6 +138,13 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 
 	public static boolean onBlockPlace(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitx, float hity, float hitz)
 	{
+		
+		// calculate offsets.
+		ForgeDirection dir = ForgeDirection.getOrientation(side);
+		x += dir.offsetX;
+		y += dir.offsetY;
+		z += dir.offsetZ;
+
 		PlayerBlockPlace ev = new PlayerBlockPlace(itemStack, player, world, x, y, z, side, hitx, hity, hitz);
 		MinecraftForge.EVENT_BUS.post(ev);
 		return !ev.isCanceled();
