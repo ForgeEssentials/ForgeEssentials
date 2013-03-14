@@ -139,7 +139,7 @@ public class Deathchest
 				}
 				else
 				{
-					removeGrave(grave, false);
+					removeGrave(grave, true);
 				}
 			}
 		}

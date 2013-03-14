@@ -51,7 +51,13 @@ public class TaskRegistry
 	
 	public static void removeTask(TimerTask task)
 	{
-		instance.timed.removeTask(task);
+		try
+		{
+			instance.timed.removeTask(task);
+		}
+		catch (Exception e)
+		{
+		}
 	}
 	
 	public static void removeTask(Runnable task)
