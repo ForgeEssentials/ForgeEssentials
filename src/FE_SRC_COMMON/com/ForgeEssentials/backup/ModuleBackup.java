@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintWriter;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -90,10 +91,12 @@ public class ModuleBackup
 			return;
 		try
 		{
-			ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
-			for (String username : server.getAllUsernames())
+			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+			ServerConfigurationManager manager = server.getConfigurationManager();
+			server.sendChatToPlayer(msg);
+			for (String username : manager.getAllUsernames())
 			{
-				EntityPlayerMP player = server.getPlayerForUsername(username);
+				EntityPlayerMP player = manager.getPlayerForUsername(username);
 				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
 				{
 					player.sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
