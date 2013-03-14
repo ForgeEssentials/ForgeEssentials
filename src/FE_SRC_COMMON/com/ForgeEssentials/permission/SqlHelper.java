@@ -1951,7 +1951,7 @@ public class SqlHelper
 		// DUMP PLAYER PERMPROPS PROPERTIES! ------------------------------
 		try
 		{
-			set = getInstance().statementDumpPlayerPermissions.executeQuery();
+			set = getInstance().statementDumpPlayerPermProps.executeQuery();
 
 			list = new ArrayList<PermissionPropHolder>();
 
@@ -1979,7 +1979,7 @@ public class SqlHelper
 		// DUMP GROUP PERMPROP PROPERTIES! ------------------------------
 		try
 		{
-			set = getInstance().statementDumpGroupPermissions.executeQuery();
+			set = getInstance().statementDumpGroupPermProps.executeQuery();
 
 			list = new ArrayList<PermissionPropHolder>();
 
