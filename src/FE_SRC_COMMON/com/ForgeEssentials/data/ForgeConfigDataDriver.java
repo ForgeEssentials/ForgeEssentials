@@ -103,13 +103,13 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		{
 			cfg.get(category, name, ((Integer) obj).intValue());
 		}
-		else if (type.equals(Byte.class))
-		{
-			cfg.get(category, name, ((Byte) obj).intValue());
-		}
 		else if (type.equals(int[].class))
 		{
 			cfg.get(category, name, (int[]) obj);
+		}
+		else if (type.equals(Byte.class))
+		{
+			cfg.get(category, name, ((Byte) obj).intValue());
 		}
 		else if (type.equals(byte[].class))
 		{
@@ -126,6 +126,17 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		{
 			cfg.get(category, name, ((Float) obj).floatValue());
 		}
+		else if (type.equals(float[].class))
+		{
+			double[] array = new double[((float[]) obj).length];
+
+			for (int i = 0; i < ((float[]) obj).length; i++)
+			{
+				array[i] = ((float[]) obj)[i];
+			}
+
+			cfg.get(category, name, array);
+		}
 		else if (type.equals(Double.class))
 		{
 			cfg.get(category, name, ((Double) obj).doubleValue());
@@ -133,6 +144,21 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		else if (type.equals(double[].class))
 		{
 			cfg.get(category, name, (double[]) obj);
+		}
+		else if (type.equals(Long.class))
+		{
+			cfg.get(category, name, ((Long) obj).intValue());
+		}
+		else if (type.equals(long[].class))
+		{
+			int[] array = new int[((long[]) obj).length];
+
+			for (int i = 0; i < ((long[]) obj).length; i++)
+			{
+				array[i] = (int) ((long[]) obj)[i];
+			}
+
+			cfg.get(category, name, array);
 		}
 		else if (type.equals(Boolean.class))
 		{
@@ -185,10 +211,34 @@ public class ForgeConfigDataDriver extends TextDataDriver
 		}
 		else if (type.equals(float.class))
 			return (float) cfg.get(category, name, 0d).getDouble(0);
+		else if (type.equals(float[].class))
+		{
+			double[] array = cfg.get(category, name, new double[] {}).getDoubleList();
+			float[] fArray = new float[array.length];
+
+			for (int i = 0; i < array.length; i++)
+			{
+				fArray[i] = (float) array[i];
+			}
+			return fArray;
+		}
 		else if (type.equals(double.class))
 			return cfg.get(category, name, 0d).getDouble(0);
 		else if (type.equals(double[].class))
 			return cfg.get(category, name, new double[] {}).getDoubleList();
+		if (type.equals(long.class))
+			return (long) cfg.get(category, name, 0).getInt();
+		else if (type.equals(long[].class))
+		{
+			int[] array = cfg.get(category, name, new int[] {}).getIntList();
+			long[] lArray = new long[array.length];
+
+			for (int i = 0; i < array.length; i++)
+			{
+				lArray[i] = (long) array[i];
+			}
+			return lArray;
+		}
 		else if (type.equals(boolean.class))
 			return cfg.get(category, name, false).getBoolean(false);
 		else if (type.equals(boolean[].class))

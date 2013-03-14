@@ -413,7 +413,7 @@ public class StorageManager implements IStorageManager
 		boolean flag = true;
 		if (type.isPrimitive() || type.equals(Integer.class) || type.equals(Float.class) ||
 				type.equals(Double.class) || type.equals(Boolean.class) || type.equals(String.class) ||
-				type.equals(Byte.class))
+				type.equals(Byte.class) || type.equals(Long.class))
 		{
 			flag = false;
 		}

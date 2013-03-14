@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagString;
 
 import com.ForgeEssentials.api.data.ClassContainer;
@@ -212,6 +213,21 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			tag.setTag(name, list);
 		}
+		else if (type.equals(Long.class))
+		{
+			tag.setLong(name, (Long) obj);
+		}
+		else if (type.equals(long[].class))
+		{
+			NBTTagList list = new NBTTagList();
+			long[] array = (long[]) obj;
+			for (int i = 0; i < array.length; i++)
+			{
+				list.appendTag(new NBTTagLong(name + "_" + i, array[i]));
+			}
+
+			tag.setTag(name, list);
+		}
 		else if (type.equals(Boolean.class))
 		{
 			tag.setBoolean(name, (Boolean) obj);
@@ -287,6 +303,19 @@ public class NBTDataDriver extends BinaryDataDriver
 			for (int i = 0; i < array.length; i++)
 			{
 				array[i] = ((NBTTagDouble) list.tagAt(i)).data;
+			}
+
+			return array;
+		}
+		if (type.equals(long.class))
+			return tag.getInteger(name);
+		else if (type.equals(long[].class))
+		{
+			NBTTagList list = tag.getTagList(name);
+			long[] array = new long[list.tagCount()];
+			for (int i = 0; i < array.length; i++)
+			{
+				array[i] = ((NBTTagLong) list.tagAt(i)).data;
 			}
 
 			return array;

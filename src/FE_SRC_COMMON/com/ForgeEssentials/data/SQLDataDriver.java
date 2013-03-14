@@ -656,6 +656,10 @@ public class SQLDataDriver extends AbstractDataDriver
 			{
 				fields.add(new Pair<String, String>(columnName, "DOUBLE"));
 			}
+			if (type.equals(int.class) || type.equals(Integer.class))
+			{
+				fields.add(new Pair<String, String>(columnName, "BIGINT"));
+			}
 			else if (type.equals(float.class) || type.equals(Float.class))
 			{
 				fields.add(new Pair<String, String>(columnName, "FLOAT"));
@@ -664,7 +668,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			{
 				fields.add(new Pair<String, String>(columnName, "VARCHAR(255)"));
 			}
-			else if (type.equals(double[].class) || type.equals(int[].class) || type.equals(boolean[].class) || type.equals(String[].class) || type.equals(Byte[].class))
+			else if (type.equals(double[].class) || type.equals(int[].class) || type.equals(boolean[].class) || type.equals(String[].class) || type.equals(byte[].class) || type.equals(float[].class) || type.equals(long[].class))
 			{
 				// We are going to roll arrays up into arbitrary long text
 				// fields.
@@ -719,14 +723,36 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		Class cType = type.getType();
 
-		if (cType.equals(Integer.class) || cType.equals(Float.class) || cType.equals(Double.class) || cType.equals(String.class)
-				|| cType.equals(int.class) || cType.equals(float.class) || cType.equals(double.class))
+		if (cType.equals(Integer.class) || cType.equals(Float.class) || cType.equals(Double.class) || cType.equals(Long.class)||cType.equals(String.class)
+				|| cType.equals(int.class) || cType.equals(float.class) || cType.equals(double.class) || cType.equals(long.class))
 		{
 			data.add(new Pair(fieldName, value.toString()));
 		}
 		else if (cType.equals(Boolean.class) || cType.equals(boolean.class))
 		{
 			data.add(new Pair(fieldName, "" + (Boolean.TRUE.equals(value) ? 1 : 0)));
+		}
+		else if (cType.equals(int[].class) && ((int[]) value).length > 0)
+		{
+			int[] arr = (int[]) value;
+			StringBuilder tempStr = new StringBuilder();
+			tempStr.append("'").append(String.valueOf(arr[0]));
+			for (int i = 1; i < arr.length; ++i)
+			{
+				tempStr.append("," + String.valueOf(arr[i]));
+			}
+			data.add(new Pair(fieldName, tempStr.append("'").toString()));
+		}
+		else if (cType.equals(float[].class) && ((float[]) value).length > 0)
+		{
+			float[] arr = (float[]) value;
+			StringBuilder tempStr = new StringBuilder();
+			tempStr.append("'").append(String.valueOf(arr[0]));
+			for (int i = 1; i < arr.length; ++i)
+			{
+				tempStr.append("," + String.valueOf(arr[i]));
+			}
+			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
 		else if (cType.equals(double[].class) && ((double[]) value).length > 0)
 		{
@@ -739,9 +765,9 @@ public class SQLDataDriver extends AbstractDataDriver
 			}
 			data.add(new Pair(fieldName, tempStr.append("'").toString()));
 		}
-		else if (cType.equals(int[].class) && ((int[]) value).length > 0)
+		else if (cType.equals(long[].class) && ((long[]) value).length > 0)
 		{
-			int[] arr = (int[]) value;
+			long[] arr = (long[]) value;
 			StringBuilder tempStr = new StringBuilder();
 			tempStr.append("'").append(String.valueOf(arr[0]));
 			for (int i = 1; i < arr.length; ++i)
@@ -812,7 +838,7 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		Class type = targetType.getType();
 
-		if (type.equals(int.class) || type.equals(double.class) || type.equals(float.class) || type.equals(String.class) || type.equals(boolean.class))
+		if (type.equals(int.class) || type.equals(float.class) || type.equals(double.class) || type.equals(long.class) || type.equals(String.class) || type.equals(boolean.class))
 		{
 			// DB Value is an integer
 			value = dbValue;
