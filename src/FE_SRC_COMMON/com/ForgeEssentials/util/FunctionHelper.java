@@ -7,7 +7,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -22,14 +21,19 @@ import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public final class FunctionHelper
 {
 	/**
-	 * stolen from Item class
+	 * Get player's looking spot.
+	 * @param player
+	 * @param restrict
+	 * Keep max distance to 5.
+	 * @return
+	 * The position as a MovingObjectPosition
+	 * Null if not existent.
 	 */
 	public static MovingObjectPosition getPlayerLookingSpot(EntityPlayer player, boolean restrict)
 	{
@@ -55,6 +59,13 @@ public final class FunctionHelper
 		return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
 	}
 
+	/**
+	 * Gets a nice string with only needed elements.
+	 * Max  time is weeks
+	 * @param timeInSec
+	 * @return
+	 * Time in string format
+	 */
 	public static String parseTime(int timeInSec)
 	{
 		String uptime = "";
@@ -92,6 +103,13 @@ public final class FunctionHelper
 		return uptime;
 	}
 
+	/**
+	 * Make new Array with everything except the 1th string.
+	 * @param par0ArrayOfStr
+	 * Old array
+	 * @return
+	 * New array
+	 */
 	public static String[] dropFirstString(String[] par0ArrayOfStr)
 	{
 		String[] var1 = new String[par0ArrayOfStr.length - 1];
@@ -104,6 +122,12 @@ public final class FunctionHelper
 		return var1;
 	}
 
+	/**
+	 * Gets the zoneID for a world.
+	 * @param world
+	 * @return
+	 * The zoneID
+	 */
 	public static String getZoneWorldString(World world)
 	{
 		return "WORLD_" + world.provider.getDimensionName().replace(' ', '_') + "_" + world.provider.dimensionId;
@@ -115,16 +139,11 @@ public final class FunctionHelper
 	}
 
 	/**
-	 * Use WorldPoint(Entity)
-	 * @param entity
+	 * Get a player obj from a partial username
+	 * @param username
 	 * @return
+	 * The player. Null if not found.
 	 */
-	@Deprecated
-	public static WorldPoint getEntityPoint(Entity entity)
-	{
-		return new WorldPoint(entity);
-	}
-
 	public static EntityPlayerMP getPlayerFromPartialName(String username)
 	{
 		List<EntityPlayer> possibles = new LinkedList<EntityPlayer>();
@@ -219,6 +238,10 @@ public final class FunctionHelper
 		}
 	}
 
+	/**
+	 * please use your module dir!
+	 * @return
+	 */
 	public static File getBaseDir()
 	{
 		if (FMLCommonHandler.instance().getSide().isClient())
@@ -227,6 +250,11 @@ public final class FunctionHelper
 			return new File(".");
 	}
 
+	/**
+	 * OP detection
+	 * @param player
+	 * @return
+	 */
 	public static boolean isPlayerOp(String player)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -245,26 +273,39 @@ public final class FunctionHelper
 		return server.getConfigurationManager().getOps().contains(player);
 	}
 
+	/**
+	 * Get tps per word.
+	 * @param dimID
+	 * @return
+	 * -1 if error
+	 */
 	public static double getTPS(int dimID)
 	{
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
-		long var2 = 0L;
-		long[] var4 = server.worldTickTimes.get(dimID);
-		int var5 = var4.length;
-
-		for (int var6 = 0; var6 < var5; ++var6)
+		try
 		{
-			long var7 = var4[var6];
-			var2 += var7;
+			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+
+			long var2 = 0L;
+			long[] var4 = server.worldTickTimes.get(dimID);
+			int var5 = var4.length;
+
+			for (int var6 = 0; var6 < var5; ++var6)
+			{
+				long var7 = var4[var6];
+				var2 += var7;
+			}
+
+			double tps = (double) var2 / (double) var5 * 1.0E-6D;
+
+			if (tps < 50)
+				return 20;
+			else
+				return 1000 / tps;
 		}
-
-		double tps = (double) var2 / (double) var5 * 1.0E-6D;
-
-		if (tps < 50)
-			return 20;
-		else
-			return 1000 / tps;
+		catch (Exception e)
+		{
+			return -1;
+		}
 	}
 
 	/**
@@ -354,9 +395,38 @@ public final class FunctionHelper
 		return format;
 	}
 
+	/**
+	 * instWarp a player to a point. Please use TeleportCenter!
+	 * @param player
+	 * @param p
+	 */
 	public static void setPlayer(EntityPlayerMP player, WarpPoint p)
 	{
 		player.playerNetServerHandler.setPlayerLocation(p.xd, p.yd, p.zd, p.yaw, p.pitch);
+	}
+	
+	/**
+	 * Join string[] to print to users. "str1, str2, str3, ..., strn"
+	 * @param par0ArrayOfObj
+	 * @return
+	 */
+	public static String niceJoin(Object[] par0ArrayOfObj)
+	{
+		StringBuilder var1 = new StringBuilder();
+
+		for (int var2 = 0; var2 < par0ArrayOfObj.length; ++var2)
+		{
+			String var3 = par0ArrayOfObj[var2].toString();
+
+			if (var2 > 0)
+			{
+				var1.append(", ");
+			}
+
+			var1.append(var3);
+		}
+
+		return var1.toString();
 	}
 
 }

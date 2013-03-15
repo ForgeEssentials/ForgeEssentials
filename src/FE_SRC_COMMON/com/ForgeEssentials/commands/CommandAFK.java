@@ -15,10 +15,8 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 public class CommandAFK extends ForgeEssentialsCommandBase
 {
 	public static List<String>	afkList	= new ArrayList<String>();
-
-	/*
-	 * Config
-	 */
+	
+	//Config
 	public static int			warmup	= 5;
 
 	@Override
@@ -75,5 +73,11 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 		afKdata.player.sendPlayerAbilities();
 		afkList.add(afKdata.player.username);
 		afKdata.player.sendChatToPlayer("You are now AFK.");
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
 	}
 }

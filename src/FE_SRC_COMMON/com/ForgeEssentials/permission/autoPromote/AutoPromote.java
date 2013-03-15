@@ -1,13 +1,9 @@
 package com.ForgeEssentials.permission.autoPromote;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
@@ -15,7 +11,6 @@ import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.PromotionLadder;
 import com.ForgeEssentials.permission.SqlHelper;
@@ -45,26 +40,34 @@ public class AutoPromote
 	{
 		AutoPromote data = new AutoPromote((String) tag.getFieldValue("zone"), (Boolean) tag.getFieldValue("enable"));
 		data.promoteList = (ArrayList<Integer>) tag.getFieldValue("promoteList");
+		if (data.promoteList != null) data.promoteList = new ArrayList<Integer>();
 		return data;
 	}
 	
 	public void tick(EntityPlayerMP player)
 	{
-		OutputHandler.debug("Tick " + player.username + " in " + zone); //TODO debug!
-		if(promoteList.contains(PlayerInfo.getPlayerInfo(player.username).timePlayed))
+		try
 		{
-			Group currentGroup = PermissionsAPI.getHighestGroup(player);
-			PromotionLadder ladder = SqlHelper.getLadderForGroup(currentGroup.name, zone);
-			if (ladder != null)
+			OutputHandler.debug("Tick " + player.username + " in " + zone); //TODO debug!
+			if(promoteList.contains(PlayerInfo.getPlayerInfo(player.username).timePlayed))
 			{
-				OutputHandler.debug("Ladderlist: " + ladder.getListGroup()); //TODO debug!
-				String newGroup = ladder.getPromotion(currentGroup.name);
-				if (newGroup != null)
+				Group currentGroup = PermissionsAPI.getHighestGroup(player);
+				PromotionLadder ladder = SqlHelper.getLadderForGroup(currentGroup.name, zone);
+				if (ladder != null)
 				{
-					PermissionsAPI.addPlayerToGroup(newGroup, player.username, zone);
-					OutputHandler.debug(player.username + " autopromoted to " + newGroup + " from " + currentGroup.name); //TODO debug!
+					OutputHandler.debug("Ladderlist: " + ladder.getListGroup()); //TODO debug!
+					String newGroup = ladder.getPromotion(currentGroup.name);
+					if (newGroup != null)
+					{
+						PermissionsAPI.addPlayerToGroup(newGroup, player.username, zone);
+						OutputHandler.debug(player.username + " autopromoted to " + newGroup + " from " + currentGroup.name); //TODO debug!
+					}
 				}
 			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 }
