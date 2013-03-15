@@ -1,12 +1,17 @@
 package com.ForgeEssentials.chat.commands;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.chat.Mail;
 import com.ForgeEssentials.chat.MailSystem;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandMail extends ForgeEssentialsCommandBase
 {
@@ -53,6 +58,15 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.Chat." + getCommandName();
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 2)
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		else
+			return null;
 	}
 
 }

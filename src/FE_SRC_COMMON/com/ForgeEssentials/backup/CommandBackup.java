@@ -93,4 +93,10 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 		}
 		return true;
 	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
+	}
 }

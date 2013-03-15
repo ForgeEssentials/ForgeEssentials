@@ -1,5 +1,7 @@
 package com.ForgeEssentials.auth.commands;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -79,5 +81,11 @@ public class CommandRegister extends ForgeEssentialsCommandBase
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		return true;
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
 	}
 }

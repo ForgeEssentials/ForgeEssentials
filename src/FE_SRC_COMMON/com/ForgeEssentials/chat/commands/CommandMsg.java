@@ -190,4 +190,10 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	{
 		playerReply.put(player, target);
 	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
+	}
 }

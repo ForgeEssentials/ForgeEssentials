@@ -241,4 +241,10 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			}
 		}
 	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
+	}
 }

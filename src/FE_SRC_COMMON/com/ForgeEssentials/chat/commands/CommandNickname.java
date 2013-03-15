@@ -147,4 +147,10 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.Chat.commands." + getCommandName();
 	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
+	}
 }
