@@ -2,6 +2,7 @@ package com.ForgeEssentials.permission;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.ForgeEssentials.api.modules.CallableMap.FECallable;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
@@ -11,8 +12,10 @@ import com.google.common.collect.HashMultimap;
 
 public class PermRegLoader
 {
-	protected HashSet<String>	mods;
-	private Set<FECallable>		data;
+	protected HashSet<String>							mods;
+	protected TreeSet<String>							perms;
+	protected HashMultimap<RegGroup, PermissionChecker>	registerredPerms;
+	private Set<FECallable>								data;
 
 	public PermRegLoader(Set<FECallable> calls)
 	{
@@ -20,7 +23,7 @@ public class PermRegLoader
 		data = calls;
 	}
 
-	protected HashMultimap<RegGroup, PermissionChecker> loadAllPerms()
+	protected void loadAllPerms()
 	{
 		PermissionRegistrationEvent event = new PermissionRegistrationEvent();
 
@@ -41,16 +44,24 @@ public class PermRegLoader
 			}
 		}
 
-		return event.perms;
+		perms = event.registerred;
+		registerredPerms = event.perms;
+	}
+	
+	protected void clearMethods()
+	{
+		data = null;
 	}
 
 	private class PermissionRegistrationEvent implements IPermRegisterEvent
 	{
-		protected HashMultimap<RegGroup, PermissionChecker>		perms;
+		private HashMultimap<RegGroup, PermissionChecker>	perms;
+		private TreeSet<String>								registerred;
 
-		protected PermissionRegistrationEvent()
+		private PermissionRegistrationEvent()
 		{
 			perms = HashMultimap.create();
+			registerred = new TreeSet<String>();
 		}
 
 		@Override
@@ -58,12 +69,15 @@ public class PermRegLoader
 		{
 			registerPermissionLevel(permission, group, false);
 		}
-		
+
 		@Override
 		public void registerPermissionLevel(String permission, RegGroup group, boolean alone)
 		{
 			Permission deny = new Permission(permission, false);
 			Permission allow = new Permission(permission, true);
+
+			if (!deny.isAll)
+				registerred.add(permission);
 
 			if (group == null)
 			{
@@ -76,10 +90,10 @@ public class PermRegLoader
 			else
 			{
 				perms.put(group, allow);
-				
+
 				if (alone)
 					return;
-				
+
 				for (RegGroup g : getHigherGroups(group))
 				{
 					perms.put(g, allow);
@@ -138,35 +152,35 @@ public class PermRegLoader
 		@Override
 		public void registerPermissionProp(String permission, int globalDefault)
 		{
-			PermissionProp prop = new PermissionProp(permission, ""+globalDefault);
+			PermissionProp prop = new PermissionProp(permission, "" + globalDefault);
 			perms.put(RegGroup.ZONE, prop);
 		}
 
 		@Override
 		public void registerPermissionProp(String permission, float globalDefault)
 		{
-			PermissionProp prop = new PermissionProp(permission, ""+globalDefault);
+			PermissionProp prop = new PermissionProp(permission, "" + globalDefault);
 			perms.put(RegGroup.ZONE, prop);
 		}
 
 		@Override
 		public void registerGroupPermissionprop(String permission, String value, RegGroup group)
 		{
-			PermissionProp prop = new PermissionProp(permission, ""+value);
+			PermissionProp prop = new PermissionProp(permission, "" + value);
 			perms.put(group, prop);
 		}
 
 		@Override
 		public void registerGroupPermissionprop(String permission, int value, RegGroup group)
 		{
-			PermissionProp prop = new PermissionProp(permission, ""+value);
+			PermissionProp prop = new PermissionProp(permission, "" + value);
 			perms.put(group, prop);
 		}
 
 		@Override
 		public void registerGroupPermissionprop(String permission, float value, RegGroup group)
 		{
-			PermissionProp prop = new PermissionProp(permission, ""+value);
+			PermissionProp prop = new PermissionProp(permission, "" + value);
 			perms.put(group, prop);
 		}
 	}

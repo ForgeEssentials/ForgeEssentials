@@ -31,23 +31,22 @@ import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-@SuppressWarnings("rawtypes")
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions
 {
-	public static SqlHelper								sql;
+	public static SqlHelper				sql;
 
 	@FEModule.Config
-	public static ConfigPermissions						config;
+	public static ConfigPermissions		config;
 
 	@FEModule.ModuleDir
-	public static File									permsFolder;
+	public static File					permsFolder;
 
-	protected static AbstractDataDriver					data;
+	protected static AbstractDataDriver	data;
 
 	// permission registrations here...
-	protected HashMultimap<RegGroup, PermissionChecker>	regPerms;
-	private AutoPromoteManager							autoPromoteManager;
+	protected PermRegLoader				permLoader;
+	private AutoPromoteManager			autoPromoteManager;
 
 	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -56,19 +55,23 @@ public class ModulePermissions
 		PermissionsAPI.manager = new PermissionsHelper();
 
 		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
-		PermRegLoader laoder = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));
-		regPerms = laoder.loadAllPerms();
+		permLoader = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));
+		permLoader.loadAllPerms();
+		permLoader.clearMethods();
 
 		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 	}
 
-	@SuppressWarnings("unchecked")
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
 		// setup SQL
 		sql = new SqlHelper(config);
-		sql.putRegistrationPerms(regPerms);
+		sql.putRegistrationPerms(permLoader.registerredPerms);
+		
+		PermissionsList list = new PermissionsList();
+		if (list.shouldMake())
+			list.output(permLoader.perms);
 
 		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);
@@ -91,7 +94,7 @@ public class ModulePermissions
 		e.registerServerCommand(new CommandFEPerm());
 		e.registerServerCommand(new CommandAutoPromote());
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
-		
+
 		autoPromoteManager = new AutoPromoteManager();
 	}
 
@@ -103,9 +106,9 @@ public class ModulePermissions
 		event.registerPermissionLevel("ForgeEssentials.perm._ALL_", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone", RegGroup.ZONE_ADMINS);
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone._ALL_", RegGroup.ZONE_ADMINS);
-		
+
 		event.registerPermissionLevel("ForgeEssentials.autoPromote", RegGroup.ZONE_ADMINS);
-		
+
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 
@@ -125,7 +128,7 @@ public class ModulePermissions
 			}
 			data.saveObject(con, zone);
 		}
-		
+
 		autoPromoteManager.stop();
 	}
 
