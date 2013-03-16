@@ -57,15 +57,14 @@ public class ModuleEconomy
 	public static void registerPerms(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel("ForgeEssentials.Economy.pay", RegGroup.MEMBERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.addtowallet", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.getwallet", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.money", RegGroup.MEMBERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.paidcommand", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.removewallet", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.Economy.requestpayment", RegGroup.MEMBERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.money", RegGroup.MEMBERS);
+		
+		event.registerPermissionLevel("ForgeEssentials.Economy.getwallet", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.paidcommand", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.addtowallet", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.Economy.sellcommand", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.removewallet", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.Economy.setwallet", RegGroup.OWNERS);
-
-		// TODO : pending review from Dries.
 	}
 }

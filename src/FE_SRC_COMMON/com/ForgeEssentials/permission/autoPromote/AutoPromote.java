@@ -67,7 +67,7 @@ public class AutoPromote
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 }
