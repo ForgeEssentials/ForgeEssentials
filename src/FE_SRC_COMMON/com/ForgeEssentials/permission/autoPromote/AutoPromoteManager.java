@@ -13,13 +13,22 @@ import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class AutoPromoteManager extends TimerTask
 {
-	HashMap<String, AutoPromote>	map	= new HashMap<String, AutoPromote>();
-	ClassContainer					con	= new ClassContainer(AutoPromote.class);
+	public HashMap<String, AutoPromote>	map	= new HashMap<String, AutoPromote>();
+	ClassContainer						con	= new ClassContainer(AutoPromote.class);
+	private static AutoPromoteManager	instance;
 
+	public static AutoPromoteManager instance()
+	{
+		return instance;
+	}
+	
 	public AutoPromoteManager()
 	{
+		if (!FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
 		Object[] loaded = DataStorageManager.getReccomendedDriver().loadAllObjects(con);
 		if (loaded != null)
 		{
@@ -33,6 +42,7 @@ public class AutoPromoteManager extends TimerTask
 			}
 		}
 		TaskRegistry.registerRecurringTask(this, 0, 0, 1, 0, 0, 1, 0, 0);
+		instance = this;
 	}
 
 	@Override

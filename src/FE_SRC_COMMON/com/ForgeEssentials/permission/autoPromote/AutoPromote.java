@@ -27,14 +27,16 @@ public class AutoPromote
 	public boolean					enable;
 
 	@SaveableField
-	public ArrayList<Integer>		promoteList	= new ArrayList<Integer>();
+	public ArrayList<Integer>		promoteList;
 
 	public AutoPromote(String zone, boolean enable)
 	{
 		this.zone = zone;
 		this.enable = enable;
+		this.promoteList = new ArrayList<Integer>();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Reconstructor
 	private static AutoPromote reconstruct(IReconstructData tag)
 	{
@@ -67,7 +69,9 @@ public class AutoPromote
 		}
 		catch (Exception e)
 		{
-			//e.printStackTrace();
+			//TODO: People can handle the errors -_-
+			OutputHandler.warning("Don't even care about this error. This isn't done yet.");
+			e.printStackTrace();
 		}
 	}
 }
