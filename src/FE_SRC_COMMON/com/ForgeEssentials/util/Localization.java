@@ -1,12 +1,12 @@
 package com.ForgeEssentials.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+
+import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 
@@ -191,16 +191,27 @@ public class Localization
 		OutputHandler.finer("Loading languages");
 		
 		File folder = new File(ForgeEssentials.FEDIR, "lang");
+		boolean forceDl = false;
 		if (!folder.exists())
 		{
+			forceDl = true;
 			folder.mkdirs();
-			for (String langFile : langFiles)
+		}
+		
+		Configuration conf = new Configuration(new File(folder, "conf.cfg"));
+		forceDl = conf.get("Lang", "AutoUpdate", true, "Leave to true unless you make changes to the lang files.").getBoolean(true);
+		conf.save();
+		
+		for (String langFile : langFiles)
+		{
+			File file = new File(folder, langFile);
+			if (!file.exists() || forceDl)
 			{
 				try
 				{
 					URL dl = new URL("https://raw.github.com/ForgeEssentials/FELocalizations/master/" + langFile);
 				    ReadableByteChannel rbc = Channels.newChannel(dl.openStream());
-				    FileOutputStream fos = new FileOutputStream(new File(folder, langFile));
+				    FileOutputStream fos = new FileOutputStream(file);
 				    fos.getChannel().transferFrom(rbc, 0, 1 << 24);
 				    fos.close();
 				}
@@ -209,6 +220,7 @@ public class Localization
 					OutputHandler.warning("Error while downloading " + langFile);
 					e.printStackTrace();
 				}
+	
 			}
 		}
 

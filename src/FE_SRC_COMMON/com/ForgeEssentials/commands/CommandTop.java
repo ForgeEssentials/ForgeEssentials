@@ -96,7 +96,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
 			point.y--;
 		}
 		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y + 1, point.z, point.yaw, point.pitch);
-		player.sendChatToPlayer("*poof*");
+		player.sendChatToPlayer(Localization.get("message.tc.done"));
 	}
 
 	@Override

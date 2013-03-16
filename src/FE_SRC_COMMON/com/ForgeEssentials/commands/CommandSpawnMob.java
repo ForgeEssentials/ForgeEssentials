@@ -83,44 +83,13 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 			double z = mop.blockZ + 0.5D;
 			if (args.length >= 2)
 			{
-				try
-				{
-					amount = new Integer(args[1]);
-				}
-				catch (NumberFormatException e)
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
-					return;
-				}
+				amount = parseIntWithMin(sender, Localization.get(args[1]), 1);
+				
 				if (args.length >= 5)
 				{
-					try
-					{
-						x = new Integer(args[2]);
-					}
-					catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
-						return;
-					}
-					try
-					{
-						y = new Integer(args[3]);
-					}
-					catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[3]));
-						return;
-					}
-					try
-					{
-						z = new Integer(args[4]);
-					}
-					catch (NumberFormatException e)
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[4]));
-						return;
-					}
+					x = 0.5 + parseInt(sender, args[2]);
+					y = 0.5 + parseInt(sender, args[3]);
+					z = 0.5 + parseInt(sender, args[4]);
 				}
 			}
 			for (int i = 0; i < amount; i++)
@@ -128,7 +97,7 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 				EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), sender.worldObj);
 				if (mob == null)
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOMOB, args[0]));
+					OutputHandler.chatError(sender, Localization.format("command.spawnmob.noMobX", args[0]));
 					return;
 				}
 				mob.setPosition(x, y, z);
@@ -151,50 +120,11 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 			int y;
 			int z;
 			int dimension = 0;
-			try
-			{
-				amount = new Integer(args[1]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
-				return;
-			}
-			try
-			{
-				x = new Integer(args[2]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
-				return;
-			}
-			try
-			{
-				y = new Integer(args[3]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
-				return;
-			}
-			try
-			{
-				z = new Integer(args[4]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[4]));
-				return;
-			}
-			try
-			{
-				dimension = new Integer(args[5]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[5]));
-			}
+			amount = parseInt(sender, args[0]);
+			x = parseInt(sender, args[1]);
+			y = parseInt(sender, args[2]);
+			z = parseInt(sender, args[3]);
+			dimension = parseInt(sender, args[4]);
 			for (int i = 0; i < amount; i++)
 			{
 				World world = FunctionHelper.getDimension(dimension);

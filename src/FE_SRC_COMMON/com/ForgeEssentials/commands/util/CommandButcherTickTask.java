@@ -261,11 +261,11 @@ public class CommandButcherTickTask implements ITickTask
 	{
 		if (playerCommand)
 		{
-			OutputHandler.chatConfirmation(player, Localization.format(Localization.BUTCHERED, counter));
+			OutputHandler.chatConfirmation(player, Localization.format("command.butcher.done", counter));
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.format(Localization.BUTCHERED, counter));
+			sender.sendChatToPlayer(Localization.format("command.butcher.done", counter));
 		}
 	}
 

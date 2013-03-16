@@ -34,34 +34,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 3)
 		{
-			int x = 0, y = 0, z = 0;
-			try
-			{
-				x = new Integer(args[0]);
-			}
-			catch (NumberFormatException e)
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
-				return;
-			}
-			try
-			{
-				y = new Integer(args[1]);
-			}
-			catch (NumberFormatException e)
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
-				return;
-			}
-			try
-			{
-				z = new Integer(args[2]);
-			}
-			catch (NumberFormatException e)
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
-				return;
-			}
+			int x = parseInt(sender, args[0]), y = parseInt(sender, args[1]), z = parseInt(sender, args[2]);
 			EntityPlayerMP player = (EntityPlayerMP) sender;
 			PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 			playerInfo.back = new WarpPoint(player);
@@ -76,7 +49,6 @@ public class CommandTppos extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-
 	}
 
 	@Override

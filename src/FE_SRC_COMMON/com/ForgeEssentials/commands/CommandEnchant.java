@@ -71,7 +71,7 @@ public class CommandEnchant extends ForgeEssentialsCommandBase
 		ItemStack var6 = sender.getCurrentEquippedItem();
 		if (var6 == null)
 		{
-			OutputHandler.chatError(sender, Localization.get("commands.enchant.noItem"));
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
 			return;
 		}
 		

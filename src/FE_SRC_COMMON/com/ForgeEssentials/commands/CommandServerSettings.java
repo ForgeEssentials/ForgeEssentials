@@ -9,6 +9,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -49,7 +50,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBase
 		DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer("Available options:");
+			sender.sendChatToPlayer(Localization.get("command.serversettings.list"));
 			sender.sendChatToPlayer(options.toString());
 			return;
 		}
