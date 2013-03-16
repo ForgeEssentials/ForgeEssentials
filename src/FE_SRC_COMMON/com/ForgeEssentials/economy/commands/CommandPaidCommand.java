@@ -94,7 +94,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "";
+		return null;
 	}
 
 	@Override
@@ -106,7 +106,6 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 

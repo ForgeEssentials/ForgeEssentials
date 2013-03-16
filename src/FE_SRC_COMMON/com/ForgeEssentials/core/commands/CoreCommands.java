@@ -10,7 +10,6 @@ public class CoreCommands
 {
 	public void load(FMLServerStartingEvent e)
 	{
-
 		e.registerServerCommand(new CommandFEVersion());
 		e.registerServerCommand(new CommandFECredits());
 		e.registerServerCommand(new CommandFEReload());

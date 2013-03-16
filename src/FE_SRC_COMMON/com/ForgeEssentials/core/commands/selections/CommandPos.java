@@ -132,7 +132,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/" + getCommandName() + " [<x> <y> <z]/[here]";
+		return "/" + getCommandName() + " [<x> <y> <z] or [here]";
 	}
 
 	@Override
@@ -161,7 +161,6 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 

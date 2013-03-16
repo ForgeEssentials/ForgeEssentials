@@ -27,19 +27,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 
 		OutputHandler.chatConfirmation(sender, Localization.get(Localization.COMMAND_DESELECT));
 	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/" + getCommandName();
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Clears the currently selected area";
-	}
-
+	
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
@@ -60,7 +48,6 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
