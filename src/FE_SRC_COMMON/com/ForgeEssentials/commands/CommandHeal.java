@@ -19,7 +19,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandHeal extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{

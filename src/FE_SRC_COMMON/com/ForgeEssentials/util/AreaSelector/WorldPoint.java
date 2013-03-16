@@ -1,6 +1,7 @@
 package com.ForgeEssentials.util.AreaSelector;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.api.data.IReconstructData;

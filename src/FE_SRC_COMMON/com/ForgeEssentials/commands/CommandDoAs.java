@@ -7,7 +7,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -27,24 +26,16 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length < 2)
-		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
-		}
-		StringBuilder cmd = new StringBuilder(args.toString().length());
-		for (int i = 1; i < args.length; i++)
-		{
-			cmd.append(args[i]);
-			cmd.append(" ");
-		}
-		EntityPlayer target = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-		target.sendChatToPlayer("Player " + sender.username + "is attempting to issue a command as you.");
-		FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(target, cmd.toString());
-		OutputHandler.chatConfirmation(sender, "Successfully issued command as " + args[0]);
+		ex(sender, args);
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+		ex(sender, args);
+	}
+
+	private void ex(ICommandSender sender, String[] args)
 	{
 		StringBuilder cmd = new StringBuilder(args.toString().length());
 		for (int i = 1; i < args.length; i++)
@@ -61,12 +52,10 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
 		{
 			for (EntityPlayer target : players)
 			{
-				String senderName = sender instanceof TileEntityCommandBlock ? "CommandBlock @ (" + ((TileEntityCommandBlock) sender).xCoord + "," + ((TileEntityCommandBlock) sender).yCoord + "," + ((TileEntityCommandBlock) sender).zCoord + ")."
-						: "The console";
-				target.sendChatToPlayer(senderName + " is attempting to issue a command as you.");
+				OutputHandler.chatWarning(target, Localization.format("command.doas.attempt", sender.getCommandSenderName()));
 				FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(target, cmd.toString());
 			}
-			sender.sendChatToPlayer("Successfully issued command as " + args[0]);
+			OutputHandler.chatConfirmation(sender, Localization.format("command.doas.success", args[0]));
 		}
 		else
 		{

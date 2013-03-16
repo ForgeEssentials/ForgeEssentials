@@ -7,12 +7,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -41,7 +39,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 		{
 			sender.inventory.clearInventory(-1, -1);
 			sender.inventoryContainer.detectAndSendChanges();
-			sender.sendChatToPlayer("Cleared inventory.");
+			OutputHandler.chatConfirmation(sender, Localization.get("command.clear.doneSelf"));
 		}
 		else if (args.length >= 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
@@ -55,44 +53,16 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 				for (EntityPlayer victim : players)
 				{
 					int clearPar1 = -1, clearPar2 = -1;
-					boolean paramsValid = true;
 					if (args.length >= 2)
 					{
-						try
-						{
-							clearPar1 = Integer.parseInt(args[1]);
-						}
-						catch (NumberFormatException e)
-						{
-							sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
-							paramsValid = false;
-						}
-						if (args.length >= 3)
-						{
-							try
-							{
-								clearPar2 = Integer.parseInt(args[2]);
-							}
-							catch (NumberFormatException e)
-							{
-								sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
-								paramsValid = false;
-							}
-						}
+						clearPar1 = parseInt(sender, args[1]);
+						clearPar2 = parseInt(sender, args[2]);
 					}
-					if (paramsValid)
-					{
-						victim.inventory.clearInventory(clearPar1, clearPar2);
-					}
-					else
-					{
-						sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
-						break;
-					}
+					victim.inventory.clearInventory(clearPar1, clearPar2);
 					victim.inventoryContainer.detectAndSendChanges();
-					victim.sendChatToPlayer("Inventory cleared by " + sender.username);
+					OutputHandler.chatWarning(sender, Localization.format("command.clear.doneBy", sender.getCommandSenderName()));
 				}
-				sender.sendChatToPlayer("Cleared inventory of " + args[0]);
+				OutputHandler.chatConfirmation(sender, Localization.format("command.clear.doneOf", args[0]));
 			}
 			else
 			{
@@ -120,44 +90,17 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 				for (EntityPlayer victim : players)
 				{
 					int clearPar1 = -1, clearPar2 = -1;
-					boolean paramsValid = true;
 					if (args.length >= 2)
 					{
-						try
-						{
-							clearPar1 = Integer.parseInt(args[1]);
-						}
-						catch (NumberFormatException e)
-						{
-							sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-							paramsValid = false;
-						}
-						if (args.length >= 3)
-						{
-							try
-							{
-								clearPar2 = Integer.parseInt(args[2]);
-							}
-							catch (NumberFormatException e)
-							{
-								sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-								paramsValid = false;
-							}
-						}
+						clearPar1 = parseInt(sender, args[1]);
+						clearPar2 = parseInt(sender, args[2]);
 					}
-					if (paramsValid)
-					{
 						victim.inventory.clearInventory(clearPar1, clearPar2);
-					}
+						
 					victim.inventoryContainer.detectAndSendChanges();
-					String senderName = sender instanceof TileEntityCommandBlock ?
-							"CommandBlock @ (" + ((TileEntityCommandBlock) sender).xCoord + ","
-									+ ((TileEntityCommandBlock) sender).yCoord + ","
-									+ ((TileEntityCommandBlock) sender).zCoord + ")."
-							: "the console";
-					victim.sendChatToPlayer("Inventory cleared by " + senderName);
+					OutputHandler.chatWarning(sender, Localization.format("command.clear.doneBy", sender.getCommandSenderName()));
 				}
-				sender.sendChatToPlayer("Cleared inventory of " + args[0]);
+				OutputHandler.chatConfirmation(sender, Localization.format("command.clear.doneOf", args[0]));
 			}
 			else
 			{
@@ -185,9 +128,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		if (args.length == 1)
-			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getItemList());
-		else if (args.length == 3)
+		if (args.length == 0)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 		else
 			return null;

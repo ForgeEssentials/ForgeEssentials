@@ -20,7 +20,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandGive extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -30,132 +29,90 @@ public class CommandGive extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		if (args.length < 2 || args.length > 3)
+		{
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+		}
+		
 		int id = 1;
 		int amount = 64;
 		int dam = 0;
-		EntityPlayer receiver = sender;
-
-		if (args.length == 4)
-		{
-			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
-			id = idAndMeta[0];
-			try
-			{
-				dam = Integer.parseInt(args[3]);
-			}
-			catch (NumberFormatException e)
-			{
-				OutputHandler.chatError(sender, "Damage value is not a number: " + args[3]);
-			}
-		}
-		if (args.length >= 3)
+		
+		// Amount is specified
+		if(args.length == 3)
 		{
 			amount = parseIntBounded(sender, args[2], 0, 64);
 		}
-
-		if (args.length > 1)
+		
+		// Parse the item
+		int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
+		id = idAndMeta[0];
+		dam = idAndMeta[1];
+		
+		List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+		if (PlayerSelector.hasArguments(args[0]))
 		{
-			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
-			id = idAndMeta[0];
-			if (idAndMeta[1] == -1)
+			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
+		}
+		if (players.size() != 0)
+		{
+			for (EntityPlayer player : players)
 			{
-				dam = 0;
-			}
-			else
-			{
-				dam = idAndMeta[1];
-			}
-			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
-			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
-				{
-					receiver = player;
-					ItemStack stack = new ItemStack(id, amount, dam);
-
-					String name = Item.itemsList[id].func_77653_i(stack);
-					String uname = receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()) ? "you" : receiver.username;
-					sender.sendChatToPlayer("Giving " + uname + " " + amount + " " + name);
-					receiver.inventory.addItemStackToInventory(stack);
-				}
-			}
-			else
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ItemStack stack = new ItemStack(id, amount, dam);
+				
+				String name = Item.itemsList[id].func_77653_i(stack);
+				sender.sendChatToPlayer("Giving " + player.username + " " + amount + " " + name);
+				player.inventory.addItemStackToInventory(stack);
 			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		if (args.length < 2 || args.length > 3)
+		{
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+		}
+		
 		int id = 1;
 		int amount = 64;
 		int dam = 0;
-
-		if (args.length == 4)
-		{
-			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
-			id = idAndMeta[0];
-			try
-			{
-				dam = Integer.parseInt(args[4]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer("Damage value is not a number: " + args[4]);
-			}
-		}
-		if (args.length == 3)
-		{
-			int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
-			id = idAndMeta[0];
-			if (idAndMeta[1] == -1)
-			{
-				dam = 0;
-			}
-			else
-			{
-				dam = idAndMeta[1];
-			}
-		}
-		if (args.length > 1)
+		
+		// Amount is specified
+		if(args.length == 3)
 		{
 			amount = parseIntBounded(sender, args[2], 0, 64);
-
-			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+		}
+		
+		// Parse the item
+		int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
+		id = idAndMeta[0];
+		dam = idAndMeta[1];
+		
+		List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+		if (PlayerSelector.hasArguments(args[0]))
+		{
+			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
+		}
+		if (players.size() != 0)
+		{
+			for (EntityPlayer player : players)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer receiver : players)
-				{
-					ItemStack stack = new ItemStack(id, amount, dam);
-
-					String name = Item.itemsList[id].func_77653_i(stack);
-					String uname = receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()) ? "you" : receiver.username;
-					sender.sendChatToPlayer("Giving " + uname + " " + amount + " " + name);
-					receiver.inventory.addItemStackToInventory(stack);
-				}
-			}
-			else
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ItemStack stack = new ItemStack(id, amount, dam);
+				
+				String name = Item.itemsList[id].func_77653_i(stack);
+				sender.sendChatToPlayer("Giving " + player.username + " " + amount + " " + name);
+				player.inventory.addItemStackToInventory(stack);
 			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		}
 	}
 

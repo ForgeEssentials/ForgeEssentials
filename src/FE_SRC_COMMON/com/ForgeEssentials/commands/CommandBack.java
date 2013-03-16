@@ -34,7 +34,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NODEATHPOINT));
+			OutputHandler.chatError(sender, Localization.get(""));
 		}
 	}
 

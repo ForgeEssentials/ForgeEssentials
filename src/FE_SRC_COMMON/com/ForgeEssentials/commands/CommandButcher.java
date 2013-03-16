@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -10,6 +11,7 @@ import net.minecraft.util.AxisAlignedBB;
 import com.ForgeEssentials.api.commands.EnumMobType;
 import com.ForgeEssentials.commands.util.CommandButcherTickTask;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -17,7 +19,16 @@ import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class CommandButcher extends ForgeEssentialsCommandBase
 {
-
+	public static List<String> typeList = new ArrayList<String>();
+	
+	static
+	{
+		for (EnumMobType type : EnumMobType.values())
+		{
+			typeList.add(type.name());
+		}
+	}
+	
 	@Override
 	public String getCommandName()
 	{
@@ -30,7 +41,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, "-1");
 		else if (args.length == 2)
-			return getListOfStringsMatchingLastWord(args, "passive", "villager", "hostile", "tamed", "all", "golem", "world", "boss");
+			return getListOfStringsFromIterableMatchingLastWord(args, typeList);
 		else
 			return null;
 	}
@@ -38,60 +49,62 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		int radius = 10;
-		double centerX = sender.posX;
-		double centerY = sender.posY;
-		double centerZ = sender.posZ;
+		int radius = -1;
+		int X = (int) sender.posX;
+		int Y = (int) sender.posY;
+		int Z = (int) sender.posZ;
 		String mobType = EnumMobType.HOSTILE.toString();
-
+		
 		if (args.length > 0)
 		{
-			try
-			{
-				radius = args[0].equalsIgnoreCase("world") ? -1 : Integer.parseInt(args[0]);
-			}
-			catch (NumberFormatException e)
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
-				return;
-			}
+			radius = args[0].equalsIgnoreCase("world") ? -1 : parseIntWithMin(sender, args[0], 0);
 		}
 		if (args.length > 1)
 		{
-			if (args[1].equalsIgnoreCase("golem") || args[1].equalsIgnoreCase("passive") || args[1].equalsIgnoreCase("all") || args[1].equalsIgnoreCase("villager") || args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile")
-					|| args[1].equalsIgnoreCase("boss"))
+			if (typeList.contains(args[1]))
 			{
 				mobType = args[1];
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "all, boss, golem, hostile, passive, tamed, or villager");
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + FunctionHelper.niceJoin(typeList.toArray()));
 				return;
 			}
 		}
 		if (args.length > 2)
 		{
-			String[] split = args[2].split(",");
+			String splitter = "";
+			if (args[2].contains(", "))
+				splitter = ", ";
+			else if (args[2].contains(","))
+				splitter = ",";
+			else if (args[2].contains(" "))
+				splitter = " ";
+			
+			String[] split = args[2].split(splitter);
 			if (split.length != 3)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "x,y,z");
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "x, y, z");
 				return;
 			}
+			else
+			{
+				X = parseInt(sender, split[0]);
+				Y = parseInt(sender, split[1]);
+				Z = parseInt(sender, split[2]);
+			}
 		}
-		if (args.length > 3)
-		{
-
-		}
-		TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1),
-				radius, sender.dimension));
+		AxisAlignedBB pool = AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(X - radius, Y - radius, Z - radius, X + radius + 1, Y + radius + 1, Z + radius + 1);
+		TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, pool, radius, sender.dimension));
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		int radius = 10;
-		int worldID = -2;
+		int radius = -1;
+		int worldID = 0;
 		int x = 0, y = 0, z = 0;
+		
 		if (sender instanceof TileEntityCommandBlock)
 		{
 			TileEntityCommandBlock cb = (TileEntityCommandBlock) sender;
@@ -105,55 +118,46 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 
 		if (args.length != 4 && !(sender instanceof TileEntityCommandBlock))
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "/butcher <radius> <type> <x,y,z> <worldID>");
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 			return;
 		}
 		if (args.length > 0)
 		{
-			try
-			{
-				radius = args[0].equalsIgnoreCase("world") ? -1 : Integer.parseInt(args[0]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
-				return;
-			}
+			radius = args[0].equalsIgnoreCase("world") ? -1 : parseIntWithMin(sender, args[0], 0);
 		}
 		if (args.length > 1)
 		{
-			if (args[1].equalsIgnoreCase("golem") || args[1].equalsIgnoreCase("passive") || args[1].equalsIgnoreCase("all") || args[1].equalsIgnoreCase("villager") || args[1].equalsIgnoreCase("tamed") || args[1].equalsIgnoreCase("hostile")
-					|| args[1].equalsIgnoreCase("boss"))
+			if (typeList.contains(args[1]))
 			{
 				mobType = args[1];
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "all, boss, golem, hostile, passive, tamed, or villager");
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + FunctionHelper.niceJoin(typeList.toArray()));
 				return;
 			}
 		}
 		if (args.length > 2)
 		{
-			String[] split = args[2].split(",");
+			String splitter = "";
+			if (args[2].contains(", "))
+				splitter = ", ";
+			else if (args[2].contains(","))
+				splitter = ",";
+			else if (args[2].contains(" "))
+				splitter = " ";
+			
+			String[] split = args[2].split(splitter);
 			if (split.length != 3)
 			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "x,y,z");
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "x, y, z");
 				return;
 			}
 			else
 			{
-				try
-				{
-					x = Integer.parseInt(split[0]);
-					y = Integer.parseInt(split[1]);
-					z = Integer.parseInt(split[2]);
-				}
-				catch (NumberFormatException e)
-				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
-					return;
-				}
+				y = parseInt(sender, split[0]);
+				y = parseInt(sender, split[1]);
+				z = parseInt(sender, split[2]);
 			}
 		}
 		if (args.length == 4)
@@ -169,8 +173,8 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 			}
 		}
 		WorldPoint center = new WorldPoint(worldID, x, y, z);
-		TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1,
-				center.z + radius + 1), radius, worldID));
+		AxisAlignedBB pool = AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1, center.z + radius + 1);
+		TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, pool, radius, worldID));
 	}
 
 	@Override

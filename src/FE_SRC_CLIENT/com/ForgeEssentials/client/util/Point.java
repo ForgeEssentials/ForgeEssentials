@@ -3,6 +3,7 @@ package com.ForgeEssentials.client.util;
 import java.io.Serializable;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChunkCoordinates;
 
 import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.SaveableObject;
@@ -39,6 +40,13 @@ public class Point implements Serializable, Comparable<Point>
 		this.x = player.posX;
 		this.y = player.posY;
 		this.z = player.posZ;
+	}
+
+	public Point(ChunkCoordinates coords)
+	{
+		this.x = coords.posX;
+		this.y = coords.posY;
+		this.z = coords.posZ;
 	}
 
 	public int getX()

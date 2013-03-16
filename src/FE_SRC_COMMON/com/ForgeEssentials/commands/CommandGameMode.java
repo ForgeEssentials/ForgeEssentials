@@ -50,7 +50,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				{
 					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 					{
-						OutputHandler.chatError(sender, "You do not have permission to do that.");
+						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 						return;
 					}
 					List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
