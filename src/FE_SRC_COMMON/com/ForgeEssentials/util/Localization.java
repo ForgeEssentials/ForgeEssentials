@@ -1,5 +1,15 @@
 package com.ForgeEssentials.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+
+import com.ForgeEssentials.core.ForgeEssentials;
+
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class Localization
@@ -179,13 +189,35 @@ public class Localization
 	public void load()
 	{
 		OutputHandler.finer("Loading languages");
-		String langDir = "/com/ForgeEssentials/util/lang/";
+		
+		File folder = new File(ForgeEssentials.FEDIR, "lang");
+		if (!folder.exists())
+		{
+			folder.mkdirs();
+			for (String langFile : langFiles)
+			{
+				try
+				{
+					URL dl = new URL("https://raw.github.com/ForgeEssentials/FELocalizations/master/" + langFile);
+				    ReadableByteChannel rbc = Channels.newChannel(dl.openStream());
+				    FileOutputStream fos = new FileOutputStream(new File(folder, langFile));
+				    fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+				    fos.close();
+				}
+				catch (Exception e)
+				{
+					OutputHandler.warning("Error while downloading " + langFile);
+					e.printStackTrace();
+				}
+			}
+		}
 
 		for (String langFile : langFiles)
 		{
 			try
 			{
-				LanguageRegistry.instance().loadLocalization(langDir + langFile, langFile.substring(langFile.lastIndexOf('/') + 1, langFile.lastIndexOf('.')), true);
+				File file = new File(folder.getAbsolutePath(), langFile);
+				LanguageRegistry.instance().loadLocalization(file.getAbsolutePath(), file.getName(), true);
 				OutputHandler.info("Loaded language file " + langFile);
 			}
 			catch (Exception e)
