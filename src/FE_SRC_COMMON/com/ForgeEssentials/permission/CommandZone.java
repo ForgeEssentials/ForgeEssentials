@@ -266,7 +266,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		switch (args.length)

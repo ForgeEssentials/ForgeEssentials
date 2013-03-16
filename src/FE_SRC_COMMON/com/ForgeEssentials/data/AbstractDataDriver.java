@@ -12,6 +12,7 @@ import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.google.common.collect.HashMultimap;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class AbstractDataDriver implements IDataDriver
 {
 	private HashMultimap<String, String>	classRegister	= HashMultimap.create();
@@ -27,7 +28,7 @@ public abstract class AbstractDataDriver implements IDataDriver
 	{
 		return this.getClass().getSimpleName().replaceAll("DataDriver", "");
 	}
-
+	
 	@Override
 	public boolean saveObject(ClassContainer type, Object o)
 	{
@@ -63,7 +64,7 @@ public abstract class AbstractDataDriver implements IDataDriver
 
 		return newObject;
 	}
-
+	
 	@Override
 	public Object[] loadAllObjects(ClassContainer type)
 	{

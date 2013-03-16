@@ -1,7 +1,6 @@
 package com.ForgeEssentials.util.events;
 
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.permission.Permission;
 import com.ForgeEssentials.permission.PermissionProp;
 
 import net.minecraftforge.event.Cancelable;

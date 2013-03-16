@@ -8,7 +8,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +15,6 @@ import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.CompatReiMinimap;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -125,7 +123,6 @@ public class LoginMessage
 	private static String Format(String line, String playerName)
 	{
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(playerName);
-		Date now = new Date();
 		Calendar cal = Calendar.getInstance();
 		
 		// int WalletHandler = WalletHandler.getWalletHandler(player); //needed to return WalletHandler info

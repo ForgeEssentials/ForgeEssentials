@@ -1,7 +1,6 @@
 package com.ForgeEssentials.economy;
 
 import java.io.File;
-import java.util.HashMap;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
@@ -32,8 +31,6 @@ public class ModuleEconomy
 
 	@FEModule.ModuleDir
 	public static File								moduleDir;
-
-	private static HashMap<String, ModuleEconomy>	playerEconomyMap	= new HashMap<String, ModuleEconomy>();
 
 	public static int								startbuget;
 

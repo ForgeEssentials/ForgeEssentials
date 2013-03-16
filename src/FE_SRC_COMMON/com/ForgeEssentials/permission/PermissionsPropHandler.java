@@ -7,7 +7,6 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQuery;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketSpot;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
@@ -15,6 +14,7 @@ import com.ForgeEssentials.api.permissions.query.PropQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
 
+@SuppressWarnings("unused")
 public final class PermissionsPropHandler
 {
 	private PermissionsPropHandler() {}
@@ -137,10 +137,8 @@ public final class PermissionsPropHandler
 	 */
 	private static String getResultFromZone(Zone zone, String perm, boolean checkParents)
 	{
-		ArrayList<Group> groups;
 		String result = null;
 		Zone tempZone = zone;
-		Group group;
 		while (result == null)
 		{
 			result = SqlHelper.getPermissionProp(PermissionsAPI.getDEFAULT().name, true, perm, tempZone.getZoneName());

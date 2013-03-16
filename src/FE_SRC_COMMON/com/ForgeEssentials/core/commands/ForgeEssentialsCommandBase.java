@@ -14,8 +14,6 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
 	public boolean				enableCmdBlock	= true;

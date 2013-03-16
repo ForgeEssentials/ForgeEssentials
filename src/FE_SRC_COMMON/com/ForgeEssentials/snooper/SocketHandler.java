@@ -5,10 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import com.ForgeEssentials.api.json.JSONArray;
 import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.json.JSONObject;
-import com.ForgeEssentials.api.json.JSONTokener;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.util.OutputHandler;
 

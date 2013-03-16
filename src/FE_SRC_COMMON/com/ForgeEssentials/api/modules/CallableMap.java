@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Set;
-import java.util.logging.Level;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar;
 import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;

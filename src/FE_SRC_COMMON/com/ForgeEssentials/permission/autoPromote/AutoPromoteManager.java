@@ -1,6 +1,5 @@
 package com.ForgeEssentials.permission.autoPromote;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TimerTask;
 
