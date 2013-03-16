@@ -9,11 +9,11 @@ import com.ForgeEssentials.auth.ModuleAuth;
 import com.ForgeEssentials.auth.pwdData;
 import com.ForgeEssentials.auth.pwdSaver;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandLogin extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -25,7 +25,7 @@ public class CommandLogin extends ForgeEssentialsCommandBase
 	{
 		if (args.length != 1)
 		{
-			sender.sendChatToPlayer("You have to give your password.");
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 		else
 		{
@@ -40,7 +40,7 @@ public class CommandLogin extends ForgeEssentialsCommandBase
 					}
 					else
 					{
-						OutputHandler.chatError(sender, "Wrong pass!");
+						OutputHandler.chatError(sender, Localization.get("command.login.wrongpass"));
 					}
 				}
 				catch (Exception e)
@@ -51,7 +51,7 @@ public class CommandLogin extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				sender.sendChatToPlayer("You have not registerd. Use /register <pwd>");
+				OutputHandler.chatError(sender, Localization.get("command.login.register"));
 			}
 		}
 	}
@@ -71,7 +71,6 @@ public class CommandLogin extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return null;
-		// return "ForgeEssentials.Auth." + getCommandName();
 	}
 
 	@Override

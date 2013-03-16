@@ -20,6 +20,8 @@ import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PlayerBlockBreak;
 
@@ -116,7 +118,7 @@ public class Deathchest
 				{
 					if (!grave.canOpen(e.entityPlayer))
 					{
-						e.entityPlayer.sendChatToPlayer("This grave is still under Notch's protection.");
+						OutputHandler.chatWarning(e.entityPlayer, Localization.get("message.afterlife.protectionEnabled"));
 						e.setCanceled(true);
 					}
 					else

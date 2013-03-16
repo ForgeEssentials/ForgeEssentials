@@ -9,13 +9,13 @@ import com.ForgeEssentials.auth.ModuleAuth;
 import com.ForgeEssentials.auth.pwdData;
 import com.ForgeEssentials.auth.pwdSaver;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandRegister extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -27,7 +27,7 @@ public class CommandRegister extends ForgeEssentialsCommandBase
 	{
 		if (args.length != 1)
 		{
-			sender.sendChatToPlayer("You must specify a password (no spaces). Don't use your MC password.");
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 		else
 		{
@@ -50,7 +50,7 @@ public class CommandRegister extends ForgeEssentialsCommandBase
 			data.salt = ModuleAuth.pwdEnc.generateSalt();
 			data.encPwd = ModuleAuth.pwdEnc.getEncryptedPassword(pass, data.salt);
 			pwdSaver.setData(sender.username, data);
-			sender.sendChatToPlayer("You have been registerd. Use /login <pwd>");
+			OutputHandler.chatError(sender, Localization.get("command.register.register"));
 		}
 		catch (Exception e)
 		{
@@ -74,7 +74,6 @@ public class CommandRegister extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return null;
-		// return "ForgeEssentials.Auth." + getCommandName();
 	}
 
 	@Override

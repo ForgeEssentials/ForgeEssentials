@@ -6,6 +6,7 @@ import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.IPlayerTracker;
@@ -46,13 +47,13 @@ public class MailSystem implements IPlayerTracker
 	{
 		if (map.containsKey(receiver.username))
 		{
-			receiver.sendChatToPlayer(FEChatFormatCodes.GREEN + "--- Your mail ---");
+			receiver.sendChatToPlayer(FEChatFormatCodes.GREEN + Localization.get("message.mail.header"));
 			for (Mail mail : map.get(receiver.username))
 			{
 				receiver.sendChatToPlayer(FEChatFormatCodes.GREEN + "{" + mail.getSender() + "} " + FEChatFormatCodes.WHITE + mail.getMessage());
 				DataStorageManager.getReccomendedDriver().deleteObject(new ClassContainer(Mail.class), mail.getKey());
 			}
-			receiver.sendChatToPlayer(FEChatFormatCodes.GREEN + "--- End of mail ---");
+			receiver.sendChatToPlayer(FEChatFormatCodes.GREEN + Localization.get("message.mail.footer"));
 		}
 	}
 

@@ -21,6 +21,7 @@ import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.google.common.base.Strings;
 
@@ -41,7 +42,7 @@ public class ChatFormatter
 		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
 		{
 			event.setCanceled(true);
-			event.player.sendChatToPlayer("You are muted.");
+			event.player.sendChatToPlayer(Localization.get("message.muted"));
 			return;
 		}
 
