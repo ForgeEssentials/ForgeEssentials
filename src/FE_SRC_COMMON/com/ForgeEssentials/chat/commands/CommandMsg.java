@@ -47,14 +47,9 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length == 0)
+		if (args.length == 0 || args.length == 1)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "/msg <player> <message>");
-			return;
-		}
-		if (args.length == 1)
-		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "/msg <player> <message>");
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 			return;
 		}
 		if (args.length > 1)
@@ -85,7 +80,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				EntityPlayerMP receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
 				if (receiver == null)
 				{
-					OutputHandler.chatError(sender, args[0] + " is not a valid username");
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 					return;
 				}
 				clearReply(sender.getCommandSenderName());
@@ -113,14 +108,9 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length == 0)
+		if (args.length == 0 || args.length == 1)
 		{
-			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX + "/msg <player> <message>");
-			return;
-		}
-		if (args.length == 1)
-		{
-			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX + "/msg <player> <message>");
+			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX + getSyntaxConsole());
 			return;
 		}
 		if (args.length > 1)
@@ -128,7 +118,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 			EntityPlayer receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if (receiver == null)
 			{
-				sender.sendChatToPlayer(args[0] + " is not a valid username");
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				return;
 			}
 			else

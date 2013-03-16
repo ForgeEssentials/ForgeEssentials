@@ -17,7 +17,6 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandNickname extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -43,14 +42,14 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 				NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 				tag.removeTag("nickname");
 				sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-				sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_SELF_REMOVE));
+				sender.sendChatToPlayer(Localization.get("command.nickname.self.remove"));
 			}
 			else
 			{
 				NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 				tag.setString("nickname", args[0]);
 				sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-				sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_SELF_SET).replace("%n", args[0]));
+				sender.sendChatToPlayer(Localization.get("command.nickname.self.set").replace("%n", args[0]));
 			}
 		}
 		else if (args.length == 2)
@@ -61,12 +60,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 				if (args[1].equalsIgnoreCase("del"))
 				{
 					player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
-					sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_OTHERS_REMOVE).replace("%p", args[0]));
+					sender.sendChatToPlayer(Localization.get("command.nickname.others.remove").replace("%p", args[0]));
 				}
 				else
 				{
 					player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-					sender.sendChatToPlayer(Localization.get(Localization.CHAT_NICK_OTHERS_SET).replace("%p", args[0]).replace("%n", args[1]));
+					sender.sendChatToPlayer(Localization.get("command.nickname.others.set").replace("%p", args[0]).replace("%n", args[1]));
 				}
 			}
 			else

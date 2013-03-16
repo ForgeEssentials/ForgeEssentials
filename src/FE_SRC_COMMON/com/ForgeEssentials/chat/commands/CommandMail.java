@@ -1,21 +1,22 @@
 package com.ForgeEssentials.chat.commands;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.chat.Mail;
 import com.ForgeEssentials.chat.MailSystem;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandMail extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -25,6 +26,11 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		if(!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
+		{
+			OutputHandler.chatError(sender, Localization.format("command.mail.unknown", args[0]));
+			return;
+		}
 		StringBuilder cmd = new StringBuilder(args.toString().length());
 		for (int i = 1; i < args.length; i++)
 		{
@@ -32,12 +38,17 @@ public class CommandMail extends ForgeEssentialsCommandBase
 			cmd.append(" ");
 		}
 		MailSystem.AddMail(new Mail("", sender.getCommandSenderName(), args[0], cmd.toString()));
-		OutputHandler.chatConfirmation(sender, "Posted message to " + args[0]);
+		OutputHandler.chatConfirmation(sender, Localization.format("command.mail.posted", args[0]));
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
+		if(!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
+		{
+			OutputHandler.chatError(sender, Localization.format("command.mail.unknown", args[0]));
+			return;
+		}
 		StringBuilder cmd = new StringBuilder(args.toString().length());
 		for (int i = 1; i < args.length; i++)
 		{
@@ -45,7 +56,7 @@ public class CommandMail extends ForgeEssentialsCommandBase
 			cmd.append(" ");
 		}
 		MailSystem.AddMail(new Mail("", sender.getCommandSenderName(), args[0], cmd.toString()));
-		OutputHandler.chatConfirmation(sender, "Posted message to " + args[0]);
+		OutputHandler.chatConfirmation(sender, Localization.format("command.mail.posted", args[0]));
 	}
 
 	@Override
