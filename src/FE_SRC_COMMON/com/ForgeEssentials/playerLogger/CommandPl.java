@@ -70,7 +70,7 @@ public class CommandPl extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "";
+		return "ForgeEssentials.playerLogger."+getCommandName();
 	}
 
 	@Override

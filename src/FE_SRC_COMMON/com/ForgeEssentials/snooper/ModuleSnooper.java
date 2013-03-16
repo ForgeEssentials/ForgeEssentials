@@ -124,7 +124,7 @@ public class ModuleSnooper
 	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel("ForgeEssentials.Snooper._ALL_", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Snooper.commands.queryreload", RegGroup.OWNERS);
 	}
 
 	public static int id()

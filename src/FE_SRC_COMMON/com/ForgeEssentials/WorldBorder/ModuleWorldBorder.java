@@ -7,8 +7,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.PlayerMoveEvent;
@@ -45,7 +48,12 @@ public class ModuleWorldBorder
 	public ModuleWorldBorder()
 	{
 		WBenabled = true;
+	}
 
+	@PermRegister
+	public static void registerPerms(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel("ForgeEssentials.WorldBorder.command.worldborder", RegGroup.OWNERS);
 	}
 
 	@FEModule.ServerInit

@@ -3,9 +3,12 @@ package com.ForgeEssentials.economy;
 import java.io.File;
 import java.util.HashMap;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.economy.commands.CommandAddToWallet;
 import com.ForgeEssentials.economy.commands.CommandGetWallet;
@@ -25,15 +28,15 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class ModuleEconomy
 {
 	@FEModule.Config
-	public static ConfigEconomy	config;
+	public static ConfigEconomy						config;
 
 	@FEModule.ModuleDir
-	public static File			moduleDir;
-	
+	public static File								moduleDir;
+
 	private static HashMap<String, ModuleEconomy>	playerEconomyMap	= new HashMap<String, ModuleEconomy>();
 
-	public static int			startbuget;
-	
+	public static int								startbuget;
+
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
@@ -51,5 +54,21 @@ public class ModuleEconomy
 		e.registerServerCommand(new CommandPaidCommand());
 		e.registerServerCommand(new CommandSellCommand());
 		e.registerServerCommand(new CommandMoney());
+	}
+
+	@PermRegister
+	public static void registerPerms(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel("ForgeEssentials.Economy.pay", RegGroup.MEMBERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.addtowallet", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.getwallet", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.money", RegGroup.MEMBERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.paidcommand", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.removewallet", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.requestpayment", RegGroup.MEMBERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.sellcommand", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.setwallet", RegGroup.OWNERS);
+
+		// TODO : pending review from Dries.
 	}
 }
