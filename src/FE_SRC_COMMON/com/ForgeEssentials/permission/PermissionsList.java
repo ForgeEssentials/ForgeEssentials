@@ -3,12 +3,9 @@ package com.ForgeEssentials.permission;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
-
-import com.google.common.base.Strings;
 
 public class PermissionsList
 {
@@ -32,9 +29,9 @@ public class PermissionsList
 			output.createNewFile();
 			BufferedWriter writer = new BufferedWriter(new FileWriter(output));
 
-			writer.write("#// ------------ PERMISSIONS LIST ------------ \\#");  writer.newLine();
-			writer.write("#// ------------ Created on "+getDateString());  writer.newLine();
-			writer.write("#// ------------------------------------------ \\#");  writer.newLine();
+			writer.write("#// ------------ PERMISSIONS LIST ------------ \\\\#"); writer.newLine();
+			writer.write(getDateString());  									writer.newLine();
+			writer.write("#// ------------------------------------------ \\\\#"); writer.newLine();
 			writer.newLine();
 			
 			for (String perm : permissions)
@@ -53,12 +50,8 @@ public class PermissionsList
 	
 	private String getDateString()
 	{
-		Calendar cal = Calendar.getInstance();
-		StringBuilder builder = new StringBuilder();
-		builder.append(cal.get(Calendar.MONTH)).append(' ');
-		builder.append(cal.get(Calendar.DAY_OF_MONTH)).append(", ");
-		builder.append(cal.get(Calendar.YEAR));
-		return builder.toString();
+		String date = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
+		return "#// ------------ " + date + " ------------ \\\\#";
 	}
 
 }
