@@ -887,8 +887,6 @@ public class SqlHelper
 				}
 			}
 
-			// TODO: IMPORT PERMISSION PROPS
-
 			// put the EntryPlayer to GUESTS for the GLOBAL zone
 			s = statementPutPlayerInGroup;
 			s.setInt(1, groups.get(RegGroup.GUESTS));
