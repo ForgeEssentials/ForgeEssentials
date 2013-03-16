@@ -2,6 +2,7 @@ package com.ForgeEssentials.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import net.minecraftforge.common.DimensionManager;
 import com.ForgeEssentials.client.util.Point;
 import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+import com.google.common.base.Joiner;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -62,7 +64,7 @@ public final class FunctionHelper
 
 	/**
 	 * Gets a nice string with only needed elements.
-	 * Max  time is weeks
+	 * Max time is weeks
 	 * @param timeInSec
 	 * @return
 	 * Time in string format
@@ -310,6 +312,38 @@ public final class FunctionHelper
 	}
 
 	/**
+	 * @return The current date in form YYYY-MM-DD
+	 */
+	public static String getCurrentDateString()
+	{
+		Calendar c = Calendar.getInstance();
+
+		StringBuilder builder = new StringBuilder();
+		builder.append(c.get(Calendar.YEAR));
+		builder.append('-');
+		builder.append(c.get(Calendar.MONTH));
+		builder.append('-');
+		builder.append(c.get(Calendar.DAY_OF_MONTH));
+
+		return builder.toString();
+	}
+	
+	/**
+	 * @return the current Time in HH:mm format. 24hr clock.
+	 */
+	public static String getCurrentTimeString()
+	{
+		Calendar c = Calendar.getInstance();
+
+		StringBuilder builder = new StringBuilder();
+		builder.append(c.get(Calendar.HOUR_OF_DAY));
+		builder.append(':');
+		builder.append(c.get(Calendar.MINUTE));
+
+		return builder.toString();
+	}
+
+	/**
 	 * @param text
 	 * @param search
 	 * @param replacement
@@ -409,11 +443,11 @@ public final class FunctionHelper
 		}
 		player.playerNetServerHandler.setPlayerLocation(p.xd, p.yd, p.zd, p.yaw, p.pitch);
 	}
-	
+
 	/**
 	 * instWarp a player to a point. Please use TeleportCenter!
 	 * @param player
-	 * @param world 
+	 * @param world
 	 * @param p
 	 */
 	public static void setPlayer(EntityPlayerMP player, Point point, World world)
@@ -423,32 +457,21 @@ public final class FunctionHelper
 			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, world.provider.dimensionId);
 		}
 		double x = point.x, y = point.y, z = point.z;
-		x = (x < 0) ? x - 0.5: x + 0.5;
-		z = (z < 0) ? z - 0.5: z + 0.5;
+		x = (x < 0) ? x - 0.5 : x + 0.5;
+		z = (z < 0) ? z - 0.5 : z + 0.5;
 		player.playerNetServerHandler.setPlayerLocation(x, y, z, player.rotationYaw, player.rotationPitch);
 	}
-	
+
 	/**
 	 * Join string[] to print to users. "str1, str2, str3, ..., strn"
 	 * @param par0ArrayOfObj
 	 * @return
 	 */
-	public static String niceJoin(Object[] par0ArrayOfObj)
+	public static String niceJoin(Object[] array)
 	{
-		StringBuilder var1 = new StringBuilder();
-
-		for (int var2 = 0; var2 < par0ArrayOfObj.length; ++var2)
-		{
-			String var3 = par0ArrayOfObj[var2].toString();
-
-			if (var2 > 0)
-			{
-				var1.append(", ");
-			}
-
-			var1.append(var3);
-		}
-
-		return var1.toString();
+		return joiner.join(array);
 	}
+
+	// used for niceJoin method.
+	private static Joiner	joiner	= Joiner.on(", ").skipNulls();
 }

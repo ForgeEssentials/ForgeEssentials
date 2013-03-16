@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import net.minecraft.command.ICommandSender;
@@ -121,23 +122,31 @@ public class LoginMessage
 	 * @param String
 	 * to parse the amount to add to the WalletHandler
 	 */
-
-	@SuppressWarnings("deprecation")
 	private static String Format(String line, String playerName)
 	{
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(playerName);
 		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		
 		// int WalletHandler = WalletHandler.getWalletHandler(player); //needed to return WalletHandler info
-		return line.replaceAll("&", FEChatFormatCodes.CODE.toString()) // color
-																		// codes
-		.replaceAll("%playername%", player.username).replaceAll("%players%", online()) // players
-		// .replaceAll("%balance%",WalletHandler + " " +
-		// WalletHandler.currency(WalletHandler))//can be usefull for the user
-		.replaceAll("%uptime%", getUptime()) // uptime
-		.replaceAll("%uniqueplayers%", uniqueplayers()) // unique
-														// players
-		.replaceAll("%time%", now.toLocaleString()).replaceAll("%hour%", now.getHours() + "").replaceAll("%min%", now.getMinutes() + "").replaceAll("%sec%", now.getSeconds() + "") // time
-		.replaceAll("%day%", now.getDate() + "").replaceAll("%month%", now.getMonth() + "").replaceAll("%year%", now.getYear() + ""); // date
+		line = FunctionHelper.formatColors(line); // colors...
+		line = FunctionHelper.format(line);
+		
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.username); // username
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%players%", online()); // players online
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%uptime%", getUptime()); // uptime
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%uniqueplayers%", uniqueplayers()); // unique players
+		
+		// time stuff
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%time%", FunctionHelper.getCurrentTimeString());
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%hour%", ""+cal.get(Calendar.HOUR));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%min%", ""+cal.get(Calendar.MINUTE));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%sec%", ""+cal.get(Calendar.SECOND));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%day%", ""+cal.get(Calendar.DAY_OF_MONTH));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%month%", ""+cal.get(Calendar.MONTH));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%year%", ""+cal.get(Calendar.YEAR));
+		
+		return line;
 	}
 
 	private static String online()

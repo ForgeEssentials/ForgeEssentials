@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
+import com.ForgeEssentials.util.FunctionHelper;
+
 public class PermissionsList
 {
 	private static final String	OUTPUT_FILE	= "PermissionsList.txt";
@@ -30,7 +32,7 @@ public class PermissionsList
 			BufferedWriter writer = new BufferedWriter(new FileWriter(output));
 
 			writer.write("#// ------------ PERMISSIONS LIST ------------ \\\\#"); writer.newLine();
-			writer.write(getDateString());  									writer.newLine();
+			writer.write("#// ------------ "+FunctionHelper.getCurrentDateString()+" ------------ \\\\#");  									writer.newLine();
 			writer.write("#// ------------------------------------------ \\\\#"); writer.newLine();
 			writer.newLine();
 			
@@ -47,11 +49,4 @@ public class PermissionsList
 
 		}
 	}
-	
-	private String getDateString()
-	{
-		String date = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
-		return "#// ------------ " + date + " ------------ \\\\#";
-	}
-
 }

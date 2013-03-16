@@ -52,7 +52,7 @@ public class DBConnector
 	 */
 	public void write(Configuration config, String cat)
 	{
-		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" ")).value = type.toString();
+		config.get(cat, "chosenType", dType.toString(), " valid types: " + FunctionHelper.niceJoin(EnumDBType.values())).value = type.toString();
 
 		if (fallback != null)
 		{
@@ -136,7 +136,7 @@ public class DBConnector
 
 		}
 
-		config.get(cat, "chosenType", type.toString(), " valid types: " + EnumDBType.getAll(" "));
+		config.get(cat, "chosenType", type.toString(), " valid types: " + FunctionHelper.niceJoin(EnumDBType.values()));
 		config.get(cat, "checkParent", useParent, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.");
 	}
 

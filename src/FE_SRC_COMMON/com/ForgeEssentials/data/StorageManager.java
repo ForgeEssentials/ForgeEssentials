@@ -28,6 +28,7 @@ import com.ForgeEssentials.data.typeInfo.TypeInfoSerialize;
 import com.ForgeEssentials.data.typeInfo.TypeInfoSet;
 import com.ForgeEssentials.data.typeInfo.TypeInfoStandard;
 import com.ForgeEssentials.util.DBConnector;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 
@@ -60,7 +61,7 @@ public class StorageManager implements IStorageManager
 
 		// generates the configs...
 		Property prop = config.get("Data", "storageType", defaultDriver.toString());
-		prop.comment = "Specifies the variety of data storage FE will use. Options: " + EnumDriverType.getAll(" ");
+		prop.comment = "Specifies the variety of data storage FE will use. Options: " + FunctionHelper.niceJoin(EnumDriverType.values());
 		chosen = EnumDriverType.valueOf(prop.value);
 
 		typeChosens.put(EnumDriverType.TEXT, "ForgeConfig");
