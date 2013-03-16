@@ -55,9 +55,9 @@ public class PermissionsList
 	{
 		Calendar cal = Calendar.getInstance();
 		StringBuilder builder = new StringBuilder();
-		
-		builder.append(cal.get(Calendar.DAY_OF_MONTH));
-		
+		builder.append(cal.get(Calendar.MONTH)).append(' ');
+		builder.append(cal.get(Calendar.DAY_OF_MONTH)).append(", ");
+		builder.append(cal.get(Calendar.YEAR));
 		return builder.toString();
 	}
 
