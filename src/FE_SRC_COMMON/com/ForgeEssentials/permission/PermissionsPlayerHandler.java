@@ -33,12 +33,12 @@ public final class PermissionsPlayerHandler
 	{
 		doOpCheck(query);
 		
-		if (query.getResult().equals(PermResult.UNKNOWN))
+		if (!query.getResult().equals(PermResult.UNKNOWN))
 			return;
 		
 		checkPlayerSupers(query);
 		
-		if (query.getResult().equals(PermResult.UNKNOWN))
+		if (!query.getResult().equals(PermResult.UNKNOWN))
 			return;
 		
 		handleQuery(query);
