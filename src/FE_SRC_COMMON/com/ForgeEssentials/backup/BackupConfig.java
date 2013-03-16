@@ -58,6 +58,17 @@ public class BackupConfig extends ModuleConfigBase
 		backupIfUnloaded = config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").getBoolean(true);
 		enableMsg = config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").getBoolean(true);
 
+		/*
+		 * Lang
+		 */
+		
+		String sub = MAIN + ".lang";
+		config.addCustomCategoryComment(sub, "Configure messages here.");
+		
+		AutoWorldSave.start = config.get(sub + ".AutoWorldSave", "start", "Saving all loaded worlds.").value;
+		AutoWorldSave.done = config.get(sub + ".AutoWorldSave", "done", "The sever has saved the worlds.").value;
+		
+		
 		ModuleBackup.baseFolder = new File(backupDir);
 
 		/*

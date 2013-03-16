@@ -8,6 +8,8 @@ import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class AutoWorldSave implements Runnable
 {
+	public static String	start;
+	public static String	done;
 	public static boolean	isSaving	= false;
 
 	public AutoWorldSave()
@@ -30,7 +32,7 @@ public class AutoWorldSave implements Runnable
 			}
 		}
 
-		ModuleBackup.msg("Saving all loaded worlds.");
+		ModuleBackup.msg(start);
 		isSaving = true;
 
 		for (int i : DimensionManager.getIDs())
@@ -50,7 +52,7 @@ public class AutoWorldSave implements Runnable
 		}
 
 		isSaving = false;
-		ModuleBackup.msg("The sever has saved the worlds.");
+		ModuleBackup.msg(done);
 
 		System.gc();
 	}

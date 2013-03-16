@@ -12,7 +12,6 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandBackup extends ForgeEssentialsCommandBase
 {
-
 	static String		source;
 	static String		output;
 	static List<String>	fileList;
