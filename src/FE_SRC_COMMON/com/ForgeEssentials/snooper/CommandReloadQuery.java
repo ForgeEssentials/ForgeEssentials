@@ -1,5 +1,7 @@
 package com.ForgeEssentials.snooper;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -44,6 +46,13 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.Snooper.commands." + getCommandName();
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

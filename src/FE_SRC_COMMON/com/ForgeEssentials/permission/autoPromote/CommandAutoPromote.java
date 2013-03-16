@@ -1,5 +1,7 @@
 package com.ForgeEssentials.permission.autoPromote;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -35,6 +37,13 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.autoPromote";
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

@@ -1,6 +1,8 @@
 package com.ForgeEssentials.core.commands.selections;
 
 //Depreciated
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
@@ -154,6 +156,13 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	public boolean canConsoleUseCommand()
 	{
 		return false;
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

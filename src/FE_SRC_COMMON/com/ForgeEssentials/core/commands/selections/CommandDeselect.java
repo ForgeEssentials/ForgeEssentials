@@ -1,5 +1,7 @@
 package com.ForgeEssentials.core.commands.selections;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -53,5 +55,12 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands.deselect";
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -1,6 +1,8 @@
 package com.ForgeEssentials.core.commands.selections;
 
 //Depreciated
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -155,5 +157,12 @@ public class CommandWand extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands.wand";
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

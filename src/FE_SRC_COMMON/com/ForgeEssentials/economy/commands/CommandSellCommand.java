@@ -138,4 +138,11 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 		return false;
 	}
 
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
