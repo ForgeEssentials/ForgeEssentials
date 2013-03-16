@@ -56,14 +56,13 @@ public class CommandGive extends ForgeEssentialsCommandBase
 		}
 		if (players.size() != 0)
 		{
+			ItemStack stack = new ItemStack(id, amount, dam);
 			for (EntityPlayer player : players)
 			{
-				ItemStack stack = new ItemStack(id, amount, dam);
-				
-				String name = Item.itemsList[id].func_77653_i(stack);
-				sender.sendChatToPlayer("Giving " + player.username + " " + amount + " " + name);
-				player.inventory.addItemStackToInventory(stack);
+				player.inventory.addItemStackToInventory(stack.copy());
 			}
+			String name = Item.itemsList[id].func_77653_i(stack);
+			OutputHandler.chatConfirmation(sender, Localization.format("command.give.given", args[0], amount, name));
 		}
 		else
 		{
@@ -101,14 +100,13 @@ public class CommandGive extends ForgeEssentialsCommandBase
 		}
 		if (players.size() != 0)
 		{
+			ItemStack stack = new ItemStack(id, amount, dam);
 			for (EntityPlayer player : players)
 			{
-				ItemStack stack = new ItemStack(id, amount, dam);
-				
-				String name = Item.itemsList[id].func_77653_i(stack);
-				sender.sendChatToPlayer("Giving " + player.username + " " + amount + " " + name);
-				player.inventory.addItemStackToInventory(stack);
+				player.inventory.addItemStackToInventory(stack.copy());
 			}
+			String name = Item.itemsList[id].func_77653_i(stack);
+			OutputHandler.chatConfirmation(sender, Localization.format("command.give.given", args[0], amount, name));
 		}
 		else
 		{

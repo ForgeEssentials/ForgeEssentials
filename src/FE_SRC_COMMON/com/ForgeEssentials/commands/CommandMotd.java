@@ -20,21 +20,21 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		LoginMessage.sendLoginMessage(sender);
 		if (args.length > 0 && args[0].equalsIgnoreCase("reload"))
 		{
 			LoginMessage.loadFile();
 		}
+		LoginMessage.sendLoginMessage(sender);
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		LoginMessage.sendLoginMessage(sender);
 		if (args.length > 0 && args[0].equalsIgnoreCase("reload"))
 		{
 			LoginMessage.loadFile();
 		}
+		LoginMessage.sendLoginMessage(sender);
 	}
 
 	@Override

@@ -8,7 +8,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandLocate extends ForgeEssentialsCommandBase
 {
@@ -30,7 +33,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
 	{
 		if (args.length != 1)
 		{
-			OutputHandler.chatError(sender, "Specity a player");
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 		else
 		{
@@ -43,7 +46,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
 	{
 		if (args.length != 1)
 		{
-			OutputHandler.chatError(sender, "Specity a player");
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 		else
 		{
@@ -56,11 +59,11 @@ public class CommandLocate extends ForgeEssentialsCommandBase
 		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(username);
 		if (player == null)
 		{
-			sender.sendChatToPlayer(username + " not found!");
+			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, username));
 		}
 		else
 		{
-			sender.sendChatToPlayer(player.username + " is at X: " + (int) player.posX + " Y: " + (int) player.posY + " Z: " + (int) player.posZ + " in dim: " + player.dimension);
+			OutputHandler.chatConfirmation(sender, Localization.format("command.locate.msg", player.username, (int) player.posX, (int) player.posY, (int) player.posZ, player.dimension));
 		}
 	}
 
@@ -79,7 +82,9 @@ public class CommandLocate extends ForgeEssentialsCommandBase
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (args.length == 1)
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		else
+			return null;
 	}
 }

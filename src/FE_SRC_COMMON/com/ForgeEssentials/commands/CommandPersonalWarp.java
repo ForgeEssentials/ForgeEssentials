@@ -10,6 +10,9 @@ import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.PWarp;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
@@ -35,12 +38,8 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 
 		if (args.length != 2)
 		{
-			String msg = "Warp list: ";
-			for (String name : map.keySet())
-			{
-				msg = msg + ", " + name;
-			}
-			sender.sendChatToPlayer(msg);
+			sender.sendChatToPlayer(Localization.get("command.personalwarp.list"));
+			sender.sendChatToPlayer(FunctionHelper.niceJoin(map.keySet().toArray()));
 		}
 		else
 		{
@@ -55,7 +54,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					sender.sendChatToPlayer("PW does not exist.");
+					OutputHandler.chatError(sender, Localization.get("command.personalwarp.notfound"));
 				}
 			}
 			else if (args[0].equalsIgnoreCase("add"))
@@ -63,11 +62,11 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 				if (!map.containsKey(args[1]))
 				{
 					map.put(args[1], new PWarp(sender.username, args[1], new WarpPoint(sender)));
-					sender.sendChatToPlayer("PW added.");
+					OutputHandler.chatConfirmation(sender, Localization.get("command.personalwarp.made"));
 				}
 				else
 				{
-					sender.sendChatToPlayer("PW already exists.");
+					OutputHandler.chatError(sender, Localization.get("command.personalwarp.alreadyexists"));
 				}
 			}
 			else if (args[0].equalsIgnoreCase("remove"))
@@ -76,11 +75,11 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 				{
 					CommandDataManager.removePWarp(map.get(args[1]));
 					map.remove(args[1]);
-					sender.sendChatToPlayer("PW removed.");
+					OutputHandler.chatConfirmation(sender, Localization.get("command.personalwarp.remove"));
 				}
 				else
 				{
-					sender.sendChatToPlayer("PW does not exist.");
+					OutputHandler.chatError(sender, Localization.get("command.personalwarp.notfound"));
 				}
 			}
 		}

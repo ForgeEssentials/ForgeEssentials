@@ -109,7 +109,7 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
