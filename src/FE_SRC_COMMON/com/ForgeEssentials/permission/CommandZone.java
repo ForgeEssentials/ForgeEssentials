@@ -18,6 +18,8 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandZone extends ForgeEssentialsCommandBase
 {
+	private static String[]	commands	= { "list", "define", "redefine", "remove", "delete", "setParent" };
+
 	@Override
 	public String getCommandName()
 	{
@@ -232,6 +234,38 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.zone";
+	}
+
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		ArrayList<String> list = new ArrayList<String>();
+		switch (args.length)
+			{
+				case 0:
+				case 1:
+					for (String c : commands)
+					{
+						list.add(c);
+					}
+					break;
+				case 2:
+					for (Zone z : ZoneManager.getZoneList())
+					{
+						list.add(z.getZoneName());
+					}
+					break;
+				case 3:
+					if (args[0].equalsIgnoreCase("setparent"))
+					{
+						for (Zone z : ZoneManager.getZoneList())
+						{
+							list.add(z.getZoneName());
+						}
+					}
+			}
+
+		return list;
 	}
 
 }
