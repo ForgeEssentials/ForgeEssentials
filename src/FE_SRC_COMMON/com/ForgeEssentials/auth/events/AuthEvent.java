@@ -17,22 +17,17 @@ public class AuthEvent extends PlayerEvent
 
 	public static class AuthLoginEvent extends AuthEvent
 	{
-
 		public AuthLoginEvent(EntityPlayer player, Map<String, String> arguments)
 		{
 			super(player, arguments);
 		}
-
 	}
 
 	public static class AuthRegisterEvent extends AuthEvent
 	{
-
 		public AuthRegisterEvent(EntityPlayer player, Map<String, String> arguments)
 		{
 			super(player, arguments);
 		}
-
 	}
-
 }
