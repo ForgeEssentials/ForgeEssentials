@@ -229,7 +229,7 @@ public class Localization
 			try
 			{
 				File file = new File(folder.getAbsolutePath(), langFile);
-				LanguageRegistry.instance().loadLocalization(file.getAbsolutePath(), file.getName(), true);
+				LanguageRegistry.instance().loadLocalization(file.toURI().toURL(), file.getName(), true);
 				OutputHandler.info("Loaded language file " + langFile);
 			}
 			catch (Exception e)
