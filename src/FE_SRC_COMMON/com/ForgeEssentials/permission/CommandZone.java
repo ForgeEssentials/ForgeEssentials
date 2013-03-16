@@ -13,12 +13,14 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class CommandZone extends ForgeEssentialsCommandBase
 {
-	private static String[]	commands	= { "list", "define", "redefine", "remove", "delete", "setParent" };
+	private static String[]	commands	= { "list", "info", "define", "redefine", "remove", "delete", "setParent" };
 
 	@Override
 	public String getCommandName()
@@ -116,6 +118,32 @@ public class CommandZone extends ForgeEssentialsCommandBase
 							}
 							return;
 						}
+						else if (args[0].equalsIgnoreCase("info"))
+						{
+							if (!ZoneManager.doesZoneExist(args[1]))
+							{
+								OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
+							}
+							else
+							{
+								if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".info." + args[1])))
+								{
+									OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+								}
+								else
+								{
+									Zone zone = ZoneManager.getZone(args[1]);
+									OutputHandler.chatConfirmation(sender, "Name: " + zone.getZoneName());
+									OutputHandler.chatConfirmation(sender, "Parent: " + zone.parent);
+									OutputHandler.chatConfirmation(sender, "Priority: " + zone.priority);
+									OutputHandler.chatConfirmation(sender, "Dimension: " + zone.dim + "     World: " + FunctionHelper.getDimension(zone.dim).provider.getDimensionName());
+									Point high = zone.getHighPoint();
+									Point low = zone.getLowPoint();
+									OutputHandler.chatConfirmation(sender, high.x + ", " + high.y + ", " + high.z + " -> " + low.x + ", " + low.y + ", " + low.z);
+								}
+							}
+							return;
+						}
 						else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete"))
 						{
 							if (!ZoneManager.doesZoneExist(args[1]))
@@ -128,6 +156,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 								{
 									OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 								}
+								else
 								{
 									ZoneManager.deleteZone(args[1]);
 									OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_REMOVE, args[1]));
