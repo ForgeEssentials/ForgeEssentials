@@ -55,7 +55,7 @@ public class TaskRegistry
 		{
 			instance.timed.removeTask(task);
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 		}
 	}

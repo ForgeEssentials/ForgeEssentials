@@ -28,22 +28,22 @@ public final class PermissionsPlayerHandler
 	{
 		// do nothing
 	}
-	
+
 	public static void parseQuery(PermQueryPlayer query)
 	{
 		doOpCheck(query);
-		
+
 		if (!query.getResult().equals(PermResult.UNKNOWN))
 			return;
-		
+
 		checkPlayerSupers(query);
-		
+
 		if (!query.getResult().equals(PermResult.UNKNOWN))
 			return;
-		
+
 		handleQuery(query);
 	}
-	
+
 	private static void doOpCheck(PermQueryPlayer event)
 	{
 		boolean isOp = FunctionHelper.isPlayerOp(event.doer.username.toLowerCase());
@@ -61,13 +61,9 @@ public final class PermissionsPlayerHandler
 
 	private static void handleQuery(PermQueryPlayer event)
 	{
-		// ensures its a permPlayerQuery before checking...
-		if (event.getClass().equals(PermQueryPlayer.class))
-		{
-			Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(event.doer));
-			PermResult result = getResultFromZone(zone, event);
-			event.setResult(result);
-		}
+		Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(event.doer));
+		PermResult result = getResultFromZone(zone, event);
+		event.setResult(result);
 	}
 
 	private static void handleQuery(PermQueryPlayerZone event)

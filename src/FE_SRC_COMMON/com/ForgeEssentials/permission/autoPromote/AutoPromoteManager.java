@@ -16,22 +16,26 @@ import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class AutoPromoteManager extends TimerTask
 {
-	HashMap<String, AutoPromote> map = new HashMap<String, AutoPromote>();
-	ClassContainer con =  new ClassContainer(AutoPromote.class);
-	
+	HashMap<String, AutoPromote>	map	= new HashMap<String, AutoPromote>();
+	ClassContainer					con	= new ClassContainer(AutoPromote.class);
+
 	public AutoPromoteManager()
 	{
-		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(con))
+		Object[] loaded = DataStorageManager.getReccomendedDriver().loadAllObjects(con);
+		if (loaded != null)
 		{
-			AutoPromote ap = (AutoPromote)obj;
-			if(ZoneManager.getZone(ap.zone) != null)
+			for (Object obj : loaded)
 			{
-				map.put(ap.zone, ap);
+				AutoPromote ap = (AutoPromote) obj;
+				if (ZoneManager.getZone(ap.zone) != null)
+				{
+					map.put(ap.zone, ap);
+				}
 			}
 		}
 		TaskRegistry.registerRecurringTask(this, 0, 0, 1, 0, 0, 1, 0, 0);
 	}
-	
+
 	@Override
 	public void run()
 	{
@@ -39,7 +43,7 @@ public class AutoPromoteManager extends TimerTask
 		{
 			EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(username);
 			Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(player));
-			while(zone != null)
+			while (zone != null)
 			{
 				if (map.containsKey(zone.getZoneName()))
 				{
@@ -52,7 +56,7 @@ public class AutoPromoteManager extends TimerTask
 
 	public void stop()
 	{
-		this.cancel();
+		TaskRegistry.removeTask(this);
 		for (AutoPromote ap : map.values())
 		{
 			DataStorageManager.getReccomendedDriver().saveObject(con, ap);

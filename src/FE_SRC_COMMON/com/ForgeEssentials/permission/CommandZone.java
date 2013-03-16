@@ -20,7 +20,7 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class CommandZone extends ForgeEssentialsCommandBase
 {
-	private static String[]	commands	= { "list", "info", "define", "redefine", "remove", "delete", "setParent" };
+	private static String[]	commands	= { "list", "info", "define", "redefine", "remove", "setParent" };
 
 	@Override
 	public String getCommandName()

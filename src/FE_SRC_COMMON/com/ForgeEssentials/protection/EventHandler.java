@@ -145,7 +145,7 @@ public class EventHandler
 
 		WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
 		PermQuery query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point);
-		Boolean result = PermissionsAPI.checkPermAllowed(query);
+		boolean result = PermissionsAPI.checkPermAllowed(query);
 
 		if (!result)
 		{
