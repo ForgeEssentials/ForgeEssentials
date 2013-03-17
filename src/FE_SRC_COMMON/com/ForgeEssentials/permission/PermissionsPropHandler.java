@@ -14,16 +14,17 @@ import com.ForgeEssentials.api.permissions.query.PropQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
 
-@SuppressWarnings("unused")
 public final class PermissionsPropHandler
 {
-	private PermissionsPropHandler() {}
-	
+	private PermissionsPropHandler()
+	{
+	}
+
 	public static void handleQuery(PropQuery query)
 	{
 		Zone applied = getZone(query);
 		String result = null;
-		
+
 		if (query instanceof PropQueryPlayer)
 		{
 			result = getResultFromZone(applied, (PropQueryPlayer) query);
@@ -36,36 +37,36 @@ public final class PermissionsPropHandler
 		{
 			result = getResultFromZone(applied, query.perm, true);
 		}
-		
+
 		query.setValue(result);
 	}
-	
+
 	public static Zone getZone(PropQuery query)
 	{
 		// this should never happen;
 		return null;
 	}
-	
+
 	private static Zone getZone(PropQueryPlayerZone query)
 	{
 		return query.zone;
 	}
-	
+
 	private static Zone getZone(PropQueryPlayerSpot query)
 	{
 		return ZoneManager.getWhichZoneIn(query.spot);
 	}
-	
+
 	private static Zone getZone(PropQueryBlanketSpot query)
 	{
 		return ZoneManager.getWhichZoneIn(query.spot);
 	}
-	
+
 	private static Zone getZone(PropQueryBlanketZone query)
 	{
 		return query.zone;
 	}
-	
+
 	/**
 	 * @param zone Zone to check permProps in.
 	 * @param perm The permission to check.
@@ -128,7 +129,7 @@ public final class PermissionsPropHandler
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @param zone Zone to check permissions in.
 	 * @param perm The permission to check.
@@ -147,9 +148,7 @@ public final class PermissionsPropHandler
 			if (result == null)
 			{
 				if (checkParents == false)
-				{
 					return result;
-				}
 				else if (tempZone == ZoneManager.getGLOBAL())
 				{
 					// default deny.

@@ -27,67 +27,65 @@ public class EventHandler
 	{
 
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(ServerChatEvent event)
 	{
 
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerCommand(CommandEvent event)
 	{
 
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		
+
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(EntityInteractEvent event)
 	{
-		
+
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(MinecartInteractEvent event)
 	{
-		
+
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerTossItem(ItemTossEvent event)
 	{
-		
+
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerTargetted(LivingSetAttackTargetEvent event)
 	{
-		
+
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerHurt(LivingHurtEvent event)
 	{
-		
+
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerPickupItem(EntityItemPickupEvent event)
 	{
-		
+
 	}
-	
+
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onPlayerAttack(AttackEntityEvent event)
 	{
-		
+
 	}
-	
-	
 
 }

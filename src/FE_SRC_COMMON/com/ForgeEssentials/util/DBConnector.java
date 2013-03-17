@@ -41,7 +41,7 @@ public class DBConnector
 		this.dbDefault = dbDefault;
 		this.dbFileDefault = dbFileDefault;
 		data = new HashMap<EnumDBType, HashMap<String, Property>>();
-		this.useParent = useFallback;
+		useParent = useFallback;
 	}
 
 	/**
@@ -157,7 +157,9 @@ public class DBConnector
 					if (con != null)
 						return con;
 					else
+					{
 						OutputHandler.warning("[FE+SQL] " + name + " Parent check failed, going to in-house.");
+					}
 				}
 
 				// continue with stuff

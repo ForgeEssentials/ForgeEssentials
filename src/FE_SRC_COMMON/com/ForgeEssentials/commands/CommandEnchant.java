@@ -19,11 +19,11 @@ public class CommandEnchant extends ForgeEssentialsCommandBase
 	{
 		return "enchant";
 	}
-	
+
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(args.length == 0)
+		if (args.length == 0)
 		{
 			String msg = "";
 			for (Enchantment ench : Enchantment.enchantmentsList)
@@ -36,7 +36,7 @@ public class CommandEnchant extends ForgeEssentialsCommandBase
 			sender.sendChatToPlayer(msg);
 			return;
 		}
-		
+
 		Enchantment ench = null;
 
 		for (Enchantment enchL : Enchantment.enchantmentsList)
@@ -67,20 +67,20 @@ public class CommandEnchant extends ForgeEssentialsCommandBase
 			OutputHandler.chatError(sender, Localization.format("commands.enchant.notFound", args[0]));
 			return;
 		}
-		
+
 		ItemStack var6 = sender.getCurrentEquippedItem();
 		if (var6 == null)
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
 			return;
 		}
-		
+
 		int lvl = ench.getMaxLevel();
 		if (args.length >= 3)
 		{
 			lvl = parseIntWithMin(sender, args[1], ench.getMinLevel());
 		}
-		
+
 		var6.addEnchantment(ench, lvl);
 	}
 

@@ -136,7 +136,7 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 
 	public static boolean onBlockPlace(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitx, float hity, float hitz)
 	{
-		
+
 		// calculate offsets.
 		ForgeDirection dir = ForgeDirection.getOrientation(side);
 		x += dir.offsetX;

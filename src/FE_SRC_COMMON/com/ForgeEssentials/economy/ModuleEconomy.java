@@ -27,12 +27,12 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class ModuleEconomy
 {
 	@FEModule.Config
-	public static ConfigEconomy						config;
+	public static ConfigEconomy	config;
 
 	@FEModule.ModuleDir
-	public static File								moduleDir;
+	public static File			moduleDir;
 
-	public static int								startbuget;
+	public static int			startbuget;
 
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
@@ -59,7 +59,7 @@ public class ModuleEconomy
 		event.registerPermissionLevel("ForgeEssentials.Economy.pay", RegGroup.MEMBERS);
 		event.registerPermissionLevel("ForgeEssentials.Economy.requestpayment", RegGroup.MEMBERS);
 		event.registerPermissionLevel("ForgeEssentials.Economy.money", RegGroup.MEMBERS);
-		
+
 		event.registerPermissionLevel("ForgeEssentials.Economy.getwallet", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.Economy.paidcommand", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.Economy.addtowallet", RegGroup.OWNERS);

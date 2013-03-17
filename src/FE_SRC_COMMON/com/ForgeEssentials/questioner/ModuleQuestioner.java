@@ -40,7 +40,7 @@ public class ModuleQuestioner
 
 		// CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
 	}
-	
+
 	@PermRegister
 	public static void registerPerms(IPermRegisterEvent event)
 	{

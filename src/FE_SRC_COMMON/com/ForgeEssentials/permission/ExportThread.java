@@ -38,7 +38,7 @@ public class ExportThread extends Thread
 		obj2 = map.get("groupPerms");
 		FlatFilePermissions permissions = new FlatFilePermissions(exportDir);
 		permissions.save((ArrayList<PermissionHolder>) obj1, (ArrayList<PermissionHolder>) obj2);
-		
+
 		output("Saving Permission Properties");
 		obj1 = map.get("playerPermProps");
 		obj2 = map.get("groupPermProps");
@@ -63,8 +63,12 @@ public class ExportThread extends Thread
 	private void output(String msg)
 	{
 		if (user != null)
+		{
 			user.sendChatToPlayer("[PermSQL]" + msg);
+		}
 		else
+		{
 			OutputHandler.finest(msg);
+		}
 	}
 }

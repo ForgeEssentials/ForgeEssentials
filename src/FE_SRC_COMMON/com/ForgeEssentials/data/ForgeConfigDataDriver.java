@@ -235,7 +235,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 
 			for (int i = 0; i < array.length; i++)
 			{
-				lArray[i] = (long) array[i];
+				lArray[i] = array[i];
 			}
 			return lArray;
 		}

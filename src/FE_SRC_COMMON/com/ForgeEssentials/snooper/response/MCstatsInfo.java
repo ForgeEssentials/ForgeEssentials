@@ -12,7 +12,7 @@ import com.ForgeEssentials.core.compat.CompatMCStats;
 public class MCstatsInfo extends Response
 {
 	LinkedHashMap<String, String>	data	= new LinkedHashMap<String, String>();
-	
+
 	@Override
 	public String getName()
 	{
@@ -32,7 +32,7 @@ public class MCstatsInfo extends Response
 	@Override
 	public JSONObject getResponce(JSONObject input) throws JSONException
 	{
-		return new JSONObject().put(this.getName(), CompatMCStats.doSnooperStats());
+		return new JSONObject().put(getName(), CompatMCStats.doSnooperStats());
 	}
 
 }

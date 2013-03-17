@@ -58,7 +58,7 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandTopManipulate("untill", Mode.UNTILL));
 		// WEIntegration.serverStarting(e);
 	}
-	
+
 	@PermRegister
 	public static void registerPerms(IPermRegisterEvent event)
 	{
@@ -72,5 +72,5 @@ public class ModuleWorldControl
 		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.till", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.untill", RegGroup.OWNERS);
 	}
-	
+
 }

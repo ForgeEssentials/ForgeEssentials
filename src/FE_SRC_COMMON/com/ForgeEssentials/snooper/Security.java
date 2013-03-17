@@ -24,7 +24,7 @@ public class Security
 		{
 			System.out.println(e.toString());
 			return new JSONArray().put("wtf").toString();
-		}	
+		}
 	}
 
 	public static String decrypt(String input, String key)
@@ -42,6 +42,6 @@ public class Security
 		{
 			System.out.println(e.toString());
 			return new JSONArray().put("KeyInvalid").toString();
-		}	
+		}
 	}
 }

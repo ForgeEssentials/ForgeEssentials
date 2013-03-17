@@ -38,6 +38,7 @@ public abstract class BinaryDataDriver extends AbstractDataDriver
 		config.save();
 	}
 
+	@Override
 	public final void serverStart(FMLServerStartingEvent e)
 	{
 		String worldName = e.getServer().getFolderName();

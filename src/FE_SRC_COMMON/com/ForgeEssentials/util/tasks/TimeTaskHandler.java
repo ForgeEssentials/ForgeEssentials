@@ -21,7 +21,7 @@ public class TimeTaskHandler
 	{
 		timer.scheduleAtFixedRate(task, delay, interval);
 	}
-	
+
 	protected void removeTask(TimerTask task)
 	{
 		task.cancel();

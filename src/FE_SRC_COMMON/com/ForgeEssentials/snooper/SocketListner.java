@@ -23,8 +23,8 @@ public class SocketListner implements Runnable
 
 	public SocketListner()
 	{
-		this.port = ModuleSnooper.port;
-		this.hostname = ModuleSnooper.hostname;
+		port = ModuleSnooper.port;
+		hostname = ModuleSnooper.hostname;
 
 		if (hostname.length() > 0)
 		{
@@ -40,7 +40,7 @@ public class SocketListner implements Runnable
 
 		if (port == 0)
 		{
-			this.port = MinecraftServer.getServer().getPort();
+			port = MinecraftServer.getServer().getPort();
 		}
 
 		thread = new Thread(this, "ForgeEssentials - Snooper - SocketListner");
@@ -98,7 +98,7 @@ public class SocketListner implements Runnable
 			{
 				handler.close();
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 			}
 		}

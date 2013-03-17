@@ -23,8 +23,9 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		//TODO: finish...
-		if(true) return;
+		// TODO: finish...
+		if (true)
+			return;
 		/*
 		 * Get the right zone.
 		 * If nothing valid is given, defaults to the senders position.
@@ -33,12 +34,19 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 		if (args.length > 0)
 		{
 			if (args[0].equalsIgnoreCase("world"))
+			{
 				zone = ZoneManager.getWorldZone(sender.worldObj);
+			}
 			if (args[0].equalsIgnoreCase("global"))
+			{
 				zone = ZoneManager.getGLOBAL();
+			}
 			if (ZoneManager.doesZoneExist(args[0]))
+			{
 				zone = ZoneManager.getZone(args[0]);
+			}
 		}
+
 		/*
 		 * Need to make a new one?
 		 */
@@ -48,6 +56,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 			AutoPromoteManager.instance().map.put(zone.getZoneName(), new AutoPromote(zone.getZoneName(), false));
 			ap = AutoPromoteManager.instance().map.get(zone.getZoneName());
 		}
+
 		/*
 		 * Nope, Edit/vieuw/remove exisition one.
 		 */
@@ -58,7 +67,10 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 			sender.sendChatToPlayer("Enabled: " + ap.enable);
 			sender.sendChatToPlayer("Promotion times: " + FunctionHelper.niceJoin(ap.promoteList.toArray()));
 			StringBuilder footer = new StringBuilder();
-			for (int i = 3; i < header.length(); i++) footer.append("-");
+			for (int i = 3; i < header.length(); i++)
+			{
+				footer.append("-");
+			}
 			sender.sendChatToPlayer(footer.toString());
 			return;
 		}
@@ -66,7 +78,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
-	{	
+	{
 	}
 
 	@Override
@@ -80,7 +92,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.autoPromote";
 	}
-	
+
 	public List<String> getZoneNames()
 	{
 		ArrayList<String> list = new ArrayList<String>();
@@ -93,7 +105,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 		}
 		return list;
 	}
-	
+
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
@@ -103,5 +115,5 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 			return getListOfStringsFromIterableMatchingLastWord(args, getZoneNames());
 		return null;
 	}
-	
+
 }

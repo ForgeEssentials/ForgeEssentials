@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ForgeEssentialsClient
 {
 
-	private boolean allowCUI;
+	private boolean					allowCUI;
 	@SideOnly(Side.CLIENT)
 	private static PlayerInfoClient	info;
 
@@ -40,7 +40,7 @@ public class ForgeEssentialsClient
 		allowCUI = prop.getBoolean(true);
 		// any other parts please config here
 		config.save();
-		
+
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -48,7 +48,8 @@ public class ForgeEssentialsClient
 	public void load(FMLInitializationEvent e)
 	{
 		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
-		if (allowCUI){
+		if (allowCUI)
+		{
 			MinecraftForge.EVENT_BUS.register(new CUIRenderrer());
 		}
 	}
@@ -57,7 +58,9 @@ public class ForgeEssentialsClient
 	public static PlayerInfoClient getInfo()
 	{
 		if (info == null)
+		{
 			info = new PlayerInfoClient();
+		}
 		return info;
 	}
 

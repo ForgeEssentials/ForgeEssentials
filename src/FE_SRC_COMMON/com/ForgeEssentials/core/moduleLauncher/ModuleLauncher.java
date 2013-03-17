@@ -111,7 +111,9 @@ public class ModuleLauncher
 		for (ModContainer container : Loader.instance().getModList())
 		{
 			if (container.getMod() != null)
+			{
 				map.scanObject(container);
+			}
 		}
 
 		// check modules for the CallableMap stuff.

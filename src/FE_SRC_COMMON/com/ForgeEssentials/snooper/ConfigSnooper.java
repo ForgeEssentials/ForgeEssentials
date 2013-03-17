@@ -28,14 +28,14 @@ public class ConfigSnooper extends ModuleConfigBase
 		ModuleSnooper.hostname = config.get(cat, "hostname", "", "The query hostname/IP").value;
 
 		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
-		
+
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
 			String subCat = cat + "." + response.getName();
 			response.allowed = config.get(subCat, "enable", true, "If false, this response won't be allowed on this server.").getBoolean(true);
 			response.readConfig(subCat, config);
 		}
-		
+
 		config.save();
 	}
 
@@ -50,7 +50,7 @@ public class ConfigSnooper extends ModuleConfigBase
 		config.get(cat, "enable", false, "This one is obvious, don't you think?").value = "" + ModuleSnooper.enable;
 
 		config.get(cat, "keysize", 128, "AES Keysize. Only affects new keys.").value = ModuleSnooper.keysize + "";
-		
+
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
 			String subCat = cat + "." + response.getName();
@@ -73,7 +73,7 @@ public class ConfigSnooper extends ModuleConfigBase
 		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
 
 		ModuleSnooper.keysize = config.get(cat, "keysize", 128, "AES Keysize. Only affects new keys.").getInt();
-		
+
 		for (Response response : ResponseRegistry.getAllresponses())
 		{
 			String subCat = cat + "." + response.getName();

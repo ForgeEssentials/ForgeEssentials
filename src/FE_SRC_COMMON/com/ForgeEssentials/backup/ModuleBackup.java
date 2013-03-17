@@ -47,9 +47,13 @@ public class ModuleBackup
 	{
 		e.registerServerCommand(new CommandBackup());
 		if (BackupConfig.autoInterval != 0)
+		{
 			new AutoBackup();
+		}
 		if (BackupConfig.worldSaveInterval != 0)
+		{
 			new AutoWorldSave();
+		}
 		makeReadme();
 	}
 

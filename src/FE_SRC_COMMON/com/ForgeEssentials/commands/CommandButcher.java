@@ -19,8 +19,8 @@ import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class CommandButcher extends ForgeEssentialsCommandBase
 {
-	public static List<String> typeList = new ArrayList<String>();
-	
+	public static List<String>	typeList	= new ArrayList<String>();
+
 	static
 	{
 		for (EnumMobType type : EnumMobType.values())
@@ -28,7 +28,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 			typeList.add(type.name());
 		}
 	}
-	
+
 	@Override
 	public String getCommandName()
 	{
@@ -54,7 +54,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		int Y = (int) sender.posY;
 		int Z = (int) sender.posZ;
 		String mobType = EnumMobType.HOSTILE.toString();
-		
+
 		if (args.length > 0)
 		{
 			radius = args[0].equalsIgnoreCase("world") ? -1 : parseIntWithMin(sender, args[0], 0);
@@ -75,12 +75,18 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		{
 			String splitter = "";
 			if (args[2].contains(", "))
+			{
 				splitter = ", ";
+			}
 			else if (args[2].contains(","))
+			{
 				splitter = ",";
+			}
 			else if (args[2].contains(" "))
+			{
 				splitter = " ";
-			
+			}
+
 			String[] split = args[2].split(splitter);
 			if (split.length != 3)
 			{
@@ -104,7 +110,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		int radius = -1;
 		int worldID = 0;
 		int x = 0, y = 0, z = 0;
-		
+
 		if (sender instanceof TileEntityCommandBlock)
 		{
 			TileEntityCommandBlock cb = (TileEntityCommandBlock) sender;
@@ -141,12 +147,18 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 		{
 			String splitter = "";
 			if (args[2].contains(", "))
+			{
 				splitter = ", ";
+			}
 			else if (args[2].contains(","))
+			{
 				splitter = ",";
+			}
 			else if (args[2].contains(" "))
+			{
 				splitter = " ";
-			
+			}
+
 			String[] split = args[2].split(splitter);
 			if (split.length != 3)
 			{

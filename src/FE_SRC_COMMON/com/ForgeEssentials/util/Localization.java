@@ -180,7 +180,7 @@ public class Localization
 	public void load()
 	{
 		OutputHandler.finer("Loading languages");
-		
+
 		File folder = new File(ForgeEssentials.FEDIR, "lang");
 		boolean forceDl = false;
 		if (!folder.exists())
@@ -188,11 +188,11 @@ public class Localization
 			forceDl = true;
 			folder.mkdirs();
 		}
-		
+
 		Configuration conf = new Configuration(new File(folder, "conf.cfg"));
 		forceDl = conf.get("Lang", "AutoUpdate", true, "Leave to true unless you make changes to the lang files.").getBoolean(true);
 		conf.save();
-		
+
 		for (String langFile : langFiles)
 		{
 			File file = new File(folder, langFile);
@@ -201,17 +201,17 @@ public class Localization
 				try
 				{
 					URL dl = new URL("https://raw.github.com/ForgeEssentials/FELocalizations/master/" + langFile);
-				    ReadableByteChannel rbc = Channels.newChannel(dl.openStream());
-				    FileOutputStream fos = new FileOutputStream(file);
-				    fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-				    fos.close();
+					ReadableByteChannel rbc = Channels.newChannel(dl.openStream());
+					FileOutputStream fos = new FileOutputStream(file);
+					fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+					fos.close();
 				}
 				catch (Exception e)
 				{
 					OutputHandler.warning("Error while downloading " + langFile);
 					e.printStackTrace();
 				}
-	
+
 			}
 		}
 

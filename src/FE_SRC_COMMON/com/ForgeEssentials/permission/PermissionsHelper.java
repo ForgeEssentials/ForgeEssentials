@@ -20,7 +20,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PermissionPropSetEvent;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class PermissionsHelper implements IPermissionsHelper
 {
 	public final String	EntryPlayer	= "_ENTRY_PLAYER_";
@@ -32,9 +32,13 @@ public class PermissionsHelper implements IPermissionsHelper
 	public boolean checkPermAllowed(PermQuery query)
 	{
 		if (query instanceof PermQueryPlayer)
+		{
 			PermissionsPlayerHandler.parseQuery((PermQueryPlayer) query);
+		}
 		else
+		{
 			PermissionsBlanketHandler.parseQuery(query);
+		}
 
 		return query.isAllowed();
 	}
@@ -43,9 +47,13 @@ public class PermissionsHelper implements IPermissionsHelper
 	public PermResult checkPermResult(PermQuery query)
 	{
 		if (query instanceof PermQueryPlayer)
+		{
 			PermissionsPlayerHandler.parseQuery((PermQueryPlayer) query);
+		}
 		else
+		{
 			PermissionsBlanketHandler.parseQuery(query);
+		}
 
 		return query.getResult();
 	}
@@ -355,9 +363,13 @@ public class PermissionsHelper implements IPermissionsHelper
 		ArrayList output = new ArrayList();
 
 		if (zone == null)
+		{
 			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
+		}
 		else
+		{
 			output.addAll(SqlHelper.getAllPermissions(target, zone, false));
+		}
 
 		return output;
 	}
@@ -368,13 +380,17 @@ public class PermissionsHelper implements IPermissionsHelper
 		ArrayList output = new ArrayList();
 
 		if (zone == null)
+		{
 			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
+		}
 		else
+		{
 			output.addAll(SqlHelper.getAllPermProps(target, zone, false));
+		}
 
 		return output;
 	}
-	
+
 	@Override
 	public ArrayList getGroupPermissions(String target, String zone)
 	{
@@ -382,11 +398,17 @@ public class PermissionsHelper implements IPermissionsHelper
 		Group g = SqlHelper.getGroupForName(target);
 
 		if (zone == null)
+		{
 			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
+		}
 		else if (g == null)
+		{
 			output.add(Localization.format("message.error.nogroup", target));
+		}
 		else
+		{
 			output.addAll(SqlHelper.getAllPermissions(target, zone, true));
+		}
 
 		return output;
 	}
@@ -398,11 +420,17 @@ public class PermissionsHelper implements IPermissionsHelper
 		Group g = SqlHelper.getGroupForName(target);
 
 		if (zone == null)
+		{
 			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
+		}
 		else if (g == null)
+		{
 			output.add(Localization.format("message.error.nogroup", target));
+		}
 		else
+		{
 			output.addAll(SqlHelper.getAllPermProps(target, zone, true));
+		}
 
 		return output;
 	}

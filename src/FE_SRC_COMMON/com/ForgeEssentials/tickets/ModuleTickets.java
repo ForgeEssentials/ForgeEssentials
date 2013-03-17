@@ -49,7 +49,7 @@ public class ModuleTickets
 		e.registerServerCommand(new Command());
 		loadAll();
 	}
-	
+
 	@FEModule.ServerStop
 	public void serverStopping(FEModuleServerStopEvent e)
 	{

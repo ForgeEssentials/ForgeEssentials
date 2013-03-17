@@ -24,7 +24,7 @@ import cpw.mods.fml.common.ModContainer;
 
 public class ServerInfo extends Response
 {
-	private JSONObject		data 	= new JSONObject();
+	private JSONObject		data		= new JSONObject();
 	private boolean			sendWB;
 	private boolean			sendMotd;
 	private boolean			sendIP;
@@ -102,8 +102,8 @@ public class ServerInfo extends Response
 		}
 
 		data.put("Players", server.getAllUsernames());
-		
-		return new JSONObject().put(this.getName(), data);
+
+		return new JSONObject().put(getName(), data);
 	}
 
 	@Override

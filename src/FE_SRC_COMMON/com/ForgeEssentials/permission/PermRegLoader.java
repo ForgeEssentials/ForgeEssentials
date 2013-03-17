@@ -47,7 +47,7 @@ public class PermRegLoader
 		perms = event.registerred;
 		registerredPerms = event.perms;
 	}
-	
+
 	protected void clearMethods()
 	{
 		data = null;
@@ -77,7 +77,9 @@ public class PermRegLoader
 			Permission allow = new Permission(permission, true);
 
 			if (!deny.isAll)
+			{
 				registerred.add(permission);
+			}
 
 			if (group == null)
 			{

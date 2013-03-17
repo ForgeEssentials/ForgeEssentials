@@ -20,13 +20,13 @@ public class Point implements Serializable, Comparable<Point>
 	private static final long	serialVersionUID	= 3003472204175937036L;
 
 	@SaveableField
-	public double	x;
+	public double				x;
 
 	@SaveableField
-	public double	y;
+	public double				y;
 
 	@SaveableField
-	public double	z;
+	public double				z;
 
 	public Point(double x, double y, double z)
 	{
@@ -37,16 +37,16 @@ public class Point implements Serializable, Comparable<Point>
 
 	public Point(EntityPlayer player)
 	{
-		this.x = player.posX;
-		this.y = player.posY;
-		this.z = player.posZ;
+		x = player.posX;
+		y = player.posY;
+		z = player.posZ;
 	}
 
 	public Point(ChunkCoordinates coords)
 	{
-		this.x = coords.posX;
-		this.y = coords.posY;
-		this.z = coords.posZ;
+		x = coords.posX;
+		y = coords.posY;
+		z = coords.posZ;
 	}
 
 	public int getX()
@@ -68,7 +68,7 @@ public class Point implements Serializable, Comparable<Point>
 	 * This is calculated by the whichever has higher coords.
 	 * 
 	 * @return Posotive number if this Point is larger. 0 if they are equal.
-	 *         Negative if the provided point is larger.
+	 * Negative if the provided point is larger.
 	 */
 	@Override
 	public int compareTo(Point point)
@@ -80,26 +80,38 @@ public class Point implements Serializable, Comparable<Point>
 		int negatives = 0;
 
 		if (x > point.x)
+		{
 			positives++;
+		}
 		else
+		{
 			negatives++;
+		}
 
 		if (y > point.y)
+		{
 			positives++;
+		}
 		else
+		{
 			negatives++;
+		}
 
 		if (z > point.z)
+		{
 			positives++;
+		}
 		else
+		{
 			negatives++;
+		}
 
 		if (positives > negatives)
 			return +1;
 		else if (negatives > positives)
 			return -1;
 		else
-			return (int) ((x - point.x) + (y - point.y) + (z - point.z));
+			return (int) (x - point.x + (y - point.y) + (z - point.z));
 	}
 
 	@Override
@@ -117,7 +129,7 @@ public class Point implements Serializable, Comparable<Point>
 	 */
 	public double getDistanceTo(Point point)
 	{
-		return Math.sqrt(((x - point.x) * (x - point.x)) + ((y - point.y) * (y - point.y)) + ((z - point.z) * (z - point.z)));
+		return Math.sqrt((x - point.x) * (x - point.x) + (y - point.y) * (y - point.y) + (z - point.z) * (z - point.z));
 	}
 
 	/**
@@ -127,7 +139,7 @@ public class Point implements Serializable, Comparable<Point>
 	 */
 	public boolean alignsWith(Point p)
 	{
-		return this.getX() == p.getX() || this.getY() == p.getY() || this.getZ() == p.getZ();
+		return getX() == p.getX() || getY() == p.getY() || getZ() == p.getZ();
 	}
 
 	/**
@@ -148,9 +160,7 @@ public class Point implements Serializable, Comparable<Point>
 	public static Point validate(Point point)
 	{
 		if (point.y < 0)
-		{
 			return new Point(point.x, 0, point.z);
-		}
 		else
 			return point;
 	}

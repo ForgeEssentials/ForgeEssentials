@@ -2,11 +2,11 @@ package com.ForgeEssentials.api.permissions;
 
 import java.util.ArrayList;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PropQuery;
-
-import net.minecraft.entity.player.EntityPlayer;
 
 @SuppressWarnings(value = { "rawtypes" })
 public interface IPermissionsHelper
@@ -14,15 +14,15 @@ public interface IPermissionsHelper
 	boolean checkPermAllowed(PermQuery query);
 
 	PermResult checkPermResult(PermQuery query);
-	
+
 	void getPermissionProp(PropQuery query);
-	
+
 	Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority);
 
 	String setPlayerPermission(String username, String permission, boolean allow, String zoneID);
 
 	String setGroupPermission(String group, String permission, boolean allow, String zoneID);
-	
+
 	String setPlayerPermissionProp(String username, String permission, String value, String zoneID);
 
 	String setGroupPermissionProp(String group, String permission, String value, String zoneID);
@@ -50,21 +50,21 @@ public interface IPermissionsHelper
 	boolean updateGroup(Group group);
 
 	String clearGroupPermission(String name, String node, String zone);
-	
+
 	String clearGroupPermissionProp(String name, String node, String zone);
 
 	ArrayList<Group> getGroupsInZone(String zoneName);
 
 	String getPermissionForGroup(String target, String zone, String perm);
-	
+
 	String getPermissionPropForGroup(String target, String zone, String perm);
 
 	ArrayList getPlayerPermissions(String target, String zone);
-	
+
 	ArrayList getPlayerPermissionProps(String target, String zone);
 
 	ArrayList getGroupPermissions(String target, String zone);
-	
+
 	ArrayList getGroupPermissionProps(String target, String zone);
 
 	String getEPPrefix();

@@ -26,7 +26,7 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if(!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
+		if (!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
 		{
 			OutputHandler.chatError(sender, Localization.format("command.mail.unknown", args[0]));
 			return;
@@ -44,7 +44,7 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if(!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
+		if (!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
 		{
 			OutputHandler.chatError(sender, Localization.format("command.mail.unknown", args[0]));
 			return;

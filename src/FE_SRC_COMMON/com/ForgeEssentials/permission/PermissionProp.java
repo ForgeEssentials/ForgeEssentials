@@ -2,7 +2,7 @@ package com.ForgeEssentials.permission;
 
 public class PermissionProp extends PermissionChecker
 {
-	public final String				value;
+	public final String	value;
 
 	public PermissionProp(String qualifiedName, String value)
 	{

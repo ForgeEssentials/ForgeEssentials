@@ -25,10 +25,11 @@ public class AutoPromoteManager extends TimerTask
 	{
 		return instance;
 	}
-	
+
 	public AutoPromoteManager()
 	{
-		if (!FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
+		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+			return;
 		Object[] loaded = DataStorageManager.getReccomendedDriver().loadAllObjects(con);
 		if (loaded != null)
 		{

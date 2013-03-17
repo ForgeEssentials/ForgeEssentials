@@ -12,11 +12,11 @@ import java.util.Set;
  * 
  * @author AbrarSyed
  * @param <V> Value type
- *
+ * 
  */
 public class CaseStringMap<V> implements Map<String, V>
 {
-	HashMap<String, V> map;
+	HashMap<String, V>	map;
 
 	public CaseStringMap()
 	{
@@ -58,7 +58,7 @@ public class CaseStringMap<V> implements Map<String, V>
 	{
 		return map.get(key);
 	}
-	
+
 	public V get(String key)
 	{
 		key = key.toLowerCase();
@@ -93,7 +93,7 @@ public class CaseStringMap<V> implements Map<String, V>
 			temp = entry.getKey().toLowerCase();
 			map.put(temp, entry.getValue());
 		}
-		
+
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class CaseStringMap<V> implements Map<String, V>
 	{
 		return map.remove(key);
 	}
-	
+
 	public V remove(String key)
 	{
 		key = key.toLowerCase();
@@ -119,13 +119,13 @@ public class CaseStringMap<V> implements Map<String, V>
 	{
 		return map.values();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj)
 	{
 		return map.equals(obj);
 	}
-	
+
 	@Override
 	public int hashCode()
 	{

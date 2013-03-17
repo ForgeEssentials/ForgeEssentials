@@ -135,7 +135,7 @@ public class ModulePlayerLogger
 			ex.printStackTrace();
 		}
 	}
-	
+
 	@PermRegister
 	public static void registerPerms(IPermRegisterEvent event)
 	{

@@ -95,8 +95,8 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 						clearPar1 = parseInt(sender, args[1]);
 						clearPar2 = parseInt(sender, args[2]);
 					}
-						victim.inventory.clearInventory(clearPar1, clearPar2);
-						
+					victim.inventory.clearInventory(clearPar1, clearPar2);
+
 					victim.inventoryContainer.detectAndSendChanges();
 					OutputHandler.chatWarning(sender, Localization.format("command.clear.doneBy", sender.getCommandSenderName()));
 				}

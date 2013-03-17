@@ -68,7 +68,9 @@ public class SQLDataDriver extends AbstractDataDriver
 		try
 		{
 			if (dbConnection == null || dbConnection.isClosed())
+			{
 				dbConnection = connector.getChosenConnection();
+			}
 		}
 		catch (Exception e)
 		{
@@ -84,9 +86,13 @@ public class SQLDataDriver extends AbstractDataDriver
 		// actually start the connection.
 		dbConnection = connector.getChosenConnection();
 		if (connector.getActiveType().equals(EnumDBType.H2_FILE))
+		{
 			SURROUNDER = "\"";
+		}
 		else
+		{
 			SURROUNDER = "";
+		}
 	}
 
 	@Override
@@ -278,7 +284,9 @@ public class SQLDataDriver extends AbstractDataDriver
 						tempVal = dataCursor.getFieldValue(name);
 
 						if (tempVal == null)
+						{
 							tempVal = DataStorageManager.getDataForType(tmpClass);
+						}
 
 						dataCursor.putField(name, tempVal);
 
@@ -723,7 +731,7 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		Class cType = type.getType();
 
-		if (cType.equals(Integer.class) || cType.equals(Float.class) || cType.equals(Double.class) || cType.equals(Long.class)||cType.equals(String.class)
+		if (cType.equals(Integer.class) || cType.equals(Float.class) || cType.equals(Double.class) || cType.equals(Long.class) || cType.equals(String.class)
 				|| cType.equals(int.class) || cType.equals(float.class) || cType.equals(double.class) || cType.equals(long.class))
 		{
 			data.add(new Pair(fieldName, value.toString()));

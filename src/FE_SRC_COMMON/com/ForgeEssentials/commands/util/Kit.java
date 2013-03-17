@@ -38,11 +38,13 @@ public class Kit
 		for (int i = 0; i < player.inventory.mainInventory.length; i++)
 		{
 			if (player.inventory.mainInventory[i] != null)
+			{
 				items.add(player.inventory.mainInventory[i]);
+			}
 		}
 
 		this.items = new ItemStack[items.size()];
-		this.armor = new ItemStack[player.inventory.armorInventory.length];
+		armor = new ItemStack[player.inventory.armorInventory.length];
 
 		for (int i = 0; i < items.size(); i++)
 		{
@@ -52,12 +54,14 @@ public class Kit
 		for (int i = 0; i < 4; i++)
 		{
 			if (player.inventory.armorInventory[i] != null)
+			{
 				armor[i] = player.inventory.armorInventory[i].copy();
+			}
 		}
 
 		CommandDataManager.addKit(this);
 	}
-	
+
 	public Kit(Object name, Object cooldown, Object items, Object armor)
 	{
 		this.name = (String) name;
@@ -69,7 +73,7 @@ public class Kit
 	@Reconstructor
 	private static Kit reconstruct(IReconstructData tag)
 	{
-		return new Kit(tag.getFieldValue("name"), tag.getFieldValue("cooldown"), tag.getFieldValue("items"), tag.getFieldValue("armor"));	
+		return new Kit(tag.getFieldValue("name"), tag.getFieldValue("cooldown"), tag.getFieldValue("items"), tag.getFieldValue("armor"));
 	}
 
 	public String getName()

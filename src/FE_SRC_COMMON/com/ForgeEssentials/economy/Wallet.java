@@ -13,26 +13,26 @@ public class Wallet
 {
 	@UniqueLoadingKey
 	private String	username;
-	
+
 	@SaveableField
 	public int		amount;
-	
+
 	public Wallet(EntityPlayer player, int startAmount)
 	{
 		if (player.getEntityData().hasKey("Economy-" + player.username))
 		{
 			startAmount = player.getEntityData().getInteger("Economy-" + player.username);
 		}
-		this.username = player.username;
-		this.amount = startAmount;
+		username = player.username;
+		amount = startAmount;
 	}
-	
+
 	private Wallet(Object username, Object amount)
 	{
 		this.username = (String) username;
 		this.amount = (Integer) amount;
 	}
-	
+
 	@Reconstructor
 	private static Wallet reconstruct(IReconstructData tag)
 	{

@@ -48,7 +48,7 @@ public class TaskRegistry
 		TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
 		registerRecurringTask(wrapper, delayHrs, delayMin, delaySec, delayMilli, intervalHrs, intervalMin, intervalSec, intervalMilli);
 	}
-	
+
 	public static void removeTask(TimerTask task)
 	{
 		try
@@ -59,7 +59,7 @@ public class TaskRegistry
 		{
 		}
 	}
-	
+
 	public static void removeTask(Runnable task)
 	{
 		TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
@@ -86,6 +86,7 @@ public class TaskRegistry
 			this.runner = runner;
 		}
 
+		@Override
 		public void run()
 		{
 			runner.run();
@@ -100,13 +101,13 @@ public class TaskRegistry
 		time = hrs;
 
 		// all minutes
-		time = (time * 60) + min;
+		time = time * 60 + min;
 
 		// all seconds
-		time = (time * 60) + sec;
+		time = time * 60 + sec;
 
 		// all milliseconds
-		time = (time * 1000) + milli;
+		time = time * 1000 + milli;
 
 		return time;
 	}

@@ -29,17 +29,20 @@ public class PermissionsList
 			output.createNewFile();
 			BufferedWriter writer = new BufferedWriter(new FileWriter(output));
 
-			writer.write("#// ------------ PERMISSIONS LIST ------------ \\\\#"); writer.newLine();
-			writer.write("#// ------------ "+FunctionHelper.getCurrentDateString()+" ------------ \\\\#");  									writer.newLine();
-			writer.write("#// ------------------------------------------ \\\\#"); writer.newLine();
+			writer.write("#// ------------ PERMISSIONS LIST ------------ \\\\#");
 			writer.newLine();
-			
+			writer.write("#// ------------ " + FunctionHelper.getCurrentDateString() + " ------------ \\\\#");
+			writer.newLine();
+			writer.write("#// ------------------------------------------ \\\\#");
+			writer.newLine();
+			writer.newLine();
+
 			for (String perm : permissions)
 			{
 				writer.write(perm);
 				writer.newLine();
 			}
-			
+
 			writer.close();
 		}
 		catch (Exception e)

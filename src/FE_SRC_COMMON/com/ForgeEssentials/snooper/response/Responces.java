@@ -18,8 +18,8 @@ public class Responces extends Response
 		{
 			data.put(responce.id + " " + responce.getName());
 		}
-		
-		return new JSONObject().put(this.getName(), data);
+
+		return new JSONObject().put(getName(), data);
 	}
 
 	@Override

@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.permissions.query.PermQuery;
-import com.ForgeEssentials.api.permissions.query.PropQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.api.permissions.query.PropQuery;
 
 // This is a bouncer class for all Permissions API duties.
 
 @SuppressWarnings("unchecked")
 public abstract class PermissionsAPI
 {
-	public static IPermissionsHelper		manager;
+	public static IPermissionsHelper	manager;
 
 	public static boolean checkPermAllowed(PermQuery query)
 	{
@@ -24,7 +24,7 @@ public abstract class PermissionsAPI
 	{
 		return manager.checkPermResult(query);
 	}
-	
+
 	/**
 	 * populates the given PropQuery with a value.
 	 */
@@ -47,12 +47,12 @@ public abstract class PermissionsAPI
 	{
 		return manager.setGroupPermission(group, permission, allow, zoneID);
 	}
-	
+
 	public static String setPlayerPermissionProp(String username, String permission, String value, String zoneID)
 	{
 		return manager.setPlayerPermissionProp(username, permission, value, zoneID);
 	}
-	
+
 	public static String setGroupPermissionProp(String group, String permission, String value, String zoneID)
 	{
 		return manager.setGroupPermissionProp(group, permission, value, zoneID);
@@ -117,7 +117,7 @@ public abstract class PermissionsAPI
 	{
 		return manager.clearGroupPermission(name, node, zone);
 	}
-	
+
 	public static String clearGroupPermissionProp(String name, String node, String zone)
 	{
 		return manager.clearGroupPermissionProp(name, node, zone);
@@ -132,7 +132,7 @@ public abstract class PermissionsAPI
 	{
 		return manager.getPermissionForGroup(target, zone, perm);
 	}
-	
+
 	public static String getPermissionPropForGroup(String target, String zone, String perm)
 	{
 		return manager.getPermissionForGroup(target, zone, perm);
@@ -142,7 +142,7 @@ public abstract class PermissionsAPI
 	{
 		return manager.getPlayerPermissions(target, zone);
 	}
-	
+
 	public static ArrayList getPlayerPermissionProps(String target, String zone)
 	{
 		return manager.getPlayerPermissions(target, zone);
@@ -152,7 +152,7 @@ public abstract class PermissionsAPI
 	{
 		return manager.getGroupPermissions(target, zone);
 	}
-	
+
 	public static ArrayList getGroupPermissionProps(String target, String zone)
 	{
 		return manager.getGroupPermissions(target, zone);

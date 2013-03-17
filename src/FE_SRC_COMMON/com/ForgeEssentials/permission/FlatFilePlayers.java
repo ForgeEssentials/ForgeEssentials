@@ -70,7 +70,9 @@ public class FlatFilePlayers
 		{
 			ServerConfigurationManager manager = server.getConfigurationManager();
 			if (manager != null)
+			{
 				allPlayers = manager.getAllUsernames();
+			}
 		}
 
 		Configuration config = new Configuration(file);

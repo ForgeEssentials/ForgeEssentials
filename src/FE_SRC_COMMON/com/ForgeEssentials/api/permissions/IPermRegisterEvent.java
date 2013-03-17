@@ -10,7 +10,7 @@ public interface IPermRegisterEvent
 	 * @param group NULL will deny the permission for everyone.
 	 */
 	public void registerPermissionLevel(String permission, RegGroup group);
-	
+
 	/**
 	 * This method will register the permission and its default level. This
 	 * should be done with ALL permissions
@@ -19,45 +19,45 @@ public interface IPermRegisterEvent
 	 * @Param alone will only set this permission to this group. Other groups will be unaffected.
 	 */
 	public void registerPermissionLevel(String permission, RegGroup group, boolean alone);
-	
+
 	/**
 	 * Registers a PermissionProperty for use with a default value.
 	 * PermissionProperties not registered will be ignored.
-	 * @param permission  permission node to save the property under.
-	 * @param globalDefault   the value saved.
+	 * @param permission permission node to save the property under.
+	 * @param globalDefault the value saved.
 	 */
 	public void registerPermissionProp(String permission, String globalDefault);
-	
+
 	/**
 	 * Registers a PermissionProperty for use with a default value.
 	 * PermissionProperties not registered will be ignored.
-	 * @param permission  permission node to save the property under.
-	 * @param globalDefault   the value saved.
+	 * @param permission permission node to save the property under.
+	 * @param globalDefault the value saved.
 	 */
 	public void registerPermissionProp(String permission, int globalDefault);
-	
+
 	/**
 	 * Registers a PermissionProperty for use with a default value.
 	 * PermissionProperties not registered will be ignored.
-	 * @param permission  permission node to save the property under.
-	 * @param globalDefault   the value saved.
+	 * @param permission permission node to save the property under.
+	 * @param globalDefault the value saved.
 	 */
 	public void registerPermissionProp(String permission, float globalDefault);
-	
+
 	/**
 	 * Sets a PermissionProperty for the provided group.
 	 * @param permission
-<<<<<<< HEAD
+	 * <<<<<<< HEAD
 	 * Qualified permission node
 	 * @param group
 	 * NULL will deny the permission for everyone.
-=======
+	 * =======
 	 * @param value
 	 * @param group
->>>>>>> origin/PermissionsProps
+	 * >>>>>>> origin/PermissionsProps
 	 */
 	public void registerGroupPermissionprop(String permission, String value, RegGroup group);
-	
+
 	/**
 	 * Sets a PermissionProperty for the provided group.
 	 * @param permission
@@ -65,7 +65,7 @@ public interface IPermRegisterEvent
 	 * @param group
 	 */
 	public void registerGroupPermissionprop(String permission, int value, RegGroup group);
-	
+
 	/**
 	 * Sets a PermissionProperty for the provided group.
 	 * @param permission

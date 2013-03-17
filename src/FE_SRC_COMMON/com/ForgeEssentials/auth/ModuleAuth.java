@@ -24,19 +24,19 @@ import cpw.mods.fml.relauncher.Side;
 public class ModuleAuth
 {
 	@Config
-	public static AuthConfig				config;
+	public static AuthConfig			config;
 
-	public static boolean					forceEnabled;
-	public static boolean					checkVanillaAuthStatus;
+	public static boolean				forceEnabled;
+	public static boolean				checkVanillaAuthStatus;
 
-	public static boolean					enabled;
+	public static boolean				enabled;
 
-	public static LoginHandler				handler;
-	public static VanillaServiceChecker		vanillaCheck;
-	public static EncryptionHelper	pwdEnc;
+	public static LoginHandler			handler;
+	public static VanillaServiceChecker	vanillaCheck;
+	public static EncryptionHelper		pwdEnc;
 
-	private static boolean					vanillaOnlineMode;
-	public static boolean					allowOfflineReg;
+	private static boolean				vanillaOnlineMode;
+	public static boolean				allowOfflineReg;
 
 	@Init
 	public void load(FEModuleInitEvent e)

@@ -41,7 +41,7 @@ public class blockChangeLog extends logEntry
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
 			te.writeToNBT(nbt);
-			
+
 			try
 			{
 				this.te = new SerialBlob(new JSONObject().put(te.getClass().getName(), TextFormatter.toJSONnbtComp(nbt).toString()).toString().getBytes());

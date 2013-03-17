@@ -4,24 +4,24 @@ import com.google.common.base.Strings;
 
 public abstract class PropQuery
 {
-	public final String perm;
-	protected String value;
+	public final String	perm;
+	protected String	value;
 
 	public PropQuery(String permKey)
 	{
 		perm = permKey;
 	}
-	
+
 	public void setValue(String value)
 	{
 		this.value = value;
 	}
-	
-	public boolean hasValue() 
+
+	public boolean hasValue()
 	{
 		return Strings.isNullOrEmpty(value);
 	}
-	
+
 	/**
 	 * @return an empty string if this is unset.
 	 */
@@ -31,7 +31,7 @@ public abstract class PropQuery
 			return "";
 		return value;
 	}
-	
+
 	/**
 	 * @return -1 if unset or not a valid integer.
 	 */
@@ -39,17 +39,17 @@ public abstract class PropQuery
 	{
 		if (value == null)
 			return -1;
-		
+
 		try
 		{
 			return Integer.parseInt(value);
 		}
-		catch(NumberFormatException e)
+		catch (NumberFormatException e)
 		{
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * @return -1 if unset or not a valid decimal.
 	 */
@@ -57,12 +57,12 @@ public abstract class PropQuery
 	{
 		if (value == null)
 			return -1;
-		
+
 		try
 		{
 			return Integer.parseInt(value);
 		}
-		catch(NumberFormatException e)
+		catch (NumberFormatException e)
 		{
 			return -1;
 		}

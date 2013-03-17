@@ -84,7 +84,7 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 			if (args.length >= 2)
 			{
 				amount = parseIntWithMin(sender, Localization.get(args[1]), 1);
-				
+
 				if (args.length >= 5)
 				{
 					x = 0.5 + parseInt(sender, args[2]);

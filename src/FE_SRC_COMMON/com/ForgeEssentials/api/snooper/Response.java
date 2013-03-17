@@ -17,9 +17,9 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public abstract class Response
 {
 	public int					id;
-	protected MinecraftServer	server		= FMLCommonHandler.instance().getMinecraftServerInstance();
-	public boolean				allowed		= true;
-	
+	protected MinecraftServer	server	= FMLCommonHandler.instance().getMinecraftServerInstance();
+	public boolean				allowed	= true;
+
 	public abstract JSONObject getResponce(JSONObject input) throws JSONException;
 
 	public abstract String getName();

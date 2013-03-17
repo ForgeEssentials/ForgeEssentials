@@ -1496,9 +1496,7 @@ public class SqlHelper
 			statement.clearParameters();
 
 			if (set.next())
-			{
 				return set.getString(COLUMN_PERMPROP_PROP);
-			}
 			else
 				return null;
 
@@ -2138,7 +2136,9 @@ public class SqlHelper
 					statement.clearParameters();
 
 					while (set.next())
+					{
 						perms.put(set.getInt(3), new Permission(set.getString(1), set.getBoolean(2)));
+					}
 
 					// $ , allowed, target, isgroup, perm, zone
 					statement = getInstance().statementPutPermission;
@@ -2168,7 +2168,9 @@ public class SqlHelper
 					statement.clearParameters();
 
 					while (set.next())
+					{
 						permProps.put(set.getInt(3), new PermissionProp(set.getString(1), set.getString(2)));
+					}
 
 					// $ , allowed, target, isgroup, perm, zone
 					statement = getInstance().statementPutPermProp;
@@ -2197,7 +2199,9 @@ public class SqlHelper
 					statement.clearParameters();
 
 					while (set.next())
+					{
 						groups.put(set.getInt(COLUMN_GROUP_CONNECTOR_ZONEID), set.getInt(COLUMN_GROUP_CONNECTOR_GROUPID));
+					}
 
 					statement = getInstance().statementPutPlayerInGroup;
 					statement.setInt(2, player);
@@ -2708,7 +2712,9 @@ public class SqlHelper
 			statement.clearParameters();
 
 			while (set.next())
+			{
 				list.add(new Permission(set.getString(1), set.getBoolean(2)));
+			}
 
 			return list;
 		}
@@ -2740,7 +2746,9 @@ public class SqlHelper
 			statement.clearParameters();
 
 			while (set.next())
+			{
 				list.add(new PermissionProp(set.getString(1), set.getString(2)));
+			}
 
 			return list;
 		}

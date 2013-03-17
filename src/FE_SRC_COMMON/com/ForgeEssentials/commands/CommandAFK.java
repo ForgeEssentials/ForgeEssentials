@@ -17,8 +17,8 @@ import com.ForgeEssentials.util.OutputHandler;
 public class CommandAFK extends ForgeEssentialsCommandBase
 {
 	public static List<String>	afkList	= new ArrayList<String>();
-	
-	//Config
+
+	// Config
 	public static int			warmup	= 5;
 
 	@Override

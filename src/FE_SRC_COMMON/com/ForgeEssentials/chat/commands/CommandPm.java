@@ -78,7 +78,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 					persistentMessage.remove(sender.getCommandSenderName());
 				}
 				persistentMessage.put(sender.getCommandSenderName(), target.getCommandSenderName());
-				
+
 				OutputHandler.chatConfirmation(sender, Localization.format("command.pm.enable", target.getCommandSenderName()));
 			}
 			return;

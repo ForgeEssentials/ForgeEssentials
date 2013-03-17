@@ -539,18 +539,13 @@ public class CommandFEPermUser
 					sender.sendChatToPlayer(playerName + " has been allowed " + args[3]);
 					return;
 				}
-				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove")) // remove
-																									// super
-																									// perm
-																									// settings
+				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove")) // remove super perm settings
 				{
 					PermissionsAPI.clearPlayerPermission(playerName, args[3], zone.getZoneName());
 					sender.sendChatToPlayer(playerName + "'s access to " + args[2] + " cleared");
 					return;
 				}
-				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny")) // deny
-																								// super
-																								// perm
+				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny")) // deny super perm
 				{
 					PermissionsAPI.setPlayerPermission(playerName, args[3], false, zone.getZoneName());
 					sender.sendChatToPlayer(playerName + " has been denied " + args[3]);

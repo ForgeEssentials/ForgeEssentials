@@ -21,19 +21,19 @@ public class AutoPromote
 {
 	@UniqueLoadingKey
 	@SaveableField
-	public String					zone;
+	public String				zone;
 
 	@SaveableField
-	public boolean					enable;
+	public boolean				enable;
 
 	@SaveableField
-	public ArrayList<Integer>		promoteList;
+	public ArrayList<Integer>	promoteList;
 
 	public AutoPromote(String zone, boolean enable)
 	{
 		this.zone = zone;
 		this.enable = enable;
-		this.promoteList = new ArrayList<Integer>();
+		promoteList = new ArrayList<Integer>();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -42,37 +42,39 @@ public class AutoPromote
 	{
 		AutoPromote data = new AutoPromote((String) tag.getFieldValue("zone"), (Boolean) tag.getFieldValue("enable"));
 		data.promoteList = (ArrayList<Integer>) tag.getFieldValue("promoteList");
-		if (data.promoteList != null) data.promoteList = new ArrayList<Integer>();
+		if (data.promoteList != null)
+		{
+			data.promoteList = new ArrayList<Integer>();
+		}
 		return data;
 	}
-	
+
 	public void tick(EntityPlayerMP player)
 	{
 		try
 		{
-			OutputHandler.debug("Tick " + player.username + " in " + zone); //TODO debug!
-			if(promoteList.contains(PlayerInfo.getPlayerInfo(player.username).timePlayed))
+			OutputHandler.debug("Tick " + player.username + " in " + zone); // TODO debug!
+			if (promoteList.contains(PlayerInfo.getPlayerInfo(player.username).timePlayed))
 			{
 				Group currentGroup = PermissionsAPI.getHighestGroup(player);
 				PromotionLadder ladder = SqlHelper.getLadderForGroup(currentGroup.name, zone);
 				if (ladder != null)
 				{
-					OutputHandler.debug("Ladderlist: " + ladder.getListGroup()); //TODO debug!
+					OutputHandler.debug("Ladderlist: " + ladder.getListGroup()); // TODO debug!
 					String newGroup = ladder.getPromotion(currentGroup.name);
 					if (newGroup != null)
 					{
 						PermissionsAPI.addPlayerToGroup(newGroup, player.username, zone);
-						OutputHandler.debug(player.username + " autopromoted to " + newGroup + " from " + currentGroup.name); //TODO debug!
+						OutputHandler.debug(player.username + " autopromoted to " + newGroup + " from " + currentGroup.name); // TODO debug!
 					}
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			//TODO: People can handle the errors -_-
+			// TODO: People can handle the errors -_-
 			OutputHandler.warning("Don't even care about this error. This isn't done yet.");
 			e.printStackTrace();
 		}
 	}
 }
-

@@ -124,25 +124,25 @@ public class LoginMessage
 	{
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(playerName);
 		Calendar cal = Calendar.getInstance();
-		
+
 		// int WalletHandler = WalletHandler.getWalletHandler(player); //needed to return WalletHandler info
 		line = FunctionHelper.formatColors(line); // colors...
 		line = FunctionHelper.format(line);
-		
+
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.username); // username
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%players%", online()); // players online
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%uptime%", getUptime()); // uptime
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%uniqueplayers%", uniqueplayers()); // unique players
-		
+
 		// time stuff
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%time%", FunctionHelper.getCurrentTimeString());
-		line = FunctionHelper.replaceAllIgnoreCase(line, "%hour%", ""+cal.get(Calendar.HOUR));
-		line = FunctionHelper.replaceAllIgnoreCase(line, "%min%", ""+cal.get(Calendar.MINUTE));
-		line = FunctionHelper.replaceAllIgnoreCase(line, "%sec%", ""+cal.get(Calendar.SECOND));
-		line = FunctionHelper.replaceAllIgnoreCase(line, "%day%", ""+cal.get(Calendar.DAY_OF_MONTH));
-		line = FunctionHelper.replaceAllIgnoreCase(line, "%month%", ""+cal.get(Calendar.MONTH));
-		line = FunctionHelper.replaceAllIgnoreCase(line, "%year%", ""+cal.get(Calendar.YEAR));
-		
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%hour%", "" + cal.get(Calendar.HOUR));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%min%", "" + cal.get(Calendar.MINUTE));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%sec%", "" + cal.get(Calendar.SECOND));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%day%", "" + cal.get(Calendar.DAY_OF_MONTH));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%month%", "" + cal.get(Calendar.MONTH));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%year%", "" + cal.get(Calendar.YEAR));
+
 		return line;
 	}
 

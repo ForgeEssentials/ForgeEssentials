@@ -14,9 +14,9 @@ import cpw.mods.fml.common.IPlayerTracker;
  */
 public class WalletHandler implements IPlayerTracker
 {
-	private static ClassContainer			con	= new ClassContainer(Wallet.class);
-	private static HashMap<String, Wallet> 	wallets = new HashMap<String, Wallet>();
-	
+	private static ClassContainer			con		= new ClassContainer(Wallet.class);
+	private static HashMap<String, Wallet>	wallets	= new HashMap<String, Wallet>();
+
 	/**
 	 * Add a set amount to a target's Wallet
 	 * @param amountToAdd
@@ -60,7 +60,7 @@ public class WalletHandler implements IPlayerTracker
 	 * target player
 	 */
 	public static void setWallet(int setAmount, EntityPlayer player)
-	{ 
+	{
 		wallets.get(player.username).amount = setAmount;
 	}
 
@@ -79,7 +79,7 @@ public class WalletHandler implements IPlayerTracker
 		else
 			return ConfigEconomy.currencyPlural;
 	}
-	
+
 	/**
 	 * Gets a combo of getWallet + currency
 	 * @param player
@@ -94,7 +94,7 @@ public class WalletHandler implements IPlayerTracker
 	/*
 	 * Player tracker stuff
 	 */
-	
+
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
@@ -109,7 +109,7 @@ public class WalletHandler implements IPlayerTracker
 	@Override
 	public void onPlayerLogout(EntityPlayer player)
 	{
-		if(wallets.containsKey(player.username))
+		if (wallets.containsKey(player.username))
 		{
 			DataStorageManager.getReccomendedDriver().saveObject(con, wallets.remove(player.username));
 		}
@@ -122,6 +122,6 @@ public class WalletHandler implements IPlayerTracker
 
 	@Override
 	public void onPlayerRespawn(EntityPlayer player)
-	{	
+	{
 	}
 }

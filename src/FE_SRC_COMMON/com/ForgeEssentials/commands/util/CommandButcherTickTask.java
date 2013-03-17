@@ -32,17 +32,17 @@ import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class CommandButcherTickTask implements ITickTask
 {
-	double						MAX_ENTITY_RADIUS;
-	boolean						isComplete;
-	AxisAlignedBB				aabb;
-	EntityPlayer				player;
-	ICommandSender				sender;
-	boolean						playerCommand;
-	String						mobType;
-	int							counter, radius, tempCount;
-	int							var4, var5, var6, var7;
-	int							var9temp, var10temp;
-	World						world;
+	double			MAX_ENTITY_RADIUS;
+	boolean			isComplete;
+	AxisAlignedBB	aabb;
+	EntityPlayer	player;
+	ICommandSender	sender;
+	boolean			playerCommand;
+	String			mobType;
+	int				counter, radius, tempCount;
+	int				var4, var5, var6, var7;
+	int				var9temp, var10temp;
+	World			world;
 
 	public CommandButcherTickTask(EntityPlayer sender, String mobType, AxisAlignedBB aabb, int radius)
 	{

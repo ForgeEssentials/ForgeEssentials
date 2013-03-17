@@ -1,9 +1,6 @@
 package com.ForgeEssentials.snooper.response;
 
-import java.util.Collection;
-
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.json.JSONException;
@@ -34,11 +31,11 @@ public class PlayerInfoResonce extends Response
 		JSONObject tempMap = new JSONObject();
 
 		if (!input.has("username"))
-			return new JSONObject().put(this.getName(), "This responce needs a username!");
-		
+			return new JSONObject().put(getName(), "This responce needs a username!");
+
 		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input.getString("username"));
 		if (player == null)
-			return new JSONObject().put(this.getName(), input.getString("username") + " not online!");
+			return new JSONObject().put(getName(), input.getString("username") + " not online!");
 
 		PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
 		if (pi != null && sendhome)
@@ -60,18 +57,24 @@ public class PlayerInfoResonce extends Response
 		}
 		try
 		{
-			if(sendMoney) PlayerData.put("Money", "" + WalletHandler.getWallet(player));
+			if (sendMoney)
+			{
+				PlayerData.put("Money", "" + WalletHandler.getWallet(player));
+			}
 		}
 		catch (Exception e)
 		{
 		}
-		if(sendPosition) PlayerData.put("Position", new WorldPoint(player).toJSON());
+		if (sendPosition)
+		{
+			PlayerData.put("Position", new WorldPoint(player).toJSON());
+		}
 		PlayerData.put("Ping", "" + player.ping);
 		PlayerData.put("Gamemode", player.theItemInWorldManager.getGameType().getName());
 
 		if (!player.getActivePotionEffects().isEmpty() && sendpotions)
 		{
-			PlayerData.put("Potions", TextFormatter.toJSON((Collection<PotionEffect>) player.getActivePotionEffects()));
+			PlayerData.put("Potions", TextFormatter.toJSON(player.getActivePotionEffects()));
 		}
 
 		if (sendXP)
@@ -107,12 +110,12 @@ public class PlayerInfoResonce extends Response
 		catch (Exception e)
 		{
 		}
-		
+
 		PlayerData.put("firstJoin", PlayerInfo.getPlayerInfo(player.username).getFirstJoin());
 		PlayerData.put("timePlayed", PlayerInfo.getPlayerInfo(player.username).timePlayed);
-		
-		return new JSONObject().put(this.getName(), PlayerData);
-		
+
+		return new JSONObject().put(getName(), PlayerData);
+
 	}
 
 	@Override

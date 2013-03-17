@@ -46,7 +46,7 @@ public class TypeInfoStandard implements ITypeInfo<Object>
 	@Override
 	public void build()
 	{
-		SaveableObject AObj = (SaveableObject) type.getAnnotation(SaveableObject.class);
+		SaveableObject AObj = type.getAnnotation(SaveableObject.class);
 		inLine = AObj.SaveInline();
 
 		Class<?> currentType = type;
@@ -76,7 +76,9 @@ public class TypeInfoStandard implements ITypeInfo<Object>
 
 					// register ignoire classes....
 					if (info != null && !info.overrideParent().isEmpty())
+					{
 						overrides.add(info.overrideParent());
+					}
 
 					tempType = f.getType();
 					aTempType = f.getGenericType();

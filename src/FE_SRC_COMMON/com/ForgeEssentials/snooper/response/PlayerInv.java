@@ -16,11 +16,11 @@ public class PlayerInv extends Response
 	public JSONObject getResponce(JSONObject input) throws JSONException
 	{
 		if (!input.has("username"))
-			return new JSONObject().put(this.getName(), "This responce needs a username!");
-		
+			return new JSONObject().put(getName(), "This responce needs a username!");
+
 		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input.getString("username"));
 		if (player == null)
-			return new JSONObject().put(this.getName(), input.getString("username") + " not online!");
+			return new JSONObject().put(getName(), input.getString("username") + " not online!");
 
 		JSONObject PlayerData = new JSONObject();
 		JSONArray tempArgs = new JSONArray();
@@ -32,7 +32,7 @@ public class PlayerInv extends Response
 			}
 		}
 		PlayerData.put("Inventory", tempArgs);
-		
+
 		tempArgs = new JSONArray();
 		for (int i = 0; i < 3; i++)
 		{
@@ -43,8 +43,8 @@ public class PlayerInv extends Response
 			}
 		}
 		PlayerData.put("Armor", tempArgs);
-		
-		return new JSONObject().put(this.getName(), PlayerData);
+
+		return new JSONObject().put(getName(), PlayerData);
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 			NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 			tag.setBoolean("mute", false);
 			receiver.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-			
+
 			OutputHandler.chatError(sender, Localization.format("command.unmute.youMuted", args[0]));
 			OutputHandler.chatError(receiver, Localization.format("command.unmute.muted", sender.getCommandSenderName()));
 		}
@@ -65,7 +65,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 			NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 			tag.setBoolean("mute", false);
 			receiver.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-		
+
 			OutputHandler.chatError(sender, Localization.format("command.unmute.youMuted", args[0]));
 			OutputHandler.chatError(receiver, Localization.format("command.unmute.muted", sender.getCommandSenderName()));
 		}

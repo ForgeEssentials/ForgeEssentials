@@ -42,7 +42,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	public ArrayList<String> loadRules()
 	{
 		ArrayList<String> rules = new ArrayList<String>();
-		
+
 		OutputHandler.info("Loading rules");
 		if (!rulesFile.exists())
 		{

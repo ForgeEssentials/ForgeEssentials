@@ -70,7 +70,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
 				world = DimensionManager.getWorld(0);
 			}
 			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-			FunctionHelper.setPlayer((EntityPlayerMP) player, new Point(spawn), world);
+			FunctionHelper.setPlayer(player, new Point(spawn), world);
 			OutputHandler.chatConfirmation(player, Localization.get("command.bed.done"));
 		}
 	}

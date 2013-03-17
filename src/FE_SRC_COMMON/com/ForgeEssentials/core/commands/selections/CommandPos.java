@@ -35,7 +35,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
 		int x, y, z;
-		
+
 		if (args.length == 1)
 		{
 			if (args[0].toLowerCase().equals("here"))
@@ -43,7 +43,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
 				x = (int) player.posX;
 				y = (int) player.posY;
 				z = (int) player.posZ;
-				
+
 				if (type == 1)
 				{
 					PlayerInfo.getPlayerInfo(player.username).setPoint1(new Point(x, y, z));
@@ -52,10 +52,10 @@ public class CommandPos extends ForgeEssentialsCommandBase
 				{
 					PlayerInfo.getPlayerInfo(player.username).setPoint2(new Point(x, y, z));
 				}
-				
+
 				OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
 				return;
-				
+
 			}
 			else
 			{

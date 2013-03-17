@@ -321,13 +321,13 @@ public final class FunctionHelper
 		StringBuilder builder = new StringBuilder();
 		builder.append(c.get(Calendar.YEAR));
 		builder.append('-');
-		builder.append(c.get(Calendar.MONTH+1));
+		builder.append(c.get(Calendar.MONTH + 1));
 		builder.append('-');
 		builder.append(c.get(Calendar.DAY_OF_MONTH));
 
 		return builder.toString();
 	}
-	
+
 	/**
 	 * @return the current Time in HH:mm format. 24hr clock.
 	 */
@@ -457,8 +457,8 @@ public final class FunctionHelper
 			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, world.provider.dimensionId);
 		}
 		double x = point.x, y = point.y, z = point.z;
-		x = (x < 0) ? x - 0.5 : x + 0.5;
-		z = (z < 0) ? z - 0.5 : z + 0.5;
+		x = x < 0 ? x - 0.5 : x + 0.5;
+		z = z < 0 ? z - 0.5 : z + 0.5;
 		player.playerNetServerHandler.setPlayerLocation(x, y, z, player.rotationYaw, player.rotationPitch);
 	}
 

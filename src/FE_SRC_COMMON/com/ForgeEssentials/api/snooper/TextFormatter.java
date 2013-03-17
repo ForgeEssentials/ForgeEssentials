@@ -101,7 +101,7 @@ public class TextFormatter
 		}
 		return name;
 	}
-	
+
 	public static JSONArray toJSONnbtComp(NBTTagCompound nbt) throws JSONException
 	{
 		Object[] obj = nbt.getTags().toArray();

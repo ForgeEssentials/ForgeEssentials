@@ -81,11 +81,11 @@ public class PlayerInfo extends TimerTask
 		info.suffix = (String) tag.getFieldValue("suffix");
 
 		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
-		
+
 		info.firstJoin = (Long) tag.getFieldValue("firstJoin");
 
 		TaskRegistry.registerRecurringTask(info, 0, 0, 0, 0, 0, 1, 0, 0);
-		
+
 		return info;
 	}
 
@@ -128,10 +128,10 @@ public class PlayerInfo extends TimerTask
 
 	@SaveableField()
 	public int						timePlayed;
-	
+
 	@SaveableField()
 	private long					firstJoin;
-	
+
 	// undo and redo stuff
 	private Stack<BackupArea>		undos;
 	private Stack<BackupArea>		redos;
@@ -151,7 +151,7 @@ public class PlayerInfo extends TimerTask
 
 		prefix = "";
 		suffix = "";
-		
+
 		firstJoin = System.currentTimeMillis();
 	}
 
@@ -163,7 +163,7 @@ public class PlayerInfo extends TimerTask
 		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
 		TaskRegistry.removeTask(this);
 	}
-	
+
 	public long getFirstJoin()
 	{
 		return firstJoin;
@@ -311,7 +311,7 @@ public class PlayerInfo extends TimerTask
 	{
 		try
 		{
-			this.timePlayed ++;
+			timePlayed++;
 		}
 		catch (Exception e)
 		{

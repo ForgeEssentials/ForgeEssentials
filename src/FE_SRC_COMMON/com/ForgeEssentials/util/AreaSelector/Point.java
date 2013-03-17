@@ -177,13 +177,13 @@ public class Point implements Serializable, Comparable<Point>
 	{
 		return "Point[" + x + ", " + y + ", " + z + "]";
 	}
-	
+
 	public JSONObject toJSON() throws JSONException
 	{
 		JSONObject data = new JSONObject();
-		data.put("x", "" + this.x);
-		data.put("y", "" + this.y);
-		data.put("z", "" + this.z);
+		data.put("x", "" + x);
+		data.put("y", "" + y);
+		data.put("z", "" + z);
 		if (this instanceof WorldPoint)
 		{
 			data.put("dim", "" + ((WorldPoint) this).dim);

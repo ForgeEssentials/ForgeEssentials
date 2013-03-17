@@ -9,13 +9,13 @@ import com.ForgeEssentials.api.modules.ModuleConfigBase;
 
 public class ConfigEconomy extends ModuleConfigBase
 {
-	private Configuration	config;
+	private Configuration		config;
 
-	public static final String CAT = "Economy";
+	public static final String	CAT	= "Economy";
 
-	public static String	currencySingular;
-	public static String	currencyPlural;
-	
+	public static String		currencySingular;
+	public static String		currencyPlural;
+
 	public ConfigEconomy(File file)
 	{
 		super(file);
@@ -25,11 +25,11 @@ public class ConfigEconomy extends ModuleConfigBase
 	public void init()
 	{
 		config = new Configuration(file);
-		
+
 		currencySingular = config.get(CAT, "currencySingular", "gold").value;
 		currencyPlural = config.get(CAT, "currencyPlural", "gold").value;
 		ModuleEconomy.startbuget = config.get(CAT, "startbuget", 100).getInt();
-		
+
 		config.save();
 	}
 
@@ -39,7 +39,7 @@ public class ConfigEconomy extends ModuleConfigBase
 		config.get(CAT, "currencySingular", "gold").value = currencySingular;
 		config.get(CAT, "currencyPlural", "gold").value = currencyPlural;
 		config.get(CAT, "startbuget", 100).value = ModuleEconomy.startbuget + "";
-		
+
 		config.save();
 	}
 
@@ -47,7 +47,7 @@ public class ConfigEconomy extends ModuleConfigBase
 	public void forceLoad(ICommandSender sender)
 	{
 		config.load();
-		
+
 		currencySingular = config.get(CAT, "currencySingular", "gold").value;
 		currencyPlural = config.get(CAT, "currencyPlural", "gold").value;
 		ModuleEconomy.startbuget = config.get(CAT, "startbuget", 100).getInt();

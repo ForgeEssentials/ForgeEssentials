@@ -61,14 +61,13 @@ public class BackupConfig extends ModuleConfigBase
 		/*
 		 * Lang
 		 */
-		
+
 		String sub = MAIN + ".lang";
 		config.addCustomCategoryComment(sub, "Configure messages here.");
-		
+
 		AutoWorldSave.start = config.get(sub + ".AutoWorldSave", "start", "Saving all loaded worlds.").value;
 		AutoWorldSave.done = config.get(sub + ".AutoWorldSave", "done", "The sever has saved the worlds.").value;
-		
-		
+
 		ModuleBackup.baseFolder = new File(backupDir);
 
 		/*

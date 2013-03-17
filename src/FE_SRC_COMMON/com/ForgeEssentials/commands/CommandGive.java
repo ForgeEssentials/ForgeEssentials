@@ -33,22 +33,22 @@ public class CommandGive extends ForgeEssentialsCommandBase
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
-		
+
 		int id = 1;
 		int amount = 64;
 		int dam = 0;
-		
+
 		// Amount is specified
-		if(args.length == 3)
+		if (args.length == 3)
 		{
 			amount = parseIntBounded(sender, args[2], 0, 64);
 		}
-		
+
 		// Parse the item
 		int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
 		id = idAndMeta[0];
 		dam = idAndMeta[1];
-		
+
 		List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 		if (PlayerSelector.hasArguments(args[0]))
 		{
@@ -77,22 +77,22 @@ public class CommandGive extends ForgeEssentialsCommandBase
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
-		
+
 		int id = 1;
 		int amount = 64;
 		int dam = 0;
-		
+
 		// Amount is specified
-		if(args.length == 3)
+		if (args.length == 3)
 		{
 			amount = parseIntBounded(sender, args[2], 0, 64);
 		}
-		
+
 		// Parse the item
 		int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
 		id = idAndMeta[0];
 		dam = idAndMeta[1];
-		
+
 		List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 		if (PlayerSelector.hasArguments(args[0]))
 		{

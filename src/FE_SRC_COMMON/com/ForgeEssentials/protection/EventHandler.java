@@ -103,7 +103,9 @@ public class EventHandler
 			boolean receiverB = !PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) e.source.getEntity(), ModuleProtection.PERM_PVP));
 
 			if (sourceB || receiverB)
+			{
 				e.setCanceled(true);
+			}
 		}
 		else if (sourcePlayer)
 		{
@@ -194,7 +196,9 @@ public class EventHandler
 			}
 
 			if (!result)
+			{
 				e.useBlock = DENY;
+			}
 		}
 	}
 
@@ -254,6 +258,8 @@ public class EventHandler
 		PermQueryBlanketSpot query = new PermQueryBlanketSpot(point, ModuleProtection.PERM_MOB_SPAWN_FORCED + "." + mobID);
 
 		if (!PermissionsAPI.checkPermAllowed(query))
+		{
 			e.setResult(Result.DENY);
+		}
 	}
 }

@@ -55,8 +55,8 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 					boolean found = false;
 					// Set needed parm
 					int amount = 1, item = 0, meta = -1;
-					ItemStack target = new ItemStack(item , amount, meta);
-					
+					ItemStack target = new ItemStack(item, amount, meta);
+
 					if (args[1].contains("x"))
 					{
 						String[] split = args[1].split("x");
@@ -71,10 +71,10 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 					}
 					target.itemID = item = parseIntWithMin(sender, args[1], 0);
 					// Loop though inv and find a stack big enough to support the sell cmd
-					for (int slot = 0; slot < player.inventory.mainInventory.length; slot ++)
+					for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
 					{
 						ItemStack is = player.inventory.mainInventory[slot];
-						if(is != null)
+						if (is != null)
 						{
 							if (is.itemID == item)
 							{
@@ -87,7 +87,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 										break;
 									}
 								}
-							}	
+							}
 						}
 					}
 					if (found)

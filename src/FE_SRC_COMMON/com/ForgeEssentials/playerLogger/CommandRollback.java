@@ -114,7 +114,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.playerLogger."+getCommandName();
+		return "ForgeEssentials.playerLogger." + getCommandName();
 	}
 
 	@Override

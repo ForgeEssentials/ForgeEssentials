@@ -1,10 +1,10 @@
 package com.ForgeEssentials.util.events;
 
-import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.permission.PermissionProp;
-
 import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.Event;
+
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.permission.PermissionProp;
 
 @Cancelable
 /**
@@ -14,9 +14,9 @@ import net.minecraftforge.event.Event;
 public class PermissionPropSetEvent extends Event
 {
 	public PermissionProp	perm;
-	public Zone			zone;
-	public String		entity; // p:PlayerUsername or g:GroupName. the prefixes will be there.
-	private String		reason;
+	public Zone				zone;
+	public String			entity; // p:PlayerUsername or g:GroupName. the prefixes will be there.
+	private String			reason;
 
 	public PermissionPropSetEvent(PermissionProp perm, Zone zone, String entity)
 	{

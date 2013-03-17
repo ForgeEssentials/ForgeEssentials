@@ -44,7 +44,7 @@ public class MobTypeLoader
 				return;
 			}
 
-			FEMob annot = (FEMob) c.getAnnotation(FEMob.class);
+			FEMob annot = c.getAnnotation(FEMob.class);
 			if (annot == null)
 				throw new IllegalArgumentException(c.getName() + " doesn't have the @FEMob annotation!");
 

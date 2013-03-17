@@ -9,16 +9,16 @@ public abstract class PermQuery
 		ALLOW, DENY, PARTIAL, UNKNOWN
 	}
 
-	private PermResult				result			= PermResult.UNKNOWN;
+	private PermResult			result			= PermResult.UNKNOWN;
 
-	public PermissionChecker		checker;
-	public boolean					checkForward	= false;
+	public PermissionChecker	checker;
+	public boolean				checkForward	= false;
 
 	public PermQuery()
 	{
 		checkForward = false;
 	}
-	
+
 	public PermQuery(boolean checkForward)
 	{
 		this.checkForward = checkForward;

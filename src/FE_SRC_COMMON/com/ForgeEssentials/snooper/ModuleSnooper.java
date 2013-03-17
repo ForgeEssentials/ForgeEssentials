@@ -27,34 +27,34 @@ import com.ForgeEssentials.snooper.response.ServerInfo;
 public class ModuleSnooper
 {
 	@FEModule.Config
-	public static ConfigSnooper		configSnooper;
-	
+	public static ConfigSnooper	configSnooper;
+
 	@FEModule.ModuleDir
-	public File						folder;
+	public File					folder;
 
-	public static int				port;
-	public static String			hostname;
-	public static boolean			enable;
+	public static int			port;
+	public static String		hostname;
+	public static boolean		enable;
 
-	public static SocketListner		socketListner;
+	public static SocketListner	socketListner;
 
-	private static int				id = 0;
+	private static int			id	= 0;
 
-	public static String			key;
+	public static String		key;
 
-	public static int				keysize;
+	public static int			keysize;
 
 	public ModuleSnooper()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 
 		snooperAPI.registerResponce(0, new Responces());
-		
+
 		snooperAPI.registerResponce(1, new ServerInfo());
 		snooperAPI.registerResponce(2, new MCstatsInfo());
 
 		snooperAPI.registerResponce(5, new PlayerInfoResonce());
-		snooperAPI.registerResponce(6, new PlayerInv()); 
+		snooperAPI.registerResponce(6, new PlayerInv());
 	}
 
 	@FEModule.ServerInit()
@@ -70,7 +70,7 @@ public class ModuleSnooper
 		try
 		{
 			File file = new File(folder.getAbsolutePath(), "key.key");
-			if(file.exists())
+			if (file.exists())
 			{
 				FileInputStream in = new FileInputStream(file);
 				byte[] buffer = new byte[in.available()];
@@ -84,7 +84,7 @@ public class ModuleSnooper
 				FileOutputStream out = new FileOutputStream(file.getAbsoluteFile());
 				KeyGenerator kgen = KeyGenerator.getInstance("AES");
 				kgen.init(keysize);
-				byte[] buffer  = kgen.generateKey().getEncoded();
+				byte[] buffer = kgen.generateKey().getEncoded();
 				out.write(buffer);
 				out.close();
 				key = new String(buffer);
@@ -94,7 +94,7 @@ public class ModuleSnooper
 		{
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	@FEModule.ServerStop()
@@ -102,7 +102,7 @@ public class ModuleSnooper
 	{
 		stop();
 	}
-	
+
 	@FEModule.Reload()
 	public void reload(ICommandSender sender)
 	{

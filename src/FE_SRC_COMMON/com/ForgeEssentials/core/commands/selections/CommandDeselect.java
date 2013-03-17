@@ -27,7 +27,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 
 		OutputHandler.chatConfirmation(sender, Localization.get(Localization.COMMAND_DESELECT));
 	}
-	
+
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{

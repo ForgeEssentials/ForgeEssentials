@@ -12,16 +12,16 @@ public class FEskullTe extends TileEntitySkull
 	{
 		super.invalidate();
 
-		WorldPoint point = new WorldPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord);
+		WorldPoint point = new WorldPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord);
 		Grave grave = ModuleAfterlife.instance.deathchest.gravemap.get(point.toString());
 		if (grave == null)
 			return;
 		if (grave.protEnable)
 		{
-			this.worldObj.setBlockAndMetadata(point.x, point.y, point.z, Block.skull.blockID, 1);
+			worldObj.setBlockAndMetadata(point.x, point.y, point.z, Block.skull.blockID, 1);
 			FEskullTe te = new FEskullTe();
 			te.setSkullType(3, grave.owner);
-			this.worldObj.setBlockTileEntity(point.x, point.y, point.z, te);
+			worldObj.setBlockTileEntity(point.x, point.y, point.z, te);
 		}
 		else
 		{

@@ -22,7 +22,7 @@ public class FEAccessTransformer extends AccessTransformer
 		Iterator<String> it = mapFiles.iterator();
 		while (it.hasNext())
 		{
-			String file = (String) it.next();
+			String file = it.next();
 			readMapFile(file);
 		}
 
