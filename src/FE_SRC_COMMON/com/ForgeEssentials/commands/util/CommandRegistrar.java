@@ -166,7 +166,6 @@ public class CommandRegistrar
 		{
 			if (cmd.getCommandPerm() != null && cmd.getReggroup() != null)
 			{
-				System.out.println(cmd.getCommandPerm() + " => " + cmd.getReggroup().name());
 				event.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
 			}
 		}
