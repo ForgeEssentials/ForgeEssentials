@@ -33,7 +33,7 @@ public class ModuleAuth
 
 	public static LoginHandler				handler;
 	public static VanillaServiceChecker		vanillaCheck;
-	public static PasswordEncryptionService	pwdEnc;
+	public static EncryptionHelper	pwdEnc;
 
 	private static boolean					vanillaOnlineMode;
 	public static boolean					allowOfflineReg;
@@ -48,7 +48,7 @@ public class ModuleAuth
 			checkVanillaAuthStatus = false;
 		}
 
-		pwdEnc = new PasswordEncryptionService();
+		pwdEnc = new EncryptionHelper();
 	}
 
 	@ServerInit
