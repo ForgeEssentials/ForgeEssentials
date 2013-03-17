@@ -27,7 +27,6 @@ public class ConfigSnooper extends ModuleConfigBase
 		ModuleSnooper.port = config.get(cat, "port", 25565, "The query port").getInt();
 		ModuleSnooper.hostname = config.get(cat, "hostname", "", "The query hostname/IP").getString();
 
-		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").getBoolean(true);
 		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
 
 		for (Response response : ResponseRegistry.getAllresponses())
@@ -37,7 +36,6 @@ public class ConfigSnooper extends ModuleConfigBase
 			response.readConfig(subCat, config);
 		}
 		config.save();
-		ModuleSnooper.startQuery();
 	}
 
 	@Override
@@ -47,8 +45,6 @@ public class ConfigSnooper extends ModuleConfigBase
 
 		config.get(cat, "port", 25565, "").set(ModuleSnooper.port);
 		config.get(cat, "hostname", "", "The query hostname/IP").set(ModuleSnooper.hostname);
-
-		config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").set(ModuleSnooper.autoReboot);
 		config.get(cat, "enable", false, "This one is obvious, don't you think?").set(ModuleSnooper.enable);
 
 		for (Response response : ResponseRegistry.getAllresponses())
@@ -70,7 +66,6 @@ public class ConfigSnooper extends ModuleConfigBase
 		ModuleSnooper.port = config.get(cat, "port", 25565, "The query port").getInt();
 		ModuleSnooper.hostname = config.get(cat, "hostname", "", "The query hostname/IP").getString();
 
-		ModuleSnooper.autoReboot = config.get(cat, "autoReload", true, "Automatically reload the query system if a fatal error occurs").getBoolean(true);
 		ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
 
 		for (Response response : ResponseRegistry.getAllresponses())
@@ -79,6 +74,5 @@ public class ConfigSnooper extends ModuleConfigBase
 			response.allowed = config.get(subCat, "enable", true, "If false, this response won't be allowed on this server.").getBoolean(true);
 			response.readConfig(subCat, config);
 		}
-		ModuleSnooper.startQuery();
 	}
 }

@@ -26,8 +26,8 @@ public class ConfigEconomy extends ModuleConfigBase
 	{
 		config = new Configuration(file);
 
-		currencySingular = config.get(CAT, "currencySingular", "gold").value;
-		currencyPlural = config.get(CAT, "currencyPlural", "gold").value;
+		currencySingular = config.get(CAT, "currencySingular", "gold").getString();
+		currencyPlural = config.get(CAT, "currencyPlural", "gold").getString();
 		ModuleEconomy.startbuget = config.get(CAT, "startbuget", 100).getInt();
 
 		config.save();
@@ -36,9 +36,9 @@ public class ConfigEconomy extends ModuleConfigBase
 	@Override
 	public void forceSave()
 	{
-		config.get(CAT, "currencySingular", "gold").value = currencySingular;
-		config.get(CAT, "currencyPlural", "gold").value = currencyPlural;
-		config.get(CAT, "startbuget", 100).value = ModuleEconomy.startbuget + "";
+		config.get(CAT, "currencySingular", "gold").set(currencySingular);
+		config.get(CAT, "currencyPlural", "gold").set(currencyPlural);
+		config.get(CAT, "startbuget", 100).set(ModuleEconomy.startbuget);
 
 		config.save();
 	}
@@ -48,8 +48,8 @@ public class ConfigEconomy extends ModuleConfigBase
 	{
 		config.load();
 
-		currencySingular = config.get(CAT, "currencySingular", "gold").value;
-		currencyPlural = config.get(CAT, "currencyPlural", "gold").value;
+		currencySingular = config.get(CAT, "currencySingular", "gold").getString();
+		currencyPlural = config.get(CAT, "currencyPlural", "gold").getString();
 		ModuleEconomy.startbuget = config.get(CAT, "startbuget", 100).getInt();
 	}
 }
