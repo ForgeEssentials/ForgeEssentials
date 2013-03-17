@@ -29,14 +29,15 @@ public class TypeInfoSet extends TypeMultiValInfo
 		fields.put(ELEMENT, new ClassContainer(container.getParameters()[0]));
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Set<TypeData> getTypeDatasFromObject(Object obj)
 	{
 		HashSet<TypeData> datas = new HashSet<TypeData>();
 
-		Set<?> set = (Set<?>) obj;
+		Set set = (Set) obj;
 
-		Iterator<?> itt = set.iterator();
+		Iterator itt = set.iterator();
 
 		TypeData data;
 		int i = 0;
@@ -54,7 +55,7 @@ public class TypeInfoSet extends TypeMultiValInfo
 		return datas;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Object reconstruct(TypeData[] data)
 	{
@@ -65,10 +66,10 @@ public class TypeInfoSet extends TypeMultiValInfo
 			Array.set(array, (Integer) dat.getFieldValue(POS), dat.getFieldValue(ELEMENT));
 		}
 
-		Set<Object> set = new HashSet<Object>(data.length);
+		Set set = new HashSet(data.length);
 		try
 		{
-			set = (Set<Object>) container.getType().newInstance();
+			set = (Set) container.getType().newInstance();
 		}
 		catch (Exception e)
 		{

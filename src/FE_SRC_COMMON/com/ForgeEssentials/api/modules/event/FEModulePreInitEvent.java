@@ -12,7 +12,7 @@ import cpw.mods.fml.common.event.FMLStateEvent;
 public class FEModulePreInitEvent extends FEModuleEvent
 {
 	private FMLPreInitializationEvent	event;
-	private CallableMap callables;
+	private CallableMap					callables;
 
 	public FEModulePreInitEvent(ModuleContainer container, FMLPreInitializationEvent event, CallableMap map)
 	{
@@ -38,7 +38,7 @@ public class FEModulePreInitEvent extends FEModuleEvent
 	{
 		return event;
 	}
-	
+
 	public CallableMap getCallableMap()
 	{
 		return callables;

@@ -1,56 +1,50 @@
 package com.ForgeEssentials.snooper.response;
 
-import java.net.DatagramPacket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.json.JSONArray;
+import com.ForgeEssentials.api.json.JSONException;
+import com.ForgeEssentials.api.json.JSONObject;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 
 public class PlayerInv extends Response
 {
 	@Override
-	public String getResponceString(DatagramPacket packet)
+	public JSONObject getResponce(JSONObject input) throws JSONException
 	{
-		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
-		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
-		if (player == null)
-			return "";
+		if (!input.has("username"))
+			return new JSONObject().put(getName(), "This responce needs a username!");
 
-		LinkedHashMap<String, String> PlayerData = new LinkedHashMap<String, String>();
-		ArrayList<String> tempArgs = new ArrayList<String>();
+		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input.getString("username"));
+		if (player == null)
+			return new JSONObject().put(getName(), input.getString("username") + " not online!");
+
+		JSONObject PlayerData = new JSONObject();
+		JSONArray tempArgs = new JSONArray();
 		for (ItemStack stack : player.inventory.mainInventory)
 		{
 			if (stack != null)
 			{
-				tempArgs.add(TextFormatter.toJSON(stack, true));
+				tempArgs.put(TextFormatter.toJSON(stack, true));
 			}
 		}
-		PlayerData.put("inv", TextFormatter.toJSON(tempArgs));
-		PlayerData.put("ench", "true");
-		dataString = TextFormatter.toJSON(PlayerData);
+		PlayerData.put("Inventory", tempArgs);
 
-		if (dataString.length() > 2043)
+		tempArgs = new JSONArray();
+		for (int i = 0; i < 3; i++)
 		{
-			PlayerData.clear();
-			tempArgs.clear();
-			for (ItemStack stack : player.inventory.mainInventory)
+			ItemStack stack = player.inventory.armorInventory[i];
+			if (stack != null)
 			{
-				if (stack != null)
-				{
-					tempArgs.add(TextFormatter.toJSON(stack, false));
-				}
+				tempArgs.put(TextFormatter.toJSON(stack, true));
 			}
-			PlayerData.put("inv", TextFormatter.toJSON(tempArgs));
-			PlayerData.put("ench", "false");
-			dataString = TextFormatter.toJSON(PlayerData);
 		}
-		return dataString;
+		PlayerData.put("Armor", tempArgs);
+
+		return new JSONObject().put(getName(), PlayerData);
 	}
 
 	@Override

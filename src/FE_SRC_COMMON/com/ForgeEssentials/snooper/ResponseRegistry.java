@@ -17,13 +17,12 @@ public class ResponseRegistry
 	 */
 	public static void registerResponse(Integer ID, Response response)
 	{
-		if (ID == 9)
-			return;
 		if (map.containsKey(ID))
 			throw new RuntimeException("You are attempting to register a response on an used ID: " + ID);
 		else
 		{
 			OutputHandler.finer("Response " + response.getName() + " ID: " + ID + " registered!");
+			response.id = ID;
 			map.put(ID, response);
 		}
 	}
@@ -38,7 +37,7 @@ public class ResponseRegistry
 		if (map.containsKey((int) ID))
 			return map.get((int) ID);
 		else
-			return null;
+			return map.get(0);
 	}
 
 	/**

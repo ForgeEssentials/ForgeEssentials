@@ -10,9 +10,6 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
@@ -35,7 +32,7 @@ public class ModuleProtection
 	public final static String									PERM_MOB_SPAWN_NATURAL	= "ForgeEssentials.Protection.mobSpawn.natural";
 	public final static String									PERM_MOB_SPAWN_FORCED	= "ForgeEssentials.Protection.mobSpawn.forced";
 
-	@Config
+	@FEModule.Config
 	public static ConfigProtection								config;
 	public static boolean										enable					= false;
 	public static boolean										enableMobSpawns			= false;
@@ -51,7 +48,7 @@ public class ModuleProtection
 	 * Module part
 	 */
 
-	@PreInit
+	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
@@ -60,7 +57,7 @@ public class ModuleProtection
 			return;
 	}
 
-	@Init
+	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
 		if (!enable)
@@ -68,7 +65,7 @@ public class ModuleProtection
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings("unchecked")
 	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{
@@ -78,7 +75,7 @@ public class ModuleProtection
 		event.registerPermissionLevel(PERM_INTERACT_ENTITY, RegGroup.MEMBERS);
 		event.registerPermissionLevel(PERM_OVERRIDE, RegGroup.OWNERS);
 
-		for (Entry<String, Class> e : ((Set<Entry<String, Class>>) EntityList.stringToClassMapping.entrySet()))
+		for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
 		{
 			if (EntityLiving.class.isAssignableFrom(e.getValue()))
 			{

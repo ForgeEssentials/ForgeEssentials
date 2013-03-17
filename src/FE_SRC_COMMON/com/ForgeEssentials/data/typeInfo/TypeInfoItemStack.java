@@ -92,11 +92,12 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Class[] getGenericTypes()
+	public Class<?>[] getGenericTypes()
 	{
 		return null;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public ITypeInfo<?> getInfoForField(String field)
 	{

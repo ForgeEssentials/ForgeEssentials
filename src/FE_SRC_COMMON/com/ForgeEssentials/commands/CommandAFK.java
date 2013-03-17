@@ -11,14 +11,14 @@ import net.minecraftforge.common.Configuration;
 import com.ForgeEssentials.commands.util.AFKdata;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandAFK extends ForgeEssentialsCommandBase
 {
 	public static List<String>	afkList	= new ArrayList<String>();
 
-	/*
-	 * Config
-	 */
+	// Config
 	public static int			warmup	= 5;
 
 	@Override
@@ -37,7 +37,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		TickHandlerCommands.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
-		sender.sendChatToPlayer("Stand still for " + warmup + "seconds.");
+		OutputHandler.chatConfirmation(sender, Localization.format("command.afk.warmup", warmup));
 	}
 
 	@Override
@@ -57,23 +57,29 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
-	public static void abort(AFKdata afKdata)
+	public static void abort(AFKdata afkData)
 	{
-		if (!afKdata.player.capabilities.isCreativeMode)
+		if (!afkData.player.capabilities.isCreativeMode)
 		{
-			afKdata.player.capabilities.disableDamage = false;
-			afKdata.player.sendPlayerAbilities();
+			afkData.player.capabilities.disableDamage = false;
+			afkData.player.sendPlayerAbilities();
 		}
-		afKdata.player.sendChatToPlayer("AFK lifted.");
-		afkList.remove(afKdata.player.username);
-		TickHandlerCommands.afkListToRemove.add(afKdata);
+		OutputHandler.chatError(afkData.player, Localization.get("command.afk.out"));
+		afkList.remove(afkData.player.username);
+		TickHandlerCommands.afkListToRemove.add(afkData);
 	}
 
-	public static void makeAFK(AFKdata afKdata)
+	public static void makeAFK(AFKdata afkData)
 	{
-		afKdata.player.capabilities.disableDamage = true;
-		afKdata.player.sendPlayerAbilities();
-		afkList.add(afKdata.player.username);
-		afKdata.player.sendChatToPlayer("You are now AFK.");
+		afkData.player.capabilities.disableDamage = true;
+		afkData.player.sendPlayerAbilities();
+		afkList.add(afkData.player.username);
+		OutputHandler.chatConfirmation(afkData.player, Localization.get("command.afk.in"));
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
 	}
 }

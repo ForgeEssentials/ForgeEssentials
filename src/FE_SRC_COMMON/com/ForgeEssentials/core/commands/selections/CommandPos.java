@@ -1,6 +1,8 @@
 package com.ForgeEssentials.core.commands.selections;
 
 //Depreciated
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
@@ -33,6 +35,34 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
 		int x, y, z;
+
+		if (args.length == 1)
+		{
+			if (args[0].toLowerCase().equals("here"))
+			{
+				x = (int) player.posX;
+				y = (int) player.posY;
+				z = (int) player.posZ;
+
+				if (type == 1)
+				{
+					PlayerInfo.getPlayerInfo(player.username).setPoint1(new Point(x, y, z));
+				}
+				else
+				{
+					PlayerInfo.getPlayerInfo(player.username).setPoint2(new Point(x, y, z));
+				}
+
+				OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
+				return;
+
+			}
+			else
+			{
+				error(player);
+				return;
+			}
+		}
 
 		if (args.length > 0)
 		{
@@ -102,7 +132,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/" + getCommandName() + " [<x> <y> <z]";
+		return "/" + getCommandName() + " [<x> <y> <z] or [here]";
 	}
 
 	@Override
@@ -120,15 +150,18 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public boolean canConsoleUseCommand()
 	{
-		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
 	}
 
 }

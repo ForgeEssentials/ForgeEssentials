@@ -41,7 +41,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
 				for (EntityPlayer victim : players)
 				{
 					victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
-					victim.sendChatToPlayer(Localization.get(Localization.KILLED));
+					victim.sendChatToPlayer(Localization.get("command.kill.msg"));
 				}
 			}
 			else
@@ -52,7 +52,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
 		else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
-			sender.sendChatToPlayer(Localization.get(Localization.KILLED));
+			sender.sendChatToPlayer(Localization.get("command.kill.msg"));
 		}
 	}
 
@@ -71,7 +71,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
 				for (EntityPlayer victim : players)
 				{
 					victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
-					victim.sendChatToPlayer(Localization.get(Localization.KILLED));
+					victim.sendChatToPlayer(Localization.get("command.kill.msg"));
 				}
 			}
 			else

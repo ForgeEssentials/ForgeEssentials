@@ -19,7 +19,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandHeal extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -91,7 +90,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 		target.heal(20);
 		target.extinguish();
 		target.getFoodStats().addStats(20, 1.0F);
-		target.sendChatToPlayer(Localization.get(Localization.HEALED));
+		target.sendChatToPlayer(Localization.get("command.heal.healed"));
 	}
 
 	@Override

@@ -7,14 +7,13 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandPaidCommand extends ForgeEssentialsCommandBase
 {
@@ -54,9 +53,9 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 				for (EntityPlayer player : players)
 				{
 					int amount = parseIntWithMin(sender, args[1], 0);
-					if (Wallet.getWallet(player) >= amount)
+					if (WalletHandler.getWallet(player) >= amount)
 					{
-						Wallet.removeFromWallet(amount, player);
+						WalletHandler.removeFromWallet(amount, player);
 						// Do command in name of player
 
 						StringBuilder cmd = new StringBuilder(args.toString().length());
@@ -66,8 +65,8 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 							cmd.append(" ");
 						}
 
-						FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, "" + cmd.toString());
-						OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + Wallet.currency(amount));
+						MinecraftServer.getServer().executeCommand(cmd.toString());
+						OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + WalletHandler.currency(amount));
 					}
 					else
 					{
@@ -95,13 +94,19 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "";
+		return null;
 	}
 
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
 		return false;
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
 	}
 
 }

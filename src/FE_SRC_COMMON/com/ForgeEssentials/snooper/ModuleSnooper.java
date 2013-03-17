@@ -1,84 +1,134 @@
 package com.ForgeEssentials.snooper;
 
-import net.minecraft.network.rcon.IServer;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
+import javax.crypto.KeyGenerator;
+
+import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.snooper.API;
+import com.ForgeEssentials.api.snooper.snooperAPI;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.snooper.response.MCstatsInfo;
-import com.ForgeEssentials.snooper.response.PlayerArmor;
 import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
 import com.ForgeEssentials.snooper.response.PlayerInv;
-import com.ForgeEssentials.snooper.response.PlayerList;
+import com.ForgeEssentials.snooper.response.Responces;
 import com.ForgeEssentials.snooper.response.ServerInfo;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 @FEModule(name = "SnooperModule", parentMod = ForgeEssentials.class, configClass = ConfigSnooper.class)
 public class ModuleSnooper
 {
-	@Config
-	public static ConfigSnooper		configSnooper;
+	@FEModule.Config
+	public static ConfigSnooper	configSnooper;
 
-	public static int				port;
-	public static String			hostname;
-	public static boolean			enable;
+	@FEModule.ModuleDir
+	public File					folder;
 
-	public static RConQueryThread	theThread;
+	public static int			port;
+	public static String		hostname;
+	public static boolean		enable;
 
-	public static boolean			autoReboot;
+	public static SocketListner	socketListner;
+
+	private static int			id	= 0;
+
+	public static String		key;
+
+	public static int			keysize;
 
 	public ModuleSnooper()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 
-		API.registerResponce(0, new ServerInfo());
-		API.registerResponce(1, new PlayerList());
-		API.registerResponce(2, new MCstatsInfo());
+		snooperAPI.registerResponce(0, new Responces());
 
-		API.registerResponce(5, new PlayerInfoResonce());
-		API.registerResponce(6, new PlayerArmor());
-		API.registerResponce(7, new PlayerInv());
+		snooperAPI.registerResponce(1, new ServerInfo());
+		snooperAPI.registerResponce(2, new MCstatsInfo());
+
+		snooperAPI.registerResponce(5, new PlayerInfoResonce());
+		snooperAPI.registerResponce(6, new PlayerInv());
 	}
 
-	@ServerInit
+	@FEModule.ServerInit()
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
+		getKey();
 		e.registerServerCommand(new CommandReloadQuery());
+		start();
+	}
+
+	private void getKey()
+	{
+		try
+		{
+			File file = new File(folder.getAbsolutePath(), "key.key");
+			if (file.exists())
+			{
+				FileInputStream in = new FileInputStream(file);
+				byte[] buffer = new byte[in.available()];
+				in.read(buffer);
+				in.close();
+				key = new String(buffer);
+			}
+			else
+			{
+				file.createNewFile();
+				FileOutputStream out = new FileOutputStream(file.getAbsoluteFile());
+				KeyGenerator kgen = KeyGenerator.getInstance("AES");
+				kgen.init(keysize);
+				byte[] buffer = kgen.generateKey().getEncoded();
+				out.write(buffer);
+				out.close();
+				key = new String(buffer);
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	@FEModule.ServerStop()
+	public void serverStopping(FEModuleServerStopEvent e)
+	{
+		stop();
+	}
+
+	@FEModule.Reload()
+	public void reload(ICommandSender sender)
+	{
+		stop();
+		getKey();
+		start();
+	}
+
+	public static void start()
+	{
+		socketListner = new SocketListner();
+	}
+
+	public static void stop()
+	{
+		socketListner.stop();
 	}
 
 	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel("ForgeEssentials.Snooper._ALL_", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Snooper.commands.queryreload", RegGroup.OWNERS);
 	}
 
-	public static void startQuery()
+	public static int id()
 	{
-		try
-		{
-			if (theThread != null)
-			{
-				ModuleSnooper.theThread.closeAllSockets_do(true);
-				ModuleSnooper.theThread.running = false;
-				theThread.interrupt();
-				System.gc();
-			}
-			if (enable)
-			{
-				theThread = new RConQueryThread((IServer) FMLCommonHandler.instance().getMinecraftServerInstance());
-				theThread.startThread();
-			}
-		}
-		catch (Exception e)
-		{
-		}
+		return id++;
 	}
 }

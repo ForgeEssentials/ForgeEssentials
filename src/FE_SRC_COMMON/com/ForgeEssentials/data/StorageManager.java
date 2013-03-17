@@ -28,12 +28,13 @@ import com.ForgeEssentials.data.typeInfo.TypeInfoSerialize;
 import com.ForgeEssentials.data.typeInfo.TypeInfoSet;
 import com.ForgeEssentials.data.typeInfo.TypeInfoStandard;
 import com.ForgeEssentials.util.DBConnector;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class StorageManager implements IStorageManager
 {
 	// just keeps an instance of the config for future use.
@@ -60,8 +61,8 @@ public class StorageManager implements IStorageManager
 
 		// generates the configs...
 		Property prop = config.get("Data", "storageType", defaultDriver.toString());
-		prop.comment = "Specifies the variety of data storage FE will use. Options: " + EnumDriverType.getAll(" ");
-		chosen = EnumDriverType.valueOf(prop.getString());
+		prop.comment = "Specifies the variety of data storage FE will use. Options: " + FunctionHelper.niceJoin(EnumDriverType.values());
+		chosen = EnumDriverType.valueOf(prop.value);
 
 		typeChosens.put(EnumDriverType.TEXT, "ForgeConfig");
 		typeChosens.put(EnumDriverType.BINARY, "NBT");
@@ -76,7 +77,7 @@ public class StorageManager implements IStorageManager
 			}
 			cat = "Data." + type;
 			prop = config.get(cat, "chosenDriver", typeChosens.get(type));
-			typeChosens.put(type, prop.getString());
+			typeChosens.put(type, prop.value);
 		}
 
 		instance = this;
@@ -111,13 +112,13 @@ public class StorageManager implements IStorageManager
 
 		loaded = true;
 	}
-	
+
 	/**
 	 * Passes the ServerStart event to the dataDrivers
 	 */
 	public void serverStart(FMLServerStartingEvent event)
 	{
-		for (IDataDriver driver: instanceMap.values())
+		for (IDataDriver driver : instanceMap.values())
 		{
 			// things MAY error here as well...
 			driver.serverStart(event);
@@ -178,7 +179,7 @@ public class StorageManager implements IStorageManager
 	@Override
 	public void registerSaveableClass(ClassContainer type)
 	{
-		ITypeInfo<Object> info = null;
+		ITypeInfo info = null;
 
 		if (type.isArray() && !type.getType().getComponentType().isPrimitive() && !String.class.isAssignableFrom(type.getType().getComponentType()))
 		{
@@ -202,7 +203,7 @@ public class StorageManager implements IStorageManager
 		}
 		else if (Serializable.class.isAssignableFrom(type.getType()))
 		{
-			info = new TypeInfoSerialize<Object>(type);
+			info = new TypeInfoSerialize(type);
 		}
 
 		if (info == null)
@@ -255,7 +256,7 @@ public class StorageManager implements IStorageManager
 					}
 				}
 
-				ITypeInfo<Object> created = null;
+				ITypeInfo created = null;
 
 				if (con == null)
 					throw new IllegalArgumentException(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
@@ -312,9 +313,9 @@ public class StorageManager implements IStorageManager
 	}
 
 	@Override
-	public ITypeInfo<Object> getInfoForType(ClassContainer type)
+	public ITypeInfo getInfoForType(ClassContainer type)
 	{
-		ITypeInfo<Object> tagged = taggerList.get(type.toString());
+		ITypeInfo tagged = taggerList.get(type.toString());
 
 		if (tagged != null)
 			return tagged;
@@ -343,7 +344,7 @@ public class StorageManager implements IStorageManager
 
 		if (tempType == null)
 		{
-			for (Class<?> inter : type.getType().getInterfaces())
+			for (Class inter : type.getType().getInterfaces())
 			{
 				tempType = new ClassContainer(inter, type.getParameters());
 
@@ -388,10 +389,10 @@ public class StorageManager implements IStorageManager
 	@Override
 	public TypeData getDataForObject(ClassContainer container, Object obj)
 	{
-		ITypeInfo<Object> info = getInfoForType(container);
+		ITypeInfo info = getInfoForType(container);
 		TypeData data = info.getTypeDataFromObject(obj);
 
-		ITypeInfo<?> tempInfo;
+		ITypeInfo tempInfo;
 		for (Entry<String, Object> e : data.getAllFields())
 		{
 			if (e.getValue() != null && !(e.getValue() instanceof TypeData) && StorageManager.isTypeComplex(e.getValue().getClass()))
@@ -408,12 +409,12 @@ public class StorageManager implements IStorageManager
 	 * @param t class check
 	 * @return True if TypeTagger must create a nested TaggedClass to allow DataDrivers to correctly save this type of object.
 	 */
-	public static boolean isTypeComplex(Class<?> type)
+	public static boolean isTypeComplex(Class type)
 	{
 		boolean flag = true;
 		if (type.isPrimitive() || type.equals(Integer.class) || type.equals(Float.class) ||
 				type.equals(Double.class) || type.equals(Boolean.class) || type.equals(String.class) ||
-				type.equals(Byte.class))
+				type.equals(Byte.class) || type.equals(Long.class))
 		{
 			flag = false;
 		}

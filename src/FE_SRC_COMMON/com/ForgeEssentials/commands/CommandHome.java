@@ -17,7 +17,6 @@ import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 public class CommandHome extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -29,7 +28,6 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			// homes aren't saving...
 			WarpPoint home = PlayerInfo.getPlayerInfo(sender.username).home;
 			if (home == null)
 			{

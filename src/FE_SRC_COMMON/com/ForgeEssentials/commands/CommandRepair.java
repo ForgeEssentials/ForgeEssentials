@@ -20,7 +20,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandRepair extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{

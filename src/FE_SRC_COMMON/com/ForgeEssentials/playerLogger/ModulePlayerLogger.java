@@ -9,8 +9,8 @@ import java.util.List;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
@@ -19,6 +19,8 @@ import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
@@ -32,7 +34,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class ModulePlayerLogger
 {
 
-	@Config
+	@FEModule.Config
 	public static ConfigPlayerLogger	config;
 
 	public static String				url;
@@ -130,6 +132,15 @@ public class ModulePlayerLogger
 			OutputHandler.info("WARNING! MySQLConnector for playerLogger failed!");
 			ex.printStackTrace();
 		}
+	}
+
+	@PermRegister
+	public static void registerPerms(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel("ForgeEssentials.playerLogger.rollback", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.playerLogger.playerlogger", RegGroup.OWNERS);
+
+		// TODO : pending review from Dries.
 	}
 
 	public static void ragequit()

@@ -15,12 +15,14 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandPm extends ForgeEssentialsCommandBase
 {
 	private static Map<String, String>	persistentMessage;
 	private List<String>				aliasList;
+
 	public CommandPm()
 	{
 		super();
@@ -49,11 +51,11 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			if (persistentMessage.containsKey(sender.getCommandSenderName()))
 			{
 				persistentMessage.remove(sender.getCommandSenderName());
-				OutputHandler.chatConfirmation(sender, "Persistent message disabled.");
+				OutputHandler.chatConfirmation(sender, Localization.get("command.pm.disabled"));
 			}
 			else
 			{
-				OutputHandler.chatWarning(sender, "Persistent message already disabled.");
+				OutputHandler.chatWarning(sender, Localization.get("command.pm.alreadyDisabled"));
 			}
 			return;
 		}
@@ -61,14 +63,14 @@ public class CommandPm extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				OutputHandler.chatConfirmation(sender, "/pm <player> to engage persistent message.  /pm to return to normal chat");
+				OutputHandler.chatConfirmation(sender, Localization.get("command.pm.help"));
 			}
 			else
 			{
 				EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[0]);
 				if (target == null)
 				{
-					OutputHandler.chatError(sender, args[0] + " does not match an online user.");
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 					return;
 				}
 				if (persistentMessage.containsKey(sender.getCommandSenderName()))
@@ -76,7 +78,8 @@ public class CommandPm extends ForgeEssentialsCommandBase
 					persistentMessage.remove(sender.getCommandSenderName());
 				}
 				persistentMessage.put(sender.getCommandSenderName(), target.getCommandSenderName());
-				OutputHandler.chatConfirmation(sender, "Persistent message to " + target.getCommandSenderName() + " enabled.");
+
+				OutputHandler.chatConfirmation(sender, Localization.format("command.pm.enable", target.getCommandSenderName()));
 			}
 			return;
 		}
@@ -99,11 +102,11 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			if (persistentMessage.containsKey(sender.getCommandSenderName()))
 			{
 				persistentMessage.remove(sender.getCommandSenderName());
-				OutputHandler.chatConfirmation(sender, "Persistent message disabled.");
+				OutputHandler.chatConfirmation(sender, Localization.get("command.pm.disabled"));
 			}
 			else
 			{
-				OutputHandler.chatWarning(sender, "Persistent message already disabled.");
+				OutputHandler.chatWarning(sender, Localization.get("command.pm.alreadyDisabled"));
 			}
 			return;
 		}
@@ -111,14 +114,14 @@ public class CommandPm extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				OutputHandler.chatConfirmation(sender, "/pm <player> to engage persistent message.  /pm to return to normal chat");
+				OutputHandler.chatConfirmation(sender, Localization.get("command.pm.help"));
 			}
 			else
 			{
 				EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[0]);
 				if (target == null)
 				{
-					OutputHandler.chatError(sender, args[0] + " does not match an online user.");
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 					return;
 				}
 				if (persistentMessage.containsKey(sender.getCommandSenderName()))
@@ -126,7 +129,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 					persistentMessage.remove(sender.getCommandSenderName());
 				}
 				persistentMessage.put(sender.getCommandSenderName(), target.getCommandSenderName());
-				OutputHandler.chatConfirmation(sender, "Persistent message to " + target.getCommandSenderName() + " enabled.");
+				OutputHandler.chatConfirmation(sender, Localization.format("command.pm.enable", target.getCommandSenderName()));
 			}
 			return;
 		}
@@ -135,7 +138,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			EntityPlayer receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
 			if (receiver == null)
 			{
-				sender.sendChatToPlayer(args[0] + " is not a valid username");
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				return;
 			}
 			else
@@ -218,7 +221,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 				EntityPlayerMP receiver = FunctionHelper.getPlayerFromPartialName(target);
 				if (receiver == null)
 				{
-					OutputHandler.chatError(sender, args[0] + " does not match an online user.");
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 					return;
 				}
 				CommandMsg.clearReply(receiver.getCommandSenderName());
@@ -239,5 +242,11 @@ public class CommandPm extends ForgeEssentialsCommandBase
 				receiver.sendChatToPlayer(receiverMessage);
 			}
 		}
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
 	}
 }

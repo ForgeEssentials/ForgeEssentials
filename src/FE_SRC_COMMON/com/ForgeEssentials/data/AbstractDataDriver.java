@@ -12,7 +12,7 @@ import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.google.common.collect.HashMultimap;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class AbstractDataDriver implements IDataDriver
 {
 	private HashMultimap<String, String>	classRegister	= HashMultimap.create();
@@ -40,8 +40,8 @@ public abstract class AbstractDataDriver implements IDataDriver
 			classRegister.put(getName(), type.getName());
 		}
 
-		ITypeInfo t;
-		if ((t = DataStorageManager.getInfoForType(type)) != null)
+		ITypeInfo t = DataStorageManager.getInfoForType(type);
+		if (t != null)
 		{
 			flag = true;
 			saveData(type, t.getTypeDataFromObject(o));

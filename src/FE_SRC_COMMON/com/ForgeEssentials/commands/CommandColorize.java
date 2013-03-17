@@ -1,9 +1,13 @@
 package com.ForgeEssentials.commands;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandColorize extends ForgeEssentialsCommandBase
 {
@@ -18,13 +22,12 @@ public class CommandColorize extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		sender.getEntityData().setBoolean("colorize", true);
-		sender.sendChatToPlayer("Click a sign to colorize!");
+		OutputHandler.chatConfirmation(sender, Localization.get("command.colorize.msg"));
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		// NOOP
 	}
 
 	@Override
@@ -37,5 +40,11 @@ public class CommandColorize extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
 	}
 }

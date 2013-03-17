@@ -2,95 +2,45 @@ package com.ForgeEssentials.economy;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 
-/**
- * Call these methods to modify a target's wallet.
- */
+@SaveableObject
 public class Wallet
 {
-	/**
-	 * Add a set amount to a target's wallet
-	 * @param amountToAdd
-	 *            the amount to add to the wallet
-	 * @param player
-	 *            target player
-	 */
-	public static void addToWallet(int amountToAdd, EntityPlayer player)
-	{
-		doesWalletExist(player);
-		ModuleEconomy.getPlayerInfo(player).wallet = ModuleEconomy.getPlayerInfo(player).wallet + amountToAdd;
-		ModuleEconomy.saveData(player);
-	}
+	@UniqueLoadingKey
+	private String	username;
 
-	/**
-	 * Returns the size of the target's wallet
-	 * @param player
-	 *            target player
-	 * @return the size of the target's wallet
-	 */
-	public static int getWallet(EntityPlayer player)
-	{
-		doesWalletExist(player);
-		return ModuleEconomy.getPlayerInfo(player).wallet;
-	}
+	@SaveableField
+	public int		amount;
 
-	/**
-	 * Remove a set amount from a target's wallet
-	 * @param amountToSubtract
-	 *            the amount to remove from the wallet
-	 * @param player
-	 *            target player
-	 */
-	public static void removeFromWallet(int amountToSubtract, EntityPlayer player)
+	public Wallet(EntityPlayer player, int startAmount)
 	{
-		doesWalletExist(player);
-		ModuleEconomy.getPlayerInfo(player).wallet = ModuleEconomy.getPlayerInfo(player).wallet - amountToSubtract;
-		ModuleEconomy.saveData(player);
-	}
-
-	/**
-	 * Checks if the player's wallet exists, if not set it to 0. Should only be
-	 * called under special circumstances, FEE should do everything needed.
-	 * @param player
-	 *            target player
-	 */
-	public static void doesWalletExist(EntityPlayer player)
-	{
-		if (!(ModuleEconomy.getPlayerInfo(player).wallet <= 0 || ModuleEconomy.getPlayerInfo(player).wallet >= 0))
+		if (player.getEntityData().hasKey("Economy-" + player.username))
 		{
-			ModuleEconomy.getPlayerInfo(player).wallet = 0;
-			ModuleEconomy.saveData(player);
+			startAmount = player.getEntityData().getInteger("Economy-" + player.username);
 		}
+		username = player.username;
+		amount = startAmount;
 	}
 
-	/**
-	 * Set the target's wallet to the specified amount
-	 * @param setAmount
-	 *            amount to set the wallet to
-	 * @param player
-	 *            target player
-	 */
-	public static void setWallet(int setAmount, EntityPlayer player)
+	private Wallet(Object username, Object amount)
 	{
-		doesWalletExist(player);
-		ModuleEconomy.getPlayerInfo(player).wallet = setAmount;
-		ModuleEconomy.saveData(player);
+		this.username = (String) username;
+		this.amount = (Integer) amount;
 	}
 
-	/**
-	 * Gets the singular or plural term of the currency used
-	 * @param setAmount
-	 *            amount to set the wallet to
-	 * @param player
-	 *            target player
-	 * @return singular or plural term of the currency used
-	 */
-	public static String currency(int amount)
+	@Reconstructor
+	private static Wallet reconstruct(IReconstructData tag)
 	{
-		if (amount == 1)
-			return Localization.get(Localization.WALLET_CURRENCY_SINGULAR);
-		else
-			return Localization.get(Localization.WALLET_CURRENCY_PLURAL);
+		return new Wallet(tag.getFieldValue("username"), tag.getFieldValue("amount"));
+	}
+
+	public String getUsername()
+	{
+		return username;
 	}
 }

@@ -19,9 +19,9 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 public abstract class BinaryDataDriver extends AbstractDataDriver
 {
 	protected File					baseFile;
-	protected static final String	EXT	= ".dat";
-	
-	private boolean useFEBase = false;
+	protected static final String	EXT			= ".dat";
+
+	private boolean					useFEBase	= false;
 
 	@Override
 	public final void loadFromConfigs(Configuration config, String category) throws Exception
@@ -37,11 +37,12 @@ public abstract class BinaryDataDriver extends AbstractDataDriver
 
 		config.save();
 	}
-	
+
+	@Override
 	public final void serverStart(FMLServerStartingEvent e)
 	{
 		String worldName = e.getServer().getFolderName();
-		
+
 		if (useFEBase)
 		{
 			baseFile = new File(ForgeEssentials.FEDIR, "saves/" + getName() + "/" + worldName + "/");

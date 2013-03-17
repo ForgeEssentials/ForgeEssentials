@@ -35,12 +35,7 @@ public class FlatFileGroups
 		Group g;
 		PromotionLadder ladder;
 		HashMap<String, String[]> playerMap;
-		HashMap<String, ConfigCategory> catList = new HashMap<String, ConfigCategory>();
-		for (String name : config.getCategoryNames())
-		{
-			catList.put(name, config.getCategory(name));
-		}
-		for (Entry<String, ConfigCategory> e : catList.entrySet())
+		for (Entry<String, ConfigCategory> e : config.categories.entrySet())
 		{
 			if (!e.getValue().isChild())
 			{
@@ -53,15 +48,15 @@ public class FlatFileGroups
 			{
 				for (Property prop : e.getValue().getValues().values())
 				{
-					ladder = new PromotionLadder(prop.getName(), split[0], prop.getStringList());
+					ladder = new PromotionLadder(prop.getName(), split[0], prop.valueList);
 					ladders.add(ladder);
 				}
 				continue;
 			}
 
-			prefix = config.get(e.getKey(), "prefix", " ").getString();
-			suffix = config.get(e.getKey(), "suffix", " ").getString();
-			parent = config.get(e.getKey(), "parent", "").getString();
+			prefix = config.get(e.getKey(), "prefix", " ").value;
+			suffix = config.get(e.getKey(), "suffix", " ").value;
+			parent = config.get(e.getKey(), "parent", "").value;
 			priority = config.get(e.getKey(), "priority", 0).getInt();
 
 			if (parent.trim().isEmpty())
@@ -73,7 +68,7 @@ public class FlatFileGroups
 			groups.add(g);
 
 			// now for the player things...
-			players = config.get(e.getKey(), "playersInGroup", new String[] {}).getStringList();
+			players = config.get(e.getKey(), "playersInGroup", new String[] {}).valueList;
 			playerMap = connector.get(split[0]);
 			if (playerMap == null)
 			{
@@ -139,11 +134,11 @@ public class FlatFileGroups
 		if (map == null)
 			return new String[] {};
 
-		ArrayList<?> list = map.get(name);
+		ArrayList<String> list = map.get(name);
 		if (list == null)
 			return new String[] {};
 
-		return (String[]) list.toArray(new String[list.size()]);
+		return list.toArray(new String[list.size()]);
 	}
 
 }

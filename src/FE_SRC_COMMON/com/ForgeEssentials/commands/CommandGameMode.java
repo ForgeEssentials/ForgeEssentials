@@ -50,7 +50,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				{
 					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 					{
-						OutputHandler.chatError(sender, "You do not have permission to do that.");
+						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 						return;
 					}
 					List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
@@ -73,7 +73,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 							}
 
 							victim.setGameType(gm);
-							OutputHandler.chatConfirmation(sender, "Gamemode changed for " + victim.username + " to " + gm.getName());
+							OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", victim.username, gm.getName()));
 						}
 					}
 					else
@@ -84,7 +84,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, "Invalid gametype or username: " + args[0]);
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				}
 			}
 			else
@@ -106,7 +106,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		{
 			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				OutputHandler.chatError(sender, "You do not have permission to do that.");
+				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 				return;
 			}
 			EnumGameType gm;
@@ -158,13 +158,11 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 					return;
 				}
 			}
-
-			OutputHandler.chatConfirmation(sender, "Gamemode changed for " + name + " to " + gm.getName());
+			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", name, gm.getName()));
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /gamemode [type]");
-			OutputHandler.chatError(sender, " /gamemode [player] [type]");
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
 	}
 
@@ -199,9 +197,9 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 						}
 
 						victim.setGameType(gm);
+						OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", victim.username, gm.getName()));
 					}
 				}
-				sender.sendChatToPlayer("Gamemode changed for " + args[0]);
 			}
 			else
 			{

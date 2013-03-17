@@ -4,11 +4,10 @@ import java.lang.reflect.Method;
 
 import cpw.mods.fml.common.FMLLog;
 
-public class API
+public class snooperAPI
 {
 	/**
-	 * Use this method to register your responses. DON'T ID 9. That is used for
-	 * challenge.
+	 * Use this method to register your responses.
 	 * @param ID
 	 * @param response
 	 */

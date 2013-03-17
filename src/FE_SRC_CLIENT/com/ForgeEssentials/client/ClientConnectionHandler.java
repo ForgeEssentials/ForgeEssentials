@@ -34,7 +34,9 @@ public class ClientConnectionHandler implements IConnectionHandler
 	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
 			ForgeEssentialsClient.setInfo(new PlayerInfoClient());
+		}
 	}
 
 	@Override
@@ -42,7 +44,9 @@ public class ClientConnectionHandler implements IConnectionHandler
 	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
 			ForgeEssentialsClient.setInfo(new PlayerInfoClient());
+		}
 	}
 
 	@Override
@@ -50,7 +54,9 @@ public class ClientConnectionHandler implements IConnectionHandler
 	public void connectionClosed(INetworkManager manager)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
 			ForgeEssentialsClient.setInfo(null);
+		}
 	}
 
 	@Override

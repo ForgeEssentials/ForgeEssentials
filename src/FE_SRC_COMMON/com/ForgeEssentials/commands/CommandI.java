@@ -1,13 +1,17 @@
 package com.ForgeEssentials.commands;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandI extends ForgeEssentialsCommandBase
 {
@@ -54,7 +58,7 @@ public class CommandI extends ForgeEssentialsCommandBase
 			ItemStack stack = new ItemStack(id, amount, dam);
 
 			String name = Item.itemsList[id].func_77653_i(stack);
-			sender.sendChatToPlayer("Giving you " + amount + " " + name);
+			OutputHandler.chatConfirmation(sender, Localization.format("command.i.given", amount, name));
 			receiver.inventory.addItemStackToInventory(stack);
 		}
 		else
@@ -66,7 +70,6 @@ public class CommandI extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-
 	}
 
 	@Override
@@ -79,6 +82,15 @@ public class CommandI extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 1)
+			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getItemList());
+		else
+			return null;
 	}
 
 }

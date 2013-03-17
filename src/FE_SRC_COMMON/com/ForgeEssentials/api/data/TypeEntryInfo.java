@@ -3,7 +3,8 @@ package com.ForgeEssentials.api.data;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TypeEntryInfo implements ITypeInfo<Object>
+@SuppressWarnings("rawtypes")
+public class TypeEntryInfo implements ITypeInfo
 {
 	private ClassContainer					parent;
 	private HashMap<String, ClassContainer>	types;
@@ -56,7 +57,7 @@ public class TypeEntryInfo implements ITypeInfo<Object>
 	@Override
 	public ClassContainer getType()
 	{
-		// why not? :)  better than void.class  .
+		// why not? :) better than void.class .
 		return new ClassContainer(Map.Entry.class);
 	}
 
@@ -65,7 +66,6 @@ public class TypeEntryInfo implements ITypeInfo<Object>
 		return parent;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Class[] getGenericTypes()
 	{
@@ -74,7 +74,7 @@ public class TypeEntryInfo implements ITypeInfo<Object>
 	}
 
 	@Override
-	public ITypeInfo<?> getInfoForField(String field)
+	public ITypeInfo getInfoForField(String field)
 	{
 		return DataStorageManager.getInfoForType(getTypeOfField(field));
 	}

@@ -3,7 +3,6 @@ package com.ForgeEssentials.afterlife;
 import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
@@ -39,7 +38,7 @@ public class RespawnDebuff implements IPlayerTracker
 	{
 		if (player1.worldObj.isRemote)
 			return;
-		EntityPlayer player = (EntityPlayerMP) player1;
+		EntityPlayer player = player1;
 		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASSPOTION)))
 		{
 			for (PotionEffect effect : potionEffects)

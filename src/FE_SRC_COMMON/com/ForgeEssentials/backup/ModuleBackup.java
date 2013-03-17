@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintWriter;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,10 +13,6 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.ModuleDir;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
@@ -31,28 +28,32 @@ import cpw.mods.fml.common.FMLCommonHandler;
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup
 {
-	@Config
+	@FEModule.Config
 	public static BackupConfig	config;
 
-	@ModuleDir
+	@FEModule.ModuleDir
 	public static File			moduleDir;
 
 	public static File			baseFolder;
 
-	@Init
+	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@ServerInit
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandBackup());
 		if (BackupConfig.autoInterval != 0)
+		{
 			new AutoBackup();
+		}
 		if (BackupConfig.worldSaveInterval != 0)
+		{
 			new AutoWorldSave();
+		}
 		makeReadme();
 	}
 
@@ -94,10 +95,12 @@ public class ModuleBackup
 			return;
 		try
 		{
-			ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
-			for (String username : server.getAllUsernames())
+			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+			ServerConfigurationManager manager = server.getConfigurationManager();
+			server.sendChatToPlayer(msg);
+			for (String username : manager.getAllUsernames())
 			{
-				EntityPlayerMP player = server.getPlayerForUsername(username);
+				EntityPlayerMP player = manager.getPlayerForUsername(username);
 				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
 				{
 					player.sendChatToPlayer(FEChatFormatCodes.AQUA + msg);

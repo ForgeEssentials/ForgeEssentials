@@ -24,7 +24,9 @@ public class CommandFEPermExport
 				return;
 			}
 			else
+			{
 				output = args[0];
+			}
 		}
 
 		OutputHandler.chatConfirmation(sender, " {PermSQL} Starting permission export...");
@@ -47,7 +49,9 @@ public class CommandFEPermExport
 				return;
 			}
 			else
+			{
 				output = args[0];
+			}
 		}
 
 		sender.sendChatToPlayer(" {PermSQL} Starting permission export...");

@@ -28,10 +28,9 @@ import com.ForgeEssentials.util.OutputHandler;
  * @author AbrarSyed
  * @param <T> This would be set to Object, but subclasses may want to have TypeInfo's for very specific classes.
  */
-@SuppressWarnings("rawtypes")
 public class TypeInfoStandard implements ITypeInfo<Object>
 {
-	Class<?>									type;
+	Class<?>								type;
 	private boolean							isUniqueKeyField;
 	private boolean							inLine;
 	private String							uniqueKey;
@@ -43,11 +42,11 @@ public class TypeInfoStandard implements ITypeInfo<Object>
 		this.type = type;
 		fields = new HashMap<String, ClassContainer>();
 	}
-	
+
 	@Override
 	public void build()
 	{
-		SaveableObject AObj = (SaveableObject) type.getAnnotation(SaveableObject.class);
+		SaveableObject AObj = type.getAnnotation(SaveableObject.class);
 		inLine = AObj.SaveInline();
 
 		Class<?> currentType = type;
@@ -55,7 +54,7 @@ public class TypeInfoStandard implements ITypeInfo<Object>
 		Type aTempType;
 		ClassContainer tempContainer;
 		SaveableField info;
-		
+
 		HashSet<String> overrides = new HashSet<String>();
 
 		// Iterate through this class and superclass's and get saveable fields
@@ -69,23 +68,24 @@ public class TypeInfoStandard implements ITypeInfo<Object>
 					overrides.remove(f.getName());
 					continue;
 				}
-				
+
 				// if its a saveable field
 				if (f.isAnnotationPresent(SaveableField.class))
 				{
 					info = f.getAnnotation(SaveableField.class);
-					
+
 					// register ignoire classes....
 					if (info != null && !info.overrideParent().isEmpty())
+					{
 						overrides.add(info.overrideParent());
-						
-						
+					}
+
 					tempType = f.getType();
 					aTempType = f.getGenericType();
 					if (aTempType instanceof ParameterizedType)
 					{
 						Type[] types = ((ParameterizedType) aTempType).getActualTypeArguments();
-						Class[] params = new Class[types.length];
+						Class<?>[] params = new Class[types.length];
 						for (int i = 0; i < types.length; i++)
 						{
 							if (types[i] instanceof Class)
@@ -282,7 +282,7 @@ public class TypeInfoStandard implements ITypeInfo<Object>
 	}
 
 	@Override
-	public Class[] getGenericTypes()
+	public Class<?>[] getGenericTypes()
 	{
 		return null;
 	}

@@ -19,18 +19,18 @@ import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class TickTaskRollback implements ITickTask
 {
-	private boolean				isComplete			= false;
-	private ICommandSender		sender;
-	private ResultSet			rs;
-	private int					changed				= 0;
-	private boolean				undo;
-	private WorldServer			world;
-	private int					X;
-	private int					Y;
-	private int					Z;
-	private String				username;
-	private Connection			connection;
-	private Statement			st;
+	private boolean			isComplete	= false;
+	private ICommandSender	sender;
+	private ResultSet		rs;
+	private int				changed		= 0;
+	private boolean			undo;
+	private WorldServer		world;
+	private int				X;
+	private int				Y;
+	private int				Z;
+	private String			username;
+	private Connection		connection;
+	private Statement		st;
 
 	public TickTaskRollback(ICommandSender sender, String username, boolean undo) throws SQLException
 	{
@@ -116,7 +116,7 @@ public class TickTaskRollback implements ITickTask
 	public void place() throws SQLException
 	{
 		String[] block = rs.getString("block").split(":");
-		world.setBlockAndMetadataWithNotify(X, Y, Z, Integer.parseInt(block[0]), Integer.parseInt(block[1]), 3);
+		world.setBlockAndMetadataWithNotify(X, Y, Z, Integer.parseInt(block[0]), Integer.parseInt(block[1]));
 		if (rs.getBlob("te") != null)
 		{
 			try
@@ -138,7 +138,7 @@ public class TickTaskRollback implements ITickTask
 	public void remove() throws SQLException
 	{
 		world.removeBlockTileEntity(X, Y, Z);
-		world.func_94575_c(X, Y, Z, 0);
+		world.setBlock(X, Y, Z, 0);
 	}
 
 	@Override

@@ -6,10 +6,13 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.data.ClassContainer;
+import com.ForgeEssentials.commands.util.CommandDataManager;
+import com.ForgeEssentials.commands.util.PWarp;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.PWarp;
+import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
@@ -31,16 +34,12 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		HashMap<String, PWarp> map = TeleportCenter.pwMap.get(sender.username);
+		HashMap<String, PWarp> map = CommandDataManager.pwMap.get(sender.username);
 
 		if (args.length != 2)
 		{
-			String msg = "Warp list: ";
-			for (String name : map.keySet())
-			{
-				msg = msg + ", " + name;
-			}
-			sender.sendChatToPlayer(msg);
+			sender.sendChatToPlayer(Localization.get("command.personalwarp.list"));
+			sender.sendChatToPlayer(FunctionHelper.niceJoin(map.keySet().toArray()));
 		}
 		else
 		{
@@ -55,7 +54,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					sender.sendChatToPlayer("PW does not exist.");
+					OutputHandler.chatError(sender, Localization.get("command.personalwarp.notfound"));
 				}
 			}
 			else if (args[0].equalsIgnoreCase("add"))
@@ -63,30 +62,29 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 				if (!map.containsKey(args[1]))
 				{
 					map.put(args[1], new PWarp(sender.username, args[1], new WarpPoint(sender)));
-					sender.sendChatToPlayer("PW added.");
+					OutputHandler.chatConfirmation(sender, Localization.get("command.personalwarp.made"));
 				}
 				else
 				{
-					sender.sendChatToPlayer("PW already exists.");
+					OutputHandler.chatError(sender, Localization.get("command.personalwarp.alreadyexists"));
 				}
 			}
 			else if (args[0].equalsIgnoreCase("remove"))
 			{
 				if (map.containsKey(args[1]))
 				{
-					ModuleCommands.data.deleteObject(new ClassContainer(PWarp.class), map.get(args[1]).getFilename());
+					CommandDataManager.removePWarp(map.get(args[1]));
 					map.remove(args[1]);
-					sender.sendChatToPlayer("PW removed.");
+					OutputHandler.chatConfirmation(sender, Localization.get("command.personalwarp.remove"));
 				}
 				else
 				{
-					sender.sendChatToPlayer("PW does not exist.");
+					OutputHandler.chatError(sender, Localization.get("command.personalwarp.notfound"));
 				}
 			}
 		}
-		TeleportCenter.pwMap.put(sender.username, map);
-
-		ModuleCommands.saveWarps();
+		CommandDataManager.pwMap.put(sender.username, map);
+		CommandDataManager.savePWarps(sender.username);
 	}
 
 	@Override
@@ -113,11 +111,11 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 			return getListOfStringsMatchingLastWord(args, "goto", "add", "remove");
 		if (args.length == 2)
 		{
-			if (TeleportCenter.pwMap.get(sender.getCommandSenderName()) == null)
+			if (CommandDataManager.pwMap.get(sender.getCommandSenderName()) == null)
 			{
-				TeleportCenter.pwMap.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
+				CommandDataManager.pwMap.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
 			}
-			return getListOfStringsFromIterableMatchingLastWord(args, TeleportCenter.pwMap.get(sender.getCommandSenderName()).keySet());
+			return getListOfStringsFromIterableMatchingLastWord(args, CommandDataManager.pwMap.get(sender.getCommandSenderName()).keySet());
 		}
 		return null;
 	}

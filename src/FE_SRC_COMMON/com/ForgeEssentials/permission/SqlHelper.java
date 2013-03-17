@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeSet;
@@ -22,20 +23,17 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
 
-@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 public class SqlHelper
 {
 	private Connection			db;
 	private boolean				generate						= false;
 	private static SqlHelper	instance;
-	private EnumDBType			dbType;
 
 	private static int			GLOBAL_ID						= 1;
 	private static int			SUPER_ID						= 2;
 	private static int			ENTRY_PLAYER_ID					= 1;
 	private static int			DEFAULT_ID						= 1;
 
-	//
 	private static final String	DATABASE_TABLE_PREFIX			= "fepermissions_";
 
 	// tables
@@ -46,6 +44,7 @@ public class SqlHelper
 	private static final String	TABLE_LADDER_NAME				= DATABASE_TABLE_PREFIX + "ladderNames";
 	private static final String	TABLE_PLAYER					= DATABASE_TABLE_PREFIX + "players";
 	private static final String	TABLE_PERMISSION				= DATABASE_TABLE_PREFIX + "permissions";
+	private static final String	TABLE_PERMPROP					= DATABASE_TABLE_PREFIX + "permProps";
 
 	// columns for the zone table
 	private static final String	COLUMN_ZONE_ZONEID				= "zoneID";
@@ -86,6 +85,13 @@ public class SqlHelper
 	private static final String	COLUMN_PERMISSION_ALLOWED		= "allowed";
 	private static final String	COLUMN_PERMISSION_ZONEID		= "zoneID";
 
+	// permprop table
+	private static final String	COLUMN_PERMPROP_TARGET			= "target";
+	private static final String	COLUMN_PERMPROP_ISGROUP			= "isGroup";
+	private static final String	COLUMN_PERMPROP_PERM			= "perm";
+	private static final String	COLUMN_PERMPROP_PROP			= "property";
+	private static final String	COLUMN_PERMPROP_ZONEID			= "zoneID";
+
 	// zones
 	private PreparedStatement	statementGetZoneIDFromName;													// zoneName >> zoneID
 	private PreparedStatement	statementGetZoneNameFromID;													// zoneID >> zoneName
@@ -106,7 +112,7 @@ public class SqlHelper
 	private PreparedStatement	statementGetGroupFromName;														// groupName >> Group
 	private PreparedStatement	statementGetGroupFromID;														// groupID >> Group
 	private PreparedStatement	statementGetGroupsForPlayerInZone;												// PlayerID, ZoneID >> Groups
-	private PreparedStatement	statementGetAllGroupsForPlayer;													// PlayerID >> all
+	private PreparedStatement	statementGetAllGroupsForPlayer;												// PlayerID >> all
 	private PreparedStatement	statementGetGroupsInZone;														// ZoneID
 	private PreparedStatement	statementPutGroup;																// $ name, prefix, suffix, parent, priority, zone
 	private PreparedStatement	statementUpdateGroup;															// $ name, prefix, suffix, parent, priority, zone
@@ -128,17 +134,26 @@ public class SqlHelper
 	private PreparedStatement	statementGetPermission;														// target, isgroup, perm, zone >> allowed
 	private PreparedStatement	statementGetAllPermissionsInZone;												// target zone isgroup >> perm allowed
 	private PreparedStatement	statementGetAllPermissions;													// target isgroup >> perm allowed
-	private PreparedStatement	statementGetAll;																// target, isgroup, zone >> allowed
 	private PreparedStatement	statementGetPermissionForward;													// target, isgroup, perm, zone >> allowed
 	private PreparedStatement	statementPutPermission;														// $ , allowed, target, isgroup, perm, zone
 	private PreparedStatement	statementUpdatePermission;														// $ allowed, target, isgroup, perm, zone
 	private PreparedStatement	statementDeletePermission;
 
+	// perm-props
+	private PreparedStatement	statementGetPermProp;															// target isgroup perm zone >> permProp
+	private PreparedStatement	statementPutPermProp;															// $ , value, target, isgroup, perm, zone
+	private PreparedStatement	statementUpdatePermProp;														// $ allowed, target, isgroup, perm, zone
+	private PreparedStatement	statementDeletePermProp;
+	private PreparedStatement	statementGetAllPermPropsInZone;												// target zone isgroup >> perm allowed
+	private PreparedStatement	statementGetAllPermProps;														// target isgroup >> perm allowed
+
 	// dump statements... replace ALL ids with names...
 	private PreparedStatement	statementDumpGroups;
 	private PreparedStatement	statementDumpPlayers;
 	private PreparedStatement	statementDumpGroupPermissions;
+	private PreparedStatement	statementDumpGroupPermProps;
 	private PreparedStatement	statementDumpPlayerPermissions;
+	private PreparedStatement	statementDumpPlayerPermProps;
 	private PreparedStatement	statementDumpGroupConnector;
 	private PreparedStatement	statementDumpLadders;
 
@@ -158,7 +173,7 @@ public class SqlHelper
 			generate();
 		}
 
-		prepareStatements(db);
+		prepareStatements(db, config.connector.getActiveType());
 	}
 
 	// ---------------------------------------------------------------------------------------------------
@@ -171,7 +186,7 @@ public class SqlHelper
 	 * Create all the prepared statements.
 	 * @param db The database to compile the statements against.
 	 */
-	private void prepareStatements(Connection db)
+	private void prepareStatements(Connection db, EnumDBType type)
 	{
 		try
 		{
@@ -182,8 +197,8 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_LADDER)
 					.append(" INNER JOIN ").append(TABLE_GROUP)
 					.append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
-					.append(" WHERE ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=").append("?")
-					.append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_ZONEID).append("=").append("?")
+					.append(" WHERE ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=?")
+					.append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_ZONEID).append("=?")
 					.append(" ORDER BY ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_RANK);
 			statementGetLadderList = getInstance().db.prepareStatement(query.toString());
 
@@ -198,7 +213,7 @@ public class SqlHelper
 					.append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
 					.append(" INNER JOIN ").append(TABLE_LADDER).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID)
 					.append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID).append(" WHERE ")
-					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?").append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=").append("?");
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=?").append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=?");
 			statementGetGroupsFromLadder = getInstance().db.prepareStatement(query.toString());
 
 			// statementGetGroupsFromLadderAndZone
@@ -207,8 +222,8 @@ public class SqlHelper
 					.append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
 					.append(" INNER JOIN ").append(TABLE_LADDER).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID)
 					.append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID).append(" WHERE ")
-					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?").append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=").append("?").append(" AND ")
-					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=?").append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=?").append(" AND ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=?");
 			statementGetGroupsFromLadderAndZone = getInstance().db.prepareStatement(query.toString());
 
 			// statementGetGroupsFromZone
@@ -216,7 +231,7 @@ public class SqlHelper
 					.append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(" FROM ").append(TABLE_GROUP_CONNECTOR)
 					.append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
 					.append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID).append(" WHERE ")
-					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?").append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=?").append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=?");
 			statementGetGroupsFromZone = getInstance().db.prepareStatement(query.toString());
 
 			// statementGetGroupsFromZone
@@ -224,21 +239,21 @@ public class SqlHelper
 					.append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(" FROM ").append(TABLE_GROUP_CONNECTOR)
 					.append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
 					.append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID).append(" WHERE ")
-					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?");
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=?");
 			statementGetGroupsFromPlayer = getInstance().db.prepareStatement(query.toString());
 
 			// statementGetGroupFromName
 			query = new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".")
 					.append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PARENT).append(", ").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(" FROM ").append(TABLE_GROUP)
 					.append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ZONE).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID).append(" WHERE ").append(TABLE_GROUP)
-					.append(".").append(COLUMN_GROUP_NAME).append("=").append("?");
+					.append(".").append(COLUMN_GROUP_NAME).append("=?");
 			statementGetGroupFromName = getInstance().db.prepareStatement(query.toString());
 
 			// statementGetGroupFromID
 			query = new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ").append(TABLE_GROUP).append(".")
 					.append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PARENT).append(", ").append(TABLE_ZONE).append(".")
 					.append(COLUMN_ZONE_NAME).append(" FROM ").append(TABLE_GROUP).append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ZONE).append("=").append(TABLE_ZONE).append(".")
-					.append(COLUMN_ZONE_ZONEID).append(" WHERE ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID).append("=").append("?");
+					.append(COLUMN_ZONE_ZONEID).append(" WHERE ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID).append("=?");
 			statementGetGroupFromID = getInstance().db.prepareStatement(query.toString());
 
 			// statementGetGroupsForPlayerInZone
@@ -252,98 +267,156 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
 					.append(" INNER JOIN ").append(TABLE_GROUP)
 					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
-					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?")
-					.append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
+					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=?")
+					.append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=?");
 			statementGetGroupsForPlayerInZone = getInstance().db.prepareStatement(query.toString());
-			
+
 			// statementGetGroupsForPlayer
 			query = new StringBuilder("SELECT * ")
 					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
-					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?");
+					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=?");
 			statementGetAllGroupsForPlayer = getInstance().db.prepareStatement(query.toString());
 
 			// statementGetGroupsInZone
 			query = new StringBuilder("SELECT * FROM ").append(TABLE_GROUP)
-					.append(" WHERE ").append(COLUMN_GROUP_ZONE).append("=").append("?");
+					.append(" WHERE ").append(COLUMN_GROUP_ZONE).append("=?");
 			statementGetGroupsInZone = getInstance().db.prepareStatement(query.toString());
 
 			// statementUpdateGroup
 			query = new StringBuilder("UPDATE ").append(TABLE_GROUP).append(" SET ").append(COLUMN_GROUP_NAME).append("=").append("?, ").append(COLUMN_GROUP_PREFIX).append("=").append("?, ").append(COLUMN_GROUP_SUFFIX).append("=").append("?, ")
-					.append(COLUMN_GROUP_PARENT).append("=").append("?, ").append(COLUMN_GROUP_PRIORITY).append("=").append("?, ").append(COLUMN_GROUP_ZONE).append("=").append("?").append(" WHERE ").append(COLUMN_GROUP_NAME).append("=").append("?")
-					.append(" AND ").append(COLUMN_GROUP_ZONE).append("=").append("?");
+					.append(COLUMN_GROUP_PARENT).append("=").append("?, ").append(COLUMN_GROUP_PRIORITY).append("=").append("?, ").append(COLUMN_GROUP_ZONE).append("=?").append(" WHERE ").append(COLUMN_GROUP_NAME).append("=?")
+					.append(" AND ").append(COLUMN_GROUP_ZONE).append("=?");
 			statementUpdateGroup = db.prepareStatement(query.toString());
 
 			// statementGetPermission
-			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ISGROUP)
-					.append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=?").append(" AND ").append(COLUMN_PERMISSION_ISGROUP)
+					.append("=?").append(" AND ").append(COLUMN_PERMISSION_PERM).append("=?").append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=?");
 			statementGetPermission = db.prepareStatement(query.toString());
 
-			// statementGetAll
-			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ISGROUP)
-					.append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("'" + Permission.ALL + "'").append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
-			statementGetAll = db.prepareStatement(query.toString());
-
-			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ISGROUP)
-					.append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_PERM).append(" LIKE ").append("?").append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			query = new StringBuilder("SELECT ").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=?").append(" AND ").append(COLUMN_PERMISSION_ISGROUP)
+					.append("=?").append(" AND ").append(COLUMN_PERMISSION_PERM).append(" LIKE ").append("?").append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=?");
 			statementGetPermissionForward = db.prepareStatement(query.toString());
 
 			// statementUpdatePermission
-			query = new StringBuilder("UPDATE ").append(TABLE_PERMISSION).append(" SET ").append(COLUMN_PERMISSION_ALLOWED).append("=").append("?").append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?").append(" AND ")
-					.append(COLUMN_PERMISSION_ISGROUP).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_PERM).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			query = new StringBuilder("UPDATE ").append(TABLE_PERMISSION)
+					.append(" SET ").append(COLUMN_PERMISSION_ALLOWED).append("=?")
+					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=?")
+					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=?")
+					.append(" AND ").append(COLUMN_PERMISSION_PERM).append("=?")
+					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=?");
 			statementUpdatePermission = db.prepareStatement(query.toString());
+
+			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
+			// PERM-PROP stuff
+			// <<<<<<<<<<<<<<<<<<<<<<<<<<
+
+			// statementGetPermProp
+			query = new StringBuilder("SELECT ").append(COLUMN_PERMPROP_PROP)
+					.append(" FROM ").append(TABLE_PERMPROP)
+					.append(" WHERE ").append(COLUMN_PERMPROP_TARGET).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_ISGROUP).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_PERM).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_ZONEID).append("=?");
+			statementGetPermProp = db.prepareStatement(query.toString());
+
+			// statementUpdatePermProp
+			query = new StringBuilder("UPDATE ").append(TABLE_PERMPROP)
+					.append(" SET ").append(COLUMN_PERMPROP_PROP).append("=?")
+					.append(" WHERE ").append(COLUMN_PERMPROP_TARGET).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_ISGROUP).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_PERM).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_ZONEID).append("=?");
+			statementUpdatePermProp = db.prepareStatement(query.toString());
+
+			// statementDeletePermProp
+			query = new StringBuilder("DELETE FROM ").append(TABLE_PERMPROP)
+					.append(" WHERE ").append(COLUMN_PERMPROP_TARGET).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_ISGROUP).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_PERM).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_ZONEID).append("=?");
+			statementDeletePermProp = db.prepareStatement(query.toString());
+
+			// statementGetAllPermProp
+			query = new StringBuilder("SELECT ")
+					.append(COLUMN_PERMPROP_PERM).append(", ").append(COLUMN_PERMPROP_PROP)
+					.append(" FROM ").append(TABLE_PERMPROP)
+					.append(" WHERE ").append(COLUMN_PERMPROP_TARGET).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_ZONEID).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_ISGROUP).append("=?");
+			statementGetAllPermPropsInZone = db.prepareStatement(query.toString());
+
+			// statementGetAllPermProp
+			query = new StringBuilder("SELECT ")
+					.append(TABLE_PERMPROP).append('.').append(COLUMN_PERMPROP_PERM).append(", ")
+					.append(TABLE_PERMPROP).append('.').append(COLUMN_PERMPROP_PROP).append(", ")
+					.append(TABLE_PERMPROP).append('.').append(COLUMN_PERMPROP_ZONEID)
+					.append(" FROM ").append(TABLE_PERMPROP)
+					.append(" WHERE ").append(COLUMN_PERMPROP_TARGET).append("=?")
+					.append(" AND ").append(COLUMN_PERMPROP_ISGROUP).append("=?");
+			statementGetAllPermProps = db.prepareStatement(query.toString());
+
+			// statementPutPermProp
+			query = new StringBuilder("INSERT INTO ").append(TABLE_PERMPROP).append(" (")
+					.append(COLUMN_PERMPROP_PROP).append(", ")
+					.append(COLUMN_PERMPROP_TARGET).append(", ")
+					.append(COLUMN_PERMPROP_ISGROUP).append(", ")
+					.append(COLUMN_PERMPROP_PERM).append(", ")
+					.append(COLUMN_PERMPROP_ZONEID).append(") ")
+					.append(" VALUES ").append(" (?, ?, ?, ?, ?) ");
+			statementPutPermProp = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
 			// Helper Get Statements
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
 
 			// statementGetLadderFromID
-			query = new StringBuilder("SELECT ").append(COLUMN_LADDER_NAME_NAME).append(" FROM ").append(TABLE_LADDER_NAME).append(" WHERE ").append(COLUMN_LADDER_NAME_LADDERID).append("=").append("?");
+			query = new StringBuilder("SELECT ").append(COLUMN_LADDER_NAME_NAME).append(" FROM ").append(TABLE_LADDER_NAME).append(" WHERE ").append(COLUMN_LADDER_NAME_LADDERID).append("=?");
 			statementGetLadderNameFromID = db.prepareStatement(query.toString());
 
 			// statementGetLadderFromName
-			query = new StringBuilder("SELECT ").append(COLUMN_LADDER_NAME_LADDERID).append(" FROM ").append(TABLE_LADDER_NAME).append(" WHERE ").append(COLUMN_LADDER_NAME_NAME).append("=").append("?");
+			query = new StringBuilder("SELECT ").append(COLUMN_LADDER_NAME_LADDERID).append(" FROM ").append(TABLE_LADDER_NAME).append(" WHERE ").append(COLUMN_LADDER_NAME_NAME).append("=?");
 			statementGetLadderIDFromName = db.prepareStatement(query.toString());
 
 			// statementGetLadderFromGroup
-			query = new StringBuilder("SELECT ").append(COLUMN_LADDER_LADDERID).append(" FROM ").append(TABLE_LADDER).append(" WHERE ").append(COLUMN_LADDER_GROUPID).append("=").append("?").append(" AND ").append(COLUMN_LADDER_ZONEID).append("=")
+			query = new StringBuilder("SELECT ").append(COLUMN_LADDER_LADDERID).append(" FROM ").append(TABLE_LADDER).append(" WHERE ").append(COLUMN_LADDER_GROUPID).append("=?").append(" AND ").append(COLUMN_LADDER_ZONEID).append("=")
 					.append("?");
 			statementGetLadderIDFromGroup = db.prepareStatement(query.toString());
 
 			// statementGetZoneFromID
-			query = new StringBuilder("SELECT ").append(COLUMN_ZONE_NAME).append(" FROM ").append(TABLE_ZONE).append(" WHERE ").append(COLUMN_ZONE_ZONEID).append("=").append("?");
+			query = new StringBuilder("SELECT ").append(COLUMN_ZONE_NAME).append(" FROM ").append(TABLE_ZONE).append(" WHERE ").append(COLUMN_ZONE_ZONEID).append("=?");
 			statementGetZoneNameFromID = db.prepareStatement(query.toString());
 
 			// statementGetZoneFromName
-			query = new StringBuilder("SELECT ").append(COLUMN_ZONE_ZONEID).append(" FROM ").append(TABLE_ZONE).append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("?");
+			query = new StringBuilder("SELECT ").append(COLUMN_ZONE_ZONEID).append(" FROM ").append(TABLE_ZONE).append(" WHERE ").append(COLUMN_ZONE_NAME).append("=?");
 			statementGetZoneIDFromName = db.prepareStatement(query.toString());
 
 			// statementGetGroupFromID
-			query = new StringBuilder("SELECT ").append(COLUMN_GROUP_NAME).append(" FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_GROUPID).append("=").append("?");
+			query = new StringBuilder("SELECT ").append(COLUMN_GROUP_NAME).append(" FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_GROUPID).append("=?");
 			statementGetGroupNameFromID = db.prepareStatement(query.toString());
 
 			// statementGetGroupFromName
 			query = new StringBuilder("SELECT *") // .append(COLUMN_GROUP_GROUPID)
-			.append(" FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_NAME).append("=").append("?");
+			.append(" FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_NAME).append("=?");
 			statementGetGroupIDFromName = db.prepareStatement(query.toString());
 
 			// statementGetPlayerFromID
-			query = new StringBuilder("SELECT ").append(COLUMN_PLAYER_USERNAME).append(" FROM ").append(TABLE_PLAYER).append(" WHERE ").append(COLUMN_PLAYER_PLAYERID).append("=").append("?");
+			query = new StringBuilder("SELECT ").append(COLUMN_PLAYER_USERNAME).append(" FROM ").append(TABLE_PLAYER).append(" WHERE ").append(COLUMN_PLAYER_PLAYERID).append("=?");
 			statementGetPlayerNameFromID = db.prepareStatement(query.toString());
 
 			// statementGetPlayerFromName
 			query = new StringBuilder("SELECT ")
 					.append(COLUMN_PLAYER_PLAYERID)
 					.append(" FROM ").append(TABLE_PLAYER)
-					.append(" WHERE ").append(COLUMN_PLAYER_USERNAME).append("=").append("?");
+					.append(" WHERE ").append(COLUMN_PLAYER_USERNAME).append("=?");
 			statementGetPlayerIDFromName = db.prepareStatement(query.toString());
 
 			// statementGetAllPermissions
 			query = new StringBuilder("SELECT ")
 					.append(COLUMN_PERMISSION_PERM).append(", ").append(COLUMN_PERMISSION_ALLOWED)
 					.append(" FROM ").append(TABLE_PERMISSION)
-					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
-					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?")
-					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?");
+					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=?")
+					.append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=?")
+					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=?");
 			statementGetAllPermissionsInZone = db.prepareStatement(query.toString());
 
 			// statementGetAllPermissions
@@ -352,8 +425,8 @@ public class SqlHelper
 					.append(TABLE_PERMISSION).append('.').append(COLUMN_PERMISSION_ALLOWED).append(", ")
 					.append(TABLE_PERMISSION).append('.').append(COLUMN_PERMISSION_ZONEID)
 					.append(" FROM ").append(TABLE_PERMISSION)
-					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?")
-					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?");
+					.append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=?")
+					.append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=?");
 			statementGetAllPermissions = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -383,8 +456,13 @@ public class SqlHelper
 			statementPutGroup = db.prepareStatement(query.toString());
 
 			// statementPutPermission
-			query = new StringBuilder("INSERT INTO ").append(TABLE_PERMISSION).append(" (").append(COLUMN_PERMISSION_ALLOWED).append(", ").append(COLUMN_PERMISSION_TARGET).append(", ").append(COLUMN_PERMISSION_ISGROUP).append(", ")
-					.append(COLUMN_PERMISSION_PERM).append(", ").append(COLUMN_PERMISSION_ZONEID).append(") ").append(" VALUES ").append(" (?, ?, ?, ?, ?) ");
+			query = new StringBuilder("INSERT INTO ").append(TABLE_PERMISSION).append(" (")
+					.append(COLUMN_PERMISSION_ALLOWED).append(", ")
+					.append(COLUMN_PERMISSION_TARGET).append(", ")
+					.append(COLUMN_PERMISSION_ISGROUP).append(", ")
+					.append(COLUMN_PERMISSION_PERM).append(", ")
+					.append(COLUMN_PERMISSION_ZONEID).append(") ")
+					.append(" VALUES ").append(" (?, ?, ?, ?, ?) ");
 			statementPutPermission = db.prepareStatement(query.toString());
 
 			// statementPutPlayerInGroup
@@ -397,28 +475,28 @@ public class SqlHelper
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
 
 			// statementDeletePermission
-			query = new StringBuilder("DELETE FROM ").append(TABLE_PERMISSION).append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=").append("?").append(" AND ")
-					.append(COLUMN_PERMISSION_PERM).append("=").append("?").append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			query = new StringBuilder("DELETE FROM ").append(TABLE_PERMISSION).append(" WHERE ").append(COLUMN_PERMISSION_TARGET).append("=?").append(" AND ").append(COLUMN_PERMISSION_ISGROUP).append("=?").append(" AND ")
+					.append(COLUMN_PERMISSION_PERM).append("=?").append(" AND ").append(COLUMN_PERMISSION_ZONEID).append("=?");
 			statementDeletePermission = db.prepareStatement(query.toString());
 
 			// statementDeleteGroupInZone
-			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_NAME).append("=").append("?").append(" AND ").append(COLUMN_GROUP_ZONE).append("=").append("?");
+			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_NAME).append("=?").append(" AND ").append(COLUMN_GROUP_ZONE).append("=?");
 			statementDeleteGroupInZone = db.prepareStatement(query.toString());
 
 			// statementDelZone
-			query = new StringBuilder("DELETE FROM ").append(TABLE_ZONE).append(" WHERE ").append(COLUMN_ZONE_NAME).append("=").append("?");
+			query = new StringBuilder("DELETE FROM ").append(TABLE_ZONE).append(" WHERE ").append(COLUMN_ZONE_NAME).append("=?");
 			statementDelZone = db.prepareStatement(query.toString());
 
 			// remove player from all groups in specified zone. used in /p user
 			// <player> group set
-			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?").append(" AND ")
-					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
+			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=?").append(" AND ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=?");
 			statementRemovePlayerGroups = getInstance().db.prepareStatement(query.toString());
 
 			// remove player from specified group in specified zone. used in /p
 			// user <player> group add
-			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append("?").append(" AND ").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?")
-					.append(" AND ").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=").append("?");
+			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=?").append(" AND ").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=?")
+					.append(" AND ").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=?");
 			statementRemovePlayerGroup = getInstance().db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -426,19 +504,19 @@ public class SqlHelper
 			// <<<<<<<<<<<<<<<<<<<<<<<<<<
 
 			// delete groups from zone
-			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_ZONE).append("=").append("?");
+			query = new StringBuilder("DELETE FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_ZONE).append("=?");
 			statementDelGroupFromZone = db.prepareStatement(query.toString());
 
 			// delete ladder from zone
-			query = new StringBuilder("DELETE FROM ").append(TABLE_LADDER).append(" WHERE ").append(COLUMN_LADDER_ZONEID).append("=").append("?");
+			query = new StringBuilder("DELETE FROM ").append(TABLE_LADDER).append(" WHERE ").append(COLUMN_LADDER_ZONEID).append("=?");
 			statementDelLadderFromZone = db.prepareStatement(query.toString());
 
 			// delete group connectorsw from zone
-			query = new StringBuilder("DELETE FROM ").append(TABLE_LADDER).append(" WHERE ").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=").append("?");
+			query = new StringBuilder("DELETE FROM ").append(TABLE_LADDER).append(" WHERE ").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=?");
 			statementDelGroupConnectorsFromZone = db.prepareStatement(query.toString());
 
 			// statementDeleteGroupInZone
-			query = new StringBuilder("DELETE FROM ").append(TABLE_PERMISSION).append(" WHERE ").append(COLUMN_PERMISSION_ZONEID).append("=").append("?");
+			query = new StringBuilder("DELETE FROM ").append(TABLE_PERMISSION).append(" WHERE ").append(COLUMN_PERMISSION_ZONEID).append("=?");
 			statementDelPermFromZone = db.prepareStatement(query.toString());
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -452,17 +530,57 @@ public class SqlHelper
 					.append(COLUMN_ZONE_ZONEID);
 			statementDumpGroups = getInstance().db.prepareStatement(query.toString());
 
-			query = new StringBuilder("SELECT DISTINCT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_PERM).append(", ").append(TABLE_ZONE).append(".")
-					.append(COLUMN_ZONE_NAME).append(", ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
-					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_TARGET).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID).append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_PERMISSION)
-					.append(".").append(COLUMN_PERMISSION_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID).append(" WHERE ").append(COLUMN_PERMISSION_ISGROUP).append('=').append(1);
+			query = new StringBuilder("SELECT DISTINCT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_PERM).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ALLOWED)
+					.append(" FROM ").append(TABLE_PERMISSION)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_TARGET).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
+					.append(" WHERE ").append(COLUMN_PERMISSION_ISGROUP).append('=').append(true);
 			statementDumpGroupPermissions = getInstance().db.prepareStatement(query.toString());
 
-			query = new StringBuilder("SELECT DISTINCT ").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME).append(", ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_PERM).append(", ").append(TABLE_ZONE).append(".")
-					.append(COLUMN_ZONE_NAME).append(", ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ALLOWED).append(" FROM ").append(TABLE_PERMISSION).append(" INNER JOIN ").append(TABLE_PLAYER).append(" ON ")
-					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_TARGET).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_PLAYERID).append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_PERMISSION)
-					.append(".").append(COLUMN_PERMISSION_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID).append(" WHERE ").append(COLUMN_PERMISSION_ISGROUP).append('=').append(0);
+			query = new StringBuilder("SELECT DISTINCT ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_PERM).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_PROP)
+					.append(" FROM ").append(TABLE_PERMPROP)
+					.append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_TARGET).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_GROUPID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
+					.append(" WHERE ").append(COLUMN_PERMPROP_ISGROUP).append('=').append(true);
+			statementDumpGroupPermProps = getInstance().db.prepareStatement(query.toString());
+
+			query = new StringBuilder("SELECT DISTINCT ")
+					.append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_PERM).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ALLOWED)
+					.append(" FROM ").append(TABLE_PERMISSION)
+					.append(" INNER JOIN ").append(TABLE_PLAYER)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_TARGET).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_PLAYERID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_PERMISSION).append(".").append(COLUMN_PERMISSION_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
+					.append(" WHERE ").append(COLUMN_PERMISSION_ISGROUP).append('=').append(false);
 			statementDumpPlayerPermissions = getInstance().db.prepareStatement(query.toString());
+
+			query = new StringBuilder("SELECT DISTINCT ")
+					.append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME).append(", ")
+					.append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_PERM).append(", ")
+					.append(TABLE_ZONE).append(".").append(COLUMN_ZONE_NAME).append(", ")
+					.append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_PROP)
+					.append(" FROM ").append(TABLE_PERMPROP)
+					.append(" INNER JOIN ").append(TABLE_PLAYER)
+					.append(" ON ").append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_TARGET).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_PLAYERID)
+					.append(" INNER JOIN ").append(TABLE_ZONE)
+					.append(" ON ").append(TABLE_PERMPROP).append(".").append(COLUMN_PERMPROP_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID)
+					.append(" WHERE ").append(COLUMN_PERMPROP_ISGROUP).append('=').append(false);
+			statementDumpPlayerPermProps = getInstance().db.prepareStatement(query.toString());
 
 			query = new StringBuilder("SELECT ").append(COLUMN_PLAYER_USERNAME).append(" FROM ").append(TABLE_PLAYER);
 			statementDumpPlayers = getInstance().db.prepareStatement(query.toString());
@@ -479,17 +597,50 @@ public class SqlHelper
 					.append(COLUMN_GROUP_GROUPID).append(" INNER JOIN ").append(TABLE_LADDER_NAME).append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=").append(TABLE_LADDER_NAME).append(".")
 					.append(COLUMN_LADDER_NAME_LADDERID).append(" INNER JOIN ").append(TABLE_ZONE).append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID);
 			statementDumpLadders = getInstance().db.prepareStatement(query.toString());
-
-			// remove specified group
-			query = new StringBuilder("");
 		}
 		catch (Exception e)
 		{
-			OutputHandler.severe("[PermSQL] error creating statements");
+			OutputHandler.severe("[PermSQL] error preparing common statements");
 			Throwables.propagate(e);
 		}
 
+		switch (type)
+			{
+				case H2_FILE:
+					prepareH2Statements(db);
+					break;
+				case MySQL:
+					prepareMySQLStatements(db);
+					break;
+			}
+
 		OutputHandler.finer("Statement preparation successful");
+	}
+
+	private void prepareH2Statements(Connection db)
+	{
+		try
+		{
+			// nothign special atm
+		}
+		catch (Exception e)
+		{
+			OutputHandler.severe("[PermSQL] error preparing H2 statements");
+			Throwables.propagate(e);
+		}
+	}
+
+	private void prepareMySQLStatements(Connection db)
+	{
+		try
+		{
+			// nothing special here either.
+		}
+		catch (Exception e)
+		{
+			OutputHandler.severe("[PermSQL] error preparing MySQL statements");
+			Throwables.propagate(e);
+		}
 	}
 
 	private static SqlHelper getInstance()
@@ -503,7 +654,7 @@ public class SqlHelper
 				{
 					instance.generate();
 				}
-				instance.prepareStatements(instance.db);
+				instance.prepareStatements(instance.db, ModulePermissions.config.connector.getActiveType());
 				OutputHandler.fine("Permissions database connection closed. Connection succesfully reset.");
 			}
 		}
@@ -520,7 +671,6 @@ public class SqlHelper
 	{
 		try
 		{
-			dbType = connector.getActiveType();
 			db = connector.getChosenConnection();
 
 			DatabaseMetaData meta = db.getMetaData();
@@ -550,7 +700,7 @@ public class SqlHelper
 	{
 		try
 		{
-			String zoneTable, groupTable, ladderTable, ladderNameTable, playerTable, groupConnectorTable, permissionTable;
+			String zoneTable, groupTable, ladderTable, ladderNameTable, playerTable, groupConnectorTable, permissionTable, permPropTable;
 
 			// ------------------
 			// H2 & MYSQL
@@ -606,6 +756,22 @@ public class SqlHelper
 					.append(COLUMN_PERMISSION_ZONEID).append(" INTEGER NOT NULL")
 					.append(")").toString();
 
+			permissionTable = new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_PERMISSION).append("(")
+					.append(COLUMN_PERMISSION_TARGET).append(" INTEGER NOT NULL, ")
+					.append(COLUMN_PERMISSION_ISGROUP).append(" BOOLEAN NOT NULL, ")
+					.append(COLUMN_PERMISSION_PERM).append(" VARCHAR(255) NOT NULL, ")
+					.append(COLUMN_PERMISSION_ALLOWED).append(" BOOLEAN NOT NULL, ")
+					.append(COLUMN_PERMISSION_ZONEID).append(" INTEGER NOT NULL")
+					.append(")").toString();
+
+			permPropTable = new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_PERMPROP).append("(")
+					.append(COLUMN_PERMPROP_TARGET).append(" INTEGER NOT NULL, ")
+					.append(COLUMN_PERMPROP_ISGROUP).append(" BOOLEAN NOT NULL, ")
+					.append(COLUMN_PERMPROP_PERM).append(" VARCHAR(255) NOT NULL, ")
+					.append(COLUMN_PERMPROP_PROP).append(" VARCHAR(255) NOT NULL, ")
+					.append(COLUMN_PERMPROP_ZONEID).append(" INTEGER NOT NULL")
+					.append(")").toString();
+
 			// create the tables.
 			db.createStatement().executeUpdate(zoneTable);
 			db.createStatement().executeUpdate(groupTable);
@@ -614,6 +780,7 @@ public class SqlHelper
 			db.createStatement().executeUpdate(playerTable);
 			db.createStatement().executeUpdate(groupConnectorTable);
 			db.createStatement().executeUpdate(permissionTable);
+			db.createStatement().executeUpdate(permPropTable);
 
 			// DEFAULT group
 			StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (").append(COLUMN_GROUP_GROUPID).append(", ").append(COLUMN_GROUP_NAME).append(", ").append(COLUMN_GROUP_PRIORITY).append(", ")
@@ -648,9 +815,9 @@ public class SqlHelper
 	/**
 	 * If generation is enabled, puts the provided Registered permissions into
 	 * the DB.
-	 * @param map
+	 * @param regPerms
 	 */
-	protected synchronized void putRegistrationperms(HashMultimap<RegGroup, Permission> map)
+	protected synchronized void putRegistrationPerms(HashMultimap<RegGroup, PermissionChecker> regPerms)
 	{
 		if (!generate)
 			return;
@@ -662,9 +829,25 @@ public class SqlHelper
 			PreparedStatement s;
 
 			// create default groups...
-			StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_PERMISSION).append(" (").append(COLUMN_PERMISSION_TARGET).append(", ").append(COLUMN_PERMISSION_ALLOWED).append(", ").append(COLUMN_PERMISSION_PERM).append(", ")
-					.append(COLUMN_PERMISSION_ISGROUP).append(", ").append(COLUMN_PERMISSION_ZONEID).append(") ").append(" VALUES ").append(" (?, ?, ?, 1, ").append(GLOBAL_ID).append(")");
-			PreparedStatement statement = db.prepareStatement(query.toString());
+			StringBuilder query = new StringBuilder("INSERT INTO ")
+					.append(TABLE_PERMISSION).append(" (")
+					.append(COLUMN_PERMISSION_TARGET).append(", ")
+					.append(COLUMN_PERMISSION_ALLOWED).append(", ")
+					.append(COLUMN_PERMISSION_PERM).append(", ")
+					.append(COLUMN_PERMISSION_ISGROUP).append(", ")
+					.append(COLUMN_PERMISSION_ZONEID).append(") ")
+					.append(" VALUES ").append(" (?, ?, ?, TRUE, ").append(GLOBAL_ID).append(")");
+			PreparedStatement permStatement = db.prepareStatement(query.toString());
+
+			query = new StringBuilder("INSERT INTO ")
+					.append(TABLE_PERMPROP).append(" (")
+					.append(COLUMN_PERMPROP_TARGET).append(", ")
+					.append(COLUMN_PERMPROP_PROP).append(", ")
+					.append(COLUMN_PERMPROP_PERM).append(", ")
+					.append(COLUMN_PERMPROP_ISGROUP).append(", ")
+					.append(COLUMN_PERMPROP_ZONEID).append(") ")
+					.append(" VALUES ").append(" (?, ?, ?, TRUE, ").append(GLOBAL_ID).append(")");
+			PreparedStatement permPropStatement = db.prepareStatement(query.toString());
 
 			// create groups...
 			HashMap<RegGroup, Integer> groups = new HashMap<RegGroup, Integer>();
@@ -683,14 +866,24 @@ public class SqlHelper
 			}
 
 			// register permissions
-			for (RegGroup group : map.keySet())
+			for (RegGroup group : regPerms.keySet())
 			{
-				statement.setInt(1, groups.get(group));
-				for (Permission perm : map.get(group))
+				permStatement.setInt(1, groups.get(group));
+				permPropStatement.setInt(1, groups.get(group));
+				for (PermissionChecker perm : regPerms.get(group))
 				{
-					statement.setBoolean(2, perm.allowed);
-					statement.setString(3, perm.getQualifiedName());
-					statement.executeUpdate();
+					if (perm instanceof PermissionProp)
+					{
+						permPropStatement.setString(2, ((PermissionProp) perm).value);
+						permPropStatement.setString(3, perm.getQualifiedName());
+						permPropStatement.executeUpdate();
+					}
+					else
+					{
+						permStatement.setBoolean(2, ((Permission) perm).allowed);
+						permStatement.setString(3, perm.getQualifiedName());
+						permStatement.executeUpdate();
+					}
 				}
 			}
 
@@ -754,6 +947,7 @@ public class SqlHelper
 	 * HashMap<String, String[]>> DONE "ladders" >> arraylist<PromotionLadder>
 	 * DONE
 	 */
+	@SuppressWarnings("unchecked")
 	protected void importPerms(String importDir)
 	{
 		try
@@ -769,6 +963,9 @@ public class SqlHelper
 
 			FlatFilePermissions pm = new FlatFilePermissions(file);
 			map.putAll(pm.load());
+
+			FlatFilePermProps pmp = new FlatFilePermProps(file);
+			map.putAll(pmp.load());
 
 			OutputHandler.info("[PermSQL] Loaded Configs into ram");
 
@@ -883,8 +1080,21 @@ public class SqlHelper
 			{
 				setPermission(perm.target, true, perm, perm.zone);
 			}
-
 			OutputHandler.info("[PermSQL] Imported permissions");
+
+			// now the permissions
+			ArrayList<PermissionPropHolder> props = (ArrayList<PermissionPropHolder>) map.get("playerPermProps");
+			for (PermissionPropHolder perm : props)
+			{
+				setPermProp(perm.target, false, perm, perm.zone);
+			}
+
+			props = (ArrayList<PermissionPropHolder>) map.get("groupPermProps");
+			for (PermissionPropHolder perm : props)
+			{
+				setPermProp(perm.target, true, perm, perm.zone);
+			}
+			OutputHandler.info("[PermSQL] Imported permission properties");
 
 			OutputHandler.info("[PermSQL] Import successful!");
 		}
@@ -906,7 +1116,7 @@ public class SqlHelper
 	 * @param zoneName
 	 * @return NULL if no ladder in existence.
 	 */
-	protected static synchronized PromotionLadder getLadderForGroup(String group, String zone)
+	public static synchronized PromotionLadder getLadderForGroup(String group, String zone)
 	{
 		try
 		{
@@ -1255,16 +1465,15 @@ public class SqlHelper
 	 * @param target (username or groupname)
 	 * @param isGroup
 	 * @param perm
-	 * @return ALLOW/DENY if the permission is allowed/denied. UNKNOWN if its
-	 * not found.
+	 * @return NULL if the
 	 */
-	protected static synchronized PermResult getAllResult(String target, boolean isGroup, String zone, boolean checkForward)
+	protected static synchronized String getPermProp(String target, boolean isGroup, String perm, String zone)
 	{
 		try
 		{
 			int tID;
 			int zID = getZoneIDFromZoneName(zone);
-			PreparedStatement statement = getInstance().statementGetAll;
+			PreparedStatement statement = getInstance().statementGetPermProp;
 			ResultSet set;
 
 			if (isGroup)
@@ -1277,19 +1486,19 @@ public class SqlHelper
 			}
 
 			if (zID < -4 || tID < -4)
-				return PermResult.UNKNOWN;
+				return null;
 
-			// initial check.
 			statement.setInt(1, tID);
 			statement.setBoolean(2, isGroup);
-			statement.setInt(3, zID);
+			statement.setString(3, perm);
+			statement.setInt(4, zID);
 			set = statement.executeQuery();
 			statement.clearParameters();
 
 			if (set.next())
-				return set.getBoolean(1) ? PermResult.ALLOW : PermResult.ALLOW;
+				return set.getString(COLUMN_PERMPROP_PROP);
 			else
-				return PermResult.UNKNOWN;
+				return null;
 
 		}
 		catch (SQLException e)
@@ -1297,7 +1506,7 @@ public class SqlHelper
 			e.printStackTrace();
 
 		}
-		return PermResult.UNKNOWN;
+		return null;
 	}
 
 	/**
@@ -1432,15 +1641,15 @@ public class SqlHelper
 			if (zID < -4 || tID < -4)
 				return false;
 
-			PreparedStatement use;
+			PreparedStatement use = getInstance().statementGetPermission;
 
 			// check permission existence...
-			getInstance().statementGetPermission.setInt(1, tID);
-			getInstance().statementGetPermission.setBoolean(2, isGroup);
-			getInstance().statementGetPermission.setString(3, perm.getQualifiedName());
-			getInstance().statementGetPermission.setInt(4, zID);
-			ResultSet set = getInstance().statementGetPermission.executeQuery();
-			getInstance().statementGetPermission.clearParameters();
+			use.setInt(1, tID);
+			use.setBoolean(2, isGroup);
+			use.setString(3, perm.getQualifiedName());
+			use.setInt(4, zID);
+			ResultSet set = use.executeQuery();
+			use.clearParameters();
 
 			// allowed, target, isgroup, perm, zone
 			if (set.next())
@@ -1453,6 +1662,72 @@ public class SqlHelper
 			}
 
 			use.setBoolean(1, perm.allowed);
+			use.setInt(2, tID);
+			use.setBoolean(3, isGroup);
+			use.setString(4, perm.getQualifiedName());
+			use.setInt(5, zID);
+			use.executeUpdate();
+			use.clearParameters();
+
+			return true;
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Creates the permission if it doesn't exist.. updates it if it does.
+	 * @param target
+	 * @param isGroup
+	 * @param perm
+	 * @param zone
+	 * @return FALSE if the group, or zone do not exist.
+	 */
+	protected static synchronized boolean setPermProp(String target, boolean isGroup, PermissionProp perm, String zone)
+	{
+		try
+		{
+			int tID;
+			int zID = getZoneIDFromZoneName(zone);
+
+			if (isGroup)
+			{
+				tID = getGroupIDFromGroupName(target);
+			}
+			else
+			{
+				tID = getPlayerIDFromPlayerName(target);
+			}
+
+			if (zID < -4 || tID < -4)
+				return false;
+
+			// target isgroup perm zone >> permProp
+			PreparedStatement use = getInstance().statementGetPermProp;
+
+			// check permission existence...
+			use.setInt(1, tID);
+			use.setBoolean(2, isGroup);
+			use.setString(3, perm.getQualifiedName());
+			use.setInt(4, zID);
+			ResultSet set = use.executeQuery();
+			use.clearParameters();
+
+			// allowed, target, isgroup, perm, zone
+			if (set.next())
+			{
+				use = getInstance().statementUpdatePermProp; // exists
+			}
+			else
+			{
+				use = getInstance().statementPutPermProp; // does not exist.
+			}
+
+			use.setString(1, perm.value);
 			use.setInt(2, tID);
 			use.setBoolean(3, isGroup);
 			use.setString(4, perm.getQualifiedName());
@@ -1548,11 +1823,13 @@ public class SqlHelper
 	 * HashMap<String, ArrayList<String>>> DONE "ladders" >>
 	 * arraylist<PromotionLadder> DONE
 	 */
+	@SuppressWarnings("unchecked")
 	protected static synchronized HashMap<String, Object> dump()
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		ResultSet set;
+		@SuppressWarnings("rawtypes")
 		ArrayList list;
 
 		// DUMP PLAYERS! ---------------------------------
@@ -1663,6 +1940,62 @@ public class SqlHelper
 		catch (SQLException e)
 		{
 			OutputHandler.info("[PermSQL] Group Permission dump for export failed!");
+			e.printStackTrace();
+			list = null;
+		}
+
+		// DUMP PLAYER PERMPROPS PROPERTIES! ------------------------------
+		try
+		{
+			set = getInstance().statementDumpPlayerPermProps.executeQuery();
+
+			list = new ArrayList<PermissionPropHolder>();
+
+			String target, zone, perm, prop;
+			PermissionPropHolder holder;
+			while (set.next())
+			{
+				target = set.getString(COLUMN_PLAYER_USERNAME);
+				zone = set.getString(COLUMN_ZONE_NAME);
+				perm = set.getString(COLUMN_PERMPROP_PERM);
+				prop = set.getString(COLUMN_PERMPROP_PROP);
+				holder = new PermissionPropHolder(target, perm, prop, zone);
+				list.add(holder);
+			}
+
+			map.put("playerPermProps", list);
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.info("[PermSQL] Player Permission Property dump for export failed!");
+			e.printStackTrace();
+			list = null;
+		}
+
+		// DUMP GROUP PERMPROP PROPERTIES! ------------------------------
+		try
+		{
+			set = getInstance().statementDumpGroupPermProps.executeQuery();
+
+			list = new ArrayList<PermissionPropHolder>();
+
+			String target, zone, perm, prop;
+			PermissionPropHolder holder;
+			while (set.next())
+			{
+				target = set.getString(COLUMN_GROUP_NAME);
+				zone = set.getString(COLUMN_ZONE_NAME);
+				perm = set.getString(COLUMN_PERMPROP_PERM);
+				prop = set.getString(COLUMN_PERMPROP_PROP);
+				holder = new PermissionPropHolder(target, perm, prop, zone);
+				list.add(holder);
+			}
+
+			map.put("groupPermProps", list);
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.info("[PermSQL] Group Permission Property dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -1803,7 +2136,9 @@ public class SqlHelper
 					statement.clearParameters();
 
 					while (set.next())
+					{
 						perms.put(set.getInt(3), new Permission(set.getString(1), set.getBoolean(2)));
+					}
 
 					// $ , allowed, target, isgroup, perm, zone
 					statement = getInstance().statementPutPermission;
@@ -1812,7 +2147,7 @@ public class SqlHelper
 					for (int zone : perms.keySet())
 					{
 						statement.setInt(5, zone);
-						for(Permission perm : perms.get(zone))
+						for (Permission perm : perms.get(zone))
 						{
 							statement.setBoolean(1, perm.allowed);
 							statement.setString(4, perm.getQualifiedName());
@@ -1821,19 +2156,53 @@ public class SqlHelper
 					}
 					statement.clearParameters();
 				}
-				
-				//copy groups
+
+				// copy permProps
+				{
+					statement = getInstance().statementGetAllPermProps;
+					HashMultimap<Integer, PermissionProp> permProps = HashMultimap.create();
+
+					statement.setInt(1, player);
+					statement.setBoolean(2, false);
+					set = statement.executeQuery();
+					statement.clearParameters();
+
+					while (set.next())
+					{
+						permProps.put(set.getInt(3), new PermissionProp(set.getString(1), set.getString(2)));
+					}
+
+					// $ , allowed, target, isgroup, perm, zone
+					statement = getInstance().statementPutPermProp;
+					statement.setInt(2, player);
+					statement.setBoolean(3, false);
+					for (int zone : permProps.keySet())
+					{
+						statement.setInt(5, zone);
+						for (PermissionProp prop : permProps.get(zone))
+						{
+							statement.setString(1, prop.value);
+							statement.setString(4, prop.getQualifiedName());
+							statement.execute();
+						}
+					}
+					statement.clearParameters();
+				}
+
+				// copy groups
 				{
 					statement = getInstance().statementGetAllGroupsForPlayer;
 					HashMultimap<Integer, Integer> groups = HashMultimap.create();
-					
+
 					statement.setInt(1, player);
 					set = statement.executeQuery();
 					statement.clearParameters();
-					
-					while(set.next())
+
+					while (set.next())
+					{
 						groups.put(set.getInt(COLUMN_GROUP_CONNECTOR_ZONEID), set.getInt(COLUMN_GROUP_CONNECTOR_GROUPID));
-					
+					}
+
 					statement = getInstance().statementPutPlayerInGroup;
 					statement.setInt(2, player);
 					for (int zone : groups.keySet())
@@ -2158,6 +2527,36 @@ public class SqlHelper
 		return "Permission not removed.";
 	}
 
+	public static synchronized String removePermissionProp(String target, boolean isGroup, String node, String zone)
+	{
+		try
+		{
+			int targetID = -5;
+			if (isGroup)
+			{
+				targetID = SqlHelper.getGroupIDFromGroupName(target);
+			}
+			else
+			{
+				targetID = SqlHelper.getPlayerIDFromPlayerName(target);
+			}
+			int zoneID = SqlHelper.getZoneIDFromZoneName(zone);
+
+			getInstance().statementDeletePermProp.setInt(1, targetID);
+			getInstance().statementDeletePermProp.setBoolean(2, isGroup);
+			getInstance().statementDeletePermProp.setString(3, node);
+			getInstance().statementDeletePermProp.setInt(4, zoneID);
+			getInstance().statementDeletePermProp.executeUpdate();
+			getInstance().statementDeletePermProp.clearParameters();
+			return null;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return "Permission not removed.";
+	}
+
 	public static synchronized void deleteGroupInZone(String group, String zone)
 	{
 		try
@@ -2174,7 +2573,7 @@ public class SqlHelper
 		}
 	}
 
-	public static synchronized ArrayList<?> getGroupsInZone(String zoneName)
+	public static synchronized ArrayList<Group> getGroupsInZone(String zoneName)
 	{
 		try
 		{
@@ -2243,7 +2642,7 @@ public class SqlHelper
 			statement.clearParameters();
 
 			if (set.next())
-				return set.getInt(COLUMN_PERMISSION_ALLOWED) == 1 ? "allowed" : "denied";
+				return set.getBoolean(COLUMN_PERMISSION_ALLOWED) ? "allowed" : "denied";
 		}
 		catch (SQLException e)
 		{
@@ -2252,7 +2651,47 @@ public class SqlHelper
 		return null;
 	}
 
-	public static ArrayList<Permission> getAllPermissions(String target, String zone, boolean isGroup)
+	public static String getPermissionProp(String target, boolean isGroup, String perm, String zone)
+	{
+		try
+		{
+			int tID;
+			int zID = getZoneIDFromZoneName(zone);
+			int isG = isGroup ? 1 : 0;
+			PreparedStatement statement = getInstance().statementGetPermProp;
+			ResultSet set;
+
+			if (isGroup)
+			{
+				tID = getGroupIDFromGroupName(target);
+			}
+			else
+			{
+				tID = getPlayerIDFromPlayerName(target);
+			}
+
+			if (zID < -4 || tID < -4)
+				return "Zone or target invalid.";
+
+			// initial check.
+			statement.setInt(1, tID);
+			statement.setInt(2, isG);
+			statement.setString(3, perm);
+			statement.setInt(4, zID);
+			set = statement.executeQuery();
+			statement.clearParameters();
+
+			if (set.next())
+				return set.getString(COLUMN_PERMPROP_PROP);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static Collection<Permission> getAllPermissions(String target, String zone, boolean isGroup)
 	{
 		ArrayList<Permission> list = new ArrayList<Permission>();
 		PreparedStatement statement = getInstance().statementGetAllPermissionsInZone;
@@ -2273,7 +2712,43 @@ public class SqlHelper
 			statement.clearParameters();
 
 			while (set.next())
+			{
 				list.add(new Permission(set.getString(1), set.getBoolean(2)));
+			}
+
+			return list;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static ArrayList<PermissionProp> getAllPermProps(String target, String zone, boolean isGroup)
+	{
+		ArrayList<PermissionProp> list = new ArrayList<PermissionProp>();
+		PreparedStatement statement = getInstance().statementGetAllPermPropsInZone;
+		try
+		{
+			int targetID = isGroup ? getGroupIDFromGroupName(target) : getPlayerIDFromPlayerName(target);
+			if (targetID == -5)
+				return list;
+
+			int zoneID = getZoneIDFromZoneName(zone);
+			if (zoneID == -5)
+				return list;
+
+			statement.setInt(1, targetID);
+			statement.setInt(2, zoneID);
+			statement.setBoolean(3, isGroup);
+			ResultSet set = statement.executeQuery();
+			statement.clearParameters();
+
+			while (set.next())
+			{
+				list.add(new PermissionProp(set.getString(1), set.getString(2)));
+			}
 
 			return list;
 		}

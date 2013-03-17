@@ -10,19 +10,18 @@
 /reobf/*
 /runtime/*
 /temp/*
+/lib/*
 
 /eclipse/.metadata/
 /eclipse/Minecraft/bin/
 
 /src/minecraft/
 
-/lib/argo-3.2-src.jar
-/lib/asm-4.1.tar.jar
-/lib/asm-debug-all-4.1.jar
-/lib/asm-all-4.0-source.jar
-/lib/guava-14.0-rc3.jar
-/lib/guava-14.0-rc3-sources.jar
-/lib/bcprov-debug-jdk15on-148.jar
+!/lib/H2DB.jar
+!/lib/mysql-connector-java-bin.jar
+!/lib/metrics-R6-FEmod.jar
+!/lib/metrics-R7-FEmod.jar
+!/lib/worldedit-5.4.6-snapshot.jar
 
 !/jars/coremods/
 

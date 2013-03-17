@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet100OpenWindow;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -20,6 +21,8 @@ import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PlayerBlockBreak;
 
@@ -48,7 +51,7 @@ public class Deathchest
 
 	public Deathchest()
 	{
-		FEskullTe.addMapping(FEskullTe.class, "FESkull");
+		TileEntity.addMapping(FEskullTe.class, "FESkull");
 		MinecraftForge.EVENT_BUS.register(this);
 		TickRegistry.registerScheduledTickHandler(new GraveProtectionTicker(this), Side.SERVER);
 	}
@@ -116,7 +119,7 @@ public class Deathchest
 				{
 					if (!grave.canOpen(e.entityPlayer))
 					{
-						e.entityPlayer.sendChatToPlayer("This grave is still under Notch's protection.");
+						OutputHandler.chatWarning(e.entityPlayer, Localization.get("message.afterlife.protectionEnabled"));
 						e.setCanceled(true);
 					}
 					else
@@ -139,7 +142,7 @@ public class Deathchest
 				}
 				else
 				{
-					removeGrave(grave, false);
+					removeGrave(grave, true);
 				}
 			}
 		}
@@ -185,7 +188,9 @@ public class Deathchest
 				{
 					int xp = grave.xp / 10;
 					if (xp == 0)
+					{
 						break;
+					}
 					EntityXPOrb entity = new EntityXPOrb(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, xp);
 					DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
 				}

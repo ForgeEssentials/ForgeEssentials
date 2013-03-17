@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagString;
 
 import com.ForgeEssentials.api.data.ClassContainer;
@@ -27,6 +28,7 @@ import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.util.OutputHandler;
 
+@SuppressWarnings("rawtypes")
 public class NBTDataDriver extends BinaryDataDriver
 {
 	@Override
@@ -116,7 +118,7 @@ public class NBTDataDriver extends BinaryDataDriver
 
 		TypeData data = DataStorageManager.getDataForType(type);
 		data.setUniqueKey(uniqueKey);
-		ITypeInfo<?> info = DataStorageManager.getInfoForType(type);
+		ITypeInfo info = DataStorageManager.getInfoForType(type);
 		readClassFromTag(nbt, data, info);
 
 		return data;
@@ -131,7 +133,7 @@ public class NBTDataDriver extends BinaryDataDriver
 	}
 
 	@SuppressWarnings("unchecked")
-	private void readClassFromTag(NBTTagCompound tag, TypeData data, ITypeInfo<?> info)
+	private void readClassFromTag(NBTTagCompound tag, TypeData data, ITypeInfo info)
 	{
 		String name;
 		ClassContainer tempType;
@@ -163,7 +165,7 @@ public class NBTDataDriver extends BinaryDataDriver
 			// ignore.
 			return;
 
-		Class<? extends Object> type = obj.getClass();
+		Class<?> type = obj.getClass();
 
 		if (type.equals(Integer.class))
 		{
@@ -211,6 +213,21 @@ public class NBTDataDriver extends BinaryDataDriver
 
 			tag.setTag(name, list);
 		}
+		else if (type.equals(Long.class))
+		{
+			tag.setLong(name, (Long) obj);
+		}
+		else if (type.equals(long[].class))
+		{
+			NBTTagList list = new NBTTagList();
+			long[] array = (long[]) obj;
+			for (int i = 0; i < array.length; i++)
+			{
+				list.appendTag(new NBTTagLong(name + "_" + i, array[i]));
+			}
+
+			tag.setTag(name, list);
+		}
 		else if (type.equals(Boolean.class))
 		{
 			tag.setBoolean(name, (Boolean) obj);
@@ -251,7 +268,7 @@ public class NBTDataDriver extends BinaryDataDriver
 			throw new IllegalArgumentException("Cannot save object type: " + type.getCanonicalName());
 	}
 
-	private Object readPrimitiveFromTag(NBTTagCompound tag, String name, Class<?> type)
+	private Object readPrimitiveFromTag(NBTTagCompound tag, String name, Class type)
 	{
 		if (name == null || type == null)
 			return null;
@@ -286,6 +303,19 @@ public class NBTDataDriver extends BinaryDataDriver
 			for (int i = 0; i < array.length; i++)
 			{
 				array[i] = ((NBTTagDouble) list.tagAt(i)).data;
+			}
+
+			return array;
+		}
+		if (type.equals(long.class))
+			return tag.getInteger(name);
+		else if (type.equals(long[].class))
+		{
+			NBTTagList list = tag.getTagList(name);
+			long[] array = new long[list.tagCount()];
+			for (int i = 0; i < array.length; i++)
+			{
+				array[i] = ((NBTTagLong) list.tagAt(i)).data;
 			}
 
 			return array;
@@ -325,7 +355,7 @@ public class NBTDataDriver extends BinaryDataDriver
 	{
 		File[] files = getTypePath(type).listFiles();
 		ArrayList<IReconstructData> data = new ArrayList<IReconstructData>();
-		
+
 		if (files == null)
 			return new TypeData[0];
 

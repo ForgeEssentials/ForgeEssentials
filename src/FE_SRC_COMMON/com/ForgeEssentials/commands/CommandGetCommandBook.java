@@ -1,7 +1,5 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
@@ -39,15 +37,12 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		List cmdList = Arrays.asList(MinecraftServer.getServer().getCommandManager().getCommands().values().toArray());
-		Collections.sort(cmdList);
-
 		NBTTagCompound tag = new NBTTagCompound();
 		NBTTagList pages = new NBTTagList();
 
 		HashMap<String, String> map = new HashMap<String, String>();
 
-		for (Object cmdObj : cmdList)
+		for (Object cmdObj : MinecraftServer.getServer().getCommandManager().getCommands().values().toArray())
 		{
 			ICommand cmd = (ICommand) cmdObj;
 

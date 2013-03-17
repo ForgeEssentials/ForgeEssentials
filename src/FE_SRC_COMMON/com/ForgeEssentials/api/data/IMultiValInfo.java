@@ -14,5 +14,5 @@ public abstract class IMultiValInfo<T> implements ITypeInfo<T>
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public abstract Class[] getGenericTypes();
+	public abstract Class<?>[] getGenericTypes();
 }

@@ -19,7 +19,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandBurn extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -34,7 +33,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 			if (args[0].toLowerCase().equals("me"))
 			{
 				sender.setFire(15);
-				OutputHandler.chatError(sender, Localization.get(Localization.BURN_SELF));
+				OutputHandler.chatError(sender, Localization.get("command.burn.self"));
 			}
 			else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
@@ -45,7 +44,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 				}
 				if (players.size() != 0)
 				{
-					OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
+					OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
 					for (EntityPlayer player : players)
 					{
 						player.setFire(15);
@@ -64,7 +63,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 				try
 				{
 					sender.setFire(Integer.parseInt(args[1]));
-					OutputHandler.chatError(sender, Localization.get(Localization.BURN_SELF));
+					OutputHandler.chatError(sender, Localization.get("command.burn.self"));
 				}
 				catch (NumberFormatException e)
 				{
@@ -82,16 +81,8 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 				{
 					for (EntityPlayer player : players)
 					{
-						try
-						{
-							player.setFire(Integer.parseInt(args[1]));
-							OutputHandler.chatConfirmation(sender, Localization.get(Localization.BURN_PLAYER));
-						}
-						catch (NumberFormatException e)
-						{
-							OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
-							break;
-						}
+						player.setFire(parseIntWithMin(sender, args[1], 0));
+						OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
 					}
 				}
 				else
@@ -109,29 +100,27 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length == 1)
+		int time = 15;
+		if (args.length == 2)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			time = parseIntWithMin(sender, args[1], 0);
+		}
+		List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+		if (PlayerSelector.hasArguments(args[0]))
+		{
+			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
+		}
+		if (players.size() != 0)
+		{
+			for (EntityPlayer player : players)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
+				player.setFire(time);
 			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
-				{
-					player.setFire(Integer.parseInt(args[1]));
-				}
-				sender.sendChatToPlayer(Localization.get(Localization.BURN_PLAYER));
-			}
-			else
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-			}
+			sender.sendChatToPlayer(Localization.get("command.burn.player"));
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		}
 	}
 

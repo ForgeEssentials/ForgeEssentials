@@ -1,13 +1,11 @@
 package com.ForgeEssentials.commands.util;
 
-import java.util.LinkedHashMap;
-
+import com.ForgeEssentials.api.json.JSONException;
+import com.ForgeEssentials.api.json.JSONObject;
 import com.ForgeEssentials.core.compat.IServerStats;
 import com.ForgeEssentials.lib.mcstats.Metrics;
 import com.ForgeEssentials.lib.mcstats.Metrics.Graph;
 import com.ForgeEssentials.lib.mcstats.Metrics.Plotter;
-import com.ForgeEssentials.util.DataStorage;
-import com.ForgeEssentials.util.TeleportCenter;
 
 public class MCStatsHelper implements IServerStats
 {
@@ -21,7 +19,7 @@ public class MCStatsHelper implements IServerStats
 			@Override
 			public int getValue()
 			{
-				return TeleportCenter.warps.size();
+				return CommandDataManager.warps.size();
 			}
 		};
 
@@ -30,7 +28,7 @@ public class MCStatsHelper implements IServerStats
 			@Override
 			public int getValue()
 			{
-				return DataStorage.getData("kitdata").getTags().size();
+				return CommandDataManager.kits.size();
 			}
 		};
 
@@ -38,12 +36,12 @@ public class MCStatsHelper implements IServerStats
 	}
 
 	@Override
-	public LinkedHashMap<String, String> addToServerInfo()
+	public JSONObject addToServerInfo() throws JSONException
 	{
-		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		map.put("Warps", "" + TeleportCenter.warps.size());
-		map.put("Kits", "" + DataStorage.getData("kitdata").getTags().size());
-		return map;
+		JSONObject data = new JSONObject();
+		data.put("Warps", CommandDataManager.warps.size());
+		data.put("Kits", CommandDataManager.kits.size());
+		return data;
 	}
 
 }

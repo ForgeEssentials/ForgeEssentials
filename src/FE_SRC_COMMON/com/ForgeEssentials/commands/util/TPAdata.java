@@ -3,6 +3,8 @@ package com.ForgeEssentials.commands.util;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.commands.CommandTPA;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class TPAdata
 {
@@ -39,13 +41,13 @@ public class TPAdata
 			TickHandlerCommands.tpaListToRemove.add(this);
 			if (tphere)
 			{
-				receiver.sendChatToPlayer("TPAhere from " + sender.username + " timed out");
-				sender.sendChatToPlayer("TPAhere to " + receiver.username + " timed out");
+				OutputHandler.chatWarning(receiver, Localization.format("command.tpahere.gotTimeout", sender.username));
+				OutputHandler.chatWarning(sender, Localization.format("command.tpahere.sendTimeout", receiver.username));
 			}
 			else
 			{
-				receiver.sendChatToPlayer("TPA from " + sender.username + " timed out");
-				sender.sendChatToPlayer("TPA to " + receiver.username + " timed out");
+				OutputHandler.chatWarning(receiver, Localization.format("command.tpa.gotTimeout", sender.username));
+				OutputHandler.chatWarning(sender, Localization.format("command.tpa.sendTimeout", receiver.username));
 			}
 		}
 		timeout--;

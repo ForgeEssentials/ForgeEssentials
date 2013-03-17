@@ -13,6 +13,8 @@ import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
+import com.ForgeEssentials.util.OutputHandler;
+
 public class Backup implements Runnable
 {
 	private Thread			thread;
@@ -217,6 +219,12 @@ public class Backup implements Runnable
 	 */
 	private void zipIt(String dir)
 	{
+		if (fileList.isEmpty())
+		{
+			OutputHandler.info("No files to backup in " + dir);
+			return;
+		}
+
 		byte[] buffer = new byte[1024];
 		try
 		{

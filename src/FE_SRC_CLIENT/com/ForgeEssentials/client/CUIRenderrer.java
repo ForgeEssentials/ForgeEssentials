@@ -68,7 +68,9 @@ public class CUIRenderrer
 				GL11.glTranslated(x, y, z);
 			}
 			else
+			{
 				GL11.glTranslated(p2.x - RenderManager.renderPosX, p2.y + 1 - RenderManager.renderPosY, p2.z - RenderManager.renderPosZ);
+			}
 
 			GL11.glScalef(1.0F, -1.0F, -1.0F);
 			GL11.glColor3f(0, 255, 0);

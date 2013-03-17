@@ -12,7 +12,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -46,7 +45,6 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 	/*
 	 * Expected syntax /capabilities [player] [capability] [value]
 	 */
-
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
@@ -73,11 +71,8 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer("Possible capabilities:");
-			for (String cap : names)
-			{
-				sender.sendChatToPlayer(cap);
-			}
+			OutputHandler.chatConfirmation(sender, Localization.get("command.capabilities.list"));
+			OutputHandler.chatConfirmation(sender, FunctionHelper.niceJoin(names.toArray()));
 		}
 		else if (args.length == 1)
 		{
@@ -90,7 +85,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 			{
 				for (EntityPlayer target : players)
 				{
-					sender.sendChatToPlayer(FEChatFormatCodes.GREEN + "Capabilities for " + target.username);
+					OutputHandler.chatConfirmation(sender, Localization.format("command.capabilities.listForX", target.username));
 					sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
 					sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
 					sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
@@ -124,27 +119,27 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 				{
 					if (args[1].equalsIgnoreCase(names.get(0)))
 					{
-						sender.sendChatToPlayer(names.get(0) + " = " + target.capabilities.disableDamage);
+						sender.sendChatToPlayer(target.username + " => " + names.get(0) + " = " + target.capabilities.disableDamage);
 					}
 					else if (args[1].equalsIgnoreCase(names.get(1)))
 					{
-						sender.sendChatToPlayer(names.get(1) + " = " + target.capabilities.isFlying);
+						sender.sendChatToPlayer(target.username + " => " + names.get(1) + " = " + target.capabilities.isFlying);
 					}
 					else if (args[1].equalsIgnoreCase(names.get(2)))
 					{
-						sender.sendChatToPlayer(names.get(2) + " = " + target.capabilities.allowFlying);
+						sender.sendChatToPlayer(target.username + " => " + names.get(2) + " = " + target.capabilities.allowFlying);
 					}
 					else if (args[1].equalsIgnoreCase(names.get(3)))
 					{
-						sender.sendChatToPlayer(names.get(3) + " = " + target.capabilities.isCreativeMode);
+						sender.sendChatToPlayer(target.username + " => " + names.get(3) + " = " + target.capabilities.isCreativeMode);
 					}
 					else if (args[1].equalsIgnoreCase(names.get(4)))
 					{
-						sender.sendChatToPlayer(names.get(4) + " = " + target.capabilities.allowEdit);
+						sender.sendChatToPlayer(target.username + " => " + names.get(4) + " = " + target.capabilities.allowEdit);
 					}
 					else
 					{
-						OutputHandler.chatError(sender, "Capability " + args[1] + " unknown.");
+						OutputHandler.chatError(sender, Localization.format("command.capabilities.capabilityUnknown", args[1]));
 						break;
 					}
 				}
@@ -201,7 +196,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 					}
 					else
 					{
-						OutputHandler.chatError(sender, "Capability " + args[1] + " unknown.");
+						OutputHandler.chatError(sender, Localization.format("command.capabilities.capabilityUnknown", args[1]));
 						break;
 					}
 					target.sendPlayerAbilities();

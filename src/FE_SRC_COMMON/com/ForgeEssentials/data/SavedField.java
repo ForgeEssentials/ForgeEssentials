@@ -4,7 +4,7 @@ public class SavedField
 {
 	public String	name;
 	public Object	value;
-	public Class<? extends Object>	type;
+	public Class<?>	type;
 
 	public SavedField()
 	{

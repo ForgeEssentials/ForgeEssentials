@@ -11,7 +11,7 @@ import cpw.mods.fml.common.asm.transformers.AccessTransformer;
 public class FEAccessTransformer extends AccessTransformer
 {
 	private static FEAccessTransformer	instance;
-	private static List<String>					mapFiles	= new LinkedList<String>();
+	private static List<String>			mapFiles	= new LinkedList<String>();
 
 	public FEAccessTransformer() throws IOException
 	{
@@ -22,7 +22,7 @@ public class FEAccessTransformer extends AccessTransformer
 		Iterator<String> it = mapFiles.iterator();
 		while (it.hasNext())
 		{
-			String file = (String) it.next();
+			String file = it.next();
 			readMapFile(file);
 		}
 

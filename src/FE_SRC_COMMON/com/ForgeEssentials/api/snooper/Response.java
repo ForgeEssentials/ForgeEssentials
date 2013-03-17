@@ -1,11 +1,11 @@
 package com.ForgeEssentials.api.snooper;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-
-import net.minecraft.network.rcon.RConOutputStream;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.Configuration;
+
+import com.ForgeEssentials.api.json.JSONException;
+import com.ForgeEssentials.api.json.JSONObject;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
@@ -16,28 +16,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class Response
 {
-	protected RConOutputStream	output		= new RConOutputStream(1460);
-	protected MinecraftServer	server		= FMLCommonHandler.instance().getMinecraftServerInstance();
-	protected String			dataString	= "";
-	public boolean				allowed		= true;
+	public int					id;
+	protected MinecraftServer	server	= FMLCommonHandler.instance().getMinecraftServerInstance();
+	public boolean				allowed	= true;
 
-	public abstract String getResponceString(DatagramPacket packet);
-
-	public byte[] getResponceByte(byte[] bs, DatagramPacket packet) throws IOException
-	{
-		output.reset();
-		output.writeInt(0);
-		output.writeByteArray(bs);
-		if (allowed)
-		{
-			output.writeString(getResponceString(packet));
-		}
-		else
-		{
-			output.writeString("_NOT_ALLOWED_");
-		}
-		return output.toByteArray();
-	}
+	public abstract JSONObject getResponce(JSONObject input) throws JSONException;
 
 	public abstract String getName();
 

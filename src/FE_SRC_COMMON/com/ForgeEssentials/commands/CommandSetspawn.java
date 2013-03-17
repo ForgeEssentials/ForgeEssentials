@@ -4,12 +4,9 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.DataStorage;
 import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -27,72 +24,16 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 3)
 		{
-			int x;
-			int y;
-			int z;
-			if (args.length == 4)
-			{
-				try
-				{
-					Integer.parseInt(args[3]);
-				}
-				catch (NumberFormatException e)
-				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
-					return;
-				}
-			}
-			try
-			{
-				x = new Integer(args[0]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
-				return;
-			}
-			try
-			{
-				y = new Integer(args[1]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
-				return;
-			}
-			try
-			{
-				z = new Integer(args[2]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[4]));
-				return;
-			}
-			// Point point = new Point(x, y, z);
-			// NBTTagCompound spawn = new NBTTagCompound();
-			// spawn.setDouble("x", point.x);
-			// spawn.setDouble("y", point.y);
-			// spawn.setDouble("z", point.z);
-			// spawn.setInteger("dim", dim);
-			// DataStorage.setData("spawn", spawn);
+			int x = parseInt(sender, args[0]);
+			int y = parseInt(sender, args[1]);
+			int z = parseInt(sender, args[2]);
 			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(x, y, z);
-			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
+			sender.sendChatToPlayer(Localization.get("command.setspawn.set"));
 		}
 		else
 		{
-			// WarpPoint point = new WarpPoint(sender);
-			// NBTTagCompound spawn = new NBTTagCompound();
-			// spawn.setDouble("x", point.x);
-			// spawn.setDouble("y", point.y);
-			// spawn.setDouble("z", point.z);
-			// spawn.setInteger("dim", sender.dimension);
-			// spawn.setFloat("pich", point.pitch);
-			// spawn.setFloat("yaw", point.yaw);
-			// DataStorage.setData("spawn", spawn);
-			// DataStorage.save();
 			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint((int) sender.posX, (int) sender.posY, (int) sender.posZ);
-			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
+			sender.sendChatToPlayer(Localization.get("command.setspawn.set"));
 		}
 	}
 
@@ -101,50 +42,15 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 3)
 		{
-			int x;
-			int y;
-			int z;
-			try
-			{
-				x = new Integer(args[0]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
-				return;
-			}
-			try
-			{
-				y = new Integer(args[1]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
-				return;
-			}
-			try
-			{
-				z = new Integer(args[2]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[4]));
-				return;
-			}
-			Point point = new Point(x, y, z);
-			NBTTagCompound spawn = new NBTTagCompound();
-			spawn.setDouble("x", point.x);
-			spawn.setDouble("y", point.y);
-			spawn.setDouble("z", point.z);
-			spawn.setInteger("dim", 0);
-			DataStorage.setData("spawn", spawn);
-			DataStorage.save();
-			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(point.x, point.y, point.z);
-			sender.sendChatToPlayer(Localization.get(Localization.SPAWNSET));
+			int x = parseInt(sender, args[0]);
+			int y = parseInt(sender, args[1]);
+			int z = parseInt(sender, args[2]);
+			FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.setSpawnPoint(x, y, z);
+			sender.sendChatToPlayer(Localization.get("command.setspawn.set"));
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

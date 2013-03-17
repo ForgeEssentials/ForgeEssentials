@@ -12,7 +12,6 @@ import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandBackup extends ForgeEssentialsCommandBase
 {
-
 	static String		source;
 	static String		output;
 	static List<String>	fileList;
@@ -92,5 +91,11 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
 	}
 }

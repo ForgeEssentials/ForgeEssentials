@@ -196,7 +196,7 @@ public class VoteReceiver extends Thread
 	/**
 	 * Reads a string from a block of data.
 	 * @param data
-	 *            The data to read from
+	 * The data to read from
 	 * @return The string
 	 */
 	private String readString(byte[] data, int offset)

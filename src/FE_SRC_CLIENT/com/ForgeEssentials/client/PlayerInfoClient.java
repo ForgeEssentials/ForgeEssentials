@@ -39,10 +39,14 @@ public class PlayerInfoClient
 			if (selection == null)
 			{
 				if (sel1 != null && sel2 != null)
+				{
 					selection = new Selection(sel1, sel2);
+				}
 			}
 			else
+			{
 				selection.setStart(sel1);
+			}
 	}
 
 	public Point getPoint2()
@@ -58,10 +62,14 @@ public class PlayerInfoClient
 			if (selection == null)
 			{
 				if (sel1 != null && sel2 != null)
+				{
 					selection = new Selection(sel1, sel2);
+				}
 			}
 			else
+			{
 				selection.setEnd(sel2);
+			}
 	}
 
 	public Selection getSelection()
@@ -71,8 +79,8 @@ public class PlayerInfoClient
 
 	public void clearSelection()
 	{
-		this.selection = null;
-		this.sel1 = null;
-		this.sel2 = null;
+		selection = null;
+		sel1 = null;
+		sel2 = null;
 	}
 }

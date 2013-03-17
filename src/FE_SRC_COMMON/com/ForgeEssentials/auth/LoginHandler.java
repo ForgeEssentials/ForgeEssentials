@@ -6,6 +6,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.auth.commands.CommandLogin;
+import com.ForgeEssentials.auth.commands.CommandRegister;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.PlayerMoveEvent;
 
@@ -32,19 +35,19 @@ public class LoginHandler implements IPlayerTracker
 		if (unLogged.contains(event.entityPlayer.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, "Please use '/login <pwd>' to login");
+			OutputHandler.chatError(event.entityPlayer, Localization.format("message.afterlife.login", new CommandLogin().getSyntaxPlayer(event.entityPlayer)));
 		}
 
 		if (unRegisted.contains(event.entityPlayer.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, "Please use '/register <pwd>' to register");
+			OutputHandler.chatError(event.entityPlayer, Localization.format("message.afterlife.register", new CommandRegister().getSyntaxPlayer(event.entityPlayer)));
 		}
 	}
 
 	public void login(EntityPlayer player)
 	{
-		player.sendChatToPlayer("Successfully logged in.");
+		player.sendChatToPlayer(Localization.get("message.afterlife.success"));
 		unLogged.remove(player.username);
 		unRegisted.remove(player.username);
 	}
@@ -63,13 +66,13 @@ public class LoginHandler implements IPlayerTracker
 		{
 			if (ModuleAuth.enabled)
 			{
-				player.sendChatToPlayer("Please use '/login <pwd>' to login");
+				OutputHandler.chatError(player, Localization.format("message.afterlife.login", new CommandLogin().getSyntaxPlayer(player)));
 				unLogged.add(player.username);
 			}
 		}
 		else
 		{
-			player.sendChatToPlayer("You must '/register <pwd>'!");
+			OutputHandler.chatError(player, Localization.format("message.afterlife.register", new CommandRegister().getSyntaxPlayer(player)));
 			unRegisted.add(player.username);
 		}
 	}

@@ -19,7 +19,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 public abstract class TextDataDriver extends AbstractDataDriver
 {
 	protected File	baseFile;
-	private boolean useFEBase = false;
+	private boolean	useFEBase	= false;
 
 	@Override
 	public final void loadFromConfigs(Configuration config, String category) throws Exception
@@ -35,11 +35,12 @@ public abstract class TextDataDriver extends AbstractDataDriver
 
 		config.save();
 	}
-	
+
+	@Override
 	public final void serverStart(FMLServerStartingEvent e)
 	{
 		String worldName = e.getServer().getFolderName();
-		
+
 		if (useFEBase)
 		{
 			baseFile = new File(ForgeEssentials.FEDIR, "saves/" + getName() + "/" + worldName + "/");
@@ -47,7 +48,7 @@ public abstract class TextDataDriver extends AbstractDataDriver
 		else
 		{
 			File parent = FunctionHelper.getBaseDir();
-			
+
 			if (FMLCommonHandler.instance().getSide().isClient())
 			{
 				parent = new File(FunctionHelper.getBaseDir(), "saves/");
@@ -69,7 +70,7 @@ public abstract class TextDataDriver extends AbstractDataDriver
 
 	/**
 	 * @return extension of the file. omit the preceding period, its
-	 *         automatically added. eg txt, cfg, dat, yml, etc...
+	 * automatically added. eg txt, cfg, dat, yml, etc...
 	 */
 	protected abstract String getExtension();
 

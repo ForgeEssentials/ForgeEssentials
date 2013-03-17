@@ -15,7 +15,6 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class CommandRemove extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -32,49 +31,19 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 
 		if (args.length == 1)
 		{
-			try
-			{
-				radius = Integer.parseInt(args[0]);
-			}
-			catch (NumberFormatException e)
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
-			}
+			radius = parseIntWithMin(sender, args[0], 0);
 		}
 		else if (args.length == 4)
 		{
-			try
-			{
-				radius = Integer.parseInt(args[0]);
-			}
-			catch (NumberFormatException e)
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[0]));
-			}
-			try
-			{
-				centerX = Integer.parseInt(args[1]);
-			}
-			catch (NumberFormatException e)
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
-			}
-			try
-			{
-				centerY = Integer.parseInt(args[2]);
-			}
-			catch (NumberFormatException e)
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[2]));
-			}
-			try
-			{
-				centerZ = Integer.parseInt(args[3]);
-			}
-			catch (NumberFormatException e)
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[3]));
-			}
+			radius = parseIntWithMin(sender, args[0], 0);
+			centerX = parseInt(sender, args[1]);
+			centerY = parseInt(sender, args[2]);
+			centerZ = parseInt(sender, args[3]);
+		}
+		else
+		{
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			return;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -88,7 +57,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 			counter++;
 			entity.setDead();
 		}
-		OutputHandler.chatConfirmation(sender, Localization.format(Localization.REMOVED, counter));
+		OutputHandler.chatConfirmation(sender, Localization.format("command.remove.done", counter));
 	}
 
 	@Override
@@ -99,53 +68,18 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 
 		if (args.length >= 4)
 		{
-			try
-			{
-				radius = Integer.parseInt(args[0]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
-			}
-			try
-			{
-				center.x = Integer.parseInt(args[1]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[1]));
-			}
-			try
-			{
-				center.y = Integer.parseInt(args[2]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[2]));
-			}
-			try
-			{
-				center.z = Integer.parseInt(args[3]);
-			}
-			catch (NumberFormatException e)
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
-			}
+			radius = parseIntWithMin(sender, args[0], 0);
+			center.x = parseInt(sender, args[1]);
+			center.y = parseInt(sender, args[2]);
+			center.z = parseInt(sender, args[3]);
 			if (args.length >= 5)
 			{
-				try
-				{
-					center.dim = Integer.parseInt(args[3]);
-				}
-				catch (NumberFormatException e)
-				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[3]));
-				}
+				center.dim = parseInt(sender, args[3]);
 			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
+			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 			return;
 		}
 
@@ -160,7 +94,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 			counter++;
 			entity.setDead();
 		}
-		sender.sendChatToPlayer(Localization.format(Localization.REMOVED, counter));
+		OutputHandler.chatConfirmation(sender, Localization.format("command.remove.done", counter));
 	}
 
 	@Override
@@ -173,6 +107,12 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return null;
 	}
 
 }

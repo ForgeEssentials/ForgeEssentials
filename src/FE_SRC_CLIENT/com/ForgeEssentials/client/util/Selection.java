@@ -26,12 +26,12 @@ public class Selection extends AreaBase
 	public void setStart(Point start)
 	{
 		this.start = start;
-		this.redefine(this.start, end);
+		redefine(this.start, end);
 	}
 
 	public void setEnd(Point end)
 	{
 		this.end = end;
-		this.redefine(start, this.end);
+		redefine(start, this.end);
 	}
 }

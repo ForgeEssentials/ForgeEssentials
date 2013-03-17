@@ -1,10 +1,12 @@
 package com.ForgeEssentials.economy.commands;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -15,7 +17,7 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName()
 	{
-		return Localization.get(Localization.WALLET_GET);
+		return "getwallet";
 	}
 
 	@Override
@@ -31,13 +33,11 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				int wallet = Wallet.getWallet(player);
-
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(player.username + Localization.get(Localization.WALLET_GET_TARGET) + wallet + " " + Wallet.currency(wallet));
+					sender.sendChatToPlayer(player.username + Localization.get(Localization.wallet_GET_TARGET) + WalletHandler.getMoneyString(player));
 				}
-				player.sendChatToPlayer(Localization.get(Localization.WALLET_GET_SELF) + wallet + " " + Wallet.currency(wallet));
+				player.sendChatToPlayer(Localization.get(Localization.wallet_GET_SELF) + WalletHandler.getMoneyString(player));
 			}
 		}
 		else
@@ -59,8 +59,7 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				int wallet = Wallet.getWallet(player);
-				sender.sendChatToPlayer(player.username + Localization.get(Localization.WALLET_GET_TARGET) + wallet + " " + Wallet.currency(wallet));
+				sender.sendChatToPlayer(player.username + Localization.get(Localization.wallet_GET_TARGET) + WalletHandler.getMoneyString(player));
 			}
 		}
 		else
@@ -79,5 +78,14 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.Economy." + getCommandName();
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 1)
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		else
+			return null;
 	}
 }

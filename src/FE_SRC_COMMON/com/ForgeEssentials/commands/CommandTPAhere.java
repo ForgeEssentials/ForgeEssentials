@@ -55,8 +55,8 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase
 				{
 					if (data.receiver == sender)
 					{
-						data.sender.sendChatToPlayer("TPAhere accepted.");
-						data.receiver.sendChatToPlayer("TPAhere accepted.");
+						data.sender.sendChatToPlayer(Localization.get("command.tpahere.accepted"));
+						data.receiver.sendChatToPlayer(Localization.get("command.tpahere.accepted"));
 						TickHandlerCommands.tpaListToRemove.add(data);
 						TeleportCenter.addToTpQue(new WarpPoint(data.sender), data.receiver);
 						return;
@@ -74,8 +74,8 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase
 				{
 					if (data.receiver == sender)
 					{
-						data.sender.sendChatToPlayer("TPAhere declined.");
-						data.receiver.sendChatToPlayer("TPAhere declined.");
+						data.sender.sendChatToPlayer(Localization.get("command.tpahere.declined"));
+						data.receiver.sendChatToPlayer(Localization.get("command.tpahere.declined"));
 						TickHandlerCommands.tpaListToRemove.add(data);
 						return;
 					}
@@ -93,15 +93,14 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase
 		{
 			TickHandlerCommands.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
 
-			sender.sendChatToPlayer("Send a TPAhere request to " + receiver.username);
-			receiver.sendChatToPlayer("Got a TPAhere request from " + sender.username);
+			sender.sendChatToPlayer(Localization.format("command.tpahere.sendRequest", receiver.username));
+			receiver.sendChatToPlayer(Localization.format("command.tpahere.gotRequest", receiver.username));
 		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-
 	}
 
 	@Override

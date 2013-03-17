@@ -1,5 +1,7 @@
 package com.ForgeEssentials.core.commands;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemInWorldManager;
@@ -81,6 +83,13 @@ public class CommandFEDebug extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
+		return null;
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		// TODO Auto-generated method stub
 		return null;
 	}
 

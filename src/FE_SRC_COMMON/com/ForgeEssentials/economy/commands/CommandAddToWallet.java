@@ -1,10 +1,12 @@
 package com.ForgeEssentials.economy.commands;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -18,7 +20,7 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName()
 	{
-		return Localization.get(Localization.WALLET_ADD);
+		return "addtowallet";
 	}
 
 	@Override
@@ -35,13 +37,13 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				Wallet.addToWallet(amountToAdd, player);
+				WalletHandler.addToWallet(amountToAdd, player);
 
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(amountToAdd + " " + Wallet.currency(amountToAdd) + Localization.get(Localization.WALLET_ADD_TARGET));
+					sender.sendChatToPlayer(amountToAdd + " " + WalletHandler.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
 				}
-				player.sendChatToPlayer(amountToAdd + " " + Wallet.currency(amountToAdd) + Localization.get(Localization.WALLET_ADD_SELF));
+				player.sendChatToPlayer(amountToAdd + " " + WalletHandler.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
 			}
 		}
 		else
@@ -65,10 +67,10 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				Wallet.addToWallet(amountToAdd, player);
+				WalletHandler.addToWallet(amountToAdd, player);
 
-				sender.sendChatToPlayer(amountToAdd + " " + Wallet.currency(amountToAdd) + Localization.get(Localization.WALLET_ADD_TARGET));
-				player.sendChatToPlayer(amountToAdd + " " + Wallet.currency(amountToAdd) + Localization.get(Localization.WALLET_ADD_SELF));
+				sender.sendChatToPlayer(amountToAdd + " " + WalletHandler.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
+				player.sendChatToPlayer(amountToAdd + " " + WalletHandler.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
 			}
 		}
 		else
@@ -87,6 +89,15 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.Economy." + getCommandName();
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 1)
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		else
+			return null;
 	}
 
 }

@@ -2,7 +2,6 @@ package com.ForgeEssentials.util;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -23,17 +22,14 @@ import cpw.mods.fml.common.TickType;
 
 public class TeleportCenter implements IScheduledTickHandler
 {
-	public static HashMap<String, Warp>						warps			= new HashMap<String, Warp>();
-	public static HashMap<String, HashMap<String, PWarp>>	pwMap			= new HashMap<String, HashMap<String, PWarp>>();
+	private static ArrayList<TPdata>	que				= new ArrayList<TPdata>();
+	private static ArrayList<TPdata>	removeQue		= new ArrayList<TPdata>();
 
-	private static ArrayList<TPdata>						que				= new ArrayList<TPdata>();
-	private static ArrayList<TPdata>						removeQue		= new ArrayList<TPdata>();
+	public static int					tpWarmup;
+	public static int					tpCooldown;
 
-	public static int										tpWarmup;
-	public static int										tpCooldown;
-
-	public static final String								BYPASS_WARMUP	= "ForgeEssentials.TeleportCenter.BypassWarmup";
-	public static final String								BYPASS_COOLDOWN	= "ForgeEssentials.TeleportCenter.BypassCooldown";
+	public static final String			BYPASS_WARMUP	= "ForgeEssentials.TeleportCenter.BypassWarmup";
+	public static final String			BYPASS_COOLDOWN	= "ForgeEssentials.TeleportCenter.BypassCooldown";
 
 	public static void addToTpQue(WarpPoint point, EntityPlayer player)
 	{

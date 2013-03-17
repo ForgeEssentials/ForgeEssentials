@@ -86,7 +86,6 @@ public class ForgeEssentials
 	public static boolean			mcstats;
 
 	public BannedItems				bannedItems;
-	
 	public static String			version;
 
 	private CompatMCStats			mcstatscompat;
@@ -143,9 +142,9 @@ public class ForgeEssentials
 			DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
 		}
 
-		// setup modules AFTER data stuff...
 		new MiscEventHandler();
 		bannedItems = new BannedItems();
+		MinecraftForge.EVENT_BUS.register(bannedItems);
 		LoginMessage.loadFile();
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
@@ -161,7 +160,7 @@ public class ForgeEssentials
 
 		mdlaunch.load(e);
 		localization.load();
-		
+
 		// tasks
 		tasks = new TaskRegistry();
 
@@ -192,7 +191,7 @@ public class ForgeEssentials
 	{
 		// load up DataAPI
 		((StorageManager) DataStorageManager.manager).serverStart(e);
-		
+
 		ModListFile.makeModList();
 
 		// Central TP system
@@ -200,7 +199,7 @@ public class ForgeEssentials
 
 		cmds = new CoreCommands();
 		cmds.load(e);
-		
+
 		tasks.onServerStart();
 
 		// do modules last... just in case...

@@ -58,13 +58,12 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 				{
 					PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 					ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
-					
+
 					// teleport
 					server.transferPlayerToDimension((EntityPlayerMP) player, 0);
 					((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
-					
-					
-					player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
+
+					player.sendChatToPlayer(Localization.get("command.spawn.done"));
 				}
 				return;
 			}
@@ -81,7 +80,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 			spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, sender.rotationPitch, sender.rotationYaw);
 			PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
 			TeleportCenter.addToTpQue(spawn, sender);
-			sender.sendChatToPlayer(Localization.get(Localization.SPAWNED));
+			sender.sendChatToPlayer(Localization.get("command.spawn.done"));
 		}
 	}
 
@@ -105,7 +104,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 					ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
 					spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
 					TeleportCenter.addToTpQue(spawn, player);
-					player.sendChatToPlayer(Localization.get(Localization.SPAWNED));
+					player.sendChatToPlayer(Localization.get("command.spawn.done"));
 				}
 				return;
 			}

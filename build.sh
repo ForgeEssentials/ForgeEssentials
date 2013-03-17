@@ -11,7 +11,7 @@ MC="`tail -n 1 VERSION.TXT`"
 echo "Version of ${JOB_NAME} is: ${VERSION} for MC ${MC}"
 
 echo "Downloading Forge..."
-wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip 
+wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.4.7-6.6.2.534.zip 
 # if it didn't downlaod, try the mirror...
 #if [ ! -f "minecraftforge-src-*.zip" ]
 #then

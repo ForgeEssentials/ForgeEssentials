@@ -7,7 +7,8 @@ package com.ForgeEssentials.api.permissions;
  * sending the instance back in to update.
  * @author AbrarSyed
  */
-public class Group implements Comparable<Object>
+@SuppressWarnings("rawtypes")
+public class Group implements Comparable
 {
 
 	public String	name;

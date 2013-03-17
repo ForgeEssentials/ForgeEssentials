@@ -13,7 +13,7 @@ public class PromotionLadder
 	 * @param name
 	 * @param zoneID
 	 * @param list
-	 *            this list must be in order. 0 bieng the top.
+	 * this list must be in order. 0 bieng the top.
 	 */
 	public PromotionLadder(String name, String zoneID, String[] list)
 	{
@@ -27,7 +27,7 @@ public class PromotionLadder
 	 * @param name
 	 * @param zoneID
 	 * @param list
-	 *            this list must be in order. 0 bieng the top.
+	 * this list must be in order. 0 bieng the top.
 	 */
 	public PromotionLadder(String name, String zoneID, ArrayList<String> list)
 	{

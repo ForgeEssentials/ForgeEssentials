@@ -138,6 +138,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return fields.keySet().toArray(new String[fields.size()]);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public TypeData getTypeDataFromObject(T obj)
 	{
@@ -218,6 +219,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return data;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public T reconstruct(IReconstructData data)
 	{
@@ -257,11 +259,12 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Class[] getGenericTypes()
+	public Class<?>[] getGenericTypes()
 	{
 		return container.getParameters();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public ITypeInfo<?> getInfoForField(String field)
 	{

@@ -4,9 +4,9 @@ package com.ForgeEssentials.util;
  * Represents a pair of values. Convenience class more than anything.
  * @author MysteriousAges
  * @param <A>
- *            First type
+ * First type
  * @param <B>
- *            Second type
+ * Second type
  */
 public class Pair<A, B>
 {
@@ -52,6 +52,7 @@ public class Pair<A, B>
 		return left.hashCode() ^ right.hashCode();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object o)
 	{

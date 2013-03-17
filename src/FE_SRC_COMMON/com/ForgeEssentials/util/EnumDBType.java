@@ -11,12 +11,12 @@ public enum EnumDBType
 
 	/**
 	 * @param isRemote
-	 *            if the JDBC connection method should use the one with username
-	 *            and password or not.
+	 * if the JDBC connection method should use the one with username
+	 * and password or not.
 	 * @param driverName
-	 *            the qualified name of the JDBC connector class for this DB
+	 * the qualified name of the JDBC connector class for this DB
 	 * @param connectString
-	 *            a formattable connection string. see existing ones.
+	 * a formattable connection string. see existing ones.
 	 */
 	EnumDBType(boolean isRemote, String driverName, String connectString)
 	{
@@ -44,7 +44,7 @@ public enum EnumDBType
 
 	/**
 	 * @param data
-	 *            Object array used in formatting
+	 * Object array used in formatting
 	 * @return fully finished connection string
 	 */
 	public String getConnectionString(Object... data) throws IllegalFormatException
@@ -56,23 +56,4 @@ public enum EnumDBType
 	public boolean			isRemote;
 	private final String	driver;
 	private String			connect;
-
-	/**
-	 * @param delimeter
-	 *            The char sequence to be done between elements. trailing
-	 *            delimiter will be there at the end.
-	 * @return
-	 */
-	public static String getAll(String delimeter)
-	{
-		StringBuilder s = new StringBuilder();
-
-		for (EnumDBType type : EnumDBType.values())
-		{
-			s.append(type).append(delimeter);
-		}
-
-		return s.toString();
-	}
-
 }

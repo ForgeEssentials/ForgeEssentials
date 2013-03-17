@@ -41,10 +41,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 
 	public ArrayList<String> loadRules()
 	{
-		// Rules the rules file will be a flat strings file.. nothing special.
 		ArrayList<String> rules = new ArrayList<String>();
-
-		// somehow a new rules.txt is generated EVERY load.
 
 		OutputHandler.info("Loading rules");
 		if (!rulesFile.exists())
@@ -218,7 +215,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			index = parseIntBounded(sender, args[1], 1, rules.size());
 
 			rules.remove(index - 1);
-			OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + " removed.");
+			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.remove", args[1]));
 		}
 		else if (args[0].equalsIgnoreCase("add"))
 		{
@@ -229,7 +226,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			}
 			newRule = FunctionHelper.formatColors(newRule);
 			rules.add(newRule);
-			OutputHandler.chatConfirmation(sender, "Rule #" + rules.size() + ": " + rules.get(rules.size() - 1) + "&r Added!");
+			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.added", args[1]));
 		}
 		else if (args[0].equalsIgnoreCase("move"))
 		{
@@ -242,12 +239,12 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			if (index < rules.size())
 			{
 				rules.add(index - 1, temp);
-				OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + ": " + temp + "&r Moved to: " + args[2]);
+				OutputHandler.chatConfirmation(sender, Localization.format("command.rules.moved", args[1], args[2]));
 			}
 			else
 			{
 				rules.add(temp);
-				OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + ": " + temp + "&r Moved to last position.");
+				OutputHandler.chatConfirmation(sender, Localization.format("command.rules.movedToLast", args[1]));
 			}
 		}
 		else if (args[0].equalsIgnoreCase("change"))
@@ -261,7 +258,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			}
 			newRule = FunctionHelper.formatColors(newRule);
 			rules.set(index - 1, newRule);
-			OutputHandler.chatConfirmation(sender, "Rule #" + index + " changed to &r" + newRule);
+			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.changed", index + "", newRule));
 		}
 		else
 		{
@@ -304,7 +301,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			index = parseIntBounded(sender, args[1], 1, rules.size());
 
 			rules.remove(index - 1);
-			OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + " removed.");
+			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.remove", args[1]));
 		}
 		else if (args[0].equalsIgnoreCase("add"))
 		{
@@ -315,7 +312,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			}
 			newRule = FunctionHelper.formatColors(newRule);
 			rules.add(newRule);
-			OutputHandler.chatConfirmation(sender, "Rule #" + rules.size() + ": " + rules.get(rules.size() - 1) + "&r Added!");
+			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.added", args[1]));
 		}
 		else if (args[0].equalsIgnoreCase("move"))
 		{
@@ -328,12 +325,12 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			if (index < rules.size())
 			{
 				rules.add(index - 1, temp);
-				OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + ": " + temp + "&r Moved to: " + args[2]);
+				OutputHandler.chatConfirmation(sender, Localization.format("command.rules.moved", args[1], args[2]));
 			}
 			else
 			{
 				rules.add(temp);
-				OutputHandler.chatConfirmation(sender, "Rule #" + args[1] + ": " + temp + "&r Moved to last position.");
+				OutputHandler.chatConfirmation(sender, Localization.format("command.rules.movedToLast", args[1]));
 			}
 		}
 		else if (args[0].equalsIgnoreCase("change"))
@@ -347,7 +344,7 @@ public class CommandRules extends ForgeEssentialsCommandBase
 			}
 			newRule = FunctionHelper.formatColors(newRule);
 			rules.set(index - 1, newRule);
-			OutputHandler.chatConfirmation(sender, "Rule #" + index + " changed to &r" + newRule);
+			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.changed", index + "", newRule));
 		}
 		else
 		{

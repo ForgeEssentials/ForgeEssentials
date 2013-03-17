@@ -3,6 +3,7 @@ package com.ForgeEssentials.api.data;
 import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.util.DBConnector;
 
+@SuppressWarnings("rawtypes")
 public interface IStorageManager
 {
 	void registerDriver(String name, Class<? extends AbstractDataDriver> c);

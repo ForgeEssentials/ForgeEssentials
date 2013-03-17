@@ -34,7 +34,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			if (args[0].toLowerCase().equals("me"))
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-				sender.sendChatToPlayer(Localization.get(Localization.SMITE_SELF));
+				sender.sendChatToPlayer(Localization.get("command.smite.self"));
 			}
 			else
 			{
@@ -48,7 +48,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 					for (EntityPlayer victim : players)
 					{
 						victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
-						sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
+						sender.sendChatToPlayer(Localization.get("command.smite.player"));
 					}
 				}
 				else
@@ -67,7 +67,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			else
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
-				sender.sendChatToPlayer(Localization.get(Localization.SMITE_GROUND));
+				sender.sendChatToPlayer(Localization.get("command.smite.ground"));
 			}
 		}
 	}
@@ -87,7 +87,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 				for (EntityPlayer victim : players)
 				{
 					victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
-					sender.sendChatToPlayer(Localization.get(Localization.SMITE_PLAYER));
+					sender.sendChatToPlayer(Localization.get("command.smite.player"));
 				}
 			}
 			else

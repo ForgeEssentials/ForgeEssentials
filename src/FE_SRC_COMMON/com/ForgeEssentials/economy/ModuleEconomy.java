@@ -1,107 +1,46 @@
 package com.ForgeEssentials.economy;
 
-import java.util.HashMap;
+import java.io.File;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.MinecraftForge;
-
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.PreInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.economy.commands.CommandAddToWallet;
 import com.ForgeEssentials.economy.commands.CommandGetWallet;
+import com.ForgeEssentials.economy.commands.CommandMoney;
 import com.ForgeEssentials.economy.commands.CommandPaidCommand;
 import com.ForgeEssentials.economy.commands.CommandPay;
 import com.ForgeEssentials.economy.commands.CommandRemoveWallet;
+import com.ForgeEssentials.economy.commands.CommandSellCommand;
 import com.ForgeEssentials.economy.commands.CommandSetWallet;
 
-import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
- * Call the Wallet class when working with Economy
+ * Call the WalletHandler class when working with Economy
  */
-@FEModule(name = "Economy", parentMod = ForgeEssentials.class)
-public class ModuleEconomy implements IPlayerTracker
+@FEModule(name = "Economy", parentMod = ForgeEssentials.class, configClass = ConfigEconomy.class)
+public class ModuleEconomy
 {
-	private static HashMap<String, ModuleEconomy>	playerEconomyMap	= new HashMap<String, ModuleEconomy>();
+	@FEModule.Config
+	public static ConfigEconomy	config;
 
-	/**
-	 * Returns the player's economy instance
-	 * @param player
-	 *            target player
-	 * @return the player's economy instance
-	 */
-	public static ModuleEconomy getPlayerInfo(EntityPlayer player)
-	{
-		ModuleEconomy info = playerEconomyMap.get(player.username);
+	@FEModule.ModuleDir
+	public static File			moduleDir;
 
-		if (info == null)
-		{
-			info = new ModuleEconomy(player);
+	public static int			startbuget;
 
-			playerEconomyMap.put(player.username, info);
-		}
-
-		return info;
-	}
-
-	/**
-	 * Returns the player's economy instance
-	 * @param username
-	 *            target's username
-	 * @return the player's economy instance
-	 */
-	public static ModuleEconomy getPlayerInfo(String username)
-	{
-		ModuleEconomy info = playerEconomyMap.get(username);
-
-		return info;
-	}
-
-	public int	wallet;
-
-	private ModuleEconomy(EntityPlayer player)
-	{
-	}
-
-	public ModuleEconomy()
-	{
-	}
-
-	public static void saveData(EntityPlayer player)
-	{
-		NBTTagCompound economyNBT = player.getEntityData();
-		economyNBT.setInteger("Economy-" + player.username, ModuleEconomy.getPlayerInfo(player).wallet);
-
-	}
-
-	public static void loadData(EntityPlayer player)
-	{
-		NBTTagCompound economyNBT = player.getEntityData();
-		ModuleEconomy.getPlayerInfo(player).wallet = economyNBT.getInteger("Economy-" + player.username);
-		Wallet.doesWalletExist(player);
-	}
-
-	@PreInit
-	public void preLoad(FEModulePreInitEvent e)
-	{
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
-	@Init
+	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
-		GameRegistry.registerPlayerTracker(this);
+		GameRegistry.registerPlayerTracker(new WalletHandler());
 	}
 
-	@ServerInit
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandAddToWallet());
@@ -110,29 +49,22 @@ public class ModuleEconomy implements IPlayerTracker
 		e.registerServerCommand(new CommandSetWallet());
 		e.registerServerCommand(new CommandPay());
 		e.registerServerCommand(new CommandPaidCommand());
+		e.registerServerCommand(new CommandSellCommand());
+		e.registerServerCommand(new CommandMoney());
 	}
 
-	@Override
-	public void onPlayerLogin(EntityPlayer player)
+	@PermRegister
+	public static void registerPerms(IPermRegisterEvent event)
 	{
-		loadData(player);
-	}
+		event.registerPermissionLevel("ForgeEssentials.Economy.pay", RegGroup.MEMBERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.requestpayment", RegGroup.MEMBERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.money", RegGroup.MEMBERS);
 
-	@Override
-	public void onPlayerLogout(EntityPlayer player)
-	{
-		saveData(player);
-	}
-
-	@Override
-	public void onPlayerChangedDimension(EntityPlayer player)
-	{
-		saveData(player);
-	}
-
-	@Override
-	public void onPlayerRespawn(EntityPlayer player)
-	{
-		loadData(player);
+		event.registerPermissionLevel("ForgeEssentials.Economy.getwallet", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.paidcommand", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.addtowallet", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.sellcommand", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.removewallet", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.Economy.setwallet", RegGroup.OWNERS);
 	}
 }

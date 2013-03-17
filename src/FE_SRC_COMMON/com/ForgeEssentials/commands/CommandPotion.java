@@ -81,7 +81,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.POTIONEFFECTNOTFOUND));
+			OutputHandler.chatError(sender, Localization.get("command.potion.effectnotfound"));
 			return;
 		}
 

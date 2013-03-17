@@ -1,11 +1,7 @@
 package com.ForgeEssentials.api.snooper;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
@@ -27,117 +23,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 
 import com.ForgeEssentials.api.json.JSONArray;
+import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.json.JSONObject;
-import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class TextFormatter
 {
-	public static String toJSON(HashMap<String, String> data)
+	public static JSONObject toJSON(ItemStack stack, Boolean listEnch) throws JSONException
 	{
-		if (data.isEmpty())
-			return "{}";
-		String toSend = "{";
-
-		for (Entry<String, String> set : data.entrySet())
-		{
-			if (set.getValue().startsWith("{") || set.getValue().startsWith("["))
-			{
-				toSend += "\"" + set.getKey() + "\": " + set.getValue() + ", ";
-			}
-			else
-			{
-				toSend += "\"" + set.getKey() + "\": \"" + set.getValue() + "\", ";
-			}
-		}
-
-		toSend = toSend.substring(0, toSend.length() - 2);
-		toSend += "}";
-
-		return toSend;
-	}
-
-	public static String toJSON(String[] data)
-	{
-		if (data.length == 0)
-			return "[]";
-		String toSend = "[";
-
-		for (String value : data)
-		{
-			if (value.startsWith("{") || value.startsWith("["))
-			{
-				toSend += value + ",";
-			}
-			else
-			{
-				toSend += "\"" + value + "\",";
-			}
-		}
-
-		toSend = toSend.substring(0, toSend.length() - 1);
-		toSend += "]";
-
-		return toSend;
-	}
-
-	public static String toJSON(int[] data)
-	{
-		if (data.length == 0)
-			return "[]";
-		String toSend = "[";
-
-		for (int value : data)
-		{
-			toSend += "\"" + value + "\",";
-		}
-
-		toSend = toSend.substring(0, toSend.length() - 1);
-		toSend += "]";
-
-		return toSend;
-	}
-
-	public static String toJSON(byte[] data)
-	{
-		if (data.length == 0)
-			return "[]";
-		String toSend = "[";
-
-		for (int value : data)
-		{
-			toSend += "\"" + value + "\",";
-		}
-
-		toSend = toSend.substring(0, toSend.length() - 1);
-		toSend += "]";
-
-		return toSend;
-	}
-
-	public static String toJSON(Point point)
-	{
-		HashMap<String, String> data = new HashMap<String, String>();
-		data.put("x", "" + point.x);
-		data.put("y", "" + point.y);
-		data.put("z", "" + point.z);
-		if (point instanceof WorldPoint)
-		{
-			data.put("dim", "" + ((WorldPoint) point).dim);
-		}
-		if (point instanceof WarpPoint)
-		{
-			data.put("dim", "" + ((WarpPoint) point).dim);
-			data.put("pitch", "" + ((WarpPoint) point).pitch);
-			data.put("yaw", "" + ((WarpPoint) point).yaw);
-		}
-		return toJSON(data);
-	}
-
-	public static String toJSON(ItemStack stack, Boolean listEnch)
-	{
-		HashMap<String, String> data = new HashMap<String, String>();
+		JSONObject data = new JSONObject();
 		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display") && stack.stackTagCompound.getCompoundTag("display").hasKey("Name"))
 		{
 			data.put("item", stack.getItemName().replaceAll("item.", "").replaceAll("tile.", ""));
@@ -155,7 +48,7 @@ public class TextFormatter
 
 		if (listEnch)
 		{
-			ArrayList<String> tempArgs = new ArrayList<String>();
+			JSONArray tempArgs = new JSONArray();
 			NBTTagList var10 = stack.getEnchantmentTagList();
 			if (var10 != null)
 			{
@@ -166,29 +59,27 @@ public class TextFormatter
 
 					if (Enchantment.enchantmentsList[var8] != null)
 					{
-						tempArgs.add(Enchantment.enchantmentsList[var8].getTranslatedName(var9));
+						tempArgs.put(Enchantment.enchantmentsList[var8].getTranslatedName(var9));
 					}
 				}
-				data.put("ench", toJSON(tempArgs));
+				data.put("ench", tempArgs);
 			}
 		}
 
-		return toJSON(data);
+		return data;
 	}
 
-	public static String toJSON(Collection<PotionEffect> collection)
+	public static JSONArray toJSON(Collection<PotionEffect> collection)
 	{
-		String[] data = new String[collection.size()];
+		JSONArray data = new JSONArray();
 		Iterator<PotionEffect> i = collection.iterator();
-		int id = 0;
 		while (i.hasNext())
 		{
 			Object obj = i.next();
 			PotionEffect effect = (PotionEffect) obj;
-			data[id] = translatePotion(effect);
-			id++;
+			data.put(translatePotion(effect));
 		}
-		return toJSON(data);
+		return data;
 	}
 
 	public static String translatePotion(PotionEffect effect)
@@ -211,89 +102,63 @@ public class TextFormatter
 		return name;
 	}
 
-	public static String toJSON(List<String> data)
-	{
-		if (data.size() == 0)
-			return "[]";
-		String toSend = "[";
-
-		for (String value : data)
-		{
-			if (value.startsWith("{") || value.startsWith("["))
-			{
-				toSend += value + ",";
-			}
-			else
-			{
-				toSend += "\"" + value + "\",";
-			}
-		}
-
-		toSend = toSend.substring(0, toSend.length() - 1);
-		toSend += "]";
-
-		return toSend;
-	}
-
-	public static String toJSONnbtComp(NBTTagCompound nbt)
+	public static JSONArray toJSONnbtComp(NBTTagCompound nbt) throws JSONException
 	{
 		Object[] obj = nbt.getTags().toArray();
-		String[] data = new String[nbt.getTags().size()];
+		JSONArray data = new JSONArray();
 		for (int i = 0; i < obj.length; i++)
 		{
-			data[i] = toJSONnbtBase((NBTBase) obj[i]);
+			data.put(toJSONnbtBase((NBTBase) obj[i]));
 		}
-		return toJSON(data);
+		return data;
 	}
 
-	public static String toJSONnbtBase(NBTBase nbt)
+	public static JSONObject toJSONnbtBase(NBTBase nbt) throws JSONException
 	{
-		HashMap<String, String> map = new HashMap<String, String>();
 		String data;
 
 		if (nbt instanceof NBTTagCompound)
 		{
-			data = toJSONnbtComp((NBTTagCompound) nbt);
+			data = toJSONnbtComp((NBTTagCompound) nbt).toString();
 		}
 		else if (nbt instanceof NBTTagByteArray)
 		{
-			data = toJSONnbtBtArray((NBTTagByteArray) nbt);
+			data = toJSONnbtBtArray((NBTTagByteArray) nbt).toString();
 		}
 		else if (nbt instanceof NBTTagIntArray)
 		{
-			data = toJSONnbtIntArray((NBTTagIntArray) nbt);
+			data = toJSONnbtIntArray((NBTTagIntArray) nbt).toString();
 		}
 		else if (nbt instanceof NBTTagList)
 		{
-			data = toJSONnbtTagList((NBTTagList) nbt);
+			data = toJSONnbtTagList((NBTTagList) nbt).toString();
 		}
 		else
 		{
 			data = nbt.toString();
 		}
 
-		map.put(nbt.getId() + "~" + nbt.getName(), data);
-		return toJSON(map);
+		return new JSONObject().put(nbt.getId() + "~" + nbt.getName(), data);
 	}
 
-	public static String toJSONnbtTagList(NBTTagList nbt)
+	public static JSONArray toJSONnbtTagList(NBTTagList nbt) throws JSONException
 	{
-		String[] data = new String[nbt.tagCount()];
+		JSONArray data = new JSONArray();
 		for (int i = 0; i < nbt.tagCount(); i++)
 		{
-			data[i] = toJSONnbtBase(nbt.tagAt(i));
+			data.put(toJSONnbtBase(nbt.tagAt(i)));
 		}
-		return toJSON(data);
+		return data;
 	}
 
-	public static String toJSONnbtIntArray(NBTTagIntArray nbt)
+	public static JSONArray toJSONnbtIntArray(NBTTagIntArray nbt)
 	{
-		return toJSON(nbt.intArray);
+		return new JSONArray().put(nbt.intArray);
 	}
 
-	public static String toJSONnbtBtArray(NBTTagByteArray nbt)
+	public static JSONArray toJSONnbtBtArray(NBTTagByteArray nbt)
 	{
-		return toJSON(nbt.byteArray);
+		return new JSONArray().put(nbt.byteArray);
 	}
 
 	public static TileEntity reconstructTE(String JSON)
@@ -302,7 +167,6 @@ public class TextFormatter
 		{
 			JSONObject top = new JSONObject(JSON);
 			String className = JSONObject.getNames(top)[0];
-			// OutputHandler.debug("RECONSTRUCT: " + className);
 			TileEntity te = (TileEntity) Class.forName(className).newInstance();
 			JSONArray dataArray = top.getJSONArray(className);
 			NBTTagCompound data = new NBTTagCompound();
@@ -418,8 +282,6 @@ public class TextFormatter
 			Object keyObj = top.keySet().toArray()[0];
 
 			String key = keyObj.toString();
-
-			// OutputHandler.debug("KEY: " + key + " DATA: " + top.get(key));
 
 			String[] split = key.split("~", 2);
 			byte type = new Byte(split[0]);

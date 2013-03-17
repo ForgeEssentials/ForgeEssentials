@@ -2,7 +2,6 @@ package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -93,7 +92,7 @@ public class CommandFEPermGroup
 				}
 			}
 			// Remove zone
-			List<Group> groups = PermissionsAPI.getGroupsInZone(zone.getZoneName());
+			ArrayList<?> groups = PermissionsAPI.getGroupsInZone(zone.getZoneName());
 			for (Object groupObj : groups)
 			{
 				Group group = (Group) groupObj;
@@ -126,7 +125,7 @@ public class CommandFEPermGroup
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
-			List<Group> list = PermissionsAPI.getGroupsInZone(zone.getZoneName());
+			ArrayList<?> list = PermissionsAPI.getGroupsInZone(zone.getZoneName());
 			String groups = "";
 			int i = 0;
 			for (Object groupObj : list)
@@ -418,6 +417,7 @@ public class CommandFEPermGroup
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
 				}
 			}
+
 			ArrayList<String> list = PermissionsAPI.getGroupPermissions(group.name, zone.getZoneName());
 			Collections.sort(list);
 			ArrayList<String> messageAllowed = new ArrayList<String>();
@@ -540,7 +540,7 @@ public class CommandFEPermGroup
 					sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
-			ArrayList<Group> list = PermissionsAPI.getGroupsInZone(zone.getZoneName());
+			ArrayList<?> list = PermissionsAPI.getGroupsInZone(zone.getZoneName());
 			String groups = "";
 			int i = 0;
 			for (Object groupObj : list)
