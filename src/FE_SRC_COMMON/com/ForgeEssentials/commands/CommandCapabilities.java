@@ -10,8 +10,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -23,7 +24,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
  * @author Dries007
  */
 
-public class CommandCapabilities extends ForgeEssentialsCommandBase
+public class CommandCapabilities extends FEcmdModuleCommands
 {
 	public static ArrayList<String>	names;
 	static
@@ -228,6 +229,12 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 			return getListOfStringsMatchingLastWord(args, "true", "false");
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 
 }

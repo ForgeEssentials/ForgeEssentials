@@ -10,12 +10,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandSpawnMob extends ForgeEssentialsCommandBase
+public class CommandSpawnMob extends FEcmdModuleCommands
 {
 
 	private HashMap<String, String>	mobNames	= new HashMap<String, String>();
@@ -163,6 +164,12 @@ public class CommandSpawnMob extends ForgeEssentialsCommandBase
 			return getListOfStringsFromIterableMatchingLastWord(args, mobNames.keySet());
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 
 }

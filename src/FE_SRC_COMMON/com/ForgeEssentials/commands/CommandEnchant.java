@@ -8,11 +8,12 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandEnchant extends ForgeEssentialsCommandBase
+public class CommandEnchant extends FEcmdModuleCommands
 {
 	@Override
 	public String getCommandName()
@@ -124,5 +125,11 @@ public class CommandEnchant extends ForgeEssentialsCommandBase
 	public boolean canConsoleUseCommand()
 	{
 		return false;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 }

@@ -7,13 +7,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandI extends ForgeEssentialsCommandBase
+public class CommandI extends FEcmdModuleCommands
 {
 
 	@Override
@@ -91,6 +92,12 @@ public class CommandI extends ForgeEssentialsCommandBase
 			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getItemList());
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 
 }

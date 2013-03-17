@@ -8,10 +8,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.network.packet.Packet100OpenWindow;
 
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.InvSeeMisk;
 import com.ForgeEssentials.commands.util.PlayerInvChest;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -20,7 +20,7 @@ import cpw.mods.fml.relauncher.Side;
  * Opens other player inventory.
  * @author Dries007
  */
-public class CommandSeeInventory extends ForgeEssentialsCommandBase
+public class CommandSeeInventory extends FEcmdModuleCommands
 {
 	private InvSeeMisk	invSeeMisk;
 
@@ -78,6 +78,12 @@ public class CommandSeeInventory extends ForgeEssentialsCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 
 }

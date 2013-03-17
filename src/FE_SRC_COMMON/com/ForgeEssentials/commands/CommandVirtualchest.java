@@ -9,14 +9,15 @@ import net.minecraft.inventory.ContainerChest;
 import net.minecraft.network.packet.Packet100OpenWindow;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.VirtualChest;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 /**
  * Opens a configurable virtual chest
  * @author Dries007
  */
-public class CommandVirtualchest extends ForgeEssentialsCommandBase
+public class CommandVirtualchest extends FEcmdModuleCommands
 {
 	public static int		size	= 54;
 	public static String	name	= "Vault 13";
@@ -79,6 +80,12 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 
 }

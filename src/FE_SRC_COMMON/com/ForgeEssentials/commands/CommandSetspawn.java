@@ -5,12 +5,13 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.Localization;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandSetspawn extends ForgeEssentialsCommandBase
+public class CommandSetspawn extends FEcmdModuleCommands
 {
 
 	@Override
@@ -70,5 +71,11 @@ public class CommandSetspawn extends ForgeEssentialsCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 }

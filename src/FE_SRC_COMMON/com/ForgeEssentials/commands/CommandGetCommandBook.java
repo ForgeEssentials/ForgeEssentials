@@ -15,10 +15,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
-public class CommandGetCommandBook extends ForgeEssentialsCommandBase
+public class CommandGetCommandBook extends FEcmdModuleCommands
 {
 	@Override
 	public String getCommandName()
@@ -57,10 +58,10 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 
 			text += FEChatFormatCodes.BLACK + cmd.getCommandUsage(sender);
 
-			if (cmd instanceof ForgeEssentialsCommandBase)
+			if (cmd instanceof FEcmdModuleCommands)
 			{
 				text += "\n";
-				text += FEChatFormatCodes.DARKGREY + ((ForgeEssentialsCommandBase) cmd).getCommandPerm();
+				text += FEChatFormatCodes.DARKGREY + ((FEcmdModuleCommands) cmd).getCommandPerm();
 			}
 
 			if (!text.equals(""))
@@ -124,5 +125,11 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.GUESTS;
 	}
 }

@@ -71,8 +71,10 @@ public class ModuleCommands
 	@PermRegister
 	public static void registerPermissions(IPermRegisterEvent event)
 	{
+		CommandRegistrar.registerPermissions(event);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands._ALL_", RegGroup.OWNERS);
 
+		/*
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.compass", RegGroup.MEMBERS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.afk", RegGroup.MEMBERS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.back", RegGroup.MEMBERS);
@@ -85,6 +87,7 @@ public class ModuleCommands
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.tps", RegGroup.GUESTS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.modlist", RegGroup.GUESTS);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.spawn", RegGroup.GUESTS);
+		*/
 	}
 
 	@FEModule.ServerStop

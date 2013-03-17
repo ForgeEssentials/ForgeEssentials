@@ -12,15 +12,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandPotion extends ForgeEssentialsCommandBase
+public class CommandPotion extends FEcmdModuleCommands
 {
 	public static HashMap<String, Integer>	names;
 	static
@@ -173,6 +174,12 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 			return getListOfStringsFromIterableMatchingLastWord(args, names.keySet());
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 
 }

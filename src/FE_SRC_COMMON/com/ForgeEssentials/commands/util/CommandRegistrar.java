@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.commands.CommandAFK;
 import com.ForgeEssentials.commands.CommandBack;
 import com.ForgeEssentials.commands.CommandBed;
@@ -50,13 +52,12 @@ import com.ForgeEssentials.commands.CommandTphere;
 import com.ForgeEssentials.commands.CommandTppos;
 import com.ForgeEssentials.commands.CommandVirtualchest;
 import com.ForgeEssentials.commands.CommandWarp;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class CommandRegistrar
 {
-	public static ArrayList<ForgeEssentialsCommandBase>	cmdList	= new ArrayList<ForgeEssentialsCommandBase>();
+	public static ArrayList<FEcmdModuleCommands>	cmdList	= new ArrayList<FEcmdModuleCommands>();
 
 	static
 	{
@@ -119,7 +120,7 @@ public class CommandRegistrar
 			config.addCustomCategoryComment("Player", "Toggle server wide player usage here.");
 			config.addCustomCategoryComment("Console", "Toggle console usage here.");
 
-			for (ForgeEssentialsCommandBase fecmd : cmdList)
+			for (FEcmdModuleCommands fecmd : cmdList)
 			{
 				if (fecmd.usefullCmdBlock())
 				{
@@ -153,9 +154,21 @@ public class CommandRegistrar
 
 	public static void load(FMLServerStartingEvent e)
 	{
-		for (ForgeEssentialsCommandBase cmd : cmdList)
+		for (FEcmdModuleCommands cmd : cmdList)
 		{
 			e.registerServerCommand(cmd);
+		}
+	}
+	
+	public static void registerPermissions(IPermRegisterEvent event)
+	{
+		for (FEcmdModuleCommands cmd : cmdList)
+		{
+			if (cmd.getCommandPerm() != null && cmd.getReggroup() != null)
+			{
+				System.out.println(cmd.getCommandPerm() + " => " + cmd.getReggroup().name());
+				event.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
+			}
 		}
 	}
 }

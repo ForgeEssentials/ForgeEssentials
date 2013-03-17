@@ -11,15 +11,16 @@ import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandGameMode extends ForgeEssentialsCommandBase
+public class CommandGameMode extends FEcmdModuleCommands
 {
 	@Override
 	public String getCommandName()
@@ -249,5 +250,11 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 		}
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 }
