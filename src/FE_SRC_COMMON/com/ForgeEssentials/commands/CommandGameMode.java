@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -252,6 +253,12 @@ public class CommandGameMode extends FEcmdModuleCommands
 			return null;
 	}
 
+	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
+	}
+	
 	@Override
 	public RegGroup getReggroup()
 	{

@@ -16,6 +16,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -366,6 +367,12 @@ public class CommandRules extends FEcmdModuleCommands
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
+	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".edit", RegGroup.OWNERS);
+	}
+	
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

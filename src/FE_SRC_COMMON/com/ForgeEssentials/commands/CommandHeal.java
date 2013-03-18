@@ -8,6 +8,7 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -106,6 +107,12 @@ public class CommandHeal extends FEcmdModuleCommands
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
+	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
+	}
+	
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

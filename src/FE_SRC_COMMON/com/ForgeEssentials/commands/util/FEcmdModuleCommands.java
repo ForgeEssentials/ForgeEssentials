@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
@@ -30,7 +31,7 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase
 	 */
 	public void doConfig(Configuration config, String category)
 	{
-
+		
 	}
 
 	@Override
@@ -55,6 +56,15 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase
 	}
 	
 	public abstract RegGroup getReggroup();
+	
+	/**
+	 * You don't need to register the commandpermission.
+	 * @param event
+	 */
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		
+	}
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender sender)

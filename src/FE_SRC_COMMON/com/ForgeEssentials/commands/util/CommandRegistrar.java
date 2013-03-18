@@ -167,6 +167,7 @@ public class CommandRegistrar
 			if (cmd.getCommandPerm() != null && cmd.getReggroup() != null)
 			{
 				event.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
+				cmd.registerExtraPermissions(event);
 			}
 		}
 	}

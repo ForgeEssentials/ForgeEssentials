@@ -8,6 +8,7 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -123,6 +124,12 @@ public class CommandBurn extends FEcmdModuleCommands
 		{
 			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		}
+	}
+	
+	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
 	}
 
 	@Override

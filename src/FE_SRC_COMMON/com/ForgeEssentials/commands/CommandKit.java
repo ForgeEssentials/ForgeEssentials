@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -183,6 +184,12 @@ public class CommandKit extends FEcmdModuleCommands
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
+	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".admin", RegGroup.OWNERS);
+	}
+	
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

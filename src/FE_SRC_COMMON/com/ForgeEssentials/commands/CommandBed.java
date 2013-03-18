@@ -11,6 +11,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -125,5 +126,11 @@ public class CommandBed extends FEcmdModuleCommands
 	public RegGroup getReggroup()
 	{
 		return RegGroup.MEMBERS;
+	}
+	
+	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
 	}
 }
