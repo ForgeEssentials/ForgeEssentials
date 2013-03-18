@@ -10,6 +10,8 @@ import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketArea;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketZone;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.AreaBase;
 import com.ForgeEssentials.util.AreaSelector.WorldArea;
@@ -26,28 +28,28 @@ public final class PermissionsBlanketHandler
 {
 	public static void parseQuery(PermQuery query)
 	{
-		handleQuery(query);
+		if (query instanceof PermQueryBlanketZone)
+			handleZone((PermQueryBlanketZone) query);
+		else if (query instanceof PermQueryBlanketArea)
+			handleArea((PermQueryBlanketArea) query);
+		else if (query instanceof PermQueryBlanketSpot)
+			handleSpot((PermQueryBlanketSpot) query);
 	}
 
-	protected static void handleQuery(PermQuery event)
-	{
-		// java formalities... -_-
-	}
-
-	protected static void handleQuery(PermQueryBlanketZone event)
+	protected static void handleZone(PermQueryBlanketZone event)
 	{
 		PermResult result = getResultFromZone(event.toCheck, event.checker, event.checkForward);
 		event.setResult(result);
 	}
 
-	protected static void handleQuery(PermQueryBlanketSpot event)
+	protected static void handleSpot(PermQueryBlanketSpot event)
 	{
 		Zone zone = ZoneManager.getWhichZoneIn(event.spot);
 		PermResult result = getResultFromZone(zone, event.checker, event.checkForward);
 		event.setResult(result);
 	}
 
-	protected static void handleQuery(PermQueryBlanketArea event)
+	protected static void handleArea(PermQueryBlanketArea event)
 	{
 		if (event.allOrNothing)
 		{

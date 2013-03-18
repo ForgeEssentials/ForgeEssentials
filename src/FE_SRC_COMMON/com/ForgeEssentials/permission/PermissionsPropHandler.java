@@ -7,6 +7,9 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.api.permissions.query.PermQueryBlanketArea;
+import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
+import com.ForgeEssentials.api.permissions.query.PermQueryBlanketZone;
 import com.ForgeEssentials.api.permissions.query.PropQuery;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketSpot;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
@@ -22,8 +25,17 @@ public final class PermissionsPropHandler
 
 	public static void handleQuery(PropQuery query)
 	{
-		Zone applied = getZone(query);
+		Zone applied = null;
 		String result = null;
+		
+		if (query instanceof PropQueryBlanketZone)
+			applied = ((PropQueryBlanketZone)query).zone;
+		else if (query instanceof PropQueryPlayerZone)
+			applied = ((PropQueryPlayerZone)query).zone;
+		else if (query instanceof PropQueryBlanketSpot)
+			applied = ZoneManager.getWhichZoneIn(((PropQueryBlanketSpot)query).spot);
+		else if (query instanceof PropQueryPlayerSpot)
+			applied = ZoneManager.getWhichZoneIn(((PropQueryPlayerSpot)query).spot);
 
 		if (query instanceof PropQueryPlayer)
 		{
