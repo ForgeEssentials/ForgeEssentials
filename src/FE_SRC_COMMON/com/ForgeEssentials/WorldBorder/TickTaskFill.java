@@ -55,6 +55,8 @@ public class TickTaskFill implements ITickTask
 
 	private int					eta;
 
+	public int					speed = 1;
+
 	public TickTaskFill(World world)
 	{
 		isComplete = false;
@@ -107,18 +109,21 @@ public class TickTaskFill implements ITickTask
 			warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
 		}
 
-		try
+		for (int i = 0; i < speed; i++)
 		{
-			Chunk chunk = world.theChunkProviderServer.loadChunk(X, Z);
-			chunk.setChunkModified();
-			world.theChunkProviderServer.safeSaveChunk(chunk);
-			world.theChunkProviderServer.unload100OldestChunks();
-			world.theChunkProviderServer.unloadChunksIfNotNearSpawn(X, Z);
-
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
+			try
+			{
+				Chunk chunk = world.theChunkProviderServer.loadChunk(X, Z);
+				chunk.setChunkModified();
+				world.theChunkProviderServer.safeSaveChunk(chunk);
+				world.theChunkProviderServer.unload100OldestChunks();
+				world.theChunkProviderServer.unloadChunksIfNotNearSpawn(X, Z);
+	
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		next();
