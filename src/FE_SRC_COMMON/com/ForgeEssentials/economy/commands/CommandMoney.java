@@ -17,7 +17,7 @@ public class CommandMoney extends ForgeEssentialsCommandBase
 	{
 		return Arrays.asList("wallet");
 	}
-	
+
 	@Override
 	public String getCommandName()
 	{

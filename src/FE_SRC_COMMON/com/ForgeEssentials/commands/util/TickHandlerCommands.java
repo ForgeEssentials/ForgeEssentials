@@ -55,27 +55,40 @@ public class TickHandlerCommands implements IScheduledTickHandler
 		/*
 		 * AFK system
 		 */
-		afkList.addAll(afkListToAdd);
-		afkListToAdd.clear();
-		for (AFKdata data : afkList)
+		try
 		{
-			data.count();
+			afkList.addAll(afkListToAdd);
+			afkListToAdd.clear();
+			for (AFKdata data : afkList)
+			{
+				data.count();
+			}
+			afkList.removeAll(afkListToRemove);
+			afkListToRemove.clear();
 		}
-		afkList.removeAll(afkListToRemove);
-		afkListToRemove.clear();
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		/*
 		 * TPA system
 		 */
-
-		tpaList.addAll(tpaListToAdd);
-		tpaListToAdd.clear();
-		for (TPAdata data : tpaList)
+		try
 		{
-			data.count();
+			tpaList.addAll(tpaListToAdd);
+			tpaListToAdd.clear();
+			for (TPAdata data : tpaList)
+			{
+				data.count();
+			}
+			tpaList.removeAll(tpaListToRemove);
+			tpaListToRemove.clear();
 		}
-		tpaList.removeAll(tpaListToRemove);
-		tpaListToRemove.clear();
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override

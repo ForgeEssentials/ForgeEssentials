@@ -125,7 +125,7 @@ public class CommandBurn extends FEcmdModuleCommands
 			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		}
 	}
-	
+
 	@Override
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{

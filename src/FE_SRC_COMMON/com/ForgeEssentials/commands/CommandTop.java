@@ -66,7 +66,7 @@ public class CommandTop extends FEcmdModuleCommands
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
 	}
-	
+
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{

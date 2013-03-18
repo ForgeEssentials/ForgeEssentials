@@ -55,7 +55,7 @@ public class TickTaskFill implements ITickTask
 
 	private int					eta;
 
-	public int					speed = 1;
+	public int					speed		= 1;
 
 	public TickTaskFill(World world)
 	{
@@ -118,7 +118,7 @@ public class TickTaskFill implements ITickTask
 				world.theChunkProviderServer.safeSaveChunk(chunk);
 				world.theChunkProviderServer.unload100OldestChunks();
 				world.theChunkProviderServer.unloadChunksIfNotNearSpawn(X, Z);
-	
+
 			}
 			catch (Exception e)
 			{

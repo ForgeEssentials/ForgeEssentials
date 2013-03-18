@@ -127,7 +127,7 @@ public class CommandBed extends FEcmdModuleCommands
 	{
 		return RegGroup.MEMBERS;
 	}
-	
+
 	@Override
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{

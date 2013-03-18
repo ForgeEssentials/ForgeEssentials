@@ -93,11 +93,11 @@ public class CommandFEPermUser
 				String perm = null;
 				String value = null;
 				boolean prop = false;
-				
-				if(args[3].contains("{"))
+
+				if (args[3].contains("{"))
 				{
 					prop = true;
-					if(args[3].contains("}"))
+					if (args[3].contains("}"))
 					{
 						perm = args[3].substring(0, args[3].indexOf("{") - 2);
 						value = args[3].substring(args[3].indexOf("{") + 1, args[3].indexOf("}") - 1);
@@ -105,12 +105,12 @@ public class CommandFEPermUser
 					else
 					{
 						int index = -1;
-						for(int i = 4; i < args.length; i++)
+						for (int i = 4; i < args.length; i++)
 						{
-							if(args[i].contains("}"))
+							if (args[i].contains("}"))
 								index = i;
 						}
-						if(index == -1)
+						if (index == -1)
 						{
 							OutputHandler.chatError(sender, "Permission prop is missing closing bracket.");
 							return;
@@ -118,7 +118,7 @@ public class CommandFEPermUser
 						else
 						{
 							value = args[3].substring(args[3].indexOf("{") + 1);
-							for(int i = 4; i < index - 1; i++)
+							for (int i = 4; i < index - 1; i++)
 							{
 								value += " " + args[i];
 							}
@@ -129,7 +129,7 @@ public class CommandFEPermUser
 
 				if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("allow"))
 				{
-					if(prop)
+					if (prop)
 					{
 						PermissionsAPI.setPlayerPermissionProp(playerName, perm, value, zone.getZoneName());
 						OutputHandler.chatConfirmation(sender, playerName + " has been allowed " + perm + " prop with value of " + value);
@@ -144,7 +144,7 @@ public class CommandFEPermUser
 				// remove super perm setting
 				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove"))
 				{
-					if(prop)
+					if (prop)
 					{
 						PermissionsAPI.clearPlayerPermissionProp(playerName, perm, zone.getZoneName());
 						OutputHandler.chatConfirmation(sender, playerName + "'s " + perm + " prop has been cleared");
@@ -159,7 +159,7 @@ public class CommandFEPermUser
 				// deny super perm
 				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny"))
 				{
-					if(prop)
+					if (prop)
 					{
 						OutputHandler.chatError(sender, "Permission prop can only be set or cleared.");
 					}
@@ -324,11 +324,11 @@ public class CommandFEPermUser
 			String perm = null;
 			String value = null;
 			boolean prop = false;
-			
+
 			if (args[2].contains("{"))
 			{
 				prop = true;
-				if(args[3].contains("}"))
+				if (args[3].contains("}"))
 				{
 					perm = args[3].substring(0, args[3].indexOf("{") - 2);
 					value = args[3].substring(args[3].indexOf("{") + 1, args[3].indexOf("}") - 1);
@@ -336,12 +336,12 @@ public class CommandFEPermUser
 				else
 				{
 					int index = -1;
-					for(int i = 4; i < args.length; i++)
+					for (int i = 4; i < args.length; i++)
 					{
-						if(args[i].contains("}"))
+						if (args[i].contains("}"))
 							index = i;
 					}
-					if(index == -1)
+					if (index == -1)
 					{
 						OutputHandler.chatError(sender, "Permission prop is missing closing bracket.");
 						return;
@@ -349,7 +349,7 @@ public class CommandFEPermUser
 					else
 					{
 						value = args[3].substring(args[3].indexOf("{") + 1);
-						for(int i = 4; i < index - 1; i++)
+						for (int i = 4; i < index - 1; i++)
 						{
 							value += " " + args[i];
 						}

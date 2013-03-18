@@ -372,7 +372,7 @@ public class CommandRules extends FEcmdModuleCommands
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".edit", RegGroup.OWNERS);
 	}
-	
+
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

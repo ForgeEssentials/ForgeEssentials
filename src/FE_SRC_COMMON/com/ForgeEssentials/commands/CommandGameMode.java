@@ -258,7 +258,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
 	}
-	
+
 	@Override
 	public RegGroup getReggroup()
 	{

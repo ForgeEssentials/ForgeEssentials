@@ -85,7 +85,7 @@ public class CommandHome extends FEcmdModuleCommands
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".set", getReggroup());
 	}
-	
+
 	@Override
 	public RegGroup getReggroup()
 	{

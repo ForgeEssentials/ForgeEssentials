@@ -206,13 +206,13 @@ public class CommandCapabilities extends FEcmdModuleCommands
 			}
 		}
 	}
-	
+
 	@Override
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
 	}
-	
+
 	@Override
 	public boolean canConsoleUseCommand()
 	{

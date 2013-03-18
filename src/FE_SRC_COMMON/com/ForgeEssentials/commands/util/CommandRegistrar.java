@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.commands.CommandAFK;
 import com.ForgeEssentials.commands.CommandBack;
@@ -159,7 +158,7 @@ public class CommandRegistrar
 			e.registerServerCommand(cmd);
 		}
 	}
-	
+
 	public static void registerPermissions(IPermRegisterEvent event)
 	{
 		for (FEcmdModuleCommands cmd : cmdList)

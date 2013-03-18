@@ -31,7 +31,7 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase
 	 */
 	public void doConfig(Configuration config, String category)
 	{
-		
+
 	}
 
 	@Override
@@ -54,16 +54,16 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase
 	{
 		return true;
 	}
-	
+
 	public abstract RegGroup getReggroup();
-	
+
 	/**
 	 * You don't need to register the commandpermission.
 	 * @param event
 	 */
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{
-		
+
 	}
 
 	@Override

@@ -162,7 +162,7 @@ public class CommandWarp extends FEcmdModuleCommands
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".admin", RegGroup.OWNERS);
 	}
-	
+
 	@Override
 	public String getCommandPerm()
 	{

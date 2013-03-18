@@ -135,7 +135,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
 	}
-	
+
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

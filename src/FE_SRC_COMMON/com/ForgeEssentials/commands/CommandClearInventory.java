@@ -141,7 +141,7 @@ public class CommandClearInventory extends FEcmdModuleCommands
 	{
 		return RegGroup.OWNERS;
 	}
-	
+
 	@Override
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{

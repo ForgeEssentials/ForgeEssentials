@@ -189,7 +189,7 @@ public class CommandKit extends FEcmdModuleCommands
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".admin", RegGroup.OWNERS);
 	}
-	
+
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
