@@ -31,7 +31,7 @@ public class PermissionsList
 
 			writer.write("#// ------------ PERMISSIONS LIST ------------ \\\\#");
 			writer.newLine();
-			writer.write("#// ------------ " + FunctionHelper.getCurrentDateString() + " ------------ \\\\#");
+			writer.write("#// --------------- " + FunctionHelper.getCurrentDateString() + " --------------- \\\\#");
 			writer.newLine();
 			writer.write("#// ------------------------------------------ \\\\#");
 			writer.newLine();
