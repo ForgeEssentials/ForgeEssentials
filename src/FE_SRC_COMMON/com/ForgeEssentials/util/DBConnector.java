@@ -27,7 +27,7 @@ public class DBConnector
 	/**
 	 * @param name a name for the DB connector. to be used in Logging.
 	 * @param fallback The DBConnector from which to take information for a given
-	 *            type if loading that type from this config fails.
+	 * type if loading that type from this config fails.
 	 * @param dType the default database type to use
 	 * @param dbDefault the default name for remote databases
 	 * @param dbFileDefault the default path for file databases. Relative to FEDIR
@@ -41,7 +41,7 @@ public class DBConnector
 		this.dbDefault = dbDefault;
 		this.dbFileDefault = dbFileDefault;
 		data = new HashMap<EnumDBType, HashMap<String, Property>>();
-		this.useParent = useFallback;
+		useParent = useFallback;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class DBConnector
 	 */
 	public void write(Configuration config, String cat)
 	{
-		config.get(cat, "chosenType", dType.toString(), " valid types: " + EnumDBType.getAll(" ")).set(type.toString());
+		config.get(cat, "chosenType", dType.toString(), " valid types: " + FunctionHelper.niceJoin(EnumDBType.values())).set(type.toString());
 
 		if (fallback != null)
 		{
@@ -136,7 +136,7 @@ public class DBConnector
 
 		}
 
-		config.get(cat, "chosenType", type.toString(), " valid types: " + EnumDBType.getAll(" "));
+		config.get(cat, "chosenType", type.toString(), " valid types: " + FunctionHelper.niceJoin(EnumDBType.values()));
 		config.get(cat, "checkParent", useParent, "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.");
 	}
 
@@ -157,7 +157,9 @@ public class DBConnector
 					if (con != null)
 						return con;
 					else
-						OutputHandler.warning("[FE+SQL] "+name+" Parent check failed, going to in-house.");
+					{
+						OutputHandler.warning("[FE+SQL] " + name + " Parent check failed, going to in-house.");
+					}
 				}
 
 				// continue with stuff
@@ -183,7 +185,7 @@ public class DBConnector
 		}
 		catch (Exception e)
 		{
-			OutputHandler.exception(Level.WARNING, "[FE+SQL] "+name+" In-House check failed, going to default.", e);
+			OutputHandler.exception(Level.WARNING, "[FE+SQL] " + name + " In-House check failed, going to default.", e);
 		}
 
 		try
@@ -214,7 +216,7 @@ public class DBConnector
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.severe("[FE+SQL] "+name+" CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
+			OutputHandler.severe("[FE+SQL] " + name + " CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
 			Throwables.propagate(e);
 		}
 
@@ -230,10 +232,10 @@ public class DBConnector
 	{
 		if (!type.isRemote)
 			throw new IllegalArgumentException("Non remote type " + type + " is asking for parent config!");
-		
+
 		try
 		{
-			
+
 			HashMap<String, Property> props = data.get(type);
 			String host = props.get("host").getString();
 			int port = props.get("port").getInt();
@@ -247,7 +249,7 @@ public class DBConnector
 		}
 		catch (Exception e)
 		{
-			OutputHandler.severe("[FE+SQL] "+name+" Failed parent check: "+e);
+			OutputHandler.severe("[FE+SQL] " + name + " Failed parent check: " + e);
 			return null;
 		}
 	}

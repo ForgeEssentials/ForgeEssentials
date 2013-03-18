@@ -30,12 +30,7 @@ public class FlatFilePermProps
 		PermissionPropHolder holder;
 		String catName;
 		String[] split;
-		HashMap<String, ConfigCategory> catList = new HashMap<String, ConfigCategory>();
-		for (String name : config.getCategoryNames())
-		{
-			catList.put(name, config.getCategory(name));
-		}
-		for (Entry<String, ConfigCategory> e : catList.entrySet())
+		for (ConfigCategory cat : config.categories.values())// needa fix this...
 		{
 			if (!cat.isChild())
 			{
@@ -106,5 +101,4 @@ public class FlatFilePermProps
 		String[] names = qualifiedName.split("\\" + Configuration.CATEGORY_SPLITTER, 3);
 		return new String[] { names[0], names[2] };
 	}
-
 }

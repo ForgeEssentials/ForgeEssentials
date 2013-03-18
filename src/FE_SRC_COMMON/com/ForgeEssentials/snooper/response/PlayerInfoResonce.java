@@ -1,21 +1,15 @@
 package com.ForgeEssentials.snooper.response;
 
-import java.net.DatagramPacket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.json.JSONException;
+import com.ForgeEssentials.api.json.JSONObject;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.economy.Wallet;
+import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class PlayerInfoResonce extends Response
@@ -26,84 +20,102 @@ public class PlayerInfoResonce extends Response
 	private boolean	sendArmorAndHealth;
 	private boolean	sendFood;
 	private boolean	sendCapabilities;
+	private boolean	sendMoney;
+	private boolean	sendPosition;
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public String getResponceString(DatagramPacket packet)
+	public JSONObject getResponce(JSONObject input) throws JSONException
 	{
-		LinkedHashMap<String, String> PlayerData = new LinkedHashMap<String, String>();
-		LinkedHashMap<String, String> tempMap = new LinkedHashMap<String, String>();
-		new ArrayList<Object>();
+		JSONObject PlayerData = new JSONObject();
+		JSONObject tempMap = new JSONObject();
 
-		String username = new String(Arrays.copyOfRange(packet.getData(), 11, packet.getLength()));
-		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(username.trim());
+		if (!input.has("username"))
+			return new JSONObject().put(getName(), "This responce needs a username!");
+
+		EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input.getString("username"));
 		if (player == null)
-			return "";
+			return new JSONObject().put(getName(), input.getString("username") + " not online!");
 
 		PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
 		if (pi != null && sendhome)
 		{
 			if (pi.home != null)
 			{
-				PlayerData.put("home", TextFormatter.toJSON(pi.home));
+				PlayerData.put("Home", pi.home.toJSON());
 			}
 			if (pi.back != null)
 			{
-				PlayerData.put("back", TextFormatter.toJSON(pi.back));
+				PlayerData.put("Back", pi.back.toJSON());
 			}
 		}
 
 		if (sendArmorAndHealth)
 		{
-			PlayerData.put("armor", "" + player.inventory.getTotalArmorValue());
-			PlayerData.put("health", "" + player.getHealth());
+			PlayerData.put("Armor", "" + player.inventory.getTotalArmorValue());
+			PlayerData.put("Health", "" + player.getHealth());
 		}
-
-		PlayerData.put("wallet", "" + Wallet.getWallet(player));
-		PlayerData.put("pos", TextFormatter.toJSON(new WorldPoint(player)));
-		PlayerData.put("ping", "" + player.ping);
-		PlayerData.put("gm", player.theItemInWorldManager.getGameType().getName());
+		try
+		{
+			if (sendMoney)
+			{
+				PlayerData.put("Money", "" + WalletHandler.getWallet(player));
+			}
+		}
+		catch (Exception e)
+		{
+		}
+		if (sendPosition)
+		{
+			PlayerData.put("Position", new WorldPoint(player).toJSON());
+		}
+		PlayerData.put("Ping", "" + player.ping);
+		PlayerData.put("Gamemode", player.theItemInWorldManager.getGameType().getName());
 
 		if (!player.getActivePotionEffects().isEmpty() && sendpotions)
 		{
-			PlayerData.put("potion", TextFormatter.toJSON((Collection<PotionEffect>) player.getActivePotionEffects()));
+			PlayerData.put("Potions", TextFormatter.toJSON(player.getActivePotionEffects()));
 		}
 
 		if (sendXP)
 		{
-			tempMap.clear();
+			tempMap = new JSONObject();
 			tempMap.put("lvl", "" + player.experienceLevel);
 			tempMap.put("bar", "" + player.experience);
-			PlayerData.put("xp", TextFormatter.toJSON(tempMap));
+			PlayerData.put("XP", tempMap);
 		}
 
 		if (sendFood)
 		{
-			tempMap.clear();
-			tempMap.put("food", "" + player.getFoodStats().getFoodLevel());
-			tempMap.put("saturation", "" + player.getFoodStats().getSaturationLevel());
-			PlayerData.put("foodStats", TextFormatter.toJSON(tempMap));
+			tempMap = new JSONObject();
+			tempMap.put("Food", "" + player.getFoodStats().getFoodLevel());
+			tempMap.put("Saturation", "" + player.getFoodStats().getSaturationLevel());
+			PlayerData.put("FoodStats", tempMap);
 		}
 
 		if (sendCapabilities)
 		{
-			tempMap.clear();
+			tempMap = new JSONObject();
 			tempMap.put("edit", "" + player.capabilities.allowEdit);
 			tempMap.put("allowFly", "" + player.capabilities.allowFlying);
 			tempMap.put("isFly", "" + player.capabilities.isFlying);
 			tempMap.put("noDamage", "" + player.capabilities.disableDamage);
 		}
-		PlayerData.put("cap", TextFormatter.toJSON(tempMap));
+		PlayerData.put("Capabilities", tempMap);
 
 		try
 		{
-			Group group = PermissionsAPI.getHighestGroup(player);
-			PlayerData.put("group", group.name);
+			PlayerData.put("group", PermissionsAPI.getHighestGroup(player).name);
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 
-		return dataString = TextFormatter.toJSON(PlayerData);
+		PlayerData.put("firstJoin", PlayerInfo.getPlayerInfo(player.username).getFirstJoin());
+		PlayerData.put("timePlayed", PlayerInfo.getPlayerInfo(player.username).timePlayed);
+
+		return new JSONObject().put(getName(), PlayerData);
+
 	}
 
 	@Override
