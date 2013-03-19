@@ -38,13 +38,15 @@ public class ModuleAuth
 	public static boolean				allowOfflineReg;
 
 	public static VanillaServiceChecker	vanillaCheck;
-	public static EncryptionHelper		pwdEnc;
+	private static EncryptionHelper		pwdEnc;
 
 	private static LoginHandler			loginHandler;
 	private static EventHandler			eventHandler;
 
 	public static HashSet<String>		unLogged		= new HashSet<String>();
 	public static HashSet<String>		unRegistered	= new HashSet<String>();
+
+	public static String				salt;
 
 	@PreInit
 	public void preInit(FEModulePreInitEvent e)
@@ -59,6 +61,9 @@ public class ModuleAuth
 	{
 		pwdEnc = new EncryptionHelper();
 		eventHandler = new EventHandler();
+
+		loginHandler = new LoginHandler();
+		GameRegistry.registerPlayerTracker(loginHandler);
 	}
 
 	@ServerInit
@@ -73,25 +78,22 @@ public class ModuleAuth
 			TickRegistry.registerScheduledTickHandler(vanillaCheck, Side.SERVER);
 		}
 
-		loginHandler = new LoginHandler();
-		GameRegistry.registerPlayerTracker(loginHandler);
-
 		MinecraftForge.EVENT_BUS.register(eventHandler);
 	}
 
 	@ServerStop
 	public void serverStop(FEModuleServerStopEvent e)
 	{
-		if (loginHandler != null)
-		{
-			loginHandler = null;
-		}
-
 		MinecraftForge.EVENT_BUS.unregister(eventHandler);
 	}
 
 	public static boolean vanillaMode()
 	{
 		return FMLCommonHandler.instance().getSidedDelegate().getServer().isServerInOnlineMode();
+	}
+
+	public static String encrypt(String str)
+	{
+		return pwdEnc.sha1(str);
 	}
 }

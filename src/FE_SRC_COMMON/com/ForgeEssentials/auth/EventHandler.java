@@ -20,7 +20,6 @@ import com.ForgeEssentials.util.events.PlayerMoveEvent;
 
 public class EventHandler
 {
-
 	public EventHandler()
 	{
 		// nothing

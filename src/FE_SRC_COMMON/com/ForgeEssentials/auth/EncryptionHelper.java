@@ -1,58 +1,76 @@
 package com.ForgeEssentials.auth;
 
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.Arrays;
+import java.util.logging.Level;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class EncryptionHelper
 {
-	public boolean authenticate(String attemptedPassword, byte[] encryptedPassword, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException
-	{
-		// Encrypt the clear-text password using the same salt that was used to
-		// encrypt the original password
-		byte[] encryptedAttemptedPassword = getEncryptedPassword(attemptedPassword, salt);
+	private static final SecureRandom	rand		= new SecureRandom();
+	private static final char[]			hex			= { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+	private static final String			saltChars	= "ABCDEFGHIJGMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_=+[]{};:.,<>/?\\|~`";
+	private MessageDigest				sha1;
 
-		// Authentication succeeds if encrypted password that the user entered
-		// is equal to the stored hash
-		return Arrays.equals(encryptedPassword, encryptedAttemptedPassword);
+	public EncryptionHelper()
+	{
+		try
+		{
+			sha1 = MessageDigest.getInstance("SHA1");
+		}
+		catch (NoSuchAlgorithmException e)
+		{
+			// probably impossible too
+		}
 	}
 
-	public byte[] getEncryptedPassword(String password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException
+	/**
+	 * Should replicate PHP exactly.
+	 * @param s
+	 * @return
+	 */
+	public String sha1(String s)
 	{
-		// PBKDF2 with SHA-1 as the hashing algorithm. Note that the NIST
-		// specifically names SHA-1 as an acceptable hashing algorithm for
-		// PBKDF2
-		String algorithm = "PBKDF2WithHmacSHA1";
-		// SHA-1 generates 160 bit hashes, so that's what makes sense here
-		int derivedKeyLength = 160;
-		// Pick an iteration count that works for you. The NIST recommends at
-		// least 1,000 iterations:
-		// http://csrc.nist.gov/publications/nistpubs/800-132/nist-sp800-132.pdf
-		// iOS 4.x reportedly uses 10,000:
-		// http://blog.crackpassword.com/2010/09/smartphone-forensics-cracking-blackberry-backup-passwords/
-		int iterations = 20000;
+		try
+		{
+			byte[] array = (s + ModuleAuth.salt).getBytes("UTF-8");
+			array = sha1.digest(array);
+			String hashed = byteArrayToHex(array);
+			return hashed;
+		}
+		catch (Throwable t)
+		{
+			OutputHandler.exception(Level.SEVERE, "Unable to hash password", t);
+		}
 
-		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, iterations, derivedKeyLength);
-
-		SecretKeyFactory f = SecretKeyFactory.getInstance(algorithm);
-
-		return f.generateSecret(spec).getEncoded();
+		return "";
 	}
 
-	public byte[] generateSalt() throws NoSuchAlgorithmException
+	private static String byteArrayToHex(byte[] bytes)
 	{
-		// VERY important to use SecureRandom instead of just Random
-		SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+		StringBuilder sb = new StringBuilder(bytes.length * 2);
+		for (final byte b : bytes)
+		{
+			sb.append(hex[(b & 0xF0) >> 4]);
+			sb.append(hex[b & 0x0F]);
+		}
+		return sb.toString();
+	}
 
-		// Generate a 8 byte (64 bit) salt as recommended by RSA PKCS5
-		byte[] salt = new byte[8];
-		random.nextBytes(salt);
+	public static String generateSalt()
+	{
+		return generateSalt(rand.nextInt(10) + 5);
+	}
 
-		return salt;
+	public static String generateSalt(int length)
+	{
+		char[] array = new char[length];
+
+		for (int i = 0; i < length; i++)
+			array[i] = saltChars.charAt(rand.nextInt(saltChars.length()));
+
+		return new String(array);
 	}
 }
