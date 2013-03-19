@@ -15,6 +15,7 @@ import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.core.network.PacketSelectionUpdate;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
@@ -50,6 +51,7 @@ public class PlayerInfo extends TimerTask
 				info = new PlayerInfo(username);
 			}
 
+			TaskRegistry.registerRecurringTask(info, 0, 1, 0, 0, 0, 1, 0, 0);
 			playerInfoMap.put(username, info);
 		}
 
@@ -83,8 +85,6 @@ public class PlayerInfo extends TimerTask
 		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
 
 		info.firstJoin = (Long) tag.getFieldValue("firstJoin");
-
-		TaskRegistry.registerRecurringTask(info, 0, 0, 0, 0, 0, 1, 0, 0);
 
 		return info;
 	}
@@ -153,6 +153,8 @@ public class PlayerInfo extends TimerTask
 		suffix = "";
 
 		firstJoin = System.currentTimeMillis();
+		
+		timePlayed = 0;
 	}
 
 	/**
@@ -311,10 +313,12 @@ public class PlayerInfo extends TimerTask
 	{
 		try
 		{
-			timePlayed++;
+			timePlayed ++;
+			OutputHandler.debug(this.username + ":" + this.timePlayed);
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 		}
 	}
 }
