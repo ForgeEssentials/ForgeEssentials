@@ -1,19 +1,23 @@
 package com.ForgeEssentials.auth;
 
+import java.util.HashSet;
+
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Init;
+import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerStop;
+import com.ForgeEssentials.api.modules.ModuleDisableException;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.auth.commands.CommandLogin;
 import com.ForgeEssentials.auth.commands.CommandRegister;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -31,24 +35,30 @@ public class ModuleAuth
 
 	public static boolean				enabled;
 
-	public static LoginHandler			handler;
+	public static boolean				allowOfflineReg;
+
 	public static VanillaServiceChecker	vanillaCheck;
 	public static EncryptionHelper		pwdEnc;
 
-	private static boolean				vanillaOnlineMode;
-	public static boolean				allowOfflineReg;
+	private static LoginHandler			loginHandler;
+	private static EventHandler			eventHandler;
+
+	public static HashSet<String>		unLogged		= new HashSet<String>();
+	public static HashSet<String>		unRegistered	= new HashSet<String>();
+
+	@PreInit
+	public void preInit(FEModulePreInitEvent e)
+	{
+		// No Auth Module on client
+		if (e.getFMLEvent().getSide().isClient())
+			throw new ModuleDisableException("Cannot run on client");
+	}
 
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
-		// No Auth Plugin on client
-		if (e.getFMLEvent().getSide().isClient())
-		{
-			enabled = false;
-			checkVanillaAuthStatus = false;
-		}
-
 		pwdEnc = new EncryptionHelper();
+		eventHandler = new EventHandler();
 	}
 
 	@ServerInit
@@ -57,84 +67,31 @@ public class ModuleAuth
 		e.registerServerCommand(new CommandLogin());
 		e.registerServerCommand(new CommandRegister());
 
-		if (checkVanillaAuthStatus)
+		if (checkVanillaAuthStatus && !forceEnabled)
 		{
-			vanillaOnlineMode = e.getServer().isServerInOnlineMode();
 			vanillaCheck = new VanillaServiceChecker();
 			TickRegistry.registerScheduledTickHandler(vanillaCheck, Side.SERVER);
 		}
 
-		if (e.getFMLEvent().getSide().isServer())
-		{
-			handler = new LoginHandler();
-			GameRegistry.registerPlayerTracker(handler);
-			MinecraftForge.EVENT_BUS.register(handler);
-		}
-	}
+		loginHandler = new LoginHandler();
+		GameRegistry.registerPlayerTracker(loginHandler);
 
-	public static boolean getVanillaOnlineMode()
-	{
-		return vanillaOnlineMode;
-	}
-
-	public static void FEAuth(Boolean onlineMode)
-	{
-		if (onlineMode)
-		{
-			boolean bln = ModuleAuth.getVanillaOnlineMode();
-
-			if (bln != FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode())
-			{
-				if (bln)
-				{
-					OutputHandler.warning("Server set to Online mode!");
-				}
-				else
-				{
-					OutputHandler.warning("Server set to Offline mode!");
-				}
-			}
-
-			FMLCommonHandler.instance().getMinecraftServerInstance().setOnlineMode(bln);
-
-			if (!forceEnabled)
-			{
-				OutputHandler.fine("FEauth disabled.");
-				enabled = false;
-			}
-			else
-			{
-				OutputHandler.fine("FEauth remains enabled due to forceEnabled in config.");
-				enabled = true;
-			}
-		}
-		else
-		{
-			if (enabled)
-			{
-				OutputHandler.fine("FEauth remains enabled.");
-			}
-			else
-			{
-				OutputHandler.fine("FEauth enabled.");
-				enabled = true;
-
-				if (FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode())
-				{
-					FMLCommonHandler.instance().getMinecraftServerInstance().setOnlineMode(false);
-					OutputHandler.warning("Server set to Offline mode!");
-				}
-			}
-		}
+		MinecraftForge.EVENT_BUS.register(eventHandler);
 	}
 
 	@ServerStop
 	public void serverStop(FEModuleServerStopEvent e)
 	{
-		if (handler != null)
+		if (loginHandler != null)
 		{
-			MinecraftForge.EVENT_BUS.unregister(handler);
-			handler = null;
+			loginHandler = null;
 		}
+
+		MinecraftForge.EVENT_BUS.unregister(eventHandler);
+	}
+
+	public static boolean vanillaMode()
+	{
+		return FMLCommonHandler.instance().getSidedDelegate().getServer().isServerInOnlineMode();
 	}
 }

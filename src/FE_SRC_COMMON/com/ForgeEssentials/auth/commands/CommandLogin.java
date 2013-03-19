@@ -36,7 +36,9 @@ public class CommandLogin extends ForgeEssentialsCommandBase
 					pwdData data = pwdSaver.getData(sender.username);
 					if (ModuleAuth.pwdEnc.authenticate(args[0], data.encPwd, data.salt))
 					{
-						ModuleAuth.handler.login(sender);
+						OutputHandler.chatConfirmation(sender, Localization.get("message.auth.success"));
+						ModuleAuth.unLogged.remove(sender.username);
+						ModuleAuth.unRegistered.remove(sender.username);
 					}
 					else
 					{
