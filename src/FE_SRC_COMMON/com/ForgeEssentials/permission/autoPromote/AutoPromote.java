@@ -30,10 +30,10 @@ public class AutoPromote
 
 	@SaveableField
 	public boolean					sendMsg;
-	
+
 	@SaveableField
 	public String					msg;
-	
+
 	public AutoPromote(String zone, boolean enable)
 	{
 		this.zone = zone;
@@ -76,7 +76,7 @@ public class AutoPromote
 			{
 				String groupName = promoteList.get(PlayerInfo.getPlayerInfo(player.username).timePlayed + "");
 				// Only add player to group if he isn't already.
-				if(!PermissionsAPI.getApplicableGroups(player.username, false, zone).contains(PermissionsAPI.getGroupForName(groupName)))
+				if (!PermissionsAPI.getApplicableGroups(player.username, false, zone).contains(PermissionsAPI.getGroupForName(groupName)))
 				{
 					PermissionsAPI.addPlayerToGroup(groupName, player.username, zone);
 					if (sendMsg)

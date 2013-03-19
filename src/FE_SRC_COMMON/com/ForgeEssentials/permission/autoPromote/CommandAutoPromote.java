@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.FEChatFormatCodes;
@@ -26,7 +25,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 	{
 		return "autopromote";
 	}
-	
+
 	@Override
 	public List<String> getCommandAliases()
 	{
@@ -36,8 +35,6 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		sender.sendChatToPlayer("Playtime: " + PlayerInfo.getPlayerInfo(sender).timePlayed);
-		
 		/*
 		 * Get the right zone.
 		 * If nothing valid is given, defaults to the senders position.
@@ -90,9 +87,9 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 			sender.sendChatToPlayer(footer.toString());
 			return;
 		}
-		
+
 		/*
-		 * Nope, Enable? 
+		 * Nope, Enable?
 		 */
 		if (args[1].equalsIgnoreCase("enable"))
 		{
@@ -106,7 +103,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 				OutputHandler.chatConfirmation(sender, "AutoPromote for " + ap.zone + " enabled.");
 			}
 		}
-		
+
 		/*
 		 * Nope, Disable?
 		 */
@@ -122,7 +119,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 				OutputHandler.chatConfirmation(sender, "AutoPromote for " + ap.zone + " disabled.");
 			}
 		}
-		
+
 		/*
 		 * Nope, Edit?
 		 */
@@ -178,14 +175,14 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 				else
 				{
 					OutputHandler.chatError(sender, "You have to specify a number and group to add to the list. (... add <time> <group>)");
-				}	
+				}
 			}
 		}
-		
+
 		/*
 		 * Nope, Message?
 		 */
-		
+
 		if (args[1].equalsIgnoreCase("message"))
 		{
 			if (args.length == 2 || args[2].equalsIgnoreCase("get"))
@@ -196,7 +193,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 			else if (args[2].equalsIgnoreCase("set"))
 			{
 				String newMsg = "";
-				for (int i = 3; i < args.length; i ++)
+				for (int i = 3; i < args.length; i++)
 				{
 					newMsg = newMsg + args[i] + " ";
 				}
@@ -215,7 +212,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 				OutputHandler.chatConfirmation(sender, "You disabled the promote message.");
 			}
 		}
-		
+
 		AutoPromoteManager.save(ap);
 	}
 
@@ -278,7 +275,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 				Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint((Entity) sender));
 				if (args[0].equalsIgnoreCase("world"))
 				{
-					zone = ZoneManager.getWorldZone(((Entity)sender).worldObj);
+					zone = ZoneManager.getWorldZone(((Entity) sender).worldObj);
 				}
 				if (args[0].equalsIgnoreCase("global"))
 				{
@@ -297,7 +294,8 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 				return getListOfStringsFromIterableMatchingLastWord(args, ap.getList());
 			}
 			catch (Exception e)
-			{}
+			{
+			}
 		}
 		// Sub of edit and add
 		if (args.length == 5 && args[1].equalsIgnoreCase("edit") && args[2].equalsIgnoreCase("add"))
@@ -307,7 +305,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 				Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint((Entity) sender));
 				if (args[0].equalsIgnoreCase("world"))
 				{
-					zone = ZoneManager.getWorldZone(((Entity)sender).worldObj);
+					zone = ZoneManager.getWorldZone(((Entity) sender).worldObj);
 				}
 				if (args[0].equalsIgnoreCase("global"))
 				{
@@ -327,7 +325,8 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 				return getListOfStringsFromIterableMatchingLastWord(args, groupNames);
 			}
 			catch (Exception e)
-			{}
+			{
+			}
 		}
 		// Sub of message
 		if (args.length == 3 && args[1].equalsIgnoreCase("message"))

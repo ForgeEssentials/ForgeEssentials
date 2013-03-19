@@ -72,7 +72,7 @@ public class AutoPromoteManager extends TimerTask
 			DataStorageManager.getReccomendedDriver().saveObject(con, ap);
 		}
 	}
-	
+
 	public static void save(AutoPromote ap)
 	{
 		if (ap != null)
