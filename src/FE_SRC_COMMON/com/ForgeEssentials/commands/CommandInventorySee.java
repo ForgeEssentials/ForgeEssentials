@@ -21,11 +21,11 @@ import cpw.mods.fml.relauncher.Side;
  * Opens other player inventory.
  * @author Dries007
  */
-public class CommandSeeInventory extends FEcmdModuleCommands
+public class CommandInventorySee extends FEcmdModuleCommands
 {
 	private InvSeeMisk	invSeeMisk;
 
-	public CommandSeeInventory()
+	public CommandInventorySee()
 	{
 		invSeeMisk = new InvSeeMisk();
 		TickRegistry.registerTickHandler(invSeeMisk, Side.SERVER);
@@ -78,7 +78,10 @@ public class CommandSeeInventory extends FEcmdModuleCommands
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		return null;
+		if (args.length == 1)
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		else
+			return null;
 	}
 
 	@Override
