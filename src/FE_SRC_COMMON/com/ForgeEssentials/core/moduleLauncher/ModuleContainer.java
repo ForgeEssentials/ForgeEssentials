@@ -23,6 +23,7 @@ import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerPostInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.api.modules.ModuleDisableException;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
@@ -76,7 +77,7 @@ public class ModuleContainer implements Comparable
 		{
 			c = Class.forName(className);
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			OutputHandler.info("Error trying to load " + data.getClassName() + " as a FEModule!");
 			e.printStackTrace();
@@ -249,7 +250,7 @@ public class ModuleContainer implements Comparable
 			c = Class.forName(className);
 			module = c.newInstance();
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			OutputHandler.warning(name + " could not be instantiated. FE will not load this module.");
 			e.printStackTrace();
@@ -291,7 +292,7 @@ public class ModuleContainer implements Comparable
 				f.set(module, file);
 			}
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			OutputHandler.info("Error populating fields of " + name);
 			Throwables.propagate(e);
@@ -317,7 +318,7 @@ public class ModuleContainer implements Comparable
 			}
 
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			OutputHandler.info("Error Instantiating or populating config for " + name);
 			Throwables.propagate(e);
@@ -339,9 +340,14 @@ public class ModuleContainer implements Comparable
 			{ FEModulePreInitEvent.class });
 			m.invoke(module, event);
 		}
-		catch (Exception e)
+		catch(ModuleDisableException e)
 		{
-			OutputHandler.info("Error while invoking preInit event for " + name);
+			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
+			this.isValid = false;
+		}
+		catch (Throwable e)
+		{
+			OutputHandler.severe("Error while invoking preInit event for " + name);
 			Throwables.propagate(e);
 		}
 	}
@@ -359,7 +365,12 @@ public class ModuleContainer implements Comparable
 			{ FEModuleInitEvent.class });
 			m.invoke(module, event);
 		}
-		catch (Exception e)
+		catch(ModuleDisableException e)
+		{
+			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
+			this.isValid = false;
+		}
+		catch (Throwable e)
 		{
 			OutputHandler.info("Error while invoking Init event for " + name);
 			Throwables.propagate(e);
@@ -379,7 +390,12 @@ public class ModuleContainer implements Comparable
 			{ FEModulePostInitEvent.class });
 			m.invoke(module, event);
 		}
-		catch (Exception e)
+		catch(ModuleDisableException e)
+		{
+			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
+			this.isValid = false;
+		}
+		catch (Throwable e)
 		{
 			OutputHandler.info("Error while invoking PostInit event for " + name);
 			Throwables.propagate(e);
@@ -399,7 +415,12 @@ public class ModuleContainer implements Comparable
 			{ FEModuleServerInitEvent.class });
 			m.invoke(module, event);
 		}
-		catch (Exception e)
+		catch(ModuleDisableException e)
+		{
+			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
+			this.isValid = false;
+		}
+		catch (Throwable e)
 		{
 			OutputHandler.info("Error while invoking ServerInit event for " + name);
 			Throwables.propagate(e);
@@ -419,7 +440,12 @@ public class ModuleContainer implements Comparable
 			{ FEModuleServerPostInitEvent.class });
 			m.invoke(module, event);
 		}
-		catch (Exception e)
+		catch(ModuleDisableException e)
+		{
+			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
+			this.isValid = false;
+		}
+		catch (Throwable e)
 		{
 			OutputHandler.info("Error while invoking ServerPostInit event for " + name);
 			Throwables.propagate(e);
@@ -439,7 +465,12 @@ public class ModuleContainer implements Comparable
 			{ FEModuleServerStopEvent.class });
 			m.invoke(module, event);
 		}
-		catch (Exception e)
+		catch(ModuleDisableException e)
+		{
+			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
+			this.isValid = false;
+		}
+		catch (Throwable e)
 		{
 			OutputHandler.info("Error while invoking ServerStop event for " + name);
 			Throwables.propagate(e);
@@ -458,7 +489,12 @@ public class ModuleContainer implements Comparable
 			{ ICommandSender.class });
 			m.invoke(module, user);
 		}
-		catch (Exception e)
+		catch(ModuleDisableException e)
+		{
+			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
+			this.isValid = false;
+		}
+		catch (Throwable e)
 		{
 			OutputHandler.info("Error while invoking Reload method for " + name);
 			Throwables.propagate(e);
