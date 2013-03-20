@@ -15,7 +15,6 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.client.util.Point;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -72,7 +71,9 @@ public class CommandBed extends FEcmdModuleCommands
 				world = DimensionManager.getWorld(0);
 			}
 			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-			FunctionHelper.setPlayer(player, new Point(spawn), world);
+			//Doesnt work
+			//FunctionHelper.setPlayer(player, new Point(spawn), world);
+			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 			OutputHandler.chatConfirmation(player, Localization.get("command.bed.done"));
 		}
 	}
