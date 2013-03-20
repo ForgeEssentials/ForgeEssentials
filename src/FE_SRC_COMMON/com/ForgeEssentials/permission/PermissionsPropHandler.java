@@ -116,13 +116,13 @@ public final class PermissionsPropHandler
 			}
 
 			// check defaults... unless it has the override..
-			if (result.equals(PermResult.UNKNOWN))
+			if (result == null)
 			{
 				result = SqlHelper.getPermissionProp(PermissionsAPI.getDEFAULT().name, true, event.perm, zone.getZoneName());
 			}
 
 			// still unknown? check parent zones.
-			if (result.equals(PermResult.UNKNOWN))
+			if (result == null)
 			{
 				if (tempZone == ZoneManager.getGLOBAL())
 				{

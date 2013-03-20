@@ -39,11 +39,6 @@ public class ModuleProtection
 
 	public static HashMap<String, HashMap<RegGroup, Boolean>>	permissions				= new HashMap<String, HashMap<RegGroup, Boolean>>();
 
-	public ModuleProtection()
-	{
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
 	/*
 	 * Module part
 	 */

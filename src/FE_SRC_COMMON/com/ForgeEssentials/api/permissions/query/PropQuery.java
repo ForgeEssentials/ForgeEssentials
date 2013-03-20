@@ -19,7 +19,7 @@ public abstract class PropQuery
 
 	public boolean hasValue()
 	{
-		return Strings.isNullOrEmpty(value);
+		return !Strings.isNullOrEmpty(value);
 	}
 
 	/**

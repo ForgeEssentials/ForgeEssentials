@@ -6,6 +6,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+import com.ForgeEssentials.util.OutputHandler;
 
 @Cancelable
 public class PlayerChangedZone extends PlayerEvent

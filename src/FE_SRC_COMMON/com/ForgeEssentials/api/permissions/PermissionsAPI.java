@@ -135,7 +135,7 @@ public abstract class PermissionsAPI
 
 	public static String getPermissionPropForGroup(String target, String zone, String perm)
 	{
-		return manager.getPermissionForGroup(target, zone, perm);
+		return manager.getPermissionPropForGroup(target, zone, perm);
 	}
 
 	public static ArrayList<String> getPlayerPermissions(String target, String zone)
@@ -145,7 +145,7 @@ public abstract class PermissionsAPI
 
 	public static ArrayList getPlayerPermissionProps(String target, String zone)
 	{
-		return manager.getPlayerPermissions(target, zone);
+		return manager.getPlayerPermissionProps(target, zone);
 	}
 
 	public static ArrayList<String> getGroupPermissions(String target, String zone)
@@ -155,7 +155,7 @@ public abstract class PermissionsAPI
 
 	public static ArrayList getGroupPermissionProps(String target, String zone)
 	{
-		return manager.getGroupPermissions(target, zone);
+		return manager.getGroupPermissionProps(target, zone);
 	}
 
 	public static String getEPPrefix()
