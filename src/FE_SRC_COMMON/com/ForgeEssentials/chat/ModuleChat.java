@@ -92,8 +92,8 @@ public class ModuleChat
 	@PermRegister
 	public static void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel("ForgeEssentials.Chat.r", RegGroup.GUESTS);
-		event.registerPermissionLevel("ForgeEssentials.Chat.msg", RegGroup.GUESTS);
+		event.registerPermissionLevel("ForgeEssentials.Chat.commands.r", RegGroup.GUESTS);
+		event.registerPermissionLevel("ForgeEssentials.Chat.commands.msg", RegGroup.GUESTS);
 		event.registerPermissionLevel("ForgeEssentials.Chat.mail", RegGroup.GUESTS);
 
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.nickname", RegGroup.MEMBERS);
