@@ -5,7 +5,7 @@
 CREATE TABLE fepermissions_permProps
  (
  target INTEGER NOT NULL,
- isgroup BOOLEAN NOT NULL,,
+ isgroup BOOLEAN NOT NULL,
  perm VARCHAR(255) NOT NULL,
  property VARCHAR(255) NOT NULL,
  zoneID INTEGER NOT NULL
