@@ -1,6 +1,7 @@
 package com.ForgeEssentials.auth;
 
 import java.io.File;
+import java.util.HashSet;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
@@ -10,7 +11,6 @@ import com.ForgeEssentials.api.modules.ModuleConfigBase;
 public class AuthConfig extends ModuleConfigBase
 {
 	private Configuration		config;
-
 	private static final String	CATEGORY_MAIN	= "main";
 
 	public AuthConfig(File file)

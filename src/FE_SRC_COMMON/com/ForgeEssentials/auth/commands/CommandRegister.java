@@ -6,8 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.auth.ModuleAuth;
-import com.ForgeEssentials.auth.pwdData;
-import com.ForgeEssentials.auth.pwdSaver;
+import com.ForgeEssentials.auth.PlayerPassData;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -29,13 +28,14 @@ public class CommandRegister extends ForgeEssentialsCommandBase
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
 		}
-		else
+		if (ModuleAuth.unLogged.contains(sender.username))
 		{
-			if (FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode())
-			{
-				register(sender, args[0]);
-			}
-			else if (!FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode() && ModuleAuth.allowOfflineReg)
+			OutputHandler.chatError(sender, Localization.get("command.register.already"));
+			return;
+		}
+		else if (ModuleAuth.unRegistered.contains(sender.username))
+		{
+			if (ModuleAuth.vanillaMode() || ModuleAuth.allowOfflineReg)
 			{
 				register(sender, args[0]);
 			}
@@ -46,10 +46,9 @@ public class CommandRegister extends ForgeEssentialsCommandBase
 	{
 		try
 		{
-			pwdData data = new pwdData();
-			data.salt = ModuleAuth.pwdEnc.generateSalt();
-			data.encPwd = ModuleAuth.pwdEnc.getEncryptedPassword(pass, data.salt);
-			pwdSaver.setData(sender.username, data);
+			pass = ModuleAuth.encrypt(pass);
+			PlayerPassData data = new PlayerPassData(sender.username, pass);
+			PlayerPassData.registerData(data);
 			OutputHandler.chatError(sender, Localization.get("command.register.register"));
 		}
 		catch (Exception e)

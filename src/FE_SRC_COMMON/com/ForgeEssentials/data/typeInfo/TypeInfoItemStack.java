@@ -18,7 +18,7 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 
 	public TypeInfoItemStack()
 	{
-	};
+	}
 
 	@Override
 	public void build()
@@ -96,7 +96,6 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 		return null;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public ITypeInfo getInfoForField(String field)
 	{

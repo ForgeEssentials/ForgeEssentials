@@ -21,12 +21,15 @@ public class LoginHandler implements IPlayerTracker
 	{
 		ModuleAuth.unLogged.remove(player.username);
 		ModuleAuth.unRegistered.remove(player.username);
+		PlayerPassData.discardData(player.username);
 	}
 
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
-		if (pwdSaver.isRegisted(player.username))
+		PlayerPassData data = PlayerPassData.getData(player.username);
+		
+		if (data != null)
 		{
 			if (ModuleAuth.enabled)
 			{
