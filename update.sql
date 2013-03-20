@@ -1,7 +1,7 @@
 -- this Update script for ForgeEssentials
 -- this script updates from ForgeEssentials beta build 1.2.0.398 to 1.2.0.399
 
--- this script will alter add a new table that is used with a new feature in ForgeEssentials
+-- this script will add a new table that is used with a new feature in ForgeEssentials
 CREATE TABLE fepermissions_permProps
  (
  target INTEGER NOT NULL,
