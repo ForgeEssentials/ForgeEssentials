@@ -71,6 +71,7 @@ public class Localization
 	public static final String	ERROR_TARGET					= "message.error.target";
 	public static final String	ERROR_NOPAGE					= "message.error.nopage";
 	public static final String	ERROR_PERMDENIED				= "message.error.permdenied";
+	public static final String  ERROR_NOUSEWAND					= "message.error.cantUseWand";
 	public static final String	ERROR_NOITEMPLAYER				= "message.error.noItemPlayer";
 	public static final String	ERROR_NOITEMTARGET				= "message.error.noItemTarget";
 	public static final String	ERROR_NOMOB						= "message.error.noMobX";

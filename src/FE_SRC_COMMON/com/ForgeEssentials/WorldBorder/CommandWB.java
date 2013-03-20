@@ -113,6 +113,34 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				return;
 			}
+			if (args[1].equalsIgnoreCase("speed"))
+			{
+				if (args.length == 2)
+				{
+					if (taskGooing != null)
+					{
+						sender.sendChatToPlayer("Current speed: " + taskGooing.speed);
+						sender.sendChatToPlayer("Set speed with '/wb fill speed <speed>'");
+					}
+					else
+					{
+						sender.sendChatToPlayer("You need to have a filler running to set the speed.");
+					}
+				}
+				else
+				{
+					if (taskGooing != null)
+					{
+						taskGooing.speed = parseIntWithMin(sender, args[2], 0);
+						sender.sendChatToPlayer("Set speed to: " + taskGooing.speed);
+					}
+					else
+					{
+						sender.sendChatToPlayer("You need to have a filler running to set the speed.");
+					}
+				}
+				return;
+			}
 			if (args[1].equalsIgnoreCase("cancel"))
 			{
 				taskGooing.stop();
@@ -248,6 +276,34 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				}
 				return;
 			}
+			if (args[1].equalsIgnoreCase("speed"))
+			{
+				if (args.length == 2)
+				{
+					if (taskGooing != null)
+					{
+						sender.sendChatToPlayer("Current speed: " + taskGooing.speed);
+						sender.sendChatToPlayer("Set speed with '/wb fill speed <speed>'");
+					}
+					else
+					{
+						sender.sendChatToPlayer("You need to have a filler running to set the speed.");
+					}
+				}
+				else
+				{
+					if (taskGooing != null)
+					{
+						taskGooing.speed = parseIntWithMin(sender, args[2], 0);
+						sender.sendChatToPlayer("Set speed to: " + taskGooing.speed);
+					}
+					else
+					{
+						sender.sendChatToPlayer("You need to have a filler running to set the speed.");
+					}
+				}
+				return;
+			}
 			if (args[1].equalsIgnoreCase("cancel"))
 			{
 				taskGooing.stop();
@@ -306,7 +362,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		if (args.length == 2 && args[0].equalsIgnoreCase("set"))
 			return getListOfStringsMatchingLastWord(args, "square", "round");
 		if (args.length == 2 && args[0].equalsIgnoreCase("fill"))
-			return getListOfStringsMatchingLastWord(args, "start", "continue", "cancel", "message");
+			return getListOfStringsMatchingLastWord(args, "start", "continue", "cancel", "message", "speed");
 		if (args.length == 3 && args[0].equalsIgnoreCase("fill") && args[1].equalsIgnoreCase("message"))
 			return getListOfStringsMatchingLastWord(args, "off", "on");
 		return null;

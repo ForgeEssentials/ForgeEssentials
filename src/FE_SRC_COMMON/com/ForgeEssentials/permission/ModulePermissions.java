@@ -73,6 +73,8 @@ public class ModulePermissions
 
 		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);
+		
+		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
 	@FEModule.ServerInit
@@ -133,5 +135,4 @@ public class ModulePermissions
 
 		autoPromoteManager.stop();
 	}
-
 }

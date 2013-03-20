@@ -16,15 +16,17 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandRules extends ForgeEssentialsCommandBase
+public class CommandRules extends FEcmdModuleCommands
 {
 
 	public static final String[]	autocomargs	=
@@ -366,6 +368,12 @@ public class CommandRules extends ForgeEssentialsCommandBase
 	}
 
 	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".edit", RegGroup.OWNERS);
+	}
+
+	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
@@ -390,6 +398,12 @@ public class CommandRules extends ForgeEssentialsCommandBase
 		}
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 
 }

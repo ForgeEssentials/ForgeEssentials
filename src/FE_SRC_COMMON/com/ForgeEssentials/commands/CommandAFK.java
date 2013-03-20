@@ -8,13 +8,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.AFKdata;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandAFK extends ForgeEssentialsCommandBase
+public class CommandAFK extends FEcmdModuleCommands
 {
 	public static List<String>	afkList	= new ArrayList<String>();
 
@@ -81,5 +82,11 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.MEMBERS;
 	}
 }

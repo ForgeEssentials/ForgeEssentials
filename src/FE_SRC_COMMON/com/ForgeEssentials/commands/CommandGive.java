@@ -10,7 +10,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.misc.ItemList;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -18,7 +19,7 @@ import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandGive extends ForgeEssentialsCommandBase
+public class CommandGive extends FEcmdModuleCommands
 {
 	@Override
 	public String getCommandName()
@@ -135,5 +136,11 @@ public class CommandGive extends ForgeEssentialsCommandBase
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 }

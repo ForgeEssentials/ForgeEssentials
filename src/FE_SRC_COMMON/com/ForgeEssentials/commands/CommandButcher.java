@@ -9,15 +9,16 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
 
 import com.ForgeEssentials.api.commands.EnumMobType;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.CommandButcherTickTask;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 
-public class CommandButcher extends ForgeEssentialsCommandBase
+public class CommandButcher extends FEcmdModuleCommands
 {
 	public static List<String>	typeList	= new ArrayList<String>();
 
@@ -199,6 +200,12 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 
 }

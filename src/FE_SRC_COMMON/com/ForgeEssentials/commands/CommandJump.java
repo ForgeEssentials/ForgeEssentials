@@ -7,10 +7,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FunctionHelper;
 
-public class CommandJump extends ForgeEssentialsCommandBase
+public class CommandJump extends FEcmdModuleCommands
 {
 
 	@Override
@@ -54,7 +55,12 @@ public class CommandJump extends ForgeEssentialsCommandBase
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.ZONE_ADMINS;
 	}
 }

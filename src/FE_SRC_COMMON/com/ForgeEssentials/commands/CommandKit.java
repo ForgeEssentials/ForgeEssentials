@@ -7,13 +7,15 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.CommandDataManager;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.Kit;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -23,7 +25,7 @@ import com.ForgeEssentials.util.OutputHandler;
  * @author Dries007
  */
 
-public class CommandKit extends ForgeEssentialsCommandBase
+public class CommandKit extends FEcmdModuleCommands
 {
 	@Override
 	public String getCommandName()
@@ -183,6 +185,12 @@ public class CommandKit extends ForgeEssentialsCommandBase
 	}
 
 	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".admin", RegGroup.OWNERS);
+	}
+
+	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
@@ -196,6 +204,12 @@ public class CommandKit extends ForgeEssentialsCommandBase
 		}
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.MEMBERS;
 	}
 
 }

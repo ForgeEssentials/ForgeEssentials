@@ -64,7 +64,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOUSEWAND));
 					return;
 				}
 			}
@@ -88,7 +88,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOUSEWAND));
 					return;
 				}
 			}
@@ -113,7 +113,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOUSEWAND));
 					return;
 				}
 			}

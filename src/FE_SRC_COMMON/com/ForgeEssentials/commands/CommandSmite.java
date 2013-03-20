@@ -10,14 +10,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandSmite extends ForgeEssentialsCommandBase
+public class CommandSmite extends FEcmdModuleCommands
 {
 
 	@Override
@@ -120,6 +121,12 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 
 }

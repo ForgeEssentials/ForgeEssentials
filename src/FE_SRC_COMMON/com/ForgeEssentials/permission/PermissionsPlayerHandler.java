@@ -41,7 +41,12 @@ public final class PermissionsPlayerHandler
 		if (!query.getResult().equals(PermResult.UNKNOWN))
 			return;
 
-		handleQuery(query);
+		if (query instanceof PermQueryPlayerZone)
+			handleZone((PermQueryPlayerZone) query);
+		else if (query instanceof PermQueryPlayerArea)
+			handleArea((PermQueryPlayerArea) query);
+		else
+			handlePlayer(query);
 	}
 
 	private static void doOpCheck(PermQueryPlayer event)
@@ -59,20 +64,20 @@ public final class PermissionsPlayerHandler
 		}
 	}
 
-	private static void handleQuery(PermQueryPlayer event)
+	private static void handlePlayer(PermQueryPlayer event)
 	{
 		Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(event.doer));
 		PermResult result = getResultFromZone(zone, event);
 		event.setResult(result);
 	}
 
-	private static void handleQuery(PermQueryPlayerZone event)
+	private static void handleZone(PermQueryPlayerZone event)
 	{
 		PermResult result = getResultFromZone(event.toCheck, event);
 		event.setResult(result);
 	}
 
-	private static void handleQuery(PermQueryPlayerArea event)
+	private static void handleArea(PermQueryPlayerArea event)
 	{
 		if (event.allOrNothing)
 		{
@@ -112,7 +117,7 @@ public final class PermissionsPlayerHandler
 		Group group;
 		while (result.equals(PermResult.UNKNOWN))
 		{
-			// get the permissions... Tis automatically checks permision
+			// get the permissions... This automatically checks permission
 			// parents...
 			result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, tempZone.getZoneName(), event.checkForward);
 

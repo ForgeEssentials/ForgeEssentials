@@ -9,13 +9,14 @@ import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.InventoryEnderChest;
 import net.minecraft.network.packet.Packet100OpenWindow;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 
 /**
  * Opens your enderchest.
  * @author Dries007
  */
-public class CommandEnderchest extends ForgeEssentialsCommandBase
+public class CommandEnderchest extends FEcmdModuleCommands
 {
 	@Override
 	public String getCommandName()
@@ -68,6 +69,12 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
 	}
 
 }

@@ -7,9 +7,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 
-public class CommandPing extends ForgeEssentialsCommandBase
+public class CommandPing extends FEcmdModuleCommands
 {
 	String	response	= "Pong! %time";
 
@@ -58,7 +59,12 @@ public class CommandPing extends ForgeEssentialsCommandBase
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.GUESTS;
 	}
 }

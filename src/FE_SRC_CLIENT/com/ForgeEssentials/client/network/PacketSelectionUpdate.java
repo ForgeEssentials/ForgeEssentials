@@ -9,7 +9,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
 import com.ForgeEssentials.client.ForgeEssentialsClient;
-import com.ForgeEssentials.client.util.Point;
+import com.ForgeEssentials.client.util.ClientPoint;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -42,7 +42,7 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 			double y = stream.readDouble();
 			double z = stream.readDouble();
 
-			ForgeEssentialsClient.getInfo().setPoint1(new Point(x, y, z));
+			ForgeEssentialsClient.getInfo().setPoint1(new ClientPoint(x, y, z));
 		}
 		else
 		{
@@ -56,7 +56,7 @@ public class PacketSelectionUpdate implements IForgeEssentialsPacket
 			double y = stream.readDouble();
 			double z = stream.readDouble();
 
-			ForgeEssentialsClient.getInfo().setPoint2(new Point(x, y, z));
+			ForgeEssentialsClient.getInfo().setPoint2(new ClientPoint(x, y, z));
 		}
 		else
 		{

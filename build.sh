@@ -151,6 +151,6 @@ echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
 cp -f ${WORKSPACE}/LICENSE.TXT .
 cp -rf ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt .
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt LICENSE.TXT
+zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* ./com/ForgeEssentials/util/* FEAPIReadme.txt LICENSE.TXT
 
 #upload

@@ -6,14 +6,15 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
-public class CommandBack extends ForgeEssentialsCommandBase
+public class CommandBack extends FEcmdModuleCommands
 {
 	@Override
 	public String getCommandName()
@@ -59,6 +60,12 @@ public class CommandBack extends ForgeEssentialsCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.MEMBERS;
 	}
 
 }

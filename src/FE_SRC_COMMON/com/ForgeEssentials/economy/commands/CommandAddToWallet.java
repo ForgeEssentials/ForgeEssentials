@@ -1,5 +1,6 @@
 package com.ForgeEssentials.economy.commands;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -21,6 +22,12 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 	public String getCommandName()
 	{
 		return "addtowallet";
+	}
+	
+	@Override
+	public List<String> getCommandAliases()
+	{
+		return Arrays.asList("walletadd");
 	}
 
 	@Override

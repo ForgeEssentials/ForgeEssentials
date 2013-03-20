@@ -22,8 +22,17 @@ public final class PermissionsPropHandler
 
 	public static void handleQuery(PropQuery query)
 	{
-		Zone applied = getZone(query);
+		Zone applied = null;
 		String result = null;
+
+		if (query instanceof PropQueryBlanketZone)
+			applied = ((PropQueryBlanketZone) query).zone;
+		else if (query instanceof PropQueryPlayerZone)
+			applied = ((PropQueryPlayerZone) query).zone;
+		else if (query instanceof PropQueryBlanketSpot)
+			applied = ZoneManager.getWhichZoneIn(((PropQueryBlanketSpot) query).spot);
+		else if (query instanceof PropQueryPlayerSpot)
+			applied = ZoneManager.getWhichZoneIn(((PropQueryPlayerSpot) query).spot);
 
 		if (query instanceof PropQueryPlayer)
 		{
@@ -107,13 +116,13 @@ public final class PermissionsPropHandler
 			}
 
 			// check defaults... unless it has the override..
-			if (result.equals(PermResult.UNKNOWN))
+			if (result == null)
 			{
 				result = SqlHelper.getPermissionProp(PermissionsAPI.getDEFAULT().name, true, event.perm, zone.getZoneName());
 			}
 
 			// still unknown? check parent zones.
-			if (result.equals(PermResult.UNKNOWN))
+			if (result == null)
 			{
 				if (tempZone == ZoneManager.getGLOBAL())
 				{

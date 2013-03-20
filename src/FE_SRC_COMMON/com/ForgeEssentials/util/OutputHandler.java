@@ -4,6 +4,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public final class OutputHandler
 {
@@ -26,7 +28,14 @@ public final class OutputHandler
 	 */
 	public static void chatError(ICommandSender sender, String msg)
 	{
-		sender.sendChatToPlayer(FEChatFormatCodes.RED + FunctionHelper.formatColors(msg));
+		if (sender instanceof EntityPlayer)
+		{
+			sender.sendChatToPlayer(FEChatFormatCodes.RED + FunctionHelper.formatColors(msg));
+		}
+		else
+		{
+			sender.sendChatToPlayer(FunctionHelper.formatColors(msg));
+		}
 	}
 
 	/**
@@ -38,7 +47,14 @@ public final class OutputHandler
 	 */
 	public static void chatConfirmation(ICommandSender sender, String msg)
 	{
-		sender.sendChatToPlayer(FEChatFormatCodes.GREEN + FunctionHelper.formatColors(msg));
+		if (sender instanceof EntityPlayer)
+		{
+			sender.sendChatToPlayer(FEChatFormatCodes.GREEN + FunctionHelper.formatColors(msg));
+		}
+		else
+		{
+			sender.sendChatToPlayer(FunctionHelper.formatColors(msg));
+		}
 	}
 
 	/**
@@ -50,7 +66,14 @@ public final class OutputHandler
 	 */
 	public static void chatWarning(ICommandSender sender, String msg)
 	{
-		sender.sendChatToPlayer(FEChatFormatCodes.YELLOW + FunctionHelper.formatColors(msg));
+		if (sender instanceof EntityPlayer)
+		{
+			sender.sendChatToPlayer(FEChatFormatCodes.YELLOW + FunctionHelper.formatColors(msg));
+		}
+		else
+		{
+			sender.sendChatToPlayer(FunctionHelper.formatColors(msg));
+		}
 	}
 
 	public static void severe(Object msg)
@@ -131,6 +154,7 @@ public final class OutputHandler
 	 */
 	public static void debug(Object msg)
 	{
+		
 		if (debugmode)
 		{
 			System.out.println(" {DEBUG} >>>> " + msg);

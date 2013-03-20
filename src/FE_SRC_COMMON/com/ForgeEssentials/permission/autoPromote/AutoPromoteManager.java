@@ -18,7 +18,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class AutoPromoteManager extends TimerTask
 {
 	public HashMap<String, AutoPromote>	map	= new HashMap<String, AutoPromote>();
-	ClassContainer						con	= new ClassContainer(AutoPromote.class);
+	static ClassContainer				con	= new ClassContainer(AutoPromote.class);
 	private static AutoPromoteManager	instance;
 
 	public static AutoPromoteManager instance()
@@ -70,6 +70,21 @@ public class AutoPromoteManager extends TimerTask
 		for (AutoPromote ap : map.values())
 		{
 			DataStorageManager.getReccomendedDriver().saveObject(con, ap);
+		}
+	}
+
+	public static void save(AutoPromote ap)
+	{
+		if (ap != null)
+		{
+			try
+			{
+				DataStorageManager.getReccomendedDriver().saveObject(con, ap);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 }

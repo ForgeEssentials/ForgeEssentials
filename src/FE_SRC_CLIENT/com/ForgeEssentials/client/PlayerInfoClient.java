@@ -1,7 +1,7 @@
 package com.ForgeEssentials.client;
 
-import com.ForgeEssentials.client.util.Point;
-import com.ForgeEssentials.client.util.Selection;
+import com.ForgeEssentials.client.util.ClientPoint;
+import com.ForgeEssentials.client.util.ClientSelection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -15,9 +15,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PlayerInfoClient
 {
 	// selection stuff
-	private Point		sel1;
-	private Point		sel2;
-	private Selection	selection;
+	private ClientPoint		sel1;
+	private ClientPoint		sel2;
+	private ClientSelection	selection;
 
 	public PlayerInfoClient()
 	{
@@ -26,12 +26,12 @@ public class PlayerInfoClient
 		selection = null;
 	}
 
-	public Point getPoint1()
+	public ClientPoint getPoint1()
 	{
 		return sel1;
 	}
 
-	public void setPoint1(Point sel1)
+	public void setPoint1(ClientPoint sel1)
 	{
 		this.sel1 = sel1;
 
@@ -40,7 +40,7 @@ public class PlayerInfoClient
 			{
 				if (sel1 != null && sel2 != null)
 				{
-					selection = new Selection(sel1, sel2);
+					selection = new ClientSelection(sel1, sel2);
 				}
 			}
 			else
@@ -49,12 +49,12 @@ public class PlayerInfoClient
 			}
 	}
 
-	public Point getPoint2()
+	public ClientPoint getPoint2()
 	{
 		return sel2;
 	}
 
-	public void setPoint2(Point sel2)
+	public void setPoint2(ClientPoint sel2)
 	{
 		this.sel2 = sel2;
 
@@ -63,7 +63,7 @@ public class PlayerInfoClient
 			{
 				if (sel1 != null && sel2 != null)
 				{
-					selection = new Selection(sel1, sel2);
+					selection = new ClientSelection(sel1, sel2);
 				}
 			}
 			else
@@ -72,7 +72,7 @@ public class PlayerInfoClient
 			}
 	}
 
-	public Selection getSelection()
+	public ClientSelection getSelection()
 	{
 		return selection;
 	}

@@ -7,10 +7,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.packet.Packet100OpenWindow;
 
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.ContainerCheatyWorkbench;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 
-public class CommandCraft extends ForgeEssentialsCommandBase
+public class CommandCraft extends FEcmdModuleCommands
 {
 	@Override
 	public String getCommandName()
@@ -50,5 +51,11 @@ public class CommandCraft extends ForgeEssentialsCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.MEMBERS;
 	}
 }

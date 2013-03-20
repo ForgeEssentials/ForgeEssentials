@@ -1,5 +1,6 @@
 package com.ForgeEssentials.economy.commands;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -18,6 +19,12 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 	public String getCommandName()
 	{
 		return "removewallet";
+	}
+	
+	@Override
+	public List<String> getCommandAliases()
+	{
+		return Arrays.asList("walletremove");
 	}
 
 	@Override

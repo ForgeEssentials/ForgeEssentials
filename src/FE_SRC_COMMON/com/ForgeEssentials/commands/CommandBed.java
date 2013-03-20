@@ -11,11 +11,12 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.client.util.Point;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -23,7 +24,7 @@ import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandBed extends ForgeEssentialsCommandBase
+public class CommandBed extends FEcmdModuleCommands
 {
 	@Override
 	public String getCommandName()
@@ -70,7 +71,9 @@ public class CommandBed extends ForgeEssentialsCommandBase
 				world = DimensionManager.getWorld(0);
 			}
 			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-			FunctionHelper.setPlayer(player, new Point(spawn), world);
+			//Doesnt work
+			//FunctionHelper.setPlayer(player, new Point(spawn), world);
+			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 			OutputHandler.chatConfirmation(player, Localization.get("command.bed.done"));
 		}
 	}
@@ -118,5 +121,17 @@ public class CommandBed extends ForgeEssentialsCommandBase
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.MEMBERS;
+	}
+
+	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
 	}
 }

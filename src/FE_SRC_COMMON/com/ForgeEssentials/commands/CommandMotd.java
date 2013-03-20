@@ -5,10 +5,11 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.misc.LoginMessage;
 
-public class CommandMotd extends ForgeEssentialsCommandBase
+public class CommandMotd extends FEcmdModuleCommands
 {
 
 	@Override
@@ -56,5 +57,11 @@ public class CommandMotd extends ForgeEssentialsCommandBase
 			return getListOfStringsMatchingLastWord(args, "reload");
 		else
 			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.GUESTS;
 	}
 }

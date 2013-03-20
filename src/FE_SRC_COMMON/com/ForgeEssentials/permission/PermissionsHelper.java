@@ -182,11 +182,11 @@ public class PermissionsHelper implements IPermissionsHelper
 			PermissionProp perm = new PermissionProp(permission, value);
 
 			// send out permission string.
-			PermissionPropSetEvent event = new PermissionPropSetEvent(perm, zone, "p:" + group);
+			PermissionPropSetEvent event = new PermissionPropSetEvent(perm, zone, "g:" + group);
 			if (MinecraftForge.EVENT_BUS.post(event))
 				return event.getCancelReason();
 
-			boolean worked = SqlHelper.setPermProp(group, false, perm, zoneID);
+			boolean worked = SqlHelper.setPermProp(group, true, perm, zoneID);
 
 			if (!worked)
 				return Localization.get(Localization.ERROR_PERM_SQL);
