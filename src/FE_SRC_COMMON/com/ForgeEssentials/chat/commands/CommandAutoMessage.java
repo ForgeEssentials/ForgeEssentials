@@ -127,7 +127,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.Chat." + getCommandName();
+		return "ForgeEssentials.Chat.commands." + getCommandName();
 	}
 
 	@Override
