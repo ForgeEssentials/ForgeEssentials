@@ -24,19 +24,20 @@ public class FlatFilePermProps
 	{
 		ArrayList<PermissionPropHolder> group = new ArrayList<PermissionPropHolder>();
 		ArrayList<PermissionPropHolder> player = new ArrayList<PermissionPropHolder>();
+		HashMap<String, ArrayList<PermissionPropHolder>> hm = new HashMap<String, ArrayList<PermissionPropHolder>>();
 
 		Configuration config = new Configuration(file);
 
 		PermissionPropHolder holder;
 		String catName;
 		String[] split;
-		for (ConfigCategory cat : config.categories.values())// needa fix this...
+		
+		for (String catName2 : config.getCategoryNames())
 		{
-			if (!cat.isChild())
-			{
+			ConfigCategory cat = config.getCategory(catName2);
+			if (!cat.isChild()){
 				continue;
 			}
-
 			catName = cat.getQualifiedName();
 
 			// ensures that the player and group catNameegories don't get in.
@@ -63,13 +64,12 @@ public class FlatFilePermProps
 					group.add(holder);
 				}
 			}
+			hm.put("playerPermProps", player);
+			hm.put("groupPermProps", group);
+			}
+		return hm;
 		}
-
-		HashMap<String, ArrayList<PermissionPropHolder>> map = new HashMap<String, ArrayList<PermissionPropHolder>>();
-		map.put("playerPermProps", player);
-		map.put("groupPermProps", group);
-		return map;
-	}
+		
 
 	public void save(ArrayList<PermissionPropHolder> players, ArrayList<PermissionPropHolder> groups)
 	{
