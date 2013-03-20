@@ -1,5 +1,7 @@
 package com.ForgeEssentials.WorldBorder.Effects;
 
+import com.ForgeEssentials.WorldBorder.WorldBorder;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -16,7 +18,7 @@ public class serverkick implements IEffect
 	}
 
 	@Override
-	public void execute(EntityPlayerMP player)
+	public void execute(WorldBorder wb, EntityPlayerMP player)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{

@@ -10,13 +10,11 @@ import java.util.List;
 
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
 import com.ForgeEssentials.api.json.JSONArray;
 import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.json.JSONObject;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
@@ -86,20 +84,6 @@ public class ServerInfo extends Response
 
 		data.put("Uptime", getUptime());
 		data.put("TPS", getTPS());
-
-		try
-		{
-			if (sendWB && ModuleWorldBorder.WBenabled && ModuleWorldBorder.set)
-			{
-				JSONObject temp = new JSONObject();
-				temp.put("Shape", ModuleWorldBorder.shape.name());
-				temp.put("Center", new Point(ModuleWorldBorder.X, 64, ModuleWorldBorder.Z).toJSON());
-				data.put("WorldBorder", temp);
-			}
-		}
-		catch (Exception e)
-		{
-		}
 
 		data.put("Players", server.getAllUsernames());
 

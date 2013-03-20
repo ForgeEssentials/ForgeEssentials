@@ -474,4 +474,17 @@ public final class FunctionHelper
 
 	// used for niceJoin method.
 	private static Joiner	joiner	= Joiner.on(", ").skipNulls();
+
+	public static boolean isNumeric(String string)
+	{
+		try
+		{
+			Integer.parseInt(string);
+			return true;
+		}
+		catch (NumberFormatException e)
+		{
+			return false;	
+		}
+	}
 }

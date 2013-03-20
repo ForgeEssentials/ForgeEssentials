@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 
-import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -57,24 +57,27 @@ public class TickTaskFill implements ITickTask
 
 	public int					speed		= 1;
 
+	public WorldBorder			border;
+
 	public TickTaskFill(World world)
 	{
 		isComplete = false;
 		this.world = (WorldServer) world;
-		X = minX = (ModuleWorldBorder.minX - ModuleWorldBorder.overGenerate) / 16;
-		Z = minZ = (ModuleWorldBorder.minZ - ModuleWorldBorder.overGenerate) / 16;
-		maxX = (ModuleWorldBorder.maxX + ModuleWorldBorder.overGenerate) / 16;
-		maxZ = (ModuleWorldBorder.maxZ + ModuleWorldBorder.overGenerate) / 16;
-		centerX = ModuleWorldBorder.X / 16;
-		centerZ = ModuleWorldBorder.Z / 16;
-		rad = (ModuleWorldBorder.rad + ModuleWorldBorder.overGenerate) / 16;
+		this.border = ModuleWorldBorder.borderMap.get(ZoneManager.getWorldZone(world).getZoneName());
+		X = minX = (border.center.x - border.rad - ModuleWorldBorder.overGenerate) / 16;
+		Z = minZ = (border.center.z - border.rad - ModuleWorldBorder.overGenerate) / 16;
+		maxX = (border.center.x + border.rad + ModuleWorldBorder.overGenerate) / 16;
+		maxZ = (border.center.z + border.rad + ModuleWorldBorder.overGenerate) / 16;
+		centerX = border.center.x / 16;
+		centerZ = border.center.z / 16;
+		rad = (border.rad + ModuleWorldBorder.overGenerate) / 16;
 
 		TaskRegistry.registerTask(this);
 
 		System.out.println("MinX=" + minX + " MaxX=" + maxX);
 		System.out.println("MinZ=" + minZ + " MaxZ=" + maxZ);
 
-		eta = ModuleWorldBorder.shape.getETA();
+		eta = border.getETA();
 
 		warnEveryone(Localization.get(Localization.WB_FILL_START));
 		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
@@ -118,20 +121,24 @@ public class TickTaskFill implements ITickTask
 				world.theChunkProviderServer.safeSaveChunk(chunk);
 				world.theChunkProviderServer.unload100OldestChunks();
 				world.theChunkProviderServer.unloadChunksIfNotNearSpawn(X, Z);
-
+				
+				next();
+				if (isComplete())
+				{
+					break;
+				}
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
 		}
-
-		next();
 	}
 
 	private void next()
 	{
-		if (ModuleWorldBorder.shape.equals(BorderShape.square))
+		// 1 = square
+		if (border.shapeByte == 1)
 		{
 			if (X <= maxX)
 			{
@@ -150,7 +157,8 @@ public class TickTaskFill implements ITickTask
 				}
 			}
 		}
-		else if (ModuleWorldBorder.shape.equals(BorderShape.round))
+		// 2 = round
+		if (border.shapeByte == 2)
 		{
 			while (true)
 			{

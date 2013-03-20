@@ -4,11 +4,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.WorldBorder.ModuleWorldBorder;
+import com.ForgeEssentials.WorldBorder.WorldBorder;
 import com.ForgeEssentials.util.vector.Vector2;
 
 public class knockback implements IEffect
 {
-
 	@Override
 	public void registerConfig(Configuration config, String category)
 	{
@@ -16,11 +16,11 @@ public class knockback implements IEffect
 	}
 
 	@Override
-	public void execute(EntityPlayerMP player)
+	public void execute(WorldBorder wb, EntityPlayerMP player)
 	{
-		Vector2 vecp = ModuleWorldBorder.getDirectionVector(player);
-		vecp.multiply(ModuleWorldBorder.rad);
-		vecp.add(new Vector2(ModuleWorldBorder.X, ModuleWorldBorder.Z));
+		Vector2 vecp = ModuleWorldBorder.getDirectionVector(wb.center, player);
+		vecp.multiply(wb.rad);
+		vecp.add(new Vector2(wb.center.x, wb.center.z));
 
 		if (player.ridingEntity != null)
 		{

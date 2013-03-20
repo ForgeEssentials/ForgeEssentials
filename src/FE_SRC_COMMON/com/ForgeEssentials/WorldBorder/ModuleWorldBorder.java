@@ -2,18 +2,26 @@ package com.ForgeEssentials.WorldBorder;
 
 import java.util.HashMap;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
+import com.ForgeEssentials.api.data.ClassContainer;
+import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.events.PlayerMoveEvent;
 import com.ForgeEssentials.util.vector.Vector2;
 
@@ -30,20 +38,14 @@ public class ModuleWorldBorder
 
 	@FEModule.Config
 	public static ConfigWorldBorder				config;
+	
+	public static HashMap<String, WorldBorder>	borderMap 		= new HashMap<String, WorldBorder>();		
 
-	public static BorderShape					shape;
 	public static HashMap<Integer, IEffect[]>	effectsList		= new HashMap<Integer, IEffect[]>();
 	public static int							overGenerate	= 345;
-	public static boolean						set				= false;
-
-	public static int							X;
-	public static int							Z;
-	public static int							rad;
-
-	public static int							maxX;
-	public static int							maxZ;
-	public static int							minX;
-	public static int							minZ;
+	
+	public static boolean						globalOverride	= true;
+	static final ClassContainer					con	= new ClassContainer(WorldBorder.class);
 
 	public ModuleWorldBorder()
 	{
@@ -53,7 +55,7 @@ public class ModuleWorldBorder
 	@PermRegister
 	public static void registerPerms(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel("ForgeEssentials.WorldBorder.command.worldborder", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.WorldBorder.admin", RegGroup.OWNERS);
 	}
 
 	@FEModule.ServerInit
@@ -61,91 +63,75 @@ public class ModuleWorldBorder
 	{
 		e.registerServerCommand(new CommandWB());
 		MinecraftForge.EVENT_BUS.register(this);
+		loadAll();
+		
+		Zone zone = ZoneManager.getGLOBAL();
+		if (!borderMap.containsKey(zone.getZoneName()))
+		{
+			borderMap.put(zone.getZoneName(), new WorldBorder(zone));
+		}
 	}
 
+	@FEModule.ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
+	{
+		saveAll();
+	}
+	
 	@ForgeSubscribe
 	public void playerMove(PlayerMoveEvent e)
 	{
-		if (WBenabled && set)
+		if (WBenabled)
 		{
-			shape.doCheck((EntityPlayerMP) e.entityPlayer);
+			borderMap.get(ZoneManager.getWorldZone(e.entityPlayer.worldObj).getZoneName()).check((EntityPlayerMP) e.entityPlayer);
+			if (globalOverride)
+			{
+				borderMap.get(ZoneManager.getGLOBAL().getZoneName()).check((EntityPlayerMP) e.entityPlayer);
+			}
 		}
 	}
-
-	/*
-	 * Used to get determen shapes & execute the actual check.
-	 */
-
-	public enum BorderShape
+	
+	@ForgeSubscribe
+	public void WorldEvent(WorldEvent e)
 	{
-		round, square;
-
-		public byte getByte()
+		Zone zone = ZoneManager.getWorldZone(e.world);
+		if (borderMap.containsKey(zone.getZoneName()))
 		{
-			if (equals(round))
-				return 1;
-			if (equals(square))
-				return 2;
-			return 0;
+			DataStorageManager.getReccomendedDriver().saveObject(con, borderMap.get(zone.getZoneName()));
 		}
-
-		public static BorderShape getFromByte(byte byte1)
+		else
 		{
-			if (byte1 == 1)
-				return BorderShape.round;
-			else if (byte1 == 2)
-				return BorderShape.square;
-			return null;
+			WorldBorder wb = (WorldBorder) DataStorageManager.getReccomendedDriver().loadObject(con, zone.getZoneName());
+			if (wb != null)
+				borderMap.put(zone.getZoneName(), wb);
+			else
+				borderMap.put(zone.getZoneName(), new WorldBorder(zone));
+			DataStorageManager.getReccomendedDriver().saveObject(con, borderMap.get(zone.getZoneName()));
 		}
-
-		public void doCheck(EntityPlayerMP player)
+		
+		if (e instanceof WorldEvent.Unload)
 		{
-			if (equals(round))
-			{
-				int dist = (int) getDistanceRound(X, Z, (int) player.posX, (int) player.posZ);
-				if (dist > rad)
-				{
-					executeClosestEffects(dist - ModuleWorldBorder.rad, player);
-				}
-			}
-			if (equals(square))
-			{
-				if (player.posX < minX)
-				{
-					executeClosestEffects((int) player.posX - minX, player);
-				}
-				if (player.posX > maxX)
-				{
-					executeClosestEffects((int) player.posX - maxX, player);
-				}
-				if (player.posZ < minZ)
-				{
-					executeClosestEffects((int) player.posZ - minZ, player);
-				}
-				if (player.posZ > maxZ)
-				{
-					executeClosestEffects((int) player.posZ - maxZ, player);
-				}
-			}
+			borderMap.remove(zone.getZoneName());
 		}
-
-		public int getETA()
+	}
+	
+	public static void loadAll()
+	{
+		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(con))
 		{
-			if (equals(square))
-			{
-				int var = maxX - minX;
-				var = var * var;
-				return var;
-			}
-			if (equals(round))
-			{
-				int var = (int) (rad * rad * Math.PI);
-				return var;
-			}
-			return 0;
+			WorldBorder wb = (WorldBorder) obj;
+			borderMap.put(wb.zone, wb);
 		}
 	}
 
+	public static void saveAll()
+	{
+		for (WorldBorder wb : borderMap.values())
+		{
+			wb.save();
+		}
+	}
+	
 	/*
 	 * Penalty part
 	 */
@@ -155,17 +141,20 @@ public class ModuleWorldBorder
 		effectsList.put(dist, effects);
 	}
 
-	public static void executeClosestEffects(int dist, EntityPlayerMP player)
+	public static void executeClosestEffects(WorldBorder wb, double dd, EntityPlayerMP player)
 	{
-		dist = Math.abs(dist);
-		log(player, dist);
-		for (int i = dist; i >= 0; i--)
+		int d = (int) Math.abs(dd);
+		if (logToConsole)
+		{
+			OutputHandler.info(player.username + " passed the worldborder by " + d + " blocks.");
+		}
+		for (int i = d; i >= 0; i--)
 		{
 			if (effectsList.containsKey(i))
 			{
 				for (IEffect effect : effectsList.get(i))
 				{
-					effect.execute(player);
+					effect.execute(wb, player);
 				}
 			}
 		}
@@ -175,45 +164,27 @@ public class ModuleWorldBorder
 	 * Static Helper Methods
 	 */
 
-	public static double getDistanceRound(int centerX, int centerZ, int X, int Z)
+	public static Vector2 getDirectionVector(Point center, EntityPlayerMP player)
 	{
-		int difX = centerX - X;
-		int difZ = centerZ - Z;
-
-		return Math.sqrt(difX * difX + difZ * difZ);
-	}
-
-	public static Vector2 getDirectionVector(EntityPlayerMP player)
-	{
-		Vector2 vecp = new Vector2(X - player.posX, Z - player.posZ);
+		Vector2 vecp = new Vector2(center.x - player.posX, center.z - player.posZ);
 		vecp.normalize();
 		vecp.multiply(-1);
 		return vecp;
 	}
 
-	public static void log(EntityPlayerMP player, int dist)
+	public static int getDistanceRound(Point center, EntityPlayer player)
 	{
-		if (logToConsole)
-		{
-			OutputHandler.info(player.username + " passed the worldborder by " + dist + " blocks.");
-		}
+		double difX = center.x - player.posX;
+		double difZ = center.z - player.posZ;
+		
+		return (int) Math.sqrt(Math.pow(difX, 2) + Math.pow(difZ, 2));
 	}
 
-	public static void setCenter(int rad, int posX, int posZ, BorderShape shapeToSet, boolean set)
+	public static int getDistanceRound(int centerX, int centerZ, int x, int z)
 	{
-		shape = shapeToSet;
-		ModuleWorldBorder.set = set;
-
-		X = posX;
-		Z = posZ;
-		ModuleWorldBorder.rad = rad;
-
-		maxX = posX + rad;
-		maxZ = posZ + rad;
-
-		minX = posX - rad;
-		minZ = posZ - rad;
-
-		config.forceSave();
+		double difX = centerX - x;
+		double difZ = centerZ - z;
+		
+		return (int) Math.sqrt(Math.pow(difX, 2) + Math.pow(difZ, 2));
 	}
 }
