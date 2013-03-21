@@ -18,7 +18,7 @@ public class FEskullTe extends TileEntitySkull
 			return;
 		if (grave.protEnable)
 		{
-			this.worldObj.setBlockAndMetadataWithNotify(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
+			this.worldObj.setBlock(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
 			FEskullTe te = new FEskullTe();
 			te.setSkullType(3, grave.owner);
 			this.worldObj.setBlockTileEntity(point.x, point.y, point.z, te);

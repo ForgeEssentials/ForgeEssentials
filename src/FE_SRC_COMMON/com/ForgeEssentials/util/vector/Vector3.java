@@ -152,17 +152,17 @@ public class Vector3 extends Vector2 implements Cloneable
 
 	public void setBlock(World world, int id, int metadata)
 	{
-		world.setBlockAndMetadataWithNotify(intX(), intY(), intZ(), id, metadata, 1);
+		world.setBlock(intX(), intY(), intZ(), id, metadata, 1);
 	}
 
 	public void setBlock(World world, int id)
 	{
-		world.func_94575_c(intX(), intY(), intZ(), id);
+		world.setBlock(intX(), intY(), intZ(), id);
 	}
 
 	public void setBlockWithNotify(World world, int id, int metadata)
 	{
-		world.setBlockAndMetadataWithNotify(intX(), intY(), intZ(), id, metadata, 1);
+		world.setBlock(intX(), intY(), intZ(), id, metadata, 1);
 	}
 
 	/**

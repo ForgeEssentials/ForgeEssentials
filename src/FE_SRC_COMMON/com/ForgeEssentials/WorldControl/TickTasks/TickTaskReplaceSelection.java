@@ -120,7 +120,7 @@ public class TickTaskReplaceSelection implements ITickTask
 	private void doReplace(int x, int y, int z)
 	{
 		backup.before.add(new BlockSaveable(player.worldObj, x, y, z));
-		player.worldObj.setBlockAndMetadataWithNotify(x, y, z, newId, newMeta, 3);
+		player.worldObj.setBlock(x, y, z, newId, newMeta, 3);
 		backup.after.add(new BlockSaveable(player.worldObj, x, y, z));
 	}
 

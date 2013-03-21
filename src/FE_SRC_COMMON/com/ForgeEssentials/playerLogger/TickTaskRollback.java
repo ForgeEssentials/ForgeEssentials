@@ -116,7 +116,7 @@ public class TickTaskRollback implements ITickTask
 	public void place() throws SQLException
 	{
 		String[] block = rs.getString("block").split(":");
-		world.setBlockAndMetadataWithNotify(X, Y, Z, Integer.parseInt(block[0]), Integer.parseInt(block[1]), 2);
+		world.setBlock(X, Y, Z, Integer.parseInt(block[0]), Integer.parseInt(block[1]), 2);
 		if (rs.getBlob("te") != null)
 		{
 			try
@@ -138,7 +138,7 @@ public class TickTaskRollback implements ITickTask
 	public void remove() throws SQLException
 	{
 		world.removeBlockTileEntity(X, Y, Z);
-		world.func_94575_c(X, Y, Z, 0);
+		world.setBlock(X, Y, Z, 0);
 	}
 
 	@Override

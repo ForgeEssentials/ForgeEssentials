@@ -70,7 +70,7 @@ public class BlockSaveable implements Serializable
 		if (equals(new BlockSaveable(world, x, y, z)))
 			return false;
 
-		world.setBlockAndMetadataWithNotify(x, y, z, blockID, metadata, 1);
+		world.setBlock(x, y, z, blockID, metadata, 1);
 		TileEntity entity = world.getBlockTileEntity(x, y, z);
 		if (entity != null && tile != null)
 		{
