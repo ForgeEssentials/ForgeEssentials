@@ -10,7 +10,6 @@ import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerStop;
-import com.ForgeEssentials.api.modules.ModuleDisableException;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
@@ -46,14 +45,14 @@ public class ModuleAuth
 	public static HashSet<String>		unLogged		= new HashSet<String>();
 	public static HashSet<String>		unRegistered	= new HashSet<String>();
 
-	public static String				salt;
+	public static String				salt			= EncryptionHelper.generateSalt();
 
 	@PreInit
 	public void preInit(FEModulePreInitEvent e)
 	{
 		// No Auth Module on client
 		if (e.getFMLEvent().getSide().isClient())
-			throw new ModuleDisableException("Cannot run on client");
+			e.getModuleContainer().isLoadable = false;
 	}
 
 	@Init
