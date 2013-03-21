@@ -27,17 +27,17 @@ public class Data
 	{
 		HashMap<String, String> iiwmHMob = new HashMap<String, String>();
 
-		iiwmHMob.put("className", "ir");
-		iiwmHMob.put("javaClassName", "ir");
-		iiwmHMob.put("targetMethodName", "d");
-		iiwmHMob.put("worldFieldName", "a");
-		iiwmHMob.put("entityPlayerFieldName", "b");
-		iiwmHMob.put("worldJavaClassName", "yc");
-		iiwmHMob.put("getBlockMetadataMethodName", "h");
-		iiwmHMob.put("blockJavaClassName", "amq");
-		iiwmHMob.put("blocksListFieldName", "p");
-		iiwmHMob.put("entityPlayerJavaClassName", "qx");
-		iiwmHMob.put("entityPlayerMPJavaClassName", "iq");
+		iiwmHMob.put("className", "jd");
+		iiwmHMob.put("javaClassName", "jd");
+		iiwmHMob.put("targetMethodName", "d");// searge name func_73079_d
+		iiwmHMob.put("worldFieldName", "a"); // searge name field_73092_a
+		iiwmHMob.put("entityPlayerFieldName", "b");// searge name field_73090_b
+		iiwmHMob.put("worldJavaClassName", "aab");
+		iiwmHMob.put("getBlockMetadataMethodName", "h");// searge name func_72805_g
+		iiwmHMob.put("blockJavaClassName", "apa");
+		iiwmHMob.put("blocksListFieldName", "p");// searge name field_71973_m
+		iiwmHMob.put("entityPlayerJavaClassName", "sq");
+		iiwmHMob.put("entityPlayerMPJavaClassName", "jc");
 
 		return iiwmHMob;
 	}
@@ -52,7 +52,7 @@ public class Data
 		iiwmHMdev.put("worldFieldName", "theWorld");
 		iiwmHMdev.put("entityPlayerFieldName", "thisPlayerMP");
 		iiwmHMdev.put("worldJavaClassName", "net/minecraft/world/World");
-		iiwmHMdev.put("getBlockMetaiiwmHMdevMethodName", "getBlockMetaiiwmHMdev");
+		iiwmHMdev.put("getBlockMetaiiwmHMdevMethodName", "getBlockMetadata");
 		iiwmHMdev.put("blockJavaClassName", "net/minecraft/block/Block");
 		iiwmHMdev.put("blocksListFieldName", "blocksList");
 		iiwmHMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
@@ -65,12 +65,12 @@ public class Data
 	{
 		HashMap<String, String> isHMob = new HashMap<String, String>();
 
-		isHMob.put("className", "ur");
-		isHMob.put("javaClassName", "ur");
+		isHMob.put("className", "wm");
+		isHMob.put("javaClassName", "wm");
 		isHMob.put("targetMethodName", "a");
-		isHMob.put("itemstackJavaClassName", "ur");
-		isHMob.put("entityPlayerJavaClassName", "qx");
-		isHMob.put("worldJavaClassName", "yc");
+		isHMob.put("itemstackJavaClassName", "wm");
+		isHMob.put("entityPlayerJavaClassName", "sq");
+		isHMob.put("worldJavaClassName", "aab");
 
 		return isHMob;
 	}
@@ -81,7 +81,7 @@ public class Data
 
 		isHMdev.put("className", "net.minecraft.item.ItemStack");
 		isHMdev.put("javaClassName", "net/minecraft/item/ItemStack");
-		isHMdev.put("targetMethodName", "tryPlaceItemIntoWorld");
+		isHMdev.put("targetMethodName", "tryPlaceItemIntoWorld");// searge name func_77943_a
 
 		isHMdev.put("itemstackJavaClassName", "net/minecraft/item/ItemStack");
 		isHMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
