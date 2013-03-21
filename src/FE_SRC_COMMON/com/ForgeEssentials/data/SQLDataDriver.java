@@ -70,6 +70,14 @@ public class SQLDataDriver extends AbstractDataDriver
 			if (dbConnection == null || dbConnection.isClosed())
 			{
 				dbConnection = connector.getChosenConnection();
+				if (connector.getActiveType().equals(EnumDBType.H2_FILE))
+				{
+					SURROUNDER = "\"";
+				}
+				else
+				{
+					SURROUNDER = "";
+				}
 			}
 		}
 		catch (Exception e)
@@ -227,7 +235,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			ArrayList<String> names = new ArrayList<String>();
 
 			// ResultSet columns start at 1. (Crazy, right?)
-			for (int i = 1; i < meta.getColumnCount(); ++i)
+			for (int i = 1; i <= meta.getColumnCount(); ++i)
 			{
 				names.add(meta.getColumnName(i));
 			}
@@ -264,6 +272,12 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			dataCursor = data;
 			infoCursor = info;
+			
+			if (entry.getKey().equalsIgnoreCase(UNIQUE))
+			{
+				data.setUniqueKey(entry.getValue().toString());
+				continue;
+			}
 
 			String[] fieldHeiarchy = entry.getKey().split(SEPERATOR);
 			if (fieldHeiarchy != null)
@@ -846,15 +860,14 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		Class type = targetType.getType();
 
-		if (type.equals(int.class) || type.equals(float.class) || type.equals(double.class) || type.equals(long.class) || type.equals(String.class) || type.equals(boolean.class))
+		if (type.equals(byte.class) && dbValue.getClass().equals(Integer.class))
+		{
+			value = ((Integer)dbValue).byteValue();
+		}
+		else if (type.equals(byte.class) || type.equals(int.class) || type.equals(float.class) || type.equals(double.class) || type.equals(long.class) || type.equals(String.class) || type.equals(boolean.class))
 		{
 			// DB Value is an integer
 			value = dbValue;
-		}
-		else if (type.equals(byte.class))
-		{
-			// DB Value is an Integer
-			value = ((Integer) dbValue).byteValue();
 		}
 		else if (type.equals(double[].class))
 		{
