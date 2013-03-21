@@ -20,6 +20,7 @@ import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
@@ -73,6 +74,12 @@ public class ModulePlayerLogger
 	@Init
 	public void load(FEModuleInitEvent e)
 	{
+		for (String name : EventLogger.exempt_groups)
+		{
+			if (PermissionsAPI.getGroupForName(name) == null)
+				throw new RuntimeException("Group '" + name + "' doesn't exist. Used in " + config.getFile().getName());
+		}
+		
 		if (!enable)
 			return;
 		try

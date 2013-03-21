@@ -1,6 +1,7 @@
 package com.ForgeEssentials.playerLogger;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -10,6 +11,8 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
@@ -49,12 +52,16 @@ public class EventLogger implements IPlayerTracker
 	public static boolean				BlockChange_WhiteList_Use	= false;
 	public static ArrayList<Integer>	BlockChange_WhiteList		= new ArrayList<Integer>();
 	public static ArrayList<Integer>	BlockChange_BlackList		= new ArrayList<Integer>();
+	public static List<String>			exempt_players 				= new ArrayList<String> ();
+	public static List<String>			exempt_groups 				= new ArrayList<String> ();
 
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
 		if (logPlayerLoginLogout && side.isServer())
 		{
+			if(exempt(player))
+				return;
 			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Login, player));
 		}
 	}
@@ -64,6 +71,8 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logPlayerLoginLogout && side.isServer())
 		{
+			if(exempt(player))
+				return;
 			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Logout, player));
 		}
 	}
@@ -73,6 +82,8 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logPlayerChangedDimension && side.isServer())
 		{
+			if(exempt(player))
+				return;
 			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.ChangedDim, player));
 		}
 	}
@@ -82,6 +93,8 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logPlayerRespawn && side.isServer())
 		{
+			if(exempt(player))
+				return;
 			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Respawn, player));
 		}
 	}
@@ -91,6 +104,8 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logCommands_Player && !e.isCanceled() && e.sender instanceof EntityPlayer && side.isServer())
 		{
+			if(exempt((EntityPlayer)e.sender))
+				return;
 			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
 			return;
 		}
@@ -111,6 +126,8 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logBlockChanges && !e.isCanceled() && side.isServer())
 		{
+			if(exempt(e.player))
+				return;
 			String block = e.world.getBlockId(e.blockX, e.blockY, e.blockZ) + ":" + e.world.getBlockMetadata(e.blockX, e.blockY, e.blockZ);
 			TileEntity te = e.world.getBlockTileEntity(e.blockX, e.blockY, e.blockZ);
 			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ, te));
@@ -122,6 +139,8 @@ public class EventLogger implements IPlayerTracker
 	{
 		if (logBlockChanges && !e.isCanceled() && side.isServer())
 		{
+			if(exempt(e.player))
+				return;
 			if (BlockChange_WhiteList_Use && !BlockChange_WhiteList.contains(e.player.dimension))
 				return;
 			if (BlockChange_BlackList.contains(e.player.dimension) && !BlockChange_WhiteList.contains(e.player.dimension))
@@ -172,5 +191,20 @@ public class EventLogger implements IPlayerTracker
 			command = command + " " + str;
 		}
 		return command;
+	}
+
+	public static boolean exempt(EntityPlayer player)
+	{
+		for (String un : exempt_players)
+		{
+			if (un.replaceAll("\"", "").equalsIgnoreCase(player.username))
+				return true;
+		}
+		for(Group group : PermissionsAPI.getApplicableGroups(player, false))
+		{
+			if (exempt_groups.contains(group.name))
+				return true;	
+		}
+		return false;
 	}
 }
