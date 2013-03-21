@@ -664,7 +664,7 @@ public class SQLDataDriver extends AbstractDataDriver
 			{
 				fields.add(new Pair<String, String>(columnName, "DOUBLE"));
 			}
-			if (type.equals(int.class) || type.equals(Integer.class))
+			else if (type.equals(long.class) || type.equals(Long.class))
 			{
 				fields.add(new Pair<String, String>(columnName, "BIGINT"));
 			}
