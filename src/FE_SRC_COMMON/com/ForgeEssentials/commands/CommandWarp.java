@@ -117,7 +117,7 @@ public class CommandWarp extends FEcmdModuleCommands
 	{
 		if (args.length == 2)
 		{
-			if (CommandDataManager.warps.containsKey(args[0].toLowerCase()))
+			if (CommandDataManager.warps.containsKey(args[1].toLowerCase()))
 			{
 				List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
 				if (PlayerSelector.hasArguments(args[0]))
