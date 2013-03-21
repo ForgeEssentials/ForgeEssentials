@@ -46,7 +46,6 @@ public class CommandLogin extends ForgeEssentialsCommandBase
 			{
 				OutputHandler.chatConfirmation(sender, Localization.get("message.auth.success"));
 				ModuleAuth.unLogged.remove(sender.username);
-				ModuleAuth.unRegistered.remove(sender.username);
 			}
 			else
 			{

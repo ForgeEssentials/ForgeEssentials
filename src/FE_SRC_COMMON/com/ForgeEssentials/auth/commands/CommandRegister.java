@@ -35,7 +35,7 @@ public class CommandRegister extends ForgeEssentialsCommandBase
 		}
 		else if (ModuleAuth.unRegistered.contains(sender.username))
 		{
-			if (ModuleAuth.vanillaMode() || ModuleAuth.allowOfflineReg)
+			if (!ModuleAuth.vanillaMode() || ModuleAuth.allowOfflineReg)
 			{
 				register(sender, args[0]);
 			}
@@ -49,7 +49,9 @@ public class CommandRegister extends ForgeEssentialsCommandBase
 			pass = ModuleAuth.encrypt(pass);
 			PlayerPassData data = new PlayerPassData(sender.username, pass);
 			PlayerPassData.registerData(data);
+			PlayerPassData.discardData(sender.username);
 			OutputHandler.chatError(sender, Localization.get("command.register.register"));
+			ModuleAuth.unRegistered.remove(sender.username);
 		}
 		catch (Exception e)
 		{
