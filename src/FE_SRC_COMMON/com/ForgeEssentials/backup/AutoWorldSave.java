@@ -1,7 +1,5 @@
 package com.ForgeEssentials.backup;
 
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.util.tasks.TaskRegistry;
@@ -39,11 +37,7 @@ public class AutoWorldSave implements Runnable
 		{
 			try
 			{
-				WorldServer world = DimensionManager.getWorld(i);
-				boolean bl = world.canNotSave;
-				world.canNotSave = false;
-				world.saveAllChunks(true, (IProgressUpdate) null);
-				world.canNotSave = bl;
+				ModuleBackup.worldsave(i);
 			}
 			catch (Exception e)
 			{
