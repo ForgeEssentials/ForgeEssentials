@@ -106,8 +106,8 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 		subcat = cat + ".exempt";
 		config.addCustomCategoryComment(subcat, "Don't log stuff from these players/group.\nCase sensitive.\nMods should not be using fake players. But if they do, you can add them here if you don't logs from them.");
 		
-		EventLogger.exempt_players = Arrays.asList(config.get(subcat, "players", exemptDefPlayers).valueList);
-		EventLogger.exempt_groups = Arrays.asList(config.get(subcat, "groups", new String[] {}).valueList);
+		EventLogger.exempt_players = Arrays.asList(config.get(subcat, "players", exemptDefPlayers).getStringList());
+		EventLogger.exempt_groups = Arrays.asList(config.get(subcat, "groups", new String[] {}).getStringList());
 		
 		subcat = cat + ".events";
 		config.addCustomCategoryComment(subcat, "Toggle events to log here.");
