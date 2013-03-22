@@ -291,7 +291,10 @@ public class PermissionsHelper implements IPermissionsHelper
 	public String addPlayerToGroup(String group, String player, String zone)
 	{
 		SqlHelper.generatePlayer(player);
-		return SqlHelper.addPlayerGroup(group, player, zone);
+		if (getApplicableGroups(player, false, zone).contains(getGroupForName(group)))
+			return "Player already in group.";
+		else
+			return SqlHelper.addPlayerGroup(group, player, zone);
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class ModuleLauncher
 		for (ASMData asm : data)
 		{
 			temp = new ModuleContainer(asm);
-			if (temp.isValid)
+			if (temp.isLoadable)
 			{
 				if (containerMap.containsKey(temp.name))
 				{

@@ -6,7 +6,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.WorldBorder.ModuleWorldBorder.BorderShape;
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.util.OutputHandler;
@@ -38,7 +37,7 @@ public class ConfigWorldBorder extends ModuleConfigBase
 
 		String[] stages =
 		{ "Stage1" };
-		stages = config.get("Penalties", "stages", stages, "If you add an item here, a subcategory will be generated.").getStringList();
+		stages = config.get("Penalties", "stages", stages, "If you add an item here, a subcategory will be generated.").valueList;
 
 		for (String stage : stages)
 		{
@@ -48,7 +47,7 @@ public class ConfigWorldBorder extends ModuleConfigBase
 
 			String[] effects =
 			{ "message", "knockback", "damage" };
-			effects = config.get(cat, "effects", effects, "Get the list of possibilities in the example file").getStringList();
+			effects = config.get(cat, "effects", effects, "Get the list of possibilities in the example file").valueList;
 
 			IEffect[] effctList = new IEffect[effects.length];
 			int i = 0;
@@ -89,7 +88,6 @@ public class ConfigWorldBorder extends ModuleConfigBase
 		config.addCustomCategoryComment(category, "Common settings.");
 
 		ModuleWorldBorder.logToConsole = config.get(category, "LogToConsole", true, "Enable logging to the server console and the log file").getBoolean(true);
-		TickTaskFill.debug = config.get(category, "debug", false).getBoolean(false);
 
 		Property prop = config.get(category, "overGenerate", 345);
 		prop.comment = "The amount of blocks that will be generated outside the radius of the border. This is important!"
@@ -97,17 +95,6 @@ public class ConfigWorldBorder extends ModuleConfigBase
 				+ " \nIf you use something like Dynmap you should put this number higher. If the border isn't there for aesthetic purposes, then you don't need that."
 				+ " \nThe default value (345) is calculated like this: (20 chuncks for view distance * 16 blocks per chunck) + 25 as backup." + " \nThis allows players to pass the border 25 blocks before generating new land.";
 		ModuleWorldBorder.overGenerate = prop.getInt(345);
-
-		category = "Point";
-		config.addCustomCategoryComment(category, "Location. This is the same in all worlds!");
-
-		int X = config.get(category, "X", 0).getInt();
-		int Z = config.get(category, "Z", 0).getInt();
-		int rad = config.get(category, "rad", 0).getInt();
-		BorderShape shape = BorderShape.valueOf(config.get(category, "shape", "square").getString());
-		boolean set = config.get(category, "set", false, "True if the value is actually set.").getBoolean(false);
-
-		ModuleWorldBorder.setCenter(rad, X, Z, shape, set);
 	}
 
 	@Override
@@ -131,12 +118,6 @@ public class ConfigWorldBorder extends ModuleConfigBase
 	@Override
 	public void forceSave()
 	{
-		String category = "Point";
-		config.get(category, "X", 0).set(ModuleWorldBorder.X);
-		config.get(category, "Z", 0).set(ModuleWorldBorder.Z);
-		config.get(category, "rad", 0).set(ModuleWorldBorder.rad);
-		config.get(category, "set", false, "True if the value is actually set.").set(ModuleWorldBorder.set);
-		config.get(category, "shape", "square").set(ModuleWorldBorder.shape.toString());
-		config.save();
+		
 	}
 }

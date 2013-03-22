@@ -23,7 +23,6 @@ import com.ForgeEssentials.api.modules.FEModule.ServerInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerPostInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.ModuleConfigBase;
-import com.ForgeEssentials.api.modules.ModuleDisableException;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
@@ -63,8 +62,7 @@ public class ModuleContainer implements Comparable
 	public final String							className;
 	public final String							name;
 	public final boolean						isCore;
-	private boolean								isLoadable	= true;
-	protected boolean							isValid		= true;
+	public boolean								isLoadable	= true;
 	protected boolean							doesOverride;
 
 	public ModuleContainer(ASMData data)
@@ -81,7 +79,7 @@ public class ModuleContainer implements Comparable
 		{
 			OutputHandler.info("Error trying to load " + data.getClassName() + " as a FEModule!");
 			e.printStackTrace();
-			isValid = false;
+
 			isCore = false;
 			name = "INVALID-MODULE";
 			return;
@@ -336,14 +334,8 @@ public class ModuleContainer implements Comparable
 		try
 		{
 			Class c = Class.forName(className);
-			Method m = c.getDeclaredMethod(preinit, new Class[]
-			{ FEModulePreInitEvent.class });
+			Method m = c.getDeclaredMethod(preinit, new Class[] { FEModulePreInitEvent.class });
 			m.invoke(module, event);
-		}
-		catch(ModuleDisableException e)
-		{
-			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
-			this.isValid = false;
 		}
 		catch (Throwable e)
 		{
@@ -361,14 +353,8 @@ public class ModuleContainer implements Comparable
 		try
 		{
 			Class c = Class.forName(className);
-			Method m = c.getDeclaredMethod(init, new Class[]
-			{ FEModuleInitEvent.class });
+			Method m = c.getDeclaredMethod(init, new Class[] { FEModuleInitEvent.class });
 			m.invoke(module, event);
-		}
-		catch(ModuleDisableException e)
-		{
-			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
-			this.isValid = false;
 		}
 		catch (Throwable e)
 		{
@@ -390,11 +376,6 @@ public class ModuleContainer implements Comparable
 			{ FEModulePostInitEvent.class });
 			m.invoke(module, event);
 		}
-		catch(ModuleDisableException e)
-		{
-			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
-			this.isValid = false;
-		}
 		catch (Throwable e)
 		{
 			OutputHandler.info("Error while invoking PostInit event for " + name);
@@ -414,11 +395,6 @@ public class ModuleContainer implements Comparable
 			Method m = c.getDeclaredMethod(serverinit, new Class[]
 			{ FEModuleServerInitEvent.class });
 			m.invoke(module, event);
-		}
-		catch(ModuleDisableException e)
-		{
-			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
-			this.isValid = false;
 		}
 		catch (Throwable e)
 		{
@@ -440,11 +416,6 @@ public class ModuleContainer implements Comparable
 			{ FEModuleServerPostInitEvent.class });
 			m.invoke(module, event);
 		}
-		catch(ModuleDisableException e)
-		{
-			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
-			this.isValid = false;
-		}
 		catch (Throwable e)
 		{
 			OutputHandler.info("Error while invoking ServerPostInit event for " + name);
@@ -465,11 +436,6 @@ public class ModuleContainer implements Comparable
 			{ FEModuleServerStopEvent.class });
 			m.invoke(module, event);
 		}
-		catch(ModuleDisableException e)
-		{
-			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
-			this.isValid = false;
-		}
 		catch (Throwable e)
 		{
 			OutputHandler.info("Error while invoking ServerStop event for " + name);
@@ -488,11 +454,6 @@ public class ModuleContainer implements Comparable
 			Method m = c.getDeclaredMethod(reload, new Class[]
 			{ ICommandSender.class });
 			m.invoke(module, user);
-		}
-		catch(ModuleDisableException e)
-		{
-			OutputHandler.severe(name+" is disabling itself: "+e.getMessage());
-			this.isValid = false;
 		}
 		catch (Throwable e)
 		{

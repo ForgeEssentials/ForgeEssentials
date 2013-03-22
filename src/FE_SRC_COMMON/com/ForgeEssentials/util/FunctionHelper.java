@@ -20,9 +20,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-
+import com.ForgeEssentials.client.util.Point;
 import com.ForgeEssentials.core.misc.ItemList;
-import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.google.common.base.Joiner;
 
@@ -475,4 +474,17 @@ public final class FunctionHelper
 
 	// used for niceJoin method.
 	private static Joiner	joiner	= Joiner.on(", ").skipNulls();
+
+	public static boolean isNumeric(String string)
+	{
+		try
+		{
+			Integer.parseInt(string);
+			return true;
+		}
+		catch (NumberFormatException e)
+		{
+			return false;	
+		}
+	}
 }

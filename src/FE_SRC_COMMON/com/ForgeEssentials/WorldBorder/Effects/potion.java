@@ -3,6 +3,8 @@ package com.ForgeEssentials.WorldBorder.Effects;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.WorldBorder.WorldBorder;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.Configuration;
@@ -28,7 +30,7 @@ public class potion implements IEffect
 	}
 
 	@Override
-	public void execute(EntityPlayerMP player)
+	public void execute(WorldBorder wb, EntityPlayerMP player)
 	{
 		for (PotionEffect potionEffect : potionEffectsList)
 		{
