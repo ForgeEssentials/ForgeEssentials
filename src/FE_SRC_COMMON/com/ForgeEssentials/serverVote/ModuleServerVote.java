@@ -75,7 +75,7 @@ public class ModuleServerVote
 		 * Offline check.
 		 */
 
-		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(vote.player);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(vote.player);
 		if (player == null)
 		{
 			if (!config.allowOfflineVotes)

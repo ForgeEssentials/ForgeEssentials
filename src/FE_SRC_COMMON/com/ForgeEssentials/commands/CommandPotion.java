@@ -97,7 +97,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		}
 		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
 				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
@@ -136,7 +136,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		dur = parseIntWithMin(sender, args[2], 0) * 20;
 		PotionEffect eff = new PotionEffect(ID, dur, ampl);
 
-		List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+		List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 		if (PlayerSelector.hasArguments(args[0]))
 		{
 			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));

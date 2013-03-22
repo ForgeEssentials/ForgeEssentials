@@ -4,9 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.PlayerSelector;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
 
@@ -39,186 +42,169 @@ public class CommandGameMode extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length < 2)
+		EnumGameType gm;
+		EntityPlayer target = sender;
+
+		// no arguments? toggle gamemode.
+		if (args.length == 0)
 		{
-			if (args.length == 1)
-			{
-				if (args[0].equals("0") || args[0].equals("1") || args[0].equals("2") || args[0].equalsIgnoreCase(EnumGameType.CREATIVE.getName()) || args[0].equalsIgnoreCase(EnumGameType.SURVIVAL.getName())
-						|| args[0].equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) || args[0].equalsIgnoreCase("a") || args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("s"))
-				{
-					sender.setGameType(getGameTypeFromString(sender, args[0]));
-				}
-				else if (FunctionHelper.getPlayerFromPartialName(args[0]) != null || PlayerSelector.hasArguments(args[0]))
-				{
-					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
-					{
-						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
-						return;
-					}
-					List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
-					if (PlayerSelector.hasArguments(args[0]))
-					{
-						players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-					}
-					if (players.size() != 0)
-					{
-						for (EntityPlayer victim : players)
-						{
-							EnumGameType gm;
-							if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType().isCreative())
-							{
-								gm = EnumGameType.SURVIVAL;
-							}
-							else
-							{
-								gm = EnumGameType.CREATIVE;
-							}
-
-							victim.setGameType(gm);
-							OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", victim.username, gm.getName()));
-						}
-					}
-					else
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-						return;
-					}
-				}
-				else
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-				}
-			}
-			else
-			{
-				EnumGameType gm;
-				if (((EntityPlayerMP) sender).theItemInWorldManager.getGameType().isCreative())
-				{
-					gm = EnumGameType.SURVIVAL;
-				}
-				else
-				{
-					gm = EnumGameType.CREATIVE;
-				}
-
-				sender.setGameType(gm);
-			}
+			gm = this.getToggledType(target);
+			target.setGameType(gm);
+			target.fallDistance = 0.0F;
+			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
+			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", target.username, modeName));
+			return;
 		}
-		else if (args.length == 2)
+
+		gm = getGameTypeFromString(sender, args[0]);
+
+		// 1 argument? try gamemode.
+		if (args.length == 1)
 		{
-			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+			// not a gamemode? try a player,
+			if (gm == null)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
-				return;
-			}
-			EnumGameType gm;
-			String name = "";
-			if (args[0].equals("0") || args[0].equals("1") || args[0].equals("2") || args[0].equalsIgnoreCase(EnumGameType.CREATIVE.getName()) || args[0].equalsIgnoreCase(EnumGameType.SURVIVAL.getName())
-					|| args[0].equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) || args[0].equalsIgnoreCase("a") || args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("s"))
-			{
-				gm = getGameTypeFromString(sender, args[0]);
+				// throws exception if there is no player
+				target = func_82359_c(sender, args[0]);
 
-				List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[1]));
-				if (PlayerSelector.hasArguments(args[1]))
-				{
-					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[1]));
-					name = args[1];
-				}
-				if (players.size() != 0)
-				{
-					for (EntityPlayer victim : players)
-					{
-						victim.setGameType(gm);
-					}
-				}
-				else
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[1]));
-					return;
-				}
+				gm = this.getToggledType(target);
 			}
-			else
-			{
-				gm = getGameTypeFromString(sender, args[1]);
 
-				List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
-				if (PlayerSelector.hasArguments(args[0]))
-				{
-					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-					name = args[0];
-				}
-				if (players.size() != 0)
-				{
-					for (EntityPlayer victim : players)
-					{
-						victim.setGameType(gm);
-					}
-				}
-				else
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-					return;
-				}
-			}
-			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", name, gm.getName()));
+			target.setGameType(gm);
+			target.fallDistance = 0.0F;
+			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
+			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", target.username, modeName));
+			return;
 		}
-		else
+
+		// default to survival if cannot be parsed
+		if (gm == null)
+			gm = EnumGameType.SURVIVAL;
+
+		// 2 arguments? do ./GameMode <mode> <player>
+		if (args.length == 2)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			// throws exception if there is no player
+			target = func_82359_c(sender, args[0]);
+
+			target.setGameType(gm);
+			target.fallDistance = 0.0F;
+			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
+			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", target.username, modeName));
+			return;
 		}
+
+		// > 2 arguments? do ./GameMode <mode> <players>
+		if (args.length > 2)
+		{
+			EntityPlayer[] players = PlayerSelector.matchPlayers(sender, args[1]);
+
+			if (players == null || players.length == 0)
+				throw new PlayerNotFoundException();
+
+			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
+
+			for (EntityPlayer player : players)
+			{
+				player.setGameType(gm);
+				player.fallDistance = 0.0F;
+			}
+
+			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", "all specified players", modeName));
+			return;
+		}
+
+		throw new WrongUsageException("commands.gamemode.usage");
+
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length <= 2)
-		{
-			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
-			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer victim : players)
-				{
-					if (args.length == 2)
-					{
-						victim.setGameType(getGameTypeFromString(sender, args[1]));
-					}
-					else
-					{
-						EnumGameType gm;
-						if (((EntityPlayerMP) victim).theItemInWorldManager.getGameType() == EnumGameType.SURVIVAL || ((EntityPlayerMP) victim).theItemInWorldManager.getGameType() == EnumGameType.ADVENTURE)
-						{
-							gm = EnumGameType.CREATIVE;
-						}
-						else
-						{
-							gm = EnumGameType.SURVIVAL;
-						}
+		EnumGameType gm;
+		EntityPlayer target;
 
-						victim.setGameType(gm);
-						OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", victim.username, gm.getName()));
-					}
-				}
-			}
-			else
-			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-				return;
-			}
-		}
-		else
+		// no arguments? toggle gamemode.
+		if (args.length == 0)
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			throw new WrongUsageException("commands.gamemode.usage");
 		}
+
+		gm = getGameTypeFromString(sender, args[0]);
+
+		// 1 argument? try player
+		if (args.length == 1)
+		{
+			// throws exception if there is no player
+			target = func_82359_c(sender, args[0]);
+
+			gm = this.getToggledType(target);
+
+			target.setGameType(gm);
+			target.fallDistance = 0.0F;
+			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
+			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", target.username, modeName));
+			return;
+		}
+
+		// default to survival if cannot be parsed
+		if (gm == null)
+			gm = EnumGameType.SURVIVAL;
+
+		// 2 arguments? do ./GameMode <mode> <player>
+		if (args.length == 2)
+		{
+			// throws exception if there is no player
+			target = func_82359_c(sender, args[0]);
+
+			target.setGameType(gm);
+			target.fallDistance = 0.0F;
+			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
+			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", target.username, modeName));
+			return;
+		}
+
+		// > 2 arguments? do ./GameMode <mode> <players>
+		if (args.length > 2)
+		{
+			EntityPlayer[] players = PlayerSelector.matchPlayers(sender, args[1]);
+
+			if (players == null || players.length == 0)
+				throw new PlayerNotFoundException();
+
+			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
+
+			for (EntityPlayer player : players)
+			{
+				player.setGameType(gm);
+				player.fallDistance = 0.0F;
+			}
+
+			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", "all specified players", modeName));
+			return;
+		}
+
+		throw new WrongUsageException("commands.gamemode.usage");
 	}
 
-	public EnumGameType getGameTypeFromString(ICommandSender sender, String string)
+	private EnumGameType getGameTypeFromString(ICommandSender sender, String string)
 	{
-		return !string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) && !string.equalsIgnoreCase("s") ? !string.equalsIgnoreCase(EnumGameType.CREATIVE.getName()) && !string.equalsIgnoreCase("c") ? !string
-				.equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) && !string.equalsIgnoreCase("a") ? WorldSettings.getGameTypeById(parseIntBounded(sender, string, 0, 2)) : EnumGameType.ADVENTURE : EnumGameType.CREATIVE : EnumGameType.SURVIVAL;
+		if (string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) || !string.equalsIgnoreCase("s") || !string.equals("0"))
+			return EnumGameType.SURVIVAL;
+		else if (string.equalsIgnoreCase(EnumGameType.CREATIVE.getName()) || string.equalsIgnoreCase("c") || !string.equals("1"))
+			return EnumGameType.CREATIVE;
+		else if (string.equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) || string.equalsIgnoreCase("a") || !string.equals("2"))
+			return EnumGameType.ADVENTURE;
+		else
+			return null;
+	}
+
+	private EnumGameType getToggledType(EntityPlayer player)
+	{
+		if (player.capabilities.isCreativeMode)
+			return EnumGameType.SURVIVAL;
+		else
+			return EnumGameType.CREATIVE;
 	}
 
 	@Override

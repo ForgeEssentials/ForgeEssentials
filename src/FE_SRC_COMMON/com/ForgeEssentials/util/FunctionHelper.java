@@ -66,8 +66,7 @@ public final class FunctionHelper
 	 * Gets a nice string with only needed elements.
 	 * Max time is weeks
 	 * @param timeInSec
-	 * @return
-	 * Time in string format
+	 * @return Time in string format
 	 */
 	public static String parseTime(int timeInSec)
 	{
@@ -106,12 +105,15 @@ public final class FunctionHelper
 		return uptime;
 	}
 
+	public static EntityPlayerMP getPlayerForName(String name)
+	{
+		return FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(name);
+	}
+
 	/**
-	 * Make new Array with everything except the 1th string.
-	 * @param par0ArrayOfStr
-	 * Old array
-	 * @return
-	 * New array
+	 * Make new Array with everything except the 1st string.
+	 * @param par0ArrayOfStr Old array
+	 * @return New array
 	 */
 	public static String[] dropFirstString(String[] par0ArrayOfStr)
 	{
@@ -139,32 +141,6 @@ public final class FunctionHelper
 	public static WorldServer getDimension(int dimension)
 	{
 		return DimensionManager.getWorld(dimension);
-	}
-
-	/**
-	 * Get a player obj from a partial username
-	 * @param username
-	 * @return
-	 * The player. Null if not found.
-	 */
-	public static EntityPlayerMP getPlayerFromPartialName(String username)
-	{
-		List<EntityPlayer> possibles = new LinkedList<EntityPlayer>();
-		@SuppressWarnings("unchecked")
-		ArrayList<EntityPlayerMP> temp = (ArrayList<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList;
-		for (EntityPlayerMP player : temp)
-		{
-			if (player.username.equalsIgnoreCase(username))
-				return player;
-
-			if (player.username.toLowerCase().contains(username.toLowerCase()))
-			{
-				possibles.add(player);
-			}
-		}
-		if (possibles.size() == 1)
-			return (EntityPlayerMP) possibles.toArray()[0];
-		return null;
 	}
 
 	/**
@@ -484,7 +460,7 @@ public final class FunctionHelper
 		}
 		catch (NumberFormatException e)
 		{
-			return false;	
+			return false;
 		}
 	}
 }

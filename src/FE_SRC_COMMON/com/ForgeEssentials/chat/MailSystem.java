@@ -20,9 +20,11 @@ public class MailSystem implements IPlayerTracker
 		map.put(mail.getReceiver(), mail);
 		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(Mail.class), mail);
 
-		if (FunctionHelper.getPlayerFromPartialName(mail.getReceiver()) != null)
+		EntityPlayer player = FunctionHelper.getPlayerForName(mail.getReceiver());
+
+		if (player != null)
 		{
-			receiveMail(FunctionHelper.getPlayerFromPartialName(mail.getReceiver()));
+			receiveMail(player);
 		}
 	}
 
