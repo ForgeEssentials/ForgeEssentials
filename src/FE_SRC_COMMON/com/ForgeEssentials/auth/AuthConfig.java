@@ -27,7 +27,7 @@ public class AuthConfig extends ModuleConfigBase
 		ModuleAuth.enabled = ModuleAuth.forceEnabled = config.get(CATEGORY_MAIN, "forceEnable", false, "Forces the module to be loaded regardless of Minecraft auth services").getBoolean(false);
 		ModuleAuth.checkVanillaAuthStatus = config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the module if and when the Minecraft Auth servers go down.").getBoolean(false);
 		ModuleAuth.allowOfflineReg = config.get(CATEGORY_MAIN, "allowOfflineReg", false, "Allow peopls to register usernames while server is offline. Don't allow this for primarily Online servers.").getBoolean(false);
-		ModuleAuth.salt = config.get(CATEGORY_MAIN, "allowOfflineReg", ModuleAuth.salt, "The salt to be used when hashing passwords").value;
+		ModuleAuth.salt = config.get(CATEGORY_MAIN, "salt", ModuleAuth.salt, "The salt to be used when hashing passwords").value;
 
 		config.save();
 	}
@@ -38,7 +38,7 @@ public class AuthConfig extends ModuleConfigBase
 		config.get(CATEGORY_MAIN, "forceEnable", false, "Forces the module to be loaded regardless of Minecraft auth services").value = "" + ModuleAuth.forceEnabled;
 		config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the module if and when the Minecraft Auth servers go down.").value = "" + ModuleAuth.checkVanillaAuthStatus;
 		config.get(CATEGORY_MAIN, "allowOfflineReg", false, "Allow registration while server is offline. Don't allow this.").value = "" + ModuleAuth.allowOfflineReg;
-		config.get(CATEGORY_MAIN, "allowOfflineReg", "", "The salt to be used when hashing passwords").value = ModuleAuth.salt;
+		config.get(CATEGORY_MAIN, "salt", "", "The salt to be used when hashing passwords").value = ModuleAuth.salt;
 
 		config.save();
 	}
@@ -50,7 +50,7 @@ public class AuthConfig extends ModuleConfigBase
 		ModuleAuth.forceEnabled = config.get(CATEGORY_MAIN, "forceEnable", false).getBoolean(false);
 		ModuleAuth.checkVanillaAuthStatus = config.get(CATEGORY_MAIN, "autoEnable", true).getBoolean(false);
 		ModuleAuth.allowOfflineReg = config.get(CATEGORY_MAIN, "allowOfflineReg", false).getBoolean(false);
-		ModuleAuth.salt = config.get(CATEGORY_MAIN, "allowOfflineReg", ModuleAuth.salt).value;
+		ModuleAuth.salt = config.get(CATEGORY_MAIN, "salt", ModuleAuth.salt).value;
 	}
 
 }
