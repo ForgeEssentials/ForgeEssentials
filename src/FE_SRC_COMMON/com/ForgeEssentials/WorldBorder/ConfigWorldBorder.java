@@ -37,7 +37,7 @@ public class ConfigWorldBorder extends ModuleConfigBase
 
 		String[] stages =
 		{ "Stage1" };
-		stages = config.get("Penalties", "stages", stages, "If you add an item here, a subcategory will be generated.").valueList;
+		stages = config.get("Penalties", "stages", stages, "If you add an item here, a subcategory will be generated.").getStringList();
 
 		for (String stage : stages)
 		{
@@ -47,7 +47,7 @@ public class ConfigWorldBorder extends ModuleConfigBase
 
 			String[] effects =
 			{ "message", "knockback", "damage" };
-			effects = config.get(cat, "effects", effects, "Get the list of possibilities in the example file").valueList;
+			effects = config.get(cat, "effects", effects, "Get the list of possibilities in the example file").getStringList();
 
 			IEffect[] effctList = new IEffect[effects.length];
 			int i = 0;

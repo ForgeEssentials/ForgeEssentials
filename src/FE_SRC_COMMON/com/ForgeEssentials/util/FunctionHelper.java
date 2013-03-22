@@ -20,8 +20,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-import com.ForgeEssentials.client.util.Point;
 import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.google.common.base.Joiner;
 
