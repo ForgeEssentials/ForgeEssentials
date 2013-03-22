@@ -43,6 +43,7 @@ public class PlayerPassData
 	public static final ClassContainer container = new ClassContainer(PlayerPassData.class);
 
 	@UniqueLoadingKey
+	@SaveableField
 	public final String	username;
 	@SaveableField
 	public String		password;
