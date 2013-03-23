@@ -44,19 +44,18 @@ cp -rf ${WORKSPACE}/lib/* .
 cd ..
 
 echo "injecting version into places"
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/core/mcmod.info
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/server/mcmod.info
 sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/client/mcmod.info
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/servercomplete/FEReadme.txt
-sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/core/mcmod.info
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/FEReadme.txt
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/server/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/client/mcmod.info
-sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt
-sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/servercomplete/FEReadme.txt
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/FEReadme.txt
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/ForgeEssentials.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/preloader/FEModContainer.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/commands/CommandFEVersion.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/client/ForgeEssentialsClient.java
-
 
 echo "Recompiling..."
 bash ./recompile.sh
@@ -69,14 +68,17 @@ mkdir ${WORKSPACE}/output
 cd reobf/minecraft
 
 echo "Creating Client package"
-cp -rf ${WORKSPACE}/A1-zipStuff/client/* .
+cp -rf ${WORKSPACE}/A1-zipStuff/client/mcmod.info .
+cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
+cp -rf ${WORKSPACE}/A1-zipStuff/logo.png .
+cp -rf ${WORKSPACE}/A1-zipStuff/LICENSE.TXT .
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-client-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/* mcmod.info logo.png FEReadme.txt LICENSE.TXT
 rm -rf ./com/ForgeEssentials/client
 rm -rf ./*.info ./*.txt logo.png
 
 echo "Copying in extra files for core"
-cp -rf ${WORKSPACE}/A1-zipStuff/core/* .
-cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/com/ForgeEssentials/util/lang/* ./com/ForgeEssentials/util/lang/
+cp -rf ${WORKSPACE}/A1-zipStuff/server/mcmod.info .
+cp -rf ${WORKSPACE}/A1-zipStuff/logo.png .
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg .
 rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
@@ -104,6 +106,9 @@ cp -rf ${WORKSPACE}/A1-zipStuff/servercomplete/*
 
 mkdir mods
 mkdir coremods
+cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
+cp -rf ${WORKSPACE}/A1-zipStuff/LICENSE.TXT .
+cp -rf ${WORKSPACE}/A1-zipStuff/HowToGetFESupport.txt .
 # coremod.. then alphebetical order please...
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./coremods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-auth-${MC}-${VERSION}.zip" ./mods/
@@ -144,8 +149,8 @@ rm -rf "${WORKSPACE}/output/LICENSE.TXT"
 
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
-cp -f ${WORKSPACE}/LICENSE.TXT .
-cp -rf ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt .
+cp -f ${WORKSPACE}/A1-zipStuff/LICENSE.TXT .
+cp -rf ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt .
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* ./com/ForgeEssentials/util/* FEAPIReadme.txt LICENSE.TXT
 
 #upload

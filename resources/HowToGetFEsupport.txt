@@ -1,0 +1,52 @@
+  ______ ______                                  _   
+ |  ____|  ____|                                | |  
+ | |__  | |__   ___ _   _ _ __  _ __   ___  _ __| |_ 
+ |  __| |  __| / __| | | | '_ \| '_ \ / _ \| '__| __|
+ | |    | |____\__ | |_| | |_) | |_) | (_) | |  | |_ 
+ |_|    |______|___/\__,_| .__/| .__/ \___/|_|   \__|
+                         | |   | |                   
+                         |_|   |_|                   
+Forge Essentials Support
+=====================================================
+Written by Dries007.
+A guide to getting your issues resolved by the FE dev team.
+
+If you don't follow this guide, YOU WILL BE IGNORED.
+
+Make sure you follow all of these steps:
+
+	1) Make sure your ForgeEssentials is up to date, Link: http://files.minecraftforge.net/ForgeEssentials/
+		a) Every time you mention your issue, mention what version of FE you are using. If you use beta, TELL US!
+	
+	2) Make a debug log.
+		a) Open "main.cfg".
+		b) Make "verbose=true"
+		c) Run the server.
+		d) Make the error happen.
+		e) Put the error on pastebin.
+	
+	2) Look at the Issue List on github, Link: https://github.com/ForgeEssentials/ForgeEssentialsMain/issues
+		=> If your problem is on github already:
+			a) Feel free to add your experience to the existing issue.
+			b) Make sure to include the link to Pastebin
+			c) Write a little explanation. Just "My server crashes!" is not a error report. And it doesn't help us to help you either.	
+		=> If your problem is not yet on the github:
+			a) Have you looked through all of the open issues?
+			- If not: Go to step 2.
+			- Otherwise: Got to step 3.
+			
+	3) Open an IRC client and join the "#forgeessentials" channel on Esper.net.
+		a) Ask about your problem.
+		b) If told to "Make an issue on github.". Go to step 4.
+		c) If someone seems interested, give them the link to your pastebin.
+		d) There is always an op around. Likely someone will take note of you within 15 minutes. Please do not ping (say the full nick) or PM ops, yuo will be ignored.
+	
+	4) Make a github issue
+		a) Make a clear title.
+		b) Make a clear explanation.
+		c) Make sure to include the link to your pastebin.
+		d) Submit the issue.
+		e) Wait for a response. (You might want to enable email notifications.)
+		f) Respond to questions asked.
+			- If you get asked for the configs, put them on github.
+
