@@ -86,7 +86,7 @@ public class ModuleAuth
 	public static void regierPerms(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel("ForgeEssentials.ModuleAuth.admin", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.ModuleAuth", RegGroup.ZONE);
+		event.registerPermissionLevel("ForgeEssentials.ModuleAuth", RegGroup.GUESTS);
 	}
 
 	@ServerStop
