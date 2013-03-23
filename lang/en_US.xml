@@ -6,24 +6,41 @@
 	<!-- End localization for ModuleAfterlife -->
 	
 	<!-- Begin localization for ModuleAuth -->
-	<entry key="command.login.syntax.console">&lt;paswd></entry>
-    <entry key="command.login.syntax.player">&lt;paswd></entry>
-    <entry key="command.login.info.console">Log in.</entry>
-    <entry key="command.login.info.player">Log in.</entry>
+	<entry key="command.auth.syntax.console">&lt;help></entry>
+    <entry key="command.auth.syntax.player">&lt;help></entry>
+    <entry key="command.auth.info.console">Control the Auth module</entry>
+    <entry key="command.auth.info.player">Do Auth stuff</entry>
 	
-	<entry key="command.login.wrongpass">Wrong pass!</entry>
-	<entry key="command.login.register">You have not registerd. Use /register &lt;pwd></entry>
+	<entry key="command.auth.usage">/auth &lt;help></entry>
+	<entry key="command.auth.usage.kick">/auth kick &lt;player></entry>
+	<entry key="command.auth.kick.user">%s has been kicked from the Auth service</entry>
+	<entry key="command.auth.kick.target">You have been kicked! Please login again.</entry>
+	
+	<entry key="command.auth.login.success">Login Succesful!</entry>
+	<entry key="command.auth.register.success">Registration Succesful!</entry>
+	<entry key="command.auth.login.fail">Login failed. Wrong password.</entry>
+	
+	<entry key="command.auth.change.same">You cannot change a apassword to itself</entry>
+	<entry key="command.auth.change.success">Password changed succesfully</entry>
+	<entry key="command.auth.change.wrongpass">Password not changed. Wrong passowrd.</entry>
+	
+	<entry key="message.auth.error.notregisterred">%s is not registerred!</entry>
+	<entry key="message.auth.error.notregisterred">%s is already registerred!</entry>
+	
+	<entry key="message.auth.needRegister">You need to register. try /auth help</entry>
+	<entry key="message.auth.needRegister">You need to login. try /auth help</entry>
 	
 	<entry key="command.register.syntax.console">&lt;paswd></entry>
     <entry key="command.register.syntax.player">&lt;paswd></entry>
     <entry key="command.register.info.console">Register.</entry>
     <entry key="command.register.info.player">Register.</entry>
+	<entry key="command.register.already">You don't need to register.</entry>
 	
 	<entry key="command.register.register">You have been registerd. Use /login &lt;pwd></entry>
 	
-	<entry key="message.afterlife.login">Please use '%s' to login.</entry>
-	<entry key="message.afterlife.register">Please use '%s' to register.</entry>
-	<entry key="message.afterlife.success">Successfully logged in.</entry>
+	<entry key="message.auth.login">Please use '%s' to login.</entry>
+	<entry key="message.auth.register">Please use '%s' to register.</entry>
+	<entry key="message.auth.success">Successfully logged in.</entry>
 	<!-- End localization for ModuleAuth -->
 	
 	<!-- Begin localization for ModuleBackup -->

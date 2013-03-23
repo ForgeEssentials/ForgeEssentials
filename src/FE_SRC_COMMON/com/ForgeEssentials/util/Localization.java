@@ -9,6 +9,7 @@ import java.nio.channels.ReadableByteChannel;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.google.common.base.Strings;
 
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -234,7 +235,12 @@ public class Localization
 
 	public static String get(String key)
 	{
-		return LanguageRegistry.instance().getStringLocalization(key);
+		String output = LanguageRegistry.instance().getStringLocalization(key);
+		
+		if (Strings.isNullOrEmpty(output))
+			output = key;
+		
+		return output;
 	}
 
 	/**
@@ -250,6 +256,10 @@ public class Localization
 	 */
 	public static String format(String localizationKey, Object... args)
 	{
-		return String.format(get(localizationKey), args);
+		String output = get(localizationKey);
+		if (!output.equals(localizationKey))
+			output = String.format(output, args);
+		
+		return output;
 	}
 }
