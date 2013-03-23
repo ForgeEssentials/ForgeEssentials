@@ -33,13 +33,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -51,13 +51,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -72,13 +72,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(player.username) && !(event.command instanceof CommandAuth))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(player.username) && !(event.command instanceof CommandAuth))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -90,13 +90,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -108,13 +108,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -126,13 +126,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -144,13 +144,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -165,13 +165,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(player.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(player.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -186,13 +186,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(player.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(player.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -204,13 +204,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -222,13 +222,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 
