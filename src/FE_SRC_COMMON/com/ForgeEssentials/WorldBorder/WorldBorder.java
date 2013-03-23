@@ -16,20 +16,20 @@ public class WorldBorder
 {
 	@UniqueLoadingKey
 	@SaveableField
-	public String		zone;
-	
+	public String	zone;
+
 	@SaveableField
-	public Point		center;
-	
+	public Point	center;
+
 	@SaveableField
-	public int			rad;
-	
+	public int		rad;
+
 	@SaveableField
-	public byte			shapeByte; // 1 = square, 2 = round.
-	
+	public byte		shapeByte;	// 1 = square, 2 = round.
+
 	@SaveableField
-	public boolean		enabled;
-	
+	public boolean	enabled;
+
 	/**
 	 * For new borders
 	 * @param world
@@ -65,7 +65,7 @@ public class WorldBorder
 			throw new RuntimeException(zone.getZoneName() + " is not the global zone or a worldzone");
 		}
 	}
-	
+
 	public WorldBorder(String zone, Object center, Object rad, Object shapeByte, Object enabled)
 	{
 		this.zone = zone;
@@ -80,7 +80,7 @@ public class WorldBorder
 	{
 		return new WorldBorder(tag.getUniqueKey(), tag.getFieldValue("center"), tag.getFieldValue("rad"), tag.getFieldValue("shapeByte"), tag.getFieldValue("enabled"));
 	}
-	
+
 	public void check(EntityPlayerMP player)
 	{
 		// 1 = square
@@ -114,26 +114,26 @@ public class WorldBorder
 		}
 	}
 
-	public int getETA()
+	public Long getETA()
 	{
 		try
 		{
 			// 1 = square
 			if (shapeByte == 1)
 			{
-				return (int) Math.pow((rad*2), 2);
+				return (long) Math.pow(((rad / 16) * 2), 2);
 			}
 			// 2 = round
 			else if (shapeByte == 2)
 			{
-				return (int) (Math.pow(rad, 2) * Math.PI);
+				return (long) (Math.pow((rad / 16), 2) * Math.PI);
 			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-		return 0;
+		return 0L;
 	}
 
 	public void save()
@@ -143,14 +143,14 @@ public class WorldBorder
 
 	public String getShape()
 	{
-		switch(shapeByte)
-		{
-			case 1:
-				return "square";
-			case 2:
-				return "round";
-			default:
-				return "not set";
-		}
+		switch (shapeByte)
+			{
+				case 1:
+					return "square";
+				case 2:
+					return "round";
+				default:
+					return "not set";
+			}
 	}
 }

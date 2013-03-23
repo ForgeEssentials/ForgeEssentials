@@ -118,43 +118,6 @@ public class Localization
 	public static final String	TC_ABORTED						= "message.tc.aborted";
 	public static final String	TC_DONE							= "message.tc.done";
 
-	/*
-	 * WorldBorder
-	 */
-
-	public static final String	WB_HITBORDER					= "message.wb.hitborder";
-
-	public static final String	WB_STATUS_HEADER				= "message.wb.status.header";
-	public static final String	WB_STATUS_BORDERSET				= "message.wb.status.borderset";
-	public static final String	WB_STATUS_BORDERNOTSET			= "message.wb.status.bordernotset";
-
-	public static final String	WB_LAGWARING					= "message.wb.lagwarning";
-
-	public static final String	WB_FILL_INFO					= "message.wb.fill.info";
-	public static final String	WB_FILL_CONFIRM					= "message.wb.fill.confirm";
-	public static final String	WB_FILL_ONLYONCE				= "message.wb.fill.onlyonce";
-	public static final String	WB_FILL_CONSOLENEEDSDIM			= "message.wb.fill.consoleneedsdim";
-	public static final String	WB_FILL_START					= "message.wb.fill.start";
-	public static final String	WB_FILL_STILLGOING				= "message.wb.fill.stillgoing";
-	public static final String	WB_FILL_DONE					= "message.wb.fill.done";
-	public static final String	WB_FILL_ETA						= "message.wb.fill.eta";
-	public static final String	WB_FILL_ABORTED					= "message.wb.fill.aborted";
-	public static final String	WB_FILL_FINISHED				= "message.wb.fill.finished";
-	public static final String	WB_FILL_UNLOADEDWOLD			= "message.wb.fill.worldunloaded";
-
-	public static final String	WB_SAVING_FAILED				= "message.wb.saving.failed";
-
-	public static final String	WB_TURBO_INFO					= "message.wb.turbo.info";
-	public static final String	WB_TURBO_CONFIRM				= "message.wb.turbo.confirm";
-	public static final String	WB_NOTHINGTODO					= "message.wb.nothingtodo";
-	public static final String	WB_TURBO_ON						= "message.wb.turbo.on";
-	public static final String	WB_TURBO_OFF					= "message.wb.turbo.off";
-
-	public static final String	WB_AUTO_INFO					= "message.wb.auto.info";
-	public static final String	WB_AUTO_CONFIRM					= "message.wb.auto.confirm";
-
-	public static final String	WB_SET							= "message.wb.set";
-
 	public static final String	UNIT_SECONDS					= "unit.seconds";
 
 	/*
