@@ -78,9 +78,10 @@ rm -rf ./*.info ./*.txt logo.png
 
 echo "Copying in extra files for core"
 cp -rf ${WORKSPACE}/resources/server/mcmod.info .
+cp -rf ${WORKSPACE}/resources/META-INF .
 cp -rf ${WORKSPACE}/resources/logo.png .
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg .
-rm ./com/ForgeEssentials/util/lang/dummyForGithub
+#rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
 echo "Creating server packages"
 jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg HowToGetFEsupport.txt ./com/ForgeEssentials/api/*
@@ -97,7 +98,7 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-tickets-${MC}-${VERSION}.zip" ./com/For
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldBorder/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-afterlife-${MC}-${VERSION}.zip" ./com/ForgeEssentials/afterlife/*
-rm -rf ./*.info ./*.txt
+rm -rf ./*.info ./*.txt logo.png
 
 echo "Creating ServerComplete package"
 cd ${WORKSPACE}/output
