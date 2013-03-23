@@ -50,7 +50,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		if (args.length == 0)
 			throw new WrongUsageException("command.auth.usage");
 
-		boolean hasAdmin = PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()+".admin"));
+		boolean hasAdmin = PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin"));
 
 		// one arg? must be help.
 		if (args.length == 1)
@@ -60,10 +60,10 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(" - /auth register <password>  - forces the player to login again");
 				sender.sendChatToPlayer(" - /auth login <player>  - forces the player to login again");
 				sender.sendChatToPlayer(" - /auth changepass <oldpass> <newpass>  - sets the players password to the specified");
-				
+
 				if (!hasAdmin)
 					return;
-				
+
 				sender.sendChatToPlayer(" - /auth kick <player>  - forces the player to login again");
 				sender.sendChatToPlayer(" - /auth setpass <player> <password>  - sets the players password to the specified");
 				sender.sendChatToPlayer(" - /auth unregister <player>  - forces the player to register again");
@@ -82,9 +82,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				PlayerPassData data = PlayerPassData.getData(sender.username);
 				if (data == null)
 					throw new WrongUsageException("message.auth.error.notregisterred", sender.username);
-				
+
 				String pass = ModuleAuth.encrypt(args[1]);
-				
+
 				// login worked
 				if (data.password.equals(pass))
 				{
@@ -92,24 +92,26 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 					OutputHandler.chatConfirmation(sender, Localization.get("command.auth.login.success"));
 				}
 				else
+				{
 					OutputHandler.chatError(sender, Localization.get("command.auth.login.fail"));
-				
+				}
+
 				return;
-					
+
 			}
 			// parse register
 			else if (args[0].equalsIgnoreCase("register"))
 			{
 				if (PlayerPassData.getData(sender.username) != null)
 					throw new WrongUsageException("command.auth.error.yesregisterred", sender.username);
-				
+
 				String pass = ModuleAuth.encrypt(args[1]);
 				PlayerPassData.registerData(new PlayerPassData(sender.username, pass));
 				ModuleAuth.unRegistered.remove(sender.username);
 				OutputHandler.chatConfirmation(sender, Localization.get("command.auth.register.success"));
 				return;
 			}
-			
+
 			if (ModuleAuth.unLogged.contains(sender.username))
 			{
 				OutputHandler.chatError(sender, Localization.get("message.auth.needlogin"));
@@ -120,7 +122,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, Localization.get("message.auth.needregister"));
 				return;
 			}
-			
+
 			// check for players.. all the rest of these should be greated than 1.
 			String name = args[1];
 			boolean isLogged = true;
@@ -132,7 +134,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
 				isLogged = false;
 			}
-			
+
 			// parse ./auth kick
 			if (args[0].equalsIgnoreCase("kick"))
 			{
@@ -153,7 +155,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			{
 				if (!hasAdmin)
 					throw new PermissionDeniedException();
-				
+
 				throw new WrongUsageException("command.auth.usage.setpass");
 			}
 
@@ -162,7 +164,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			{
 				if (!hasAdmin)
 					throw new PermissionDeniedException();
-				
+
 				if (PlayerPassData.getData(name) == null)
 					throw new WrongUsageException("message.auth.error.notregisterred", name);
 
@@ -187,52 +189,47 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, Localization.get("message.auth.needregister"));
 				return;
 			}
-			
+
 			// parse changePass
 			if (args[0].equalsIgnoreCase("changepass"))
 			{
 				PlayerPassData data = PlayerPassData.getData(sender.username);
 				String oldpass = ModuleAuth.encrypt(args[1]);
 				String newPass = ModuleAuth.encrypt(args[2]);
-				
+
 				if (args[1].equals(args[2]))
 				{
 					OutputHandler.chatConfirmation(sender, Localization.get("command.auth.change.same"));
 					return;
 				}
-				
+
 				if (!data.password.equals(oldpass))
 				{
 					OutputHandler.chatConfirmation(sender, Localization.get("command.auth.change.wrongpass"));
 					return;
 				}
-				
+
 				data.password = newPass;
 				OutputHandler.chatConfirmation(sender, Localization.get("command.auth.change.success"));
 				return;
-					
+
 			}
-			
-			
+
 			// check for players.. all the rest of these should be greated than 1.
 			String name = args[1];
-			boolean isLogged = true;
-
 			// check if the player is logged.
 			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, name);
 			if (player == null)
 			{
 				OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
-				isLogged = false;
 			}
-			
-			
+
 			// pasre setPass
 			if (args[0].equalsIgnoreCase("setPass"))
 			{
 				if (!hasAdmin)
 					throw new PermissionDeniedException();
-				
+
 				PlayerPassData data = PlayerPassData.getData(name);
 				if (data == null)
 				{
@@ -240,7 +237,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 					PlayerPassData.registerData(data);
 				}
 				else
+				{
 					data.password = ModuleAuth.encrypt(args[2]);
+				}
 			}
 		}
 	}
@@ -295,11 +294,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			}
 			// parse ./auth setpass
 			else if (args[0].equalsIgnoreCase("setPass"))
-			{
 				throw new WrongUsageException("command.auth.usage.setpass");
-			}
-
-			// parse ./auth unregister
 			else if (args[0].equalsIgnoreCase("unregister"))
 			{
 				if (PlayerPassData.getData(name) == null)
@@ -326,7 +321,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 					PlayerPassData.registerData(data);
 				}
 				else
+				{
 					data.password = ModuleAuth.encrypt(args[2]);
+				}
 			}
 		}
 	}

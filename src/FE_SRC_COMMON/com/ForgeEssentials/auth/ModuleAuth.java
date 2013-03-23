@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Init;
@@ -14,6 +15,8 @@ import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -50,7 +53,9 @@ public class ModuleAuth
 	{
 		// No Auth Module on client
 		if (e.getFMLEvent().getSide().isClient())
+		{
 			e.getModuleContainer().isLoadable = false;
+		}
 	}
 
 	@Init
@@ -75,6 +80,13 @@ public class ModuleAuth
 		}
 
 		MinecraftForge.EVENT_BUS.register(eventHandler);
+	}
+
+	@PermRegister
+	public static void regierPerms(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel("ForgeEssentials.ModuleAuth.admin", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.ModuleAuth", RegGroup.ZONE);
 	}
 
 	@ServerStop
