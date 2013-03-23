@@ -47,11 +47,11 @@ echo "injecting version into places"
 sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/core/mcmod.info
 sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/client/mcmod.info
 sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/FEReadme.txt
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/servercomplete/FEReadme.txt
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/core/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/client/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/API/FEAPIReadme.txt
-sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/FEReadme.txt
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/servercomplete/FEReadme.txt
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/ForgeEssentials.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/preloader/FEModContainer.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/commands/CommandFEVersion.java
@@ -95,14 +95,11 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-tickets-${MC}-${VERSION}.zip" ./com/For
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldBorder/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-afterlife-${MC}-${VERSION}.zip" ./com/ForgeEssentials/afterlife/*
-zip -r9 "${WORKSPACE}/output/${JOB_NAME}-mobControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/mobControl/*
 rm -rf ./*.info ./*.txt
 
 echo "Creating ServerComplete package"
 cd ${WORKSPACE}/output
-cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
-cp -f ${WORKSPACE}/LICENSE.TXT .
-cp -rf ${WORKSPACE}/A1-zipStuff/HowToGetFEsupport.txt .
+cp -rf ${WORKSPACE}/A1-zipStuff/servercomplete/*
 
 
 mkdir mods
@@ -122,7 +119,6 @@ cp -rf "${WORKSPACE}/output/${JOB_NAME}-tickets-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./mods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-afterlife-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/${JOB_NAME}-mobControl-${MC}-${VERSION}.zip" ./mods/
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt LICENSE.TXT
 
 echo "Cleaning up"
@@ -142,7 +138,6 @@ rm -rf "${WORKSPACE}/output/${JOB_NAME}-tickets-${MC}-${VERSION}.zip"
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/${JOB_NAME}-afterlife-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/${JOB_NAME}-mobControl-${MC}-${VERSION}.zip" 
 rm -rf "${WORKSPACE}/output/FEReadme.txt"
 rm -rf "${WORKSPACE}/output/HowToGetFEsupport.txt"
 rm -rf "${WORKSPACE}/output/LICENSE.TXT"

@@ -36,7 +36,7 @@ public class CommandHeal extends FEcmdModuleCommands
 		}
 		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
 				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
@@ -64,7 +64,7 @@ public class CommandHeal extends FEcmdModuleCommands
 	{
 		if (args.length == 1)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
 				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));

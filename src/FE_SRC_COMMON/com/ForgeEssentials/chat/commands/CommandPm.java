@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -67,7 +68,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[0]);
+				EntityPlayerMP target = PlayerSelector.matchOnePlayer(sender, args[0]);
 				if (target == null)
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -118,7 +119,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[0]);
+				EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
 				if (target == null)
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -135,7 +136,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 		}
 		if (args.length > 1)
 		{
-			EntityPlayer receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
+			EntityPlayer receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if (receiver == null)
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -218,7 +219,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayerMP receiver = FunctionHelper.getPlayerFromPartialName(target);
+				EntityPlayerMP receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
 				if (receiver == null)
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));

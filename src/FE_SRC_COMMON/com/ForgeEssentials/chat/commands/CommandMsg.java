@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -77,7 +78,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayerMP receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
+				EntityPlayerMP receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
 				if (receiver == null)
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -115,7 +116,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 		}
 		if (args.length > 1)
 		{
-			EntityPlayer receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
+			EntityPlayerMP receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if (receiver == null)
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));

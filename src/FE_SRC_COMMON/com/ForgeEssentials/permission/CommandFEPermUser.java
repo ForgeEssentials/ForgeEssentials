@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -34,7 +35,7 @@ public class CommandFEPermUser
 		}
 
 		String playerName = args[0];
-		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
+		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
 		if (playerName.equalsIgnoreCase("_ME_"))
 		{
 			player = (EntityPlayerMP) sender;
@@ -481,7 +482,7 @@ public class CommandFEPermUser
 		}
 
 		String playerName = args[0];
-		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(args[0]);
+		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
 		if (player == null)
 		{
 			sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_NOPLAYER, args[0]));

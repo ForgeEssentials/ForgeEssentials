@@ -38,7 +38,7 @@ public class CommandTp extends FEcmdModuleCommands
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[0]);
+			EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if (PlayerSelector.hasArguments(args[0]))
 			{
 				target = PlayerSelector.matchOnePlayer(sender, args[0]);
@@ -57,7 +57,7 @@ public class CommandTp extends FEcmdModuleCommands
 		}
 		else if (args.length == 2)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
 				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
@@ -66,7 +66,7 @@ public class CommandTp extends FEcmdModuleCommands
 			{
 				for (EntityPlayer player : players)
 				{
-					EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[1]);
+					EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
 					if (PlayerSelector.hasArguments(args[1]))
 					{
 						target = PlayerSelector.matchOnePlayer(sender, args[1]);
@@ -103,7 +103,7 @@ public class CommandTp extends FEcmdModuleCommands
 			else if (args.length == 4)
 			{
 				int x = parseInt(sender, args[1]), y = parseInt(sender, args[2]), z = parseInt(sender, args[3]);
-				List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+				List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 				if (PlayerSelector.hasArguments(args[0]))
 				{
 					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
@@ -138,7 +138,7 @@ public class CommandTp extends FEcmdModuleCommands
 	{
 		if (args.length == 2)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
 				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
@@ -147,7 +147,7 @@ public class CommandTp extends FEcmdModuleCommands
 			{
 				for (EntityPlayer player : players)
 				{
-					EntityPlayer target = FunctionHelper.getPlayerFromPartialName(args[1]);
+					EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
 					if (PlayerSelector.hasArguments(args[1]))
 					{
 						target = PlayerSelector.matchOnePlayer(sender, args[1]);
@@ -174,7 +174,7 @@ public class CommandTp extends FEcmdModuleCommands
 		else if (args.length == 4)
 		{
 			int x = parseInt(sender, args[1]), y = parseInt(sender, args[2]), z = parseInt(sender, args[3]);
-			List<EntityPlayerMP> players = Arrays.asList(FunctionHelper.getPlayerFromPartialName(args[0]));
+			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
 			if (PlayerSelector.hasArguments(args[0]))
 			{
 				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));

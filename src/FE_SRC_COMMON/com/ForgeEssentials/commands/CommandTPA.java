@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -85,7 +86,7 @@ public class CommandTPA extends FEcmdModuleCommands
 			return;
 		}
 
-		EntityPlayerMP receiver = FunctionHelper.getPlayerFromPartialName(args[0]);
+		EntityPlayerMP receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
 		if (receiver == null)
 		{
 			sender.sendChatToPlayer(args[0] + " not found.");

@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -57,7 +58,7 @@ public class CommandLocate extends FEcmdModuleCommands
 
 	public void locate(ICommandSender sender, String username)
 	{
-		EntityPlayerMP player = FunctionHelper.getPlayerFromPartialName(username);
+		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, username);
 		if (player == null)
 		{
 			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, username));

@@ -38,7 +38,7 @@ public class PlayerTracker implements IPlayerTracker
 
 			while (FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames().length + VIPslots > FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers())
 			{
-				EntityPlayerMP player2 = FunctionHelper.getPlayerFromPartialName(FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()[new Random().nextInt(FMLCommonHandler.instance().getMinecraftServerInstance()
+				EntityPlayerMP player2 = FunctionHelper.getPlayerForName(FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()[new Random().nextInt(FMLCommonHandler.instance().getMinecraftServerInstance()
 						.getAllUsernames().length)]);
 
 				if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player2, PERMISSION)))

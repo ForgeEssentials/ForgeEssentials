@@ -3,6 +3,7 @@ package com.ForgeEssentials.chat.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -63,7 +64,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayerMP receiver = FunctionHelper.getPlayerFromPartialName(target);
+				EntityPlayerMP receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
 				if (receiver == null)
 				{
 					OutputHandler.chatError(sender, target + " is not a valid username");
@@ -103,7 +104,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 				sender.sendChatToPlayer(Localization.get("message.error.r.noPrevious"));
 				return;
 			}
-			EntityPlayer receiver = FunctionHelper.getPlayerFromPartialName(target);
+			EntityPlayer receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
 			if (receiver == null)
 			{
 				sender.sendChatToPlayer(target + " is not a valid username");
