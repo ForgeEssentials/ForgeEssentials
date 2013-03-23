@@ -14,6 +14,12 @@ import com.ForgeEssentials.util.OutputHandler;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
+	@Override
+    public boolean isUsernameIndex(int par1)
+    {
+        return true;
+    }
+
 	// ---------------------------
 	// processing command
 	// ---------------------------
