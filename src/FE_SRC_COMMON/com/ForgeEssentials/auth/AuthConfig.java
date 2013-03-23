@@ -1,7 +1,6 @@
 package com.ForgeEssentials.auth;
 
 import java.io.File;
-import java.util.HashSet;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
