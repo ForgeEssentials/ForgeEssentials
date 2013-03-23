@@ -363,7 +363,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "FormeEssentials.ModuleAuth";
+		return "ForgeEssentials.ModuleAuth";
 	}
-
 }
