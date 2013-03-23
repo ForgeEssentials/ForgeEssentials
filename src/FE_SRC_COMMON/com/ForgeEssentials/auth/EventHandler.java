@@ -7,7 +7,6 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -151,27 +150,6 @@ public class EventHandler
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
-		}
-	}
-
-	@ForgeSubscribe(priority = EventPriority.HIGHEST)
-	public void onPlayerTargetted(LivingSetAttackTargetEvent event)
-	{
-		if (!(event.target instanceof EntityPlayer))
-			return;
-
-		EntityPlayer player = (EntityPlayer) event.target;
-
-		if (ModuleAuth.unLogged.contains(player.username))
-		{
-			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.get("message.auth.needlogin"));
-		}
-
-		if (ModuleAuth.unRegistered.contains(player.username))
-		{
-			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.get("message.auth.needregister"));
 		}
 	}
 
