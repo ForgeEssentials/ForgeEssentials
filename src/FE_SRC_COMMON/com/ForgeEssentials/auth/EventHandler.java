@@ -14,8 +14,6 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.ForgeEssentials.auth.commands.CommandLogin;
-import com.ForgeEssentials.auth.commands.CommandRegister;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.PlayerMoveEvent;
@@ -71,13 +69,13 @@ public class EventHandler
 
 		EntityPlayer player = (EntityPlayer) event.sender;
 
-		if (ModuleAuth.unLogged.contains(player.username) && !(event.command instanceof CommandLogin))
+		if (ModuleAuth.unLogged.contains(player.username) && !(event.command instanceof CommandAuth))
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
 		}
 
-		if (ModuleAuth.unRegistered.contains(player.username) && !(event.command instanceof CommandRegister))
+		if (ModuleAuth.unRegistered.contains(player.username) && !(event.command instanceof CommandAuth))
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));

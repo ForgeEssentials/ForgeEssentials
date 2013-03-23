@@ -14,8 +14,6 @@ import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
-import com.ForgeEssentials.auth.commands.CommandLogin;
-import com.ForgeEssentials.auth.commands.CommandRegister;
 import com.ForgeEssentials.core.ForgeEssentials;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -68,8 +66,7 @@ public class ModuleAuth
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
-		e.registerServerCommand(new CommandLogin());
-		e.registerServerCommand(new CommandRegister());
+		e.registerServerCommand(new CommandAuth());
 
 		if (checkVanillaAuthStatus && !forceEnabled)
 		{

@@ -30,6 +30,8 @@ public class PlayerPassData
 	public static void registerData(PlayerPassData data)
 	{
 		DataStorageManager.getReccomendedDriver().saveObject(container, data);
+		if (datas.get(data.username) != null)
+			datas.put(data.username, data);
 	}
 	
 	public static void discardData(String username)
@@ -38,6 +40,14 @@ public class PlayerPassData
 		
 		if (data != null)
 			DataStorageManager.getReccomendedDriver().saveObject(container, data);
+	}
+	
+	public static void deleteData(String username)
+	{
+		PlayerPassData data = datas.remove(username);
+		DataStorageManager.getReccomendedDriver().deleteObject(container, username);
+		if (data != null)
+			ModuleAuth.unRegistered.add(username);
 	}
 	
 	public static final ClassContainer container = new ClassContainer(PlayerPassData.class);

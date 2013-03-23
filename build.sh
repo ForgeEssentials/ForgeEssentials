@@ -80,6 +80,7 @@ echo "Copying in extra files for core"
 cp -rf ${WORKSPACE}/resources/server/mcmod.info .
 cp -rf ${WORKSPACE}/resources/META-INF .
 cp -rf ${WORKSPACE}/resources/logo.png .
+cp -rf ${WORKSPACE}/resources/HowToGetFEsupport.txt .
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg .
 #rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
