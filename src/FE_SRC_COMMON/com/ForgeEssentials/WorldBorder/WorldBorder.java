@@ -86,15 +86,6 @@ public class WorldBorder
 		// 1 = square
 		if (shapeByte == 1)
 		{
-			int dist = ModuleWorldBorder.getDistanceRound(center, player);
-			if (dist > rad)
-			{
-				ModuleWorldBorder.executeClosestEffects(this, dist, player);
-			}
-		}
-		// 2 = round
-		else if (shapeByte == 2)
-		{
 			if (player.posX < (center.x - rad))
 			{
 				ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.x - rad), player);
@@ -110,6 +101,15 @@ public class WorldBorder
 			if (player.posZ > (center.z + rad))
 			{
 				ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.z + rad), player);
+			}
+		}
+		// 2 = round
+		else if (shapeByte == 2)
+		{
+			int dist = ModuleWorldBorder.getDistanceRound(center, player);
+			if (dist > rad)
+			{
+				ModuleWorldBorder.executeClosestEffects(this, dist, player);
 			}
 		}
 	}
