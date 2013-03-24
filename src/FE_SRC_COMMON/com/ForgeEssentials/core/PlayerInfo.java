@@ -26,7 +26,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
 @SaveableObject
-public class PlayerInfo extends TimerTask
+public class PlayerInfo
 {
 	private static HashMap<String, PlayerInfo>	playerInfoMap	= new HashMap<String, PlayerInfo>();
 
@@ -51,7 +51,6 @@ public class PlayerInfo extends TimerTask
 				info = new PlayerInfo(username);
 			}
 
-			TaskRegistry.registerRecurringTask(info, 0, 1, 0, 0, 0, 1, 0, 0);
 			playerInfoMap.put(username, info);
 		}
 
@@ -85,7 +84,6 @@ public class PlayerInfo extends TimerTask
 		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
 
 		info.firstJoin = (Long) tag.getFieldValue("firstJoin");
-
 		return info;
 	}
 
@@ -129,6 +127,8 @@ public class PlayerInfo extends TimerTask
 	@SaveableField()
 	public int						timePlayed;
 
+	private long					loginTime;
+
 	@SaveableField()
 	private long					firstJoin;
 
@@ -153,7 +153,8 @@ public class PlayerInfo extends TimerTask
 		suffix = "";
 
 		firstJoin = System.currentTimeMillis();
-		
+		loginTime = System.currentTimeMillis();
+
 		timePlayed = 0;
 	}
 
@@ -162,8 +163,11 @@ public class PlayerInfo extends TimerTask
 	 */
 	public void save()
 	{
+		long current = System.currentTimeMillis() - loginTime;
+		int min = (int)(current/60000);
+		loginTime = System.currentTimeMillis();
+		timePlayed += min;
 		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
-		TaskRegistry.removeTask(this);
 	}
 
 	public long getFirstJoin()
@@ -306,19 +310,5 @@ public class PlayerInfo extends TimerTask
 		sel2 = null;
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
 		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
-	}
-
-	@Override
-	public void run()
-	{
-		try
-		{
-			timePlayed ++;
-			OutputHandler.debug(this.username + ":" + this.timePlayed);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 }
