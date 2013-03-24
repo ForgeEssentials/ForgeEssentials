@@ -15,6 +15,7 @@ import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.util.FEChunkLoader;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.tasks.ITickTask;
@@ -85,6 +86,7 @@ public class TickTaskFill implements ITickTask
 	public TickTaskFill(WorldServer worldToFill, ICommandSender sender, boolean restart)
 	{
 		dimID = worldToFill.provider.dimensionId + "";
+		FEChunkLoader.instance().forceLoadWorld(worldToFill);
 		
 		if (CommandFiller.map.containsKey(worldToFill.provider.dimensionId))
 		{
@@ -95,7 +97,7 @@ public class TickTaskFill implements ITickTask
 		source = sender;
 		world = worldToFill;
 		border = ModuleWorldBorder.borderMap.get(ZoneManager.getWorldZone(world).getZoneName());
-
+		
 		if (border.shapeByte == 0 || border.rad == 0)
 		{
 			OutputHandler.chatError(sender, "You need to set the worldborder first!");
@@ -258,6 +260,8 @@ public class TickTaskFill implements ITickTask
 			System.out.print("Removed filler? :" + DataStorageManager.getReccomendedDriver().deleteObject(con, dimID));
 		}
 		CommandFiller.map.remove(Integer.parseInt(dimID));
+		FEChunkLoader.instance().unforceLoadWorld(world);
+		System.gc();
 	}
 
 	@Override
@@ -278,6 +282,7 @@ public class TickTaskFill implements ITickTask
 		isComplete = true;
 		DataStorageManager.getReccomendedDriver().saveObject(con, this);
 		OutputHandler.chatWarning(source, "Filler stopped after " + ticks + " ticks. Still to do: " + todo + " chuncks.");
+		System.gc();
 	}
 
 	public String getStatus()
@@ -288,6 +293,6 @@ public class TickTaskFill implements ITickTask
 	public void speed(int speed)
 	{
 		this.speed = speed;
-		OutputHandler.chatWarning(source, "Chaned speed of filler " + dimID + " to " + speed);
+		OutputHandler.chatWarning(source, "Changed speed of filler " + dimID + " to " + speed);
 	}
 }

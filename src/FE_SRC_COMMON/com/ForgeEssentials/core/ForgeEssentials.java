@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.data.ClassContainer;
@@ -25,6 +26,7 @@ import com.ForgeEssentials.data.SQLDataDriver;
 import com.ForgeEssentials.data.StorageManager;
 import com.ForgeEssentials.data.typeInfo.TypeInfoItemStack;
 import com.ForgeEssentials.data.typeInfo.TypeInfoNBTCompound;
+import com.ForgeEssentials.util.FEChunkLoader;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.MiscEventHandler;
@@ -204,6 +206,8 @@ public class ForgeEssentials
 
 		// do modules last... just in case...
 		mdlaunch.serverStarting(e);
+		
+		ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
 	}
 
 	@ServerStarted

@@ -146,6 +146,11 @@ public class ModuleWorldBorder
 		{
 			wb.save();
 		}
+		
+		for (TickTaskFill filler : CommandFiller.map.values())
+		{
+			filler.stop();
+		}
 	}
 
 	/*

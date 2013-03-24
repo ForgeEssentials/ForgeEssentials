@@ -109,7 +109,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatWarning(sender, "Filler already running for that world!");
+					OutputHandler.chatError(sender, "Filler already running for that world!");
 				}
 			}
 			else if (args[1].equalsIgnoreCase("stop"))
@@ -123,7 +123,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 					map.get(world.provider.dimensionId).stop();
 				}
 			}
-			else if (args[1].equalsIgnoreCase("restart"))
+			else if (args[1].equalsIgnoreCase("reset"))
 			{
 				if (!map.containsKey(world.provider.dimensionId))
 				{
@@ -131,7 +131,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatWarning(sender, "Filler already running for that world!");
+					OutputHandler.chatError(sender, "Filler already running for that world!");
 				}
 			}
 			else if (args[1].equalsIgnoreCase("speed"))
@@ -180,7 +180,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 		}
 		if (args.length == 2)
 		{
-			return getListOfStringsMatchingLastWord(args, "start", "stop", "restart", "speed");
+			return getListOfStringsMatchingLastWord(args, "start", "stop", "reset", "speed");
 		}
 		return null;
 	}

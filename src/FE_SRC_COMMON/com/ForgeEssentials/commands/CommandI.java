@@ -40,7 +40,7 @@ public class CommandI extends FEcmdModuleCommands
 
 		if (args.length == 2)
 		{
-			amount = parseIntBounded(sender, args[1], 0, 64);
+			amount = parseInt(sender, args[1]);
 		}
 
 		if (args.length > 0)
