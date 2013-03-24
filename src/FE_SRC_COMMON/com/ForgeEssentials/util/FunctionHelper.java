@@ -449,6 +449,9 @@ public final class FunctionHelper
 			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, p.dim);
 		}
 		player.playerNetServerHandler.setPlayerLocation(p.xd, p.yd, p.zd, p.yaw, p.pitch);
+        player.prevPosX = player.posX = p.xd;
+        player.prevPosY = player.posY = p.yd;
+        player.prevPosZ = player.posZ = p.zd;
 	}
 
 	/**

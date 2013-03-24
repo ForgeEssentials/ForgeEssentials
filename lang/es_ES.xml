@@ -6,22 +6,29 @@
     <!-- End localization for ModuleAfterlife -->
 
     <!-- Begin localization for ModuleAuth -->
-    <entry key="command.login.syntax.console">&lt;paswd></entry>
-    <entry key="command.login.syntax.player">&lt;paswd></entry>
-    <entry key="command.login.info.console">Iniciar sesión</entry>
-    <entry key="command.login.info.player">Iniciar sesión.</entry>
-    <entry key="command.login.already">No necesitas iniciar sesión.</entry>
-
-    <entry key="command.login.wrongpass">¡Contraseña incorrecta!</entry>
-    <entry key="command.login.register">No estas registrado. Utiliza /register &lt;pwd></entry>
-
-    <entry key="command.register.syntax.console">&lt;paswd></entry>
-    <entry key="command.register.syntax.player">&lt;paswd></entry>
-    <entry key="command.register.info.console">Registrarse.</entry>
-    <entry key="command.register.info.player">Registrarse.</entry>
-    <entry key="command.register.already">No necesitas registrarte.</entry>
-
-    <entry key="command.register.register">Estás registrado. Utiliza /login &lt;pwd></entry>
+    <entry key="command.auth.syntax.console">&lt;help></entry>
+    <entry key="command.auth.syntax.player">&lt;help></entry>
+    <entry key="command.auth.info.console">Controla el modulo de autorización</entry>
+    <entry key="command.auth.info.player">Hace tareas de autorización</entry>
+  
+  <entry key="command.auth.usage">/auth &lt;help></entry>
+  <entry key="command.auth.usage.kick">/auth kick &lt;jugador></entry>
+  <entry key="command.auth.kick.user">%s ha sido echado por el servicio de autorización</entry>
+  <entry key="command.auth.kick.target">¡Has sido echado! Por favor inicia sesión otra vez.</entry>
+  
+  <entry key="command.auth.login.success">¡Sesión iniciada con éxito!</entry>
+  <entry key="command.auth.register.success">¡Registro correcto!</entry>
+  <entry key="command.auth.login.fail">Inicio de sesión fallido. Contraseña incorrecta.</entry>
+  
+  <entry key="command.auth.change.same">No puedes cambiarte la contraseña a ti mismo</entry>
+  <entry key="command.auth.change.success">Contraseña cambiada correctamente</entry>
+  <entry key="command.auth.change.wrongpass">Contraseña no cambiada. Contraseña incorrecta.</entry>
+  
+  <entry key="message.auth.error.notregisterred">¡%s no está registrado!</entry>
+  <entry key="message.auth.error.yesregisterred">¡%s ya está registrado!</entry>
+  
+  <entry key="message.auth.needregister">Necesitas registrate. Prueba /auth help</entry>
+  <entry key="message.auth.needlogin">Necesitas iniciar sesiónYou need to login. try /auth help</entry>
 
     <entry key="message.auth.login">Por favor utiliza '%s' para iniciar sesión.</entry>
     <entry key="message.auth.register">Por favor utiliza '%s' para registrate.</entry>
@@ -522,43 +529,10 @@
     <entry key="command.zone.syntax.player">&lt;define|redefine|remove|setparent &lt;nuevoPadre>> &lt;IDZona></entry>
 
     <!-- Some localization for WorldBorder -->
-    <entry key="command.worldborder.syntax.console">[fill|turbo|autopilot] OR [set] &lt;round|square> &lt;Radius> &lt;X> &lt;Z></entry>
-    <entry key="command.worldborder.syntax.player">[fill|turbo|autopilot] OR [set] &lt;round|square> &lt;Radius> [X] [Z]</entry>
-    <entry key="command.worldborder.info.console">Fija el borde del mundo</entry>
-    <entry key="command.worldborder.info.player">Fija el borde del mundo</entry>
-
-    <entry key="message.wb.hitborder">You have reached the worlds' border.</entry>
-
-    <entry key="message.wb.status.header">Worldborder status:</entry>
-    <entry key="message.wb.status.borderset">Border set!</entry>
-    <entry key="message.wb.status.bordernotset">No border set!</entry>
-
-    <entry key="message.wb.lagwarning">This will cause lag!</entry>
-
-    <entry key="message.wb.fill.aborted">Done filling the world, now saving!</entry>
-    <entry key="message.wb.fill.confirm">To execute, do /worldborder fill start</entry>
-    <entry key="message.wb.fill.consoleneedsdim">Debes entrar el id de dimensión que quieres generado. (0 para overworld)</entry>
-    <entry key="message.wb.fill.done">¡Finalizado el rellenado del mundo, ahora salvando!</entry>
-    <entry key="message.wb.fill.eta">ETA: %eta</entry>
-    <entry key="message.wb.fill.finished">¡Salvado finalizado! Tiempo empleado: %ticks ticks o %sec seg.</entry>
-    <entry key="message.wb.fill.info">Este comando rellenará todos los chuncks dentro del borde del mundo.</entry>
-    <entry key="message.wb.fill.onlyonce">¡No puedes ejecutar esto mas de una vez al mismo tiempo!</entry>
-    <entry key="message.wb.fill.start">¡Comenzando el rellenado del mundo, provocará muchisimo lag!</entry>
-    <entry key="message.wb.fill.stillgoing">Aún rellenado el mundo. ETA: %eta. Ritmo de generación actual: %ctp chuncks por tick.</entry>
-    <entry key="message.wb.fill.worldunloaded">¡El mundo que quieres rellenar no existe o no está cargado!</entry>
-
-    <entry key="message.wb.saving.failed">¡Error guardando el mundo!</entry>
-
-    <entry key="message.wb.turbo.info">Establece la cantidad de chuncks generados por tick. Usa "autopilot" si quieres que sea seguro!</entry>
-    <entry key="message.wb.turbo.confirm">Para ejecutar, haz "/worldborder turbo &lt;cpt>" Utiliza "off" para desactivar el modo turbo.</entry>
-    <entry key="message.wb.turbo.nothingtodo">You need a running filler command to (dis)engage the turbo!</entry>
-    <entry key="message.wb.turbo.on">¡Modo turbo activado! Preparate para más lag!</entry>
-    <entry key="message.wb.turbo.off">¡Modo turbo desactivado! El lag debería reducirse.</entry>
-
-    <entry key="message.wb.auto.info">Este modo ajusta automaticament la cantidad de chuncks/sec generados.</entry>
-    <entry key="message.wb.auto.confirm">Para ejecutar, haz "/worldborder autopilot &lt;TPSObjetivo>" Utiliza "off" para apagar el modo autopiloto.</entry>
-
-    <entry key="message.wb.set">WorldBorder fijado con radio %r  en el punto X:%x Z:%z</entry>
+   <entry key="command.worldborder.syntax.console">&lt;global|mundo|IDdim> [info|enable|disable|center|radius|shape]</entry>
+    <entry key="command.worldborder.syntax.player">&lt;global|mundo|IDdim> [info|enable|disable|center|radius|shape]</entry>
+    <entry key="command.worldborder.info.console">Configuración del borde del mundo.</entry>
+    <entry key="command.worldborder.info.player">Configuración del borde del mundo.</entry>
 
     <!-- Some localization for WorldControl -->
     <entry key="command./replace.info.player">Reemplaza bloques del primer ID con bloques del segundo</entry>

@@ -117,7 +117,7 @@ public final class PermissionsPropHandler
 			// check defaults... unless it has the override..
 			if (result == null)
 			{
-				result = SqlHelper.getPermissionProp(PermissionsAPI.getDEFAULT().name, true, event.perm, zone.getZoneName());
+				result = SqlHelper.getPermissionProp(PermissionsAPI.getDEFAULT().name, true, event.perm, tempZone.getZoneName());
 			}
 
 			// still unknown? check parent zones.

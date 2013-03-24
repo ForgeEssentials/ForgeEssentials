@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -13,11 +14,15 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
+import com.ForgeEssentials.commands.CommandSetSpawn;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -43,10 +48,10 @@ public class EventHandler
 				{
 					String[] signText = ((TileEntitySign) te).signText;
 
-					signText[0] = colorize(signText[0]);
-					signText[1] = colorize(signText[1]);
-					signText[2] = colorize(signText[2]);
-					signText[3] = colorize(signText[3]);
+					signText[0] = FunctionHelper.formatColors(signText[0]);
+					signText[1] = FunctionHelper.formatColors(signText[1]);
+					signText[2] = FunctionHelper.formatColors(signText[2]);
+					signText[3] = FunctionHelper.formatColors(signText[3]);
 
 					((TileEntitySign) te).signText = signText;
 					e.entityPlayer.worldObj.setBlockTileEntity(e.x, e.y, e.z, te);
@@ -92,11 +97,6 @@ public class EventHandler
 		}
 	}
 
-	private String colorize(String string)
-	{
-		return string.replaceAll("&", FEChatFormatCodes.CODE.toString());
-	}
-
 	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void onPlayerDeath(LivingDeathEvent e)
 	{
@@ -105,7 +105,50 @@ public class EventHandler
 
 		if (e.entity instanceof EntityPlayer)
 		{
-			PlayerInfo.getPlayerInfo(((EntityPlayer) e.entity).username).back = new WarpPoint((EntityPlayer) e.entity);
+			EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
+			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+
+			{
+				int currentDim = player.worldObj.provider.dimensionId;
+				int spawnDim = player.worldObj.provider.getRespawnDimension(player);
+
+				if (spawnDim != 0 && spawnDim == currentDim && !CommandSetSpawn.dimsWithProp.contains(currentDim))
+				{
+					Zone z = ZoneManager.getWorldZone(player.worldObj);
+					ChunkCoordinates dimPoint = player.worldObj.getSpawnPoint();
+					WorldPoint point = new WorldPoint(spawnDim, dimPoint.posX, dimPoint.posY, dimPoint.posZ);
+					CommandSetSpawn.setSpawnPoint(point, z);
+					CommandSetSpawn.dimsWithProp.add(currentDim);
+
+					WarpPoint p = new WarpPoint(currentDim, dimPoint.posX + .5, dimPoint.posY + 1, dimPoint.posZ + .5, player.cameraYaw, player.cameraPitch);
+					CommandSetSpawn.spawns.put(player.username, p);
+					return;
+				}
+			}
+
+			PropQueryPlayerSpot query = new PropQueryPlayerSpot(player, "ForgeEssentials.BasicCommands.spawnPoint");
+			PermissionsAPI.getPermissionProp(query);
+
+			if (!query.hasValue())
+				throw new RuntimeException("NO GLOBAL SPAWN SET!!!");
+
+			String val = query.getStringValue();
+			String[] split = val.split("[;_]");
+
+			try
+			{
+				int dim = Integer.parseInt(split[0]);
+				int x = Integer.parseInt(split[1]);
+				int y = Integer.parseInt(split[2]);
+				int z = Integer.parseInt(split[3]);
+
+				WarpPoint point = new WarpPoint(dim, x + .5, y + 1, z + .5, player.cameraYaw, player.cameraPitch);
+				CommandSetSpawn.spawns.put(player.username, point);
+			}
+			catch (Exception exception)
+			{
+				CommandSetSpawn.spawns.put(player.username, null);
+			}
 		}
 	}
 }

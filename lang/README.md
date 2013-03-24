@@ -17,7 +17,7 @@ If you are **fluent** (could hold a conversation) in a language that ForgeEssent
 While writing your new locale file, please make sure you read our Formatting Guide on this page, and make sure you understand what the crazy symbols in the strings are doing. If you do not understand the guide, come join us in #forgeessentials on irc.esper.net and someone should be able to explain it. If you do not follow the guide correctly, we will not accept your PR.
 
 ## Editing existing translations
-If you discover an error in one of our localization strings, submit a new issue and make sure that you tag it with "Localization". Make sure your bug report follows this format:
+If you discover an error in one of our localization strings, submit a new issue. Make sure your bug report follows this format:
 
 `Localization file <language>.xml key "<key in XML file>" is incorrect. Should be <correct string>`
 

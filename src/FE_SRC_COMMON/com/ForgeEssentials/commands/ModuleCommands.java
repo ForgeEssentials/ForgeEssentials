@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.io.File;
 
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
@@ -12,18 +13,24 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
 import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.CommandRegistrar;
 import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.MCStatsHelper;
 import com.ForgeEssentials.commands.util.MobTypeLoader;
+import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.CompatMCStats;
+import com.ForgeEssentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -42,8 +49,8 @@ public class ModuleCommands
 	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-
 		MobTypeLoader.preLoad(e);
+		GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
 	}
 
 	@FEModule.Init
@@ -65,6 +72,17 @@ public class ModuleCommands
 	{
 		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
 		CommandDataManager.load();
+		
+		PropQueryBlanketZone query = new PropQueryBlanketZone(CommandSetSpawn.spawnProp, ZoneManager.getGLOBAL(), false);
+		PermissionsAPI.getPermissionProp(query);
+		
+		// nothing set for the global??
+		if (!query.hasValue())
+		{
+			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
+			String val = "0;"+point.posX+";"+point.posY+";"+point.posZ;
+			PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, CommandSetSpawn.spawnProp, val, ZoneManager.getGLOBAL().getZoneName());
+		}
 	}
 
 	@PermRegister
@@ -72,6 +90,9 @@ public class ModuleCommands
 	{
 		CommandRegistrar.registerPermissions(event);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands._ALL_", RegGroup.OWNERS);
+		
+		// ensures on ServerStart
+		//event.registerPermissionProp("ForgeEssentials.BasicCommands.spawnPoint", "0;0;0;0");
 	}
 
 	@FEModule.ServerStop

@@ -28,10 +28,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandSpawn extends FEcmdModuleCommands
 {
-
-	/** Spawn point for each dimension */
-	public static HashMap<Integer, Point>	spawnPoints	= new HashMap<Integer, Point>();
-
 	@Override
 	public String getCommandName()
 	{

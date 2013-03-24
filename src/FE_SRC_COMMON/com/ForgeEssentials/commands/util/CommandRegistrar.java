@@ -38,7 +38,7 @@ import com.ForgeEssentials.commands.CommandRepair;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.CommandServerDo;
 import com.ForgeEssentials.commands.CommandServerSettings;
-import com.ForgeEssentials.commands.CommandSetspawn;
+import com.ForgeEssentials.commands.CommandSetSpawn;
 import com.ForgeEssentials.commands.CommandSmite;
 import com.ForgeEssentials.commands.CommandSpawn;
 import com.ForgeEssentials.commands.CommandSpawnMob;
@@ -75,7 +75,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandEnderchest());
 		cmdList.add(new CommandVirtualchest());
 		cmdList.add(new CommandCapabilities());
-		cmdList.add(new CommandSetspawn());
+		cmdList.add(new CommandSetSpawn());
 		cmdList.add(new CommandJump());
 		cmdList.add(new CommandCraft());
 		cmdList.add(new CommandPing());

@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.world.World;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent.Load;
 
@@ -70,7 +71,7 @@ public class ZoneHelper implements IZoneManager
 	protected ConcurrentHashMap<String, Zone>	worldZoneMap;
 
 	// to load WorldZones
-	@ForgeSubscribe
+	@ForgeSubscribe(priority = EventPriority.HIGH)
 	public void worldLoader(Load e) // thats the WorldLoad event.
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
