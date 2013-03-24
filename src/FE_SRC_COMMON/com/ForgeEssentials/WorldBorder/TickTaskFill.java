@@ -1,69 +1,107 @@
 package com.ForgeEssentials.WorldBorder;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.MinecraftException;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 
+import com.ForgeEssentials.api.data.ClassContainer;
+import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.tasks.ITickTask;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Does the actual filling, with limited chuncks per tick.
  * @author Dries007
  */
 
+@SaveableObject
 public class TickTaskFill implements ITickTask
 {
-	protected boolean			isComplete;
+	@UniqueLoadingKey
+	@SaveableField
+	String					dimID;
+	boolean					isComplete	= false;
 
-	protected WorldServer		world;
-	protected int				dim;
+	WorldServer				world;
 
-	protected int				minX;
-	protected int				minZ;
+	int						minX;
+	int						minZ;
 
-	protected int				maxX;
-	protected int				maxZ;
+	int						maxX;
+	int						maxZ;
 
-	protected int				centerX;
-	protected int				centerZ;
-	protected int				rad;
+	int						centerX;
+	int						centerZ;
+	int						rad;
 
-	protected int				tps			= 20;
+	@SaveableField
+	long					ticks		= 0L;
+	@SaveableField
+	long					todo		= 0L;
 
-	protected Long				ticks		= 0L;
+	MinecraftServer			server		= MinecraftServer.getServer();
 
-	public static boolean		enablemsg	= true;
+	@SaveableField
+	private int				X;
+	@SaveableField
+	private int				Z;
 
-	public static boolean		debug;
+	@SaveableField
+	public int				speed		= 1;
 
-	protected MinecraftServer	server		= FMLCommonHandler.instance().getMinecraftServerInstance();
+	public WorldBorder		border;
 
-	private int					X;
+	ICommandSender			source;
 
-	private int					Z;
+	boolean					stopped		= false;
+	final ClassContainer	con			= new ClassContainer(TickTaskFill.class);
 
-	private int					eta;
-
-	public int					speed		= 1;
-
-	public WorldBorder			border;
-
-	public TickTaskFill(World world)
+	@Reconstructor
+	private static TickTaskFill reconstruct(IReconstructData tag)
 	{
-		isComplete = false;
-		this.world = (WorldServer) world;
-		this.border = ModuleWorldBorder.borderMap.get(ZoneManager.getWorldZone(world).getZoneName());
+		return new TickTaskFill(tag);
+	}
+
+	private TickTaskFill(IReconstructData tag)
+	{
+		X = (Integer) tag.getFieldValue("X");
+		Z = (Integer) tag.getFieldValue("Z");
+		speed = (Integer) tag.getFieldValue("speed");
+		ticks = (Long) tag.getFieldValue("ticks");
+		todo = (Long) tag.getFieldValue("todo");
+	}
+
+	public TickTaskFill(WorldServer worldToFill, ICommandSender sender, boolean restart)
+	{
+		dimID = worldToFill.provider.dimensionId + "";
+		
+		if (CommandFiller.map.containsKey(worldToFill.provider.dimensionId))
+		{
+			OutputHandler.chatError(server, "Already running a filler for dim " + dimID + "!");
+			return;
+		}
+		
+		source = sender;
+		world = worldToFill;
+		border = ModuleWorldBorder.borderMap.get(ZoneManager.getWorldZone(world).getZoneName());
+
+		if (border.shapeByte == 0 || border.rad == 0)
+		{
+			OutputHandler.chatError(sender, "You need to set the worldborder first!");
+			return;
+		}
+
 		X = minX = (border.center.x - border.rad - ModuleWorldBorder.overGenerate) / 16;
 		Z = minZ = (border.center.z - border.rad - ModuleWorldBorder.overGenerate) / 16;
 		maxX = (border.center.x + border.rad + ModuleWorldBorder.overGenerate) / 16;
@@ -72,32 +110,40 @@ public class TickTaskFill implements ITickTask
 		centerZ = border.center.z / 16;
 		rad = (border.rad + ModuleWorldBorder.overGenerate) / 16;
 
+		todo = border.getETA();
+
+		OutputHandler.debug("Filler for :" + world.provider.dimensionId);
+		OutputHandler.debug("MinX=" + minX + " MaxX=" + maxX);
+		OutputHandler.debug("MinZ=" + minZ + " MaxZ=" + maxZ);
+
+		if (restart)
+		{
+			TickTaskFill saved = (TickTaskFill) DataStorageManager.getReccomendedDriver().loadObject(con, worldToFill.provider.dimensionId + "");
+			if (saved != null)
+			{
+				OutputHandler.chatWarning(source, "Found a stopped filler. Will resume that one.");
+				X = saved.X;
+				Z = saved.Z;
+				speed = saved.speed;
+				ticks = saved.ticks;
+				todo = saved.todo;
+			}
+		}
+
 		TaskRegistry.registerTask(this);
 
-		System.out.println("MinX=" + minX + " MaxX=" + maxX);
-		System.out.println("MinZ=" + minZ + " MaxZ=" + maxZ);
-
-		eta = border.getETA();
-
-		warnEveryone(Localization.get(Localization.WB_FILL_START));
-		warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
-
+		OutputHandler.chatWarning(source, "This filler will take about " + getETA() + " at current speed.");
 	}
 
-	public String getETA()
+	private String getETA()
 	{
-		return eta / 10 + " ticks.";
-	}
-
-	public void warnEveryone(String msg)
-	{
-		OutputHandler.info("#### " + msg);
-		if (enablemsg)
+		try
 		{
-			for (int var2 = 0; var2 < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); ++var2)
-			{
-				((EntityPlayerMP) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(var2)).sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
-			}
+			return FunctionHelper.parseTime((int) ((todo / speed) / FunctionHelper.getTPS()));
+		}
+		catch (Exception e)
+		{
+			return "";
 		}
 	}
 
@@ -105,13 +151,12 @@ public class TickTaskFill implements ITickTask
 	public void tick()
 	{
 		ticks++;
-		eta--;
 
-		if (ticks % 250 == 0)
+		if (ticks % (20 * 25) == 0)
 		{
-			warnEveryone(Localization.get(Localization.WB_FILL_ETA).replaceAll("%eta", getETA()));
+			source.sendChatToPlayer("Filler for " + dimID + ": " + getStatus());
 		}
-
+		
 		for (int i = 0; i < speed; i++)
 		{
 			try
@@ -121,7 +166,9 @@ public class TickTaskFill implements ITickTask
 				world.theChunkProviderServer.safeSaveChunk(chunk);
 				world.theChunkProviderServer.unloadQueuedChunks();
 				world.theChunkProviderServer.unloadChunksIfNotNearSpawn(X, Z);
-				
+
+				todo--;
+
 				next();
 				if (isComplete())
 				{
@@ -158,7 +205,7 @@ public class TickTaskFill implements ITickTask
 			}
 		}
 		// 2 = round
-		if (border.shapeByte == 2)
+		else if (border.shapeByte == 2)
 		{
 			while (true)
 			{
@@ -186,7 +233,10 @@ public class TickTaskFill implements ITickTask
 			}
 		}
 		else
-			throw new RuntimeException("WTF?");
+		{
+			this.isComplete = true;
+			throw new RuntimeException("WTF?" + border.shapeByte);
+		}
 	}
 
 	@Override
@@ -201,11 +251,13 @@ public class TickTaskFill implements ITickTask
 		}
 		catch (MinecraftException var7)
 		{
-			warnEveryone("Save FAILED!");
 		}
-		warnEveryone(Localization.get(Localization.WB_FILL_DONE));
-		warnEveryone(Localization.get(Localization.WB_FILL_FINISHED).replaceAll("%ticks", "" + ticks).replaceAll("%sec", "" + (int) (ticks / tps)));
-		CommandWB.taskGooing = null;
+		if (!stopped)
+		{
+			OutputHandler.chatWarning(source, "Filler finished after " + ticks + " ticks.");
+			System.out.print("Removed filler? :" + DataStorageManager.getReccomendedDriver().deleteObject(con, dimID));
+		}
+		CommandFiller.map.remove(Integer.parseInt(dimID));
 	}
 
 	@Override
@@ -222,15 +274,20 @@ public class TickTaskFill implements ITickTask
 
 	public void stop()
 	{
-		warnEveryone(Localization.get(Localization.WB_FILL_ABORTED));
+		stopped = true;
 		isComplete = true;
+		DataStorageManager.getReccomendedDriver().saveObject(con, this);
+		OutputHandler.chatWarning(source, "Filler stopped after " + ticks + " ticks. Still to do: " + todo + " chuncks.");
 	}
 
-	public void debug(String string)
+	public String getStatus()
 	{
-		if (debug)
-		{
-			OutputHandler.finer(string);
-		}
+		return "Todo: " + getETA() + " at " + speed + " chuncks per ticks.";
+	}
+
+	public void speed(int speed)
+	{
+		this.speed = speed;
+		OutputHandler.chatWarning(source, "Chaned speed of filler " + dimID + " to " + speed);
 	}
 }

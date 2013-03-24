@@ -7,15 +7,12 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.ForgeEssentials.auth.commands.CommandLogin;
-import com.ForgeEssentials.auth.commands.CommandRegister;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.PlayerMoveEvent;
@@ -35,13 +32,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -53,13 +50,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -71,16 +68,16 @@ public class EventHandler
 
 		EntityPlayer player = (EntityPlayer) event.sender;
 
-		if (ModuleAuth.unLogged.contains(player.username) && !(event.command instanceof CommandLogin))
+		if (ModuleAuth.unLogged.contains(player.username) && !(event.command instanceof CommandAuth))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(player, Localization.get("message.auth.needlogin"));
 		}
 
-		if (ModuleAuth.unRegistered.contains(player.username) && !(event.command instanceof CommandRegister))
+		if (ModuleAuth.unRegistered.contains(player.username) && !(event.command instanceof CommandAuth))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -92,13 +89,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -110,13 +107,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -128,13 +125,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -146,34 +143,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
-		}
-	}
-
-	@ForgeSubscribe(priority = EventPriority.HIGHEST)
-	public void onPlayerTargetted(LivingSetAttackTargetEvent event)
-	{
-		if (!(event.target instanceof EntityPlayer))
-			return;
-
-		EntityPlayer player = (EntityPlayer) event.target;
-
-		if (ModuleAuth.unLogged.contains(player.username))
-		{
-			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
-		}
-
-		if (ModuleAuth.unRegistered.contains(player.username))
-		{
-			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -188,13 +164,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(player.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(player.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(player, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -206,13 +182,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -224,13 +200,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.login", Localization.get("command.login.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.format("message.auth.register", Localization.get("command.register.syntax.player")));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 

@@ -69,7 +69,9 @@ public class EncryptionHelper
 		char[] array = new char[length];
 
 		for (int i = 0; i < length; i++)
+		{
 			array[i] = saltChars.charAt(rand.nextInt(saltChars.length()));
+		}
 
 		return new String(array);
 	}

@@ -1,10 +1,7 @@
 package com.ForgeEssentials.util;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -266,6 +263,40 @@ public final class FunctionHelper
 
 			long var2 = 0L;
 			long[] var4 = server.worldTickTimes.get(dimID);
+			int var5 = var4.length;
+
+			for (int var6 = 0; var6 < var5; ++var6)
+			{
+				long var7 = var4[var6];
+				var2 += var7;
+			}
+
+			double tps = (double) var2 / (double) var5 * 1.0E-6D;
+
+			if (tps < 50)
+				return 20;
+			else
+				return 1000 / tps;
+		}
+		catch (Exception e)
+		{
+			return -1;
+		}
+	}
+	
+	/**
+	 * Get tps.
+	 * @return
+	 * -1 if error
+	 */
+	public static double getTPS()
+	{
+		try
+		{
+			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+
+			long var2 = 0L;
+			long[] var4 = server.tickTimeArray;
 			int var5 = var4.length;
 
 			for (int var6 = 0; var6 < var5; ++var6)

@@ -2,8 +2,6 @@ package com.ForgeEssentials.auth;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.auth.commands.CommandLogin;
-import com.ForgeEssentials.auth.commands.CommandRegister;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -28,12 +26,12 @@ public class LoginHandler implements IPlayerTracker
 	public void onPlayerLogin(EntityPlayer player)
 	{
 		PlayerPassData data = PlayerPassData.getData(player.username);
-		
+
 		if (data != null)
 		{
 			if (ModuleAuth.enabled)
 			{
-				OutputHandler.chatError(player, Localization.format("message.auth.login", new CommandLogin().getSyntaxPlayer(player)));
+				OutputHandler.chatError(player, Localization.format("command.auth.needLogin"));
 				ModuleAuth.unLogged.add(player.username);
 			}
 		}
@@ -41,7 +39,7 @@ public class LoginHandler implements IPlayerTracker
 		{
 			if (ModuleAuth.enabled)
 			{
-				OutputHandler.chatError(player, Localization.format("message.auth.register", new CommandRegister().getSyntaxPlayer(player)));
+				OutputHandler.chatError(player, Localization.format("command.auth.needRegister"));
 			}
 
 			ModuleAuth.unRegistered.add(player.username);

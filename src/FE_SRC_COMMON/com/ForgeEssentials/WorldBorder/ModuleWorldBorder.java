@@ -47,7 +47,6 @@ public class ModuleWorldBorder
 	public static HashMap<Integer, IEffect[]>	effectsList		= new HashMap<Integer, IEffect[]>();
 	public static int							overGenerate	= 345;
 
-	public static boolean						globalOverride	= true;
 	static final ClassContainer					con				= new ClassContainer(WorldBorder.class);
 
 	public ModuleWorldBorder()
@@ -59,6 +58,7 @@ public class ModuleWorldBorder
 	public static void registerPerms(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel("ForgeEssentials.WorldBorder.admin", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.WorldBorder.filler", RegGroup.OWNERS);
 	}
 
 	@FEModule.Init
@@ -71,6 +71,7 @@ public class ModuleWorldBorder
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandWB());
+		e.registerServerCommand(new CommandFiller());
 		loadAll();
 
 		Zone zone = ZoneManager.getGLOBAL();
@@ -94,10 +95,7 @@ public class ModuleWorldBorder
 			Zone zone = ZoneManager.getWorldZone(e.entityPlayer.worldObj);
 			WorldBorder border = borderMap.get(zone.getZoneName());
 			border.check((EntityPlayerMP) e.entityPlayer);
-			if (globalOverride)
-			{
-				borderMap.get(ZoneManager.getGLOBAL().getZoneName()).check((EntityPlayerMP) e.entityPlayer);
-			}
+			borderMap.get(ZoneManager.getGLOBAL().getZoneName()).check((EntityPlayerMP) e.entityPlayer);
 		}
 	}
 

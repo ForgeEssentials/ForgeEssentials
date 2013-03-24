@@ -14,7 +14,6 @@ import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;

@@ -18,7 +18,7 @@ public class PlayerPassData
 	public static PlayerPassData getData(String username)
 	{
 		PlayerPassData data = datas.get(username);
-		
+
 		if (data == null)
 		{
 			data = (PlayerPassData) DataStorageManager.getReccomendedDriver().loadObject(container, username);
@@ -26,27 +26,43 @@ public class PlayerPassData
 
 		return data;
 	}
-	
+
 	public static void registerData(PlayerPassData data)
 	{
 		DataStorageManager.getReccomendedDriver().saveObject(container, data);
+		if (datas.get(data.username) != null)
+		{
+			datas.put(data.username, data);
+		}
 	}
-	
+
 	public static void discardData(String username)
 	{
 		PlayerPassData data = datas.remove(username);
-		
+
 		if (data != null)
+		{
 			DataStorageManager.getReccomendedDriver().saveObject(container, data);
+		}
 	}
-	
-	public static final ClassContainer container = new ClassContainer(PlayerPassData.class);
+
+	public static void deleteData(String username)
+	{
+		PlayerPassData data = datas.remove(username);
+		DataStorageManager.getReccomendedDriver().deleteObject(container, username);
+		if (data != null)
+		{
+			ModuleAuth.unRegistered.add(username);
+		}
+	}
+
+	public static final ClassContainer	container	= new ClassContainer(PlayerPassData.class);
 
 	@UniqueLoadingKey
 	@SaveableField
-	public final String	username;
+	public final String					username;
 	@SaveableField
-	public String		password;
+	public String						password;
 
 	public PlayerPassData(String username, String password)
 	{

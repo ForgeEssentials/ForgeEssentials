@@ -44,14 +44,14 @@ cp -rf ${WORKSPACE}/lib/* .
 cd ..
 
 echo "injecting version into places"
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/server/mcmod.info
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/client/mcmod.info
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/A1-zipStuff/FEReadme.txt
-sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/server/mcmod.info
-sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/client/mcmod.info
-sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt
-sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/A1-zipStuff/FEReadme.txt
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/resources/server/mcmod.info
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/resources/client/mcmod.info
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/resources/FEAPIReadme.txt
+sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/resources/FEReadme.txt
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/server/mcmod.info
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/client/mcmod.info
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/FEAPIReadme.txt
+sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/FEReadme.txt
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/ForgeEssentials.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/preloader/FEModContainer.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/commands/CommandFEVersion.java
@@ -68,19 +68,21 @@ mkdir ${WORKSPACE}/output
 cd reobf/minecraft
 
 echo "Creating Client package"
-cp -rf ${WORKSPACE}/A1-zipStuff/client/mcmod.info .
-cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
-cp -rf ${WORKSPACE}/A1-zipStuff/logo.png .
-cp -rf ${WORKSPACE}/A1-zipStuff/LICENSE.TXT .
+cp -rf ${WORKSPACE}/resources/client/mcmod.info .
+cp -rf ${WORKSPACE}/resources/FEReadme.txt .
+cp -rf ${WORKSPACE}/resources/logo.png .
+cp -rf ${WORKSPACE}/resources/LICENSE.TXT .
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-client-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/* mcmod.info logo.png FEReadme.txt LICENSE.TXT
 rm -rf ./com/ForgeEssentials/client
 rm -rf ./*.info ./*.txt logo.png
 
 echo "Copying in extra files for core"
-cp -rf ${WORKSPACE}/A1-zipStuff/server/mcmod.info .
-cp -rf ${WORKSPACE}/A1-zipStuff/logo.png .
+cp -rf ${WORKSPACE}/resources/server/mcmod.info .
+cp -rf ${WORKSPACE}/resources/META-INF .
+cp -rf ${WORKSPACE}/resources/logo.png .
+cp -rf ${WORKSPACE}/resources/HowToGetFEsupport.txt .
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg .
-rm ./com/ForgeEssentials/util/lang/dummyForGithub
+#rm ./com/ForgeEssentials/util/lang/dummyForGithub
 
 echo "Creating server packages"
 jar cvfm "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/coremod/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg HowToGetFEsupport.txt ./com/ForgeEssentials/api/*
@@ -97,18 +99,18 @@ zip -r9 "${WORKSPACE}/output/${JOB_NAME}-tickets-${MC}-${VERSION}.zip" ./com/For
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-worldborder-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldBorder/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl/*
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-afterlife-${MC}-${VERSION}.zip" ./com/ForgeEssentials/afterlife/*
-rm -rf ./*.info ./*.txt
+rm -rf ./*.info ./*.txt logo.png
 
 echo "Creating ServerComplete package"
 cd ${WORKSPACE}/output
-cp -rf ${WORKSPACE}/A1-zipStuff/servercomplete/*
+cp -rf ${WORKSPACE}/resources/servercomplete/*
 
 
 mkdir mods
 mkdir coremods
-cp -rf ${WORKSPACE}/A1-zipStuff/FEReadme.txt .
-cp -rf ${WORKSPACE}/A1-zipStuff/LICENSE.TXT .
-cp -rf ${WORKSPACE}/A1-zipStuff/HowToGetFESupport.txt .
+cp -rf ${WORKSPACE}/resources/FEReadme.txt .
+cp -rf ${WORKSPACE}/resources/LICENSE.TXT .
+cp -rf ${WORKSPACE}/resources/HowToGetFESupport.txt .
 # coremod.. then alphebetical order please...
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-core-${MC}-${VERSION}.jar" ./coremods/
 cp -rf "${WORKSPACE}/output/${JOB_NAME}-auth-${MC}-${VERSION}.zip" ./mods/
@@ -149,8 +151,8 @@ rm -rf "${WORKSPACE}/output/LICENSE.TXT"
 
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
-cp -f ${WORKSPACE}/A1-zipStuff/LICENSE.TXT .
-cp -rf ${WORKSPACE}/A1-zipStuff/FEAPIReadme.txt .
+cp -f ${WORKSPACE}/resources/LICENSE.TXT .
+cp -rf ${WORKSPACE}/resources/FEAPIReadme.txt .
 zip -r9 "${WORKSPACE}/output/${JOB_NAME}-API-${MC}-${VERSION}.zip" ./com/ForgeEssentials/api/* ./com/ForgeEssentials/util/* FEAPIReadme.txt LICENSE.TXT
 
 #upload

@@ -27,8 +27,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandWB extends ForgeEssentialsCommandBase
 {
-	public static TickTaskFill	taskGooing	= null;
-
 	@Override
 	public String getCommandName()
 	{
@@ -47,7 +45,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		execute(sender, args);
 	}
 
@@ -56,7 +54,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
-		
+
 		execute(sender, args);
 	}
 
@@ -80,7 +78,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		else if (FunctionHelper.isNumeric(args[0]))
 		{
 			World world = DimensionManager.getWorld(parseInt(sender, args[0]));
-			if(world == null)
+			if (world == null)
 			{
 				OutputHandler.chatError(sender, args[0] + " is not an ID of a loaded world.");
 				return;
@@ -96,21 +94,21 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			OutputHandler.chatError(sender, "You must specify a zone you want to work in. '/wb global' or '/wb <id>'");
 			return;
 		}
-		
+
 		/*
 		 * Now we have the zone...
 		 */
 		WorldBorder border = ModuleWorldBorder.borderMap.get(zone.getZoneName());
-		
+
 		/*
-		 * Want info? 
+		 * Want info?
 		 */
 		if (args.length == 1 || args[1].equalsIgnoreCase("info"))
 		{
 			// Header
 			String header = "--- WorldBorder for " + zone.getZoneName() + " ---";
 			sender.sendChatToPlayer(header);
-			// Actual info		
+			// Actual info
 			sender.sendChatToPlayer("Enabled: " + (border.enabled ? FEChatFormatCodes.GREEN : FEChatFormatCodes.RED) + border.enabled);
 			sender.sendChatToPlayer("Center: " + border.center.toString());
 			sender.sendChatToPlayer("Radius: " + border.rad);
@@ -171,7 +169,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 					int x = parseInt(sender, args[2]);
 					int z = parseInt(sender, args[3]);
 					border.center = new Point(x, 64, z);
-					OutputHandler.chatConfirmation(sender, "Center set to " + border.center);	
+					OutputHandler.chatConfirmation(sender, "Center set to " + border.center);
 				}
 				else
 				{
@@ -222,8 +220,10 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			OutputHandler.chatError(sender, "dafuq? I have no clue what you are trying to do. Use TAB for cmd filling!");
 			OutputHandler.chatError(sender, "/wb <zone> [info|enable|disable|center|radius|shape]");
 		}
+
+		ModuleWorldBorder.saveAll();
 	}
-	
+
 	@Override
 	public boolean canConsoleUseCommand()
 	{
@@ -244,7 +244,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		{
 			ArrayList<String> list = new ArrayList<String>();
 			list.add("global");
-			if(sender instanceof EntityPlayer)
+			if (sender instanceof EntityPlayer)
 				list.add("world");
 			for (int i : DimensionManager.getIDs())
 				list.add("" + i);

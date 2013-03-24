@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.economy.WalletHandler;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 

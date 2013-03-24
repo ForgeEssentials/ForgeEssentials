@@ -47,14 +47,8 @@ public interface IPermRegisterEvent
 	/**
 	 * Sets a PermissionProperty for the provided group.
 	 * @param permission
-	 * <<<<<<< HEAD
-	 * Qualified permission node
-	 * @param group
-	 * NULL will deny the permission for everyone.
-	 * =======
 	 * @param value
 	 * @param group
-	 * >>>>>>> origin/PermissionsProps
 	 */
 	public void registerGroupPermissionprop(String permission, String value, RegGroup group);
 

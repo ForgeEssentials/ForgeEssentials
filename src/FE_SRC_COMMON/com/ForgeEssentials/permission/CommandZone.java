@@ -12,7 +12,6 @@ import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
-import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;

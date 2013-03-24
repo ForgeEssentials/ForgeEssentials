@@ -35,7 +35,7 @@ public class CommandBack extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(""));
+			OutputHandler.chatError(sender, Localization.get("command.back.noback"));
 		}
 	}
 

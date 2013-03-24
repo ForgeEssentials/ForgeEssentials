@@ -118,6 +118,6 @@ public class ConfigWorldBorder extends ModuleConfigBase
 	@Override
 	public void forceSave()
 	{
-		
+
 	}
 }
