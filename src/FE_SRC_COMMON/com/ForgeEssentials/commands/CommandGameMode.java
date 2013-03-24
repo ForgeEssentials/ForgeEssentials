@@ -183,11 +183,11 @@ public class CommandGameMode extends FEcmdModuleCommands
 
 	private EnumGameType getGameTypeFromString(ICommandSender sender, String string)
 	{
-		if (string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) || !string.equalsIgnoreCase("s") || !string.equals("0"))
+		if (string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) || string.equalsIgnoreCase("s") || string.equals("0"))
 			return EnumGameType.SURVIVAL;
-		else if (string.equalsIgnoreCase(EnumGameType.CREATIVE.getName()) || string.equalsIgnoreCase("c") || !string.equals("1"))
+		else if (string.equalsIgnoreCase(EnumGameType.CREATIVE.getName()) || string.equalsIgnoreCase("c") || string.equals("1"))
 			return EnumGameType.CREATIVE;
-		else if (string.equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) || string.equalsIgnoreCase("a") || !string.equals("2"))
+		else if (string.equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) || string.equalsIgnoreCase("a") || string.equals("2"))
 			return EnumGameType.ADVENTURE;
 		else
 			return null;
