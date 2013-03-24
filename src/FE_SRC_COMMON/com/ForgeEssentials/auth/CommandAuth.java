@@ -25,11 +25,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 	private static String[]	playerCommands	= new String[] { "help", "login", "register", "changepass", "kick", "setpass", "unregister" };
 	private static String[]	serverCommands	= new String[] { "help", "kick", "setpass", "unregister" };
 
-	public CommandAuth()
-	{
-		// nothing
-	}
-
 	@Override
 	public String getCommandName()
 	{
@@ -37,9 +32,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<?> getCommandAliases()
 	{
-		ArrayList<String> list = new ArrayList();
+		ArrayList<String> list = new ArrayList<String>();
 		list.add("AUTH");
 		return list;
 	}
@@ -334,10 +329,11 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		ArrayList<String> list = new ArrayList();
+		ArrayList<String> list = new ArrayList<String>();
 		switch (args.length)
 			{
 				case 1:
