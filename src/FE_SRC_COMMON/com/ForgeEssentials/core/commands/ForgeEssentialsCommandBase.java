@@ -15,7 +15,7 @@ import com.ForgeEssentials.util.OutputHandler;
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
 	@Override
-    public boolean isUsernameIndex(int par1)
+    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par1)
     {
         return true;
     }
