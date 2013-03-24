@@ -2,6 +2,7 @@ package com.ForgeEssentials.backup;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,12 +37,9 @@ public class AutoBackup implements Runnable
 
 		isBackingUp = true;
 		List<Integer> list = Arrays.asList(DimensionManager.getIDs());
-
-		for (int i : BackupConfig.blacklist)
-		{
-			list.remove(i);
-		}
-
+		
+		list.removeAll(BackupConfig.blacklist);
+		
 		for (int i : BackupConfig.whitelist)
 		{
 			if (!list.contains(i))
