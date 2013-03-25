@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -15,6 +14,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.TPAdata;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -85,7 +85,7 @@ public class CommandTPA extends FEcmdModuleCommands
 			return;
 		}
 
-		EntityPlayerMP receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
+		EntityPlayerMP receiver = FunctionHelper.getPlayerForName(args[0]);
 		if (receiver == null)
 		{
 			sender.sendChatToPlayer(args[0] + " not found.");

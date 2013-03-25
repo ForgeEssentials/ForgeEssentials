@@ -1,10 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
@@ -17,6 +15,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
@@ -36,7 +35,7 @@ public class CommandBed extends FEcmdModuleCommands
 	{
 		if (args.length >= 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 				tp(player);
@@ -75,7 +74,7 @@ public class CommandBed extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 				tp((EntityPlayerMP) player);

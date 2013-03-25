@@ -1,10 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -14,6 +12,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -44,7 +43,7 @@ public class CommandRepair extends FEcmdModuleCommands
 		}
 		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 
@@ -73,7 +72,7 @@ public class CommandRepair extends FEcmdModuleCommands
 		if (args.length == 1)
 		{
 			//PlayerSelector.matchPlayers(sender, args[0])
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 

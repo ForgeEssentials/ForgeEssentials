@@ -1,10 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,7 +37,7 @@ public class CommandSmite extends FEcmdModuleCommands
 			}
 			else
 			{
-				EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 				if (player != null)
 				{
 					player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
@@ -71,7 +69,7 @@ public class CommandSmite extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));

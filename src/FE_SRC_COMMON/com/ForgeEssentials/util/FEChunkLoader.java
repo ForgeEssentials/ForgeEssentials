@@ -3,13 +3,13 @@ package com.ForgeEssentials.util;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ForgeEssentials.core.ForgeEssentials;
-
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
+
+import com.ForgeEssentials.core.ForgeEssentials;
 
 public class FEChunkLoader implements LoadingCallback
 {

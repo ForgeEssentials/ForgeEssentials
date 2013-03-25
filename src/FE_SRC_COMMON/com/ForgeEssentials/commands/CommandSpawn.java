@@ -1,11 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -21,7 +18,6 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -44,7 +40,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 				return;
 			}
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 				ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
@@ -80,7 +76,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);

@@ -3,7 +3,6 @@ package com.ForgeEssentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -49,7 +48,7 @@ public class CommandGive extends FEcmdModuleCommands
 		id = idAndMeta[0];
 		dam = idAndMeta[1];
 
-		EntityPlayer player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		EntityPlayer player = FunctionHelper.getPlayerForName(args[0]);
 		if (player != null)
 		{
 			ItemStack stack = new ItemStack(id, amount, dam);
@@ -86,7 +85,7 @@ public class CommandGive extends FEcmdModuleCommands
 		id = idAndMeta[0];
 		dam = idAndMeta[1];
 
-		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 		if (player != null)
 		{
 			ItemStack stack = new ItemStack(id, amount, dam);

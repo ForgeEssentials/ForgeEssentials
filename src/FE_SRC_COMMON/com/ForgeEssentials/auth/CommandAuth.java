@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,6 +14,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.core.commands.PermissionDeniedException;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -106,7 +106,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				OutputHandler.chatConfirmation(sender, Localization.get("command.auth.register.success"));
 				return;
 			}
-
+			
+			// stop if unlogged.
 			if (ModuleAuth.unLogged.contains(sender.username))
 			{
 				OutputHandler.chatError(sender, Localization.get("message.auth.needlogin"));
@@ -123,7 +124,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			boolean isLogged = true;
 
 			// check if the player is logged.
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, name);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(name);
 			if (player == null)
 			{
 				OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -213,7 +214,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			// check for players.. all the rest of these should be greated than 1.
 			String name = args[1];
 			// check if the player is logged.
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, name);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(name);
 			if (player == null)
 			{
 				OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -264,7 +265,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		boolean isLogged = true;
 
 		// check if the player is logged.
-		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, name);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(name);
 		if (player == null)
 		{
 			sender.sendChatToPlayer("A player of that name is not on the server. Doing the action anyways.");

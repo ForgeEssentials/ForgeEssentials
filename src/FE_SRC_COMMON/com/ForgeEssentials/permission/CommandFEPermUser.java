@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -14,6 +13,7 @@ import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -34,7 +34,7 @@ public class CommandFEPermUser
 		}
 
 		String playerName = args[0];
-		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 		if (playerName.equalsIgnoreCase("_ME_"))
 		{
 			player = (EntityPlayerMP) sender;
@@ -391,7 +391,7 @@ public class CommandFEPermUser
 		}
 
 		String playerName = args[0];
-		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 		if (player == null)
 		{
 			sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_NOPLAYER, args[0]));

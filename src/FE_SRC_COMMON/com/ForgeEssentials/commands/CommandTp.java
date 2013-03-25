@@ -1,6 +1,5 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -37,10 +37,10 @@ public class CommandTp extends FEcmdModuleCommands
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayer target = FunctionHelper.getPlayerForName(args[0]);
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				target = PlayerSelector.matchOnePlayer(sender, args[0]);
+				target = FunctionHelper.getPlayerForName(args[0]);
 			}
 			if (target != null)
 			{
@@ -56,13 +56,13 @@ public class CommandTp extends FEcmdModuleCommands
 		}
 		else if (args.length == 2)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
-				EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
+				EntityPlayer target = FunctionHelper.getPlayerForName(args[0]);
 				if (PlayerSelector.hasArguments(args[1]))
 				{
-					target = PlayerSelector.matchOnePlayer(sender, args[1]);
+					target = FunctionHelper.getPlayerForName(args[1]);
 				}
 				if (target != null)
 				{
@@ -95,7 +95,7 @@ public class CommandTp extends FEcmdModuleCommands
 			else if (args.length == 4)
 			{
 				int x = parseInt(sender, args[1]), y = parseInt(sender, args[2]), z = parseInt(sender, args[3]);
-				EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 				if (player != null)
 				{
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
@@ -123,13 +123,13 @@ public class CommandTp extends FEcmdModuleCommands
 	{
 		if (args.length == 2)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
-				EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
+				EntityPlayer target = FunctionHelper.getPlayerForName(args[0]);
 				if (PlayerSelector.hasArguments(args[1]))
 				{
-					target = PlayerSelector.matchOnePlayer(sender, args[1]);
+					target = FunctionHelper.getPlayerForName(args[1]);
 				}
 				if (target != null)
 				{
@@ -152,7 +152,7 @@ public class CommandTp extends FEcmdModuleCommands
 		else if (args.length == 4)
 		{
 			int x = parseInt(sender, args[1]), y = parseInt(sender, args[2]), z = parseInt(sender, args[3]);
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);

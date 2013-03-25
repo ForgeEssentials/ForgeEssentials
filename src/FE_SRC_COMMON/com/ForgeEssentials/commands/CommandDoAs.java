@@ -1,15 +1,14 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -43,7 +42,7 @@ public class CommandDoAs extends FEcmdModuleCommands
 			cmd.append(args[i]);
 			cmd.append(" ");
 		}
-		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 		if (player != null)
 		{
 			OutputHandler.chatWarning(player, Localization.format("command.doas.attempt", sender.getCommandSenderName()));

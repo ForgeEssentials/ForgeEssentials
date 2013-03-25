@@ -1,11 +1,9 @@
 package com.ForgeEssentials.commands;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -78,7 +76,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 		}
 		else if (args.length == 1)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 				OutputHandler.chatConfirmation(sender, Localization.format("command.capabilities.listForX", player.username));
@@ -103,7 +101,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 					return;
 				}
 			}
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 				if (args[1].equalsIgnoreCase(names.get(0)))
@@ -143,7 +141,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 					return;
 				}
 			}
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
 				if (args[1].equalsIgnoreCase(names.get(0)))

@@ -32,13 +32,15 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
+			if (event.before.y == event.before.y)
+				OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
+			if (event.before.y == event.before.y)
+				OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 

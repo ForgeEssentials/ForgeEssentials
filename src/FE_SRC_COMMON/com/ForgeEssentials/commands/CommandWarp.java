@@ -1,10 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -17,6 +15,7 @@ import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.Warp;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -118,7 +117,7 @@ public class CommandWarp extends FEcmdModuleCommands
 		{
 			if (CommandDataManager.warps.containsKey(args[1].toLowerCase()))
 			{
-				EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 				if (player != null)
 				{
 					Warp warp = CommandDataManager.warps.get(args[1].toLowerCase());
