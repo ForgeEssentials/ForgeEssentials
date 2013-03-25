@@ -182,7 +182,7 @@ public class PlayerInfo
 	{
 		long current = System.currentTimeMillis() - loginTime;
 		int min = (int)(current/60000);
-		timePlayed += getTimePlayed() + min;
+		timePlayed += min;
 		loginTime = System.currentTimeMillis();
 	}
 
