@@ -348,16 +348,16 @@ public class CommandFEPermUser
 				{
 					if (permission.contains("has no individual permissions."))
 					{
-						OutputHandler.chatConfirmation(sender, perm);
+						OutputHandler.chatConfirmation(sender, permission);
 						return;
 					}
 					if (permission.contains("ALLOW"))
 					{
-						messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + perm.substring(0, perm.indexOf(":")));
+						messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + permission.substring(0, permission.indexOf(":")));
 					}
 					else
 					{
-						messageDenied.add(" " + FEChatFormatCodes.DARKRED + perm.substring(0, perm.indexOf(":")));
+						messageDenied.add(" " + FEChatFormatCodes.DARKRED + permission.substring(0, permission.indexOf(":")));
 					}
 				}
 				OutputHandler.chatConfirmation(sender, playerName + ": Current permissions in zone " + zoneName + ":");

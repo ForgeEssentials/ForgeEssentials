@@ -11,6 +11,7 @@ import net.minecraftforge.common.MinecraftForge;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModulePostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
@@ -18,13 +19,11 @@ import com.ForgeEssentials.core.ForgeEssentials;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-/**
- * @author Dries007
- */
 @FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true, configClass = ConfigProtection.class)
 public class ModuleProtection
 {
 	public final static String									PERM_EDITS				= "ForgeEssentials.Protection.allowEdits";
+	public final static String									PERM_ITEM_USE			= "ForgeEssentials.Protection.itemUse";
 	public final static String									PERM_INTERACT_BLOCK		= "ForgeEssentials.Protection.allowBlockInteractions";
 	public final static String									PERM_INTERACT_ENTITY	= "ForgeEssentials.Protection.allowEntityInteractions";
 	public final static String									PERM_OVERRIDE			= "ForgeEssentials.Protection.overrideProtection";
@@ -46,21 +45,27 @@ public class ModuleProtection
 	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if (!FMLCommonHandler.instance().getEffectiveSide().isServer() || !enable)
+		{
+			e.getModuleContainer().isLoadable = false;
 			return;
-		if (!enable)
-			return;
+		}
+
+		ItemList.vanillaStep();
 	}
 
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
-		if (!enable)
-			return;
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
-	@SuppressWarnings("unchecked")
+	@FEModule.PostInit
+	public void postload(FEModulePostInitEvent e)
+	{
+		ItemList.modStep();
+	}
+
 	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{
