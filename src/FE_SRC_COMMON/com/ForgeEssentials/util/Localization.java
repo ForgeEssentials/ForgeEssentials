@@ -201,7 +201,7 @@ public class Localization
 		String output = LanguageRegistry.instance().getStringLocalization(key);
 		
 		if (Strings.isNullOrEmpty(output))
-			output = key;
+			output = LanguageRegistry.instance().getStringLocalization(key, "en_US");
 		
 		return output;
 	}
