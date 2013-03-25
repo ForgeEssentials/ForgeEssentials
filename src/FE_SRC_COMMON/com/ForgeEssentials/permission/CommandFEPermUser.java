@@ -92,82 +92,25 @@ public class CommandFEPermUser
 				Zone zone = ZoneManager.getSUPER();
 				String perm = null;
 				String value = null;
-				boolean prop = false;
-
-				if (args[3].contains("{"))
-				{
-					prop = true;
-					if (args[3].contains("}"))
-					{
-						perm = args[3].substring(0, args[3].indexOf("{") - 2);
-						value = args[3].substring(args[3].indexOf("{") + 1, args[3].indexOf("}") - 1);
-					}
-					else
-					{
-						int index = -1;
-						for (int i = 4; i < args.length; i++)
-						{
-							if (args[i].contains("}"))
-								index = i;
-						}
-						if (index == -1)
-						{
-							OutputHandler.chatError(sender, "Permission prop is missing closing bracket.");
-							return;
-						}
-						else
-						{
-							value = args[3].substring(args[3].indexOf("{") + 1);
-							for (int i = 4; i < index - 1; i++)
-							{
-								value += " " + args[i];
-							}
-							value += " " + args[index].substring(0, args[index].indexOf("}") - 1);
-						}
-					}
-				}
 
 				if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("allow"))
 				{
-					if (prop)
-					{
-						PermissionsAPI.setPlayerPermissionProp(playerName, perm, value, zone.getZoneName());
-						OutputHandler.chatConfirmation(sender, playerName + " has been allowed " + perm + " prop with value of " + value);
-					}
-					else
-					{
-						PermissionsAPI.setPlayerPermission(playerName, args[3], true, zone.getZoneName());
-						OutputHandler.chatConfirmation(sender, playerName + " has been allowed " + args[3]);
-					}
+					PermissionsAPI.setPlayerPermissionProp(playerName, perm, value, zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, playerName + " has been allowed " + perm + " prop with value of " + value);
 					return;
 				}
 				// remove super perm setting
 				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove"))
 				{
-					if (prop)
-					{
-						PermissionsAPI.clearPlayerPermissionProp(playerName, perm, zone.getZoneName());
-						OutputHandler.chatConfirmation(sender, playerName + "'s " + perm + " prop has been cleared");
-					}
-					else
-					{
-						PermissionsAPI.clearPlayerPermission(playerName, args[3], zone.getZoneName());
-						OutputHandler.chatConfirmation(sender, playerName + "'s access to " + args[2] + " cleared");
-					}
+					PermissionsAPI.clearPlayerPermission(playerName, args[3], zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, playerName + "'s access to " + args[2] + " cleared");
 					return;
 				}
 				// deny super perm
 				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny"))
 				{
-					if (prop)
-					{
-						OutputHandler.chatError(sender, "Permission prop can only be set or cleared.");
-					}
-					else
-					{
-						PermissionsAPI.setPlayerPermission(playerName, args[3], false, zone.getZoneName());
-						OutputHandler.chatConfirmation(sender, playerName + " has been denied " + args[3]);
-					}
+					PermissionsAPI.setPlayerPermission(playerName, args[3], false, zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, playerName + " has been denied " + args[3]);
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("get"))
@@ -323,40 +266,7 @@ public class CommandFEPermUser
 			String zoneName = ZoneManager.getGLOBAL().getZoneName();
 			String perm = null;
 			String value = null;
-			boolean prop = false;
-
-			if (args[2].contains("{"))
-			{
-				prop = true;
-				if (args[3].contains("}"))
-				{
-					perm = args[3].substring(0, args[3].indexOf("{") - 2);
-					value = args[3].substring(args[3].indexOf("{") + 1, args[3].indexOf("}") - 1);
-				}
-				else
-				{
-					int index = -1;
-					for (int i = 4; i < args.length; i++)
-					{
-						if (args[i].contains("}"))
-							index = i;
-					}
-					if (index == -1)
-					{
-						OutputHandler.chatError(sender, "Permission prop is missing closing bracket.");
-						return;
-					}
-					else
-					{
-						value = args[3].substring(args[3].indexOf("{") + 1);
-						for (int i = 4; i < index - 1; i++)
-						{
-							value += " " + args[i];
-						}
-						value += " " + args[index].substring(0, args[index].indexOf("}") - 1);
-					}
-				}
-			}
+			
 			if (args.length == 4) // zone is set
 			{
 				if (ZoneManager.getZone(args[3]) != null)
