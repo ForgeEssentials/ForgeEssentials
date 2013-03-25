@@ -55,6 +55,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		if (args.length == 0)
 		{
 			// CMD usage
+			sender.sendChatToPlayer("/rollback <username> [undo|clear]");
 		}
 		else if (args.length == 1)
 		{
