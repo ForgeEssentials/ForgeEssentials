@@ -1,6 +1,5 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -50,18 +49,11 @@ public class CommandGive extends FEcmdModuleCommands
 		id = idAndMeta[0];
 		dam = idAndMeta[1];
 
-		List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		if (PlayerSelector.hasArguments(args[0]))
-		{
-			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		}
-		if (players.size() != 0)
+		EntityPlayer player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		if (player != null)
 		{
 			ItemStack stack = new ItemStack(id, amount, dam);
-			for (EntityPlayer player : players)
-			{
-				player.inventory.addItemStackToInventory(stack.copy());
-			}
+			player.inventory.addItemStackToInventory(stack.copy());
 			String name = Item.itemsList[id].func_77653_i(stack);
 			OutputHandler.chatConfirmation(sender, Localization.format("command.give.given", args[0], amount, name));
 		}
@@ -94,18 +86,11 @@ public class CommandGive extends FEcmdModuleCommands
 		id = idAndMeta[0];
 		dam = idAndMeta[1];
 
-		List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		if (PlayerSelector.hasArguments(args[0]))
-		{
-			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		}
-		if (players.size() != 0)
+		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		if (player != null)
 		{
 			ItemStack stack = new ItemStack(id, amount, dam);
-			for (EntityPlayer player : players)
-			{
-				player.inventory.addItemStackToInventory(stack.copy());
-			}
+			player.inventory.addItemStackToInventory(stack.copy());
 			String name = Item.itemsList[id].func_77653_i(stack);
 			OutputHandler.chatConfirmation(sender, Localization.format("command.give.given", args[0], amount, name));
 		}

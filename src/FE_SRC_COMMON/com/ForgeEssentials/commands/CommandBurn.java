@@ -38,18 +38,11 @@ public class CommandBurn extends FEcmdModuleCommands
 			}
 			else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				if (PlayerSelector.hasArguments(args[0]))
-				{
-					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				}
-				if (players.size() != 0)
+				EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+				if (player != null)
 				{
 					OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
-					for (EntityPlayer player : players)
-					{
-						player.setFire(15);
-					}
+					player.setFire(15);
 				}
 				else
 				{
@@ -73,18 +66,11 @@ public class CommandBurn extends FEcmdModuleCommands
 			}
 			else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				if (PlayerSelector.hasArguments(args[0]))
+				EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+				if (player != null)
 				{
-					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				}
-				if (players.size() != 0)
-				{
-					for (EntityPlayer player : players)
-					{
-						player.setFire(parseIntWithMin(sender, args[1], 0));
-						OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
-					}
+					player.setFire(parseIntWithMin(sender, args[1], 0));
+					OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
 				}
 				else
 				{
