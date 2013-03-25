@@ -32,18 +32,11 @@ public class CommandKill extends FEcmdModuleCommands
 	{
 		if (args.length >= 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer victim : players)
-				{
-					victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
-					victim.sendChatToPlayer(Localization.get("command.kill.msg"));
-				}
+				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
+				player.sendChatToPlayer(Localization.get("command.kill.msg"));
 			}
 			else
 			{
@@ -62,18 +55,11 @@ public class CommandKill extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer victim : players)
-				{
-					victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
-					victim.sendChatToPlayer(Localization.get("command.kill.msg"));
-				}
+				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
+				player.sendChatToPlayer(Localization.get("command.kill.msg"));
 			}
 			else
 			{

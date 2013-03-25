@@ -44,25 +44,18 @@ public class CommandSpawn extends FEcmdModuleCommands
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 				return;
 			}
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
-			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			if (player != null)
 			{
 				ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
-				for (EntityPlayer player : players)
-				{
-					PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-					ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
+				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+				ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
 
-					// teleport
-					server.transferPlayerToDimension((EntityPlayerMP) player, 0);
-					((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
+				// teleport
+				server.transferPlayerToDimension((EntityPlayerMP) player, 0);
+				((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
 
-					player.sendChatToPlayer(Localization.get("command.spawn.done"));
-				}
+				player.sendChatToPlayer(Localization.get("command.spawn.done"));
 				return;
 			}
 			else
@@ -87,23 +80,16 @@ public class CommandSpawn extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
-				{
-					PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 
-					WarpPoint spawn;
-					ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
-					spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
-					TeleportCenter.addToTpQue(spawn, player);
-					player.sendChatToPlayer(Localization.get("command.spawn.done"));
-				}
+				WarpPoint spawn;
+				ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
+				spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
+				TeleportCenter.addToTpQue(spawn, player);
+				player.sendChatToPlayer(Localization.get("command.spawn.done"));
 				return;
 			}
 			else

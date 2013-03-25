@@ -92,17 +92,10 @@ public class CommandBurn extends FEcmdModuleCommands
 		{
 			time = parseIntWithMin(sender, args[1], 0);
 		}
-		List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		if (PlayerSelector.hasArguments(args[0]))
+		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		if (player != null)
 		{
-			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		}
-		if (players.size() != 0)
-		{
-			for (EntityPlayer player : players)
-			{
-				player.setFire(time);
-			}
+			player.setFire(time);
 			sender.sendChatToPlayer(Localization.get("command.burn.player"));
 		}
 		else

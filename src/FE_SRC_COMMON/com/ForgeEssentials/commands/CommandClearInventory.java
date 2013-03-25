@@ -44,25 +44,18 @@ public class CommandClearInventory extends FEcmdModuleCommands
 		}
 		else if (args.length >= 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer victim : players)
+				int clearPar1 = -1, clearPar2 = -1;
+				if (args.length >= 2)
 				{
-					int clearPar1 = -1, clearPar2 = -1;
-					if (args.length >= 2)
-					{
-						clearPar1 = parseInt(sender, args[1]);
-						clearPar2 = parseInt(sender, args[2]);
-					}
-					victim.inventory.clearInventory(clearPar1, clearPar2);
-					victim.inventoryContainer.detectAndSendChanges();
-					OutputHandler.chatWarning(sender, Localization.format("command.clear.doneBy", sender.getCommandSenderName()));
+					clearPar1 = parseInt(sender, args[1]);
+					clearPar2 = parseInt(sender, args[2]);
 				}
+				player.inventory.clearInventory(clearPar1, clearPar2);
+				player.inventoryContainer.detectAndSendChanges();
+				OutputHandler.chatWarning(sender, Localization.format("command.clear.doneBy", sender.getCommandSenderName()));
 				OutputHandler.chatConfirmation(sender, Localization.format("command.clear.doneOf", args[0]));
 			}
 			else
@@ -81,26 +74,19 @@ public class CommandClearInventory extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer victim : players)
+				int clearPar1 = -1, clearPar2 = -1;
+				if (args.length >= 2)
 				{
-					int clearPar1 = -1, clearPar2 = -1;
-					if (args.length >= 2)
-					{
-						clearPar1 = parseInt(sender, args[1]);
-						clearPar2 = parseInt(sender, args[2]);
-					}
-					victim.inventory.clearInventory(clearPar1, clearPar2);
-
-					victim.inventoryContainer.detectAndSendChanges();
-					OutputHandler.chatWarning(sender, Localization.format("command.clear.doneBy", sender.getCommandSenderName()));
+					clearPar1 = parseInt(sender, args[1]);
+					clearPar2 = parseInt(sender, args[2]);
 				}
+				player.inventory.clearInventory(clearPar1, clearPar2);
+
+				player.inventoryContainer.detectAndSendChanges();
+				OutputHandler.chatWarning(sender, Localization.format("command.clear.doneBy", sender.getCommandSenderName()));
 				OutputHandler.chatConfirmation(sender, Localization.format("command.clear.doneOf", args[0]));
 			}
 			else

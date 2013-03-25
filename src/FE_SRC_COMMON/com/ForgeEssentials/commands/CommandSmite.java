@@ -39,18 +39,11 @@ public class CommandSmite extends FEcmdModuleCommands
 			}
 			else
 			{
-				List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				if (PlayerSelector.hasArguments(args[0]))
+				EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+				if (player != null)
 				{
-					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				}
-				if (players.size() != 0)
-				{
-					for (EntityPlayer victim : players)
-					{
-						victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
-						sender.sendChatToPlayer(Localization.get("command.smite.player"));
-					}
+					player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
+					sender.sendChatToPlayer(Localization.get("command.smite.player"));
 				}
 				else
 				{
@@ -78,18 +71,11 @@ public class CommandSmite extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer victim : players)
-				{
-					victim.worldObj.addWeatherEffect(new EntityLightningBolt(victim.worldObj, victim.posX, victim.posY, victim.posZ));
-					sender.sendChatToPlayer(Localization.get("command.smite.player"));
-				}
+				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
+				sender.sendChatToPlayer(Localization.get("command.smite.player"));
 			}
 			else
 			{

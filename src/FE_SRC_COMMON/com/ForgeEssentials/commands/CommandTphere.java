@@ -37,20 +37,13 @@ public class CommandTphere extends FEcmdModuleCommands
 	{
 		if (args.length == 1)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
-				{
-					EntityPlayerMP target = (EntityPlayerMP) sender;
-					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
-					playerInfo.back = new WarpPoint(player);
-					TeleportCenter.addToTpQue(new WarpPoint(target), player);
-				}
+				EntityPlayerMP target = (EntityPlayerMP) sender;
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+				playerInfo.back = new WarpPoint(player);
+				TeleportCenter.addToTpQue(new WarpPoint(target), player);
 			}
 			else
 			{
