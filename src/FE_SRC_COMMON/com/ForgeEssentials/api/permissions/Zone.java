@@ -12,7 +12,6 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WorldArea;
 
-@SuppressWarnings("rawtypes")
 @SaveableObject
 public class Zone extends WorldArea implements Comparable
 {

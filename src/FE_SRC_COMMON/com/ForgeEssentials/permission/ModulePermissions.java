@@ -123,14 +123,13 @@ public class ModulePermissions
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		// save all the zones
-		ClassContainer con = new ClassContainer(Zone.class);
 		for (Zone zone : ZoneManager.getZoneList())
 		{
 			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
 			{
 				continue;
 			}
-			data.saveObject(con, zone);
+			data.saveObject(ZoneHelper.container, zone);
 		}
 
 		autoPromoteManager.stop();
