@@ -18,6 +18,7 @@ import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -45,6 +46,8 @@ public class ModuleAuth
 	public static HashSet<String>		unRegistered	= new HashSet<String>();
 
 	public static String				salt			= EncryptionHelper.generateSalt();
+
+	public static int					checkInterval;
 
 	@PreInit
 	public void preInit(FEModulePreInitEvent e)
@@ -74,7 +77,7 @@ public class ModuleAuth
 		if (checkVanillaAuthStatus && !forceEnabled)
 		{
 			vanillaCheck = new VanillaServiceChecker();
-			TickRegistry.registerScheduledTickHandler(vanillaCheck, Side.SERVER);
+			TaskRegistry.registerRecurringTask(vanillaCheck, 0, checkInterval, 0, 0, 0, checkInterval, 0, 0);
 		}
 
 		MinecraftForge.EVENT_BUS.register(eventHandler);
@@ -97,15 +100,25 @@ public class ModuleAuth
 	{
 		return FMLCommonHandler.instance().getSidedDelegate().getServer().isServerInOnlineMode();
 	}
-	
+
 	public static boolean isEnabled()
 	{
 		if (forceEnabled)
 			return true;
 		else if (checkVanillaAuthStatus && !vanillaMode())
 			return true;
-		
+
 		return false;
+	}
+
+	public static void onStatusChange()
+	{
+		if (isEnabled())
+		{
+			MinecraftForge.EVENT_BUS.register(eventHandler);
+		}
+		else
+			MinecraftForge.EVENT_BUS.unregister(eventHandler);
 	}
 
 	public static String encrypt(String str)

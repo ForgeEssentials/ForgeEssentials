@@ -76,7 +76,10 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			{
 				PlayerPassData data = PlayerPassData.getData(sender.username);
 				if (data == null)
-					throw new WrongUsageException("message.auth.error.notregisterred", sender.username);
+				{
+					OutputHandler.chatError(sender, Localization.format("message.auth.error.notregisterred", sender.username));
+					return;
+				}
 
 				String pass = ModuleAuth.encrypt(args[1]);
 
@@ -98,7 +101,16 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			else if (args[0].equalsIgnoreCase("register"))
 			{
 				if (PlayerPassData.getData(sender.username) != null)
-					throw new WrongUsageException("command.auth.error.yesregisterred", sender.username);
+				{
+					OutputHandler.chatError(sender, Localization.format("command.auth.error.yesregisterred", sender.username));
+					return;
+				}				
+				
+				if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineReg)
+				{
+					OutputHandler.chatError(sender, Localization.format("command.auth.error.disabledreg"));
+					return;
+				}
 
 				String pass = ModuleAuth.encrypt(args[1]);
 				PlayerPassData.registerData(new PlayerPassData(sender.username, pass));

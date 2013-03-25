@@ -38,7 +38,7 @@ public class EventHandler
 			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
-		if (ModuleAuth.unRegistered.contains(username))
+		if (ModuleAuth.unRegistered.contains(username) && ModuleAuth.isEnabled())
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
@@ -56,7 +56,7 @@ public class EventHandler
 			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
 		}
 
-		if (ModuleAuth.unRegistered.contains(username))
+		if (ModuleAuth.unRegistered.contains(username) && ModuleAuth.isEnabled())
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
@@ -95,7 +95,7 @@ public class EventHandler
 			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
-		if (ModuleAuth.unRegistered.contains(username))
+		if (ModuleAuth.unRegistered.contains(username) && ModuleAuth.isEnabled())
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
@@ -113,7 +113,7 @@ public class EventHandler
 			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
-		if (ModuleAuth.unRegistered.contains(username))
+		if (ModuleAuth.unRegistered.contains(username) && ModuleAuth.isEnabled())
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
@@ -131,7 +131,7 @@ public class EventHandler
 			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
 		}
 
-		if (ModuleAuth.unRegistered.contains(username))
+		if (ModuleAuth.unRegistered.contains(username) && ModuleAuth.isEnabled())
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
@@ -149,7 +149,7 @@ public class EventHandler
 			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
 		}
 
-		if (ModuleAuth.unRegistered.contains(username))
+		if (ModuleAuth.unRegistered.contains(username) && ModuleAuth.isEnabled())
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
@@ -188,7 +188,7 @@ public class EventHandler
 			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
-		if (ModuleAuth.unRegistered.contains(username))
+		if (ModuleAuth.unRegistered.contains(username) && ModuleAuth.isEnabled())
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
@@ -206,7 +206,7 @@ public class EventHandler
 			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
-		if (ModuleAuth.unRegistered.contains(username))
+		if (ModuleAuth.unRegistered.contains(username) && ModuleAuth.isEnabled())
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
