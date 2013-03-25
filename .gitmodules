@@ -1,0 +1,3 @@
+[submodule "lang"]
+	path = lang
+	url = git@github.com:ForgeEssentials/FELocalizations.git
