@@ -112,7 +112,8 @@ public class SqlHelper
 	private PreparedStatement	statementGetGroupFromName;														// groupName >> Group
 	private PreparedStatement	statementGetGroupFromID;														// groupID >> Group
 	private PreparedStatement	statementGetGroupsForPlayerInZone;												// PlayerID, ZoneID >> Groups
-	private PreparedStatement	statementGetAllGroupsForPlayer;												// PlayerID >> all
+	private PreparedStatement	statementGetAllGroupsForPlayer;												// groupid, playerid >> players
+	private PreparedStatement	statementGetAllPlayersForGroup;												// PlayerID >> all
 	private PreparedStatement	statementGetGroupsInZone;														// ZoneID
 	private PreparedStatement	statementPutGroup;																// $ name, prefix, suffix, parent, priority, zone
 	private PreparedStatement	statementUpdateGroup;															// $ name, prefix, suffix, parent, priority, zone
@@ -276,6 +277,15 @@ public class SqlHelper
 					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
 					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=?");
 			statementGetAllGroupsForPlayer = getInstance().db.prepareStatement(query.toString());
+
+			// statementGetGroupsForPlayer
+			query = new StringBuilder("SELECT ").append(TABLE_PLAYER).append('.').append(COLUMN_PLAYER_USERNAME)
+					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
+					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=?")
+					.append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=?")
+					.append(" INNER JOIN ").append(TABLE_PLAYER)
+					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_PLAYERID);
+			statementGetAllPlayersForGroup = getInstance().db.prepareStatement(query.toString());
 
 			// statementGetGroupsInZone
 			query = new StringBuilder("SELECT * FROM ").append(TABLE_GROUP)
@@ -1305,6 +1315,35 @@ public class SqlHelper
 		}
 
 		return null;
+	}
+
+	protected static synchronized ArrayList<String> getPlayersForGroup(String group, String zone)
+	{
+		ArrayList<String> list = new ArrayList<String>();
+
+		try
+		{
+			PreparedStatement s = getInstance().statementGetAllPlayersForGroup;
+
+			int gID = getGroupIDFromGroupName(group);
+			int zID = getZoneIDFromZoneName(zone);
+
+			s.setInt(1, gID);
+			s.setInt(2, zID);
+			ResultSet set = s.executeQuery();
+			s.clearParameters();
+			
+			while(set.next())
+			{
+				list.add(set.getString(1));
+			}
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 
 	/**

@@ -34,6 +34,8 @@ public interface IPermissionsHelper
 	Group getGroupForName(String name);
 
 	Group getHighestGroup(EntityPlayer player);
+	
+	ArrayList<String> getPlayersInGroup(String group, String zone);
 
 	String setPlayerGroup(String group, String player, String zone);
 

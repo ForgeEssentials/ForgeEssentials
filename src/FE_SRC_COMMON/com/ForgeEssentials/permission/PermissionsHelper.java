@@ -20,7 +20,6 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PermissionPropSetEvent;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class PermissionsHelper implements IPermissionsHelper
 {
 	public final String	EntryPlayer	= "_ENTRY_PLAYER_";
@@ -247,6 +246,12 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 
 		return list;
+	}
+	
+	@Override
+	public ArrayList<String> getPlayersInGroup(String group, String zone)
+	{
+		return null;
 	}
 
 	@Override

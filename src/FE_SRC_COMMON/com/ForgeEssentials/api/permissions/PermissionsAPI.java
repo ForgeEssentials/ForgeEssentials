@@ -10,7 +10,6 @@ import com.ForgeEssentials.api.permissions.query.PropQuery;
 
 // This is a bouncer class for all Permissions API duties.
 
-@SuppressWarnings("unchecked")
 public abstract class PermissionsAPI
 {
 	public static IPermissionsHelper	manager;
@@ -76,6 +75,11 @@ public abstract class PermissionsAPI
 	public static Group getHighestGroup(EntityPlayer player)
 	{
 		return manager.getHighestGroup(player);
+	}
+	
+	public static ArrayList<String> getPlayersInGroup(String group, String zone)
+	{
+		return manager.getPlayersInGroup(group, zone);
 	}
 
 	public static String setPlayerGroup(String group, String player, String zone)
