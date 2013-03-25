@@ -44,22 +44,17 @@ public class CommandRepair extends FEcmdModuleCommands
 		}
 		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer target : players)
-				{
-					ItemStack item = target.getHeldItem();
 
-					if (item != null)
-					{
-						item.setItemDamage(0);
-					}
+				ItemStack item = player.getHeldItem();
+
+				if (item != null)
+				{
+					item.setItemDamage(0);
 				}
+
 			}
 			else
 			{
@@ -78,22 +73,17 @@ public class CommandRepair extends FEcmdModuleCommands
 		if (args.length == 1)
 		{
 			//PlayerSelector.matchPlayers(sender, args[0])
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer target : players)
-				{
-					ItemStack item = target.getHeldItem();
 
-					if (item != null)
-					{
-						item.setItemDamage(0);
-					}
+				ItemStack item = player.getHeldItem();
+
+				if (item != null)
+				{
+					item.setItemDamage(0);
 				}
+
 			}
 			else
 			{

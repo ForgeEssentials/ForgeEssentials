@@ -89,24 +89,17 @@ public class CommandPotion extends FEcmdModuleCommands
 		dur = parseIntWithMin(sender, args[2], 0) * 20;
 
 		PotionEffect eff = new PotionEffect(ID, dur, ampl);
-		List<EntityPlayerMP> players = new ArrayList<EntityPlayerMP>();
 		if (args[0].equalsIgnoreCase("me"))
 		{
-			players.add((EntityPlayerMP) sender);
+			sender.addPotionEffect(eff);
 		}
 		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
-				{
-					player.addPotionEffect(eff);
-				}
+				player.addPotionEffect(eff);
 			}
 			else
 			{
@@ -135,17 +128,11 @@ public class CommandPotion extends FEcmdModuleCommands
 		dur = parseIntWithMin(sender, args[2], 0) * 20;
 		PotionEffect eff = new PotionEffect(ID, dur, ampl);
 
-		List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		if (PlayerSelector.hasArguments(args[0]))
+		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		
+		if (player != null)
 		{
-			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		}
-		if (players.size() != 0)
-		{
-			for (EntityPlayer target : players)
-			{
-				target.addPotionEffect(eff);
-			}
+			player.addPotionEffect(eff);
 		}
 		else
 		{
