@@ -21,6 +21,7 @@ import com.ForgeEssentials.core.misc.ModListFile;
 import com.ForgeEssentials.core.misc.UnfreindlyItemList;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
+import com.ForgeEssentials.core.preloader.FEModContainer;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLDataDriver;
@@ -69,7 +70,7 @@ import cpw.mods.fml.relauncher.Side;
 		clientSideRequired = false,
 		serverSideRequired = false,
 		serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = PacketHandler.class))
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "@VERSION@")
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version)
 public class ForgeEssentials
 {
 

@@ -52,9 +52,7 @@ sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/server/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/client/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/FEAPIReadme.txt
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/FEReadme.txt
-sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/ForgeEssentials.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/preloader/FEModContainer.java
-sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/commands/CommandFEVersion.java
 sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/client/ForgeEssentialsClient.java
 
 echo "Recompiling..."
