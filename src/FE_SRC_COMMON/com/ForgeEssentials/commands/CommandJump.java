@@ -10,6 +10,7 @@ import net.minecraft.util.MovingObjectPosition;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandJump extends FEcmdModuleCommands
 {
@@ -31,7 +32,13 @@ public class CommandJump extends FEcmdModuleCommands
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(sender, false);
-		((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(mo.blockX, mo.blockY, mo.blockZ, sender.rotationPitch, sender.rotationYaw);
+		if (mo == null)
+		{
+			OutputHandler.chatError(sender, "command.jump.toofar");
+			return;
+		}
+		else
+			((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(mo.blockX+.5, mo.blockY+1, mo.blockZ+.5, sender.rotationPitch, sender.rotationYaw);
 	}
 
 	@Override
