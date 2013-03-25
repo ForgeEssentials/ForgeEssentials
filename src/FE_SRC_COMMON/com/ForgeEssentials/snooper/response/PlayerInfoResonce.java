@@ -59,7 +59,7 @@ public class PlayerInfoResonce extends Response
 		{
 			if (sendMoney)
 			{
-				PlayerData.put("Money", "" + EconManager.getWallet(player));
+				PlayerData.put("Money", "" + EconManager.getWallet(player.username));
 			}
 		}
 		catch (Exception e)
