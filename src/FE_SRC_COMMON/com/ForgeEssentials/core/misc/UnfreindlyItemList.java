@@ -76,8 +76,10 @@ public abstract class UnfreindlyItemList
 			if (name == null || data.getModId().equalsIgnoreCase("Minecraft"))
 				continue;
 			
-			name = name.substring(name.lastIndexOf('.'), name.length());
-			name = data.getModId() + name;
+			if (name.contains("."))
+				name = name.substring(name.lastIndexOf('.')+1, name.length());
+			
+			name = data.getModId()+"." + name;
 			OutputHandler.debug("MOD-ITEM REGISTERRED>> "+name+" : "+data.getItemId());
 			map.forcePut(name, data.getItemId());
 		}
