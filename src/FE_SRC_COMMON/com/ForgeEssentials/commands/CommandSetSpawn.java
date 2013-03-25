@@ -67,9 +67,9 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		}
 		else if (args.length == 4)
 		{
-			int x = parseInt(sender, args[0]);
-			int y = parseInt(sender, args[1]);
-			int z = parseInt(sender, args[2]);
+			int x = parseInt(sender, args[1]);
+			int y = parseInt(sender, args[2]);
+			int z = parseInt(sender, args[3]);
 			point = new WorldPoint(sender.worldObj.provider.dimensionId, x, y, z);
 		}
 		else
@@ -100,10 +100,10 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 
 		if (args.length == 5)
 		{
-			int dim = parseInt(sender, args[0]);
-			int x = parseInt(sender, args[0]);
-			int y = parseInt(sender, args[1]);
-			int z = parseInt(sender, args[2]);
+			int dim = parseInt(sender, args[1]);
+			int x = parseInt(sender, args[2]);
+			int y = parseInt(sender, args[3]);
+			int z = parseInt(sender, args[4]);
 			WorldPoint point = new WorldPoint(dim, x, y, z);
 			setSpawnPoint(point, zone);
 			OutputHandler.chatConfirmation(sender, Localization.format("command.setspawn.set", zone.getZoneName(), point.x, point.y, point.z));
