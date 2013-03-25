@@ -14,6 +14,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(value = Side.CLIENT)
 public class PlayerInfoClient
 {
+	public boolean		playerLogger = false;
+	
 	// selection stuff
 	private Point		sel1;
 	private Point		sel2;

@@ -51,6 +51,7 @@ public class ForgeEssentialsClient
 		if (allowCUI)
 		{
 			MinecraftForge.EVENT_BUS.register(new CUIRenderrer());
+			MinecraftForge.EVENT_BUS.register(new CUIPlayerLogger());
 		}
 	}
 
