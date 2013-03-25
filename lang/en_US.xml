@@ -28,7 +28,7 @@
 	<entry key="message.auth.error.yesregisterred">%s is already registerred!</entry>
 	
 	<entry key="message.auth.needregister">You need to register. try /auth help</entry>
-	<entry key="message.auth.needlegister">You need to login. try /auth help</entry>
+	<entry key="message.auth.needlogin">You need to login. try /auth help</entry>
 	
 	<entry key="message.auth.login">Please use '%s' to login.</entry>
 	<entry key="message.auth.register">Please use '%s' to register.</entry>
@@ -197,11 +197,11 @@
     <entry key="command.enderchest.info.player">Reload ForgeEssentials' configs</entry>
     
 	<entry key="command.gamemode.syntax.console">&lt;player> [gamemode]</entry>
-    <entry key="command.gamemode.syntax.player">[player|gamemode] [gamemode|player]</entry>
+    <entry key="command.gamemode.syntax.player">[player|gamemode] [gamemode]</entry>
     <entry key="command.gamemode.info.console">Changes gamemode of 'player'.</entry>
     <entry key="command.gamemode.info.player">Changes gamemode.</entry>
 	
-	<entry key="command.gamemode.changed">Gamemode changed of %s$1 to %s$2</entry>
+	<entry key="command.gamemode.changed">Gamemode changed of %s to %s</entry>
 	<entry key="command.gamemode.invalidParm">Invalid gametype or username: %s</entry>
 	
 	<entry key="command.getcommandbook.syntax.console"></entry>
@@ -352,7 +352,7 @@
     <entry key="command.setspawn.syntax.player">&lt;zone|here> &lt;X Y Z| here]</entry>
     <entry key="command.setspawn.info.console">Set the spawn point of a zone</entry>
     <entry key="command.setspawn.info.player">Set the spawn point of a zone</entry>
-    <entry key="command.setspawn.set">Spawn if zone %s set to %d, %d, $d</entry>
+    <entry key="command.setspawn.set">Spawn if zone %s set to %d, %d, %d</entry>
     
     <entry key="command.smite.syntax.console">&lt;player></entry>
     <entry key="command.smite.syntax.player">[me|&lt;player>]</entry>

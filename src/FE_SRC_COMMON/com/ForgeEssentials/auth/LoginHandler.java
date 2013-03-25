@@ -11,7 +11,7 @@ public class LoginHandler implements IPlayerTracker
 {
 	public LoginHandler()
 	{
-		OutputHandler.info("FEauth initialized. Enabled: " + ModuleAuth.enabled);
+		OutputHandler.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class LoginHandler implements IPlayerTracker
 
 		if (data != null)
 		{
-			if (ModuleAuth.enabled)
+			if (ModuleAuth.isEnabled())
 			{
 				OutputHandler.chatError(player, Localization.format("command.auth.needLogin"));
 				ModuleAuth.unLogged.add(player.username);
@@ -37,7 +37,7 @@ public class LoginHandler implements IPlayerTracker
 		}
 		else
 		{
-			if (ModuleAuth.enabled)
+			if (ModuleAuth.isEnabled())
 			{
 				OutputHandler.chatError(player, Localization.format("command.auth.needRegister"));
 			}

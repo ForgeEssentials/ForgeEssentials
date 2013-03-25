@@ -34,7 +34,6 @@ public class VanillaServiceChecker implements IScheduledTickHandler
 		if (oldOnline != online)
 		{
 			FMLCommonHandler.instance().getSidedDelegate().getServer().setOnlineMode(online);
-			ModuleAuth.enabled = !online;
 		}
 	}
 

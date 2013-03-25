@@ -33,8 +33,6 @@ public class ModuleAuth
 	public static boolean				forceEnabled;
 	public static boolean				checkVanillaAuthStatus;
 
-	public static boolean				enabled;
-
 	public static boolean				allowOfflineReg;
 
 	public static VanillaServiceChecker	vanillaCheck;
@@ -98,6 +96,16 @@ public class ModuleAuth
 	public static boolean vanillaMode()
 	{
 		return FMLCommonHandler.instance().getSidedDelegate().getServer().isServerInOnlineMode();
+	}
+	
+	public static boolean isEnabled()
+	{
+		if (forceEnabled)
+			return true;
+		else if (checkVanillaAuthStatus && !vanillaMode())
+			return true;
+		
+		return false;
 	}
 
 	public static String encrypt(String str)
