@@ -72,9 +72,9 @@ public class AutoPromote
 	{
 		try
 		{
-			if (promoteList.containsKey(PlayerInfo.getPlayerInfo(player.username).timePlayed + ""))
+			if (promoteList.containsKey(PlayerInfo.getPlayerInfo(player.username).getTimePlayed() + ""))
 			{
-				String groupName = promoteList.get(PlayerInfo.getPlayerInfo(player.username).timePlayed + "");
+				String groupName = promoteList.get(PlayerInfo.getPlayerInfo(player.username).getTimePlayed() + "");
 				// Only add player to group if he isn't already.
 				if (!PermissionsAPI.getApplicableGroups(player.username, false, zone).contains(PermissionsAPI.getGroupForName(groupName)))
 				{
@@ -84,7 +84,7 @@ public class AutoPromote
 						String msg = this.msg;
 						msg = FunctionHelper.formatColors(msg);
 						msg = msg.replaceAll("%group", groupName);
-						msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).timePlayed * 60));
+						msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).getTimePlayed() * 60));
 						player.sendChatToPlayer(msg);
 					}
 				}

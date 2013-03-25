@@ -125,7 +125,7 @@ public class PlayerInfo
 	public int						spawnType;
 
 	@SaveableField()
-	public int						timePlayed;
+	private int						timePlayed;
 
 	private long					loginTime;
 
@@ -163,16 +163,27 @@ public class PlayerInfo
 	 */
 	public void save()
 	{
-		long current = System.currentTimeMillis() - loginTime;
-		int min = (int)(current/60000);
-		loginTime = System.currentTimeMillis();
-		timePlayed += min;
+		recalcTimePlayed();
 		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
 	}
 
 	public long getFirstJoin()
 	{
 		return firstJoin;
+	}
+	
+	public int getTimePlayed()
+	{
+		recalcTimePlayed();
+		return timePlayed;
+	}
+	
+	public void recalcTimePlayed()
+	{
+		long current = System.currentTimeMillis() - loginTime;
+		int min = (int)(current/60000);
+		timePlayed += getTimePlayed() + min;
+		loginTime = System.currentTimeMillis();
 	}
 
 	// ----------------------------------------------

@@ -112,7 +112,7 @@ public class PlayerInfoResonce extends Response
 		}
 
 		PlayerData.put("firstJoin", PlayerInfo.getPlayerInfo(player.username).getFirstJoin());
-		PlayerData.put("timePlayed", PlayerInfo.getPlayerInfo(player.username).timePlayed);
+		PlayerData.put("timePlayed", PlayerInfo.getPlayerInfo(player.username).getTimePlayed());
 
 		return new JSONObject().put(getName(), PlayerData);
 
