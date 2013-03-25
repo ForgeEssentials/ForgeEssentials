@@ -3,12 +3,12 @@ package com.ForgeEssentials.economy.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.economy.WalletHandler;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -28,7 +28,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player == null)
 			{
 				sender.sendChatToPlayer(args[0] + " not found!");
@@ -51,7 +51,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player == null)
 			{
 				sender.sendChatToPlayer(args[0] + " not found!");
