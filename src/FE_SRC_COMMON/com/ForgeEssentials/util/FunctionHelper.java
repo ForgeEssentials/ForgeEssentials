@@ -18,7 +18,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.client.util.Point;
-import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.google.common.base.Joiner;
 
@@ -198,7 +198,7 @@ public final class FunctionHelper
 	{
 		if (blockOnly)
 		{
-			Block block = ItemList.instance().getBlockForName(name);
+			Block block = FriendlyItemList.instance().getBlockForName(name);
 			if (block == null)
 				return 0;
 			else
@@ -206,7 +206,7 @@ public final class FunctionHelper
 		}
 		else
 		{
-			Item item = ItemList.instance().getItemForName(name);
+			Item item = FriendlyItemList.instance().getItemForName(name);
 			if (item == null)
 				return 0;
 			else

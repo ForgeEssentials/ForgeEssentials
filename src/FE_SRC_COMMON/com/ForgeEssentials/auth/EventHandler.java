@@ -28,19 +28,20 @@ public class EventHandler
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		String username = event.entityPlayer.username;
+		
+		if (event.before.xd == event.after.xd && event.before.zd == event.after.zd)
+			return;
 
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			if (event.before.y == event.before.y)
-				OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			if (event.before.y == event.before.y)
-				OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 

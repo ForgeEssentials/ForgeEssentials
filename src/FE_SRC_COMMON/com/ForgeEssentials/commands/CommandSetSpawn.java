@@ -63,7 +63,10 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				point = new WorldPoint(sender);
 			}
 			else
+			{
 				error(sender);
+				return;
+			}
 		}
 		else if (args.length == 4)
 		{
@@ -75,6 +78,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		else
 		{
 			error(sender);
+			return;
 		}
 
 		setSpawnPoint(point, zone);

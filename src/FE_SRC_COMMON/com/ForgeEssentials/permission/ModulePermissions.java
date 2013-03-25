@@ -9,6 +9,7 @@ import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModulePostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
@@ -52,8 +53,6 @@ public class ModulePermissions
 
 		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
 		permLoader = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));
-		permLoader.loadAllPerms();
-		permLoader.clearMethods();
 
 		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 	}
@@ -63,7 +62,6 @@ public class ModulePermissions
 	{
 		// setup SQL
 		sql = new SqlHelper(config);
-		sql.putRegistrationPerms(permLoader.registerredPerms);
 
 		PermissionsList list = new PermissionsList();
 		if (list.shouldMake())
@@ -75,6 +73,14 @@ public class ModulePermissions
 		DataStorageManager.registerSaveableType(AutoPromote.class);
 		
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
+	}
+	
+	@FEModule.PostInit
+	public void postload(FEModulePostInitEvent e)
+	{
+		permLoader.loadAllPerms();
+		permLoader.clearMethods();
+		sql.putRegistrationPerms(permLoader.registerredPerms);
 	}
 
 	@FEModule.ServerInit

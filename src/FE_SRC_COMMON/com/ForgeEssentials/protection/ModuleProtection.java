@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,6 +17,8 @@ import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.misc.UnfreindlyItemList;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -45,25 +48,20 @@ public class ModuleProtection
 	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		if (!FMLCommonHandler.instance().getEffectiveSide().isServer() || !enable)
+		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			e.getModuleContainer().isLoadable = false;
 			return;
 		}
-
-		ItemList.vanillaStep();
 	}
 
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
+		if(!enable)
+			e.getModuleContainer().isLoadable = false;
+		
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
-	}
-
-	@FEModule.PostInit
-	public void postload(FEModulePostInitEvent e)
-	{
-		ItemList.modStep();
 	}
 
 	@PermRegister
@@ -83,5 +81,8 @@ public class ModuleProtection
 				event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + e.getKey(), RegGroup.ZONE);
 			}
 		}
+		
+		for (String perm : UnfreindlyItemList.getNameSet())
+			event.registerPermissionLevel(PERM_ITEM_USE + "." + perm, RegGroup.MEMBERS);
 	}
 }

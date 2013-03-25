@@ -15,9 +15,10 @@ import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.core.compat.SanityChecker;
 import com.ForgeEssentials.core.misc.BannedItems;
-import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
+import com.ForgeEssentials.core.misc.UnfreindlyItemList;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
@@ -145,6 +146,7 @@ public class ForgeEssentials
 		}
 
 		new MiscEventHandler();
+		UnfreindlyItemList.vanillaStep();
 		bannedItems = new BannedItems();
 		MinecraftForge.EVENT_BUS.register(bannedItems);
 		LoginMessage.loadFile();
@@ -185,7 +187,7 @@ public class ForgeEssentials
 		mdlaunch.postLoad(e);
 		bannedItems.postLoad(e);
 
-		new ItemList();
+		new FriendlyItemList();
 	}
 
 	@ServerStarting
@@ -208,6 +210,7 @@ public class ForgeEssentials
 		mdlaunch.serverStarting(e);
 		
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
+		UnfreindlyItemList.modStep();
 	}
 
 	@ServerStarted

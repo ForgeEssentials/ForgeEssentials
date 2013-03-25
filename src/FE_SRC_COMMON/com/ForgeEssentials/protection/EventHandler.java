@@ -21,6 +21,7 @@ import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
+import com.ForgeEssentials.core.misc.UnfreindlyItemList;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PlayerBlockBreak;
@@ -175,7 +176,7 @@ public class EventHandler
 			query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_EDITS, point);
 			result = PermissionsAPI.checkPermAllowed(query);
 		}
-
+		OutputHandler.severe("PLACE >> "+result);
 		e.setCanceled(!result);
 	}
 
@@ -196,20 +197,25 @@ public class EventHandler
 				// check block usage perm
 				query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_INTERACT_BLOCK, point);
 				result = PermissionsAPI.checkPermAllowed(query);
-				e.useBlock = !result ? DENY : DEFAULT;
+				if (!result)
+					e.useBlock = DENY;
 
 				
-//				// item check
-//				ItemStack stack = e.entityPlayer.getCurrentEquippedItem();
-//				if (stack == null)
-//					return;
-//				
-//				String name = ItemList.getName(stack.itemID);
-//				name = ModuleProtection.PERM_ITEM_USE+"."+name;
-//				
-//				query = new PermQueryPlayerArea(e.entityPlayer, name, point);
-//				result = PermissionsAPI.checkPermAllowed(query);
-//				e.useItem = !result ? DENY : DEFAULT;
+				// item check
+				ItemStack stack = e.entityPlayer.getCurrentEquippedItem();
+				if (stack == null)
+					return;
+				
+				String name = UnfreindlyItemList.getName(stack.itemID);
+				name = ModuleProtection.PERM_ITEM_USE+"."+name;
+				
+				query = new PermQueryPlayerArea(e.entityPlayer, name, point);
+				result = PermissionsAPI.checkPermAllowed(query);
+				if (!result)
+					e.useItem = DENY;
+				
+				// TEST
+				OutputHandler.severe(name+" >> "+result);
 			}
 		}
 	}

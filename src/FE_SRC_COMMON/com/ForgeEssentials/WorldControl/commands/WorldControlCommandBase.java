@@ -7,7 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.FriendlyItemList;
 
 public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 {
@@ -81,6 +81,6 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getBlockList());
+		return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getBlockList());
 	}
 }
