@@ -63,12 +63,6 @@ public class ModulePermissions
 		// setup SQL
 		sql = new SqlHelper(config);
 
-		PermissionsList list = new PermissionsList();
-		if (list.shouldMake())
-		{
-			list.output(permLoader.perms);
-		}
-
 		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);
 		
@@ -81,6 +75,12 @@ public class ModulePermissions
 		permLoader.loadAllPerms();
 		permLoader.clearMethods();
 		sql.putRegistrationPerms(permLoader.registerredPerms);
+		
+		PermissionsList list = new PermissionsList();
+		if (list.shouldMake())
+		{
+			list.output(permLoader.perms);
+		}
 	}
 
 	@FEModule.ServerInit

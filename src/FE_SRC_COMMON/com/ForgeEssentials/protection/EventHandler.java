@@ -176,7 +176,6 @@ public class EventHandler
 			query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_EDITS, point);
 			result = PermissionsAPI.checkPermAllowed(query);
 		}
-		OutputHandler.severe("PLACE >> "+result);
 		e.setCanceled(!result);
 	}
 
@@ -214,8 +213,6 @@ public class EventHandler
 				if (!result)
 					e.useItem = DENY;
 				
-				// TEST
-				OutputHandler.severe(name+" >> "+result);
 			}
 		}
 	}

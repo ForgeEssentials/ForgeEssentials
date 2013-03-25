@@ -55,7 +55,6 @@ public abstract class UnfreindlyItemList
 			}
 			
 			map.put(name, item.itemID);
-			OutputHandler.debug("VANILLA-ITEM REGISTERRED>> "+name+" : "+item.itemID);
 		}
 	}
 
@@ -80,7 +79,6 @@ public abstract class UnfreindlyItemList
 				name = name.substring(name.lastIndexOf('.')+1, name.length());
 			
 			name = data.getModId()+"." + name;
-			OutputHandler.debug("MOD-ITEM REGISTERRED>> "+name+" : "+data.getItemId());
 			map.forcePut(name, data.getItemId());
 		}
 	}
