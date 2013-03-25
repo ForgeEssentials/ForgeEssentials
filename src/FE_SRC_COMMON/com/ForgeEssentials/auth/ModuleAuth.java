@@ -49,6 +49,8 @@ public class ModuleAuth
 
 	public static int					checkInterval;
 
+	private static boolean				oldEnabled		= false;
+
 	@PreInit
 	public void preInit(FEModulePreInitEvent e)
 	{
@@ -80,7 +82,7 @@ public class ModuleAuth
 			TaskRegistry.registerRecurringTask(vanillaCheck, 0, checkInterval, 0, 0, 0, checkInterval, 0, 0);
 		}
 
-		MinecraftForge.EVENT_BUS.register(eventHandler);
+		onStatusChange();
 	}
 
 	@PermRegister
@@ -113,6 +115,12 @@ public class ModuleAuth
 
 	public static void onStatusChange()
 	{
+		boolean change = oldEnabled != isEnabled();
+		oldEnabled = isEnabled();
+
+		if (!change)
+			return;
+
 		if (isEnabled())
 		{
 			MinecraftForge.EVENT_BUS.register(eventHandler);
