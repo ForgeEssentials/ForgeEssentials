@@ -31,13 +31,13 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	@Override
 	public String getSyntaxConsole()
 	{
-		return "/feversion";
+		return "";
 	}
 
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/feversion";
+		return "";
 	}
 
 	@Override

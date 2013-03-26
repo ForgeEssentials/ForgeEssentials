@@ -29,7 +29,7 @@ public abstract class UnfreindlyItemList
 	public static void modStep()
 	{
 		HashMap<Integer, String> gameMap = new HashMap<Integer, String>();
-		
+
 		// populate from GameData
 		{
 			NBTTagList list = new NBTTagList();
@@ -42,17 +42,25 @@ public abstract class UnfreindlyItemList
 				data = new ItemData((NBTTagCompound) list.tagAt(i));
 				name = data.getItemType();
 
-				if (name == null || data.getModId().equalsIgnoreCase("Minecraft"))
+				if (name == null)
 					continue;
 
 				if (name.contains("."))
 					name = name.substring(name.lastIndexOf('.') + 1, name.length());
 
-				name = data.getModId() + "." + name;
+				if (data.getModId().equalsIgnoreCase("Minecraft"))
+				{
+					name = "vanilla" + "." + name;
+				}
+				else
+				{
+					name = data.getModId() + "." + name;
+				}
+
 				gameMap.put(data.getItemId(), name);
 			}
 		}
-		
+
 		// now iterrate through ItemList.
 		HashMap<String, Integer> duplicates = new HashMap();
 
@@ -72,18 +80,11 @@ public abstract class UnfreindlyItemList
 
 			name = name.replace("tile.", "block.");
 
-			if (item.getClass().getPackage().getName().equals(Item.class.getPackage().getName()))
-			{
-				name = "vanilla." + name;
-			}
+			tempName = gameMap.get(item.itemID);
+			if (Strings.isNullOrEmpty(tempName))
+				name = "unknownSource." + name;
 			else
-			{
-				tempName = gameMap.get(item.itemID);
-				if (Strings.isNullOrEmpty(tempName))
-					name = "unknownSource."+name;
-				else
-					name = tempName+"."+name;
-			}
+				name = tempName + "." + name;
 
 			num = duplicates.get(name);
 			if (num == null)
