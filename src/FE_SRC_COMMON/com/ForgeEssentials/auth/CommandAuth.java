@@ -177,6 +177,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 					throw new WrongUsageException("message.auth.error.notregisterred", name);
 
 				PlayerPassData.deleteData(name);
+				OutputHandler.chatConfirmation(sender, Localization.format("command.auth.unregister", name));
 				return;
 			}
 
