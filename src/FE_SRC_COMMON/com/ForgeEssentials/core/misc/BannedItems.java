@@ -31,48 +31,7 @@ public class BannedItems
 {
 	private static final String		BYPASS	= "ForgeEssentials.BannedItems.override";
 
-	HashMultimap<Integer, Integer>	noUse	= HashMultimap.create();
 	List<String>					noCraft	= new ArrayList<String>();
-
-	@PermRegister
-	public void registerPermissions(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel(BYPASS, RegGroup.OWNERS);
-	}
-
-	@ForgeSubscribe(priority = EventPriority.HIGHEST, receiveCanceled = true)
-	public void click(PlayerInteractEvent e)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-			return;
-
-		if (PermissionsAPI.checkPermAllowed(new PermQueryPlayerZone(e.entityPlayer, BYPASS, ZoneManager.getWhichZoneIn(new WorldPoint(e.entityPlayer)))))
-			return;
-
-		ItemStack is = e.entityPlayer.inventory.getCurrentItem();
-		if (is != null)
-		{
-			if (noUse.containsKey(is.itemID))
-			{
-				if (noUse.get(is.itemID).contains(is.getItemDamage()))
-				{
-					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerZone(e.entityPlayer, BYPASS + "." + is.itemID + ":" + is.getItemDamage(), ZoneManager.getWhichZoneIn(new WorldPoint(e.entityPlayer)))))
-					{
-						e.entityPlayer.sendChatToPlayer("That item is banned.");
-						e.setCanceled(true);
-					}
-				}
-				if (noUse.get(is.itemID).contains(-1))
-				{
-					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerZone(e.entityPlayer, BYPASS + "." + is.itemID + ":-1", ZoneManager.getWhichZoneIn(new WorldPoint(e.entityPlayer)))))
-					{
-						e.entityPlayer.sendChatToPlayer("That item is banned.");
-						e.setCanceled(true);
-					}
-				}
-			}
-		}
-	}
 
 	public void postLoad(FMLPostInitializationEvent e)
 	{
@@ -87,39 +46,6 @@ public class BannedItems
 		config.save();
 		int id;
 		int meta;
-
-		for (String s : temp)
-		{
-			id = meta = 0;
-			String[] tmp = s.split(":");
-			if (tmp != null && tmp.length > 0)
-			{
-				try
-				{
-					id = Integer.parseInt(tmp[0]);
-					if (tmp.length > 1)
-					{
-						try
-						{
-							meta = Integer.parseInt(tmp[1]);
-						}
-						catch (Exception ex)
-						{
-							meta = 0;
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					id = 0;
-				}
-			}
-
-			if (id != 0)
-			{
-				noUse.put(id, meta);
-			}
-		}
 
 		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 		// Decompose list into (item ID, Meta) pairs.
