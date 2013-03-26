@@ -52,16 +52,16 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				sender.sendChatToPlayer(" - /auth register <password>  - registers the player with the given password");
-				sender.sendChatToPlayer(" - /auth login <player>  - logs the player in");
-				sender.sendChatToPlayer(" - /auth changepass <oldpass> <newpass>  - sets the players password to the specified");
+				OutputHandler.chatConfirmation(sender, " - /auth register <password>");
+				OutputHandler.chatConfirmation(sender, " - /auth login <player>");
+				OutputHandler.chatConfirmation(sender, " - /auth changepass <oldpass> <newpass>  - changes your password");
 
 				if (!hasAdmin)
 					return;
 
-				sender.sendChatToPlayer(" - /auth kick <player>  - forces the player to login again");
-				sender.sendChatToPlayer(" - /auth setpass <player> <password>  - sets the players password to the specified");
-				sender.sendChatToPlayer(" - /auth unregister <player>  - forces the player to register again");
+				OutputHandler.chatConfirmation(sender, " - /auth kick <player>  - forces the player to login again");
+				OutputHandler.chatConfirmation(sender, " - /auth setpass <player> <password>  - sets the players password");
+				OutputHandler.chatConfirmation(sender, " - /auth unregister <player>  - forces the player to register again");
 				return;
 			}
 			else
