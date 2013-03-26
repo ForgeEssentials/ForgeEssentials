@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -72,7 +73,12 @@ public abstract class UnfreindlyItemList
 			name = item.getItemName();
 			if (name == null)
 			{
-				continue;
+				if (item instanceof ItemBlock)
+					name = "block.";
+				else
+					name = "item.";
+
+				name = name + "unknown";
 			}
 
 			name = name.replace("tile.", "block.");
@@ -126,7 +132,7 @@ public abstract class UnfreindlyItemList
 	{
 		return map.keySet();
 	}
-	
+
 	public static void output(File output)
 	{
 		try
@@ -141,7 +147,7 @@ public abstract class UnfreindlyItemList
 			writer.write("#// ------------------------------------------ \\\\#");
 			writer.newLine();
 			writer.newLine();
-			
+
 			TreeSet<Integer> ids = new TreeSet<Integer>();
 			BiMap<Integer, String> inverse = map.inverse();
 
@@ -150,13 +156,13 @@ public abstract class UnfreindlyItemList
 			{
 				ids.add(id);
 			}
-			
+
 			String paddedID;
 			String str;
 			for (Integer id : ids)
 			{
-				str =  String.format("%-7s", id);
-				str = str+"  ==  "+inverse.get(id);
+				str = String.format("%-7s", id);
+				str = str + "  ==  " + inverse.get(id);
 				writer.write(str);
 				writer.newLine();
 			}
