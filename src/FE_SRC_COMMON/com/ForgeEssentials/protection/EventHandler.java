@@ -207,6 +207,7 @@ public class EventHandler
 
 				String name = UnfreindlyItemList.getName(stack.itemID);
 				name = ModuleProtection.PERM_ITEM_USE + "." + name;
+				name = name + "."+stack.getItemDamage();
 
 				query = new PermQueryPlayerArea(e.entityPlayer, name, point);
 				result = PermissionsAPI.checkPermAllowed(query);
