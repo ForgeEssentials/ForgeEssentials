@@ -1,6 +1,7 @@
 package com.ForgeEssentials.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import net.minecraft.block.Block;
@@ -10,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -105,6 +107,16 @@ public final class FunctionHelper
 	public static EntityPlayerMP getPlayerForName(String name)
 	{
 		return FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(name);
+	}
+
+	public static EntityPlayerMP[] getPlayerForNames(ArrayList<String> names)
+	{
+		ServerConfigurationManager manager = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
+		EntityPlayerMP[] players = new EntityPlayerMP[names.size()];
+		for(int index = 0; index < names.size(); index ++)
+			players[index] = manager.getPlayerForUsername(names.get(index));
+
+		return players;
 	}
 
 	/**
@@ -283,7 +295,7 @@ public final class FunctionHelper
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * Get tps.
 	 * @return
@@ -449,9 +461,9 @@ public final class FunctionHelper
 			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, p.dim);
 		}
 		player.playerNetServerHandler.setPlayerLocation(p.xd, p.yd, p.zd, p.yaw, p.pitch);
-        player.prevPosX = player.posX = p.xd;
-        player.prevPosY = player.posY = p.yd;
-        player.prevPosZ = player.posZ = p.zd;
+		player.prevPosX = player.posX = p.xd;
+		player.prevPosY = player.posY = p.yd;
+		player.prevPosZ = player.posZ = p.zd;
 	}
 
 	/**
