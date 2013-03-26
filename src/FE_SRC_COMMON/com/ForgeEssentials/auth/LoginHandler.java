@@ -32,16 +32,12 @@ public class LoginHandler implements IPlayerTracker
 			if (ModuleAuth.isEnabled())
 			{
 				OutputHandler.chatError(player, Localization.format("command.auth.needLogin"));
-				ModuleAuth.unLogged.add(player.username);
 			}
+			ModuleAuth.unLogged.add(player.username);
 		}
 		else
 		{
-			if (ModuleAuth.isEnabled())
-			{
-				OutputHandler.chatError(player, Localization.format("command.auth.needRegister"));
-			}
-
+			OutputHandler.chatError(player, Localization.format("command.auth.needRegister"));
 			ModuleAuth.unRegistered.add(player.username);
 		}
 	}

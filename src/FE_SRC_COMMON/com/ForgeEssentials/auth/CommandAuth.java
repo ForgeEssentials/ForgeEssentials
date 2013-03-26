@@ -102,13 +102,13 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			{
 				if (PlayerPassData.getData(sender.username) != null)
 				{
-					OutputHandler.chatError(sender, Localization.format("command.auth.error.yesregisterred", sender.username));
+					OutputHandler.chatError(sender, Localization.format("message.auth.error.yesregisterred", sender.username));
 					return;
 				}
 
 				if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineReg)
 				{
-					OutputHandler.chatError(sender, Localization.format("command.auth.error.disabledreg"));
+					OutputHandler.chatError(sender, Localization.format("message.auth.error.disabledreg"));
 					return;
 				}
 
@@ -249,6 +249,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				{
 					data.password = ModuleAuth.encrypt(args[2]);
 				}
+				OutputHandler.chatConfirmation(sender, Localization.format("command.auth.setPass", name));
 			}
 		}
 	}
@@ -333,6 +334,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				{
 					data.password = ModuleAuth.encrypt(args[2]);
 				}
+				sender.sendChatToPlayer(Localization.format("command.auth.setPass", name));
 			}
 		}
 	}
