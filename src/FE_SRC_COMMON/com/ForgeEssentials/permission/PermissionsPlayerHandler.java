@@ -1,6 +1,8 @@
 package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.TreeSet;
 
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
@@ -132,6 +134,7 @@ public final class PermissionsPlayerHandler
 			{
 				// get all the players groups here.
 				groups = PermissionsAPI.getApplicableGroups(event.doer, false);
+				Collections.sort(groups);
 
 				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
