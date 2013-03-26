@@ -8,12 +8,20 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
@@ -22,6 +30,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -30,7 +39,7 @@ public class CommandRules extends FEcmdModuleCommands
 {
 
 	public static final String[]	autocomargs	=
-												{ "add", "remove", "move", "change" };
+												{ "add", "remove", "move", "change", "book" };
 	public static ArrayList<String>	rules;
 	public static File				rulesFile	= new File(ForgeEssentials.FEDIR, "rules.txt");
 
@@ -183,6 +192,33 @@ public class CommandRules extends FEcmdModuleCommands
 			{
 				sender.sendChatToPlayer(rule);
 			}
+			return;
+		}
+		if (args[0].equalsIgnoreCase("book"))
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			NBTTagList pages = new NBTTagList();
+
+			HashMap<String, String> map = new HashMap();
+
+			for (int i = 0; i < rules.size(); i++)
+			{
+				map.put(FEChatFormatCodes.UNDERLINE + "Rule #" + (i + 1) + "\n\n", FEChatFormatCodes.RESET + FunctionHelper.formatColors(rules.get(i)));
+			}
+
+			SortedSet<String> keys = new TreeSet<String>(map.keySet());
+			for (String name : keys)
+			{
+				pages.appendTag(new NBTTagString("", name + map.get(name)));
+			}
+
+			tag.setString("author", "ForgeEssentials");
+			tag.setString("title", "Rule Book");
+			tag.setTag("pages", pages);
+
+			ItemStack is = new ItemStack(Item.writtenBook);
+			is.setTagCompound(tag);
+			sender.inventory.addItemStackToInventory(is);
 			return;
 		}
 		if (args.length == 1)
