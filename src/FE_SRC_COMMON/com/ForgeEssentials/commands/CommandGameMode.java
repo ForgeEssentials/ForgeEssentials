@@ -101,7 +101,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 			ArrayList<String> currentNames = new ArrayList<String>();
 			for(int index = 1; index < args.length; index ++)
 				currentNames.add(args[index]);
-			EntityPlayer[] players = FunctionHelper.getPlayerForNames(currentNames);
+			EntityPlayerMP[] players = FunctionHelper.getPlayerForNames(currentNames);
 			if (players == null || players.length == 0)
 				throw new PlayerNotFoundException();
 
@@ -109,8 +109,8 @@ public class CommandGameMode extends FEcmdModuleCommands
 
 			for (int ind = 0; ind < players.length; ind ++)
 			{
-				EntityPlayerMP player = (EntityPlayerMP) players[ind];
-				if(player == null) //To fix
+				EntityPlayerMP player = players[ind];
+				if(player == null) 
 					OutputHandler.chatWarning(sender, Localization.format("commands.generic.player.notFound", currentNames.get(ind)) ); 
 				else
 				{
@@ -179,7 +179,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 			ArrayList<String> currentNames = new ArrayList<String>();
 			for(int index = 1; index < args.length; index ++)
 				currentNames.add(args[index]);
-			EntityPlayer[] players = FunctionHelper.getPlayerForNames(currentNames);
+			EntityPlayerMP[] players = FunctionHelper.getPlayerForNames(currentNames);
 			if (players == null || players.length == 0)
 				throw new PlayerNotFoundException();
 
@@ -187,7 +187,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 
 			for (int ind = 0; ind < players.length; ind ++)
 			{
-				EntityPlayerMP player = (EntityPlayerMP) players[ind];
+				EntityPlayerMP player =  players[ind];
 				if(player == null)
 					OutputHandler.chatWarning(sender, Localization.format("commands.generic.player.notFound", currentNames.get(ind)) ); 
 				else
