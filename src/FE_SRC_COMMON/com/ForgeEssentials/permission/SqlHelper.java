@@ -279,12 +279,12 @@ public class SqlHelper
 			statementGetAllGroupsForPlayer = getInstance().db.prepareStatement(query.toString());
 
 			// statementGetGroupsForPlayer
-			query = new StringBuilder("SELECT ").append(TABLE_PLAYER).append('.').append(COLUMN_PLAYER_USERNAME)
+			query = new StringBuilder("SELECT ").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_USERNAME)
 					.append(" FROM ").append(TABLE_GROUP_CONNECTOR)
-					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=?")
-					.append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=?")
 					.append(" INNER JOIN ").append(TABLE_PLAYER)
-					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_PLAYERID);
+					.append(" ON ").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_PLAYERID).append("=").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYERID)
+					.append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUPID).append("=?")
+					.append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_ZONEID).append("=?");
 			statementGetAllPlayersForGroup = getInstance().db.prepareStatement(query.toString());
 
 			// statementGetGroupsInZone
@@ -1332,8 +1332,8 @@ public class SqlHelper
 			s.setInt(2, zID);
 			ResultSet set = s.executeQuery();
 			s.clearParameters();
-			
-			while(set.next())
+
+			while (set.next())
 			{
 				list.add(set.getString(1));
 			}
