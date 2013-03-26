@@ -105,6 +105,9 @@ public class ForgeEssentials
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		OutputHandler.init(e.getModLog());
+		
+		// FE MUST BE FIRST!!
+		GameRegistry.registerPlayerTracker(new PlayerTracker());
 
 		version = e.getModMetadata().version;
 
@@ -168,9 +171,7 @@ public class ForgeEssentials
 		// tasks
 		tasks = new TaskRegistry();
 
-		// other stuff
-		GameRegistry.registerPlayerTracker(new PlayerTracker());
-
+		//other stuff
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		TickRegistry.registerTickHandler(factory, Side.SERVER);
 		GameRegistry.registerPlayerTracker(factory);

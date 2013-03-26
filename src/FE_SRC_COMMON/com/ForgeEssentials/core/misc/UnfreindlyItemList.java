@@ -111,6 +111,8 @@ public abstract class UnfreindlyItemList
 				duplicates.put(name, num);
 				name += num;
 			}
+			
+			name = name.replace(' ', '_');
 
 			// save
 			map.put(name, item.itemID);

@@ -27,18 +27,18 @@ public class LoginHandler implements IPlayerTracker
 	{
 		PlayerPassData data = PlayerPassData.getData(player.username);
 
-		if (data != null)
+		if (data == null)
 		{
-			if (ModuleAuth.isEnabled())
-			{
-				OutputHandler.chatError(player, Localization.format("command.auth.needLogin"));
-			}
-			ModuleAuth.unLogged.add(player.username);
+			OutputHandler.chatError(player, Localization.format("message.auth.needregister"));
+			ModuleAuth.unRegistered.add(player.username);
 		}
 		else
 		{
-			OutputHandler.chatError(player, Localization.format("command.auth.needRegister"));
-			ModuleAuth.unRegistered.add(player.username);
+			if (ModuleAuth.isEnabled())
+			{
+				OutputHandler.chatError(player, Localization.format("message.auth.needlogin"));
+			}
+			ModuleAuth.unLogged.add(player.username);
 		}
 	}
 
