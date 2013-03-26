@@ -27,11 +27,17 @@ public final class PermissionsBlanketHandler
 	public static void parseQuery(PermQuery query)
 	{
 		if (query instanceof PermQueryBlanketZone)
+		{
 			handleZone((PermQueryBlanketZone) query);
+		}
 		else if (query instanceof PermQueryBlanketArea)
+		{
 			handleArea((PermQueryBlanketArea) query);
+		}
 		else if (query instanceof PermQueryBlanketSpot)
+		{
 			handleSpot((PermQueryBlanketSpot) query);
+		}
 	}
 
 	protected static void handleZone(PermQueryBlanketZone event)

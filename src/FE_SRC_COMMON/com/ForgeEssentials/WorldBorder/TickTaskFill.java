@@ -87,17 +87,17 @@ public class TickTaskFill implements ITickTask
 	{
 		dimID = worldToFill.provider.dimensionId + "";
 		FEChunkLoader.instance().forceLoadWorld(worldToFill);
-		
+
 		if (CommandFiller.map.containsKey(worldToFill.provider.dimensionId))
 		{
 			OutputHandler.chatError(server, "Already running a filler for dim " + dimID + "!");
 			return;
 		}
-		
+
 		source = sender;
 		world = worldToFill;
 		border = ModuleWorldBorder.borderMap.get(ZoneManager.getWorldZone(world).getZoneName());
-		
+
 		if (border.shapeByte == 0 || border.rad == 0)
 		{
 			OutputHandler.chatError(sender, "You need to set the worldborder first!");
@@ -141,7 +141,7 @@ public class TickTaskFill implements ITickTask
 	{
 		try
 		{
-			return FunctionHelper.parseTime((int) ((todo / speed) / FunctionHelper.getTPS()));
+			return FunctionHelper.parseTime((int) (todo / speed / FunctionHelper.getTPS()));
 		}
 		catch (Exception e)
 		{
@@ -158,7 +158,7 @@ public class TickTaskFill implements ITickTask
 		{
 			source.sendChatToPlayer("Filler for " + dimID + ": " + getStatus());
 		}
-		
+
 		for (int i = 0; i < speed; i++)
 		{
 			try
@@ -236,7 +236,7 @@ public class TickTaskFill implements ITickTask
 		}
 		else
 		{
-			this.isComplete = true;
+			isComplete = true;
 			throw new RuntimeException("WTF?" + border.shapeByte);
 		}
 	}

@@ -76,7 +76,7 @@ public abstract class PermissionsAPI
 	{
 		return manager.getHighestGroup(player);
 	}
-	
+
 	public static ArrayList<String> getPlayersInGroup(String group, String zone)
 	{
 		return manager.getPlayersInGroup(group, zone);

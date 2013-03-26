@@ -71,7 +71,7 @@ public class CommandRepair extends FEcmdModuleCommands
 	{
 		if (args.length == 1)
 		{
-			//PlayerSelector.matchPlayers(sender, args[0])
+			// PlayerSelector.matchPlayers(sender, args[0])
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{

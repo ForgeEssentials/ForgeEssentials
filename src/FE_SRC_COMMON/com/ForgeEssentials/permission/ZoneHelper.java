@@ -26,10 +26,10 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class ZoneHelper implements IZoneManager
 {
 	// GLOBAL and WORLD zones.
-	private Zone	GLOBAL;
-	private Zone	SUPER;
-	
-	public static final ClassContainer container = new ClassContainer(Zone.class);
+	private Zone						GLOBAL;
+	private Zone						SUPER;
+
+	public static final ClassContainer	container	= new ClassContainer(Zone.class);
 
 	public ZoneHelper()
 	{

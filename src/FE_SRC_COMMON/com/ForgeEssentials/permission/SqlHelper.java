@@ -957,7 +957,7 @@ public class SqlHelper
 	 * HashMap<String, String[]>> DONE "ladders" >> arraylist<PromotionLadder>
 	 * DONE
 	 */
-	@SuppressWarnings("unchecked")
+
 	protected void importPerms(String importDir)
 	{
 		try
@@ -1862,13 +1862,13 @@ public class SqlHelper
 	 * HashMap<String, ArrayList<String>>> DONE "ladders" >>
 	 * arraylist<PromotionLadder> DONE
 	 */
-	@SuppressWarnings("unchecked")
+
 	protected static synchronized HashMap<String, Object> dump()
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		ResultSet set;
-		@SuppressWarnings("rawtypes")
+
 		ArrayList list;
 
 		// DUMP PLAYERS! ---------------------------------

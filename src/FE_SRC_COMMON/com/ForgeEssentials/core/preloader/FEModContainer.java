@@ -12,9 +12,9 @@ import cpw.mods.fml.common.ModMetadata;
 
 public class FEModContainer extends DummyModContainer
 {
-	public static final String version = "@VERSION@";
-	
-	public boolean	mod;
+	public static final String	version	= "@VERSION@";
+
+	public boolean				mod;
 
 	public FEModContainer()
 	{

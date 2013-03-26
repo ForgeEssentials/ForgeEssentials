@@ -30,7 +30,6 @@ import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-@SuppressWarnings("rawtypes")
 public class SQLDataDriver extends AbstractDataDriver
 {
 	protected static final String	SEPERATOR			= "__";
@@ -272,7 +271,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			dataCursor = data;
 			infoCursor = info;
-			
+
 			if (entry.getKey().equalsIgnoreCase(UNIQUE))
 			{
 				data.setUniqueKey(entry.getValue().toString());
@@ -423,7 +422,6 @@ public class SQLDataDriver extends AbstractDataDriver
 		return builder.toString();
 	}
 
-	@SuppressWarnings("unchecked")
 	private ArrayList<String> generateInsertBatch(ITypeInfo info, TypeData data)
 	{
 		ClassContainer type = info.getType();
@@ -738,7 +736,6 @@ public class SQLDataDriver extends AbstractDataDriver
 	 * @param value
 	 * @return Array of fieldname => value pairs
 	 */
-	@SuppressWarnings({ "unchecked" })
 	private ArrayList<Pair> fieldToValues(String fieldName, ClassContainer type, Object value)
 	{
 		ArrayList<Pair> data = new ArrayList<Pair>();
@@ -862,7 +859,7 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		if (type.equals(byte.class) && dbValue.getClass().equals(Integer.class))
 		{
-			value = ((Integer)dbValue).byteValue();
+			value = ((Integer) dbValue).byteValue();
 		}
 		else if (type.equals(byte.class) || type.equals(int.class) || type.equals(float.class) || type.equals(double.class) || type.equals(long.class) || type.equals(String.class) || type.equals(boolean.class))
 		{

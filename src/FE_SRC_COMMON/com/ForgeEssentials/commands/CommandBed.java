@@ -64,7 +64,7 @@ public class CommandBed extends FEcmdModuleCommands
 			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 			// Doesnt work
 			// FunctionHelper.setPlayer(player, new Point(spawn), world);
-			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
+			player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 			OutputHandler.chatConfirmation(player, Localization.get("command.bed.done"));
 		}
 	}
@@ -77,7 +77,7 @@ public class CommandBed extends FEcmdModuleCommands
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 			if (player != null)
 			{
-				tp((EntityPlayerMP) player);
+				tp(player);
 			}
 			else
 			{

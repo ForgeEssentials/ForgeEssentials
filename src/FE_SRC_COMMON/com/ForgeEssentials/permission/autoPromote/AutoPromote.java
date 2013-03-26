@@ -38,18 +38,17 @@ public class AutoPromote
 	{
 		this.zone = zone;
 		this.enable = enable;
-		this.promoteList = new HashMap<String, String>();
+		promoteList = new HashMap<String, String>();
 		/*
 		 * Available options:
 		 * '%group' = new group.
 		 * '%time' = nicely formatted time.
 		 * All color codes with '&'.
 		 */
-		this.msg = "&5You have been promoted to %group for playing for %time.";
-		this.sendMsg = true;
+		msg = "&5You have been promoted to %group for playing for %time.";
+		sendMsg = true;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Reconstructor
 	private static AutoPromote reconstruct(IReconstructData tag)
 	{

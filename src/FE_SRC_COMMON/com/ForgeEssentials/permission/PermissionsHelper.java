@@ -247,7 +247,7 @@ public class PermissionsHelper implements IPermissionsHelper
 
 		return list;
 	}
-	
+
 	@Override
 	public ArrayList<String> getPlayersInGroup(String group, String zone)
 	{

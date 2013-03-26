@@ -264,9 +264,6 @@ public class CommandFEPermUser
 
 			// player permisisons
 			String zoneName = ZoneManager.getGLOBAL().getZoneName();
-			String perm = null;
-			String value = null;
-			
 			if (args.length == 4) // zone is set
 			{
 				if (ZoneManager.getZone(args[3]) != null)

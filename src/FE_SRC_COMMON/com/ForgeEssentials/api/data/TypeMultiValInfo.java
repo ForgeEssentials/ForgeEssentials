@@ -9,7 +9,6 @@ import java.util.Set;
 
 import com.ForgeEssentials.data.StorageManager;
 
-@SuppressWarnings("rawtypes")
 public abstract class TypeMultiValInfo implements ITypeInfo
 {
 	protected ClassContainer					container;

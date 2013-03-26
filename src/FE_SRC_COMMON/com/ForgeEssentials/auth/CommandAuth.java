@@ -104,8 +104,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				{
 					OutputHandler.chatError(sender, Localization.format("command.auth.error.yesregisterred", sender.username));
 					return;
-				}				
-				
+				}
+
 				if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineReg)
 				{
 					OutputHandler.chatError(sender, Localization.format("command.auth.error.disabledreg"));
@@ -118,7 +118,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				OutputHandler.chatConfirmation(sender, Localization.get("command.auth.register.success"));
 				return;
 			}
-			
+
 			// stop if unlogged.
 			if (ModuleAuth.unLogged.contains(sender.username))
 			{
@@ -343,7 +343,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

@@ -39,7 +39,7 @@ public class AuthConfig extends ModuleConfigBase
 		config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the module if and when the Minecraft Auth servers go down.").value = "" + ModuleAuth.checkVanillaAuthStatus;
 		config.get(CATEGORY_MAIN, "allowOfflineReg", false, "Allow registration while server is offline. Don't allow this.").value = "" + ModuleAuth.allowOfflineReg;
 		config.get(CATEGORY_MAIN, "salt", "", "The salt to be used when hashing passwords").value = ModuleAuth.salt;
-		config.get(CATEGORY_MAIN, "chcekInterval", "", "Interval to check Vanill Auth service. In minutes.").value = ""+ModuleAuth.checkInterval;
+		config.get(CATEGORY_MAIN, "chcekInterval", "", "Interval to check Vanill Auth service. In minutes.").value = "" + ModuleAuth.checkInterval;
 
 		config.save();
 	}

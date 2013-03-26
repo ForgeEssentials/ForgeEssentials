@@ -20,7 +20,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 	{
 		return "removewallet";
 	}
-	
+
 	@Override
 	public List<String> getCommandAliases()
 	{

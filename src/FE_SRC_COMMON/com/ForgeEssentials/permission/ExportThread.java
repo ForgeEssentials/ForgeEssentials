@@ -20,7 +20,6 @@ public class ExportThread extends Thread
 		user = sender;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void run()
 	{

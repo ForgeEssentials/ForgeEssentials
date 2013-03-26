@@ -17,7 +17,6 @@ import com.ForgeEssentials.api.data.TypeData;
  * Storage driver for filesystem (flat-file) persistence.
  * @author AbrarSyed
  */
-@SuppressWarnings(value = { "rawtypes" })
 public class ForgeConfigDataDriver extends TextDataDriver
 {
 

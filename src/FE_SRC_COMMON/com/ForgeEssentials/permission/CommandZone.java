@@ -281,9 +281,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				{
 					String tempEntry = "";
 					for (int i = 2; i < args.length; i++)
+					{
 						tempEntry += args[i] + " ";
-					String tempTest = PermissionsAPI.getDEFAULT().name;
-
+					}
 					PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.entry", tempEntry, args[1]);
 
 					OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Entry Message set to: " + tempEntry);
@@ -313,9 +313,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				{
 					String tempEntry = "";
 					for (int i = 2; i < args.length; i++)
+					{
 						tempEntry += args[i] + " ";
-					String tempTest = PermissionsAPI.getDEFAULT().name;
-
+					}
 					PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.exit", tempEntry, args[1]);
 
 					OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Exit Message set to: " + tempEntry);

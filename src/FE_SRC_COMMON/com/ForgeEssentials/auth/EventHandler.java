@@ -28,7 +28,7 @@ public class EventHandler
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		String username = event.entityPlayer.username;
-		
+
 		if (event.before.xd == event.after.xd && event.before.zd == event.after.zd)
 			return;
 

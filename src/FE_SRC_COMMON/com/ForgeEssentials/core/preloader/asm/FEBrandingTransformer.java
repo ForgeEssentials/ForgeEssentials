@@ -60,7 +60,6 @@ public class FEBrandingTransformer implements IClassTransformer
 		return bytes;
 	}
 
-	@SuppressWarnings("unchecked")
 	private byte[] transformBranding(byte[] bytes, HashMap<String, String> hm)
 	{
 		System.out.println("[FE coremod] Patching MinecraftServer or ClientBrandRetriever...");

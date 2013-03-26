@@ -27,7 +27,7 @@ public class PacketPlayerLogger implements IForgeEssentialsPacket
 		try
 		{
 			stream.write(packetID);
-			
+
 			stream.writeBoolean(player.getEntityData().getBoolean("lb"));
 
 			stream.close();

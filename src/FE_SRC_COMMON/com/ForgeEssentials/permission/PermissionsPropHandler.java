@@ -25,13 +25,21 @@ public final class PermissionsPropHandler
 		String result = null;
 
 		if (query instanceof PropQueryBlanketZone)
+		{
 			applied = ((PropQueryBlanketZone) query).zone;
+		}
 		else if (query instanceof PropQueryPlayerZone)
+		{
 			applied = ((PropQueryPlayerZone) query).zone;
+		}
 		else if (query instanceof PropQueryBlanketSpot)
+		{
 			applied = ZoneManager.getWhichZoneIn(((PropQueryBlanketSpot) query).spot);
+		}
 		else if (query instanceof PropQueryPlayerSpot)
+		{
 			applied = ZoneManager.getWhichZoneIn(((PropQueryPlayerSpot) query).spot);
+		}
 
 		if (query instanceof PropQueryPlayer)
 		{

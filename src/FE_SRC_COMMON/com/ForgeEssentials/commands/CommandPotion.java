@@ -94,7 +94,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
-			
+
 			if (player != null)
 			{
 				player.addPotionEffect(eff);
@@ -127,7 +127,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		PotionEffect eff = new PotionEffect(ID, dur, ampl);
 
 		EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
-		
+
 		if (player != null)
 		{
 			player.addPotionEffect(eff);

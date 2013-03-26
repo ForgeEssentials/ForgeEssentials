@@ -10,7 +10,7 @@ import com.ForgeEssentials.api.modules.ModuleConfigBase;
 
 public class ConfigPlayerLogger extends ModuleConfigBase
 {
-	public static final String[]	exemptDefPlayers = {"\"[Forestry]\"", "\"[Buildcraft]\""};
+	public static final String[]	exemptDefPlayers	= { "\"[Forestry]\"", "\"[Buildcraft]\"" };
 	public Configuration			config;
 
 	public ConfigPlayerLogger(File file)
@@ -39,10 +39,10 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 
 		subcat = cat + ".exempt";
 		config.addCustomCategoryComment(subcat, "Don't log stuff from these players/group.\nCase sensitive.\nMods should not be using fake players. But if they do, you can add them here if you don't logs from them.");
-		
+
 		EventLogger.exempt_players = Arrays.asList(config.get(subcat, "players", exemptDefPlayers).valueList);
 		EventLogger.exempt_groups = Arrays.asList(config.get(subcat, "groups", new String[] {}).valueList);
-		
+
 		subcat = cat + ".events";
 		config.addCustomCategoryComment(subcat, "Toggle events to log here.");
 
@@ -73,8 +73,6 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 		{
 			EventLogger.BlockChange_BlackList.add(i);
 		}
-		
-		
 
 		config.save();
 	}
@@ -105,10 +103,10 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 
 		subcat = cat + ".exempt";
 		config.addCustomCategoryComment(subcat, "Don't log stuff from these players/group.\nCase sensitive.\nMods should not be using fake players. But if they do, you can add them here if you don't logs from them.");
-		
+
 		EventLogger.exempt_players = Arrays.asList(config.get(subcat, "players", exemptDefPlayers).valueList);
 		EventLogger.exempt_groups = Arrays.asList(config.get(subcat, "groups", new String[] {}).valueList);
-		
+
 		subcat = cat + ".events";
 		config.addCustomCategoryComment(subcat, "Toggle events to log here.");
 

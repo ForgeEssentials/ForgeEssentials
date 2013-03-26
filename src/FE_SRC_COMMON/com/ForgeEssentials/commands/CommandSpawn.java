@@ -5,16 +5,13 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChunkCoordinates;
 
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
@@ -23,7 +20,6 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -55,7 +51,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 
 				String val = query.getStringValue();
 				String[] split = val.split("[;_]");
-				
+
 				int dim = Integer.parseInt(split[0]);
 				int x = Integer.parseInt(split[1]);
 				int y = Integer.parseInt(split[2]);
@@ -81,7 +77,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 
 			String val = query.getStringValue();
 			String[] split = val.split("[;_]");
-			
+
 			int dim = Integer.parseInt(split[0]);
 			int x = Integer.parseInt(split[1]);
 			int y = Integer.parseInt(split[2]);

@@ -35,7 +35,7 @@ public class AutoBackup implements Runnable
 		}
 
 		isBackingUp = true;
-		
+
 		HashSet<Integer> list = new HashSet<Integer>();
 		list.addAll(Arrays.asList(DimensionManager.getIDs()));
 		list.removeAll(BackupConfig.blacklist);

@@ -47,7 +47,6 @@ public class CommandRemove extends FEcmdModuleCommands
 			return;
 		}
 
-		@SuppressWarnings("unchecked")
 		List<EntityItem> entityList = sender.worldObj.getEntitiesWithinAABB(EntityItem.class,
 				AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1));
 
@@ -84,7 +83,6 @@ public class CommandRemove extends FEcmdModuleCommands
 			return;
 		}
 
-		@SuppressWarnings("unchecked")
 		List<EntityItem> entityList = FunctionHelper.getDimension(center.dim).getEntitiesWithinAABB(EntityItem.class,
 				AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1, center.z + radius + 1));
 

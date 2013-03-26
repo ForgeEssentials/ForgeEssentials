@@ -1,10 +1,5 @@
 package com.ForgeEssentials.client;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import com.ForgeEssentials.client.util.Point;
-
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +8,12 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.ForgeSubscribe;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import com.ForgeEssentials.client.util.Point;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -25,35 +26,33 @@ public class CUIPlayerLogger
 	{
 		EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
 		PlayerInfoClient info = ForgeEssentialsClient.getInfo();
-		
-		
+
 		if (player == null || info == null || !info.playerLogger)
 			return;
-		
-		
+
 		Point p = getPoint(player);
-			
-		if(p == null)
+
+		if (p == null)
 			return;
-		
+
 		GL11.glPushMatrix();
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		Tessellator tess = Tessellator.instance;
 		Tessellator.renderingWorldRenderer = false;
-		
+
 		GL11.glTranslated(p.x - RenderManager.renderPosX, p.y + 1 - RenderManager.renderPosY, p.z - RenderManager.renderPosZ);
 		GL11.glScalef(1.0F, -1.0F, -1.0F);
 		GL11.glColor3f(255, 145, 0);
-		renderBlockBox(tess);	
-		
+		renderBlockBox(tess);
+
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glPopMatrix();
 	}
-	
+
 	private Point getPoint(EntityPlayer player)
 	{
 		float var4 = 1.0F;
@@ -70,50 +69,50 @@ public class CUIPlayerLogger
 		float var18 = var15 * var16;
 		float var20 = var14 * var16;
 		double var21 = 500D;
-		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21); 
-		
+		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
+
 		MovingObjectPosition mo = player.worldObj.rayTraceBlocks_do_do(var13, var23, false, false);
-		
+
 		if (mo == null)
 			return null;
-		
+
 		Point p = new Point(mo.blockX, mo.blockY, mo.blockZ);
-		
+
 		if (!player.isSneaking())
 			return p;
-		
+
 		switch (mo.sideHit)
-		{
-			case 0:
-				p.y --;
-				break;
-			case 1:
-				p.y ++;
-				break;
-			case 2:
-				p.z --;
-				break;
-			case 3:
-				p.z ++;
-				break;
-			case 4:
-				p.x --;
-				break;
-			case 5:
-				p.x ++;
-				break;
-		}
-		
+			{
+				case 0:
+					p.y--;
+					break;
+				case 1:
+					p.y++;
+					break;
+				case 2:
+					p.z--;
+					break;
+				case 3:
+					p.z++;
+					break;
+				case 4:
+					p.x--;
+					break;
+				case 5:
+					p.x++;
+					break;
+			}
+
 		return p;
 	}
-	
+
 	/**
 	 * must be translated to proper point before calling
 	 */
 	private void renderBlockBox(Tessellator tess)
 	{
 		tess.startDrawing(GL11.GL_LINES);
-		
+
 		// FRONT
 		tess.addVertex(0, 0, 0);
 		tess.addVertex(0, 1, 0);

@@ -77,7 +77,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 		{
 			world = DimensionManager.getWorld(parseInt(sender, args[0]));
 		}
-		else if (args[0].equalsIgnoreCase("here") && (sender instanceof EntityPlayer))
+		else if (args[0].equalsIgnoreCase("here") && sender instanceof EntityPlayer)
 		{
 			world = (WorldServer) ((EntityPlayer) sender).worldObj;
 		}
@@ -173,15 +173,17 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 		{
 			ArrayList<String> list = new ArrayList<String>();
 			if (sender instanceof EntityPlayer)
+			{
 				list.add("here");
+			}
 			for (int i : DimensionManager.getIDs())
+			{
 				list.add("" + i);
+			}
 			return getListOfStringsFromIterableMatchingLastWord(args, list);
 		}
 		if (args.length == 2)
-		{
 			return getListOfStringsMatchingLastWord(args, "start", "stop", "reset", "speed");
-		}
 		return null;
 	}
 

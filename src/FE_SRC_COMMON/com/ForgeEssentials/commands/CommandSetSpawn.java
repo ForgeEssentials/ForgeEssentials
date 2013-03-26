@@ -89,7 +89,9 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		if (args.length <= 1)
+		{
 			error(sender);
+		}
 
 		Zone zone = ZoneManager.getGLOBAL();
 		if (ZoneManager.doesZoneExist(args[0]))
@@ -144,7 +146,9 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		{
 			ArrayList<String> names = new ArrayList<String>();
 			for (Zone z : ZoneManager.getZoneList())
+			{
 				names.add(z.getZoneName());
+			}
 			return names;
 		}
 		return null;

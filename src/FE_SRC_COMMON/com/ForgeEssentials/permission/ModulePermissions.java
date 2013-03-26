@@ -65,17 +65,17 @@ public class ModulePermissions
 
 		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);
-		
+
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
-	
+
 	@FEModule.PostInit
 	public void postload(FEModulePostInitEvent e)
 	{
 		permLoader.loadAllPerms();
 		permLoader.clearMethods();
 		sql.putRegistrationPerms(permLoader.registerredPerms);
-		
+
 		PermissionsList list = new PermissionsList();
 		if (list.shouldMake())
 		{

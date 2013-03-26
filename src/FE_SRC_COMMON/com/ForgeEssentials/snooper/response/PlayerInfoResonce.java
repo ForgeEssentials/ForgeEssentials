@@ -23,7 +23,6 @@ public class PlayerInfoResonce extends Response
 	private boolean	sendMoney;
 	private boolean	sendPosition;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getResponce(JSONObject input) throws JSONException
 	{

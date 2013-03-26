@@ -13,26 +13,26 @@ import com.ForgeEssentials.core.ForgeEssentials;
 
 public class FEChunkLoader implements LoadingCallback
 {
-	static FEChunkLoader instance;
-	
-	HashMap<Integer, Ticket> map = new HashMap<Integer, Ticket>();
-	
+	static FEChunkLoader		instance;
+
+	HashMap<Integer, Ticket>	map	= new HashMap<Integer, Ticket>();
+
 	public static FEChunkLoader instance()
 	{
 		return instance;
 	}
-	
+
 	public FEChunkLoader()
 	{
 		instance = this;
 	}
-	
+
 	public boolean forceLoadWorld(World world)
 	{
 		if (map.containsKey(world.provider.dimensionId))
 		{
 			OutputHandler.debug(world.provider.dimensionId + " was already loaded. add 1 to count.");
-			
+
 			Ticket ticket = map.get(world.provider.dimensionId);
 			ticket.getModData().setInteger("count", ticket.getModData().getInteger("count") + 1);
 			return true;
@@ -55,7 +55,7 @@ public class FEChunkLoader implements LoadingCallback
 			}
 		}
 	}
-	
+
 	public boolean unforceLoadWorld(World world)
 	{
 		if (map.containsKey(world.provider.dimensionId))
@@ -82,7 +82,7 @@ public class FEChunkLoader implements LoadingCallback
 			return false;
 		}
 	}
-	
+
 	@Override
 	public void ticketsLoaded(List<Ticket> tickets, World world)
 	{
