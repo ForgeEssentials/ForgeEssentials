@@ -35,6 +35,7 @@ public abstract class UnfreindlyItemList
 	public static void modStep()
 	{
 		HashMap<Integer, String> gameMap = new HashMap<Integer, String>();
+		map.clear();
 
 		// populate from GameData
 		{
@@ -69,7 +70,6 @@ public abstract class UnfreindlyItemList
 
 			if (item == null)
 			{
-				OutputHandler.severe(i+" >> null");
 				continue;
 			}
 			
@@ -114,7 +114,6 @@ public abstract class UnfreindlyItemList
 
 			// save
 			map.put(name, item.itemID);
-			OutputHandler.severe(item.itemID+" >> "+name);
 		}
 	}
 

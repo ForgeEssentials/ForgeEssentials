@@ -16,6 +16,7 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.misc.UnfreindlyItemList;
+import com.ForgeEssentials.permission.Permission;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -85,5 +86,7 @@ public class ModuleProtection
 		{
 			event.registerPermissionLevel(PERM_ITEM_USE + "." + perm, RegGroup.MEMBERS);
 		}
+		
+		event.registerPermissionLevel(PERM_ITEM_USE + "." + Permission.ALL, RegGroup.MEMBERS);
 	}
 }

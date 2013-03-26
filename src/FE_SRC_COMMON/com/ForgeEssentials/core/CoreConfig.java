@@ -1,11 +1,13 @@
 package com.ForgeEssentials.core;
 
 import java.io.File;
+import java.util.logging.Level;
 
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -32,6 +34,10 @@ public class CoreConfig
 		prop = config.get("Core", "mcstats", true);
 		prop.comment = "If you don't want to send feedback to MCstats, set to false. Optionally, use the opt-out setting located in PluginMetrics.cfg in your minecraft folder.";
 		ForgeEssentials.mcstats = prop.getBoolean(true);
+		
+		prop = config.get("Core", "logLevel", ""+Level.OFF);
+		prop.comment = "ForgeEssentials LogLevel. Valid values: OFF, FINE, FINER, FINEST, WARNING, SEVERE, ALL, OFF";
+		OutputHandler.felog.setLevel(getLevel(prop.value));
 
 		prop = config.get("Core", "modlistLocation", "modlist.txt");
 		prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
@@ -74,6 +80,28 @@ public class CoreConfig
 		PlayerTracker.kickMessage = prop.value;
 
 		config.save();
+	}
+	
+	private Level getLevel(String val)
+	{
+		if (val.equalsIgnoreCase("INFO"))
+			return Level.INFO;
+		else if (val.equalsIgnoreCase("WARNING"))
+			return Level.WARNING;
+		else if (val.equalsIgnoreCase("SEVERE"))
+			return Level.SEVERE;
+		else if (val.equalsIgnoreCase("FINE"))
+			return Level.FINE;
+		else if (val.equalsIgnoreCase("FINER"))
+			return Level.FINER;
+		else if (val.equalsIgnoreCase("FINEST"))
+			return Level.FINEST;
+		else if (val.equalsIgnoreCase("ALL"))
+			return Level.ALL;
+		else if (val.equalsIgnoreCase("OFF"))
+			return Level.OFF;
+		else
+			return Level.INFO;
 	}
 
 	/**
