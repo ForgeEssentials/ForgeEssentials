@@ -42,11 +42,17 @@ public final class PermissionsPlayerHandler
 			return;
 
 		if (query instanceof PermQueryPlayerZone)
+		{
 			handleZone((PermQueryPlayerZone) query);
+		}
 		else if (query instanceof PermQueryPlayerArea)
+		{
 			handleArea((PermQueryPlayerArea) query);
+		}
 		else
+		{
 			handlePlayer(query);
+		}
 	}
 
 	private static void doOpCheck(PermQueryPlayer event)

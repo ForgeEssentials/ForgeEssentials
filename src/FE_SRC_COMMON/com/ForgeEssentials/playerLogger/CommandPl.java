@@ -58,7 +58,7 @@ public class CommandPl extends ForgeEssentialsCommandBase
 		{
 			sender.getEntityData().setBoolean("lb", false);
 		}
-		
+
 		PacketDispatcher.sendPacketToPlayer(new PacketPlayerLogger(sender).getPayload(), (Player) sender);
 
 		// TODO add further stuff.

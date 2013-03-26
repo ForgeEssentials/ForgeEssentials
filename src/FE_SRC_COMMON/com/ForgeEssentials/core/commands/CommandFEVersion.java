@@ -2,10 +2,10 @@ package com.ForgeEssentials.core.commands;
 
 import java.util.List;
 
-import com.ForgeEssentials.core.preloader.FEModContainer;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.core.preloader.FEModContainer;
 
 public class CommandFEVersion extends ForgeEssentialsCommandBase
 {
@@ -31,13 +31,13 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	@Override
 	public String getSyntaxConsole()
 	{
-		return "/feversion";
+		return "";
 	}
 
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/feversion";
+		return "";
 	}
 
 	@Override

@@ -10,11 +10,9 @@ import com.ForgeEssentials.api.modules.FEModule.Config;
 import com.ForgeEssentials.api.modules.FEModule.Init;
 import com.ForgeEssentials.api.modules.FEModule.PreInit;
 import com.ForgeEssentials.api.modules.FEModule.ServerInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -22,8 +20,6 @@ import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, configClass = AuthConfig.class)
 public class ModuleAuth
@@ -92,12 +88,6 @@ public class ModuleAuth
 		event.registerPermissionLevel("ForgeEssentials.ModuleAuth", RegGroup.GUESTS);
 	}
 
-	@ServerStop
-	public void serverStop(FEModuleServerStopEvent e)
-	{
-		MinecraftForge.EVENT_BUS.unregister(eventHandler);
-	}
-
 	public static boolean vanillaMode()
 	{
 		return FMLCommonHandler.instance().getSidedDelegate().getServer().isServerInOnlineMode();
@@ -126,7 +116,9 @@ public class ModuleAuth
 			MinecraftForge.EVENT_BUS.register(eventHandler);
 		}
 		else
+		{
 			MinecraftForge.EVENT_BUS.unregister(eventHandler);
+		}
 	}
 
 	public static String encrypt(String str)

@@ -168,17 +168,17 @@ public class PlayerInfo
 	{
 		return firstJoin;
 	}
-	
+
 	public int getTimePlayed()
 	{
 		recalcTimePlayed();
 		return timePlayed;
 	}
-	
+
 	public void recalcTimePlayed()
 	{
 		long current = System.currentTimeMillis() - loginTime;
-		int min = (int)(current/60000);
+		int min = (int) (current / 60000);
 		timePlayed += min;
 		loginTime = System.currentTimeMillis();
 	}

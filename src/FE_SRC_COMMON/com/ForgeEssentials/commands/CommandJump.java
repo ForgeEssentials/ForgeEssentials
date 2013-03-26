@@ -38,7 +38,9 @@ public class CommandJump extends FEcmdModuleCommands
 			return;
 		}
 		else
-			((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(mo.blockX+.5, mo.blockY+1, mo.blockZ+.5, sender.rotationPitch, sender.rotationYaw);
+		{
+			((EntityPlayerMP) sender).playerNetServerHandler.setPlayerLocation(mo.blockX + .5, mo.blockY + 1, mo.blockZ + .5, sender.rotationPitch, sender.rotationYaw);
+		}
 	}
 
 	@Override

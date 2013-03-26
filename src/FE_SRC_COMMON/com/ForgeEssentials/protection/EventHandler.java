@@ -1,6 +1,5 @@
 package com.ForgeEssentials.protection;
 
-import static net.minecraftforge.event.Event.Result.DEFAULT;
 import static net.minecraftforge.event.Event.Result.DENY;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -197,22 +196,25 @@ public class EventHandler
 				query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_INTERACT_BLOCK, point);
 				result = PermissionsAPI.checkPermAllowed(query);
 				if (!result)
+				{
 					e.useBlock = DENY;
+				}
 
-				
 				// item check
 				ItemStack stack = e.entityPlayer.getCurrentEquippedItem();
 				if (stack == null)
 					return;
-				
+
 				String name = UnfreindlyItemList.getName(stack.itemID);
-				name = ModuleProtection.PERM_ITEM_USE+"."+name;
-				
+				name = ModuleProtection.PERM_ITEM_USE + "." + name;
+
 				query = new PermQueryPlayerArea(e.entityPlayer, name, point);
 				result = PermissionsAPI.checkPermAllowed(query);
 				if (!result)
+				{
 					e.useItem = DENY;
-				
+				}
+
 			}
 		}
 	}

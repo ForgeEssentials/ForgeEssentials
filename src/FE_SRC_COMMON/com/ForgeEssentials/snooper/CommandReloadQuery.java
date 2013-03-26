@@ -51,7 +51,6 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -68,7 +68,9 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		{
 			OutputHandler.chatError(sender, "You must specify a zone you want to work in. '/wb global' or '/wb <id>'");
 			if (sender instanceof EntityPlayer)
+			{
 				OutputHandler.chatError(sender, "As a player, '/wb world' works too");
+			}
 			return;
 		}
 		else if (args[0].equalsIgnoreCase("global"))
@@ -85,7 +87,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			}
 			zone = ZoneManager.getWorldZone(world);
 		}
-		else if (args[0].equalsIgnoreCase("world") && (sender instanceof EntityPlayer))
+		else if (args[0].equalsIgnoreCase("world") && sender instanceof EntityPlayer)
 		{
 			zone = ZoneManager.getWorldZone(((EntityPlayer) sender).worldObj);
 		}
@@ -155,9 +157,9 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		{
 			if (args.length == 2)
 			{
-				OutputHandler.chatError(sender, "You have to specify coordinates (x z)" + ((sender instanceof EntityPlayer) ? " or 'here'." : "."));
+				OutputHandler.chatError(sender, "You have to specify coordinates (x z)" + (sender instanceof EntityPlayer ? " or 'here'." : "."));
 			}
-			else if ((sender instanceof EntityPlayer) && args[2].equalsIgnoreCase("here"))
+			else if (sender instanceof EntityPlayer && args[2].equalsIgnoreCase("here"))
 			{
 				border.center = new Point((EntityPlayer) sender);
 				OutputHandler.chatConfirmation(sender, "Center set to " + border.center);
@@ -245,21 +247,21 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			ArrayList<String> list = new ArrayList<String>();
 			list.add("global");
 			if (sender instanceof EntityPlayer)
+			{
 				list.add("world");
+			}
 			for (int i : DimensionManager.getIDs())
+			{
 				list.add("" + i);
+			}
 			return getListOfStringsFromIterableMatchingLastWord(args, list);
 		}
 		// Options
 		if (args.length == 2)
-		{
 			return getListOfStringsMatchingLastWord(args, "info", "enable", "disable", "center", "radius", "shape");
-		}
 		// If shape...
 		if (args.length == 3 && args[2].equalsIgnoreCase("shape"))
-		{
 			return getListOfStringsMatchingLastWord(args, "square", "round");
-		}
 		return null;
 	}
 

@@ -12,6 +12,7 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
 
@@ -63,7 +64,7 @@ public class Command extends ForgeEssentialsCommandBase
 		{
 			if (args.length != 2)
 			{
-				OutputHandler.chatError(sender, "Usage: /ticket view <id>");
+				OutputHandler.chatError(sender, Localization.get("command.ticket.view.usage"));
 				return;
 			}
 			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
@@ -79,7 +80,7 @@ public class Command extends ForgeEssentialsCommandBase
 			{
 				page = parseIntBounded(sender, args[1], 0, pages);
 			}
-			sender.sendChatToPlayer(c + "--- Ticket List ---");
+			sender.sendChatToPlayer(c + Localization.get("message.other.ticketList.header"));
 			for (int i = page * 7; i < (page + 1) * 7; i++)
 			{
 				try
@@ -92,7 +93,7 @@ public class Command extends ForgeEssentialsCommandBase
 					break;
 				}
 			}
-			sender.sendChatToPlayer(c + "--- Page " + page + " of " + pages + " ---");
+			sender.sendChatToPlayer(c + Localization.format("message.other.ticketList.pages", page, pages));
 			return;
 		}
 
@@ -100,12 +101,12 @@ public class Command extends ForgeEssentialsCommandBase
 		{
 			if (args.length < 3)
 			{
-				OutputHandler.chatError(sender, "Usage: /ticket new <category> <message ...>");
+				OutputHandler.chatError(sender, Localization.get("command.ticket.new.usage"));
 				return;
 			}
 			if (!ModuleTickets.categories.contains(args[1]))
 			{
-				OutputHandler.chatError(sender, "That category doesn't exist!");
+				OutputHandler.chatError(sender, Localization.format("message.error.illegalCategory", args[1]));
 				return;
 			}
 			String msg = "";
@@ -116,7 +117,7 @@ public class Command extends ForgeEssentialsCommandBase
 			msg = msg.substring(1);
 			Ticket t = new Ticket(sender, args[1], msg);
 			ModuleTickets.ticketList.add(t);
-			sender.sendChatToPlayer(c + "Your ticket has been posted. ID: " + t.id);
+			sender.sendChatToPlayer(c + Localization.format("message.confim.ticketPost", t.id));
 			return;
 		}
 
@@ -124,7 +125,7 @@ public class Command extends ForgeEssentialsCommandBase
 		{
 			if (args.length != 2)
 			{
-				OutputHandler.chatError(sender, "Usage: /ticket tp <id>");
+				OutputHandler.chatError(sender, Localization.get("command.ticket.tp.usage"));
 				return;
 			}
 			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
@@ -135,12 +136,12 @@ public class Command extends ForgeEssentialsCommandBase
 		{
 			if (args.length != 2)
 			{
-				OutputHandler.chatError(sender, "Usage: /ticket del <id>");
+				OutputHandler.chatError(sender, Localization.get("command.ticket.dev.usage"));
 				return;
 			}
 			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
 			ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
-			sender.sendChatToPlayer(c + "Ticket removed.");
+			sender.sendChatToPlayer(c + Localization.format("message.confim.ticketPost", id));
 		}
 	}
 

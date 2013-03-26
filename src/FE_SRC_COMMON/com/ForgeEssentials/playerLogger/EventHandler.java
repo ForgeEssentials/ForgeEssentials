@@ -8,14 +8,14 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import com.ForgeEssentials.client.util.Point;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
+import com.ForgeEssentials.client.util.Point;
 
 public class EventHandler
 {
@@ -57,7 +57,7 @@ public class EventHandler
 			}
 		}
 	}
-	
+
 	private Point getPoint(EntityPlayer player)
 	{
 		float var4 = 1.0F;
@@ -74,40 +74,40 @@ public class EventHandler
 		float var18 = var15 * var16;
 		float var20 = var14 * var16;
 		double var21 = 500D;
-		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21); 
-		
+		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
+
 		MovingObjectPosition mo = player.worldObj.rayTraceBlocks_do_do(var13, var23, false, false);
-		
+
 		if (mo == null)
 			return null;
-		
+
 		Point p = new Point(mo.blockX, mo.blockY, mo.blockZ);
-		
+
 		if (!player.isSneaking())
 			return p;
-		
+
 		switch (mo.sideHit)
-		{
-			case 0:
-				p.y --;
-				break;
-			case 1:
-				p.y ++;
-				break;
-			case 2:
-				p.z --;
-				break;
-			case 3:
-				p.z ++;
-				break;
-			case 4:
-				p.x --;
-				break;
-			case 5:
-				p.x ++;
-				break;
-		}
-		
+			{
+				case 0:
+					p.y--;
+					break;
+				case 1:
+					p.y++;
+					break;
+				case 2:
+					p.z--;
+					break;
+				case 3:
+					p.z++;
+					break;
+				case 4:
+					p.x--;
+					break;
+				case 5:
+					p.x++;
+					break;
+			}
+
 		return p;
 	}
 }

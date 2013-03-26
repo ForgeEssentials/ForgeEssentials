@@ -79,7 +79,7 @@ public class ModulePlayerLogger
 			if (PermissionsAPI.getGroupForName(name) == null)
 				throw new RuntimeException("Group '" + name + "' doesn't exist. Used in " + config.getFile().getName());
 		}
-		
+
 		if (!enable)
 			return;
 		try

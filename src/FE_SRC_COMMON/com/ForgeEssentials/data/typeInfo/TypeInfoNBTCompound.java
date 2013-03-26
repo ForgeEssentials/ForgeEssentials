@@ -39,7 +39,6 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 		fields.put(I_ARRAY, new ClassContainer(int[].class));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Set<TypeData> getTypeDatasFromObject(Object obj)
 	{

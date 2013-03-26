@@ -47,7 +47,7 @@ public class CommandGive extends FEcmdModuleCommands
 		int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
 		id = idAndMeta[0];
 		dam = idAndMeta[1];
-		if(dam == -1) 
+		if (dam == -1)
 		{
 			dam = 0;
 		}
@@ -87,12 +87,12 @@ public class CommandGive extends FEcmdModuleCommands
 		int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
 		id = idAndMeta[0];
 		dam = idAndMeta[1];
-		
-		if(dam == -1) 
+
+		if (dam == -1)
 		{
 			dam = 0;
 		}
-		
+
 		EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
 		if (player != null)
 		{

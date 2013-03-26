@@ -41,13 +41,11 @@ public class WorldBorder
 			this.zone = zone.getZoneName();
 			this.center = center;
 			this.rad = rad;
-			this.shapeByte = shape;
-			this.enabled = true;
+			shapeByte = shape;
+			enabled = true;
 		}
 		else
-		{
 			throw new RuntimeException(zone.getZoneName() + " is not the global zone or a worldzone");
-		}
 	}
 
 	public WorldBorder(Zone zone)
@@ -55,15 +53,13 @@ public class WorldBorder
 		if (zone.isGlobalZone() || zone.isWorldZone())
 		{
 			this.zone = zone.getZoneName();
-			this.center = new Point(0, 0, 0);
-			this.rad = 0;
-			this.shapeByte = 0;
-			this.enabled = false;
+			center = new Point(0, 0, 0);
+			rad = 0;
+			shapeByte = 0;
+			enabled = false;
 		}
 		else
-		{
 			throw new RuntimeException(zone.getZoneName() + " is not the global zone or a worldzone");
-		}
 	}
 
 	public WorldBorder(String zone, Object center, Object rad, Object shapeByte, Object enabled)
@@ -86,19 +82,19 @@ public class WorldBorder
 		// 1 = square
 		if (shapeByte == 1)
 		{
-			if (player.posX < (center.x - rad))
+			if (player.posX < center.x - rad)
 			{
 				ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.x - rad), player);
 			}
-			if (player.posX > (center.x + rad))
+			if (player.posX > center.x + rad)
 			{
 				ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.x + rad), player);
 			}
-			if (player.posZ < (center.z - rad))
+			if (player.posZ < center.z - rad)
 			{
 				ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.z - rad), player);
 			}
-			if (player.posZ > (center.z + rad))
+			if (player.posZ > center.z + rad)
 			{
 				ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.z + rad), player);
 			}
@@ -120,14 +116,9 @@ public class WorldBorder
 		{
 			// 1 = square
 			if (shapeByte == 1)
-			{
-				return (long) Math.pow(((rad / 16) * 2), 2);
-			}
-			// 2 = round
+				return (long) Math.pow(rad / 16 * 2, 2);
 			else if (shapeByte == 2)
-			{
-				return (long) (Math.pow((rad / 16), 2) * Math.PI);
-			}
+				return (long) (Math.pow(rad / 16, 2) * Math.PI);
 		}
 		catch (Exception e)
 		{

@@ -23,7 +23,7 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 	{
 		return "addtowallet";
 	}
-	
+
 	@Override
 	public List<String> getCommandAliases()
 	{

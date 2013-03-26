@@ -14,7 +14,7 @@ public class FriendlyItemList
 	private HashMap<String, Item>	itemMap		= new HashMap<String, Item>();
 	private HashMap<String, Block>	blockMap	= new HashMap<String, Block>();
 
-	private static FriendlyItemList			instance;
+	private static FriendlyItemList	instance;
 
 	public FriendlyItemList()
 	{

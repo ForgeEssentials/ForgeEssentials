@@ -114,9 +114,13 @@ public class ModuleWorldBorder
 		{
 			WorldBorder wb = (WorldBorder) DataStorageManager.getReccomendedDriver().loadObject(con, zone.getZoneName());
 			if (wb != null)
+			{
 				borderMap.put(zone.getZoneName(), wb);
+			}
 			else
+			{
 				borderMap.put(zone.getZoneName(), new WorldBorder(zone));
+			}
 			DataStorageManager.getReccomendedDriver().saveObject(con, borderMap.get(zone.getZoneName()));
 		}
 	}
@@ -146,7 +150,7 @@ public class ModuleWorldBorder
 		{
 			wb.save();
 		}
-		
+
 		for (TickTaskFill filler : CommandFiller.map.values())
 		{
 			filler.stop();

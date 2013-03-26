@@ -15,10 +15,10 @@ import com.ForgeEssentials.util.OutputHandler;
 public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
 	@Override
-    public boolean isUsernameIndex(int par1)
-    {
-        return true;
-    }
+	public boolean isUsernameIndex(int par1)
+	{
+		return true;
+	}
 
 	// ---------------------------
 	// processing command
@@ -147,17 +147,11 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
-		{
 			return canPlayerUseCommand((EntityPlayer) sender);
-		}
 		else if (sender instanceof TileEntityCommandBlock)
-		{
 			return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
-		}
 		else
-		{
 			return canConsoleUseCommand();
-		}
 	}
 
 	public abstract boolean canConsoleUseCommand();

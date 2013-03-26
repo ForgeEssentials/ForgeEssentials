@@ -64,6 +64,6 @@ public interface ITypeInfo<T>
 	 * This may return null for primitive types.
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
+
 	public ITypeInfo getInfoForField(String field);
 }

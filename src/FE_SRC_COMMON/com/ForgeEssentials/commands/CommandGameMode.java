@@ -47,7 +47,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 		// no arguments? toggle gamemode.
 		if (args.length == 0)
 		{
-			gm = this.getToggledType(target);
+			gm = getToggledType(target);
 			target.setGameType(gm);
 			target.fallDistance = 0.0F;
 			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
@@ -66,7 +66,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 				// throws exception if there is no player
 				target = func_82359_c(sender, args[0]);
 
-				gm = this.getToggledType(target);
+				gm = getToggledType(target);
 			}
 
 			target.setGameType(gm);
@@ -78,7 +78,9 @@ public class CommandGameMode extends FEcmdModuleCommands
 
 		// default to survival if cannot be parsed
 		if (gm == null)
+		{
 			gm = EnumGameType.SURVIVAL;
+		}
 
 		// 2 arguments? do ./GameMode <mode> <player>
 		if (args.length == 2)
@@ -133,9 +135,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 
 		// no arguments? toggle gamemode.
 		if (args.length == 0)
-		{
 			throw new WrongUsageException("commands.gamemode.usage");
-		}
 
 		gm = getGameTypeFromString(sender, args[0]);
 
@@ -145,7 +145,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 			// throws exception if there is no player
 			target = func_82359_c(sender, args[0]);
 
-			gm = this.getToggledType(target);
+			gm = getToggledType(target);
 
 			target.setGameType(gm);
 			target.fallDistance = 0.0F;
@@ -156,7 +156,9 @@ public class CommandGameMode extends FEcmdModuleCommands
 
 		// default to survival if cannot be parsed
 		if (gm == null)
+		{
 			gm = EnumGameType.SURVIVAL;
+		}
 
 		// 2 arguments? do ./GameMode <mode> <player>
 		if (args.length == 2)

@@ -1,15 +1,13 @@
 package com.ForgeEssentials.auth;
 
-import java.util.TimerTask;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.EnumSet;
+import java.util.TimerTask;
 
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.TickType;
 
 public class VanillaServiceChecker extends TimerTask
 {

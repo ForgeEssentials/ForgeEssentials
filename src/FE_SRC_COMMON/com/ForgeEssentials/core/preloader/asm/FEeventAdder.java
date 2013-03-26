@@ -130,7 +130,6 @@ public class FEeventAdder implements IClassTransformer
 		return bytes;
 	}
 
-	@SuppressWarnings("unchecked")
 	private byte[] transformItemStack(byte[] bytes, HashMap<String, String> hm)
 	{
 		msg("[FE coremod] Patching ItemStack...");
@@ -190,7 +189,6 @@ public class FEeventAdder implements IClassTransformer
 		return writer.toByteArray();
 	}
 
-	@SuppressWarnings("unchecked")
 	private byte[] transformItemInWorldManager(byte[] bytes, HashMap<String, String> hm)
 	{
 		msg("[FE coremod] Patching ItemInWorldManager...");
