@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -66,9 +67,9 @@ public abstract class UnfreindlyItemList
 		{
 			Item item = Item.itemsList[i];
 
-			// null ? skip it.
 			if (item == null)
 			{
+				OutputHandler.severe(i+" >> null");
 				continue;
 			}
 			
@@ -113,6 +114,7 @@ public abstract class UnfreindlyItemList
 
 			// save
 			map.put(name, item.itemID);
+			OutputHandler.severe(item.itemID+" >> "+name);
 		}
 	}
 

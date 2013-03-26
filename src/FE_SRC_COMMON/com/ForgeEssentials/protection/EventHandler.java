@@ -214,8 +214,6 @@ public class EventHandler
 				{
 					e.useItem = DENY;
 				}
-				OutputHandler.severe(name+" >> "+result);
-
 			}
 		}
 	}
