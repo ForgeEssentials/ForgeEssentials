@@ -185,6 +185,7 @@ public class ForgeEssentials
 	public void postLoad(FMLPostInitializationEvent e)
 	{
 		UnfreindlyItemList.modStep();
+		UnfreindlyItemList.output(new File(FEDIR, "UnfreindlyItemList.txt"));
 
 		mdlaunch.postLoad(e);
 		bannedItems.postLoad(e);

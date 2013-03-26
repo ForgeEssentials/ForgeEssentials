@@ -1,13 +1,19 @@
 package com.ForgeEssentials.core.misc;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.TreeSet;
 
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import com.ForgeEssentials.util.FunctionHelper;
 import com.google.common.base.Strings;
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -33,33 +39,19 @@ public abstract class UnfreindlyItemList
 			NBTTagList list = new NBTTagList();
 			GameData.writeItemData(list);
 			ItemData data;
-			String name;
+			String modid;
 
 			for (int i = 0; i < list.tagCount(); i++)
 			{
 				data = new ItemData((NBTTagCompound) list.tagAt(i));
-				name = data.getItemType();
+				modid = "vanilla";
 
-				if (name == null)
+				if (!data.getModId().equalsIgnoreCase("Minecraft"))
 				{
-					continue;
+					modid = data.getModId();
 				}
 
-				if (name.contains("."))
-				{
-					name = name.substring(name.lastIndexOf('.') + 1, name.length());
-				}
-
-				if (data.getModId().equalsIgnoreCase("Minecraft"))
-				{
-					name = "vanilla" + "." + name;
-				}
-				else
-				{
-					name = data.getModId() + "." + name;
-				}
-
-				gameMap.put(data.getItemId(), name);
+				gameMap.put(data.getItemId(), modid);
 			}
 		}
 
@@ -133,6 +125,48 @@ public abstract class UnfreindlyItemList
 	public static Set<String> getNameSet()
 	{
 		return map.keySet();
+	}
+	
+	public static void output(File output)
+	{
+		try
+		{
+			output.createNewFile();
+			BufferedWriter writer = new BufferedWriter(new FileWriter(output));
+
+			writer.write("#// ------------ Item-ID-List ------------ \\\\#");
+			writer.newLine();
+			writer.write("#// --------------- " + FunctionHelper.getCurrentDateString() + " --------------- \\\\#");
+			writer.newLine();
+			writer.write("#// ------------------------------------------ \\\\#");
+			writer.newLine();
+			writer.newLine();
+			
+			TreeSet<Integer> ids = new TreeSet<Integer>();
+			BiMap<Integer, String> inverse = map.inverse();
+
+			// order ids.
+			for (Integer id : map.inverse().keySet())
+			{
+				ids.add(id);
+			}
+			
+			String paddedID;
+			String str;
+			for (Integer id : ids)
+			{
+				str =  String.format("%-7s", id);
+				str = str+"  ==  "+inverse.get(id);
+				writer.write(str);
+				writer.newLine();
+			}
+
+			writer.close();
+		}
+		catch (Exception e)
+		{
+
+		}
 	}
 
 }
