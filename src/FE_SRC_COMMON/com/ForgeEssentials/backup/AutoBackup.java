@@ -109,7 +109,15 @@ public class AutoBackup implements Runnable
 				if (time > file.lastModified() + BackupConfig.maxBackupLifespan * 3600000)
 				{
 					OutputHandler.debug("Removed file: " + file.getAbsolutePath());
-					file.delete();
+					try
+					{
+						Files.delete(file.toPath());
+					}
+					catch (IOException e)
+					{
+						OutputHandler.severe("Why you no delete file?");
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -158,7 +166,16 @@ public class AutoBackup implements Runnable
 				{
 					File file = lastFileModified(folder);
 					OutputHandler.debug("Removed file: " + file.getAbsolutePath());
-					file.delete();
+					try
+					{
+						Files.delete(file.toPath());
+					}
+					catch (IOException e)
+					{
+						OutputHandler.severe("Try #" + trys + "Removed file: " + file.getAbsolutePath());
+						OutputHandler.severe("Why you no delete file?");
+						e.printStackTrace();
+					}
 				}
 			}
 		}
