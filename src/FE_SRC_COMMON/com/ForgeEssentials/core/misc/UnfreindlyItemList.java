@@ -70,7 +70,6 @@ public abstract class UnfreindlyItemList
 			
 			if (item == null)
 			{
-				name = "NULL";
 				continue;
 			}
 			else
