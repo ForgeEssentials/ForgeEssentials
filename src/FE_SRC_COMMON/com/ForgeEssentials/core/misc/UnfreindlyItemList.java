@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.ForgeEssentials.util.OutputHandler;
+import com.google.common.base.Strings;
 import com.google.common.collect.HashBiMap;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -22,12 +23,43 @@ public abstract class UnfreindlyItemList
 	{
 	}
 
-	public static void vanillaStep()
+	/**
+	 * should be called at PostLoad.
+	 */
+	public static void modStep()
 	{
-		HashMap<String, Integer> duplicates = new HashMap();
+		HashMap<Integer, String> gameMap = new HashMap<Integer, String>();
 		
-		String name = "";
+		// populate from GameData
+		{
+			NBTTagList list = new NBTTagList();
+			GameData.writeItemData(list);
+			ItemData data;
+			String name;
+
+			for (int i = 0; i < list.tagCount(); i++)
+			{
+				data = new ItemData((NBTTagCompound) list.tagAt(i));
+				name = data.getItemType();
+
+				if (name == null || data.getModId().equalsIgnoreCase("Minecraft"))
+					continue;
+
+				if (name.contains("."))
+					name = name.substring(name.lastIndexOf('.') + 1, name.length());
+
+				name = data.getModId() + "." + name;
+				gameMap.put(data.getItemId(), name);
+			}
+		}
+		
+		// now iterrate through ItemList.
+		HashMap<String, Integer> duplicates = new HashMap();
+
+		String name;
 		Integer num;
+		String clazz;
+		String tempName;
 		for (int i = 0; i < Item.itemsList.length; i++)
 		{
 			Item item = Item.itemsList[i];
@@ -40,8 +72,19 @@ public abstract class UnfreindlyItemList
 
 			name = name.replace("tile.", "block.");
 
-			name = "vanilla." + name;
-			
+			if (item.getClass().getPackage().getName().equals(Item.class.getPackage().getName()))
+			{
+				name = "vanilla." + name;
+			}
+			else
+			{
+				tempName = gameMap.get(item.itemID);
+				if (Strings.isNullOrEmpty(tempName))
+					name = "unknownSource."+name;
+				else
+					name = tempName+"."+name;
+			}
+
 			num = duplicates.get(name);
 			if (num == null)
 			{
@@ -51,35 +94,10 @@ public abstract class UnfreindlyItemList
 			{
 				num++;
 				duplicates.put(name, num);
-				name+=num;
+				name += num;
 			}
-			
-			map.put(name, item.itemID);
-		}
-	}
 
-	/**
-	 * should be called at PostLoad.
-	 */
-	public static void modStep()
-	{
-		NBTTagList list = new NBTTagList();
-		GameData.writeItemData(list);
-		ItemData data;
-		String name;
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			data = new ItemData((NBTTagCompound) list.tagAt(i));
-			name = data.getItemType();
-			
-			if (name == null || data.getModId().equalsIgnoreCase("Minecraft"))
-				continue;
-			
-			if (name.contains("."))
-				name = name.substring(name.lastIndexOf('.')+1, name.length());
-			
-			name = data.getModId()+"." + name;
-			map.forcePut(name, data.getItemId());
+			map.put(name, item.itemID);
 		}
 	}
 

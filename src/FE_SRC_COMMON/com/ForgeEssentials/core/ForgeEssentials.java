@@ -147,7 +147,6 @@ public class ForgeEssentials
 		}
 
 		new MiscEventHandler();
-		UnfreindlyItemList.vanillaStep();
 		bannedItems = new BannedItems();
 		MinecraftForge.EVENT_BUS.register(bannedItems);
 		LoginMessage.loadFile();
@@ -185,6 +184,8 @@ public class ForgeEssentials
 	@PostInit
 	public void postLoad(FMLPostInitializationEvent e)
 	{
+		UnfreindlyItemList.modStep();
+		
 		mdlaunch.postLoad(e);
 		bannedItems.postLoad(e);
 
@@ -211,7 +212,6 @@ public class ForgeEssentials
 		mdlaunch.serverStarting(e);
 		
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
-		UnfreindlyItemList.modStep();
 	}
 
 	@ServerStarted
