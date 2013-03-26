@@ -92,11 +92,6 @@ public class ModuleAuth
 		event.registerPermissionLevel("ForgeEssentials.ModuleAuth", RegGroup.GUESTS);
 	}
 
-	@ServerStop
-	public void serverStop(FEModuleServerStopEvent e)
-	{
-		MinecraftForge.EVENT_BUS.unregister(eventHandler);
-	}
 
 	public static boolean vanillaMode()
 	{
