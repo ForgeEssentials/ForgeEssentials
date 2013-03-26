@@ -51,7 +51,7 @@ public class CommandGive extends FEcmdModuleCommands
 		{
 			dam = 0;
 		}
-		EntityPlayer player = FunctionHelper.getPlayerForName(args[0]);
+		EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (player != null)
 		{
 			ItemStack stack = new ItemStack(id, amount, dam);
@@ -93,7 +93,7 @@ public class CommandGive extends FEcmdModuleCommands
 			dam = 0;
 		}
 
-		EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (player != null)
 		{
 			ItemStack stack = new ItemStack(id, amount, dam);

@@ -136,7 +136,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			boolean isLogged = true;
 
 			// check if the player is logged.
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(name);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
 			if (player == null)
 			{
 				OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -227,7 +227,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			// check for players.. all the rest of these should be greated than 1.
 			String name = args[1];
 			// check if the player is logged.
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(name);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
 			if (player == null)
 			{
 				OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -279,7 +279,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		boolean isLogged = true;
 
 		// check if the player is logged.
-		EntityPlayerMP player = FunctionHelper.getPlayerForName(name);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
 		if (player == null)
 		{
 			sender.sendChatToPlayer("A player of that name is not on the server. Doing the action anyways.");

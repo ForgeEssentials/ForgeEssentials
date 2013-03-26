@@ -57,7 +57,7 @@ public class CommandLocate extends FEcmdModuleCommands
 
 	public void locate(ICommandSender sender, String username)
 	{
-		EntityPlayerMP player = FunctionHelper.getPlayerForName(username);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, username);
 		if (player == null)
 		{
 			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, username));

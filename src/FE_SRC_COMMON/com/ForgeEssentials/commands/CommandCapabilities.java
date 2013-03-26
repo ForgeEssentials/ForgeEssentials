@@ -76,7 +76,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 		}
 		else if (args.length == 1)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
 				OutputHandler.chatConfirmation(sender, Localization.format("command.capabilities.listForX", player.username));
@@ -101,7 +101,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 					return;
 				}
 			}
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
 				if (args[1].equalsIgnoreCase(names.get(0)))
@@ -141,7 +141,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 					return;
 				}
 			}
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
 				if (args[1].equalsIgnoreCase(names.get(0)))

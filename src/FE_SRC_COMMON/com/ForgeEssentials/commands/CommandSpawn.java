@@ -41,7 +41,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 				return;
 			}
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
@@ -95,7 +95,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);

@@ -36,7 +36,7 @@ public class CommandTop extends FEcmdModuleCommands
 		}
 		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
 				top(player);
@@ -63,7 +63,7 @@ public class CommandTop extends FEcmdModuleCommands
 	{
 		if (args.length == 1)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
 				top(player);

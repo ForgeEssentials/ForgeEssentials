@@ -67,7 +67,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayerMP target = FunctionHelper.getPlayerForName(args[0]);
+				EntityPlayerMP target = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (target == null)
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -118,7 +118,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayer target = FunctionHelper.getPlayerForName(args[0]);
+				EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (target == null)
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -135,7 +135,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 		}
 		if (args.length > 1)
 		{
-			EntityPlayer receiver = FunctionHelper.getPlayerForName(args[0]);
+			EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (receiver == null)
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -218,7 +218,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayerMP receiver = FunctionHelper.getPlayerForName(args[0]);
+				EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (receiver == null)
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));

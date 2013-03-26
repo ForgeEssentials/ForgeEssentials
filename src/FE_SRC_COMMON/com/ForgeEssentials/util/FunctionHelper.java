@@ -1,10 +1,16 @@
 package com.ForgeEssentials.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -102,9 +108,50 @@ public final class FunctionHelper
 		return uptime;
 	}
 
+	/**
+	 * DO NOT use this for commands
+	 * @param name
+	 * @return
+	 */
 	public static EntityPlayerMP getPlayerForName(String name)
+	{	
+		// tru exact match first.
+		{
+			EntityPlayerMP tempPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(name);
+			if (tempPlayer != null)
+				return tempPlayer;
+		}
+
+		// now try getting others
+		List<EntityPlayerMP> possibles = new LinkedList<EntityPlayerMP>();
+		ArrayList<EntityPlayerMP> temp = (ArrayList<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList;
+		for (EntityPlayerMP player : temp)
+		{
+			if (player.username.equalsIgnoreCase(name))
+				return player;
+
+			if (player.username.toLowerCase().contains(name.toLowerCase()))
+			{
+				possibles.add(player);
+			}
+		}
+		if (possibles.size() == 1)
+			return possibles.get(0);
+		return null;
+	}
+	
+	public static EntityPlayerMP getPlayerForName(ICommandSender sender, String name)
 	{
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(name);
+        EntityPlayerMP var2 = PlayerSelector.matchOnePlayer(sender, name);
+
+        if (var2 != null)
+        {
+            return var2;
+        }
+        else
+        {
+        	return getPlayerForName(name);
+        }
 	}
 
 	/**

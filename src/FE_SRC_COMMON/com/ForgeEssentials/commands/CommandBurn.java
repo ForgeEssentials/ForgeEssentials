@@ -37,7 +37,7 @@ public class CommandBurn extends FEcmdModuleCommands
 			}
 			else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (player != null)
 				{
 					OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
@@ -65,7 +65,7 @@ public class CommandBurn extends FEcmdModuleCommands
 			}
 			else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (player != null)
 				{
 					player.setFire(parseIntWithMin(sender, args[1], 0));
@@ -91,7 +91,7 @@ public class CommandBurn extends FEcmdModuleCommands
 		{
 			time = parseIntWithMin(sender, args[1], 0);
 		}
-		EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (player != null)
 		{
 			player.setFire(time);

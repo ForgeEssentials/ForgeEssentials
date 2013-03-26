@@ -36,7 +36,7 @@ public class CommandTphere extends FEcmdModuleCommands
 	{
 		if (args.length == 1)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
 				EntityPlayerMP target = (EntityPlayerMP) sender;

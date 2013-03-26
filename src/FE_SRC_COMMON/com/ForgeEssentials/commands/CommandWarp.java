@@ -117,7 +117,7 @@ public class CommandWarp extends FEcmdModuleCommands
 		{
 			if (CommandDataManager.warps.containsKey(args[1].toLowerCase()))
 			{
-				EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (player != null)
 				{
 					Warp warp = CommandDataManager.warps.get(args[1].toLowerCase());

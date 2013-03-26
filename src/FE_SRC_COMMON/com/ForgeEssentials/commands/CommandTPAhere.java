@@ -85,7 +85,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 			return;
 		}
 
-		EntityPlayerMP receiver = FunctionHelper.getPlayerForName(args[0]);
+		EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (receiver == null)
 		{
 			sender.sendChatToPlayer(args[0] + " not found.");

@@ -42,7 +42,7 @@ public class CommandDoAs extends FEcmdModuleCommands
 			cmd.append(args[i]);
 			cmd.append(" ");
 		}
-		EntityPlayerMP player = FunctionHelper.getPlayerForName(args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (player != null)
 		{
 			OutputHandler.chatWarning(player, Localization.format("command.doas.attempt", sender.getCommandSenderName()));
