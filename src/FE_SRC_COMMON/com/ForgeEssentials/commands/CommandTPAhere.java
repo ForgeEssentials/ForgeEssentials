@@ -54,7 +54,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 			{
 				if (data.tphere)
 				{
-					if (data.receiver == sender)
+					if (data.receiver.username.equalsIgnoreCase(sender.username))
 					{
 						data.sender.sendChatToPlayer(Localization.get("command.tpahere.accepted"));
 						data.receiver.sendChatToPlayer(Localization.get("command.tpahere.accepted"));
@@ -73,7 +73,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 			{
 				if (data.tphere)
 				{
-					if (data.receiver == sender)
+					if (data.receiver.username.equalsIgnoreCase(sender.username))
 					{
 						data.sender.sendChatToPlayer(Localization.get("command.tpahere.declined"));
 						data.receiver.sendChatToPlayer(Localization.get("command.tpahere.declined"));
