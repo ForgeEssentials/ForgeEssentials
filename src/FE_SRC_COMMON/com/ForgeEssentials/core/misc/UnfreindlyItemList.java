@@ -38,7 +38,7 @@ public abstract class UnfreindlyItemList
 			if (name == null)
 				continue;
 
-			name = name.replace("item.", "").replace("tile.", "");
+			name = name.replace("tile.", "block.");
 
 			name = "vanilla." + name;
 			
