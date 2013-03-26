@@ -1,18 +1,23 @@
 package com.ForgeEssentials.commands;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.bouncycastle.util.Arrays;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.EnumGameType;
 
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -81,7 +86,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 		if (args.length == 2)
 		{
 			// throws exception if there is no player
-			target = func_82359_c(sender, args[0]);
+			target = func_82359_c(sender, args[1]);
 
 			target.setGameType(gm);
 			target.fallDistance = 0.0F;
@@ -92,18 +97,26 @@ public class CommandGameMode extends FEcmdModuleCommands
 
 		// > 2 arguments? do ./GameMode <mode> <players>
 		if (args.length > 2)
-		{
-			EntityPlayer[] players = PlayerSelector.matchPlayers(sender, args[1]);
-
+		{			
+			ArrayList<String> currentNames = new ArrayList<String>();
+			for(int index = 1; index < args.length; index ++)
+				currentNames.add(args[index]);
+			EntityPlayerMP[] players = FunctionHelper.getPlayerForNames(currentNames);
 			if (players == null || players.length == 0)
 				throw new PlayerNotFoundException();
 
 			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
 
-			for (EntityPlayer player : players)
+			for (int ind = 0; ind < players.length; ind ++)
 			{
-				player.setGameType(gm);
-				player.fallDistance = 0.0F;
+				EntityPlayerMP player = players[ind];
+				if(player == null) 
+					OutputHandler.chatWarning(sender, Localization.format("commands.generic.player.notFound", currentNames.get(ind)) ); 
+				else
+				{
+					player.setGameType(gm);
+					player.fallDistance = 0.0F;
+				}
 			}
 
 			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", "all specified players", modeName));
@@ -151,7 +164,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 		if (args.length == 2)
 		{
 			// throws exception if there is no player
-			target = func_82359_c(sender, args[0]);
+			target = func_82359_c(sender, args[1]);
 
 			target.setGameType(gm);
 			target.fallDistance = 0.0F;
@@ -163,17 +176,25 @@ public class CommandGameMode extends FEcmdModuleCommands
 		// > 2 arguments? do ./GameMode <mode> <players>
 		if (args.length > 2)
 		{
-			EntityPlayer[] players = PlayerSelector.matchPlayers(sender, args[1]);
-
+			ArrayList<String> currentNames = new ArrayList<String>();
+			for(int index = 1; index < args.length; index ++)
+				currentNames.add(args[index]);
+			EntityPlayerMP[] players = FunctionHelper.getPlayerForNames(currentNames);
 			if (players == null || players.length == 0)
 				throw new PlayerNotFoundException();
 
 			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
 
-			for (EntityPlayer player : players)
+			for (int ind = 0; ind < players.length; ind ++)
 			{
-				player.setGameType(gm);
-				player.fallDistance = 0.0F;
+				EntityPlayerMP player =  players[ind];
+				if(player == null)
+					OutputHandler.chatWarning(sender, Localization.format("commands.generic.player.notFound", currentNames.get(ind)) ); 
+				else
+				{
+					player.setGameType(gm);
+					player.fallDistance = 0.0F;
+				}
 			}
 
 			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", "all specified players", modeName));
