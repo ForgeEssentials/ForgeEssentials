@@ -2,6 +2,8 @@ package com.ForgeEssentials.backup;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -124,8 +126,17 @@ public class AutoBackup implements Runnable
 			{
 				trys++;
 				File file = lastFileModified(folder);
-				OutputHandler.debug("Removed file: " + file.getAbsolutePath());
-				file.delete();
+				OutputHandler.debug("Try #" + trys + "Removed file: " + file.getAbsolutePath());
+				try
+				{
+					Files.delete(file.toPath());
+				}
+				catch (IOException e)
+				{
+					OutputHandler.severe("Try #" + trys + "Removed file: " + file.getAbsolutePath());
+					OutputHandler.severe("Why you no delete file?");
+					e.printStackTrace();
+				}
 			}
 		}
 	}
