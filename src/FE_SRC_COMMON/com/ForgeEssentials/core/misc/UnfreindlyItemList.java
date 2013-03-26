@@ -65,25 +65,32 @@ public abstract class UnfreindlyItemList
 		for (int i = 0; i < Item.itemsList.length; i++)
 		{
 			Item item = Item.itemsList[i];
+			
+			int id = 256 + i;
+			
 			if (item == null)
 			{
+				name = "NULL";
 				continue;
 			}
-
-			name = item.getItemName();
-			if (name == null)
+			else
 			{
-				if (item instanceof ItemBlock)
-					name = "block.";
-				else
-					name = "item.";
+				id = item.itemID;
+				name = item.getItemName();
+				if (name == null)
+				{
+					if (item instanceof ItemBlock)
+						name = "block.";
+					else
+						name = "item.";
 
-				name = name + "unknown";
+					name = name + item.getClass().getSimpleName();
+				}
 			}
 
 			name = name.replace("tile.", "block.");
 
-			tempName = gameMap.get(item.itemID);
+			tempName = gameMap.get(id);
 			if (Strings.isNullOrEmpty(tempName))
 			{
 				name = "unknownSource." + name;
@@ -105,7 +112,7 @@ public abstract class UnfreindlyItemList
 				name += num;
 			}
 
-			map.put(name, item.itemID);
+			map.put(name, id);
 		}
 	}
 
