@@ -11,7 +11,6 @@ import com.ForgeEssentials.core.preloader.asm.FEeventAdder;
 
 public class CommandFEDebug extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -74,22 +73,38 @@ public class CommandFEDebug extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
-		return null;
+		return "ForgeEssentials.CoreCommands." + getCommandName();
 	}
 
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public String getSyntaxConsole()
+	{
+		return "";
+	}
 
+	@Override
+	public String getSyntaxPlayer(EntityPlayer player)
+	{
+		return "";
+	}
+
+	@Override
+	public String getInfoConsole()
+	{
+		return "Use if you need help with FE related stuff";
+	}
+
+	@Override
+	public String getInfoPlayer(EntityPlayer player)
+	{
+		return "Use if you need help with FE related stuff";
+	}
 }

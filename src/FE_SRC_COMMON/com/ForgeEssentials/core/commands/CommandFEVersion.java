@@ -61,13 +61,18 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.CoreCommands." + getCommandName();
+		return null;
+	}
+	
+	@Override
+	public boolean canPlayerUseCommand(EntityPlayer player)
+	{
+		return true;
 	}
 
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

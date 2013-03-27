@@ -10,7 +10,6 @@ import com.ForgeEssentials.util.FEChatFormatCodes;
 
 public class CommandFEReload extends ForgeEssentialsCommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -46,12 +45,34 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.CoreCommands." + getCommandName();
 	}
+	
+	@Override
+	public String getSyntaxConsole()
+	{
+		return "";
+	}
 
+	@Override
+	public String getSyntaxPlayer(EntityPlayer player)
+	{
+		return "";
+	}
+
+	@Override
+	public String getInfoConsole()
+	{
+		return "Reload FE configs";
+	}
+
+	@Override
+	public String getInfoPlayer(EntityPlayer player)
+	{
+		return "Reload FE configs";
+	}
+	
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
