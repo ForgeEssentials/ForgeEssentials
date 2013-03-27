@@ -77,7 +77,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 		{
 			world = DimensionManager.getWorld(parseInt(sender, args[0]));
 		}
-		else if (args[0].equalsIgnoreCase("here") && sender instanceof EntityPlayer)
+		else if ((args[0].equalsIgnoreCase("here") || args[0].equalsIgnoreCase("world")) && sender instanceof EntityPlayer)
 		{
 			world = (WorldServer) ((EntityPlayer) sender).worldObj;
 		}
@@ -174,6 +174,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 			ArrayList<String> list = new ArrayList<String>();
 			if (sender instanceof EntityPlayer)
 			{
+				list.add("world");
 				list.add("here");
 			}
 			for (int i : DimensionManager.getIDs())
