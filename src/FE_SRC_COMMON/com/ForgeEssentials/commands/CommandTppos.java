@@ -43,7 +43,7 @@ public class CommandTppos extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+			this.error(sender);
 		}
 	}
 
