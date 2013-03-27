@@ -10,6 +10,7 @@ import net.minecraft.util.ChunkCoordinates;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
@@ -34,6 +35,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		Zone zone = ZoneManager.getWorldZone(sender.worldObj);
 		if (args.length >= 1)
 		{
 			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
@@ -46,7 +48,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 			{
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 
-				PropQueryPlayerZone query = new PropQueryPlayerZone(player, "ForgeEssentials.BasicCommands.spawnPoint", ZoneManager.getGLOBAL(), true);
+				PropQueryPlayerZone query = new PropQueryPlayerZone(player, "ForgeEssentials.BasicCommands.spawnPoint", zone, true);
 				PermissionsAPI.getPermissionProp(query);
 
 				String val = query.getStringValue();
@@ -72,7 +74,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 		}
 		else if (args.length == 0)
 		{
-			PropQueryPlayerZone query = new PropQueryPlayerZone(sender, "ForgeEssentials.BasicCommands.spawnPoint", ZoneManager.getGLOBAL(), true);
+			PropQueryPlayerZone query = new PropQueryPlayerZone(sender, "ForgeEssentials.BasicCommands.spawnPoint", zone, true);
 			PermissionsAPI.getPermissionProp(query);
 
 			String val = query.getStringValue();
