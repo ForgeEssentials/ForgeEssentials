@@ -1,4 +1,4 @@
-package com.ForgeEssentials.playerLogger;
+package com.ForgeEssentials.playerLogger.rollback;
 
 import java.sql.Blob;
 import java.sql.Connection;
@@ -15,6 +15,7 @@ import net.minecraft.world.WorldServer;
 
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.api.snooper.TextFormatter;
+import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -58,7 +59,7 @@ public class TickTaskRollback implements ITickTask
 			Date date = new Date();
 			Timestamp time = new Timestamp(date.getTime());
 			//								   Hours,  mins, sec, nano
-			time.setNanos(time.getNanos() - (timeBack * 60 * 60 * 1000));
+			time.setNanos(time.getNanos() - (timeBack * 60 * 60 * 1000 * 1000));
 			sql = sql + " AND `time` = '" + time.toString() + "'";
 		}
 		

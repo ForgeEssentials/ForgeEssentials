@@ -1,4 +1,4 @@
-package com.ForgeEssentials.playerLogger.types;
+package com.ForgeEssentials.playerLogger.logger.types;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -24,6 +24,7 @@ public class commandLog extends logEntry
 		catch (SQLException e)
 		{
 			e.printStackTrace();
+			ModulePlayerLogger.error(e);
 		}
 		
 	}
