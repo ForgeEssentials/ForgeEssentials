@@ -6,9 +6,6 @@ import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class AutoWorldSave implements Runnable
 {
-	public static String	start;
-	public static String	done;
-	public static boolean	isSaving	= false;
 
 	public AutoWorldSave()
 	{
@@ -30,24 +27,9 @@ public class AutoWorldSave implements Runnable
 			}
 		}
 
-		ModuleBackup.msg(start);
-		isSaving = true;
-
 		for (int i : DimensionManager.getIDs())
 		{
-			try
-			{
-				ModuleBackup.worldsave(i);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			WorldSaver.addWorldNeedsSave(i);
 		}
-
-		isSaving = false;
-		ModuleBackup.msg(done);
-
-		System.gc();
 	}
 }

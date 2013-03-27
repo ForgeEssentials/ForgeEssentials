@@ -65,8 +65,9 @@ public class BackupConfig extends ModuleConfigBase
 		String sub = MAIN + ".lang";
 		config.addCustomCategoryComment(sub, "Configure messages here.");
 
-		AutoWorldSave.start = config.get(sub + ".AutoWorldSave", "start", "Saving all loaded worlds.").value;
-		AutoWorldSave.done = config.get(sub + ".AutoWorldSave", "done", "The sever has saved the worlds.").value;
+		WorldSaver.start = config.get(sub + ".AutoWorldSave", "start", "Saving world %1$s").value;
+		WorldSaver.done = config.get(sub + ".AutoWorldSave", "done", "Done saving world %1$s").value;
+		WorldSaver.failed = config.get(sub + ".AutoWorldSave", "failed", "%1$s failed to save!").value;
 
 		ModuleBackup.baseFolder = new File(backupDir);
 
