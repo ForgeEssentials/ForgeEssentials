@@ -422,6 +422,7 @@ public class CommandFEPermGroup
 			Collections.sort(list);
 			ArrayList<String> messageAllowed = new ArrayList<String>();
 			ArrayList<String> messageDenied = new ArrayList<String>();
+			String permString;
 			for (String perm : list)
 			{
 				if (perm.contains("has no individual permissions."))
@@ -429,7 +430,7 @@ public class CommandFEPermGroup
 					OutputHandler.chatConfirmation(sender, perm);
 					return;
 				}
-				if (perm.contains("ALLOW"))
+				if (perm.toLowerCase().contains("allow") || perm.toLowerCase().contains("true"))
 				{
 					messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + perm.substring(0, perm.indexOf(":")));
 				}

@@ -214,10 +214,6 @@ public class PermissionsHelper implements IPermissionsHelper
 		ArrayList<Group> temp;
 
 		temp = SqlHelper.getGroupsForPlayer(player, zoneID);
-		if (temp.isEmpty())
-		{
-			temp = SqlHelper.getGroupsForPlayer(player, ZoneManager.getGLOBAL().getZoneName());
-		}
 		list.addAll(temp);
 
 		if (includeDefaults)
@@ -356,7 +352,8 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 		else
 		{
-			output.addAll(SqlHelper.getAllPermissions(target, zone, false));
+			for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+				output.add(perm.toString());
 		}
 
 		return output;
@@ -373,7 +370,8 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 		else
 		{
-			output.addAll(SqlHelper.getAllPermProps(target, zone, false));
+			for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+				output.add(perm.toString());
 		}
 
 		return output;
@@ -395,7 +393,8 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 		else
 		{
-			output.addAll(SqlHelper.getAllPermissions(target, zone, true));
+			for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+				output.add(perm.toString());
 		}
 
 		return output;
@@ -417,7 +416,8 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 		else
 		{
-			output.addAll(SqlHelper.getAllPermProps(target, zone, true));
+			for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+				output.add(perm.toString());
 		}
 
 		return output;

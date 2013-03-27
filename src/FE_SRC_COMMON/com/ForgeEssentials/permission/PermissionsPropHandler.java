@@ -105,7 +105,7 @@ public final class PermissionsPropHandler
 			if (result == null)
 			{
 				// get all the players groups here.
-				groups = PermissionsAPI.getApplicableGroups(event.player, false);
+				groups = PermissionsAPI.getApplicableGroups(event.player.username, false, tempZone.getZoneName());
 
 				// iterates through the groups.
 				for (int i = 0; result == null && i < groups.size(); i++)

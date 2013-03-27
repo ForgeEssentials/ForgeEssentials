@@ -126,6 +126,7 @@ public class CommandFEPermUser
 				OutputHandler.chatConfirmation(sender, "/p user <player> group remove : Removes player from specified group.");
 				OutputHandler.chatConfirmation(sender, "/p user <player> group set : Removes player from all groups and adds them to specified group.");
 			}
+
 			String zoneName = ZoneManager.getGLOBAL().getZoneName();
 			if (args.length == 5) // zone is set
 			{
@@ -139,59 +140,61 @@ public class CommandFEPermUser
 					return;
 				}
 			}
-
-			if (args[2].equalsIgnoreCase("add")) // add player to group
+			else if (args.length >= 3)
 			{
-				if (args.length > 3)
+				if (args[2].equalsIgnoreCase("add")) // add player to group
 				{
-					String result = PermissionsAPI.addPlayerToGroup(args[3], playerName, zoneName);
-					if (result != null)
+					if (args.length > 3)
 					{
-						OutputHandler.chatError(sender, result);
+						String result = PermissionsAPI.addPlayerToGroup(args[3], playerName, zoneName);
+						if (result != null)
+						{
+							OutputHandler.chatError(sender, result);
+						}
+						else
+						{
+							OutputHandler.chatConfirmation(sender, playerName + " added to group " + args[3]);
+						}
 					}
 					else
 					{
-						OutputHandler.chatConfirmation(sender, playerName + " added to group " + args[3]);
+						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
 					}
+					return;
 				}
-				else
+				else if (args[2].equalsIgnoreCase("remove")) // remove player from
+																// group
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+					if (args.length > 3)
+					{
+						String result = PermissionsAPI.clearPlayerGroup(args[3], playerName, zoneName);
+						if (result != null)
+						{
+							OutputHandler.chatError(sender, result);
+						}
+						else
+						{
+							OutputHandler.chatConfirmation(sender, playerName + " removed from group " + args[3]);
+						}
+					}
+					return;
 				}
-				return;
-			}
-			else if (args[2].equalsIgnoreCase("remove")) // remove player from
-															// group
-			{
-				if (args.length > 3)
+				else if (args[2].equalsIgnoreCase("set")) // set player's group
 				{
-					String result = PermissionsAPI.clearPlayerGroup(args[3], playerName, zoneName);
-					if (result != null)
+					if (args.length > 3)
 					{
-						OutputHandler.chatError(sender, result);
+						String result = PermissionsAPI.setPlayerGroup(args[3], playerName, zoneName);
+						if (result != null)
+						{
+							OutputHandler.chatError(sender, result);
+						}
+						else
+						{
+							OutputHandler.chatConfirmation(sender, playerName + "'s group set to " + args[3]);
+						}
 					}
-					else
-					{
-						OutputHandler.chatConfirmation(sender, playerName + " removed from group " + args[3]);
-					}
+					return;
 				}
-				return;
-			}
-			else if (args[2].equalsIgnoreCase("set")) // set player's group
-			{
-				if (args.length > 3)
-				{
-					String result = PermissionsAPI.setPlayerGroup(args[3], playerName, zoneName);
-					if (result != null)
-					{
-						OutputHandler.chatError(sender, result);
-					}
-					else
-					{
-						OutputHandler.chatConfirmation(sender, playerName + "'s group set to " + args[3]);
-					}
-				}
-				return;
 			}
 		}
 		else if (args.length >= 2) // player management

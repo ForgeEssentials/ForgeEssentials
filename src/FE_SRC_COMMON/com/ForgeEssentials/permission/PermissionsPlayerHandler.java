@@ -133,8 +133,7 @@ public final class PermissionsPlayerHandler
 			if (result.equals(PermResult.UNKNOWN))
 			{
 				// get all the players groups here.
-				groups = PermissionsAPI.getApplicableGroups(event.doer, false);
-				Collections.sort(groups);
+				groups = PermissionsAPI.getApplicableGroups(event.doer.username, false, tempZone.getZoneName());
 
 				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
