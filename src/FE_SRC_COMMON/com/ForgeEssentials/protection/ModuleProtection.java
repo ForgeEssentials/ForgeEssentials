@@ -77,14 +77,16 @@ public class ModuleProtection
 		{
 			if (EntityLiving.class.isAssignableFrom(e.getValue()))
 			{
-				event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + e.getKey(), RegGroup.ZONE);
-				event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + e.getKey(), RegGroup.ZONE);
+				event.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + e.getKey());
+				event.registerPermission(PERM_MOB_SPAWN_FORCED + "." + e.getKey());
 			}
 		}
+		event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + Permission.ALL, RegGroup.ZONE);
+		event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + Permission.ALL, RegGroup.ZONE);
 
 		for (String perm : UnfreindlyItemList.getNameSet())
 		{
-			event.registerPermissionLevel(PERM_ITEM_USE + "." + perm, RegGroup.MEMBERS);
+			event.registerPermission(PERM_ITEM_USE + "." + perm);
 		}
 		
 		event.registerPermissionLevel(PERM_ITEM_USE + "." + Permission.ALL, RegGroup.MEMBERS);

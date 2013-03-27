@@ -2,6 +2,15 @@ package com.ForgeEssentials.api.permissions;
 
 public interface IPermRegisterEvent
 {
+	
+	/**
+	 * This should be done for large ammounts of permissions, where 
+	 * they should not be exported as defaults but instead only be saved as posible permitions. 
+	 * @param permission Qualified permission node
+	 */
+	public void registerPermission(String permission);
+	
+	
 	/**
 	 * This method will register the permission and its default level. This
 	 * should be done with ALL permissions as well. If a group is registered with a given permission,
