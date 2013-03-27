@@ -75,6 +75,7 @@ public class LoginMessage
 				pw.println("# %time% => Local server time. All in one string.");
 				pw.println("# %hour% ; %min% ; %sec% => Local server time.");
 				pw.println("# %day% ; %month% ; %year% => Local server date.");
+				pw.println("# %online => Nice list of online players.");
 				pw.println("# ");
 				pw.println("# If you would like more codes, you can make an issue on https://github.com/ForgeEssentials/ForgeEssentialsMain/issues");
 				pw.println("");
@@ -132,7 +133,8 @@ public class LoginMessage
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.username); // username
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%players%", online()); // players online
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%uptime%", getUptime()); // uptime
-		line = FunctionHelper.replaceAllIgnoreCase(line, "%uniqueplayers%", uniqueplayers()); // unique players
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%uniqueplayers%", uniqueplayers()); // unique players		
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%online", MinecraftServer.getServer().getConfigurationManager().getPlayerListAsString()); // All online players
 
 		// time stuff
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%time%", FunctionHelper.getCurrentTimeString());
