@@ -2681,7 +2681,9 @@ public class SqlHelper
 			statement.clearParameters();
 
 			if (set.next())
+			{
 				return set.getBoolean(COLUMN_PERMISSION_ALLOWED) ? "allowed" : "denied";
+			}
 		}
 		catch (SQLException e)
 		{
