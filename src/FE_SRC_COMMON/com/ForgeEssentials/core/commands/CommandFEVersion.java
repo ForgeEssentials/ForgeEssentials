@@ -63,12 +63,6 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	{
 		return null;
 	}
-	
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return true;
-	}
 
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)

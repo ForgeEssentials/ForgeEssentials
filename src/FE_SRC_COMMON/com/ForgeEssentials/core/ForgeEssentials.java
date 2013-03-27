@@ -7,8 +7,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.data.ClassContainer;
 import com.ForgeEssentials.api.data.DataStorageManager;
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.commands.CoreCommands;
 import com.ForgeEssentials.core.commands.selections.WandController;
 import com.ForgeEssentials.core.compat.CompatMCStats;
@@ -192,6 +195,16 @@ public class ForgeEssentials
 		bannedItems.postLoad(e);
 
 		new FriendlyItemList();
+	}
+	
+	@PermRegister
+	private static void registerPerms(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel("ForgeEssentials.CoreCommands.select.pos", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.CoreCommands.select.wand", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.CoreCommands.select.deselect", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.CoreCommands.fedebug", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.CoreCommands.fereload", RegGroup.OWNERS);
 	}
 
 	@ServerStarting
