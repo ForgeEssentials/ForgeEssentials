@@ -22,7 +22,9 @@ import cpw.mods.fml.common.registry.ItemData;
 
 public abstract class UnfreindlyItemList
 {
-	private static HashBiMap<String, Integer>	map	= HashBiMap.create();
+	private static final HashBiMap<String, Integer>	map	= HashBiMap.create();
+	private static final String VANILLA = "vanilla";
+	private static final String UNKNOWN = "unknownSource";
 
 	private UnfreindlyItemList()
 	{
@@ -46,7 +48,7 @@ public abstract class UnfreindlyItemList
 			for (int i = 0; i < list.tagCount(); i++)
 			{
 				data = new ItemData((NBTTagCompound) list.tagAt(i));
-				modid = "vanilla";
+				modid = VANILLA;
 
 				if (!data.getModId().equalsIgnoreCase("Minecraft"))
 				{
@@ -91,7 +93,7 @@ public abstract class UnfreindlyItemList
 			tempName = gameMap.get(item.itemID);
 			if (Strings.isNullOrEmpty(tempName))
 			{
-				name = "unknownSource." + name;
+				name = UNKNOWN+"." + name;
 			}
 			else
 			{
@@ -134,7 +136,11 @@ public abstract class UnfreindlyItemList
 	 */
 	public static String getName(int id)
 	{
-		return map.inverse().get(id);
+		String name = map.inverse().get(id);
+		if (Strings.isNullOrEmpty(name))
+			return UNKNOWN+"."+id;
+		else
+			return name;
 	}
 
 	public static Set<String> getNameSet()
