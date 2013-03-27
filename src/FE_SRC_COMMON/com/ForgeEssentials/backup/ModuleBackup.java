@@ -72,7 +72,7 @@ public class ModuleBackup
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if (BackupConfig.backupIfUnloaded)
+			if (BackupConfig.backupOnWorldUnload)
 			{
 				new Backup((WorldServer) e.world, false);
 			}
@@ -80,14 +80,11 @@ public class ModuleBackup
 	}
 
 	@ForgeSubscribe
-	public void worldUnload(WorldEvent.Load e)
+	public void worldLoad(WorldEvent.Load e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if (BackupConfig.worldSaveing)
-			{
-				((WorldServer) e.world).canNotSave = !BackupConfig.worldSaveing;
-			}
+			((WorldServer) e.world).canNotSave = !BackupConfig.worldSaveing;
 		}
 	}
 
@@ -147,7 +144,7 @@ public class ModuleBackup
 			e.printStackTrace();
 		}
 	}
-	
+
 	synchronized static void worldsave(int i) throws MinecraftException
 	{
 		WorldServer world = DimensionManager.getWorld(i);

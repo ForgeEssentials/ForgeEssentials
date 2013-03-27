@@ -28,7 +28,7 @@ import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.util.OutputHandler;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class NBTDataDriver extends BinaryDataDriver
 {
 	@Override
@@ -132,7 +132,6 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void readClassFromTag(NBTTagCompound tag, TypeData data, ITypeInfo info)
 	{
 		String name;

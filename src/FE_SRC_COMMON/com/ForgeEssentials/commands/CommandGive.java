@@ -1,10 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -12,7 +10,7 @@ import net.minecraft.item.ItemStack;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
-import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -49,19 +47,15 @@ public class CommandGive extends FEcmdModuleCommands
 		int[] idAndMeta = FunctionHelper.parseIdAndMetaFromString(args[1], false);
 		id = idAndMeta[0];
 		dam = idAndMeta[1];
-
-		List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		if (PlayerSelector.hasArguments(args[0]))
+		if (dam == -1)
 		{
-			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
+			dam = 0;
 		}
-		if (players.size() != 0)
+		EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[0]);
+		if (player != null)
 		{
 			ItemStack stack = new ItemStack(id, amount, dam);
-			for (EntityPlayer player : players)
-			{
-				player.inventory.addItemStackToInventory(stack.copy());
-			}
+			player.inventory.addItemStackToInventory(stack.copy());
 			String name = Item.itemsList[id].func_77653_i(stack);
 			OutputHandler.chatConfirmation(sender, Localization.format("command.give.given", args[0], amount, name));
 		}
@@ -94,18 +88,16 @@ public class CommandGive extends FEcmdModuleCommands
 		id = idAndMeta[0];
 		dam = idAndMeta[1];
 
-		List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		if (PlayerSelector.hasArguments(args[0]))
+		if (dam == -1)
 		{
-			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
+			dam = 0;
 		}
-		if (players.size() != 0)
+
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+		if (player != null)
 		{
 			ItemStack stack = new ItemStack(id, amount, dam);
-			for (EntityPlayer player : players)
-			{
-				player.inventory.addItemStackToInventory(stack.copy());
-			}
+			player.inventory.addItemStackToInventory(stack.copy());
 			String name = Item.itemsList[id].func_77653_i(stack);
 			OutputHandler.chatConfirmation(sender, Localization.format("command.give.given", args[0], amount, name));
 		}
@@ -131,7 +123,7 @@ public class CommandGive extends FEcmdModuleCommands
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getItemList());
+			return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getItemList());
 		else if (args.length == 3)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 		else

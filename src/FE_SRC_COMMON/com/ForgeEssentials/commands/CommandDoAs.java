@@ -1,15 +1,14 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -43,18 +42,11 @@ public class CommandDoAs extends FEcmdModuleCommands
 			cmd.append(args[i]);
 			cmd.append(" ");
 		}
-		List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		if (PlayerSelector.hasArguments(args[0]))
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+		if (player != null)
 		{
-			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		}
-		if (players.size() != 0)
-		{
-			for (EntityPlayer target : players)
-			{
-				OutputHandler.chatWarning(target, Localization.format("command.doas.attempt", sender.getCommandSenderName()));
-				FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(target, cmd.toString());
-			}
+			OutputHandler.chatWarning(player, Localization.format("command.doas.attempt", sender.getCommandSenderName()));
+			FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, cmd.toString());
 			OutputHandler.chatConfirmation(sender, Localization.format("command.doas.success", args[0]));
 		}
 		else

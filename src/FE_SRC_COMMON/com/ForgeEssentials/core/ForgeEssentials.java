@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.data.ClassContainer;
@@ -14,17 +15,20 @@ import com.ForgeEssentials.core.compat.CompatMCStats;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.core.compat.SanityChecker;
 import com.ForgeEssentials.core.misc.BannedItems;
-import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
+import com.ForgeEssentials.core.misc.UnfreindlyItemList;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
+import com.ForgeEssentials.core.preloader.FEModContainer;
 import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLDataDriver;
 import com.ForgeEssentials.data.StorageManager;
 import com.ForgeEssentials.data.typeInfo.TypeInfoItemStack;
 import com.ForgeEssentials.data.typeInfo.TypeInfoNBTCompound;
+import com.ForgeEssentials.util.FEChunkLoader;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.MiscEventHandler;
@@ -66,7 +70,7 @@ import cpw.mods.fml.relauncher.Side;
 		clientSideRequired = false,
 		serverSideRequired = false,
 		serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = PacketHandler.class))
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = "@VERSION@")
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version)
 public class ForgeEssentials
 {
 
@@ -101,6 +105,9 @@ public class ForgeEssentials
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		OutputHandler.init(e.getModLog());
+		
+		// FE MUST BE FIRST!!
+		GameRegistry.registerPlayerTracker(new PlayerTracker());
 
 		version = e.getModMetadata().version;
 
@@ -164,9 +171,7 @@ public class ForgeEssentials
 		// tasks
 		tasks = new TaskRegistry();
 
-		// other stuff
-		GameRegistry.registerPlayerTracker(new PlayerTracker());
-
+		//other stuff
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		TickRegistry.registerTickHandler(factory, Side.SERVER);
 		GameRegistry.registerPlayerTracker(factory);
@@ -180,10 +185,13 @@ public class ForgeEssentials
 	@PostInit
 	public void postLoad(FMLPostInitializationEvent e)
 	{
+		UnfreindlyItemList.modStep();
+		UnfreindlyItemList.output(new File(FEDIR, "UnfreindlyItemList.txt"));
+
 		mdlaunch.postLoad(e);
 		bannedItems.postLoad(e);
 
-		new ItemList();
+		new FriendlyItemList();
 	}
 
 	@ServerStarting
@@ -204,6 +212,8 @@ public class ForgeEssentials
 
 		// do modules last... just in case...
 		mdlaunch.serverStarting(e);
+
+		ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
 	}
 
 	@ServerStarted

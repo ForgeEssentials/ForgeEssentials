@@ -1,10 +1,15 @@
 package com.ForgeEssentials.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -17,7 +22,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.google.common.base.Joiner;
@@ -102,9 +107,51 @@ public final class FunctionHelper
 		return uptime;
 	}
 
+	/**
+	 * DO NOT use this for commands
+	 * @param name
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
 	public static EntityPlayerMP getPlayerForName(String name)
+	{	
+		// tru exact match first.
+		{
+			EntityPlayerMP tempPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(name);
+			if (tempPlayer != null)
+				return tempPlayer;
+		}
+
+		// now try getting others
+		List<EntityPlayerMP> possibles = new LinkedList<EntityPlayerMP>();
+		ArrayList<EntityPlayerMP> temp = (ArrayList<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList;
+		for (EntityPlayerMP player : temp)
+		{
+			if (player.username.equalsIgnoreCase(name))
+				return player;
+
+			if (player.username.toLowerCase().contains(name.toLowerCase()))
+			{
+				possibles.add(player);
+			}
+		}
+		if (possibles.size() == 1)
+			return possibles.get(0);
+		return null;
+	}
+	
+	public static EntityPlayerMP getPlayerForName(ICommandSender sender, String name)
 	{
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(name);
+        EntityPlayerMP var2 = PlayerSelector.matchOnePlayer(sender, name);
+
+        if (var2 != null)
+        {
+            return var2;
+        }
+        else
+        {
+        	return getPlayerForName(name);
+        }
 	}
 
 	/**
@@ -198,7 +245,7 @@ public final class FunctionHelper
 	{
 		if (blockOnly)
 		{
-			Block block = ItemList.instance().getBlockForName(name);
+			Block block = FriendlyItemList.instance().getBlockForName(name);
 			if (block == null)
 				return 0;
 			else
@@ -206,7 +253,7 @@ public final class FunctionHelper
 		}
 		else
 		{
-			Item item = ItemList.instance().getItemForName(name);
+			Item item = FriendlyItemList.instance().getItemForName(name);
 			if (item == null)
 				return 0;
 			else
@@ -283,7 +330,7 @@ public final class FunctionHelper
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * Get tps.
 	 * @return
@@ -449,6 +496,9 @@ public final class FunctionHelper
 			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, p.dim);
 		}
 		player.playerNetServerHandler.setPlayerLocation(p.xd, p.yd, p.zd, p.yaw, p.pitch);
+		player.prevPosX = player.posX = p.xd;
+		player.prevPosY = player.posY = p.yd;
+		player.prevPosZ = player.posZ = p.zd;
 	}
 
 	/**

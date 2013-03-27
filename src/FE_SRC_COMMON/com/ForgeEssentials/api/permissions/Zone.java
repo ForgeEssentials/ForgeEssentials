@@ -116,6 +116,9 @@ public class Zone extends WorldArea implements Comparable<Object>
 	{
 		if (!(o instanceof Zone))
 			return Integer.MIN_VALUE;
+		
+		if (equals(o))
+			return 0;
 
 		Zone zone = (Zone) o;
 		if (zone.isParentOf(this))

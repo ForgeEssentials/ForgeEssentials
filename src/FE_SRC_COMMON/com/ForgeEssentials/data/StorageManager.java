@@ -34,19 +34,17 @@ import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class StorageManager implements IStorageManager
 {
 	// just keeps an instance of the config for future use.
 	private Configuration													config;
-	private static final String												configCategory	= "data";
 	public static final EnumDriverType										defaultDriver	= EnumDriverType.TEXT;
 	private EnumDriverType													chosen			= defaultDriver;
 	private ConcurrentHashMap<EnumDriverType, String>						typeChosens;													// the defaults...
 	private ConcurrentHashMap<String, Class<? extends AbstractDataDriver>>	classMap;														// registered ones...
 	private ConcurrentHashMap<String, AbstractDataDriver>					instanceMap;													// instantiated ones
 	private static StorageManager											instance;
-	private boolean															loaded			= false;
 	private ConcurrentHashMap<String, ITypeInfo>							taggerList		= new ConcurrentHashMap<String, ITypeInfo>();
 
 	public StorageManager(Configuration config)
@@ -109,8 +107,6 @@ public class StorageManager implements IStorageManager
 				e.printStackTrace();
 			}
 		}
-
-		loaded = true;
 	}
 
 	/**

@@ -5,16 +5,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.TPAdata;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -84,8 +87,14 @@ public class CommandTPA extends FEcmdModuleCommands
 			}
 			return;
 		}
-
-		EntityPlayerMP receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
+		
+		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".sendrequest")))
+		{
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+			return;
+		}
+		
+		EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (receiver == null)
 		{
 			sender.sendChatToPlayer(args[0] + " not found.");
@@ -135,5 +144,11 @@ public class CommandTPA extends FEcmdModuleCommands
 	public RegGroup getReggroup()
 	{
 		return RegGroup.MEMBERS;
+	}
+	
+	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".sendrequest", getReggroup());
 	}
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -14,6 +13,7 @@ import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -34,7 +34,7 @@ public class CommandFEPermUser
 		}
 
 		String playerName = args[0];
-		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (playerName.equalsIgnoreCase("_ME_"))
 		{
 			player = (EntityPlayerMP) sender;
@@ -92,82 +92,25 @@ public class CommandFEPermUser
 				Zone zone = ZoneManager.getSUPER();
 				String perm = null;
 				String value = null;
-				boolean prop = false;
-
-				if (args[3].contains("{"))
-				{
-					prop = true;
-					if (args[3].contains("}"))
-					{
-						perm = args[3].substring(0, args[3].indexOf("{") - 2);
-						value = args[3].substring(args[3].indexOf("{") + 1, args[3].indexOf("}") - 1);
-					}
-					else
-					{
-						int index = -1;
-						for (int i = 4; i < args.length; i++)
-						{
-							if (args[i].contains("}"))
-								index = i;
-						}
-						if (index == -1)
-						{
-							OutputHandler.chatError(sender, "Permission prop is missing closing bracket.");
-							return;
-						}
-						else
-						{
-							value = args[3].substring(args[3].indexOf("{") + 1);
-							for (int i = 4; i < index - 1; i++)
-							{
-								value += " " + args[i];
-							}
-							value += " " + args[index].substring(0, args[index].indexOf("}") - 1);
-						}
-					}
-				}
 
 				if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("allow"))
 				{
-					if (prop)
-					{
-						PermissionsAPI.setPlayerPermissionProp(playerName, perm, value, zone.getZoneName());
-						OutputHandler.chatConfirmation(sender, playerName + " has been allowed " + perm + " prop with value of " + value);
-					}
-					else
-					{
-						PermissionsAPI.setPlayerPermission(playerName, args[3], true, zone.getZoneName());
-						OutputHandler.chatConfirmation(sender, playerName + " has been allowed " + args[3]);
-					}
+					PermissionsAPI.setPlayerPermissionProp(playerName, perm, value, zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, playerName + " has been allowed " + perm + " prop with value of " + value);
 					return;
 				}
 				// remove super perm setting
 				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove"))
 				{
-					if (prop)
-					{
-						PermissionsAPI.clearPlayerPermissionProp(playerName, perm, zone.getZoneName());
-						OutputHandler.chatConfirmation(sender, playerName + "'s " + perm + " prop has been cleared");
-					}
-					else
-					{
-						PermissionsAPI.clearPlayerPermission(playerName, args[3], zone.getZoneName());
-						OutputHandler.chatConfirmation(sender, playerName + "'s access to " + args[2] + " cleared");
-					}
+					PermissionsAPI.clearPlayerPermission(playerName, args[3], zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, playerName + "'s access to " + args[2] + " cleared");
 					return;
 				}
 				// deny super perm
 				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny"))
 				{
-					if (prop)
-					{
-						OutputHandler.chatError(sender, "Permission prop can only be set or cleared.");
-					}
-					else
-					{
-						PermissionsAPI.setPlayerPermission(playerName, args[3], false, zone.getZoneName());
-						OutputHandler.chatConfirmation(sender, playerName + " has been denied " + args[3]);
-					}
+					PermissionsAPI.setPlayerPermission(playerName, args[3], false, zone.getZoneName());
+					OutputHandler.chatConfirmation(sender, playerName + " has been denied " + args[3]);
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("get"))
@@ -183,6 +126,7 @@ public class CommandFEPermUser
 				OutputHandler.chatConfirmation(sender, "/p user <player> group remove : Removes player from specified group.");
 				OutputHandler.chatConfirmation(sender, "/p user <player> group set : Removes player from all groups and adds them to specified group.");
 			}
+
 			String zoneName = ZoneManager.getGLOBAL().getZoneName();
 			if (args.length == 5) // zone is set
 			{
@@ -196,59 +140,61 @@ public class CommandFEPermUser
 					return;
 				}
 			}
-
-			if (args[2].equalsIgnoreCase("add")) // add player to group
+			else if (args.length >= 3)
 			{
-				if (args.length > 3)
+				if (args[2].equalsIgnoreCase("add")) // add player to group
 				{
-					String result = PermissionsAPI.addPlayerToGroup(args[3], playerName, zoneName);
-					if (result != null)
+					if (args.length > 3)
 					{
-						OutputHandler.chatError(sender, result);
+						String result = PermissionsAPI.addPlayerToGroup(args[3], playerName, zoneName);
+						if (result != null)
+						{
+							OutputHandler.chatError(sender, result);
+						}
+						else
+						{
+							OutputHandler.chatConfirmation(sender, playerName + " added to group " + args[3]);
+						}
 					}
 					else
 					{
-						OutputHandler.chatConfirmation(sender, playerName + " added to group " + args[3]);
+						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
 					}
+					return;
 				}
-				else
+				else if (args[2].equalsIgnoreCase("remove")) // remove player from
+																// group
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+					if (args.length > 3)
+					{
+						String result = PermissionsAPI.clearPlayerGroup(args[3], playerName, zoneName);
+						if (result != null)
+						{
+							OutputHandler.chatError(sender, result);
+						}
+						else
+						{
+							OutputHandler.chatConfirmation(sender, playerName + " removed from group " + args[3]);
+						}
+					}
+					return;
 				}
-				return;
-			}
-			else if (args[2].equalsIgnoreCase("remove")) // remove player from
-															// group
-			{
-				if (args.length > 3)
+				else if (args[2].equalsIgnoreCase("set")) // set player's group
 				{
-					String result = PermissionsAPI.clearPlayerGroup(args[3], playerName, zoneName);
-					if (result != null)
+					if (args.length > 3)
 					{
-						OutputHandler.chatError(sender, result);
+						String result = PermissionsAPI.setPlayerGroup(args[3], playerName, zoneName);
+						if (result != null)
+						{
+							OutputHandler.chatError(sender, result);
+						}
+						else
+						{
+							OutputHandler.chatConfirmation(sender, playerName + "'s group set to " + args[3]);
+						}
 					}
-					else
-					{
-						OutputHandler.chatConfirmation(sender, playerName + " removed from group " + args[3]);
-					}
+					return;
 				}
-				return;
-			}
-			else if (args[2].equalsIgnoreCase("set")) // set player's group
-			{
-				if (args.length > 3)
-				{
-					String result = PermissionsAPI.setPlayerGroup(args[3], playerName, zoneName);
-					if (result != null)
-					{
-						OutputHandler.chatError(sender, result);
-					}
-					else
-					{
-						OutputHandler.chatConfirmation(sender, playerName + "'s group set to " + args[3]);
-					}
-				}
-				return;
 			}
 		}
 		else if (args.length >= 2) // player management
@@ -321,42 +267,6 @@ public class CommandFEPermUser
 
 			// player permisisons
 			String zoneName = ZoneManager.getGLOBAL().getZoneName();
-			String perm = null;
-			String value = null;
-			boolean prop = false;
-
-			if (args[2].contains("{"))
-			{
-				prop = true;
-				if (args[3].contains("}"))
-				{
-					perm = args[3].substring(0, args[3].indexOf("{") - 2);
-					value = args[3].substring(args[3].indexOf("{") + 1, args[3].indexOf("}") - 1);
-				}
-				else
-				{
-					int index = -1;
-					for (int i = 4; i < args.length; i++)
-					{
-						if (args[i].contains("}"))
-							index = i;
-					}
-					if (index == -1)
-					{
-						OutputHandler.chatError(sender, "Permission prop is missing closing bracket.");
-						return;
-					}
-					else
-					{
-						value = args[3].substring(args[3].indexOf("{") + 1);
-						for (int i = 4; i < index - 1; i++)
-						{
-							value += " " + args[i];
-						}
-						value += " " + args[index].substring(0, args[index].indexOf("}") - 1);
-					}
-				}
-			}
 			if (args.length == 4) // zone is set
 			{
 				if (ZoneManager.getZone(args[3]) != null)
@@ -438,16 +348,16 @@ public class CommandFEPermUser
 				{
 					if (permission.contains("has no individual permissions."))
 					{
-						OutputHandler.chatConfirmation(sender, perm);
+						OutputHandler.chatConfirmation(sender, permission);
 						return;
 					}
 					if (permission.contains("ALLOW"))
 					{
-						messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + perm.substring(0, perm.indexOf(":")));
+						messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + permission.substring(0, permission.indexOf(":")));
 					}
 					else
 					{
-						messageDenied.add(" " + FEChatFormatCodes.DARKRED + perm.substring(0, perm.indexOf(":")));
+						messageDenied.add(" " + FEChatFormatCodes.DARKRED + permission.substring(0, permission.indexOf(":")));
 					}
 				}
 				OutputHandler.chatConfirmation(sender, playerName + ": Current permissions in zone " + zoneName + ":");
@@ -481,7 +391,7 @@ public class CommandFEPermUser
 		}
 
 		String playerName = args[0];
-		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (player == null)
 		{
 			sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_NOPLAYER, args[0]));

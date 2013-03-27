@@ -1,10 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
@@ -14,6 +12,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -32,18 +31,11 @@ public class CommandKill extends FEcmdModuleCommands
 	{
 		if (args.length >= 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer victim : players)
-				{
-					victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
-					victim.sendChatToPlayer(Localization.get("command.kill.msg"));
-				}
+				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
+				player.sendChatToPlayer(Localization.get("command.kill.msg"));
 			}
 			else
 			{
@@ -62,18 +54,11 @@ public class CommandKill extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer victim : players)
-				{
-					victim.attackEntityFrom(DamageSource.outOfWorld, 1000);
-					victim.sendChatToPlayer(Localization.get("command.kill.msg"));
-				}
+				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
+				player.sendChatToPlayer(Localization.get("command.kill.msg"));
 			}
 			else
 			{

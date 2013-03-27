@@ -43,7 +43,7 @@ public class ForgeEssentialsClient
 		config.addCustomCategoryComment("Core", "Configure ForgeEssentials .");
 
 		Property prop = config.get("Core", "allowCUI", true);
-		prop.comment = "Set to false to disable the WorldControl CUI.";
+		prop.comment = "Set to false to disable graphical selections.";
 		allowCUI = prop.getBoolean(true);
 		// any other parts please config here
 		config.save();
@@ -57,6 +57,7 @@ public class ForgeEssentialsClient
 		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
 		if (allowCUI){
 			MinecraftForge.EVENT_BUS.register(new CUIRenderrer());
+			MinecraftForge.EVENT_BUS.register(new CUIPlayerLogger());
 		}
 	}
 

@@ -1,6 +1,5 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -37,10 +37,10 @@ public class CommandTp extends FEcmdModuleCommands
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				target = PlayerSelector.matchOnePlayer(sender, args[0]);
+				target = FunctionHelper.getPlayerForName(sender, args[0]);
 			}
 			if (target != null)
 			{
@@ -56,31 +56,24 @@ public class CommandTp extends FEcmdModuleCommands
 		}
 		else if (args.length == 2)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
+				EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[0]);
+				if (PlayerSelector.hasArguments(args[1]))
 				{
-					EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
-					if (PlayerSelector.hasArguments(args[1]))
-					{
-						target = PlayerSelector.matchOnePlayer(sender, args[1]);
-					}
-					if (target != null)
-					{
-						PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
-						playerInfo.back = new WarpPoint(player);
-						TeleportCenter.addToTpQue(new WarpPoint(target), player);
-					}
-					else
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[1]));
-						break;
-					}
+					target = FunctionHelper.getPlayerForName(sender, args[1]);
+				}
+				if (target != null)
+				{
+					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+					playerInfo.back = new WarpPoint(player);
+					TeleportCenter.addToTpQue(new WarpPoint(target), player);
+				}
+				else
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[1]));
+					return;
 				}
 			}
 			else
@@ -102,19 +95,12 @@ public class CommandTp extends FEcmdModuleCommands
 			else if (args.length == 4)
 			{
 				int x = parseInt(sender, args[1]), y = parseInt(sender, args[2]), z = parseInt(sender, args[3]);
-				List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				if (PlayerSelector.hasArguments(args[0]))
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+				if (player != null)
 				{
-					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				}
-				if (players.size() != 0)
-				{
-					for (EntityPlayer player : players)
-					{
-						PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
-						playerInfo.back = new WarpPoint(player);
-						TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
-					}
+					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+					playerInfo.back = new WarpPoint(player);
+					TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
 				}
 				else
 				{
@@ -137,31 +123,24 @@ public class CommandTp extends FEcmdModuleCommands
 	{
 		if (args.length == 2)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
+				EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[0]);
+				if (PlayerSelector.hasArguments(args[1]))
 				{
-					EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
-					if (PlayerSelector.hasArguments(args[1]))
-					{
-						target = PlayerSelector.matchOnePlayer(sender, args[1]);
-					}
-					if (target != null)
-					{
-						PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
-						playerInfo.back = new WarpPoint(player);
-						TeleportCenter.addToTpQue(new WarpPoint(target), player);
-					}
-					else
-					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[1]));
-						break;
-					}
+					target = FunctionHelper.getPlayerForName(sender, args[1]);
+				}
+				if (target != null)
+				{
+					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+					playerInfo.back = new WarpPoint(player);
+					TeleportCenter.addToTpQue(new WarpPoint(target), player);
+				}
+				else
+				{
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[1]));
+					return;
 				}
 			}
 			else
@@ -173,19 +152,12 @@ public class CommandTp extends FEcmdModuleCommands
 		else if (args.length == 4)
 		{
 			int x = parseInt(sender, args[1]), y = parseInt(sender, args[2]), z = parseInt(sender, args[3]);
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
-				{
-					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
-					playerInfo.back = new WarpPoint(player);
-					TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
-				}
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+				playerInfo.back = new WarpPoint(player);
+				TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
 			}
 			else
 			{

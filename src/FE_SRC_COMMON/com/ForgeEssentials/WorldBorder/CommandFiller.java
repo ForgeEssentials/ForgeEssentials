@@ -77,7 +77,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 		{
 			world = DimensionManager.getWorld(parseInt(sender, args[0]));
 		}
-		else if (args[0].equalsIgnoreCase("here") && (sender instanceof EntityPlayer))
+		else if ((args[0].equalsIgnoreCase("here") || args[0].equalsIgnoreCase("world")) && sender instanceof EntityPlayer)
 		{
 			world = (WorldServer) ((EntityPlayer) sender).worldObj;
 		}
@@ -109,7 +109,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatWarning(sender, "Filler already running for that world!");
+					OutputHandler.chatError(sender, "Filler already running for that world!");
 				}
 			}
 			else if (args[1].equalsIgnoreCase("stop"))
@@ -123,7 +123,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 					map.get(world.provider.dimensionId).stop();
 				}
 			}
-			else if (args[1].equalsIgnoreCase("restart"))
+			else if (args[1].equalsIgnoreCase("reset"))
 			{
 				if (!map.containsKey(world.provider.dimensionId))
 				{
@@ -131,7 +131,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatWarning(sender, "Filler already running for that world!");
+					OutputHandler.chatError(sender, "Filler already running for that world!");
 				}
 			}
 			else if (args[1].equalsIgnoreCase("speed"))
@@ -173,15 +173,18 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 		{
 			ArrayList<String> list = new ArrayList<String>();
 			if (sender instanceof EntityPlayer)
+			{
+				list.add("world");
 				list.add("here");
+			}
 			for (int i : DimensionManager.getIDs())
+			{
 				list.add("" + i);
+			}
 			return getListOfStringsFromIterableMatchingLastWord(args, list);
 		}
 		if (args.length == 2)
-		{
-			return getListOfStringsMatchingLastWord(args, "start", "stop", "restart", "speed");
-		}
+			return getListOfStringsMatchingLastWord(args, "start", "stop", "reset", "speed");
 		return null;
 	}
 

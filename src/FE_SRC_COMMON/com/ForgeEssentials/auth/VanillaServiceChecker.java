@@ -3,15 +3,13 @@ package com.ForgeEssentials.auth;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.EnumSet;
+import java.util.TimerTask;
 
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.IScheduledTickHandler;
-import cpw.mods.fml.common.TickType;
 
-public class VanillaServiceChecker implements IScheduledTickHandler
+public class VanillaServiceChecker extends TimerTask
 {
 	private boolean				online		= true;
 	private boolean				oldOnline;
@@ -26,7 +24,7 @@ public class VanillaServiceChecker implements IScheduledTickHandler
 	}
 
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
+	public void run()
 	{
 		oldOnline = online;
 		online = check();
@@ -34,32 +32,8 @@ public class VanillaServiceChecker implements IScheduledTickHandler
 		if (oldOnline != online)
 		{
 			FMLCommonHandler.instance().getSidedDelegate().getServer().setOnlineMode(online);
-			ModuleAuth.enabled = !online;
+			ModuleAuth.onStatusChange();
 		}
-	}
-
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
-	{
-	}
-
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of(TickType.SERVER);
-	}
-
-	@Override
-	public String getLabel()
-	{
-		return "VanillaAuthServiceChecker";
-	}
-
-	@Override
-	public int nextTickSpacing()
-	{
-		// TODO: make configureable
-		return 20 * 5;
 	}
 
 	private static boolean check()

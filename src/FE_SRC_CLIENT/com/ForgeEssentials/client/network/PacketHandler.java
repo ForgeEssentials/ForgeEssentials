@@ -35,6 +35,9 @@ public class PacketHandler implements IPacketHandler
 					case 0:
 						PacketSelectionUpdate.readClient(stream, world, player);
 						break;
+					case 1:
+						PacketPlayerLogger.readClient(stream, world, player);
+						break;
 				}
 		}
 		catch (Exception e)

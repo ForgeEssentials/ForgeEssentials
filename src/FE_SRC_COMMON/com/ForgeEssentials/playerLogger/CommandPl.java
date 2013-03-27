@@ -7,8 +7,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.network.PacketPlayerLogger;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 
 /**
  * Main playerlogger command. Still WIP
@@ -37,10 +40,10 @@ public class CommandPl extends ForgeEssentialsCommandBase
 			return;
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer("You must use /pl get");
+			sender.sendChatToPlayer("You must use /playerlogger enable");
 			return;
 		}
-		if (args[0].equalsIgnoreCase("get"))
+		else if (args[0].equalsIgnoreCase("enable"))
 		{
 			int limit = 5;
 			if (args.length == 2)
@@ -51,6 +54,12 @@ public class CommandPl extends ForgeEssentialsCommandBase
 			sender.getEntityData().setInteger("lb_limit", limit);
 			sender.sendChatToPlayer("Click a block and you will get the last " + limit + " changes.");
 		}
+		else if (args[0].equalsIgnoreCase("disable"))
+		{
+			sender.getEntityData().setBoolean("lb", false);
+		}
+
+		PacketDispatcher.sendPacketToPlayer(new PacketPlayerLogger(sender).getPayload(), (Player) sender);
 
 		// TODO add further stuff.
 	}
@@ -77,7 +86,7 @@ public class CommandPl extends ForgeEssentialsCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-			return getListOfStringsMatchingLastWord(args, "get", "rollback");
+			return getListOfStringsMatchingLastWord(args, "enable", "disable");
 		else if (args.length == 2)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 		else

@@ -13,6 +13,7 @@ import com.ForgeEssentials.api.permissions.query.PropQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
 
+@SuppressWarnings("unused")
 public final class PermissionsPropHandler
 {
 	private PermissionsPropHandler()
@@ -25,13 +26,21 @@ public final class PermissionsPropHandler
 		String result = null;
 
 		if (query instanceof PropQueryBlanketZone)
+		{
 			applied = ((PropQueryBlanketZone) query).zone;
+		}
 		else if (query instanceof PropQueryPlayerZone)
+		{
 			applied = ((PropQueryPlayerZone) query).zone;
+		}
 		else if (query instanceof PropQueryBlanketSpot)
+		{
 			applied = ZoneManager.getWhichZoneIn(((PropQueryBlanketSpot) query).spot);
+		}
 		else if (query instanceof PropQueryPlayerSpot)
+		{
 			applied = ZoneManager.getWhichZoneIn(((PropQueryPlayerSpot) query).spot);
+		}
 
 		if (query instanceof PropQueryPlayer)
 		{
@@ -69,7 +78,7 @@ public final class PermissionsPropHandler
 	{
 		return ZoneManager.getWhichZoneIn(query.spot);
 	}
-
+	
 	private static Zone getZone(PropQueryBlanketZone query)
 	{
 		return query.zone;
@@ -97,7 +106,7 @@ public final class PermissionsPropHandler
 			if (result == null)
 			{
 				// get all the players groups here.
-				groups = PermissionsAPI.getApplicableGroups(event.player, false);
+				groups = PermissionsAPI.getApplicableGroups(event.player.username, false, tempZone.getZoneName());
 
 				// iterates through the groups.
 				for (int i = 0; result == null && i < groups.size(); i++)
@@ -117,7 +126,7 @@ public final class PermissionsPropHandler
 			// check defaults... unless it has the override..
 			if (result == null)
 			{
-				result = SqlHelper.getPermissionProp(PermissionsAPI.getDEFAULT().name, true, event.perm, zone.getZoneName());
+				result = SqlHelper.getPermissionProp(PermissionsAPI.getDEFAULT().name, true, event.perm, tempZone.getZoneName());
 			}
 
 			// still unknown? check parent zones.

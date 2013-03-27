@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
@@ -145,28 +146,13 @@ public class CommandZone extends ForgeEssentialsCommandBase
 						PropQueryBlanketZone query2 = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.exit", zone, false);
 						PermissionsAPI.getPermissionProp(query1);
 						PermissionsAPI.getPermissionProp(query2);
-						
-						
+
 						OutputHandler.chatConfirmation(sender, "Name: " + zone.getZoneName());
 						OutputHandler.chatConfirmation(sender, "Parent: " + zone.parent);
 						OutputHandler.chatConfirmation(sender, "Priority: " + zone.priority);
 						OutputHandler.chatConfirmation(sender, "Dimension: " + zone.dim + "     World: " + FunctionHelper.getDimension(zone.dim).provider.getDimensionName());
-						if (query1.hasValue())
-						{
-							sender.sendChatToPlayer(FunctionHelper.formatColors(FEChatFormatCodes.GREEN + "Global Entry Message: " + FEChatFormatCodes.RESET + query1.getStringValue()));
-						}
-						else
-						{
-							OutputHandler.chatConfirmation(sender, "No Global Entry Message Set.");
-						}
-						if (query2.hasValue())
-						{
-							sender.sendChatToPlayer(FunctionHelper.formatColors(FEChatFormatCodes.GREEN + "Global Exit Message: " + FEChatFormatCodes.RESET + query2.getStringValue()));
-						}
-						else
-						{
-							OutputHandler.chatConfirmation(sender, "No Global Exit Message Set.");
-						}
+						sender.sendChatToPlayer(FunctionHelper.formatColors(FEChatFormatCodes.GREEN + "Entry Message: " + FEChatFormatCodes.RESET + query1.getStringValue()));
+						sender.sendChatToPlayer(FunctionHelper.formatColors(FEChatFormatCodes.GREEN + "Exit Message: " + FEChatFormatCodes.RESET + query2.getStringValue()));
 						Point high = zone.getHighPoint();
 						Point low = zone.getLowPoint();
 						OutputHandler.chatConfirmation(sender, high.x + ", " + high.y + ", " + high.z + " -> " + low.x + ", " + low.y + ", " + low.z);
@@ -237,7 +223,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					ZoneManager.getZone(args[1]).redefine(info.getPoint1(), info.getPoint2());
+					Zone z = ZoneManager.getZone(args[1]);
+					z.redefine(info.getPoint1(), info.getPoint2());
+					saveZone(z);
 					OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_REDEFINE, args[1]));
 				}
 				return;
@@ -262,7 +250,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					ZoneManager.getZone(args[1]).parent = args[2];
+					Zone z = ZoneManager.getZone(args[1]);
+					z.parent = args[2];
+					saveZone(z);
 					OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_SETPARENT, args[1], args[2]));
 				}
 				return;
@@ -291,9 +281,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				{
 					String tempEntry = "";
 					for (int i = 2; i < args.length; i++)
+					{
 						tempEntry += args[i] + " ";
-					String tempTest = PermissionsAPI.getDEFAULT().name;
-
+					}
 					PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.entry", tempEntry, args[1]);
 
 					OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Entry Message set to: " + tempEntry);
@@ -323,16 +313,16 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				{
 					String tempEntry = "";
 					for (int i = 2; i < args.length; i++)
+					{
 						tempEntry += args[i] + " ";
-					String tempTest = PermissionsAPI.getDEFAULT().name;
-
+					}
 					PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.exit", tempEntry, args[1]);
 
 					OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Exit Message set to: " + tempEntry);
 					return;
 				}
 			}
-			
+
 		}
 		else
 		{
@@ -344,6 +334,11 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		// no defining zones from the console.
+	}
+
+	private void saveZone(Zone z)
+	{
+		DataStorageManager.getReccomendedDriver().saveObject(ZoneHelper.container, z);
 	}
 
 	@Override

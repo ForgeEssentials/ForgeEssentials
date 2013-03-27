@@ -1,10 +1,10 @@
 package com.ForgeEssentials.permission;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -20,7 +20,7 @@ public class CommandFEPermPromote
 			// Localization.get(Localization.ERROR_BADSYNTAX) + "");
 			return;
 
-		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (player == null)
 		{
 			// No such player!

@@ -6,8 +6,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.economy.EconManager;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -20,7 +20,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 	{
 		return "removewallet";
 	}
-	
+
 	@Override
 	public List<String> getCommandAliases()
 	{
@@ -41,13 +41,13 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				WalletHandler.removeFromWallet(amountToSubtract, player);
+				EconManager.removeFromWallet(amountToSubtract, player.username);
 
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(amountToSubtract + " " + WalletHandler.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_TARGET));
+					sender.sendChatToPlayer(amountToSubtract + " " + EconManager.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_TARGET));
 				}
-				player.sendChatToPlayer(amountToSubtract + " " + WalletHandler.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_SELF));
+				player.sendChatToPlayer(amountToSubtract + " " + EconManager.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_SELF));
 			}
 		}
 		else
@@ -70,10 +70,10 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				WalletHandler.removeFromWallet(amountToSubtract, player);
+				EconManager.removeFromWallet(amountToSubtract, player.username);
 
-				sender.sendChatToPlayer(amountToSubtract + " " + WalletHandler.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_TARGET));
-				player.sendChatToPlayer(amountToSubtract + " " + WalletHandler.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_SELF));
+				sender.sendChatToPlayer(amountToSubtract + " " + EconManager.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_TARGET));
+				player.sendChatToPlayer(amountToSubtract + " " + EconManager.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_SELF));
 			}
 		}
 		else

@@ -5,8 +5,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.economy.EconManager;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -34,13 +34,13 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				WalletHandler.setWallet(amountToSet, player);
+				EconManager.setWallet(amountToSet, player);
 
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(Localization.get(Localization.wallet_SET_TARGET) + WalletHandler.getMoneyString(player));
+					sender.sendChatToPlayer(Localization.get(Localization.wallet_SET_TARGET) + EconManager.getMoneyString(player.username));
 				}
-				player.sendChatToPlayer(Localization.get(Localization.wallet_SET_SELF) + WalletHandler.getMoneyString(player));
+				player.sendChatToPlayer(Localization.get(Localization.wallet_SET_SELF) + EconManager.getMoneyString(player.username));
 			}
 		}
 		else
@@ -64,10 +64,10 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				WalletHandler.setWallet(amountToSet, player);
+				EconManager.setWallet(amountToSet, player);
 
-				sender.sendChatToPlayer(Localization.get(Localization.wallet_SET_TARGET) + WalletHandler.getMoneyString(player));
-				player.sendChatToPlayer(Localization.get(Localization.wallet_SET_SELF) + WalletHandler.getMoneyString(player));
+				sender.sendChatToPlayer(Localization.get(Localization.wallet_SET_TARGET) + EconManager.getMoneyString(player.username));
+				player.sendChatToPlayer(Localization.get(Localization.wallet_SET_SELF) + EconManager.getMoneyString(player.username));
 			}
 		}
 		else

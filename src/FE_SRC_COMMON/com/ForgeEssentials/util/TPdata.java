@@ -60,7 +60,9 @@ public class TPdata
 			}
 			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.xd, point.yd, point.zd, point.yaw, point.pitch);
 			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, TeleportCenter.BYPASS_COOLDOWN)))
+			{
 				PlayerInfo.getPlayerInfo(player.username).TPcooldown = TeleportCenter.tpCooldown;
+			}
 			TeleportCenter.TPdone(this);
 		}
 		catch (Exception e)

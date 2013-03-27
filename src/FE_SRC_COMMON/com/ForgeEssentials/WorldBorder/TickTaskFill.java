@@ -15,6 +15,7 @@ import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.util.FEChunkLoader;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.tasks.ITickTask;
@@ -85,13 +86,14 @@ public class TickTaskFill implements ITickTask
 	public TickTaskFill(WorldServer worldToFill, ICommandSender sender, boolean restart)
 	{
 		dimID = worldToFill.provider.dimensionId + "";
-		
+		FEChunkLoader.instance().forceLoadWorld(worldToFill);
+
 		if (CommandFiller.map.containsKey(worldToFill.provider.dimensionId))
 		{
 			OutputHandler.chatError(server, "Already running a filler for dim " + dimID + "!");
 			return;
 		}
-		
+
 		source = sender;
 		world = worldToFill;
 		border = ModuleWorldBorder.borderMap.get(ZoneManager.getWorldZone(world).getZoneName());
@@ -139,7 +141,7 @@ public class TickTaskFill implements ITickTask
 	{
 		try
 		{
-			return FunctionHelper.parseTime((int) ((todo / speed) / FunctionHelper.getTPS()));
+			return FunctionHelper.parseTime((int) (todo / speed / FunctionHelper.getTPS()));
 		}
 		catch (Exception e)
 		{
@@ -156,7 +158,7 @@ public class TickTaskFill implements ITickTask
 		{
 			source.sendChatToPlayer("Filler for " + dimID + ": " + getStatus());
 		}
-		
+
 		for (int i = 0; i < speed; i++)
 		{
 			try
@@ -234,7 +236,7 @@ public class TickTaskFill implements ITickTask
 		}
 		else
 		{
-			this.isComplete = true;
+			isComplete = true;
 			throw new RuntimeException("WTF?" + border.shapeByte);
 		}
 	}
@@ -258,6 +260,8 @@ public class TickTaskFill implements ITickTask
 			System.out.print("Removed filler? :" + DataStorageManager.getReccomendedDriver().deleteObject(con, dimID));
 		}
 		CommandFiller.map.remove(Integer.parseInt(dimID));
+		FEChunkLoader.instance().unforceLoadWorld(world);
+		System.gc();
 	}
 
 	@Override
@@ -278,6 +282,7 @@ public class TickTaskFill implements ITickTask
 		isComplete = true;
 		DataStorageManager.getReccomendedDriver().saveObject(con, this);
 		OutputHandler.chatWarning(source, "Filler stopped after " + ticks + " ticks. Still to do: " + todo + " chuncks.");
+		System.gc();
 	}
 
 	public String getStatus()
@@ -288,6 +293,6 @@ public class TickTaskFill implements ITickTask
 	public void speed(int speed)
 	{
 		this.speed = speed;
-		OutputHandler.chatWarning(source, "Chaned speed of filler " + dimID + " to " + speed);
+		OutputHandler.chatWarning(source, "Changed speed of filler " + dimID + " to " + speed);
 	}
 }

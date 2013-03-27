@@ -72,7 +72,7 @@ public class Localization
 	public static final String	ERROR_TARGET					= "message.error.target";
 	public static final String	ERROR_NOPAGE					= "message.error.nopage";
 	public static final String	ERROR_PERMDENIED				= "message.error.permdenied";
-	public static final String  ERROR_NOUSEWAND					= "message.error.cantUseWand";
+	public static final String	ERROR_NOUSEWAND					= "message.error.cantUseWand";
 	public static final String	ERROR_NOITEMPLAYER				= "message.error.noItemPlayer";
 	public static final String	ERROR_NOITEMTARGET				= "message.error.noItemTarget";
 	public static final String	ERROR_NOMOB						= "message.error.noMobX";
@@ -199,10 +199,12 @@ public class Localization
 	public static String get(String key)
 	{
 		String output = LanguageRegistry.instance().getStringLocalization(key);
-		
+
 		if (Strings.isNullOrEmpty(output))
-			output = key;
-		
+		{
+			output = LanguageRegistry.instance().getStringLocalization(key, "en_US");
+		}
+
 		return output;
 	}
 
@@ -221,8 +223,10 @@ public class Localization
 	{
 		String output = get(localizationKey);
 		if (!output.equals(localizationKey))
+		{
 			output = String.format(output, args);
-		
+		}
+
 		return output;
 	}
 }

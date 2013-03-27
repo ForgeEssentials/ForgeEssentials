@@ -5,6 +5,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.core.preloader.FEModContainer;
+
 public class CommandFEVersion extends ForgeEssentialsCommandBase
 {
 
@@ -17,25 +19,25 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		player.addChatMessage("You are currently running ForgeEssentials version @VERSION@");
+		player.addChatMessage("You are currently running ForgeEssentials version " + FEModContainer.version);
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		sender.sendChatToPlayer("You are currently running ForgeEssentials version @VERSION@");
+		sender.sendChatToPlayer("You are currently running ForgeEssentials version " + FEModContainer.version);
 	}
 
 	@Override
 	public String getSyntaxConsole()
 	{
-		return "/feversion";
+		return "";
 	}
 
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/feversion";
+		return "";
 	}
 
 	@Override

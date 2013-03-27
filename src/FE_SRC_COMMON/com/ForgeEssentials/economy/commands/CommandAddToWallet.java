@@ -6,8 +6,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.economy.EconManager;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -23,7 +23,7 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 	{
 		return "addtowallet";
 	}
-	
+
 	@Override
 	public List<String> getCommandAliases()
 	{
@@ -44,13 +44,13 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				WalletHandler.addToWallet(amountToAdd, player);
+				EconManager.addToWallet(amountToAdd, player.username);
 
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(amountToAdd + " " + WalletHandler.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
+					sender.sendChatToPlayer(amountToAdd + " " + EconManager.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
 				}
-				player.sendChatToPlayer(amountToAdd + " " + WalletHandler.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
+				player.sendChatToPlayer(amountToAdd + " " + EconManager.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
 			}
 		}
 		else
@@ -74,10 +74,10 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				WalletHandler.addToWallet(amountToAdd, player);
+				EconManager.addToWallet(amountToAdd, player.username);
 
-				sender.sendChatToPlayer(amountToAdd + " " + WalletHandler.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
-				player.sendChatToPlayer(amountToAdd + " " + WalletHandler.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
+				sender.sendChatToPlayer(amountToAdd + " " + EconManager.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
+				player.sendChatToPlayer(amountToAdd + " " + EconManager.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
 			}
 		}
 		else

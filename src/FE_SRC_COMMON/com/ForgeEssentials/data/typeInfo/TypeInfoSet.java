@@ -12,6 +12,7 @@ import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.TypeMultiValInfo;
 import com.ForgeEssentials.util.OutputHandler;
 
+@SuppressWarnings("rawtypes")
 public class TypeInfoSet extends TypeMultiValInfo
 {
 	public static final String	POS		= "ElementPos";
@@ -29,7 +30,6 @@ public class TypeInfoSet extends TypeMultiValInfo
 		fields.put(ELEMENT, new ClassContainer(container.getParameters()[0]));
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Set<TypeData> getTypeDatasFromObject(Object obj)
 	{
@@ -55,7 +55,7 @@ public class TypeInfoSet extends TypeMultiValInfo
 		return datas;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object reconstruct(TypeData[] data)
 	{

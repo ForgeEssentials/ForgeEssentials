@@ -1,17 +1,16 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -37,20 +36,13 @@ public class CommandTphere extends FEcmdModuleCommands
 	{
 		if (args.length == 1)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
-				{
-					EntityPlayerMP target = (EntityPlayerMP) sender;
-					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
-					playerInfo.back = new WarpPoint(player);
-					TeleportCenter.addToTpQue(new WarpPoint(target), player);
-				}
+				EntityPlayerMP target = (EntityPlayerMP) sender;
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+				playerInfo.back = new WarpPoint(player);
+				TeleportCenter.addToTpQue(new WarpPoint(target), player);
 			}
 			else
 			{

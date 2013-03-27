@@ -36,7 +36,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 @FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class, configClass = ConfigWorldBorder.class)
 public class ModuleWorldBorder
 {
-	public static boolean						WBenabled		= false;
 	public static boolean						logToConsole	= true;
 
 	@FEModule.Config
@@ -48,11 +47,6 @@ public class ModuleWorldBorder
 	public static int							overGenerate	= 345;
 
 	static final ClassContainer					con				= new ClassContainer(WorldBorder.class);
-
-	public ModuleWorldBorder()
-	{
-		WBenabled = true;
-	}
 
 	@PermRegister
 	public static void registerPerms(IPermRegisterEvent event)
@@ -90,13 +84,10 @@ public class ModuleWorldBorder
 	@ForgeSubscribe
 	public void playerMove(PlayerMoveEvent e)
 	{
-		if (WBenabled)
-		{
-			Zone zone = ZoneManager.getWorldZone(e.entityPlayer.worldObj);
-			WorldBorder border = borderMap.get(zone.getZoneName());
-			border.check((EntityPlayerMP) e.entityPlayer);
-			borderMap.get(ZoneManager.getGLOBAL().getZoneName()).check((EntityPlayerMP) e.entityPlayer);
-		}
+		Zone zone = ZoneManager.getWorldZone(e.entityPlayer.worldObj);
+		WorldBorder border = borderMap.get(zone.getZoneName());
+		border.check((EntityPlayerMP) e.entityPlayer);
+		borderMap.get(ZoneManager.getGLOBAL().getZoneName()).check((EntityPlayerMP) e.entityPlayer);
 	}
 
 	@ForgeSubscribe
@@ -114,9 +105,13 @@ public class ModuleWorldBorder
 		{
 			WorldBorder wb = (WorldBorder) DataStorageManager.getReccomendedDriver().loadObject(con, zone.getZoneName());
 			if (wb != null)
+			{
 				borderMap.put(zone.getZoneName(), wb);
+			}
 			else
+			{
 				borderMap.put(zone.getZoneName(), new WorldBorder(zone));
+			}
 			DataStorageManager.getReccomendedDriver().saveObject(con, borderMap.get(zone.getZoneName()));
 		}
 	}
@@ -145,6 +140,11 @@ public class ModuleWorldBorder
 		for (WorldBorder wb : borderMap.values())
 		{
 			wb.save();
+		}
+
+		for (TickTaskFill filler : CommandFiller.map.values())
+		{
+			filler.stop();
 		}
 	}
 

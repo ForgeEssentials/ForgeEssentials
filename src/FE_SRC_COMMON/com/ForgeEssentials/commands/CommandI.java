@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
-import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -40,7 +40,7 @@ public class CommandI extends FEcmdModuleCommands
 
 		if (args.length == 2)
 		{
-			amount = parseIntBounded(sender, args[1], 0, 64);
+			amount = parseInt(sender, args[1]);
 		}
 
 		if (args.length > 0)
@@ -89,7 +89,7 @@ public class CommandI extends FEcmdModuleCommands
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getItemList());
+			return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getItemList());
 		else
 			return null;
 	}

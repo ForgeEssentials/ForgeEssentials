@@ -1,10 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
@@ -17,6 +15,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
@@ -36,17 +35,10 @@ public class CommandBed extends FEcmdModuleCommands
 	{
 		if (args.length >= 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
-				{
-					tp((EntityPlayerMP) player);
-				}
+				tp(player);
 			}
 			else
 			{
@@ -70,9 +62,9 @@ public class CommandBed extends FEcmdModuleCommands
 				world = DimensionManager.getWorld(0);
 			}
 			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-			//Doesnt work
-			//FunctionHelper.setPlayer(player, new Point(spawn), world);
-			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
+			// Doesnt work
+			// FunctionHelper.setPlayer(player, new Point(spawn), world);
+			player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 			OutputHandler.chatConfirmation(player, Localization.get("command.bed.done"));
 		}
 	}
@@ -82,17 +74,10 @@ public class CommandBed extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer player : players)
-				{
-					tp((EntityPlayerMP) player);
-				}
+				tp(player);
 			}
 			else
 			{

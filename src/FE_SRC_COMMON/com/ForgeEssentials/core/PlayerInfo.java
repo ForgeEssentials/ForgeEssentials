@@ -2,7 +2,6 @@ package com.ForgeEssentials.core;
 
 import java.util.HashMap;
 import java.util.Stack;
-import java.util.TimerTask;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -15,18 +14,16 @@ import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.core.network.PacketSelectionUpdate;
 import com.ForgeEssentials.util.BackupArea;
-import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
 @SaveableObject
-public class PlayerInfo extends TimerTask
+public class PlayerInfo
 {
 	private static HashMap<String, PlayerInfo>	playerInfoMap	= new HashMap<String, PlayerInfo>();
 
@@ -51,7 +48,6 @@ public class PlayerInfo extends TimerTask
 				info = new PlayerInfo(username);
 			}
 
-			TaskRegistry.registerRecurringTask(info, 0, 1, 0, 0, 0, 1, 0, 0);
 			playerInfoMap.put(username, info);
 		}
 
@@ -61,7 +57,8 @@ public class PlayerInfo extends TimerTask
 	public static void discardInfo(String username)
 	{
 		PlayerInfo info = playerInfoMap.remove(username);
-		info.save();
+		if (info != null)
+			info.save();
 	}
 
 	@Reconstructor()
@@ -85,7 +82,6 @@ public class PlayerInfo extends TimerTask
 		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
 
 		info.firstJoin = (Long) tag.getFieldValue("firstJoin");
-
 		return info;
 	}
 
@@ -127,7 +123,9 @@ public class PlayerInfo extends TimerTask
 	public int						spawnType;
 
 	@SaveableField()
-	public int						timePlayed;
+	private int						timePlayed;
+
+	private long					loginTime;
 
 	@SaveableField()
 	private long					firstJoin;
@@ -153,7 +151,8 @@ public class PlayerInfo extends TimerTask
 		suffix = "";
 
 		firstJoin = System.currentTimeMillis();
-		
+		loginTime = System.currentTimeMillis();
+
 		timePlayed = 0;
 	}
 
@@ -162,13 +161,27 @@ public class PlayerInfo extends TimerTask
 	 */
 	public void save()
 	{
+		recalcTimePlayed();
 		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
-		TaskRegistry.removeTask(this);
 	}
 
 	public long getFirstJoin()
 	{
 		return firstJoin;
+	}
+
+	public int getTimePlayed()
+	{
+		recalcTimePlayed();
+		return timePlayed;
+	}
+
+	public void recalcTimePlayed()
+	{
+		long current = System.currentTimeMillis() - loginTime;
+		int min = (int) (current / 60000);
+		timePlayed += min;
+		loginTime = System.currentTimeMillis();
 	}
 
 	// ----------------------------------------------
@@ -306,19 +319,5 @@ public class PlayerInfo extends TimerTask
 		sel2 = null;
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
 		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
-	}
-
-	@Override
-	public void run()
-	{
-		try
-		{
-			timePlayed ++;
-			OutputHandler.debug(this.username + ":" + this.timePlayed);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 }

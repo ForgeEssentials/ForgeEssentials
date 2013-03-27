@@ -15,16 +15,16 @@ public class EventHandler
 	{
 		PropQueryPlayerZone query1 = new PropQueryPlayerZone(event.entityPlayer, "ForgeEssentials.Permissions.Zone.exit", event.beforeZone, false);
 		PropQueryPlayerZone query2 = new PropQueryPlayerZone(event.entityPlayer, "ForgeEssentials.Permissions.Zone.entry", event.afterZone, false);
-		
+
 		PermissionsAPI.getPermissionProp(query1);
-		if(query1.hasValue())
-		{	
+		if (query1.hasValue())
+		{
 			event.entityPlayer.sendChatToPlayer(FunctionHelper.formatColors(query1.getStringValue()));
 		}
-		
+
 		PermissionsAPI.getPermissionProp(query2);
-		if(query2.hasValue())
-		{	
+		if (query2.hasValue())
+		{
 			event.entityPlayer.sendChatToPlayer(FunctionHelper.formatColors(query2.getStringValue()));
 		}
 

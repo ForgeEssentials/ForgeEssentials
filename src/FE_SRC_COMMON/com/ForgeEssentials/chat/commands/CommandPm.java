@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -15,6 +14,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -67,7 +67,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayerMP target = PlayerSelector.matchOnePlayer(sender, args[0]);
+				EntityPlayerMP target = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (target == null)
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -118,7 +118,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayer target = PlayerSelector.matchOnePlayer(sender, args[0]);
+				EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (target == null)
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -135,7 +135,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 		}
 		if (args.length > 1)
 		{
-			EntityPlayer receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (receiver == null)
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -218,7 +218,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				EntityPlayerMP receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
+				EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (receiver == null)
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));

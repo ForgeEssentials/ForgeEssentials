@@ -20,7 +20,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PermissionPropSetEvent;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class PermissionsHelper implements IPermissionsHelper
 {
 	public final String	EntryPlayer	= "_ENTRY_PLAYER_";
@@ -199,26 +199,6 @@ public class PermissionsHelper implements IPermissionsHelper
 		return null;
 	}
 
-	// ill recreate it when I need it...
-	//
-	// /**
-	// * Gets all the groups that were explicitly created in the given zone.
-	// these groups will only apply
-	// * to the given Zone and all of its children.
-	// * @param zoneID zone to check.
-	// * @return List of Groups. may be an empty list, but never null.
-	// */
-	// protected ArrayList<Group> getAllGroupsCreatedForZone(String
-	// zoneID)
-	// {
-	// ArrayList<Group> gs = new ArrayList<Group>();
-	// for (Group g : groups.values())
-	// if (g.zoneID.equals(zoneID))
-	// gs.add(g);
-	//
-	// return gs;
-	// }
-
 	@Override
 	public ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
@@ -235,10 +215,6 @@ public class PermissionsHelper implements IPermissionsHelper
 		ArrayList<Group> temp;
 
 		temp = SqlHelper.getGroupsForPlayer(player, zoneID);
-		if (temp.isEmpty())
-		{
-			temp = SqlHelper.getGroupsForPlayer(player, ZoneManager.getGLOBAL().getZoneName());
-		}
 		list.addAll(temp);
 
 		if (includeDefaults)
@@ -247,6 +223,12 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 
 		return list;
+	}
+
+	@Override
+	public ArrayList<String> getPlayersInGroup(String group, String zone)
+	{
+		return null;
 	}
 
 	@Override
@@ -371,7 +353,8 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 		else
 		{
-			output.addAll(SqlHelper.getAllPermissions(target, zone, false));
+			for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+				output.add(perm.toString());
 		}
 
 		return output;
@@ -388,7 +371,8 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 		else
 		{
-			output.addAll(SqlHelper.getAllPermProps(target, zone, false));
+			for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+				output.add(perm.toString());
 		}
 
 		return output;
@@ -410,7 +394,8 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 		else
 		{
-			output.addAll(SqlHelper.getAllPermissions(target, zone, true));
+			for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+				output.add(perm.toString());
 		}
 
 		return output;
@@ -432,7 +417,8 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 		else
 		{
-			output.addAll(SqlHelper.getAllPermProps(target, zone, true));
+			for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+				output.add(perm.toString());
 		}
 
 		return output;

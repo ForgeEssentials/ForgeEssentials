@@ -69,6 +69,12 @@ public class PermRegLoader
 		{
 			registerPermissionLevel(permission, group, false);
 		}
+		
+		@Override
+		public void registerPermission(String permission)
+		{
+			registerred.add(permission);
+		}
 
 		@Override
 		public void registerPermissionLevel(String permission, RegGroup group, boolean alone)

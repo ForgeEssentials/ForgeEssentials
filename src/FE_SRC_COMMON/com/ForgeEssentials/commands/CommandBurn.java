@@ -1,10 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -13,6 +11,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -38,18 +37,11 @@ public class CommandBurn extends FEcmdModuleCommands
 			}
 			else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				if (PlayerSelector.hasArguments(args[0]))
-				{
-					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				}
-				if (players.size() != 0)
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+				if (player != null)
 				{
 					OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
-					for (EntityPlayer player : players)
-					{
-						player.setFire(15);
-					}
+					player.setFire(15);
 				}
 				else
 				{
@@ -73,18 +65,11 @@ public class CommandBurn extends FEcmdModuleCommands
 			}
 			else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				if (PlayerSelector.hasArguments(args[0]))
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+				if (player != null)
 				{
-					players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-				}
-				if (players.size() != 0)
-				{
-					for (EntityPlayer player : players)
-					{
-						player.setFire(parseIntWithMin(sender, args[1], 0));
-						OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
-					}
+					player.setFire(parseIntWithMin(sender, args[1], 0));
+					OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
 				}
 				else
 				{
@@ -106,17 +91,10 @@ public class CommandBurn extends FEcmdModuleCommands
 		{
 			time = parseIntWithMin(sender, args[1], 0);
 		}
-		List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		if (PlayerSelector.hasArguments(args[0]))
+		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+		if (player != null)
 		{
-			players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-		}
-		if (players.size() != 0)
-		{
-			for (EntityPlayer player : players)
-			{
-				player.setFire(time);
-			}
+			player.setFire(time);
 			sender.sendChatToPlayer(Localization.get("command.burn.player"));
 		}
 		else

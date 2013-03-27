@@ -12,7 +12,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.core.misc.ItemList;
+import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -92,7 +92,7 @@ public class CommandSet extends WorldControlCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-			return getListOfStringsFromIterableMatchingLastWord(args, ItemList.instance().getBlockList());
+			return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getBlockList());
 		return null;
 	}
 }

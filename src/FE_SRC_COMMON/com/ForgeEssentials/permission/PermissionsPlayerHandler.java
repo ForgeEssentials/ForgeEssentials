@@ -42,11 +42,17 @@ public final class PermissionsPlayerHandler
 			return;
 
 		if (query instanceof PermQueryPlayerZone)
+		{
 			handleZone((PermQueryPlayerZone) query);
+		}
 		else if (query instanceof PermQueryPlayerArea)
+		{
 			handleArea((PermQueryPlayerArea) query);
+		}
 		else
+		{
 			handlePlayer(query);
+		}
 	}
 
 	private static void doOpCheck(PermQueryPlayer event)
@@ -125,7 +131,7 @@ public final class PermissionsPlayerHandler
 			if (result.equals(PermResult.UNKNOWN))
 			{
 				// get all the players groups here.
-				groups = PermissionsAPI.getApplicableGroups(event.doer, false);
+				groups = PermissionsAPI.getApplicableGroups(event.doer.username, false, tempZone.getZoneName());
 
 				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)

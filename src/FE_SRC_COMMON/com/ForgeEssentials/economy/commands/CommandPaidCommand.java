@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
+import com.ForgeEssentials.api.economy.EconManager;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.WalletHandler;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -52,9 +52,9 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 				for (EntityPlayer player : players)
 				{
 					int amount = parseIntWithMin(sender, args[1], 0);
-					if (WalletHandler.getWallet(player) >= amount)
+					if (EconManager.getWallet(player.username) >= amount)
 					{
-						WalletHandler.removeFromWallet(amount, player);
+						EconManager.removeFromWallet(amount, player.username);
 						// Do command in name of player
 
 						StringBuilder cmd = new StringBuilder(args.toString().length());
@@ -65,7 +65,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 						}
 
 						MinecraftServer.getServer().executeCommand(cmd.toString());
-						OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + WalletHandler.currency(amount));
+						OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + EconManager.currency(amount));
 					}
 					else
 					{

@@ -429,7 +429,7 @@ public class CommandFEPermGroup
 					OutputHandler.chatConfirmation(sender, perm);
 					return;
 				}
-				if (perm.contains("ALLOW"))
+				if (perm.toLowerCase().contains("allow") || perm.toLowerCase().contains("true"))
 				{
 					messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + perm.substring(0, perm.indexOf(":")));
 				}

@@ -26,7 +26,8 @@ public class InventoryGrave extends InventoryBasic
 
 		for (int i = 0; i < grave.inv.length; i++)
 		{
-			setInventorySlotContents(i, grave.inv[i].copy());
+			if (grave.inv[i] != null)
+				setInventorySlotContents(i, grave.inv[i].copy());
 		}
 
 		super.openChest();

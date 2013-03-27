@@ -1,6 +1,7 @@
 package com.ForgeEssentials.auth;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -28,6 +29,9 @@ public class EventHandler
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		String username = event.entityPlayer.username;
+
+		if (event.before.xd == event.after.xd && event.before.zd == event.after.zd)
+			return;
 
 		if (ModuleAuth.unLogged.contains(username))
 		{
@@ -140,16 +144,45 @@ public class EventHandler
 	{
 		String username = event.player.username;
 
+		boolean cancel = false;
+
 		if (ModuleAuth.unLogged.contains(username))
 		{
-			event.setCanceled(true);
+			cancel = true;
+
 			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
-			event.setCanceled(true);
+			cancel = true;
 			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
+		}
+
+		if (cancel)
+		{
+			// add the item back to the inventory
+			ItemStack stack = event.entityItem.getEntityItem();
+			event.player.inventory.addItemStackToInventory(stack);
+			event.setCanceled(cancel);
+		}
+	}
+	
+	@ForgeSubscribe(priority = EventPriority.HIGHEST)
+	public void onPlayerPickupItem(EntityItemPickupEvent event)
+	{
+		String username = event.entityPlayer.username;
+
+		if (ModuleAuth.unLogged.contains(username))
+		{
+			event.setCanceled(true);
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
+		}
+
+		if (ModuleAuth.unRegistered.contains(username))
+		{
+			event.setCanceled(true);
+			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 
@@ -171,24 +204,6 @@ public class EventHandler
 		{
 			event.setCanceled(true);
 			OutputHandler.chatError(player, Localization.get("message.auth.needregister"));
-		}
-	}
-
-	@ForgeSubscribe(priority = EventPriority.HIGHEST)
-	public void onPlayerPickupItem(EntityItemPickupEvent event)
-	{
-		String username = event.entityPlayer.username;
-
-		if (ModuleAuth.unLogged.contains(username))
-		{
-			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
-		}
-
-		if (ModuleAuth.unRegistered.contains(username))
-		{
-			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
 		}
 	}
 

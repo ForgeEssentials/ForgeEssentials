@@ -3,12 +3,12 @@ package com.ForgeEssentials.economy.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.economy.EconManager;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.WalletHandler;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -28,7 +28,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player == null)
 			{
 				sender.sendChatToPlayer(args[0] + " not found!");
@@ -36,8 +36,8 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 			else
 			{
 				int amount = parseIntWithMin(sender, args[1], 0);
-				OutputHandler.chatConfirmation(sender, "You have requested " + amount + WalletHandler.currency(amount) + " from " + player.username + ".");
-				OutputHandler.chatConfirmation(player, "You been requested to play " + amount + WalletHandler.currency(amount) + " by " + player.username + ".");
+				OutputHandler.chatConfirmation(sender, "You have requested " + amount + EconManager.currency(amount) + " from " + player.username + ".");
+				OutputHandler.chatConfirmation(player, "You been requested to play " + amount + EconManager.currency(amount) + " by " + player.username + ".");
 			}
 		}
 		else
@@ -51,7 +51,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player == null)
 			{
 				sender.sendChatToPlayer(args[0] + " not found!");
@@ -59,8 +59,8 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 			else
 			{
 				int amount = parseIntWithMin(sender, args[1], 0);
-				OutputHandler.chatConfirmation(sender, "You have requested " + amount + WalletHandler.currency(amount) + " from " + player.username + ".");
-				OutputHandler.chatConfirmation(player, "You been requested to play " + amount + WalletHandler.currency(amount) + " by " + player.username + ".");
+				OutputHandler.chatConfirmation(sender, "You have requested " + amount + EconManager.currency(amount) + " from " + player.username + ".");
+				OutputHandler.chatConfirmation(player, "You been requested to play " + amount + EconManager.currency(amount) + " by " + player.username + ".");
 			}
 		}
 		else

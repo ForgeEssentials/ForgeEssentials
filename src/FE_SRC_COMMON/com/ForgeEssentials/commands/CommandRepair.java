@@ -1,10 +1,8 @@
 package com.ForgeEssentials.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -14,6 +12,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -44,22 +43,17 @@ public class CommandRepair extends FEcmdModuleCommands
 		}
 		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer target : players)
-				{
-					ItemStack item = target.getHeldItem();
 
-					if (item != null)
-					{
-						item.setItemDamage(0);
-					}
+				ItemStack item = player.getHeldItem();
+
+				if (item != null)
+				{
+					item.setItemDamage(0);
 				}
+
 			}
 			else
 			{
@@ -77,23 +71,18 @@ public class CommandRepair extends FEcmdModuleCommands
 	{
 		if (args.length == 1)
 		{
-			//PlayerSelector.matchPlayers(sender, args[0])
-			List<EntityPlayerMP> players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			if (PlayerSelector.hasArguments(args[0]))
+			// PlayerSelector.matchPlayers(sender, args[0])
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
 			{
-				players = Arrays.asList(PlayerSelector.matchPlayers(sender, args[0]));
-			}
-			if (players.size() != 0)
-			{
-				for (EntityPlayer target : players)
-				{
-					ItemStack item = target.getHeldItem();
 
-					if (item != null)
-					{
-						item.setItemDamage(0);
-					}
+				ItemStack item = player.getHeldItem();
+
+				if (item != null)
+				{
+					item.setItemDamage(0);
 				}
+
 			}
 			else
 			{

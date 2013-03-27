@@ -3,11 +3,11 @@ package com.ForgeEssentials.chat.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -36,7 +36,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (receiver == null)
 			{
 				OutputHandler.chatError(receiver, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -56,7 +56,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer receiver = PlayerSelector.matchOnePlayer(sender, args[0]);
+			EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (receiver == null)
 			{
 				OutputHandler.chatError(receiver, Localization.format(Localization.ERROR_NOPLAYER, args[0]));

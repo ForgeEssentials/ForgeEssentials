@@ -6,8 +6,9 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.economy.EconManager;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.economy.WalletHandler;
+import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandMoney extends ForgeEssentialsCommandBase
@@ -27,7 +28,7 @@ public class CommandMoney extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		OutputHandler.chatConfirmation(sender, "You have " + WalletHandler.getMoneyString(sender));
+		OutputHandler.chatConfirmation(sender, Localization.get(Localization.wallet_GET_SELF) + EconManager.getMoneyString(sender.username));
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.ForgeEssentials.permission;
 
-public class PermissionChecker
+@SuppressWarnings("rawtypes")
+public class PermissionChecker implements Comparable
 {
 	/**
 	 * fully qualified name in format ModName.parent1.parent2.parentN.name
@@ -156,5 +157,18 @@ public class PermissionChecker
 			return name + "." + Permission.ALL;
 		else
 			return name;
+	}
+
+	@Override
+	public int compareTo(Object o)
+	{
+		if (!(o instanceof Comparable))
+			return Integer.MAX_VALUE;
+		
+		if (equals(o))
+			return 0;
+		
+		PermissionChecker check = (PermissionChecker) o;
+		return name.compareTo(check.name);
 	}
 }

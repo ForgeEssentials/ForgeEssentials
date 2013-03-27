@@ -3,6 +3,7 @@ package com.ForgeEssentials.economy;
 import java.io.File;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
+import com.ForgeEssentials.api.economy.EconManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
@@ -18,6 +19,7 @@ import com.ForgeEssentials.economy.commands.CommandRemoveWallet;
 import com.ForgeEssentials.economy.commands.CommandSellCommand;
 import com.ForgeEssentials.economy.commands.CommandSetWallet;
 
+import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
@@ -37,7 +39,8 @@ public class ModuleEconomy
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
-		GameRegistry.registerPlayerTracker(new WalletHandler());
+		EconManager.manager = new WalletHandler();
+		GameRegistry.registerPlayerTracker((IPlayerTracker) EconManager.manager);
 	}
 
 	@FEModule.ServerInit

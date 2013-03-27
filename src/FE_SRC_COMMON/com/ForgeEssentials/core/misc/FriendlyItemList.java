@@ -9,21 +9,21 @@ import net.minecraft.item.Item;
 
 import com.ForgeEssentials.util.OutputHandler;
 
-public class ItemList
+public class FriendlyItemList
 {
 	private HashMap<String, Item>	itemMap		= new HashMap<String, Item>();
 	private HashMap<String, Block>	blockMap	= new HashMap<String, Block>();
 
-	private static ItemList			instance;
+	private static FriendlyItemList	instance;
 
-	public ItemList()
+	public FriendlyItemList()
 	{
 		instance = this;
 		makeList();
 		OutputHandler.info("Item & blockList made. Added " + itemMap.size() + " items and " + blockMap.size() + " blocks.");
 	}
 
-	public static ItemList instance()
+	public static FriendlyItemList instance()
 	{
 		return instance;
 	}

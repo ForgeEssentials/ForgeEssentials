@@ -17,6 +17,7 @@ import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.data.StorageManager;
 import com.ForgeEssentials.util.OutputHandler;
 
+@SuppressWarnings("rawtypes")
 public class TypeInfoSerialize<T> implements ITypeInfo<T>
 {
 	private final ClassContainer			container;
@@ -38,7 +39,6 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return true;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public void build()
 	{
@@ -138,7 +138,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return fields.keySet().toArray(new String[fields.size()]);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	@Override
 	public TypeData getTypeDataFromObject(T obj)
 	{
@@ -219,7 +219,6 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return data;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public T reconstruct(IReconstructData data)
 	{
@@ -264,7 +263,6 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return container.getParameters();
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public ITypeInfo<?> getInfoForField(String field)
 	{

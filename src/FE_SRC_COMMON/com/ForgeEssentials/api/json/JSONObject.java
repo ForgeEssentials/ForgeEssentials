@@ -73,7 +73,7 @@ import java.util.Set;
  * @author JSON.org
  * @version 2012-12-01
  */
-@SuppressWarnings(value = { "rawtypes", "unchecked" })
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class JSONObject
 {
 	/**

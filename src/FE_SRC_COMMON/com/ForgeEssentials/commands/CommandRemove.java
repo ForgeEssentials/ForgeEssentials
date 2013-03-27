@@ -22,6 +22,7 @@ public class CommandRemove extends FEcmdModuleCommands
 		return "remove";
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
@@ -47,7 +48,6 @@ public class CommandRemove extends FEcmdModuleCommands
 			return;
 		}
 
-		@SuppressWarnings("unchecked")
 		List<EntityItem> entityList = sender.worldObj.getEntitiesWithinAABB(EntityItem.class,
 				AxisAlignedBB.getAABBPool().getAABB(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1));
 
@@ -61,6 +61,7 @@ public class CommandRemove extends FEcmdModuleCommands
 		OutputHandler.chatConfirmation(sender, Localization.format("command.remove.done", counter));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
@@ -84,7 +85,6 @@ public class CommandRemove extends FEcmdModuleCommands
 			return;
 		}
 
-		@SuppressWarnings("unchecked")
 		List<EntityItem> entityList = FunctionHelper.getDimension(center.dim).getEntitiesWithinAABB(EntityItem.class,
 				AxisAlignedBB.getAABBPool().getAABB(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1, center.z + radius + 1));
 

@@ -15,16 +15,16 @@ import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.misc.UnfreindlyItemList;
+import com.ForgeEssentials.permission.Permission;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-/**
- * @author Dries007
- */
 @FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true, configClass = ConfigProtection.class)
 public class ModuleProtection
 {
 	public final static String									PERM_EDITS				= "ForgeEssentials.Protection.allowEdits";
+	public final static String									PERM_ITEM_USE			= "ForgeEssentials.Protection.itemUse";
 	public final static String									PERM_INTERACT_BLOCK		= "ForgeEssentials.Protection.allowBlockInteractions";
 	public final static String									PERM_INTERACT_ENTITY	= "ForgeEssentials.Protection.allowEntityInteractions";
 	public final static String									PERM_OVERRIDE			= "ForgeEssentials.Protection.overrideProtection";
@@ -47,16 +47,20 @@ public class ModuleProtection
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			e.getModuleContainer().isLoadable = false;
 			return;
-		if (!enable)
-			return;
+		}
 	}
 
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
 		if (!enable)
-			return;
+		{
+			e.getModuleContainer().isLoadable = false;
+		}
+
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
@@ -74,9 +78,18 @@ public class ModuleProtection
 		{
 			if (EntityLiving.class.isAssignableFrom(e.getValue()))
 			{
-				event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + e.getKey(), RegGroup.ZONE);
-				event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + e.getKey(), RegGroup.ZONE);
+				event.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + e.getKey());
+				event.registerPermission(PERM_MOB_SPAWN_FORCED + "." + e.getKey());
 			}
 		}
+		event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + Permission.ALL, RegGroup.ZONE);
+		event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + Permission.ALL, RegGroup.ZONE);
+
+		for (String perm : UnfreindlyItemList.getNameSet())
+		{
+			event.registerPermission(PERM_ITEM_USE + "." + perm);
+		}
+		
+		event.registerPermissionLevel(PERM_ITEM_USE + "." + Permission.ALL, RegGroup.MEMBERS);
 	}
 }

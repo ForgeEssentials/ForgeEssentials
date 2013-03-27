@@ -12,7 +12,7 @@ import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.google.common.collect.HashMultimap;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class AbstractDataDriver implements IDataDriver
 {
 	private HashMultimap<String, String>	classRegister	= HashMultimap.create();

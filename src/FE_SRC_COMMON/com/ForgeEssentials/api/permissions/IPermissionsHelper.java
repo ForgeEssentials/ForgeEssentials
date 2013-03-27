@@ -8,7 +8,7 @@ import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PropQuery;
 
-@SuppressWarnings(value = { "rawtypes" })
+@SuppressWarnings("rawtypes")
 public interface IPermissionsHelper
 {
 	boolean checkPermAllowed(PermQuery query);
@@ -34,6 +34,8 @@ public interface IPermissionsHelper
 	Group getGroupForName(String name);
 
 	Group getHighestGroup(EntityPlayer player);
+
+	ArrayList<String> getPlayersInGroup(String group, String zone);
 
 	String setPlayerGroup(String group, String player, String zone);
 

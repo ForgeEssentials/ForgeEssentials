@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,13 +15,10 @@ import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.CompatReiMinimap;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-
-//import com.ForgeEssentials.economy.Wallet;
 
 public class LoginMessage
 {
@@ -78,6 +75,7 @@ public class LoginMessage
 				pw.println("# %time% => Local server time. All in one string.");
 				pw.println("# %hour% ; %min% ; %sec% => Local server time.");
 				pw.println("# %day% ; %month% ; %year% => Local server date.");
+				pw.println("# %online => Nice list of online players.");
 				pw.println("# ");
 				pw.println("# If you would like more codes, you can make an issue on https://github.com/ForgeEssentials/ForgeEssentialsMain/issues");
 				pw.println("");
@@ -121,25 +119,33 @@ public class LoginMessage
 	/**
 	 * Formats the chat, replacing given strings by their values
 	 * @param String
-	 *            to parse the amount to add to the wallet
+	 * to parse the amount to add to the WalletHandler
 	 */
-
-	@SuppressWarnings("deprecation")
 	private static String Format(String line, String playerName)
 	{
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(playerName);
-		Date now = new Date();
-		// int wallet = Wallet.getWallet(player); //needed to return wallet info
-		return line.replaceAll("&", FEChatFormatCodes.CODE.toString()) // color
-																		// codes
-		.replaceAll("%playername%", player.username).replaceAll("%players%", online()) // players
-		// .replaceAll("%balance%",wallet + " " +
-		// Wallet.currency(wallet))//can be usefull for the user
-		.replaceAll("%uptime%", getUptime()) // uptime
-		.replaceAll("%uniqueplayers%", uniqueplayers()) // unique
-														// players
-		.replaceAll("%time%", now.toLocaleString()).replaceAll("%hour%", now.getHours() + "").replaceAll("%min%", now.getMinutes() + "").replaceAll("%sec%", now.getSeconds() + "") // time
-		.replaceAll("%day%", now.getDate() + "").replaceAll("%month%", now.getMonth() + "").replaceAll("%year%", now.getYear() + ""); // date
+		Calendar cal = Calendar.getInstance();
+
+		// int WalletHandler = WalletHandler.getWalletHandler(player); //needed to return WalletHandler info
+		line = FunctionHelper.formatColors(line); // colors...
+		line = FunctionHelper.format(line);
+
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.username); // username
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%players%", online()); // players online
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%uptime%", getUptime()); // uptime
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%uniqueplayers%", uniqueplayers()); // unique players		
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%online", MinecraftServer.getServer().getConfigurationManager().getPlayerListAsString()); // All online players
+
+		// time stuff
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%time%", FunctionHelper.getCurrentTimeString());
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%hour%", "" + cal.get(Calendar.HOUR));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%min%", "" + cal.get(Calendar.MINUTE));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%sec%", "" + cal.get(Calendar.SECOND));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%day%", "" + cal.get(Calendar.DAY_OF_MONTH));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%month%", "" + cal.get(Calendar.MONTH));
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%year%", "" + cal.get(Calendar.YEAR));
+
+		return line;
 	}
 
 	private static String online()
@@ -150,7 +156,8 @@ public class LoginMessage
 			online = server.getCurrentPlayerCount();
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 		return "" + online;
 	}
 
@@ -162,7 +169,8 @@ public class LoginMessage
 			logins = server.getConfigurationManager().getAvailablePlayerDat().length;
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 		return "" + logins;
 	}
 

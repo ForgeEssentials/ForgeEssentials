@@ -6,6 +6,7 @@ import java.util.Set;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
+import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -13,6 +14,7 @@ import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModulePostInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
@@ -46,6 +48,12 @@ public class ModuleChat
 
 	public ModuleChat()
 	{
+	}
+
+	@FEModule.PreInit
+	public void load(FEModulePreInitEvent e)
+	{
+		Packet3Chat.maxChatLength = 200;
 	}
 
 	@FEModule.Init
