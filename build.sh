@@ -59,7 +59,7 @@ echo "Recompiling..."
 bash ./recompile.sh
 
 echo "Reobfuscating..."
-bash ./reobfuscate.sh
+bash ./reobfuscate_srg.sh
 
 # create this ahead of time...
 mkdir ${WORKSPACE}/output
