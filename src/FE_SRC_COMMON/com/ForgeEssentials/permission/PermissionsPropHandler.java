@@ -13,6 +13,7 @@ import com.ForgeEssentials.api.permissions.query.PropQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
 
+@SuppressWarnings("unused")
 public final class PermissionsPropHandler
 {
 	private PermissionsPropHandler()
@@ -77,7 +78,7 @@ public final class PermissionsPropHandler
 	{
 		return ZoneManager.getWhichZoneIn(query.spot);
 	}
-
+	
 	private static Zone getZone(PropQueryBlanketZone query)
 	{
 		return query.zone;

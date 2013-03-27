@@ -422,7 +422,6 @@ public class CommandFEPermGroup
 			Collections.sort(list);
 			ArrayList<String> messageAllowed = new ArrayList<String>();
 			ArrayList<String> messageDenied = new ArrayList<String>();
-			String permString;
 			for (String perm : list)
 			{
 				if (perm.contains("has no individual permissions."))

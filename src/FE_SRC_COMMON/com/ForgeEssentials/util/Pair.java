@@ -52,6 +52,7 @@ public class Pair<A, B>
 		return left.hashCode() ^ right.hashCode();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object o)
 	{

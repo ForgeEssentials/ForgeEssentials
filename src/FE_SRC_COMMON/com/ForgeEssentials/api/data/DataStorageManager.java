@@ -9,6 +9,7 @@ import com.ForgeEssentials.util.DBConnector;
  * forever. (Well, until next load, I suppose.)
  * @author MysteriousAges
  */
+@SuppressWarnings("rawtypes")
 public abstract class DataStorageManager
 {
 

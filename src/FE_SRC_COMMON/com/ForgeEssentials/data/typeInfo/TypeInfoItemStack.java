@@ -9,6 +9,7 @@ import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 
+@SuppressWarnings("rawtypes")
 public class TypeInfoItemStack implements ITypeInfo<ItemStack>
 {
 	private static final String	SIZE		= "stackSize";

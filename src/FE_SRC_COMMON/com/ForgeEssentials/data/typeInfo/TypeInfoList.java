@@ -49,6 +49,7 @@ public class TypeInfoList extends TypeMultiValInfo
 		return datas;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object reconstruct(TypeData[] data)
 	{

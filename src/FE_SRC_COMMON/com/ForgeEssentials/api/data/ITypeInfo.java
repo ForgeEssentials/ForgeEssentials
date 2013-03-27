@@ -8,6 +8,7 @@ package com.ForgeEssentials.api.data;
  * @author AbrarSyed
  * @param <T> The class this will be the TypeOverride for.
  */
+@SuppressWarnings("rawtypes")
 public interface ITypeInfo<T>
 {
 	/**

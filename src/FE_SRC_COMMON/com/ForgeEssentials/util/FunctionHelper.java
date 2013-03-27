@@ -112,6 +112,7 @@ public final class FunctionHelper
 	 * @param name
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static EntityPlayerMP getPlayerForName(String name)
 	{	
 		// tru exact match first.

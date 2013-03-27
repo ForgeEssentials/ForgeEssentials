@@ -22,6 +22,7 @@ public class CommandRemove extends FEcmdModuleCommands
 		return "remove";
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
@@ -60,6 +61,7 @@ public class CommandRemove extends FEcmdModuleCommands
 		OutputHandler.chatConfirmation(sender, Localization.format("command.remove.done", counter));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
