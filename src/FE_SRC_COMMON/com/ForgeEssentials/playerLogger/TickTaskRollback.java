@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.TileEntity;
@@ -15,6 +17,7 @@ import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class TickTaskRollback implements ITickTask
@@ -28,26 +31,50 @@ public class TickTaskRollback implements ITickTask
 	private int				X;
 	private int				Y;
 	private int				Z;
-	private String			username;
 	private Connection		connection;
 	private Statement		st;
 
-	public TickTaskRollback(ICommandSender sender, String username, boolean undo) throws SQLException
+	/**
+	 * 
+	 * @param sender
+	 * @param username
+	 * @param undo
+	 * @param timeBack 0 means forever. Time in hours
+	 * @param p null means no radius. (console)
+	 * @param rad 0 means no radius.
+	 * @throws SQLException
+	 */
+	public TickTaskRollback(ICommandSender sender, String username, boolean undo, int timeBack, WorldPoint p, int rad) throws SQLException
 	{
 		this.sender = sender;
 		this.undo = undo;
-		this.username = username;
 		connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
 		st = connection.createStatement();
 
+		String sql = "SELECT * FROM  `blockChange` WHERE  `player` LIKE  '" + username + "'";
+		
+		if (timeBack != 0)
+		{
+			Date date = new Date();
+			Timestamp time = new Timestamp(date.getTime());
+			//								   Hours,  mins, sec, nano
+			time.setNanos(time.getNanos() - (timeBack * 60 * 60 * 1000));
+			sql = sql + " AND `time` = '" + time.toString() + "'";
+		}
+		
+		if (p != null && rad != 0)
+		{
+			sql = sql + " AND `Dim` = " + p.dim;
+			sql = sql + " AND `X` BETWEEN " + (p.x - rad) + " AND " + (p.x + rad);
+			sql = sql + " AND `Z` BETWEEN " + (p.z - rad) + " AND " + (p.z + rad);
+		}
+		
 		if (undo)
-		{
-			st.execute("SELECT * FROM  `blockChange` WHERE  `player` LIKE  '" + username + "' ORDER BY time ASC");
-		}
+			sql = sql + " ORDER BY time ASC";
 		else
-		{
-			st.execute("SELECT * FROM  `blockChange` WHERE  `player` LIKE  '" + username + "' ORDER BY time DESC");
-		}
+			sql = sql + " ORDER BY time DESC";
+		
+		st.execute(sql);
 		rs = st.getResultSet();
 	}
 
@@ -144,7 +171,7 @@ public class TickTaskRollback implements ITickTask
 	@Override
 	public void onComplete()
 	{
-		sender.sendChatToPlayer("Rollback done! Changed " + changed + " blocks. You can undo by using '/rb " + username + " undo'");
+		sender.sendChatToPlayer("Rollback done! Changed " + changed + " blocks.");
 		try
 		{
 			rs.close();
