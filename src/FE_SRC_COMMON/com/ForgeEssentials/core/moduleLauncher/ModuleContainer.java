@@ -43,6 +43,7 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
+@SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable
 {
 	protected static HashSet<Class>				modClasses	= new HashSet<Class>();
@@ -64,6 +65,7 @@ public class ModuleContainer implements Comparable
 	public boolean								isLoadable	= true;
 	protected boolean							doesOverride;
 
+	@SuppressWarnings("unchecked")
 	public ModuleContainer(ASMData data)
 	{
 		// get the class....
@@ -324,6 +326,7 @@ public class ModuleContainer implements Comparable
 
 	// make the methods to run the events now...
 
+	@SuppressWarnings("unchecked")
 	public void runPreInit(FMLPreInitializationEvent fmlEvent, CallableMap map)
 	{
 		if (!isLoadable || preinit == null)
@@ -343,6 +346,7 @@ public class ModuleContainer implements Comparable
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void runInit(FMLInitializationEvent fmlEvent)
 	{
 		if (!isLoadable || init == null)
@@ -362,6 +366,7 @@ public class ModuleContainer implements Comparable
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void runPostInit(FMLPostInitializationEvent fmlEvent)
 	{
 		if (!isLoadable || postinit == null)
@@ -382,6 +387,7 @@ public class ModuleContainer implements Comparable
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void runServerInit(FMLServerStartingEvent fmlEvent)
 	{
 		if (!isLoadable || serverinit == null)
@@ -402,6 +408,7 @@ public class ModuleContainer implements Comparable
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void runServerPostInit(FMLServerStartedEvent fmlEvent)
 	{
 		if (!isLoadable || serverpostinit == null)
@@ -422,6 +429,7 @@ public class ModuleContainer implements Comparable
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void runServerStop(FMLServerStoppingEvent fmlEvent)
 	{
 		if (!isLoadable || serverstop == null)
@@ -442,6 +450,7 @@ public class ModuleContainer implements Comparable
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void runReload(ICommandSender user)
 	{
 		if (!isLoadable || reload == null)

@@ -30,6 +30,7 @@ import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class SQLDataDriver extends AbstractDataDriver
 {
 	protected static final String	SEPERATOR			= "__";

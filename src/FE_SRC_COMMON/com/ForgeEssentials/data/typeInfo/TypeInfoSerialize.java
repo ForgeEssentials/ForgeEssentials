@@ -17,6 +17,7 @@ import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.data.StorageManager;
 import com.ForgeEssentials.util.OutputHandler;
 
+@SuppressWarnings("rawtypes")
 public class TypeInfoSerialize<T> implements ITypeInfo<T>
 {
 	private final ClassContainer			container;
@@ -137,6 +138,7 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return fields.keySet().toArray(new String[fields.size()]);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public TypeData getTypeDataFromObject(T obj)
 	{

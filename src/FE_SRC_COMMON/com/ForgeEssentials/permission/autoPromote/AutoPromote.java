@@ -49,6 +49,7 @@ public class AutoPromote
 		sendMsg = true;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Reconstructor
 	private static AutoPromote reconstruct(IReconstructData tag)
 	{

@@ -1,8 +1,6 @@
 package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.TreeSet;
 
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;

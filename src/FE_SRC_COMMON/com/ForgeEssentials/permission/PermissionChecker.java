@@ -1,5 +1,6 @@
 package com.ForgeEssentials.permission;
 
+@SuppressWarnings("rawtypes")
 public class PermissionChecker implements Comparable
 {
 	/**

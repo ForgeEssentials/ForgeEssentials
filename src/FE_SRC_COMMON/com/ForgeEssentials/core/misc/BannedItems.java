@@ -9,30 +9,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
-import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.ZoneManager;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
-import com.google.common.collect.HashMultimap;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
 public class BannedItems
 {
-	private static final String		BYPASS	= "ForgeEssentials.BannedItems.override";
-
 	List<String>					noCraft	= new ArrayList<String>();
 
+	@SuppressWarnings("unchecked")
 	public void postLoad(FMLPostInitializationEvent e)
 	{
 		Configuration config = new Configuration(new File(ForgeEssentials.FEDIR, "banneditems.cfg"));
@@ -41,7 +28,6 @@ public class BannedItems
 		config.addCustomCategoryComment("NoUse", "Configuration options to make an item unusable.");
 
 		noCraft = Arrays.asList(config.get("NoCraft", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").valueList);
-		List<String> temp = Arrays.asList(config.get("NoUse", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").valueList);
 
 		config.save();
 		int id;

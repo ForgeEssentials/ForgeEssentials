@@ -12,6 +12,7 @@ import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.TypeMultiValInfo;
 import com.ForgeEssentials.util.OutputHandler;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class TypeInfoMap extends TypeMultiValInfo
 {
 	public static final String	KEY	= "key";

@@ -13,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -59,7 +58,7 @@ public abstract class UnfreindlyItemList
 		}
 
 		// now iterrate through ItemList.
-		HashMap<String, Integer> duplicates = new HashMap();
+		HashMap<String, Integer> duplicates = new HashMap<String, Integer>();
 
 		String name;
 		Integer num;
@@ -167,7 +166,6 @@ public abstract class UnfreindlyItemList
 				ids.add(id);
 			}
 
-			String paddedID;
 			String str;
 			for (Integer id : ids)
 			{

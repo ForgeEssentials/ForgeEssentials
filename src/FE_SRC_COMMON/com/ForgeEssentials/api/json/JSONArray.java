@@ -56,6 +56,7 @@ import java.util.Map;
  * @author JSON.org
  * @version 2012-11-13
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class JSONArray
 {
 

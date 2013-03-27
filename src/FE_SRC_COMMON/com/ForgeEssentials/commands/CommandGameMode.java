@@ -98,7 +98,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 		// > 2 arguments? do ./GameMode <mode> <players>
 		if (args.length > 2)
 		{
-			ArrayList<EntityPlayerMP> players = new ArrayList();
+			ArrayList<EntityPlayerMP> players = new ArrayList<EntityPlayerMP>();
 			EntityPlayerMP player;
 			for (int i = 1; i < args.length; i++)
 			{

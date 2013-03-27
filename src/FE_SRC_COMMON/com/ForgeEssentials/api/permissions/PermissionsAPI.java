@@ -10,6 +10,7 @@ import com.ForgeEssentials.api.permissions.query.PropQuery;
 
 // This is a bouncer class for all Permissions API duties.
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class PermissionsAPI
 {
 	public static IPermissionsHelper	manager;

@@ -28,6 +28,7 @@ import com.ForgeEssentials.api.data.ITypeInfo;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.util.OutputHandler;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class NBTDataDriver extends BinaryDataDriver
 {
 	@Override

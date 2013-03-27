@@ -8,6 +8,7 @@ import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PropQuery;
 
+@SuppressWarnings("rawtypes")
 public interface IPermissionsHelper
 {
 	boolean checkPermAllowed(PermQuery query);

@@ -5,6 +5,7 @@ package com.ForgeEssentials.data;
  * @author MysteriousAges
  */
 
+@SuppressWarnings("rawtypes")
 class FieldInfo
 {
 	public Class	Type;

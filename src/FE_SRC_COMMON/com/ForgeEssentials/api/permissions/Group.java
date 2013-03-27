@@ -8,6 +8,7 @@ package com.ForgeEssentials.api.permissions;
  * @author AbrarSyed
  */
 
+@SuppressWarnings("rawtypes")
 public class Group implements Comparable
 {
 

@@ -345,6 +345,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

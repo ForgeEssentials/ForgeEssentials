@@ -8,14 +8,14 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import com.ForgeEssentials.util.AreaSelector.Point;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
+import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class EventHandler
 {
