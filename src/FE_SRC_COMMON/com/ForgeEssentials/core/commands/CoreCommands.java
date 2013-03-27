@@ -1,6 +1,7 @@
 package com.ForgeEssentials.core.commands;
 
 import com.ForgeEssentials.core.commands.selections.CommandDeselect;
+import com.ForgeEssentials.core.commands.selections.CommandExpand;
 import com.ForgeEssentials.core.commands.selections.CommandPos;
 import com.ForgeEssentials.core.commands.selections.CommandWand;
 
@@ -18,6 +19,7 @@ public class CoreCommands
 		e.registerServerCommand(new CommandPos(2));
 		e.registerServerCommand(new CommandWand());
 		e.registerServerCommand(new CommandDeselect());
+		e.registerServerCommand(new CommandExpand());
 	}
 
 }
