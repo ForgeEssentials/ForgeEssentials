@@ -57,7 +57,8 @@ public class PlayerInfo
 	public static void discardInfo(String username)
 	{
 		PlayerInfo info = playerInfoMap.remove(username);
-		info.save();
+		if (info != null)
+			info.save();
 	}
 
 	@Reconstructor()
