@@ -79,6 +79,9 @@ public class WorldBorder
 
 	public void check(EntityPlayerMP player)
 	{
+		if (!enabled)
+			return;
+		
 		// 1 = square
 		if (shapeByte == 1)
 		{
