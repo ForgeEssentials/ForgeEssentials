@@ -1,5 +1,3 @@
-!/bin/bash
-
 VERSION="1.2.1"
 MC="1.5.1
 
