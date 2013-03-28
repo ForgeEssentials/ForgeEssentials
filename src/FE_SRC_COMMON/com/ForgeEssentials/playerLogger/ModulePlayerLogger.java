@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
@@ -24,6 +25,9 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.playerLogger.logger.EventLogger;
+import com.ForgeEssentials.playerLogger.rollback.CommandPl;
+import com.ForgeEssentials.playerLogger.rollback.CommandRollback;
+import com.ForgeEssentials.playerLogger.rollback.EventHandler;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.logEntry;
@@ -46,7 +50,7 @@ public class ModulePlayerLogger
 	public static Integer				interval;
 	public static boolean				enable		= false;
 
-	private Connection					connection;
+	private static Connection					connection;
 	public static EventLogger			eLogger;
 
 	public static List<logEntry>		logTypes	= new ArrayList<logEntry>();
@@ -132,12 +136,33 @@ public class ModulePlayerLogger
 			return;
 		try
 		{
-			eLogger.logLoop.sendLogs();
-			eLogger.logLoop.end();
+			new Thread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					try
+					{
+						Thread.sleep(1000 * 5);
+					}
+					catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+					try
+					{
+						connection.close();
+					}
+					catch (SQLException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}).start();
 		}
 		catch (Exception ex)
 		{
-			OutputHandler.info("WARNING! MySQLConnector for playerLogger failed!");
+			OutputHandler.warning("WARNING! MySQLConnector for playerLogger failed!");
 			ex.printStackTrace();
 		}
 	}
@@ -147,20 +172,22 @@ public class ModulePlayerLogger
 	{
 		event.registerPermissionLevel("ForgeEssentials.playerLogger.rollback", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.playerLogger.playerlogger", RegGroup.OWNERS);
-
-		// TODO : pending review from Dries.
 	}
 
-	public static void ragequit()
+	public static Connection getConnection()
+	{
+		return connection;
+	}
+
+	public static void error(Exception e)
 	{
 		if (ragequitOn)
 		{
-			FMLCommonHandler.instance().raiseException(new RuntimeException(), "Database connection lost.", true);
+			MinecraftServer.getServer().stopServer();
 		}
-	}
-
-	public static void log(logEntry e)
-	{
-		eLogger.logLoop.buffer.add(e);
+		else
+		{
+			OutputHandler.severe("PlayerLogger error: " + e.getLocalizedMessage());
+		}
 	}
 }
