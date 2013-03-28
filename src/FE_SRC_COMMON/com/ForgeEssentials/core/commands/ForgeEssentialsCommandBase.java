@@ -208,7 +208,11 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		String perm = getCommandPerm();
+		if (perm == null)
+			return true;
+		else
+			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, perm));
 	}
 
 	@Override

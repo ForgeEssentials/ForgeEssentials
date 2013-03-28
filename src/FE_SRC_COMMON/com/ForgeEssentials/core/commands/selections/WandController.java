@@ -41,7 +41,7 @@ public class WandController
 
 		Point point = new Point(event.x, event.y, event.z);
 
-		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, "WorldControl.commands.pos", point)))
+		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, "ForgeEssentials.CoreCommands.select.pos", point)))
 		{
 			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 			return;

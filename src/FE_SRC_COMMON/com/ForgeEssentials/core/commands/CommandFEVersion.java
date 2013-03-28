@@ -61,13 +61,12 @@ public class CommandFEVersion extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.CoreCommands." + getCommandName();
+		return null;
 	}
 
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

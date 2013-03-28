@@ -299,7 +299,6 @@ public class ZoneHelper implements IZoneManager
 		pointCache.put(p, zoneID);
 	}
 
-	@SuppressWarnings("unused")
 	private void putCache(WorldArea a, String zoneID)
 	{
 		areaCache.put(a, zoneID);

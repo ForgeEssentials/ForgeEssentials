@@ -27,6 +27,8 @@ import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup
@@ -43,6 +45,7 @@ public class ModuleBackup
 	public void load(FEModuleInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
+		TickRegistry.registerTickHandler(new WorldSaver(), Side.SERVER);
 	}
 
 	@FEModule.ServerInit
@@ -143,14 +146,5 @@ public class ModuleBackup
 		{
 			e.printStackTrace();
 		}
-	}
-
-	synchronized static void worldsave(int i) throws MinecraftException
-	{
-		WorldServer world = DimensionManager.getWorld(i);
-		boolean bl = world.canNotSave;
-		world.canNotSave = false;
-		world.saveAllChunks(true, (IProgressUpdate) null);
-		world.canNotSave = bl;
 	}
 }

@@ -144,7 +144,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands.pos";
+		return "ForgeEssentials.CoreCommands.select.pos";
 	}
 
 	@Override

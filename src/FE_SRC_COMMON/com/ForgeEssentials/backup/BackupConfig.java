@@ -52,8 +52,8 @@ public class BackupConfig extends ModuleConfigBase
 		 * Main cat
 		 */
 		config.addCustomCategoryComment(MAIN, "Configure the backup system.");
-		backupName = config.get(MAIN, "name", "%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").getString();
-		backupDir = config.get(MAIN, "backupsDir", "Backup", "The path to the backup folder.").getString();
+		backupName = config.get(MAIN, "name", "%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").value;
+		backupDir = config.get(MAIN, "backupsDir", "Backup", "The path to the backup folder.").value;
 		backupOnWorldUnload = config.get(MAIN, "backupOnWorldUnload", true, "Make a backup when a dim unloads.").getBoolean(true);
 		backupIfUnloaded = config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").getBoolean(true);
 		enableMsg = config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").getBoolean(true);
@@ -65,8 +65,9 @@ public class BackupConfig extends ModuleConfigBase
 		String sub = MAIN + ".lang";
 		config.addCustomCategoryComment(sub, "Configure messages here.");
 
-		AutoWorldSave.start = config.get(sub + ".AutoWorldSave", "start", "Saving all loaded worlds.").getString();
-		AutoWorldSave.done = config.get(sub + ".AutoWorldSave", "done", "The sever has saved the worlds.").getString();
+		WorldSaver.start = config.get(sub + ".AutoWorldSave", "start", "Saving world %1$s").value;
+		WorldSaver.done = config.get(sub + ".AutoWorldSave", "done", "Done saving world %1$s").value;
+		WorldSaver.failed = config.get(sub + ".AutoWorldSave", "failed", "%1$s failed to save!").value;
 
 		ModuleBackup.baseFolder = new File(backupDir);
 
@@ -80,7 +81,7 @@ public class BackupConfig extends ModuleConfigBase
 		worldSaveing = config.get(AUTOBACKUP, "worldSaving", false, "If false, doesn't save wold continuesly.").getBoolean(false);
 		whitelist = Ints.asList(config.get(AUTOBACKUP, "whitelist", new int[] {}, "Always make a backup of these dims. Even when empty.").getIntList());
 		blacklist = Ints.asList(config.get(AUTOBACKUP, "blacklist", new int[] {}, "Don't make automatic backups of these dims. Can still be done via command.").getIntList());
-		extraFolders = Arrays.asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").getStringList());
+		extraFolders = Arrays.asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").valueList);
 
 		/*
 		 * Subcat autoRemove
@@ -104,11 +105,11 @@ public class BackupConfig extends ModuleConfigBase
 		 * Main cat
 		 */
 		config.addCustomCategoryComment(MAIN, "Configure the backup system.");
-		config.get(MAIN, "name", "%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").set(backupName);
-		config.get(MAIN, "backupsDir", "Backup", "The path to the backup folder.").set(backupDir);
-		config.get(MAIN, "backupOnWorldUnload", true, "Make a backup when a dim unloads.").set(backupOnWorldUnload);
-		config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").set(backupIfUnloaded);
-		config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").set(enableMsg);
+		config.get(MAIN, "name", "%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").value = backupName;
+		config.get(MAIN, "backupsDir", "Backup", "The path to the backup folder.").value = backupDir;
+		config.get(MAIN, "backupOnWorldUnload", true, "Make a backup when a dim unloads.").value = backupOnWorldUnload + "";
+		config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").value = backupIfUnloaded + "";
+		config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").value = enableMsg + "";
 
 		ModuleBackup.baseFolder = new File(backupDir);
 
@@ -117,22 +118,22 @@ public class BackupConfig extends ModuleConfigBase
 		 */
 		config.addCustomCategoryComment(AUTOBACKUP, "Settings for the scheduled backup system");
 
-		config.get(AUTOBACKUP, "interval", 30, "Interval in minutes. 0 to disable").set(autoInterval);
-		config.get(AUTOBACKUP, "worldSaveInterval", 10, "Does a save-all every X minutes. 0 to disable").set(worldSaveInterval);
-		config.get(AUTOBACKUP, "worldSaving", false, "If false, doesn't save wold continuesly.").set(worldSaveing);
-		config.get(AUTOBACKUP, "whitelist", new int[] {}, "Always make a backup of these dims. Even when empty.").set(whitelist.toArray(new String[0]));
-		config.get(AUTOBACKUP, "blacklist", new int[] {}, "Don't make automatic backups of these dims. Can still be done via command.").set(blacklist.toArray(new String[0]));
-		config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").set(extraFolders.toArray(new String[0]));
+		config.get(AUTOBACKUP, "interval", 30, "Interval in minutes. 0 to disable").value = autoInterval + "";
+		config.get(AUTOBACKUP, "worldSaveInterval", 10, "Does a save-all every X minutes. 0 to disable").value = worldSaveInterval + "";
+		config.get(AUTOBACKUP, "worldSaving", false, "If false, doesn't save wold continuesly.").value = worldSaveing + "";
+		config.get(AUTOBACKUP, "whitelist", new int[] {}, "Always make a backup of these dims. Even when empty.").valueList = whitelist.toArray(new String[0]);
+		config.get(AUTOBACKUP, "blacklist", new int[] {}, "Don't make automatic backups of these dims. Can still be done via command.").valueList = blacklist.toArray(new String[0]);
+		config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").valueList = extraFolders.toArray(new String[0]);
 
 		/*
 		 * Subcat autoRemove
 		 */
 		config.addCustomCategoryComment(AUTOREMOVE, "Settings for the autoremoval of old backups");
 
-		config.get(AUTOREMOVE, "enable", true, "Automaticly remove old backups").set(enableAutoRemove);
-		config.get(AUTOREMOVE, "minimunFreeSpace", -1, "Minimum of free space that needs to remain on the HDD the server is on. Value in GB. -1 disables this criteria.").set(minimunFreeSpace);
-		config.get(AUTOREMOVE, "maxfilesperbackupfolder", -1, "Maximum amout of backups per folder or world. -1 to disable this criteria.").set(maxfilesperbackupfolder);
-		config.get(AUTOREMOVE, "maxBackupLifespan", -1, "Time in hours a backup may last. -1 to disable this criteria.").set(maxBackupLifespan);
+		config.get(AUTOREMOVE, "enable", true, "Automaticly remove old backups").value = enableAutoRemove + "";
+		config.get(AUTOREMOVE, "minimunFreeSpace", -1, "Minimum of free space that needs to remain on the HDD the server is on. Value in GB. -1 disables this criteria.").value = minimunFreeSpace + "";
+		config.get(AUTOREMOVE, "maxfilesperbackupfolder", -1, "Maximum amout of backups per folder or world. -1 to disable this criteria.").value = maxfilesperbackupfolder + "";
+		config.get(AUTOREMOVE, "maxBackupLifespan", -1, "Time in hours a backup may last. -1 to disable this criteria.").value = maxBackupLifespan + "";
 
 		config.save();
 	}
@@ -146,8 +147,8 @@ public class BackupConfig extends ModuleConfigBase
 		 * Main cat
 		 */
 		config.addCustomCategoryComment(MAIN, "Configure the backup system.");
-		backupName = config.get(MAIN, "name", "%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").getString();
-		backupDir = config.get(MAIN, "backupsDir", "Backup", "The path to the backup folder.").getString();
+		backupName = config.get(MAIN, "name", "%year-%month-%day_%hour-%min", "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").value;
+		backupDir = config.get(MAIN, "backupsDir", "Backup", "The path to the backup folder.").value;
 		backupOnWorldUnload = config.get(MAIN, "backupOnWorldUnload", true, "Make a backup when a dim unloads.").getBoolean(true);
 		backupIfUnloaded = config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").getBoolean(true);
 		enableMsg = config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").getBoolean(true);
@@ -164,7 +165,7 @@ public class BackupConfig extends ModuleConfigBase
 		worldSaveing = config.get(AUTOBACKUP, "worldSaving", false, "If false, doesn't save wold continuesly.").getBoolean(false);
 		whitelist = Ints.asList(config.get(AUTOBACKUP, "whitelist", new int[] {}, "Always make a backup of these dims. Even when empty.").getIntList());
 		blacklist = Ints.asList(config.get(AUTOBACKUP, "blacklist", new int[] {}, "Don't make automatic backups of these dims. Can still be done via command.").getIntList());
-		extraFolders = Arrays.asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").getStringList());
+		extraFolders = Arrays.asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").valueList);
 
 		/*
 		 * Subcat autoRemove

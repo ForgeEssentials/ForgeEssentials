@@ -24,7 +24,7 @@ public class AutoBackup implements Runnable
 	@Override
 	public void run()
 	{
-		while (AutoWorldSave.isSaving)
+		while (WorldSaver.isSaving())
 		{
 			try
 			{
@@ -115,7 +115,7 @@ public class AutoBackup implements Runnable
 					}
 					catch (IOException e)
 					{
-						OutputHandler.severe("Why you no delete file?");
+						OutputHandler.severe("Why you no delete file? "+file);
 						e.printStackTrace();
 					}
 				}

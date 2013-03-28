@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.playerLogger.logger.EventLogger;
 
 public class ConfigPlayerLogger extends ModuleConfigBase
 {

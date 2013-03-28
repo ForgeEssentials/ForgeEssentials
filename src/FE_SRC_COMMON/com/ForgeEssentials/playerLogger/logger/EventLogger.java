@@ -1,4 +1,4 @@
-package com.ForgeEssentials.playerLogger;
+package com.ForgeEssentials.playerLogger.logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.core.network.PacketPlayerLogger;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
@@ -21,21 +22,17 @@ import com.ForgeEssentials.util.events.PlayerBlockPlace;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 public class EventLogger implements IPlayerTracker
 {
-	public LogLoop	logLoop;
-	public Thread	thread;
-	public Side		side	= FMLCommonHandler.instance().getEffectiveSide();
+	public Side	side	= FMLCommonHandler.instance().getEffectiveSide();
 
 	public EventLogger()
 	{
-		logLoop = new LogLoop();
-		Thread thread = new Thread(logLoop, "ForgeEssentials - MySQL Connection Thread - PlayerLogger");
-		thread.start();
-
 		MinecraftForge.EVENT_BUS.register(this);
 		GameRegistry.registerPlayerTracker(this);
 	}
@@ -58,11 +55,12 @@ public class EventLogger implements IPlayerTracker
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
+		PacketDispatcher.sendPacketToPlayer(new PacketPlayerLogger(player).getPayload(), (Player) player);
 		if (logPlayerLoginLogout && side.isServer())
 		{
 			if (exempt(player))
 				return;
-			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Login, player));
+			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Login, player, "");
 		}
 	}
 
@@ -73,7 +71,7 @@ public class EventLogger implements IPlayerTracker
 		{
 			if (exempt(player))
 				return;
-			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Logout, player));
+			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Logout, player, "");
 		}
 	}
 
@@ -84,7 +82,7 @@ public class EventLogger implements IPlayerTracker
 		{
 			if (exempt(player))
 				return;
-			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.ChangedDim, player));
+			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.ChangedDim, player, "");
 		}
 	}
 
@@ -95,7 +93,7 @@ public class EventLogger implements IPlayerTracker
 		{
 			if (exempt(player))
 				return;
-			ModulePlayerLogger.log(new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Respawn, player));
+			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Respawn, player, "");
 		}
 	}
 
@@ -106,17 +104,17 @@ public class EventLogger implements IPlayerTracker
 		{
 			if (exempt((EntityPlayer) e.sender))
 				return;
-			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
+			new commandLog(e.sender.getCommandSenderName(), getCommand(e));
 			return;
 		}
 		if (logCommands_Block && !e.isCanceled() && e.sender instanceof TileEntityCommandBlock && side.isServer())
 		{
-			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
+			new commandLog(e.sender.getCommandSenderName(), getCommand(e));
 			return;
 		}
 		if (logCommands_rest && !e.isCanceled() && side.isServer())
 		{
-			ModulePlayerLogger.log(new commandLog(e.sender.getCommandSenderName(), getCommand(e)));
+			new commandLog(e.sender.getCommandSenderName(), getCommand(e));
 			return;
 		}
 	}
@@ -130,7 +128,7 @@ public class EventLogger implements IPlayerTracker
 				return;
 			String block = e.world.getBlockId(e.blockX, e.blockY, e.blockZ) + ":" + e.world.getBlockMetadata(e.blockX, e.blockY, e.blockZ);
 			TileEntity te = e.world.getBlockTileEntity(e.blockX, e.blockY, e.blockZ);
-			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ, te));
+			new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ, te);
 		}
 	}
 
@@ -175,7 +173,7 @@ public class EventLogger implements IPlayerTracker
 						x++;
 						break;
 				}
-			ModulePlayerLogger.log(new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, x, y, z, null));
+			new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, x, y, z, null);
 		}
 	}
 

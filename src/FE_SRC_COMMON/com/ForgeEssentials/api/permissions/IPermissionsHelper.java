@@ -60,6 +60,10 @@ public interface IPermissionsHelper
 	String getPermissionForGroup(String target, String zone, String perm);
 
 	String getPermissionPropForGroup(String target, String zone, String perm);
+	
+	String getPermissionForPlayer(String target, String zone, String perm);
+
+	String getPermissionPropForPlayer(String target, String zone, String perm);
 
 	ArrayList getPlayerPermissions(String target, String zone);
 

@@ -329,6 +329,18 @@ public class PermissionsHelper implements IPermissionsHelper
 	{
 		return SqlHelper.getGroupsInZone(zoneName);
 	}
+	
+	@Override
+	public String getPermissionForPlayer(String target, String zone, String perm)
+	{
+		return SqlHelper.getPermission(target, false, perm, zone);
+	}
+
+	@Override
+	public String getPermissionPropForPlayer(String target, String zone, String perm)
+	{
+		return SqlHelper.getPermissionProp(target, false, perm, zone);
+	}
 
 	@Override
 	public String getPermissionForGroup(String target, String zone, String perm)
@@ -379,9 +391,9 @@ public class PermissionsHelper implements IPermissionsHelper
 	}
 
 	@Override
-	public ArrayList getGroupPermissions(String target, String zone)
+	public ArrayList<String> getGroupPermissions(String target, String zone)
 	{
-		ArrayList output = new ArrayList();
+		ArrayList<String> output = new ArrayList();
 		Group g = SqlHelper.getGroupForName(target);
 
 		if (zone == null)
@@ -402,9 +414,9 @@ public class PermissionsHelper implements IPermissionsHelper
 	}
 
 	@Override
-	public ArrayList getGroupPermissionProps(String target, String zone)
+	public ArrayList<String> getGroupPermissionProps(String target, String zone)
 	{
-		ArrayList output = new ArrayList();
+		ArrayList<String> output = new ArrayList();
 		Group g = SqlHelper.getGroupForName(target);
 
 		if (zone == null)

@@ -156,13 +156,13 @@ public class CommandWand extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands.wand";
+		return "ForgeEssentials.CoreCommands.select.wand";
 	}
 
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 }

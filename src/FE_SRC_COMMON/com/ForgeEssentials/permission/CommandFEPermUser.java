@@ -114,8 +114,22 @@ public class CommandFEPermUser
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("get"))
-					// Get current state.
+				{
+					String result = PermissionsAPI.getPermissionForPlayer(player.username, zone.getZoneName(), args[2]);
+					if (result == null)
+					{
+						OutputHandler.chatError(sender, "Error processing statement");
+					}
+					else if (result.equals("Zone or target invalid"))
+					{
+						OutputHandler.chatError(sender, "Zone or group does not exist!");
+					}
+					else
+					{
+						OutputHandler.chatConfirmation(sender, args[2] + " is " + result + " for " + player.username);
+					}
 					return;
+				}
 			}
 		}
 		else if (args[1].equalsIgnoreCase("group")) // group management
@@ -462,8 +476,22 @@ public class CommandFEPermUser
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("get"))
-					// Get current state.
+				{
+					String result = PermissionsAPI.getPermissionForPlayer(player.username, zone.getZoneName(), args[2]);
+					if (result == null)
+					{
+						OutputHandler.chatError(sender, "Error processing statement");
+					}
+					else if (result.equals("Zone or target invalid"))
+					{
+						OutputHandler.chatError(sender, "Zone or group does not exist!");
+					}
+					else
+					{
+						OutputHandler.chatConfirmation(sender, args[2] + " is " + result + " for " + player.username);
+					}
 					return;
+				}
 
 			}
 		}

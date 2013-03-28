@@ -10,7 +10,6 @@ import com.ForgeEssentials.api.permissions.query.PropQuery;
 
 // This is a bouncer class for all Permissions API duties.
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class PermissionsAPI
 {
 	public static IPermissionsHelper	manager;
@@ -131,6 +130,16 @@ public abstract class PermissionsAPI
 	public static ArrayList<Group> getGroupsInZone(String zoneName)
 	{
 		return manager.getGroupsInZone(zoneName);
+	}
+	
+	public static String getPermissionForPlayer(String target, String zone, String perm)
+	{
+		return manager.getPermissionForPlayer(target, zone, perm);
+	}
+
+	public static String getPermissionPropForPlayer(String target, String zone, String perm)
+	{
+		return manager.getPermissionPropForPlayer(target, zone, perm);
 	}
 
 	public static String getPermissionForGroup(String target, String zone, String perm)

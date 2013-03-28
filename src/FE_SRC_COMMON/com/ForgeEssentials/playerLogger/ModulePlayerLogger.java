@@ -23,6 +23,7 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.playerLogger.logger.EventLogger;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.logEntry;
