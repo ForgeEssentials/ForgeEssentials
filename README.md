@@ -40,11 +40,11 @@ Downloads
 
 FE Team Members:
 ================
-[AbrarSyed] (active)
-[Bob-A-Red-Dino][] (inactive)
-[bspkrs]() (inactive)
-[MysteriousAges](MysteriousAges) (inactive)
-@luacs1998 (inactive)
-@Dries007 (active)
-@Weneg (inactive)
-@Malkerian (active)
+[AbrarSyed](github.com/AbrarSyed) (active)
+[Bob-A-Red-Dino](github.com/Bob-A-Red-Dino) (inactive)
+[bspkrs](github.com/bspkrs) (inactive)
+[MysteriousAges](github.com/MysteriousAges) (inactive)
+[luacs1998](github.com/luacs1998) (inactive)
+[Dries007](github.com/Dries007) (active)
+[Weneg](github.com/Weneg) (inactive)
+[Malkerian](github.com/Malkerian) (active)
