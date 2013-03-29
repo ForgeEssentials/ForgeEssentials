@@ -1,7 +1,8 @@
 ForgeEssentialsMain
 ===================
-The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality. More info can be found <a href="https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/About-ForgeEssentials">here</a>.
 *Join us on our IRC channel [#forgeessentials](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on EsperNet.*
+_________________________________________________________________________________________________________________________
+The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality
 
 *More information can be found at the [wiki](wiki).*
 
@@ -10,7 +11,7 @@ Setup
 *Please see [README-Developing.txt](README-Developing.txt) for setting up ForgeEssentials with MCP.*
 
 1. Install Forge.
-2. Drag the ForgeEssentials Files to the mod folder.
+2. Watch this [video](http://www.google.com/url?sa=t&rct=j&q=forge%20essentials%20install&source=web&cd=2&ved=0CD4QtwIwAQ&url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DeILe2YDVHfs&ei=6-BUUYL3JITUyQG-noGIDw&usg=AFQjCNEbvjbyDXQZ9wBuwxn8g4wjFw5ADw&bvm=bv.44442042,d.aWc).
 3. Enjoy!
 
 Downloads
@@ -39,31 +40,11 @@ Downloads
 
 FE Team Members:
 ================
-<table>
-<tr>
-<th>The FE Team</th>
-<tr>
-<td><a href="https://github.com/AbrarSyed">AbrarSyed</a></td>
-</tr>
-<tr>
-<td><a href="https://github.com/Bob-A-Red-Dino">Bob A Red Dino</a></td>
-</tr>
-<tr>
-<td><a href="https://github.com/bspkrs">bspkrs</a></td>
-</tr>
-<tr>
-<td><a href="https://github.com/MysteriousAges">MysteriousAges</a></td>
-</tr>
-<tr>
-<td> <a href="https://github.com/luacs1998">luacs1998</a> </td>
-</tr>
-<tr>
-<td><a href="https://github.com/dries007">Dries007</a></td>
-</tr>
-<tr>
-<td><a href="https://github.com/Weneg">Weneg</a></td>
-</tr>
-<tr>
-<td> <a href="https://github.com/Malkerian">Malkerian</a></td>
-</tr>
-</table>
+@AbrarSyed (active)
+@Bob-A-Red-Dino (inactive)
+@bspkrs (inactive)
+@MysteriousAges (inactive)
+@luacs1998 (inactive)
+@Dries007 (active)
+@Weneg (inactive)
+@Malkerian (active)
