@@ -1,5 +1,7 @@
 ForgeEssentialsMain
 ===================
+___________________
+___________________
 *Join us on our IRC channel [#forgeessentials](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on EsperNet.*
 _________________________________________________________________________________________________________________________
 The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality
@@ -8,6 +10,7 @@ The Forge Essentials project consists of a permissions and protection system to 
 
 Setup
 =====
+_____
 *Please see [README-Developing.txt](README-Developing.txt) for setting up ForgeEssentials with MCP.*
 
 1. Install Forge.
@@ -16,6 +19,7 @@ Setup
 
 Downloads
 =========
+_________
 <table>
 <tr>
 <th>Link</th>
@@ -40,11 +44,19 @@ Downloads
 
 FE Team Members:
 ================
-[AbrarSyed](github.com/AbrarSyed) (active)
-[Bob-A-Red-Dino](github.com/Bob-A-Red-Dino) (inactive)
-[bspkrs](github.com/bspkrs) (inactive)
-[MysteriousAges](github.com/MysteriousAges) (inactive)
-[luacs1998](github.com/luacs1998) (inactive)
-[Dries007](github.com/Dries007) (active)
-[Weneg](github.com/Weneg) (inactive)
-[Malkerian](github.com/Malkerian) (active)
+________________
+<a href="https://github.com/AbrarSyed">AbrarSyed</a>  
+
+<a href="https://github.com/Bob-A-Red-Dino">Bob A Red Dino</a>  (inactive)
+
+<a href="https://github.com/bspkrs">bspkrs</a> (inactive)
+
+<a href="https://github.com/MysteriousAges">MysteriousAges</a> (inactive)
+
+<a href="https://github.com/luacs1998">luacs1998</a> (inactive)
+
+<a href="https://github.com/dries007">Dries007</a>
+
+<a href="https://github.com/Weneg">Weneg</a> (inactive)
+
+<a href="https://github.com/Malkerian">Malkerian</a>
