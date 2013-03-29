@@ -40,10 +40,10 @@ Downloads
 
 FE Team Members:
 ================
-<AbrarSyed> (active)
-@Bob-A-Red-Dino (inactive)
-@bspkrs (inactive)
-@MysteriousAges (inactive)
+[AbrarSyed] (active)
+[Bob-A-Red-Dino][] (inactive)
+[bspkrs]() (inactive)
+[MysteriousAges](MysteriousAges) (inactive)
 @luacs1998 (inactive)
 @Dries007 (active)
 @Weneg (inactive)
