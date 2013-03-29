@@ -1,7 +1,6 @@
 ForgeEssentialsMain
 ===================
-___________________
-___________________
+*******************
 *Join us on our IRC channel [#forgeessentials](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on EsperNet.*
 _________________________________________________________________________________________________________________________
 The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality
