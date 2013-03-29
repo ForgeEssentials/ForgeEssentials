@@ -1,5 +1,10 @@
 package com.ForgeEssentials.client;
 
+import java.util.logging.Logger;
+
+import com.ForgeEssentials.client.cui.CUIPlayerLogger;
+import com.ForgeEssentials.client.cui.CUIRenderrer;
+
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
@@ -23,13 +28,20 @@ public class ForgeEssentialsClient
 
 	private boolean allowCUI;
 	
+	public Logger feclientlog;
+	
+	private static final String beta = "@BETA@";
+	
 	@SideOnly(Side.CLIENT)
 	private static PlayerInfoClient	info;
 
 	private boolean getDevOverride() 
 	{
-		if (System.getProperty("forgeessentials.client.developermode").equals("true")) // FOR DEVS ONLY! THAT IS WHY IT IS A PROPERTY!!!
-		return true;
+		if (System.getProperty("forgeessentials.client.developermode").equals("true")){ // FOR DEVS ONLY! THAT IS WHY IT IS A PROPERTY!!!
+		
+			feclientlog.severe("Developer mode has been enabled, things may break.");
+			return true;
+		}
 		else return false;
 	}
 	
@@ -38,6 +50,15 @@ public class ForgeEssentialsClient
 	{
 		if (FMLCommonHandler.instance().getSide().isServer() && getDevOverride() == false)
 			throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
+		
+		feclientlog = e.getModLog();
+		
+		if (beta.equals("true")){
+			feclientlog.fine("You are running ForgeEssentials beta build @VERSION@");
+			feclientlog.fine("Please report all bugs to the github issue tracker at https://github.com/ForgeEssentials/ForgeEssentialsMain/issues.");
+			feclientlog.fine("We thank you for helping us to beta test ForgeEssentials.");
+		}
+		
 		Configuration config = new Configuration(e.getSuggestedConfigurationFile());
 		config.load();
 		config.addCustomCategoryComment("Core", "Configure ForgeEssentials .");

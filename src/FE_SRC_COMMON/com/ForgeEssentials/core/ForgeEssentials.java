@@ -103,11 +103,19 @@ public class ForgeEssentials
 	private CoreCommands			cmds;
 
 	private TaskRegistry			tasks;
+	
+	private static final String beta = "@BETA@";
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		OutputHandler.init(e.getModLog());
+		
+		if (beta.equals("true")){
+			OutputHandler.fine("You are running ForgeEssentials beta build " + FEModContainer.version);
+			OutputHandler.fine("Please report all bugs to the github issue tracker at https://github.com/ForgeEssentials/ForgeEssentialsMain/issues.");
+			OutputHandler.fine("We thank you for helping us to beta test ForgeEssentials.");
+		}
 		
 		// FE MUST BE FIRST!!
 		GameRegistry.registerPlayerTracker(new PlayerTracker());

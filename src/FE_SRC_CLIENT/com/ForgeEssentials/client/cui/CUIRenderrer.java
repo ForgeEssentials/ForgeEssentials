@@ -1,4 +1,4 @@
-package com.ForgeEssentials.client;
+package com.ForgeEssentials.client.cui;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -9,6 +9,8 @@ import net.minecraftforge.event.ForgeSubscribe;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.ForgeEssentials.client.ForgeEssentialsClient;
+import com.ForgeEssentials.client.PlayerInfoClient;
 import com.ForgeEssentials.client.util.ClientPoint;
 import com.ForgeEssentials.client.util.ClientSelection;
 
