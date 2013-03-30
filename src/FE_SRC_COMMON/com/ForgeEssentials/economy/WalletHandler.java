@@ -70,7 +70,7 @@ public class WalletHandler implements IPlayerTracker, IEconManager
 		{
 			wallet = new Wallet(player, ModuleEconomy.startbuget);
 		}
-		wallets.put(wallet.getUsername(), wallet);
+		wallets.put(player.username, wallet);
 	}
 
 	@Override
