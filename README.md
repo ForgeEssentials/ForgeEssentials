@@ -64,6 +64,6 @@ ________________
 
 <a href="https://github.com/helinus">Helinus</a>
 
-<a href="https://github.com/jovino">Jovino</a>
+<a href="https://github.com/jovino">Jovino</a> (inactive)
 
 <a href="https://github.com/RlonRyan">_</a>
