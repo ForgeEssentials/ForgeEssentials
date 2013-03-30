@@ -1,5 +1,6 @@
 package com.ForgeEssentials.core.commands.selections;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -16,7 +17,13 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandName()
 	{
-		return "fedesel";
+		return "/fedesel";
+	}
+	
+	@Override
+	public List<String> getCommandAliases()
+	{
+		return Arrays.asList("/fedeselect");
 	}
 
 	@Override
