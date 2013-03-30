@@ -52,10 +52,18 @@ ________________
 
 <a href="https://github.com/MysteriousAges">MysteriousAges</a> (inactive)
 
-<a href="https://github.com/luacs1998">luacs1998</a> (inactive)
+<a href="https://github.com/luacs1998">luacs1998</a>
 
 <a href="https://github.com/dries007">Dries007</a>
 
 <a href="https://github.com/Weneg">Weneg</a> (inactive)
 
 <a href="https://github.com/Malkerian">Malkerian</a>
+
+<a href="https://github.com/Jgdovin">Jgdovin</a>
+
+<a href="https://github.com/helinus">Helinus</a>
+
+<a href="https://github.com/jovino">Jovino</a>
+
+<a href="https://github.com/RlonRyan">_</a>
