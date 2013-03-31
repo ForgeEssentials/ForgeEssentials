@@ -7,9 +7,10 @@ cd ${WORKSPACE}
 
 # try getting the version from files
 VERSION="`head -n 1 VERSION.TXT`"
-if [BETA = true]
+if [ BETA = true ]
 then VERSION="${VERSION}.${BUILD_NUMBER}-betas"
 else VERSION="${VERSION}.${BUILD_NUMBER}"
+fi
 MC="`tail -n 1 VERSION.TXT`"
 echo "Version of ForgeEssentials is: ${VERSION} for MC ${MC}"
 
