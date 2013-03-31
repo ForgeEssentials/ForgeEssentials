@@ -48,10 +48,10 @@ public class ForgeEssentialsClient
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		feclientlog = e.getModLog();
+		
 		if (FMLCommonHandler.instance().getSide().isServer() && getDevOverride() == false)
 			throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
-		
-		feclientlog = e.getModLog();
 		
 		if (beta.equals("true")){
 			feclientlog.fine("You are running ForgeEssentials beta build @VERSION@");

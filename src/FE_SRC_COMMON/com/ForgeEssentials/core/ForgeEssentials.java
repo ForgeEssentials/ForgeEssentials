@@ -104,7 +104,7 @@ public class ForgeEssentials
 
 	private TaskRegistry			tasks;
 	
-	private static final String beta = "@BETA@";
+	public static final String beta = "@BETA@";
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
