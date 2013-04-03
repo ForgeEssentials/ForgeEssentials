@@ -63,7 +63,6 @@ public class Backup implements Runnable
 		backupName = getFilename() + ".zip";
 
 		thread = new Thread(this, "ForgeEssentials - Backup - " + name);
-		thread.start();
 	}
 
 	public Backup(WorldServer world, boolean worldSave)
@@ -90,6 +89,11 @@ public class Backup implements Runnable
 		backupName = getFilename() + ".zip";
 
 		thread = new Thread(this, "ForgeEssentials - Backup - " + name);
+		thread.start();
+	}
+	
+	public void startThread()
+	{
 		thread.start();
 	}
 

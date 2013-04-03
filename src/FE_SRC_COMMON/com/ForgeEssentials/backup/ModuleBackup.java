@@ -77,7 +77,7 @@ public class ModuleBackup
 		{
 			if (BackupConfig.backupOnWorldUnload)
 			{
-				new Backup((WorldServer) e.world, false);
+				new Backup((WorldServer) e.world, ((WorldServer) e.world).canNotSave).run();
 			}
 		}
 	}
@@ -87,7 +87,7 @@ public class ModuleBackup
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			((WorldServer) e.world).canNotSave = !BackupConfig.worldSaveing;
+			((WorldServer) e.world).canNotSave = !BackupConfig.worldSaving;
 		}
 	}
 
