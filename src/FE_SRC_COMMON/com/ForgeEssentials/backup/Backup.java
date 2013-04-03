@@ -77,7 +77,6 @@ public class Backup implements Runnable
 		backupName = getFilename() + ".zip";
 
 		thread = new Thread(this, "ForgeEssentials - Backup - " + name);
-		thread.start();
 	}
 
 	public Backup(File folder)
@@ -89,12 +88,12 @@ public class Backup implements Runnable
 		backupName = getFilename() + ".zip";
 
 		thread = new Thread(this, "ForgeEssentials - Backup - " + name);
-		thread.start();
 	}
 	
 	public void startThread()
 	{
-		thread.start();
+		if (thread != null && !thread.isAlive())
+			thread.start();
 	}
 
 	@Override
