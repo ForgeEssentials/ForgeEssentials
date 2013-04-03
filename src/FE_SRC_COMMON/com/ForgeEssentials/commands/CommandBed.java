@@ -56,16 +56,24 @@ public class CommandBed extends FEcmdModuleCommands
 		ChunkCoordinates spawn = player.getBedLocation();
 		if (spawn != null)
 		{
-			World world = player.worldObj;
-			if (!world.provider.canRespawnHere())
+			spawn = EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
+			if (spawn != null)
 			{
-				world = DimensionManager.getWorld(0);
+				World world = player.worldObj;
+				if (!world.provider.canRespawnHere())
+				{
+					world = DimensionManager.getWorld(0);
+				}
+				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+				// Doesnt work
+				// FunctionHelper.setPlayer(player, new Point(spawn), world);
+				player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
+				OutputHandler.chatConfirmation(player, Localization.get("command.bed.done"));
+			} else {
+				OutputHandler.chatError(player, Localization.get("command.bed.obstructed"));
 			}
-			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-			// Doesnt work
-			// FunctionHelper.setPlayer(player, new Point(spawn), world);
-			player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
-			OutputHandler.chatConfirmation(player, Localization.get("command.bed.done"));
+		} else {
+			OutputHandler.chatError(player, Localization.get("command.bed.noExist"));			
 		}
 	}
 
