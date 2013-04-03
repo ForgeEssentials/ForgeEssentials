@@ -77,7 +77,7 @@ public class ModuleBackup
 		{
 			if (BackupConfig.backupOnWorldUnload)
 			{
-				new Backup((WorldServer) e.world, ((WorldServer) e.world).canNotSave).run();
+				new Backup((WorldServer) e.world, false).run();
 			}
 		}
 	}
