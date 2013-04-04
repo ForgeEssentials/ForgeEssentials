@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
@@ -22,10 +25,10 @@ import cpw.mods.fml.common.FMLCommonHandler;
  * Rollback command. WIP!
  * @author Dries007
  */
-
 public class CommandRollback extends ForgeEssentialsCommandBase
 {
-
+	HashMap<ICommandSender, String> que = new HashMap<ICommandSender, String>();
+	
 	@Override
 	public String getCommandName()
 	{
@@ -56,32 +59,85 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	 */
 	private void doRollback(ICommandSender sender, String[] args)
 	{
+		ArrayList userlist = new ArrayList();
+		userlist.addAll(Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()));
+		/*
+		 * Cmd info
+		 */
 		if (args.length == 0)
 		{
 			sender.sendChatToPlayer("--- Rollback usage ---");
-			sender.sendChatToPlayer("'/rollback <username> clear' => Removes a players data.");
-			sender.sendChatToPlayer("'/rollback <username> undo' => Undo a rollback. You can specify time and radius");
-			sender.sendChatToPlayer("'/rollback <username>' => Rolls back a players. All the way!");
-			sender.sendChatToPlayer("'/rollback <username> [undo] <rad>' => Format like this: 10r");
-			sender.sendChatToPlayer("'/rollback <username> [undo] <time>' => Format time like this: 10d = 10 days, 10h = 10 hours.");
-			sender.sendChatToPlayer("'/rollback <username> [undo] <time> <rad>' => Combo of the above.");
+			sender.sendChatToPlayer("All actions must be confirmed with '/rb ok'.");
+			sender.sendChatToPlayer("All actions can be canceld with '/rb abort'.");
+			sender.sendChatToPlayer("'/rb clear <username>' => Removes a players data.");
+			sender.sendChatToPlayer("'/rb undo <username>' => Undo a rollback. You can specify time and radius");
+			sender.sendChatToPlayer("'/rb <undo|rollback> <username>' => Rolls back a players. All the way!");
+			sender.sendChatToPlayer("'/rb <undo|rollback> <username> <rad>' => Format like this: 10r");
+			sender.sendChatToPlayer("'/rb <undo|rollback> <username> <time>' => Format time like this: 10d = 10 days, 10h = 10 hours.");
+			sender.sendChatToPlayer("A combo of the above is possible too.");
+			return;
 		}
-		else if (args.length > 1 && args[1].equalsIgnoreCase("clear"))
+		
+		/* 
+		 * Only 1 arg
+		 */
+		if (args[0].equalsIgnoreCase("ok"))
 		{
-			try
+			if (que.containsKey(sender))
 			{
-				Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
-				Statement st = connection.createStatement();
-				st.execute("DELETE FROM `blockchange` WHERE `player` LIKE '" + args[0] + "'");
-				OutputHandler.chatConfirmation(sender, "Done.");
-				st.close();
-				connection.close();
+				execute(sender, que.get(sender).split(" "));
 			}
-			catch (Exception e)
+			else
 			{
-				OutputHandler.chatError(sender, "Error. " + e.getLocalizedMessage());
-				e.printStackTrace();
+				OutputHandler.chatError(sender, "No pending commands.");
 			}
+			return;
+		}
+		else if (args[0].equalsIgnoreCase("abort"))
+		{
+			if (que.containsKey(sender))
+			{
+				que.remove(sender);
+				OutputHandler.chatConfirmation(sender, "Command aborted");
+			}
+			else
+			{
+				OutputHandler.chatError(sender, "No pending commands.");
+			}
+			return;
+		}
+		
+		/* 
+		 * 2 or more args
+		 * Arg 1 must be a username.
+		 * Arg 0 should be a command.
+		 */
+		if (args.length <= 2)
+		{
+			OutputHandler.chatError(sender, "You have to provide a username!");
+			return;
+		}
+		else if (!userlist.contains(args[1]))
+		{
+			OutputHandler.chatError(sender, "That player is not in the database.");
+			return;
+		}
+		
+		/*
+		 * So it is a command.
+		 */
+		if (args[0].equalsIgnoreCase("clear"))
+		{
+			OutputHandler.chatWarning(sender, "Confirm the clearing of all blockchanges for player " + args[1]);
+			que.put(sender, "clear " + args[1]);
+		}
+		else if (args[0].equalsIgnoreCase("undo"))
+		{
+			
+		}
+		else if (args[0].equalsIgnoreCase("rollback") || args[0].equalsIgnoreCase("rb"))
+		{
+			
 		}
 		else if (args.length > 1 && args[1].equalsIgnoreCase("undo"))
 		{
@@ -90,6 +146,25 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		else
 		{
 			parse(sender, args, false);
+		}
+	}
+
+	private void execute(ICommandSender sender, String[] args)
+	{
+		if (args[0].equalsIgnoreCase("clear"))
+		{
+			try
+			{	
+				Statement st = ModulePlayerLogger.getConnection().createStatement();
+				st.execute("DELETE FROM `blockchange` WHERE `player` LIKE '" + args[1] + "'");
+				OutputHandler.chatConfirmation(sender, "Removed all records of " + args[1]);
+				st.close();
+			}
+			catch (Exception e)
+			{
+				OutputHandler.chatError(sender, "Error. " + e.getLocalizedMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -142,6 +217,8 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
+			 return getListOfStringsMatchingLastWord(args, "ok", "abort", "clear", "undo", "rollback");
+		else if (args.length == 2)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getAvailablePlayerDat());
 		else if (args.length == 2)
 			return getListOfStringsMatchingLastWord(args, "clear", "undo");

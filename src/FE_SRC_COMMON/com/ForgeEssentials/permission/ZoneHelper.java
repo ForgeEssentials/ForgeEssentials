@@ -23,7 +23,6 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-@SuppressWarnings("unused")
 public class ZoneHelper implements IZoneManager
 {
 	// GLOBAL and WORLD zones.

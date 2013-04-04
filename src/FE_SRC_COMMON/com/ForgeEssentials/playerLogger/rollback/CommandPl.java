@@ -60,8 +60,6 @@ public class CommandPl extends ForgeEssentialsCommandBase
 		}
 
 		PacketDispatcher.sendPacketToPlayer(new PacketPlayerLogger(sender).getPayload(), (Player) sender);
-
-		// TODO add further stuff.
 	}
 
 	@Override
