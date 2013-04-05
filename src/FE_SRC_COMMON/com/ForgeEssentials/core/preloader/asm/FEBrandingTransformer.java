@@ -57,10 +57,10 @@ public class FEBrandingTransformer implements IClassTransformer
 				// ClientBrandRetriever, NOT obfuscated
 				return transformBranding(bytes, cbrHM);
 		}
+		
 		return bytes;
 	}
 
-	@SuppressWarnings("unchecked")
 	private byte[] transformBranding(byte[] bytes, HashMap<String, String> hm)
 	{
 		System.out.println("[FE coremod] Patching MinecraftServer or ClientBrandRetriever...");
@@ -80,6 +80,14 @@ public class FEBrandingTransformer implements IClassTransformer
 				while (m.instructions.get(offset).getOpcode() != LDC)
 				{
 					offset++;
+					
+					if (offset == m.instructions.size())
+					{
+						System.out.println("[FE coremod] Patching MinecraftServer or ClientBrandRetriever FAILED");
+						ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+						classNode.accept(writer);
+						return writer.toByteArray();
+					}
 				}
 
 				InsnList toInject = new InsnList();
