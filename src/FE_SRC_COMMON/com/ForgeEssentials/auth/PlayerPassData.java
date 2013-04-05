@@ -15,6 +15,11 @@ public class PlayerPassData
 {
 	private static HashMap<String, PlayerPassData>	datas	= new HashMap<String, PlayerPassData>();
 
+	/**
+	 * Returns the PlayerPassData if it exists.
+	 * @param username
+	 * @return
+	 */
 	public static PlayerPassData getData(String username)
 	{
 		PlayerPassData data = datas.get(username);
@@ -27,33 +32,45 @@ public class PlayerPassData
 		return data;
 	}
 
-	public static void registerData(PlayerPassData data)
+	/**
+	 * Creates a PlayerPassData
+	 * @param username
+	 * @return
+	 */
+	public static void registerData(String username, String pass)
 	{
-		DataStorageManager.getReccomendedDriver().saveObject(container, data);
+		PlayerPassData data = new PlayerPassData(username, pass);
+		data.save();
 		if (datas.get(data.username) != null)
 		{
 			datas.put(data.username, data);
 		}
 	}
 
+	/**
+	 * Discards it.
+	 * Usually onPlayerLogout
+	 * @param username
+	 * @return
+	 */
 	public static void discardData(String username)
 	{
 		PlayerPassData data = datas.remove(username);
-
 		if (data != null)
-		{
-			DataStorageManager.getReccomendedDriver().saveObject(container, data);
-		}
+			data.save();
 	}
 
+	/**
+	 * Completely removes the data.
+	 * @param username
+	 * @return
+	 */
 	public static void deleteData(String username)
 	{
 		PlayerPassData data = datas.remove(username);
 		DataStorageManager.getReccomendedDriver().deleteObject(container, username);
 		if (data != null)
-		{
 			ModuleAuth.unRegistered.add(username);
-		}
 	}
 
 	public static final ClassContainer	container	= new ClassContainer(PlayerPassData.class);
@@ -77,6 +94,11 @@ public class PlayerPassData
 		String pass = (String) data.getFieldValue("password");
 
 		return new PlayerPassData(username, pass);
+	}
+
+	public void save()
+	{
+		DataStorageManager.getReccomendedDriver().saveObject(container, this);
 	}
 
 }
