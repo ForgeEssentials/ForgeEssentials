@@ -1,6 +1,7 @@
 package com.ForgeEssentials.core.commands.selections;
 
 //Depreciated
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -21,6 +22,14 @@ public class CommandWand extends ForgeEssentialsCommandBase
 	{
 		return "/fewand";
 	}
+
+	@Override
+	public List getCommandAliases()
+    {
+        List<String> Aliases = new ArrayList<String>();
+        Aliases.add("/wand");
+        return Aliases;
+    }
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
