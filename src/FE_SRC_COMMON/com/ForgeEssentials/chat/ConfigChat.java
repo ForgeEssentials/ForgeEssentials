@@ -88,6 +88,11 @@ public class ConfigChat extends ModuleConfigBase
 		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
 		groupRankFormat = config.get("Chat.groups", "rank", "[{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}]").getString();
 
+		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
+		
+		for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blockd if the player is muted.").getStringList())
+		    CommandMuter.mutedCommands.add(cmd);
+		
 		config.save();
 	}
 
@@ -122,6 +127,10 @@ public class ConfigChat extends ModuleConfigBase
 		config.get("Chat.groups", "groupSuffix", "").set(groupSuffixFormat);
 		config.get("Chat.groups", "rank", "").set(groupRankFormat);
 
+		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
+		
+		config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blockd if the player is muted.").set(CommandMuter.mutedCommands.toArray(new String[CommandMuter.mutedCommands.size()]));
+		
 		config.save();
 	}
 
@@ -157,6 +166,12 @@ public class ConfigChat extends ModuleConfigBase
 		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
 		groupRankFormat = config.get("Chat.groups", "rank", "[{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}]").getString();
 
+		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
+        
+		CommandMuter.mutedCommands.clear();
+        for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blockd if the player is muted.").getStringList())
+            CommandMuter.mutedCommands.add(cmd);
+		
 		config.save();
 	}
 }

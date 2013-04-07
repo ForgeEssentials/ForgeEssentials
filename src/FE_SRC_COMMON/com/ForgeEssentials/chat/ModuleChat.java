@@ -59,8 +59,8 @@ public class ModuleChat
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
-		ChatFormatter chat = new ChatFormatter();
-		MinecraftForge.EVENT_BUS.register(chat);
+		MinecraftForge.EVENT_BUS.register(new ChatFormatter());
+		MinecraftForge.EVENT_BUS.register(new CommandMuter());
 	}
 
 	@FEModule.PostInit
