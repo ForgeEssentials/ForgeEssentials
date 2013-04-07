@@ -82,15 +82,6 @@ public class ModuleBackup
 		}
 	}
 
-	@ForgeSubscribe
-	public void worldLoad(WorldEvent.Load e)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			((WorldServer) e.world).canNotSave = !BackupConfig.worldSaveing;
-		}
-	}
-
 	public static void msg(String msg)
 	{
 		OutputHandler.info(msg);
