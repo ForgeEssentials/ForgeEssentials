@@ -375,7 +375,7 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 		else
 		{
-			for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+			for (Permission perm : SqlHelper.getAllPermissions(target, zone, false))
 				output.add(perm.toString());
 		}
 

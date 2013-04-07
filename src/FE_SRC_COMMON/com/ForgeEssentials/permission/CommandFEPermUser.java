@@ -22,8 +22,7 @@ public class CommandFEPermUser
 {
 	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length == 0) // display syntax & possible options for this
-								// level
+		if (args.length == 0) // display syntax & possible options for this level
 		{
 			OutputHandler.chatConfirmation(sender, "Possible usage:");
 			OutputHandler.chatConfirmation(sender, "/p user <player> : Display user statistics");
