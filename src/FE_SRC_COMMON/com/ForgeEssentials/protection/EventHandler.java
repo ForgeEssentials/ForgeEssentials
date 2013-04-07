@@ -203,7 +203,7 @@ public class EventHandler
 				int y = e.y + dir.offsetY;
 				int z = e.z + dir.offsetZ;
 
-				new WorldPoint(e.entityPlayer.dimension, x, y, z);
+				point = new WorldPoint(e.entityPlayer.dimension, x, y, z);
 			}
 			else
 				point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
