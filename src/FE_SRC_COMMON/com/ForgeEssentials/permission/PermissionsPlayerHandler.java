@@ -117,7 +117,7 @@ public final class PermissionsPlayerHandler
 	 */
 	private static PermResult getResultFromZone(Zone zone, PermQueryPlayer event)
 	{
-		ArrayList<Group> groups;
+		ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(event.doer.username, false, zone.getZoneName());
 		PermResult result = PermResult.UNKNOWN;
 		Zone tempZone = zone;
 		Group group;
@@ -130,9 +130,6 @@ public final class PermissionsPlayerHandler
 			// if its unknown still
 			if (result.equals(PermResult.UNKNOWN))
 			{
-				// get all the players groups here.
-				groups = PermissionsAPI.getApplicableGroups(event.doer.username, false, tempZone.getZoneName());
-
 				// iterates through the groups.
 				for (int i = 0; result.equals(PermResult.UNKNOWN) && i < groups.size(); i++)
 				{

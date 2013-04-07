@@ -50,8 +50,7 @@ public class CommandFEPermUser
 			playerName = player.username;
 		}
 
-		if (args.length == 1) // display user-specific settings & there values
-								// for this player
+		if (args.length == 1) // display user-specific settings & there values for this player
 		{
 			ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(playerName, false, ZoneManager.getGLOBAL().getZoneName());
 			OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.user.info.groups", playerName));
@@ -154,7 +153,8 @@ public class CommandFEPermUser
 					return;
 				}
 			}
-			else if (args.length >= 3)
+			
+			if (args.length >= 3)
 			{
 				if (args[2].equalsIgnoreCase("add")) // add player to group
 				{
@@ -167,7 +167,7 @@ public class CommandFEPermUser
 						}
 						else
 						{
-							OutputHandler.chatConfirmation(sender, playerName + " added to group " + args[3]);
+							OutputHandler.chatConfirmation(sender, playerName + " added to group " + args[3]+" in zone "+zoneName);
 						}
 					}
 					else

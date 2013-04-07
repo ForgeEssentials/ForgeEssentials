@@ -1,6 +1,7 @@
 package com.ForgeEssentials.protection;
 
 import static net.minecraftforge.event.Event.Result.DENY;
+import static net.minecraftforge.event.Event.Result.ALLOW;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -170,7 +171,7 @@ public class EventHandler
 
 		WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
 		PermQuery query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point);
-		Boolean result = PermissionsAPI.checkPermAllowed(query);
+		boolean result = PermissionsAPI.checkPermAllowed(query);
 
 		if (!result)
 		{
@@ -199,8 +200,8 @@ public class EventHandler
 				// calculate offsets.
 				ForgeDirection dir = ForgeDirection.getOrientation(e.face);
 				int x = e.x + dir.offsetX;
-				int y = e.x + dir.offsetY;
-				int z = e.x + dir.offsetZ;
+				int y = e.y + dir.offsetY;
+				int z = e.z + dir.offsetZ;
 
 				new WorldPoint(e.entityPlayer.dimension, x, y, z);
 			}
@@ -220,9 +221,9 @@ public class EventHandler
 			query = new PermQueryPlayerArea(e.entityPlayer, name, point);
 			result = PermissionsAPI.checkPermAllowed(query);
 			if (!result)
-			{
 				e.useItem = DENY;
-			}
+			else
+				e.useItem = ALLOW;
 		}
 	}
 
@@ -244,9 +245,9 @@ public class EventHandler
 				query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_INTERACT_BLOCK, point);
 				result = PermissionsAPI.checkPermAllowed(query);
 				if (!result)
-				{
 					e.useBlock = DENY;
-				}
+				else
+					e.useBlock = ALLOW;
 			}
 		}
 	}
