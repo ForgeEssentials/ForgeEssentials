@@ -17,6 +17,9 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQuery;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.AddPlayerGroupEvent;
+import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.RemovePlayerGroupEvent;
+import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.SetPlayerGroupEvent;
 import com.ForgeEssentials.util.events.PermissionPropSetEvent;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
 
@@ -265,6 +268,10 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public String setPlayerGroup(String group, String player, String zone)
 	{
+	    SetPlayerGroupEvent event = new SetPlayerGroupEvent(group, player, zone);
+        if (MinecraftForge.EVENT_BUS.post(event))
+            return event.getCancelReason();
+        
 		SqlHelper.generatePlayer(player);
 		return SqlHelper.setPlayerGroup(group, player, zone);
 	}
@@ -276,12 +283,22 @@ public class PermissionsHelper implements IPermissionsHelper
 		if (getApplicableGroups(player, false, zone).contains(getGroupForName(group)))
 			return "Player already in group.";
 		else
+		{
+		    AddPlayerGroupEvent event = new AddPlayerGroupEvent(group, player, zone);
+		    if (MinecraftForge.EVENT_BUS.post(event))
+		        return event.getCancelReason();
+		        
 			return SqlHelper.addPlayerGroup(group, player, zone);
+		}
 	}
 
 	@Override
 	public String clearPlayerGroup(String group, String player, String zone)
 	{
+	    RemovePlayerGroupEvent event = new RemovePlayerGroupEvent(group, player, zone);
+        if (MinecraftForge.EVENT_BUS.post(event))
+            return event.getCancelReason();
+        
 		SqlHelper.generatePlayer(player);
 		return SqlHelper.removePlayerGroup(group, player, zone);
 	}
