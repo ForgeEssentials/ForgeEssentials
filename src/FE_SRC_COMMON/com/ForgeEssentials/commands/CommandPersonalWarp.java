@@ -166,8 +166,8 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 	
 	private void setLimit(String target, int limit)
     {
-        if (target.startsWith("p:")) PermissionsAPI.getPermissionPropForPlayer(target.replaceFirst("p:", ""), ZoneManager.getGLOBAL().getZoneName(), PERMPROP);
-        else if (target.startsWith("g:")) PermissionsAPI.getPermissionPropForGroup(target.replaceFirst("g:", ""), ZoneManager.getGLOBAL().getZoneName(), PERMPROP);
+        if (target.startsWith("p:")) PermissionsAPI.setPlayerPermissionProp(target.replaceFirst("p:", ""), PERMPROP, "" + limit, ZoneManager.getGLOBAL().getZoneName());
+        else if (target.startsWith("g:")) PermissionsAPI.setGroupPermissionProp(target.replaceFirst("g:", ""), PERMPROP, "" + limit, ZoneManager.getGLOBAL().getZoneName());
         else return;
     }
 
