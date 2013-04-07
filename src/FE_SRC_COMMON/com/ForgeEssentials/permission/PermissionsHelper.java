@@ -228,7 +228,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public ArrayList<String> getPlayersInGroup(String group, String zone)
 	{
-		return null;
+	    return SqlHelper.getPlayersForGroup(group, zone);
 	}
 
 	@Override
