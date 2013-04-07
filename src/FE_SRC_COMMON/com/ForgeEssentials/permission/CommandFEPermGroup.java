@@ -72,7 +72,7 @@ public class CommandFEPermGroup
 			}
 			if (PermissionsAPI.getGroupForName(args[1]) == null)
 			{
-				OutputHandler.chatError(sender, args[0] + " does not exist as a group!");
+				OutputHandler.chatError(sender, args[1] + " does not exist as a group!");
 				return;
 			}
 			Zone zone = ZoneManager.getGLOBAL();

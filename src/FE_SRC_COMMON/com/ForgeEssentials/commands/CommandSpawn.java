@@ -48,7 +48,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 			{
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 
-				PropQueryPlayerZone query = new PropQueryPlayerZone(player, "ForgeEssentials.BasicCommands.spawnPoint", zone, true);
+				PropQueryPlayerZone query = new PropQueryPlayerZone(player, CommandSetSpawn.SPAWN_PROP, zone, true);
 				PermissionsAPI.getPermissionProp(query);
 
 				String val = query.getStringValue();
@@ -74,7 +74,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 		}
 		else if (args.length == 0)
 		{
-			PropQueryPlayerZone query = new PropQueryPlayerZone(sender, "ForgeEssentials.BasicCommands.spawnPoint", zone, true);
+			PropQueryPlayerZone query = new PropQueryPlayerZone(sender, CommandSetSpawn.SPAWN_PROP, zone, true);
 			PermissionsAPI.getPermissionProp(query);
 
 			String val = query.getStringValue();

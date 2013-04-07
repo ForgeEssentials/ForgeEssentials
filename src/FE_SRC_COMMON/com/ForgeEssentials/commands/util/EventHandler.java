@@ -108,6 +108,7 @@ public class EventHandler
 			EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
 			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 
+			// generate for un-generated dimension
 			{
 				int currentDim = player.worldObj.provider.dimensionId;
 				int spawnDim = player.worldObj.provider.getRespawnDimension(player);
@@ -125,8 +126,29 @@ public class EventHandler
 					return;
 				}
 			}
+			
+			PropQueryPlayerSpot query = new PropQueryPlayerSpot(player, "ForgeEssentials.BasicCommands.spawnType");
+			PermissionsAPI.getPermissionProp(query);
+			
+			if (query.getStringValue().equalsIgnoreCase("none"))
+			{
+				return;
+			}
+			else if (query.getStringValue().equalsIgnoreCase("bed"))
+			{
+				if (player.getBedLocation() != null)
+				{
+					ChunkCoordinates spawn = player.getBedLocation();
+					EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
+					
+					WarpPoint point = new WarpPoint(player.worldObj.provider.dimensionId, spawn.posX + .5, spawn.posY + 1, spawn.posZ + .5, player.cameraYaw, player.cameraPitch);
+					CommandSetSpawn.spawns.put(player.username, point);
+					
+					return;
+				}
+			}
 
-			PropQueryPlayerSpot query = new PropQueryPlayerSpot(player, "ForgeEssentials.BasicCommands.spawnPoint");
+			query = new PropQueryPlayerSpot(player, "ForgeEssentials.BasicCommands.spawnPoint");
 			PermissionsAPI.getPermissionProp(query);
 
 			if (!query.hasValue())

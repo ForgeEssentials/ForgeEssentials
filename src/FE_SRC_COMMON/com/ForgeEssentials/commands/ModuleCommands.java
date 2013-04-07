@@ -73,7 +73,7 @@ public class ModuleCommands
 		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
 		CommandDataManager.load();
 
-		PropQueryBlanketZone query = new PropQueryBlanketZone(CommandSetSpawn.spawnProp, ZoneManager.getGLOBAL(), false);
+		PropQueryBlanketZone query = new PropQueryBlanketZone(CommandSetSpawn.SPAWN_PROP, ZoneManager.getGLOBAL(), false);
 		PermissionsAPI.getPermissionProp(query);
 
 		// nothing set for the global??
@@ -81,7 +81,7 @@ public class ModuleCommands
 		{
 			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
 			String val = "0;" + point.posX + ";" + point.posY + ";" + point.posZ;
-			PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, CommandSetSpawn.spawnProp, val, ZoneManager.getGLOBAL().getZoneName());
+			PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val, ZoneManager.getGLOBAL().getZoneName());
 		}
 	}
 
@@ -93,6 +93,7 @@ public class ModuleCommands
 
 		// ensures on ServerStart
 		// event.registerPermissionProp("ForgeEssentials.BasicCommands.spawnPoint", "0;0;0;0");
+		event.registerPermissionProp(CommandSetSpawn.SPAWN_TYPE_PROP, "bed"); // bed, point, none
 	}
 
 	@FEModule.ServerStop
