@@ -104,7 +104,7 @@ public class CommandTPA extends FEcmdModuleCommands
 			TickHandlerCommands.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, false));
 
 			sender.sendChatToPlayer(Localization.format("command.tpa.sendRequest", receiver.username));
-			receiver.sendChatToPlayer(Localization.format("command.tpa.gotRequest", receiver.username));
+			receiver.sendChatToPlayer(Localization.format("command.tpa.gotRequest", sender.username));
 		}
 	}
 

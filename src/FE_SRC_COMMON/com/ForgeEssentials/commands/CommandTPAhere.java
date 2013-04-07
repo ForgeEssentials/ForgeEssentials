@@ -104,7 +104,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 			TickHandlerCommands.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
 
 			sender.sendChatToPlayer(Localization.format("command.tpahere.sendRequest", receiver.username));
-			receiver.sendChatToPlayer(Localization.format("command.tpahere.gotRequest", receiver.username));
+			receiver.sendChatToPlayer(Localization.format("command.tpahere.gotRequest", sender.username));
 		}
 	}
 
