@@ -42,10 +42,7 @@ public class CommandWarp extends FEcmdModuleCommands
 			String msg = "";
 			for (String warp : CommandDataManager.warps.keySet())
 			{
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
-				{
-					msg = warp + ", " + msg;
-				}
+			    msg = warp + ", " + msg;
 			}
 			sender.sendChatToPlayer(msg);
 		}
