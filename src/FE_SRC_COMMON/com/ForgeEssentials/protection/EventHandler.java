@@ -1,7 +1,7 @@
 package com.ForgeEssentials.protection;
 
-import static net.minecraftforge.event.Event.Result.DENY;
 import static net.minecraftforge.event.Event.Result.ALLOW;
+import static net.minecraftforge.event.Event.Result.DENY;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;

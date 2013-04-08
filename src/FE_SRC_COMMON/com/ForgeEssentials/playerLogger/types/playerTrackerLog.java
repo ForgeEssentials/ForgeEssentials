@@ -3,10 +3,10 @@ package com.ForgeEssentials.playerLogger.types;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+
+import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 
 public class playerTrackerLog extends logEntry
 {

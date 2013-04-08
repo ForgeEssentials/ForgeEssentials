@@ -2,12 +2,13 @@ package com.ForgeEssentials.client;
 
 import java.util.logging.Logger;
 
-import com.ForgeEssentials.client.cui.CUIPlayerLogger;
-import com.ForgeEssentials.client.cui.CUIRenderrer;
-
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
+
+import com.ForgeEssentials.client.cui.CUIPlayerLogger;
+import com.ForgeEssentials.client.cui.CUIRenderrer;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
