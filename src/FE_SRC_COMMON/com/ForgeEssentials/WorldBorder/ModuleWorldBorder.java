@@ -15,6 +15,7 @@ import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
+import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
@@ -66,13 +67,18 @@ public class ModuleWorldBorder
 	{
 		e.registerServerCommand(new CommandWB());
 		e.registerServerCommand(new CommandFiller());
-		loadAll();
+	}
+	
+	@FEModule.ServerPostInit
+	public void serverStarted(FEModuleServerPostInitEvent e)
+	{
+	    loadAll();
 
-		Zone zone = ZoneManager.getGLOBAL();
-		if (!borderMap.containsKey(zone.getZoneName()))
-		{
-			borderMap.put(zone.getZoneName(), new WorldBorder(zone));
-		}
+        Zone zone = ZoneManager.getGLOBAL();
+        if (!borderMap.containsKey(zone.getZoneName()))
+        {
+            borderMap.put(zone.getZoneName(), new WorldBorder(zone));
+        }
 	}
 
 	@FEModule.ServerStop
@@ -97,11 +103,7 @@ public class ModuleWorldBorder
 			return;
 
 		Zone zone = ZoneManager.getWorldZone(e.world);
-		if (borderMap.containsKey(zone.getZoneName()))
-		{
-			DataStorageManager.getReccomendedDriver().saveObject(con, borderMap.get(zone.getZoneName()));
-		}
-		else
+		if (!borderMap.containsKey(zone.getZoneName()))
 		{
 			WorldBorder wb = (WorldBorder) DataStorageManager.getReccomendedDriver().loadObject(con, zone.getZoneName());
 			if (wb != null)
@@ -112,7 +114,6 @@ public class ModuleWorldBorder
 			{
 				borderMap.put(zone.getZoneName(), new WorldBorder(zone));
 			}
-			DataStorageManager.getReccomendedDriver().saveObject(con, borderMap.get(zone.getZoneName()));
 		}
 	}
 
