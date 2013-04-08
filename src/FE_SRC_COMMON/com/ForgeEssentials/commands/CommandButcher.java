@@ -96,9 +96,9 @@ public class CommandButcher extends FEcmdModuleCommands
 			}
 			else
 			{
-				X = parseInt(sender, split[0]);
-				Y = parseInt(sender, split[1]);
-				Z = parseInt(sender, split[2]);
+				X = parseInt(sender, split[0], sender.posX);
+				Y = parseInt(sender, split[1], sender.posY);
+				Z = parseInt(sender, split[2], sender.posZ);
 			}
 		}
 		AxisAlignedBB pool = AxisAlignedBB.getAABBPool().getAABB(X - radius, Y - radius, Z - radius, X + radius + 1, Y + radius + 1, Z + radius + 1);
@@ -168,7 +168,7 @@ public class CommandButcher extends FEcmdModuleCommands
 			}
 			else
 			{
-				y = parseInt(sender, split[0]);
+				x = parseInt(sender, split[0]);
 				y = parseInt(sender, split[1]);
 				z = parseInt(sender, split[2]);
 			}

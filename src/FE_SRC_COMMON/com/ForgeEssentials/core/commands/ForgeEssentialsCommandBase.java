@@ -220,4 +220,28 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	public abstract String getCommandPerm();
 
+	/*
+	 * Helper methods
+	 */
+	
+	/**
+	 * Parse int with support for relative int.
+	 * @param sender
+	 * @param string
+	 * @param relativeStart
+	 * @return
+	 */
+	public int parseInt(ICommandSender sender, String string, double relativeStart)
+    {
+        if (string.startsWith("~"))
+        {
+            string = string.substring(1);
+            return (int) (relativeStart + parseInt(sender, string));
+        }
+        else
+        {
+            return parseInt(sender, string);
+        }
+    }
+    
 }

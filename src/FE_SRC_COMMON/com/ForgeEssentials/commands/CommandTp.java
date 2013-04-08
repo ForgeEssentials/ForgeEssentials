@@ -87,18 +87,18 @@ public class CommandTp extends FEcmdModuleCommands
 		{
 			if (args.length == 3)
 			{
-				int x = parseInt(sender, args[0]), y = parseInt(sender, args[1]), z = parseInt(sender, args[2]);
-				EntityPlayerMP player = (EntityPlayerMP) sender;
+			    EntityPlayerMP player = (EntityPlayerMP) sender;
+			    int x = parseInt(sender, args[0], player.posX), y = parseInt(sender, args[1], player.posY), z = parseInt(sender, args[2], player.posZ);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
 			}
 			else if (args.length == 4)
 			{
-				int x = parseInt(sender, args[1]), y = parseInt(sender, args[2]), z = parseInt(sender, args[3]);
 				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (player != null)
 				{
+				    int x = parseInt(sender, args[1], player.posX), y = parseInt(sender, args[2], player.posY), z = parseInt(sender, args[3], player.posZ);
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 					playerInfo.back = new WarpPoint(player);
 					TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
@@ -152,10 +152,10 @@ public class CommandTp extends FEcmdModuleCommands
 		}
 		else if (args.length == 4)
 		{
-			int x = parseInt(sender, args[1]), y = parseInt(sender, args[2]), z = parseInt(sender, args[3]);
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
+			    int x = parseInt(sender, args[1], player.posX), y = parseInt(sender, args[2], player.posY), z = parseInt(sender, args[3], player.posZ);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 				playerInfo.back = new WarpPoint(player);
 				TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);

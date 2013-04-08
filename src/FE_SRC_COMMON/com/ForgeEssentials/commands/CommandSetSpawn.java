@@ -77,9 +77,9 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			if (args.length >= 6)
 			{
 				dim = sender.worldObj.provider.dimensionId;
-				x = parseInt(sender, args[3]);
-				y = parseInt(sender, args[4]);
-				z = parseInt(sender, args[5]);
+				x = parseInt(sender, args[3], sender.posX);
+				y = parseInt(sender, args[4], sender.posY);
+				z = parseInt(sender, args[5], sender.posZ);
 			}
 			else if (args.length >= 4)
 			{

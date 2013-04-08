@@ -33,7 +33,7 @@ public class CommandTppos extends FEcmdModuleCommands
 	{
 		if (args.length == 3)
 		{
-			int x = parseInt(sender, args[0]), y = parseInt(sender, args[1]), z = parseInt(sender, args[2]);
+			int x = parseInt(sender, args[0], sender.posX), y = parseInt(sender, args[1], sender.posY), z = parseInt(sender, args[2], sender.posZ);
 			EntityPlayerMP player = (EntityPlayerMP) sender;
 			PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 			playerInfo.back = new WarpPoint(player);
