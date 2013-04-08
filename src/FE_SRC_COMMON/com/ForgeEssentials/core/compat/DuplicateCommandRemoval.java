@@ -16,6 +16,8 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class DuplicateCommandRemoval
 {
+    public static final String[] FIELDNAME = {"commandSet", "b", "field_71561_b", "y/b"};
+    
 	public static boolean	removeDuplicateCommands;
 
 	public static void remove()
@@ -29,7 +31,7 @@ public class DuplicateCommandRemoval
 				HashMap<String, ICommand> initials = new HashMap<String, ICommand>();
 				HashMultimap<String, ICommand> duplicates = HashMultimap.create();
 
-				Set<ICommand> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandSet", "b");
+				Set<ICommand> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), FIELDNAME);
 				OutputHandler.finer("commandSet size: " + cmdList.size());
 
 				ICommand keep;

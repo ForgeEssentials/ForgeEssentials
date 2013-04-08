@@ -29,6 +29,7 @@ import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -118,7 +119,7 @@ public class ModuleChat
 		{
 			try
 			{
-				Set<?> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandSet", "b");
+				Set<?> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), DuplicateCommandRemoval.FIELDNAME);
 
 				ICommand toRemove = null;
 				Class<?> cmdClass = null;
