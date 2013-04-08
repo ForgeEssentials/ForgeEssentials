@@ -33,14 +33,14 @@ public class AFKdata
 		currentPos = new WarpPoint(player);
 		if (!lastPos.equals(currentPos))
 		{
-			CommandAFK.abort(this);
+			CommandAFK.instance.abort(this);
 		}
 
 		if (needstowait)
 		{
 			if (waittime == 0)
 			{
-				CommandAFK.makeAFK(this);
+				CommandAFK.instance.makeAFK(this);
 			}
 			waittime--;
 		}
