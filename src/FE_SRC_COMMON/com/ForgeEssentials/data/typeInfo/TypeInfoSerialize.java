@@ -138,7 +138,6 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return fields.keySet().toArray(new String[fields.size()]);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public TypeData getTypeDataFromObject(T obj)
 	{
@@ -256,7 +255,6 @@ public class TypeInfoSerialize<T> implements ITypeInfo<T>
 		return container;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Class<?>[] getGenericTypes()
 	{

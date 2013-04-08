@@ -57,7 +57,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	 */
 	private void doRollback(ICommandSender sender, String[] args)
 	{
-		ArrayList userlist = new ArrayList();
+		ArrayList<String> userlist = new ArrayList<String>();
 		userlist.addAll(Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()));
 		/*
 		 * Cmd info

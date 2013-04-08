@@ -20,8 +20,7 @@ public class ExportThread extends Thread
 		this.exportDir = new File(ModulePermissions.permsFolder, exportDir);
 		user = sender;
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public void run()
 	{

@@ -3,7 +3,6 @@ package com.ForgeEssentials.api.data;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-@SuppressWarnings("rawtypes")
 public interface IDataDriver
 {
 	void onClassRegistered(ITypeInfo<?> tagger);

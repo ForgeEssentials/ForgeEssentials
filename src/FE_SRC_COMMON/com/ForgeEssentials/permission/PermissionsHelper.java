@@ -23,6 +23,7 @@ import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.SetPlayerGroupEven
 import com.ForgeEssentials.util.events.PermissionPropSetEvent;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
 
+@SuppressWarnings("rawtypes")
 public class PermissionsHelper implements IPermissionsHelper
 {
 	public final String	EntryPlayer	= "_ENTRY_PLAYER_";
@@ -351,8 +352,8 @@ public class PermissionsHelper implements IPermissionsHelper
 		return SqlHelper.removePermissionProp(name, true, node, zone);
 	}
 
-	@Override
-	public ArrayList getGroupsInZone(String zoneName)
+    @Override
+	public ArrayList<Group> getGroupsInZone(String zoneName)
 	{
 		return SqlHelper.getGroupsInZone(zoneName);
 	}
@@ -384,7 +385,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public ArrayList getPlayerPermissions(String target, String zone)
 	{
-		ArrayList output = new ArrayList();
+		ArrayList<String> output = new ArrayList<String>();
 
 		if (zone == null)
 		{
@@ -402,7 +403,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public ArrayList getPlayerPermissionProps(String target, String zone)
 	{
-		ArrayList output = new ArrayList();
+		ArrayList<String> output = new ArrayList<String>();
 
 		if (zone == null)
 		{
@@ -420,7 +421,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public ArrayList<String> getGroupPermissions(String target, String zone)
 	{
-		ArrayList<String> output = new ArrayList();
+		ArrayList<String> output = new ArrayList<String>();
 		Group g = SqlHelper.getGroupForName(target);
 
 		if (zone == null)
@@ -443,7 +444,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public ArrayList<String> getGroupPermissionProps(String target, String zone)
 	{
-		ArrayList<String> output = new ArrayList();
+		ArrayList<String> output = new ArrayList<String>();
 		Group g = SqlHelper.getGroupForName(target);
 
 		if (zone == null)

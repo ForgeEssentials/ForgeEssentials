@@ -199,7 +199,7 @@ public class CommandRules extends FEcmdModuleCommands
 			NBTTagCompound tag = new NBTTagCompound();
 			NBTTagList pages = new NBTTagList();
 
-			HashMap<String, String> map = new HashMap();
+			HashMap<String, String> map = new HashMap<String, String>();
 
 			for (int i = 0; i < rules.size(); i++)
 			{

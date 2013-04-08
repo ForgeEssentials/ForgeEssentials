@@ -34,7 +34,6 @@ public class CommandGetCommandBook extends FEcmdModuleCommands
 		{ "cmdb", "gcmdb" };
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{

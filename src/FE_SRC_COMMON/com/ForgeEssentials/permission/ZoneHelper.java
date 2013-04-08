@@ -23,6 +23,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
+@SuppressWarnings("unused")
 public class ZoneHelper implements IZoneManager
 {
 	// GLOBAL and WORLD zones.
@@ -298,7 +299,7 @@ public class ZoneHelper implements IZoneManager
 		pointCache.put(p, zoneID);
 	}
 
-	private void putCache(WorldArea a, String zoneID)
+    private void putCache(WorldArea a, String zoneID)
 	{
 		areaCache.put(a, zoneID);
 	}

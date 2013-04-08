@@ -13,6 +13,7 @@ import com.ForgeEssentials.api.permissions.query.PropQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
 
+@SuppressWarnings("unused")
 public final class PermissionsPropHandler
 {
 	private PermissionsPropHandler()

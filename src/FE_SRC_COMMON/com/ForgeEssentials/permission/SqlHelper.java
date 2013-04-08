@@ -23,6 +23,7 @@ import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
 
+@SuppressWarnings({"rawtypes", "unused", "unchecked"})
 public class SqlHelper
 {
 	private Connection			db;
@@ -958,7 +959,7 @@ public class SqlHelper
 	 * DONE
 	 */
 
-	protected void importPerms(String importDir)
+    protected void importPerms(String importDir)
 	{
 		try
 		{
@@ -2434,7 +2435,7 @@ public class SqlHelper
 	 * @return null if the Player does not exist.
 	 * @throws SQLException
 	 */
-	private static synchronized String getPlayerNameFromPlayerID(int playerID) throws SQLException
+    private static synchronized String getPlayerNameFromPlayerID(int playerID) throws SQLException
 	{
 		getInstance().statementGetPlayerNameFromID.setInt(1, playerID);
 		ResultSet set = getInstance().statementGetPlayerNameFromID.executeQuery();
