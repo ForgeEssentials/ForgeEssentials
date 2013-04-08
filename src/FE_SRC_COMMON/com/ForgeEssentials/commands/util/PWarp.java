@@ -10,6 +10,8 @@ import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 @SaveableObject
 public class PWarp
 {
+    public static final String SEPERATOR = "#";
+    
 	@UniqueLoadingKey
 	@SaveableField
 	private String		name;
@@ -19,7 +21,7 @@ public class PWarp
 
 	public PWarp(String username, String name, WarpPoint point)
 	{
-		this.name = username + "$" + name;
+		this.name = username + SEPERATOR + name;
 		this.point = point;
 	}
 
@@ -30,12 +32,12 @@ public class PWarp
 
 	public String getUsername()
 	{
-		return name.split("$")[0];
+		return name.split(SEPERATOR)[0];
 	}
 
 	public String getName()
 	{
-		return name.split("$")[1];
+		return name.split(SEPERATOR)[1];
 	}
 
 	public WarpPoint getPoint()
@@ -46,6 +48,6 @@ public class PWarp
 	@Reconstructor
 	private static PWarp reconstruct(IReconstructData tag)
 	{
-		return new PWarp(((String) tag.getFieldValue("name")).split("$")[0], ((String) tag.getFieldValue("name")).split("$")[1], (WarpPoint) tag.getFieldValue("point"));
+		return new PWarp(((String) tag.getFieldValue("name")).split(SEPERATOR)[0], ((String) tag.getFieldValue("name")).split(SEPERATOR)[1], (WarpPoint) tag.getFieldValue("point"));
 	}
 }
