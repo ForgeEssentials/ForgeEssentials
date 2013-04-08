@@ -84,7 +84,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 			double z = mop.blockZ + 0.5D;
 			if (args.length >= 2)
 			{
-				amount = parseIntWithMin(sender, Localization.get(args[1]), 1);
+				amount = parseIntWithMin(sender, args[1], 1);
 
 				if (args.length >= 5)
 				{

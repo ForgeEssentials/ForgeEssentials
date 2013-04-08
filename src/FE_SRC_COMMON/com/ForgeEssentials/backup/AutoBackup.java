@@ -46,6 +46,7 @@ public class AutoBackup implements Runnable
 		for (int i : list)
 		{
 			Backup backup = new Backup(i, true);
+			backup.startThread();
 			while (!backup.isDone())
 			{
 				try

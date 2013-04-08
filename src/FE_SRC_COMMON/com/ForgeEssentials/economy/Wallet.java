@@ -12,6 +12,7 @@ import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 public class Wallet
 {
 	@UniqueLoadingKey
+	@SaveableField
 	private String	username;
 
 	@SaveableField

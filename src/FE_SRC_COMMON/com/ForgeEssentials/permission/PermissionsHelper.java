@@ -23,7 +23,6 @@ import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.SetPlayerGroupEven
 import com.ForgeEssentials.util.events.PermissionPropSetEvent;
 import com.ForgeEssentials.util.events.PermissionSetEvent;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class PermissionsHelper implements IPermissionsHelper
 {
 	public final String	EntryPlayer	= "_ENTRY_PLAYER_";
@@ -215,10 +214,21 @@ public class PermissionsHelper implements IPermissionsHelper
 	{
 		ArrayList<Group> list = new ArrayList<Group>();
 
-		ArrayList<Group> temp;
+		Zone zone = ZoneManager.getZone(zoneID);
 
-		temp = SqlHelper.getGroupsForPlayer(player, zoneID);
-		list.addAll(temp);
+		while (zone != null)
+		{
+			list.addAll(SqlHelper.getGroupsForPlayer(player, zone.getZoneName()));
+
+			if (zone == ZoneManager.getGLOBAL())
+			{
+				zone = null;
+			}
+			else
+			{
+				zone = ZoneManager.getZone(zone.parent);
+			}
+		}
 
 		if (includeDefaults)
 		{
@@ -346,7 +356,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	{
 		return SqlHelper.getGroupsInZone(zoneName);
 	}
-	
+
 	@Override
 	public String getPermissionForPlayer(String target, String zone, String perm)
 	{
@@ -382,7 +392,7 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 		else
 		{
-			for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+			for (Permission perm : SqlHelper.getAllPermissions(target, zone, false))
 				output.add(perm.toString());
 		}
 

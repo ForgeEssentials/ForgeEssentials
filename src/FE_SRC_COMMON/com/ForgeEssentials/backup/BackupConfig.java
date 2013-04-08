@@ -27,6 +27,7 @@ public class BackupConfig extends ModuleConfigBase
 	// AutoBackup
 	public static Integer		autoInterval;
 	public static Integer		worldSaveInterval;
+	public static boolean		worldSaving;
 	public static List<Integer>	whitelist;
 	public static List<Integer>	blacklist;
 	public static List<String>	extraFolders;
@@ -77,6 +78,7 @@ public class BackupConfig extends ModuleConfigBase
 
 		autoInterval = config.get(AUTOBACKUP, "interval", 30, "Interval in minutes. 0 to disable").getInt();
 		worldSaveInterval = config.get(AUTOBACKUP, "worldSaveInterval", 10, "Does a save-all every X minutes. 0 to disable").getInt();
+		worldSaving = config.get(AUTOBACKUP, "worldSaving", true, "If false, doesn't save wold continuesly.").getBoolean(false);
 		whitelist = Ints.asList(config.get(AUTOBACKUP, "whitelist", new int[] {}, "Always make a backup of these dims. Even when empty.").getIntList());
 		blacklist = Ints.asList(config.get(AUTOBACKUP, "blacklist", new int[] {}, "Don't make automatic backups of these dims. Can still be done via command.").getIntList());
 		extraFolders = Arrays.asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").getStringList());
@@ -118,6 +120,7 @@ public class BackupConfig extends ModuleConfigBase
 
 		config.get(AUTOBACKUP, "interval", 30, "Interval in minutes. 0 to disable").set(autoInterval);
 		config.get(AUTOBACKUP, "worldSaveInterval", 10, "Does a save-all every X minutes. 0 to disable").set(worldSaveInterval);
+		config.get(AUTOBACKUP, "worldSaving", false, "If false, doesn't save wold continuesly.").set(worldSaving);
 		config.get(AUTOBACKUP, "whitelist", new int[] {}, "Always make a backup of these dims. Even when empty.").set(whitelist.toArray(new String[0]));
 		config.get(AUTOBACKUP, "blacklist", new int[] {}, "Don't make automatic backups of these dims. Can still be done via command.").set(blacklist.toArray(new String[0]));
 		config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").set(extraFolders.toArray(new String[0]));
@@ -159,6 +162,7 @@ public class BackupConfig extends ModuleConfigBase
 
 		autoInterval = config.get(AUTOBACKUP, "interval", 30, "Interval in minutes. 0 to disable").getInt();
 		worldSaveInterval = config.get(AUTOBACKUP, "worldSaveInterval", 10, "Does a save-all every X minutes. 0 to disable").getInt();
+		worldSaving = config.get(AUTOBACKUP, "worldSaving", true, "If false, doesn't save wold continuesly.").getBoolean(false);
 		whitelist = Ints.asList(config.get(AUTOBACKUP, "whitelist", new int[] {}, "Always make a backup of these dims. Even when empty.").getIntList());
 		blacklist = Ints.asList(config.get(AUTOBACKUP, "blacklist", new int[] {}, "Don't make automatic backups of these dims. Can still be done via command.").getIntList());
 		extraFolders = Arrays.asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").getStringList());

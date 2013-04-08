@@ -876,7 +876,7 @@ public class SqlHelper
 			}
 
 			// register permissions
-			for (RegGroup group : regPerms.keySet())
+			for (RegGroup group : regPerms.keySet()) 
 			{
 				permStatement.setInt(1, groups.get(group));
 				permPropStatement.setInt(1, groups.get(group));

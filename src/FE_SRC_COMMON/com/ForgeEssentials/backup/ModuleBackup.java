@@ -6,7 +6,10 @@ import java.io.PrintWriter;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
@@ -74,8 +77,17 @@ public class ModuleBackup
 		{
 			if (BackupConfig.backupOnWorldUnload)
 			{
-				new Backup((WorldServer) e.world, false);
+				new Backup((WorldServer) e.world, false).run();
 			}
+		}
+	}
+
+	@ForgeSubscribe
+	public void worldLoad(WorldEvent.Load e)
+	{
+		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			((WorldServer) e.world).canNotSave = !BackupConfig.worldSaving;
 		}
 	}
 

@@ -1,10 +1,13 @@
 package com.ForgeEssentials.protection;
 
 import static net.minecraftforge.event.Event.Result.DENY;
+import static net.minecraftforge.event.Event.Result.ALLOW;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -168,7 +171,7 @@ public class EventHandler
 
 		WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
 		PermQuery query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point);
-		Boolean result = PermissionsAPI.checkPermAllowed(query);
+		boolean result = PermissionsAPI.checkPermAllowed(query);
 
 		if (!result)
 		{
@@ -179,7 +182,53 @@ public class EventHandler
 	}
 
 	@ForgeSubscribe(priority = EventPriority.LOW)
-	public void playerInteractEvent(PlayerInteractEvent e)
+	public void playerInteractEventItemUse(PlayerInteractEvent e)
+	{
+		if (e.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
+			return;
+
+		// item check
+		ItemStack stack = e.entityPlayer.getCurrentEquippedItem();
+		if (stack == null)
+			return;
+
+		WorldPoint point = new WorldPoint(e.entityPlayer);
+		if (e.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
+		{
+			if (stack.getItem() instanceof ItemBlock)
+			{
+				// calculate offsets.
+				ForgeDirection dir = ForgeDirection.getOrientation(e.face);
+				int x = e.x + dir.offsetX;
+				int y = e.y + dir.offsetY;
+				int z = e.z + dir.offsetZ;
+
+				point = new WorldPoint(e.entityPlayer.dimension, x, y, z);
+			}
+			else
+				point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
+		}
+
+		PermQuery query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_OVERRIDE, point);
+		boolean result = PermissionsAPI.checkPermAllowed(query);
+
+		if (!result)
+		{
+			String name = UnfreindlyItemList.getName(stack.itemID);
+			name = ModuleProtection.PERM_ITEM_USE + "." + name;
+			name = name + "." + stack.getItemDamage();
+
+			query = new PermQueryPlayerArea(e.entityPlayer, name, point);
+			result = PermissionsAPI.checkPermAllowed(query);
+			if (!result)
+				e.useItem = DENY;
+			else
+				e.useItem = ALLOW;
+		}
+	}
+
+	@ForgeSubscribe(priority = EventPriority.LOW)
+	public void playerInteractEventBlockUse(PlayerInteractEvent e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
@@ -196,25 +245,9 @@ public class EventHandler
 				query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_INTERACT_BLOCK, point);
 				result = PermissionsAPI.checkPermAllowed(query);
 				if (!result)
-				{
 					e.useBlock = DENY;
-				}
-
-				// item check
-				ItemStack stack = e.entityPlayer.getCurrentEquippedItem();
-				if (stack == null)
-					return;
-
-				String name = UnfreindlyItemList.getName(stack.itemID);
-				name = ModuleProtection.PERM_ITEM_USE + "." + name;
-				name = name + "."+stack.getItemDamage();
-
-				query = new PermQueryPlayerArea(e.entityPlayer, name, point);
-				result = PermissionsAPI.checkPermAllowed(query);
-				if (!result)
-				{
-					e.useItem = DENY;
-				}
+				else
+					e.useBlock = ALLOW;
 			}
 		}
 	}

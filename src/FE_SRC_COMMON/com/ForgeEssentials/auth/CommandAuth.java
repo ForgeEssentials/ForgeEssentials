@@ -113,7 +113,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				}
 
 				String pass = ModuleAuth.encrypt(args[1]);
-				PlayerPassData.registerData(new PlayerPassData(sender.username, pass));
+				PlayerPassData.registerData(sender.username, pass);
 				ModuleAuth.unRegistered.remove(sender.username);
 				OutputHandler.chatConfirmation(sender, Localization.get("command.auth.register.success"));
 				return;
@@ -185,7 +185,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			else
 				throw new WrongUsageException("command.auth.usage");
 		}
-		// 3 args? must be a command - player - pass
+		// 3 args? must be a comtmand - player - pass
 		else if (args.length == 3)
 		{
 			if (ModuleAuth.unLogged.contains(sender.username))
@@ -219,6 +219,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				}
 
 				data.password = newPass;
+				data.save();
+				
 				OutputHandler.chatConfirmation(sender, Localization.get("command.auth.change.success"));
 				return;
 
@@ -240,14 +242,16 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 					throw new PermissionDeniedException();
 
 				PlayerPassData data = PlayerPassData.getData(name);
+				String encrypted = ModuleAuth.encrypt(args[2]);
+				
 				if (data == null)
 				{
-					data = new PlayerPassData(name, args[2]);
-					PlayerPassData.registerData(data);
+					PlayerPassData.registerData(name, encrypted);
 				}
 				else
 				{
-					data.password = ModuleAuth.encrypt(args[2]);
+					data.password = encrypted;
+					data.save();
 				}
 				OutputHandler.chatConfirmation(sender, Localization.format("command.auth.setPass", name));
 			}
@@ -325,14 +329,16 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			if (args[0].equalsIgnoreCase("setPass"))
 			{
 				PlayerPassData data = PlayerPassData.getData(name);
+				String encrypted = ModuleAuth.encrypt(args[2]);
+				
 				if (data == null)
 				{
-					data = new PlayerPassData(name, args[2]);
-					PlayerPassData.registerData(data);
+					PlayerPassData.registerData(name, encrypted);
 				}
 				else
 				{
-					data.password = ModuleAuth.encrypt(args[2]);
+					data.password = encrypted;
+					data.save();
 				}
 				sender.sendChatToPlayer(Localization.format("command.auth.setPass", name));
 			}
