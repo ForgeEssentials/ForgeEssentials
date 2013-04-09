@@ -52,10 +52,12 @@ public class ZoneHelper implements IZoneManager
 		{
 			temp = (Zone) obj;
 
+			/*
 			if (temp == null || temp.getZoneName() == null || temp.getZoneName().isEmpty())
 			{
 				continue;
 			}
+			*/
 
 			zoneMap.put(temp.getZoneName(), temp);
 

@@ -367,7 +367,7 @@ public class StorageManager implements IStorageManager
 			return tagged;
 		}
 
-		return taggerList.get(tempType);
+		return taggerList.get(tempType.toString());
 	}
 
 	@Override

@@ -437,6 +437,9 @@ public class SQLDataDriver extends AbstractDataDriver
 		ArrayList<Pair> temp;
 		for (Entry<String, Object> entry : data.getAllFields())
 		{
+			if (entry.getValue() == null)
+				continue;
+			
 			temp = fieldToValues(entry.getKey(), info.getTypeOfField(entry.getKey()), entry.getValue());
 
 			// catch multivals and add them to a different list.
@@ -585,6 +588,8 @@ public class SQLDataDriver extends AbstractDataDriver
 		// if its multi, add the UID thing.
 		if (isMulti)
 		{
+			classTableChecked.add(type.getName());
+			
 			tableFields.add(new Pair<String, String>(MULTI_MARKER, "VARCHAR(100)"));
 
 			TypeEntryInfo info = ((TypeMultiValInfo) tagger).getEntryInfo();
@@ -639,7 +644,8 @@ public class SQLDataDriver extends AbstractDataDriver
 			return false;
 		}
 
-		classTableChecked.add(type.getName());
+		if (!isMulti)
+			classTableChecked.add(type.getName());
 
 		return true;
 	}
@@ -740,6 +746,12 @@ public class SQLDataDriver extends AbstractDataDriver
 	private ArrayList<Pair> fieldToValues(String fieldName, ClassContainer type, Object value)
 	{
 		ArrayList<Pair> data = new ArrayList<Pair>();
+		
+		if (value == null)
+		{
+			data.add(new Pair(fieldName, "NULL"));
+			return data;
+		}
 
 		Class cType = type.getType();
 
