@@ -14,7 +14,7 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 public class CommandExpand extends ForgeEssentialsCommandBase
 {
 
-  public CommandExpand()
+	public CommandExpand()
 	{
 		return;
 	}
@@ -137,7 +137,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 			}
 			else if (args[0].equalsIgnoreCase("east") || args[1].equalsIgnoreCase("east"))
 			{
-				if (info.getPoint1().x < info.getPoint2().x)
+				if (info.getPoint1().x > info.getPoint2().x)
 				{
 					info.setPoint1(new Point(info.getPoint1().x + expandby, info.getPoint1().y, info.getPoint1().z));
 				}
@@ -148,7 +148,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 			}
 			else if (args[0].equalsIgnoreCase("south") || args[1].equalsIgnoreCase("south"))
 			{
-				if (info.getPoint1().z < info.getPoint2().z)
+				if (info.getPoint1().z > info.getPoint2().z)
 				{
 					info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y, info.getPoint1().z + expandby));
 				}
@@ -168,7 +168,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 					info.setPoint2(new Point(info.getPoint2().x - expandby, info.getPoint2().y, info.getPoint2().z));
 				}
 			}
-			else if (args[0].equalsIgnoreCase("up"))
+			else if (args[0].equalsIgnoreCase("up") || args[1].equalsIgnoreCase("up"))
 			{
 				if (info.getPoint1().z > info.getPoint2().z)
 				{
@@ -179,7 +179,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 					info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y + expandby, info.getPoint2().z));
 				}
 			}
-			else if (args[0].equalsIgnoreCase("down"))
+			else if (args[0].equalsIgnoreCase("down") || args[1].equalsIgnoreCase("down"))
 			{
 				if (info.getPoint1().y < info.getPoint2().y)
 				{
@@ -206,7 +206,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 	@Override
 	public String getSyntaxPlayer(EntityPlayer player)
 	{
-		return "/" + getCommandName() + "<direction> <number of blocks to expand>";
+		return "/" + getCommandName() + "[direction] <number of blocks to expand>";
 	}
 
 	@Override
