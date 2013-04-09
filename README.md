@@ -1,4 +1,4 @@
-ForgeEssentialsMain
+![FE](https://e3v0za.bn1.livefilestore.com/y1pLTfE0-jKAgZpsjchmtkDH2bkoytaijRBPvgJvSxl1uX3XqDBTRrvhVX6HLXPDJfaHwA-aVvllSXVCt29HFwqVN4Lr_Mk7XZ8/FEIcon.png?psid=1) ForgeEssentialsMain
 ===================
 *******************
 ####Join us on our IRC channel [#forgeessentials](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on EsperNet.####
