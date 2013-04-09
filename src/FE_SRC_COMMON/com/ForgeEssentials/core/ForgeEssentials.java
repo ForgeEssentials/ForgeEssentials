@@ -106,6 +106,11 @@ public class ForgeEssentials
 	
 	public static final String beta = "@BETA@";
 
+	public ForgeEssentials()
+	{
+        tasks = new TaskRegistry();
+	}
+	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
@@ -119,7 +124,7 @@ public class ForgeEssentials
 		
 		// FE MUST BE FIRST!!
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
-
+		
 		version = e.getModMetadata().version;
 
 		// setup fedir stuff
@@ -178,9 +183,6 @@ public class ForgeEssentials
 
 		mdlaunch.load(e);
 		localization.load();
-
-		// tasks
-		tasks = new TaskRegistry();
 
 		//other stuff
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();

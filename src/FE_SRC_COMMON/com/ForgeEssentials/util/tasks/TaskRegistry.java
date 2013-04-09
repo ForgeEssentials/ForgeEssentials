@@ -15,6 +15,7 @@ public class TaskRegistry
 	{
 		instance = this;
 		ticks = new TickTaskHandler();
+		timed = new TimeTaskHandler();
 		TickRegistry.registerTickHandler(ticks, Side.SERVER);
 	}
 
