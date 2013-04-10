@@ -11,6 +11,9 @@ public class ClassContainer
 	{
 		heldClass = type;
 		this.parameters = parameters;
+		
+		if (type.isArray())
+			return;
 	}
 
 	public ClassContainer(Class<?> type)
@@ -115,6 +118,7 @@ public class ClassContainer
 		temp = temp.replace('<', '$');
 		temp = temp.replace('>', '$');
 		temp = temp.replaceAll("\\, ", "_H_");
+		temp = temp.replaceAll("\\[\\]", "_ARR_");
 		return temp;
 	}
 

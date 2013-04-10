@@ -9,10 +9,10 @@ import java.util.Set;
 
 import com.ForgeEssentials.data.StorageManager;
 
-@SuppressWarnings("rawtypes")
 public abstract class TypeMultiValInfo implements ITypeInfo
 {
 	protected ClassContainer					container;
+	protected HashMap<String, ClassContainer>	entryFields;
 	protected HashMap<String, ClassContainer>	fields;
 	private TypeEntryInfo						entryInfo;
 
@@ -22,21 +22,27 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	{
 		this.container = container;
 		fields = new HashMap<String, ClassContainer>();
-		fields.put(UID, new ClassContainer(String.class));
+		entryFields = new HashMap<String, ClassContainer>();
+		entryFields.put(UID, new ClassContainer(String.class));
 	}
 
 	@Override
 	public final void build()
 	{
-		build(fields);
-		entryInfo = new TypeEntryInfo(fields, container);
+		buildEntry(entryFields);
+		entryInfo = new TypeEntryInfo(entryFields, container);
 	}
 
 	/**
-	 * the actual types that this holds. An Entry class will be created for which element of this.
-	 * @param fields
+	 * Fields that the elements of this MultiVal opbject should have.
+	 * @param entryFields
 	 */
-	public abstract void build(HashMap<String, ClassContainer> fields);
+	public abstract void buildEntry(HashMap<String, ClassContainer> entryFields);
+	
+	public void build(HashMap<String, ClassContainer> entryFields)
+	{
+		// optional override
+	}
 
 	@Override
 	public boolean canSaveInline()
@@ -47,6 +53,9 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	@Override
 	public ClassContainer getTypeOfField(String field)
 	{
+		if (field == null)
+			return null;
+		
 		if (field.toLowerCase().contains(getEntryName().toLowerCase()))
 			return entryInfo.getType();
 		return fields.get(field);
@@ -68,6 +77,11 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	public String[] getFieldList()
 	{
 		return fields.keySet().toArray(new String[fields.size()]);
+	}
+	
+	public String[] getEntryFieldList()
+	{
+		return entryFields.keySet().toArray(new String[entryFields.size()]);
 	}
 
 	@Override
@@ -97,6 +111,9 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 			dat.putField(UID, id);
 			data.putField(getEntryName() + i++, dat);
 		}
+		
+		addExtraDataForObject(data, obj);
+		
 		data.setUniqueKey(unique);
 		return data;
 	}
@@ -110,8 +127,13 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	{
 		return unique.substring(unique.lastIndexOf('_'));
 	}
-
+	
 	public abstract Set<TypeData> getTypeDatasFromObject(Object obj);
+	
+	public void addExtraDataForObject(TypeData data, Object obj)
+	{
+		// optional override
+	}
 
 	@Override
 	public final Object reconstruct(IReconstructData data)
@@ -123,15 +145,18 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 		{
 			datas[i++] = (TypeData) obj;
 		}
-		return reconstruct(datas);
+		return reconstruct(datas, data);
 	}
 
-	public abstract Object reconstruct(TypeData[] data);
+	public abstract Object reconstruct(TypeData[] data, IReconstructData rawData);
 
 	@Override
 	public final ITypeInfo getInfoForField(String field)
 	{
-		return getEntryInfo();
+		if (field.toLowerCase().contains(getEntryName().toLowerCase()))
+			return getEntryInfo();
+		else
+			return DataStorageManager.getInfoForType(getTypeOfField(field));
 	}
 
 	public TypeEntryInfo getEntryInfo()

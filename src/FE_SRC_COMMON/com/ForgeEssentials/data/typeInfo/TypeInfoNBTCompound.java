@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 
 import com.ForgeEssentials.api.data.ClassContainer;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.TypeMultiValInfo;
 
@@ -29,7 +30,7 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 	}
 
 	@Override
-	public void build(HashMap<String, ClassContainer> fields)
+	public void buildEntry(HashMap<String, ClassContainer> fields)
 	{
 		fields.put(KEY, new ClassContainer(String.class));
 		fields.put(TYPE, new ClassContainer(int.class));
@@ -109,7 +110,7 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo
 	}
 
 	@Override
-	public Object reconstruct(TypeData[] data)
+	public Object reconstruct(TypeData[] data, IReconstructData rawType)
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 

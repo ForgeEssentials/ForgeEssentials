@@ -30,7 +30,6 @@ import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class SQLDataDriver extends AbstractDataDriver
 {
 	protected static final String	SEPERATOR			= "__";
@@ -332,7 +331,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		ArrayList<String> list = new ArrayList<String>();
 
 		// normal class delete thing.
-		String statement = "DELETE FROM " + FEDATA_PREFIX + type.getFileSafeName() + " WHERE " + UNIQUE + "='" + unique + "'";
+		String statement = "DELETE FROM " + FEDATA_PREFIX + type.getFileSafeName() + " WHERE " + SURROUNDER + UNIQUE + SURROUNDER + "='" + unique + "'";
 		list.add(statement);
 
 		ITypeInfo info = DataStorageManager.getInfoForType(type);
@@ -353,17 +352,18 @@ public class SQLDataDriver extends AbstractDataDriver
 		boolean isFirst = false;
 		for (ClassContainer key : multiMap.keySet())
 		{
-			statement = "DELETE FROM " + FEDATA_PREFIX + key.getFileSafeName() + " WHERE " + TypeMultiValInfo.UID + "='";
-			isFirst = false;
+			statement = "DELETE FROM " + FEDATA_PREFIX + key.getFileSafeName() + " WHERE " + SURROUNDER + TypeMultiValInfo.UID + SURROUNDER + "='";
+			isFirst = true;
 			for (String valID : multiMap.get(key))
 			{
 				if (isFirst)
 				{
 					statement += valID + "'";
+					isFirst = false;
 				}
 				else
 				{
-					statement += " OR " + TypeMultiValInfo.UID + "='" + valID + "'";
+					statement += " OR " + SURROUNDER + TypeMultiValInfo.UID + SURROUNDER + "='" + valID + "'";
 				}
 			}
 			list.add(statement);
@@ -415,7 +415,9 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			builder.append(" WHERE ");
 			DataStorageManager.getInfoForType(type);
+			builder.append(SURROUNDER);
 			builder.append(UNIQUE);
+			builder.append(SURROUNDER);
 			builder.append("=");
 			builder.append('\'').append(unique).append('\'');
 		}
@@ -439,7 +441,7 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			if (entry.getValue() == null)
 				continue;
-			
+
 			temp = fieldToValues(entry.getKey(), info.getTypeOfField(entry.getKey()), entry.getValue());
 
 			// catch multivals and add them to a different list.
@@ -559,7 +561,8 @@ public class SQLDataDriver extends AbstractDataDriver
 
 		for (Object dat : data.getAllValues())
 		{
-			statements.addAll(generateInsertBatch(entryInfo, (TypeData) dat));
+			if (dat instanceof TypeData)
+				statements.addAll(generateInsertBatch(entryInfo, (TypeData) dat));
 		}
 
 		return statements;
@@ -579,7 +582,6 @@ public class SQLDataDriver extends AbstractDataDriver
 			return false;
 
 		ITypeInfo tagger = DataStorageManager.getInfoForType(type);
-		String[] fields = tagger.getFieldList();
 		ArrayList<Pair<String, String>> tableFields = new ArrayList<Pair<String, String>>();
 		String keyClause = "";
 
@@ -589,19 +591,19 @@ public class SQLDataDriver extends AbstractDataDriver
 		if (isMulti)
 		{
 			classTableChecked.add(type.getName());
-			
+
 			tableFields.add(new Pair<String, String>(MULTI_MARKER, "VARCHAR(100)"));
 
 			TypeEntryInfo info = ((TypeMultiValInfo) tagger).getEntryInfo();
 
-			for (String name : fields)
+			for (String name : info.getFieldList())
 			{
 				tableFields.addAll(fieldToColumns(info, name, name));
 			}
 		}
 		else
 		{
-			for (String name : fields)
+			for (String name : tagger.getFieldList())
 			{
 				tableFields.addAll(fieldToColumns(tagger, name, name));
 			}
@@ -718,17 +720,14 @@ public class SQLDataDriver extends AbstractDataDriver
 				createTable(con);
 				fields.add(new Pair<String, String>(columnName + "_" + MULTI_MARKER, "VARCHAR(255)"));
 			}
-			else
+
+			// some other complex type.
+			String[] fieldList = tagger.getFieldList();
+
+			// Iterate over the stored fields. Recurse if nessescary.
+			for (String name : fieldList)
 			{
-				// some other complex type.
-				String[] fieldList = tagger.getFieldList();
-
-				// Iterate over the stored fields. Recurse if nessecary.
-				for (String name : fieldList)
-				{
-					fields.addAll(fieldToColumns(tagger, columnName + SEPERATOR + name, name));
-				}
-
+				fields.addAll(fieldToColumns(tagger, columnName + SEPERATOR + name, name));
 			}
 		}
 
@@ -746,7 +745,7 @@ public class SQLDataDriver extends AbstractDataDriver
 	private ArrayList<Pair> fieldToValues(String fieldName, ClassContainer type, Object value)
 	{
 		ArrayList<Pair> data = new ArrayList<Pair>();
-		
+
 		if (value == null)
 		{
 			data.add(new Pair(fieldName, "NULL"));
@@ -843,6 +842,11 @@ public class SQLDataDriver extends AbstractDataDriver
 
 				// this will be removed what all the MultiVal ones are collected.
 				data.add(new Pair(fieldName + "_" + MULTI_MARKER, tc));
+
+				for (String name : info.getFieldList())
+				{
+					data.addAll(fieldToValues(fieldName + SEPERATOR + name, info.getTypeOfField(name), tc.getFieldValue(name)));
+				}
 			}
 			else
 			{
