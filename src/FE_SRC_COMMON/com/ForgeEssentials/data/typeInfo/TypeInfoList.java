@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import com.ForgeEssentials.api.data.ClassContainer;
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.api.data.TypeData;
 import com.ForgeEssentials.api.data.TypeMultiValInfo;
 import com.ForgeEssentials.util.OutputHandler;
@@ -24,7 +25,7 @@ public class TypeInfoList extends TypeMultiValInfo
 	}
 
 	@Override
-	public void build(HashMap<String, ClassContainer> fields)
+	public void buildEntry(HashMap<String, ClassContainer> fields)
 	{
 		fields.put(POS, new ClassContainer(int.class));
 		fields.put(ELEMENT, new ClassContainer(container.getParameters()[0]));
@@ -49,9 +50,8 @@ public class TypeInfoList extends TypeMultiValInfo
 		return datas;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Object reconstruct(TypeData[] data)
+	public Object reconstruct(TypeData[] data, IReconstructData rawType)
 	{
 		Object array = Array.newInstance(container.getType(), data.length);
 

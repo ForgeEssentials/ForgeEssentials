@@ -121,11 +121,11 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 			int y;
 			int z;
 			int dimension = 0;
-			amount = parseInt(sender, args[0]);
-			x = parseInt(sender, args[1]);
-			y = parseInt(sender, args[2]);
-			z = parseInt(sender, args[3]);
-			dimension = parseInt(sender, args[4]);
+			amount = parseInt(sender, args[1]);
+			x = parseInt(sender, args[2]);
+			y = parseInt(sender, args[3]);
+			z = parseInt(sender, args[4]);
+			dimension = parseInt(sender, args[5]);
 			for (int i = 0; i < amount; i++)
 			{
 				World world = FunctionHelper.getDimension(dimension);
@@ -142,6 +142,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 		else
 		{
 			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
+			OutputHandler.debug("test");
 		}
 	}
 

@@ -179,7 +179,7 @@ public class StorageManager implements IStorageManager
 
 		if (type.isArray() && !type.getType().getComponentType().isPrimitive() && !String.class.isAssignableFrom(type.getType().getComponentType()))
 		{
-			info = new TypeInfoArray(new ClassContainer(type.getType(), type.getType().getComponentType()));
+			info = new TypeInfoArray(new ClassContainer(type.getType()));
 		}
 		else if (Map.class.isAssignableFrom(type.getType()))
 		{
@@ -367,7 +367,7 @@ public class StorageManager implements IStorageManager
 			return tagged;
 		}
 
-		return taggerList.get(tempType);
+		return taggerList.get(tempType.toString());
 	}
 
 	@Override

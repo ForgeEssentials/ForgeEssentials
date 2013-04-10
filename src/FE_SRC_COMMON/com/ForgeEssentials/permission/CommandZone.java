@@ -208,10 +208,6 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_YESZONE, args[1]));
 				}
-				else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".redefine." + args[1])))
-				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
-				}
 				else if (info.getSelection() == null)
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOSELECTION));
@@ -350,7 +346,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.zone";
+		return "ForgeEssentials.permissions.zone";
 	}
 
 	@Override
