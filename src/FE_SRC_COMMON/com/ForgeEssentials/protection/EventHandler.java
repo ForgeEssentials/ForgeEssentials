@@ -220,11 +220,12 @@ public class EventHandler
 
 			query = new PermQueryPlayerArea(e.entityPlayer, name, point);
 			result = PermissionsAPI.checkPermAllowed(query);
-			if (!result)
-				e.useItem = DENY;
-			else
-				e.useItem = ALLOW;
 		}
+		
+		if (result)
+			e.useItem = ALLOW;
+		else
+			e.useItem = DENY;
 	}
 
 	@ForgeSubscribe(priority = EventPriority.LOW)
@@ -244,11 +245,12 @@ public class EventHandler
 				// check block usage perm
 				query = new PermQueryPlayerArea(e.entityPlayer, ModuleProtection.PERM_INTERACT_BLOCK, point);
 				result = PermissionsAPI.checkPermAllowed(query);
-				if (!result)
-					e.useBlock = DENY;
-				else
-					e.useBlock = ALLOW;
 			}
+			
+			if (result)
+				e.useBlock = ALLOW;
+			else
+				e.useBlock = DENY;
 		}
 	}
 
