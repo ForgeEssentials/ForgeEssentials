@@ -346,7 +346,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.zone";
+		return "ForgeEssentials.permissions.zone";
 	}
 
 	@Override
