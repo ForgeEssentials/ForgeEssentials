@@ -364,7 +364,7 @@ public class CommandFEPermUser
 						OutputHandler.chatConfirmation(sender, permission);
 						return;
 					}
-					if (permission.contains("ALLOW"))
+					if (permission.contains("true"))
 					{
 						messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + permission.substring(0, permission.indexOf(":")));
 					}
