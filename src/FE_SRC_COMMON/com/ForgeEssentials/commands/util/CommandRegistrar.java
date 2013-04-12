@@ -11,6 +11,7 @@ import com.ForgeEssentials.commands.CommandBed;
 import com.ForgeEssentials.commands.CommandBurn;
 import com.ForgeEssentials.commands.CommandButcher;
 import com.ForgeEssentials.commands.CommandCapabilities;
+import com.ForgeEssentials.commands.CommandChunkLoaderList;
 import com.ForgeEssentials.commands.CommandClearInventory;
 import com.ForgeEssentials.commands.CommandColorize;
 import com.ForgeEssentials.commands.CommandCraft;
@@ -106,6 +107,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandTPA());
 		cmdList.add(new CommandTop());
 		cmdList.add(new CommandTPAhere());
+		cmdList.add(new CommandChunkLoaderList());
 	}
 
 	public static void commandConfigs(Configuration config)
