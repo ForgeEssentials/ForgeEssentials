@@ -14,10 +14,6 @@ Setup
 _____
 *Please see [README-Developing.txt](README-Developing.txt) for setting up ForgeEssentials with MCP.*
 
-1. Install Forge.
-2. Watch this [video](http://www.google.com/url?sa=t&rct=j&q=forge%20essentials%20install&source=web&cd=2&ved=0CD4QtwIwAQ&url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DeILe2YDVHfs&ei=6-BUUYL3JITUyQG-noGIDw&usg=AFQjCNEbvjbyDXQZ9wBuwxn8g4wjFw5ADw&bvm=bv.44442042,d.aWc).
-3. Enjoy!
-
 <br>
 
 Downloads
@@ -41,8 +37,8 @@ _________
 <td>All official ForgeEssential builds may be found here.</td>
 </tr>
 <tr>
-<td><a href="http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-1.5.1-7.7.1.611.zip">Forge Mod Loader</a></td>
-<td>Forge 7.7.1 Direct download</td>
+<td><a href="http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-latest.zip">Forge</a></td>
+<td>Latest Forge Direct download (Jenkins compiles on this)</td>
 </table>
 
 <br>
@@ -68,8 +64,9 @@ ________________
 
 <a href="https://github.com/Jgdovin">Jgdovin</a>
 
+With ocalization credits to:
+
 <a href="https://github.com/helinus">Helinus</a>
 
 <a href="https://github.com/jovino">Jovino</a> (inactive)
 
-<a href="https://github.com/RlonRyan">_</a>
