@@ -39,7 +39,7 @@ public class CommandPay extends ForgeEssentialsCommandBase
 				if (EconManager.getWallet(sender.username) >= amount)
 				{
 					EconManager.removeFromWallet(amount, sender.username);
-					EconManager.addToWallet(amount, sender.username);
+					EconManager.addToWallet(amount, player.username);
 					OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + EconManager.currency(amount));
 					OutputHandler.chatConfirmation(player, "You have been payed " + amount + " " + EconManager.currency(amount) + " by " + sender.getCommandSenderName());
 				}
