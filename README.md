@@ -64,7 +64,7 @@ ________________
 
 <a href="https://github.com/Jgdovin">Jgdovin</a>
 
-With ocalization credits to:
+With localization credits to:
 
 <a href="https://github.com/helinus">Helinus</a>
 
