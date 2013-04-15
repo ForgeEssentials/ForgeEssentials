@@ -39,7 +39,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length <= 1)
+		if (args.length <= 0)
 		{
 			error(sender);
 			return;
