@@ -31,10 +31,12 @@ import java.net.UnknownHostException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.snooper.VoteEvent;
 import com.ForgeEssentials.serverVote.ModuleServerVote;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLLog;
@@ -164,9 +166,30 @@ public class VoteReceiver extends Thread
 				// Create the vote.
 				VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
 
-				FMLLog.fine("Received vote record -> " + vote);
+				OutputHandler.finer("Got Vote from player " + vote.player + " by service " + vote.serviceName);
 
-				MinecraftForge.EVENT_BUS.post(vote);
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(vote.player);
+		        if (player == null)
+		        {
+		            if (!ModuleServerVote.config.allowOfflineVotes)
+		            {
+		                OutputHandler.finer("Player for vote not online, vote canceled.");
+		                vote.setFeedback("notOnline");
+		                vote.setCanceled(true);
+		                return;
+		            }
+		            else
+		            {
+		                try
+                        {
+                            MinecraftForge.EVENT_BUS.post(vote);
+                        }
+                        catch (Exception e)
+                        {
+                            
+                        }
+		            }
+		        }
 
 				// Clean up.
 				writer.close();

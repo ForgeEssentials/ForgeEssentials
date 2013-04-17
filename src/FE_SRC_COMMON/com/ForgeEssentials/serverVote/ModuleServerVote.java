@@ -69,8 +69,6 @@ public class ModuleServerVote
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void defVoteResponces(VoteEvent vote)
 	{
-		OutputHandler.finer("Got Vote!");
-
 		/*
 		 * Offline check.
 		 */
@@ -110,10 +108,6 @@ public class ModuleServerVote
 				OutputHandler.finer(stack);
 				player.inventory.addItemStackToInventory(stack.copy());
 			}
-		}
-		else
-		{
-			OutputHandler.finer("noFreeStuff :(");
 		}
 	}
 }

@@ -9,14 +9,15 @@ import net.minecraftforge.event.Event;
 import com.ForgeEssentials.api.json.JSONObject;
 
 /**
- * Event triggered when the snooper gets a vote from a service. If you cancel
- * the event, the service will receive "Failed".
+ * Event triggered when the snooper gets a vote from a service.
+ *
+ * Note that the player might be offline or not even play on the server.
  * @author Dries007
  */
 
 @Cancelable
 public class VoteEvent extends Event
-{
+{  
 	public String	player;
 	public String	serviceName;
 	public String	ip;
