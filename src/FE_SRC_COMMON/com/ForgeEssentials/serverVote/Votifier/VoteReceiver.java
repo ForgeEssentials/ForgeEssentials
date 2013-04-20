@@ -166,7 +166,7 @@ public class VoteReceiver extends Thread
 				// Create the vote.
 				VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
 
-				OutputHandler.finer("Got Vote from player " + vote.player + " by service " + vote.serviceName);
+				ModuleServerVote.log(vote);
 
 				EntityPlayerMP player = FunctionHelper.getPlayerForName(vote.player);
 		        if (player == null)
