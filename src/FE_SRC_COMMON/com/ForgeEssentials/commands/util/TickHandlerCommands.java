@@ -5,6 +5,8 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraft.world.storage.WorldInfo;
 
 import com.ForgeEssentials.core.PlayerInfo;
 
@@ -40,57 +42,139 @@ public class TickHandlerCommands implements IScheduledTickHandler
 	public static List<TPAdata>	tpaList				= new ArrayList<TPAdata>();
 	public static List<TPAdata>	tpaListToAdd		= new ArrayList<TPAdata>();
 	public static List<TPAdata>	tpaListToRemove		= new ArrayList<TPAdata>();
-
+	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		/*
-		 * Kit system
-		 */
-		for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
+	    if (type.contains(TickType.SERVER))
+	    {
+	        doServerTick();
+	    }
+	    
+		if (type.contains(TickType.WORLD))
 		{
-			PlayerInfo.getPlayerInfo(((EntityPlayer) player).username).KitCooldownTick();
-		}
-
-		/*
-		 * AFK system
-		 */
-		try
-		{
-			afkList.addAll(afkListToAdd);
-			afkListToAdd.clear();
-			for (AFKdata data : afkList)
-			{
-				data.count();
-			}
-			afkList.removeAll(afkListToRemove);
-			afkListToRemove.clear();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		/*
-		 * TPA system
-		 */
-		try
-		{
-			tpaList.addAll(tpaListToAdd);
-			tpaListToAdd.clear();
-			for (TPAdata data : tpaList)
-			{
-				data.count();
-			}
-			tpaList.removeAll(tpaListToRemove);
-			tpaListToRemove.clear();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
+		    doWorldTick((World)tickData[0]);
 		}
 	}
+	
+	public static int getWorldHour(World world)
+	{
+	    return (int)((world.getWorldTime() % 24000) / 1000);
+	}
+	
+	public static int getWorldDays(World world)
+    {
+        return (int)(world.getWorldTime() / 24000);
+    }
+	
+	public static void makeWorldTimeHours(World world, int target)
+    {
+        world.setWorldTime((getWorldDays(world) + 1) * 24000 + (target * 1000));
+    }
 
+	private void doWorldTick(World world)
+    {
+	    /*
+	     * Time settings
+	     */
+	    if (!CommandDataManager.WTmap.containsKey(world.provider.dimensionId))
+	    {
+	        WeatherTimeData wt = new WeatherTimeData(world.provider.dimensionId);
+	        wt.freezeTime = world.getWorldTime();
+	        CommandDataManager.WTmap.put(world.provider.dimensionId, wt);
+	    }
+	    else
+	    {
+	        WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
+	        /*
+	         * Weather part
+	         */
+	        if (wt.weatherSpecified)
+	        {
+	            WorldInfo winfo = world.getWorldInfo();
+	            if (!wt.rain)
+	            {
+	                winfo.setRainTime(20 * 300);
+	                winfo.setRaining(false);
+	                winfo.setThunderTime(20 * 300);
+                    winfo.setThundering(false);
+	            }
+	            else if (!wt.storm)
+	            {
+	                winfo.setThunderTime(20 * 300);
+	                winfo.setThundering(false);
+	            }
+	        }
+	        
+	        /*
+	         * Time part
+	         */
+	        if (wt.timeFreeze) world.setWorldTime(wt.freezeTime);
+	        else if (wt.timeSpecified)
+	        {
+	            int h = getWorldHour(world);
+	            
+	            if (wt.day)
+	            {
+	                if (h >= WeatherTimeData.dayTimeEnd) makeWorldTimeHours(world, WeatherTimeData.dayTimeStart);
+	            }
+	            else
+	            {
+	                if (h >= WeatherTimeData.nightTimeEnd) makeWorldTimeHours(world, WeatherTimeData.nightTimeStart);
+	            }
+	        }
+	    }
+    }
+
+    private void doServerTick()
+	{
+	    /*
+         * Kit system
+         */
+        for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
+        {
+            PlayerInfo.getPlayerInfo(((EntityPlayer) player).username).KitCooldownTick();
+        }
+
+        /*
+         * AFK system
+         */
+        try
+        {
+            afkList.addAll(afkListToAdd);
+            afkListToAdd.clear();
+            for (AFKdata data : afkList)
+            {
+                data.count();
+            }
+            afkList.removeAll(afkListToRemove);
+            afkListToRemove.clear();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        /*
+         * TPA system
+         */
+        try
+        {
+            tpaList.addAll(tpaListToAdd);
+            tpaListToAdd.clear();
+            for (TPAdata data : tpaList)
+            {
+                data.count();
+            }
+            tpaList.removeAll(tpaListToRemove);
+            tpaListToRemove.clear();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+	}
+	
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
@@ -100,7 +184,7 @@ public class TickHandlerCommands implements IScheduledTickHandler
 	@Override
 	public EnumSet<TickType> ticks()
 	{
-		return EnumSet.of(TickType.SERVER);
+		return EnumSet.of(TickType.SERVER, TickType.WORLD);
 	}
 
 	@Override

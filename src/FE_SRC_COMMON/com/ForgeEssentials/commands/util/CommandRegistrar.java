@@ -46,12 +46,14 @@ import com.ForgeEssentials.commands.CommandSpawnMob;
 import com.ForgeEssentials.commands.CommandTPA;
 import com.ForgeEssentials.commands.CommandTPAhere;
 import com.ForgeEssentials.commands.CommandTPS;
+import com.ForgeEssentials.commands.CommandTime;
 import com.ForgeEssentials.commands.CommandTop;
 import com.ForgeEssentials.commands.CommandTp;
 import com.ForgeEssentials.commands.CommandTphere;
 import com.ForgeEssentials.commands.CommandTppos;
 import com.ForgeEssentials.commands.CommandVirtualchest;
 import com.ForgeEssentials.commands.CommandWarp;
+import com.ForgeEssentials.commands.CommandWeather;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
@@ -108,6 +110,8 @@ public class CommandRegistrar
 		cmdList.add(new CommandTop());
 		cmdList.add(new CommandTPAhere());
 		cmdList.add(new CommandChunkLoaderList());
+		cmdList.add(new CommandTime());
+		cmdList.add(new CommandWeather());
 	}
 
 	public static void commandConfigs(Configuration config)

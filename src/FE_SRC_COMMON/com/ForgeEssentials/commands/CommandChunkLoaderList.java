@@ -14,9 +14,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
-import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.google.common.collect.HashMultimap;

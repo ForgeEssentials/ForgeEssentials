@@ -12,7 +12,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -32,7 +31,7 @@ public class ConfigServerVote extends ModuleConfigBase
 	public boolean				allowOfflineVotes;
 	public String				msgAll		= "";
 	public String				msgVoter	= "";
-	public List<ItemStack>		freeStuff	= new ArrayList<ItemStack>();
+	public ArrayList<ItemStack>	freeStuff	= new ArrayList<ItemStack>();
 
 	public File					keyFolder;
 
@@ -42,6 +41,8 @@ public class ConfigServerVote extends ModuleConfigBase
 
 	public String				hostname;
 	public Integer				port;
+
+    public boolean              flatfileLog;
 
 	public ConfigServerVote(File file)
 	{
@@ -63,8 +64,11 @@ public class ConfigServerVote extends ModuleConfigBase
 		msgAll = config.get(category, "msgAll", "%player has voted for this server on %service.", "You can use color codes (&), %player and %service").getString();
 		msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").getString();
 
+		flatfileLog = config.get(category, "flatFileLog", true, "Log the votes in \"votes.log\"").getBoolean(true);
+		
 		String[] tempArray = config.get(category, "rewards", new String[] {}, "Format is like this: [amount]x<id>[:meta]").getStringList();
 
+		freeStuff.clear();
 		for (String temp : tempArray)
 		{
 			int amount = 1;
@@ -93,7 +97,6 @@ public class ConfigServerVote extends ModuleConfigBase
 		}
 
 		config.save();
-
 		loadKeys();
 	}
 
@@ -111,6 +114,39 @@ public class ConfigServerVote extends ModuleConfigBase
 		msgAll = config.get(category, "msgAll", "%player has voted for this server on %service.", "You can use color codes (&), %player and %service").getString();
 		msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").getString();
 
+		flatfileLog = config.get(category, "flatFileLog", true, "Log the votes in \"votes.log\"").getBoolean(true);
+		
+		String[] tempArray = config.get(category, "rewards", new String[] {}, "Format is like this: [amount]x<id>[:meta]").getStringList();
+
+		freeStuff.clear();
+        for (String temp : tempArray)
+        {
+            int amount = 1;
+            int meta = 0;
+
+            if (temp.contains("x"))
+            {
+                String[] temp2 = temp.split("x");
+                amount = Integer.parseInt(temp2[0]);
+                temp = temp2[1];
+            }
+
+            if (temp.contains(":"))
+            {
+                String[] temp2 = temp.split(":");
+                meta = Integer.parseInt(temp2[1]);
+                temp = temp2[0];
+            }
+
+            int id = Integer.parseInt(temp);
+            ItemStack stack = new ItemStack(id, amount, meta);
+
+            OutputHandler.finer(stack);
+
+            freeStuff.add(stack);
+        }
+		
+		config.save();
 		loadKeys();
 	}
 

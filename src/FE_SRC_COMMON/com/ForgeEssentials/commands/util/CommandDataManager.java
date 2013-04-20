@@ -11,13 +11,15 @@ public class CommandDataManager
 	private static ClassContainer							conWarp		= new ClassContainer(Warp.class);
 	private static ClassContainer							conPWarp	= new ClassContainer(PWarp.class);
 	private static ClassContainer							conKit		= new ClassContainer(Kit.class);
+	private static ClassContainer                           conWT       = new ClassContainer(WeatherTimeData.class);
 
 	private static AbstractDataDriver						data;
 
 	public static HashMap<String, Kit>						kits		= new HashMap<String, Kit>();
 	public static HashMap<String, Warp>						warps		= new HashMap<String, Warp>();
 	public static HashMap<String, HashMap<String, PWarp>>	pwMap		= new HashMap<String, HashMap<String, PWarp>>();
-
+	public static HashMap<Integer, WeatherTimeData>         WTmap        = new HashMap<Integer, WeatherTimeData>();
+	
 	public static void load()
 	{
 		data = DataStorageManager.getReccomendedDriver();
@@ -25,6 +27,7 @@ public class CommandDataManager
 		loadWarps();
 		loadPWarps();
 		loadKits();
+		loadWT();
 	}
 
 	public static void save()
@@ -32,6 +35,7 @@ public class CommandDataManager
 		saveWarps();
 		savePWarps();
 		saveKits();
+		saveWT();
 	}
 
 	/*
@@ -72,6 +76,16 @@ public class CommandDataManager
 			kits.put(kit.getName(), kit);
 		}
 	}
+	
+	public static void loadWT()
+    {
+        Object[] objs = data.loadAllObjects(conWT);
+        for (Object obj : objs)
+        {
+            WeatherTimeData wt = (WeatherTimeData) obj;
+            WTmap.put(wt.dimID, wt);
+        }
+    }
 
 	/*
 	 * Saving loops
@@ -110,6 +124,14 @@ public class CommandDataManager
 			data.saveObject(conKit, kit);
 		}
 	}
+	
+	public static void saveWT()
+    {
+        for (WeatherTimeData wt : WTmap.values())
+        {
+            data.saveObject(conWT, wt);
+        }
+    }
 
 	/*
 	 * Adding loops

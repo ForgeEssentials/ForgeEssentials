@@ -31,9 +31,7 @@ public class OverrideManager
 		e.registerServerCommand(new CommandSeed());
 		e.registerServerCommand(new CommandSetSpawn());
 		e.registerServerCommand(new CommandStop());
-		e.registerServerCommand(new CommandTime());
 		e.registerServerCommand(new CommandToggleDownfall());
-		e.registerServerCommand(new CommandWeather());
 		e.registerServerCommand(new CommandWhitelist());
 		e.registerServerCommand(new CommandXP());
 	}
