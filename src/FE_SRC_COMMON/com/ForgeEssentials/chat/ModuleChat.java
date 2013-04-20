@@ -1,6 +1,7 @@
 package com.ForgeEssentials.chat;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,12 +41,15 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 public class ModuleChat
 {
 	@FEModule.Config
-	public static ConfigChat	conf;
+	public static ConfigChat   conf;
 
 	@FEModule.ModuleDir
-	public static File			moduleDir;
+	public static File         moduleDir;
+	
+	public static PrintWriter  chatLog;
+	public static PrintWriter  cmdLog;
 
-	private MailSystem			mailsystem;
+	private MailSystem         mailsystem;
 
 	public ModuleChat()
 	{
@@ -81,6 +85,28 @@ public class ModuleChat
 		e.registerServerCommand(new CommandUnmute());
 		e.registerServerCommand(new CommandMail());
 		e.registerServerCommand(new CommandAutoMessage());
+		
+		try
+		{
+		    File file = new File(moduleDir, "chat.log");
+		    if (!file.exists()) file.createNewFile();
+		    chatLog = new PrintWriter(file);
+		}
+		catch (Exception e1)
+		{
+		    e1.printStackTrace();
+		}
+		
+		try
+        {
+            File file = new File(moduleDir, "cmd.log");
+            if (!file.exists()) file.createNewFile();
+            cmdLog = new PrintWriter(file);
+        }
+        catch (Exception e1)
+        {
+            e1.printStackTrace();
+        }
 	}
 
 	@FEModule.ServerPostInit()
@@ -96,6 +122,9 @@ public class ModuleChat
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		MailSystem.SaveAll();
+		
+		chatLog.close();
+		cmdLog.close();
 	}
 
 	@PermRegister
@@ -168,4 +197,23 @@ public class ModuleChat
 			}
 		}
 	}
+
+    
+	public static void logChat(String line)
+    {
+	    if (ConfigChat.logchat && chatLog != null)
+	    {
+	        chatLog.println(line);
+	        chatLog.flush();
+	    }
+    }
+
+    public static void logCmd(String line)
+    {
+        if (ConfigChat.logcmd && cmdLog != null)
+        {
+            cmdLog.println(line);
+            cmdLog.flush();
+        }
+    }
 }

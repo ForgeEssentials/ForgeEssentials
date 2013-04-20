@@ -192,6 +192,8 @@ public class ChatFormatter
 
 		// finally make it the chat line.
 		event.line = format;
+		
+		ModuleChat.logChat(event.line);
 	}
 
 	private String getGroupRankString(String username)

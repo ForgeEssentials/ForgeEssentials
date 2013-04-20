@@ -45,6 +45,15 @@ public class CommandMuter
                 }
             }
         }
+        
+        ModuleChat.logCmd("[" + e.sender.getCommandSenderName() + "] /" + e.command.getCommandName() + " " + join(e.parameters));
     }
     
+    public String join(String[] args)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (String agr : args)
+            sb.append(agr + " ");
+        return sb.toString();
+    }
 }

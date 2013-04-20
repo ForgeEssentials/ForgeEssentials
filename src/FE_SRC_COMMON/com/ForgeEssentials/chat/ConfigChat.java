@@ -20,6 +20,8 @@ public class ConfigChat extends ModuleConfigBase
 	public static String	largeComment_chatFormat	= "";
 	public static String	largeComment_Cat_Groups	= "";
 	public Configuration	config;
+    public static boolean   logchat;
+    public static boolean   logcmd;
 
 	// this is designed so it will work for any class.
 	public ConfigChat(File file)
@@ -93,6 +95,12 @@ public class ConfigChat extends ModuleConfigBase
 		for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blockd if the player is muted.").getStringList())
 		    CommandMuter.mutedCommands.add(cmd);
 		
+		String logCat = "Chat.log";
+		config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
+		
+		logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
+		logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
+		
 		config.save();
 	}
 
@@ -130,6 +138,12 @@ public class ConfigChat extends ModuleConfigBase
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
 		
 		config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blockd if the player is muted.").set(CommandMuter.mutedCommands.toArray(new String[CommandMuter.mutedCommands.size()]));
+		
+		String logCat = "Chat.log";
+        config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
+        
+        config.get(logCat, "logchat", true, "Log all chat messages").set(logchat);
+        config.get(logCat, "logcmd", true, "Log all commands").set(logcmd);
 		
 		config.save();
 	}
@@ -172,6 +186,12 @@ public class ConfigChat extends ModuleConfigBase
         for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blockd if the player is muted.").getStringList())
             CommandMuter.mutedCommands.add(cmd);
 		
+        String logCat = "Chat.log";
+        config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
+        
+        logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
+        logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
+        
 		config.save();
 	}
 }
