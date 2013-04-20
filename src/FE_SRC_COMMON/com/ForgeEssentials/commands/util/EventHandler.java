@@ -3,6 +3,9 @@ package com.ForgeEssentials.commands.util;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.ChunkCoordinates;
@@ -23,6 +26,7 @@ import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.google.common.base.Strings;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -37,7 +41,6 @@ public class EventHandler
 		/*
 		 * Colorize!
 		 */
-
 		if (e.entityPlayer.getEntityData().getBoolean("colorize"))
 		{
 			e.setCanceled(true);
@@ -73,7 +76,6 @@ public class EventHandler
 		/*
 		 * Jump with compass
 		 */
-
 		if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK)
 		{
 			if (e.entityPlayer.getCurrentEquippedItem() != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
@@ -94,6 +96,28 @@ public class EventHandler
 					}
 				}
 			}
+		}
+		
+		/*
+		 * 
+		 */
+		if (e.entityPlayer.getCurrentEquippedItem() != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+		    ItemStack is = e.entityPlayer.inventory.getCurrentItem();
+		    if (is != null && is.getTagCompound() != null && is.getTagCompound().hasKey("FEbinding"))
+		    {
+		        String cmd = null;
+		        NBTTagCompound nbt = is.getTagCompound().getCompoundTag("FEbinding");
+		        
+		        if (e.action.equals(Action.LEFT_CLICK_BLOCK)) cmd = nbt.getString("left");
+		        else if (e.action.equals(Action.RIGHT_CLICK_AIR)) cmd = nbt.getString("right");
+		        
+		        if (!Strings.isNullOrEmpty(cmd))
+	            {
+		            MinecraftServer.getServer().getCommandManager().executeCommand(e.entityPlayer, cmd);
+		            e.setCanceled(true);
+	            }
+		    }
 		}
 	}
 

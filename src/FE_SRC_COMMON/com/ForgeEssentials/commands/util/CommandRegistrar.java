@@ -8,6 +8,7 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.commands.CommandAFK;
 import com.ForgeEssentials.commands.CommandBack;
 import com.ForgeEssentials.commands.CommandBed;
+import com.ForgeEssentials.commands.CommandBind;
 import com.ForgeEssentials.commands.CommandBurn;
 import com.ForgeEssentials.commands.CommandButcher;
 import com.ForgeEssentials.commands.CommandCapabilities;
@@ -35,6 +36,7 @@ import com.ForgeEssentials.commands.CommandPersonalWarp;
 import com.ForgeEssentials.commands.CommandPing;
 import com.ForgeEssentials.commands.CommandPotion;
 import com.ForgeEssentials.commands.CommandRemove;
+import com.ForgeEssentials.commands.CommandRename;
 import com.ForgeEssentials.commands.CommandRepair;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.CommandServerDo;
@@ -112,6 +114,8 @@ public class CommandRegistrar
 		cmdList.add(new CommandChunkLoaderList());
 		cmdList.add(new CommandTime());
 		cmdList.add(new CommandWeather());
+		cmdList.add(new CommandBind());
+		cmdList.add(new CommandRename());
 	}
 
 	public static void commandConfigs(Configuration config)
