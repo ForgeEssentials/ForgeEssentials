@@ -1,4 +1,4 @@
-package mod.fml.admintools;
+package com.ForgeEssentials.commands.util;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

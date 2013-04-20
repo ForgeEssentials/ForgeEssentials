@@ -1,4 +1,4 @@
-package mod.fml.admintools;
+package com.ForgeEssentials.commands.util;
 
 import java.util.Random;
 

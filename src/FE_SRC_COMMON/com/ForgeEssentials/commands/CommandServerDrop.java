@@ -1,4 +1,4 @@
-package mod.fml.admintools;
+package com.ForgeEssentials.commands;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

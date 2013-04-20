@@ -1,4 +1,8 @@
-package mod.fml.admintools;
+package com.ForgeEssentials.commands;
+
+import java.util.List;
+
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockButton;
@@ -14,25 +18,20 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class CommandServerPush extends CommandBase
+public class CommandPush extends ForgeEssentialsCommandBase
 {
     public String getCommandName()
     {
         return "push";
     }
-
-    /**
-     * Return the required permission level for this command.
-     */
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
-    }
+  
     public String getCommandUsage(ICommandSender par1ICommandSender)
     {
         return par1ICommandSender.translateString("/push <X> <Y> <Z>", new Object[0]);
     }
-    public void processCommand(ICommandSender var1, String[] var2)
+    
+    @Override
+    public void processCommandConsole(ICommandSender var1, String[] var2)
     {
         if (var2.length != 3)
         {
@@ -121,4 +120,28 @@ public class CommandServerPush extends CommandBase
 
         return var8;
     }
+
+	@Override
+	public void processCommandPlayer(EntityPlayer sender, String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean canConsoleUseCommand() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getCommandPerm() {
+		// TODO Auto-generated method stub
+		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
 }

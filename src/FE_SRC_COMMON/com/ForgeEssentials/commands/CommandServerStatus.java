@@ -1,4 +1,4 @@
-package package com.ForgeEssentials.commands;
+package com.ForgeEssentials.commands;
 
 import java.text.DecimalFormat;
 import java.util.List;

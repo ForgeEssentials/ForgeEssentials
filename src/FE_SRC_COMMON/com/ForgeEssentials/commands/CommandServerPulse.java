@@ -1,4 +1,6 @@
-package mod.fml.admintools;
+package com.ForgeEssentials.commands;
+
+import com.ForgeEssentials.commands.util.BlockPoweredOreMod;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
