@@ -135,6 +135,7 @@ public class ModuleChat
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.mail", RegGroup.GUESTS);
 
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.nickname", RegGroup.MEMBERS);
+		event.registerPermissionLevel("ForgeEssentials.Chat.usecolor", RegGroup.MEMBERS);
 
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.nickname.others", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.mute", RegGroup.OWNERS);
