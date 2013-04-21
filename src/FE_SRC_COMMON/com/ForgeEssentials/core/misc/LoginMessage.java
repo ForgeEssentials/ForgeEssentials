@@ -8,13 +8,20 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.chat.ConfigChat;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.compat.CompatReiMinimap;
+import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -68,6 +75,11 @@ public class LoginMessage
 				pw.println("# Handy link: http://www.minecraftwiki.net/wiki/Formatting_codes");
 				pw.println("# Other codes:");
 				pw.println("# %playername% => The name of the player the message is send to");
+				pw.println("# %rank% => Players rank (see chat config)");
+				pw.println("# %groupPrefix% => Group prefix (see chat config)");
+				pw.println("# %groupSuffix% => Group suffix (see chat config)");
+				pw.println("# %playerPrefix% => Player prefix (see chat config)");
+                pw.println("# %playerSuffix% => Player suffix (see chat config)");
 				// pw.println("# %balance% => Prints the users balance (economy)");
 				pw.println("# %players% => Amount of players online.");
 				pw.println("# %uptime% => Current server uptime.");
@@ -144,7 +156,16 @@ public class LoginMessage
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%day%", "" + cal.get(Calendar.DAY_OF_MONTH));
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%month%", "" + cal.get(Calendar.MONTH));
 		line = FunctionHelper.replaceAllIgnoreCase(line, "%year%", "" + cal.get(Calendar.YEAR));
-
+		
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%rank%", getGroupRankString(playerName));
+		
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%groupPrefix%", FunctionHelper.formatColors(getGroupPrefixString(playerName)).trim());
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%groupSuffix%", FunctionHelper.formatColors(getGroupSuffixString(playerName)).trim());
+		
+		PlayerInfo info = PlayerInfo.getPlayerInfo(playerName);
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%playerPrefix%", info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim());
+		line = FunctionHelper.replaceAllIgnoreCase(line, "%playerSuffix%", info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim());
+		
 		return line;
 	}
 
@@ -180,4 +201,144 @@ public class LoginMessage
 		int secsIn = (int) (rb.getUptime() / 1000);
 		return FunctionHelper.parseTime(secsIn);
 	}
+	
+	private static String getGroupRankString(String username)
+    {
+        Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupRankFormat);
+        ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+
+        String end = "";
+
+        StringBuilder temp = new StringBuilder();
+        for (TreeSet<Group> set : list)
+        {
+            for (Group g : set)
+            {
+                if (temp.length() != 0)
+                {
+                    temp.append("&r");
+                }
+
+                temp.append(g.name);
+            }
+
+            end = match.replaceFirst(temp.toString());
+            temp = new StringBuilder();
+        }
+
+        return end;
+    }
+
+    private static String getGroupPrefixString(String username)
+    {
+        Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupPrefixFormat);
+
+        ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+
+        String end = "";
+
+        StringBuilder temp = new StringBuilder();
+        for (TreeSet<Group> set : list)
+        {
+            for (Group g : set)
+            {
+                if (g.prefix.trim().isEmpty())
+                {
+                    continue;
+                }
+
+                if (temp.length() == 0)
+                {
+                    temp.append(g.prefix);
+                }
+                else
+                {
+                    temp.insert(0, g.prefix + "&r");
+                }
+            }
+
+            end = match.replaceFirst(temp.toString());
+            temp = new StringBuilder();
+        }
+
+        return end;
+    }
+
+    private static String getGroupSuffixString(String username)
+    {
+        Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupSuffixFormat);
+
+        ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+
+        String end = "";
+
+        StringBuilder temp = new StringBuilder();
+        for (TreeSet<Group> set : list)
+        {
+            for (Group g : set)
+            {
+                if (g.suffix.trim().isEmpty())
+                {
+                    continue;
+                }
+
+                temp.append("&r").append(g.suffix);
+            }
+
+            end = match.replaceFirst(temp.toString());
+            temp = new StringBuilder();
+        }
+
+        return end;
+    }
+
+    private static ArrayList<TreeSet<Group>> getGroupsList(Matcher match, String username)
+    {
+        ArrayList<TreeSet<Group>> list = new ArrayList<TreeSet<Group>>();
+
+        String whole;
+        String[] p;
+        TreeSet<Group> set;
+        while (match.find())
+        {
+            whole = match.group();
+            whole = whole.replaceAll("\\{", "").replaceAll("\\}", "");
+            p = whole.split("\\<\\:\\>", 2);
+            if (p[0].equalsIgnoreCase("..."))
+            {
+                p[0] = null;
+            }
+            if (p[1].equalsIgnoreCase("..."))
+            {
+                p[1] = null;
+            }
+
+            set = SqlHelper.getGroupsForChat(p[0], p[1], username);
+            if (set != null)
+            {
+                list.add(set);
+            }
+        }
+
+        list = removeDuplicates(list);
+        return list;
+    }
+
+    private static ArrayList<TreeSet<Group>> removeDuplicates(ArrayList<TreeSet<Group>> list)
+    {
+        HashSet<Group> used = new HashSet<Group>();
+
+        for (TreeSet<Group> set : list)
+        {
+            for (Group g : used)
+            {
+                set.remove(g);
+            }
+
+            // add all the remaining...
+            used.addAll(set);
+        }
+
+        return list;
+    }
 }
