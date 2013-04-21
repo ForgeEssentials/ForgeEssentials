@@ -1,7 +1,10 @@
 package com.ForgeEssentials.commands;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
+import net.minecraft.block.Block;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -17,6 +20,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
+import com.ForgeEssentials.commands.util.BlockPoweredOreMod;
 import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.CommandRegistrar;
 import com.ForgeEssentials.commands.util.ConfigCmd;
@@ -59,6 +63,8 @@ public class ModuleCommands
 		MinecraftForge.EVENT_BUS.register(eventHandler);
 		CommandRegistrar.commandConfigs(conf.config);
 		CompatMCStats.registerStats(mcstats);
+		//override BlockPoweredOre
+		registerBlocks();
 	}
 
 	@FEModule.ServerInit
@@ -101,4 +107,44 @@ public class ModuleCommands
 	{
 		CommandDataManager.save();
 	}
+
+	void registerBlocks(){
+		Block instance = Block.dirt;
+		Field[] blockList = Block.class.getFields();
+		for (Field block : blockList) {
+		    try {
+				if (block.get(instance) instanceof Block && ((Block)block.get(instance)).blockID == Block.blockRedstone.blockID){
+					try {
+						setFinalStatic(block, null);					
+						Block.blocksList[152] = null;
+						setFinalStatic(block,(new BlockPoweredOreMod(152)).setHardness(5.0F).setResistance(10.0F).setStepSound(Block.soundMetalFootstep).setUnlocalizedName("blockRedstone"));
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					}
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    }
+		
+			
+			
+		      
+	}
+	static void setFinalStatic(Field field, Object newValue) throws Exception {
+	    field.setAccessible(true);
+
+	    // remove final modifier from field
+	    Field modifiersField = Field.class.getDeclaredField("modifiers");
+	    modifiersField.setAccessible(true);
+	    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+	    field.set(null, newValue);
+	}
+
 }

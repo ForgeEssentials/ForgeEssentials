@@ -17,6 +17,7 @@ import com.ForgeEssentials.commands.CommandClearInventory;
 import com.ForgeEssentials.commands.CommandColorize;
 import com.ForgeEssentials.commands.CommandCraft;
 import com.ForgeEssentials.commands.CommandDoAs;
+import com.ForgeEssentials.commands.CommandDrop;
 import com.ForgeEssentials.commands.CommandEnchant;
 import com.ForgeEssentials.commands.CommandEnderchest;
 import com.ForgeEssentials.commands.CommandGameMode;
@@ -35,6 +36,8 @@ import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandPersonalWarp;
 import com.ForgeEssentials.commands.CommandPing;
 import com.ForgeEssentials.commands.CommandPotion;
+import com.ForgeEssentials.commands.CommandPulse;
+import com.ForgeEssentials.commands.CommandPush;
 import com.ForgeEssentials.commands.CommandRemove;
 import com.ForgeEssentials.commands.CommandRename;
 import com.ForgeEssentials.commands.CommandRepair;
@@ -116,6 +119,9 @@ public class CommandRegistrar
 		cmdList.add(new CommandWeather());
 		cmdList.add(new CommandBind());
 		cmdList.add(new CommandRename());
+		cmdList.add(new CommandPulse());
+		cmdList.add(new CommandPush());
+		cmdList.add(new CommandDrop());
 	}
 
 	public static void commandConfigs(Configuration config)
