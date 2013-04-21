@@ -1,11 +1,13 @@
 package com.ForgeEssentials.commands;
 
-import net.minecraft.command.CommandBase;
+import java.util.List;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +19,11 @@ import net.minecraft.tileentity.TileEntityDropper;
 import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.world.World;
 
-public class CommandServerDrop extends CommandBase
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.FunctionHelper;
+
+public class CommandDrop extends FEcmdModuleCommands
 {
     public String getCommandName()
     {
@@ -220,4 +226,29 @@ public class CommandServerDrop extends CommandBase
 
         return var8;
     }
+	@Override
+	public RegGroup getReggroup() {
+		return RegGroup.MEMBERS;
+	}
+	@Override
+	public void processCommandPlayer(EntityPlayer sender, String[] args) {
+		EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.username);
+		processCommand(playermp, args);
+	}
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args) {
+		processCommand(sender, args);
+	}
+	@Override
+	public boolean canConsoleUseCommand() {
+		return true;
+	}
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args) {
+		return null;
+	}
+	@Override
+	public String getCommandPerm() {
+		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
 }

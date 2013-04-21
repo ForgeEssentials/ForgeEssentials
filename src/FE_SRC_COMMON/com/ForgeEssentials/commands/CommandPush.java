@@ -2,7 +2,10 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockButton;
@@ -18,7 +21,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class CommandPush extends ForgeEssentialsCommandBase
+public class CommandPush extends FEcmdModuleCommands
 {
     public String getCommandName()
     {
@@ -77,6 +80,39 @@ public class CommandPush extends ForgeEssentialsCommandBase
             }
         }
     }
+    
+    @Override
+	public void processCommandPlayer(EntityPlayer sender, String[] args) {
+		EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.username);
+		if (args.length != 3)
+        {
+            throw new WrongUsageException("/push <X> <Y> <Z>", new Object[0]);
+        }
+        else
+        {
+            int var3 = 0;
+            int var4 = 0;
+            int var5 = 0;
+            Object var7 = null;
+            
+                var3 = (int)this.func_82368_a(playermp, ((EntityPlayerMP)playermp).posX, args[0]);
+                var4 = (int)this.func_82367_a(playermp, ((EntityPlayerMP)playermp).posY, args[1], 0, 0);
+                var5 = (int)this.func_82368_a(playermp, ((EntityPlayerMP)playermp).posZ, args[2]);
+                var7 = ((EntityPlayerMP)playermp).worldObj;
+            
+            
+
+            if ((((World)var7).getBlockId(var3, var4, var5) == 0 || !(Block.blocksList[((World)var7).getBlockId(var3, var4, var5)] instanceof BlockButton)) && !(Block.blocksList[((World)var7).getBlockId(var3, var4, var5)] instanceof BlockLever))
+            {
+                 throw new CommandException("Button/Lever Not Found");
+            }
+            else
+            {
+                Block.blocksList[((World)var7).getBlockId(var3, var4, var5)].onBlockActivated((World)var7, var3, var4, var5, (EntityPlayer)null, 0, 0.0F, 0.0F, 0.0F);
+                sender.sendChatToPlayer("Button/Lever Pushed");
+            }
+        }
+	}
 
     private double func_82368_a(ICommandSender var1, double var2, String var4)
     {
@@ -120,28 +156,28 @@ public class CommandPush extends ForgeEssentialsCommandBase
 
         return var8;
     }
-
-	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args) {
-		// TODO Auto-generated method stub
-		
-	}
+    
+	
 
 	@Override
 	public boolean canConsoleUseCommand() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getCommandPerm() {
-		// TODO Auto-generated method stub
 		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
+
+	@Override
+	public RegGroup getReggroup() {
+		return RegGroup.MEMBERS;
+	}
+
+	
 }

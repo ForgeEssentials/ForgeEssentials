@@ -1,19 +1,38 @@
 package com.ForgeEssentials.commands;
 
-import com.ForgeEssentials.commands.util.BlockPoweredOreMod;
+import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.tileentity.*;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityBrewingStand;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityComparator;
+import net.minecraft.tileentity.TileEntityDaylightDetector;
+import net.minecraft.tileentity.TileEntityDispenser;
+import net.minecraft.tileentity.TileEntityDropper;
+import net.minecraft.tileentity.TileEntityEnchantmentTable;
+import net.minecraft.tileentity.TileEntityEnderChest;
+import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.TileEntityHopper;
+import net.minecraft.tileentity.TileEntityNote;
+import net.minecraft.tileentity.TileEntityPiston;
+import net.minecraft.tileentity.TileEntityRecordPlayer;
+import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.world.World;
 
-public class CommandServerPulse extends CommandBase
+import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.commands.util.BlockPoweredOreMod;
+import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.FunctionHelper;
+
+public class CommandPulse extends FEcmdModuleCommands
 {
     public String getCommandName()
     {
@@ -156,4 +175,34 @@ public class CommandServerPulse extends CommandBase
 
         return var8;
     }
+
+	@Override
+	public RegGroup getReggroup() {
+		return RegGroup.MEMBERS;
+	}
+
+	@Override
+	public void processCommandPlayer(EntityPlayer sender, String[] args) {
+		EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.username);
+		processCommand(playermp, args);
+	}
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args) {
+		processCommand(sender, args);
+	}
+
+	@Override
+	public boolean canConsoleUseCommand() {
+		return true;
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args) {
+		return null;
+	}
+
+	@Override
+	public String getCommandPerm() {
+		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
 }

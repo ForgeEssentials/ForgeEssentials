@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
@@ -21,7 +22,7 @@ import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandClearInventory extends ForgeEssentialsCommandBase
+public class CommandClearInventory extends FEcmdModuleCommands
 {
 	@Override
 	public String getCommandName()
@@ -30,10 +31,11 @@ public class CommandClearInventory extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public String[] getDefaultAliases()
+	public List<String> getCommandAliases()
 	{
-		return new String[]
-		{ "ci" };
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("ci");
+		return list;
 	}
 
 	@Override
