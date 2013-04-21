@@ -92,7 +92,7 @@ public class ChatFormatter
 		 */
 		if (event.message.contains("&"))
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.chat.usecolor")))
+			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.Chat.usecolor")))
 			{
 				message = FunctionHelper.formatColors(event.message);
 			}
