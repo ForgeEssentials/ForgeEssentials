@@ -53,7 +53,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			if (args[0].equalsIgnoreCase("help"))
 			{
 				OutputHandler.chatConfirmation(sender, " - /auth register <password>");
-				OutputHandler.chatConfirmation(sender, " - /auth login <player>");
+				OutputHandler.chatConfirmation(sender, " - /auth login <password>");
 				OutputHandler.chatConfirmation(sender, " - /auth changepass <oldpass> <newpass>  - changes your password");
 
 				if (!hasAdmin)
