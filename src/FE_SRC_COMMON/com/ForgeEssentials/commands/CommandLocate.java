@@ -26,7 +26,7 @@ public class CommandLocate extends FEcmdModuleCommands
 	public String[] getDefaultAliases()
 	{
 		return new String[]
-		{ "gps", "loc" };
+		{ "gps", "loc", "playerinfo"};
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class CommandLocate extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatConfirmation(sender, Localization.format("command.locate.msg", player.username, (int) player.posX, (int) player.posY, (int) player.posZ, player.dimension));
+			OutputHandler.chatConfirmation(sender, Localization.format("command.locate.msg", player.username, (int) player.posX, (int) player.posY, (int) player.posZ, player.dimension, player.theItemInWorldManager.getGameType().getName()));
 		}
 	}
 

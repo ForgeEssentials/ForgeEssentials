@@ -53,12 +53,12 @@ public class WeatherTimeData
     {
         WeatherTimeData data = new WeatherTimeData(Integer.parseInt(tag.getUniqueKey()));
         
-        data.weatherSpecified    = (boolean) tag.getFieldValue("weatherSpecified");
-        data.rain                = (boolean) tag.getFieldValue("rain");
-        data.storm               = (boolean) tag.getFieldValue("storm");
-        data.timeSpecified       = (boolean) tag.getFieldValue("timeSpecified");
-        data.day                 = (boolean) tag.getFieldValue("day");
-        data.timeFreeze          = (boolean) tag.getFieldValue("timeFreeze");
+        data.weatherSpecified    = tag.getFieldValue("weatherSpecified").toString().equals(true);
+        data.rain                = tag.getFieldValue("rain").toString().equals(true);
+        data.storm               = tag.getFieldValue("storm").toString().equals(true);
+        data.timeSpecified       = tag.getFieldValue("timeSpecified").toString().equals(true);
+        data.day                 = tag.getFieldValue("day").toString().equals(true);
+        data.timeFreeze          = tag.getFieldValue("timeFreeze").toString().equals(true);
         
         return data;
     }
