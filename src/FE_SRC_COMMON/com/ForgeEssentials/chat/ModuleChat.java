@@ -19,6 +19,7 @@ import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
+import com.ForgeEssentials.api.packetInspector.PacketAnalyzerRegistry;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.chat.commands.CommandAutoMessage;
@@ -66,6 +67,8 @@ public class ModuleChat
 	{
 		MinecraftForge.EVENT_BUS.register(new ChatFormatter());
 		MinecraftForge.EVENT_BUS.register(new CommandMuter());
+		
+		PacketAnalyzerRegistry.register(new PacketAnalyzerChat(), new int [] { 201 });
 	}
 
 	@FEModule.PostInit
