@@ -20,7 +20,6 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
-import com.ForgeEssentials.commands.util.BlockPoweredOreMod;
 import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.CommandRegistrar;
 import com.ForgeEssentials.commands.util.ConfigCmd;
@@ -106,5 +105,5 @@ public class ModuleCommands
 		CommandDataManager.save();
 	}
 
-
+	
 }

@@ -36,6 +36,7 @@ import com.ForgeEssentials.commands.CommandMotd;
 import com.ForgeEssentials.commands.CommandPersonalWarp;
 import com.ForgeEssentials.commands.CommandPing;
 import com.ForgeEssentials.commands.CommandPotion;
+import com.ForgeEssentials.commands.CommandPulse;
 import com.ForgeEssentials.commands.CommandPush;
 import com.ForgeEssentials.commands.CommandRemove;
 import com.ForgeEssentials.commands.CommandRename;
@@ -120,6 +121,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandRename());
 		cmdList.add(new CommandPush());
 		cmdList.add(new CommandDrop());
+		cmdList.add(new CommandPulse());
 	}
 
 	public static void commandConfigs(Configuration config)

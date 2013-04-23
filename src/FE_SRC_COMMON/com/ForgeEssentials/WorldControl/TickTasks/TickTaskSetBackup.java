@@ -66,12 +66,8 @@ public class TickTaskSetBackup implements ITickTask
 
 	@Override
 	public void onComplete()
-	{
-		if(player.username == ""){
-			PlayerInfo.discardInfo("");
-		}else {
-			OutputHandler.chatConfirmation(player, "" + changed + " blocks changed");
-		}		
+	{			
+		OutputHandler.chatConfirmation(player, "" + changed + " blocks changed");
 	}
 
 	@Override
