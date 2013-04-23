@@ -41,6 +41,8 @@ import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 
+import cpw.mods.fml.server.FMLServerHandler;
+
 public class CommandPulse extends FEcmdModuleCommands
 {
     public String getCommandName()
@@ -57,11 +59,11 @@ public class CommandPulse extends FEcmdModuleCommands
     }
     public String getCommandUsage(ICommandSender par1ICommandSender)
     {
-        return par1ICommandSender.translateString("/pulse <X> <Y> <Z> [PulseLength]", new Object[0]);
+        return par1ICommandSender.translateString("/pulse <X> <Y> <Z> [PulseLength] [pulsestrength]", new Object[0]);
     }
     public void processCommand(ICommandSender var1, String[] var2)
     {
-        if (var2.length >= 3 && var2.length <= 4)
+        if (var2.length >= 3 && var2.length <= 5)
         {
             int var3 = 0;
             int var4 = 0;
@@ -78,7 +80,7 @@ public class CommandPulse extends FEcmdModuleCommands
                 var4 = (int)this.func_82367_a(var1, (double)((TileEntity)var1).yCoord, var2[1], 0, 0);
                 var5 = (int)this.func_82368_a(var1, (double)((TileEntity)var1).zCoord, var2[2]);
                 var11 = ((TileEntity)var1).worldObj;
-                //mcsever = ((TileEntity)var1).
+                mcServer = MinecraftServer.getServer();
             }
             else if (var1 instanceof EntityPlayerMP)
             {
@@ -103,15 +105,14 @@ public class CommandPulse extends FEcmdModuleCommands
             }
 
             BackupArea back = new BackupArea();
-            EntityPlayerMP dummy = new EntityPlayerMP(mcServer, (World)var11, "DummyFE", new ItemInWorldManager((World)var11));
-            PlayerInfo.getPlayerInfo("");
+            EntityPlayerMP dummy = new EntityPlayerMP(mcServer, (World)var11, "", new ItemInWorldManager((World)var11));
             TaskRegistry.registerTask(new TickTaskSetSelection(dummy, 152, -1, back, new Selection(new Point(var3, var4, var5), new Point(var3, var4, var5))));
             TaskRegistry.registerTask(new TickTaskPulseHelper(dummy,var6 + 1));
             var1.sendChatToPlayer("Redstone Pulsed for " + var6 + " Ticks");
         }
         else
         {
-            throw new WrongUsageException("/pulse <X> <Y> <Z> [PulseLength]", new Object[0]);
+            throw new WrongUsageException("/pulse <X> <Y> <Z> [PulseLength] [pulsestrength]", new Object[0]);
         }
     }
 
