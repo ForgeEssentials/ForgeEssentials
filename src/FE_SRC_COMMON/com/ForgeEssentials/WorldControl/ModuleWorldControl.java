@@ -4,6 +4,7 @@ package com.ForgeEssentials.WorldControl;
 import java.util.ArrayList;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
+import com.ForgeEssentials.WorldControl.commands.CommandPulse;
 import com.ForgeEssentials.WorldControl.commands.CommandRedo;
 import com.ForgeEssentials.WorldControl.commands.CommandReplace;
 import com.ForgeEssentials.WorldControl.commands.CommandSet;
@@ -51,6 +52,7 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandRedo());
 		e.registerServerCommand(new CommandUndo());
 		e.registerServerCommand(new CommandReplace());
+		e.registerServerCommand(new CommandPulse());
 		e.registerServerCommand(new CommandTopManipulate("thaw", Mode.THAW));
 		e.registerServerCommand(new CommandTopManipulate("freeze", Mode.FREEZE));
 		e.registerServerCommand(new CommandTopManipulate("snow", Mode.SNOW));

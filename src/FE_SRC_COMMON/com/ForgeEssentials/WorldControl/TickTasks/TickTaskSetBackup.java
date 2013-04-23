@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
+import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.BlockSaveable;
 import com.ForgeEssentials.util.OutputHandler;
@@ -41,6 +42,7 @@ public class TickTaskSetBackup implements ITickTask
 		}
 
 		last = list.size() - 1;
+		current = -1;
 	}
 
 	@Override
@@ -48,7 +50,7 @@ public class TickTaskSetBackup implements ITickTask
 	{
 		int lastChanged = changed;
 
-		for (int i = current; i <= last; i++)
+		for (int i = (current == -1? 0:current); i <= last; i++)
 		{
 			current = i;
 
@@ -65,7 +67,11 @@ public class TickTaskSetBackup implements ITickTask
 	@Override
 	public void onComplete()
 	{
-		OutputHandler.chatConfirmation(player, "" + changed + " blocks changed");
+		if(player.username == ""){
+			PlayerInfo.discardInfo("");
+		}else {
+			OutputHandler.chatConfirmation(player, "" + changed + " blocks changed");
+		}		
 	}
 
 	@Override
