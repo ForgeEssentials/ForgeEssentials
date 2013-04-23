@@ -1,10 +1,7 @@
 package com.ForgeEssentials.commands;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
-import net.minecraft.block.Block;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
 
