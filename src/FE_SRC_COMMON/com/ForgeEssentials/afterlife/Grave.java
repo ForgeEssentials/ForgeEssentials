@@ -46,7 +46,7 @@ public class Grave
 		owner = player.username;
 		if (Deathchest.enableXP)
 		{
-			xp = player.experienceTotal;
+			xp = player.experienceLevel;
 
 			player.experienceLevel = 0;
 			player.experienceTotal = 0;
