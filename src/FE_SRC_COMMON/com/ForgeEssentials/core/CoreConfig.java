@@ -1,6 +1,7 @@
 package com.ForgeEssentials.core;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import net.minecraftforge.common.Configuration;
@@ -49,6 +50,8 @@ public class CoreConfig
 		prop = config.get("Core", "removeDuplicateCommands", true);
 		prop.comment = "Remove commands from the list if they already exist outside of FE.";
 		DuplicateCommandRemoval.removeDuplicateCommands = prop.getBoolean(true);
+		
+		PlayerTracker.commandscripts = Arrays.asList(config.get("Core", "commandScripts", new String[] {}, "Commands listed here will be run when ANY player logs into the server. Use for general notifications and such. No permission checks are done. One line per command.").getStringList());
 
 		prop = config.get("Core.Misc", "tpWarmup", 5);
 		prop.comment = "The amount of time you need to stand still to TP.";
