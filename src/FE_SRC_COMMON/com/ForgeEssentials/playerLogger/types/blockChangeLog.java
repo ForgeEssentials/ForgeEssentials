@@ -43,7 +43,7 @@ public class blockChangeLog extends logEntry
 			ps.setString(2, cat.toString());
 			ps.setString(3, block);
 			ps.setInt(4, player.dimension);
-			ps.setInt(5, Y);
+			ps.setInt(5, X);
 			ps.setInt(6, Y);
 			ps.setInt(7, Z);
 			ps.setTimestamp(8, time);
