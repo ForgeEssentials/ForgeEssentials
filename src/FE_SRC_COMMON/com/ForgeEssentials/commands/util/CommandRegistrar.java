@@ -29,6 +29,7 @@ import com.ForgeEssentials.commands.CommandInventorySee;
 import com.ForgeEssentials.commands.CommandJump;
 import com.ForgeEssentials.commands.CommandKill;
 import com.ForgeEssentials.commands.CommandKit;
+import com.ForgeEssentials.commands.CommandList;
 import com.ForgeEssentials.commands.CommandLocate;
 import com.ForgeEssentials.commands.CommandModlist;
 import com.ForgeEssentials.commands.CommandMotd;
@@ -116,6 +117,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandWeather());
 		cmdList.add(new CommandBind());
 		cmdList.add(new CommandRename());
+		cmdList.add(new CommandList());
 	}
 
 	public static void commandConfigs(Configuration config)

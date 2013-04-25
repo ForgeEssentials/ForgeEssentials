@@ -7,9 +7,6 @@ import net.minecraft.network.packet.Packet201PlayerInfo;
 import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.api.packetInspector.IPacketAnalyzer;
-import com.ForgeEssentials.util.FunctionHelper;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class PacketAnalyzerChat implements IPacketAnalyzer
 {

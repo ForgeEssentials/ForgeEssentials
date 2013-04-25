@@ -3,8 +3,11 @@ package com.ForgeEssentials.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -22,7 +25,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
+import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.chat.ConfigChat;
 import com.ForgeEssentials.core.misc.FriendlyItemList;
+import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.google.common.base.Joiner;
@@ -544,4 +550,161 @@ public final class FunctionHelper
 			return false;
 		}
 	}
+	
+	public static String getGroupRankString(String username)
+    {
+        Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupRankFormat);
+        ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+
+        String end = "";
+
+        StringBuilder temp = new StringBuilder();
+        for (TreeSet<Group> set : list)
+        {
+            for (Group g : set)
+            {
+                if (temp.length() != 0)
+                {
+                    temp.append("&r");
+                }
+
+                temp.append(g.name);
+            }
+
+            end = match.replaceFirst(temp.toString());
+            temp = new StringBuilder();
+        }
+
+        return end;
+    }
+
+	public static String getGroupPrefixString(String username)
+    {
+        Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupPrefixFormat);
+
+        ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+
+        String end = "";
+
+        StringBuilder temp = new StringBuilder();
+        for (TreeSet<Group> set : list)
+        {
+            for (Group g : set)
+            {
+                if (g.prefix.trim().isEmpty())
+                {
+                    continue;
+                }
+
+                if (temp.length() == 0)
+                {
+                    temp.append(g.prefix);
+                }
+                else
+                {
+                    temp.insert(0, g.prefix + "&r");
+                }
+            }
+
+            end = match.replaceFirst(temp.toString());
+            temp = new StringBuilder();
+        }
+
+        return end;
+    }
+
+	public static String getGroupSuffixString(String username)
+    {
+        Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupSuffixFormat);
+
+        ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+
+        String end = "";
+
+        StringBuilder temp = new StringBuilder();
+        for (TreeSet<Group> set : list)
+        {
+            for (Group g : set)
+            {
+                if (g.suffix.trim().isEmpty())
+                {
+                    continue;
+                }
+
+                temp.append("&r").append(g.suffix);
+            }
+
+            end = match.replaceFirst(temp.toString());
+            temp = new StringBuilder();
+        }
+
+        return end;
+    }
+
+    private static ArrayList<TreeSet<Group>> getGroupsList(Matcher match, String username)
+    {
+        ArrayList<TreeSet<Group>> list = new ArrayList<TreeSet<Group>>();
+
+        String whole;
+        String[] p;
+        TreeSet<Group> set;
+        while (match.find())
+        {
+            whole = match.group();
+            whole = whole.replaceAll("\\{", "").replaceAll("\\}", "");
+            p = whole.split("\\<\\:\\>", 2);
+            if (p[0].equalsIgnoreCase("..."))
+            {
+                p[0] = null;
+            }
+            if (p[1].equalsIgnoreCase("..."))
+            {
+                p[1] = null;
+            }
+
+            set = SqlHelper.getGroupsForChat(p[0], p[1], username);
+            if (set != null)
+            {
+                list.add(set);
+            }
+        }
+
+        list = removeDuplicates(list);
+        return list;
+    }
+
+    private static ArrayList<TreeSet<Group>> removeDuplicates(ArrayList<TreeSet<Group>> list)
+    {
+        HashSet<Group> used = new HashSet<Group>();
+
+        for (TreeSet<Group> set : list)
+        {
+            for (Group g : used)
+            {
+                set.remove(g);
+            }
+
+            // add all the remaining...
+            used.addAll(set);
+        }
+
+        return list;
+    }
+
+    public static String getFormattedPlayersOnline()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (Object fakePlayer : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
+        {
+            EntityPlayer player = (EntityPlayer) fakePlayer;
+            String name = player.username;
+            if (player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).hasKey("nickname"))
+            {
+                name = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
+            }
+            name = getGroupRankString(player.username) + ":" + name;
+            sb.append(name + ", ");
+        }
+        return sb.toString().substring(0, sb.toString().lastIndexOf(","));
+    }
 }

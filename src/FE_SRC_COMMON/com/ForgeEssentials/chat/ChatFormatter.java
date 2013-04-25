@@ -1,9 +1,7 @@
 package com.ForgeEssentials.chat;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,14 +10,12 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 
-import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -114,12 +110,12 @@ public class ChatFormatter
 
 		// Group stuff!!! DO NOT TOUCH!!!
 		{
-			rank = getGroupRankString(event.username);
+			rank = FunctionHelper.getGroupRankString(event.username);
 
-			gPrefix = getGroupPrefixString(event.username);
+			gPrefix = FunctionHelper.getGroupPrefixString(event.username);
 			gPrefix = FunctionHelper.formatColors(gPrefix).trim();
 
-			gSuffix = getGroupSuffixString(event.username);
+			gSuffix = FunctionHelper.getGroupSuffixString(event.username);
 			gSuffix = FunctionHelper.formatColors(gSuffix).trim();
 		}
 
@@ -194,145 +190,5 @@ public class ChatFormatter
 		event.line = format;
 		
 		ModuleChat.logChat(event.line);
-	}
-
-	private String getGroupRankString(String username)
-	{
-		Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupRankFormat);
-		ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
-
-		String end = "";
-
-		StringBuilder temp = new StringBuilder();
-		for (TreeSet<Group> set : list)
-		{
-			for (Group g : set)
-			{
-				if (temp.length() != 0)
-				{
-					temp.append("&r");
-				}
-
-				temp.append(g.name);
-			}
-
-			end = match.replaceFirst(temp.toString());
-			temp = new StringBuilder();
-		}
-
-		return end;
-	}
-
-	private String getGroupPrefixString(String username)
-	{
-		Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupPrefixFormat);
-
-		ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
-
-		String end = "";
-
-		StringBuilder temp = new StringBuilder();
-		for (TreeSet<Group> set : list)
-		{
-			for (Group g : set)
-			{
-				if (g.prefix.trim().isEmpty())
-				{
-					continue;
-				}
-
-				if (temp.length() == 0)
-				{
-					temp.append(g.prefix);
-				}
-				else
-				{
-					temp.insert(0, g.prefix + "&r");
-				}
-			}
-
-			end = match.replaceFirst(temp.toString());
-			temp = new StringBuilder();
-		}
-
-		return end;
-	}
-
-	private String getGroupSuffixString(String username)
-	{
-		Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupSuffixFormat);
-
-		ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
-
-		String end = "";
-
-		StringBuilder temp = new StringBuilder();
-		for (TreeSet<Group> set : list)
-		{
-			for (Group g : set)
-			{
-				if (g.suffix.trim().isEmpty())
-				{
-					continue;
-				}
-
-				temp.append("&r").append(g.suffix);
-			}
-
-			end = match.replaceFirst(temp.toString());
-			temp = new StringBuilder();
-		}
-
-		return end;
-	}
-
-	private ArrayList<TreeSet<Group>> getGroupsList(Matcher match, String username)
-	{
-		ArrayList<TreeSet<Group>> list = new ArrayList<TreeSet<Group>>();
-
-		String whole;
-		String[] p;
-		TreeSet<Group> set;
-		while (match.find())
-		{
-			whole = match.group();
-			whole = whole.replaceAll("\\{", "").replaceAll("\\}", "");
-			p = whole.split("\\<\\:\\>", 2);
-			if (p[0].equalsIgnoreCase("..."))
-			{
-				p[0] = null;
-			}
-			if (p[1].equalsIgnoreCase("..."))
-			{
-				p[1] = null;
-			}
-
-			set = SqlHelper.getGroupsForChat(p[0], p[1], username);
-			if (set != null)
-			{
-				list.add(set);
-			}
-		}
-
-		list = removeDuplicates(list);
-		return list;
-	}
-
-	private ArrayList<TreeSet<Group>> removeDuplicates(ArrayList<TreeSet<Group>> list)
-	{
-		HashSet<Group> used = new HashSet<Group>();
-
-		for (TreeSet<Group> set : list)
-		{
-			for (Group g : used)
-			{
-				set.remove(g);
-			}
-
-			// add all the remaining...
-			used.addAll(set);
-		}
-
-		return list;
 	}
 }
