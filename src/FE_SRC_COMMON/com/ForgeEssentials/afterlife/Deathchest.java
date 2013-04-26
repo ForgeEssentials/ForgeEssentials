@@ -125,6 +125,11 @@ public class Deathchest
 					else
 					{
 						EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
+						if (grave.xp > 0)
+						{
+							player.addExperienceLevel(grave.xp);
+							grave.xp = 0;
+						}
 
 						if (player.openContainer != player.inventoryContainer)
 						{
@@ -181,24 +186,24 @@ public class Deathchest
 					e.printStackTrace();
 				}
 			}
-			
-			int orbs = 10;
-			int XPperorb = (grave.xp / 10);
 
-			for (int i = 0; i < orbs; i++)
-			{
-			    if (XPperorb == 0) break;
-			    EntityXPOrb entity = new EntityXPOrb(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, XPperorb);
-                DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
-                
-                grave.xp = grave.xp - XPperorb;
-			}
-			
-			if (grave.xp != 0)
-			{
-			    EntityXPOrb entity = new EntityXPOrb(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, grave.xp);
-                DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
-			}
+//			for (int i = 0; i < 10; i++)
+//			{
+//				try
+//				{
+//					int xp = grave.xp / 10;
+//					if (xp == 0)
+//					{
+//						break;
+//					}
+//					EntityXPOrb entity = new EntityXPOrb(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, xp);
+//					DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
+//				}
+//				catch (Exception e)
+//				{
+//					e.printStackTrace();
+//				}
+//			}
 		}
 	}
 }
