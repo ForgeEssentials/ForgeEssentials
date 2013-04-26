@@ -16,7 +16,7 @@ public class Data
 	protected static String[]	checksums		=
 												{ "3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15", "32f12e53b4dab80b721525c01d766b95d22129bb", "bfffcaf975982b45d568f95526eba337652eecfb" };
 	protected static String[]	transformers	=
-												{ "com.ForgeEssentials.core.preloader.asm.FEAccessTransformer", "com.ForgeEssentials.core.preloader.asm.FEeventAdder", "com.ForgeEssentials.core.preloader.asm.FEBrandingTransformer" , "com.ForgeEssentials.core.preloader.asm.FEPacketAnalyzer"};
+												{ "com.ForgeEssentials.core.preloader.asm.FEAccessTransformer", "com.ForgeEssentials.core.preloader.asm.FEeventAdder", "com.ForgeEssentials.core.preloader.asm.FEPacketAnalyzer"};
 	public static HashMap<String, String>	iiwmHMob	= makeiiwmHMob();
 	public static HashMap<String, String>	iiwmHMdev	= makeiiwmHMdev();
 
