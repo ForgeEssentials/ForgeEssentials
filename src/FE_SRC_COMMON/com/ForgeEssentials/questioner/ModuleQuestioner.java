@@ -2,9 +2,6 @@ package com.ForgeEssentials.questioner;
 
 import java.io.File;
 
-import net.minecraftforge.event.ForgeSubscribe;
-
-import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.modules.FEModule;
 import com.ForgeEssentials.api.modules.FEModule.Init;
@@ -13,10 +10,8 @@ import com.ForgeEssentials.api.modules.FEModule.ServerStop;
 import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
-import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.AbstractDataDriver;
-import com.ForgeEssentials.util.events.PermissionSetEvent;
 
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;

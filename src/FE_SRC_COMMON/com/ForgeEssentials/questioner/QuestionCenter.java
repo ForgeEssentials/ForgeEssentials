@@ -6,17 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
-
-import com.ForgeEssentials.api.questioner.AnswerEnum;
-
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
-
-/**
- * Use this for all TPs. This system does it all for you: warmup, cooldown,
- * bypass for both, going between dimensions.
- * @author Dries007
- */
 
 public class QuestionCenter implements IScheduledTickHandler
 {

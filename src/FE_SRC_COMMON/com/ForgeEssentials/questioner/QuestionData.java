@@ -1,21 +1,10 @@
 package com.ForgeEssentials.questioner;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.management.ServerConfigurationManager;
 
 import com.ForgeEssentials.api.questioner.AnswerEnum;
 import com.ForgeEssentials.api.questioner.RunnableAnswer;
-import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
-/**
- * Uses by TeleportCenter.
- * @author Dries007
- */
 
 public class QuestionData
 {

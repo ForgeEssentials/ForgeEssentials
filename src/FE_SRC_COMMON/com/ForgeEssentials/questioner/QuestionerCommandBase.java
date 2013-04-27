@@ -22,7 +22,7 @@ public abstract class QuestionerCommandBase extends CommandBase
 	public boolean				enableConsole	= true;
 	public boolean				enablePlayer	= true;
 
-	public ArrayList<String>	aliasList		= new ArrayList();
+	public ArrayList<String>	aliasList		= new ArrayList<String>();
 
 	// ---------------------------
 	// config interaction
@@ -40,7 +40,7 @@ public abstract class QuestionerCommandBase extends CommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
 		return aliasList;
 	}
@@ -280,7 +280,7 @@ public abstract class QuestionerCommandBase extends CommandBase
 		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
-	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 0)
 		{

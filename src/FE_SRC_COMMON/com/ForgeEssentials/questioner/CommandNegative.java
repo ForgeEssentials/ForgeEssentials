@@ -6,9 +6,6 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-
 public class CommandNegative extends QuestionerCommandBase
 {
 
@@ -19,9 +16,9 @@ public class CommandNegative extends QuestionerCommandBase
 	}
 	
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
-		ArrayList list = new ArrayList();
+		ArrayList<String> list = new ArrayList<String>();
 		list.add("decline");
 		list.add("deny");
 		list.add("take");

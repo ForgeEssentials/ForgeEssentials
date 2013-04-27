@@ -6,10 +6,6 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.questioner.AnswerEnum;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-
 public class CommandAffirmative extends QuestionerCommandBase
 {
 	
@@ -20,9 +16,9 @@ public class CommandAffirmative extends QuestionerCommandBase
 	}
 	
 	@Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
 	{
-		ArrayList list = new ArrayList();
+		ArrayList<String> list = new ArrayList<String>();
 		list.add("accept");
 		list.add("allow");
 		list.add("give");
