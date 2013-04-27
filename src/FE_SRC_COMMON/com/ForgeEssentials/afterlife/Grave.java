@@ -19,6 +19,7 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 public class Grave
 {
 	@UniqueLoadingKey
+	@SaveableField
 	public String		key;
 
 	@SaveableField

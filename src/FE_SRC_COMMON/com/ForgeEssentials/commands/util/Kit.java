@@ -55,7 +55,7 @@ public class Kit
 		{
 			if (player.inventory.armorInventory[i] != null)
 			{
-				armor[i] = player.inventory.armorInventory[i].copy();
+				this.armor[i] = player.inventory.armorInventory[i].copy();
 			}
 		}
 

@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.io.File;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -17,6 +18,7 @@ import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
+import com.ForgeEssentials.commands.shortcut.ShortcutCommands;
 import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.CommandRegistrar;
 import com.ForgeEssentials.commands.util.ConfigCmd;
@@ -58,6 +60,7 @@ public class ModuleCommands
 	{
 		MinecraftForge.EVENT_BUS.register(eventHandler);
 		CommandRegistrar.commandConfigs(conf.config);
+		ShortcutCommands.loadConfig(cmddir);
 		CompatMCStats.registerStats(mcstats);
 	}
 
@@ -65,6 +68,14 @@ public class ModuleCommands
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
+		ShortcutCommands.load();
+	}
+	
+	@FEModule.Reload
+	public void reload(ICommandSender sender)
+	{
+	    ShortcutCommands.parseConfig();
+	    ShortcutCommands.load();
 	}
 
 	@FEModule.ServerPostInit

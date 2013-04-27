@@ -231,7 +231,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	 * @param relativeStart
 	 * @return
 	 */
-	public int parseInt(ICommandSender sender, String string, double relativeStart)
+	public static int parseInt(ICommandSender sender, String string, double relativeStart)
     {
         if (string.startsWith("~"))
         {
