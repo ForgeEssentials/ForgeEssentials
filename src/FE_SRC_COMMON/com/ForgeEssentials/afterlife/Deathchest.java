@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
@@ -127,10 +126,10 @@ public class Deathchest
 						EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
 						if (grave.xp > 0)
 						{
-							player.addExperienceLevel(grave.xp);
-							grave.xp = 0;
+						    player.addExperienceLevel(grave.xp);
+						    grave.xp = 0;
 						}
-
+						
 						if (player.openContainer != player.inventoryContainer)
 						{
 							player.closeScreen();
@@ -186,24 +185,6 @@ public class Deathchest
 					e.printStackTrace();
 				}
 			}
-
-//			for (int i = 0; i < 10; i++)
-//			{
-//				try
-//				{
-//					int xp = grave.xp / 10;
-//					if (xp == 0)
-//					{
-//						break;
-//					}
-//					EntityXPOrb entity = new EntityXPOrb(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, xp);
-//					DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
-//				}
-//				catch (Exception e)
-//				{
-//					e.printStackTrace();
-//				}
-//			}
 		}
 	}
 }

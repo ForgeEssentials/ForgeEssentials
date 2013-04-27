@@ -22,8 +22,8 @@ import cpw.mods.fml.common.TickType;
 
 public class TeleportCenter implements IScheduledTickHandler
 {
-	private static ArrayList<TPdata>	que				= new ArrayList<TPdata>();
-	private static ArrayList<TPdata>	removeQue		= new ArrayList<TPdata>();
+	private static ArrayList<TPdata>	queue				= new ArrayList<TPdata>();
+	private static ArrayList<TPdata>	removeQueue		= new ArrayList<TPdata>();
 
 	public static int					tpWarmup;
 	public static int					tpCooldown;
@@ -48,32 +48,32 @@ public class TeleportCenter implements IScheduledTickHandler
 			else
 			{
 				player.sendChatToPlayer(Localization.get(Localization.TC_WARMUP).replaceAll("%w", "" + FunctionHelper.parseTime(tpWarmup)));
-				que.add(data);
+				queue.add(data);
 			}
 		}
 	}
 
 	public static void abort(TPdata tpData)
 	{
-		removeQue.add(tpData);
+		removeQueue.add(tpData);
 		tpData.getPlayer().sendChatToPlayer(Localization.get(Localization.TC_ABORTED));
 	}
 
 	public static void TPdone(TPdata tpData)
 	{
-		removeQue.add(tpData);
+		removeQueue.add(tpData);
 		tpData.getPlayer().sendChatToPlayer(Localization.get(Localization.TC_DONE));
 	}
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		for (TPdata data : que)
+		for (TPdata data : queue)
 		{
 			data.count();
 		}
-		que.removeAll(removeQue);
-		removeQue.clear();
+		queue.removeAll(removeQueue);
+		removeQueue.clear();
 		for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
 		{
 			PlayerInfo.getPlayerInfo(((EntityPlayer) player).username).TPcooldownTick();

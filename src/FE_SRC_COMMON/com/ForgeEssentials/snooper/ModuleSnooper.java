@@ -42,8 +42,6 @@ public class ModuleSnooper
 
 	public static String		key;
 
-	public static int			keysize;
-
 	public ModuleSnooper()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
@@ -83,7 +81,7 @@ public class ModuleSnooper
 				file.createNewFile();
 				FileOutputStream out = new FileOutputStream(file.getAbsoluteFile());
 				KeyGenerator kgen = KeyGenerator.getInstance("AES");
-				kgen.init(keysize);
+				kgen.init(128);
 				byte[] buffer = kgen.generateKey().getEncoded();
 				out.write(buffer);
 				out.close();
