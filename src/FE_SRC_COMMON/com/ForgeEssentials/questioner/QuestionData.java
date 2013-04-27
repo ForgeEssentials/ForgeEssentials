@@ -1,0 +1,105 @@
+package com.ForgeEssentials.questioner;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.management.ServerConfigurationManager;
+
+import com.ForgeEssentials.api.questioner.AnswerEnum;
+import com.ForgeEssentials.api.questioner.RunnableAnswer;
+import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.WarpPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+
+/**
+ * Uses by TeleportCenter.
+ * @author Dries007
+ */
+
+public class QuestionData
+{
+	private WarpPoint		point;
+	private EntityPlayer	asker;
+	private EntityPlayer	target;
+	private int	waitTime;
+	private int interval;
+	private int intervalCounter;
+	private AnswerEnum affirmative;
+	private AnswerEnum negative;
+	
+	private RunnableAnswer processAnswer;
+	
+	private String question;
+
+	public QuestionData(WarpPoint point, EntityPlayer asker, EntityPlayer target, String question, RunnableAnswer runnable, AnswerEnum affirmative, AnswerEnum negative)
+	{
+		this.point = point;
+		this.asker = asker;
+		this.target = target;
+		this.question = question;
+		this.affirmative = affirmative;
+		this.negative = negative;
+		processAnswer = runnable;
+		waitTime = QuestionCenter.defaultTime;
+		interval = intervalCounter = QuestionCenter.defaultInterval;
+	}
+	
+	public void setWaitTime(int seconds)
+	{
+		waitTime = seconds;
+	}
+	
+	public void setInterval(int seconds)
+	{
+		interval = intervalCounter = seconds;
+	}
+
+	public void count()
+	{
+		intervalCounter--;
+		if(intervalCounter == 0)
+		{
+			doQuestion();
+			intervalCounter = interval;
+		}
+		
+		waitTime--;
+		if (waitTime == 0)
+		{
+			QuestionCenter.abort(this);
+		}
+	}
+	
+	public void doAnswer(boolean affirmative)
+	{
+		processAnswer.setAnswer(affirmative);
+		processAnswer.run();
+		QuestionCenter.questionDone(this);
+	}
+
+	public void doQuestion()
+	{
+		target.sendChatToPlayer(question);
+	}
+
+	public EntityPlayer getAsker()
+	{
+		return asker;
+	}
+	
+	public EntityPlayer getTarget()
+	{
+		return target;
+	}
+	
+	public AnswerEnum getAffirmative()
+	{
+		return affirmative;
+	}
+	
+	public AnswerEnum getNegative()
+	{
+		return negative;
+	}
+}
