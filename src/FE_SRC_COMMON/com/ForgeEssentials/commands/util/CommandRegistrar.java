@@ -54,6 +54,7 @@ import com.ForgeEssentials.commands.CommandTop;
 import com.ForgeEssentials.commands.CommandTp;
 import com.ForgeEssentials.commands.CommandTphere;
 import com.ForgeEssentials.commands.CommandTppos;
+import com.ForgeEssentials.commands.CommandVanish;
 import com.ForgeEssentials.commands.CommandVirtualchest;
 import com.ForgeEssentials.commands.CommandWarp;
 import com.ForgeEssentials.commands.CommandWeather;
@@ -118,6 +119,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandBind());
 		cmdList.add(new CommandRename());
 		cmdList.add(new CommandList());
+		cmdList.add(new CommandVanish());
 	}
 
 	public static void commandConfigs(Configuration config)

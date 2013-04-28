@@ -25,6 +25,7 @@ import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.MCStatsHelper;
 import com.ForgeEssentials.commands.util.MobTypeLoader;
+import com.ForgeEssentials.commands.util.PacketAnalyzerCmd;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -62,6 +63,7 @@ public class ModuleCommands
 		CommandRegistrar.commandConfigs(conf.config);
 		ShortcutCommands.loadConfig(cmddir);
 		CompatMCStats.registerStats(mcstats);
+		new PacketAnalyzerCmd();
 	}
 
 	@FEModule.ServerInit
