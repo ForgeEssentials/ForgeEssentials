@@ -21,7 +21,7 @@ import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
-import com.ForgeEssentials.core.misc.UnfreindlyItemList;
+import com.ForgeEssentials.core.misc.UnfriendlyItemList;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
 import com.ForgeEssentials.core.preloader.FEModContainer;
@@ -198,8 +198,8 @@ public class ForgeEssentials
 	@PostInit
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		UnfreindlyItemList.modStep();
-		UnfreindlyItemList.output(new File(FEDIR, "UnfreindlyItemList.txt"));
+		UnfriendlyItemList.modStep();
+		UnfriendlyItemList.output(new File(FEDIR, "UnfriendlyItemList.txt"));
 
 		mdlaunch.postLoad(e);
 		bannedItems.postLoad(e);

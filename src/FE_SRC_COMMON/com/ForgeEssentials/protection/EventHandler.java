@@ -23,7 +23,7 @@ import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
-import com.ForgeEssentials.core.misc.UnfreindlyItemList;
+import com.ForgeEssentials.core.misc.UnfriendlyItemList;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PlayerBlockBreak;
@@ -214,7 +214,7 @@ public class EventHandler
 
 		if (!result)
 		{
-			String name = UnfreindlyItemList.getName(stack.itemID);
+			String name = UnfriendlyItemList.getName(stack.itemID);
 			name = ModuleProtection.PERM_ITEM_USE + "." + name;
 			name = name + "." + stack.getItemDamage();
 

@@ -14,7 +14,7 @@ import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.core.misc.UnfreindlyItemList;
+import com.ForgeEssentials.core.misc.UnfriendlyItemList;
 import com.ForgeEssentials.permission.Permission;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -78,7 +78,7 @@ public class ModuleProtection
 		event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + Permission.ALL, RegGroup.ZONE);
 		event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + Permission.ALL, RegGroup.ZONE);
 
-		for (String perm : UnfreindlyItemList.getNameSet())
+		for (String perm : UnfriendlyItemList.getNameSet())
 		{
 			event.registerPermission(PERM_ITEM_USE + "." + perm);
 		}

@@ -20,14 +20,14 @@ import com.google.common.collect.HashBiMap;
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.ItemData;
 
-public abstract class UnfreindlyItemList
+public abstract class UnfriendlyItemList
 {
 	private static final HashBiMap<String, Integer>	map	= HashBiMap.create();
 	private static final String VANILLA = "vanilla";
 	private static final String UNKNOWN_SOURCE = "unknownSource";
 	private static final String UNKNOWN_TYPE = "unknownType";
 
-	private UnfreindlyItemList()
+	private UnfriendlyItemList()
 	{
 	}
 
