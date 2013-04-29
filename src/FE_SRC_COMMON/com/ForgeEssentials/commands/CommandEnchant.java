@@ -81,6 +81,27 @@ public class CommandEnchant extends FEcmdModuleCommands
 			sender.sendChatToPlayer(msg);
 			return;
 		}
+		
+		if(args[0].equalsIgnoreCase("listall"))
+		{
+			String msg = "";
+			for (Enchantment ench : Enchantment.enchantmentsList)
+			{
+				if (ench != null)
+				{
+					msg += StatCollector.translateToLocal(ench.getName()).replaceAll(" ", "") + ", ";
+				}
+				if(msg.length() > 100)
+				{
+					msg = msg.substring(0, msg.length() - 2);
+					sender.sendChatToPlayer(msg);
+					msg = "";
+				}
+			}
+			msg = msg.substring(0, msg.length() - 2);
+			sender.sendChatToPlayer(msg);
+			return;
+		}
 
 		Enchantment ench = null;
 
