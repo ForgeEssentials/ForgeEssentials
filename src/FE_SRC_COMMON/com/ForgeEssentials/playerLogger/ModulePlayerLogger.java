@@ -24,7 +24,6 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.playerLogger.logger.EventLogger;
 import com.ForgeEssentials.playerLogger.rollback.CommandPl;
 import com.ForgeEssentials.playerLogger.rollback.CommandRollback;
 import com.ForgeEssentials.playerLogger.rollback.EventHandler;

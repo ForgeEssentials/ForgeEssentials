@@ -1,4 +1,4 @@
-package com.ForgeEssentials.playerLogger.logger;
+package com.ForgeEssentials.playerLogger;
 
 import java.util.ArrayList;
 import java.util.List;
