@@ -2,11 +2,23 @@ package com.ForgeEssentials.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemCarrotOnAStick;
+import net.minecraft.item.ItemFishingRod;
+import net.minecraft.item.ItemFlintAndSteel;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
@@ -24,16 +36,69 @@ public class CommandEnchant extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		ItemStack var6 = sender.getCurrentEquippedItem();
+		if (var6 == null)
+		{
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
+			return;
+		}
+		
 		if (args.length == 0)
+		{
+			String msg = "";
+			for (Enchantment ench : Enchantment.enchantmentsList)
+			{
+				if (ench != null && ench.canApplyAtEnchantingTable(var6))
+				{
+					msg += StatCollector.translateToLocal(ench.getName()).replaceAll(" ", "") + ", ";
+				}
+			}
+			msg = msg.substring(0, msg.length() - 2);
+			Item held = var6.getItem();
+			if(held instanceof ItemAxe)
+			{
+				msg += ", Sharpness, Smite, BaneofArthropods, Looting";
+			}
+			if(held instanceof ItemArmor)
+			{
+				if(!msg.contains("Thorns"))
+					msg += ", Thorns";
+				msg += ", Unbreaking";
+			}
+			if(held instanceof ItemBow)
+			{
+				msg += ", Unbreaking";
+			}
+			if(held instanceof ItemCarrotOnAStick || held instanceof ItemHoe ||
+					held instanceof ItemFishingRod || held instanceof ItemFlintAndSteel)
+			{
+				msg = "Unbreaking";
+			}
+			if(held instanceof ItemShears)
+			{
+				msg = "Efficiency, SilkTouch, Unbreaking";
+			}
+			sender.sendChatToPlayer(msg);
+			return;
+		}
+		
+		if(args[0].equalsIgnoreCase("listall"))
 		{
 			String msg = "";
 			for (Enchantment ench : Enchantment.enchantmentsList)
 			{
 				if (ench != null)
 				{
-					msg = ench.getName().replaceAll("enchantment.", "") + ", " + msg;
+					msg += StatCollector.translateToLocal(ench.getName()).replaceAll(" ", "") + ", ";
+				}
+				if(msg.length() > 100)
+				{
+					msg = msg.substring(0, msg.length() - 2);
+					sender.sendChatToPlayer(msg);
+					msg = "";
 				}
 			}
+			msg = msg.substring(0, msg.length() - 2);
 			sender.sendChatToPlayer(msg);
 			return;
 		}
@@ -46,8 +111,14 @@ public class CommandEnchant extends FEcmdModuleCommands
 			{
 				try
 				{
-					if (enchL.getName().replaceAll("enchantment.", "").equalsIgnoreCase(args[0]))
+					if (StatCollector.translateToLocal(enchL.getName()).replaceAll(" ", "").equalsIgnoreCase(args[0]))
 					{
+						Map map = EnchantmentHelper.getEnchantments(var6);
+						if(map.containsKey(enchL.effectId))
+						{
+							map.remove(enchL.effectId);
+							EnchantmentHelper.setEnchantments(map, var6);
+						}
 						ench = enchL;
 						break;
 					}
@@ -66,13 +137,6 @@ public class CommandEnchant extends FEcmdModuleCommands
 		if (ench == null)
 		{
 			OutputHandler.chatError(sender, Localization.format("commands.enchant.notFound", args[0]));
-			return;
-		}
-
-		ItemStack var6 = sender.getCurrentEquippedItem();
-		if (var6 == null)
-		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
 			return;
 		}
 
