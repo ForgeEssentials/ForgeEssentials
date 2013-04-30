@@ -125,7 +125,12 @@ public class Deathchest
 					else
 					{
 						EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
-
+			            if (grave.xp > 0)
+			            {
+							player.addExperienceLevel(grave.xp);
+							grave.xp = 0;
+						}
+			            
 						if (player.openContainer != player.inventoryContainer)
 						{
 							player.closeScreen();
@@ -182,23 +187,23 @@ public class Deathchest
 				}
 			}
 
-			for (int i = 0; i < 10; i++)
-			{
-				try
-				{
-					int xp = grave.xp / 10;
-					if (xp == 0)
-					{
-						break;
-					}
-					EntityXPOrb entity = new EntityXPOrb(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, xp);
-					DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
+//			for (int i = 0; i < 10; i++)
+//			{
+//				try
+//				{
+//					int xp = grave.xp / 10;
+//					if (xp == 0)
+//					{
+//						break;
+//					}
+//					EntityXPOrb entity = new EntityXPOrb(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, xp);
+//					DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
+//				}
+//				catch (Exception e)
+//				{
+//					e.printStackTrace();
+//				}
+//			}
 		}
 	}
 }
