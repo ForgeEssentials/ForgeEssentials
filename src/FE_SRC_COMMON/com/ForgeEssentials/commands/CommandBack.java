@@ -1,12 +1,15 @@
 package com.ForgeEssentials.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.Localization;
@@ -16,6 +19,7 @@ import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 public class CommandBack extends FEcmdModuleCommands
 {
+	public static List justDied = new ArrayList<String>();
 	@Override
 	public String getCommandName()
 	{
@@ -25,17 +29,45 @@ public class CommandBack extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
-		if (info.back != null)
+		if(justDied.contains(sender.username))
 		{
-			WarpPoint death = info.back;
-			info.back = new WarpPoint(sender);
-			EntityPlayerMP player = (EntityPlayerMP) sender;
-			TeleportCenter.addToTpQue(death, player);
+			if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.BasicCommands.back.ondeath")))
+			{
+				PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
+				if (info.back != null)
+				{
+					WarpPoint death = info.back;
+					info.back = new WarpPoint(sender);
+					EntityPlayerMP player = (EntityPlayerMP) sender;
+					TeleportCenter.addToTpQue(death, player);
+				}
+				else
+				{
+					OutputHandler.chatError(sender, Localization.get("command.back.noback"));
+				}
+				justDied.remove(sender.username);
+				return;
+			}
+			else
+			{
+				OutputHandler.chatError(sender, Localization.get("command.back.nodeath"));
+			}
 		}
-		else
+		else if(PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.BasicCommands.back.ontp")))
 		{
-			OutputHandler.chatError(sender, Localization.get("command.back.noback"));
+			PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
+			if (info.back != null)
+			{
+				WarpPoint back = info.back;
+				info.back = new WarpPoint(sender);
+				EntityPlayerMP player = (EntityPlayerMP) sender;
+				TeleportCenter.addToTpQue(back, player);
+			}
+			else
+			{
+				OutputHandler.chatError(sender, Localization.get("command.back.noback"));
+			}
+			return;
 		}
 	}
 

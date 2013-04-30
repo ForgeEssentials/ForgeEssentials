@@ -42,7 +42,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 	public String[] getDefaultAliases()
 	{
 		return new String[]
-		{ "pw" };
+		{ "pw", "pwarp" };
 	}
 
 	@Override
@@ -70,6 +70,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 					PWarp warp = map.get(args[1]);
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.username);
 					playerInfo.back = new WarpPoint(sender);
+					CommandBack.justDied.remove(sender.username);
 					TeleportCenter.addToTpQue(warp.getPoint(), sender);
 				}
 				else

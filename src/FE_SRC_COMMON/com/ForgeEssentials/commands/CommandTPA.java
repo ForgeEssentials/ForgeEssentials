@@ -17,6 +17,7 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.TPAdata;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
+import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -61,6 +62,9 @@ public class CommandTPA extends FEcmdModuleCommands
 					{
 						data.sender.sendChatToPlayer(Localization.get("command.tpa.accepted"));
 						data.receiver.sendChatToPlayer(Localization.get("command.tpa.accepted"));
+						PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(data.sender.username);
+						playerInfo.back = new WarpPoint(data.sender);
+						CommandBack.justDied.remove(data.sender.username);
 						TickHandlerCommands.tpaListToRemove.add(data);
 						TeleportCenter.addToTpQue(new WarpPoint(data.receiver), data.sender);
 						return;

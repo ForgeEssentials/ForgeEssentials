@@ -40,6 +40,7 @@ public class CommandHome extends FEcmdModuleCommands
 				EntityPlayerMP player = (EntityPlayerMP) sender;
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
 				playerInfo.back = new WarpPoint(player);
+				CommandBack.justDied.remove(player.username);
 				TeleportCenter.addToTpQue(home, player);
 			}
 		}
