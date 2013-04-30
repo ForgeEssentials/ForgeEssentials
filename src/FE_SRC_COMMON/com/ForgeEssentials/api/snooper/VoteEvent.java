@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.Event;
 
+import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.json.JSONObject;
 
 /**
@@ -54,7 +55,21 @@ public class VoteEvent extends Event
 	@Override
 	public String toString()
 	{
-		return player + "@" + ip + " by " + serviceName + "@" + timeStamp;
+	    try
+        {
+            JSONObject json = new JSONObject();
+            json.put("player", player);
+            json.put("serviceName", serviceName);
+            json.put("ip", ip);
+            json.put("ip", ip);
+            json.put("timeStamp", new JSONObject().put("date", timeStamp));
+            return json.toString();
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+	    return "";
 	}
 
 	public boolean isSane()
