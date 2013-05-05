@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.packetInspector;
+package com.ForgeEssentials.util.packetInspector;
 
 import net.minecraft.network.packet.Packet;
 
