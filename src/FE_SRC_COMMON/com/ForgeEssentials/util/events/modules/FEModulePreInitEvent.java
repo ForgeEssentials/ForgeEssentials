@@ -1,8 +1,8 @@
-package com.ForgeEssentials.api.modules.event;
+package com.ForgeEssentials.util.events.modules;
 
 import java.util.logging.Logger;
 
-import com.ForgeEssentials.api.modules.CallableMap;
+import com.ForgeEssentials.core.moduleLauncher.CallableMap;
 import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
 import com.ForgeEssentials.util.OutputHandler;
 

@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.ForgeEssentials.api.modules.CallableMap.FECallable;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.core.moduleLauncher.CallableMap.FECallable;
 import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 

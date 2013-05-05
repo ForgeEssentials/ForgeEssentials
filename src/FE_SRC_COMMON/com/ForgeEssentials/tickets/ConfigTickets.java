@@ -6,7 +6,7 @@ import java.util.Arrays;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigTickets extends ModuleConfigBase

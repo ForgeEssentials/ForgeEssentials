@@ -7,7 +7,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.google.common.primitives.Ints;
 
 public class BackupConfig extends ModuleConfigBase

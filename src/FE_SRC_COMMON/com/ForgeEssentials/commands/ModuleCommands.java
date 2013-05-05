@@ -7,12 +7,6 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
@@ -30,7 +24,13 @@ import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.CompatMCStats;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerPostInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;

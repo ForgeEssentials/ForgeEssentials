@@ -12,16 +12,16 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.TickRegistry;

@@ -8,14 +8,14 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.misc.UnfriendlyItemList;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.permission.Permission;
+import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

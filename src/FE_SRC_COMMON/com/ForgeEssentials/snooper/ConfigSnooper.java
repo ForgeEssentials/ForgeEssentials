@@ -5,8 +5,8 @@ import java.io.File;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.api.snooper.Response;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
 public class ConfigSnooper extends ModuleConfigBase
 {

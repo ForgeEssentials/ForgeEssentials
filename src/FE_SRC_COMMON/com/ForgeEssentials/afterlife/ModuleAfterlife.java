@@ -3,13 +3,13 @@ package com.ForgeEssentials.afterlife;
 import java.io.File;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 

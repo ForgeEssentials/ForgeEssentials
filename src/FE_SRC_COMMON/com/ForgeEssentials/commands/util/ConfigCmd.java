@@ -5,9 +5,9 @@ import java.io.File;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.commands.CommandRules;
 import com.ForgeEssentials.commands.ModuleCommands;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
 public class ConfigCmd extends ModuleConfigBase
 {

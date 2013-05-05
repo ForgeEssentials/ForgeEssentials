@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.modules.event;
+package com.ForgeEssentials.util.events.modules;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;

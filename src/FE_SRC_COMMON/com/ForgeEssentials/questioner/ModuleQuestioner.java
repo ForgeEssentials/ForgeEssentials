@@ -3,15 +3,15 @@ package com.ForgeEssentials.questioner;
 import java.io.File;
 
 import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerStop;
-import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerStop;
 import com.ForgeEssentials.data.AbstractDataDriver;
+import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;

@@ -19,7 +19,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigServerVote extends ModuleConfigBase

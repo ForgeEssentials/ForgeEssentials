@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.modules;
+package com.ForgeEssentials.core.moduleLauncher;
 
 import java.io.File;
 import java.lang.annotation.ElementType;

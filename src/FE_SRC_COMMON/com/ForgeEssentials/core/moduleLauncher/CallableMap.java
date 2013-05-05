@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.modules;
+package com.ForgeEssentials.core.moduleLauncher;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -7,7 +7,6 @@ import java.lang.reflect.Modifier;
 import java.util.Set;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar;
-import com.ForgeEssentials.core.moduleLauncher.ModuleContainer;
 import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 

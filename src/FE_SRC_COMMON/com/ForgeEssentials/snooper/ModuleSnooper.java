@@ -10,18 +10,18 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.snooper.snooperAPI;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.snooper.response.MCstatsInfo;
 import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
 import com.ForgeEssentials.snooper.response.PlayerInv;
 import com.ForgeEssentials.snooper.response.Responces;
 import com.ForgeEssentials.snooper.response.ServerInfo;
+import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerStopEvent;
 
 @FEModule(name = "SnooperModule", parentMod = ForgeEssentials.class, configClass = ConfigSnooper.class)
 public class ModuleSnooper

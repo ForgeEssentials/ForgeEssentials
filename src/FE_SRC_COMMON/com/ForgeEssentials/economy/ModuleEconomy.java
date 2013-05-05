@@ -4,12 +4,10 @@ import java.io.File;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.economy.EconManager;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.economy.commands.CommandAddToWallet;
 import com.ForgeEssentials.economy.commands.CommandGetWallet;
 import com.ForgeEssentials.economy.commands.CommandMoney;
@@ -18,6 +16,8 @@ import com.ForgeEssentials.economy.commands.CommandPay;
 import com.ForgeEssentials.economy.commands.CommandRemoveWallet;
 import com.ForgeEssentials.economy.commands.CommandSellCommand;
 import com.ForgeEssentials.economy.commands.CommandSetWallet;
+import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.registry.GameRegistry;

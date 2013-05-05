@@ -8,9 +8,6 @@ import java.util.TreeMap;
 import net.minecraft.command.ICommandSender;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar;
-import com.ForgeEssentials.api.modules.CallableMap;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 

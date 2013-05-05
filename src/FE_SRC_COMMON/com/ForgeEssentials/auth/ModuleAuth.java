@@ -5,17 +5,17 @@ import java.util.HashSet;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.FEModule.Config;
-import com.ForgeEssentials.api.modules.FEModule.Init;
-import com.ForgeEssentials.api.modules.FEModule.PreInit;
-import com.ForgeEssentials.api.modules.FEModule.ServerInit;
-import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
+import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;

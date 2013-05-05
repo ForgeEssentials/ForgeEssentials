@@ -5,7 +5,7 @@ import java.io.File;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 
 public class ConfigEconomy extends ModuleConfigBase
 {
