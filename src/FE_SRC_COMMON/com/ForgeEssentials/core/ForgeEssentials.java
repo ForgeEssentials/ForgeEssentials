@@ -8,8 +8,6 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.commands.CoreCommands;
@@ -29,6 +27,8 @@ import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLDataDriver;
 import com.ForgeEssentials.data.StorageManager;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.DataStorageManager;
 import com.ForgeEssentials.data.typeInfo.TypeInfoItemStack;
 import com.ForgeEssentials.data.typeInfo.TypeInfoNBTCompound;
 import com.ForgeEssentials.util.FEChunkLoader;

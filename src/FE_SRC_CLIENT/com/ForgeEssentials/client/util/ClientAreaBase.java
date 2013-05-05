@@ -1,7 +1,6 @@
 package com.ForgeEssentials.client.util;
 
-import com.ForgeEssentials.api.data.SaveableObject;
-import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.client.util.SaveableObject.SaveableField;
 
 @SaveableObject
 public abstract class ClientAreaBase

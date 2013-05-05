@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.data;
+package com.ForgeEssentials.data.api;
 
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;

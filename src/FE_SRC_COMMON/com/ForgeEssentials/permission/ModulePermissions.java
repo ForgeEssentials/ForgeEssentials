@@ -5,8 +5,6 @@ import java.io.File;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
@@ -15,6 +13,8 @@ import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.data.AbstractDataDriver;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.DataStorageManager;
 import com.ForgeEssentials.permission.autoPromote.AutoPromote;
 import com.ForgeEssentials.permission.autoPromote.AutoPromoteManager;
 import com.ForgeEssentials.permission.autoPromote.CommandAutoPromote;

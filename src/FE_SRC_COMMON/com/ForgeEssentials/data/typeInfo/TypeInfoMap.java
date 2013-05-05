@@ -7,10 +7,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.IReconstructData;
-import com.ForgeEssentials.api.data.TypeData;
-import com.ForgeEssentials.api.data.TypeMultiValInfo;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.IReconstructData;
+import com.ForgeEssentials.data.api.TypeData;
+import com.ForgeEssentials.data.api.TypeMultiValInfo;
 import com.ForgeEssentials.util.OutputHandler;
 
 @SuppressWarnings({"rawtypes", "unchecked"})

@@ -10,10 +10,10 @@ import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.IReconstructData;
-import com.ForgeEssentials.api.data.TypeData;
-import com.ForgeEssentials.api.data.TypeMultiValInfo;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.IReconstructData;
+import com.ForgeEssentials.data.api.TypeData;
+import com.ForgeEssentials.data.api.TypeMultiValInfo;
 
 public class TypeInfoNBTCompound extends TypeMultiValInfo
 {

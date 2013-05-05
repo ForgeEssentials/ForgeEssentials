@@ -6,13 +6,13 @@ import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.ForgeEssentials.api.data.IReconstructData;
-import com.ForgeEssentials.api.data.SaveableObject;
-import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
-import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
-import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.data.api.IReconstructData;
+import com.ForgeEssentials.data.api.SaveableObject;
+import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
+import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
+import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.util.FunctionHelper;
 
 @SaveableObject

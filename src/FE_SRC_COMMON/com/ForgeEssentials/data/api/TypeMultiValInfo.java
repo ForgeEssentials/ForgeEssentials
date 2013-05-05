@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.data;
+package com.ForgeEssentials.data.api;
 
 import java.rmi.server.UID;
 import java.util.Collection;

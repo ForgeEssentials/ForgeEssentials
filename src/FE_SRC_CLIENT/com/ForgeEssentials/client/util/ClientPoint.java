@@ -2,14 +2,12 @@ package com.ForgeEssentials.client.util;
 
 import java.io.Serializable;
 
+import com.ForgeEssentials.client.util.SaveableObject.Reconstructor;
+import com.ForgeEssentials.client.util.SaveableObject.SaveableField;
+import com.ForgeEssentials.client.util.SaveableObject.UniqueLoadingKey;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
-
-import com.ForgeEssentials.api.data.IReconstructData;
-import com.ForgeEssentials.api.data.SaveableObject;
-import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
-import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
-import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 
 @SaveableObject(SaveInline = true)
 public class ClientPoint implements Serializable, Comparable<ClientPoint>

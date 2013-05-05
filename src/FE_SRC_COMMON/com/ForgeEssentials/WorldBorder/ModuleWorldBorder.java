@@ -10,14 +10,14 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.DataStorageManager;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.events.PlayerMoveEvent;

@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.DataStorageManager;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerStopEvent;

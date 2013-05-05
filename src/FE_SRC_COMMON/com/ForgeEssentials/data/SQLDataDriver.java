@@ -14,14 +14,14 @@ import java.util.logging.Level;
 
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.EnumDriverType;
-import com.ForgeEssentials.api.data.ITypeInfo;
-import com.ForgeEssentials.api.data.TypeData;
-import com.ForgeEssentials.api.data.TypeEntryInfo;
-import com.ForgeEssentials.api.data.TypeMultiValInfo;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.DataStorageManager;
+import com.ForgeEssentials.data.api.EnumDriverType;
+import com.ForgeEssentials.data.api.ITypeInfo;
+import com.ForgeEssentials.data.api.TypeData;
+import com.ForgeEssentials.data.api.TypeEntryInfo;
+import com.ForgeEssentials.data.api.TypeMultiValInfo;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
 import com.ForgeEssentials.util.OutputHandler;

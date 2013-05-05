@@ -2,13 +2,13 @@ package com.ForgeEssentials.auth;
 
 import java.util.HashMap;
 
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.IReconstructData;
-import com.ForgeEssentials.api.data.SaveableObject;
-import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
-import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
-import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.DataStorageManager;
+import com.ForgeEssentials.data.api.IReconstructData;
+import com.ForgeEssentials.data.api.SaveableObject;
+import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
+import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
+import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
 
 @SaveableObject
 public class PlayerPassData
