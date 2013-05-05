@@ -166,6 +166,20 @@ public class CommandEnchant extends FEcmdModuleCommands
 				{
 					try
 					{
+						temp.add(StatCollector.translateToLocal(ench.getName().replace(" ", "")));
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+			for (Enchantment ench : Enchantment.enchantmentsList)
+			{
+				if (ench != null)
+				{
+					try
+					{
 						temp.add(ench.getName().replaceAll("enchantment.", ""));
 					}
 					catch (Exception e)
