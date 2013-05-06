@@ -67,7 +67,7 @@ public class BlockSaveable
 		if (equals(new BlockSaveable(world, x, y, z)))
 			return false;
 
-		world.setBlock(x, y, z, blockID, metadata, 1);
+		world.setBlock(x, y, z, blockID, metadata, 3);
 		TileEntity entity = world.getBlockTileEntity(x, y, z);
 		if (entity != null && tile != null)
 		{
