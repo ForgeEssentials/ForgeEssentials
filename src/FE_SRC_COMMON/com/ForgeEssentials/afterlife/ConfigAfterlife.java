@@ -7,7 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigAfterlife extends ModuleConfigBase

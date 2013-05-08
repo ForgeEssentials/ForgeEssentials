@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
@@ -17,10 +16,10 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.DataStorageManager;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -125,7 +124,12 @@ public class Deathchest
 					else
 					{
 						EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
-
+						if (grave.xp > 0)
+						{
+						    player.addExperienceLevel(grave.xp);
+						    grave.xp = 0;
+						}
+						
 						if (player.openContainer != player.inventoryContainer)
 						{
 							player.closeScreen();
@@ -180,24 +184,6 @@ public class Deathchest
 				{
 					e.printStackTrace();
 				}
-			}
-			
-			int orbs = 10;
-			int XPperorb = (grave.xp / 10);
-
-			for (int i = 0; i < orbs; i++)
-			{
-			    if (XPperorb == 0) break;
-			    EntityXPOrb entity = new EntityXPOrb(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, XPperorb);
-                DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
-                
-                grave.xp = grave.xp - XPperorb;
-			}
-			
-			if (grave.xp != 0)
-			{
-			    EntityXPOrb entity = new EntityXPOrb(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, grave.xp);
-                DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
 			}
 		}
 	}

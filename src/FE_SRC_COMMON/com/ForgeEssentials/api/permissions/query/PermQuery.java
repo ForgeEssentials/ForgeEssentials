@@ -10,8 +10,10 @@ public abstract class PermQuery
 	}
 
 	private PermResult			result			= PermResult.UNKNOWN;
+	
+	public PermissionChecker checker;
 
-	public PermissionChecker	checker;
+
 	public boolean				checkForward	= false;
 
 	public PermQuery()

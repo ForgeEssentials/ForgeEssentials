@@ -5,11 +5,11 @@ import java.util.Map.Entry;
 
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.DataStorageManager;
-import com.ForgeEssentials.api.data.IDataDriver;
-import com.ForgeEssentials.api.data.ITypeInfo;
-import com.ForgeEssentials.api.data.TypeData;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.DataStorageManager;
+import com.ForgeEssentials.data.api.IDataDriver;
+import com.ForgeEssentials.data.api.ITypeInfo;
+import com.ForgeEssentials.data.api.TypeData;
 import com.google.common.collect.HashMultimap;
 
 @SuppressWarnings({"rawtypes", "unchecked"})

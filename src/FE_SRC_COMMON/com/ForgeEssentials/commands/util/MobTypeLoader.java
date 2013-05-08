@@ -10,8 +10,8 @@ import net.minecraft.entity.passive.EntityTameable;
 import com.ForgeEssentials.api.commands.EnumMobType;
 import com.ForgeEssentials.api.commands.FEMob;
 import com.ForgeEssentials.api.commands.FEMob.IsTamed;
-import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

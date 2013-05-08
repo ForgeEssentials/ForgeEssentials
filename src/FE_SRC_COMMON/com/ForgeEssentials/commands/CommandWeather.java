@@ -128,7 +128,7 @@ public class CommandWeather extends FEcmdModuleCommands
             else
             {
                 if (args[1].equalsIgnoreCase("on")) wt.storm = true;
-                else if (args[1].equalsIgnoreCase("off")) wt.storm = true;
+                else if (args[1].equalsIgnoreCase("off")) wt.storm = false;
                 else
                 {
                     OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());

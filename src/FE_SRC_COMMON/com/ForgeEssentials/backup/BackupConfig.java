@@ -7,7 +7,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.google.common.primitives.Ints;
 
 public class BackupConfig extends ModuleConfigBase
@@ -91,7 +91,7 @@ public class BackupConfig extends ModuleConfigBase
 		enableAutoRemove = config.get(AUTOREMOVE, "enable", true, "Automaticly remove old backups").getBoolean(true);
 		minimunFreeSpace = config.get(AUTOREMOVE, "minimunFreeSpace", -1, "Minimum of free space that needs to remain on the HDD the server is on. Value in GB. -1 disables this criteria.").getInt();
 		maxfilesperbackupfolder = config.get(AUTOREMOVE, "maxfilesperbackupfolder", -1, "Maximum amout of backups per folder or world. -1 to disable this criteria.").getInt();
-		maxBackupLifespan = config.get(AUTOREMOVE, "maxBackupLifespan", -1, "Time in hours a backup may last. -1 to disable this criteria.").getInt();
+		maxBackupLifespan = config.get(AUTOREMOVE, "maxBackupLifespan", 168, "Time in hours a backup may last. -1 to disable this criteria.").getInt();
 
 		config.save();
 	}
@@ -133,7 +133,7 @@ public class BackupConfig extends ModuleConfigBase
 		config.get(AUTOREMOVE, "enable", true, "Automaticly remove old backups").set(enableAutoRemove);
 		config.get(AUTOREMOVE, "minimunFreeSpace", -1, "Minimum of free space that needs to remain on the HDD the server is on. Value in GB. -1 disables this criteria.").set(minimunFreeSpace);
 		config.get(AUTOREMOVE, "maxfilesperbackupfolder", -1, "Maximum amout of backups per folder or world. -1 to disable this criteria.").set(maxfilesperbackupfolder);
-		config.get(AUTOREMOVE, "maxBackupLifespan", -1, "Time in hours a backup may last. -1 to disable this criteria.").set(maxBackupLifespan);
+		config.get(AUTOREMOVE, "maxBackupLifespan", 168, "Time in hours a backup may last. -1 to disable this criteria.").set(maxBackupLifespan);
 
 		config.save();
 	}
@@ -175,7 +175,7 @@ public class BackupConfig extends ModuleConfigBase
 		enableAutoRemove = config.get(AUTOREMOVE, "enable", true, "Automaticly remove old backups").getBoolean(true);
 		minimunFreeSpace = config.get(AUTOREMOVE, "minimunFreeSpace", -1, "Minimum of free space that needs to remain on the HDD the server is on. Value in GB. -1 disables this criteria.").getInt();
 		maxfilesperbackupfolder = config.get(AUTOREMOVE, "maxfilesperbackupfolder", -1, "Maximum amout of backups per folder or world. -1 to disable this criteria.").getInt();
-		maxBackupLifespan = config.get(AUTOREMOVE, "maxBackupLifespan", -1, "Time in hours a backup may last. -1 to disable this criteria.").getInt();
+		maxBackupLifespan = config.get(AUTOREMOVE, "maxBackupLifespan", 168, "Time in hours a backup may last. -1 to disable this criteria.").getInt();
 
 		config.save();
 	}

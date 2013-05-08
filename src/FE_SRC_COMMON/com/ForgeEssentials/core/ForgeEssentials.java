@@ -8,8 +8,6 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.data.ClassContainer;
-import com.ForgeEssentials.api.data.DataStorageManager;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.commands.CoreCommands;
@@ -21,7 +19,7 @@ import com.ForgeEssentials.core.misc.BannedItems;
 import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
-import com.ForgeEssentials.core.misc.UnfreindlyItemList;
+import com.ForgeEssentials.core.misc.UnfriendlyItemList;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
 import com.ForgeEssentials.core.preloader.FEModContainer;
@@ -29,6 +27,8 @@ import com.ForgeEssentials.data.ForgeConfigDataDriver;
 import com.ForgeEssentials.data.NBTDataDriver;
 import com.ForgeEssentials.data.SQLDataDriver;
 import com.ForgeEssentials.data.StorageManager;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.DataStorageManager;
 import com.ForgeEssentials.data.typeInfo.TypeInfoItemStack;
 import com.ForgeEssentials.data.typeInfo.TypeInfoNBTCompound;
 import com.ForgeEssentials.util.FEChunkLoader;
@@ -198,8 +198,8 @@ public class ForgeEssentials
 	@PostInit
 	public void postLoad(FMLPostInitializationEvent e)
 	{
-		UnfreindlyItemList.modStep();
-		UnfreindlyItemList.output(new File(FEDIR, "UnfreindlyItemList.txt"));
+		UnfriendlyItemList.modStep();
+		UnfriendlyItemList.output(new File(FEDIR, "UnfriendlyItemList.txt"));
 
 		mdlaunch.postLoad(e);
 		bannedItems.postLoad(e);

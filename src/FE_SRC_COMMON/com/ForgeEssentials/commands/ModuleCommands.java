@@ -2,32 +2,35 @@ package com.ForgeEssentials.commands;
 
 import java.io.File;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
+import com.ForgeEssentials.commands.shortcut.ShortcutCommands;
 import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.CommandRegistrar;
 import com.ForgeEssentials.commands.util.ConfigCmd;
 import com.ForgeEssentials.commands.util.EventHandler;
 import com.ForgeEssentials.commands.util.MCStatsHelper;
 import com.ForgeEssentials.commands.util.MobTypeLoader;
+import com.ForgeEssentials.commands.util.PacketAnalyzerCmd;
 import com.ForgeEssentials.commands.util.PlayerTrackerCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.CompatMCStats;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerPostInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -58,13 +61,23 @@ public class ModuleCommands
 	{
 		MinecraftForge.EVENT_BUS.register(eventHandler);
 		CommandRegistrar.commandConfigs(conf.config);
+		ShortcutCommands.loadConfig(cmddir);
 		CompatMCStats.registerStats(mcstats);
+		new PacketAnalyzerCmd();
 	}
 
 	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
+		ShortcutCommands.load();
+	}
+	
+	@FEModule.Reload
+	public void reload(ICommandSender sender)
+	{
+	    ShortcutCommands.parseConfig();
+	    ShortcutCommands.load();
 	}
 
 	@FEModule.ServerPostInit

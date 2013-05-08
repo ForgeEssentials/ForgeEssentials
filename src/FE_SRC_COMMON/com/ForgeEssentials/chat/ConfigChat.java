@@ -8,8 +8,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.api.modules.ModuleConfigBase;
 import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -62,14 +62,14 @@ public class ConfigChat extends ModuleConfigBase
 		config.addCustomCategoryComment("Automessage", "Automated spamm");
 
 		String[] msg = config.get("Automessage", "messages", new String[]
-		{ "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be chenged there too!\"" }, "Each line is 1 message. You can use collor coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
+		{ "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" }, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
 		for (int i = 0; i < msg.length; i++)
 		{
 			AutoMessage.msg.add(FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1))));
 		}
 
-		AutoMessage.random = config.get("Automessage", "random", false, "Randomize the oreder of messages").getBoolean(false);
-		AutoMessage.waittime = config.get("Automessage", "inverval", 60, "Time inbetween each message in minutes").getInt();
+		AutoMessage.random = config.get("Automessage", "random", false, "Randomize the order of messages").getBoolean(false);
+		AutoMessage.waittime = config.get("Automessage", "inverval", 60, "Time in between each message in minutes").getInt();
 		AutoMessage.enable = config.get("Automessage", "enable", false).getBoolean(true);
 
 		chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat).getString();
@@ -92,7 +92,7 @@ public class ConfigChat extends ModuleConfigBase
 
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
 		
-		for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blockd if the player is muted.").getStringList())
+		for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blocked if the player is muted.").getStringList())
 		    CommandMuter.mutedCommands.add(cmd);
 		
 		String logCat = "Chat.log";
@@ -110,7 +110,7 @@ public class ConfigChat extends ModuleConfigBase
 		config = new Configuration(file, true);
 
 		config.addCustomCategoryComment("Chat", "Chatconfigs");
-		config.addCustomCategoryComment("Automessage", "Automated spamm");
+		config.addCustomCategoryComment("Automessage", "Automated spam");
 
 		Property prop = config.get("Chat", "chatformat", "%groupPrefix%playerPrefix<%username>%playerSuffix%groupSuffix %reset%message", largeComment_chatFormat);
 		prop.set(chatFormat);
@@ -121,9 +121,9 @@ public class ConfigChat extends ModuleConfigBase
 			msg[i] = "\"" + msg[i] + "\"";
 		}
 
-		config.get("Automessage", "messages", new String[] {}, "Each line is 1 message. You can use collor coldes. YOU MUST USE DOUBLE QUOTES").set(msg);
-		config.get("Automessage", "random", false, "Randomize the oreder of messages").set(AutoMessage.random);
-		config.get("Automessage", "inverval", 1, "Time inbetween each message in minutes").set(AutoMessage.waittime);
+		config.get("Automessage", "messages", new String[] {}, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").set(msg);
+		config.get("Automessage", "random", false, "Randomize the order of messages").set(AutoMessage.random);
+		config.get("Automessage", "inverval", 1, "Time in between each message in minutes").set(AutoMessage.waittime);
 		config.get("Automessage", "enable", true).set(AutoMessage.enable);
 
 		config.get("BannedWords", "censor", true, "censor the words in the censorList").set(ChatFormatter.censor);
@@ -137,7 +137,7 @@ public class ConfigChat extends ModuleConfigBase
 
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
 		
-		config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blockd if the player is muted.").set(CommandMuter.mutedCommands.toArray(new String[CommandMuter.mutedCommands.size()]));
+		config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blocked if the player is muted.").set(CommandMuter.mutedCommands.toArray(new String[CommandMuter.mutedCommands.size()]));
 		
 		String logCat = "Chat.log";
         config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
@@ -157,14 +157,14 @@ public class ConfigChat extends ModuleConfigBase
 		config.addCustomCategoryComment("Automessage", "Automated spamm");
 
 		String[] msg = config.get("Automessage", "messages", new String[]
-		{ "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be chenged there too!\"" }, "Each line is 1 message. You can use collor coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
+		{ "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" }, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
 		for (int i = 0; i < msg.length; i++)
 		{
 			AutoMessage.msg.add(FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1))));
 		}
 
-		AutoMessage.random = config.get("Automessage", "random", false, "Randomize the oreder of messages").getBoolean(false);
-		AutoMessage.waittime = config.get("Automessage", "inverval", 1, "Time inbetween each message in minutes").getInt();
+		AutoMessage.random = config.get("Automessage", "random", false, "Randomize the order of messages").getBoolean(false);
+		AutoMessage.waittime = config.get("Automessage", "inverval", 1, "Time in between each message in minutes").getInt();
 		AutoMessage.enable = config.get("Automessage", "enable", true).getBoolean(true);
 
 		chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat).getString();
@@ -183,7 +183,7 @@ public class ConfigChat extends ModuleConfigBase
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
         
 		CommandMuter.mutedCommands.clear();
-        for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blockd if the player is muted.").getStringList())
+        for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blocked if the player is muted.").getStringList())
             CommandMuter.mutedCommands.add(cmd);
 		
         String logCat = "Chat.log";

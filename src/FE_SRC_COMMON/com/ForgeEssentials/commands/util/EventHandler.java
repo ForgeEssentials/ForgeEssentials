@@ -21,6 +21,7 @@ import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
+import com.ForgeEssentials.commands.CommandBack;
 import com.ForgeEssentials.commands.CommandSetSpawn;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -131,6 +132,7 @@ public class EventHandler
 		{
 			EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
 			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+			CommandBack.justDied.add(player.username);
 
 			// generate for un-generated dimension
 			{

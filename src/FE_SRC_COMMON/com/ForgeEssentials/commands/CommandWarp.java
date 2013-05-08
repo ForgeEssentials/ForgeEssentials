@@ -55,6 +55,7 @@ public class CommandWarp extends FEcmdModuleCommands
 					Warp warp = CommandDataManager.warps.get(args[0].toLowerCase());
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.username);
 					playerInfo.back = new WarpPoint(sender);
+					CommandBack.justDied.remove(sender.username);
 					TeleportCenter.addToTpQue(warp.getPoint(), sender);
 				}
 				else

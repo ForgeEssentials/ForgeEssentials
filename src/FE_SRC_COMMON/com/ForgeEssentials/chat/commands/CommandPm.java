@@ -18,7 +18,10 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandPm extends ForgeEssentialsCommandBase
+import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.registry.GameRegistry;
+
+public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTracker
 {
 	private static Map<String, String>	persistentMessage;
 	private List<String>				aliasList;
@@ -29,6 +32,7 @@ public class CommandPm extends ForgeEssentialsCommandBase
 		persistentMessage = new HashMap<String, String>();
 		aliasList = new LinkedList<String>();
 		aliasList.add("persistentmessage");
+		GameRegistry.registerPlayerTracker(this);
 	}
 
 	@Override
@@ -249,4 +253,19 @@ public class CommandPm extends ForgeEssentialsCommandBase
 	{
 		return null;
 	}
+
+    @Override
+    public void onPlayerLogin(EntityPlayer player) {}
+
+    @Override
+    public void onPlayerLogout(EntityPlayer player)
+    {
+        persistentMessage.remove(player.username);
+    }
+
+    @Override
+    public void onPlayerChangedDimension(EntityPlayer player) {}
+
+    @Override
+    public void onPlayerRespawn(EntityPlayer player) {}
 }

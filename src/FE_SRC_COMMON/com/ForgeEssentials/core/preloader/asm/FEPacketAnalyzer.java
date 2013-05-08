@@ -1,13 +1,12 @@
 package com.ForgeEssentials.core.preloader.asm;
 
-import org.objectweb.asm.Opcodes;
-
 import java.util.HashMap;
 import java.util.Iterator;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -16,6 +15,8 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
+import com.ForgeEssentials.core.preloader.Data;
 
 import cpw.mods.fml.relauncher.IClassTransformer;
 
@@ -26,34 +27,19 @@ public class FEPacketAnalyzer implements IClassTransformer
     public static boolean                   TcpConnection_addToSendQueue = false;
     public static boolean                   TcpConnection_readPacket = false;
     
-    public static HashMap<String, String>   MCdev = new HashMap<String, String>();
-    public static HashMap<String, String>   TCdev = new HashMap<String, String>();
-    
     private static final String             ANALYZERCLASS = "com/ForgeEssentials/api/packetInspector/PacketAnalyzerRegistry";
     private static final String             outgoingMethodName = "handleOutgoing";
     private static final String             incomingMethodName = "handleIncoming";
     
-    static
-    {
-        MCdev.put("className", "net.minecraft.network.MemoryConnection");
-        MCdev.put("targetMethod1", "addToSendQueue");
-        MCdev.put("targetMethod2", "processOrCachePacket");
-        MCdev.put("packetName", "net/minecraft/network/packet/Packet");
-        
-        TCdev.put("className", "net.minecraft.network.TcpConnection");
-        TCdev.put("targetMethod1", "addToSendQueue");
-        TCdev.put("targetMethod2", "readPacket");
-        TCdev.put("packetName", "net/minecraft/network/packet/Packet");
-    }
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes)
     {
-        if (name.equals(MCdev.get("className")))
-            return transformMemoryConnection(bytes, MCdev);
+        if (name.equals(Data.MCdev.get("className")))
+            return transformMemoryConnection(bytes, Data.MCdev);
         
-        if (name.equals(TCdev.get("className")))
-            return transformTcpConnection(bytes, TCdev);
+        if (name.equals(Data.TCdev.get("className")))
+            return transformTcpConnection(bytes, Data.TCdev);
         
         return bytes;
     }

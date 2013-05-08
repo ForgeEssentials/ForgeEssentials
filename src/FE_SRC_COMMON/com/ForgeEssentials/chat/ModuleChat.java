@@ -12,13 +12,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.modules.FEModule;
-import com.ForgeEssentials.api.modules.event.FEModuleInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModulePostInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModulePreInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerPostInitEvent;
-import com.ForgeEssentials.api.modules.event.FEModuleServerStopEvent;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.chat.commands.CommandAutoMessage;
@@ -31,7 +24,15 @@ import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
+import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModulePostInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerPostInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModuleServerStopEvent;
+import com.ForgeEssentials.util.packetInspector.PacketAnalyzerRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -66,6 +67,8 @@ public class ModuleChat
 	{
 		MinecraftForge.EVENT_BUS.register(new ChatFormatter());
 		MinecraftForge.EVENT_BUS.register(new CommandMuter());
+		
+		PacketAnalyzerRegistry.register(new PacketAnalyzerChat(), new int [] { 201 });
 	}
 
 	@FEModule.PostInit

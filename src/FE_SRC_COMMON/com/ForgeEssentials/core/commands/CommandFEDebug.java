@@ -41,7 +41,7 @@ public class CommandFEDebug extends ForgeEssentialsCommandBase
 			else
 			{
 				sender.sendChatToPlayer("The custom event 'PlayerBlockBreak' was NOT added. Some functions might not work!");
-				sender.sendChatToPlayer("The classname should be '" + Data.isHMob.get("className") + "' but is '" + ItemInWorldManager.class.getName() + "'.");
+				sender.sendChatToPlayer("The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemInWorldManager.class.getName() + "'.");
 			}
 		}
 		catch (Exception ex)
@@ -58,7 +58,7 @@ public class CommandFEDebug extends ForgeEssentialsCommandBase
 			else
 			{
 				sender.sendChatToPlayer("The custom event 'PlayerBlockPlace' was NOT added. Some functions might not work!");
-				sender.sendChatToPlayer("The classname should be '" + Data.isHMob.get("className") + "' but is '" + ItemStack.class.getName() + "'.");
+				sender.sendChatToPlayer("The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemStack.class.getName() + "'.");
 			}
 		}
 		catch (Exception ex)

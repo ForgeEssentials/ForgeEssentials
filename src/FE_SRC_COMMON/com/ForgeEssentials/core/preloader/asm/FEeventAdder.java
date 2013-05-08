@@ -41,21 +41,21 @@ public class FEeventAdder implements IClassTransformer
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes)
 	{
-		if (name.equals(Data.iiwmHMob.get("className")))
+		if (name.equals(Data.IIWMob.get("className")))
 			// ItemInWorldManager, Obfuscated
-			return transformItemInWorldManager(bytes, Data.iiwmHMob);
+			return transformItemInWorldManager(bytes, Data.IIWMob);
 
-		if (name.equals(Data.iiwmHMdev.get("className")))
+		if (name.equals(Data.IIWMdev.get("className")))
 			// ItemInWorldManager, NOT Obfuscated
-			return transformItemInWorldManager(bytes, Data.iiwmHMdev);
+			return transformItemInWorldManager(bytes, Data.IIWMdev);
 
-		if (name.equals(Data.isHMob.get("className")))
+		if (name.equals(Data.ISob.get("className")))
 			// ItemStack, Obfuscated
-			return transformItemStack(bytes, Data.isHMob);
+			return transformItemStack(bytes, Data.ISob);
 
-		if (name.equals(Data.isHMdev.get("className")))
+		if (name.equals(Data.ISdev.get("className")))
 			// ItemStack, NOT Obfuscated
-			return transformItemStack(bytes, Data.isHMdev);
+			return transformItemStack(bytes, Data.ISdev);
 		return bytes;
 	}
 
