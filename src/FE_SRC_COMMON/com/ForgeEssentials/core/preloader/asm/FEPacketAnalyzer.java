@@ -84,7 +84,7 @@ public class FEPacketAnalyzer implements IClassTransformer
                 toInject.add(lmm2Node);
                 
                 m.instructions.insertBefore(m.instructions.get(offset), toInject);
-                
+                TcpConnection_addToSendQueue = true;
                 System.out.println("[FE coremod] Patching addToSendQueue Complete!");
             }
             else if (hm.get("targetMethod2").equals(m.name))
@@ -112,7 +112,7 @@ public class FEPacketAnalyzer implements IClassTransformer
                 toInject.add(lmm2Node);
                 
                 m.instructions.insertBefore(m.instructions.get(offset), toInject);
-                
+                TcpConnection_readPacket = true;
                 System.out.println("[FE coremod] Patching processOrCachePacket Complete!");
             }
         }
@@ -121,6 +121,18 @@ public class FEPacketAnalyzer implements IClassTransformer
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
+        if (!TcpConnection_addToSendQueue){
+        	System.out.println("##########################################################");
+        	System.out.println("#####                    WARNING                     #####");
+        	System.out.println("##     [FE coremod] Patching addToSendQueue  FAILED!    ##");
+        	System.out.println("##########################################################");
+		}
+        if (!TcpConnection_readPacket){
+        	System.out.println("##########################################################");
+        	System.out.println("#####                    WARNING                     #####");
+        	System.out.println("##  [FE coremod] Patching processOrCachePacket FAILED   ##");
+        	System.out.println("##########################################################");
+		}
         return writer.toByteArray();
     }
     /**
@@ -208,6 +220,18 @@ public class FEPacketAnalyzer implements IClassTransformer
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
+        if (!TcpConnection_addToSendQueue){
+        	System.out.println("##########################################################");
+        	System.out.println("#####                    WARNING                     #####");
+        	System.out.println("##     [FE coremod] Patching addToSendQueue FAILED!     ##");
+        	System.out.println("##########################################################");
+		}
+        if (!TcpConnection_readPacket){
+        	System.out.println("##########################################################");
+        	System.out.println("#####                    WARNING                     #####");
+        	System.out.println("##       [FE coremod] Patching readPacket FAILED!       ##");
+        	System.out.println("##########################################################");
+		}
         return writer.toByteArray();
     }
 }
