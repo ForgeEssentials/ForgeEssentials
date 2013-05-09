@@ -68,7 +68,7 @@ public class FEeventAdder implements IClassTransformer
 		classReader.accept(classNode, 0);
 
 		Iterator<MethodNode> methods = classNode.methods.iterator();
-
+		
 		while (methods.hasNext())
 		{
 			MethodNode m = methods.next();
@@ -108,13 +108,19 @@ public class FEeventAdder implements IClassTransformer
 
 				m.instructions.insertBefore(m.instructions.get(offset), toInject);
 				addedPlace = true;
-				msg("[FE coremod] Patching ItemInWorldManager Complete!");
+				msg("[FE coremod] Patching ItemStack Complete!");
 				break;
 			}
 		}
 
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		classNode.accept(writer);
+		if (!addedPlace){
+			msg("##########################################################");
+			msg("#####                    WARNING                     #####");
+			msg("##        [FE coremod] Patching ItemStack FAILED!       ##");
+			msg("##########################################################");
+		}
 		return writer.toByteArray();
 	}
 
@@ -210,6 +216,12 @@ public class FEeventAdder implements IClassTransformer
 
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		classNode.accept(writer);
+		if (!addedBreak){
+			msg("##########################################################");
+			msg("#####                    WARNING                     #####");
+			msg("##   [FE coremod] Patching ItemInWorldManager FAILED!   ##");
+			msg("##########################################################");
+		}
 		return writer.toByteArray();
 	}
 
