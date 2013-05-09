@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
-import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.BlockSaveable;
 import com.ForgeEssentials.util.OutputHandler;

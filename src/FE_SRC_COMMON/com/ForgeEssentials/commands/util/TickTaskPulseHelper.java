@@ -1,8 +1,5 @@
 package com.ForgeEssentials.commands.util;
 
-import java.util.ArrayList;
-
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.util.BackupArea;

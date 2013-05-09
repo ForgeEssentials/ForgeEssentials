@@ -50,13 +50,12 @@ public class SocketListner implements Runnable
 	@Override
 	public void run()
 	{
+	    OutputHandler.info("Starting snooper on " + inetAddress + ":" + port);
 		if (!init())
 		{
 			OutputHandler.severe("Unable to start the snooper!");
 			return;
 		}
-
-		OutputHandler.info("Started Snooper on " + socket.getInetAddress().getHostName() + ":" + socket.getLocalPort());
 
 		try
 		{
@@ -107,7 +106,7 @@ public class SocketListner implements Runnable
 
 	private boolean init()
 	{
-		try
+	    try
 		{
 			socket = new ServerSocket(port, 0, inetAddress);
 			running = true;

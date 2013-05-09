@@ -16,10 +16,10 @@ import com.ForgeEssentials.data.api.DataStorageManager;
 import com.ForgeEssentials.data.api.IReconstructData;
 import com.ForgeEssentials.data.api.ITypeInfo;
 import com.ForgeEssentials.data.api.SaveableObject;
-import com.ForgeEssentials.data.api.TypeData;
 import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.data.api.TypeData;
 import com.ForgeEssentials.util.OutputHandler;
 
 /**

@@ -7,12 +7,11 @@ import net.minecraft.network.packet.Packet28EntityVelocity;
 import net.minecraft.network.packet.Packet29DestroyEntity;
 import net.minecraft.network.packet.Packet30Entity;
 
+import com.ForgeEssentials.api.packetInspector.IPacketAnalyzer;
+import com.ForgeEssentials.api.packetInspector.PacketAnalyzerRegistry;
 import com.ForgeEssentials.commands.CommandVanish;
-import com.ForgeEssentials.util.packetInspector.IPacketAnalyzer;
-import com.ForgeEssentials.util.packetInspector.PacketAnalyzerRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.Player;
 
 /**
  * Used for vanish

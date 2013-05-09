@@ -22,6 +22,12 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	{
 		return "mail";
 	}
+	
+	@Override
+	public List<String> getCommandAliases()
+    {
+        return Arrays.asList("femail");
+    }
 
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)

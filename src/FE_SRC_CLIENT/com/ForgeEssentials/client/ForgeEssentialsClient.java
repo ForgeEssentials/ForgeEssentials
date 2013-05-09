@@ -8,6 +8,7 @@ import net.minecraftforge.common.Property;
 
 import com.ForgeEssentials.client.cui.CUIPlayerLogger;
 import com.ForgeEssentials.client.cui.CUIRenderrer;
+import com.ForgeEssentials.client.cui.CUIRollback;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -82,6 +83,7 @@ public class ForgeEssentialsClient
 		if (allowCUI){
 			MinecraftForge.EVENT_BUS.register(new CUIRenderrer());
 			MinecraftForge.EVENT_BUS.register(new CUIPlayerLogger());
+			MinecraftForge.EVENT_BUS.register(new CUIRollback());
 		}
 	}
 

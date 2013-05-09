@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
@@ -30,6 +31,7 @@ public class ChatFormatter
 	public static String		gmS;
 	public static String		gmC;
 	public static String		gmA;
+    public static int           censorSlap;
 
 	@ForgeSubscribe(priority = EventPriority.NORMAL)
 	public void chatEvent(ServerChatEvent event)
@@ -70,6 +72,8 @@ public class ChatFormatter
 					String replaceWith = Strings.repeat(censorSymbol, length);
 
 					message = m.replaceAll(replaceWith);
+					
+					if (censorSlap != 0) event.player.attackEntityFrom(DamageSource.generic, censorSlap);
 				}
 			}
 		}
