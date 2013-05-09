@@ -97,7 +97,7 @@ public class EventLogger implements IPlayerTracker
 		}
 	}
 
-	@ForgeSubscribe
+	@ForgeSubscribe(priority = EventPriority.LOWEST)
 	public void command(CommandEvent e)
 	{
 		if (logCommands_Player && !e.isCanceled() && e.sender instanceof EntityPlayer && side.isServer())

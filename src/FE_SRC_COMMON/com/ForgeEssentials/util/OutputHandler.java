@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public final class OutputHandler
 {
-
 	public static Logger	felog;
 	
 	public static boolean debugmode;
@@ -16,6 +15,7 @@ public final class OutputHandler
 	public static void init(Logger logger)
 	{
 		felog = logger;
+		felog.setParent(Logger.getLogger(Logger.GLOBAL_LOGGER_NAME));
 	}
 
 	/**

@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
