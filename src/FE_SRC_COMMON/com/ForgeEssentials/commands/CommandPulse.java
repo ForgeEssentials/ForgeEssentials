@@ -83,48 +83,48 @@ public class CommandPulse extends FEcmdModuleCommands
 		}
 	}
 
-	private double func_82368_a(ICommandSender var1, double var2, String var4)
-	{
-		return this.func_82367_a(var1, var2, var4, -30000000, 30000000);
-	}
+	private double func_82368_a(ICommandSender par1ICommandSender, double par2, String par4Str)
+    {
+        return this.func_82367_a(par1ICommandSender, par2, par4Str, -30000000, 30000000);
+    }
 
-	private double func_82367_a(ICommandSender var1, double var2, String var4, int var5, int var6)
-	{
-		boolean var7 = var4.startsWith("~");
-		double var8 = var7 ? var2 : 0.0D;
+    private double func_82367_a(ICommandSender par1ICommandSender, double par2, String par4Str, int par5, int par6)
+    {
+        boolean flag = par4Str.startsWith("~");
+        double d1 = flag ? par2 : 0.0D;
 
-		if (!var7 || var4.length() > 1)
-		{
-			boolean var10 = var4.contains(".");
+        if (!flag || par4Str.length() > 1)
+        {
+            boolean flag1 = par4Str.contains(".");
 
-			if (var7)
-			{
-				var4 = var4.substring(1);
-			}
+            if (flag)
+            {
+                par4Str = par4Str.substring(1);
+            }
 
-			var8 += func_82363_b(var1, var4);
+            d1 += parseDouble(par1ICommandSender, par4Str);
 
-			if (!var10 && !var7)
-			{
-				var8 += 0.5D;
-			}
-		}
+            if (!flag1 && !flag)
+            {
+                d1 += 0.5D;
+            }
+        }
 
-		if (var5 != 0 || var6 != 0)
-		{
-			if (var8 < (double) var5)
-			{
-				throw new NumberInvalidException("commands.generic.double.tooSmall", new Object[] { Double.valueOf(var8), Integer.valueOf(var5) });
-			}
+        if (par5 != 0 || par6 != 0)
+        {
+            if (d1 < (double)par5)
+            {
+                throw new NumberInvalidException("commands.generic.double.tooSmall", new Object[] {Double.valueOf(d1), Integer.valueOf(par5)});
+            }
 
-			if (var8 > (double) var6)
-			{
-				throw new NumberInvalidException("commands.generic.double.tooBig", new Object[] { Double.valueOf(var8), Integer.valueOf(var6) });
-			}
-		}
+            if (d1 > (double)par6)
+            {
+                throw new NumberInvalidException("commands.generic.double.tooBig", new Object[] {Double.valueOf(d1), Integer.valueOf(par6)});
+            }
+        }
 
-		return var8;
-	}
+        return d1;
+    }
 
 	@Override
 	public RegGroup getReggroup()
