@@ -6,7 +6,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet201PlayerInfo;
 import net.minecraft.server.MinecraftServer;
 
-import com.ForgeEssentials.util.packetInspector.IPacketAnalyzer;
+import com.ForgeEssentials.api.packetInspector.IPacketAnalyzer;
 
 public class PacketAnalyzerChat implements IPacketAnalyzer
 {
