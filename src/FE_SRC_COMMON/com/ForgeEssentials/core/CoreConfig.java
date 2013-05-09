@@ -92,10 +92,9 @@ public class CoreConfig
 
 		config.addCustomCategoryComment("Core.groups", largeComment_Cat_Groups);
 
-        groupPrefixFormat = config.get("Core.groups", "groupPrefix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
-        groupSuffixFormat = config.get("Core.groups", "groupSuffix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
-        groupRankFormat = config.get("Core.groups", "rank", "[{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}]").getString();
-
+        groupPrefixFormat = config.get("Core.groups", "groupPrefix", "{...<:>_GLOBAL_}").getString();
+        groupSuffixFormat = config.get("Core.groups", "groupSuffix", "{...<:>_GLOBAL_}").getString();
+        groupRankFormat = config.get("Core.groups", "rank", "[{...<:>_GLOBAL_}]").getString();
 		
 		config.save();
 	}
