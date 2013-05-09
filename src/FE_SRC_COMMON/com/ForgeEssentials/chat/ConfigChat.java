@@ -2,23 +2,20 @@ package com.ForgeEssentials.chat;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.moduleLauncher.ModuleConfigBase;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class ConfigChat extends ModuleConfigBase
 {
-	public static String	chatFormat, groupPrefixFormat, groupSuffixFormat, groupRankFormat;
-	public static Pattern	groupRegex				= Pattern.compile("\\{[a-zA-Z0-9._]*\\<\\:\\>[a-zA-Z0-9._]*\\}");
+	public static String	chatFormat;
 	public static String	largeComment_chatFormat	= "";
-	public static String	largeComment_Cat_Groups	= "";
+	
 	public Configuration	config;
     public static boolean   logchat;
     public static boolean   logcmd;
@@ -44,12 +41,6 @@ public class ConfigChat extends ModuleConfigBase
 		largeComment_chatFormat += "\nUse %rank to display a users rank as specified, %zone to specify there current zone";
 		largeComment_chatFormat += "\nUse %groupPrefix and %groupSuffix to display the group prefixes and suffixes as specified";
 		largeComment_chatFormat += "\n'%gm' is a variable formatcode. It changes depending on wich gamemode the player is in. Set the value below.";
-
-		largeComment_Cat_Groups += "You may put enything here that you want displaed as part of the group prefixes, suffixes, or ranks.";
-		largeComment_Cat_Groups += "\n {ladderName<:>Zone} will display the data for the highest priority group that the player is in that is part of the specified ladder and specified zone.";
-		largeComment_Cat_Groups += "\n {...<:>...} will display the data of each group the player is in in order of priority";
-		largeComment_Cat_Groups += "\n you may put contsraints with ladders or zones with {...<:>zoneName} or {ladderName<:>...}";
-		largeComment_Cat_Groups += "\n you may also use the color and MCFormat codes above.";
 	}
 
 	@Override
@@ -84,11 +75,7 @@ public class ConfigChat extends ModuleConfigBase
 		{ "fuck", "ass", "bitch", "shit" }, "List of words to be censored").getStringList());
 		ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").getString();
 
-		config.addCustomCategoryComment("Chat.groups", largeComment_Cat_Groups);
-
-		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
-		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
-		groupRankFormat = config.get("Chat.groups", "rank", "[{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}]").getString();
+		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
 
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
 		
@@ -129,12 +116,8 @@ public class ConfigChat extends ModuleConfigBase
 		config.get("BannedWords", "censor", true, "censor the words in the censorList").set(ChatFormatter.censor);
 		config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").set(ChatFormatter.bannedWords.toArray(new String[ChatFormatter.bannedWords.size()]));
 
-		config.addCustomCategoryComment("Chat.groups", largeComment_Cat_Groups);
-
-		config.get("Chat.groups", "groupPrefix", "").set(groupPrefixFormat);
-		config.get("Chat.groups", "groupSuffix", "").set(groupSuffixFormat);
-		config.get("Chat.groups", "rank", "").set(groupRankFormat);
-
+		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
+		
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
 		
 		config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blocked if the player is muted.").set(CommandMuter.mutedCommands.toArray(new String[CommandMuter.mutedCommands.size()]));
@@ -174,11 +157,7 @@ public class ConfigChat extends ModuleConfigBase
 		{ "fuck", "ass", "bitch", "shit" }, "List of words to be censored").getStringList());
 		ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").getString();
 
-		config.addCustomCategoryComment("Chat.groups", largeComment_Cat_Groups);
-
-		groupPrefixFormat = config.get("Chat.groups", "groupPrefix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
-		groupSuffixFormat = config.get("Chat.groups", "groupSuffix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
-		groupRankFormat = config.get("Chat.groups", "rank", "[{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}]").getString();
+		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
 
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
         

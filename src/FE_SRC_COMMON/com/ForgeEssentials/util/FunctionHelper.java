@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -26,7 +27,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.chat.ConfigChat;
+import com.ForgeEssentials.core.CoreConfig;
 import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
@@ -37,6 +38,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public final class FunctionHelper
 {
+    public static Pattern   groupRegex              = Pattern.compile("\\{[a-zA-Z0-9._]*\\<\\:\\>[a-zA-Z0-9._]*\\}");
+    
 	/**
 	 * Get player's looking spot.
 	 * @param player
@@ -553,7 +556,7 @@ public final class FunctionHelper
 	
 	public static String getGroupRankString(String username)
     {
-        Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupRankFormat);
+        Matcher match = groupRegex.matcher(CoreConfig.groupRankFormat);
         ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
 
         String end = "";
@@ -580,7 +583,7 @@ public final class FunctionHelper
 
 	public static String getGroupPrefixString(String username)
     {
-        Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupPrefixFormat);
+        Matcher match = groupRegex.matcher(CoreConfig.groupPrefixFormat);
 
         ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
 
@@ -615,7 +618,7 @@ public final class FunctionHelper
 
 	public static String getGroupSuffixString(String username)
     {
-        Matcher match = ConfigChat.groupRegex.matcher(ConfigChat.groupSuffixFormat);
+        Matcher match = groupRegex.matcher(CoreConfig.groupSuffixFormat);
 
         ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
 

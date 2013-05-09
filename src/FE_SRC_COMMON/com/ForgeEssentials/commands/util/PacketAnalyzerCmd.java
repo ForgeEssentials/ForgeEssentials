@@ -12,7 +12,6 @@ import com.ForgeEssentials.util.packetInspector.IPacketAnalyzer;
 import com.ForgeEssentials.util.packetInspector.PacketAnalyzerRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.Player;
 
 /**
  * Used for vanish

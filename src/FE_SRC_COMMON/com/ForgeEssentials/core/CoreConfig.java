@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
@@ -17,6 +18,16 @@ public class CoreConfig
 	public static final File	mainconfig	= new File(ForgeEssentials.FEDIR, "main.cfg");
 
 	public final Configuration	config;
+	
+	public static String   largeComment_Cat_Groups, groupPrefixFormat, groupSuffixFormat, groupRankFormat;
+	static
+	{
+	    largeComment_Cat_Groups = "You may put enything here that you want displaed as part of the group prefixes, suffixes, or ranks.";
+        largeComment_Cat_Groups += "\n {ladderName<:>Zone} will display the data for the highest priority group that the player is in that is part of the specified ladder and specified zone.";
+        largeComment_Cat_Groups += "\n {...<:>...} will display the data of each group the player is in in order of priority";
+        largeComment_Cat_Groups += "\n you may put contsraints with ladders or zones with {...<:>zoneName} or {ladderName<:>...}";
+        largeComment_Cat_Groups += "\n you may also use the color and MCFormat codes above.";
+	}
 
 	// this is designed so it will work for any class.
 	public CoreConfig()
@@ -79,6 +90,13 @@ public class CoreConfig
 		prop.comment = "Message you get when you log in and no VIP space is available";
 		PlayerTracker.kickMessage = prop.getString();
 
+		config.addCustomCategoryComment("Core.groups", largeComment_Cat_Groups);
+
+        groupPrefixFormat = config.get("Core.groups", "groupPrefix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
+        groupSuffixFormat = config.get("Core.groups", "groupSuffix", "{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}").getString();
+        groupRankFormat = config.get("Core.groups", "rank", "[{...<:>" + ZoneManager.getGLOBAL().getZoneName() + "}]").getString();
+
+		
 		config.save();
 	}
 	
@@ -114,5 +132,12 @@ public class CoreConfig
 		Property prop = config.get("general", "removeDuplicateCommands", true);
 		prop.comment = ("Remove commands from the list if they already exist outside of FE.");
 		DuplicateCommandRemoval.removeDuplicateCommands = prop.getBoolean(true);
+		
+		config.addCustomCategoryComment("Core.groups", largeComment_Cat_Groups);
+
+        config.get("Core.groups", "groupPrefix", "").set(groupPrefixFormat);
+        config.get("Core.groups", "groupSuffix", "").set(groupSuffixFormat);
+        config.get("Core.groups", "rank", "").set(groupRankFormat);
+
 	}
 }
