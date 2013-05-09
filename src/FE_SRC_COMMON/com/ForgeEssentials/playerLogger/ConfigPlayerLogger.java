@@ -35,7 +35,6 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 		ModulePlayerLogger.username = config.get(subcat, "username", "root").getString();
 		ModulePlayerLogger.password = config.get(subcat, "password", "root").getString();
 		ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
-		ModulePlayerLogger.interval = config.get(subcat, "interval", 300, "Amount of time (in sec.) between database saves.").getInt();
 
 		subcat = cat + ".exempt";
 		config.addCustomCategoryComment(subcat, "Don't log stuff from these players/group.\nCase sensitive.\nMods should not be using fake players. But if they do, you can add them here if you don't logs from them.");
@@ -101,7 +100,6 @@ public class ConfigPlayerLogger extends ModuleConfigBase
 		ModulePlayerLogger.username = config.get(subcat, "username", "root").getString();
 		ModulePlayerLogger.password = config.get(subcat, "password", "root").getString();
 		ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
-		ModulePlayerLogger.interval = config.get(subcat, "interval", 300, "Amount of time (in sec.) between database saves.").getInt();
 
 		subcat = cat + ".exempt";
 		config.addCustomCategoryComment(subcat, "Don't log stuff from these players/group.\nCase sensitive.\nMods should not be using fake players. But if they do, you can add them here if you don't logs from them.");

@@ -1,5 +1,7 @@
 package com.ForgeEssentials.client;
 
+import java.util.HashMap;
+
 import com.ForgeEssentials.client.util.ClientPoint;
 import com.ForgeEssentials.client.util.ClientSelection;
 
@@ -20,6 +22,8 @@ public class PlayerInfoClient
 	private ClientPoint		sel1;
 	private ClientPoint		sel2;
 	private ClientSelection	selection;
+
+    public HashMap<ClientPoint, Boolean>  rbList = new HashMap<ClientPoint, Boolean>();
 
 	public PlayerInfoClient()
 	{

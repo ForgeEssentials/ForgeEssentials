@@ -12,12 +12,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.core.network.PacketRollback;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 
 /**
  * Rollback command. WIP!
@@ -96,6 +99,9 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 			if (que.containsKey(sender))
 			{
 				que.remove(sender);
+				
+				PacketDispatcher.sendPacketToPlayer(new PacketRollback(((EntityPlayer)sender).dimension, null).getPayload(), (Player) sender);
+				
 				OutputHandler.chatConfirmation(sender, "Command aborted");
 			}
 			else
@@ -110,7 +116,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		 * Arg 1 must be a username.
 		 * Arg 0 should be a command.
 		 */
-		if (args.length <= 2)
+		if (args.length > 2)
 		{
 			OutputHandler.chatError(sender, "You have to provide a username!");
 			return;
@@ -131,19 +137,11 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		}
 		else if (args[0].equalsIgnoreCase("undo"))
 		{
-			
+		    parse(sender, args, true, false);
 		}
 		else if (args[0].equalsIgnoreCase("rollback") || args[0].equalsIgnoreCase("rb"))
 		{
-			
-		}
-		else if (args.length > 1 && args[1].equalsIgnoreCase("undo"))
-		{
-			parse(sender, args, true);
-		}
-		else
-		{
-			parse(sender, args, false);
+		    parse(sender, args, false, false);
 		}
 	}
 
@@ -164,9 +162,16 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 				e.printStackTrace();
 			}
 		}
+		else if (args[0].equalsIgnoreCase("undo"))
+        {
+            parse(sender, args, true, true);
+        }
+        else if (args[0].equalsIgnoreCase("rollback") || args[0].equalsIgnoreCase("rb"))
+        {
+        }
 	}
 
-	public void parse(ICommandSender sender, String[] args, boolean undo)
+	public void parse(ICommandSender sender, String[] args, boolean undo, boolean execute)
 	{
 		int time = 0;
 		WorldPoint point = (sender instanceof EntityPlayer) ? new WorldPoint((EntityPlayer) sender) : null;
@@ -175,27 +180,43 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		for (int i = 1; i < args.length; i++)
 		{
 			String arg = args[i];
-			if (arg.contains("d"))
+			if (arg.endsWith("d"))
 			{
 				time = 24 * parseInt(sender, arg.replaceAll("d", ""));
 			}
-			else if (arg.contains("h"))
+			else if (arg.endsWith("h"))
 			{
 				time = parseInt(sender, arg.replaceAll("h", ""));
 			}
-			else if (arg.contains("r"))
+			else if (arg.endsWith("r"))
 			{
 				rad = parseIntWithMin(sender, arg.replaceAll("r", ""), 0);
 			}
 		}
-		try
+		
+		if (execute)
 		{
-			TaskRegistry.registerTask(new TickTaskRollback(sender, args[0], false, time, point, rad));
+		    try
+	        {
+	            TaskRegistry.registerTask(new TickTaskRollback(sender, false, ModulePlayerLogger.getBlockChangesWithinParameters(args[1], undo, time, point, rad)));
+	        }
+	        catch (SQLException e)
+	        {
+	            OutputHandler.chatError(sender, "Error. " + e.getLocalizedMessage());
+	            e.printStackTrace();
+	        }
 		}
-		catch (SQLException e)
+		else
 		{
-			OutputHandler.chatError(sender, "Error. " + e.getLocalizedMessage());
-			e.printStackTrace();
+		    StringBuilder sb = new StringBuilder();
+		    for (String arg : args)
+		        sb.append(arg + " ");
+		    
+		    que.put(sender, sb.toString().trim());
+		    if (sender instanceof EntityPlayer)
+		    {
+		        PacketDispatcher.sendPacketToPlayer(new PacketRollback(((EntityPlayer)sender).dimension, ModulePlayerLogger.getBlockChangesWithinParameters(args[1], undo, time, point, rad)).getPayload(), (Player) sender);
+		    }
 		}
 	}
 	

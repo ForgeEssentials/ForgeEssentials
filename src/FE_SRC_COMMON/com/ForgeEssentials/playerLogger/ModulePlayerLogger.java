@@ -2,10 +2,13 @@ package com.ForgeEssentials.playerLogger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+import java.util.HashSet;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,6 +31,7 @@ import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.logEntry;
 import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
 import com.ForgeEssentials.util.OutputHandler;
+import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
@@ -44,13 +48,12 @@ public class ModulePlayerLogger
 	public static String				username;
 	public static String				password;
 	public static boolean				ragequitOn;
-	public static Integer				interval;
 	public static boolean				enable		= false;
 
 	private static Connection					connection;
 	public static EventLogger			eLogger;
 
-	public static List<logEntry>		logTypes	= new ArrayList<logEntry>();
+	public static HashSet<logEntry>		logTypes	= new HashSet<logEntry>();
 	static
 	{
 		logTypes.add(new playerTrackerLog());
@@ -115,7 +118,6 @@ public class ModulePlayerLogger
 			}
 
 			s.close();
-			connection.close();
 			eLogger = new EventLogger();
 		}
 		catch (SQLException e1)
@@ -173,6 +175,15 @@ public class ModulePlayerLogger
 
 	public static Connection getConnection()
 	{
+	    try
+	    {
+    	    if (connection.isClosed()) 
+                connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
+	    }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
 		return connection;
 	}
 
@@ -186,5 +197,55 @@ public class ModulePlayerLogger
 		{
 			OutputHandler.severe("PlayerLogger error: " + e.getLocalizedMessage());
 		}
+	}
+	
+	public static ArrayList<blockChange> getBlockChangesWithinParameters(String username, boolean undo, int timeBack, WorldPoint p, int rad)
+	{
+	    ArrayList<blockChange> data = new ArrayList<blockChange>();
+	    try
+        {
+	        Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
+	        Statement st = connection.createStatement();
+	        
+	        String sql = "SELECT * FROM  `blockChange` WHERE  `player` LIKE  '" + username + "'";
+	        
+	        if (timeBack != 0)
+	        {
+	            Date date = new Date();
+	            Timestamp time = new Timestamp(date.getTime());
+	            //                                 Hours,  mins, sec, nano
+	            time.setNanos(time.getNanos() - (timeBack * 60 * 60 * 1000 * 1000));
+	            sql = sql + " AND `time` = '" + time.toString() + "'";
+	        }
+	        
+	        if (p != null && rad != 0)
+	        {
+	            sql = sql + " AND `Dim` = " + p.dim;
+	            sql = sql + " AND `X` BETWEEN " + (p.x - rad) + " AND " + (p.x + rad);
+	            sql = sql + " AND `Z` BETWEEN " + (p.z - rad) + " AND " + (p.z + rad);
+	        }
+	        
+	        if (undo)
+	            sql = sql + " ORDER BY time ASC";
+	        else
+	            sql = sql + " ORDER BY time DESC";
+	        
+	        st.execute(sql);
+	        ResultSet rs = st.getResultSet();
+	        
+	        while (rs.next())
+            {
+	            data.add(new blockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"), rs.getString("category").equalsIgnoreCase(blockChangeLog.blockChangeLogCategory.placed.toString()) ? true : false, rs.getString("block"), rs.getBlob("te")));
+            }
+	        
+	        rs.close();
+	        st.close();
+	        connection.close();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return data;
 	}
 }

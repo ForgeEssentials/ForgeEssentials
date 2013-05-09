@@ -38,6 +38,9 @@ public class PacketHandler implements IPacketHandler
 					case 1:
 						PacketPlayerLogger.readClient(stream, world, player);
 						break;
+					case 2:
+					    PacketRollback.readClient(stream, world, player);
+					    break;
 				}
 		}
 		catch (Exception e)
