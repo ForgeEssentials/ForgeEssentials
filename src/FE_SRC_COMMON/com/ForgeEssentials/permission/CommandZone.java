@@ -273,6 +273,11 @@ public class CommandZone extends ForgeEssentialsCommandBase
 
 					return;
 				}
+				else if (args[2].equalsIgnoreCase("remove"))
+                {
+                    PermissionsAPI.clearGroupPermissionProp(PermissionsAPI.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.entry", args[1]);
+                    OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Entry Message removed.");
+                }
 				else
 				{
 					String tempEntry = "";
@@ -304,6 +309,11 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					OutputHandler.chatConfirmation(sender, query.getStringValue());
 
 					return;
+				}
+				else if (args[2].equalsIgnoreCase("remove"))
+				{
+				    PermissionsAPI.clearGroupPermissionProp(PermissionsAPI.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.exit", args[1]);
+				    OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Exit Message removed.");
 				}
 				else
 				{
