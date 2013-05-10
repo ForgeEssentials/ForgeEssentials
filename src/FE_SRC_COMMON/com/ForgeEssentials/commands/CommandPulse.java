@@ -102,7 +102,7 @@ public class CommandPulse extends FEcmdModuleCommands
                 par4Str = par4Str.substring(1);
             }
 
-            d1 += parseDouble(par1ICommandSender, par4Str);
+            d1 += func_82363_b(par1ICommandSender, par4Str);
 
             if (!flag1 && !flag)
             {
