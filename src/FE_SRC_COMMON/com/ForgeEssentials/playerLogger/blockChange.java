@@ -1,7 +1,12 @@
 package com.ForgeEssentials.playerLogger;
 
 import java.sql.Blob;
-
+/**
+ * This is a data class, used for easy list making.
+ * Don't use for anything else.
+ * @author Dries007
+ *
+ */
 public class blockChange
 {
     public int X, Y, Z, dim;

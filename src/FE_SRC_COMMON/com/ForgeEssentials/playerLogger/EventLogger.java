@@ -149,31 +149,8 @@ public class EventLogger implements IPlayerTracker
 			{
 				block = e.player.inventory.getCurrentItem().itemID + ":" + e.player.inventory.getCurrentItem().getItemDamage();
 			}
-			int x = e.blockX;
-			int y = e.blockY;
-			int z = e.blockZ;
-			switch (e.side)
-				{
-					case 0:
-						y--;
-						break;
-					case 1:
-						y++;
-						break;
-					case 2:
-						z--;
-						break;
-					case 3:
-						z++;
-						break;
-					case 4:
-						x--;
-						break;
-					case 5:
-						x++;
-						break;
-				}
-			new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, x, y, z, null);
+			
+			new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, e.blockX, e.blockY, e.blockZ, null);
 		}
 	}
 
