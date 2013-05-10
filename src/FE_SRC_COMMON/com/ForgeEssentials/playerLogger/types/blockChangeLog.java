@@ -83,6 +83,6 @@ public class blockChangeLog extends logEntry
 
 	public enum blockChangeLogCategory
 	{
-		broke, placed
+		broke, placed, interact
 	}
 }

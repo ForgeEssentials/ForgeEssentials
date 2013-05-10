@@ -87,6 +87,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 			if (que.containsKey(sender))
 			{
 				execute(sender, que.get(sender).split(" "));
+				que.remove(sender);
 			}
 			else
 			{
@@ -168,6 +169,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
         }
         else if (args[0].equalsIgnoreCase("rollback") || args[0].equalsIgnoreCase("rb"))
         {
+            parse(sender, args, false, true);
         }
 	}
 

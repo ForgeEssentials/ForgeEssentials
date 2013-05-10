@@ -235,7 +235,7 @@ public class ModulePlayerLogger
 	        
 	        while (rs.next())
             {
-	            data.add(new blockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"), rs.getString("category").equalsIgnoreCase(blockChangeLog.blockChangeLogCategory.placed.toString()) ? true : false, rs.getString("block"), rs.getBlob("te")));
+	            data.add(new blockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"), blockChangeLog.blockChangeLogCategory.valueOf(rs.getString("category")).ordinal(), rs.getString("block"), rs.getBlob("te")));
             }
 	        
 	        rs.close();

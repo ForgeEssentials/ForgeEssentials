@@ -41,7 +41,7 @@ public class PacketRollback implements IForgeEssentialsPacket
                         stream.writeInt(bc.Y);
                         stream.writeInt(bc.Z);
                         // True if the change was a placement.
-                        stream.writeBoolean(bc.place);
+                        stream.writeInt(bc.type);
                     }
                 }
             }

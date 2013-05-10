@@ -23,7 +23,13 @@ public class PlayerInfoClient
 	private ClientPoint		sel2;
 	private ClientSelection	selection;
 
-    public HashMap<ClientPoint, Boolean>  rbList = new HashMap<ClientPoint, Boolean>();
+	/*
+	 * Int => Type of change. (color in cui)
+	 * 0 = place
+	 * 1 = break
+	 * 2 = interact
+	 */
+    public HashMap<ClientPoint, Integer>  rbList = new HashMap<ClientPoint, Integer>();
 
 	public PlayerInfoClient()
 	{

@@ -59,14 +59,14 @@ public class TickTaskRollback implements ITickTask
                     bc = i.next();
                     world = FunctionHelper.getDimension(bc.dim);
                     
-                    if (bc.place)
-                    {
-                        if (undo) place();
-                        else remove();
-                    }
-                    else
+                    if (bc.type == 0)
                     {
                         if (!undo) place();
+                        else remove();
+                    }
+                    else if (bc.type == 1)
+                    {
+                        if (undo) place();
                         else remove();
                     }
                     currentTickChanged++;

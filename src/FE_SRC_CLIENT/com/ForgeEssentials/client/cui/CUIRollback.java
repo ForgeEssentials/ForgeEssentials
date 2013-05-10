@@ -1,12 +1,7 @@
 package com.ForgeEssentials.client.cui;
 
-import java.util.Iterator;
-
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -21,13 +16,10 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class CUIRollback
 {
-    int i = 0;
-    
     @ForgeSubscribe
     public void render(RenderWorldLastEvent event)
     {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
-        Entity entity = event.context.mc.renderViewEntity;
         PlayerInfoClient info = ForgeEssentialsClient.getInfo();
 
         if (player == null || info == null || info.rbList.isEmpty())
@@ -35,6 +27,8 @@ public class CUIRollback
 
         GL11.glPushMatrix();
         
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -42,30 +36,28 @@ public class CUIRollback
         GL11.glLineWidth(1.5F);
         GL11.glBegin(GL11.GL_LINES);
         
-        GL11.glColor4f(1, 0, 0, 1);
-        
-        i ++;
-        
-        if (i % 240 == 0) System.out.println(ForgeEssentialsClient.getInfo().rbList.keySet().size());
-        
         for (ClientPoint p : ForgeEssentialsClient.getInfo().rbList.keySet())
         {
-            if (i % 240 == 0) System.out.println(p.x + "; " + p.y + "; " + p.z);
+            switch (ForgeEssentialsClient.getInfo().rbList.get(p))
+            {
+            // Break
+            case 0:
+                GL11.glColor4f(1, 0, 0, 0.5F);
+                break;
+            // Place
+            case 1:
+                GL11.glColor4f(0, 1, 0, 0.5F);
+                break;
+            // Interact
+            case 2:
+                GL11.glColor4f(0, 0, 1, 0.5F);
+                break;
+            default:
+                GL11.glColor4f(1, 1, 1, 0.5F);
+                break;
+            }
             
-            double x = p.getX() - RenderManager.renderPosX;
-            double z = p.getZ() - RenderManager.renderPosZ;
-            double y = p.getY() - RenderManager.renderPosY;
-            
-            /*
-            GL11.glVertex3d(x, y, z);
-            GL11.glVertex3d(x+1, y, z);
-            
-            GL11.glVertex3d(x, y, z);
-            GL11.glVertex3d(x, y+1, z);
-            
-            GL11.glVertex3d(x, y, z);
-            GL11.glVertex3d(x, y, z+1);
-            */
+            renderBlockBox(p);
         }
         
         GL11.glEnd();
@@ -73,49 +65,52 @@ public class CUIRollback
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
         
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        
         GL11.glPopMatrix();
     }
     
-    private void renderBlockBox(Tessellator tess)
+    private void renderBlockBox(ClientPoint p)
     {
-        tess.startDrawing(GL11.GL_LINES);
+        double x = p.getX() - RenderManager.renderPosX;
+        double z = p.getZ() - RenderManager.renderPosZ + 1;
+        double y = p.getY() - RenderManager.renderPosY;
+        
+        GL11.glVertex3d(x, y, z);
+        GL11.glVertex3d(x, y+1, z);
+        
+        GL11.glVertex3d(x, y+1, z);
+        GL11.glVertex3d(x+1, y+1, z);
+        
+        GL11.glVertex3d(x+1, y+1, z);
+        GL11.glVertex3d(x+1, y, z);
 
-        // FRONT
-        tess.addVertex(0, 0, 0);
-        tess.addVertex(0, 1, 0);
+        GL11.glVertex3d(x+1, y, z);
+        GL11.glVertex3d(x, y, z);
+        
+        GL11.glVertex3d(x, y, z-1);
+        GL11.glVertex3d(x, y+1, z-1);
 
-        tess.addVertex(0, 1, 0);
-        tess.addVertex(1, 1, 0);
+        GL11.glVertex3d(x, y, z-1);
+        GL11.glVertex3d(x+1, y, z-1);
 
-        tess.addVertex(1, 1, 0);
-        tess.addVertex(1, 0, 0);
+        GL11.glVertex3d(x+1, y, z-1);
+        GL11.glVertex3d(x+1, y+1, z-1);
 
-        tess.addVertex(1, 0, 0);
-        tess.addVertex(0, 0, 0);
+        GL11.glVertex3d(x, y+1, z-1);
+        GL11.glVertex3d(x+1, y+1, z-1);
 
-        // BACK
-        tess.addVertex(0, 0, -1);
-        tess.addVertex(0, 1, -1);
-        tess.addVertex(0, 0, -1);
-        tess.addVertex(1, 0, -1);
-        tess.addVertex(1, 0, -1);
-        tess.addVertex(1, 1, -1);
-        tess.addVertex(0, 1, -1);
-        tess.addVertex(1, 1, -1);
+        GL11.glVertex3d(x, y, z);
+        GL11.glVertex3d(x, y, z-1);
 
-        // betweens.
-        tess.addVertex(0, 0, 0);
-        tess.addVertex(0, 0, -1);
-
-        tess.addVertex(0, 1, 0);
-        tess.addVertex(0, 1, -1);
-
-        tess.addVertex(1, 0, 0);
-        tess.addVertex(1, 0, -1);
-
-        tess.addVertex(1, 1, 0);
-        tess.addVertex(1, 1, -1);
-
-        tess.draw();
+        GL11.glVertex3d(x, y+1, z);
+        GL11.glVertex3d(x, y+1, z-1);
+        
+        GL11.glVertex3d(x+1, y, z);
+        GL11.glVertex3d(x+1, y, z-1);
+        
+        GL11.glVertex3d(x+1, y+1, z);
+        GL11.glVertex3d(x+1, y+1, z-1);
     }
 }

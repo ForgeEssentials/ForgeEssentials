@@ -39,7 +39,7 @@ public class PacketRollback implements IForgeEssentialsPacket
                 {
                     ClientPoint p = new ClientPoint(stream.readInt(), stream.readInt(), stream.readInt());
                     System.out.println(p.x + "; " + p.y + "; " + p.z);
-                    ForgeEssentialsClient.getInfo().rbList.put(p, stream.readBoolean());
+                    ForgeEssentialsClient.getInfo().rbList.put(p, stream.readInt());
                 }
                 catch (Exception e)
                 {
