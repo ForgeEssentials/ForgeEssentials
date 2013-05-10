@@ -58,7 +58,7 @@ public class TPdata
 			{
 				server.transferPlayerToDimension((EntityPlayerMP) player, point.dim);
 			}
-			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.xd, point.yd, point.zd, point.yaw, point.pitch);
+			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 1, point.zd, point.yaw, point.pitch);
 			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, TeleportCenter.BYPASS_COOLDOWN)))
 			{
 				PlayerInfo.getPlayerInfo(player.username).TPcooldown = TeleportCenter.tpCooldown;

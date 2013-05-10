@@ -200,7 +200,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		{
 		    try
 	        {
-	            TaskRegistry.registerTask(new TickTaskRollback(sender, false, ModulePlayerLogger.getBlockChangesWithinParameters(args[1], undo, time, point, rad)));
+	            TaskRegistry.registerTask(new TickTaskRollback(sender, undo, ModulePlayerLogger.getBlockChangesWithinParameters(args[1], undo, time, point, rad)));
 	        }
 	        catch (SQLException e)
 	        {

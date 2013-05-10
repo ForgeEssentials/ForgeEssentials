@@ -138,9 +138,10 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 	{
 	    // calculate offsets.
 	    ForgeDirection dir = ForgeDirection.getOrientation(side);
-	    x += dir.offsetX;
-	    y += dir.offsetY;
-	    z += dir.offsetZ;
+	    
+	    x =+ dir.offsetX;
+	    y =+ dir.offsetY;
+	    z =+ dir.offsetZ;
 	    
 		PlayerBlockPlace ev = new PlayerBlockPlace(itemStack, player, world, x, y, z, side, hitx, hity, hitz);
 		MinecraftForge.EVENT_BUS.post(ev);

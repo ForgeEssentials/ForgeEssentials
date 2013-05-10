@@ -4,19 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.core.network.PacketPlayerLogger;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
+import com.ForgeEssentials.playerLogger.types.blockChangeLog.blockChangeLogCategory;
 import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
+import com.ForgeEssentials.playerLogger.types.playerTrackerLog.playerTrackerLogCategory;
 import com.ForgeEssentials.util.events.PlayerBlockBreak;
 import com.ForgeEssentials.util.events.PlayerBlockPlace;
 
@@ -60,7 +63,7 @@ public class EventLogger implements IPlayerTracker
 		{
 			if (exempt(player))
 				return;
-			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Login, player, "");
+			new playerTrackerLog(playerTrackerLogCategory.Login, player, "");
 		}
 	}
 
@@ -71,7 +74,7 @@ public class EventLogger implements IPlayerTracker
 		{
 			if (exempt(player))
 				return;
-			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Logout, player, "");
+			new playerTrackerLog(playerTrackerLogCategory.Logout, player, "");
 		}
 	}
 
@@ -82,7 +85,7 @@ public class EventLogger implements IPlayerTracker
 		{
 			if (exempt(player))
 				return;
-			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.ChangedDim, player, "");
+			new playerTrackerLog(playerTrackerLogCategory.ChangedDim, player, "");
 		}
 	}
 
@@ -93,7 +96,7 @@ public class EventLogger implements IPlayerTracker
 		{
 			if (exempt(player))
 				return;
-			new playerTrackerLog(playerTrackerLog.playerTrackerLogCategory.Respawn, player, "");
+			new playerTrackerLog(playerTrackerLogCategory.Respawn, player, "");
 		}
 	}
 
@@ -126,9 +129,8 @@ public class EventLogger implements IPlayerTracker
 		{
 			if (exempt(e.player))
 				return;
-			String block = e.world.getBlockId(e.blockX, e.blockY, e.blockZ) + ":" + e.world.getBlockMetadata(e.blockX, e.blockY, e.blockZ);
-			TileEntity te = e.world.getBlockTileEntity(e.blockX, e.blockY, e.blockZ);
-			new blockChangeLog(blockChangeLog.blockChangeLogCategory.broke, e.player, block, e.blockX, e.blockY, e.blockZ, te);
+			
+			new blockChangeLog(blockChangeLogCategory.broke, e.player, e.world.getBlockId(e.blockX, e.blockY, e.blockZ) + ":" + e.world.getBlockMetadata(e.blockX, e.blockY, e.blockZ), e.blockX, e.blockY, e.blockZ, e.world.getBlockTileEntity(e.blockX, e.blockY, e.blockZ));
 		}
 	}
 
@@ -146,12 +148,26 @@ public class EventLogger implements IPlayerTracker
 
 			String block = "";
 			if (e.player.inventory.getCurrentItem() != null)
-			{
 				block = e.player.inventory.getCurrentItem().itemID + ":" + e.player.inventory.getCurrentItem().getItemDamage();
-			}
 			
-			new blockChangeLog(blockChangeLog.blockChangeLogCategory.placed, e.player, block, e.blockX, e.blockY, e.blockZ, null);
+			new blockChangeLog(blockChangeLogCategory.placed, e.player, block, e.blockX, e.blockY, e.blockZ, null);
 		}
+	}
+	
+	@ForgeSubscribe(priority = EventPriority.LOWEST)
+	public void playerInteractEvent(PlayerInteractEvent e)
+	{
+	    if (e.action == Action.RIGHT_CLICK_BLOCK)
+	    {
+	        if (exempt(e.entityPlayer))
+                return;
+	        if (BlockChange_WhiteList_Use && !BlockChange_WhiteList.contains(e.entityPlayer.dimension))
+                return;
+            if (BlockChange_BlackList.contains(e.entityPlayer.dimension) && !BlockChange_WhiteList.contains(e.entityPlayer.dimension))
+                return;
+	        
+	        new blockChangeLog(blockChangeLogCategory.interact, e.entityPlayer, e.entity.worldObj.getBlockId(e.x, e.y, e.z) + ":" + e.entity.worldObj.getBlockMetadata(e.x, e.y, e.z), e.x, e.y, e.z, e.entity.worldObj.getBlockTileEntity(e.x, e.y, e.z));
+	    }
 	}
 
 	/*
