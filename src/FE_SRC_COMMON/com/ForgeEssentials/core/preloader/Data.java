@@ -58,21 +58,21 @@ public class Data
 
         ISob.put("className", "wm");
         ISob.put("javaClassName", "wm");
-        ISob.put("targetMethodName", "a");
+        ISob.put("targetMethodName", "a");// searge name func_77943_a
         ISob.put("itemstackJavaClassName", "wm");
         ISob.put("entityPlayerJavaClassName", "sq");
         ISob.put("worldJavaClassName", "aab");
 
         ISdev.put("className", "net.minecraft.item.ItemStack");
         ISdev.put("javaClassName", "net/minecraft/item/ItemStack");
-        ISdev.put("targetMethodName", "tryPlaceItemIntoWorld");// searge name func_77943_a
+        ISdev.put("targetMethodName", "tryPlaceItemIntoWorld");
         ISdev.put("itemstackJavaClassName", "net/minecraft/item/ItemStack");
         ISdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
         ISdev.put("worldJavaClassName", "net/minecraft/world/World");
         
         MCob.put("className", "ch");
-        MCob.put("targetMethod1", "a");
-        MCob.put("targetMethod2", "b");
+        MCob.put("targetMethod1", "a");// searge name func_74429_a
+        MCob.put("targetMethod2", "b");// searge name func_74436_b
         MCob.put("packetName", "ei");
         
         MCdev.put("className", "net.minecraft.network.MemoryConnection");
@@ -81,8 +81,8 @@ public class Data
         MCdev.put("packetName", "net/minecraft/network/packet/Packet");
         
         TCob.put("className", "ci");
-        TCob.put("targetMethod1", "a");
-        TCob.put("targetMethod2", "i");
+        TCob.put("targetMethod1", "a");// searge namefunc_74429_a
+        TCob.put("targetMethod2", "i");// searge name func_74447_i
         TCob.put("packetName", "ei");
         
         TCdev.put("className", "net.minecraft.network.TcpConnection");
