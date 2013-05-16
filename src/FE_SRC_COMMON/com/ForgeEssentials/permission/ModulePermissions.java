@@ -123,6 +123,32 @@ public class ModulePermissions
 		event.registerPermissionLevel("ForgeEssentials.permissions.zone.list", RegGroup.MEMBERS);
 
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.list", RegGroup.GUESTS);
+		
+		// somehow the perms stuff doesn't read this where they were, try here
+		event.registerPermissionLevel("Minecraft.commands.ban", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("Minecraft.commands.ban-ip", RegGroup.OWNERS);
+		event.registerPermissionLevel("Minecraft.commands.debug", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("Minecraft.commands.defaultgamemode", RegGroup.OWNERS);
+		event.registerPermissionLevel("Minecraft.commands.deop", RegGroup.OWNERS);
+		event.registerPermissionLevel("Minecraft.commands.difficulty", RegGroup.OWNERS);
+		event.registerPermissionLevel("Minecraft.commands.gamerule", RegGroup.OWNERS);
+		event.registerPermissionLevel("Minecraft.commands.kick", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("Minecraft.commands.me", RegGroup.GUESTS);
+		event.registerPermissionLevel("Minecraft.commands.op", RegGroup.OWNERS);
+		event.registerPermissionLevel("Minecraft.commands.pardon", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("Minecraft.commands.pardon-ip", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("Minecraft.commands.publish", RegGroup.OWNERS);
+		event.registerPermissionLevel("Minecraft.commands.save-all", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("Minecraft.commands.save-on", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("Minecraft.commands.save-off", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("Minecraft.commands.say", RegGroup.OWNERS);
+		event.registerPermissionLevel("Minecraft.commands.seed", RegGroup.MEMBERS);
+		event.registerPermissionLevel("Minecraft.commands.stop", RegGroup.GUESTS);
+		event.registerPermissionLevel("Minecraft.commands.whitelist", RegGroup.OWNERS);
+		event.registerPermissionLevel("Minecraft.commands.xp", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("Minecraft.commands.toggledownfall", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("Minecraft.commands.testfor", RegGroup.MEMBERS);
+		event.registerPermissionLevel("Minecraft.commands.help", RegGroup.GUESTS);
 	}
 
 	@FEModule.ServerStop

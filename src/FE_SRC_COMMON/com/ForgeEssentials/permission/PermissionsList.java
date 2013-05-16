@@ -24,6 +24,7 @@ public class PermissionsList
 
 	public void output(Set<String> permissions)
 	{
+		int permsize = permissions.size();
 		try
 		{
 			output.createNewFile();
@@ -32,6 +33,8 @@ public class PermissionsList
 			writer.write("#// ------------ PERMISSIONS LIST ------------ \\\\#");
 			writer.newLine();
 			writer.write("#// --------------- " + FunctionHelper.getCurrentDateString() + " --------------- \\\\#");
+			writer.newLine();
+			writer.write("#// ------------ Total amount: " + permsize + " ------------ \\\\#");
 			writer.newLine();
 			writer.write("#// ------------------------------------------ \\\\#");
 			writer.newLine();
