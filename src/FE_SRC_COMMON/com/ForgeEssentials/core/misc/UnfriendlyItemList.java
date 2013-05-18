@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.ForgeEssentials.util.FunctionHelper;
+import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -117,7 +118,8 @@ public abstract class UnfriendlyItemList
 			name = name.replace(' ', '_');
 
 			// save
-			map.put(name, item.itemID);
+			if (!map.containsKey(name)) map.put(name, item.itemID);
+			else OutputHandler.severe("Double item! Name:" + name + " ID:" + item.itemID);
 		}
 	}
 
