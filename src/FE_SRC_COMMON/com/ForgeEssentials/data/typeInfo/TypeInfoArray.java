@@ -22,13 +22,14 @@ public class TypeInfoArray extends TypeMultiValInfo
 	}
 
 	@Override
-	public void buildEntry(HashMap<String, ClassContainer> fields)
+	public void buildEntry(HashMap<String, ClassContainer> entryFields)
 	{
-		fields.put(POS, new ClassContainer(int.class));
-		fields.put(ELEMENT, new ClassContainer(container.getType().getComponentType()));
+		entryFields.put(POS, new ClassContainer(int.class));
+		entryFields.put(ELEMENT, new ClassContainer(container.getType().getComponentType()));
 	}
 
-	public void build(HashMap<String, ClassContainer> entryFields)
+	@Override
+	public void build(HashMap<String, ClassContainer> fields)
 	{
 		fields.put(LENGTH, new ClassContainer(int.class));
 	}
@@ -45,7 +46,9 @@ public class TypeInfoArray extends TypeMultiValInfo
 		for (Object element : array)
 		{
 			if (element == null)
+			{
 				continue;
+			}
 
 			data = getEntryData();
 			data.putField(POS, i);
@@ -56,6 +59,7 @@ public class TypeInfoArray extends TypeMultiValInfo
 		return datas;
 	}
 
+	@Override
 	public void addExtraDataForObject(TypeData data, Object obj)
 	{
 		Object[] array = (Object[]) obj;
