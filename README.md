@@ -12,7 +12,7 @@ The Forge Essentials project consists of a permissions and protection system to 
 Setup
 =====
 _____
-*Please see [README-Developing.txt](README-Developing.txt) for setting up ForgeEssentials with MCP.*
+*Please see [README-Developing.md](README-Developing.md) for setting up ForgeEssentials with MCP.*
 
 <br>
 
