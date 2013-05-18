@@ -1,6 +1,7 @@
 package com.ForgeEssentials.data.api;
 
 import java.rmi.server.UID;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,12 +12,12 @@ import com.ForgeEssentials.data.StorageManager;
 
 public abstract class TypeMultiValInfo implements ITypeInfo
 {
-	protected ClassContainer					container;
-	protected HashMap<String, ClassContainer>	entryFields;
-	protected HashMap<String, ClassContainer>	fields;
-	private TypeEntryInfo						entryInfo;
+	protected ClassContainer				container;
+	private HashMap<String, ClassContainer>	entryFields;
+	private HashMap<String, ClassContainer>	fields;
+	private TypeEntryInfo					entryInfo;
 
-	public static final String					UID	= "_$EntryID$_";
+	public static final String				UID	= "_$EntryID$_";
 
 	public TypeMultiValInfo(ClassContainer container)
 	{
@@ -29,6 +30,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	@Override
 	public final void build()
 	{
+		build(fields);
 		buildEntry(entryFields);
 		entryInfo = new TypeEntryInfo(entryFields, container);
 	}
@@ -38,7 +40,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	 * @param entryFields
 	 */
 	public abstract void buildEntry(HashMap<String, ClassContainer> entryFields);
-	
+
 	public void build(HashMap<String, ClassContainer> entryFields)
 	{
 		// optional override
@@ -55,7 +57,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	{
 		if (field == null)
 			return null;
-		
+
 		if (field.toLowerCase().contains(getEntryName().toLowerCase()))
 			return entryInfo.getType();
 		return fields.get(field);
@@ -78,7 +80,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	{
 		return fields.keySet().toArray(new String[fields.size()]);
 	}
-	
+
 	public String[] getEntryFieldList()
 	{
 		return entryFields.keySet().toArray(new String[entryFields.size()]);
@@ -111,9 +113,9 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 			dat.putField(UID, id);
 			data.putField(getEntryName() + i++, dat);
 		}
-		
+
 		addExtraDataForObject(data, obj);
-		
+
 		data.setUniqueKey(unique);
 		return data;
 	}
@@ -127,9 +129,9 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	{
 		return unique.substring(unique.lastIndexOf('_'));
 	}
-	
+
 	public abstract Set<TypeData> getTypeDatasFromObject(Object obj);
-	
+
 	public void addExtraDataForObject(TypeData data, Object obj)
 	{
 		// optional override
@@ -139,12 +141,15 @@ public abstract class TypeMultiValInfo implements ITypeInfo
 	public final Object reconstruct(IReconstructData data)
 	{
 		Collection values = data.getAllValues();
-		TypeData[] datas = new TypeData[values.size()];
-		int i = 0;
+		ArrayList<TypeData> list = new ArrayList();
 		for (Object obj : values)
 		{
-			datas[i++] = (TypeData) obj;
+			if (obj instanceof TypeData)
+			{
+				list.add((TypeData) obj);
+			}
 		}
+		TypeData[] datas = list.toArray(new TypeData[list.size()]);
 		return reconstruct(datas, data);
 	}
 
