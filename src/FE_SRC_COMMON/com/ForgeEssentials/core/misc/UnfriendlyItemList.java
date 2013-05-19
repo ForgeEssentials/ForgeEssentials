@@ -118,7 +118,7 @@ public abstract class UnfriendlyItemList
 			name = name.replace(' ', '_');
 
 			// save
-			if (!map.containsKey(name)) map.put(name, item.itemID);
+			if (!map.containsKey(name) && map.containsValue(item.itemID)) map.put(name, item.itemID);
 			else OutputHandler.severe("Double item! Name:" + name + " ID:" + item.itemID);
 		}
 	}
