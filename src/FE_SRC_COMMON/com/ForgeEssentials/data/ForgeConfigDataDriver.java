@@ -272,8 +272,7 @@ public class ForgeConfigDataDriver extends TextDataDriver
 			for (String childName : cfg.getCategoryNames())
 			{
 				ConfigCategory child = cfg.getCategory(childName);
-				if (child.isChild() && child.parent == cat) // intentional use
-															// of ==
+				if (child.isChild() && child.parent == cat) // intentional use of ==
 				{
 					name = child.getQualifiedName().replace(cat.getQualifiedName() + ".", "");
 					newInfo = info.getInfoForField(name);

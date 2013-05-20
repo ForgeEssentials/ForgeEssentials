@@ -44,7 +44,6 @@ public class SQLDataDriver extends AbstractDataDriver
 	private String					SURROUNDER			= "";
 
 	// Default constructor is good enough for us.
-
 	public SQLDataDriver()
 	{
 		connector = new DBConnector("CoreData", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.FEDIR.getPath() + "/FEData", false);
@@ -878,10 +877,24 @@ public class SQLDataDriver extends AbstractDataDriver
 		{
 			value = ((Integer) dbValue).byteValue();
 		}
-		else if (type.equals(byte.class) || type.equals(int.class) || type.equals(float.class) || type.equals(double.class) || type.equals(long.class) || type.equals(String.class) || type.equals(boolean.class))
+		else if (type.equals(byte.class) || type.equals(int.class) || type.equals(double.class) || type.equals(String.class) || type.equals(boolean.class))
 		{
 			// DB Value is an integer
 			value = dbValue;
+		}
+		else if (type.equals(float.class))
+		{
+			if (dbValue instanceof Double)
+				value = new Float(((Double) dbValue));
+			else if (dbValue instanceof Float)
+				value = dbValue;
+		}
+		else if (type.equals(long.class))
+		{
+			if (dbValue instanceof Integer)
+				value = new Long(((Integer) dbValue));
+			else if (dbValue instanceof Long)
+				value = dbValue;
 		}
 		else if (type.equals(double[].class))
 		{
