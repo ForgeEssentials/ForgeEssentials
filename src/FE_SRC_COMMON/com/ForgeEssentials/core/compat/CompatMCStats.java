@@ -23,8 +23,7 @@ public class CompatMCStats implements IServerStats
 
 	private static List<IServerStats>	handlers	= new ArrayList<IServerStats>();
 	private static Metrics				metrics;
-	private static String version = getVersion();
-
+	
 	public static void registerStats(IServerStats generator)
 	{
 		if (generator != null)
@@ -35,17 +34,12 @@ public class CompatMCStats implements IServerStats
 			throw new RuntimeException("Why would you register null?");
 	}
 
-	private static String getVersion() {
-		if (ForgeEssentials.beta.equals("true")){
-			return "Beta build";
-		}else return ForgeEssentials.version;
-	}
-
+	
 	public static void doMCStats()
 	{
 		try
 		{
-			metrics = new Metrics("ForgeEssentials", version);
+			metrics = new Metrics("ForgeEssentials", ForgeEssentials.version);
 
 			for (IServerStats obj : handlers)
 			{

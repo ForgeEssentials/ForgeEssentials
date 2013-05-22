@@ -5,7 +5,7 @@
  | |    | |____\__ | |_| | |_) | |_) | (_) | |  | |_ 
  |_|    |______|___/\__,_| .__/| .__/ \___/|_|   \__|
                          | |   | |                   
-                         |_|   |_|                   
+                         |_|   |_|                    <- good old ASCII art :P
 Forge Essentials Support
 =====================================================
 Written by Dries007.
@@ -39,7 +39,7 @@ Make sure you follow all of these steps:
 		a) Ask about your problem.
 		b) If told to "Make an issue on github.". Go to step 4.
 		c) If someone seems interested, give them the link to your pastebin.
-		d) There is always an op around. Likely someone will take note of you within 15 minutes. Please do not ping (say the full nick) or PM ops, yuo will be ignored.
+		d) There is always an op around. Likely someone will take note of you within 15 minutes. Please do not ping (say the full nick) or PM ops, you will be ignored.
 	
 	4) Make a github issue
 		a) Make a clear title.
@@ -48,5 +48,5 @@ Make sure you follow all of these steps:
 		d) Submit the issue.
 		e) Wait for a response. (You might want to enable email notifications.)
 		f) Respond to questions asked.
-			- If you get asked for the configs, put them on github.
+			- If you get asked for the configs, put them on github. Look in the ForgeEssentials folder.
 

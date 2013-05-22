@@ -2,7 +2,8 @@
 {
   "modid": "ForgeEssentialsClient",
   "name": "Forge Essentials Client Addon",
-  "description": "The client addon for the popular ForgeEssentials server-side mod. This addon will provide some nice client-side perks such as Selection Highlighting and MUCH MORE!!!!",
+  "description": "The client addon for the ForgeEssentials server-side mod. 
+	/n This addon provides some clientside functionality to add on to the ForgeEssentials server side experience and is optional.",
   "version": "@VERSION@",
   "mcversion": "@MC@",
   "url": "https://github.com/ForgeEssentials/ForgeEssentialsMain",
@@ -15,8 +16,9 @@
 	"MysteriousAges",
 	"dries007",
 	"Malkierian"
+	"And a few others"
   ],
-  "credits": "Thanks to Route66Craft for hosting the Test Server, and all our Testers.",
+  "credits": "Thanks to ModdedMiners for hosting the Test Server, and all our Testers.",
   "logoFile": "/logo.png",
   "screenshots": [
   ],

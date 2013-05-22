@@ -32,8 +32,6 @@ public class ForgeEssentialsClient
 	
 	public Logger feclientlog;
 	
-	private static final String beta = "@BETA@";
-	
 	@SideOnly(Side.CLIENT)
 	private static PlayerInfoClient	info;
 
@@ -56,12 +54,6 @@ public class ForgeEssentialsClient
 		
 		if (FMLCommonHandler.instance().getSide().isServer() && getDevOverride() == false)
 			throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
-		
-		if (beta.equals("true")){
-			feclientlog.fine("You are running ForgeEssentials beta build @VERSION@");
-			feclientlog.fine("Please report all bugs to the github issue tracker at https://github.com/ForgeEssentials/ForgeEssentialsMain/issues.");
-			feclientlog.fine("We thank you for helping us to beta test ForgeEssentials.");
-		}
 		
 		Configuration config = new Configuration(e.getSuggestedConfigurationFile());
 		config.load();

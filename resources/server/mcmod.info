@@ -2,7 +2,7 @@
 {
   "modid": "ForgeEssentials",
   "name": "Forge Essentials",
-  "description": "WorldEdit, Worldguard, Essentials, and Permissions all in one Forge mod",
+  "description": "A Forge mod striving to provide Bukkit plugin functionality on a pure forge base",
   "version": "@VERSION@",
   "mcversion": "@MC@",
   "url": "https://github.com/ForgeEssentials/ForgeEssentialsMain",
@@ -15,8 +15,9 @@
 	"MysteriousAges",
 	"dries007",
 	"Malkierian"
+	"And a few others"
   ],
-  "credits": "Thanks to Route66Craft for hosting the Test Server, and all our Testers.",
+  "credits": "Thanks to ModdedMiners for hosting the Test Server, and all our Testers.",
   "logoFile": "/logo.png",
   "screenshots": [
   ],
