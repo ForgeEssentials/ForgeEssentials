@@ -15,7 +15,8 @@ MC="`head -n 2 VERSION.TXT | tail -n 1 VERSION.TXT`"
 echo "Version of ForgeEssentials is: ${VERSION} for MC ${MC}"
 
 echo "Downloading Forge..."
-wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.5.1-7.7.2.682.zip
+#wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.5.1-7.7.2.682.zip
+wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
 # if it didn't downlaod, try the mirror...
 #if [ ! -f "minecraftforge-src-*.zip" ]
 #then

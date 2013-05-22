@@ -40,7 +40,7 @@ public class Data
 		IIWMob.put("worldJavaClassName", "aab");
 		IIWMob.put("getBlockMetadataMethodName", "h");// searge name func_72805_g
 		IIWMob.put("blockJavaClassName", "apa");
-		IIWMob.put("blocksListFieldName", "p");// searge name field_71973_m
+		IIWMob.put("blocksListFieldName", "m");// searge name field_71973_m
 		IIWMob.put("entityPlayerJavaClassName", "sq");
 		IIWMob.put("entityPlayerMPJavaClassName", "jc");
 

@@ -5,6 +5,7 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.WorldBorder.WorldBorder;
 
+
 public interface IEffect
 {
 	void registerConfig(Configuration config, String category);
