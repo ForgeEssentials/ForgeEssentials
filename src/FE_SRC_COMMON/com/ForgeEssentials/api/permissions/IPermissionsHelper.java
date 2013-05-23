@@ -11,20 +11,73 @@ import com.ForgeEssentials.api.permissions.query.PropQuery;
 @SuppressWarnings("rawtypes")
 public interface IPermissionsHelper
 {
+	// Javadocs please
+	
+	/**
+	 * Check if a permission is allowed
+	 * @param query A PermQuery object
+	 * @return true if allowed, false if not.
+	 */
+	
 	boolean checkPermAllowed(PermQuery query);
-
+	
 	PermResult checkPermResult(PermQuery query);
-
+	
+	/**
+	 * populates the given PropQuery with a value.
+	 */
 	void getPermissionProp(PropQuery query);
 
+	/**
+	 * Create a group within a zone
+	 * @param groupName Name of the group
+	 * @param zoneName Name of the zone the group is under
+	 * @param prefix Chat prefix
+	 * @param suffix Chat suffix
+	 * @param parent Parent group
+	 * @param priority Priority that the group should be checked in
+	 * @return Group created
+	 */
 	Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority);
 
+	/**
+	 * Set a permission for a player
+	 * @param username The player's username
+	 * @param permission The permission node name
+	 * @param allow Is the permission allowed or denied
+	 * @param zoneID The zone in which the permission takes effect
+	 * @return 
+	 */
 	String setPlayerPermission(String username, String permission, boolean allow, String zoneID);
 
+	/**
+	 * Set a permission for a group
+	 * @param username The group name
+	 * @param permission The permission node name
+	 * @param allow Is the permission allowed or denied
+	 * @param zoneID The zone in which the permission takes effect
+	 * @return 
+	 */
 	String setGroupPermission(String group, String permission, boolean allow, String zoneID);
 
+	/**
+	 * Set a permission prop for a player
+	 * @param username The player's username
+	 * @param permission The permission node name
+	 * @param value Value of the permission prop
+	 * @param zoneID The zone in which the permission takes effect
+	 * @return 
+	 */
 	String setPlayerPermissionProp(String username, String permission, String value, String zoneID);
 
+	/**
+	 * Set a permission for a player
+	 * @param username The player's username
+	 * @param permission The permission node name
+	 * @param value Value of the permission prop
+	 * @param zoneID The zone in which the permission takes effect
+	 * @return 
+	 */
 	String setGroupPermissionProp(String group, String permission, String value, String zoneID);
 
 	ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults);
