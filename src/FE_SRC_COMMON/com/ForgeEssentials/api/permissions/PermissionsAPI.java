@@ -8,8 +8,8 @@ import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PropQuery;
 
-// This is a bouncer class for all Permissions API duties.
-
+@Deprecated
+// to be replaced by @link APIRegistry
 @SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class PermissionsAPI
 {
@@ -25,9 +25,7 @@ public abstract class PermissionsAPI
 		return manager.checkPermResult(query);
 	}
 
-	/**
-	 * populates the given PropQuery with a value.
-	 */
+	
 	public static void getPermissionProp(PropQuery query)
 	{
 		manager.getPermissionProp(query);

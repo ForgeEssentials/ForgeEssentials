@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.economy.EconManager;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -35,9 +35,9 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 			{
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(player.username + Localization.get(Localization.wallet_GET_TARGET) + EconManager.getMoneyString(player.username));
+					sender.sendChatToPlayer(player.username + Localization.get(Localization.wallet_GET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
 				}
-				player.sendChatToPlayer(Localization.get(Localization.wallet_GET_SELF) + EconManager.getMoneyString(player.username));
+				player.sendChatToPlayer(Localization.get(Localization.wallet_GET_SELF) + APIRegistry.wallet.getMoneyString(player.username));
 			}
 		}
 		else
@@ -59,7 +59,7 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				sender.sendChatToPlayer(player.username + Localization.get(Localization.wallet_GET_TARGET) + EconManager.getMoneyString(player.username));
+				sender.sendChatToPlayer(player.username + Localization.get(Localization.wallet_GET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
 			}
 		}
 		else

@@ -2,8 +2,8 @@ package com.ForgeEssentials.economy;
 
 import java.io.File;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.economy.EconManager;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -39,8 +39,8 @@ public class ModuleEconomy
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
-		EconManager.manager = new WalletHandler();
-		GameRegistry.registerPlayerTracker((IPlayerTracker) EconManager.manager);
+		APIRegistry.wallet = new WalletHandler();
+		GameRegistry.registerPlayerTracker((IPlayerTracker) APIRegistry.wallet);
 	}
 
 	@FEModule.ServerInit

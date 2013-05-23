@@ -3,7 +3,7 @@ package com.ForgeEssentials.snooper.response;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.economy.EconManager;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.json.JSONObject;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
@@ -59,7 +59,7 @@ public class PlayerInfoResonce extends Response
 		{
 			if (sendMoney)
 			{
-				PlayerData.put("Money", "" + EconManager.getWallet(player.username));
+				PlayerData.put("Money", "" + APIRegistry.wallet.getWallet(player.username));
 			}
 		}
 		catch (Exception e)
