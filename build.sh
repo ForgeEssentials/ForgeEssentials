@@ -11,7 +11,7 @@ if [ BETA = true ]
 then VERSION="${VERSION}.${BUILD_NUMBER}-betas"
 else VERSION="${VERSION}.${BUILD_NUMBER}"
 fi
-MC="`head -n 2 VERSION.TXT | tail -n 1 VERSION.TXT`"
+MC="`head -2 VERSION.TXT | tail -1 VERSION.TXT`"
 echo "Version of ForgeEssentials is: ${VERSION} for MC ${MC}"
 
 echo "Downloading Forge..."
