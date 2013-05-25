@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.PermissionsAPI;
@@ -49,7 +50,8 @@ public class ModulePermissions
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		ZoneManager.manager = new ZoneHelper();
-		PermissionsAPI.manager = new PermissionsHelper();
+		PermissionsAPI.manager = new PermissionsHelper();// old version kept for compatibility
+		APIRegistry.perms = new PermissionsHelper();// new one for new API
 
 		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
 		permLoader = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));

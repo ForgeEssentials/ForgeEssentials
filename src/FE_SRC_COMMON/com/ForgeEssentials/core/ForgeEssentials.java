@@ -20,6 +20,7 @@ import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
 import com.ForgeEssentials.core.misc.UnfriendlyItemList;
+import com.ForgeEssentials.core.misc.scripting.ScriptPlayerTracker;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
 import com.ForgeEssentials.core.preloader.FEModContainer;
@@ -120,17 +121,10 @@ public class ForgeEssentials
 		version = e.getModMetadata().version;
 
 		// setup fedir stuff
-		if (FMLCommonHandler.instance().getSide().isClient())
-		{
-			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials-CLIENT");
-		}
-		else
-		{
-			FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
-		}
+		FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
 
 		config = new CoreConfig();
-
+		GameRegistry.registerPlayerTracker(new ScriptPlayerTracker());
 		bc = new SanityChecker();
 		bc.run();
 
