@@ -104,6 +104,7 @@ public class ForgeEssentials
 	private CoreCommands			cmds;
 
 	private TaskRegistry			tasks;
+	private OutputHandler log;
 
 	public ForgeEssentials()
 	{
@@ -113,6 +114,7 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		log = new OutputHandler();
 		
 		// FE MUST BE FIRST!!
 		GameRegistry.registerPlayerTracker(new PlayerTracker());

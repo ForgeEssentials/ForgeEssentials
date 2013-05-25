@@ -10,14 +10,14 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public final class OutputHandler
 {
-	public static Logger	felog = getLogger();
+	public static Logger	felog;
 	
 	public static boolean debugmode;
 	
-	private static Logger getLogger(){
-		Logger log = Logger.getLogger("ForgeEssentials");
-        log.setParent(FMLLog.getLogger());
-        return log;
+	
+	public OutputHandler(){
+		felog = Logger.getLogger("ForgeEssentials");
+        felog.setParent(FMLLog.getLogger());
 	}
 
 	/**
