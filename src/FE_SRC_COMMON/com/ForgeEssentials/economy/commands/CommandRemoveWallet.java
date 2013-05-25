@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -32,7 +33,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[0]);
 			int amountToSubtract = Integer.parseInt(args[1]);
 
 			if (player == null)
@@ -61,7 +62,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 2)
 		{
-			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+			EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[0]);
 			int amountToSubtract = Integer.parseInt(args[1]);
 
 			if (player == null)
