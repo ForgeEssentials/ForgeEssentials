@@ -9,8 +9,8 @@ import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 
 public class FlatFileGroups
 {
@@ -105,7 +105,7 @@ public class FlatFileGroups
 		String[] list;
 		for (Group g : groups)
 		{
-			if (g.name.equals(PermissionsAPI.getDEFAULT().name))
+			if (g.name.equals(APIRegistry.perms.getDEFAULT().name))
 			{
 				continue;
 			}

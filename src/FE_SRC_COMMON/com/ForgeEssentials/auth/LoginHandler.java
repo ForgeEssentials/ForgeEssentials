@@ -11,7 +11,7 @@ public class LoginHandler implements IPlayerTracker
 {
 	public LoginHandler()
 	{
-		OutputHandler.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
+		OutputHandler.felog.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
 	}
 
 	@Override

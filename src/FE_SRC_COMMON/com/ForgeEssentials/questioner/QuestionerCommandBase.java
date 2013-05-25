@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -277,7 +277,7 @@ public abstract class QuestionerCommandBase extends CommandBase
 
 	public boolean checkCommandPerm(EntityPlayer player)
 	{
-		return PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
 	}
 
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)

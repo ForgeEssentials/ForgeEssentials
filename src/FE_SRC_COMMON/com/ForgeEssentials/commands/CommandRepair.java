@@ -7,8 +7,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
@@ -41,7 +41,7 @@ public class CommandRepair extends FEcmdModuleCommands
 			item.setItemDamage(0);
 
 		}
-		else if (args.length == 1 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		else if (args.length == 1 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)

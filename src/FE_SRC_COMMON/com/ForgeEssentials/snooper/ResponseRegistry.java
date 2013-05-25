@@ -21,7 +21,7 @@ public class ResponseRegistry
 			throw new RuntimeException("You are attempting to register a response on an used ID: " + ID);
 		else
 		{
-			OutputHandler.finer("Response " + response.getName() + " ID: " + ID + " registered!");
+			OutputHandler.felog.finer("Response " + response.getName() + " ID: " + ID + " registered!");
 			response.id = ID;
 			map.put(ID, response);
 		}

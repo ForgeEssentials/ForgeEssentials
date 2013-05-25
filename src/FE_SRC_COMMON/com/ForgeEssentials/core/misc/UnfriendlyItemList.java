@@ -119,7 +119,7 @@ public abstract class UnfriendlyItemList
 
 			// save
 			if (!map.containsKey(name) && map.containsValue(item.itemID)) map.put(name, item.itemID);
-			else OutputHandler.severe("Double item! Name:" + name + " ID:" + item.itemID);
+			else OutputHandler.felog.severe("Double item! Name:" + name + " ID:" + item.itemID);
 		}
 	}
 

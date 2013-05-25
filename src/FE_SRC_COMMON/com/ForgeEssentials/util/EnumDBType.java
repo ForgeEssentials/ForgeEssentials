@@ -37,7 +37,7 @@ public enum EnumDBType
 		}
 		catch (ClassNotFoundException e)
 		{
-			OutputHandler.severe("Could not load the " + this + " JDBC Driver! Does it exist in the lib directory?");
+			OutputHandler.felog.severe("Could not load the " + this + " JDBC Driver! Does it exist in the lib directory?");
 			Throwables.propagateIfPossible(e);
 		}
 	}

@@ -6,7 +6,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.data.api.IReconstructData;
 import com.ForgeEssentials.data.api.SaveableObject;
@@ -114,7 +114,7 @@ public class Grave
 			return true;
 		if (player.username.equals(owner))
 			return true;
-		if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, Deathchest.PERMISSION_BYPASS)))
+		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, Deathchest.PERMISSION_BYPASS)))
 			return true;
 
 		return false;

@@ -116,7 +116,7 @@ public class AutoBackup implements Runnable
 					}
 					catch (IOException e)
 					{
-						OutputHandler.severe("Why you no delete file? "+file);
+						OutputHandler.felog.severe("Why you no delete file? "+file);
 						e.printStackTrace();
 					}
 				}
@@ -142,8 +142,8 @@ public class AutoBackup implements Runnable
 				}
 				catch (IOException e)
 				{
-					OutputHandler.severe("Try #" + trys + "Removed file: " + file.getAbsolutePath());
-					OutputHandler.severe("Why you no delete file?");
+					OutputHandler.felog.severe("Try #" + trys + "Removed file: " + file.getAbsolutePath());
+					OutputHandler.felog.severe("Why you no delete file?");
 					e.printStackTrace();
 				}
 			}
@@ -154,7 +154,7 @@ public class AutoBackup implements Runnable
 	{
 		if (ModuleBackup.baseFolder.getFreeSpace() / 1024 / 1024 / 1024 < BackupConfig.minimunFreeSpace)
 		{
-			OutputHandler.warning("Low disk space. Removing old backups.");
+			OutputHandler.felog.warning("Low disk space. Removing old backups.");
 
 			int trys = 0;
 			while (ModuleBackup.baseFolder.getFreeSpace() / 1024 / 1024 / 1024 < BackupConfig.minimunFreeSpace && trys < 5)
@@ -173,8 +173,8 @@ public class AutoBackup implements Runnable
 					}
 					catch (IOException e)
 					{
-						OutputHandler.severe("Try #" + trys + "Removed file: " + file.getAbsolutePath());
-						OutputHandler.severe("Why you no delete file?");
+						OutputHandler.felog.severe("Try #" + trys + "Removed file: " + file.getAbsolutePath());
+						OutputHandler.felog.severe("Why you no delete file?");
 						e.printStackTrace();
 					}
 				}

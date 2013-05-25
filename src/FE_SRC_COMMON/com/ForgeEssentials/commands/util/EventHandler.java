@@ -16,7 +16,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -83,7 +83,7 @@ public class EventHandler
 			{
 				if (e.entityPlayer.getCurrentEquippedItem().itemID == Item.compass.itemID)
 				{
-					if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, "ForgeEssentials.BasicCommands.jump")))
+					if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, "ForgeEssentials.BasicCommands.jump")))
 					{
 						try
 						{
@@ -154,7 +154,7 @@ public class EventHandler
 			}
 			
 			PropQueryPlayerSpot query = new PropQueryPlayerSpot(player, "ForgeEssentials.BasicCommands.spawnType");
-			PermissionsAPI.getPermissionProp(query);
+			APIRegistry.perms.getPermissionProp(query);
 			
 			if (query.getStringValue().equalsIgnoreCase("none"))
 			{
@@ -175,7 +175,7 @@ public class EventHandler
 			}
 
 			query = new PropQueryPlayerSpot(player, "ForgeEssentials.BasicCommands.spawnPoint");
-			PermissionsAPI.getPermissionProp(query);
+			APIRegistry.perms.getPermissionProp(query);
 
 			if (!query.hasValue())
 				throw new RuntimeException("NO GLOBAL SPAWN SET!!!");

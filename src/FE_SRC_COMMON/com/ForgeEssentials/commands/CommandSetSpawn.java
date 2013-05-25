@@ -9,8 +9,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
@@ -182,18 +182,18 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				}
 			}
 			
-			PermissionsAPI.setPlayerPermissionProp(name, permProp, prop, zone.getZoneName());
+			APIRegistry.perms.setPlayerPermissionProp(name, permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else if (args[1].equalsIgnoreCase("group"))
 		{
-			if (PermissionsAPI.getGroupForName(args[2]) == null)
+			if (APIRegistry.perms.getGroupForName(args[2]) == null)
 			{
 				OutputHandler.chatError(sender, args[2] + " does not exist as a group!");
 				return;
 			}
 			
-			PermissionsAPI.setGroupPermissionProp(args[2], permProp, prop, zone.getZoneName());
+			APIRegistry.perms.setGroupPermissionProp(args[2], permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else if (args[1].equalsIgnoreCase("zone"))
@@ -212,7 +212,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				return;
 			}
 			
-			PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, permProp, prop, zone.getZoneName());
+			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else
@@ -335,18 +335,18 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 					name = player.username;
 				}
 			
-			PermissionsAPI.setPlayerPermissionProp(name, permProp, prop, zone.getZoneName());
+				APIRegistry.perms.setPlayerPermissionProp(name, permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else if (args[1].equalsIgnoreCase("group"))
 		{
-			if (PermissionsAPI.getGroupForName(args[2]) == null)
+			if (APIRegistry.perms.getGroupForName(args[2]) == null)
 			{
 				OutputHandler.chatError(sender, args[2] + " does not exist as a group!");
 				return;
 			}
 			
-			PermissionsAPI.setGroupPermissionProp(args[2], permProp, prop, zone.getZoneName());
+			APIRegistry.perms.setGroupPermissionProp(args[2], permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else if (args[1].equalsIgnoreCase("zone"))
@@ -361,7 +361,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				return;
 			}
 			
-			PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, permProp, prop, zone.getZoneName());
+			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else
@@ -371,7 +371,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 	public static void setSpawnPoint(WorldPoint p, Zone zone)
 	{
 		String val = p.dim + ";" + p.x + ";" + p.y + ";" + p.z;
-		PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, SPAWN_PROP, val, zone.getZoneName());
+		APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, SPAWN_PROP, val, zone.getZoneName());
 	}
 
 	@Override
@@ -417,7 +417,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 			else if (args[1].equalsIgnoreCase("group"))
 			{
-				List<Group> groups = PermissionsAPI.getGroupsInZone(ZoneManager.getGLOBAL().getZoneName());
+				List<Group> groups = APIRegistry.perms.getGroupsInZone(ZoneManager.getGLOBAL().getZoneName());
 				for (Group g : groups)
 					completes.add(g.name);
 			}

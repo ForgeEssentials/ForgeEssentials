@@ -144,7 +144,7 @@ public class Localization
 
 	public void load()
 	{
-		OutputHandler.finer("Loading languages");
+		OutputHandler.felog.finer("Loading languages");
 
 		File folder = new File(ForgeEssentials.FEDIR, "lang");
 		boolean forceDl = false;
@@ -173,7 +173,7 @@ public class Localization
 				}
 				catch (Exception e)
 				{
-					OutputHandler.warning("Error while downloading " + langFile);
+					OutputHandler.felog.warning("Error while downloading " + langFile);
 					e.printStackTrace();
 				}
 
@@ -186,11 +186,11 @@ public class Localization
 			{
 				File file = new File(folder.getAbsolutePath(), langFile);
 				LanguageRegistry.instance().loadLocalization(file.toURI().toURL(), file.getName().substring(0, file.getName().lastIndexOf(".")), true);
-				OutputHandler.info("Loaded language file " + langFile);
+				OutputHandler.felog.info("Loaded language file " + langFile);
 			}
 			catch (Exception e)
 			{
-				OutputHandler.info("Could not load language file " + langFile);
+				OutputHandler.felog.info("Could not load language file " + langFile);
 				e.printStackTrace();
 			}
 		}

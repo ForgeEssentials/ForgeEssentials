@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
@@ -611,7 +611,7 @@ public class SqlHelper
 		}
 		catch (Exception e)
 		{
-			OutputHandler.severe("[PermSQL] error preparing common statements");
+			OutputHandler.felog.severe("[PermSQL] error preparing common statements");
 			Throwables.propagate(e);
 		}
 
@@ -625,7 +625,7 @@ public class SqlHelper
 					break;
 			}
 
-		OutputHandler.finer("Statement preparation successful");
+		OutputHandler.felog.finer("Statement preparation successful");
 	}
 
 	private void prepareH2Statements(Connection db)
@@ -636,7 +636,7 @@ public class SqlHelper
 		}
 		catch (Exception e)
 		{
-			OutputHandler.severe("[PermSQL] error preparing H2 statements");
+			OutputHandler.felog.severe("[PermSQL] error preparing H2 statements");
 			Throwables.propagate(e);
 		}
 	}
@@ -649,7 +649,7 @@ public class SqlHelper
 		}
 		catch (Exception e)
 		{
-			OutputHandler.severe("[PermSQL] error preparing MySQL statements");
+			OutputHandler.felog.severe("[PermSQL] error preparing MySQL statements");
 			Throwables.propagate(e);
 		}
 	}
@@ -666,12 +666,12 @@ public class SqlHelper
 					instance.generate();
 				}
 				instance.prepareStatements(instance.db, ModulePermissions.config.connector.getActiveType());
-				OutputHandler.fine("Permissions database connection closed. Connection succesfully reset.");
+				OutputHandler.felog.fine("Permissions database connection closed. Connection succesfully reset.");
 			}
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.severe("Permissions connection database unable to be reset!");
+			OutputHandler.felog.severe("Permissions connection database unable to be reset!");
 			Throwables.propagate(e);
 		}
 
@@ -699,7 +699,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.severe("Unable to connect to the database!");
+			OutputHandler.felog.severe("Unable to connect to the database!");
 			Throwables.propagate(e);
 		}
 	}
@@ -796,7 +796,7 @@ public class SqlHelper
 			// DEFAULT group
 			StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (").append(COLUMN_GROUP_GROUPID).append(", ").append(COLUMN_GROUP_NAME).append(", ").append(COLUMN_GROUP_PRIORITY).append(", ")
 					.append(COLUMN_GROUP_ZONE).append(") ").append(" VALUES ").append(" (").append(DEFAULT_ID).append(", ") // groupID
-					.append("'").append(PermissionsAPI.getDEFAULT().name).append("', ").append("0, ").append(GLOBAL_ID).append(")"); // priority, zone
+					.append("'").append(APIRegistry.perms.getDEFAULT().name).append("', ").append("0, ").append(GLOBAL_ID).append(")"); // priority, zone
 			db.createStatement().executeUpdate(query.toString());
 
 			// GLOBAL zone
@@ -811,7 +811,7 @@ public class SqlHelper
 			db.createStatement().executeUpdate(query.toString());
 
 			// Entry player...
-			query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_USERNAME).append(", ").append(COLUMN_PLAYER_PLAYERID).append(") ").append(" VALUES ").append(" ('").append(PermissionsAPI.getEntryPlayer())
+			query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_USERNAME).append(", ").append(COLUMN_PLAYER_PLAYERID).append(") ").append(" VALUES ").append(" ('").append(APIRegistry.perms.getEntryPlayer())
 					.append("', ").append(ENTRY_PLAYER_ID).append(")");
 			db.createStatement().executeUpdate(query.toString());
 
@@ -834,7 +834,7 @@ public class SqlHelper
 			return;
 		try
 		{
-			OutputHandler.info(" Inserting registration permissions into Permissions DB");
+			OutputHandler.felog.info(" Inserting registration permissions into Permissions DB");
 
 			// make a statement to be used later.. just easier...
 			PreparedStatement s;
@@ -939,7 +939,7 @@ public class SqlHelper
 			}
 			s.clearParameters();
 
-			OutputHandler.info(" Registration permissions successfully inserted");
+			OutputHandler.felog.info(" Registration permissions successfully inserted");
 		}
 		catch (SQLException e)
 		{
@@ -964,7 +964,7 @@ public class SqlHelper
 		try
 		{
 			File file = new File(ModulePermissions.permsFolder, importDir);
-			OutputHandler.info("[PermSQL] Importing permissions from " + importDir);
+			OutputHandler.felog.info("[PermSQL] Importing permissions from " + importDir);
 
 			FlatFileGroups g = new FlatFileGroups(file);
 			HashMap<String, Object> map = g.load();
@@ -978,7 +978,7 @@ public class SqlHelper
 			FlatFilePermProps pmp = new FlatFilePermProps(file);
 			map.putAll(pmp.load());
 
-			OutputHandler.info("[PermSQL] Loaded Configs into ram");
+			OutputHandler.felog.info("[PermSQL] Loaded Configs into ram");
 
 			// KILL ALL DE DATA!!!!
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_PERMISSION);
@@ -986,19 +986,19 @@ public class SqlHelper
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_LADDER_NAME);
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_GROUP_CONNECTOR);
 			db.createStatement().executeUpdate("TRUNCATE TABLE " + TABLE_PLAYER);
-			OutputHandler.info("[PermSQL] Cleaned tables of existing data");
+			OutputHandler.felog.info("[PermSQL] Cleaned tables of existing data");
 
 			// call generate to remake the stuff that should be there
 			{
 				// recreate EntryPlayer player
 				StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_USERNAME).append(", ").append(COLUMN_PLAYER_PLAYERID).append(") ").append(" VALUES ").append(" ('")
-						.append(PermissionsAPI.getEntryPlayer()).append("', ").append(ENTRY_PLAYER_ID).append(")");
+						.append(APIRegistry.perms.getEntryPlayer()).append("', ").append(ENTRY_PLAYER_ID).append(")");
 				db.createStatement().executeUpdate(query.toString());
 
 				// recreate DEFAULT group
 				query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (").append(COLUMN_GROUP_GROUPID).append(", ").append(COLUMN_GROUP_NAME).append(", ").append(COLUMN_GROUP_PRIORITY).append(", ").append(COLUMN_GROUP_ZONE)
 						.append(") ").append(" VALUES ").append(" (").append(DEFAULT_ID).append(", ") // groupID
-						.append("'").append(PermissionsAPI.getDEFAULT().name).append("', ").append("0, ").append(GLOBAL_ID).append(")"); // priority, zone
+						.append("'").append(APIRegistry.perms.getDEFAULT().name).append("', ").append("0, ").append(GLOBAL_ID).append(")"); // priority, zone
 				db.createStatement().executeUpdate(query.toString());
 			}
 
@@ -1010,7 +1010,7 @@ public class SqlHelper
 				s.executeUpdate();
 			}
 			s.clearParameters();
-			OutputHandler.info("[PermSQL] Imported players");
+			OutputHandler.felog.info("[PermSQL] Imported players");
 
 			// create groups
 			s = getInstance().statementPutPlayerInGroup;
@@ -1020,7 +1020,7 @@ public class SqlHelper
 
 			for (Group group : (ArrayList<Group>) map.get("groups"))
 			{
-				if (group.name.equals(PermissionsAPI.getDEFAULT().name))
+				if (group.name.equals(APIRegistry.perms.getDEFAULT().name))
 				{
 					continue;
 				}
@@ -1056,7 +1056,7 @@ public class SqlHelper
 			{
 				updateGroup(group);
 			}
-			OutputHandler.info("[PermSQL] Imported groups");
+			OutputHandler.felog.info("[PermSQL] Imported groups");
 
 			// add groups to ladders and stuff
 			s = statementPutLadderName;
@@ -1077,7 +1077,7 @@ public class SqlHelper
 					s2.executeUpdate();
 				}
 			}
-			OutputHandler.info("[PermSQL] Imported ladders");
+			OutputHandler.felog.info("[PermSQL] Imported ladders");
 
 			// now the permissions
 			ArrayList<PermissionHolder> perms = (ArrayList<PermissionHolder>) map.get("playerPerms");
@@ -1091,7 +1091,7 @@ public class SqlHelper
 			{
 				setPermission(perm.target, true, perm, perm.zone);
 			}
-			OutputHandler.info("[PermSQL] Imported permissions");
+			OutputHandler.felog.info("[PermSQL] Imported permissions");
 
 			// now the permissions
 			ArrayList<PermissionPropHolder> props = (ArrayList<PermissionPropHolder>) map.get("playerPermProps");
@@ -1105,9 +1105,9 @@ public class SqlHelper
 			{
 				setPermProp(perm.target, true, perm, perm.zone);
 			}
-			OutputHandler.info("[PermSQL] Imported permission properties");
+			OutputHandler.felog.info("[PermSQL] Imported permission properties");
 
-			OutputHandler.info("[PermSQL] Import successful!");
+			OutputHandler.felog.info("[PermSQL] Import successful!");
 		}
 		catch (SQLException e)
 		{
@@ -1198,7 +1198,7 @@ public class SqlHelper
 
 			if (lID < -4 || zID < -4 || pID < -4)
 			{
-				OutputHandler.warning("Ladder, Player, or Zone does not exist!");
+				OutputHandler.felog.warning("Ladder, Player, or Zone does not exist!");
 				return end;
 			}
 
@@ -1888,7 +1888,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.severe("[PermSQL] Player dump for export failed!");
+			OutputHandler.felog.severe("[PermSQL] Player dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -1921,7 +1921,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("[PermSQL] Group dump for export failed!");
+			OutputHandler.felog.info("[PermSQL] Group dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -1950,7 +1950,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("[PermSQL] Player Permission dump for export failed!");
+			OutputHandler.felog.info("[PermSQL] Player Permission dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -1979,7 +1979,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("[PermSQL] Group Permission dump for export failed!");
+			OutputHandler.felog.info("[PermSQL] Group Permission dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -2007,7 +2007,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("[PermSQL] Player Permission Property dump for export failed!");
+			OutputHandler.felog.info("[PermSQL] Player Permission Property dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -2035,7 +2035,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("[PermSQL] Group Permission Property dump for export failed!");
+			OutputHandler.felog.info("[PermSQL] Group Permission Property dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -2076,7 +2076,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("[PermSQL] Group Connection dump for export failed!");
+			OutputHandler.felog.info("[PermSQL] Group Connection dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -2136,7 +2136,7 @@ public class SqlHelper
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.info("[PermSQL] Ladder dump for export failed!");
+			OutputHandler.felog.info("[PermSQL] Ladder dump for export failed!");
 			e.printStackTrace();
 			list = null;
 		}
@@ -2425,7 +2425,7 @@ public class SqlHelper
 		getInstance().statementGetPlayerIDFromName.clearParameters();
 
 		if (!set.next())
-			return getPlayerIDFromPlayerName(PermissionsAPI.getEntryPlayer());
+			return getPlayerIDFromPlayerName(APIRegistry.perms.getEntryPlayer());
 
 		return set.getInt(1);
 	}
@@ -2433,7 +2433,7 @@ public class SqlHelper
 	/**
 	 * @param playerID
 	 * @return null if the Player does not exist.
-	 * @throws SQLException
+	 * @throws SQLException 
 	 */
     private static synchronized String getPlayerNameFromPlayerID(int playerID) throws SQLException
 	{

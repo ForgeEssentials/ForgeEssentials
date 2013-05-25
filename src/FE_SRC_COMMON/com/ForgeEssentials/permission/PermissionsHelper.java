@@ -470,10 +470,6 @@ public class PermissionsHelper implements IPermissionsHelper
 		return EPPrefix;
 	}
 
-	public void setEPPrefix(String ePPrefix)
-	{
-		EPPrefix = ePPrefix;
-	}
 
 	@Override
 	public Group getDEFAULT()
@@ -482,7 +478,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	}
 
 	@Override
-	public void setEPPrifix(String ePPrefix)
+	public void setEPPrefix(String ePPrefix)
 	{
 		EPPrefix = ePPrefix;
 	}

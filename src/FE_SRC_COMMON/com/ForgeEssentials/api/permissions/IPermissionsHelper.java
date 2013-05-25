@@ -128,7 +128,7 @@ public interface IPermissionsHelper
 
 	String getEPPrefix();
 
-	void setEPPrifix(String ePPrefix);
+	void setEPPrefix(String ePPrefix);
 
 	String getEPSuffix();
 

@@ -28,7 +28,7 @@ public class ConfigWorldControl extends ModuleConfigBase
 		Property prop = config.get("WorldControl", "BlocksPerTick", 20);
 		prop.comment = "Specifies the maximum blocks/tick that can be changed via the WorldControl functions. Powerful computers may set it higher, servers may want to keep it lower.";
 		blocksPerTick = prop.getInt();
-		OutputHandler.info("Setting blocks/tick to: " + blocksPerTick);
+		OutputHandler.felog.info("Setting blocks/tick to: " + blocksPerTick);
 
 		config.save();
 	}
@@ -50,7 +50,7 @@ public class ConfigWorldControl extends ModuleConfigBase
 		config.load();
 
 		blocksPerTick = config.get("WorldControl", "BlocksPerTick", 20).getInt();
-		OutputHandler.fine("Setting blocks/tick to: " + blocksPerTick);
+		OutputHandler.felog.fine("Setting blocks/tick to: " + blocksPerTick);
 	}
 
 }

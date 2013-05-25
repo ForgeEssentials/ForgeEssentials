@@ -113,7 +113,6 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		OutputHandler.init(e.getModLog());
 		
 		// FE MUST BE FIRST!!
 		GameRegistry.registerPlayerTracker(new PlayerTracker());

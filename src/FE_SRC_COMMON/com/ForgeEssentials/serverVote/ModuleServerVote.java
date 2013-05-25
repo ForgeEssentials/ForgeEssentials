@@ -158,7 +158,7 @@ public class ModuleServerVote implements IPlayerTracker
 
     public static void log(VoteEvent vote)
     {
-        OutputHandler.finer("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
+        OutputHandler.felog.finer("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
     }
 
     @Override
@@ -203,7 +203,7 @@ public class ModuleServerVote implements IPlayerTracker
         {
             for (ItemStack stack : config.freeStuff)
             {
-                OutputHandler.finer(stack);
+                OutputHandler.felog.finer(stack.toString());
                 player.inventory.addItemStackToInventory(stack.copy());
             }
         }

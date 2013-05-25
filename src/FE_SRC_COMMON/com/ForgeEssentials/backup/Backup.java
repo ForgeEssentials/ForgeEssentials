@@ -224,7 +224,7 @@ public class Backup implements Runnable
 	{
 		if (fileList.isEmpty())
 		{
-			OutputHandler.info("No files to backup in " + dir);
+			OutputHandler.felog.info("No files to backup in " + dir);
 			return;
 		}
 

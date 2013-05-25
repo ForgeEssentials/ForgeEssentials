@@ -46,7 +46,7 @@ public class ConfigChat extends ModuleConfigBase
 	@Override
 	public void init()
 	{
-		OutputHandler.finer("Loading chatconfigs");
+		OutputHandler.felog.finer("Loading chatconfigs");
 		config = new Configuration(file, true);
 
 		config.addCustomCategoryComment("Chat", "Chat Configs");

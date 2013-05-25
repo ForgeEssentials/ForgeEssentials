@@ -26,14 +26,14 @@ public class ScriptPlayerTracker implements IPlayerTracker{
 	
 	@Override
 	public void onPlayerLogin(EntityPlayer player) {
-		OutputHandler.info("Running command scripts!");
+		OutputHandler.felog.info("Running command scripts!");
 		try{
 			if (!scriptfolder.exists()){
 			scriptfolder  = new File(ForgeEssentials.FEDIR, "scripting");
 			loginplayer = new File(scriptfolder, "login/player/");
 			}
 		}catch (Exception e){
-			OutputHandler.warning("Something broke - we couldn't setup the scripting folders. You'll have to do it yourself.");
+			OutputHandler.felog.warning("Something broke - we couldn't setup the scripting folders. You'll have to do it yourself.");
 		}
 		
 		// now run player scripts
@@ -64,12 +64,12 @@ public class ScriptPlayerTracker implements IPlayerTracker{
 
 			}
 		}catch (Exception e){
-			OutputHandler.warning("Could not find command script for player " + player.username + ", ignoring!");
+			OutputHandler.felog.warning("Could not find command script for player " + player.username + ", ignoring!");
 		}finally{
 			for (Object s : loginscripts.toArray()){
 				String s1 = s.toString();
 				MinecraftServer.getServer().getCommandManager().executeCommand(player, s1);
-				OutputHandler.info("Successfully run command scripts for player "+ player.username);
+				OutputHandler.felog.info("Successfully run command scripts for player "+ player.username);
 			}
 		}
 		

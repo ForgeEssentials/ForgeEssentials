@@ -102,8 +102,8 @@ public class StorageManager implements IStorageManager
 			}
 			catch (Exception e)
 			{
-				OutputHandler.info("Problem loading DataDriver " + entry.getKey());
-				OutputHandler.info("ForgeEssentials will not be able to save any data through this driver");
+				OutputHandler.felog.info("Problem loading DataDriver " + entry.getKey());
+				OutputHandler.felog.info("ForgeEssentials will not be able to save any data through this driver");
 				e.printStackTrace();
 			}
 		}
@@ -140,8 +140,8 @@ public class StorageManager implements IStorageManager
 		}
 		catch (Exception e)
 		{
-			OutputHandler.info("Problem initializing DataDriver " + name);
-			OutputHandler.info("ForgeEssentials will not be able to save any data through this driver");
+			OutputHandler.felog.info("Problem initializing DataDriver " + name);
+			OutputHandler.felog.info("ForgeEssentials will not be able to save any data through this driver");
 			e.printStackTrace();
 		}
 	}
@@ -275,27 +275,27 @@ public class StorageManager implements IStorageManager
 			}
 			catch (SecurityException e)
 			{
-				OutputHandler.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
+				OutputHandler.felog.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
 				Throwables.propagate(e);
 			}
 			catch (InstantiationException e)
 			{
-				OutputHandler.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
+				OutputHandler.felog.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
 				Throwables.propagate(e);
 			}
 			catch (IllegalAccessException e)
 			{
-				OutputHandler.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
+				OutputHandler.felog.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
 				Throwables.propagate(e);
 			}
 			catch (IllegalArgumentException e)
 			{
-				OutputHandler.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
+				OutputHandler.felog.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
 				Throwables.propagate(e);
 			}
 			catch (InvocationTargetException e)
 			{
-				OutputHandler.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
+				OutputHandler.felog.severe(infoType.getCanonicalName() + " must have useable constructors! See the ITypeInfo documentation!");
 				Throwables.propagate(e);
 			}
 		}

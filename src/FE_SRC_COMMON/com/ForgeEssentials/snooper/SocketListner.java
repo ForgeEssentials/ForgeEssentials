@@ -50,10 +50,10 @@ public class SocketListner implements Runnable
 	@Override
 	public void run()
 	{
-	    OutputHandler.info("Starting snooper on " + inetAddress + ":" + port);
+	    OutputHandler.felog.info("Starting snooper on " + inetAddress + ":" + port);
 		if (!init())
 		{
-			OutputHandler.severe("Unable to start the snooper!");
+			OutputHandler.felog.severe("Unable to start the snooper!");
 			return;
 		}
 

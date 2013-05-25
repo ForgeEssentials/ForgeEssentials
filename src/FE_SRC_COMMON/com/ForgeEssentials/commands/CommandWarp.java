@@ -7,8 +7,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.CommandDataManager;
@@ -50,7 +50,7 @@ public class CommandWarp extends FEcmdModuleCommands
 		{
 			if (CommandDataManager.warps.containsKey(args[0].toLowerCase()))
 			{
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
 					Warp warp = CommandDataManager.warps.get(args[0].toLowerCase());
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.username);
@@ -70,7 +70,7 @@ public class CommandWarp extends FEcmdModuleCommands
 		}
 		else if (args.length == 2)
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
 			{
 				if (args[0].equalsIgnoreCase("set"))
 				{
@@ -129,7 +129,7 @@ public class CommandWarp extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.info("CommandBlock Error: " + Localization.get("command.warp.notfound"));
+				OutputHandler.felog.info("CommandBlock Error: " + Localization.get("command.warp.notfound"));
 			}
 		}
 	}

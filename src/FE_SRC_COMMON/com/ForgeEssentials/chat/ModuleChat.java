@@ -173,15 +173,15 @@ public class ModuleChat
 						}
 						catch (Exception e)
 						{
-							OutputHandler.finer("Can't remove " + cmd.getCommandName());
-							OutputHandler.finer("" + e.getLocalizedMessage());
+							OutputHandler.felog.finer("Can't remove " + cmd.getCommandName());
+							OutputHandler.felog.finer("" + e.getLocalizedMessage());
 							e.printStackTrace();
 						}
 					}
 				}
 				if (toRemove != null)
 				{
-					OutputHandler.finer("Removing command '" + toRemove.getCommandName() + "' from class: " + cmdClass.getName());
+					OutputHandler.felog.finer("Removing command '" + toRemove.getCommandName() + "' from class: " + cmdClass.getName());
 					cmdList.remove(toRemove);
 				}
 				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, "commandSet", "b");
@@ -189,7 +189,7 @@ public class ModuleChat
 				Map<String, CommandMsg> cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandMap", "a");
 				if (cmds.containsKey("tell"))
 				{
-					OutputHandler.finer("Removing command tell from vanilla set.");
+					OutputHandler.felog.finer("Removing command tell from vanilla set.");
 					cmds.remove("tell");
 					cmds.put("tell", new CommandMsg());
 				}

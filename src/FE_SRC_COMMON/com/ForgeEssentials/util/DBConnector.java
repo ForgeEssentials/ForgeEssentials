@@ -158,7 +158,7 @@ public class DBConnector
 						return con;
 					else
 					{
-						OutputHandler.warning("[FE+SQL] " + name + " Parent check failed, going to in-house.");
+						OutputHandler.felog.warning("[FE+SQL] " + name + " Parent check failed, going to in-house.");
 					}
 				}
 
@@ -216,7 +216,7 @@ public class DBConnector
 		}
 		catch (SQLException e)
 		{
-			OutputHandler.severe("[FE+SQL] " + name + " CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
+			OutputHandler.felog.severe("[FE+SQL] " + name + " CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
 			Throwables.propagate(e);
 		}
 
@@ -249,7 +249,7 @@ public class DBConnector
 		}
 		catch (Exception e)
 		{
-			OutputHandler.severe("[FE+SQL] " + name + " Failed parent check: " + e);
+			OutputHandler.felog.severe("[FE+SQL] " + name + " Failed parent check: " + e);
 			return null;
 		}
 	}

@@ -7,7 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraftforge.common.Configuration;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.core.PlayerInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -34,10 +34,10 @@ public class FlatFilePlayers
 			{
 				continue;
 			}
-			else if (cat.equalsIgnoreCase(PermissionsAPI.getEntryPlayer()))
+			else if (cat.equalsIgnoreCase(APIRegistry.perms.getEntryPlayer()))
 			{
-				PermissionsAPI.setEPPrefix(config.get(cat, "prefix", " ").getString());
-				PermissionsAPI.setEPSuffix(config.get(cat, "suffix", " ").getString());
+				APIRegistry.perms.setEPPrefix(config.get(cat, "prefix", " ").getString());
+				APIRegistry.perms.setEPSuffix(config.get(cat, "suffix", " ").getString());
 				continue;
 			}
 
@@ -80,10 +80,10 @@ public class FlatFilePlayers
 		PlayerInfo info;
 		for (String name : players)
 		{
-			if (name.equalsIgnoreCase(PermissionsAPI.getEntryPlayer()))
+			if (name.equalsIgnoreCase(APIRegistry.perms.getEntryPlayer()))
 			{
-				config.get(name, "prefix", PermissionsAPI.getEPPrefix());
-				config.get(name, "suffix", PermissionsAPI.getEPSuffix());
+				config.get(name, "prefix", APIRegistry.perms.getEPPrefix());
+				config.get(name, "suffix", APIRegistry.perms.getEPSuffix());
 				continue;
 			}
 

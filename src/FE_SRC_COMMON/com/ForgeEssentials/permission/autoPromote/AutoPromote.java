@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.data.api.IReconstructData;
 import com.ForgeEssentials.data.api.SaveableObject;
@@ -76,9 +76,9 @@ public class AutoPromote
 			{
 				String groupName = promoteList.get(PlayerInfo.getPlayerInfo(player.username).getTimePlayed() + "");
 				// Only add player to group if he isn't already.
-				if (!PermissionsAPI.getApplicableGroups(player.username, false, zone).contains(PermissionsAPI.getGroupForName(groupName)))
+				if (!APIRegistry.perms.getApplicableGroups(player.username, false, zone).contains(APIRegistry.perms.getGroupForName(groupName)))
 				{
-					PermissionsAPI.addPlayerToGroup(groupName, player.username, zone);
+					APIRegistry.perms.addPlayerToGroup(groupName, player.username, zone);
 					if (sendMsg)
 					{
 						String msg = this.msg;

@@ -32,7 +32,7 @@ public class DuplicateCommandRemoval
 				HashMultimap<String, ICommand> duplicates = HashMultimap.create();
 
 				Set<ICommand> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), FIELDNAME);
-				OutputHandler.finer("commandSet size: " + cmdList.size());
+				OutputHandler.felog.finer("commandSet size: " + cmdList.size());
 
 				ICommand keep;
 				for (ICommand cmd : cmdList)
@@ -40,7 +40,7 @@ public class DuplicateCommandRemoval
 					keep = initials.put(cmd.getCommandName(), cmd);
 					if (keep != null)
 					{
-						OutputHandler.finer("Duplicate command found! Name:" + keep.getCommandName());
+						OutputHandler.felog.finer("Duplicate command found! Name:" + keep.getCommandName());
 						duplicates.put(cmd.getCommandName(), cmd);
 						duplicates.put(cmd.getCommandName(), keep);
 					}
@@ -82,13 +82,13 @@ public class DuplicateCommandRemoval
 						{
 							toRemove.add(cmd);
 							cmdClass = cmd.getClass();
-							OutputHandler.finer("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
+							OutputHandler.felog.finer("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
 						}
 						else
 						{
 							toRemove.add(keep);
 							cmdClass = keep.getClass();
-							OutputHandler.finer("Removing command '" + keep.getCommandName() + "' from class: " + cmdClass.getName());
+							OutputHandler.felog.finer("Removing command '" + keep.getCommandName() + "' from class: " + cmdClass.getName());
 
 							keep = cmd;
 							kept = other;
@@ -98,13 +98,13 @@ public class DuplicateCommandRemoval
 				}
 
 				cmdList.removeAll(toRemove);
-				OutputHandler.finer("commandSet size: " + cmdList.size());
+				OutputHandler.felog.finer("commandSet size: " + cmdList.size());
 				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, "commandSet", "b");
 
 			}
 			catch (Exception e)
 			{
-				OutputHandler.finer("Something broke: " + e.getLocalizedMessage());
+				OutputHandler.felog.finer("Something broke: " + e.getLocalizedMessage());
 				e.printStackTrace();
 			}
 		}
@@ -126,8 +126,8 @@ public class DuplicateCommandRemoval
 		}
 		catch (Exception e)
 		{
-			OutputHandler.finer("Can't remove " + cmd.getCommandName());
-			OutputHandler.finer("" + e.getLocalizedMessage());
+			OutputHandler.felog.finer("Can't remove " + cmd.getCommandName());
+			OutputHandler.felog.finer("" + e.getLocalizedMessage());
 			e.printStackTrace();
 			return -1;
 		}

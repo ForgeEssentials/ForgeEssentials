@@ -7,8 +7,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
@@ -38,7 +38,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 		Zone zone = ZoneManager.getWorldZone(sender.worldObj);
 		if (args.length >= 1)
 		{
-			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 				return;
@@ -49,7 +49,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 
 				PropQueryPlayerZone query = new PropQueryPlayerZone(player, CommandSetSpawn.SPAWN_PROP, zone, true);
-				PermissionsAPI.getPermissionProp(query);
+				APIRegistry.perms.getPermissionProp(query);
 
 				String val = query.getStringValue();
 				String[] split = val.split("[;_]");
@@ -75,7 +75,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 		else if (args.length == 0)
 		{
 			PropQueryPlayerZone query = new PropQueryPlayerZone(sender, CommandSetSpawn.SPAWN_PROP, zone, true);
-			PermissionsAPI.getPermissionProp(query);
+			APIRegistry.perms.getPermissionProp(query);
 
 			String val = query.getStringValue();
 			String[] split = val.split("[;_]");

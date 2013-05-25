@@ -2,8 +2,8 @@ package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
@@ -117,7 +117,7 @@ public final class PermissionsPlayerHandler
 	 */
 	private static PermResult getResultFromZone(Zone zone, PermQueryPlayer event)
 	{
-		ArrayList<Group> groups = PermissionsAPI.getApplicableGroups(event.doer.username, false, zone.getZoneName());
+		ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(event.doer.username, false, zone.getZoneName());
 		PermResult result = PermResult.UNKNOWN;
 		Zone tempZone = zone;
 		Group group;
@@ -148,7 +148,7 @@ public final class PermissionsPlayerHandler
 			// check defaults... unless it has the override..
 			if (result.equals(PermResult.UNKNOWN) && !event.dOverride)
 			{
-				result = SqlHelper.getPermissionResult(PermissionsAPI.getDEFAULT().name, true, event.checker, zone.getZoneName(), event.checkForward);
+				result = SqlHelper.getPermissionResult(APIRegistry.perms.getDEFAULT().name, true, event.checker, zone.getZoneName(), event.checkForward);
 			}
 
 			// still unknown? check parent zones.

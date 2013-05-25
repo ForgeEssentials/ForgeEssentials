@@ -89,7 +89,7 @@ public class VoteReceiver extends Thread
 		{
 			server = new ServerSocket();
 			server.bind(new InetSocketAddress(host, port));
-			OutputHandler.info("Votifier connection handler initialized!");
+			OutputHandler.felog.info("Votifier connection handler initialized!");
 		}
 		catch (Exception ex)
 		{
@@ -173,7 +173,7 @@ public class VoteReceiver extends Thread
 		        {
 		            if (!ModuleServerVote.config.allowOfflineVotes)
 		            {
-		                OutputHandler.finer("Player for vote not online, vote canceled.");
+		                OutputHandler.felog.finer("Player for vote not online, vote canceled.");
 		                vote.setFeedback("notOnline");
 		                vote.setCanceled(true);
 		                return;

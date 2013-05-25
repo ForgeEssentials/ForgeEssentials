@@ -51,7 +51,7 @@ public class LoginMessage
 			}
 			catch (Exception e)
 			{
-				OutputHandler.info("Error reading the MOTD file.");
+				OutputHandler.felog.info("Error reading the MOTD file.");
 				e.printStackTrace();
 			}
 		}
@@ -93,7 +93,7 @@ public class LoginMessage
 			}
 			catch (Exception e)
 			{
-				OutputHandler.info("Error reading the MOTD file.");
+				OutputHandler.felog.info("Error reading the MOTD file.");
 				e.printStackTrace();
 			}
 

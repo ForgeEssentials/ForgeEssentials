@@ -5,7 +5,7 @@ import java.util.EnumSet;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
@@ -33,7 +33,7 @@ public class TeleportCenter implements IScheduledTickHandler
 
 	public static void addToTpQue(WarpPoint point, EntityPlayer player)
 	{
-		if (PlayerInfo.getPlayerInfo(player.username).TPcooldown != 0 && !PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
+		if (PlayerInfo.getPlayerInfo(player.username).TPcooldown != 0 && !APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
 		{
 			player.sendChatToPlayer(Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).TPcooldown)));
 		}
@@ -41,7 +41,7 @@ public class TeleportCenter implements IScheduledTickHandler
 		{
 			PlayerInfo.getPlayerInfo(player.username).TPcooldown = tpCooldown;
 			TPdata data = new TPdata(point, player);
-			if (tpWarmup == 0 || PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, BYPASS_WARMUP)))
+			if (tpWarmup == 0 || APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASS_WARMUP)))
 			{
 				data.doTP();
 			}

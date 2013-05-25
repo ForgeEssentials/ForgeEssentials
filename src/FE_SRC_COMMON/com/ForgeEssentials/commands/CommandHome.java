@@ -6,8 +6,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
@@ -44,7 +44,7 @@ public class CommandHome extends FEcmdModuleCommands
 				TeleportCenter.addToTpQue(home, player);
 			}
 		}
-		else if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".set")))
+		else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".set")))
 		{
 			if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
 			{

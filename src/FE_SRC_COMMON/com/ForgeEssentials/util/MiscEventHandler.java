@@ -49,7 +49,7 @@ public class MiscEventHandler
 			}
 
 			float percent = playersS * 100.0f / playersT;
-			OutputHandler.finer("Players sleeping: " + percent + "%");
+			OutputHandler.felog.finer("Players sleeping: " + percent + "%");
 			if (percent > 50)
 			{
 				WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];

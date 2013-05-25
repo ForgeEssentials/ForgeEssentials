@@ -20,7 +20,7 @@ public class FriendlyItemList
 	{
 		instance = this;
 		makeList();
-		OutputHandler.info("Item & blockList made. Added " + itemMap.size() + " items and " + blockMap.size() + " blocks.");
+		OutputHandler.felog.info("Item & blockList made. Added " + itemMap.size() + " items and " + blockMap.size() + " blocks.");
 	}
 
 	public static FriendlyItemList instance()
@@ -40,7 +40,7 @@ public class FriendlyItemList
 				}
 				catch (Exception e)
 				{
-					OutputHandler.finer("Not added to list: " + item.getClass().getName());
+					OutputHandler.felog.finer("Not added to list: " + item.getClass().getName());
 				}
 			}
 		}
@@ -56,7 +56,7 @@ public class FriendlyItemList
 				}
 				catch (Exception e)
 				{
-					OutputHandler.finer("Not added to list: " + block.getClass().getName());
+					OutputHandler.felog.finer("Not added to list: " + block.getClass().getName());
 				}
 			}
 		}

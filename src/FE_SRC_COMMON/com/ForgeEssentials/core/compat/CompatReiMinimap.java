@@ -2,7 +2,7 @@ package com.ForgeEssentials.core.compat;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 
 public class CompatReiMinimap
@@ -23,31 +23,31 @@ public class CompatReiMinimap
 		{
 			String MOTD = "\u00a7e\u00a7f";
 
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, cavemap)))
+			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, cavemap)))
 			{
 				MOTD = "\u00a77" + MOTD;
 			}
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, radarSquid)))
+			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, radarSquid)))
 			{
 				MOTD = "\u00a76" + MOTD;
 			}
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, radarSlime)))
+			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, radarSlime)))
 			{
 				MOTD = "\u00a75" + MOTD;
 			}
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, radarMod)))
+			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, radarMod)))
 			{
 				MOTD = "\u00a74" + MOTD;
 			}
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, radarAnimal)))
+			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, radarAnimal)))
 			{
 				MOTD = "\u00a73" + MOTD;
 			}
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, radarPlayer)))
+			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, radarPlayer)))
 			{
 				MOTD = "\u00a72" + MOTD;
 			}
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(username, cavemap)))
+			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, cavemap)))
 			{
 				MOTD = "\u00a71" + MOTD;
 			}

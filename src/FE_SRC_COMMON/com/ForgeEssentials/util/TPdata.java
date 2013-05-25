@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
@@ -59,7 +59,7 @@ public class TPdata
 				server.transferPlayerToDimension((EntityPlayerMP) player, point.dim);
 			}
 			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 1, point.zd, point.yaw, point.pitch);
-			if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, TeleportCenter.BYPASS_COOLDOWN)))
+			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TeleportCenter.BYPASS_COOLDOWN)))
 			{
 				PlayerInfo.getPlayerInfo(player.username).TPcooldown = TeleportCenter.tpCooldown;
 			}
@@ -67,7 +67,7 @@ public class TPdata
 		}
 		catch (Exception e)
 		{
-			OutputHandler.warning("Someone tried to crash the server when warping!");
+			OutputHandler.felog.warning("Someone tried to crash the server when warping!");
 			e.printStackTrace();
 		}
 	}

@@ -21,7 +21,7 @@ public class ConfigTickets extends ModuleConfigBase
 	@Override
 	public void init()
 	{
-		OutputHandler.finer("Loading Tickets Config");
+		OutputHandler.felog.finer("Loading Tickets Config");
 		config = new Configuration(file, true);
 
 		String cat = "Tickets";

@@ -16,7 +16,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.data.api.ClassContainer;
 import com.ForgeEssentials.data.api.DataStorageManager;
@@ -77,7 +77,7 @@ public class Deathchest
 	{
 		if (!enable)
 			return;
-		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, PERMISSION_MAKE)))
+		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, PERMISSION_MAKE)))
 			return;
 		WorldPoint point = new WorldPoint(e.entityPlayer);
 		World world = e.entityPlayer.worldObj;

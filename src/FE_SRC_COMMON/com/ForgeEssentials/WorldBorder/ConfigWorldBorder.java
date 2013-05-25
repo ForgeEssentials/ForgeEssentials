@@ -65,12 +65,12 @@ public class ConfigWorldBorder extends ModuleConfigBase
 					}
 					catch (Exception e)
 					{
-						OutputHandler.info("Could not initialize '" + effect + "' in stage '" + stage + "'");
+						OutputHandler.felog.info("Could not initialize '" + effect + "' in stage '" + stage + "'");
 					}
 				}
 				catch (ClassNotFoundException e)
 				{
-					OutputHandler.info("'" + effect + "' in the stage '" + stage + "' does not exist!");
+					OutputHandler.felog.info("'" + effect + "' in the stage '" + stage + "' does not exist!");
 				}
 			}
 

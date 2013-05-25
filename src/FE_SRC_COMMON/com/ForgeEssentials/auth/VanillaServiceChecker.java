@@ -20,7 +20,7 @@ public class VanillaServiceChecker extends TimerTask
 	public VanillaServiceChecker()
 	{
 		online = oldOnline = check();
-		OutputHandler.info("VanillaServiceChecker initialized. Vanilla online mode: '" + ModuleAuth.vanillaMode() + "' Mojang login servers: '" + online + "'");
+		OutputHandler.felog.info("VanillaServiceChecker initialized. Vanilla online mode: '" + ModuleAuth.vanillaMode() + "' Mojang login servers: '" + online + "'");
 	}
 
 	@Override

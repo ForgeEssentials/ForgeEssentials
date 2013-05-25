@@ -92,7 +92,7 @@ public class cmdWrapper extends ForgeEssentialsCommandBase
             }
             else
             {
-                OutputHandler.severe("Error in this shortcut (" + this.name + "). The command sepcified in the config is no FE command.");
+                OutputHandler.felog.severe("Error in this shortcut (" + this.name + "). The command sepcified in the config is no FE command.");
                 return;
             }
         }

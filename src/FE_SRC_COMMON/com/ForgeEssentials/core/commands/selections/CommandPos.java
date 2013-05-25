@@ -7,7 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
@@ -110,7 +110,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
 		z = mop.blockZ;
 
 		Point point = new Point(x, y, z);
-		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(player, getCommandPerm(), point)))
+		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, getCommandPerm(), point)))
 		{
 			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 			return;

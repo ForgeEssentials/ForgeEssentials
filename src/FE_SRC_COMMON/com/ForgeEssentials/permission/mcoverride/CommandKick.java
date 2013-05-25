@@ -4,7 +4,7 @@ import net.minecraft.command.CommandServerKick;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 
 public class CommandKick extends CommandServerKick
@@ -14,7 +14,7 @@ public class CommandKick extends CommandServerKick
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
-			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, "Minecraft.commands." + getCommandName()));
+			return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, "Minecraft.commands." + getCommandName()));
 		else
 			return true;
 	}

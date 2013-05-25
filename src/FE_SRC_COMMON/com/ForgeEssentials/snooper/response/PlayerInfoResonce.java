@@ -6,7 +6,6 @@ import net.minecraftforge.common.Configuration;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.json.JSONException;
 import com.ForgeEssentials.api.json.JSONObject;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.snooper.Response;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.core.PlayerInfo;
@@ -105,7 +104,7 @@ public class PlayerInfoResonce extends Response
 
 		try
 		{
-			PlayerData.put("group", PermissionsAPI.getHighestGroup(player).name);
+			PlayerData.put("group", APIRegistry.perms.getHighestGroup(player).name);
 		}
 		catch (Exception e)
 		{

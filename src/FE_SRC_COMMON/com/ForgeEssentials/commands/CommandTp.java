@@ -8,7 +8,7 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
@@ -57,7 +57,7 @@ public class CommandTp extends FEcmdModuleCommands
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
-		else if (args.length == 2 && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+		else if (args.length == 2 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);

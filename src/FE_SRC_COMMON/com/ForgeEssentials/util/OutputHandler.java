@@ -3,19 +3,21 @@ package com.ForgeEssentials.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import cpw.mods.fml.common.FMLLog;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 public final class OutputHandler
 {
-	public static Logger	felog;
+	public static Logger	felog = getLogger();
 	
 	public static boolean debugmode;
-
-	public static void init(Logger logger)
-	{
-		felog = logger;
-		felog.setParent(Logger.getLogger(Logger.GLOBAL_LOGGER_NAME));
+	
+	private static Logger getLogger(){
+		Logger log = Logger.getLogger("ForgeEssentials");
+        log.setParent(FMLLog.getLogger());
+        return log;
 	}
 
 	/**
@@ -75,66 +77,6 @@ public final class OutputHandler
 		}
 	}
 
-	public static void severe(Object msg)
-	{
-		felog.severe(msg.toString());
-	}
-
-	public static void warning(Object msg)
-	{
-		felog.warning(msg.toString());
-	}
-
-	public static void info(Object msg)
-	{
-		felog.info(msg.toString());
-	}
-
-	public static void fine(Object msg)
-	{
-		felog.fine(msg.toString());
-	}
-
-	public static void finer(Object msg)
-	{
-		felog.finer(msg.toString());
-	}
-
-	public static void finest(Object msg)
-	{
-		felog.finest(msg.toString());
-	}
-
-	public static void severe(String msg)
-	{
-		felog.severe(msg);
-	}
-
-	public static void warning(String msg)
-	{
-		felog.warning(msg);
-	}
-
-	public static void info(String msg)
-	{
-		felog.info(msg);
-	}
-
-	public static void fine(String msg)
-	{
-		felog.fine(msg);
-	}
-
-	public static void finer(String msg)
-	{
-		felog.finer(msg);
-	}
-
-	public static void finest(String msg)
-	{
-		felog.finest(msg);
-	}
-
 	/**
 	 * Use this to throw errors that can continue without crashing the server.
 	 * @param level
@@ -153,7 +95,6 @@ public final class OutputHandler
 	 */
 	public static void debug(Object msg)
 	{
-		
 		if (debugmode)
 		{
 			System.out.println(" {DEBUG} >>>> " + msg);

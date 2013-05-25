@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -50,7 +50,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("list"))
 			{
-				if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".list")))
+				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".list")))
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}
@@ -85,7 +85,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("list"))
 			{
-				if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".list")))
+				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".list")))
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}
@@ -135,7 +135,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".info." + args[1])))
+					if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".info." + args[1])))
 					{
 						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 					}
@@ -144,8 +144,8 @@ public class CommandZone extends ForgeEssentialsCommandBase
 						Zone zone = ZoneManager.getZone(args[1]);
 						PropQueryBlanketZone query1 = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.entry", zone, false);
 						PropQueryBlanketZone query2 = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.exit", zone, false);
-						PermissionsAPI.getPermissionProp(query1);
-						PermissionsAPI.getPermissionProp(query2);
+						APIRegistry.perms.getPermissionProp(query1);
+						APIRegistry.perms.getPermissionProp(query2);
 
 						OutputHandler.chatConfirmation(sender, "Name: " + zone.getZoneName());
 						OutputHandler.chatConfirmation(sender, "Parent: " + zone.parent);
@@ -168,7 +168,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".remove." + args[1])))
+					if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".remove." + args[1])))
 					{
 						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 					}
@@ -191,7 +191,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOSELECTION));
 					return;
 				}
-				else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".define", info.getSelection(), true)))
+				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".define", info.getSelection(), true)))
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}
@@ -213,7 +213,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOSELECTION));
 					return;
 				}
-				else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".redefine." + args[1], info.getSelection(), true)))
+				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".redefine." + args[1], info.getSelection(), true)))
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}
@@ -240,7 +240,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
-				else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".setparent." + args[1])))
+				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".setparent." + args[1])))
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}
@@ -261,21 +261,21 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
 					return;
 				}
-				else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".entry." + args[1])))
+				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".entry." + args[1])))
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}
 				else if (args[2].equalsIgnoreCase("get"))
 				{
 					PropQueryBlanketZone query = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.entry", ZoneManager.getZone(args[1]), false);
-					PermissionsAPI.getPermissionProp(query);
+					APIRegistry.perms.getPermissionProp(query);
 					OutputHandler.chatConfirmation(sender, query.getStringValue());
 
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("remove"))
                 {
-                    PermissionsAPI.clearGroupPermissionProp(PermissionsAPI.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.entry", args[1]);
+                    APIRegistry.perms.clearGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.entry", args[1]);
                     OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Entry Message removed.");
                 }
 				else
@@ -285,7 +285,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					{
 						tempEntry += args[i] + " ";
 					}
-					PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.entry", tempEntry, args[1]);
+					APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.entry", tempEntry, args[1]);
 
 					OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Entry Message set to: " + tempEntry);
 					return;
@@ -298,21 +298,21 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
 					return;
 				}
-				else if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".exit." + args[1])))
+				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".exit." + args[1])))
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}
 				else if (args[2].equalsIgnoreCase("get"))
 				{
 					PropQueryBlanketZone query = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.exit", ZoneManager.getZone(args[1]), false);
-					PermissionsAPI.getPermissionProp(query);
+					APIRegistry.perms.getPermissionProp(query);
 					OutputHandler.chatConfirmation(sender, query.getStringValue());
 
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("remove"))
 				{
-				    PermissionsAPI.clearGroupPermissionProp(PermissionsAPI.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.exit", args[1]);
+				    APIRegistry.perms.clearGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.exit", args[1]);
 				    OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Exit Message removed.");
 				}
 				else
@@ -322,7 +322,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					{
 						tempEntry += args[i] + " ";
 					}
-					PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.exit", tempEntry, args[1]);
+					APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.exit", tempEntry, args[1]);
 
 					OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Exit Message set to: " + tempEntry);
 					return;

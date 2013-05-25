@@ -90,7 +90,7 @@ public class NBTDataDriver extends BinaryDataDriver
 		}
 		catch (Exception e)
 		{
-			OutputHandler.info("Writing NBT to " + file + " failed");
+			OutputHandler.felog.info("Writing NBT to " + file + " failed");
 		}
 	}
 

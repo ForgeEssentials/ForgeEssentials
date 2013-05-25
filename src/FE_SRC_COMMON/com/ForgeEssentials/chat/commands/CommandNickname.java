@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.Localization;
@@ -54,7 +54,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 		}
 		else if (args.length == 2)
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
 				EntityPlayerMP player = func_82359_c(sender, args[0]);
 				if (args[1].equalsIgnoreCase("del"))

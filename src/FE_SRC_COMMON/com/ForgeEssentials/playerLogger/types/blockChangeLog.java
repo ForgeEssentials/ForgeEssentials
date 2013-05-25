@@ -31,7 +31,7 @@ public class blockChangeLog extends logEntry
 			}
 			catch (Exception e)
 			{
-				OutputHandler.severe(e);
+				OutputHandler.felog.severe(e.toString());
 				e.printStackTrace();
 			}
 		}

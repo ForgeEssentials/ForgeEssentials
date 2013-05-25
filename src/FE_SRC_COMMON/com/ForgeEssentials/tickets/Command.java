@@ -7,7 +7,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
@@ -181,7 +181,7 @@ public class Command extends ForgeEssentialsCommandBase
 	public boolean permcheck(ICommandSender sender, String perm)
 	{
 		if (sender instanceof EntityPlayer)
-			return PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm));
+			return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm));
 		else
 			return true;
 	}

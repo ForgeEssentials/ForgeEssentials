@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -34,7 +34,7 @@ public class PlayerTracker implements IPlayerTracker
 		{
 			if (FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames().length + VIPslots > FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers())
 			{
-				if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, PERMISSION)))
+				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, PERMISSION)))
 				{
 					((EntityPlayerMP) player).playerNetServerHandler.kickPlayerFromServer(kickMessage);
 				}
@@ -45,7 +45,7 @@ public class PlayerTracker implements IPlayerTracker
 				EntityPlayerMP player2 = FunctionHelper.getPlayerForName(FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()[new Random().nextInt(FMLCommonHandler.instance().getMinecraftServerInstance()
 						.getAllUsernames().length)]);
 
-				if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player2, PERMISSION)))
+				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player2, PERMISSION)))
 				{
 					player2.playerNetServerHandler.kickPlayerFromServer(kickMessage);
 				}

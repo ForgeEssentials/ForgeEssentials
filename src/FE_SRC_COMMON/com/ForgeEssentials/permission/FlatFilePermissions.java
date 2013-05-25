@@ -8,7 +8,7 @@ import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 
 public class FlatFilePermissions
@@ -92,7 +92,7 @@ public class FlatFilePermissions
 			config.get(holder.zone + ".group." + holder.target, holder.getQualifiedName(), holder.allowed);
 		}
 
-		config.addCustomCategoryComment(ZoneManager.getGLOBAL().getZoneName() + ".group." + PermissionsAPI.getDEFAULT().name, "The group used to as a placeholder for zone flags and such.");
+		config.addCustomCategoryComment(ZoneManager.getGLOBAL().getZoneName() + ".group." + APIRegistry.perms.getDEFAULT().name, "The group used to as a placeholder for zone flags and such.");
 
 		config.save();
 	}

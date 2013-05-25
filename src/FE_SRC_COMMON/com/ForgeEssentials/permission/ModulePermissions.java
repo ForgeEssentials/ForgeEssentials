@@ -7,7 +7,6 @@ import net.minecraftforge.common.MinecraftForge;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
@@ -50,7 +49,6 @@ public class ModulePermissions
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		ZoneManager.manager = new ZoneHelper();
-		PermissionsAPI.manager = new PermissionsHelper();// old version kept for compatibility
 		APIRegistry.perms = new PermissionsHelper();// new one for new API
 
 		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
@@ -150,7 +148,6 @@ public class ModulePermissions
 		event.registerPermissionLevel("Minecraft.commands.xp", RegGroup.ZONE_ADMINS);
 		event.registerPermissionLevel("Minecraft.commands.toggledownfall", RegGroup.ZONE_ADMINS);
 		event.registerPermissionLevel("Minecraft.commands.testfor", RegGroup.MEMBERS);
-		event.registerPermissionLevel("Minecraft.commands.help", RegGroup.GUESTS);
 	}
 
 	@FEModule.ServerStop

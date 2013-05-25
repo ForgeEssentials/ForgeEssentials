@@ -11,9 +11,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -90,7 +90,7 @@ public class ModuleBackup
 
 	public static void msg(String msg)
 	{
-		OutputHandler.info(msg);
+		OutputHandler.felog.info(msg);
 		if (!BackupConfig.enableMsg)
 			return;
 		try
@@ -101,7 +101,7 @@ public class ModuleBackup
 			for (String username : manager.getAllUsernames())
 			{
 				EntityPlayerMP player = manager.getPlayerForUsername(username);
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
+				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
 				{
 					player.sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
 				}

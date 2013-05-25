@@ -6,9 +6,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
@@ -87,14 +87,14 @@ public class ModuleCommands
 		CommandDataManager.load();
 
 		PropQueryBlanketZone query = new PropQueryBlanketZone(CommandSetSpawn.SPAWN_PROP, ZoneManager.getGLOBAL(), false);
-		PermissionsAPI.getPermissionProp(query);
+		APIRegistry.perms.getPermissionProp(query);
 
 		// nothing set for the global??
 		if (!query.hasValue())
 		{
 			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
 			String val = "0;" + point.posX + ";" + point.posY + ";" + point.posZ;
-			PermissionsAPI.setGroupPermissionProp(PermissionsAPI.getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val, ZoneManager.getGLOBAL().getZoneName());
+			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val, ZoneManager.getGLOBAL().getZoneName());
 		}
 	}
 

@@ -12,8 +12,8 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.core.network.PacketPlayerLogger;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog.blockChangeLogCategory;
@@ -191,7 +191,7 @@ public class EventLogger implements IPlayerTracker
 			if (un.replaceAll("\"", "").equalsIgnoreCase(player.username))
 				return true;
 		}
-		for (Group group : PermissionsAPI.getApplicableGroups(player, false))
+		for (Group group : APIRegistry.perms.getApplicableGroups(player, false))
 		{
 			if (exempt_groups.contains(group.name))
 				return true;

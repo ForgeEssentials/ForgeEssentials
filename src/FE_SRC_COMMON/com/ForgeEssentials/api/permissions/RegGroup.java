@@ -1,5 +1,6 @@
 package com.ForgeEssentials.api.permissions;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
 /**
@@ -18,7 +19,7 @@ public enum RegGroup
 		@Override
 		public Group getGroup()
 		{
-			return PermissionsAPI.getDEFAULT();
+			return APIRegistry.perms.getDEFAULT();
 		}
 	},
 

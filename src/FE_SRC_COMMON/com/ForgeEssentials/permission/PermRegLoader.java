@@ -39,7 +39,7 @@ public class PermRegLoader
 			}
 			catch (Exception e)
 			{
-				OutputHandler.severe("Error trying to load permissions from \"" + modid + "\"!");
+				OutputHandler.felog.severe("Error trying to load permissions from \"" + modid + "\"!");
 				e.printStackTrace();
 			}
 		}

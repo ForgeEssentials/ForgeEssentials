@@ -11,7 +11,7 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -92,7 +92,7 @@ public class ChatFormatter
 		 */
 		if (event.message.contains("&"))
 		{
-			if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.Chat.usecolor")))
+			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.Chat.usecolor")))
 			{
 				message = FunctionHelper.formatColors(event.message);
 			}

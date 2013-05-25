@@ -13,9 +13,9 @@ import java.util.HashSet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
@@ -71,7 +71,7 @@ public class ModulePlayerLogger
 	{
 		if (!enable)
 			return;
-		OutputHandler.info("PlayerLogger module is enabled. Loading...");
+		OutputHandler.felog.info("PlayerLogger module is enabled. Loading...");
 	}
 
 	@Init
@@ -79,7 +79,7 @@ public class ModulePlayerLogger
 	{
 		for (String name : EventLogger.exempt_groups)
 		{
-			if (PermissionsAPI.getGroupForName(name) == null)
+			if (APIRegistry.perms.getGroupForName(name) == null)
 				throw new RuntimeException("Group '" + name + "' doesn't exist. Used in " + config.getFile().getName());
 		}
 
@@ -122,8 +122,8 @@ public class ModulePlayerLogger
 		}
 		catch (SQLException e1)
 		{
-			OutputHandler.info("Could not connect to database! Wrong credentials?");
-			OutputHandler.info(e1.getMessage());
+			OutputHandler.felog.info("Could not connect to database! Wrong credentials?");
+			OutputHandler.felog.info(e1.getMessage());
 			e1.printStackTrace();
 		}
 	}
@@ -161,7 +161,7 @@ public class ModulePlayerLogger
 		}
 		catch (Exception ex)
 		{
-			OutputHandler.warning("WARNING! MySQLConnector for playerLogger failed!");
+			OutputHandler.felog.warning("WARNING! MySQLConnector for playerLogger failed!");
 			ex.printStackTrace();
 		}
 	}
@@ -195,7 +195,7 @@ public class ModulePlayerLogger
 		}
 		else
 		{
-			OutputHandler.severe("PlayerLogger error: " + e.getLocalizedMessage());
+			OutputHandler.felog.severe("PlayerLogger error: " + e.getLocalizedMessage());
 		}
 	}
 	

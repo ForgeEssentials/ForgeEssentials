@@ -72,7 +72,7 @@ public class CallableMap
 		}
 		catch (Throwable e)
 		{
-			OutputHandler.severe("Error stripping methods from class! " + obj.getClass().getName());
+			OutputHandler.felog.severe("Error stripping methods from class! " + obj.getClass().getName());
 		}
 	}
 
@@ -112,7 +112,7 @@ public class CallableMap
 		}
 		catch (Throwable e)
 		{
-			OutputHandler.severe("Error stripping methods from class! " + c.getName());
+			OutputHandler.felog.severe("Error stripping methods from class! " + c.getName());
 		}
 	}
 

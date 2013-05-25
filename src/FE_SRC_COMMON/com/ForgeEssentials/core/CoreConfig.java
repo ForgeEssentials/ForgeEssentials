@@ -31,7 +31,7 @@ public class CoreConfig
 	// this is designed so it will work for any class.
 	public CoreConfig()
 	{
-		OutputHandler.finer("Loading configs");
+		OutputHandler.felog.finer("Loading configs");
 
 		config = new Configuration(mainconfig, true);
 

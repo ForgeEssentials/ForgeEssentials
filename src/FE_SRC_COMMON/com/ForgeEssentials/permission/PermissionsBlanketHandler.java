@@ -2,7 +2,7 @@ package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
 
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery;
@@ -91,7 +91,7 @@ public final class PermissionsBlanketHandler
 		Zone tempZone = zone;
 		while (result.equals(PermResult.UNKNOWN))
 		{
-			result = SqlHelper.getPermissionResult(PermissionsAPI.getDEFAULT().name, true, checker, tempZone.getZoneName(), checkForward);
+			result = SqlHelper.getPermissionResult(APIRegistry.perms.getDEFAULT().name, true, checker, tempZone.getZoneName(), checkForward);
 
 			// still unknown? check parent zones.
 			if (result.equals(PermResult.UNKNOWN))

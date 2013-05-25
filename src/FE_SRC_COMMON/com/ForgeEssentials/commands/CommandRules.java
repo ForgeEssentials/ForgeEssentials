@@ -24,8 +24,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.Configuration;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
@@ -54,12 +54,12 @@ public class CommandRules extends FEcmdModuleCommands
 	{
 		ArrayList<String> rules = new ArrayList<String>();
 
-		OutputHandler.info("Loading rules");
+		OutputHandler.felog.info("Loading rules");
 		if (!rulesFile.exists())
 		{
 			try
 			{
-				OutputHandler.info("No rules file found. Generating with default rules..");
+				OutputHandler.felog.info("No rules file found. Generating with default rules..");
 
 				rulesFile.createNewFile();
 
@@ -83,7 +83,7 @@ public class CommandRules extends FEcmdModuleCommands
 				streamWriter.close();
 				stream.close();
 
-				OutputHandler.info("Completed generating rules file.");
+				OutputHandler.felog.info("Completed generating rules file.");
 			}
 			catch (Exception e)
 			{
@@ -95,7 +95,7 @@ public class CommandRules extends FEcmdModuleCommands
 		{
 			try
 			{
-				OutputHandler.info("Rules file found. Reading...");
+				OutputHandler.felog.info("Rules file found. Reading...");
 
 				FileInputStream stream = new FileInputStream(rulesFile);
 				InputStreamReader streamReader = new InputStreamReader(stream);
@@ -127,7 +127,7 @@ public class CommandRules extends FEcmdModuleCommands
 				streamReader.close();
 				stream.close();
 
-				OutputHandler.info("Completed reading rules file. " + counter + " rules read.");
+				OutputHandler.felog.info("Completed reading rules file. " + counter + " rules read.");
 			}
 			catch (Exception e)
 			{
@@ -143,7 +143,7 @@ public class CommandRules extends FEcmdModuleCommands
 	{
 		try
 		{
-			OutputHandler.info("Saving rules");
+			OutputHandler.felog.info("Saving rules");
 
 			if (!rulesFile.exists())
 			{
@@ -168,7 +168,7 @@ public class CommandRules extends FEcmdModuleCommands
 			streamWriter.close();
 			stream.close();
 
-			OutputHandler.info("Completed saving rules file.");
+			OutputHandler.felog.info("Completed saving rules file.");
 		}
 		catch (Exception e)
 		{
@@ -226,7 +226,7 @@ public class CommandRules extends FEcmdModuleCommands
 			if (args[0].equalsIgnoreCase("help"))
 			{
 				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
-				if (PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
+				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
 				{
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
@@ -240,7 +240,7 @@ public class CommandRules extends FEcmdModuleCommands
 			return;
 		}
 
-		if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
+		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 			return;

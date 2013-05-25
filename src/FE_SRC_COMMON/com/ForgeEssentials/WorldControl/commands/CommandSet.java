@@ -8,7 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
@@ -66,7 +66,7 @@ public class CommandSet extends WorldControlCommandBase
 				BackupArea back = new BackupArea();
 
 				PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
-				PermResult result = PermissionsAPI.checkPermResult(query);
+				PermResult result = APIRegistry.perms.checkPermResult(query);
 
 				switch (result)
 					{

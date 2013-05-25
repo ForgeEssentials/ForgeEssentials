@@ -68,7 +68,7 @@ public class ExportThread extends Thread
 		}
 		else
 		{
-			OutputHandler.finest(msg);
+			OutputHandler.felog.finest(msg);
 		}
 	}
 }

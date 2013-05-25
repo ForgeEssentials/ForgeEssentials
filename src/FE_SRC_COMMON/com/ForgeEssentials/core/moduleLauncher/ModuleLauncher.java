@@ -33,7 +33,7 @@ public class ModuleLauncher
 
 	public void preLoad(FMLPreInitializationEvent e)
 	{
-		OutputHandler.info("Discovering and loading modules...");
+		OutputHandler.felog.info("Discovering and loading modules...");
 
 		// started ASM handling for the module loading.
 		Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
@@ -65,7 +65,7 @@ public class ModuleLauncher
 				}
 
 				temp.createAndPopulate();
-				OutputHandler.info("Loaded " + temp.name);
+				OutputHandler.felog.info("Loaded " + temp.name);
 			}
 		}
 

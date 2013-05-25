@@ -7,9 +7,9 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
@@ -83,7 +83,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 				if (!map.containsKey(args[1]))
 				{
 				    PropQueryPlayerSpot prop = new PropQueryPlayerSpot(sender, PERMPROP);
-			        PermissionsAPI.getPermissionProp(prop);
+				    APIRegistry.perms.getPermissionProp(prop);
 			        if (!prop.hasValue() ||  prop.getNumberValue() == -1)
 			        {
 			            map.put(args[1], new PWarp(sender.username, args[1], new WarpPoint(sender)));
@@ -117,7 +117,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 					OutputHandler.chatError(sender, Localization.get("command.personalwarp.notfound"));
 				}
 			}
-			else if (args[0].equalsIgnoreCase("limit") && PermissionsAPI.checkPermAllowed(new PermQueryPlayer(sender, PERMSETLIMIT)))
+			else if (args[0].equalsIgnoreCase("limit") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, PERMSETLIMIT)))
 			{
 			    if (args.length == 1)
 			    {
@@ -126,7 +126,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 			    else
 			    {
 			        String target;
-                    if (PermissionsAPI.getGroupForName(args[1]) != null) target = "g:" + PermissionsAPI.getGroupForName(args[1]).name;
+                    if (APIRegistry.perms.getGroupForName(args[1]) != null) target = "g:" + APIRegistry.perms.getGroupForName(args[1]).name;
                     else if (args[1].equalsIgnoreCase("me")) target = "p:" + sender.username;
                     else target = "p:" + FunctionHelper.getPlayerForName(sender, args[1]).username;
                     
@@ -154,21 +154,21 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 	private String getLimit(EntityPlayer sender)
     {
 	    PropQueryPlayerSpot prop = new PropQueryPlayerSpot(sender, PERMPROP);
-        PermissionsAPI.getPermissionProp(prop);
+	    APIRegistry.perms.getPermissionProp(prop);
         return prop.getNumberValue() + "";
     }
 
     private String getLimit(String target)
     {
-	    if (target.startsWith("p:")) return PermissionsAPI.getPermissionPropForPlayer(target.replaceFirst("p:", ""), ZoneManager.getGLOBAL().getZoneName(), PERMPROP);
-	    else if (target.startsWith("g:")) return PermissionsAPI.getPermissionPropForGroup(target.replaceFirst("g:", ""), ZoneManager.getGLOBAL().getZoneName(), PERMPROP);
+	    if (target.startsWith("p:")) return APIRegistry.perms.getPermissionPropForPlayer(target.replaceFirst("p:", ""), ZoneManager.getGLOBAL().getZoneName(), PERMPROP);
+	    else if (target.startsWith("g:")) return APIRegistry.perms.getPermissionPropForGroup(target.replaceFirst("g:", ""), ZoneManager.getGLOBAL().getZoneName(), PERMPROP);
 	    else return "";
     }
 	
 	private void setLimit(String target, int limit)
     {
-        if (target.startsWith("p:")) PermissionsAPI.setPlayerPermissionProp(target.replaceFirst("p:", ""), PERMPROP, "" + limit, ZoneManager.getGLOBAL().getZoneName());
-        else if (target.startsWith("g:")) PermissionsAPI.setGroupPermissionProp(target.replaceFirst("g:", ""), PERMPROP, "" + limit, ZoneManager.getGLOBAL().getZoneName());
+        if (target.startsWith("p:")) APIRegistry.perms.setPlayerPermissionProp(target.replaceFirst("p:", ""), PERMPROP, "" + limit, ZoneManager.getGLOBAL().getZoneName());
+        else if (target.startsWith("g:")) APIRegistry.perms.setGroupPermissionProp(target.replaceFirst("g:", ""), PERMPROP, "" + limit, ZoneManager.getGLOBAL().getZoneName());
         else return;
     }
 
@@ -203,7 +203,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 
             while (zone != null)
             {
-                for (Group g : PermissionsAPI.getGroupsInZone(zone.getZoneName()))
+                for (Group g : APIRegistry.perms.getGroupsInZone(zone.getZoneName()))
                     list.add(g.name);
                 zone = ZoneManager.getZone(zone.parent);
             }

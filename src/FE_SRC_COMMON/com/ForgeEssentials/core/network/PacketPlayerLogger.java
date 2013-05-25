@@ -40,7 +40,7 @@ public class PacketPlayerLogger implements IForgeEssentialsPacket
 
 		catch (Exception e)
 		{
-			OutputHandler.info("Error creating packet >> " + this.getClass());
+			OutputHandler.felog.info("Error creating packet >> " + this.getClass());
 		}
 	}
 

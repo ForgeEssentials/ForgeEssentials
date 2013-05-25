@@ -23,7 +23,7 @@ public class ConfigAfterlife extends ModuleConfigBase
 	@Override
 	public void init()
 	{
-		OutputHandler.finer("Loading Afterlife Config");
+		OutputHandler.felog.finer("Loading Afterlife Config");
 		config = new Configuration(file, true);
 
 		String subcat = cat + ".DeathChest";

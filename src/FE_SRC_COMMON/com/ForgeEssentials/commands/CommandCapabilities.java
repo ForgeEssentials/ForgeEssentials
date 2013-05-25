@@ -7,8 +7,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
@@ -95,7 +95,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 		{
 			if (sender instanceof EntityPlayer)
 			{
-				if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
+				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 					return;
@@ -135,7 +135,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 		{
 			if (sender instanceof EntityPlayer)
 			{
-				if (!PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
+				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 					return;

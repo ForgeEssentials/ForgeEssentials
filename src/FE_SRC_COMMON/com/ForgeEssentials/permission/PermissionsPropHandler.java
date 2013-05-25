@@ -2,8 +2,8 @@ package com.ForgeEssentials.permission;
 
 import java.util.ArrayList;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.api.permissions.PermissionsAPI;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PropQuery;
@@ -105,7 +105,7 @@ public final class PermissionsPropHandler
 			if (result == null)
 			{
 				// get all the players groups here.
-				groups = PermissionsAPI.getApplicableGroups(event.player.username, false, tempZone.getZoneName());
+				groups = APIRegistry.perms.getApplicableGroups(event.player.username, false, tempZone.getZoneName());
 
 				// iterates through the groups.
 				for (int i = 0; result == null && i < groups.size(); i++)
@@ -125,7 +125,7 @@ public final class PermissionsPropHandler
 			// check defaults... unless it has the override..
 			if (result == null)
 			{
-				result = SqlHelper.getPermissionProp(PermissionsAPI.getDEFAULT().name, true, event.perm, tempZone.getZoneName());
+				result = SqlHelper.getPermissionProp(APIRegistry.perms.getDEFAULT().name, true, event.perm, tempZone.getZoneName());
 			}
 
 			// still unknown? check parent zones.
@@ -158,7 +158,7 @@ public final class PermissionsPropHandler
 		Zone tempZone = zone;
 		while (result == null)
 		{
-			result = SqlHelper.getPermissionProp(PermissionsAPI.getDEFAULT().name, true, perm, tempZone.getZoneName());
+			result = SqlHelper.getPermissionProp(APIRegistry.perms.getDEFAULT().name, true, perm, tempZone.getZoneName());
 
 			// still unknown? check parent zones.
 			if (result == null)

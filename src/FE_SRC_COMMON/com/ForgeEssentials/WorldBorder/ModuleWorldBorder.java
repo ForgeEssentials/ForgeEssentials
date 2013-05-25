@@ -163,7 +163,7 @@ public class ModuleWorldBorder
 		int d = (int) Math.abs(dd);
 		if (logToConsole)
 		{
-			OutputHandler.info(player.username + " passed the worldborder by " + d + " blocks.");
+			OutputHandler.felog.info(player.username + " passed the worldborder by " + d + " blocks.");
 		}
 		for (int i = d; i >= 0; i--)
 		{
