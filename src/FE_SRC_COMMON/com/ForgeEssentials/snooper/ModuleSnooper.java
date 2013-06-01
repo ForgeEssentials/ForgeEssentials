@@ -9,10 +9,10 @@ import javax.crypto.KeyGenerator;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.snooper.snooperAPI;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.snooper.response.MCstatsInfo;
@@ -46,13 +46,13 @@ public class ModuleSnooper
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 
-		snooperAPI.registerResponce(0, new Responces());
+		APIRegistry.registerResponse(0, new Responces());
 
-		snooperAPI.registerResponce(1, new ServerInfo());
-		snooperAPI.registerResponce(2, new MCstatsInfo());
+		APIRegistry.registerResponse(1, new ServerInfo());
+		APIRegistry.registerResponse(2, new MCstatsInfo());
 
-		snooperAPI.registerResponce(5, new PlayerInfoResonce());
-		snooperAPI.registerResponce(6, new PlayerInv());
+		APIRegistry.registerResponse(5, new PlayerInfoResonce());
+		APIRegistry.registerResponse(6, new PlayerInv());
 	}
 
 	@FEModule.ServerInit()
