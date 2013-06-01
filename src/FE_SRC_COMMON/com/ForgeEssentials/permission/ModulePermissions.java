@@ -9,7 +9,6 @@ import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.data.AbstractDataDriver;
@@ -48,10 +47,10 @@ public class ModulePermissions
 	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		ZoneManager.manager = new ZoneHelper();
+		APIRegistry.zones = new ZoneHelper();
 		APIRegistry.perms = new PermissionsHelper();// new one for new API
 
-		MinecraftForge.EVENT_BUS.register(ZoneManager.manager);
+		MinecraftForge.EVENT_BUS.register(APIRegistry.zones);
 		permLoader = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));
 
 		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
@@ -88,7 +87,7 @@ public class ModulePermissions
 	{
 		// load zones...
 		data = DataStorageManager.getReccomendedDriver();
-		((ZoneHelper) ZoneManager.manager).loadZones();
+		((ZoneHelper) APIRegistry.zones).loadZones();
 
 		if (config.importBool)
 		{
@@ -154,7 +153,7 @@ public class ModulePermissions
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		// save all the zones
-		for (Zone zone : ZoneManager.getZoneList())
+		for (Zone zone : APIRegistry.zones.getZoneList())
 		{
 			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
 			{

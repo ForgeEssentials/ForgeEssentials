@@ -1,5 +1,7 @@
 package com.ForgeEssentials.api.permissions;
 
+import com.ForgeEssentials.api.APIRegistry;
+
 /**
  * This class is not a format that is designed to actually be saved in any way.
  * It is simply an output format for the data that is saved in the DataBase. The
@@ -41,8 +43,8 @@ public class Group implements Comparable
 		if (equals(g))
 			return 0;
 
-		Zone my = ZoneManager.getZone(zoneName);
-		Zone their = ZoneManager.getZone(g.zoneName);
+		Zone my = APIRegistry.zones.getZone(zoneName);
+		Zone their = APIRegistry.zones.getZone(g.zoneName);
 
 		int end = my.compareTo(their);
 

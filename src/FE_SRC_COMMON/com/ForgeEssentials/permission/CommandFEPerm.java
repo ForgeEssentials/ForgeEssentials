@@ -10,7 +10,6 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
@@ -112,7 +111,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		}
 		else if (first.equalsIgnoreCase("default"))
 		{
-			Zone zone = ZoneManager.getGLOBAL();
+			Zone zone = APIRegistry.zones.getGLOBAL();
 			int zoneIndex = -1;
 			if (args.length == 2)
 			{
@@ -124,13 +123,13 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 			}
 			if (zoneIndex != -1)
 			{
-				if (ZoneManager.doesZoneExist(args[zoneIndex]))
+				if (APIRegistry.zones.doesZoneExist(args[zoneIndex]))
 				{
-					zone = ZoneManager.getZone(args[zoneIndex]);
+					zone = APIRegistry.zones.getZone(args[zoneIndex]);
 				}
 				else if (args[2].equalsIgnoreCase("here"))
 				{
-					zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+					zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 				}
 				else
 				{
@@ -140,7 +139,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 			}
 			if (args.length > 2 && args[1].equalsIgnoreCase("set"))
 			{
-				if (zone.getZoneName() != ZoneManager.getGLOBAL().getZoneName())
+				if (zone.getZoneName() != APIRegistry.zones.getGLOBAL().getZoneName())
 				{
 					OutputHandler.chatWarning(sender, "Setting the default group outside of _GLOBAL_ zone is not recommended.");
 				}
@@ -216,7 +215,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		}
 		else if (first.equalsIgnoreCase("default"))
 		{
-			Zone zone = ZoneManager.getGLOBAL();
+			Zone zone = APIRegistry.zones.getGLOBAL();
 			int zoneIndex = -1;
 			if (args.length == 2)
 			{
@@ -228,9 +227,9 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 			}
 			if (zoneIndex != -1)
 			{
-				if (ZoneManager.doesZoneExist(args[zoneIndex]))
+				if (APIRegistry.zones.doesZoneExist(args[zoneIndex]))
 				{
-					zone = ZoneManager.getZone(args[zoneIndex]);
+					zone = APIRegistry.zones.getZone(args[zoneIndex]);
 				}
 				else if (args[2].equalsIgnoreCase("here"))
 				{
@@ -244,7 +243,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 			}
 			if (args.length > 2 && args[1].equalsIgnoreCase("set"))
 			{
-				if (zone.getZoneName() != ZoneManager.getGLOBAL().getZoneName())
+				if (zone.getZoneName() != APIRegistry.zones.getGLOBAL().getZoneName())
 				{
 					sender.sendChatToPlayer("WARNING: Setting the default group outside of _GLOBAL_ zone is not recommended.");
 				}
@@ -315,7 +314,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 				case 2:
 					if (args[0].equalsIgnoreCase("group"))
 					{
-						List<Group> groups = APIRegistry.perms.getGroupsInZone(ZoneManager.getGLOBAL().getZoneName());
+						List<Group> groups = APIRegistry.perms.getGroupsInZone(APIRegistry.zones.getGLOBAL().getZoneName());
 						ArrayList<String> groupnames = new ArrayList<String>();
 						for (int i = 0; i < groups.size(); i++)
 						{

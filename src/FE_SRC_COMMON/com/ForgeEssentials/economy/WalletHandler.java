@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.economy.IEconManager;
+import com.ForgeEssentials.api.IEconManager;
 import com.ForgeEssentials.data.api.ClassContainer;
 import com.ForgeEssentials.data.api.DataStorageManager;
 

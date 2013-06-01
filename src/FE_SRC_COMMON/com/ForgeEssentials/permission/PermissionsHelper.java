@@ -6,11 +6,11 @@ import java.util.TreeSet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.IPermissionsHelper;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -29,7 +29,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	public final String	EntryPlayer	= "_ENTRY_PLAYER_";
 	private String		EPPrefix	= "";
 	private String		EPSuffix	= "";
-	private Group		DEFAULT		= new Group(RegGroup.ZONE.toString(), " ", " ", null, ZoneManager.getGLOBAL().getZoneName(), 0);
+	private Group		DEFAULT		= new Group(RegGroup.ZONE.toString(), " ", " ", null, APIRegistry.zones.getGLOBAL().getZoneName(), 0);
 
 	@Override
 	public boolean checkPermAllowed(PermQuery query)
@@ -80,7 +80,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	{
 		try
 		{
-			Zone zone = ZoneManager.getZone(zoneID);
+			Zone zone = APIRegistry.zones.getZone(zoneID);
 			if (zone == null)
 				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
 
@@ -110,7 +110,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	{
 		try
 		{
-			Zone zone = ZoneManager.getZone(zoneID);
+			Zone zone = APIRegistry.zones.getZone(zoneID);
 			if (zone == null)
 				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
 
@@ -140,7 +140,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	{
 		try
 		{
-			Zone zone = ZoneManager.getZone(zoneID);
+			Zone zone = APIRegistry.zones.getZone(zoneID);
 
 			if (zone == null)
 				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
@@ -174,7 +174,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	{
 		try
 		{
-			Zone zone = ZoneManager.getZone(zoneID);
+			Zone zone = APIRegistry.zones.getZone(zoneID);
 			if (zone == null)
 				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
 
@@ -205,7 +205,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
 	{
-		Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(player));
+		Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(player));
 
 		return getApplicableGroups(player.username, includeDefaults, zone.getZoneName());
 	}
@@ -215,19 +215,19 @@ public class PermissionsHelper implements IPermissionsHelper
 	{
 		ArrayList<Group> list = new ArrayList<Group>();
 
-		Zone zone = ZoneManager.getZone(zoneID);
+		Zone zone = APIRegistry.zones.getZone(zoneID);
 
 		while (zone != null)
 		{
 			list.addAll(SqlHelper.getGroupsForPlayer(player, zone.getZoneName()));
 
-			if (zone == ZoneManager.getGLOBAL())
+			if (zone == APIRegistry.zones.getGLOBAL())
 			{
 				zone = null;
 			}
 			else
 			{
-				zone = ZoneManager.getZone(zone.parent);
+				zone = APIRegistry.zones.getZone(zone.parent);
 			}
 		}
 
@@ -248,7 +248,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	@Override
 	public Group getHighestGroup(EntityPlayer player)
 	{
-		Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(player));
+		Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(player));
 		TreeSet<Group> list = new TreeSet<Group>();
 
 		ArrayList<Group> temp;
@@ -261,7 +261,7 @@ public class PermissionsHelper implements IPermissionsHelper
 				list.addAll(temp);
 			}
 
-			zone = ZoneManager.getZone(zone.parent);
+			zone = APIRegistry.zones.getZone(zone.parent);
 		}
 
 		if (list.size() == 0)

@@ -8,9 +8,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.permission.SqlHelper;
 import com.ForgeEssentials.util.FEChatFormatCodes;
@@ -39,20 +39,20 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 		 * Get the right zone.
 		 * If nothing valid is given, defaults to the senders position.
 		 */
-		Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+		Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 		if (args.length > 0)
 		{
 			if (args[0].equalsIgnoreCase("world"))
 			{
-				zone = ZoneManager.getWorldZone(sender.worldObj);
+				zone = APIRegistry.zones.getWorldZone(sender.worldObj);
 			}
 			if (args[0].equalsIgnoreCase("global"))
 			{
-				zone = ZoneManager.getGLOBAL();
+				zone = APIRegistry.zones.getGLOBAL();
 			}
-			if (ZoneManager.doesZoneExist(args[0]))
+			if (APIRegistry.zones.doesZoneExist(args[0]))
 			{
-				zone = ZoneManager.getZone(args[0]);
+				zone = APIRegistry.zones.getZone(args[0]);
 			}
 		}
 
@@ -250,7 +250,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 		list.add("here");
 		list.add("global");
 		list.add("world");
-		for (Zone zone : ZoneManager.getZoneList())
+		for (Zone zone : APIRegistry.zones.getZoneList())
 		{
 			list.add(zone.getZoneName());
 		}
@@ -272,18 +272,18 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 		{
 			try
 			{
-				Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint((Entity) sender));
+				Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint((Entity) sender));
 				if (args[0].equalsIgnoreCase("world"))
 				{
-					zone = ZoneManager.getWorldZone(((Entity) sender).worldObj);
+					zone = APIRegistry.zones.getWorldZone(((Entity) sender).worldObj);
 				}
 				if (args[0].equalsIgnoreCase("global"))
 				{
-					zone = ZoneManager.getGLOBAL();
+					zone = APIRegistry.zones.getGLOBAL();
 				}
-				if (ZoneManager.doesZoneExist(args[0]))
+				if (APIRegistry.zones.doesZoneExist(args[0]))
 				{
-					zone = ZoneManager.getZone(args[0]);
+					zone = APIRegistry.zones.getZone(args[0]);
 				}
 				AutoPromote ap = AutoPromoteManager.instance().map.get(zone.getZoneName());
 				if (ap == null)
@@ -302,18 +302,18 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 		{
 			try
 			{
-				Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint((Entity) sender));
+				Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint((Entity) sender));
 				if (args[0].equalsIgnoreCase("world"))
 				{
-					zone = ZoneManager.getWorldZone(((Entity) sender).worldObj);
+					zone = APIRegistry.zones.getWorldZone(((Entity) sender).worldObj);
 				}
 				if (args[0].equalsIgnoreCase("global"))
 				{
-					zone = ZoneManager.getGLOBAL();
+					zone = APIRegistry.zones.getGLOBAL();
 				}
-				if (ZoneManager.doesZoneExist(args[0]))
+				if (APIRegistry.zones.doesZoneExist(args[0]))
 				{
-					zone = ZoneManager.getZone(args[0]);
+					zone = APIRegistry.zones.getZone(args[0]);
 				}
 				ArrayList<Group> groups = SqlHelper.getGroupsInZone(zone.getZoneName());
 				ArrayList<String> groupNames = new ArrayList<String>();

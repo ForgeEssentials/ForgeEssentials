@@ -15,7 +15,6 @@ import java.util.TreeSet;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
@@ -800,12 +799,12 @@ public class SqlHelper
 			db.createStatement().executeUpdate(query.toString());
 
 			// GLOBAL zone
-			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (").append(COLUMN_ZONE_NAME).append(", ").append(COLUMN_ZONE_ZONEID).append(") ").append(" VALUES ").append(" ('").append(ZoneManager.getGLOBAL().getZoneName())
+			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (").append(COLUMN_ZONE_NAME).append(", ").append(COLUMN_ZONE_ZONEID).append(") ").append(" VALUES ").append(" ('").append(APIRegistry.zones.getGLOBAL().getZoneName())
 					.append("', ").append(GLOBAL_ID).append(")");
 			db.createStatement().executeUpdate(query.toString());
 
 			// SUPER zone
-			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (").append(COLUMN_ZONE_NAME).append(", ").append(COLUMN_ZONE_ZONEID).append(") ").append(" VALUES ").append(" ('").append(ZoneManager.getSUPER().getZoneName())
+			query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (").append(COLUMN_ZONE_NAME).append(", ").append(COLUMN_ZONE_ZONEID).append(") ").append(" VALUES ").append(" ('").append(APIRegistry.zones.getSUPER().getZoneName())
 					.append("', ").append(SUPER_ID).append(")");
 			;
 			db.createStatement().executeUpdate(query.toString());

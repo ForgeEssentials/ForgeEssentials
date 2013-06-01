@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -75,7 +75,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		}
 		else if (args[0].equalsIgnoreCase("global"))
 		{
-			zone = ZoneManager.getGLOBAL();
+			zone = APIRegistry.zones.getGLOBAL();
 		}
 		else if (FunctionHelper.isNumeric(args[0]))
 		{
@@ -85,11 +85,11 @@ public class CommandWB extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, args[0] + " is not an ID of a loaded world.");
 				return;
 			}
-			zone = ZoneManager.getWorldZone(world);
+			zone = APIRegistry.zones.getWorldZone(world);
 		}
 		else if (args[0].equalsIgnoreCase("world") && sender instanceof EntityPlayer)
 		{
-			zone = ZoneManager.getWorldZone(((EntityPlayer) sender).worldObj);
+			zone = APIRegistry.zones.getWorldZone(((EntityPlayer) sender).worldObj);
 		}
 		else
 		{

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryBlanketArea;
@@ -48,7 +47,7 @@ public final class PermissionsBlanketHandler
 
 	protected static void handleSpot(PermQueryBlanketSpot event)
 	{
-		Zone zone = ZoneManager.getWhichZoneIn(event.spot);
+		Zone zone = APIRegistry.zones.getWhichZoneIn(event.spot);
 		PermResult result = getResultFromZone(zone, event.checker, event.checkForward);
 		event.setResult(result);
 	}
@@ -57,7 +56,7 @@ public final class PermissionsBlanketHandler
 	{
 		if (event.allOrNothing)
 		{
-			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo);
+			Zone zone = APIRegistry.zones.getWhichZoneIn(event.doneTo);
 			PermResult result = getResultFromZone(zone, event.checker, event.checkForward);
 			event.setResult(result);
 		}
@@ -96,7 +95,7 @@ public final class PermissionsBlanketHandler
 			// still unknown? check parent zones.
 			if (result.equals(PermResult.UNKNOWN))
 			{
-				if (tempZone == ZoneManager.getGLOBAL())
+				if (tempZone == APIRegistry.zones.getGLOBAL())
 				{
 					// default deny.
 					result = PermResult.DENY;
@@ -104,7 +103,7 @@ public final class PermissionsBlanketHandler
 				else
 				{
 					// get the parent of the zone.
-					tempZone = ZoneManager.getZone(tempZone.parent);
+					tempZone = APIRegistry.zones.getZone(tempZone.parent);
 				}
 			}
 		}
@@ -115,11 +114,11 @@ public final class PermissionsBlanketHandler
 	{
 		ArrayList<AreaBase> applicable = new ArrayList<AreaBase>();
 
-		Zone worldZone = ZoneManager.getWorldZone(FunctionHelper.getDimension(doneTo.dim));
+		Zone worldZone = APIRegistry.zones.getWorldZone(FunctionHelper.getDimension(doneTo.dim));
 		ArrayList<Zone> zones = new ArrayList<Zone>();
 
 		// add all children
-		for (Zone zone : ZoneManager.getZoneList())
+		for (Zone zone : APIRegistry.zones.getZoneList())
 		{
 			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
 			{

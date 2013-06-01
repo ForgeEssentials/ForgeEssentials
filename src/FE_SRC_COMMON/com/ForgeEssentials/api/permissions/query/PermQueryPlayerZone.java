@@ -4,8 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.event.Event.HasResult;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 
 /**
  * Reuslts are: default, allow, deny.
@@ -18,7 +18,7 @@ public class PermQueryPlayerZone extends PermQueryPlayer
 
 	public PermQueryPlayerZone(EntityPlayer player, String permission, String zoneID)
 	{
-		this(player, permission, ZoneManager.getZone(zoneID));
+		this(player, permission, APIRegistry.zones.getZone(zoneID));
 	}
 
 	public PermQueryPlayerZone(EntityPlayer player, String permission, Zone zone)
@@ -35,7 +35,7 @@ public class PermQueryPlayerZone extends PermQueryPlayer
 	public PermQueryPlayerZone(EntityPlayer player, String permission, World world)
 	{
 		super(player, permission);
-		toCheck = ZoneManager.getWorldZone(world);
+		toCheck = APIRegistry.zones.getWorldZone(world);
 	}
 
 	/**
@@ -44,12 +44,12 @@ public class PermQueryPlayerZone extends PermQueryPlayer
 	public PermQueryPlayerZone(EntityPlayer player, String permission)
 	{
 		super(player, permission);
-		toCheck = ZoneManager.getGLOBAL();
+		toCheck = APIRegistry.zones.getGLOBAL();
 	}
 
 	public PermQueryPlayerZone(EntityPlayer player, String permission, String zoneID, boolean checkForward)
 	{
-		this(player, permission, ZoneManager.getZone(zoneID));
+		this(player, permission, APIRegistry.zones.getZone(zoneID));
 		this.checkForward = checkForward;
 	}
 
@@ -61,13 +61,13 @@ public class PermQueryPlayerZone extends PermQueryPlayer
 
 	public PermQueryPlayerZone(EntityPlayer player, String permission, World world, boolean checkForward)
 	{
-		this(player, permission, ZoneManager.getWorldZone(world));
+		this(player, permission, APIRegistry.zones.getWorldZone(world));
 		this.checkForward = checkForward;
 	}
 
 	public PermQueryPlayerZone(EntityPlayer player, String permission, boolean checkForward)
 	{
-		this(player, permission, ZoneManager.getGLOBAL());
+		this(player, permission, APIRegistry.zones.getGLOBAL());
 		this.checkForward = checkForward;
 	}
 }

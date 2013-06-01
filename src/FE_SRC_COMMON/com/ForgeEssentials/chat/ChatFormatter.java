@@ -13,7 +13,6 @@ import net.minecraftforge.event.ServerChatEvent;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.core.PlayerInfo;
@@ -109,7 +108,7 @@ public class ChatFormatter
 		String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
 		String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
 
-		Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(event.player));
+		Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(event.player));
 		zoneID = zone.getZoneName();
 
 		// Group stuff!!! DO NOT TOUCH!!!

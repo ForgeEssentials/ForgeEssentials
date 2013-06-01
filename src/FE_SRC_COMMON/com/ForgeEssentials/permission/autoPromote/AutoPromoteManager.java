@@ -6,8 +6,8 @@ import java.util.TimerTask;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.data.api.ClassContainer;
 import com.ForgeEssentials.data.api.DataStorageManager;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -36,7 +36,7 @@ public class AutoPromoteManager extends TimerTask
 			for (Object obj : loaded)
 			{
 				AutoPromote ap = (AutoPromote) obj;
-				if (ZoneManager.getZone(ap.zone) != null)
+				if (APIRegistry.zones.getZone(ap.zone) != null)
 				{
 					map.put(ap.zone, ap);
 				}
@@ -52,14 +52,14 @@ public class AutoPromoteManager extends TimerTask
 		for (String username : MinecraftServer.getServer().getAllUsernames())
 		{
 			EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(username);
-			Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(player));
+			Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(player));
 			while (zone != null)
 			{
 				if (map.containsKey(zone.getZoneName()))
 				{
 					map.get(zone.getZoneName()).tick(player);
 				}
-				zone = ZoneManager.getZone(zone.parent);
+				zone = APIRegistry.zones.getZone(zone.parent);
 			}
 		}
 	}

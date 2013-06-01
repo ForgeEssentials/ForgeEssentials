@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PropQuery;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketSpot;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
@@ -34,11 +33,11 @@ public final class PermissionsPropHandler
 		}
 		else if (query instanceof PropQueryBlanketSpot)
 		{
-			applied = ZoneManager.getWhichZoneIn(((PropQueryBlanketSpot) query).spot);
+			applied = APIRegistry.zones.getWhichZoneIn(((PropQueryBlanketSpot) query).spot);
 		}
 		else if (query instanceof PropQueryPlayerSpot)
 		{
-			applied = ZoneManager.getWhichZoneIn(((PropQueryPlayerSpot) query).spot);
+			applied = APIRegistry.zones.getWhichZoneIn(((PropQueryPlayerSpot) query).spot);
 		}
 
 		if (query instanceof PropQueryPlayer)
@@ -70,12 +69,12 @@ public final class PermissionsPropHandler
 
 	private static Zone getZone(PropQueryPlayerSpot query)
 	{
-		return ZoneManager.getWhichZoneIn(query.spot);
+		return APIRegistry.zones.getWhichZoneIn(query.spot);
 	}
 
 	private static Zone getZone(PropQueryBlanketSpot query)
 	{
-		return ZoneManager.getWhichZoneIn(query.spot);
+		return APIRegistry.zones.getWhichZoneIn(query.spot);
 	}
 	
 	private static Zone getZone(PropQueryBlanketZone query)
@@ -131,7 +130,7 @@ public final class PermissionsPropHandler
 			// still unknown? check parent zones.
 			if (result == null)
 			{
-				if (tempZone == ZoneManager.getGLOBAL())
+				if (tempZone == APIRegistry.zones.getGLOBAL())
 				{
 					// default deny.
 					result = "";
@@ -139,7 +138,7 @@ public final class PermissionsPropHandler
 				else
 				{
 					// get the parent of the zone.
-					tempZone = ZoneManager.getZone(tempZone.parent);
+					tempZone = APIRegistry.zones.getZone(tempZone.parent);
 				}
 			}
 		}
@@ -165,7 +164,7 @@ public final class PermissionsPropHandler
 			{
 				if (checkParents == false)
 					return result;
-				else if (tempZone == ZoneManager.getGLOBAL())
+				else if (tempZone == APIRegistry.zones.getGLOBAL())
 				{
 					// default deny.
 					result = null;
@@ -173,7 +172,7 @@ public final class PermissionsPropHandler
 				else
 				{
 					// get the parent of the zone.
-					tempZone = ZoneManager.getZone(tempZone.parent);
+					tempZone = APIRegistry.zones.getZone(tempZone.parent);
 				}
 			}
 		}

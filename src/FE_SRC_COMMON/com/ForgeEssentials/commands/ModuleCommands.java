@@ -10,7 +10,6 @@ import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
 import com.ForgeEssentials.commands.shortcut.ShortcutCommands;
 import com.ForgeEssentials.commands.util.CommandDataManager;
@@ -86,7 +85,7 @@ public class ModuleCommands
 		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
 		CommandDataManager.load();
 
-		PropQueryBlanketZone query = new PropQueryBlanketZone(CommandSetSpawn.SPAWN_PROP, ZoneManager.getGLOBAL(), false);
+		PropQueryBlanketZone query = new PropQueryBlanketZone(CommandSetSpawn.SPAWN_PROP, APIRegistry.zones.getGLOBAL(), false);
 		APIRegistry.perms.getPermissionProp(query);
 
 		// nothing set for the global??
@@ -94,7 +93,7 @@ public class ModuleCommands
 		{
 			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
 			String val = "0;" + point.posX + ";" + point.posY + ";" + point.posZ;
-			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val, ZoneManager.getGLOBAL().getZoneName());
+			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val, APIRegistry.zones.getGLOBAL().getZoneName());
 		}
 	}
 

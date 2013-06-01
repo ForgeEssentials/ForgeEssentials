@@ -12,7 +12,6 @@ import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.commands.util.CommandDataManager;
@@ -160,15 +159,15 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 
     private String getLimit(String target)
     {
-	    if (target.startsWith("p:")) return APIRegistry.perms.getPermissionPropForPlayer(target.replaceFirst("p:", ""), ZoneManager.getGLOBAL().getZoneName(), PERMPROP);
-	    else if (target.startsWith("g:")) return APIRegistry.perms.getPermissionPropForGroup(target.replaceFirst("g:", ""), ZoneManager.getGLOBAL().getZoneName(), PERMPROP);
+	    if (target.startsWith("p:")) return APIRegistry.perms.getPermissionPropForPlayer(target.replaceFirst("p:", ""), APIRegistry.zones.getGLOBAL().getZoneName(), PERMPROP);
+	    else if (target.startsWith("g:")) return APIRegistry.perms.getPermissionPropForGroup(target.replaceFirst("g:", ""), APIRegistry.zones.getGLOBAL().getZoneName(), PERMPROP);
 	    else return "";
     }
 	
 	private void setLimit(String target, int limit)
     {
-        if (target.startsWith("p:")) APIRegistry.perms.setPlayerPermissionProp(target.replaceFirst("p:", ""), PERMPROP, "" + limit, ZoneManager.getGLOBAL().getZoneName());
-        else if (target.startsWith("g:")) APIRegistry.perms.setGroupPermissionProp(target.replaceFirst("g:", ""), PERMPROP, "" + limit, ZoneManager.getGLOBAL().getZoneName());
+        if (target.startsWith("p:")) APIRegistry.perms.setPlayerPermissionProp(target.replaceFirst("p:", ""), PERMPROP, "" + limit, APIRegistry.zones.getGLOBAL().getZoneName());
+        else if (target.startsWith("g:")) APIRegistry.perms.setGroupPermissionProp(target.replaceFirst("g:", ""), PERMPROP, "" + limit, APIRegistry.zones.getGLOBAL().getZoneName());
         else return;
     }
 
@@ -196,7 +195,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 			return getListOfStringsMatchingLastWord(args, "goto", "add", "remove", "limit");
 		if (args.length == 2 && args[0].equalsIgnoreCase("limit"))
 		{
-		    Zone zone = sender instanceof EntityPlayer ? ZoneManager.getWhichZoneIn(new WorldPoint((EntityPlayer) sender)) : ZoneManager.getGLOBAL();
+		    Zone zone = sender instanceof EntityPlayer ? APIRegistry.zones.getWhichZoneIn(new WorldPoint((EntityPlayer) sender)) : APIRegistry.zones.getGLOBAL();
             ArrayList<String> list = new ArrayList<String>();
             for (String s : FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames())
                 list.add(s);
@@ -205,7 +204,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
             {
                 for (Group g : APIRegistry.perms.getGroupsInZone(zone.getZoneName()))
                     list.add(g.name);
-                zone = ZoneManager.getZone(zone.parent);
+                zone = APIRegistry.zones.getZone(zone.parent);
             }
 
             return getListOfStringsFromIterableMatchingLastWord(args, list);

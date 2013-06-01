@@ -9,11 +9,11 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.WorldBorder.Effects.IEffect;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.data.api.ClassContainer;
@@ -74,7 +74,7 @@ public class ModuleWorldBorder
 	{
 	    loadAll();
 
-        Zone zone = ZoneManager.getGLOBAL();
+        Zone zone = APIRegistry.zones.getGLOBAL();
         if (!borderMap.containsKey(zone.getZoneName()))
         {
             borderMap.put(zone.getZoneName(), new WorldBorder(zone));
@@ -90,10 +90,10 @@ public class ModuleWorldBorder
 	@ForgeSubscribe
 	public void playerMove(PlayerMoveEvent e)
 	{
-		Zone zone = ZoneManager.getWorldZone(e.entityPlayer.worldObj);
+		Zone zone = APIRegistry.zones.getWorldZone(e.entityPlayer.worldObj);
 		WorldBorder border = borderMap.get(zone.getZoneName());
 		border.check((EntityPlayerMP) e.entityPlayer);
-		borderMap.get(ZoneManager.getGLOBAL().getZoneName()).check((EntityPlayerMP) e.entityPlayer);
+		borderMap.get(APIRegistry.zones.getGLOBAL().getZoneName()).check((EntityPlayerMP) e.entityPlayer);
 	}
 
 	@ForgeSubscribe
@@ -102,7 +102,7 @@ public class ModuleWorldBorder
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
 
-		Zone zone = ZoneManager.getWorldZone(e.world);
+		Zone zone = APIRegistry.zones.getWorldZone(e.world);
 		if (!borderMap.containsKey(zone.getZoneName()))
 		{
 			WorldBorder wb = (WorldBorder) DataStorageManager.getReccomendedDriver().loadObject(con, zone.getZoneName());
@@ -123,7 +123,7 @@ public class ModuleWorldBorder
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
 
-		Zone zone = ZoneManager.getWorldZone(e.world);
+		Zone zone = APIRegistry.zones.getWorldZone(e.world);
 		borderMap.remove(zone.getZoneName());
 	}
 

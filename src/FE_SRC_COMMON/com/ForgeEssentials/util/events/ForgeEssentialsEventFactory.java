@@ -12,8 +12,8 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
@@ -114,8 +114,8 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
 	@ForgeSubscribe
 	public void playerMove(PlayerMoveEvent e)
 	{
-		Zone before = ZoneManager.getWhichZoneIn(e.before);
-		Zone after = ZoneManager.getWhichZoneIn(e.after);
+		Zone before = APIRegistry.zones.getWhichZoneIn(e.before);
+		Zone after = APIRegistry.zones.getWhichZoneIn(e.after);
 
 		if (before != after)
 		{

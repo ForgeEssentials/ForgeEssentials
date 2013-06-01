@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.economy;
+package com.ForgeEssentials.api;
 
 import net.minecraft.entity.player.EntityPlayer;
 

@@ -2,6 +2,7 @@ package com.ForgeEssentials.api.permissions;
 
 import net.minecraft.world.World;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.data.api.IReconstructData;
 import com.ForgeEssentials.data.api.SaveableObject;
 import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
@@ -47,7 +48,7 @@ public class Zone extends WorldArea implements Comparable<Object>
 	{
 		super(dimension, new Point(0, 0, 0), new Point(0, 0, 0));
 		zoneID = name;
-		parent = ZoneManager.getGLOBAL().zoneID;
+		parent = APIRegistry.zones.getGLOBAL().zoneID;
 	}
 
 	/**
@@ -81,10 +82,10 @@ public class Zone extends WorldArea implements Comparable<Object>
 			return false;
 		else if (zoneID.equals(zone.parent))
 			return true;
-		else if (zone.parent.equals(ZoneManager.getGLOBAL().zoneID))
+		else if (zone.parent.equals(APIRegistry.zones.getGLOBAL().zoneID))
 			return false;
 		else
-			return isParentOf(ZoneManager.getZone(zone.parent));
+			return isParentOf(APIRegistry.zones.getZone(zone.parent));
 	}
 
 	/**
@@ -94,12 +95,12 @@ public class Zone extends WorldArea implements Comparable<Object>
 	{
 		if (zone.parent == null)
 			return false;
-		else if (zone.parent.equals(ZoneManager.getGLOBAL().zoneID))
+		else if (zone.parent.equals(APIRegistry.zones.getGLOBAL().zoneID))
 			return dim == zone.dim;
 		else if (zone.zoneID.equals(parent))
 			return true;
 		else
-			return ZoneManager.getZone(parent).isChildOf(zone);
+			return APIRegistry.zones.getZone(parent).isChildOf(zone);
 	}
 
 	/**
@@ -137,7 +138,7 @@ public class Zone extends WorldArea implements Comparable<Object>
 	{
 		if (parent == null)
 			return false;
-		return parent.equals(ZoneManager.getGLOBAL().zoneID);
+		return parent.equals(APIRegistry.zones.getGLOBAL().zoneID);
 	}
 
 	@Reconstructor

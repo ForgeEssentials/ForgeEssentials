@@ -2,8 +2,8 @@ package com.ForgeEssentials.api.permissions.query;
 
 import net.minecraft.world.World;
 
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 
 public class PermQueryBlanketZone extends PermQuery
 {
@@ -11,13 +11,13 @@ public class PermQueryBlanketZone extends PermQuery
 
 	public PermQueryBlanketZone(String permission, String zoneID)
 	{
-		toCheck = ZoneManager.getZone(zoneID);
+		toCheck = APIRegistry.zones.getZone(zoneID);
 		checkForward = false;
 	}
 
 	public PermQueryBlanketZone(String permission, String zoneID, boolean checkForward)
 	{
-		toCheck = ZoneManager.getZone(zoneID);
+		toCheck = APIRegistry.zones.getZone(zoneID);
 		this.checkForward = checkForward;
 	}
 
@@ -39,7 +39,7 @@ public class PermQueryBlanketZone extends PermQuery
 	 */
 	public PermQueryBlanketZone(String permission, World world)
 	{
-		toCheck = ZoneManager.getWorldZone(world);
+		toCheck = APIRegistry.zones.getWorldZone(world);
 	}
 
 	/**
@@ -47,6 +47,6 @@ public class PermQueryBlanketZone extends PermQuery
 	 */
 	public PermQueryBlanketZone(String permission)
 	{
-		toCheck = ZoneManager.getGLOBAL();
+		toCheck = APIRegistry.zones.getGLOBAL();
 	}
 }

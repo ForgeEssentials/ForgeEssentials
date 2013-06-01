@@ -11,7 +11,6 @@ import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
@@ -35,7 +34,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		Zone zone = ZoneManager.getWorldZone(sender.worldObj);
+		Zone zone = APIRegistry.zones.getWorldZone(sender.worldObj);
 		if (args.length >= 1)
 		{
 			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))

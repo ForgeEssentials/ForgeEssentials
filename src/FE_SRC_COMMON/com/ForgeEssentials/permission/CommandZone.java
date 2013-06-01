@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
@@ -44,7 +43,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
-		ArrayList<Zone> zones = ZoneManager.getZoneList();
+		ArrayList<Zone> zones = APIRegistry.zones.getZoneList();
 		int zonePages = zones.size() / 15 + 1;
 		if (args.length == 1)
 		{
@@ -127,9 +126,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				if (args[1].equalsIgnoreCase("here"))
 				{
 					WorldPoint point = new WorldPoint(sender);
-					args[1] = ZoneManager.getWhichZoneIn(point).getZoneName();
+					args[1] = APIRegistry.zones.getWhichZoneIn(point).getZoneName();
 				}
-				if (!ZoneManager.doesZoneExist(args[1]))
+				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
 				}
@@ -141,7 +140,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					}
 					else
 					{
-						Zone zone = ZoneManager.getZone(args[1]);
+						Zone zone = APIRegistry.zones.getZone(args[1]);
 						PropQueryBlanketZone query1 = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.entry", zone, false);
 						PropQueryBlanketZone query2 = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.exit", zone, false);
 						APIRegistry.perms.getPermissionProp(query1);
@@ -162,7 +161,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			}
 			else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete"))
 			{
-				if (!ZoneManager.doesZoneExist(args[1]))
+				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
 				}
@@ -174,7 +173,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					}
 					else
 					{
-						ZoneManager.deleteZone(args[1]);
+						APIRegistry.zones.deleteZone(args[1]);
 						OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_REMOVE, args[1]));
 					}
 				}
@@ -182,7 +181,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			}
 			else if (args[0].equalsIgnoreCase("define"))
 			{
-				if (ZoneManager.doesZoneExist(args[1]))
+				if (APIRegistry.zones.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_YESZONE, args[1]));
 				}
@@ -197,14 +196,14 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					ZoneManager.createZone(args[1], info.getSelection(), sender.worldObj);
+					APIRegistry.zones.createZone(args[1], info.getSelection(), sender.worldObj);
 					OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_DEFINE, args[1]));
 				}
 				return;
 			}
 			else if (args[0].equalsIgnoreCase("redefine"))
 			{
-				if (!ZoneManager.doesZoneExist(args[1]))
+				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_YESZONE, args[1]));
 				}
@@ -219,7 +218,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					Zone z = ZoneManager.getZone(args[1]);
+					Zone z = APIRegistry.zones.getZone(args[1]);
 					z.redefine(info.getPoint1(), info.getPoint2());
 					saveZone(z);
 					OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_REDEFINE, args[1]));
@@ -232,11 +231,11 @@ public class CommandZone extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("setParent"))
 			{
-				if (!ZoneManager.doesZoneExist(args[1]))
+				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
 				}
-				else if (!ZoneManager.doesZoneExist(args[2]))
+				else if (!APIRegistry.zones.doesZoneExist(args[2]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
@@ -246,7 +245,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					Zone z = ZoneManager.getZone(args[1]);
+					Zone z = APIRegistry.zones.getZone(args[1]);
 					z.parent = args[2];
 					saveZone(z);
 					OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_SETPARENT, args[1], args[2]));
@@ -256,7 +255,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 
 			if (args[0].equalsIgnoreCase("entry"))
 			{
-				if (!ZoneManager.doesZoneExist(args[1]))
+				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
 					return;
@@ -267,7 +266,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else if (args[2].equalsIgnoreCase("get"))
 				{
-					PropQueryBlanketZone query = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.entry", ZoneManager.getZone(args[1]), false);
+					PropQueryBlanketZone query = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.entry", APIRegistry.zones.getZone(args[1]), false);
 					APIRegistry.perms.getPermissionProp(query);
 					OutputHandler.chatConfirmation(sender, query.getStringValue());
 
@@ -293,7 +292,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			}
 			else if (args[0].equalsIgnoreCase("exit"))
 			{
-				if (!ZoneManager.doesZoneExist(args[1]))
+				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
 					return;
@@ -304,7 +303,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else if (args[2].equalsIgnoreCase("get"))
 				{
-					PropQueryBlanketZone query = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.exit", ZoneManager.getZone(args[1]), false);
+					PropQueryBlanketZone query = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.exit", APIRegistry.zones.getZone(args[1]), false);
 					APIRegistry.perms.getPermissionProp(query);
 					OutputHandler.chatConfirmation(sender, query.getStringValue());
 
@@ -373,7 +372,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					}
 					break;
 				case 2:
-					for (Zone z : ZoneManager.getZoneList())
+					for (Zone z : APIRegistry.zones.getZoneList())
 					{
 						list.add(z.getZoneName());
 					}
@@ -381,7 +380,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				case 3:
 					if (args[0].equalsIgnoreCase("setparent"))
 					{
-						for (Zone z : ZoneManager.getZoneList())
+						for (Zone z : APIRegistry.zones.getZoneList())
 						{
 							list.add(z.getZoneName());
 						}

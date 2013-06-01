@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -42,17 +41,17 @@ public class CommandFEPermGroup
 				OutputHandler.chatConfirmation(sender, "Usage: /p group create <groupname>");
 				return;
 			}
-			Zone zone = ZoneManager.getGLOBAL();
+			Zone zone = APIRegistry.zones.getGLOBAL();
 			if (args.length > 2)
 			{
 
-				if (ZoneManager.doesZoneExist(args[2]))
+				if (APIRegistry.zones.doesZoneExist(args[2]))
 				{
-					zone = ZoneManager.getZone(args[2]);
+					zone = APIRegistry.zones.getZone(args[2]);
 				}
 				else if (args[2].equalsIgnoreCase("here"))
 				{
-					zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+					zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 				}
 				else
 				{
@@ -75,16 +74,16 @@ public class CommandFEPermGroup
 				OutputHandler.chatError(sender, args[1] + " does not exist as a group!");
 				return;
 			}
-			Zone zone = ZoneManager.getGLOBAL();
+			Zone zone = APIRegistry.zones.getGLOBAL();
 			if (args.length == 3)
 			{
-				if (ZoneManager.doesZoneExist(args[2]))
+				if (APIRegistry.zones.doesZoneExist(args[2]))
 				{
-					zone = ZoneManager.getZone(args[2]);
+					zone = APIRegistry.zones.getZone(args[2]);
 				}
 				else if (args[2].equalsIgnoreCase("here"))
 				{
-					zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+					zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 				}
 				else
 				{
@@ -109,16 +108,16 @@ public class CommandFEPermGroup
 		if (args[0].equalsIgnoreCase("list"))
 		{
 			// list the current groups: by zone? in priority order?
-			Zone zone = ZoneManager.getGLOBAL();
+			Zone zone = APIRegistry.zones.getGLOBAL();
 			if (args.length == 2)
 			{
-				if (ZoneManager.doesZoneExist(args[1]))
+				if (APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					zone = ZoneManager.getZone(args[1]);
+					zone = APIRegistry.zones.getZone(args[1]);
 				}
 				else if (args[1].equalsIgnoreCase("here"))
 				{
-					zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+					zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 				}
 				else
 				{
@@ -158,18 +157,18 @@ public class CommandFEPermGroup
 		/*
 		 * Settings
 		 */
-		Zone zone = ZoneManager.getGLOBAL();
+		Zone zone = APIRegistry.zones.getGLOBAL();
 		if (args.length == 3 && (args[1].equalsIgnoreCase("prefix") || args[1].equalsIgnoreCase("suffix") || args[1].equalsIgnoreCase("parent") || args[1].equalsIgnoreCase("priority")))
 		{
 			if (args.length == 3)
 			{
-				if (ZoneManager.doesZoneExist(args[2]))
+				if (APIRegistry.zones.doesZoneExist(args[2]))
 				{
-					zone = ZoneManager.getZone(args[2]);
+					zone = APIRegistry.zones.getZone(args[2]);
 				}
 				else if (args[2].equalsIgnoreCase("here"))
 				{
-					zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+					zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 				}
 				else
 				{
@@ -179,13 +178,13 @@ public class CommandFEPermGroup
 		}
 		else if (args.length == 5)
 		{
-			if (ZoneManager.doesZoneExist(args[4]))
+			if (APIRegistry.zones.doesZoneExist(args[4]))
 			{
-				zone = ZoneManager.getZone(args[4]);
+				zone = APIRegistry.zones.getZone(args[4]);
 			}
 			else if (args[4].equalsIgnoreCase("here"))
 			{
-				zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+				zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 			}
 			else
 			{
@@ -328,16 +327,16 @@ public class CommandFEPermGroup
 		/*
 		 * Permissions part
 		 */
-		zone = ZoneManager.getGLOBAL();
+		zone = APIRegistry.zones.getGLOBAL();
 		if (args.length == 4)
 		{
-			if (ZoneManager.doesZoneExist(args[3]))
+			if (APIRegistry.zones.doesZoneExist(args[3]))
 			{
-				zone = ZoneManager.getZone(args[3]);
+				zone = APIRegistry.zones.getZone(args[3]);
 			}
 			else if (args[3].equalsIgnoreCase("here"))
 			{
-				zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+				zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 			}
 			else
 			{
@@ -404,13 +403,13 @@ public class CommandFEPermGroup
 		{
 			if (args.length == 3)
 			{
-				if (ZoneManager.doesZoneExist(args[2]))
+				if (APIRegistry.zones.doesZoneExist(args[2]))
 				{
-					zone = ZoneManager.getZone(args[2]);
+					zone = APIRegistry.zones.getZone(args[2]);
 				}
 				else if (args[2].equalsIgnoreCase("here"))
 				{
-					zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+					zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 				}
 				else
 				{
@@ -479,13 +478,13 @@ public class CommandFEPermGroup
 				sender.sendChatToPlayer("Usage: /p group create <groupname>");
 				return;
 			}
-			Zone zone = ZoneManager.getGLOBAL();
+			Zone zone = APIRegistry.zones.getGLOBAL();
 			if (args.length > 2)
 			{
 
-				if (ZoneManager.doesZoneExist(args[2]))
+				if (APIRegistry.zones.doesZoneExist(args[2]))
 				{
-					zone = ZoneManager.getZone(args[2]);
+					zone = APIRegistry.zones.getZone(args[2]);
 				}
 				else
 				{
@@ -508,12 +507,12 @@ public class CommandFEPermGroup
 				sender.sendChatToPlayer(args[0] + " does not exist as a group!");
 				return;
 			}
-			Zone zone = ZoneManager.getGLOBAL();
+			Zone zone = APIRegistry.zones.getGLOBAL();
 			if (args.length == 3)
 			{
-				if (ZoneManager.doesZoneExist(args[2]))
+				if (APIRegistry.zones.doesZoneExist(args[2]))
 				{
-					zone = ZoneManager.getZone(args[2]);
+					zone = APIRegistry.zones.getZone(args[2]);
 				}
 				else
 				{
@@ -528,12 +527,12 @@ public class CommandFEPermGroup
 		if (args[0].equalsIgnoreCase("list"))
 		{
 			// list the current groups: by zone? in priority order?
-			Zone zone = ZoneManager.getGLOBAL();
+			Zone zone = APIRegistry.zones.getGLOBAL();
 			if (args.length == 2)
 			{
-				if (ZoneManager.doesZoneExist(args[1]))
+				if (APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					zone = ZoneManager.getZone(args[1]);
+					zone = APIRegistry.zones.getZone(args[1]);
 				}
 				else
 				{
@@ -573,14 +572,14 @@ public class CommandFEPermGroup
 		/*
 		 * Settings
 		 */
-		Zone zone = ZoneManager.getGLOBAL();
+		Zone zone = APIRegistry.zones.getGLOBAL();
 		if (args.length == 3 && (args[1].equalsIgnoreCase("prefix") || args[1].equalsIgnoreCase("suffix") || args[1].equalsIgnoreCase("parent") || args[1].equalsIgnoreCase("priority")))
 		{
 			if (args.length == 3)
 			{
-				if (ZoneManager.doesZoneExist(args[2]))
+				if (APIRegistry.zones.doesZoneExist(args[2]))
 				{
-					zone = ZoneManager.getZone(args[2]);
+					zone = APIRegistry.zones.getZone(args[2]);
 				}
 				else
 				{
@@ -590,9 +589,9 @@ public class CommandFEPermGroup
 		}
 		else if (args.length == 5)
 		{
-			if (ZoneManager.doesZoneExist(args[4]))
+			if (APIRegistry.zones.doesZoneExist(args[4]))
 			{
-				zone = ZoneManager.getZone(args[4]);
+				zone = APIRegistry.zones.getZone(args[4]);
 			}
 			else
 			{
@@ -735,12 +734,12 @@ public class CommandFEPermGroup
 		/*
 		 * Permissions part
 		 */
-		zone = ZoneManager.getGLOBAL();
+		zone = APIRegistry.zones.getGLOBAL();
 		if (args.length == 4)
 		{
-			if (ZoneManager.doesZoneExist(args[3]))
+			if (APIRegistry.zones.doesZoneExist(args[3]))
 			{
-				zone = ZoneManager.getZone(args[3]);
+				zone = APIRegistry.zones.getZone(args[3]);
 			}
 			else
 			{
@@ -807,9 +806,9 @@ public class CommandFEPermGroup
 		{
 			if (args.length == 3)
 			{
-				if (ZoneManager.doesZoneExist(args[2]))
+				if (APIRegistry.zones.doesZoneExist(args[2]))
 				{
-					zone = ZoneManager.getZone(args[2]);
+					zone = APIRegistry.zones.getZone(args[2]);
 				}
 				else if (args[2].equalsIgnoreCase("here"))
 				{

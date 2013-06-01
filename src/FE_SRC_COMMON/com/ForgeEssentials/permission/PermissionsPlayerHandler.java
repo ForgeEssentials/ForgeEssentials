@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
@@ -63,7 +62,7 @@ public final class PermissionsPlayerHandler
 
 	private static void checkPlayerSupers(PermQueryPlayer event)
 	{
-		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, ZoneManager.getSUPER().getZoneName(), event.checkForward);
+		PermResult result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, APIRegistry.zones.getSUPER().getZoneName(), event.checkForward);
 		if (!result.equals(PermResult.UNKNOWN))
 		{
 			event.setResult(result);
@@ -72,7 +71,7 @@ public final class PermissionsPlayerHandler
 
 	private static void handlePlayer(PermQueryPlayer event)
 	{
-		Zone zone = ZoneManager.getWhichZoneIn(new WorldPoint(event.doer));
+		Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(event.doer));
 		PermResult result = getResultFromZone(zone, event);
 		event.setResult(result);
 	}
@@ -87,7 +86,7 @@ public final class PermissionsPlayerHandler
 	{
 		if (event.allOrNothing)
 		{
-			Zone zone = ZoneManager.getWhichZoneIn(event.doneTo);
+			Zone zone = APIRegistry.zones.getWhichZoneIn(event.doneTo);
 			PermResult result = getResultFromZone(zone, event);
 			event.setResult(result);
 		}
@@ -154,7 +153,7 @@ public final class PermissionsPlayerHandler
 			// still unknown? check parent zones.
 			if (result.equals(PermResult.UNKNOWN))
 			{
-				if (tempZone == ZoneManager.getGLOBAL())
+				if (tempZone == APIRegistry.zones.getGLOBAL())
 				{
 					// default deny.
 					result = PermResult.DENY;
@@ -162,7 +161,7 @@ public final class PermissionsPlayerHandler
 				else
 				{
 					// get the parent of the zone.
-					tempZone = ZoneManager.getZone(tempZone.parent);
+					tempZone = APIRegistry.zones.getZone(tempZone.parent);
 				}
 			}
 		}
@@ -173,11 +172,11 @@ public final class PermissionsPlayerHandler
 	{
 		ArrayList<AreaBase> applicable = new ArrayList<AreaBase>();
 
-		Zone worldZone = ZoneManager.getWorldZone(event.doer.worldObj);
+		Zone worldZone = APIRegistry.zones.getWorldZone(event.doer.worldObj);
 		ArrayList<Zone> zones = new ArrayList<Zone>();
 
 		// add all children
-		for (Zone zone : ZoneManager.getZoneList())
+		for (Zone zone : APIRegistry.zones.getZoneList())
 		{
 			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
 			{

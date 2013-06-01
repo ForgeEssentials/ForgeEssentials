@@ -7,7 +7,7 @@ import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 
-import com.ForgeEssentials.api.permissions.ZoneManager;
+import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.data.api.ClassContainer;
 import com.ForgeEssentials.data.api.DataStorageManager;
 import com.ForgeEssentials.data.api.IReconstructData;
@@ -96,7 +96,7 @@ public class TickTaskFill implements ITickTask
 
 		source = sender;
 		world = worldToFill;
-		border = ModuleWorldBorder.borderMap.get(ZoneManager.getWorldZone(world).getZoneName());
+		border = ModuleWorldBorder.borderMap.get(APIRegistry.zones.getWorldZone(world).getZoneName());
 
 		if (border.shapeByte == 0 || border.rad == 0)
 		{

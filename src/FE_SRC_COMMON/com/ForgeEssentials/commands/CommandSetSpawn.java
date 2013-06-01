@@ -13,7 +13,6 @@ import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -127,16 +126,16 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		}
 		
 		// calc zone.
-		Zone zone = ZoneManager.getGLOBAL();
+		Zone zone = APIRegistry.zones.getGLOBAL();
 		if (args.length == 5)
 		{
-			if (ZoneManager.doesZoneExist(args[4]))
+			if (APIRegistry.zones.doesZoneExist(args[4]))
 			{
-				zone = ZoneManager.getZone(args[4]);
+				zone = APIRegistry.zones.getZone(args[4]);
 			}
 			else if (args[4].equalsIgnoreCase("here"))
 			{
-				zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+				zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 			}
 			else
 			{
@@ -146,13 +145,13 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		}
 		else if(args.length == 7)
 		{
-			if (ZoneManager.doesZoneExist(args[6]))
+			if (APIRegistry.zones.doesZoneExist(args[6]))
 			{
-				zone = ZoneManager.getZone(args[6]);
+				zone = APIRegistry.zones.getZone(args[6]);
 			}
 			else if (args[6].equalsIgnoreCase("here"))
 			{
-				zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+				zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 			}
 			else
 			{
@@ -198,13 +197,13 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		}
 		else if (args[1].equalsIgnoreCase("zone"))
 		{
-			if (ZoneManager.doesZoneExist(args[2]))
+			if (APIRegistry.zones.doesZoneExist(args[2]))
 			{
-				zone = ZoneManager.getZone(args[2]);
+				zone = APIRegistry.zones.getZone(args[2]);
 			}
 			else if (args[5].equalsIgnoreCase("here"))
 			{
-				zone = ZoneManager.getWhichZoneIn(new WorldPoint(sender));
+				zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 			}
 			else
 			{
@@ -295,12 +294,12 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		}
 		
 		// calc zone.
-		Zone zone = ZoneManager.getGLOBAL();
+		Zone zone = APIRegistry.zones.getGLOBAL();
 		if (args.length == 6)
 		{
-			if (ZoneManager.doesZoneExist(args[5]))
+			if (APIRegistry.zones.doesZoneExist(args[5]))
 			{
-				zone = ZoneManager.getZone(args[5]);
+				zone = APIRegistry.zones.getZone(args[5]);
 			}
 			else
 			{
@@ -310,9 +309,9 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		}
 		else if(args.length == 8)
 		{
-			if (ZoneManager.doesZoneExist(args[7]))
+			if (APIRegistry.zones.doesZoneExist(args[7]))
 			{
-				zone = ZoneManager.getZone(args[7]);
+				zone = APIRegistry.zones.getZone(args[7]);
 			}
 			else
 			{
@@ -351,9 +350,9 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		}
 		else if (args[1].equalsIgnoreCase("zone"))
 		{
-			if (ZoneManager.doesZoneExist(args[2]))
+			if (APIRegistry.zones.doesZoneExist(args[2]))
 			{
-				zone = ZoneManager.getZone(args[2]);
+				zone = APIRegistry.zones.getZone(args[2]);
 			}
 			else
 			{
@@ -417,13 +416,13 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 			else if (args[1].equalsIgnoreCase("group"))
 			{
-				List<Group> groups = APIRegistry.perms.getGroupsInZone(ZoneManager.getGLOBAL().getZoneName());
+				List<Group> groups = APIRegistry.perms.getGroupsInZone(APIRegistry.zones.getGLOBAL().getZoneName());
 				for (Group g : groups)
 					completes.add(g.name);
 			}
 			else if (args[1].equalsIgnoreCase("zone"))
 			{
-				for (Zone z : ZoneManager.getZoneList())
+				for (Zone z : APIRegistry.zones.getZoneList())
 				{
 					completes.add(z.getZoneName());
 				}
@@ -448,7 +447,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		{
 			if (args[0].equalsIgnoreCase("type") || (args[0].equalsIgnoreCase("point") && args[4].equalsIgnoreCase("here")))
 			{
-				for (Zone z : ZoneManager.getZoneList())
+				for (Zone z : APIRegistry.zones.getZoneList())
 				{
 					completes.add(z.getZoneName());
 				}
@@ -459,7 +458,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		{
 			if (args[0].equalsIgnoreCase("point"))
 			{
-				for (Zone z : ZoneManager.getZoneList())
+				for (Zone z : APIRegistry.zones.getZoneList())
 				{
 					completes.add(z.getZoneName());
 				}

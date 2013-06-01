@@ -54,7 +54,7 @@ public enum RegGroup
 	private RegGroup(String name, String parent, String prefix, String suffix, int priority)
 	{
 		this.name = name;
-		group = new Group(name, parent, prefix, suffix, ZoneManager.getGLOBAL().getZoneName(), priority);
+		group = new Group(name, parent, prefix, suffix, APIRegistry.zones.getGLOBAL().getZoneName(), priority);
 	}
 
 	@Override

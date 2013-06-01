@@ -18,7 +18,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.ZoneManager;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.commands.CommandBack;
@@ -141,7 +140,7 @@ public class EventHandler
 
 				if (spawnDim != 0 && spawnDim == currentDim && !CommandSetSpawn.dimsWithProp.contains(currentDim))
 				{
-					Zone z = ZoneManager.getWorldZone(player.worldObj);
+					Zone z = APIRegistry.zones.getWorldZone(player.worldObj);
 					ChunkCoordinates dimPoint = player.worldObj.getSpawnPoint();
 					WorldPoint point = new WorldPoint(spawnDim, dimPoint.posX, dimPoint.posY, dimPoint.posZ);
 					CommandSetSpawn.setSpawnPoint(point, z);
