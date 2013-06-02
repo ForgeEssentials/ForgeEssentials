@@ -65,7 +65,7 @@ public class cmdWrapper extends ForgeEssentialsCommandBase
     @Override
     public boolean canConsoleUseCommand()
     {
-        return cmd.canConsoleUseCommand();
+        return true;
     }
 
     @Override

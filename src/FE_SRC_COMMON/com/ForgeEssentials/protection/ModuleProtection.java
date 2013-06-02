@@ -80,7 +80,7 @@ public class ModuleProtection
 
 		for (String perm : UnfriendlyItemList.getNameSet())
 		{
-			event.registerPermission(PERM_ITEM_USE + "." + perm);
+			event.registerPermissionLevel(PERM_ITEM_USE + "." + perm, RegGroup.MEMBERS);
 		}
 		
 		event.registerPermissionLevel(PERM_ITEM_USE + "." + Permission.ALL, RegGroup.MEMBERS);

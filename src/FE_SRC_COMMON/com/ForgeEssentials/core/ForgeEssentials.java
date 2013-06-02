@@ -20,7 +20,6 @@ import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.core.misc.LoginMessage;
 import com.ForgeEssentials.core.misc.ModListFile;
 import com.ForgeEssentials.core.misc.UnfriendlyItemList;
-import com.ForgeEssentials.core.misc.scripting.ScriptPlayerTracker;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
 import com.ForgeEssentials.core.network.PacketHandler;
 import com.ForgeEssentials.core.preloader.FEModContainer;
@@ -44,7 +43,6 @@ import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.ForgeEssentialsEventFactory;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -125,7 +123,6 @@ public class ForgeEssentials
 		FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
 
 		config = new CoreConfig();
-		GameRegistry.registerPlayerTracker(new ScriptPlayerTracker());
 		bc = new SanityChecker();
 		bc.run();
 

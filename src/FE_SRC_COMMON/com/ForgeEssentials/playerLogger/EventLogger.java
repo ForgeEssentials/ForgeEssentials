@@ -14,7 +14,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
-import com.ForgeEssentials.core.network.PacketPlayerLogger;
+import com.ForgeEssentials.playerLogger.network.PacketPlayerLogger;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog;
 import com.ForgeEssentials.playerLogger.types.blockChangeLog.blockChangeLogCategory;
 import com.ForgeEssentials.playerLogger.types.commandLog;

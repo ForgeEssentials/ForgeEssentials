@@ -12,6 +12,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.base.Strings;
@@ -118,8 +119,8 @@ public abstract class UnfriendlyItemList
 			name = name.replace(' ', '_');
 
 			// save
-			if (!map.containsKey(name) && map.containsValue(item.itemID)) map.put(name, item.itemID);
-			else OutputHandler.felog.severe("Double item! Name:" + name + " ID:" + item.itemID);
+			map.put(name, item.itemID);
+			
 		}
 	}
 
@@ -188,6 +189,7 @@ public abstract class UnfriendlyItemList
 		}
 		catch (Exception e)
 		{
+			OutputHandler.felog.warning("Could not generate itemID list.");
 
 		}
 	}

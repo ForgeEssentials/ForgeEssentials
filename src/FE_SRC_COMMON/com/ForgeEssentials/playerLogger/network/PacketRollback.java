@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core.network;
+package com.ForgeEssentials.playerLogger.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import net.minecraft.network.packet.Packet250CustomPayload;
 
+import com.ForgeEssentials.core.network.IForgeEssentialsPacket;
 import com.ForgeEssentials.playerLogger.blockChange;
 import com.ForgeEssentials.util.OutputHandler;
 

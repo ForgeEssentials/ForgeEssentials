@@ -1,4 +1,4 @@
-package com.ForgeEssentials.core.network;
+package com.ForgeEssentials.playerLogger.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
+import com.ForgeEssentials.core.network.IForgeEssentialsPacket;
 import com.ForgeEssentials.util.OutputHandler;
 
 public class PacketPlayerLogger implements IForgeEssentialsPacket

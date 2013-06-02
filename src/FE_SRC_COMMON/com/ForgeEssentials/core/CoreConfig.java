@@ -49,7 +49,7 @@ public class CoreConfig
 		prop.comment = "If you don't want to send feedback to MCstats, set to false. Optionally, use the opt-out setting located in PluginMetrics.cfg in your minecraft folder.";
 		ForgeEssentials.mcstats = prop.getBoolean(true);
 		
-		prop = config.get("Core", "logLevel", ""+Level.OFF);
+		prop = config.get("Core", "logLevel", ""+Level.FINE);
 		prop.comment = "ForgeEssentials LogLevel. Valid values: OFF, FINE, FINER, FINEST, WARNING, SEVERE, ALL, OFF";
 		OutputHandler.felog.setLevel(getLevel(prop.getString()));
 
