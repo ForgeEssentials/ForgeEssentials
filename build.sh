@@ -74,7 +74,7 @@ echo "Copying in extra files for core"
 cp -rf ${WORKSPACE}/resources/server/* .
 
 echo "Creating server packages"
-jar cvfm "${WORKSPACE}/output/ForgeEssentials-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg ./com/ForgeEssentials/api/permissions ./com/ForgeEssentials/api/packetInspector
+jar cvfm "${WORKSPACE}/output/ForgeEssentials-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg ./com/ForgeEssentials/api/*.class ./com/ForgeEssentials/api/permissions ./com/ForgeEssentials/api/packetInspector
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-auth-${MC}-${VERSION}.zip" ./com/ForgeEssentials/auth/*
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-backups-${MC}-${VERSION}.zip" ./com/ForgeEssentials/backup/*
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-chat-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* 
