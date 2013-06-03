@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -46,7 +47,11 @@ public class CommandMuter
             }
         }
         
-        ModuleChat.logCmd("[" + e.sender.getCommandSenderName() + "] /" + e.command.getCommandName() + " " + join(e.parameters));
+        if (ConfigChat.logcmd && ModuleChat.cmdLog != null)
+        {
+            ModuleChat.cmdLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + e.sender.getCommandSenderName() + "] /" + e.command.getCommandName() + " " + join(e.parameters));
+        }
+        
     }
     
     public String join(String[] args)

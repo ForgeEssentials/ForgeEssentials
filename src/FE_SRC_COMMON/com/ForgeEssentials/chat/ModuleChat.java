@@ -26,6 +26,7 @@ import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModulePostInitEvent;
@@ -49,6 +50,7 @@ public class ModuleChat
 	
 	public static PrintWriter  chatLog;
 	public static PrintWriter  cmdLog;
+	public static File logdir;
 
 	private MailSystem         mailsystem;
 
@@ -89,26 +91,32 @@ public class ModuleChat
 		e.registerServerCommand(new CommandMail());
 		e.registerServerCommand(new CommandAutoMessage());
 		
+		try{
+			logdir = new File(moduleDir, "logs/");
+			logdir.mkdirs();
+		}catch (Exception e1){
+			OutputHandler.felog.warning("Could not create chat log directory!");
+		}
 		try
 		{
-		    File file = new File(moduleDir, "chat.log");
+		    File file = new File(logdir, "chat-" + FunctionHelper.getCurrentDateString() + ".log");
 		    if (!file.exists()) file.createNewFile();
 		    chatLog = new PrintWriter(file);
 		}
 		catch (Exception e1)
 		{
-		    e1.printStackTrace();
+			OutputHandler.felog.warning("Could not create chat log file!");
 		}
 		
 		try
         {
-            File file = new File(moduleDir, "cmd.log");
+            File file = new File(logdir, "cmd-" + FunctionHelper.getCurrentDateString() + ".log");
             if (!file.exists()) file.createNewFile();
             cmdLog = new PrintWriter(file);
         }
         catch (Exception e1)
         {
-            e1.printStackTrace();
+        	OutputHandler.felog.warning("Could not create command log file!");
         }
 	}
 
@@ -201,23 +209,4 @@ public class ModuleChat
 			}
 		}
 	}
-
-    
-	public static void logChat(String line)
-    {
-	    if (ConfigChat.logchat && chatLog != null)
-	    {
-	        chatLog.println(line);
-	        chatLog.flush();
-	    }
-    }
-
-    public static void logCmd(String line)
-    {
-        if (ConfigChat.logcmd && cmdLog != null)
-        {
-            cmdLog.println(line);
-            cmdLog.flush();
-        }
-    }
 }

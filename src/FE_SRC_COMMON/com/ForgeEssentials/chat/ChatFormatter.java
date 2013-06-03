@@ -192,6 +192,9 @@ public class ChatFormatter
 		// finally make it the chat line.
 		event.line = format;
 		
-		ModuleChat.logChat(event.line);
+		if (ConfigChat.logchat && ModuleChat.chatLog != null)
+	    {
+	        ModuleChat.chatLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + event.username + "] " + event.message); // don't use event.line - it shows colour codes and everything
+	    }
 	}
 }
