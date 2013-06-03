@@ -1,5 +1,5 @@
-VERSION="1.2.1"
-MC="1.5.1"
+VERSION="SNAPSHOT"
+MC="1.5.2"
 
 
 #in case we arnt there already
