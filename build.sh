@@ -74,7 +74,7 @@ echo "Copying in extra files for core"
 cp -rf ${WORKSPACE}/resources/server/* .
 
 echo "Creating server packages"
-jar cvfm "${WORKSPACE}/output/ForgeEssentials-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg ./com/ForgeEssentials/api/*.class ./com/ForgeEssentials/api/permissions ./com/ForgeEssentials/api/packetInspector
+jar cvfm "${WORKSPACE}/output/ForgeEssentials-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg ./com/ForgeEssentials/api/*.class ./com/ForgeEssentials/api/permissions ./com/ForgeEssentials/api/packetInspector ./com/ForgeEssentials/api/json
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-auth-${MC}-${VERSION}.zip" ./com/ForgeEssentials/auth/*
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-backups-${MC}-${VERSION}.zip" ./com/ForgeEssentials/backup/*
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-chat-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* 
@@ -83,7 +83,7 @@ zip -r9 "${WORKSPACE}/output/ForgeEssentials-economy-${MC}-${VERSION}.zip" ./com
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-playerlogger-${MC}-${VERSION}.zip" ./com/ForgeEssentials/playerLogger/* 
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-protection-${MC}-${VERSION}.zip" ./com/ForgeEssentials/protection/* 
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-questioner-${MC}-${VERSION}.zip" ./com/ForgeEssentials/questioner/* ./com/ForgeEssentials/api/questioner 
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-snooper-${MC}-${VERSION}.zip" ./com/ForgeEssentials/snooper/* ./com/ForgeEssentials/api/json ./com/ForgeEssentials/api/snooper
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-snooper-${MC}-${VERSION}.zip" ./com/ForgeEssentials/snooper/*  ./com/ForgeEssentials/api/snooper
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-servervote-${MC}-${VERSION}.zip" ./com/ForgeEssentials/serverVote/*
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-scripting-${MC}-${VERSION}.zip" ./com/ForgeEssentials/scripting/*
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-tickets-${MC}-${VERSION}.zip" ./com/ForgeEssentials/tickets/* 
