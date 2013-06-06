@@ -3,6 +3,7 @@ package com.ForgeEssentials.afterlife;
 import java.util.HashMap;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
@@ -15,11 +16,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.liquids.LiquidEvent;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.data.api.ClassContainer;
 import com.ForgeEssentials.data.api.DataStorageManager;
+import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -83,22 +86,40 @@ public class Deathchest
 		World world = e.entityPlayer.worldObj;
 		if (world.isRemote)
 			return;
-
-		if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable())
+		if (enableFencePost)
 		{
-			e.setCanceled(true);
-
-			if (enableFencePost)
+			while (world.getBlockMaterial(point.x, point.y, point.z) == Material.water || world.getBlockMaterial(point.x, point.y, point.z) == Material.lava)
 			{
-				world.setBlock(point.x, point.y, point.z, Block.fence.blockID);
 				point.y++;
 			}
-			new Grave(point, e.entityPlayer, e.drops, this);
-
-			world.setBlock(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
-			FEskullTe te = new FEskullTe();
-			te.setSkullType(3, e.entityPlayer.username);
-			world.setBlockTileEntity(point.x, point.y, point.z, te);
+			if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable() && world.getBlockMaterial(point.x, point.y + 1, point.z).isReplaceable())
+			{
+				e.setCanceled(true);
+				world.setBlock(point.x, point.y, point.z, Block.fence.blockID);
+				point.y++;
+				new Grave(point, e.entityPlayer, e.drops, this);
+				world.setBlock(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
+				FEskullTe te = new FEskullTe();
+				te.setSkullType(3, e.entityPlayer.username);
+				world.setBlockTileEntity(point.x, point.y, point.z, te);
+				return;
+			}
+		}
+		else
+		{
+			while (world.getBlockMaterial(point.x, point.y, point.z) == Material.water || world.getBlockMaterial(point.x, point.y, point.z) == Material.lava)
+			{
+				point.y++;
+			}
+			if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable())
+			{
+				e.setCanceled(true);
+				world.setBlock(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
+				FEskullTe te = new FEskullTe();
+				te.setSkullType(3, e.entityPlayer.username);
+				world.setBlockTileEntity(point.x, point.y, point.z, te);
+				return;
+			}
 		}
 	}
 
@@ -126,10 +147,10 @@ public class Deathchest
 						EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
 						if (grave.xp > 0)
 						{
-						    player.addExperienceLevel(grave.xp);
-						    grave.xp = 0;
+							player.addExperienceLevel(grave.xp);
+							grave.xp = 0;
 						}
-						
+
 						if (player.openContainer != player.inventoryContainer)
 						{
 							player.closeScreen();
@@ -144,10 +165,6 @@ public class Deathchest
 						e.setCanceled(true);
 					}
 				}
-				else
-				{
-					removeGrave(grave, true);
-				}
 			}
 		}
 	}
@@ -157,11 +174,32 @@ public class Deathchest
 	{
 		if (e.world.isRemote)
 			return;
-		WorldPoint point = new WorldPoint(e.world, e.blockX, e.blockY, e.blockZ);
-		if (gravemap.containsKey(point.toString()))
+		if (enableFencePost)
 		{
-			Grave grave = gravemap.get(point.toString());
-			removeGrave(grave, true);
+			WorldPoint point = new WorldPoint(e.world, e.blockX, e.blockY, e.blockZ);
+			WorldPoint point2 = new WorldPoint(e.world, e.blockX, e.blockY + 1, e.blockZ);
+			if (gravemap.containsKey(point.toString()))
+			{
+				e.setCanceled(true);
+				Grave grave = gravemap.get(point.toString());
+				removeGrave(grave, true);
+			}
+			else if (gravemap.containsKey(point2.toString()))
+			{
+				e.setCanceled(true);
+				Grave grave = gravemap.get(point2.toString());
+				removeGrave(grave, true);
+			}
+		}
+		else
+		{
+			WorldPoint point = new WorldPoint(e.world, e.blockX, e.blockY, e.blockZ);
+			if (gravemap.containsKey(point.toString()))
+			{
+				e.setCanceled(true);
+				Grave grave = gravemap.get(point.toString());
+				removeGrave(grave, true);
+			}
 		}
 	}
 
@@ -170,6 +208,7 @@ public class Deathchest
 		if (grave == null)
 			return;
 		DataStorageManager.getReccomendedDriver().deleteObject(graveType, grave.point.toString());
+
 		gravemap.remove(grave.point.toString());
 		if (mined)
 		{
@@ -186,5 +225,8 @@ public class Deathchest
 				}
 			}
 		}
+		DimensionManager.getWorld(grave.point.dim).destroyBlock(grave.point.x, grave.point.y, grave.point.z, false);
+		if (enableFencePost)
+			DimensionManager.getWorld(grave.point.dim).destroyBlock(grave.point.x, grave.point.y - 1, grave.point.z, false);
 	}
 }
