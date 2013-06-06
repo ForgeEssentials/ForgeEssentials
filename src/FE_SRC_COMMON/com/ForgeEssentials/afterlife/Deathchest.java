@@ -16,6 +16,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.liquids.LiquidEvent;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
@@ -87,7 +88,11 @@ public class Deathchest
 			return;
 		if (enableFencePost)
 		{
-			if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable() && world.getBlockMaterial(point.x, point.y + 1, point.z).isReplaceable() && world.getBlockMaterial(point.x, point.y, point.z) != Material.lava && world.getBlockMaterial(point.x, point.y + 1, point.z) != Material.water && world.getBlockMaterial(point.x, point.y + 1, point.z) != Material.lava)
+			while (world.getBlockMaterial(point.x, point.y, point.z) == Material.water || world.getBlockMaterial(point.x, point.y, point.z) == Material.lava)
+			{
+				point.y++;
+			}
+			if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable() && world.getBlockMaterial(point.x, point.y + 1, point.z).isReplaceable())
 			{
 				e.setCanceled(true);
 				world.setBlock(point.x, point.y, point.z, Block.fence.blockID);
@@ -102,7 +107,11 @@ public class Deathchest
 		}
 		else
 		{
-			if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable() && world.getBlockMaterial(point.x, point.y, point.z) != Material.water && world.getBlockMaterial(point.x, point.y, point.z) != Material.lava)
+			while (world.getBlockMaterial(point.x, point.y, point.z) == Material.water || world.getBlockMaterial(point.x, point.y, point.z) == Material.lava)
+			{
+				point.y++;
+			}
+			if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable())
 			{
 				e.setCanceled(true);
 				world.setBlock(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
