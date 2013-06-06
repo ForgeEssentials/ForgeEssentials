@@ -28,7 +28,7 @@ public class CommandGive extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length == 2 || args.length > 3)
+		if (args.length < 2 || args.length > 3)
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
