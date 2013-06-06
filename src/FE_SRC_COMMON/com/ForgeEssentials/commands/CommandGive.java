@@ -28,7 +28,7 @@ public class CommandGive extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length < 2 || args.length > 3)
+		if (args.length == 2 || args.length > 3)
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
@@ -123,9 +123,9 @@ public class CommandGive extends FEcmdModuleCommands
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-			return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getItemList());
-		else if (args.length == 3)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		else if (args.length == 2)
+			return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getItemList());
 		else
 			return null;
 	}
