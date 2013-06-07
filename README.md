@@ -1,24 +1,25 @@
 ForgeEssentialsMain
 ===================
-*******************
+
 ####Join us on our IRC channel [#forgeessentials](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on EsperNet.####
 _________________________________________________________________________________________________________________________
 The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality
 
-*More information can be found at the [wiki](wiki).*
+*More information can be found at the [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki) .*
 
 <br>
 
 Setup
 =====
-_____
+
 *Please see [README-Developing.md](README-Developing.md) for setting up ForgeEssentials with MCP.*
+_____
 
 <br>
 
 Downloads
 =========
-_________
+
 <table>
 <tr>
 <th>Link</th>
@@ -45,7 +46,7 @@ _________
 
 FE Team Members:
 ================
-________________
+
 <a href="https://github.com/AbrarSyed">AbrarSyed</a>  
 
 <a href="https://github.com/Bob-A-Red-Dino">Bob A Red Dino</a>  (inactive)
