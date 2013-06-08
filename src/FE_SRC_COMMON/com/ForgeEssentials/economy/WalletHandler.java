@@ -33,7 +33,9 @@ public class WalletHandler implements IPlayerTracker, IEconManager
 	@Override
 	public void removeFromWallet(int amountToSubtract, String player)
 	{
+		if (wallets.get(player).amount - amountToSubtract > 0){
 		wallets.get(player).amount = wallets.get(player).amount - amountToSubtract;
+		}
 	}
 
 	@Override
