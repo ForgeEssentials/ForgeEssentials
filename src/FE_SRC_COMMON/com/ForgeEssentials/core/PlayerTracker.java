@@ -22,7 +22,6 @@ public class PlayerTracker implements IPlayerTracker
 	public static int			VIPslots;
 	public static String		kickMessage;
 	public static final String	PERMISSION	= "ForgeEssentials.vip";
-	static List<String> commandscripts = new ArrayList<String>();
 
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
@@ -50,10 +49,6 @@ public class PlayerTracker implements IPlayerTracker
 					player2.playerNetServerHandler.kickPlayerFromServer(kickMessage);
 				}
 			}
-		}
-		for (Object s : commandscripts.toArray()){
-			String s1 = s.toString();
-			MinecraftServer.getServer().getCommandManager().executeCommand(player, s1);
 		}
 	}
 

@@ -22,6 +22,7 @@ public class DuplicateCommandRemoval
 
 	public static void remove()
 	{
+		OutputHandler.felog.finest("Running duplicate command removal process!");
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
 		if (server.getCommandManager() instanceof CommandHandler)
@@ -99,7 +100,7 @@ public class DuplicateCommandRemoval
 
 				cmdList.removeAll(toRemove);
 				OutputHandler.felog.finer("commandSet size: " + cmdList.size());
-				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, "commandSet", "b");
+				ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, FIELDNAME);
 
 			}
 			catch (Exception e)
