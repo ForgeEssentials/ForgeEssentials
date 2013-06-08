@@ -33,7 +33,7 @@ public class ForgeEssentialsClient
 
 	private boolean allowCUI;
 	
-	public Logger feclientlog;
+	public static Logger feclientlog;
 	
 	@SideOnly(Side.CLIENT)
 	private static PlayerInfoClient	info;
@@ -58,17 +58,27 @@ public class ForgeEssentialsClient
 		if (FMLCommonHandler.instance().getSide().isServer() && getDevOverride() == false)
 			throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
 		
-		Configuration config = new Configuration(e.getSuggestedConfigurationFile());
+		if (FMLCommonHandler.instance().getSide().isClient()){
+			config(new Configuration(e.getSuggestedConfigurationFile()));
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void config(Configuration config){
 		config.load();
 		config.addCustomCategoryComment("Core", "Configure ForgeEssentials .");
 
 		Property prop = config.get("Core", "allowCUI", true);
 		prop.comment = "Set to false to disable graphical selections.";
 		allowCUI = prop.getBoolean(true);
+		
+		prop = config.get("Core", "keybinding", 88);
+		prop.comment = "Minecraft key code for activating the FE GUI. Defaults to F12 (88)";
+		FEKeyBinding.fekeycode = prop.getInt(88);
 		// any other parts please config here
 		config.save();
-		
 	}
+	
 
 	@SideOnly(Side.CLIENT)
 	@Init

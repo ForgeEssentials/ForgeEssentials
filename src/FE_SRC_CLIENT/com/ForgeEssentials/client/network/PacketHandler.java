@@ -3,6 +3,8 @@ package com.ForgeEssentials.client.network;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 
+import com.ForgeEssentials.util.OutputHandler;
+
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
@@ -27,6 +29,8 @@ public class PacketHandler implements IPacketHandler
 			WorldClient world = (WorldClient) player.worldObj;
 
 			int ID = stream.read();
+			
+			OutputHandler.felog.finest("Received packet with ID " + ID);
 
 			switch (ID)
 				{
@@ -41,6 +45,9 @@ public class PacketHandler implements IPacketHandler
 					case 2:
 					    PacketRollback.readClient(stream, world, player);
 					    break;
+					case 3:
+						PacketPermNodeList.readClient(stream, world, player);
+						break;
 				}
 		}
 		catch (Exception e)

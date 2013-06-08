@@ -1,15 +1,7 @@
 package com.ForgeEssentials.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiShareToLan;
-import net.minecraft.client.gui.achievement.GuiAchievements;
-import net.minecraft.client.gui.achievement.GuiStats;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.stats.StatList;
-import net.minecraft.util.StatCollector;
 
 public class GuiFEMain extends GuiScreen{
 	
@@ -22,6 +14,7 @@ public class GuiFEMain extends GuiScreen{
 	public void initGui(){
 		byte b0 = -16;
 		this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 4 + 24 + b0, "Return to game"));
+		this.buttonList.add(new GuiButton(1, this.width / 2 - 100, this.height / 4 + 48 + b0, 98, 20, "Permissions"));
 	}
 	protected void actionPerformed(GuiButton par1GuiButton)
     {
@@ -32,6 +25,10 @@ public class GuiFEMain extends GuiScreen{
                 this.mc.setIngameFocus();
                 this.mc.sndManager.resumeAllSounds();
                 break;
+                
+            case 1:
+            	this.mc.displayGuiScreen(new GuiPermissions());
+            	break;
             
         }
     }

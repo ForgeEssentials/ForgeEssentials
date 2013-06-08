@@ -9,6 +9,7 @@ import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
+import com.ForgeEssentials.permission.network.PacketPermNodeList;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.data.AbstractDataDriver;
@@ -26,6 +27,8 @@ import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions
@@ -163,5 +166,8 @@ public class ModulePermissions
 		}
 
 		autoPromoteManager.stop();
+	}
+	public void sendPermList(Player player){
+		PacketDispatcher.sendPacketToPlayer(new PacketPermNodeList(permLoader.perms).getPayload(), player);
 	}
 }

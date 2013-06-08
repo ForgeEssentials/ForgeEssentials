@@ -10,8 +10,10 @@ import cpw.mods.fml.common.TickType;
 
 public class FEKeyBinding extends KeyHandler{
 
+	public static int fekeycode;
+	
 	public FEKeyBinding(KeyBinding[] keyBindings) {
-		super(new KeyBinding[] { new KeyBinding("ForgeEssentials Menu", 88) }, new boolean[] { false });
+		super(new KeyBinding[] { new KeyBinding("ForgeEssentials Menu", fekeycode) }, new boolean[] { false });
 	}
 
 	@Override
@@ -33,6 +35,7 @@ public class FEKeyBinding extends KeyHandler{
                 FMLClientHandler.instance().getClient().displayGuiScreen(new GuiFEMain());
                 World world = FMLClientHandler.instance().getClient().theWorld;
         }
+		// TODO: tap key again to close fe menu
 	}
 
 	@Override
