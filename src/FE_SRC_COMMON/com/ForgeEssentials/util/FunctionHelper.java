@@ -384,7 +384,7 @@ public final class FunctionHelper
 		StringBuilder builder = new StringBuilder();
 		builder.append(c.get(Calendar.YEAR));
 		builder.append('-');
-		builder.append(c.get(Calendar.MONTH + 1));
+		builder.append(c.get(Calendar.MONTH) + 1);
 		builder.append('-');
 		builder.append(c.get(Calendar.DAY_OF_MONTH));
 
