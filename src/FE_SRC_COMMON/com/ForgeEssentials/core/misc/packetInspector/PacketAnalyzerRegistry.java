@@ -1,7 +1,8 @@
-package com.ForgeEssentials.api.packetInspector;
+package com.ForgeEssentials.core.misc.packetInspector;
 
 import net.minecraft.network.packet.Packet;
 
+import com.ForgeEssentials.api.IPacketAnalyzer;
 import com.ForgeEssentials.core.preloader.asm.FEPacketAnalyzer;
 import com.google.common.collect.ArrayListMultimap;
 /**

@@ -10,7 +10,7 @@ import com.ForgeEssentials.WorldControl.commands.CommandSet;
 import com.ForgeEssentials.WorldControl.commands.CommandTopManipulate;
 import com.ForgeEssentials.WorldControl.commands.CommandUndo;
 import com.ForgeEssentials.WorldControl.commands.WorldControlCommandBase;
-import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
+import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;

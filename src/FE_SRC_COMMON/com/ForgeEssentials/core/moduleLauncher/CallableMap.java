@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-import com.ForgeEssentials.api.ForgeEssentialsRegistrar;
+import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.ForgeEssentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 

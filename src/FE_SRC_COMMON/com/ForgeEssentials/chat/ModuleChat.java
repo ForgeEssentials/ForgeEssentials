@@ -11,8 +11,7 @@ import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
-import com.ForgeEssentials.api.packetInspector.PacketAnalyzerRegistry;
+import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.chat.commands.CommandAutoMessage;
@@ -25,6 +24,7 @@ import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.chat.commands.CommandUnmute;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
+import com.ForgeEssentials.core.misc.packetInspector.PacketAnalyzerRegistry;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;

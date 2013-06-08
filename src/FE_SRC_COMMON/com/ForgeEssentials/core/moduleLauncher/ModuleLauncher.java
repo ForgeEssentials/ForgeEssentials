@@ -7,7 +7,7 @@ import java.util.TreeMap;
 
 import net.minecraft.command.ICommandSender;
 
-import com.ForgeEssentials.api.ForgeEssentialsRegistrar;
+import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 

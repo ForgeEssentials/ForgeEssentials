@@ -7,9 +7,9 @@ import java.util.Set;
 
 import net.minecraft.entity.passive.EntityTameable;
 
-import com.ForgeEssentials.api.commands.EnumMobType;
-import com.ForgeEssentials.api.commands.FEMob;
-import com.ForgeEssentials.api.commands.FEMob.IsTamed;
+import com.ForgeEssentials.api.EnumMobType;
+import com.ForgeEssentials.api.EnumMobType.FEMob;
+import com.ForgeEssentials.api.EnumMobType.FEMob.IsTamed;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 
@@ -20,9 +20,7 @@ public class MobTypeLoader
 {
 	public static void preLoad(FEModulePreInitEvent event)
 	{
-		OutputHandler.felog.info("Discovering and loading modules...");
-		OutputHandler.felog.info("If you would like to disable a module, please look in ForgeEssentials/main.cfg.");
-
+		OutputHandler.felog.info("Discovering and loading FEMob data...");
 		// started ASM handling for the module loading.
 		Set<ASMData> data = ((FMLPreInitializationEvent) event.getFMLEvent()).getAsmData().getAll(FEMob.class.getName());
 

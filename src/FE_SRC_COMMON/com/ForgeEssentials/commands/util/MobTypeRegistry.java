@@ -8,7 +8,7 @@ import java.util.Set;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityTameable;
 
-import com.ForgeEssentials.api.commands.EnumMobType;
+import com.ForgeEssentials.api.EnumMobType;
 import com.google.common.collect.HashMultimap;
 
 public class MobTypeRegistry

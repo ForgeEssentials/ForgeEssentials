@@ -5,7 +5,7 @@ import java.io.File;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.ForgeEssentialsRegistrar.PermRegister;
+import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;

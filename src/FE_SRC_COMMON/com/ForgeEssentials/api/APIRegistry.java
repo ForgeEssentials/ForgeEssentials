@@ -1,5 +1,9 @@
 package com.ForgeEssentials.api;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
 import com.ForgeEssentials.api.permissions.IPermissionsHelper;
@@ -8,6 +12,11 @@ import com.ForgeEssentials.api.snooper.Response;
 
 import cpw.mods.fml.common.FMLLog;
 
+/**
+ * This is the central access point for all FE API functions
+ * @author luacs1998
+ *
+ */
 public class APIRegistry {
 	
 	// Use this to call API functions available in the economy module.
@@ -42,5 +51,47 @@ public class APIRegistry {
 	}
 
 	private static Method	ResponseRegistry_regsisterResponce;
+	private static Method PacketAnalyzerRegistry_register;
+	
+	/**
+	 * Register your packet analyzers here. No ID support.
+	 * @param analyzer Your packet analyzer
+	 */
+	public static void registerPacketAnalyzer(IPacketAnalyzer analyzer){
+		try
+		{
+			if (PacketAnalyzerRegistry_register == null)
+			{
+				PacketAnalyzerRegistry_register= Class.forName("com.ForgeEssentials.core.misc.PacketAnalyzerRegistry").getMethod("register", IPacketAnalyzer.class);
+			}
+			PacketAnalyzerRegistry_register.invoke(null, analyzer);
+		}
+		catch (Exception e)
+		{
+			FMLLog.warning("[FE API] Unable to register packet analyzer " + analyzer.getClass().toString());
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * Use this annotation to mark classes where static methods with other FE annotations might be.
+	 * @author AbrarSyed
+	 * 
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.TYPE })
+	public @interface ForgeEssentialsRegistrar
+	{
+		String ident();
+
+		/**
+		 * Called before Pre-Init
+		 * @param event IPermRegisterEvent
+		 */
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target({ ElementType.METHOD })
+		public @interface PermRegister
+		{
+		}
+	}
 
 }

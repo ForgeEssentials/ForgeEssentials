@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
 
-import com.ForgeEssentials.api.commands.EnumMobType;
+import com.ForgeEssentials.api.EnumMobType;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.CommandButcherTickTask;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
