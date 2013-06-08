@@ -1,7 +1,6 @@
 package com.ForgeEssentials.scripting;
 
 import java.io.File;
-import java.io.PrintWriter;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;

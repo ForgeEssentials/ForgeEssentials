@@ -3,10 +3,9 @@ package com.ForgeEssentials.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import cpw.mods.fml.common.FMLLog;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.FMLLog;
 
 public final class OutputHandler
 {
