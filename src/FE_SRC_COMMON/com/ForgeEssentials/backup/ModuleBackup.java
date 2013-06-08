@@ -90,20 +90,24 @@ public class ModuleBackup
 
 	public static void msg(String msg)
 	{
-		OutputHandler.felog.info(msg);
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		if (!BackupConfig.enableMsg)
 			return;
 		try
 		{
-			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+			if (FMLCommonHandler.instance().getEffectiveSide().isClient()){
+				OutputHandler.felog.info(msg);
+			}
+			else{
+			server.sendChatToPlayer("[ForgeEssentials] " + msg);
+			}
 			ServerConfigurationManager manager = server.getConfigurationManager();
-			server.sendChatToPlayer(msg);
 			for (String username : manager.getAllUsernames())
 			{
 				EntityPlayerMP player = manager.getPlayerForUsername(username);
 				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
 				{
-					player.sendChatToPlayer(FEChatFormatCodes.AQUA + msg);
+					player.sendChatToPlayer(FEChatFormatCodes.AQUA + "[ForgeEssentials] " + msg);
 				}
 			}
 		}

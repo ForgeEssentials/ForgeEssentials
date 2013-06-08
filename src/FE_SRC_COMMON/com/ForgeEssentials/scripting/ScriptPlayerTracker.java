@@ -21,7 +21,7 @@ public class ScriptPlayerTracker implements IPlayerTracker{
 
 	static List<String> loginscripts = new ArrayList<String>();
 	static List<String> respawnscripts = new ArrayList<String>();
-	static File scriptfolder = new File(ForgeEssentials.FEDIR, "scripting/");
+	static File scriptfolder = ModuleScripting.moduleDir;
 	static File loginplayer = new File(scriptfolder, "login/player/");
 	static File logingroup = new File(scriptfolder, "login/group/");
 	static File respawngroup = new File(scriptfolder, "respawn/group/");

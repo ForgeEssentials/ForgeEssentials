@@ -439,7 +439,7 @@ public class CommandRules extends FEcmdModuleCommands
 	@Override
 	public RegGroup getReggroup()
 	{
-		return RegGroup.OWNERS;
+		return RegGroup.GUESTS;
 	}
 
 }

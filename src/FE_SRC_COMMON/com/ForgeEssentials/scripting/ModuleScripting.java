@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 
@@ -12,6 +13,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 @FEModule(name = "scripting", parentMod = ForgeEssentials.class, isCore = false)
 public class ModuleScripting {
+	
+	@ModuleDir
+	public static File moduleDir;
 	
 	@FEModule.PreInit
 	public void preInit(FEModulePreInitEvent e){
