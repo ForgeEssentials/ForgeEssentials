@@ -21,6 +21,14 @@ public interface IPermissionsHelper
 	
 	boolean checkPermAllowed(PermQuery query);
 	
+	/**
+	 * Check if a permission is allowed. Use if you do not want to create PermQuery objects.
+	 * @param player
+	 * @param node
+	 * @return true if allowed, false if not.
+	 */
+	boolean checkPermAllowed(EntityPlayer player, String node);
+	
 	PermResult checkPermResult(PermQuery query);
 	
 	/**

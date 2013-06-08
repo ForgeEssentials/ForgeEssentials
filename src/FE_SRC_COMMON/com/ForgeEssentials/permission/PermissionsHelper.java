@@ -45,6 +45,11 @@ public class PermissionsHelper implements IPermissionsHelper
 
 		return query.isAllowed();
 	}
+	
+	@Override
+	public boolean checkPermAllowed(EntityPlayer player, String node){
+		return checkPermAllowed(new PermQueryPlayer(player, node));
+	}
 
 	@Override
 	public PermResult checkPermResult(PermQuery query)
