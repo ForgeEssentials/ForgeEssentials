@@ -2,6 +2,7 @@ package com.ForgeEssentials.client;
 
 import java.util.logging.Logger;
 
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
@@ -9,7 +10,9 @@ import net.minecraftforge.common.Property;
 import com.ForgeEssentials.client.cui.CUIPlayerLogger;
 import com.ForgeEssentials.client.cui.CUIRenderrer;
 import com.ForgeEssentials.client.cui.CUIRollback;
+import com.ForgeEssentials.client.gui.FEKeyBinding;
 
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -77,6 +80,7 @@ public class ForgeEssentialsClient
 			MinecraftForge.EVENT_BUS.register(new CUIPlayerLogger());
 			MinecraftForge.EVENT_BUS.register(new CUIRollback());
 		}
+        KeyBindingRegistry.registerKeyBinding(new FEKeyBinding(new KeyBinding[] { new KeyBinding("ForgeEssentials Menu", 88) }));
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -27,7 +27,7 @@ public class FEPacketAnalyzer implements IClassTransformer
     public static boolean                   TcpConnection_addToSendQueue = false;
     public static boolean                   TcpConnection_readPacket = false;
     
-    private static final String             ANALYZERCLASS = "com/ForgeEssentials/api/packetInspector/PacketAnalyzerRegistry";
+    private static final String             ANALYZERCLASS = "com/ForgeEssentials/core/misc/packetInspector/PacketAnalyzerRegistry";
     private static final String             outgoingMethodName = "handleOutgoing";
     private static final String             incomingMethodName = "handleIncoming";
     
