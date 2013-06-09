@@ -10,12 +10,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.FEChatFormatCodes;
+import com.ForgeEssentials.api.AreaSelector.Point;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

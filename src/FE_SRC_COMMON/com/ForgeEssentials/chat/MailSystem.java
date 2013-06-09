@@ -2,9 +2,9 @@ package com.ForgeEssentials.chat;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.FEChatFormatCodes;
 import com.ForgeEssentials.data.api.ClassContainer;
 import com.ForgeEssentials.data.api.DataStorageManager;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.google.common.collect.HashMultimap;

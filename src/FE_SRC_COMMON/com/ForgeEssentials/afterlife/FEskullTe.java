@@ -3,7 +3,7 @@ package com.ForgeEssentials.afterlife;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntitySkull;
 
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 
 public class FEskullTe extends TileEntitySkull
 {

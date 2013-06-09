@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.ForgeEssentials.api.data.IReconstructData;
+
 public class TypeData implements IReconstructData, Serializable
 {
 	/**

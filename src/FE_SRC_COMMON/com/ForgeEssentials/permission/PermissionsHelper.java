@@ -7,16 +7,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.Point;
+import com.ForgeEssentials.api.AreaSelector.Selection;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.IPermissionsHelper;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.query.PermQuery;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.query.PropQuery;
+import com.ForgeEssentials.permission.query.PermQuery;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
+import com.ForgeEssentials.permission.query.PropQuery;
 import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.AddPlayerGroupEvent;
 import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.RemovePlayerGroupEvent;
 import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.SetPlayerGroupEvent;
@@ -31,7 +34,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	private String		EPSuffix	= "";
 	private Group		DEFAULT		= new Group(RegGroup.ZONE.toString(), " ", " ", null, APIRegistry.zones.getGLOBAL().getZoneName(), 0);
 
-	@Override
+	
 	public boolean checkPermAllowed(PermQuery query)
 	{
 		if (query instanceof PermQueryPlayer)
@@ -50,8 +53,13 @@ public class PermissionsHelper implements IPermissionsHelper
 	public boolean checkPermAllowed(EntityPlayer player, String node){
 		return checkPermAllowed(new PermQueryPlayer(player, node));
 	}
-
+	
 	@Override
+	public boolean checkPermAllowed(EntityPlayer player, String node, Point p){
+		return checkPermAllowed(new PermQueryPlayerArea(player, node, p));
+	}
+
+	
 	public PermResult checkPermResult(PermQuery query)
 	{
 		if (query instanceof PermQueryPlayer)
@@ -64,6 +72,20 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 
 		return query.getResult();
+	}
+	@Override
+	public String checkPermResult(EntityPlayer p, String node){
+		return checkPermResult(new PermQueryPlayer(p, node)).toString();
+	}
+
+	@Override
+	public String checkPermResult(EntityPlayer p, String node, boolean checkForward){
+		return checkPermResult(new PermQueryPlayer(p, node, checkForward)).toString();
+	}
+	
+	@Override
+	public String checkPermResult(EntityPlayer p, String node, boolean checkForward, Selection sel){
+		return checkPermResult(new PermQueryPlayerArea(p, node, sel, checkForward)).toString();
 	}
 
 	@Override

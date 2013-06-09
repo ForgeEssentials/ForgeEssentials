@@ -3,15 +3,15 @@ package com.ForgeEssentials.permission;
 import java.util.ArrayList;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.AreaBase;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayerZone;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
+import com.ForgeEssentials.permission.query.PermQueryPlayerZone;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.AreaSelector.AreaBase;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 /**
  * This is the default catcher of all the ForgeEssentials Permission checks.

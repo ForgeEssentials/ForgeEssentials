@@ -8,14 +8,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 public class CommandBack extends FEcmdModuleCommands
 {
@@ -31,7 +30,7 @@ public class CommandBack extends FEcmdModuleCommands
 	{
 		if(justDied.contains(sender.username))
 		{
-			if(APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.BasicCommands.back.ondeath")))
+			if(APIRegistry.perms.checkPermAllowed(sender, "ForgeEssentials.BasicCommands.back.ondeath"))
 			{
 				PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
 				if (info.back != null)
@@ -53,7 +52,7 @@ public class CommandBack extends FEcmdModuleCommands
 				OutputHandler.chatError(sender, Localization.get("command.back.nodeath"));
 			}
 		}
-		else if(APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.BasicCommands.back.ontp")))
+		else if(APIRegistry.perms.checkPermAllowed(sender, "ForgeEssentials.BasicCommands.back.ontp"))
 		{
 			PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
 			if (info.back != null)

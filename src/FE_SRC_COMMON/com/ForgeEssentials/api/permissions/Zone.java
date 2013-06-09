@@ -3,15 +3,15 @@ package com.ForgeEssentials.api.permissions;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.data.api.IReconstructData;
-import com.ForgeEssentials.data.api.SaveableObject;
-import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
-import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
-import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.api.AreaSelector.Point;
+import com.ForgeEssentials.api.AreaSelector.Selection;
+import com.ForgeEssentials.api.AreaSelector.WorldArea;
+import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.Selection;
-import com.ForgeEssentials.util.AreaSelector.WorldArea;
 
 @SaveableObject
 public class Zone extends WorldArea implements Comparable<Object>

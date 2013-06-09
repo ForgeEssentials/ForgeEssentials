@@ -19,13 +19,12 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PermQuery;
-import com.ForgeEssentials.api.permissions.query.PermQueryBlanketSpot;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.core.misc.UnfriendlyItemList;
+import com.ForgeEssentials.permission.query.PermQuery;
+import com.ForgeEssentials.permission.query.PermQueryBlanketSpot;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.PlayerBlockBreak;
 import com.ForgeEssentials.util.events.PlayerBlockPlace;
 
@@ -43,7 +42,7 @@ public class EventHandler
 		{
 			// Stops players from hitting each other.
 
-			boolean sourceB = !APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, ModuleProtection.PERM_PVP));
+			boolean sourceB = !APIRegistry.perms.checkPermAllowed(e.entityPlayer, ModuleProtection.PERM_PVP);
 
 			if (sourceB)
 			{
@@ -51,7 +50,7 @@ public class EventHandler
 				return;
 			}
 
-			boolean receiverB = !APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) e.target, ModuleProtection.PERM_PVP));
+			boolean receiverB = !APIRegistry.perms.checkPermAllowed((EntityPlayer) e.target, ModuleProtection.PERM_PVP);
 
 			if (sourceB || receiverB)
 			{
@@ -63,13 +62,11 @@ public class EventHandler
 		{
 			// Stops players from hitting entities.
 
-			PermQuery query = new PermQueryPlayer(e.entityPlayer, ModuleProtection.PERM_OVERRIDE);
-			Boolean result = APIRegistry.perms.checkPermAllowed(query);
+			Boolean result = APIRegistry.perms.checkPermAllowed(e.entityPlayer, ModuleProtection.PERM_OVERRIDE);
 
 			if (!result)
 			{
-				query = new PermQueryPlayer(e.entityPlayer, ModuleProtection.PERM_INTERACT_ENTITY);
-				result = APIRegistry.perms.checkPermAllowed(query);
+				result = APIRegistry.perms.checkPermAllowed(e.entityPlayer, ModuleProtection.PERM_INTERACT_ENTITY);
 			}
 
 			e.setCanceled(!result);
@@ -105,7 +102,7 @@ public class EventHandler
 				return;
 			}
 
-			boolean receiverB = !APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) e.source.getEntity(), ModuleProtection.PERM_PVP));
+			boolean receiverB = !APIRegistry.perms.checkPermAllowed((EntityPlayer) e.source.getEntity(), ModuleProtection.PERM_PVP);
 
 			if (sourceB || receiverB)
 			{
@@ -131,13 +128,11 @@ public class EventHandler
 		{
 			// stop people from hitting entites.
 
-			PermQuery query = new PermQueryPlayer((EntityPlayer) e.entityLiving, ModuleProtection.PERM_OVERRIDE);
-			Boolean result = APIRegistry.perms.checkPermAllowed(query);
+			Boolean result = APIRegistry.perms.checkPermAllowed((EntityPlayer) e.entityLiving, ModuleProtection.PERM_OVERRIDE);
 
 			if (!result)
 			{
-				query = new PermQueryPlayer((EntityPlayer) e.entityLiving, ModuleProtection.PERM_INTERACT_ENTITY);
-				result = APIRegistry.perms.checkPermAllowed(query);
+				result = APIRegistry.perms.checkPermAllowed((EntityPlayer) e.entityLiving, ModuleProtection.PERM_INTERACT_ENTITY);
 			}
 
 			e.setCanceled(!result);

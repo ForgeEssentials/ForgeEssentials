@@ -17,7 +17,6 @@ public class OverrideManager
 		e.registerServerCommand(new CommandDeop());
 		e.registerServerCommand(new CommandDifficulty());
 		e.registerServerCommand(new CommandGameRule());
-		e.registerServerCommand(new CommandHelp());
 		e.registerServerCommand(new CommandKick());
 		e.registerServerCommand(new CommandMe());
 		e.registerServerCommand(new CommandOp());

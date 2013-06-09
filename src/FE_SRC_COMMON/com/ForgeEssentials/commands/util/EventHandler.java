@@ -17,15 +17,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.commands.CommandBack;
 import com.ForgeEssentials.commands.CommandSetSpawn;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.permission.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.google.common.base.Strings;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -82,7 +81,7 @@ public class EventHandler
 			{
 				if (e.entityPlayer.getCurrentEquippedItem().itemID == Item.compass.itemID)
 				{
-					if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, "ForgeEssentials.BasicCommands.jump")))
+					if (APIRegistry.perms.checkPermAllowed(e.entityPlayer, "ForgeEssentials.BasicCommands.jump"))
 					{
 						try
 						{

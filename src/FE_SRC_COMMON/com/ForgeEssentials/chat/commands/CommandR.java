@@ -8,9 +8,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.api.FEChatFormatCodes;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -138,7 +137,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+		return APIRegistry.perms.checkPermAllowed(player, getCommandPerm());
 	}
 
 	@Override

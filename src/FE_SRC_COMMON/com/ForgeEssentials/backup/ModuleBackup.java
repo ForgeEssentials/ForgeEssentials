@@ -13,12 +13,11 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
+import com.ForgeEssentials.api.FEChatFormatCodes;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
@@ -105,7 +104,7 @@ public class ModuleBackup
 			for (String username : manager.getAllUsernames())
 			{
 				EntityPlayerMP player = manager.getPlayerForUsername(username);
-				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
+				if (APIRegistry.perms.checkPermAllowed(player, "ForgeEssentials.backup.msg"))
 				{
 					player.sendChatToPlayer(FEChatFormatCodes.AQUA + "[ForgeEssentials] " + msg);
 				}

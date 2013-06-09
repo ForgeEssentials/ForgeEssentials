@@ -25,12 +25,11 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.FEChatFormatCodes;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -226,7 +225,7 @@ public class CommandRules extends FEcmdModuleCommands
 			if (args[0].equalsIgnoreCase("help"))
 			{
 				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
-				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
+				if (APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + ".edit"))
 				{
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
 					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
@@ -240,7 +239,7 @@ public class CommandRules extends FEcmdModuleCommands
 			return;
 		}
 
-		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
+		if (!APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + ".edit"))
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 			return;

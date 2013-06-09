@@ -10,8 +10,8 @@ import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.data.api.ClassContainer;
-import com.ForgeEssentials.data.api.IReconstructData;
 import com.ForgeEssentials.data.api.TypeData;
 import com.ForgeEssentials.data.api.TypeMultiValInfo;
 

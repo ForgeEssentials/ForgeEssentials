@@ -7,14 +7,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
+import com.ForgeEssentials.api.AreaSelector.AreaBase;
+import com.ForgeEssentials.api.AreaSelector.Point;
+import com.ForgeEssentials.api.AreaSelector.Selection;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.BlockSaveable;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.AreaBase;
-import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.tasks.ITickTask;
 
 public class TickTaskReplaceSelection implements ITickTask

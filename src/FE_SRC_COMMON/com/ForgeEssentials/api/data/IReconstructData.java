@@ -1,4 +1,4 @@
-package com.ForgeEssentials.data.api;
+package com.ForgeEssentials.api.data;
 
 import java.util.Collection;
 

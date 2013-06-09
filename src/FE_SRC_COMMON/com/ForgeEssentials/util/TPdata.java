@@ -5,10 +5,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -59,7 +58,7 @@ public class TPdata
 				server.transferPlayerToDimension((EntityPlayerMP) player, point.dim);
 			}
 			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 1, point.zd, point.yaw, point.pitch);
-			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TeleportCenter.BYPASS_COOLDOWN)))
+			if (!APIRegistry.perms.checkPermAllowed(player, TeleportCenter.BYPASS_COOLDOWN))
 			{
 				PlayerInfo.getPlayerInfo(player.username).TPcooldown = TeleportCenter.tpCooldown;
 			}

@@ -1,4 +1,4 @@
-package com.ForgeEssentials.util;
+package com.ForgeEssentials.api;
 
 public enum FEChatFormatCodes
 {

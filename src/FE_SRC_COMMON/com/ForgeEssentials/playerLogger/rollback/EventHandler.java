@@ -15,8 +15,8 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import com.ForgeEssentials.api.AreaSelector.Point;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
-import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class EventHandler
 {

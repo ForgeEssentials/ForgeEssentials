@@ -8,22 +8,21 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.PWarp;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.permission.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -116,7 +115,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 					OutputHandler.chatError(sender, Localization.get("command.personalwarp.notfound"));
 				}
 			}
-			else if (args[0].equalsIgnoreCase("limit") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, PERMSETLIMIT)))
+			else if (args[0].equalsIgnoreCase("limit") && APIRegistry.perms.checkPermAllowed(sender, PERMSETLIMIT))
 			{
 			    if (args.length == 1)
 			    {

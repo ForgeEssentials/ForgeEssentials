@@ -11,11 +11,11 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.world.World;
 
+import com.ForgeEssentials.api.AreaSelector.Point;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.TickTaskPulseHelper;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class CommandPulse extends FEcmdModuleCommands

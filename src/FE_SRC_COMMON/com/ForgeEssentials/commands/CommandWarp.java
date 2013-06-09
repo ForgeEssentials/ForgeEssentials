@@ -8,9 +8,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.Warp;
@@ -19,7 +19,6 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 /**
  * Now uses TeleportCenter.
@@ -50,7 +49,7 @@ public class CommandWarp extends FEcmdModuleCommands
 		{
 			if (CommandDataManager.warps.containsKey(args[0].toLowerCase()))
 			{
-				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+				if (APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + "." + args[0].toLowerCase()))
 				{
 					Warp warp = CommandDataManager.warps.get(args[0].toLowerCase());
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.username);
@@ -70,7 +69,7 @@ public class CommandWarp extends FEcmdModuleCommands
 		}
 		else if (args.length == 2)
 		{
-			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+			if (APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + ".admin"))
 			{
 				if (args[0].equalsIgnoreCase("set"))
 				{

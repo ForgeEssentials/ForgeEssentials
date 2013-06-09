@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.util.AreaSelector.Selection;
-import com.ForgeEssentials.util.AreaSelector.WorldArea;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.api.AreaSelector.Selection;
+import com.ForgeEssentials.api.AreaSelector.WorldArea;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 
 public interface IZoneManager
 {

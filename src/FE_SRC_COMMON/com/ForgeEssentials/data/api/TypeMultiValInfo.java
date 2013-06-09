@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.data.StorageManager;
 
 public abstract class TypeMultiValInfo implements ITypeInfo

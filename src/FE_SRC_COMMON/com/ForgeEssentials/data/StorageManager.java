@@ -13,13 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.data.api.ClassContainer;
 import com.ForgeEssentials.data.api.DataStorageManager;
 import com.ForgeEssentials.data.api.EnumDriverType;
 import com.ForgeEssentials.data.api.IDataDriver;
 import com.ForgeEssentials.data.api.IStorageManager;
 import com.ForgeEssentials.data.api.ITypeInfo;
-import com.ForgeEssentials.data.api.SaveableObject;
 import com.ForgeEssentials.data.api.TypeData;
 import com.ForgeEssentials.data.typeInfo.TypeInfoArray;
 import com.ForgeEssentials.data.typeInfo.TypeInfoList;
