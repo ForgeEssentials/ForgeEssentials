@@ -3,12 +3,13 @@ package com.ForgeEssentials.client.network;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 
-import com.ForgeEssentials.util.OutputHandler;
-
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+
+import com.ForgeEssentials.client.ForgeEssentialsClient;
+
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
@@ -30,7 +31,7 @@ public class PacketHandler implements IPacketHandler
 
 			int ID = stream.read();
 			
-			OutputHandler.felog.finest("Received packet with ID " + ID);
+			ForgeEssentialsClient.feclientlog.finest("Received packet with ID " + ID);
 
 			switch (ID)
 				{
