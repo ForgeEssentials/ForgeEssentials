@@ -7,8 +7,10 @@ import com.ForgeEssentials.api.AreaSelector.AreaBase;
 import com.ForgeEssentials.api.AreaSelector.WorldArea;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.permission.query.PermQuery;
-import com.ForgeEssentials.permission.query.PermQueryBlanketZone;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.permission.query.PermQueryBlanketArea;
+import com.ForgeEssentials.permission.query.PermQueryBlanketSpot;
+import com.ForgeEssentials.permission.query.PermQueryBlanketZone;
 import com.ForgeEssentials.util.FunctionHelper;
 
 /**

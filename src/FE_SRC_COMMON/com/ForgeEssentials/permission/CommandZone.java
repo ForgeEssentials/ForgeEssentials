@@ -14,6 +14,7 @@ import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.data.api.DataStorageManager;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.permission.query.PropQueryBlanketZone;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -189,6 +190,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					return;
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".define", info.getSelection(), true)))
+				
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}

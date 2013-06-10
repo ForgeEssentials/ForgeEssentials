@@ -6,8 +6,10 @@ import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.permission.query.PropQuery;
+import com.ForgeEssentials.permission.query.PropQueryBlanketSpot;
 import com.ForgeEssentials.permission.query.PropQueryBlanketZone;
 import com.ForgeEssentials.permission.query.PropQueryPlayer;
+import com.ForgeEssentials.permission.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.permission.query.PropQueryPlayerZone;
 
 public final class PermissionsPropHandler

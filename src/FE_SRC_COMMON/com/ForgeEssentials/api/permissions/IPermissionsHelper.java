@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.AreaSelector.Point;
 import com.ForgeEssentials.api.AreaSelector.Selection;
+import com.ForgeEssentials.permission.query.PermQuery;
 import com.ForgeEssentials.permission.query.PropQuery;
 
 @SuppressWarnings("rawtypes")
@@ -18,6 +19,10 @@ public interface IPermissionsHelper
 	 * @param node
 	 * @return true if allowed, false if not.
 	 */
+	
+	@Deprecated
+	boolean checkPermAllowed(PermQuery query);
+	
 	boolean checkPermAllowed(EntityPlayer player, String node);
 	
 	boolean checkPermAllowed(EntityPlayer player, String node, Point point);
@@ -35,6 +40,7 @@ public interface IPermissionsHelper
 	/**
 	 * populates the given PropQuery with a value.
 	 */
+	@Deprecated
 	void getPermissionProp(PropQuery query);
 
 	/**

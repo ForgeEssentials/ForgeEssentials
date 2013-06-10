@@ -22,6 +22,8 @@ import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.core.misc.UnfriendlyItemList;
 import com.ForgeEssentials.permission.query.PermQuery;
+import com.ForgeEssentials.permission.query.PermQueryBlanketSpot;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.PlayerBlockBreak;
 import com.ForgeEssentials.util.events.PlayerBlockPlace;

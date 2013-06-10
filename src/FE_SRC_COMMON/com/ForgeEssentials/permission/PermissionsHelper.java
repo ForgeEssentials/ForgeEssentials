@@ -15,9 +15,10 @@ import com.ForgeEssentials.api.permissions.IPermissionsHelper;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.permission.query.PermQuery;
-import com.ForgeEssentials.permission.query.PermQueryPlayer;
-import com.ForgeEssentials.permission.query.PropQuery;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
+import com.ForgeEssentials.permission.query.PropQuery;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.AddPlayerGroupEvent;
 import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.RemovePlayerGroupEvent;
@@ -525,5 +526,17 @@ public class PermissionsHelper implements IPermissionsHelper
 	public String getEntryPlayer()
 	{
 		return EntryPlayer;
+	}
+
+	@Override
+	public String checkPermResult(EntityPlayer p, String node, Point point) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String checkPermResult(EntityPlayer p, String node, Selection point) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
