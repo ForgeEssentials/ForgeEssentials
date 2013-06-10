@@ -194,7 +194,7 @@ public class ModuleWorldBorder
 		double difX = center.x - player.posX;
 		double difZ = center.z - player.posZ;
 
-		return (int) Math.sqrt(Math.pow(difX, 2) + Math.pow(difZ, 2));
+		return (int) Math.sqrt((difX * difX) + (difZ * difZ));
 	}
 
 	public static int getDistanceRound(int centerX, int centerZ, int x, int z)
@@ -202,6 +202,6 @@ public class ModuleWorldBorder
 		double difX = centerX - x;
 		double difZ = centerZ - z;
 
-		return (int) Math.sqrt(Math.pow(difX, 2) + Math.pow(difZ, 2));
+		return (int) Math.sqrt((difX * difX) + (difZ * difZ));
 	}
 }
