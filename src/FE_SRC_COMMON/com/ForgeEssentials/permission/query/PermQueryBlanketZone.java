@@ -1,4 +1,4 @@
-package com.ForgeEssentials.api.permissions.query;
+package com.ForgeEssentials.permission.query;
 
 import net.minecraft.world.World;
 

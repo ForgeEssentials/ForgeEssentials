@@ -7,14 +7,11 @@ import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.WorldControl.TickTasks.TickTaskReplaceSelection;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.AreaSelector.Selection;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.misc.FriendlyItemList;
-import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
-import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;

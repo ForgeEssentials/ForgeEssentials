@@ -23,7 +23,6 @@ import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.commands.CommandBack;
 import com.ForgeEssentials.commands.CommandSetSpawn;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.permission.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.google.common.base.Strings;
 

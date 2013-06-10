@@ -4,7 +4,7 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
+import com.ForgeEssentials.permission.query.PropQueryPlayerZone;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.events.PlayerChangedZone;
 

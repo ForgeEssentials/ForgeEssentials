@@ -11,7 +11,6 @@ import com.ForgeEssentials.api.data.SaveableObject;
 import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
 import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.util.FunctionHelper;
 
 @SaveableObject
 public class Zone extends WorldArea implements Comparable<Object>
@@ -37,7 +36,7 @@ public class Zone extends WorldArea implements Comparable<Object>
 	{
 		super(world, sel);
 		zoneID = name;
-		parent = FunctionHelper.getZoneWorldString(world);
+		parent = getZoneWorldString(world);
 	}
 
 	/**
@@ -162,5 +161,10 @@ public class Zone extends WorldArea implements Comparable<Object>
 	public String toString()
 	{
 		return zoneID + " " + super.toString();
+	}
+	
+	public static String getZoneWorldString(World world)
+	{
+		return "WORLD_" + world.provider.getDimensionName().replace(' ', '_') + "_" + world.provider.dimensionId;
 	}
 }

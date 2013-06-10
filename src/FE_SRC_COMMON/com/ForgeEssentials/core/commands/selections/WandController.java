@@ -10,7 +10,6 @@ import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.FEChatFormatCodes;
 import com.ForgeEssentials.api.AreaSelector.Point;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
