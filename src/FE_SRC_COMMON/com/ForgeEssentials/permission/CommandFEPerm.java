@@ -21,10 +21,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandFEPerm extends ForgeEssentialsCommandBase
 {
-	// Variables for autocomplete
+	// Variables for auto-complete
 	String[]	args2		= { "user", "group", "export", "promote" };
 	String[]	groupargs	= { "prefix", "suffix", "parent", "priority", "allow", "true", "deny", "false", "clear" };
-	String[]	playerargs	= { "prefix", "suffix", "set", "add", "remove", "allow", "true", "deny", "false", "clear" };
+	String[]	playerargs	= { "prefix", "suffix", "group", "set", "add", "remove", "allow", "true", "deny", "false", "clear" };
+	String[]	playergargs	= { "set", "add", "remove" };
 
 	@Override
 	public final String getCommandName()
@@ -329,6 +330,23 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 						return getListOfStringsMatchingLastWord(args, playerargs);
 					else if (args[0].equalsIgnoreCase("group") && !args[1].equalsIgnoreCase("create"))
 						return getListOfStringsMatchingLastWord(args, groupargs);
+					break;
+				case 4:
+					if ((args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player")) && args[2].equalsIgnoreCase("group"))
+						return getListOfStringsMatchingLastWord(args, playergargs);
+					break;
+				case 5:
+					if ((args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player")) && args[2].equalsIgnoreCase("group"))
+					{
+						List<Group> groups = APIRegistry.perms.getGroupsInZone(APIRegistry.zones.getGLOBAL().getZoneName());
+						ArrayList<String> groupnames = new ArrayList<String>();
+						for (int i = 0; i < groups.size(); i++)
+						{
+							groupnames.add(groups.get(i).name);
+						}
+						groupnames.add("create");
+						return getListOfStringsFromIterableMatchingLastWord(args, groupnames);
+					}
 					break;
 			}
 		return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
