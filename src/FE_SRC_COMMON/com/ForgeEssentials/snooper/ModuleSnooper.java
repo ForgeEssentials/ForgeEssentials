@@ -20,6 +20,7 @@ import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
 import com.ForgeEssentials.snooper.response.PlayerInv;
 import com.ForgeEssentials.snooper.response.Responces;
 import com.ForgeEssentials.snooper.response.ServerInfo;
+import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerStopEvent;
 
@@ -55,6 +56,12 @@ public class ModuleSnooper
 		APIRegistry.registerResponse(6, new PlayerInv());
 	}
 
+	@FEModule.PreInit
+	public void load(FEModuleInitEvent e){
+		if (!enable)
+			e.getModuleContainer().isLoadable = false;
+	}
+	
 	@FEModule.ServerInit()
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
