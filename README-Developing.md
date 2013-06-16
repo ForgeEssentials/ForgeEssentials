@@ -42,6 +42,6 @@ ________________________________________________________________________________
 
 3 In VM Arguments, copy in the following code: <code>-Dfml.coreMods.load=com.ForgeEssentials.core.preloader.FEPreLoader</code>
 
-4 Do the same, but for Server this time. This time, add: <code>-Dforgeessentials.client.developermode=true"</code>
+4 Do the same, but for Server this time. This time, add: <code>-Dforgeessentials.client.developermode=true</code>
 
 You're good to go!

@@ -20,6 +20,7 @@ import com.ForgeEssentials.commands.CommandDoAs;
 import com.ForgeEssentials.commands.CommandDrop;
 import com.ForgeEssentials.commands.CommandEnchant;
 import com.ForgeEssentials.commands.CommandEnderchest;
+import com.ForgeEssentials.commands.CommandFindblock;
 import com.ForgeEssentials.commands.CommandGameMode;
 import com.ForgeEssentials.commands.CommandGetCommandBook;
 import com.ForgeEssentials.commands.CommandGive;
@@ -126,6 +127,7 @@ public class CommandRegistrar
 		cmdList.add(new CommandPush());
 		cmdList.add(new CommandDrop());
 		cmdList.add(new CommandPulse());
+		cmdList.add(new CommandFindblock());
 	}
 
 	public static void commandConfigs(Configuration config)

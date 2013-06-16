@@ -201,10 +201,10 @@ public final class FunctionHelper
 	 * does NOT check if its a valid BlockID and stuff.. this may be used for
 	 * items.
 	 * @return never NULL. always {0, -1}. Meta by default is -1.
-	 * @throws RuntimeException
+	 * @throws NumberFormatException
 	 * the message is a formatted chat string.
 	 */
-	public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly) throws RuntimeException
+	public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly) throws NumberFormatException
 	{
 		int ID;
 		int meta = -1;
@@ -229,7 +229,7 @@ public final class FunctionHelper
 			}
 			catch (NumberFormatException e)
 			{
-				throw new RuntimeException(Localization.format(Localization.ERROR_NAN, pair[1]));
+				throw new NumberFormatException(Localization.format(Localization.ERROR_NAN, pair[1]));
 			}
 		}
 		else
