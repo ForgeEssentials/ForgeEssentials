@@ -15,6 +15,7 @@ public class GuiFEMain extends GuiScreen{
 		byte b0 = -16;
 		this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 4 + 24 + b0, "Return to game"));
 		this.buttonList.add(new GuiButton(1, this.width / 2 - 100, this.height / 4 + 48 + b0, 98, 20, "Permissions"));
+		this.buttonList.add(new GuiButton(2, this.width / 2 - 100, this.height / 4 + 72 + b0, 98, 20, "Economy"));
 	}
 	protected void actionPerformed(GuiButton par1GuiButton)
     {
@@ -29,7 +30,9 @@ public class GuiFEMain extends GuiScreen{
             case 1:
             	this.mc.displayGuiScreen(new GuiPermissions());
             	break;
-            
+            case 2:
+            	this.mc.displayGuiScreen(new GuiEconomy());
+            	break;
         }
     }
 	public void updateScreen()

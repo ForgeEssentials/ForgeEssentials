@@ -49,6 +49,9 @@ public class PacketHandler implements IPacketHandler
 					case 3:
 						PacketPermNodeList.readClient(stream, world, player);
 						break;
+					case 4:
+						//PacketGetEconAmount.readClient(stream, world, player);
+						break;
 				}
 		}
 		catch (Exception e)
