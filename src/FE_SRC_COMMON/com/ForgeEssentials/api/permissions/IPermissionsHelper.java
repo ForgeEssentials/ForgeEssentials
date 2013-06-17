@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.permission.query.PermQuery;
 import com.ForgeEssentials.permission.query.PropQuery;
 
 @SuppressWarnings("rawtypes")
