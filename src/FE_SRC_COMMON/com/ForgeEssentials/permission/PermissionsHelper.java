@@ -7,8 +7,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.AreaBase;
 import com.ForgeEssentials.api.AreaSelector.Point;
 import com.ForgeEssentials.api.AreaSelector.Selection;
+import com.ForgeEssentials.api.AreaSelector.WorldArea;
 import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.IPermissionsHelper;
@@ -16,6 +18,8 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.permission.query.PermQuery;
 import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.permission.query.PermQueryBlanketArea;
+import com.ForgeEssentials.permission.query.PermQueryBlanketSpot;
 import com.ForgeEssentials.permission.query.PermQueryPlayer;
 import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
 import com.ForgeEssentials.permission.query.PropQuery;
@@ -55,10 +59,29 @@ public class PermissionsHelper implements IPermissionsHelper
 	}
 	
 	@Override
-	public boolean checkPermAllowed(EntityPlayer player, String node, Point p){
-		return checkPermAllowed(new PermQueryPlayerArea(player, node, p));
+	public boolean checkPermAllowed(EntityPlayer player, String node, Object areasel){
+		if (areasel instanceof Point){
+			Point p = (Point) areasel;
+			return checkPermAllowed(new PermQueryPlayerArea(player, node, p));
+		}else if (areasel instanceof AreaBase){
+			AreaBase ab = (AreaBase)areasel;
+			return checkPermAllowed(new PermQueryPlayerArea(player, node, ab, true));
+		}
+		return false;
+		
 	}
-
+	
+	@Override
+	public boolean checkPermAllowed(Object areasel, String node){
+		if (areasel instanceof Point){
+			Point p = (Point) areasel;
+			return checkPermAllowed(new PermQueryBlanketSpot((WorldPoint)p, node));
+		}else if (areasel instanceof AreaBase){
+			AreaBase ab = (AreaBase)areasel;
+			return checkPermAllowed(new PermQueryBlanketArea(node, (WorldArea)ab, true));
+		}
+		return false;
+	}
 	
 	public PermResult checkPermResult(PermQuery query)
 	{
@@ -84,7 +107,8 @@ public class PermissionsHelper implements IPermissionsHelper
 	}
 	
 	@Override
-	public String checkPermResult(EntityPlayer p, String node, boolean checkForward, Selection sel){
+	public String checkPermResult(EntityPlayer p, String node, boolean checkForward, Object areasel){
+		Selection sel = (Selection)areasel;
 		return checkPermResult(new PermQueryPlayerArea(p, node, sel, checkForward)).toString();
 	}
 
@@ -529,13 +553,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	}
 
 	@Override
-	public String checkPermResult(EntityPlayer p, String node, Point point) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String checkPermResult(EntityPlayer p, String node, Selection point) {
+	public String checkPermResult(EntityPlayer p, String node, Object areasel) {
 		// TODO Auto-generated method stub
 		return null;
 	}

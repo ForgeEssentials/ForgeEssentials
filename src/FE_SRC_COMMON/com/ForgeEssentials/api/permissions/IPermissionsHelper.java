@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.AreaSelector.Point;
-import com.ForgeEssentials.api.AreaSelector.Selection;
 import com.ForgeEssentials.permission.query.PermQuery;
 import com.ForgeEssentials.permission.query.PropQuery;
 
@@ -20,22 +18,20 @@ public interface IPermissionsHelper
 	 * @return true if allowed, false if not.
 	 */
 	
-	@Deprecated
-	boolean checkPermAllowed(PermQuery query);
 	
 	boolean checkPermAllowed(EntityPlayer player, String node);
 	
-	boolean checkPermAllowed(EntityPlayer player, String node, Point point);
+	boolean checkPermAllowed(EntityPlayer player, String node, Object areasel);
+	
+	boolean checkPermAllowed(Object areasel, String node);
 	
 	String checkPermResult(EntityPlayer p, String node);
 	
-	String checkPermResult(EntityPlayer p, String node, Point point);
-	
-	String checkPermResult(EntityPlayer p, String node, Selection point);
+	String checkPermResult(EntityPlayer p, String node, Object areasel);
 	
 	String checkPermResult(EntityPlayer p, String node, boolean checkForward);
 	
-	String checkPermResult(EntityPlayer p, String node, boolean checkForward, Selection sel);
+	String checkPermResult(EntityPlayer p, String node, boolean checkForward, Object areasel);
 	
 	/**
 	 * populates the given PropQuery with a value.

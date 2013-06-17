@@ -189,7 +189,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOSELECTION));
 					return;
 				}
-				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".define", info.getSelection(), true)))
+				else if (!APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + ".define", info.getSelection()))
 				
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
@@ -212,7 +212,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOSELECTION));
 					return;
 				}
-				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".redefine." + args[1], info.getSelection(), true)))
+				else if (!APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + ".redefine." + args[1], info.getSelection()))
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
 				}

@@ -20,7 +20,7 @@ import com.ForgeEssentials.snooper.response.PlayerInfoResonce;
 import com.ForgeEssentials.snooper.response.PlayerInv;
 import com.ForgeEssentials.snooper.response.Responces;
 import com.ForgeEssentials.snooper.response.ServerInfo;
-import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerStopEvent;
 
@@ -57,7 +57,7 @@ public class ModuleSnooper
 	}
 
 	@FEModule.PreInit
-	public void load(FEModuleInitEvent e){
+	public void load(FEModulePreInitEvent e){
 		if (!enable)
 			e.getModuleContainer().isLoadable = false;
 	}
