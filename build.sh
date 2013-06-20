@@ -66,7 +66,7 @@ cd reobf/minecraft
 
 echo "Creating Client package"
 cp -rf ${WORKSPACE}/resources/client/*.
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-client-${MC}-${VERSION}.zip" ./com/ForgeEssentials/client/* mcmod.info logo.png FEReadme.txt LICENSE.TXT
+jar cvf "${WORKSPACE}/output/ForgeEssentials-client-${MC}-${VERSION}.jar" ./com/ForgeEssentials/client/* mcmod.info logo.png FEReadme.txt LICENSE.TXT
 rm -rf ./com/ForgeEssentials/client
 rm -rf ./*.info
 
