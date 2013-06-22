@@ -65,7 +65,7 @@ mkdir ${WORKSPACE}/output
 cd reobf/minecraft
 
 echo "Creating Client package"
-cp -rf ${WORKSPACE}/resources/client/*.
+cp -rf ${WORKSPACE}/resources/client/* .
 jar cvf "${WORKSPACE}/output/ForgeEssentials-client-${MC}-${VERSION}.jar" ./com/ForgeEssentials/client/* mcmod.info logo.png FEReadme.txt LICENSE.TXT
 rm -rf ./com/ForgeEssentials/client
 rm -rf ./*.info
