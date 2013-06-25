@@ -19,7 +19,7 @@ import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true, configClass = ConfigProtection.class)
+@FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, configClass = ConfigProtection.class)
 public class ModuleProtection
 {
 	public final static String									PERM_EDITS				= "ForgeEssentials.Protection.allowEdits";
