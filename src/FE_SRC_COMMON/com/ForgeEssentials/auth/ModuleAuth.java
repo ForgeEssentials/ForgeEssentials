@@ -7,6 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.auth.lists.PlayerTracker;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
@@ -65,6 +66,7 @@ public class ModuleAuth
 
 		loginHandler = new LoginHandler();
 		GameRegistry.registerPlayerTracker(loginHandler);
+		PlayerTracker.whitelist = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().isWhiteListEnabled();
 	}
 
 	@ServerInit

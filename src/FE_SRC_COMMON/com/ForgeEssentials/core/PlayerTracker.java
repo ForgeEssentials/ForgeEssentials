@@ -13,40 +13,13 @@ import com.ForgeEssentials.util.FunctionHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;
 
-public class PlayerTracker implements IPlayerTracker
-{
-	public static boolean		KickForVIP;
-	public static int			VIPslots;
-	public static String		kickMessage;
-	public static final String	PERMISSION	= "ForgeEssentials.vip";
+public class PlayerTracker implements IPlayerTracker{
 
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
 		PlayerInfo.getPlayerInfo(player.username);
 		LoginMessage.sendLoginMessage(player);
-
-		if (KickForVIP)
-		{
-			if (FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames().length + VIPslots > FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers())
-			{
-				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, PERMISSION)))
-				{
-					((EntityPlayerMP) player).playerNetServerHandler.kickPlayerFromServer(kickMessage);
-				}
-			}
-
-			while (FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames().length + VIPslots > FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers())
-			{
-				EntityPlayerMP player2 = FunctionHelper.getPlayerForName(FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()[new Random().nextInt(FMLCommonHandler.instance().getMinecraftServerInstance()
-						.getAllUsernames().length)]);
-
-				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player2, PERMISSION)))
-				{
-					player2.playerNetServerHandler.kickPlayerFromServer(kickMessage);
-				}
-			}
-		}
 	}
 
 	@Override

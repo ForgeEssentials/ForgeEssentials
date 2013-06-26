@@ -9,7 +9,6 @@ public class OverrideManager
 
 	public static void regOverrides(FMLServerStartingEvent e)
 	{
-		e.registerServerCommand(new CommandBan());
 		e.registerServerCommand(new CommandBanIp());
 		e.registerServerCommand(new CommandBanlist());
 		e.registerServerCommand(new CommandDebug());
