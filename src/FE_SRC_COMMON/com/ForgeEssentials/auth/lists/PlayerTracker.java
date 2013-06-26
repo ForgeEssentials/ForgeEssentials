@@ -17,8 +17,8 @@ public class PlayerTracker implements IPlayerTracker {
 	public static String notvip;
 	public static String notwhitelisted;
 	public static boolean whitelist;
-	public int vipslots;
-	public int offset;
+	public static int vipslots;
+	public static int offset;
 	
 	@Override
 	public void onPlayerLogin(EntityPlayer player) {
