@@ -7,6 +7,9 @@ import net.minecraftforge.common.MinecraftForge;
 import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
+import com.ForgeEssentials.auth.lists.CommandBan;
+import com.ForgeEssentials.auth.lists.CommandVIP;
+import com.ForgeEssentials.auth.lists.CommandWhiteList;
 import com.ForgeEssentials.auth.lists.PlayerTracker;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
@@ -66,13 +69,19 @@ public class ModuleAuth
 
 		loginHandler = new LoginHandler();
 		GameRegistry.registerPlayerTracker(loginHandler);
-		PlayerTracker.whitelist = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().isWhiteListEnabled();
+		GameRegistry.registerPlayerTracker(new PlayerTracker());
+		if (!PlayerTracker.whitelist){
+			PlayerTracker.whitelist = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().isWhiteListEnabled();
+		}
 	}
 
 	@ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandAuth());
+		e.registerServerCommand(new CommandBan());
+		e.registerServerCommand(new CommandWhiteList());
+		e.registerServerCommand(new CommandVIP());
 
 		if (checkVanillaAuthStatus && !forceEnabled)
 		{
@@ -88,6 +97,9 @@ public class ModuleAuth
 	{
 		event.registerPermissionLevel("ForgeEssentials.ModuleAuth.admin", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.ModuleAuth", RegGroup.GUESTS);
+		event.registerPermissionLevel("ForgeEssentials.Auth.isVIP", null);
+		event.registerPermissionLevel("ForgeEssentials.Auth.isBanned", null);
+		event.registerPermissionLevel("ForgeEssentials.Auth.isWhiteListed", null);
 	}
 
 	public static boolean vanillaMode()
