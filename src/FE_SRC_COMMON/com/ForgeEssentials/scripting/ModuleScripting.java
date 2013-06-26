@@ -10,7 +10,7 @@ import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@FEModule(name = "Scripting", parentMod = ForgeEssentials.class, isCore = false)
+@FEModule(name = "scripting", parentMod = ForgeEssentials.class, isCore = false)
 public class ModuleScripting
 {
 
