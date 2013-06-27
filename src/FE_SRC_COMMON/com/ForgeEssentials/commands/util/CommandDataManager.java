@@ -1,67 +1,193 @@
 package com.ForgeEssentials.commands.util;
 
-import com.ForgeEssentials.data.api.IReconstructData;
-import com.ForgeEssentials.data.api.SaveableObject;
-import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
-import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
-import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
 
-@SaveableObject
-public class WeatherTimeData
+import java.util.HashMap;
+
+
+import com.ForgeEssentials.data.AbstractDataDriver;
+import com.ForgeEssentials.data.api.ClassContainer;
+import com.ForgeEssentials.data.api.DataStorageManager;
+
+
+public class CommandDataManager
 {
-	public static final int	dayTimeStart	= 1;
-	public static final int	dayTimeEnd	= 11;
-	public static final int	nightTimeStart	= 14;
-	public static final int	nightTimeEnd	= 22;
+	private static ClassContainer							conWarp		= new ClassContainer(Warp.class);
+	private static ClassContainer							conPWarp	= new ClassContainer(PWarp.class);
+	private static ClassContainer							conKit		= new ClassContainer(Kit.class);
+	private static ClassContainer                           conWT       = new ClassContainer(WeatherTimeData.class);
 
-	@UniqueLoadingKey
-	@SaveableField
-	public int			dimID;
 
-	@SaveableField
-	public boolean			weatherSpecified;
+	private static AbstractDataDriver						data;
 
-	@SaveableField
-	public boolean			rain;
 
-	@SaveableField
-	public boolean			storm;
+	public static HashMap<String, Kit>						kits		= new HashMap<String, Kit>();
+	public static HashMap<String, Warp>						warps		= new HashMap<String, Warp>();
+	public static HashMap<String, HashMap<String, PWarp>>	pwMap		= new HashMap<String, HashMap<String, PWarp>>();
+	public static HashMap<Integer, WeatherTimeData>         WTmap        = new HashMap<Integer, WeatherTimeData>();
 
-	@SaveableField
-	public boolean			timeSpecified;
 
-	@SaveableField
-	public boolean			day;
-
-	@SaveableField
-	public boolean			timeFreeze;
-
-	@SaveableField
-	public long			freezeTime;
-
-	public WeatherTimeData(int dimID)
+	public static void load()
 	{
-		this.dimID = dimID;
-		this.weatherSpecified = false;
-		this.timeSpecified = false;
-		this.timeFreeze = false;
-		this.storm = false;
-		this.rain = false;
-		this.day = true;
+		data = DataStorageManager.getReccomendedDriver();
+
+
+		loadWarps();
+		loadPWarps();
+		loadKits();
+		loadWT();
 	}
 
-	@Reconstructor
-	private static WeatherTimeData reconstruct(IReconstructData tag)
+
+	public static void save()
 	{
-		WeatherTimeData data = new WeatherTimeData(Integer.parseInt(tag.getUniqueKey()));
+		saveWarps();
+		savePWarps();
+		saveKits();
+		saveWT();
+	}
 
-		data.weatherSpecified = tag.getFieldValue("weatherSpecified").toString().equals(true);
-		data.rain = tag.getFieldValue("rain").toString().equals(true);
-		data.storm = tag.getFieldValue("storm").toString().equals(true);
-		data.timeSpecified = tag.getFieldValue("timeSpecified").toString().equals(true);
-		data.day = tag.getFieldValue("day").toString().equals(true);
-		data.timeFreeze = tag.getFieldValue("timeFreeze").toString().equals(true);
 
-		return data;
+	/*
+	 * Loading loops
+	 */
+	public static void loadWarps()
+	{
+		Object[] objs = data.loadAllObjects(conWarp);
+		for (Object obj : objs)
+		{
+			Warp warp = (Warp) obj;
+			warps.put(warp.getName(), warp);
+		}
+	}
+
+
+	public static void loadPWarps()
+	{
+		Object[] objs = data.loadAllObjects(conPWarp);
+		for (Object obj : objs)
+		{
+			PWarp warp = (PWarp) obj;
+			HashMap<String, PWarp> map = pwMap.get(warp.getUsername());
+			if (map == null)
+			{
+				map = new HashMap<String, PWarp>();
+			}
+			map.put(warp.getName(), warp);
+			pwMap.put(warp.getUsername(), map);
+		}
+	}
+
+
+	public static void loadKits()
+	{
+		Object[] objs = data.loadAllObjects(conKit);
+		for (Object obj : objs)
+		{
+			Kit kit = (Kit) obj;
+			kits.put(kit.getName(), kit);
+		}
+	}
+
+
+	public static void loadWT()
+    {
+        Object[] objs = data.loadAllObjects(conWT);
+        for (Object obj : objs)
+        {
+            WeatherTimeData wt = (WeatherTimeData) obj;
+            WTmap.put(wt.dimID, wt);
+        }
+    }
+
+
+	/*
+	 * Saving loops
+	 */
+	public static void saveWarps()
+	{
+		for (Warp warp : warps.values())
+		{
+			data.saveObject(conWarp, warp);
+		}
+	}
+
+
+	public static void savePWarps()
+	{
+		for (HashMap<String, PWarp> pws : pwMap.values())
+		{
+			for (PWarp warp : pws.values())
+			{
+				data.saveObject(conPWarp, warp);
+			}
+		}
+	}
+
+
+	public static void savePWarps(String username)
+	{
+		for (PWarp warp : pwMap.get(username).values())
+		{
+			data.saveObject(conPWarp, warp);
+		}
+	}
+
+
+	public static void saveKits()
+	{
+		for (Kit kit : kits.values())
+		{
+			data.saveObject(conKit, kit);
+		}
+	}
+
+
+	public static void saveWT()
+    {
+        for (WeatherTimeData wt : WTmap.values())
+        {
+            data.saveObject(conWT, wt);
+        }
+    }
+
+
+	/*
+	 * Adding loops
+	 */
+	public static void addKit(Kit kit)
+	{
+		kits.put(kit.getName(), kit);
+		data.saveObject(conKit, kit);
+	}
+
+
+	public static void addWarp(Warp warp)
+	{
+		warps.put(warp.getName(), warp);
+		data.saveObject(conWarp, warp);
+	}
+
+
+	/*
+	 * Removing loops
+	 */
+	public static void removeWarp(Warp warp)
+	{
+		warps.remove(warp.getName());
+		data.deleteObject(conWarp, warp.getName());
+	}
+
+
+	public static void removePWarp(PWarp pwarp)
+	{
+		data.deleteObject(conPWarp, pwarp.getFilename());
+	}
+
+
+	public static void removeKit(Kit kit)
+	{
+		kits.remove(kit.getName());
+		data.deleteObject(conKit, kit.getName());
 	}
 }
+
