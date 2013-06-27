@@ -40,7 +40,7 @@ public class CommandScript extends FEcmdModuleCommands
 	public String[] getDefaultAliases()
 	{
 		return new String[]
-		{ "item" };
+		{ "s" };
 	}
 
 	@Override
