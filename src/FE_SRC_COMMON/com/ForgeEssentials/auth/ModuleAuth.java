@@ -15,9 +15,11 @@ import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Config;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.Init;
+import com.ForgeEssentials.core.moduleLauncher.FEModule.PostInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.PreInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
+import com.ForgeEssentials.util.events.modules.FEModulePostInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
@@ -70,9 +72,7 @@ public class ModuleAuth
 		loginHandler = new LoginHandler();
 		GameRegistry.registerPlayerTracker(loginHandler);
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
-		if (!PlayerTracker.whitelist){
-			PlayerTracker.whitelist = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().isWhiteListEnabled();
-		}
+		
 	}
 
 	@ServerInit
