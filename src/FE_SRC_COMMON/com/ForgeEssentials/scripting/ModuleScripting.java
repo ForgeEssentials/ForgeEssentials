@@ -30,7 +30,7 @@ public class ModuleScripting
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandScript());
-		e.registerServerCommand(new CommandScriptBook());
+		e.registerServerCommand(new CommandGetScriptBook());
 	}
 
 	public static void startup()
