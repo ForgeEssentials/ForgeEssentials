@@ -74,7 +74,14 @@ public class CommandScript extends FEcmdModuleCommands
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		return null;
+		File[] files = commandscripts.listFiles();
+		List<String> filenames = new ArrayList<String>();
+		for (File file : files)
+		{
+			if (file.getName() != "")
+				filenames.add(file.getName().replace(".txt", ""));
+		}
+		return filenames;
 	}
 
 	@Override
