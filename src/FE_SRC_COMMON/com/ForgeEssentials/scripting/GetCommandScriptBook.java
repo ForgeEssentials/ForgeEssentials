@@ -34,10 +34,10 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
-public class CommandScriptBook extends FEcmdModuleCommands
+public class CommandGetScriptBook extends FEcmdModuleCommands
 {
 
-  static List<String>	scripts			= new ArrayList<String>();
+	static List<String>	scripts			= new ArrayList<String>();
 	public static File	commandscripts	= new File(ModuleScripting.moduleDir, "scripts/");
 
 	@Override
@@ -49,6 +49,27 @@ public class CommandScriptBook extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
+		if (sender.inventory.hasItemStack(new ItemStack(Item.writtenBook)))
+		{
+			int i = 0;
+			for (ItemStack e : sender.inventory.mainInventory)
+			{
+				if (e != null)
+				{
+					if (e.hasTagCompound())
+					{
+						if (e.getTagCompound().hasKey("title") && e.getTagCompound().hasKey("author"))
+						{
+							if (e.getTagCompound().getString("title").equals("ScriptBook") && e.getTagCompound().getString("author").equals("ForgeEssentials"))
+							{
+								sender.inventory.setInventorySlotContents(i, null);
+							}
+						}
+					}
+				}
+				i++;
+			}
+		}
 		executeScript(sender);
 	}
 
