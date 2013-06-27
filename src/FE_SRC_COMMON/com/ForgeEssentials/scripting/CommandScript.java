@@ -27,15 +27,15 @@ import com.ForgeEssentials.util.OutputHandler;
 public class CommandScript extends FEcmdModuleCommands
 {
 
-  static List<String> scripts = new ArrayList<String>();
-	public static File commandscripts = new File(ModuleScripting.moduleDir, "scripts/");
-	
+	static List<String>	scripts			= new ArrayList<String>();
+	public static File	commandscripts	= new File(ModuleScripting.moduleDir, "scripts/");
+
 	@Override
 	public String getCommandName()
 	{
 		return "script";
 	}
-	
+
 	@Override
 	public String[] getDefaultAliases()
 	{
@@ -53,7 +53,8 @@ public class CommandScript extends FEcmdModuleCommands
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
-		if (player != null){
+		if (player != null)
+		{
 			executeScript(player, args[1]);
 		}
 	}
@@ -81,12 +82,14 @@ public class CommandScript extends FEcmdModuleCommands
 	{
 		return RegGroup.OWNERS;
 	}
-	
-	public void executeScript(EntityPlayer player, String script){
+
+	public void executeScript(EntityPlayer player, String script)
+	{
 		OutputHandler.felog.info("Running command script for player " + player.username + " on login");
-		
-		//  run player scripts
-		try{
+
+		// run player scripts
+		try
+		{
 			File pscript = new File(commandscripts, script + ".txt");
 			FileInputStream stream = new FileInputStream(pscript);
 			InputStreamReader streamReader = new InputStreamReader(stream);
@@ -106,20 +109,24 @@ public class CommandScript extends FEcmdModuleCommands
 
 				// read the next string
 				read = reader.readLine();
-				
+
 				reader.close();
 				streamReader.close();
 				stream.close();
 
 			}
-		}catch (Exception e){
+		}
+		catch (Exception e)
+		{
 			OutputHandler.felog.warning("Something went wrong...");
 		}
-		finally{
-			for (Object s : scripts.toArray()){
+		finally
+		{
+			for (Object s : scripts.toArray())
+			{
 				String s1 = s.toString();
 				MinecraftServer.getServer().getCommandManager().executeCommand(player, s1);
-				OutputHandler.felog.info("Successfully run command scripts for player "+ player.username);
+				OutputHandler.felog.info("Successfully run command scripts for player " + player.username);
 			}
 		}
 	}
