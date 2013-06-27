@@ -13,25 +13,30 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @FEModule(name = "scripting", parentMod = ForgeEssentials.class, isCore = false)
-public class ModuleScripting {
-	
+public class ModuleScripting
+{
+
 	@ModuleDir
-	public static File moduleDir;
-	
+	public static File	moduleDir;
+
 	@FEModule.PreInit
-	public void preInit(FEModulePreInitEvent e){
+	public void preInit(FEModulePreInitEvent e)
+	{
 		startup();
 		GameRegistry.registerPlayerTracker(new ScriptPlayerTracker());
 	}
-	
+
 	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandScript());
+		e.registerServerCommand(new CommandScriptBook());
 	}
-	
-	public static void startup(){
-		try{
+
+	public static void startup()
+	{
+		try
+		{
 			if (!ScriptPlayerTracker.scriptfolder.exists())
 			{
 				ScriptPlayerTracker.scriptfolder.mkdirs();
@@ -62,7 +67,9 @@ public class ModuleScripting {
 			{
 				CommandScript.commandscripts.mkdirs();
 			}
-		}catch (Exception e){
+		}
+		catch (Exception e)
+		{
 			OutputHandler.felog.warning("Could not setup scripting folders - you might have to do it yourself.");
 		}
 	}
