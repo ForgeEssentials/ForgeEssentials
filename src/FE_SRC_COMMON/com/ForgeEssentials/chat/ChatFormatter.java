@@ -15,6 +15,7 @@ import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.chat.commands.CommandPm;
+import com.ForgeEssentials.chat.irc.IRCThread;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -196,5 +197,6 @@ public class ChatFormatter
 	    {
 	        ModuleChat.chatLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + event.username + "] " + event.message); // don't use event.line - it shows colour codes and everything
 	    }
+		IRCThread.postqueue.add("<" + event.username + ">" + event.message);
 	}
 }

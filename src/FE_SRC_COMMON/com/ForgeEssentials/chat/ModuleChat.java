@@ -22,6 +22,7 @@ import com.ForgeEssentials.chat.commands.CommandNickname;
 import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.chat.commands.CommandR;
 import com.ForgeEssentials.chat.commands.CommandUnmute;
+import com.ForgeEssentials.chat.irc.IRCThread;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.compat.DuplicateCommandRemoval;
 import com.ForgeEssentials.core.misc.packetInspector.PacketAnalyzerRegistry;
@@ -53,6 +54,7 @@ public class ModuleChat
 	public static File logdir;
 
 	private MailSystem         mailsystem;
+	private IRCThread irc;
 
 	public ModuleChat()
 	{
@@ -71,12 +73,16 @@ public class ModuleChat
 		MinecraftForge.EVENT_BUS.register(new CommandMuter());
 		
 		PacketAnalyzerRegistry.register(new PacketAnalyzerChat(), new int [] { 201 });
+		System.out.println("Starting irc connection");
+		irc = new IRCThread();
 	}
 
 	@FEModule.PostInit
 	public void postLoad(FEModulePostInitEvent e)
 	{
 		mailsystem = new MailSystem();
+
+		
 	}
 
 	@FEModule.ServerInit
@@ -127,6 +133,7 @@ public class ModuleChat
 		new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
 		MailSystem.LoadAll();
 		GameRegistry.registerPlayerTracker(mailsystem);
+		irc.joinChannels();
 	}
 
 	@FEModule.ServerStop()
@@ -136,6 +143,7 @@ public class ModuleChat
 		
 		chatLog.close();
 		cmdLog.close();
+		irc.endConnection();
 	}
 
 	@PermRegister
