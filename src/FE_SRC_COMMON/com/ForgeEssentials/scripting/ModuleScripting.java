@@ -31,6 +31,7 @@ public class ModuleScripting
 	{
 		e.registerServerCommand(new CommandScript());
 		e.registerServerCommand(new CommandGetScriptBook());
+		e.registerServerCommand(new CommandScriptBook());
 	}
 
 	public static void startup()
