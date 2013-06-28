@@ -53,6 +53,7 @@ public class ModuleChat
 	public static File logdir;
 
 	private MailSystem         mailsystem;
+	public static boolean connectToIRC;
 
 	public ModuleChat()
 	{
@@ -130,6 +131,9 @@ public class ModuleChat
 		new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
 		MailSystem.LoadAll();
 		GameRegistry.registerPlayerTracker(mailsystem);
+		if (connectToIRC){
+		IRCHelper.connectToServer();
+		}
 	}
 
 	@FEModule.ServerStop()
@@ -139,6 +143,7 @@ public class ModuleChat
 		
 		chatLog.close();
 		cmdLog.close();
+		IRCHelper.shutdown();
 	}
 
 	@PermRegister

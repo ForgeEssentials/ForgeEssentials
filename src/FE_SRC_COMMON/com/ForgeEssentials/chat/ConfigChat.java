@@ -89,6 +89,14 @@ public class ConfigChat extends ModuleConfigBase
 		logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
 		logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
 		
+		config.addCustomCategoryComment("irc", "Configure the inbuilt IRC bot here.");
+		
+		ModuleChat.connectToIRC = config.get("irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
+		IRCHelper.port = config.get("irc", "port", 0, "The port to connect to the IRC server through.").getInt();
+		IRCHelper.name = config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
+		IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
+		IRCHelper.channel = config.get("irc", "channel", "#something", "Channel to connect to").getString();
+		
 		config.save();
 	}
 
@@ -129,6 +137,12 @@ public class ConfigChat extends ModuleConfigBase
         
         config.get(logCat, "logchat", true, "Log all chat messages").set(logchat);
         config.get(logCat, "logcmd", true, "Log all commands").set(logcmd);
+        
+        config.get("irc", "enable", false, "Enable IRC interoperability?").set(ModuleChat.connectToIRC);
+        config.get("irc", "port", 0, "The port to connect to the IRC server through.").set(IRCHelper.port);
+		config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").set(IRCHelper.name);
+		config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").set(IRCHelper.server);
+		config.get("irc", "channel", "#something", "Channel to connect to").set(IRCHelper.channel);
 		
 		config.save();
 	}
@@ -172,6 +186,12 @@ public class ConfigChat extends ModuleConfigBase
         
         logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
         logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
+        
+        ModuleChat.connectToIRC = config.get("irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
+        IRCHelper.port = config.get("irc", "port", 0, "The port to connect to the IRC server through.").getInt();
+		IRCHelper.name = config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
+		IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
+		IRCHelper.channel = config.get("irc", "channel", "#something", "Channels to connect to").getString();
         
 		config.save();
 	}
