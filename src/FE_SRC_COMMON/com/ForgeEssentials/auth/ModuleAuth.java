@@ -98,8 +98,8 @@ public class ModuleAuth
 		event.registerPermissionLevel("ForgeEssentials.ModuleAuth.admin", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.ModuleAuth", RegGroup.GUESTS);
 		event.registerPermissionLevel("ForgeEssentials.Auth.isVIP", null);
-		event.registerPermissionLevel("ForgeEssentials.Auth.isBanned", null);
-		event.registerPermissionLevel("ForgeEssentials.Auth.isWhiteListed", null);
+		event.registerPermissionLevel("ForgeEssentials.Auth.isBanned", RegGroup.GUESTS);
+		event.registerPermissionLevel("ForgeEssentials.Auth.isWhiteListed", RegGroup.GUESTS);
 	}
 
 	public static boolean vanillaMode()
