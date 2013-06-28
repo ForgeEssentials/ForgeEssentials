@@ -197,6 +197,5 @@ public class ChatFormatter
 	    {
 	        ModuleChat.chatLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + event.username + "] " + event.message); // don't use event.line - it shows colour codes and everything
 	    }
-		IRCThread.postqueue.add("<" + event.username + ">" + event.message);
 	}
 }

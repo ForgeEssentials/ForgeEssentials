@@ -73,8 +73,8 @@ public class ModuleChat
 		MinecraftForge.EVENT_BUS.register(new CommandMuter());
 		
 		PacketAnalyzerRegistry.register(new PacketAnalyzerChat(), new int [] { 201 });
-		System.out.println("Starting irc connection");
-		irc = new IRCThread();
+		//System.out.println("Starting irc connection");
+		//irc = new IRCThread();
 	}
 
 	@FEModule.PostInit
@@ -133,7 +133,7 @@ public class ModuleChat
 		new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
 		MailSystem.LoadAll();
 		GameRegistry.registerPlayerTracker(mailsystem);
-		irc.joinChannels();
+		//irc.joinChannels();
 	}
 
 	@FEModule.ServerStop()
@@ -143,7 +143,7 @@ public class ModuleChat
 		
 		chatLog.close();
 		cmdLog.close();
-		irc.endConnection();
+		//irc.endConnection();
 	}
 
 	@PermRegister
