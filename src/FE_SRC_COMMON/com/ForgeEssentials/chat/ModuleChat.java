@@ -43,17 +43,17 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 public class ModuleChat
 {
 	@FEModule.Config
-	public static ConfigChat   conf;
+	public static ConfigChat	conf;
 
 	@FEModule.ModuleDir
-	public static File         moduleDir;
-	
-	public static PrintWriter  chatLog;
-	public static PrintWriter  cmdLog;
-	public static File logdir;
+	public static File			moduleDir;
 
-	private MailSystem         mailsystem;
-	public static boolean connectToIRC;
+	public static PrintWriter	chatLog;
+	public static PrintWriter	cmdLog;
+	public static File			logdir;
+
+	private MailSystem			mailsystem;
+	public static boolean		enableIRC;
 
 	public ModuleChat()
 	{
@@ -70,8 +70,8 @@ public class ModuleChat
 	{
 		MinecraftForge.EVENT_BUS.register(new ChatFormatter());
 		MinecraftForge.EVENT_BUS.register(new CommandMuter());
-		
-		PacketAnalyzerRegistry.register(new PacketAnalyzerChat(), new int [] { 201 });
+
+		PacketAnalyzerRegistry.register(new PacketAnalyzerChat(), new int[] { 201 });
 		System.out.println("Starting irc connection");
 	}
 
@@ -80,7 +80,6 @@ public class ModuleChat
 	{
 		mailsystem = new MailSystem();
 
-		
 	}
 
 	@FEModule.ServerInit
@@ -94,34 +93,39 @@ public class ModuleChat
 		e.registerServerCommand(new CommandUnmute());
 		e.registerServerCommand(new CommandMail());
 		e.registerServerCommand(new CommandAutoMessage());
-		
-		try{
+
+		try
+		{
 			logdir = new File(moduleDir, "logs/");
 			logdir.mkdirs();
-		}catch (Exception e1){
+		}
+		catch (Exception e1)
+		{
 			OutputHandler.felog.warning("Could not create chat log directory!");
 		}
 		try
 		{
-		    File file = new File(logdir, "chat-" + FunctionHelper.getCurrentDateString() + ".log");
-		    if (!file.exists()) file.createNewFile();
-		    chatLog = new PrintWriter(file);
+			File file = new File(logdir, "chat-" + FunctionHelper.getCurrentDateString() + ".log");
+			if (!file.exists())
+				file.createNewFile();
+			chatLog = new PrintWriter(file);
 		}
 		catch (Exception e1)
 		{
 			OutputHandler.felog.warning("Could not create chat log file!");
 		}
-		
+
 		try
-        {
-            File file = new File(logdir, "cmd-" + FunctionHelper.getCurrentDateString() + ".log");
-            if (!file.exists()) file.createNewFile();
-            cmdLog = new PrintWriter(file);
-        }
-        catch (Exception e1)
-        {
-        	OutputHandler.felog.warning("Could not create command log file!");
-        }
+		{
+			File file = new File(logdir, "cmd-" + FunctionHelper.getCurrentDateString() + ".log");
+			if (!file.exists())
+				file.createNewFile();
+			cmdLog = new PrintWriter(file);
+		}
+		catch (Exception e1)
+		{
+			OutputHandler.felog.warning("Could not create command log file!");
+		}
 	}
 
 	@FEModule.ServerPostInit()
@@ -131,8 +135,9 @@ public class ModuleChat
 		new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
 		MailSystem.LoadAll();
 		GameRegistry.registerPlayerTracker(mailsystem);
-		if (connectToIRC){
-		IRCHelper.connectToServer();
+		if (enableIRC)
+		{
+			IRCHelper.connectToServer();
 		}
 	}
 
@@ -140,7 +145,6 @@ public class ModuleChat
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		MailSystem.SaveAll();
-		
 		chatLog.close();
 		cmdLog.close();
 		IRCHelper.shutdown();
