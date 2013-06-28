@@ -15,10 +15,10 @@ public class ConfigChat extends ModuleConfigBase
 {
 	public static String	chatFormat;
 	public static String	largeComment_chatFormat	= "";
-	
+
 	public Configuration	config;
-    public static boolean   logchat;
-    public static boolean   logcmd;
+	public static boolean	logchat;
+	public static boolean	logcmd;
 
 	// this is designed so it will work for any class.
 	public ConfigChat(File file)
@@ -50,7 +50,7 @@ public class ConfigChat extends ModuleConfigBase
 		config = new Configuration(file, true);
 
 		config.addCustomCategoryComment("Chat", "Chat Configs");
-		config.addCustomCategoryComment("Automessage", "Automated spamm");
+		config.addCustomCategoryComment("Automessage", "Automated spam");
 
 		String[] msg = config.get("Automessage", "messages", new String[]
 		{ "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" }, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
@@ -79,24 +79,25 @@ public class ConfigChat extends ModuleConfigBase
 		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
 
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
-		
-		for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blocked if the player is muted.").getStringList())
-		    CommandMuter.mutedCommands.add(cmd);
-		
+
+		for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] { "me" }, "All commands in here will be blocked if the player is muted.").getStringList())
+			CommandMuter.mutedCommands.add(cmd);
+
 		String logCat = "Chat.log";
 		config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
-		
+
 		logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
 		logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
-		
-		config.addCustomCategoryComment("irc", "Configure the inbuilt IRC bot here.");
-		
-		ModuleChat.connectToIRC = config.get("irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
+
+		config.addCustomCategoryComment("irc", "Configure the built-in IRC bot here.");
+
+		ModuleChat.enableIRC = config.get("irc", "enable", false, "Enable IRC?").getBoolean(false);
 		IRCHelper.port = config.get("irc", "port", 0, "The port to connect to the IRC server through.").getInt();
 		IRCHelper.name = config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
+		IRCHelper.password = config.get("irc", "password", "", "Password to connect with (optional).").getString();
 		IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
 		IRCHelper.channel = config.get("irc", "channel", "#something", "Channel to connect to").getString();
-		
+
 		config.save();
 	}
 
@@ -125,25 +126,26 @@ public class ConfigChat extends ModuleConfigBase
 		config.get("BannedWords", "censor", true, "censor the words in the censorList").set(ChatFormatter.censor);
 		config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").set(ChatFormatter.bannedWords.toArray(new String[ChatFormatter.bannedWords.size()]));
 		config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 hart, ...").set(ChatFormatter.censorSlap);
-		
+
 		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
-		
+
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
-		
-		config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blocked if the player is muted.").set(CommandMuter.mutedCommands.toArray(new String[CommandMuter.mutedCommands.size()]));
-		
+
+		config.get("Chat.mute", "mutedCommands", new String[] { "me" }, "All commands in here will be blocked if the player is muted.").set(CommandMuter.mutedCommands.toArray(new String[CommandMuter.mutedCommands.size()]));
+
 		String logCat = "Chat.log";
-        config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
-        
-        config.get(logCat, "logchat", true, "Log all chat messages").set(logchat);
-        config.get(logCat, "logcmd", true, "Log all commands").set(logcmd);
-        
-        config.get("irc", "enable", false, "Enable IRC interoperability?").set(ModuleChat.connectToIRC);
-        config.get("irc", "port", 0, "The port to connect to the IRC server through.").set(IRCHelper.port);
+		config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
+
+		config.get(logCat, "logchat", true, "Log all chat messages").set(logchat);
+		config.get(logCat, "logcmd", true, "Log all commands").set(logcmd);
+
+		config.get("irc", "enable", false, "Enable IRC?").set(ModuleChat.enableIRC);
+		config.get("irc", "port", 0, "The port to connect to the IRC server through.").set(IRCHelper.port);
 		config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").set(IRCHelper.name);
+		config.get("irc", "password", "", "Password to connect with (optional).").set(IRCHelper.password);
 		config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").set(IRCHelper.server);
 		config.get("irc", "channel", "#something", "Channel to connect to").set(IRCHelper.channel);
-		
+
 		config.save();
 	}
 
@@ -176,23 +178,25 @@ public class ConfigChat extends ModuleConfigBase
 		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
 
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
-        
+
 		CommandMuter.mutedCommands.clear();
-        for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] {"me"}, "All commands in here will be blocked if the player is muted.").getStringList())
-            CommandMuter.mutedCommands.add(cmd);
-		
-        String logCat = "Chat.log";
-        config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
-        
-        logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
-        logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
-        
-        ModuleChat.connectToIRC = config.get("irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
-        IRCHelper.port = config.get("irc", "port", 0, "The port to connect to the IRC server through.").getInt();
+		for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] { "me" }, "All commands in here will be blocked if the player is muted.").getStringList())
+			CommandMuter.mutedCommands.add(cmd);
+
+		String logCat = "Chat.log";
+		config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
+
+		logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
+		logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
+
+		// IRC
+		ModuleChat.enableIRC = config.get("irc", "enable", false, "Enable IRC?").getBoolean(false);
+		IRCHelper.port = config.get("irc", "port", 0, "The port to connect to the IRC server through.").getInt();
 		IRCHelper.name = config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
+		IRCHelper.password = config.get("irc", "password", "FEIRCBot", "Password to connect with (optional).").getString();
 		IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
 		IRCHelper.channel = config.get("irc", "channel", "#something", "Channels to connect to").getString();
-        
+
 		config.save();
 	}
 }
