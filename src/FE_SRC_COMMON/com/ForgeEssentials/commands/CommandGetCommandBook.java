@@ -42,6 +42,28 @@ public class CommandGetCommandBook extends FEcmdModuleCommands
 
 		HashMap<String, String> map = new HashMap<String, String>();
 
+		if (sender.inventory.hasItemStack(new ItemStack(Item.writtenBook)))
+		{
+			int i = 0;
+			for (ItemStack e : sender.inventory.mainInventory)
+			{
+				if (e != null)
+				{
+					if (e.hasTagCompound())
+					{
+						if (e.getTagCompound().hasKey("title") && e.getTagCompound().hasKey("author"))
+						{
+							if (e.getTagCompound().getString("title").equals("CommandBook") && e.getTagCompound().getString("author").equals("ForgeEssentials"))
+							{
+								sender.inventory.setInventorySlotContents(i, null);
+							}
+						}
+					}
+				}
+				i++;
+			}
+		}
+
 		for (Object cmdObj : MinecraftServer.getServer().getCommandManager().getCommands().values().toArray())
 		{
 			ICommand cmd = (ICommand) cmdObj;
