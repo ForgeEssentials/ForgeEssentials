@@ -30,12 +30,12 @@ public class ChatFormatter
 	public static String		gmS;
 	public static String		gmC;
 	public static String		gmA;
-    public static int           censorSlap;
+	public static int			censorSlap;
 
 	@ForgeSubscribe(priority = EventPriority.NORMAL)
 	public void chatEvent(ServerChatEvent event)
 	{
-		// muting this should probably be done elsewhere
+		// Muting
 		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
 		{
 			event.setCanceled(true);
@@ -54,7 +54,7 @@ public class ChatFormatter
 		String message = event.message;
 		String nickname = event.username;
 
-		// censoring
+		// Censoring
 		if (censor)
 		{
 			for (String word : bannedWords)
@@ -71,24 +71,22 @@ public class ChatFormatter
 					String replaceWith = Strings.repeat(censorSymbol, length);
 
 					message = m.replaceAll(replaceWith);
-					
-					if (censorSlap != 0) event.player.attackEntityFrom(DamageSource.generic, censorSlap);
+
+					if (censorSlap != 0)
+						event.player.attackEntityFrom(DamageSource.generic, censorSlap);
 				}
 			}
 		}
 
-		/*
-		 * Nickname
-		 */
+		// Nickname
 
 		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).hasKey("nickname"))
 		{
 			nickname = event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
 		}
 
-		/*
-		 * Colorize!
-		 */
+		// Colorize!
+
 		if (event.message.contains("&"))
 		{
 			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.Chat.usecolor")))
@@ -122,15 +120,10 @@ public class ChatFormatter
 			gSuffix = FunctionHelper.formatColors(gSuffix).trim();
 		}
 
-		// It may be beneficial to make this a public function. -RlonRyan
 		String format = ConfigChat.chatFormat;
 		format = ConfigChat.chatFormat == null || ConfigChat.chatFormat.trim().isEmpty() ? "<%username>%message" : ConfigChat.chatFormat;
 
-		/*
-		 * if(enable_chat%){ format = replaceAllIngnoreCase(format, "%message",
-		 * message); }
-		 */
-		// replace group, zone, and rank
+		// Replace group, zone, and rank
 
 		if (format.contains("%gm"))
 		{
@@ -174,28 +167,35 @@ public class ChatFormatter
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%groupPrefix", gPrefix);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%groupSuffix", gSuffix);
 
-		// random nice things...
+		// Random nice things...
+
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%health", "" + event.player.getHealth());
+
+		// Symbols
 
 		format = FunctionHelper.format(format);
 
-		// essentials
+		// Essentials
+
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%playerSuffix", playerSuffix);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%username", nickname);
-		// if(!enable_chat%){ //whereas enable chat is a boolean that can be set
-		// in the config or whatever
-		// //allowing the use of %codes in chat
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%message", message);
-		// }
 
-		// finally make it the chat line.
+		// Finally make it the chat line.
+
 		event.line = format;
-		
+
 		if (ConfigChat.logchat && ModuleChat.chatLog != null)
-	    {
-	        ModuleChat.chatLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + event.username + "] " + event.message); // don't use event.line - it shows colour codes and everything
-	    }
-		IRCHelper.postIRC("<" + event.username + "> " + event.message);
+		{
+			ModuleChat.chatLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + event.username + "] " + event.message); // don't use event.line - it shows colour codes and everything
+		}
+
+		// KHAAAAAAAAN!
+
+		if (ModuleChat.enableIRC)
+		{
+			IRCHelper.postIRC("<" + event.username + "> " + event.message);
+		}
 	}
 }
