@@ -43,7 +43,7 @@ public class CommandGetScriptBook extends FEcmdModuleCommands
 	@Override
 	public String getCommandName()
 	{
-		return "scriptbook";
+		return "getscriptbook";
 	}
 
 	@Override
