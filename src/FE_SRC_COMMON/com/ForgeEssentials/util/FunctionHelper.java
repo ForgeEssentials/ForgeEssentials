@@ -1,11 +1,18 @@
 package com.ForgeEssentials.util;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +24,10 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.MathHelper;
@@ -38,8 +49,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public final class FunctionHelper
 {
-    public static Pattern   groupRegex              = Pattern.compile("\\{[a-zA-Z0-9._]*\\<\\:\\>[a-zA-Z0-9._]*\\}");
-    
+	public static Pattern	groupRegex	= Pattern.compile("\\{[a-zA-Z0-9._]*\\<\\:\\>[a-zA-Z0-9._]*\\}");
+
 	/**
 	 * Get player's looking spot.
 	 * @param player
@@ -123,7 +134,7 @@ public final class FunctionHelper
 	 */
 	@SuppressWarnings("unchecked")
 	public static EntityPlayerMP getPlayerForName(String name)
-	{	
+	{
 		// tru exact match first.
 		{
 			EntityPlayerMP tempPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(name);
@@ -148,19 +159,19 @@ public final class FunctionHelper
 			return possibles.get(0);
 		return null;
 	}
-	
+
 	public static EntityPlayerMP getPlayerForName(ICommandSender sender, String name)
 	{
-        EntityPlayerMP var2 = PlayerSelector.matchOnePlayer(sender, name);
+		EntityPlayerMP var2 = PlayerSelector.matchOnePlayer(sender, name);
 
-        if (var2 != null)
-        {
-            return var2;
-        }
-        else
-        {
-        	return getPlayerForName(name);
-        }
+		if (var2 != null)
+		{
+			return var2;
+		}
+		else
+		{
+			return getPlayerForName(name);
+		}
 	}
 
 	/**
@@ -553,161 +564,286 @@ public final class FunctionHelper
 			return false;
 		}
 	}
-	
+
 	public static String getGroupRankString(String username)
-    {
-        Matcher match = groupRegex.matcher(CoreConfig.groupRankFormat);
-        ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+	{
+		Matcher match = groupRegex.matcher(CoreConfig.groupRankFormat);
+		ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
 
-        String end = "";
+		String end = "";
 
-        StringBuilder temp = new StringBuilder();
-        for (TreeSet<Group> set : list)
-        {
-            for (Group g : set)
-            {
-                if (temp.length() != 0)
-                {
-                    temp.append("&r");
-                }
+		StringBuilder temp = new StringBuilder();
+		for (TreeSet<Group> set : list)
+		{
+			for (Group g : set)
+			{
+				if (temp.length() != 0)
+				{
+					temp.append("&r");
+				}
 
-                temp.append(g.name);
-            }
+				temp.append(g.name);
+			}
 
-            end = match.replaceFirst(temp.toString());
-            temp = new StringBuilder();
-        }
+			end = match.replaceFirst(temp.toString());
+			temp = new StringBuilder();
+		}
 
-        return end;
-    }
+		return end;
+	}
 
 	public static String getGroupPrefixString(String username)
-    {
-        Matcher match = groupRegex.matcher(CoreConfig.groupPrefixFormat);
+	{
+		Matcher match = groupRegex.matcher(CoreConfig.groupPrefixFormat);
 
-        ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+		ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
 
-        String end = "";
+		String end = "";
 
-        StringBuilder temp = new StringBuilder();
-        for (TreeSet<Group> set : list)
-        {
-            for (Group g : set)
-            {
-                if (g.prefix.trim().isEmpty())
-                {
-                    continue;
-                }
+		StringBuilder temp = new StringBuilder();
+		for (TreeSet<Group> set : list)
+		{
+			for (Group g : set)
+			{
+				if (g.prefix.trim().isEmpty())
+				{
+					continue;
+				}
 
-                if (temp.length() == 0)
-                {
-                    temp.append(g.prefix);
-                }
-                else
-                {
-                    temp.insert(0, g.prefix + "&r");
-                }
-            }
+				if (temp.length() == 0)
+				{
+					temp.append(g.prefix);
+				}
+				else
+				{
+					temp.insert(0, g.prefix + "&r");
+				}
+			}
 
-            end = match.replaceFirst(temp.toString());
-            temp = new StringBuilder();
-        }
+			end = match.replaceFirst(temp.toString());
+			temp = new StringBuilder();
+		}
 
-        return end;
-    }
+		return end;
+	}
 
 	public static String getGroupSuffixString(String username)
-    {
-        Matcher match = groupRegex.matcher(CoreConfig.groupSuffixFormat);
+	{
+		Matcher match = groupRegex.matcher(CoreConfig.groupSuffixFormat);
 
-        ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
+		ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
 
-        String end = "";
+		String end = "";
 
-        StringBuilder temp = new StringBuilder();
-        for (TreeSet<Group> set : list)
-        {
-            for (Group g : set)
-            {
-                if (g.suffix.trim().isEmpty())
-                {
-                    continue;
-                }
+		StringBuilder temp = new StringBuilder();
+		for (TreeSet<Group> set : list)
+		{
+			for (Group g : set)
+			{
+				if (g.suffix.trim().isEmpty())
+				{
+					continue;
+				}
 
-                temp.append("&r").append(g.suffix);
-            }
+				temp.append("&r").append(g.suffix);
+			}
 
-            end = match.replaceFirst(temp.toString());
-            temp = new StringBuilder();
-        }
+			end = match.replaceFirst(temp.toString());
+			temp = new StringBuilder();
+		}
 
-        return end;
-    }
+		return end;
+	}
 
-    private static ArrayList<TreeSet<Group>> getGroupsList(Matcher match, String username)
-    {
-        ArrayList<TreeSet<Group>> list = new ArrayList<TreeSet<Group>>();
+	private static ArrayList<TreeSet<Group>> getGroupsList(Matcher match, String username)
+	{
+		ArrayList<TreeSet<Group>> list = new ArrayList<TreeSet<Group>>();
 
-        String whole;
-        String[] p;
-        TreeSet<Group> set;
-        while (match.find())
-        {
-            whole = match.group();
-            whole = whole.replaceAll("\\{", "").replaceAll("\\}", "");
-            p = whole.split("\\<\\:\\>", 2);
-            if (p[0].equalsIgnoreCase("..."))
-            {
-                p[0] = null;
-            }
-            if (p[1].equalsIgnoreCase("..."))
-            {
-                p[1] = null;
-            }
+		String whole;
+		String[] p;
+		TreeSet<Group> set;
+		while (match.find())
+		{
+			whole = match.group();
+			whole = whole.replaceAll("\\{", "").replaceAll("\\}", "");
+			p = whole.split("\\<\\:\\>", 2);
+			if (p[0].equalsIgnoreCase("..."))
+			{
+				p[0] = null;
+			}
+			if (p[1].equalsIgnoreCase("..."))
+			{
+				p[1] = null;
+			}
 
-            set = SqlHelper.getGroupsForChat(p[0], p[1], username);
-            if (set != null)
-            {
-                list.add(set);
-            }
-        }
+			set = SqlHelper.getGroupsForChat(p[0], p[1], username);
+			if (set != null)
+			{
+				list.add(set);
+			}
+		}
 
-        list = removeDuplicates(list);
-        return list;
-    }
+		list = removeDuplicates(list);
+		return list;
+	}
 
-    private static ArrayList<TreeSet<Group>> removeDuplicates(ArrayList<TreeSet<Group>> list)
-    {
-        HashSet<Group> used = new HashSet<Group>();
+	private static ArrayList<TreeSet<Group>> removeDuplicates(ArrayList<TreeSet<Group>> list)
+	{
+		HashSet<Group> used = new HashSet<Group>();
 
-        for (TreeSet<Group> set : list)
-        {
-            for (Group g : used)
-            {
-                set.remove(g);
-            }
+		for (TreeSet<Group> set : list)
+		{
+			for (Group g : used)
+			{
+				set.remove(g);
+			}
 
-            // add all the remaining...
-            used.addAll(set);
-        }
+			// add all the remaining...
+			used.addAll(set);
+		}
 
-        return list;
-    }
+		return list;
+	}
 
-    public static String getFormattedPlayersOnline()
-    {
-        StringBuilder sb = new StringBuilder();
-        for (Object fakePlayer : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
-        {
-            EntityPlayer player = (EntityPlayer) fakePlayer;
-            String name = player.username;
-            if (player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).hasKey("nickname"))
-            {
-                name = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
-            }
-            name = getGroupRankString(player.username) + ":" + name;
-            sb.append(name + ", ");
-        }
-        return sb.toString().substring(0, sb.toString().lastIndexOf(","));
-    }
+	public static String getFormattedPlayersOnline()
+	{
+		StringBuilder sb = new StringBuilder();
+		for (Object fakePlayer : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
+		{
+			EntityPlayer player = (EntityPlayer) fakePlayer;
+			String name = player.username;
+			if (player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).hasKey("nickname"))
+			{
+				name = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
+			}
+			name = getGroupRankString(player.username) + ":" + name;
+			sb.append(name + ", ");
+		}
+		return sb.toString().substring(0, sb.toString().lastIndexOf(","));
+	}
+
+	public static void saveBookToFile(ItemStack book, File savefolder)
+	{
+		NBTTagList pages;
+		String filename = "";
+		if (book != null)
+		{
+			if (book.hasTagCompound())
+			{
+				if (book.getTagCompound().hasKey("title") && book.getTagCompound().hasKey("pages"))
+				{
+					filename = book.getTagCompound().getString("title") + ".txt";
+					pages = (NBTTagList) book.getTagCompound().getTag("pages");
+					File savefile = new File(savefolder, filename);
+					if (savefile.exists())
+					{
+						savefile.delete();
+					}
+					try
+					{
+						savefile.createNewFile();
+						FileWriter fstream = new FileWriter(savefile);
+						BufferedWriter out = new BufferedWriter(fstream);
+						for (int c = 0; c < pages.tagCount(); c++)
+						{
+							String line = pages.tagAt(c).toString();
+							while (line.contains("\n"))
+							{
+								out.write(line.substring(0, line.indexOf("\n")));
+								out.newLine();
+								line = line.substring(line.indexOf("\n") + 1);
+							}
+							if (line.length() > 0)
+							{
+								out.write(line);
+							}
+						}
+						out.close();
+						fstream.close();
+					}
+					catch (Exception e)
+					{
+						OutputHandler.felog.info("Something went wrong...");
+					}
+				}
+			}
+		}
+	}
+
+	public static void getBookFromFolder(EntityPlayer player, File folder)
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		NBTTagList pages = new NBTTagList();
+
+		HashMap<String, String> map = new HashMap<String, String>();
+
+		File[] listOfFiles = folder.listFiles();
+
+		for (File file : listOfFiles)
+		{
+			if (file.isFile())
+			{
+				List<String> lines = new ArrayList<String>();
+				try
+				{
+					lines.add(FEChatFormatCodes.GREEN + "START" + FEChatFormatCodes.BLACK);
+					lines.add("");
+					FileInputStream stream = new FileInputStream(file);
+					InputStreamReader streamReader = new InputStreamReader(stream);
+					BufferedReader reader = new BufferedReader(streamReader);
+					String line = reader.readLine();
+					while (line != null)
+					{
+						while (line.length() > 21)
+						{
+							lines.add(line.substring(0, 20));
+							line = line.substring(20);
+						}
+						lines.add(line);
+						line = reader.readLine();
+					}
+					reader.close();
+					streamReader.close();
+					stream.close();
+					lines.add("");
+					lines.add(FEChatFormatCodes.RED + "END" + FEChatFormatCodes.BLACK);
+
+				}
+				catch (Exception e)
+				{
+					OutputHandler.felog.warning("Error reading script: " + file.getName());
+				}
+				int part = 0;
+				int parts = lines.size() / 10 + 1;
+				String filename = file.getName().replaceAll(".txt", "");
+				if (filename.length() > 13)
+					filename = filename.substring(0, 10) + "...";
+				while (lines.size() != 0)
+				{
+					part++;
+					String temp = "";
+					for (int i = 0; i < 10 && lines.size() > 0; i++)
+					{
+						temp += lines.get(0) + "\n";
+						lines.remove(0);
+					}
+					map.put(FEChatFormatCodes.GOLD + " File: " + FEChatFormatCodes.GREY + filename + FEChatFormatCodes.DARKGREY + "\nPart " + part + " of " + parts + FEChatFormatCodes.BLACK + "\n\n", temp);
+				}
+			}
+		}
+
+		SortedSet<String> keys = new TreeSet<String>(map.keySet());
+		for (String name : keys)
+		{
+			pages.appendTag(new NBTTagString("", name + map.get(name)));
+		}
+
+		tag.setString("author", "ForgeEssentials");
+		tag.setString("title", folder.getName());
+		tag.setTag("pages", pages);
+
+		ItemStack is = new ItemStack(Item.writtenBook);
+		is.setTagCompound(tag);
+		player.inventory.addItemStackToInventory(is);
+	}
 }
