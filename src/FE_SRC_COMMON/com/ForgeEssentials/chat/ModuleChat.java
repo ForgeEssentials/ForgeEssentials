@@ -160,6 +160,7 @@ public class ModuleChat
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.mute", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.unmute", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.automessage", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.chat.irc", RegGroup.ZONE_ADMINS);
 	}
 
 	private void removeTell(MinecraftServer server)

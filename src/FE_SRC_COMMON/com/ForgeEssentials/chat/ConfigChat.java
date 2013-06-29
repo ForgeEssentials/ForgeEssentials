@@ -96,6 +96,7 @@ public class ConfigChat extends ModuleConfigBase
 		IRCHelper.name = config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
 		IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
 		IRCHelper.channel = config.get("irc", "channel", "#something", "Channel to connect to").getString();
+		IRCHelper.suppressEvents = config.get("irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.").getBoolean(true);
 		
 		config.save();
 	}
@@ -143,6 +144,7 @@ public class ConfigChat extends ModuleConfigBase
 		config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").set(IRCHelper.name);
 		config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").set(IRCHelper.server);
 		config.get("irc", "channel", "#something", "Channel to connect to").set(IRCHelper.channel);
+		config.get("irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.").set(IRCHelper.suppressEvents);
 		
 		config.save();
 	}
@@ -192,6 +194,7 @@ public class ConfigChat extends ModuleConfigBase
 		IRCHelper.name = config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
 		IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
 		IRCHelper.channel = config.get("irc", "channel", "#something", "Channels to connect to").getString();
+		IRCHelper.suppressEvents = config.get("irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.").getBoolean(true);
         
 		config.save();
 	}
