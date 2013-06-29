@@ -23,9 +23,7 @@ public class PlayerTracker implements IPlayerTracker {
 	@Override
 	public void onPlayerLogin(EntityPlayer player) {
 		maxcounter = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipslots - offset;
-		if (APIRegistry.perms.checkPermAllowed(player, "ForgeEssentials.Auth.isBanned")){
-			((EntityPlayerMP) player).playerNetServerHandler.kickPlayerFromServer(banned);
-		}else if (whitelist){
+		if (whitelist){
 			if(!APIRegistry.perms.checkPermAllowed(player, "ForgeEssentials.Auth.isWhiteListed")){
 				((EntityPlayerMP) player).playerNetServerHandler.kickPlayerFromServer(notwhitelisted);
 			}
