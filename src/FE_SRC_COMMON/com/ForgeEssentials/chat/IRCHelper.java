@@ -54,7 +54,9 @@ public class IRCHelper extends ListenerAdapter implements Listener{
 	}
 	
 	public static void postIRC(String message){
-		bot.sendMessage(channel, message);
+		if (ModuleChat.connectToIRC){
+			bot.sendMessage(channel, message);
+		}
 	}
 	private static void postMinecraft(String message){
 		MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);

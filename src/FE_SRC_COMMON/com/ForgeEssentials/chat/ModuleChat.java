@@ -143,7 +143,9 @@ public class ModuleChat
 		
 		chatLog.close();
 		cmdLog.close();
+		if (connectToIRC){
 		IRCHelper.shutdown();
+		}
 	}
 
 	@PermRegister
