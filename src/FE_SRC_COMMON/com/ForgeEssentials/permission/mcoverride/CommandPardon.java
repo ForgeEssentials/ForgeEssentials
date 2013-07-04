@@ -6,9 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
 
-public class CommandPardon extends CommandServerPardon
-{
-
+public class CommandPardon extends CommandServerPardon{
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
@@ -17,4 +15,5 @@ public class CommandPardon extends CommandServerPardon
 		else
 			return true;
 	}
+
 }

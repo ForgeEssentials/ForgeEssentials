@@ -13,7 +13,8 @@ echo "Version of ForgeEssentials is: ${VERSION} for MC ${MC}"
 
 echo "Downloading Forge..."
 
-wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
+#wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
+wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.5.2-7.8.1.738.zip
 
 
 unzip minecraftforge-src-*.zip

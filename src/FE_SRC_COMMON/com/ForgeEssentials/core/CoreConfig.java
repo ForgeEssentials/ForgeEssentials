@@ -72,20 +72,6 @@ public class CoreConfig
 		prop.comment = "If +50% of players sleep, make it day.";
 		MiscEventHandler.MajoritySleep = prop.getBoolean(true);
 
-		config.addCustomCategoryComment("Core.VIP", "Permission \n" + PlayerTracker.PERMISSION);
-
-		prop = config.get("Core.VIP", "KickForVIP", true);
-		prop.comment = "Kick a player if not VIP and (playercount + VIP slots = total slots)";
-		PlayerTracker.KickForVIP = prop.getBoolean(true);
-
-		prop = config.get("Core.VIP", "VIPslots", 5);
-		prop.comment = "Amount of space reserved for VIPs";
-		PlayerTracker.VIPslots = prop.getInt();
-
-		prop = config.get("Core.VIP", "kickMessage", "Sorry, this spot is for VIPs");
-		prop.comment = "Message you get when you log in and no VIP space is available";
-		PlayerTracker.kickMessage = prop.getString();
-
 		config.addCustomCategoryComment("Core.groups", largeComment_Cat_Groups);
 
         groupPrefixFormat = config.get("Core.groups", "groupPrefix", "{...<:>_GLOBAL_}").getString();

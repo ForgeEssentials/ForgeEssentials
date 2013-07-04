@@ -51,6 +51,9 @@ public class CommandMuter
         {
             ModuleChat.cmdLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + e.sender.getCommandSenderName() + "] /" + e.command.getCommandName() + " " + join(e.parameters));
         }
+        if (e.command.getCommandName().equalsIgnoreCase("me")){
+        	IRCHelper.postIRC(e.sender.getCommandSenderName() + " " + e.parameters.toString());
+        }
         
     }
     

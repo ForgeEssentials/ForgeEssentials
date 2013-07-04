@@ -53,6 +53,7 @@ public class ModuleChat
 	public static File logdir;
 
 	private MailSystem         mailsystem;
+	public static boolean connectToIRC;
 
 	public ModuleChat()
 	{
@@ -71,12 +72,15 @@ public class ModuleChat
 		MinecraftForge.EVENT_BUS.register(new CommandMuter());
 		
 		PacketAnalyzerRegistry.register(new PacketAnalyzerChat(), new int [] { 201 });
+		System.out.println("Starting irc connection");
 	}
 
 	@FEModule.PostInit
 	public void postLoad(FEModulePostInitEvent e)
 	{
 		mailsystem = new MailSystem();
+
+		
 	}
 
 	@FEModule.ServerInit
@@ -127,6 +131,9 @@ public class ModuleChat
 		new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
 		MailSystem.LoadAll();
 		GameRegistry.registerPlayerTracker(mailsystem);
+		if (connectToIRC){
+		IRCHelper.connectToServer();
+		}
 	}
 
 	@FEModule.ServerStop()
@@ -136,6 +143,9 @@ public class ModuleChat
 		
 		chatLog.close();
 		cmdLog.close();
+		if (connectToIRC){
+		IRCHelper.shutdown();
+		}
 	}
 
 	@PermRegister
@@ -152,6 +162,7 @@ public class ModuleChat
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.mute", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.unmute", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.Chat.commands.automessage", RegGroup.OWNERS);
+		event.registerPermissionLevel("ForgeEssentials.chat.irc", RegGroup.ZONE_ADMINS);
 	}
 
 	private void removeTell(MinecraftServer server)

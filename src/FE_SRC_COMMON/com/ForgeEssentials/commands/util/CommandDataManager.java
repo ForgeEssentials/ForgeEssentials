@@ -1,10 +1,12 @@
 package com.ForgeEssentials.commands.util;
 
+
 import java.util.HashMap;
 
 import com.ForgeEssentials.data.AbstractDataDriver;
 import com.ForgeEssentials.data.api.ClassContainer;
 import com.ForgeEssentials.data.api.DataStorageManager;
+
 
 public class CommandDataManager
 {
@@ -13,22 +15,27 @@ public class CommandDataManager
 	private static ClassContainer							conKit		= new ClassContainer(Kit.class);
 	private static ClassContainer                           conWT       = new ClassContainer(WeatherTimeData.class);
 
+
 	private static AbstractDataDriver						data;
+
 
 	public static HashMap<String, Kit>						kits		= new HashMap<String, Kit>();
 	public static HashMap<String, Warp>						warps		= new HashMap<String, Warp>();
 	public static HashMap<String, HashMap<String, PWarp>>	pwMap		= new HashMap<String, HashMap<String, PWarp>>();
 	public static HashMap<Integer, WeatherTimeData>         WTmap        = new HashMap<Integer, WeatherTimeData>();
-	
+
+
 	public static void load()
 	{
 		data = DataStorageManager.getReccomendedDriver();
+
 
 		loadWarps();
 		loadPWarps();
 		loadKits();
 		loadWT();
 	}
+
 
 	public static void save()
 	{
@@ -37,6 +44,7 @@ public class CommandDataManager
 		saveKits();
 		saveWT();
 	}
+
 
 	/*
 	 * Loading loops
@@ -50,6 +58,7 @@ public class CommandDataManager
 			warps.put(warp.getName(), warp);
 		}
 	}
+
 
 	public static void loadPWarps()
 	{
@@ -67,6 +76,7 @@ public class CommandDataManager
 		}
 	}
 
+
 	public static void loadKits()
 	{
 		Object[] objs = data.loadAllObjects(conKit);
@@ -76,7 +86,8 @@ public class CommandDataManager
 			kits.put(kit.getName(), kit);
 		}
 	}
-	
+
+
 	public static void loadWT()
     {
         Object[] objs = data.loadAllObjects(conWT);
@@ -86,6 +97,7 @@ public class CommandDataManager
             WTmap.put(wt.dimID, wt);
         }
     }
+
 
 	/*
 	 * Saving loops
@@ -98,6 +110,7 @@ public class CommandDataManager
 		}
 	}
 
+
 	public static void savePWarps()
 	{
 		for (HashMap<String, PWarp> pws : pwMap.values())
@@ -109,6 +122,7 @@ public class CommandDataManager
 		}
 	}
 
+
 	public static void savePWarps(String username)
 	{
 		for (PWarp warp : pwMap.get(username).values())
@@ -117,6 +131,7 @@ public class CommandDataManager
 		}
 	}
 
+
 	public static void saveKits()
 	{
 		for (Kit kit : kits.values())
@@ -124,7 +139,8 @@ public class CommandDataManager
 			data.saveObject(conKit, kit);
 		}
 	}
-	
+
+
 	public static void saveWT()
     {
         for (WeatherTimeData wt : WTmap.values())
@@ -132,6 +148,7 @@ public class CommandDataManager
             data.saveObject(conWT, wt);
         }
     }
+
 
 	/*
 	 * Adding loops
@@ -142,11 +159,13 @@ public class CommandDataManager
 		data.saveObject(conKit, kit);
 	}
 
+
 	public static void addWarp(Warp warp)
 	{
 		warps.put(warp.getName(), warp);
 		data.saveObject(conWarp, warp);
 	}
+
 
 	/*
 	 * Removing loops
@@ -157,10 +176,12 @@ public class CommandDataManager
 		data.deleteObject(conWarp, warp.getName());
 	}
 
+
 	public static void removePWarp(PWarp pwarp)
 	{
 		data.deleteObject(conPWarp, pwarp.getFilename());
 	}
+
 
 	public static void removeKit(Kit kit)
 	{
@@ -168,3 +189,4 @@ public class CommandDataManager
 		data.deleteObject(conKit, kit.getName());
 	}
 }
+

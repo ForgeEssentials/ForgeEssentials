@@ -8,6 +8,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.World;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.AreaSelector.WarpPoint;
@@ -63,15 +64,15 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			error(sender);
 			return;
 		}
-		
+
 		// check point or type.
 		String permProp = null;
 		String prop = null;
 		String output = "";
 		if (args[0].equalsIgnoreCase("point"))
 		{
-			permProp = SPAWN_PROP; 
-			
+			permProp = SPAWN_PROP;
+
 			int dim = 0, x = 0, y = 0, z = 0;
 			if (args.length >= 6)
 			{
@@ -90,19 +91,28 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 					z = p.z;
 					dim = p.dim;
 				}
+				else if (args[3].equalsIgnoreCase("revert"))
+				{
+					World world = FunctionHelper.getDimension(0);
+					WorldPoint p = new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ);
+					x = p.x;
+					y = p.y;
+					z = p.z;
+					dim = p.dim;
+				}
 				else
 					error(sender);
 			}
 			else
 				error(sender);
-			
+
 			prop = dim + ";" + x + ";" + y + ";" + z;
 			output = Localization.format("command.setspawn.setPoint", x, y, z);
 		}
 		else if (args[0].equalsIgnoreCase("type"))
 		{
-			permProp = SPAWN_TYPE_PROP; 
-			
+			permProp = SPAWN_TYPE_PROP;
+
 			if (args[3].equalsIgnoreCase("none"))
 			{
 				prop = "none";
@@ -117,14 +127,14 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 			else
 				error(sender);
-			
+
 			output = Localization.format("command.setspawn.setType", prop);
 		}
 		else
 		{
 			error(sender);
 		}
-		
+
 		// calc zone.
 		Zone zone = APIRegistry.zones.getGLOBAL();
 		if (args.length == 5)
@@ -137,13 +147,19 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			{
 				zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 			}
+			else if (args[4].equalsIgnoreCase("revert"))
+			{
+				World world = FunctionHelper.getDimension(0);
+				// zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ));
+				zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(0, 10, 10, 10));
+			}
 			else
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[5]));
 				return;
 			}
 		}
-		else if(args.length == 7)
+		else if (args.length == 7)
 		{
 			if (APIRegistry.zones.doesZoneExist(args[6]))
 			{
@@ -153,6 +169,12 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			{
 				zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
 			}
+			else if (args[4].equalsIgnoreCase("revert"))
+			{
+				World world = FunctionHelper.getDimension(0);
+				// zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ));
+				zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(0, 10, 10, 10));
+			}
 			else
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[7]));
@@ -160,27 +182,27 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 		}
 
-		if (args[1].equalsIgnoreCase("user"))
+		if (args[1].equalsIgnoreCase("player"))
 		{
-			String name = args[1];
+			String name = args[2];
 			if (args[2].equalsIgnoreCase("_ME_"))
 			{
 				name = sender.username;
 			}
 			else
 			{
-				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
 				if (player == null)
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-					OutputHandler.chatConfirmation(sender, args[0] + " will be used, but may be inaccurate.");
+					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, name));
+					OutputHandler.chatConfirmation(sender, name + " will be used, but may be inaccurate.");
 				}
 				else
 				{
 					name = player.username;
 				}
 			}
-			
+
 			APIRegistry.perms.setPlayerPermissionProp(name, permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
@@ -191,7 +213,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				OutputHandler.chatError(sender, args[2] + " does not exist as a group!");
 				return;
 			}
-			
+
 			APIRegistry.perms.setGroupPermissionProp(args[2], permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
@@ -210,7 +232,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				return;
 			}
-			
+
 			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
@@ -246,15 +268,15 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			error(sender);
 			return;
 		}
-		
+
 		// check point or type.
 		String permProp = null;
 		String prop = null;
 		String output = "";
 		if (args[0].equalsIgnoreCase("point"))
 		{
-			permProp = SPAWN_PROP; 
-			
+			permProp = SPAWN_PROP;
+
 			int dim = 0, x = 0, y = 0, z = 0;
 			if (args.length >= 7)
 			{
@@ -263,14 +285,14 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				y = parseInt(sender, args[4]);
 				z = parseInt(sender, args[5]);
 			}
-			
+
 			prop = dim + ";" + x + ";" + y + ";" + z;
 			output = Localization.format("command.setspawn.setPoint", x, y, z);
 		}
 		else if (args[0].equalsIgnoreCase("type"))
 		{
-			permProp = SPAWN_TYPE_PROP; 
-			
+			permProp = SPAWN_TYPE_PROP;
+
 			if (args[3].equalsIgnoreCase("none"))
 			{
 				prop = "none";
@@ -285,14 +307,14 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 			else
 				error(sender);
-			
+
 			output = Localization.format("command.setspawn.setType", prop);
 		}
 		else
 		{
 			error(sender);
 		}
-		
+
 		// calc zone.
 		Zone zone = APIRegistry.zones.getGLOBAL();
 		if (args.length == 6)
@@ -307,7 +329,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				return;
 			}
 		}
-		else if(args.length == 8)
+		else if (args.length == 8)
 		{
 			if (APIRegistry.zones.doesZoneExist(args[7]))
 			{
@@ -320,21 +342,21 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 		}
 
-		if (args[1].equalsIgnoreCase("user"))
+		if (args[1].equalsIgnoreCase("player"))
 		{
-			String name = args[1];
-				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
-				if (player == null)
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-					OutputHandler.chatConfirmation(sender, args[0] + " will be used, but may be inaccurate.");
-				}
-				else
-				{
-					name = player.username;
-				}
-			
-				APIRegistry.perms.setPlayerPermissionProp(name, permProp, prop, zone.getZoneName());
+			String name = args[2];
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
+			if (player == null)
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatConfirmation(sender, name + " will be used, but may be inaccurate.");
+			}
+			else
+			{
+				name = player.username;
+			}
+
+			APIRegistry.perms.setPlayerPermissionProp(name, permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else if (args[1].equalsIgnoreCase("group"))
@@ -344,7 +366,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				OutputHandler.chatError(sender, args[2] + " does not exist as a group!");
 				return;
 			}
-			
+
 			APIRegistry.perms.setGroupPermissionProp(args[2], permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}
@@ -359,7 +381,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				return;
 			}
-			
+
 			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, permProp, prop, zone.getZoneName());
 			OutputHandler.chatConfirmation(sender, output);
 		}

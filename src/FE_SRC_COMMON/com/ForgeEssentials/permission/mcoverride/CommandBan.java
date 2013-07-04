@@ -5,9 +5,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
 
-public class CommandBan extends CommandServerBan
-{
+public class CommandBan extends CommandServerBan{
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
@@ -16,4 +16,5 @@ public class CommandBan extends CommandServerBan
 		else
 			return true;
 	}
+
 }

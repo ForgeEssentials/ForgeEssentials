@@ -8,8 +8,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.Point;
 import com.ForgeEssentials.api.AreaSelector.WarpPoint;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
@@ -23,6 +26,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandBed extends FEcmdModuleCommands
 {
+	private Point sleepPoint;
+	
 	@Override
 	public String getCommandName()
 	{
@@ -66,7 +71,12 @@ public class CommandBed extends FEcmdModuleCommands
 				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 				// Doesnt work
 				// FunctionHelper.setPlayer(player, new Point(spawn), world);
-				player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
+				//player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
+				if (sleepPoint != null){
+				FunctionHelper.setPlayer(player, sleepPoint, world);
+				}else{
+					OutputHandler.chatError(player, Localization.get("command.bed.noExist"));
+				}
 				OutputHandler.chatConfirmation(player, Localization.get("command.bed.done"));
 			} else {
 				OutputHandler.chatError(player, Localization.get("command.bed.obstructed"));
@@ -124,5 +134,12 @@ public class CommandBed extends FEcmdModuleCommands
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
+	}
+	
+	@ForgeSubscribe
+	private void getCoords(PlayerSleepInBedEvent e){
+		this.sleepPoint.x = e.x;
+		this.sleepPoint.y = e.y;
+		this.sleepPoint.z = e.z;
 	}
 }
