@@ -12,6 +12,8 @@ import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.chat.IRCHelper;
+import com.ForgeEssentials.chat.ModuleChat;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -75,6 +77,40 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				MinecraftServer.getServer().sendChatToPlayer(receiverMessage);
 				sender.sendChatToPlayer(senderMessage);
 			}
+
+			// IRC messages.
+
+			if (ModuleChat.connectToIRC && args[0].equalsIgnoreCase("irc")) // To leverage short-circuit operation AKA: skip IRC if it is off.
+			{
+				clearReply(sender.getCommandSenderName());
+				clearReply("irc" + args[1].toLowerCase());
+				addReply(sender.getCommandSenderName(), "irc" + args[1].toLowerCase());
+				addReply("irc" + args[1].toLowerCase(), sender.getCommandSenderName());
+				String senderMessage = FEChatFormatCodes.GOLD + "(IRC)[me -> " + args[1] + "] " + FEChatFormatCodes.GREY;
+				String receiverMessage = new String();
+				for (int i = 2; i < args.length; i++)
+				{
+					receiverMessage += args[i];
+					senderMessage += args[i];
+					if (i != args.length - 1)
+					{
+						receiverMessage += " ";
+						senderMessage += " ";
+					}
+				}
+				try
+				{
+					IRCHelper.privateMessage(sender.getCommandSenderName(), args[1], receiverMessage);
+					sender.sendChatToPlayer(senderMessage);
+				}
+				catch (Exception e)
+				{
+					sender.sendChatToPlayer("Unable to send message to: " + args[1]);
+				}
+			}
+
+			// Other messages.
+
 			else
 			{
 				EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);

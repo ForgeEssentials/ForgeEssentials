@@ -89,7 +89,7 @@ public class ConfigChat extends ModuleConfigBase
 		logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
 		logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
 		
-		config.addCustomCategoryComment("irc", "Configure the inbuilt IRC bot here.");
+		config.addCustomCategoryComment("irc", "Configure the built-in IRC bot here.");
 		
 		ModuleChat.connectToIRC = config.get("irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
 		IRCHelper.port = config.get("irc", "port", 0, "The port to connect to the IRC server through.").getInt();
