@@ -11,9 +11,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.TPAdata;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
@@ -21,7 +21,6 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 public class CommandTPAhere extends FEcmdModuleCommands
 {
@@ -88,7 +87,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 			return;
 		}
 		
-		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".sendrequest")))
+		if (!APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + ".sendrequest"))
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
 			return;

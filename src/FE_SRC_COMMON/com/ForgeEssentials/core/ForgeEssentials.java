@@ -8,6 +8,9 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
+import com.ForgeEssentials.api.AreaSelector.Point;
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.commands.CoreCommands;
@@ -37,9 +40,6 @@ import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.MiscEventHandler;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.AreaSelector.Point;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.ForgeEssentialsEventFactory;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 

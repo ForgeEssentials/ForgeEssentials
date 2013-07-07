@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.PotionEffect;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 
 import cpw.mods.fml.common.IPlayerTracker;
 
@@ -39,14 +38,14 @@ public class RespawnDebuff implements IPlayerTracker
 		if (player1.worldObj.isRemote)
 			return;
 		EntityPlayer player = player1;
-		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASSPOTION)))
+		if (!APIRegistry.perms.checkPermAllowed(player, BYPASSPOTION))
 		{
 			for (PotionEffect effect : potionEffects)
 			{
 				player.addPotionEffect(effect);
 			}
 		}
-		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASSSTATS)))
+		if (!APIRegistry.perms.checkPermAllowed(player, BYPASSSTATS))
 		{
 			player.getFoodStats().addStats(-1 * (20 - food), 0);
 			player.setEntityHealth(hp);

@@ -2,9 +2,9 @@ package com.ForgeEssentials.commands.util;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.commands.CommandAFK;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 public class AFKdata
 {

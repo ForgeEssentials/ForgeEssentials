@@ -16,7 +16,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
-import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.api.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.IPlayerTracker;

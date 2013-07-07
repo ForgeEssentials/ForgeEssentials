@@ -7,16 +7,23 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.AreaBase;
+import com.ForgeEssentials.api.AreaSelector.Point;
+import com.ForgeEssentials.api.AreaSelector.Selection;
+import com.ForgeEssentials.api.AreaSelector.WorldArea;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.IPermissionsHelper;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.query.PermQuery;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.api.permissions.query.PropQuery;
+import com.ForgeEssentials.permission.query.PermQuery;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
+import com.ForgeEssentials.permission.query.PermQueryBlanketArea;
+import com.ForgeEssentials.permission.query.PermQueryBlanketSpot;
+import com.ForgeEssentials.permission.query.PermQueryPlayer;
+import com.ForgeEssentials.permission.query.PermQueryPlayerArea;
+import com.ForgeEssentials.permission.query.PropQuery;
 import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.AddPlayerGroupEvent;
 import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.RemovePlayerGroupEvent;
 import com.ForgeEssentials.util.events.ModifyPlayerGroupEvent.SetPlayerGroupEvent;
@@ -31,7 +38,7 @@ public class PermissionsHelper implements IPermissionsHelper
 	private String		EPSuffix	= "";
 	private Group		DEFAULT		= new Group(RegGroup.ZONE.toString(), " ", " ", null, APIRegistry.zones.getGLOBAL().getZoneName(), 0);
 
-	@Override
+	
 	public boolean checkPermAllowed(PermQuery query)
 	{
 		if (query instanceof PermQueryPlayer)
@@ -50,8 +57,32 @@ public class PermissionsHelper implements IPermissionsHelper
 	public boolean checkPermAllowed(EntityPlayer player, String node){
 		return checkPermAllowed(new PermQueryPlayer(player, node));
 	}
-
+	
 	@Override
+	public boolean checkPermAllowed(EntityPlayer player, String node, Object areasel){
+		if (areasel instanceof Point){
+			Point p = (Point) areasel;
+			return checkPermAllowed(new PermQueryPlayerArea(player, node, p));
+		}else if (areasel instanceof AreaBase){
+			AreaBase ab = (AreaBase)areasel;
+			return checkPermAllowed(new PermQueryPlayerArea(player, node, ab, true));
+		}
+		return false;
+		
+	}
+	
+	@Override
+	public boolean checkPermAllowed(Object areasel, String node){
+		if (areasel instanceof Point){
+			Point p = (Point) areasel;
+			return checkPermAllowed(new PermQueryBlanketSpot((WorldPoint)p, node));
+		}else if (areasel instanceof AreaBase){
+			AreaBase ab = (AreaBase)areasel;
+			return checkPermAllowed(new PermQueryBlanketArea(node, (WorldArea)ab, true));
+		}
+		return false;
+	}
+	
 	public PermResult checkPermResult(PermQuery query)
 	{
 		if (query instanceof PermQueryPlayer)
@@ -64,6 +95,21 @@ public class PermissionsHelper implements IPermissionsHelper
 		}
 
 		return query.getResult();
+	}
+	@Override
+	public String checkPermResult(EntityPlayer p, String node){
+		return checkPermResult(new PermQueryPlayer(p, node)).toString();
+	}
+
+	@Override
+	public String checkPermResult(EntityPlayer p, String node, boolean checkForward){
+		return checkPermResult(new PermQueryPlayer(p, node, checkForward)).toString();
+	}
+	
+	@Override
+	public String checkPermResult(EntityPlayer p, String node, boolean checkForward, Object areasel){
+		Selection sel = (Selection)areasel;
+		return checkPermResult(new PermQueryPlayerArea(p, node, sel, checkForward)).toString();
 	}
 
 	@Override
@@ -504,5 +550,11 @@ public class PermissionsHelper implements IPermissionsHelper
 	public String getEntryPlayer()
 	{
 		return EntryPlayer;
+	}
+
+	@Override
+	public String checkPermResult(EntityPlayer p, String node, Object areasel) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

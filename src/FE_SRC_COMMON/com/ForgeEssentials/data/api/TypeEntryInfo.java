@@ -3,6 +3,8 @@ package com.ForgeEssentials.data.api;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ForgeEssentials.api.data.IReconstructData;
+
 public class TypeEntryInfo implements ITypeInfo
 {
 	private ClassContainer					parent;

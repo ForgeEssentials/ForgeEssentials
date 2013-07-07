@@ -1,7 +1,7 @@
-package com.ForgeEssentials.util.AreaSelector;
+package com.ForgeEssentials.api.AreaSelector;
 
-import com.ForgeEssentials.data.api.SaveableObject;
-import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
 
 @SaveableObject
 public abstract class AreaBase

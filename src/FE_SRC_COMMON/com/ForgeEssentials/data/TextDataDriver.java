@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.data.api.ClassContainer;
 import com.ForgeEssentials.data.api.EnumDriverType;
-import com.ForgeEssentials.data.api.IReconstructData;
 import com.ForgeEssentials.data.api.TypeData;
 import com.ForgeEssentials.util.FunctionHelper;
 

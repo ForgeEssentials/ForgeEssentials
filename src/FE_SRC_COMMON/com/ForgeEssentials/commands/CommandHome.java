@@ -7,15 +7,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 public class CommandHome extends FEcmdModuleCommands
 {
@@ -44,7 +43,7 @@ public class CommandHome extends FEcmdModuleCommands
 				TeleportCenter.addToTpQue(home, player);
 			}
 		}
-		else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".set")))
+		else if (APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + ".set"))
 		{
 			if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
 			{

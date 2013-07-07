@@ -3,8 +3,6 @@ package com.ForgeEssentials.permission.network;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 
-import com.ForgeEssentials.core.network.PacketSelectionUpdate;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;

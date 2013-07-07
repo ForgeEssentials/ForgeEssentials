@@ -15,6 +15,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -31,7 +32,6 @@ import com.ForgeEssentials.playerLogger.types.commandLog;
 import com.ForgeEssentials.playerLogger.types.logEntry;
 import com.ForgeEssentials.playerLogger.types.playerTrackerLog;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;

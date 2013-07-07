@@ -8,14 +8,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -295,7 +294,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	@Override
 	public boolean canPlayerUseCommand(EntityPlayer player)
 	{
-		PermResult result = APIRegistry.perms.checkPermResult(new PermQueryPlayer(player, getCommandPerm(), true));
+		String result = APIRegistry.perms.checkPermResult(player, getCommandPerm(), true);
 		return result.equals(PermResult.DENY) ? false : true;
 	}
 

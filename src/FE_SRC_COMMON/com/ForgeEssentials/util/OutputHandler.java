@@ -5,6 +5,9 @@ import java.util.logging.Logger;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.api.FEChatFormatCodes;
+
 import cpw.mods.fml.common.FMLLog;
 
 public final class OutputHandler

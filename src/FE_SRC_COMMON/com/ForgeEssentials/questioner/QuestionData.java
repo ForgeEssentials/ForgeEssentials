@@ -2,9 +2,9 @@ package com.ForgeEssentials.questioner;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
 import com.ForgeEssentials.api.questioner.AnswerEnum;
 import com.ForgeEssentials.api.questioner.RunnableAnswer;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 public class QuestionData
 {

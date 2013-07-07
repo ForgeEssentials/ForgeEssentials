@@ -1,7 +1,7 @@
 package com.ForgeEssentials.api.permissions;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.api.FEChatFormatCodes;
 
 /**
  * RegistrationGroups

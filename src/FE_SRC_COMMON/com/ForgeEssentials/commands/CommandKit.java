@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.Kit;
@@ -46,7 +45,7 @@ public class CommandKit extends FEcmdModuleCommands
 			String msg = "";
 			for (Kit kit : CommandDataManager.kits.values())
 			{
-				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + kit.getName())))
+				if (APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + "." + kit.getName()))
 				{
 					msg = kit.getName() + ", " + msg;
 				}
@@ -61,7 +60,7 @@ public class CommandKit extends FEcmdModuleCommands
 		{
 			if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
 			{
-				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+				if (APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + "." + args[0].toLowerCase()))
 				{
 					giveKit(sender, CommandDataManager.kits.get(args[0].toLowerCase()));
 				}
@@ -79,7 +78,7 @@ public class CommandKit extends FEcmdModuleCommands
 		/*
 		 * Make kit
 		 */
-		if (args[1].equalsIgnoreCase("set") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+		if (args[1].equalsIgnoreCase("set") && APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + ".admin"))
 		{
 			if (args.length == 3)
 			{
@@ -100,7 +99,7 @@ public class CommandKit extends FEcmdModuleCommands
 		/*
 		 * Delete kit
 		 */
-		if (args[1].equalsIgnoreCase("del") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+		if (args[1].equalsIgnoreCase("del") && APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + ".admin"))
 		{
 			if (args.length == 2)
 			{
@@ -133,7 +132,7 @@ public class CommandKit extends FEcmdModuleCommands
 		{
 			player.sendChatToPlayer(Localization.get(Localization.KIT_DONE));
 
-			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
+			if (!APIRegistry.perms.checkPermAllowed(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN))
 			{
 				PlayerInfo.getPlayerInfo(player.username).kitCooldown.put(kit.getName(), kit.getCooldown());
 			}

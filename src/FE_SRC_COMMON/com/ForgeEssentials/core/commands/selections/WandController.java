@@ -7,12 +7,11 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
+import com.ForgeEssentials.api.FEChatFormatCodes;
+import com.ForgeEssentials.api.AreaSelector.Point;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -41,7 +40,7 @@ public class WandController
 
 		Point point = new Point(event.x, event.y, event.z);
 
-		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, "ForgeEssentials.CoreCommands.select.pos", point)))
+		if (!APIRegistry.perms.checkPermAllowed(player, "ForgeEssentials.CoreCommands.select.pos", point))
 		{
 			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
 			return;

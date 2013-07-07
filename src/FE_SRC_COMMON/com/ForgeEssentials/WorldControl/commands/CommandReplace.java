@@ -5,14 +5,12 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskReplaceSelection;
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
+import com.ForgeEssentials.api.AreaSelector.Selection;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Selection;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class CommandReplace extends WorldControlCommandBase
@@ -90,21 +88,12 @@ public class CommandReplace extends WorldControlCommandBase
 				Selection sel = info.getSelection();
 				BackupArea back = new BackupArea();
 
-				PermQueryPlayerArea query = new PermQueryPlayerArea(player, getCommandPerm(), sel, false);
-				PermResult result = APIRegistry.perms.checkPermResult(query);
+				String result = APIRegistry.perms.checkPermResult(player, getCommandPerm(), sel);
 
-				switch (result)
-					{
-						case ALLOW:
-							TaskRegistry.registerTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
-							return;
-						case PARTIAL:
-							TaskRegistry.registerTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel, query.applicable));
-						default:
-							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
-							return;
-					}
-
+				if (result.equals("ALLOW"))
+					TaskRegistry.registerTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel));
+				else OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+				
 			}
 
 			player.sendChatToPlayer("Working on replace.");

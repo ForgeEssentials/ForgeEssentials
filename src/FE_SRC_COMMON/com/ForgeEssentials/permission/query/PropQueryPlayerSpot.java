@@ -1,8 +1,8 @@
-package com.ForgeEssentials.api.permissions.query;
+package com.ForgeEssentials.permission.query;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 
 public class PropQueryPlayerSpot extends PropQueryPlayer
 {

@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -212,7 +211,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		if (perm == null)
 			return true;
 		else
-			return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, perm));
+			return APIRegistry.perms.checkPermAllowed(player, perm);
 	}
 
 	@Override

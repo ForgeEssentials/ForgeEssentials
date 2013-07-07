@@ -9,9 +9,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
+import com.ForgeEssentials.api.AreaSelector.Point;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class PacketSelectionUpdate implements IForgeEssentialsPacket
 {

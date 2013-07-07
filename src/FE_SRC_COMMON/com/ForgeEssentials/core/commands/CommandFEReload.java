@@ -5,8 +5,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.api.FEChatFormatCodes;
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 
 public class CommandFEReload extends ForgeEssentialsCommandBase
 {

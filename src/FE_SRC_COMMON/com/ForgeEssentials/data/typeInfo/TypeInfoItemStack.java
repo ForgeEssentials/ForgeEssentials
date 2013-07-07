@@ -3,9 +3,9 @@ package com.ForgeEssentials.data.typeInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.ForgeEssentials.api.data.IReconstructData;
 import com.ForgeEssentials.data.api.ClassContainer;
 import com.ForgeEssentials.data.api.DataStorageManager;
-import com.ForgeEssentials.data.api.IReconstructData;
 import com.ForgeEssentials.data.api.ITypeInfo;
 import com.ForgeEssentials.data.api.TypeData;
 

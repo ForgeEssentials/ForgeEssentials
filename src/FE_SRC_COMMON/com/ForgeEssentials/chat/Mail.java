@@ -2,11 +2,11 @@ package com.ForgeEssentials.chat;
 
 import java.rmi.server.UID;
 
-import com.ForgeEssentials.data.api.IReconstructData;
-import com.ForgeEssentials.data.api.SaveableObject;
-import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
-import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
-import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 
 @SaveableObject
 public class Mail

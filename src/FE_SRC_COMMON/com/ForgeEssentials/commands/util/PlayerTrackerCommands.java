@@ -3,10 +3,10 @@ package com.ForgeEssentials.commands.util;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.ForgeEssentials.api.AreaSelector.WarpPoint;
 import com.ForgeEssentials.commands.CommandSetSpawn;
 import com.ForgeEssentials.commands.CommandVanish;
 import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.IPlayerTracker;
 

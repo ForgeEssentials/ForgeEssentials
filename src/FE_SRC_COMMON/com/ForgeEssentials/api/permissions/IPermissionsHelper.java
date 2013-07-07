@@ -4,36 +4,38 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.ForgeEssentials.api.permissions.query.PermQuery;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
-import com.ForgeEssentials.api.permissions.query.PropQuery;
+import com.ForgeEssentials.permission.query.PropQuery;
 
 @SuppressWarnings("rawtypes")
 public interface IPermissionsHelper
 {
 	// Javadocs please
-	
 	/**
-	 * Check if a permission is allowed
-	 * @param query A PermQuery object
-	 * @return true if allowed, false if not.
-	 */
-	
-	boolean checkPermAllowed(PermQuery query);
-	
-	/**
-	 * Check if a permission is allowed. Use if you do not want to create PermQuery objects.
+	 * Check if a permission is allowed. 
 	 * @param player
 	 * @param node
 	 * @return true if allowed, false if not.
 	 */
+	
+	
 	boolean checkPermAllowed(EntityPlayer player, String node);
 	
-	PermResult checkPermResult(PermQuery query);
+	boolean checkPermAllowed(EntityPlayer player, String node, Object areasel);
+	
+	boolean checkPermAllowed(Object areasel, String node);
+	
+	String checkPermResult(EntityPlayer p, String node);
+	
+	String checkPermResult(EntityPlayer p, String node, Object areasel);
+	
+	String checkPermResult(EntityPlayer p, String node, boolean checkForward);
+	
+	String checkPermResult(EntityPlayer p, String node, boolean checkForward, Object areasel);
 	
 	/**
 	 * populates the given PropQuery with a value.
 	 */
+	@Deprecated
 	void getPermissionProp(PropQuery query);
 
 	/**
@@ -145,4 +147,6 @@ public interface IPermissionsHelper
 	Group getDEFAULT();
 
 	String getEntryPlayer();
+
+	
 }

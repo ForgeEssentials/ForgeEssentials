@@ -7,13 +7,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-import com.ForgeEssentials.data.api.IReconstructData;
-import com.ForgeEssentials.data.api.SaveableObject;
-import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
-import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
-import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
+import com.ForgeEssentials.api.data.IReconstructData;
+import com.ForgeEssentials.api.data.SaveableObject;
+import com.ForgeEssentials.api.data.SaveableObject.Reconstructor;
+import com.ForgeEssentials.api.data.SaveableObject.SaveableField;
+import com.ForgeEssentials.api.data.SaveableObject.UniqueLoadingKey;
 
 @SaveableObject
 public class Grave
@@ -114,7 +113,7 @@ public class Grave
 			return true;
 		if (player.username.equals(owner))
 			return true;
-		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, Deathchest.PERMISSION_BYPASS)))
+		if (APIRegistry.perms.checkPermAllowed(player, Deathchest.PERMISSION_BYPASS))
 			return true;
 
 		return false;

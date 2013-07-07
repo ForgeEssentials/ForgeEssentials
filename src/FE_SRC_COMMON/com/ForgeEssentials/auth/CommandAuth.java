@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.core.commands.PermissionDeniedException;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -45,7 +44,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		if (args.length == 0)
 			throw new WrongUsageException("command.auth.usage");
 
-		boolean hasAdmin = APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin"));
+		boolean hasAdmin = APIRegistry.perms.checkPermAllowed(sender, getCommandPerm() + ".admin");
 
 		// one arg? must be help.
 		if (args.length == 1)

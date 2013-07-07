@@ -1,9 +1,9 @@
-package com.ForgeEssentials.api.permissions.query;
+package com.ForgeEssentials.permission.query;
 
 import java.util.ArrayList;
 
-import com.ForgeEssentials.util.AreaSelector.AreaBase;
-import com.ForgeEssentials.util.AreaSelector.WorldArea;
+import com.ForgeEssentials.api.AreaSelector.AreaBase;
+import com.ForgeEssentials.api.AreaSelector.WorldArea;
 
 public class PermQueryBlanketArea extends PermQuery
 {

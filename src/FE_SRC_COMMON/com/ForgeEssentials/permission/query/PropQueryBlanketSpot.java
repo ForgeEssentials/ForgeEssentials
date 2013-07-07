@@ -1,6 +1,6 @@
-package com.ForgeEssentials.api.permissions.query;
+package com.ForgeEssentials.permission.query;
 
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 
 public class PropQueryBlanketSpot extends PropQuery
 {

@@ -12,13 +12,12 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 
 import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.AreaSelector.WorldPoint;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.google.common.base.Strings;
 
 public class ChatFormatter
@@ -91,7 +90,7 @@ public class ChatFormatter
 		 */
 		if (event.message.contains("&"))
 		{
-			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.Chat.usecolor")))
+			if (APIRegistry.perms.checkPermAllowed(event.player, "ForgeEssentials.Chat.usecolor"))
 			{
 				message = FunctionHelper.formatColors(event.message);
 			}

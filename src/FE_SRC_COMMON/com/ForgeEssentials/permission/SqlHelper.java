@@ -15,7 +15,7 @@ import java.util.TreeSet;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.Group;
 import com.ForgeEssentials.api.permissions.RegGroup;
-import com.ForgeEssentials.api.permissions.query.PermQuery.PermResult;
+import com.ForgeEssentials.permission.query.PermQuery.PermResult;
 import com.ForgeEssentials.util.DBConnector;
 import com.ForgeEssentials.util.EnumDBType;
 import com.ForgeEssentials.util.OutputHandler;

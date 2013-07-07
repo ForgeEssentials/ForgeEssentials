@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-import com.ForgeEssentials.util.AreaSelector.Point;
+import com.ForgeEssentials.api.AreaSelector.Point;
 import com.ForgeEssentials.util.tasks.ITickTask;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 

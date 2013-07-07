@@ -15,9 +15,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 
+import com.ForgeEssentials.api.FEChatFormatCodes;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
-import com.ForgeEssentials.util.FEChatFormatCodes;
 
 public class CommandGetCommandBook extends FEcmdModuleCommands
 {
