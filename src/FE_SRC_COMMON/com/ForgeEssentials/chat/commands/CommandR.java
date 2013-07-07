@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.chat.IRCHelper;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
@@ -60,6 +61,31 @@ public class CommandR extends ForgeEssentialsCommandBase
 				}
 				MinecraftServer.getServer().sendChatToPlayer(receiverMessage);
 				sender.sendChatToPlayer(senderMessage);
+			}
+			else if (target.toLowerCase().startsWith("irc"))
+			{
+				target = target.substring(3);
+				String senderMessage = FEChatFormatCodes.GOLD + "(IRC)[me -> " + target + "] " + FEChatFormatCodes.GREY;
+				String receiverMessage = new String();
+				for (int i = 0; i < args.length; i++)
+				{
+					receiverMessage += args[i];
+					senderMessage += args[i];
+					if (i != args.length - 1)
+					{
+						receiverMessage += " ";
+						senderMessage += " ";
+					}
+				}
+				try
+				{
+					IRCHelper.privateMessage(sender.getCommandSenderName(), target, receiverMessage);
+					sender.sendChatToPlayer(senderMessage);
+				}
+				catch (Exception e)
+				{
+					sender.sendChatToPlayer("Unable to send message to: " + target);
+				}
 			}
 			else
 			{
