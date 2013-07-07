@@ -5,11 +5,11 @@ MC="1.5.2"
 #in case we arnt there already
 cd ${WORKSPACE}
 
-# try getting the version from files
-VERSION="`head -n 1 VERSION.TXT`"
-VERSION="${VERSION}.${BUILD_NUMBER}"
-MC="`head -2 VERSION.TXT | tail -1 VERSION.TXT`"
-echo "Version of ForgeEssentials is: ${VERSION} for MC ${MC}"
+# try getting the VERSIONBUILD from files
+VERSION="`head -n 1 VERSIONBUILD.TXT`"
+VERSIONBUILD="${VERSIONBUILD}.${BUILD_NUMBER}"
+MC="`head -2 VERSIONBUILD.TXT | tail -1 VERSIONBUILD.TXT`"
+echo "Building ForgeEssentials ${VERSIONBUILD} for MC ${MC}"
 
 echo "Downloading Forge..."
 
@@ -39,19 +39,19 @@ cd lib
 cp -rf ${WORKSPACE}/lib/* .
 cd ..
 
-echo "Injecting version number into places"
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/resources/server/mcmod.info
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/resources/client/mcmod.info
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/resources/api/FEAPIReadme.txt
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/resources/servercomplete/FEReadme.txt
-sed -i 's/@VERSION@/'${VERSION}'/g' ${WORKSPACE}/resources/client/FEReadme.txt
+echo "Injecting VERSIONBUILD number into places"
+sed -i 's/@VERSIONBUILD@/'${VERSIONBUILD}'/g' ${WORKSPACE}/resources/server/mcmod.info
+sed -i 's/@VERSIONBUILD@/'${VERSIONBUILD}'/g' ${WORKSPACE}/resources/client/mcmod.info
+sed -i 's/@VERSIONBUILD@/'${VERSIONBUILD}'/g' ${WORKSPACE}/resources/api/FEAPIReadme.txt
+sed -i 's/@VERSIONBUILD@/'${VERSIONBUILD}'/g' ${WORKSPACE}/resources/servercomplete/FEReadme.txt
+sed -i 's/@VERSIONBUILD@/'${VERSIONBUILD}'/g' ${WORKSPACE}/resources/client/FEReadme.txt
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/server/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/client/mcmod.info
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/api/FEAPIReadme.txt
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/client/FEReadme.txt
 sed -i 's/@MC@/'${MC}'/g' ${WORKSPACE}/resources/servercomplete/FEReadme.txt
-sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/core/preloader/FEModContainer.java
-sed -i 's/@VERSION@/'${VERSION}'/g' src/minecraft/com/ForgeEssentials/client/ForgeEssentialsClient.java
+sed -i 's/@VERSIONBUILD@/'${VERSIONBUILD}'/g' src/minecraft/com/ForgeEssentials/core/preloader/FEModContainer.java
+sed -i 's/@VERSIONBUILD@/'${VERSIONBUILD}'/g' src/minecraft/com/ForgeEssentials/client/ForgeEssentialsClient.java
 sed -i 's/@BETA@/'${BETA}'/g' src/minecraft/com/ForgeEssentials/core/preloader/FEModContainer.java
 sed -i 's/@BETA@/'${BETA}'/g' src/minecraft/com/ForgeEssentials/client/ForgeEssentialsClient.java
 
@@ -67,7 +67,7 @@ cd reobf/minecraft
 
 echo "Creating Client package"
 cp -rf ${WORKSPACE}/resources/client/* .
-jar cvf "${WORKSPACE}/output/ForgeEssentials-client-${MC}-${VERSION}.jar" ./com/ForgeEssentials/client/* mcmod.info logo.png FEReadme.txt LICENSE.TXT
+jar cvf "${WORKSPACE}/output/ForgeEssentials-client-${MC}-${VERSIONBUILD}.jar" ./com/ForgeEssentials/client/* mcmod.info logo.png FEReadme.txt LICENSE.TXT
 rm -rf ./com/ForgeEssentials/client
 rm -rf ./*.info
 
@@ -75,22 +75,22 @@ echo "Copying in extra files for core"
 cp -rf ${WORKSPACE}/resources/server/* .
 
 echo "Creating server packages"
-jar cvfm "${WORKSPACE}/output/ForgeEssentials-core-${MC}-${VERSION}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg ./com/ForgeEssentials/api/*.class ./com/ForgeEssentials/api/permissions ./com/ForgeEssentials/api/packetInspector ./com/ForgeEssentials/api/json
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-auth-${MC}-${VERSION}.zip" ./com/ForgeEssentials/auth/*
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-backups-${MC}-${VERSION}.zip" ./com/ForgeEssentials/backup/*
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-chat-${MC}-${VERSION}.zip" ./com/ForgeEssentials/chat/* 
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-commands-${MC}-${VERSION}.zip" ./com/ForgeEssentials/commands/* ./com/ForgeEssentials/api/commands
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-economy-${MC}-${VERSION}.zip" ./com/ForgeEssentials/economy/* 
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-playerlogger-${MC}-${VERSION}.zip" ./com/ForgeEssentials/playerLogger/* 
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-protection-${MC}-${VERSION}.zip" ./com/ForgeEssentials/protection/* 
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-questioner-${MC}-${VERSION}.zip" ./com/ForgeEssentials/questioner/* ./com/ForgeEssentials/api/questioner 
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-snooper-${MC}-${VERSION}.zip" ./com/ForgeEssentials/snooper/*  ./com/ForgeEssentials/api/snooper
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-servervote-${MC}-${VERSION}.zip" ./com/ForgeEssentials/serverVote/*
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-scripting-${MC}-${VERSION}.zip" ./com/ForgeEssentials/scripting/*
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-tickets-${MC}-${VERSION}.zip" ./com/ForgeEssentials/tickets/* 
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-worldborder-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldBorder/*
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-WorldControl-${MC}-${VERSION}.zip" ./com/ForgeEssentials/WorldControl/*
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-afterlife-${MC}-${VERSION}.zip" ./com/ForgeEssentials/afterlife/*
+jar cvfm "${WORKSPACE}/output/ForgeEssentials-core-${MC}-${VERSIONBUILD}.jar" ./META-INF/MANIFEST.MF ./com/ForgeEssentials/core/* ./com/ForgeEssentials/permission/* ./com/ForgeEssentials/util/* ./com/ForgeEssentials/data/* logo.png mcmod.info forgeessentials_at.cfg ./com/ForgeEssentials/api/*.class ./com/ForgeEssentials/api/permissions ./com/ForgeEssentials/api/packetInspector ./com/ForgeEssentials/api/json
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-auth-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/auth/*
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-backups-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/backup/*
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-chat-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/chat/* 
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-commands-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/commands/* ./com/ForgeEssentials/api/commands
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-economy-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/economy/* 
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-playerlogger-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/playerLogger/* 
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-protection-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/protection/* 
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-questioner-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/questioner/* ./com/ForgeEssentials/api/questioner 
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-snooper-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/snooper/*  ./com/ForgeEssentials/api/snooper
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-servervote-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/serverVote/*
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-scripting-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/scripting/*
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-tickets-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/tickets/* 
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-worldborder-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/WorldBorder/*
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-WorldControl-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/WorldControl/*
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-afterlife-${MC}-${VERSIONBUILD}.zip" ./com/ForgeEssentials/afterlife/*
 rm -rf ./*.info ./*.txt logo.png
 
 echo "Creating ServerComplete package"
@@ -100,43 +100,43 @@ cp -rf ${WORKSPACE}/resources/servercomplete/* .
 mkdir mods
 mkdir coremods
 # coremod.. then alphebetical order please...
-cp -rf "${WORKSPACE}/output/ForgeEssentials-core-${MC}-${VERSION}.jar" ./coremods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-auth-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-backups-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-chat-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-commands-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-economy-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-playerlogger-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-protection-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-questioner-${MC}-${VERSION}.zip"  ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-snooper-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-servervote-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-scripting-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-tickets-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-worldborder-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-WorldControl-${MC}-${VERSION}.zip" ./mods/
-cp -rf "${WORKSPACE}/output/ForgeEssentials-afterlife-${MC}-${VERSION}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-core-${MC}-${VERSIONBUILD}.jar" ./coremods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-auth-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-backups-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-chat-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-commands-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-economy-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-playerlogger-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-protection-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-questioner-${MC}-${VERSIONBUILD}.zip"  ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-snooper-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-servervote-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-scripting-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-tickets-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-worldborder-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-WorldControl-${MC}-${VERSIONBUILD}.zip" ./mods/
+cp -rf "${WORKSPACE}/output/ForgeEssentials-afterlife-${MC}-${VERSIONBUILD}.zip" ./mods/
 zip -r9 "${WORKSPACE}/output/ForgeEssentials-ServerComplete-${MC}-${VERSION}.zip" ./coremods/* ./mods/* FEReadme.txt HowToGetFEsupport.txt LICENSE.TXT
 
 echo "Cleaning up"
 rm -rf ./mods/*
 rm -rf ./coremods/*
-rm -rf "${WORKSPACE}/output/ForgeEssentials-auth-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-backups-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-chat-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-core-${MC}-${VERSION}.jar" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-commands-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-economy-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-playerlogger-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-protection-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-questioner-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-servervote-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-scripting-${MC}-${VERSION}.zip"
-rm -rf "${WORKSPACE}/output/ForgeEssentials-snooper-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-tickets-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-worldborder-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-WorldControl-${MC}-${VERSION}.zip" 
-rm -rf "${WORKSPACE}/output/ForgeEssentials-afterlife-${MC}-${VERSION}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-auth-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-backups-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-chat-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-core-${MC}-${VERSIONBUILD}.jar" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-commands-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-economy-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-playerlogger-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-protection-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-questioner-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-servervote-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-scripting-${MC}-${VERSIONBUILD}.zip"
+rm -rf "${WORKSPACE}/output/ForgeEssentials-snooper-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-tickets-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-worldborder-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-WorldControl-${MC}-${VERSIONBUILD}.zip" 
+rm -rf "${WORKSPACE}/output/ForgeEssentials-afterlife-${MC}-${VERSIONBUILD}.zip" 
 rm -rf "${WORKSPACE}/output/FEReadme.txt"
 rm -rf "${WORKSPACE}/output/HowToGetFEsupport.txt"
 rm -rf "${WORKSPACE}/output/LICENSE.TXT"
@@ -144,6 +144,6 @@ rm -rf "${WORKSPACE}/output/LICENSE.TXT"
 echo "Creating API package"
 cd ${WORKSPACE}/src/FE_SRC_COMMON
 cp -f ${WORKSPACE}/resources/api/* . .
-zip -r9 "${WORKSPACE}/output/ForgeEssentials-API-r2-${VERSION}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt LICENSE.TXT
+zip -r9 "${WORKSPACE}/output/ForgeEssentials-API-r2-${VERSIONBUILD}.zip" ./com/ForgeEssentials/api/* FEAPIReadme.txt LICENSE.TXT
 
 #upload

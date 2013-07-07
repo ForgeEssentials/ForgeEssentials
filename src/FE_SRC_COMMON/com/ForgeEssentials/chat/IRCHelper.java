@@ -136,7 +136,3 @@ public class IRCHelper extends ListenerAdapter implements Listener{
 		
 		
 }
-
-	
-
-
