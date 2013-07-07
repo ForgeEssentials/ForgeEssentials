@@ -73,7 +73,7 @@ public class ConfigChat extends ModuleConfigBase
 		ChatFormatter.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
 		ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
 		{ "fuck", "ass", "bitch", "shit" }, "List of words to be censored").getStringList());
-		ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 hart, ...").getInt();
+		ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 heart, ...").getInt();
 		ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").getString();
 
 		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
@@ -125,7 +125,7 @@ public class ConfigChat extends ModuleConfigBase
 
 		config.get("BannedWords", "censor", true, "censor the words in the censorList").set(ChatFormatter.censor);
 		config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").set(ChatFormatter.bannedWords.toArray(new String[ChatFormatter.bannedWords.size()]));
-		config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 hart, ...").set(ChatFormatter.censorSlap);
+		config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 heart, ...").set(ChatFormatter.censorSlap);
 		
 		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
 		
@@ -174,7 +174,7 @@ public class ConfigChat extends ModuleConfigBase
 		ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
 		{ "fuck", "ass", "bitch", "shit" }, "List of words to be censored").getStringList());
 		ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").getString();
-		ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 hart, ...").getInt();
+		ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 heart, ...").getInt();
 		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
 
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
