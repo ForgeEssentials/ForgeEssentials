@@ -5,10 +5,10 @@ MC="1.5.2"
 #in case we arnt there already
 cd ${WORKSPACE}
 
-# try getting the VERSIONBUILD from files
-VERSION="`head -n 1 VERSIONBUILD.TXT`"
+
+VERSION="`head -n 1 VERSION.TXT`"
 VERSIONBUILD="${VERSIONBUILD}.${BUILD_NUMBER}"
-MC="`head -2 VERSIONBUILD.TXT | tail -1 VERSIONBUILD.TXT`"
+MC="`head -2 VERSION.TXT | tail -1 VERSION.TXT`"
 echo "Building ForgeEssentials ${VERSIONBUILD} for MC ${MC}"
 
 echo "Downloading Forge..."
