@@ -7,7 +7,7 @@ cd ${WORKSPACE}
 
 
 VERSION="`head -n 1 VERSION.TXT`"
-VERSIONBUILD="${VERSIONBUILD}.${BUILD_NUMBER}"
+VERSIONBUILD="${VERSION}.${BUILD_NUMBER}"
 MC="`head -2 VERSION.TXT | tail -1 VERSION.TXT`"
 echo "Building ForgeEssentials ${VERSIONBUILD} for MC ${MC}"
 
@@ -39,7 +39,7 @@ cd lib
 cp -rf ${WORKSPACE}/lib/* .
 cd ..
 
-echo "Injecting VERSIONBUILD number into places"
+echo "Injecting version number into places"
 sed -i 's/@VERSIONBUILD@/'${VERSIONBUILD}'/g' ${WORKSPACE}/resources/server/mcmod.info
 sed -i 's/@VERSIONBUILD@/'${VERSIONBUILD}'/g' ${WORKSPACE}/resources/client/mcmod.info
 sed -i 's/@VERSIONBUILD@/'${VERSIONBUILD}'/g' ${WORKSPACE}/resources/api/FEAPIReadme.txt
