@@ -73,7 +73,7 @@ public class ConfigChat extends ModuleConfigBase
 		ChatFormatter.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
 		ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
 		{ "fuck", "ass", "bitch", "shit" }, "List of words to be censored").getStringList());
-		ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 hart, ...").getInt();
+		ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 heart, ...").getInt();
 		ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").getString();
 
 		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
@@ -89,10 +89,10 @@ public class ConfigChat extends ModuleConfigBase
 		logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
 		logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
 		
-		config.addCustomCategoryComment("irc", "Configure the inbuilt IRC bot here.");
+		config.addCustomCategoryComment("irc", "Configure the built-in IRC bot here.");
 		
 		ModuleChat.connectToIRC = config.get("irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
-		IRCHelper.port = config.get("irc", "port", 0, "The port to connect to the IRC server through.").getInt();
+		IRCHelper.port = config.get("irc", "port", 5555, "The port to connect to the IRC server through.").getInt();
 		IRCHelper.name = config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
 		IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
 		IRCHelper.channel = config.get("irc", "channel", "#something", "Channel to connect to").getString();
@@ -125,7 +125,7 @@ public class ConfigChat extends ModuleConfigBase
 
 		config.get("BannedWords", "censor", true, "censor the words in the censorList").set(ChatFormatter.censor);
 		config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").set(ChatFormatter.bannedWords.toArray(new String[ChatFormatter.bannedWords.size()]));
-		config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 hart, ...").set(ChatFormatter.censorSlap);
+		config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 heart, ...").set(ChatFormatter.censorSlap);
 		
 		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
 		
@@ -140,7 +140,7 @@ public class ConfigChat extends ModuleConfigBase
         config.get(logCat, "logcmd", true, "Log all commands").set(logcmd);
         
         config.get("irc", "enable", false, "Enable IRC interoperability?").set(ModuleChat.connectToIRC);
-        config.get("irc", "port", 0, "The port to connect to the IRC server through.").set(IRCHelper.port);
+        config.get("irc", "port", 5555, "The port to connect to the IRC server through.").set(IRCHelper.port);
 		config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").set(IRCHelper.name);
 		config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").set(IRCHelper.server);
 		config.get("irc", "channel", "#something", "Channel to connect to").set(IRCHelper.channel);
@@ -174,7 +174,7 @@ public class ConfigChat extends ModuleConfigBase
 		ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
 		{ "fuck", "ass", "bitch", "shit" }, "List of words to be censored").getStringList());
 		ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").getString();
-		ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 hart, ...").getInt();
+		ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 heart, ...").getInt();
 		config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
 
 		config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
@@ -190,7 +190,7 @@ public class ConfigChat extends ModuleConfigBase
         logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
         
         ModuleChat.connectToIRC = config.get("irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
-        IRCHelper.port = config.get("irc", "port", 0, "The port to connect to the IRC server through.").getInt();
+        IRCHelper.port = config.get("irc", "port", 5555, "The port to connect to the IRC server through.").getInt();
 		IRCHelper.name = config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
 		IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
 		IRCHelper.channel = config.get("irc", "channel", "#something", "Channels to connect to").getString();
