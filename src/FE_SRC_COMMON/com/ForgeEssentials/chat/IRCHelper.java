@@ -125,6 +125,10 @@ public class IRCHelper extends ListenerAdapter implements Listener
 			if (index == -1)
 			{
 				e.respond("Unable to send message: No mesage or delimeter.");
+				e.respond("Did you forget the ':'?");
+				e.respond("Sytax: /privmsg " + bot.getNick() + " :playername message");
+				e.respond("Or to reply to a previous private message.");
+				e.respond("Sytax: /privmsg " + bot.getNick() + " :%r message");
 				return;
 			}
 			if (e.getMessage().trim().toLowerCase().startsWith("%r"))
