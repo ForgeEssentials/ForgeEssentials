@@ -32,6 +32,8 @@ public class CommandPay extends ForgeEssentialsCommandBase
 			if (player == null)
 			{
 				sender.sendChatToPlayer(args[0] + " not found!");
+			}else if(player == sender){
+				sender.sendChatToPlayer("You can't pay yourself!");
 			}
 			else
 			{
