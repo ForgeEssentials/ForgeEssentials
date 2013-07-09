@@ -112,7 +112,11 @@ public class ForgeEssentials
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
+		
 		log = new OutputHandler();
+		
+		OutputHandler.felog.info("Forge Essentials version " + FEModContainer.version + " loading, reading config from " + FEDIR.getAbsolutePath());
 		
 		// FE MUST BE FIRST!!
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
@@ -120,8 +124,6 @@ public class ForgeEssentials
 		version = e.getModMetadata().version;
 
 		// setup fedir stuff
-		FEDIR = new File(FunctionHelper.getBaseDir(), "ForgeEssentials");
-
 		config = new CoreConfig();
 		bc = new SanityChecker();
 		bc.run();

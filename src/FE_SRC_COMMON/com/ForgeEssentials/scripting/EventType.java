@@ -35,12 +35,13 @@ public enum EventType {
 	}
 	public static void run(EntityPlayer player, EventType event){
 		ArrayList<String> scripts = new ArrayList<String>();
-		OutputHandler.felog.info("Running command scripts for player " + player.username);
-				
+		OutputHandler.felog.info("Running command scripts for player " + player.username);	
 				
 				//  run player scripts
 				try{
 					File pscript = new File(event.player, player.username+ ".txt");
+
+					OutputHandler.felog.info("Reading command script file " + pscript.getAbsolutePath());	
 					FileInputStream stream = new FileInputStream(pscript);
 					InputStreamReader streamReader = new InputStreamReader(stream);
 					BufferedReader reader = new BufferedReader(streamReader);
@@ -71,6 +72,7 @@ public enum EventType {
 				// now run group scripts - must be global
 				try{
 					File gscript = new File(event.group, APIRegistry.perms.getHighestGroup(player).name + ".txt");
+					OutputHandler.felog.info("Reading command script file " + gscript.getAbsolutePath());	
 					FileInputStream stream = new FileInputStream(gscript);
 					InputStreamReader streamReader = new InputStreamReader(stream);
 					BufferedReader reader = new BufferedReader(streamReader);

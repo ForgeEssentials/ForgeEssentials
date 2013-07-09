@@ -7,7 +7,6 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
-import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.modules.FEModulePreInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModuleServerInitEvent;
@@ -17,8 +16,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @FEModule(name = "scripting", parentMod = ForgeEssentials.class, isCore = false)
 public class ModuleScripting {
 	
-	@ModuleDir
-	public static File moduleDir;
+	public static File moduleDir = new File(ForgeEssentials.FEDIR, "scripting/");
 	
 static File loginplayer = new File(moduleDir, "login/player/");
 	static File logingroup = new File(moduleDir, "login/group/");
@@ -28,6 +26,7 @@ static File loginplayer = new File(moduleDir, "login/player/");
 	
 	@FEModule.PreInit
 	public void preInit(FEModulePreInitEvent e){
+		OutputHandler.felog.info("Scripts are being read from " + moduleDir.getAbsolutePath());
 		startup();
 		GameRegistry.registerPlayerTracker(new ScriptPlayerTracker());
 	}
@@ -38,7 +37,8 @@ static File loginplayer = new File(moduleDir, "login/player/");
 	}
 	
 	public static void startup(){
-		try{loginplayer.mkdirs();
+		try{moduleDir.mkdirs();
+			loginplayer.mkdirs();
 			logingroup.mkdirs();
 			respawngroup.mkdirs();
 			respawnplayer.mkdirs();
