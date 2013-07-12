@@ -47,24 +47,21 @@ public class BlockSaveable
 	@Override
 	public boolean equals(Object object)
 	{
-		if (object == null)
-			return false;
 		
-		if (object instanceof BlockSaveable)
+		if (object != null && object instanceof BlockSaveable)
 		{
 			BlockSaveable block = (BlockSaveable) object;
 			
 			// check NBT tag for equality
-			boolean tileEqual = false;
-			if (tile == null && block.tile == null)
-				tileEqual = true;
-			else if (tile != null && tile.equals(block.tile))
-				tileEquals = true;
+			boolean tileEqual = tile == null ? block.tile == null : tile.equals(block.tile);
 			
 			// return full boolean that takes everything into account
-			return blockID == block.blockID && metadata == block.metadata && tileEqual;
+			return tileEqual && blockID == block.blockID && metadata == block.metadata;
 		}
-		return false;
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
