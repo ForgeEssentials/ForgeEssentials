@@ -53,7 +53,16 @@ public class BlockSaveable
 		if (object instanceof BlockSaveable)
 		{
 			BlockSaveable block = (BlockSaveable) object;
-			return blockID == block.blockID && metadata == block.metadata && tile.equals(block.tile);
+			
+			// check NBT tag for equality
+			boolean tileEqual = false;
+			if (tile == null && block.tile == null)
+				tileEqual = true;
+			else if (tile != null && tile.equals(block.tile))
+				tileEquals = true;
+			
+			// return full boolean that takes everything into account
+			return blockID == block.blockID && metadata == block.metadata && tileEqual;
 		}
 		return false;
 	}
