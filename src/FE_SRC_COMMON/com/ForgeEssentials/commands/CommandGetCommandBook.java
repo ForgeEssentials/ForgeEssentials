@@ -17,6 +17,7 @@ import net.minecraft.server.MinecraftServer;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
 public class CommandGetCommandBook extends FEcmdModuleCommands
@@ -66,29 +67,48 @@ public class CommandGetCommandBook extends FEcmdModuleCommands
 
 		for (Object cmdObj : MinecraftServer.getServer().getCommandManager().getCommands().values().toArray())
 		{
+			/*
+			 * PAGE FORMAT
+			 * =========================
+			 * [GOLD] /commandName
+			 * [GOLD] aliases
+			 * [DARKRED] permission
+			 * [Black] usage
+			 */
+
+			// Cast to command
 			ICommand cmd = (ICommand) cmdObj;
 
-			String text = "\n";
+			// Skip commands for which the user has no permission
+			if (!cmd.canCommandSenderUseCommand(sender))
+				continue;
+
+			// Initialize string for page.
+			String text = "";
+
+			// List command aliases.
 			if (cmd.getCommandAliases() != null && cmd.getCommandAliases().size() != 0)
 			{
-				text += joinAliases(cmd.getCommandAliases().toArray()) + "\n";
+				text += FEChatFormatCodes.GOLD + joinAliases(cmd.getCommandAliases().toArray()) + "\n\n";
 			}
 			else
 			{
-				text += "No aliases.\n";
+				text += FEChatFormatCodes.GOLD + "No aliases.\n\n";
 			}
 
+			// Display permission node (If applicable)
+			if (cmd instanceof ForgeEssentialsCommandBase)// Was: FEcmdModuleCommands
+			{
+				text += FEChatFormatCodes.DARKRED + ((ForgeEssentialsCommandBase) cmd).getCommandPerm() + "\n\n";
+			}
+
+			// Display usage
 			text += FEChatFormatCodes.BLACK + cmd.getCommandUsage(sender);
 
-			if (cmd instanceof FEcmdModuleCommands)
-			{
-				text += "\n";
-				text += FEChatFormatCodes.DARKGREY + ((FEcmdModuleCommands) cmd).getCommandPerm();
-			}
-
+			// Finally post to map
 			if (!text.equals(""))
 			{
-				map.put(FEChatFormatCodes.DARKAQUA + "/" + cmd.getCommandName(), text);
+				map.put(FEChatFormatCodes.GOLD + "/" + cmd.getCommandName() + "\n" + FEChatFormatCodes.RESET, text);
 			}
 		}
 
