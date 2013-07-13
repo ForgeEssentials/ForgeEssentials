@@ -226,7 +226,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.CoreCommands.select.expand";
+		return "ForgeEssentials.CoreCommands.select.pos";
 	}
 
 	@Override
