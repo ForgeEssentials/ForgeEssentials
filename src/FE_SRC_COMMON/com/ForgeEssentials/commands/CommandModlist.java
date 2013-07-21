@@ -7,7 +7,9 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -42,7 +44,7 @@ public class CommandModlist extends FEcmdModuleCommands
 		int page = args.length == 0 ? 0 : parseIntBounded(sender, args[0], 1, pages) - 1;
 		int min = Math.min(page * perPage, size);
 
-		sender.sendChatToPlayer("\u00a72" + Localization.get("command.modlist.header").replaceAll("%p", "" + (page + 1)).replaceAll("%t", "" + pages));
+		OutputHandler.chatConfirmation(sender, Localization.format("command.modlist.header", page + 1, pages));
 
 		for (int i = page * perPage; i < min + perPage; i++)
 		{
