@@ -14,6 +14,7 @@ unzip -q minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
 rm -rf ./oldcode/*
 chmod +x **/*.sh
+chmod +rw **/*
 cd forge
 
 echo "Copying FE AccessTransformer..."
