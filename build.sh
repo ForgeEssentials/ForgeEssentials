@@ -3,14 +3,14 @@ MC="1.5.2"
 VERSION="`head -n 1 VERSION.TXT`"
 VERSIONBUILD="${VERSION}.${bamboo.buildNumber}"
 MC="`head -2 VERSION.TXT | tail -1 VERSION.TXT`"
-WORKSPACE=${bamboo.build.working.directory}
+WORKSPACE="${bamboo.build.working.directory}"
 echo "Building ForgeEssentials ${VERSIONBUILD} for MC ${MC}"
 
 echo "Downloading Forge..."
 
 #wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
 wget -nv http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.5.2-7.8.1.738.zip
-
+chmod +x **/*.sh
 unzip -q minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
 rm -rf ./oldcode/*
