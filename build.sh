@@ -4,7 +4,7 @@ VERSION="`head -n 1 VERSION.TXT`"
 VERSIONBUILD="${VERSION}.${bamboo.buildNumber}"
 MC="`head -2 VERSION.TXT | tail -1 VERSION.TXT`"
 WORKSPACE="${bamboo.build.working.directory}"
-echo "Building ForgeEssentials ${VERSIONBUILD} for MC ${MC}"
+echo "Building ForgeEssentials ${VERSIONBUILD} for MC ${MC} in ${WORKSPACE}"
 
 echo "Downloading Forge..."
 
