@@ -13,8 +13,7 @@ wget -nv http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.5.2
 unzip -q minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
 rm -rf ./oldcode/*
-chmod +x **/*.sh
-chmod +rw **/*
+chmod -R 777 *
 cd forge
 
 echo "Copying FE AccessTransformer..."
