@@ -21,7 +21,7 @@ mkdir accesstransformers
 cp -rf ${WORKSPACE}/src/FE_SRC_COMMON/forgeessentials_at.cfg ${WORKSPACE}/forge/accesstransformers/
 
 echo "Installing Forge..."
-bash ./install.sh
+./install.sh
 cd mcp
 
 echo "Copying ForgeEssentials and related libraries into MCP..."
@@ -50,10 +50,10 @@ sed -i 's/@BETA@/'${BETA}'/g' src/minecraft/com/ForgeEssentials/core/preloader/F
 sed -i 's/@BETA@/'${BETA}'/g' src/minecraft/com/ForgeEssentials/client/ForgeEssentialsClient.java
 
 echo "Recompiling..."
-bash ./recompile.sh
+./recompile.sh
 
 echo "Reobfuscating..."
-bash ./reobfuscate_srg.sh
+./reobfuscate_srg.sh
 
 # create this ahead of time...
 mkdir ${WORKSPACE}/output
