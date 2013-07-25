@@ -10,10 +10,11 @@ echo "Downloading Forge..."
 
 #wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
 wget -nv http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.5.2-7.8.1.738.zip
-chmod +x **/*.sh
+
 unzip -q minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
 rm -rf ./oldcode/*
+chmod +x **/*.sh
 cd forge
 
 echo "Copying FE AccessTransformer..."
