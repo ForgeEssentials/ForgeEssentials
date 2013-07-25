@@ -69,4 +69,3 @@ With localization credits to:
 <a href="https://github.com/helinus">Helinus</a>
 
 <a href="https://github.com/jovino">Jovino</a> (inactive)
-
