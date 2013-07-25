@@ -1,9 +1,9 @@
 VERSION="SNAPSHOT"
 MC="1.5.2"
 VERSION="`head -n 1 VERSION.TXT`"
-VERSIONBUILD="${VERSION}.${bamboo.buildNumber}"
+VERSIONBUILD="${VERSION}.${bamboo_buildNumber}"
 MC="`head -2 VERSION.TXT | tail -1 VERSION.TXT`"
-WORKSPACE="${bamboo.build.working.directory}"
+WORKSPACE="${bamboo_build_working_directory}"
 echo "Building ForgeEssentials ${VERSIONBUILD} for MC ${MC} in ${WORKSPACE}"
 
 echo "Downloading Forge..."
