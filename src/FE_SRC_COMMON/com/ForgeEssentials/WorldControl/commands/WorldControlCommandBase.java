@@ -3,6 +3,7 @@ package com.ForgeEssentials.WorldControl.commands;
 //Depreciated
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
@@ -61,10 +62,9 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		sender.sendChatToPlayer("You cannot use the \"" + getCommandName() + "\" command from the console");
-	}
+	public void processCommandConsole(ICommandSender sender, String[] args) {
+        ChatUtils.sendMessage(sender, "You cannot use the \"" + getCommandName() + "\" command from the console");
+    }
 
 	@Override
 	public boolean canConsoleUseCommand()

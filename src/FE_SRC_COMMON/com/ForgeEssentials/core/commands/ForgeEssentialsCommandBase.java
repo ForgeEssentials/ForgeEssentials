@@ -2,6 +2,7 @@ package com.ForgeEssentials.core.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -200,10 +201,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		{
 			OutputHandler.chatError(sender, message);
 		}
-		else
-		{
-			sender.sendChatToPlayer(message);
-		}
+		else {
+            ChatUtils.sendMessage(sender, message);
+        }
 	}
 
 	public boolean checkCommandPerm(EntityPlayer player)

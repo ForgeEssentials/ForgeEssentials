@@ -6,6 +6,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.core.ForgeEssentials;
@@ -198,14 +199,8 @@ public class Localization
 
 	public static String get(String key)
 	{
-		String output = LanguageRegistry.instance().getStringLocalization(key);
-
-		if (Strings.isNullOrEmpty(output))
-		{
-			output = LanguageRegistry.instance().getStringLocalization(key, "en_US");
-		}
-
-		return output;
+        // If we are client-side we can get the current localization. On the server, we can't.
+        return LanguageRegistry.instance().getStringLocalization(key, "en_US");
 	}
 
 	/**

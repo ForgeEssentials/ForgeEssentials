@@ -3,6 +3,7 @@ package com.ForgeEssentials.playerLogger.rollback;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -38,22 +39,19 @@ public class CommandPl extends ForgeEssentialsCommandBase
 	{
 		if (sender.worldObj.isRemote)
 			return;
-		if (args.length == 0)
-		{
-			sender.sendChatToPlayer("You must use /playerlogger enable");
-			return;
-		}
-		else if (args[0].equalsIgnoreCase("enable"))
-		{
-			int limit = 5;
-			if (args.length == 2)
-			{
-				limit = parseIntWithMin(sender, args[1], 0);
-			}
-			sender.getEntityData().setBoolean("lb", true);
-			sender.getEntityData().setInteger("lb_limit", limit);
-			sender.sendChatToPlayer("Click a block and you will get the last " + limit + " changes.");
-		}
+		if (args.length == 0) {
+            ChatUtils.sendMessage(sender, "You must use /playerlogger enable");
+            return;
+        }
+		else if (args[0].equalsIgnoreCase("enable")) {
+            int limit = 5;
+            if (args.length == 2) {
+                limit = parseIntWithMin(sender, args[1], 0);
+            }
+            sender.getEntityData().setBoolean("lb", true);
+            sender.getEntityData().setInteger("lb_limit", limit);
+            ChatUtils.sendMessage(sender, "Click a block and you will get the last " + limit + " changes.");
+        }
 		else if (args[0].equalsIgnoreCase("disable"))
 		{
 			sender.getEntityData().setBoolean("lb", false);

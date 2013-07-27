@@ -1,5 +1,6 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -11,18 +12,16 @@ public class CommandFEPermExport
 	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		String output = "export";
-		if (args.length > 1)
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
-			return;
-		}
+		if (args.length > 1) {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+            return;
+        }
 		else if (args.length == 1)
 		{
-			if (args[0].equalsIgnoreCase("help"))
-			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
-				return;
-			}
+			if (args[0].equalsIgnoreCase("help")) {
+                ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+                return;
+            }
 			else
 			{
 				output = args[0];
@@ -33,30 +32,23 @@ public class CommandFEPermExport
 		startThread(sender, output);
 	}
 
-	public static void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		String output = "export";
-		if (args.length > 1)
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
-			return;
-		}
-		else if (args.length == 1)
-		{
-			if (args[0].equalsIgnoreCase("help"))
-			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
-				return;
-			}
-			else
-			{
-				output = args[0];
-			}
-		}
+	public static void processCommandConsole(ICommandSender sender, String[] args) {
+        String output = "export";
+        if (args.length > 1) {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+            return;
+        } else if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("help")) {
+                ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+                return;
+            } else {
+                output = args[0];
+            }
+        }
 
-		sender.sendChatToPlayer(" {PermSQL} Starting permission export...");
-		startThread(sender, output);
-	}
+        ChatUtils.sendMessage(sender, " {PermSQL} Starting permission export...");
+        startThread(sender, output);
+    }
 
 	private static void startThread(ICommandSender sender, String output)
 	{

@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -59,11 +60,10 @@ public class CommandCapabilities extends FEcmdModuleCommands
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length > 3)
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-			return;
-		}
+		if (args.length > 3) {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+            return;
+        }
 		execute(sender, args);
 	}
 
@@ -77,15 +77,14 @@ public class CommandCapabilities extends FEcmdModuleCommands
 		else if (args.length == 1)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
-			if (player != null)
-			{
-				OutputHandler.chatConfirmation(sender, Localization.format("command.capabilities.listForX", player.username));
-				sender.sendChatToPlayer(names.get(0) + " = " + player.capabilities.disableDamage);
-				sender.sendChatToPlayer(names.get(1) + " = " + player.capabilities.isFlying);
-				sender.sendChatToPlayer(names.get(2) + " = " + player.capabilities.allowFlying);
-				sender.sendChatToPlayer(names.get(3) + " = " + player.capabilities.isCreativeMode);
-				sender.sendChatToPlayer(names.get(4) + " = " + player.capabilities.allowEdit);
-			}
+			if (player != null) {
+                OutputHandler.chatConfirmation(sender, Localization.format("command.capabilities.listForX", player.username));
+                ChatUtils.sendMessage(sender, names.get(0) + " = " + player.capabilities.disableDamage);
+                ChatUtils.sendMessage(sender, names.get(1) + " = " + player.capabilities.isFlying);
+                ChatUtils.sendMessage(sender, names.get(2) + " = " + player.capabilities.allowFlying);
+                ChatUtils.sendMessage(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
+                ChatUtils.sendMessage(sender, names.get(4) + " = " + player.capabilities.allowEdit);
+            }
 			else
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -104,26 +103,21 @@ public class CommandCapabilities extends FEcmdModuleCommands
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
-				if (args[1].equalsIgnoreCase(names.get(0)))
-				{
-					sender.sendChatToPlayer(player.username + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
-				}
-				else if (args[1].equalsIgnoreCase(names.get(1)))
-				{
-					sender.sendChatToPlayer(player.username + " => " + names.get(1) + " = " + player.capabilities.isFlying);
-				}
-				else if (args[1].equalsIgnoreCase(names.get(2)))
-				{
-					sender.sendChatToPlayer(player.username + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
-				}
-				else if (args[1].equalsIgnoreCase(names.get(3)))
-				{
-					sender.sendChatToPlayer(player.username + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
-				}
-				else if (args[1].equalsIgnoreCase(names.get(4)))
-				{
-					sender.sendChatToPlayer(player.username + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
-				}
+				if (args[1].equalsIgnoreCase(names.get(0))) {
+                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
+                }
+				else if (args[1].equalsIgnoreCase(names.get(1))) {
+                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(1) + " = " + player.capabilities.isFlying);
+                }
+				else if (args[1].equalsIgnoreCase(names.get(2))) {
+                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
+                }
+				else if (args[1].equalsIgnoreCase(names.get(3))) {
+                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
+                }
+				else if (args[1].equalsIgnoreCase(names.get(4))) {
+                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
+                }
 				else
 				{
 					OutputHandler.chatError(sender, Localization.format("command.capabilities.capabilityUnknown", args[1]));
@@ -144,36 +138,31 @@ public class CommandCapabilities extends FEcmdModuleCommands
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
-				if (args[1].equalsIgnoreCase(names.get(0)))
-				{
-					boolean bln = Boolean.parseBoolean(args[2]);
-					player.capabilities.disableDamage = bln;
-					sender.sendChatToPlayer(names.get(0) + " = " + player.capabilities.disableDamage);
-				}
-				else if (args[1].equalsIgnoreCase(names.get(1)))
-				{
-					boolean bln = Boolean.parseBoolean(args[2]);
-					player.capabilities.isFlying = bln;
-					sender.sendChatToPlayer(names.get(1) + " = " + player.capabilities.isFlying);
-				}
-				else if (args[1].equalsIgnoreCase(names.get(2)))
-				{
-					boolean bln = Boolean.parseBoolean(args[2]);
-					player.capabilities.allowFlying = bln;
-					sender.sendChatToPlayer(names.get(2) + " = " + player.capabilities.allowFlying);
-				}
-				else if (args[1].equalsIgnoreCase(names.get(3)))
-				{
-					boolean bln = Boolean.parseBoolean(args[2]);
-					player.capabilities.isCreativeMode = bln;
-					sender.sendChatToPlayer(names.get(3) + " = " + player.capabilities.isCreativeMode);
-				}
-				else if (args[1].equalsIgnoreCase(names.get(4)))
-				{
-					boolean bln = Boolean.parseBoolean(args[2]);
-					player.capabilities.allowEdit = bln;
-					sender.sendChatToPlayer(names.get(4) + " = " + player.capabilities.allowEdit);
-				}
+				if (args[1].equalsIgnoreCase(names.get(0))) {
+                    boolean bln = Boolean.parseBoolean(args[2]);
+                    player.capabilities.disableDamage = bln;
+                    ChatUtils.sendMessage(sender, names.get(0) + " = " + player.capabilities.disableDamage);
+                }
+				else if (args[1].equalsIgnoreCase(names.get(1))) {
+                    boolean bln = Boolean.parseBoolean(args[2]);
+                    player.capabilities.isFlying = bln;
+                    ChatUtils.sendMessage(sender, names.get(1) + " = " + player.capabilities.isFlying);
+                }
+				else if (args[1].equalsIgnoreCase(names.get(2))) {
+                    boolean bln = Boolean.parseBoolean(args[2]);
+                    player.capabilities.allowFlying = bln;
+                    ChatUtils.sendMessage(sender, names.get(2) + " = " + player.capabilities.allowFlying);
+                }
+				else if (args[1].equalsIgnoreCase(names.get(3))) {
+                    boolean bln = Boolean.parseBoolean(args[2]);
+                    player.capabilities.isCreativeMode = bln;
+                    ChatUtils.sendMessage(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
+                }
+				else if (args[1].equalsIgnoreCase(names.get(4))) {
+                    boolean bln = Boolean.parseBoolean(args[2]);
+                    player.capabilities.allowEdit = bln;
+                    ChatUtils.sendMessage(sender, names.get(4) + " = " + player.capabilities.allowEdit);
+                }
 				else
 				{
 					OutputHandler.chatError(sender, Localization.format("command.capabilities.capabilityUnknown", args[1]));

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -65,19 +66,18 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		/*
 		 * Cmd info
 		 */
-		if (args.length == 0)
-		{
-			sender.sendChatToPlayer("--- Rollback usage ---");
-			sender.sendChatToPlayer("All actions must be confirmed with '/rb ok'.");
-			sender.sendChatToPlayer("All actions can be canceld with '/rb abort'.");
-			sender.sendChatToPlayer("'/rb clear <username>' => Removes a players data.");
-			sender.sendChatToPlayer("'/rb undo <username>' => Undo a rollback. You can specify time and radius");
-			sender.sendChatToPlayer("'/rb <undo|rollback> <username>' => Rolls back a players. All the way!");
-			sender.sendChatToPlayer("'/rb <undo|rollback> <username> <rad>' => Format like this: 10r");
-			sender.sendChatToPlayer("'/rb <undo|rollback> <username> <time>' => Format time like this: 10d = 10 days, 10h = 10 hours.");
-			sender.sendChatToPlayer("A combo of the above is possible too.");
-			return;
-		}
+		if (args.length == 0) {
+            ChatUtils.sendMessage(sender, "--- Rollback usage ---");
+            ChatUtils.sendMessage(sender, "All actions must be confirmed with '/rb ok'.");
+            ChatUtils.sendMessage(sender, "All actions can be canceld with '/rb abort'.");
+            ChatUtils.sendMessage(sender, "'/rb clear <username>' => Removes a players data.");
+            ChatUtils.sendMessage(sender, "'/rb undo <username>' => Undo a rollback. You can specify time and radius");
+            ChatUtils.sendMessage(sender, "'/rb <undo|rollback> <username>' => Rolls back a players. All the way!");
+            ChatUtils.sendMessage(sender, "'/rb <undo|rollback> <username> <rad>' => Format like this: 10r");
+            ChatUtils.sendMessage(sender, "'/rb <undo|rollback> <username> <time>' => Format time like this: 10d = 10 days, 10h = 10 hours.");
+            ChatUtils.sendMessage(sender, "A combo of the above is possible too.");
+            return;
+        }
 		
 		/* 
 		 * Only 1 arg

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.ForgeEssentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -18,10 +19,6 @@ import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.PWarp;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
@@ -55,11 +52,10 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 		    CommandDataManager.pwMap.put(sender.username, map);
 		}
 		
-		if (args.length == 0)
-		{
-			sender.sendChatToPlayer(Localization.get("command.personalwarp.list"));
-			sender.sendChatToPlayer(FunctionHelper.niceJoin(map.keySet().toArray()));
-		}
+		if (args.length == 0) {
+            ChatUtils.sendMessage(sender, Localization.get("command.personalwarp.list"));
+            ChatUtils.sendMessage(sender, FunctionHelper.niceJoin(map.keySet().toArray()));
+        }
 		else
 		{
 			if (args[0].equalsIgnoreCase("goto"))

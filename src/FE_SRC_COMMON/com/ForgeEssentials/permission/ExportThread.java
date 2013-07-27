@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 
 import com.ForgeEssentials.api.permissions.Group;
@@ -62,10 +63,9 @@ public class ExportThread extends Thread
 
 	private void output(String msg)
 	{
-		if (user != null)
-		{
-			user.sendChatToPlayer("[PermSQL]" + msg);
-		}
+		if (user != null) {
+            ChatUtils.sendMessage(user, "[PermSQL]" + msg);
+        }
 		else
 		{
 			OutputHandler.felog.finest(msg);

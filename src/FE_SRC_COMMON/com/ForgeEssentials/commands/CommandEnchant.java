@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -43,65 +44,53 @@ public class CommandEnchant extends FEcmdModuleCommands
 			return;
 		}
 		
-		if (args.length == 0)
-		{
-			String msg = "";
-			for (Enchantment ench : Enchantment.enchantmentsList)
-			{
-				if (ench != null && ench.canApplyAtEnchantingTable(var6))
-				{
-					msg += StatCollector.translateToLocal(ench.getName()).replaceAll(" ", "") + ", ";
-				}
-			}
-			msg = msg.substring(0, msg.length() - 2);
-			Item held = var6.getItem();
-			if(held instanceof ItemAxe)
-			{
-				msg += ", Sharpness, Smite, BaneofArthropods, Looting";
-			}
-			if(held instanceof ItemArmor)
-			{
-				if(!msg.contains("Thorns"))
-					msg += ", Thorns";
-				msg += ", Unbreaking";
-			}
-			if(held instanceof ItemBow)
-			{
-				msg += ", Unbreaking";
-			}
-			if(held instanceof ItemCarrotOnAStick || held instanceof ItemHoe ||
-					held instanceof ItemFishingRod || held instanceof ItemFlintAndSteel)
-			{
-				msg = "Unbreaking";
-			}
-			if(held instanceof ItemShears)
-			{
-				msg = "Efficiency, SilkTouch, Unbreaking";
-			}
-			sender.sendChatToPlayer(msg);
-			return;
-		}
+		if (args.length == 0) {
+            String msg = "";
+            for (Enchantment ench : Enchantment.enchantmentsList) {
+                if (ench != null && ench.canApplyAtEnchantingTable(var6)) {
+                    msg += StatCollector.translateToLocal(ench.getName()).replaceAll(" ", "") + ", ";
+                }
+            }
+            msg = msg.substring(0, msg.length() - 2);
+            Item held = var6.getItem();
+            if (held instanceof ItemAxe) {
+                msg += ", Sharpness, Smite, BaneofArthropods, Looting";
+            }
+            if (held instanceof ItemArmor) {
+                if (!msg.contains("Thorns"))
+                    msg += ", Thorns";
+                msg += ", Unbreaking";
+            }
+            if (held instanceof ItemBow) {
+                msg += ", Unbreaking";
+            }
+            if (held instanceof ItemCarrotOnAStick || held instanceof ItemHoe ||
+                    held instanceof ItemFishingRod || held instanceof ItemFlintAndSteel) {
+                msg = "Unbreaking";
+            }
+            if (held instanceof ItemShears) {
+                msg = "Efficiency, SilkTouch, Unbreaking";
+            }
+            ChatUtils.sendMessage(sender, msg);
+            return;
+        }
 		
-		if(args[0].equalsIgnoreCase("listall"))
-		{
-			String msg = "";
-			for (Enchantment ench : Enchantment.enchantmentsList)
-			{
-				if (ench != null)
-				{
-					msg += StatCollector.translateToLocal(ench.getName()).replaceAll(" ", "") + ", ";
-				}
-				if(msg.length() > 100)
-				{
-					msg = msg.substring(0, msg.length() - 2);
-					sender.sendChatToPlayer(msg);
-					msg = "";
-				}
-			}
-			msg = msg.substring(0, msg.length() - 2);
-			sender.sendChatToPlayer(msg);
-			return;
-		}
+		if(args[0].equalsIgnoreCase("listall")) {
+            String msg = "";
+            for (Enchantment ench : Enchantment.enchantmentsList) {
+                if (ench != null) {
+                    msg += StatCollector.translateToLocal(ench.getName()).replaceAll(" ", "") + ", ";
+                }
+                if (msg.length() > 100) {
+                    msg = msg.substring(0, msg.length() - 2);
+                    ChatUtils.sendMessage(sender, msg);
+                    msg = "";
+                }
+            }
+            msg = msg.substring(0, msg.length() - 2);
+            ChatUtils.sendMessage(sender, msg);
+            return;
+        }
 
 		Enchantment ench = null;
 

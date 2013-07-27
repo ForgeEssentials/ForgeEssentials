@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -39,21 +40,18 @@ public class CommandKit extends FEcmdModuleCommands
 		/*
 		 * Print kits
 		 */
-		if (args.length == 0)
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.KIT_LIST));
+		if (args.length == 0) {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.KIT_LIST));
 
-			String msg = "";
-			for (Kit kit : CommandDataManager.kits.values())
-			{
-				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + kit.getName())))
-				{
-					msg = kit.getName() + ", " + msg;
-				}
-			}
-			sender.sendChatToPlayer(msg);
-			return;
-		}
+            String msg = "";
+            for (Kit kit : CommandDataManager.kits.values()) {
+                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + kit.getName()))) {
+                    msg = kit.getName() + ", " + msg;
+                }
+            }
+            ChatUtils.sendMessage(sender, msg);
+            return;
+        }
 		/*
 		 * Give kit
 		 */
@@ -83,12 +81,11 @@ public class CommandKit extends FEcmdModuleCommands
 		{
 			if (args.length == 3)
 			{
-				if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
-				{
-					int cooldown = parseIntWithMin(sender, args[2], 0);
-					new Kit(sender, args[0].toLowerCase(), cooldown);
-					sender.sendChatToPlayer(Localization.get(Localization.KIT_MADE).replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
-				}
+				if (!CommandDataManager.kits.containsKey(args[0].toLowerCase())) {
+                    int cooldown = parseIntWithMin(sender, args[2], 0);
+                    new Kit(sender, args[0].toLowerCase(), cooldown);
+                    ChatUtils.sendMessage(sender, Localization.get(Localization.KIT_MADE).replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
+                }
 				else
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.KIT_ALREADYEXISTS));
@@ -104,11 +101,10 @@ public class CommandKit extends FEcmdModuleCommands
 		{
 			if (args.length == 2)
 			{
-				if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
-				{
-					CommandDataManager.removeKit(CommandDataManager.kits.get(args[0].toLowerCase()));
-					sender.sendChatToPlayer(Localization.get(Localization.KIT_REMOVED));
-				}
+				if (CommandDataManager.kits.containsKey(args[0].toLowerCase())) {
+                    CommandDataManager.removeKit(CommandDataManager.kits.get(args[0].toLowerCase()));
+                    ChatUtils.sendMessage(sender, Localization.get(Localization.KIT_REMOVED));
+                }
 				else
 				{
 					OutputHandler.chatError(sender, Localization.get(Localization.KIT_NOTEXISTS));
@@ -125,46 +121,37 @@ public class CommandKit extends FEcmdModuleCommands
 
 	public void giveKit(EntityPlayer player, Kit kit)
 	{
-		if (PlayerInfo.getPlayerInfo(player.username).kitCooldown.containsKey(kit.getName()))
-		{
-			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName()))));
-		}
-		else
-		{
-			player.sendChatToPlayer(Localization.get(Localization.KIT_DONE));
+		if (PlayerInfo.getPlayerInfo(player.username).kitCooldown.containsKey(kit.getName())) {
+            ChatUtils.sendMessage(player, Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName()))));
+        }
+		else {
+            ChatUtils.sendMessage(player, Localization.get(Localization.KIT_DONE));
 
-			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
-			{
-				PlayerInfo.getPlayerInfo(player.username).kitCooldown.put(kit.getName(), kit.getCooldown());
-			}
+            if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN))) {
+                PlayerInfo.getPlayerInfo(player.username).kitCooldown.put(kit.getName(), kit.getCooldown());
+            }
 
 			/*
 			 * Main inv.
 			 */
-			for (ItemStack stack : kit.getItems())
-			{
-				player.inventory.addItemStackToInventory(stack);
-			}
+            for (ItemStack stack : kit.getItems()) {
+                player.inventory.addItemStackToInventory(stack);
+            }
 
 			/*
 			 * Armor
 			 */
-			for (int i = 0; i < 4; i++)
-			{
-				if (kit.getArmor()[i] != null)
-				{
-					ItemStack stack = kit.getArmor()[i];
-					if (player.inventory.armorInventory[i] == null)
-					{
-						player.inventory.armorInventory[i] = stack;
-					}
-					else
-					{
-						player.inventory.addItemStackToInventory(stack);
-					}
-				}
-			}
-		}
+            for (int i = 0; i < 4; i++) {
+                if (kit.getArmor()[i] != null) {
+                    ItemStack stack = kit.getArmor()[i];
+                    if (player.inventory.armorInventory[i] == null) {
+                        player.inventory.armorInventory[i] = stack;
+                    } else {
+                        player.inventory.addItemStackToInventory(stack);
+                    }
+                }
+            }
+        }
 	}
 
 	@Override

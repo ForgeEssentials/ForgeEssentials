@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,10 +18,6 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.TPAdata;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 public class CommandTPAhere extends FEcmdModuleCommands
@@ -57,14 +54,13 @@ public class CommandTPAhere extends FEcmdModuleCommands
 			{
 				if (data.tphere)
 				{
-					if (data.receiver.username.equalsIgnoreCase(sender.username))
-					{
-						data.sender.sendChatToPlayer(Localization.get("command.tpahere.accepted"));
-						data.receiver.sendChatToPlayer(Localization.get("command.tpahere.accepted"));
-						TickHandlerCommands.tpaListToRemove.add(data);
-						TeleportCenter.addToTpQue(new WarpPoint(data.sender), data.receiver);
-						return;
-					}
+					if (data.receiver.username.equalsIgnoreCase(sender.username)) {
+                        ChatUtils.sendMessage(data.sender, Localization.get("command.tpahere.accepted"));
+                        ChatUtils.sendMessage(data.receiver, Localization.get("command.tpahere.accepted"));
+                        TickHandlerCommands.tpaListToRemove.add(data);
+                        TeleportCenter.addToTpQue(new WarpPoint(data.sender), data.receiver);
+                        return;
+                    }
 				}
 			}
 			return;
@@ -76,13 +72,12 @@ public class CommandTPAhere extends FEcmdModuleCommands
 			{
 				if (data.tphere)
 				{
-					if (data.receiver.username.equalsIgnoreCase(sender.username))
-					{
-						data.sender.sendChatToPlayer(Localization.get("command.tpahere.declined"));
-						data.receiver.sendChatToPlayer(Localization.get("command.tpahere.declined"));
-						TickHandlerCommands.tpaListToRemove.add(data);
-						return;
-					}
+					if (data.receiver.username.equalsIgnoreCase(sender.username)) {
+                        ChatUtils.sendMessage(data.sender, Localization.get("command.tpahere.declined"));
+                        ChatUtils.sendMessage(data.receiver, Localization.get("command.tpahere.declined"));
+                        TickHandlerCommands.tpaListToRemove.add(data);
+                        return;
+                    }
 				}
 			}
 			return;
@@ -95,17 +90,15 @@ public class CommandTPAhere extends FEcmdModuleCommands
 		}
 
 		EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
-		if (receiver == null)
-		{
-			sender.sendChatToPlayer(args[0] + " not found.");
-		}
-		else
-		{
-			TickHandlerCommands.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
+		if (receiver == null) {
+            ChatUtils.sendMessage(sender, args[0] + " not found.");
+        }
+		else {
+            TickHandlerCommands.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
 
-			sender.sendChatToPlayer(Localization.format("command.tpahere.sendRequest", receiver.username));
-			receiver.sendChatToPlayer(Localization.format("command.tpahere.gotRequest", sender.username));
-		}
+            ChatUtils.sendMessage(sender, Localization.format("command.tpahere.sendRequest", receiver.username));
+            ChatUtils.sendMessage(receiver, Localization.format("command.tpahere.gotRequest", sender.username));
+        }
 	}
 
 	@Override

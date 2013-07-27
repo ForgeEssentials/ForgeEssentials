@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,10 +16,6 @@ import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.Warp;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 /**
@@ -37,15 +34,13 @@ public class CommandWarp extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length == 0)
-		{
-			String msg = "";
-			for (String warp : CommandDataManager.warps.keySet())
-			{
-			    msg = warp + ", " + msg;
-			}
-			sender.sendChatToPlayer(msg);
-		}
+		if (args.length == 0) {
+            String msg = "";
+            for (String warp : CommandDataManager.warps.keySet()) {
+                msg = warp + ", " + msg;
+            }
+            ChatUtils.sendMessage(sender, msg);
+        }
 		else if (args.length == 1)
 		{
 			if (CommandDataManager.warps.containsKey(args[0].toLowerCase()))

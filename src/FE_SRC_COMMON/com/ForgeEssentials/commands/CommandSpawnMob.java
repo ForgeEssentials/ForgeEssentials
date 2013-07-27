@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.HashMap;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
@@ -130,20 +131,18 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 			{
 				World world = FunctionHelper.getDimension(dimension);
 				EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), world);
-				if (mob == null)
-				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOMOB, args[0]));
-					return;
-				}
+				if (mob == null) {
+                    ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOMOB, args[0]));
+                    return;
+                }
 				mob.setPosition(x, y, z);
 				world.spawnEntityInWorld(mob);
 			}
 		}
-		else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
-			OutputHandler.debug("test");
-		}
+		else {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+            OutputHandler.debug("test");
+        }
 	}
 
 	@Override

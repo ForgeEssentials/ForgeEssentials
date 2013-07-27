@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -26,16 +27,14 @@ public class CommandServerDo extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER && args.length >= 1)
-		{
-			String cmd = args[0];
-			for (int i = 1; i < args.length; ++i)
-			{
-				cmd = cmd + " " + args[i];
-			}
-			String result = MinecraftServer.getServer().executeCommand(cmd);
-			player.sendChatToPlayer(result);
-		}
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER && args.length >= 1) {
+            String cmd = args[0];
+            for (int i = 1; i < args.length; ++i) {
+                cmd = cmd + " " + args[i];
+            }
+            String result = MinecraftServer.getServer().executeCommand(cmd);
+            ChatUtils.sendMessage(player, result);
+        }
 	}
 
 	@Override

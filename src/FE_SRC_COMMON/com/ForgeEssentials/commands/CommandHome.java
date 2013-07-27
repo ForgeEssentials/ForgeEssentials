@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -46,12 +47,11 @@ public class CommandHome extends FEcmdModuleCommands
 		}
 		else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".set")))
 		{
-			if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
-			{
-				WarpPoint p = new WarpPoint(sender);
-				PlayerInfo.getPlayerInfo(sender.username).home = p;
-				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
-			}
+			if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set"))) {
+                WarpPoint p = new WarpPoint(sender);
+                PlayerInfo.getPlayerInfo(sender.username).home = p;
+                ChatUtils.sendMessage(sender, Localization.format("command.home.confirm", p.x, p.y, p.z));
+            }
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.ForgeEssentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,10 +14,6 @@ import net.minecraft.server.MinecraftServer;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -145,31 +142,27 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				return;
 			}
-			else
-			{
-				CommandMsg.clearReply(receiver.getCommandSenderName());
-				CommandMsg.addReply(receiver.getCommandSenderName(), "server");
-				if (persistentMessage.containsKey("server"))
-				{
-					persistentMessage.remove("server");
-				}
-				persistentMessage.put(sender.getCommandSenderName(), receiver.getCommandSenderName());
-				OutputHandler.chatConfirmation(sender, "Persistent message to " + receiver.getCommandSenderName() + " enabled.");
-				String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.GREY;
-				for (int i = 1; i < args.length; i++)
-				{
-					receiverMessage += args[i];
-					senderMessage += args[i];
-					if (i != args.length - 1)
-					{
-						receiverMessage += " ";
-						senderMessage += " ";
-					}
-				}
-				sender.sendChatToPlayer(senderMessage);
-				receiver.sendChatToPlayer(receiverMessage);
-			}
+			else {
+                CommandMsg.clearReply(receiver.getCommandSenderName());
+                CommandMsg.addReply(receiver.getCommandSenderName(), "server");
+                if (persistentMessage.containsKey("server")) {
+                    persistentMessage.remove("server");
+                }
+                persistentMessage.put(sender.getCommandSenderName(), receiver.getCommandSenderName());
+                OutputHandler.chatConfirmation(sender, "Persistent message to " + receiver.getCommandSenderName() + " enabled.");
+                String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
+                String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.GREY;
+                for (int i = 1; i < args.length; i++) {
+                    receiverMessage += args[i];
+                    senderMessage += args[i];
+                    if (i != args.length - 1) {
+                        receiverMessage += " ";
+                        senderMessage += " ";
+                    }
+                }
+                ChatUtils.sendMessage(sender, senderMessage);
+                ChatUtils.sendMessage(receiver, receiverMessage);
+            }
 		}
 	}
 
@@ -201,50 +194,43 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 		if (sender instanceof EntityPlayer)
 		{
 			String target = persistentMessage.get(sender.getCommandSenderName());
-			if (target.equalsIgnoreCase("server") || target.equalsIgnoreCase("console"))
-			{
-				CommandMsg.clearReply("server");
-				CommandMsg.addReply("server", sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.GREY;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
-				for (int i = 0; i < args.length; i++)
-				{
-					receiverMessage += args[i];
-					senderMessage += args[i];
-					if (i != args.length - 1)
-					{
-						receiverMessage += " ";
-						senderMessage += " ";
-					}
-				}
-				MinecraftServer.getServer().sendChatToPlayer(receiverMessage);
-				sender.sendChatToPlayer(senderMessage);
-			}
-			else
-			{
-				EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
-				if (receiver == null)
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-					return;
-				}
-				CommandMsg.clearReply(receiver.getCommandSenderName());
-				CommandMsg.addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.WHITE;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.WHITE;
-				for (int i = 1; i < args.length; i++)
-				{
-					receiverMessage += args[i];
-					senderMessage += args[i];
-					if (i != args.length - 1)
-					{
-						receiverMessage += " ";
-						senderMessage += " ";
-					}
-				}
-				sender.sendChatToPlayer(senderMessage);
-				receiver.sendChatToPlayer(receiverMessage);
-			}
+			if (target.equalsIgnoreCase("server") || target.equalsIgnoreCase("console")) {
+                CommandMsg.clearReply("server");
+                CommandMsg.addReply("server", sender.getCommandSenderName());
+                String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.GREY;
+                String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
+                for (int i = 0; i < args.length; i++) {
+                    receiverMessage += args[i];
+                    senderMessage += args[i];
+                    if (i != args.length - 1) {
+                        receiverMessage += " ";
+                        senderMessage += " ";
+                    }
+                }
+                ChatUtils.sendMessage(MinecraftServer.getServer(), receiverMessage);
+                ChatUtils.sendMessage(sender, senderMessage);
+            }
+			else {
+                EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+                if (receiver == null) {
+                    OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+                    return;
+                }
+                CommandMsg.clearReply(receiver.getCommandSenderName());
+                CommandMsg.addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
+                String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.WHITE;
+                String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.WHITE;
+                for (int i = 1; i < args.length; i++) {
+                    receiverMessage += args[i];
+                    senderMessage += args[i];
+                    if (i != args.length - 1) {
+                        receiverMessage += " ";
+                        senderMessage += " ";
+                    }
+                }
+                ChatUtils.sendMessage(sender, senderMessage);
+                ChatUtils.sendMessage(receiver, receiverMessage);
+            }
 		}
 	}
 

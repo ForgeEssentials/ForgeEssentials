@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.TcpConnection;
@@ -79,52 +80,46 @@ public class CommandTPS extends FEcmdModuleCommands
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (!doCommand(sender, args))
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-		}
+		if (!doCommand(sender, args)) {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+        }
 	}
 
 	public boolean doCommand(ICommandSender sender, String[] args)
 	{
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		if (args.length == 0)
-		{
-			long var1 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+		if (args.length == 0) {
+            long var1 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
-			sender.sendChatToPlayer("Memory use: " + var1 / 1024L / 1024L + " mb (" + Runtime.getRuntime().freeMemory() * 100L / Runtime.getRuntime().maxMemory() + "% free)");
-			sender.sendChatToPlayer("Threads: " + TcpConnection.field_74471_a.get() + " + " + TcpConnection.field_74469_b.get());
-			sender.sendChatToPlayer("Avg tick: " + getTPS(server.tickTimeArray));
-			sender.sendChatToPlayer("Avg sent: " + (int) func_79015_a(server.sentPacketCountArray) + ", Avg size: " + (int) func_79015_a(server.sentPacketSizeArray));
-			sender.sendChatToPlayer("Avg rec: " + (int) func_79015_a(server.receivedPacketCountArray) + ", Avg size: " + (int) func_79015_a(server.receivedPacketSizeArray));
+            ChatUtils.sendMessage(sender, "Memory use: " + var1 / 1024L / 1024L + " mb (" + Runtime.getRuntime().freeMemory() * 100L / Runtime.getRuntime().maxMemory() + "% free)");
+            ChatUtils.sendMessage(sender, "Threads: " + TcpConnection.field_74471_a.get() + " + " + TcpConnection.field_74469_b.get());
+            ChatUtils.sendMessage(sender, "Avg tick: " + getTPS(server.tickTimeArray));
+            ChatUtils.sendMessage(sender, "Avg sent: " + (int) func_79015_a(server.sentPacketCountArray) + ", Avg size: " + (int) func_79015_a(server.sentPacketSizeArray));
+            ChatUtils.sendMessage(sender, "Avg rec: " + (int) func_79015_a(server.receivedPacketCountArray) + ", Avg size: " + (int) func_79015_a(server.receivedPacketSizeArray));
 
-			if (server.worldServers != null)
-			{
-				for (Integer id : DimensionManager.getIDs())
-				{
-					sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + getTickTime(server.worldTickTimes.get(id)) + "ms");
-				}
-			}
-			return true;
-		}
+            if (server.worldServers != null) {
+                for (Integer id : DimensionManager.getIDs()) {
+                    ChatUtils.sendMessage(sender, "Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + getTickTime(server.worldTickTimes.get(id)) + "ms");
+                }
+            }
+            return true;
+        }
 		if (args.length == 1)
 		{
 			if (args[0].equalsIgnoreCase("all"))
 			{
 				if (server.worldServers != null)
 				{
-					for (Integer id : DimensionManager.getIDs())
-					{
-						sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
-					}
+					for (Integer id : DimensionManager.getIDs()) {
+                        ChatUtils.sendMessage(sender, "Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
+                    }
 				}
 				return true;
 			}
-			else
-			{
-				int id = parseIntBounded(sender, args[0], DimensionManager.getIDs()[0], DimensionManager.getNextFreeDimId() - 1);
-				sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
-			}
+			else {
+                int id = parseIntBounded(sender, args[0], DimensionManager.getIDs()[0], DimensionManager.getNextFreeDimId() - 1);
+                ChatUtils.sendMessage(sender, "Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
+            }
 			return true;
 		}
 		return false;

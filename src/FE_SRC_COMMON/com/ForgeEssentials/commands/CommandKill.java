@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -32,21 +33,18 @@ public class CommandKill extends FEcmdModuleCommands
 		if (args.length >= 1 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
-			if (player != null)
-			{
-				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				player.sendChatToPlayer(Localization.get("command.kill.msg"));
-			}
-			else
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-			}
+			if (player != null) {
+                player.attackEntityFrom(DamageSource.outOfWorld, 1000);
+                ChatUtils.sendMessage(player, Localization.get("command.kill.msg"));
+            }
+			else {
+                ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+            }
 		}
-		else
-		{
-			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
-			sender.sendChatToPlayer(Localization.get("command.kill.msg"));
-		}
+		else {
+            sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
+            ChatUtils.sendMessage(sender, Localization.get("command.kill.msg"));
+        }
 	}
 
 	@Override
@@ -55,20 +53,17 @@ public class CommandKill extends FEcmdModuleCommands
 		if (args.length >= 1)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
-			if (player != null)
-			{
-				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				player.sendChatToPlayer(Localization.get("command.kill.msg"));
-			}
-			else
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-			}
+			if (player != null) {
+                player.attackEntityFrom(DamageSource.outOfWorld, 1000);
+                ChatUtils.sendMessage(player, Localization.get("command.kill.msg"));
+            }
+			else {
+                ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+            }
 		}
-		else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-		}
+		else {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+        }
 	}
 
 	@Override

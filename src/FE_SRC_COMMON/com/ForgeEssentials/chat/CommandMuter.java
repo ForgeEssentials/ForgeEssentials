@@ -2,6 +2,7 @@ package com.ForgeEssentials.chat;
 
 import java.util.ArrayList;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -26,9 +27,8 @@ public class CommandMuter
             EntityPlayer player = (EntityPlayer) e.sender;
             if (player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
             {
-                if (mutedCommands.contains(e.command.getCommandName()))
-                {
-                    player.sendChatToPlayer(Localization.get("message.muted"));
+                if (mutedCommands.contains(e.command.getCommandName())) {
+                    ChatUtils.sendMessage(player, Localization.get("message.muted"));
                     e.setCanceled(true);
                     return;
                 }
@@ -36,9 +36,8 @@ public class CommandMuter
                 {
                     for (Object obj : e.command.getCommandAliases())
                     {
-                        if(mutedCommands.contains(obj.toString()))
-                        {
-                            player.sendChatToPlayer(Localization.get("message.muted"));
+                        if(mutedCommands.contains(obj.toString())) {
+                            ChatUtils.sendMessage(player, Localization.get("message.muted"));
                             e.setCanceled(true);
                             return;
                         }

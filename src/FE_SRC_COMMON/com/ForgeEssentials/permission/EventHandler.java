@@ -1,5 +1,6 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -17,16 +18,14 @@ public class EventHandler
 		PropQueryPlayerZone query2 = new PropQueryPlayerZone(event.entityPlayer, "ForgeEssentials.Permissions.Zone.entry", event.afterZone, false);
 
 		APIRegistry.perms.getPermissionProp(query1);
-		if (query1.hasValue())
-		{
-			event.entityPlayer.sendChatToPlayer(FunctionHelper.formatColors(query1.getStringValue()));
-		}
+		if (query1.hasValue()) {
+            ChatUtils.sendMessage(event.entityPlayer, FunctionHelper.formatColors(query1.getStringValue()));
+        }
 
 		APIRegistry.perms.getPermissionProp(query2);
-		if (query2.hasValue())
-		{
-			event.entityPlayer.sendChatToPlayer(FunctionHelper.formatColors(query2.getStringValue()));
-		}
+		if (query2.hasValue()) {
+            ChatUtils.sendMessage(event.entityPlayer, FunctionHelper.formatColors(query2.getStringValue()));
+        }
 
 	}
 }

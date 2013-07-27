@@ -3,6 +3,7 @@ package com.ForgeEssentials.economy.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -40,16 +41,14 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPLAYER));
 			}
-			else
-			{
-				APIRegistry.wallet.removeFromWallet(amountToSubtract, player.username);
+			else {
+                APIRegistry.wallet.removeFromWallet(amountToSubtract, player.username);
 
-				if (sender != player)
-				{
-					sender.sendChatToPlayer(amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_TARGET));
-				}
-				player.sendChatToPlayer(amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_SELF));
-			}
+                if (sender != player) {
+                    ChatUtils.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_TARGET));
+                }
+                ChatUtils.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_SELF));
+            }
 		}
 		else
 		{
@@ -65,22 +64,19 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 			EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[0]);
 			int amountToSubtract = Integer.parseInt(args[1]);
 
-			if (player == null)
-			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOPLAYER));
-			}
-			else
-			{
-				APIRegistry.wallet.removeFromWallet(amountToSubtract, player.username);
+			if (player == null) {
+                ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_NOPLAYER));
+            }
+			else {
+                APIRegistry.wallet.removeFromWallet(amountToSubtract, player.username);
 
-				sender.sendChatToPlayer(amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_TARGET));
-				player.sendChatToPlayer(amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_SELF));
-			}
+                ChatUtils.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_TARGET));
+                ChatUtils.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_SELF));
+            }
 		}
-		else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-		}
+		else {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+        }
 	}
 
 	@Override

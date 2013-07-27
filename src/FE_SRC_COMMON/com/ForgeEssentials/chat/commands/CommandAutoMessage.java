@@ -3,6 +3,7 @@ package com.ForgeEssentials.chat.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -69,7 +70,8 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 			try
 			{
 				int id = parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
-				FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendChatMsg(AutoMessage.msg.get(id));
+                ChatUtils.sendMessage(FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager(),
+                        AutoMessage.msg.get(id));
 				return;
 			}
 			catch (Exception e)
