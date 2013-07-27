@@ -15,6 +15,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -190,7 +191,7 @@ public class CommandRules extends FEcmdModuleCommands
 		{
 			for (String rule : rules)
 			{
-				sender.sendChatToPlayer(rule);
+				ChatUtils.sendMessage(sender, rule);
 			}
 			return;
 		}
@@ -236,7 +237,7 @@ public class CommandRules extends FEcmdModuleCommands
 				return;
 			}
 
-			sender.sendChatToPlayer(rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+			ChatUtils.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
 			return;
 		}
 
@@ -312,7 +313,7 @@ public class CommandRules extends FEcmdModuleCommands
 		{
 			for (String rule : rules)
 			{
-				sender.sendChatToPlayer(rule);
+				ChatUtils.sendMessage(sender, rule);
 			}
 			return;
 		}
@@ -328,7 +329,7 @@ public class CommandRules extends FEcmdModuleCommands
 
 			}
 
-			sender.sendChatToPlayer(rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+			ChatUtils.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
 			return;
 		}
 

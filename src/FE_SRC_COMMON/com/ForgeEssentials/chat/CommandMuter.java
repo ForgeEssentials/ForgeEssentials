@@ -2,6 +2,7 @@ package com.ForgeEssentials.chat;
 
 import java.util.ArrayList;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -14,13 +15,13 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class CommandMuter
 {
     public static ArrayList<String> mutedCommands = new ArrayList<String>();
-    
+
     @ForgeSubscribe
     public void commandEvent(CommandEvent e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        
+
         if (e.sender instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) e.sender;
@@ -28,7 +29,7 @@ public class CommandMuter
             {
                 if (mutedCommands.contains(e.command.getCommandName()))
                 {
-                    player.sendChatToPlayer(Localization.get("message.muted"));
+					ChatUtils.sendMessage(player, Localization.get("message.muted"));
                     e.setCanceled(true);
                     return;
                 }
@@ -38,7 +39,7 @@ public class CommandMuter
                     {
                         if(mutedCommands.contains(obj.toString()))
                         {
-                            player.sendChatToPlayer(Localization.get("message.muted"));
+							ChatUtils.sendMessage(player, Localization.get("message.muted"));
                             e.setCanceled(true);
                             return;
                         }
@@ -46,7 +47,7 @@ public class CommandMuter
                 }
             }
         }
-        
+
         if (ConfigChat.logcmd && ModuleChat.cmdLog != null)
         {
             ModuleChat.cmdLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + e.sender.getCommandSenderName() + "] /" + e.command.getCommandName() + " " + join(e.parameters));
@@ -54,9 +55,9 @@ public class CommandMuter
         if (e.command.getCommandName().equalsIgnoreCase("me")){
         	IRCHelper.postIRC(e.sender.getCommandSenderName() + " " + e.parameters.toString());
         }
-        
+
     }
-    
+
     public String join(String[] args)
     {
         StringBuilder sb = new StringBuilder();

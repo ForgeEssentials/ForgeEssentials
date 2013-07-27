@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -34,7 +35,7 @@ public class CommandServerDo extends FEcmdModuleCommands
 				cmd = cmd + " " + args[i];
 			}
 			String result = MinecraftServer.getServer().executeCommand(cmd);
-			player.sendChatToPlayer(result);
+			ChatUtils.sendMessage(player, result);
 		}
 	}
 

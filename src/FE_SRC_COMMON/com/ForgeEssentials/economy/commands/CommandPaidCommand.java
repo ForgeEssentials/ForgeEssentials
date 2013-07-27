@@ -3,6 +3,7 @@ package com.ForgeEssentials.economy.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -73,9 +74,9 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 			}
 		}
 		else
-		{	
+		{
 			//this should be removed
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

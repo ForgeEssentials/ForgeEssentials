@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.EntityLiving;
@@ -146,11 +147,7 @@ public class CommandButcherTickTask implements ITickTask
 					world.getChunkFromChunkCoords(var9, var10).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, (IEntitySelector) null);
 					for (EntityLiving entity : list)
 					{
-						if (entity instanceof EntityPlayer)
-						{
-							continue;
-						}
-						else if (mobType.equalsIgnoreCase("boss") || mobType.equalsIgnoreCase("all"))
+						if (mobType.equalsIgnoreCase("boss") || mobType.equalsIgnoreCase("all"))
 						{
 							typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.BOSS);
 							if (entity instanceof EntityDragon)
@@ -265,7 +262,7 @@ public class CommandButcherTickTask implements ITickTask
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.format("command.butcher.done", counter));
+			ChatUtils.sendMessage(sender, Localization.format("command.butcher.done", counter));
 		}
 	}
 

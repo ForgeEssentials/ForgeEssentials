@@ -3,6 +3,7 @@ package com.ForgeEssentials.core.commands.selections;
 //Depreciated
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -101,7 +102,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 					info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y - expandby, info.getPoint2().z));
 				}
 			}
-			player.sendChatToPlayer("Region expanded by: " + expandby);
+			ChatUtils.sendMessage(player, "Region expanded by: " + expandby);
 			return;
 		}
 		else if (args.length == 2)
@@ -194,7 +195,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 			{
 				OutputHandler.chatError(player, "Invalid Direction");
 			}
-			player.sendChatToPlayer("Region expanded by: " + expandby);
+			ChatUtils.sendMessage(player, "Region expanded by: " + expandby);
 			return;
 		}
 		else

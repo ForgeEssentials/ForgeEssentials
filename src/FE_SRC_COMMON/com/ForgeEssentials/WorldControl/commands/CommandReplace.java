@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl.commands;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -107,7 +108,7 @@ public class CommandReplace extends WorldControlCommandBase
 
 			}
 
-			player.sendChatToPlayer("Working on replace.");
+			ChatUtils.sendMessage(player, "Working on replace.");
 		}
 		else
 		{

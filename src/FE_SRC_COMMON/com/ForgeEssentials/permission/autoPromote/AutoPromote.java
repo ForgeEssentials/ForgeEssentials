@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.APIRegistry;
@@ -85,7 +86,7 @@ public class AutoPromote
 						msg = FunctionHelper.formatColors(msg);
 						msg = msg.replaceAll("%group", groupName);
 						msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).getTimePlayed() * 60));
-						player.sendChatToPlayer(msg);
+						ChatUtils.sendMessage(player, msg);
 					}
 				}
 			}
