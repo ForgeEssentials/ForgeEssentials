@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockButton;
 import net.minecraft.block.BlockLever;
@@ -28,7 +29,7 @@ public class CommandPush extends FEcmdModuleCommands
 
 	public String getCommandUsage(ICommandSender par1ICommandSender)
 	{
-		return par1ICommandSender.translateString("/push <X> <Y> <Z>", new Object[0]);
+		return "/push <X> <Y> <Z>";
 	}
 
 	@Override
@@ -71,11 +72,10 @@ public class CommandPush extends FEcmdModuleCommands
 			{
 				throw new CommandException("Button/Lever Not Found");
 			}
-			else
-			{
-				Block.blocksList[((World) var7).getBlockId(var3, var4, var5)].onBlockActivated((World) var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
-				var1.sendChatToPlayer("Button/Lever Pushed");
-			}
+			else {
+                Block.blocksList[((World) var7).getBlockId(var3, var4, var5)].onBlockActivated((World) var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
+                ChatUtils.sendMessage(var1, "Button/Lever Pushed");
+            }
 		}
 	}
 
@@ -103,11 +103,10 @@ public class CommandPush extends FEcmdModuleCommands
 			{
 				throw new CommandException("Button/Lever Not Found");
 			}
-			else
-			{
-				Block.blocksList[((World) var7).getBlockId(var3, var4, var5)].onBlockActivated((World) var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
-				sender.sendChatToPlayer("Button/Lever Pushed");
-			}
+			else {
+                Block.blocksList[((World) var7).getBlockId(var3, var4, var5)].onBlockActivated((World) var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
+                ChatUtils.sendMessage(sender, "Button/Lever Pushed");
+            }
 		}
 	}
 

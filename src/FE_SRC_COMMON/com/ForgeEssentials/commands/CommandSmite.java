@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,19 +31,17 @@ public class CommandSmite extends FEcmdModuleCommands
 	{
 		if (args.length >= 1)
 		{
-			if (args[0].toLowerCase().equals("me"))
-			{
-				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-				sender.sendChatToPlayer(Localization.get("command.smite.self"));
-			}
+			if (args[0].toLowerCase().equals("me")) {
+                sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
+                ChatUtils.sendMessage(sender, Localization.get("command.smite.self"));
+            }
 			else
 			{
 				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
-				if (player != null)
-				{
-					player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-					sender.sendChatToPlayer(Localization.get("command.smite.player"));
-				}
+				if (player != null) {
+                    player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
+                    ChatUtils.sendMessage(sender, Localization.get("command.smite.player"));
+                }
 				else
 				{
 					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
@@ -56,11 +55,10 @@ public class CommandSmite extends FEcmdModuleCommands
 			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_TARGET));
 			}
-			else
-			{
-				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
-				sender.sendChatToPlayer(Localization.get("command.smite.ground"));
-			}
+			else {
+                sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
+                ChatUtils.sendMessage(sender, Localization.get("command.smite.ground"));
+            }
 		}
 	}
 
@@ -70,20 +68,18 @@ public class CommandSmite extends FEcmdModuleCommands
 		if (args.length >= 1)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
-			if (player != null)
-			{
-				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-				sender.sendChatToPlayer(Localization.get("command.smite.player"));
-			}
+			if (player != null) {
+                player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
+                ChatUtils.sendMessage(sender, Localization.get("command.smite.player"));
+            }
 			else
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
-		else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-		}
+		else {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+        }
 	}
 
 	@Override

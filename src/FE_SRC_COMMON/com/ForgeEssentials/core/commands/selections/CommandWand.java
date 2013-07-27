@@ -3,15 +3,12 @@ package com.ForgeEssentials.core.commands.selections;
 //Depreciated
 import java.util.List;
 
+import com.ForgeEssentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandWand extends ForgeEssentialsCommandBase
 {
@@ -71,7 +68,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 			else if (args[0].equalsIgnoreCase("unbind"))
 			{
 				info.wandEnabled = false;
-				sender.sendChatToPlayer(FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
+				com.ForgeEssentials.util.ChatUtils.sendMessage(sender, FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
 				return;
 			}
 			else
@@ -95,12 +92,11 @@ public class CommandWand extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			if (info.wandEnabled)
-			{
-				info.wandEnabled = false;
-				sender.sendChatToPlayer(FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
-				return;
-			}
+			if (info.wandEnabled) {
+                info.wandEnabled = false;
+                ChatUtils.sendMessage(sender, FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
+                return;
+            }
 			else
 			{
 				if (allowed)

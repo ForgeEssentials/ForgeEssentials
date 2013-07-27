@@ -3,6 +3,7 @@ package com.ForgeEssentials.backup;
 import java.io.File;
 import java.io.PrintWriter;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -98,17 +99,16 @@ public class ModuleBackup
 			if (FMLCommonHandler.instance().getEffectiveSide().isClient()){
 				OutputHandler.felog.info(msg);
 			}
-			else{
-			server.sendChatToPlayer("[ForgeEssentials] " + msg);
-			}
+			else {
+                ChatUtils.sendMessage(server, "[ForgeEssentials] " + msg);
+            }
 			ServerConfigurationManager manager = server.getConfigurationManager();
 			for (String username : manager.getAllUsernames())
 			{
 				EntityPlayerMP player = manager.getPlayerForUsername(username);
-				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
-				{
-					player.sendChatToPlayer(FEChatFormatCodes.AQUA + "[ForgeEssentials] " + msg);
-				}
+				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg"))) {
+                    ChatUtils.sendMessage(player, FEChatFormatCodes.AQUA + "[ForgeEssentials] " + msg);
+                }
 			}
 		}
 		catch (Exception e)

@@ -33,10 +33,9 @@ public class TeleportCenter implements IScheduledTickHandler
 
 	public static void addToTpQue(WarpPoint point, EntityPlayer player)
 	{
-		if (PlayerInfo.getPlayerInfo(player.username).TPcooldown != 0 && !APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
-		{
-			player.sendChatToPlayer(Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).TPcooldown)));
-		}
+		if (PlayerInfo.getPlayerInfo(player.username).TPcooldown != 0 && !APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN))) {
+            ChatUtils.sendMessage(player, Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).TPcooldown)));
+        }
 		else
 		{
 			PlayerInfo.getPlayerInfo(player.username).TPcooldown = tpCooldown;
@@ -45,25 +44,22 @@ public class TeleportCenter implements IScheduledTickHandler
 			{
 				data.doTP();
 			}
-			else
-			{
-				player.sendChatToPlayer(Localization.get(Localization.TC_WARMUP).replaceAll("%w", "" + FunctionHelper.parseTime(tpWarmup)));
-				queue.add(data);
-			}
+			else {
+                ChatUtils.sendMessage(player, Localization.get(Localization.TC_WARMUP).replaceAll("%w", "" + FunctionHelper.parseTime(tpWarmup)));
+                queue.add(data);
+            }
 		}
 	}
 
-	public static void abort(TPdata tpData)
-	{
-		removeQueue.add(tpData);
-		tpData.getPlayer().sendChatToPlayer(Localization.get(Localization.TC_ABORTED));
-	}
+	public static void abort(TPdata tpData) {
+        removeQueue.add(tpData);
+        ChatUtils.sendMessage(tpData.getPlayer(), Localization.get(Localization.TC_ABORTED));
+    }
 
-	public static void TPdone(TPdata tpData)
-	{
-		removeQueue.add(tpData);
-		tpData.getPlayer().sendChatToPlayer(Localization.get(Localization.TC_DONE));
-	}
+	public static void TPdone(TPdata tpData) {
+        removeQueue.add(tpData);
+        ChatUtils.sendMessage(tpData.getPlayer(), Localization.get(Localization.TC_DONE));
+    }
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)

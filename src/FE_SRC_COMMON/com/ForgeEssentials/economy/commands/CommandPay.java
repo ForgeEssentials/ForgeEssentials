@@ -2,6 +2,7 @@ package com.ForgeEssentials.economy.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,12 +30,11 @@ public class CommandPay extends ForgeEssentialsCommandBase
 		if (args.length == 2)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
-			if (player == null)
-			{
-				sender.sendChatToPlayer(args[0] + " not found!");
-			}else if(player == sender){
-				sender.sendChatToPlayer("You can't pay yourself!");
-			}
+			if (player == null) {
+                ChatUtils.sendMessage(sender, args[0] + " not found!");
+            }else if(player == sender) {
+                ChatUtils.sendMessage(sender, "You can't pay yourself!");
+            }
 			else
 			{
 				int amount = parseIntWithMin(sender, args[1], 0);
@@ -67,10 +67,9 @@ public class CommandPay extends ForgeEssentialsCommandBase
 			{
 				player = FunctionHelper.getPlayerForName(sender, args[0]);
 			}
-			if (player == null)
-			{
-				sender.sendChatToPlayer(args[0] + " not found!");
-			}
+			if (player == null) {
+                ChatUtils.sendMessage(sender, args[0] + " not found!");
+            }
 			else
 			{
 				int amount = parseIntWithMin(sender, args[1], 0);
@@ -79,10 +78,9 @@ public class CommandPay extends ForgeEssentialsCommandBase
 				OutputHandler.chatConfirmation(player, "You have been payed " + amount + " " + APIRegistry.wallet.currency(amount) + " by " + sender.getCommandSenderName());
 			}
 		}
-		else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-		}
+		else {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+        }
 	}
 
 	@Override

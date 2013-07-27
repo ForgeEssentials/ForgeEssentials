@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.APIRegistry;
@@ -79,14 +80,13 @@ public class AutoPromote
 				if (!APIRegistry.perms.getApplicableGroups(player.username, false, zone).contains(APIRegistry.perms.getGroupForName(groupName)))
 				{
 					APIRegistry.perms.addPlayerToGroup(groupName, player.username, zone);
-					if (sendMsg)
-					{
-						String msg = this.msg;
-						msg = FunctionHelper.formatColors(msg);
-						msg = msg.replaceAll("%group", groupName);
-						msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).getTimePlayed() * 60));
-						player.sendChatToPlayer(msg);
-					}
+					if (sendMsg) {
+                        String msg = this.msg;
+                        msg = FunctionHelper.formatColors(msg);
+                        msg = msg.replaceAll("%group", groupName);
+                        msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).getTimePlayed() * 60));
+                        ChatUtils.sendMessage(player, msg);
+                    }
 				}
 			}
 		}

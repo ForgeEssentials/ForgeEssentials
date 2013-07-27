@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -77,7 +78,8 @@ public class CommandAFK extends FEcmdModuleCommands
 		TickHandlerCommands.afkListToRemove.add(afkData);
 		
 		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
-		    MinecraftServer.getServer().getConfigurationManager().sendChatMsg(Localization.format("command.afk.notice.out", afkData.player.username));
+            ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
+                    Localization.format("command.afk.notice.out", afkData.player.username));
 		else
 		    OutputHandler.chatConfirmation(afkData.player, Localization.get("command.afk.out"));
 	}
@@ -89,7 +91,8 @@ public class CommandAFK extends FEcmdModuleCommands
 		afkList.add(afkData.player.username);
 		
 		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
-		    MinecraftServer.getServer().getConfigurationManager().sendChatMsg(Localization.format("command.afk.notice.in", afkData.player.username));
+            ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
+                    Localization.format("command.afk.notice.in", afkData.player.username));
 		else
 		    OutputHandler.chatConfirmation(afkData.player, Localization.get("command.afk.in"));
 	}

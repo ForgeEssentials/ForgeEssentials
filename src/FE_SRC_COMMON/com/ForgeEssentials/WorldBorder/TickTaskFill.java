@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldBorder;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IProgressUpdate;
@@ -154,10 +155,9 @@ public class TickTaskFill implements ITickTask
 	{
 		ticks++;
 
-		if (ticks % (20 * 25) == 0)
-		{
-			source.sendChatToPlayer("Filler for " + dimID + ": " + getStatus());
-		}
+		if (ticks % (20 * 25) == 0) {
+            ChatUtils.sendMessage(source, "Filler for " + dimID + ": " + getStatus());
+        }
 
 		for (int i = 0; i < speed; i++)
 		{

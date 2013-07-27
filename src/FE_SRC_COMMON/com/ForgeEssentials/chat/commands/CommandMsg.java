@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.ForgeEssentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,10 +16,6 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.chat.IRCHelper;
 import com.ForgeEssentials.chat.ModuleChat;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
-import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandMsg extends ForgeEssentialsCommandBase
 {
@@ -56,27 +53,24 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 		}
 		if (args.length > 1)
 		{
-			if (args[0].equalsIgnoreCase("server") || args[0].equalsIgnoreCase("console"))
-			{
-				clearReply(sender.getCommandSenderName());
-				clearReply("server");
-				addReply(sender.getCommandSenderName(), "server");
-				addReply("server", sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.GREY;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
-				for (int i = 0; i < args.length; i++)
-				{
-					receiverMessage += args[i];
-					senderMessage += args[i];
-					if (i != args.length - 1)
-					{
-						receiverMessage += " ";
-						senderMessage += " ";
-					}
-				}
-				MinecraftServer.getServer().sendChatToPlayer(receiverMessage);
-				sender.sendChatToPlayer(senderMessage);
-			}
+			if (args[0].equalsIgnoreCase("server") || args[0].equalsIgnoreCase("console")) {
+                clearReply(sender.getCommandSenderName());
+                clearReply("server");
+                addReply(sender.getCommandSenderName(), "server");
+                addReply("server", sender.getCommandSenderName());
+                String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.GREY;
+                String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
+                for (int i = 0; i < args.length; i++) {
+                    receiverMessage += args[i];
+                    senderMessage += args[i];
+                    if (i != args.length - 1) {
+                        receiverMessage += " ";
+                        senderMessage += " ";
+                    }
+                }
+                ChatUtils.sendMessage(MinecraftServer.getServer(), receiverMessage);
+                ChatUtils.sendMessage(sender, senderMessage);
+            }
 
 			// IRC messages.
 
@@ -98,57 +92,50 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 						senderMessage += " ";
 					}
 				}
-				try
-				{
-					IRCHelper.privateMessage(sender.getCommandSenderName(), args[1], receiverMessage);
-					sender.sendChatToPlayer(senderMessage);
-				}
-				catch (Exception e)
-				{
-					sender.sendChatToPlayer("Unable to send message to: " + args[1]);
-				}
+				try {
+                    IRCHelper.privateMessage(sender.getCommandSenderName(), args[1], receiverMessage);
+                    ChatUtils.sendMessage(sender, senderMessage);
+                }
+				catch (Exception e) {
+                    ChatUtils.sendMessage(sender, "Unable to send message to: " + args[1]);
+                }
 			}
 
 			// Other messages.
 
-			else
-			{
-				EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
-				if (receiver == null)
-				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-					return;
-				}
-				clearReply(sender.getCommandSenderName());
-				clearReply(receiver.getCommandSenderName());
-				addReply(sender.getCommandSenderName(), receiver.getCommandSenderName());
-				addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.WHITE;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.WHITE;
-				for (int i = 1; i < args.length; i++)
-				{
-					receiverMessage += args[i];
-					senderMessage += args[i];
-					if (i != args.length - 1)
-					{
-						receiverMessage += " ";
-						senderMessage += " ";
-					}
-				}
-				sender.sendChatToPlayer(senderMessage);
-				receiver.sendChatToPlayer(receiverMessage);
-			}
+			else {
+                EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+                if (receiver == null) {
+                    OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+                    return;
+                }
+                clearReply(sender.getCommandSenderName());
+                clearReply(receiver.getCommandSenderName());
+                addReply(sender.getCommandSenderName(), receiver.getCommandSenderName());
+                addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
+                String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.WHITE;
+                String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.WHITE;
+                for (int i = 1; i < args.length; i++) {
+                    receiverMessage += args[i];
+                    senderMessage += args[i];
+                    if (i != args.length - 1) {
+                        receiverMessage += " ";
+                        senderMessage += " ";
+                    }
+                }
+                ChatUtils.sendMessage(sender, senderMessage);
+                ChatUtils.sendMessage(receiver, receiverMessage);
+            }
 		}
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length == 0 || args.length == 1)
-		{
-			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX + getSyntaxConsole());
-			return;
-		}
+		if (args.length == 0 || args.length == 1) {
+            ChatUtils.sendMessage(sender, Localization.ERROR_BADSYNTAX + getSyntaxConsole());
+            return;
+        }
 		if (args.length > 1)
 		{
 			EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
@@ -157,27 +144,24 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				return;
 			}
-			else
-			{
-				clearReply(receiver.getCommandSenderName());
-				clearReply("server");
-				addReply(receiver.getCommandSenderName(), "server");
-				addReply("server", receiver.getCommandSenderName());
-				String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.GREY;
-				for (int i = 1; i < args.length; i++)
-				{
-					receiverMessage += args[i];
-					senderMessage += args[i];
-					if (i != args.length - 1)
-					{
-						receiverMessage += " ";
-						senderMessage += " ";
-					}
-				}
-				sender.sendChatToPlayer(senderMessage);
-				receiver.sendChatToPlayer(receiverMessage);
-			}
+			else {
+                clearReply(receiver.getCommandSenderName());
+                clearReply("server");
+                addReply(receiver.getCommandSenderName(), "server");
+                addReply("server", receiver.getCommandSenderName());
+                String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
+                String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.GREY;
+                for (int i = 1; i < args.length; i++) {
+                    receiverMessage += args[i];
+                    senderMessage += args[i];
+                    if (i != args.length - 1) {
+                        receiverMessage += " ";
+                        senderMessage += " ";
+                    }
+                }
+                ChatUtils.sendMessage(sender, senderMessage);
+                ChatUtils.sendMessage(receiver, receiverMessage);
+            }
 		}
 	}
 

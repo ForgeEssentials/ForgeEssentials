@@ -56,7 +56,7 @@ public class CommandGive extends FEcmdModuleCommands
 		{
 			ItemStack stack = new ItemStack(id, amount, dam);
 			player.inventory.addItemStackToInventory(stack.copy());
-			String name = Item.itemsList[id].func_77653_i(stack);
+			String name = Item.itemsList[id].getItemStackDisplayName(stack);
 			OutputHandler.chatConfirmation(sender, Localization.format("command.give.given", args[0], amount, name));
 		}
 		else
@@ -98,7 +98,7 @@ public class CommandGive extends FEcmdModuleCommands
 		{
 			ItemStack stack = new ItemStack(id, amount, dam);
 			player.inventory.addItemStackToInventory(stack.copy());
-			String name = Item.itemsList[id].func_77653_i(stack);
+			String name = Item.itemsList[id].getItemStackDisplayName(stack);
 			OutputHandler.chatConfirmation(sender, Localization.format("command.give.given", args[0], amount, name));
 		}
 		else

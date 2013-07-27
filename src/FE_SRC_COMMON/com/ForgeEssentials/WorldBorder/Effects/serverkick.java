@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldBorder.Effects;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 
@@ -25,11 +26,10 @@ public class serverkick implements IEffect
 		{
 			player.playerNetServerHandler.kickPlayerFromServer(message);
 		}
-		else
-		{
-			player.sendChatToPlayer("You should have been kicked from the server with this message:");
-			player.sendChatToPlayer(message);
-			player.sendChatToPlayer("Since this is SSP, thats not possible.");
-		}
+		else {
+            ChatUtils.sendMessage(player, "You should have been kicked from the server with this message:");
+            ChatUtils.sendMessage(player, message);
+            ChatUtils.sendMessage(player, "Since this is SSP, thats not possible.");
+        }
 	}
 }

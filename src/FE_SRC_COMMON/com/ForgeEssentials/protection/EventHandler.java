@@ -4,6 +4,7 @@ import static net.minecraftforge.event.Event.Result.ALLOW;
 import static net.minecraftforge.event.Event.Result.DENY;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -84,7 +85,7 @@ public class EventHandler
 		if (e.source.getEntity() == null || !(e.source.getEntity() instanceof EntityLiving))
 			return;
 
-		EntityLiving source = (EntityLiving) e.source.getEntity();
+        EntityLivingBase source = (EntityLivingBase) e.source.getEntity();
 
 		boolean sourcePlayer = e.source.getEntity() instanceof EntityPlayer;
 		boolean targetPlayer = e.entityLiving instanceof EntityPlayer;

@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -30,32 +31,29 @@ public class EventHandler
 		if (e.entityPlayer.getEntityData().getBoolean("lb"))
 		{
 			e.setCanceled(true);
-			try
-			{
-				int limit = e.entityPlayer.getEntityData().getInteger("lb_limit");
-				Date date = new Date();
-				new Timestamp(date.getTime());
-				Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
-				Statement st = connection.createStatement();
-				Point p = getPoint(e.entityPlayer);
-				st.execute("SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + p.x + " AND  `Y` = " + p.y + " AND  `Z` = " + p.z + " ORDER BY id DESC LIMIT " + limit);
-				ResultSet res = st.getResultSet();
+			try {
+                int limit = e.entityPlayer.getEntityData().getInteger("lb_limit");
+                Date date = new Date();
+                new Timestamp(date.getTime());
+                Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
+                Statement st = connection.createStatement();
+                Point p = getPoint(e.entityPlayer);
+                st.execute("SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + p.x + " AND  `Y` = " + p.y + " AND  `Z` = " + p.z + " ORDER BY id DESC LIMIT " + limit);
+                ResultSet res = st.getResultSet();
 
-				e.entityPlayer.sendChatToPlayer("Results: " + p.x + ", " + p.y + ", " + p.z);
+                ChatUtils.sendMessage(e.entityPlayer, "Results: " + p.x + ", " + p.y + ", " + p.z);
 
-				while (res.next())
-				{
-					e.entityPlayer.sendChatToPlayer(res.getString("player") + " " + res.getString("category") + " block " + res.getString("block") + " at " + res.getTimestamp("time"));
-				}
-				res.close();
-				st.close();
-				connection.close();
-			}
-			catch (SQLException e1)
-			{
-				e.entityPlayer.sendChatToPlayer("Connection error!");
-				e1.printStackTrace();
-			}
+                while (res.next()) {
+                    ChatUtils.sendMessage(e.entityPlayer, res.getString("player") + " " + res.getString("category") + " block " + res.getString("block") + " at " + res.getTimestamp("time"));
+                }
+                res.close();
+                st.close();
+                connection.close();
+            }
+			catch (SQLException e1) {
+                ChatUtils.sendMessage(e.entityPlayer, "Connection error!");
+                e1.printStackTrace();
+            }
 		}
 	}
 

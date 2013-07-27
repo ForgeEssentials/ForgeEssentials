@@ -3,6 +3,7 @@ package com.ForgeEssentials.core.commands.selections;
 //Depreciated
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -28,82 +29,52 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		if (args.length == 1)
-		{
-			int x = Math.round((float) player.getLookVec().xCoord);
-			int y = Math.round((float) player.getLookVec().yCoord);
-			int z = Math.round((float) player.getLookVec().zCoord);
-			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
-			int expandby = Integer.decode(args[0]);
-			if (x == -1)
-			{
-				if (info.getPoint1().x < info.getPoint2().x)
-				{
-					info.setPoint1(new Point(info.getPoint1().x - expandby, info.getPoint1().y, info.getPoint1().z));
-				}
-				else
-				{
-					info.setPoint2(new Point(info.getPoint2().x - expandby, info.getPoint2().y, info.getPoint2().z));
-				}
-			}
-			else if (z == 1)
-			{
-				if (info.getPoint1().z < info.getPoint2().z)
-				{
-					info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y, info.getPoint1().z + expandby));
-				}
-				else
-				{
-					info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y, info.getPoint2().z + expandby));
-				}
-			}
-			else if (x == 1)
-			{
-				if (info.getPoint1().x < info.getPoint2().x)
-				{
-					info.setPoint1(new Point(info.getPoint1().x + expandby, info.getPoint1().y, info.getPoint1().z));
-				}
-				else
-				{
-					info.setPoint2(new Point(info.getPoint2().x + expandby, info.getPoint2().y, info.getPoint2().z));
-				}
-			}
-			else if (z == -1)
-			{
-				if (info.getPoint1().z < info.getPoint2().z)
-				{
-					info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y, info.getPoint1().z - expandby));
-				}
-				else
-				{
-					info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y, info.getPoint2().z - expandby));
-				}
-			}
-			else if (y == 1)
-			{
-				if (info.getPoint1().y > info.getPoint2().y)
-				{
-					info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y + expandby, info.getPoint1().z));
-				}
-				else
-				{
-					info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y + expandby, info.getPoint2().z));
-				}
-			}
-			else if (y == -1)
-			{
-				if (info.getPoint1().y < info.getPoint2().y)
-				{
-					info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y - expandby, info.getPoint1().z));
-				}
-				else
-				{
-					info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y - expandby, info.getPoint2().z));
-				}
-			}
-			player.sendChatToPlayer("Region expanded by: " + expandby);
-			return;
-		}
+		if (args.length == 1) {
+            int x = Math.round((float) player.getLookVec().xCoord);
+            int y = Math.round((float) player.getLookVec().yCoord);
+            int z = Math.round((float) player.getLookVec().zCoord);
+            PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
+            int expandby = Integer.decode(args[0]);
+            if (x == -1) {
+                if (info.getPoint1().x < info.getPoint2().x) {
+                    info.setPoint1(new Point(info.getPoint1().x - expandby, info.getPoint1().y, info.getPoint1().z));
+                } else {
+                    info.setPoint2(new Point(info.getPoint2().x - expandby, info.getPoint2().y, info.getPoint2().z));
+                }
+            } else if (z == 1) {
+                if (info.getPoint1().z < info.getPoint2().z) {
+                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y, info.getPoint1().z + expandby));
+                } else {
+                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y, info.getPoint2().z + expandby));
+                }
+            } else if (x == 1) {
+                if (info.getPoint1().x < info.getPoint2().x) {
+                    info.setPoint1(new Point(info.getPoint1().x + expandby, info.getPoint1().y, info.getPoint1().z));
+                } else {
+                    info.setPoint2(new Point(info.getPoint2().x + expandby, info.getPoint2().y, info.getPoint2().z));
+                }
+            } else if (z == -1) {
+                if (info.getPoint1().z < info.getPoint2().z) {
+                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y, info.getPoint1().z - expandby));
+                } else {
+                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y, info.getPoint2().z - expandby));
+                }
+            } else if (y == 1) {
+                if (info.getPoint1().y > info.getPoint2().y) {
+                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y + expandby, info.getPoint1().z));
+                } else {
+                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y + expandby, info.getPoint2().z));
+                }
+            } else if (y == -1) {
+                if (info.getPoint1().y < info.getPoint2().y) {
+                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y - expandby, info.getPoint1().z));
+                } else {
+                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y - expandby, info.getPoint2().z));
+                }
+            }
+            ChatUtils.sendMessage(player, "Region expanded by: " + expandby);
+            return;
+        }
 		else if (args.length == 2)
 		{
 			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
@@ -194,7 +165,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 			{
 				OutputHandler.chatError(player, "Invalid Direction");
 			}
-			player.sendChatToPlayer("Region expanded by: " + expandby);
+			com.ForgeEssentials.util.ChatUtils.sendMessage(player, "Region expanded by: " + expandby);
 			return;
 		}
 		else

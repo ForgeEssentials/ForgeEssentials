@@ -1,6 +1,7 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetBackup;
@@ -25,18 +26,16 @@ public class CommandUndo extends WorldControlCommandBase
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args)
-	{
-		BackupArea back = PlayerInfo.getPlayerInfo(player.username).getNextUndo();
+	public void processCommandPlayer(EntityPlayer player, String[] args) {
+        BackupArea back = PlayerInfo.getPlayerInfo(player.username).getNextUndo();
 
-		if (back == null)
-		{
-			OutputHandler.chatError(player, Localization.get(Localization.WC_NOUNDO));
-			return;
-		}
+        if (back == null) {
+            OutputHandler.chatError(player, Localization.get(Localization.WC_NOUNDO));
+            return;
+        }
 
-		TaskRegistry.registerTask(new TickTaskSetBackup(player, back, false));
+        TaskRegistry.registerTask(new TickTaskSetBackup(player, back, false));
 
-		player.sendChatToPlayer("Working on undo.");
-	}
+        ChatUtils.sendMessage(player, "Working on undo.");
+    }
 }

@@ -15,6 +15,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ForgeEssentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -30,10 +31,6 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
-import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
 
 public class CommandRules extends FEcmdModuleCommands
 {
@@ -188,10 +185,9 @@ public class CommandRules extends FEcmdModuleCommands
 	{
 		if (args.length == 0)
 		{
-			for (String rule : rules)
-			{
-				sender.sendChatToPlayer(rule);
-			}
+			for (String rule : rules) {
+                ChatUtils.sendMessage(sender, rule);
+            }
 			return;
 		}
 		if (args[0].equalsIgnoreCase("book"))
@@ -221,24 +217,21 @@ public class CommandRules extends FEcmdModuleCommands
 			sender.inventory.addItemStackToInventory(is);
 			return;
 		}
-		if (args.length == 1)
-		{
-			if (args[0].equalsIgnoreCase("help"))
-			{
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
-				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
-				{
-					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
-					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
-					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.4"));
-					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.5"));
-				}
-				return;
-			}
+		if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("help")) {
+                OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
+                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit"))) {
+                    OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
+                    OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
+                    OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.4"));
+                    OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.5"));
+                }
+                return;
+            }
 
-			sender.sendChatToPlayer(rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
-			return;
-		}
+            ChatUtils.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            return;
+        }
 
 		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
 		{
@@ -310,27 +303,24 @@ public class CommandRules extends FEcmdModuleCommands
 	{
 		if (args.length == 0)
 		{
-			for (String rule : rules)
-			{
-				sender.sendChatToPlayer(rule);
-			}
+			for (String rule : rules) {
+                ChatUtils.sendMessage(sender, rule);
+            }
 			return;
 		}
-		if (args.length == 1)
-		{
-			if (args[0].equalsIgnoreCase("help"))
-			{
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.4"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.5"));
+		if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("help")) {
+                OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
+                OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
+                OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
+                OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.4"));
+                OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.5"));
 
-			}
+            }
 
-			sender.sendChatToPlayer(rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
-			return;
-		}
+            ChatUtils.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            return;
+        }
 
 		int index;
 

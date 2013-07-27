@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
@@ -105,9 +106,8 @@ public class TickTaskRollback implements ITickTask
                 TileEntity te = TextFormatter.reconstructTE(new String(bdata));
                 world.setBlockTileEntity(bc.X, bc.Y, bc.Z, te);
             }
-            catch (Exception e)
-            {
-                sender.sendChatToPlayer("Could not restore TE data.");
+            catch (Exception e) {
+                ChatUtils.sendMessage(sender, "Could not restore TE data.");
                 e.printStackTrace();
             }
         }
@@ -120,9 +120,8 @@ public class TickTaskRollback implements ITickTask
     }
 
     @Override
-    public void onComplete()
-    {
-        sender.sendChatToPlayer("Rollback done! Changed " + changed + " blocks.");
+    public void onComplete() {
+        ChatUtils.sendMessage(sender, "Rollback done! Changed " + changed + " blocks.");
     }
 
     @Override

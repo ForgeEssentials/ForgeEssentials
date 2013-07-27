@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,10 +40,9 @@ public class CommandHeal extends FEcmdModuleCommands
 			{
 				heal(player);
 			}
-			else
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-			}
+			else {
+                ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+            }
 		}
 		else
 		{
@@ -60,24 +60,21 @@ public class CommandHeal extends FEcmdModuleCommands
 			{
 				heal(player);
 			}
-			else
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-			}
+			else {
+                ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+            }
 		}
-		else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-		}
+		else {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+        }
 	}
 
-	public void heal(EntityPlayer target)
-	{
-		target.heal(20);
-		target.extinguish();
-		target.getFoodStats().addStats(20, 1.0F);
-		target.sendChatToPlayer(Localization.get("command.heal.healed"));
-	}
+	public void heal(EntityPlayer target) {
+        target.heal(20);
+        target.extinguish();
+        target.getFoodStats().addStats(20, 1.0F);
+        ChatUtils.sendMessage(target, Localization.get("command.heal.healed"));
+    }
 
 	@Override
 	public boolean canConsoleUseCommand()

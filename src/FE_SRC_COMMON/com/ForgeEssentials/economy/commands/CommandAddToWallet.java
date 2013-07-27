@@ -3,6 +3,7 @@ package com.ForgeEssentials.economy.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -43,16 +44,14 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 			{
 				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPLAYER));
 			}
-			else
-			{
-				APIRegistry.wallet.addToWallet(amountToAdd, player.username);
+			else {
+                APIRegistry.wallet.addToWallet(amountToAdd, player.username);
 
-				if (sender != player)
-				{
-					sender.sendChatToPlayer(amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
-				}
-				player.sendChatToPlayer(amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
-			}
+                if (sender != player) {
+                    ChatUtils.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
+                }
+                ChatUtils.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
+            }
 		}
 		else
 		{
@@ -69,22 +68,19 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 			EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[0]);
 			int amountToAdd = Integer.parseInt(args[1]);
 
-			if (player == null)
-			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOPLAYER));
-			}
-			else
-			{
-				APIRegistry.wallet.addToWallet(amountToAdd, player.username);
+			if (player == null) {
+                ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_NOPLAYER));
+            }
+			else {
+                APIRegistry.wallet.addToWallet(amountToAdd, player.username);
 
-				sender.sendChatToPlayer(amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
-				player.sendChatToPlayer(amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
-			}
+                ChatUtils.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
+                ChatUtils.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
+            }
 		}
-		else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-		}
+		else {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+        }
 	}
 
 	@Override

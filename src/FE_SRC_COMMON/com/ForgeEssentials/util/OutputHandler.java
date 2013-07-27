@@ -28,14 +28,12 @@ public final class OutputHandler
 	 */
 	public static void chatError(ICommandSender sender, String msg)
 	{
-		if (sender instanceof EntityPlayer)
-		{
-			sender.sendChatToPlayer(FEChatFormatCodes.RED + FunctionHelper.formatColors(msg));
-		}
-		else
-		{
-			sender.sendChatToPlayer(FunctionHelper.formatColors(msg));
-		}
+		if (sender instanceof EntityPlayer) {
+            ChatUtils.sendMessage(sender, FEChatFormatCodes.RED + FunctionHelper.formatColors(msg));
+        }
+		else {
+            ChatUtils.sendMessage(sender, FunctionHelper.formatColors(msg));
+        }
 	}
 
 	/**
@@ -47,14 +45,12 @@ public final class OutputHandler
 	 */
 	public static void chatConfirmation(ICommandSender sender, String msg)
 	{
-		if (sender instanceof EntityPlayer)
-		{
-			sender.sendChatToPlayer(FEChatFormatCodes.GREEN + FunctionHelper.formatColors(msg));
-		}
-		else
-		{
-			sender.sendChatToPlayer(FunctionHelper.formatColors(msg));
-		}
+		if (sender instanceof EntityPlayer) {
+            ChatUtils.sendMessage(sender, FEChatFormatCodes.GREEN + FunctionHelper.formatColors(msg));
+        }
+		else {
+            ChatUtils.sendMessage(sender, FunctionHelper.formatColors(msg));
+        }
 	}
 
 	/**
@@ -66,14 +62,12 @@ public final class OutputHandler
 	 */
 	public static void chatWarning(ICommandSender sender, String msg)
 	{
-		if (sender instanceof EntityPlayer)
-		{
-			sender.sendChatToPlayer(FEChatFormatCodes.YELLOW + FunctionHelper.formatColors(msg));
-		}
-		else
-		{
-			sender.sendChatToPlayer(FunctionHelper.formatColors(msg));
-		}
+		if (sender instanceof EntityPlayer) {
+            ChatUtils.sendMessage(sender, FEChatFormatCodes.YELLOW + FunctionHelper.formatColors(msg));
+        }
+		else {
+            ChatUtils.sendMessage(sender, FunctionHelper.formatColors(msg));
+        }
 	}
 
 	/**

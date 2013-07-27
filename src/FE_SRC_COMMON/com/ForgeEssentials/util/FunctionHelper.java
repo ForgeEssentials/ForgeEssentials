@@ -288,7 +288,7 @@ public final class FunctionHelper
 	public static File getBaseDir()
 	{
 		if (FMLCommonHandler.instance().getSide().isClient())
-			return Minecraft.getMinecraftDir();
+			return Minecraft.getMinecraft().mcDataDir; // TODO: Is this the dir we want to store data in?
 		else
 			return new File(".");
 	}

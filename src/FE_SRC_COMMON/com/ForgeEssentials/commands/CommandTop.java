@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -41,10 +42,9 @@ public class CommandTop extends FEcmdModuleCommands
 			{
 				top(player);
 			}
-			else
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-			}
+			else {
+                ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+            }
 		}
 		else
 		{
@@ -68,28 +68,24 @@ public class CommandTop extends FEcmdModuleCommands
 			{
 				top(player);
 			}
-			else
-			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-			}
+			else {
+                ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+            }
 		}
-		else
-		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-		}
+		else {
+            ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+        }
 	}
 
-	public void top(EntityPlayer player)
-	{
-		WarpPoint point = new WarpPoint(player);
-		point.y = player.worldObj.getActualHeight();
-		while (player.worldObj.getBlockId(point.x, point.y, point.z) == 0)
-		{
-			point.y--;
-		}
-		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y + 1, point.z, point.yaw, point.pitch);
-		player.sendChatToPlayer(Localization.get("message.tc.done"));
-	}
+	public void top(EntityPlayer player) {
+        WarpPoint point = new WarpPoint(player);
+        point.y = player.worldObj.getActualHeight();
+        while (player.worldObj.getBlockId(point.x, point.y, point.z) == 0) {
+            point.y--;
+        }
+        ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y + 1, point.z, point.yaw, point.pitch);
+        ChatUtils.sendMessage(player, Localization.get("message.tc.done"));
+    }
 
 	@Override
 	public boolean canConsoleUseCommand()

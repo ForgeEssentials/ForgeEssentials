@@ -3,6 +3,7 @@ package com.ForgeEssentials.questioner;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -269,10 +270,9 @@ public abstract class QuestionerCommandBase extends CommandBase
 		{
 			OutputHandler.chatError((EntityPlayer) sender, message);
 		}
-		else
-		{
-			sender.sendChatToPlayer(message);
-		}
+		else {
+            ChatUtils.sendMessage(sender, message);
+        }
 	}
 
 	public boolean checkCommandPerm(EntityPlayer player)

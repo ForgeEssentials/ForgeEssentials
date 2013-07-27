@@ -2,6 +2,7 @@ package com.ForgeEssentials.snooper;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -28,13 +29,12 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase
 		reload(sender);
 	}
 
-	public void reload(ICommandSender sender)
-	{
-		sender.sendChatToPlayer("Killing old one....");
-		ModuleSnooper.stop();
-		sender.sendChatToPlayer("Making new one....");
-		ModuleSnooper.start();
-	}
+	public void reload(ICommandSender sender) {
+        ChatUtils.sendMessage(sender, "Killing old one....");
+        ModuleSnooper.stop();
+        ChatUtils.sendMessage(sender, "Making new one....");
+        ModuleSnooper.start();
+    }
 
 	@Override
 	public boolean canConsoleUseCommand()

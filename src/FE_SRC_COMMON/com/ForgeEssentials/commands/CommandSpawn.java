@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,10 +16,6 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
-import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -43,52 +40,50 @@ public class CommandSpawn extends FEcmdModuleCommands
 				return;
 			}
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
-			if (player != null)
-			{
-				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+			if (player != null) {
+                PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 
-				PropQueryPlayerZone query = new PropQueryPlayerZone(player, CommandSetSpawn.SPAWN_PROP, zone, true);
-				APIRegistry.perms.getPermissionProp(query);
+                PropQueryPlayerZone query = new PropQueryPlayerZone(player, CommandSetSpawn.SPAWN_PROP, zone, true);
+                APIRegistry.perms.getPermissionProp(query);
 
-				String val = query.getStringValue();
-				String[] split = val.split("[;_]");
+                String val = query.getStringValue();
+                String[] split = val.split("[;_]");
 
-				int dim = Integer.parseInt(split[0]);
-				int x = Integer.parseInt(split[1]);
-				int y = Integer.parseInt(split[2]);
-				int z = Integer.parseInt(split[3]);
+                int dim = Integer.parseInt(split[0]);
+                int x = Integer.parseInt(split[1]);
+                int y = Integer.parseInt(split[2]);
+                int z = Integer.parseInt(split[3]);
 
-				WarpPoint point = new WarpPoint(dim, x + .5, y + 1, z + .5, player.cameraYaw, player.cameraPitch);
+                WarpPoint point = new WarpPoint(dim, x + .5, y + 1, z + .5, player.cameraYaw, player.cameraPitch);
 
-				// teleport
-				FunctionHelper.setPlayer(player, point);
-				player.sendChatToPlayer(Localization.get("command.spawn.done"));
-				return;
-			}
+                // teleport
+                FunctionHelper.setPlayer(player, point);
+                ChatUtils.sendMessage(player, Localization.get("command.spawn.done"));
+                return;
+            }
 			else
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 				return;
 			}
 		}
-		else if (args.length == 0)
-		{
-			PropQueryPlayerZone query = new PropQueryPlayerZone(sender, CommandSetSpawn.SPAWN_PROP, zone, true);
-			APIRegistry.perms.getPermissionProp(query);
+		else if (args.length == 0) {
+            PropQueryPlayerZone query = new PropQueryPlayerZone(sender, CommandSetSpawn.SPAWN_PROP, zone, true);
+            APIRegistry.perms.getPermissionProp(query);
 
-			String val = query.getStringValue();
-			String[] split = val.split("[;_]");
+            String val = query.getStringValue();
+            String[] split = val.split("[;_]");
 
-			int dim = Integer.parseInt(split[0]);
-			int x = Integer.parseInt(split[1]);
-			int y = Integer.parseInt(split[2]);
-			int z = Integer.parseInt(split[3]);
+            int dim = Integer.parseInt(split[0]);
+            int x = Integer.parseInt(split[1]);
+            int y = Integer.parseInt(split[2]);
+            int z = Integer.parseInt(split[3]);
 
-			WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, sender.cameraYaw, sender.cameraPitch);
-			PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
-			TeleportCenter.addToTpQue(spawn, sender);
-			sender.sendChatToPlayer(Localization.get("command.spawn.done"));
-		}
+            WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, sender.cameraYaw, sender.cameraPitch);
+            PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
+            TeleportCenter.addToTpQue(spawn, sender);
+            ChatUtils.sendMessage(sender, Localization.get("command.spawn.done"));
+        }
 	}
 
 	@Override
@@ -97,17 +92,16 @@ public class CommandSpawn extends FEcmdModuleCommands
 		if (args.length >= 1)
 		{
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
-			if (player != null)
-			{
-				PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+			if (player != null) {
+                PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 
-				WarpPoint spawn;
-				ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
-				spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
-				TeleportCenter.addToTpQue(spawn, player);
-				player.sendChatToPlayer(Localization.get("command.spawn.done"));
-				return;
-			}
+                WarpPoint spawn;
+                ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
+                spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
+                TeleportCenter.addToTpQue(spawn, player);
+                ChatUtils.sendMessage(player, Localization.get("command.spawn.done"));
+                return;
+            }
 			else
 			{
 				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));

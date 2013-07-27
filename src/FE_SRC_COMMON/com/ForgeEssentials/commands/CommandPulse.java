@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
@@ -35,48 +36,41 @@ public class CommandPulse extends FEcmdModuleCommands
 
 	public String getCommandUsage(ICommandSender par1ICommandSender)
 	{
-		return par1ICommandSender.translateString("/pulse <X> <Y> <Z> [PulseLength]", new Object[0]);
+		return "/pulse <X> <Y> <Z> [PulseLength]";
 	}
 
 	public void processCommand(ICommandSender var1, String[] var2)
 	{
-		if (var2.length >= 3 && var2.length <= 4)
-		{
-			int var3 = 0;
-			int var4 = 0;
-			int var5 = 0;
-			int var6 = 10;
-			World var11 = null;
-			if (var1 instanceof TileEntityCommandBlock)
-			{
-				var3 = (int) this.func_82368_a(var1, (double) ((TileEntityCommandBlock) var1).xCoord, var2[0]);
-				var4 = (int) this.func_82367_a(var1, (double) ((TileEntityCommandBlock) var1).yCoord, var2[1], 0, 0);
-				var5 = (int) this.func_82368_a(var1, (double) ((TileEntityCommandBlock) var1).zCoord, var2[2]);
-				var11 = ((TileEntityCommandBlock) var1).worldObj;
-			}
-			else if (var1 instanceof EntityPlayerMP)
-			{
-				var3 = (int) this.func_82368_a(var1, ((EntityPlayerMP) var1).posX, var2[0]);
-				var4 = (int) this.func_82367_a(var1, ((EntityPlayerMP) var1).posY, var2[1], 0, 0);
-				var5 = (int) this.func_82368_a(var1, ((EntityPlayerMP) var1).posZ, var2[2]);
-				var11 = ((EntityPlayerMP) var1).worldObj;
-			}
-			else if (var1 instanceof DedicatedServer)
-			{
-				var3 = (int) this.func_82368_a(var1, 0.0D, var2[0]);
-				var4 = (int) this.func_82367_a(var1, 0.0D, var2[1], 0, 0);
-				var5 = (int) this.func_82368_a(var1, 0.0D, var2[2]);
-				var11 = ((DedicatedServer) var1).worldServerForDimension(0);
-			}
+		if (var2.length >= 3 && var2.length <= 4) {
+            int var3 = 0;
+            int var4 = 0;
+            int var5 = 0;
+            int var6 = 10;
+            World var11 = null;
+            if (var1 instanceof TileEntityCommandBlock) {
+                var3 = (int) this.func_82368_a(var1, (double) ((TileEntityCommandBlock) var1).xCoord, var2[0]);
+                var4 = (int) this.func_82367_a(var1, (double) ((TileEntityCommandBlock) var1).yCoord, var2[1], 0, 0);
+                var5 = (int) this.func_82368_a(var1, (double) ((TileEntityCommandBlock) var1).zCoord, var2[2]);
+                var11 = ((TileEntityCommandBlock) var1).worldObj;
+            } else if (var1 instanceof EntityPlayerMP) {
+                var3 = (int) this.func_82368_a(var1, ((EntityPlayerMP) var1).posX, var2[0]);
+                var4 = (int) this.func_82367_a(var1, ((EntityPlayerMP) var1).posY, var2[1], 0, 0);
+                var5 = (int) this.func_82368_a(var1, ((EntityPlayerMP) var1).posZ, var2[2]);
+                var11 = ((EntityPlayerMP) var1).worldObj;
+            } else if (var1 instanceof DedicatedServer) {
+                var3 = (int) this.func_82368_a(var1, 0.0D, var2[0]);
+                var4 = (int) this.func_82367_a(var1, 0.0D, var2[1], 0, 0);
+                var5 = (int) this.func_82368_a(var1, 0.0D, var2[2]);
+                var11 = ((DedicatedServer) var1).worldServerForDimension(0);
+            }
 
-			if (var2.length >= 4)
-			{
-				var6 = parseIntWithMin(var1, var2[3], 1);
-			}
+            if (var2.length >= 4) {
+                var6 = parseIntWithMin(var1, var2[3], 1);
+            }
 
-			TaskRegistry.registerTask(new TickTaskPulseHelper(var11, new Point(var3, var4, var5), var6));
-			var1.sendChatToPlayer("Redstone Pulsed for " + var6 + " Ticks");
-		}
+            TaskRegistry.registerTask(new TickTaskPulseHelper(var11, new Point(var3, var4, var5), var6));
+            ChatUtils.sendMessage(var1, "Redstone Pulsed for " + var6 + " Ticks");
+        }
 		else
 		{
 			throw new WrongUsageException("/pulse <X> <Y> <Z> [PulseLength]", new Object[0]);

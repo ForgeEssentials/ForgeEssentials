@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -78,58 +79,53 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
 	        list(sender, i, key);
     }
 	
-	private void list(ICommandSender sender, int dim, String key)
-	{
-	    WorldServer world = DimensionManager.getWorld(dim);
-	    
-	    HashMultimap<String, Ticket> modTickets = HashMultimap.create();
-	    HashMultimap<String, Ticket> playerTickets = HashMultimap.create();
-	    
-	    for (Ticket ticket : ForgeChunkManager.getPersistentChunksFor(world).values())
-	        if (ticket.isPlayerTicket()) playerTickets.put(ticket.getPlayerName(), ticket);
-	        else modTickets.put(ticket.getModId(), ticket);
-	    
-	    if (modTickets.isEmpty() && playerTickets.isEmpty()) return;
-        
-	    if (!key.equals("*")) sender.sendChatToPlayer(FEChatFormatCodes.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
-	    
-        sender.sendChatToPlayer(FEChatFormatCodes.AQUA + "Dim " + world.provider.getDimensionName() + ":");
-	    
-	    if (key.startsWith("p:") || key.equals("*"))
-	    {
-	        for (String username : playerTickets.keySet())
-	        {
-	            if (key.replace("p:", "").equalsIgnoreCase(username) || key.equals("*"))
-	            {
-	                if(key.equals("*")) sender.sendChatToPlayer(FEChatFormatCodes.AQUA + username);
-	                
-	                HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
-	                
-	                for (Ticket ticket : playerTickets.get(username))
-	                    for (Object obj : ticket.getChunkList())
-	                        chunks.add((ChunkCoordIntPair) obj);
-	                
-	                for(ChunkCoordIntPair coords : chunks)
-	                    sender.sendChatToPlayer(coords.getCenterXPos() + " : " + coords.getCenterZPosition());
-	            }
-	        }    
-	    }
-	    
-	    if (key.startsWith("m:") || key.equals("*"))
-	    {
-	        for (String modID : modTickets.keySet())
-	        {
-	            if(key.equals("*")) sender.sendChatToPlayer(FEChatFormatCodes.AQUA + modID);
-	            HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
-                
+	private void list(ICommandSender sender, int dim, String key) {
+        WorldServer world = DimensionManager.getWorld(dim);
+
+        HashMultimap<String, Ticket> modTickets = HashMultimap.create();
+        HashMultimap<String, Ticket> playerTickets = HashMultimap.create();
+
+        for (Ticket ticket : ForgeChunkManager.getPersistentChunksFor(world).values())
+            if (ticket.isPlayerTicket()) playerTickets.put(ticket.getPlayerName(), ticket);
+            else modTickets.put(ticket.getModId(), ticket);
+
+        if (modTickets.isEmpty() && playerTickets.isEmpty()) return;
+
+        if (!key.equals("*"))
+            ChatUtils.sendMessage(sender, FEChatFormatCodes.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
+
+        ChatUtils.sendMessage(sender, FEChatFormatCodes.AQUA + "Dim " + world.provider.getDimensionName() + ":");
+
+        if (key.startsWith("p:") || key.equals("*")) {
+            for (String username : playerTickets.keySet()) {
+                if (key.replace("p:", "").equalsIgnoreCase(username) || key.equals("*")) {
+                    if (key.equals("*")) ChatUtils.sendMessage(sender, FEChatFormatCodes.AQUA + username);
+
+                    HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
+
+                    for (Ticket ticket : playerTickets.get(username))
+                        for (Object obj : ticket.getChunkList())
+                            chunks.add((ChunkCoordIntPair) obj);
+
+                    for (ChunkCoordIntPair coords : chunks)
+                        ChatUtils.sendMessage(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+                }
+            }
+        }
+
+        if (key.startsWith("m:") || key.equals("*")) {
+            for (String modID : modTickets.keySet()) {
+                if (key.equals("*")) ChatUtils.sendMessage(sender, FEChatFormatCodes.AQUA + modID);
+                HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
+
                 for (Ticket ticket : playerTickets.get(modID))
                     for (Object obj : ticket.getChunkList())
                         chunks.add((ChunkCoordIntPair) obj);
-                    
-                for(ChunkCoordIntPair coords : chunks)
-                    sender.sendChatToPlayer(coords.getCenterXPos() + " : " + coords.getCenterZPosition());
-	        }
-	    }
+
+                for (ChunkCoordIntPair coords : chunks)
+                    ChatUtils.sendMessage(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+            }
+        }
     }
 
     @Override
