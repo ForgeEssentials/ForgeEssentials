@@ -1,5 +1,6 @@
 package com.ForgeEssentials.chat.ircCommands;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import org.pircbotx.User;
@@ -63,7 +64,7 @@ public class ircCommandMessage extends ircCommand
 			String send = FEChatFormatCodes.GOLD + "(IRC)[" + user.getNick() + " -> me] " + FEChatFormatCodes.GREY + message;
 			String recipt = "(IRC)[me -> " + player.getCommandSenderName() + "] " + message;
 
-			player.sendChatToPlayer(send);
+			ChatUtils.sendMessage(player, send);
 			IRCHelper.privateMessage(user.getNick(), recipt);
 
 			// Add in /r stuff

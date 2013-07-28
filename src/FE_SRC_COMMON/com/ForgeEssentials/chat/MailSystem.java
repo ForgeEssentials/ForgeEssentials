@@ -1,5 +1,6 @@
 package com.ForgeEssentials.chat;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.data.api.ClassContainer;
@@ -49,13 +50,13 @@ public class MailSystem implements IPlayerTracker
 	{
 		if (map.containsKey(receiver.username))
 		{
-			receiver.sendChatToPlayer(FEChatFormatCodes.GREEN + Localization.get("message.mail.header"));
+			ChatUtils.sendMessage(receiver, FEChatFormatCodes.GREEN + Localization.get("message.mail.header"));
 			for (Mail mail : map.get(receiver.username))
 			{
-				receiver.sendChatToPlayer(FEChatFormatCodes.GREEN + "{" + mail.getSender() + "} " + FEChatFormatCodes.WHITE + mail.getMessage());
+				ChatUtils.sendMessage(receiver, FEChatFormatCodes.GREEN + "{" + mail.getSender() + "} " + FEChatFormatCodes.WHITE + mail.getMessage());
 				DataStorageManager.getReccomendedDriver().deleteObject(new ClassContainer(Mail.class), mail.getKey());
 			}
-			receiver.sendChatToPlayer(FEChatFormatCodes.GREEN + Localization.get("message.mail.footer"));
+			ChatUtils.sendMessage(receiver, FEChatFormatCodes.GREEN + Localization.get("message.mail.footer"));
 		}
 	}
 

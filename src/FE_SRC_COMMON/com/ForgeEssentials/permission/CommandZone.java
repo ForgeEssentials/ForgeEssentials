@@ -3,6 +3,7 @@ package com.ForgeEssentials.permission;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -14,10 +15,6 @@ import com.ForgeEssentials.api.permissions.query.PropQueryBlanketZone;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.data.api.DataStorageManager;
-import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
-import com.ForgeEssentials.util.Localization;
-import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 
@@ -150,8 +147,8 @@ public class CommandZone extends ForgeEssentialsCommandBase
 						OutputHandler.chatConfirmation(sender, "Parent: " + zone.parent);
 						OutputHandler.chatConfirmation(sender, "Priority: " + zone.priority);
 						OutputHandler.chatConfirmation(sender, "Dimension: " + zone.dim + "     World: " + FunctionHelper.getDimension(zone.dim).provider.getDimensionName());
-						sender.sendChatToPlayer(FunctionHelper.formatColors(FEChatFormatCodes.GREEN + "Entry Message: " + FEChatFormatCodes.RESET + query1.getStringValue()));
-						sender.sendChatToPlayer(FunctionHelper.formatColors(FEChatFormatCodes.GREEN + "Exit Message: " + FEChatFormatCodes.RESET + query2.getStringValue()));
+						ChatUtils.sendMessage(sender, FunctionHelper.formatColors(FEChatFormatCodes.GREEN + "Entry Message: " + FEChatFormatCodes.RESET + query1.getStringValue()));
+						ChatUtils.sendMessage(sender, FunctionHelper.formatColors(FEChatFormatCodes.GREEN + "Exit Message: " + FEChatFormatCodes.RESET + query2.getStringValue()));
 						Point high = zone.getHighPoint();
 						Point low = zone.getLowPoint();
 						OutputHandler.chatConfirmation(sender, high.x + ", " + high.y + ", " + high.z + " -> " + low.x + ", " + low.y + ", " + low.z);

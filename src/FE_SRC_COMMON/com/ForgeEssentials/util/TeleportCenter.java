@@ -35,7 +35,7 @@ public class TeleportCenter implements IScheduledTickHandler
 	{
 		if (PlayerInfo.getPlayerInfo(player.username).TPcooldown != 0 && !APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
 		{
-			player.sendChatToPlayer(Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).TPcooldown)));
+			ChatUtils.sendMessage(player, Localization.get(Localization.TC_COOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).TPcooldown)));
 		}
 		else
 		{
@@ -47,7 +47,7 @@ public class TeleportCenter implements IScheduledTickHandler
 			}
 			else
 			{
-				player.sendChatToPlayer(Localization.get(Localization.TC_WARMUP).replaceAll("%w", "" + FunctionHelper.parseTime(tpWarmup)));
+				ChatUtils.sendMessage(player, Localization.get(Localization.TC_WARMUP).replaceAll("%w", "" + FunctionHelper.parseTime(tpWarmup)));
 				queue.add(data);
 			}
 		}
@@ -56,13 +56,13 @@ public class TeleportCenter implements IScheduledTickHandler
 	public static void abort(TPdata tpData)
 	{
 		removeQueue.add(tpData);
-		tpData.getPlayer().sendChatToPlayer(Localization.get(Localization.TC_ABORTED));
+		ChatUtils.sendMessage(tpData.getPlayer(), Localization.get(Localization.TC_ABORTED));
 	}
 
 	public static void TPdone(TPdata tpData)
 	{
 		removeQueue.add(tpData);
-		tpData.getPlayer().sendChatToPlayer(Localization.get(Localization.TC_DONE));
+		ChatUtils.sendMessage(tpData.getPlayer(), Localization.get(Localization.TC_DONE));
 	}
 
 	@Override
