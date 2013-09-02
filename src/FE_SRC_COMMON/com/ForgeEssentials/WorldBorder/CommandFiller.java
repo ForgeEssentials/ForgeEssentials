@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldServer;
@@ -53,11 +54,11 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 		{
 			// Header
 			String header = "--- Fillers active ---";
-			sender.sendChatToPlayer(header);
+			ChatUtils.sendMessage(sender, header);
 			// Actual info
 			for (Integer world : map.keySet())
 			{
-				sender.sendChatToPlayer(world + ": " + map.get(world).getStatus());
+				ChatUtils.sendMessage(sender, world + ": " + map.get(world).getStatus());
 			}
 			// Footer
 			StringBuilder footer = new StringBuilder();
@@ -65,7 +66,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 			{
 				footer.append("-");
 			}
-			sender.sendChatToPlayer(footer.toString());
+			ChatUtils.sendMessage(sender, footer.toString());
 			return;
 		}
 

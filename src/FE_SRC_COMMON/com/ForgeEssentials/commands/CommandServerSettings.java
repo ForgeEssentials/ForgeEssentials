@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -51,8 +52,8 @@ public class CommandServerSettings extends FEcmdModuleCommands
 		DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer(Localization.get("command.serversettings.list"));
-			sender.sendChatToPlayer(options.toString());
+			ChatUtils.sendMessage(sender, Localization.get("command.serversettings.list"));
+			ChatUtils.sendMessage(sender, options.toString());
 			return;
 		}
 

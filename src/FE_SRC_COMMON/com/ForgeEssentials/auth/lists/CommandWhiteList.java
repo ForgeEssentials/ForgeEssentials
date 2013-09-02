@@ -2,6 +2,7 @@ package com.ForgeEssentials.auth.lists;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -19,9 +20,9 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args) {
 		if(!PlayerTracker.whitelist){
-			sender.sendChatToPlayer("The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
-			sender.sendChatToPlayer("Note that server.properties will take precedent over the auth config.");
-			
+			ChatUtils.sendMessage(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
+			ChatUtils.sendMessage(sender, "Note that server.properties will take precedent over the auth config.");
+
 		}
 		else if (args.length >= 2 && args[0].equalsIgnoreCase("add")){
 			APIRegistry.perms.setPlayerPermission(args[1], "ForgeEssentials.Auth.isWhiteListed", true, "_GLOBAL_");
@@ -37,9 +38,9 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args) {
 		if(!PlayerTracker.whitelist){
-			sender.sendChatToPlayer("The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
-			sender.sendChatToPlayer("Note that server.properties will take precedent over the auth config.");
-			
+			ChatUtils.sendMessage(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
+			ChatUtils.sendMessage(sender, "Note that server.properties will take precedent over the auth config.");
+
 		}
 		else if (args.length >= 2 && args[0].equalsIgnoreCase("add")){
 			APIRegistry.perms.setPlayerPermission(args[1], "ForgeEssentials.Auth.isWhiteListed", true, "_GLOBAL_");

@@ -9,6 +9,7 @@ import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -108,16 +109,16 @@ public class LoginMessage
 			{
 				if (sender instanceof EntityPlayer)
 				{
-					sender.sendChatToPlayer(CompatReiMinimap.reimotd((EntityPlayer) sender) + Format(messageList.get(id), sender.getCommandSenderName()));
+					ChatUtils.sendMessage(sender, CompatReiMinimap.reimotd((EntityPlayer) sender) + Format(messageList.get(id), sender.getCommandSenderName()));
 				}
 				else
 				{
-					sender.sendChatToPlayer(Format(messageList.get(id), sender.getCommandSenderName()));
+					ChatUtils.sendMessage(sender, Format(messageList.get(id), sender.getCommandSenderName()));
 				}
 			}
 			else
 			{
-				sender.sendChatToPlayer(Format(messageList.get(id), sender.getCommandSenderName()));
+				ChatUtils.sendMessage(sender, Format(messageList.get(id), sender.getCommandSenderName()));
 			}
 		}
 	}

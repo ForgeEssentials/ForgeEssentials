@@ -1,5 +1,6 @@
 package com.ForgeEssentials.questioner;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.questioner.AnswerEnum;
@@ -69,7 +70,7 @@ public class QuestionData
 
 	public void doQuestion()
 	{
-		target.sendChatToPlayer(question);
+		ChatUtils.sendMessage(target, question);
 	}
 
 	public EntityPlayer getAsker()

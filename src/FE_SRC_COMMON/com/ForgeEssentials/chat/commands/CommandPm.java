@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.ForgeEssentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -167,8 +168,8 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 						senderMessage += " ";
 					}
 				}
-				sender.sendChatToPlayer(senderMessage);
-				receiver.sendChatToPlayer(receiverMessage);
+				ChatUtils.sendMessage(sender, senderMessage);
+				ChatUtils.sendMessage(receiver, receiverMessage);
 			}
 		}
 	}
@@ -217,8 +218,8 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 						senderMessage += " ";
 					}
 				}
-				MinecraftServer.getServer().sendChatToPlayer(receiverMessage);
-				sender.sendChatToPlayer(senderMessage);
+				ChatUtils.sendMessage(MinecraftServer.getServer(), receiverMessage);
+				ChatUtils.sendMessage(sender, senderMessage);
 			}
 			else
 			{
@@ -242,8 +243,8 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 						senderMessage += " ";
 					}
 				}
-				sender.sendChatToPlayer(senderMessage);
-				receiver.sendChatToPlayer(receiverMessage);
+				ChatUtils.sendMessage(sender, senderMessage);
+				ChatUtils.sendMessage(receiver, receiverMessage);
 			}
 		}
 	}

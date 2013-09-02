@@ -1,5 +1,6 @@
 package com.ForgeEssentials.commands.util;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -62,12 +63,12 @@ public class EventHandler
 				}
 				else
 				{
-					e.entityPlayer.sendChatToPlayer("That is no sign!");
+					ChatUtils.sendMessage(e.entityPlayer, "That is no sign!");
 				}
 			}
 			else
 			{
-				e.entityPlayer.sendChatToPlayer("That is no sign!");
+				ChatUtils.sendMessage(e.entityPlayer, "That is no sign!");
 			}
 
 			e.entityPlayer.getEntityData().setBoolean("colorize", false);

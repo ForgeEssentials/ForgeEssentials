@@ -1,5 +1,6 @@
 package com.ForgeEssentials.WorldControl.commands;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator;
@@ -82,7 +83,7 @@ public class CommandTopManipulate extends WorldControlCommandBase
 
 				TaskRegistry.registerTask(new TickTaskTopManipulator(player, back, effectPosition, radius, manipulateMode));
 			}
-			player.sendChatToPlayer("Working on " + name + ".");
+			ChatUtils.sendMessage(player, "Working on " + name + ".");
 		}
 		else
 		{

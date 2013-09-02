@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands.util;
 
 import java.util.ArrayList;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -109,7 +110,7 @@ public class TickTaskBlockFinder implements ITickTask
 
     private void msg(String string)
     {
-        player.sendChatToPlayer(EnumChatFormatting.AQUA + string);
+        ChatUtils.sendMessage(player, EnumChatFormatting.AQUA + string);
     }
 
     @Override

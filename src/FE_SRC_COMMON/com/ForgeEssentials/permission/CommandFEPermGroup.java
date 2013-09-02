@@ -3,6 +3,7 @@ package com.ForgeEssentials.permission;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -59,7 +60,7 @@ public class CommandFEPermGroup
 				}
 			}
 			APIRegistry.perms.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
-			sender.sendChatToPlayer("Group " + args[1] + " made in zone " + zone.getZoneName());
+			ChatUtils.sendMessage(sender, "Group " + args[1] + " made in zone " + zone.getZoneName());
 			return;
 		}
 		if (args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("remove"))
@@ -459,10 +460,10 @@ public class CommandFEPermGroup
 								// level
 		{
 			// Make list
-			sender.sendChatToPlayer("Possible usage:");
-			sender.sendChatToPlayer("/p group create|delete");
-			sender.sendChatToPlayer("/p group <groupName>");
-			sender.sendChatToPlayer("/p group list ");
+			ChatUtils.sendMessage(sender, "Possible usage:");
+			ChatUtils.sendMessage(sender, "/p group create|delete");
+			ChatUtils.sendMessage(sender, "/p group <groupName>");
+			ChatUtils.sendMessage(sender, "/p group list ");
 			// sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX)
 			// + "");
 			return;
@@ -475,7 +476,7 @@ public class CommandFEPermGroup
 		{
 			if (args.length == 1)
 			{
-				sender.sendChatToPlayer("Usage: /p group create <groupname>");
+				ChatUtils.sendMessage(sender, "Usage: /p group create <groupname>");
 				return;
 			}
 			Zone zone = APIRegistry.zones.getGLOBAL();
@@ -488,23 +489,23 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
 			APIRegistry.perms.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
-			sender.sendChatToPlayer("Group " + args[1] + " made in zone " + zone.getZoneName());
+			ChatUtils.sendMessage(sender, "Group " + args[1] + " made in zone " + zone.getZoneName());
 			return;
 		}
 		if (args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("remove"))
 		{
 			if (args.length == 1)
 			{
-				sender.sendChatToPlayer("Usage: /p group delete <groupname>");
+				ChatUtils.sendMessage(sender, "Usage: /p group delete <groupname>");
 				return;
 			}
 			if (APIRegistry.perms.getGroupForName(args[1]) == null)
 			{
-				sender.sendChatToPlayer(args[0] + " does not exist as a group!");
+				ChatUtils.sendMessage(sender, args[0] + " does not exist as a group!");
 				return;
 			}
 			Zone zone = APIRegistry.zones.getGLOBAL();
@@ -516,12 +517,12 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
 			// Remove zone
 			APIRegistry.perms.deleteGroupInZone(args[1], zone.getZoneName());
-			sender.sendChatToPlayer("Group " + args[1] + " removed in zone " + zone.getZoneName());
+			ChatUtils.sendMessage(sender, "Group " + args[1] + " removed in zone " + zone.getZoneName());
 			return;
 		}
 		if (args[0].equalsIgnoreCase("list"))
@@ -536,7 +537,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
 			ArrayList<?> list = APIRegistry.perms.getGroupsInZone(zone.getZoneName());
@@ -551,22 +552,22 @@ public class CommandFEPermGroup
 					groups += ", ";
 				}
 			}
-			sender.sendChatToPlayer("Groups available in zone " + zone.getZoneName() + ":");
-			sender.sendChatToPlayer(groups);
+			ChatUtils.sendMessage(sender, "Groups available in zone " + zone.getZoneName() + ":");
+			ChatUtils.sendMessage(sender, groups);
 			return;
 		}
 
 		Group group = APIRegistry.perms.getGroupForName(args[0]);
 		if (group == null)
 		{
-			sender.sendChatToPlayer(args[0] + " does not exist as a group!");
+			ChatUtils.sendMessage(sender, args[0] + " does not exist as a group!");
 			return;
 		}
 		if (args.length == 1) // display group-specific settings and their
-								// values for this group
+		// values for this group
 		{
-			sender.sendChatToPlayer("Current settings for " + group.name + ": prefix=" + group.prefix + ", suffix=" + group.suffix + ", parent=" + group.parent + ", priority=" + group.priority);
-			sender.sendChatToPlayer("To change any of these, type /p group <groupname> prefix|suffix|parent|priority set <value>");
+			ChatUtils.sendMessage(sender, "Current settings for " + group.name + ": prefix=" + group.prefix + ", suffix=" + group.suffix + ", parent=" + group.parent + ", priority=" + group.priority);
+			ChatUtils.sendMessage(sender, "To change any of these, type /p group <groupname> prefix|suffix|parent|priority set <value>");
 			return;
 		}
 		/*
@@ -583,7 +584,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 				}
 			}
 		}
@@ -595,14 +596,14 @@ public class CommandFEPermGroup
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 			}
 		}
 		if (args[1].equalsIgnoreCase("prefix"))
 		{
 			if (args.length == 2 || !args[2].equalsIgnoreCase("set"))
 			{
-				sender.sendChatToPlayer(group.name + "'s prefix is &f" + group.prefix);
+				ChatUtils.sendMessage(sender, group.name + "'s prefix is &f" + group.prefix);
 				return;
 			}
 			else
@@ -619,11 +620,11 @@ public class CommandFEPermGroup
 				boolean result = APIRegistry.perms.updateGroup(group);
 				if (result)
 				{
-					sender.sendChatToPlayer(group.name + "'s prefix set to &f" + group.prefix);
+					ChatUtils.sendMessage(sender, group.name + "'s prefix set to &f" + group.prefix);
 				}
 				else
 				{
-					sender.sendChatToPlayer("Error processing group prefix update.");
+					ChatUtils.sendMessage(sender, "Error processing group prefix update.");
 				}
 				return;
 			}
@@ -632,7 +633,7 @@ public class CommandFEPermGroup
 		{
 			if (args.length == 2 || !args[2].equalsIgnoreCase("set"))
 			{
-				sender.sendChatToPlayer(group.name + "'s suffix is &f" + group.suffix);
+				ChatUtils.sendMessage(sender, group.name + "'s suffix is &f" + group.suffix);
 				return;
 			}
 			else
@@ -649,11 +650,11 @@ public class CommandFEPermGroup
 				boolean result = APIRegistry.perms.updateGroup(group);
 				if (result)
 				{
-					sender.sendChatToPlayer(group.name + "'s suffix set to &f" + group.suffix);
+					ChatUtils.sendMessage(sender, group.name + "'s suffix set to &f" + group.suffix);
 				}
 				else
 				{
-					sender.sendChatToPlayer("Error processing group suffix update.");
+					ChatUtils.sendMessage(sender, "Error processing group suffix update.");
 				}
 				return;
 			}
@@ -665,7 +666,7 @@ public class CommandFEPermGroup
 		{
 			if (args.length == 2 || !args[2].equalsIgnoreCase("set"))
 			{
-				sender.sendChatToPlayer(group.name + "'s parent is " + group.parent);
+				ChatUtils.sendMessage(sender, group.name + "'s parent is " + group.parent);
 				return;
 			}
 			else
@@ -682,11 +683,11 @@ public class CommandFEPermGroup
 				boolean result = APIRegistry.perms.updateGroup(group);
 				if (result)
 				{
-					sender.sendChatToPlayer(group.name + "'s parent set to " + group.parent);
+					ChatUtils.sendMessage(sender, group.name + "'s parent set to " + group.parent);
 				}
 				else
 				{
-					sender.sendChatToPlayer("Error processing group parent update.");
+					ChatUtils.sendMessage(sender, "Error processing group parent update.");
 				}
 				return;
 			}
@@ -698,7 +699,7 @@ public class CommandFEPermGroup
 		{
 			if (args.length == 2 || !args[2].equalsIgnoreCase("set"))
 			{
-				sender.sendChatToPlayer(group.name + "'s priority is " + group.priority);
+				ChatUtils.sendMessage(sender, group.name + "'s priority is " + group.priority);
 				return;
 			}
 			else
@@ -716,17 +717,17 @@ public class CommandFEPermGroup
 					}
 					catch (NumberFormatException e)
 					{
-						sender.sendChatToPlayer(args[3] + "");
+						ChatUtils.sendMessage(sender, args[3] + "");
 					}
 				}
 				boolean result = APIRegistry.perms.updateGroup(group);
 				if (result)
 				{
-					sender.sendChatToPlayer(group.name + "'s priority set to " + group.priority);
+					ChatUtils.sendMessage(sender, group.name + "'s priority set to " + group.priority);
 				}
 				else
 				{
-					sender.sendChatToPlayer("Error processing group priority update.");
+					ChatUtils.sendMessage(sender, "Error processing group priority update.");
 				}
 				return;
 			}
@@ -743,7 +744,7 @@ public class CommandFEPermGroup
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
 			}
 		}
 		if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow"))
@@ -751,11 +752,11 @@ public class CommandFEPermGroup
 			String result = APIRegistry.perms.setGroupPermission(group.name, args[2], true, zone.getZoneName());
 			if (result == null)
 			{
-				sender.sendChatToPlayer(group.name + " in zone " + zone.getZoneName() + " allowed access to " + args[2]);
+				ChatUtils.sendMessage(sender, group.name + " in zone " + zone.getZoneName() + " allowed access to " + args[2]);
 			}
 			else
 			{
-				sender.sendChatToPlayer(result);
+				ChatUtils.sendMessage(sender, result);
 			}
 			return;
 		}
@@ -764,11 +765,11 @@ public class CommandFEPermGroup
 			String result = APIRegistry.perms.setGroupPermission(group.name, args[2], false, zone.getZoneName());
 			if (result == null)
 			{
-				sender.sendChatToPlayer(group.name + " in zone " + zone.getZoneName() + " denied access to " + args[2]);
+				ChatUtils.sendMessage(sender, group.name + " in zone " + zone.getZoneName() + " denied access to " + args[2]);
 			}
 			else
 			{
-				sender.sendChatToPlayer(result);
+				ChatUtils.sendMessage(sender, result);
 			}
 			return;
 		}
@@ -777,11 +778,11 @@ public class CommandFEPermGroup
 			String result = APIRegistry.perms.clearGroupPermission(group.name, args[2], zone.getZoneName());
 			if (result == null)
 			{
-				sender.sendChatToPlayer(args[2] + " has been removed from " + group.name + " in zone " + zone.getZoneName());
+				ChatUtils.sendMessage(sender, args[2] + " has been removed from " + group.name + " in zone " + zone.getZoneName());
 			}
 			else
 			{
-				sender.sendChatToPlayer(result);
+				ChatUtils.sendMessage(sender, result);
 			}
 			return;
 		}
@@ -790,15 +791,15 @@ public class CommandFEPermGroup
 			String result = APIRegistry.perms.getPermissionForGroup(group.name, zone.getZoneName(), args[2]);
 			if (result == null)
 			{
-				sender.sendChatToPlayer("Error processing statement");
+				ChatUtils.sendMessage(sender, "Error processing statement");
 			}
 			else if (result.equals("Zone or target invalid"))
 			{
-				sender.sendChatToPlayer("Zone or group does not exist!");
+				ChatUtils.sendMessage(sender, "Zone or group does not exist!");
 			}
 			else
 			{
-				sender.sendChatToPlayer(args[2] + " is " + result + " for " + group.name);
+				ChatUtils.sendMessage(sender, args[2] + " is " + result + " for " + group.name);
 			}
 			return;
 		}
@@ -812,11 +813,11 @@ public class CommandFEPermGroup
 				}
 				else if (args[2].equalsIgnoreCase("here"))
 				{
-					sender.sendChatToPlayer("ERROR: You are not allowed to use the here keyword in console.");
+					ChatUtils.sendMessage(sender, "ERROR: You are not allowed to use the here keyword in console.");
 				}
 				else
 				{
-					sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
 				}
 			}
 			ArrayList<String> list = APIRegistry.perms.getGroupPermissions(group.name, zone.getZoneName());
@@ -827,7 +828,7 @@ public class CommandFEPermGroup
 			{
 				if (perm.contains("has no individual permissions."))
 				{
-					sender.sendChatToPlayer(perm);
+					ChatUtils.sendMessage(sender, perm);
 					return;
 				}
 				if (perm.contains("ALLOW"))
@@ -839,19 +840,19 @@ public class CommandFEPermGroup
 					messageDenied.add(" " + perm);
 				}
 			}
-			sender.sendChatToPlayer(group.name + (group.parent != null ? " inherits from " + group.parent : "") + ".\nCurrent permissions in zone " + zone.getZoneName() + ":");
+			ChatUtils.sendMessage(sender, group.name + (group.parent != null ? " inherits from " + group.parent : "") + ".\nCurrent permissions in zone " + zone.getZoneName() + ":");
 			for (String perm : messageAllowed)
 			{
-				sender.sendChatToPlayer(perm);
+				ChatUtils.sendMessage(sender, perm);
 			}
 			for (String perm : messageDenied)
 			{
-				sender.sendChatToPlayer(perm);
+				ChatUtils.sendMessage(sender, perm);
 			}
 			return;
 		}
 
-		sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + "");
+		ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
 	}
 
 }

@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -181,7 +182,7 @@ public class CommandButcher extends FEcmdModuleCommands
 			}
 			catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NAN, args[0]));
 				return;
 			}
 		}

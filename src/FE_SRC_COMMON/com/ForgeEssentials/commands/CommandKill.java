@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -35,17 +36,17 @@ public class CommandKill extends FEcmdModuleCommands
 			if (player != null)
 			{
 				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				player.sendChatToPlayer(Localization.get("command.kill.msg"));
+				ChatUtils.sendMessage(player, Localization.get("command.kill.msg"));
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
 		else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
-			sender.sendChatToPlayer(Localization.get("command.kill.msg"));
+			ChatUtils.sendMessage(sender, Localization.get("command.kill.msg"));
 		}
 	}
 
@@ -58,16 +59,16 @@ public class CommandKill extends FEcmdModuleCommands
 			if (player != null)
 			{
 				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				player.sendChatToPlayer(Localization.get("command.kill.msg"));
+				ChatUtils.sendMessage(player, Localization.get("command.kill.msg"));
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

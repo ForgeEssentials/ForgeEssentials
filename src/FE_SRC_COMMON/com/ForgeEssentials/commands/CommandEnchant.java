@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -42,7 +43,7 @@ public class CommandEnchant extends FEcmdModuleCommands
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
 			return;
 		}
-		
+
 		if (args.length == 0)
 		{
 			String msg = "";
@@ -78,10 +79,10 @@ public class CommandEnchant extends FEcmdModuleCommands
 			{
 				msg = "Efficiency, SilkTouch, Unbreaking";
 			}
-			sender.sendChatToPlayer(msg);
+			ChatUtils.sendMessage(sender, msg);
 			return;
 		}
-		
+
 		if(args[0].equalsIgnoreCase("listall"))
 		{
 			String msg = "";
@@ -94,12 +95,12 @@ public class CommandEnchant extends FEcmdModuleCommands
 				if(msg.length() > 100)
 				{
 					msg = msg.substring(0, msg.length() - 2);
-					sender.sendChatToPlayer(msg);
+					ChatUtils.sendMessage(sender, msg);
 					msg = "";
 				}
 			}
 			msg = msg.substring(0, msg.length() - 2);
-			sender.sendChatToPlayer(msg);
+			ChatUtils.sendMessage(sender, msg);
 			return;
 		}
 

@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -95,11 +96,11 @@ public class CommandBurn extends FEcmdModuleCommands
 		if (player != null)
 		{
 			player.setFire(time);
-			sender.sendChatToPlayer(Localization.get("command.burn.player"));
+			ChatUtils.sendMessage(sender, Localization.get("command.burn.player"));
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		}
 	}
 

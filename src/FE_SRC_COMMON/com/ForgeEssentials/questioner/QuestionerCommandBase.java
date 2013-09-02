@@ -3,6 +3,7 @@ package com.ForgeEssentials.questioner;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -271,7 +272,7 @@ public abstract class QuestionerCommandBase extends CommandBase
 		}
 		else
 		{
-			sender.sendChatToPlayer(message);
+			ChatUtils.sendMessage(sender, message);
 		}
 	}
 

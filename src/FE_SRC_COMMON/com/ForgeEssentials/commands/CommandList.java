@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -18,7 +19,7 @@ public class CommandList extends FEcmdModuleCommands
     {
         return new String[] {"who", "online", "players"};
     }
-    
+
     @Override
     public String getCommandName()
     {
@@ -49,10 +50,11 @@ public class CommandList extends FEcmdModuleCommands
         HashMultimap<String, String> map = HashMultimap.create();
         for (String username : MinecraftServer.getServer().getConfigurationManager().getAllUsernames())
             map.put(FunctionHelper.getGroupRankString(username), username);
-        
-        sender.sendChatToPlayer(sender.translateString("commands.players.list", new Object[] {Integer.valueOf(MinecraftServer.getServer().getCurrentPlayerCount()), Integer.valueOf(MinecraftServer.getServer().getMaxPlayers())}));
+
+		ChatUtils.sendLocalizedMessage(sender, "commands.players.list",
+				MinecraftServer.getServer().getCurrentPlayerCount(), MinecraftServer.getServer().getMaxPlayers());
         for (String group : map.keySet())
-            sender.sendChatToPlayer(group + ": " + FunctionHelper.niceJoin(map.get(group).toArray()));
+			ChatUtils.sendMessage(sender, group + ": " + FunctionHelper.niceJoin(map.get(group).toArray()));
     }
 
     @Override

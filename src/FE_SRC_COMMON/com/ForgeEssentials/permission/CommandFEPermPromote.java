@@ -1,5 +1,6 @@
 package com.ForgeEssentials.permission;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,7 +13,7 @@ public class CommandFEPermPromote
 {
 	public static void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		sender.sendChatToPlayer("TEST! Promote parsing");
+		ChatUtils.sendMessage(sender, "TEST! Promote parsing");
 
 		if (args.length == 0)
 			// Not possible

@@ -2,6 +2,7 @@ package com.ForgeEssentials.economy.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -31,7 +32,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player == null)
 			{
-				sender.sendChatToPlayer(args[0] + " not found!");
+				ChatUtils.sendMessage(sender, args[0] + " not found!");
 			}
 			else
 			{
@@ -54,7 +55,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player == null)
 			{
-				sender.sendChatToPlayer(args[0] + " not found!");
+				ChatUtils.sendMessage(sender, args[0] + " not found!");
 			}
 			else
 			{
@@ -65,7 +66,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

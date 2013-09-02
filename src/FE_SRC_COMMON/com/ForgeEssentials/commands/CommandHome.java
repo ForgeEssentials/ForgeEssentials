@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -50,7 +51,7 @@ public class CommandHome extends FEcmdModuleCommands
 			{
 				WarpPoint p = new WarpPoint(sender);
 				PlayerInfo.getPlayerInfo(sender.username).home = p;
-				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
+				ChatUtils.sendMessage(sender, Localization.format("command.home.confirm", p.x, p.y, p.z));
 			}
 		}
 	}
