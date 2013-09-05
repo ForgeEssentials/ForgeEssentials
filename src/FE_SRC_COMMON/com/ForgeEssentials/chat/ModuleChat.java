@@ -7,7 +7,6 @@ import java.util.Set;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
-import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 

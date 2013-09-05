@@ -2,7 +2,6 @@ package com.ForgeEssentials.core.commands;
 
 import java.util.List;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemInWorldManager;
@@ -10,6 +9,7 @@ import net.minecraft.item.ItemStack;
 
 import com.ForgeEssentials.core.preloader.Data;
 import com.ForgeEssentials.core.preloader.asm.FEeventAdder;
+import com.ForgeEssentials.util.ChatUtils;
 
 public class CommandFEDebug extends ForgeEssentialsCommandBase
 {

@@ -1,6 +1,5 @@
 package com.ForgeEssentials.WorldBorder;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IProgressUpdate;
@@ -16,6 +15,7 @@ import com.ForgeEssentials.data.api.SaveableObject;
 import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChunkLoader;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;

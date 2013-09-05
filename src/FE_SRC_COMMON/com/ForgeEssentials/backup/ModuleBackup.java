@@ -3,7 +3,6 @@ package com.ForgeEssentials.backup;
 import java.io.File;
 import java.io.PrintWriter;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -19,6 +18,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;

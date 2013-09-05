@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -24,6 +23,7 @@ import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerStop;
 import com.ForgeEssentials.serverVote.Votifier.VoteReceiver;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;

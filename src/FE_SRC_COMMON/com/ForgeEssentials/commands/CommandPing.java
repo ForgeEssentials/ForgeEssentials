@@ -2,7 +2,6 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,6 +9,7 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 
 public class CommandPing extends FEcmdModuleCommands
 {

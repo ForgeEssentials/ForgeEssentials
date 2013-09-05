@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
@@ -13,6 +12,7 @@ import net.minecraft.world.WorldServer;
 import com.ForgeEssentials.WorldControl.ConfigWorldControl;
 import com.ForgeEssentials.api.snooper.TextFormatter;
 import com.ForgeEssentials.playerLogger.blockChange;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.tasks.ITickTask;
 

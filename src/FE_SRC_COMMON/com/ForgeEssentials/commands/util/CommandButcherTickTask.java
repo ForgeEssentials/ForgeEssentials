@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.EntityLiving;
@@ -26,6 +25,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.api.EnumMobType;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;

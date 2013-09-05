@@ -3,7 +3,6 @@ package com.ForgeEssentials.commands;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
@@ -13,6 +12,7 @@ import net.minecraft.world.World;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;

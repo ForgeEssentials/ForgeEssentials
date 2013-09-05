@@ -2,7 +2,6 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
@@ -15,6 +14,7 @@ import net.minecraft.world.World;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.TickTaskPulseHelper;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.tasks.TaskRegistry;

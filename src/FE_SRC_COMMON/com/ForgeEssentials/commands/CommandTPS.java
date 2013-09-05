@@ -3,7 +3,6 @@ package com.ForgeEssentials.commands;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.TcpConnection;
@@ -12,6 +11,7 @@ import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 

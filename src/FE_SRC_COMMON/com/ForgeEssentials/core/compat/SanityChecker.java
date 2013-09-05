@@ -1,6 +1,5 @@
 package com.ForgeEssentials.core.compat;
 
-import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Loader;

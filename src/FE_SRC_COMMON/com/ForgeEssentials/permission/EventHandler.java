@@ -1,11 +1,11 @@
 package com.ForgeEssentials.permission;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PropQueryPlayerZone;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.events.PlayerChangedZone;
 

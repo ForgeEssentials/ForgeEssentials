@@ -1,7 +1,5 @@
 package com.ForgeEssentials.chat.ircCommands;
 
-import java.util.Arrays;
-
 import org.pircbotx.User;
 
 public class ircCommandHelp extends ircCommand

@@ -9,7 +9,6 @@ import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -17,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.compat.CompatReiMinimap;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 

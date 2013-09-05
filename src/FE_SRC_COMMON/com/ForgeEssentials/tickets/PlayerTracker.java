@@ -1,10 +1,10 @@
 package com.ForgeEssentials.tickets;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
 import cpw.mods.fml.common.IPlayerTracker;

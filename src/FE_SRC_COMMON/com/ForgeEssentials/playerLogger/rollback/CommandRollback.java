@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -15,6 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.playerLogger.network.PacketRollback;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.tasks.TaskRegistry;

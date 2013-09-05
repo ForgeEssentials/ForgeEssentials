@@ -1,16 +1,11 @@
 package com.ForgeEssentials.chat;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-import org.h2.bnf.Sentence;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
@@ -22,14 +17,9 @@ import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
-import com.ForgeEssentials.chat.commands.CommandMsg;
-import com.ForgeEssentials.chat.ircCommands.ircCommand;
-import com.ForgeEssentials.chat.ircCommands.ircCommandMessage;
-import com.ForgeEssentials.chat.ircCommands.ircCommandReply;
 import com.ForgeEssentials.chat.ircCommands.ircCommands;
-import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.IPlayerTracker;

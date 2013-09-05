@@ -1,11 +1,11 @@
 package com.ForgeEssentials.permission.mcoverride;
 
-import com.ForgeEssentials.api.APIRegistry;
-import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
-
 import net.minecraft.command.CommandServerPardon;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+
+import com.ForgeEssentials.api.APIRegistry;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 
 public class CommandPardon extends CommandServerPardon{
 	@Override

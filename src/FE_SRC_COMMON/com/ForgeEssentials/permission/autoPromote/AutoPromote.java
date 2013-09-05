@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.APIRegistry;
@@ -14,6 +13,7 @@ import com.ForgeEssentials.data.api.SaveableObject;
 import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 
 @SaveableObject

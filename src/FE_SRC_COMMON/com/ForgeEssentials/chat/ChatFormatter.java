@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.DamageSource;
@@ -18,6 +17,7 @@ import com.ForgeEssentials.api.permissions.Zone;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.chat.commands.CommandPm;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;

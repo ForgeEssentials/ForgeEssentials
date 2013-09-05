@@ -1,10 +1,10 @@
 package com.ForgeEssentials.questioner;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.questioner.AnswerEnum;
 import com.ForgeEssentials.api.questioner.RunnableAnswer;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 
 public class QuestionData

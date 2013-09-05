@@ -2,12 +2,12 @@ package com.ForgeEssentials.commands.util;
 
 import java.util.ArrayList;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.tasks.ITickTask;
 import com.ForgeEssentials.util.tasks.TaskRegistry;

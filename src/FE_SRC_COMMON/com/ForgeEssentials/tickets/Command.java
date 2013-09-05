@@ -10,12 +10,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
-import com.ForgeEssentials.util.ChatUtils;
 
 public class Command extends ForgeEssentialsCommandBase
 {

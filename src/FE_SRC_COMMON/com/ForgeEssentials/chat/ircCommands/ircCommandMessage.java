@@ -1,12 +1,12 @@
 package com.ForgeEssentials.chat.ircCommands;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import org.pircbotx.User;
 
 import com.ForgeEssentials.chat.IRCHelper;
 import com.ForgeEssentials.chat.commands.CommandMsg;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 

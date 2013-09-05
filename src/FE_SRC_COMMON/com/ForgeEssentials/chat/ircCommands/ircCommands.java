@@ -4,9 +4,6 @@ import java.util.ArrayList;
 
 import org.pircbotx.User;
 
-import com.ForgeEssentials.chat.IRCHelper;
-import com.ForgeEssentials.util.OutputHandler;
-
 public class ircCommands
 {
 

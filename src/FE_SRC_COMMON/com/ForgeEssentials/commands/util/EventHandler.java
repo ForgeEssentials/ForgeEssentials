@@ -1,6 +1,5 @@
 package com.ForgeEssentials.commands.util;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -24,6 +23,7 @@ import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.commands.CommandBack;
 import com.ForgeEssentials.commands.CommandSetSpawn;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;

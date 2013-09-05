@@ -9,7 +9,6 @@ import com.ForgeEssentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister
 import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.Zone;
-import com.ForgeEssentials.permission.network.PacketPermNodeList;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
 import com.ForgeEssentials.data.AbstractDataDriver;
@@ -19,6 +18,7 @@ import com.ForgeEssentials.permission.autoPromote.AutoPromote;
 import com.ForgeEssentials.permission.autoPromote.AutoPromoteManager;
 import com.ForgeEssentials.permission.autoPromote.CommandAutoPromote;
 import com.ForgeEssentials.permission.mcoverride.OverrideManager;
+import com.ForgeEssentials.permission.network.PacketPermNodeList;
 import com.ForgeEssentials.util.TeleportCenter;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
 import com.ForgeEssentials.util.events.modules.FEModulePostInitEvent;

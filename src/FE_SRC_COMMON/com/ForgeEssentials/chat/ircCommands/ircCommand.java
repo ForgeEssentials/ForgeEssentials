@@ -1,16 +1,9 @@
 package com.ForgeEssentials.chat.ircCommands;
 
-import java.awt.List;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.h2.expression.Alias;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.hooks.types.GenericMessageEvent;
-
-import net.minecraftforge.event.ForgeSubscribe;
 
 public abstract class ircCommand
 {

@@ -2,12 +2,12 @@ package com.ForgeEssentials.auth.lists;
 
 import java.util.List;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 
 public class CommandWhiteList extends ForgeEssentialsCommandBase {
 

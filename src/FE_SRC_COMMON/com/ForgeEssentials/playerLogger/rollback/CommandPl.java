@@ -3,12 +3,12 @@ package com.ForgeEssentials.playerLogger.rollback;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.playerLogger.network.PacketPlayerLogger;
+import com.ForgeEssentials.util.ChatUtils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;

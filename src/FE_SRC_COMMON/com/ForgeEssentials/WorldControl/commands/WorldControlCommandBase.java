@@ -3,12 +3,12 @@ package com.ForgeEssentials.WorldControl.commands;
 //Depreciated
 import java.util.List;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.core.misc.FriendlyItemList;
+import com.ForgeEssentials.util.ChatUtils;
 
 public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 {

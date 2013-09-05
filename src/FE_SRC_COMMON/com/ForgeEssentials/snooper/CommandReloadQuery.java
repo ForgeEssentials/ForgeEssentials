@@ -2,11 +2,11 @@ package com.ForgeEssentials.snooper;
 
 import java.util.List;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 
 public class CommandReloadQuery extends ForgeEssentialsCommandBase
 {

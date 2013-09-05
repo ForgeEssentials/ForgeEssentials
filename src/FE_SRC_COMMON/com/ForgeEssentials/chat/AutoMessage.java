@@ -3,9 +3,9 @@ package com.ForgeEssentials.chat;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.server.MinecraftServer;
 
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
 
 public class AutoMessage implements Runnable
