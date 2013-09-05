@@ -7,8 +7,8 @@ echo "Building ForgeEssentials ${VERSIONBUILD} for MC ${MC} in $1"
 
 echo "Downloading Forge..."
 
-#wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
-wget -nv http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.5.2-7.8.1.738.zip
+wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
+#wget -nv http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.5.2-7.8.1.738.zip
 
 unzip -q minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
