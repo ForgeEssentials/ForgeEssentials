@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.HashMap;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -119,7 +120,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		}
 		else if (args.length != 3)
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 			return;
 		}
 

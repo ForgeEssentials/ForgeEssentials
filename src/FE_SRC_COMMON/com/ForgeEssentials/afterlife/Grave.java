@@ -51,7 +51,6 @@ public class Grave
 
 			player.experienceLevel = 0;
 			player.experienceTotal = 0;
-			player.experienceValue = 0;
 		}
 		inv = new ItemStack[drops.size()];
 		for (int i = 0; i < drops.size(); i++)

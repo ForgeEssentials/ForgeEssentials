@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -44,7 +45,7 @@ public class CommandWarp extends FEcmdModuleCommands
 			{
 			    msg = warp + ", " + msg;
 			}
-			sender.sendChatToPlayer(msg);
+			ChatUtils.sendMessage(sender, msg);
 		}
 		else if (args.length == 1)
 		{

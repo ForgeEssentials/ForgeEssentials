@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -59,8 +60,8 @@ public class CommandTPAhere extends FEcmdModuleCommands
 				{
 					if (data.receiver.username.equalsIgnoreCase(sender.username))
 					{
-						data.sender.sendChatToPlayer(Localization.get("command.tpahere.accepted"));
-						data.receiver.sendChatToPlayer(Localization.get("command.tpahere.accepted"));
+						ChatUtils.sendMessage(data.sender, Localization.get("command.tpahere.accepted"));
+						ChatUtils.sendMessage(data.receiver, Localization.get("command.tpahere.accepted"));
 						TickHandlerCommands.tpaListToRemove.add(data);
 						TeleportCenter.addToTpQue(new WarpPoint(data.sender), data.receiver);
 						return;
@@ -69,7 +70,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 			}
 			return;
 		}
-		
+
 		if (args[0].equalsIgnoreCase("decline"))
 		{
 			for (TPAdata data : TickHandlerCommands.tpaList)
@@ -78,8 +79,8 @@ public class CommandTPAhere extends FEcmdModuleCommands
 				{
 					if (data.receiver.username.equalsIgnoreCase(sender.username))
 					{
-						data.sender.sendChatToPlayer(Localization.get("command.tpahere.declined"));
-						data.receiver.sendChatToPlayer(Localization.get("command.tpahere.declined"));
+						ChatUtils.sendMessage(data.sender, Localization.get("command.tpahere.declined"));
+						ChatUtils.sendMessage(data.receiver, Localization.get("command.tpahere.declined"));
 						TickHandlerCommands.tpaListToRemove.add(data);
 						return;
 					}
@@ -87,7 +88,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 			}
 			return;
 		}
-		
+
 		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".sendrequest")))
 		{
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
@@ -97,14 +98,14 @@ public class CommandTPAhere extends FEcmdModuleCommands
 		EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (receiver == null)
 		{
-			sender.sendChatToPlayer(args[0] + " not found.");
+			ChatUtils.sendMessage(sender, args[0] + " not found.");
 		}
 		else
 		{
 			TickHandlerCommands.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
 
-			sender.sendChatToPlayer(Localization.format("command.tpahere.sendRequest", receiver.username));
-			receiver.sendChatToPlayer(Localization.format("command.tpahere.gotRequest", sender.username));
+			ChatUtils.sendMessage(sender, Localization.format("command.tpahere.sendRequest", receiver.username));
+			ChatUtils.sendMessage(receiver, Localization.format("command.tpahere.gotRequest", sender.username));
 		}
 	}
 
@@ -145,7 +146,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 	{
 		return RegGroup.MEMBERS;
 	}
-	
+
 	@Override
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{

@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -39,7 +41,7 @@ public class ChatFormatter
 		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
 		{
 			event.setCanceled(true);
-			event.player.sendChatToPlayer(Localization.get("message.muted"));
+			ChatUtils.sendMessage(event.player, Localization.get("message.muted"));
 			return;
 		}
 
@@ -71,7 +73,7 @@ public class ChatFormatter
 					String replaceWith = Strings.repeat(censorSymbol, length);
 
 					message = m.replaceAll(replaceWith);
-					
+
 					if (censorSlap != 0) event.player.attackEntityFrom(DamageSource.generic, censorSlap);
 				}
 			}
@@ -151,14 +153,16 @@ public class ChatFormatter
 			format = FunctionHelper.replaceAllIgnoreCase(format, "%gm", gmCode);
 		}
 
+		float health = event.player.func_110143_aJ(); // No nice name for player health yet
+
 		if (format.contains("%healthcolor"))
 		{
 			String c = "";
-			if (event.player.getHealth() < 6)
+			if (health < 6)
 			{
 				c = "%red";
 			}
-			else if (event.player.getHealth() < 12)
+			else if (health < 12)
 			{
 				c = "%yellow";
 			}
@@ -175,7 +179,7 @@ public class ChatFormatter
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%groupSuffix", gSuffix);
 
 		// random nice things...
-		format = FunctionHelper.replaceAllIgnoreCase(format, "%health", "" + event.player.getHealth());
+		format = FunctionHelper.replaceAllIgnoreCase(format, "%health", "" + health);
 
 		format = FunctionHelper.format(format);
 
@@ -190,8 +194,9 @@ public class ChatFormatter
 		// }
 
 		// finally make it the chat line.
-		event.line = format;
-		
+		// TODO: This is probably incorrect with regards to coloring
+		event.component = ChatMessageComponent.func_111066_d(format);
+
 		if (ConfigChat.logchat && ModuleChat.chatLog != null)
 	    {
 	        ModuleChat.chatLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + event.username + "] " + event.message); // don't use event.line - it shows colour codes and everything

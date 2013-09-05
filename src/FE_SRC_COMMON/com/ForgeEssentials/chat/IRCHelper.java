@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -112,7 +113,7 @@ public class IRCHelper extends ListenerAdapter implements Listener
 
 	private static void postMinecraft(String message)
 	{
-		MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
+		ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(), message);
 	}
 
 	public static void shutdown()
@@ -128,15 +129,15 @@ public class IRCHelper extends ListenerAdapter implements Listener
 		}
 		catch (NickAlreadyInUseException e)
 		{
-			sender.sendChatToPlayer("Could not reconnect to the IRC server - the assigned nick is already in use. Try again in a few minutes.");
+			ChatUtils.sendMessage(sender, "Could not reconnect to the IRC server - the assigned nick is already in use. Try again in a few minutes.");
 		}
 		catch (IOException e)
 		{
-			sender.sendChatToPlayer("Could not reconnect to the IRC server - something went wrong.");
+			ChatUtils.sendMessage(sender, "Could not reconnect to the IRC server - something went wrong.");
 		}
 		catch (IrcException e)
 		{
-			sender.sendChatToPlayer("Could not reconnect to the IRC server - something went wrong, or you are already connected to the server.");
+			ChatUtils.sendMessage(sender, "Could not reconnect to the IRC server - something went wrong, or you are already connected to the server.");
 		}
 	}
 

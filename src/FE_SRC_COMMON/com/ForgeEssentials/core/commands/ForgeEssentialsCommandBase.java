@@ -2,6 +2,7 @@ package com.ForgeEssentials.core.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -202,7 +203,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		}
 		else
 		{
-			sender.sendChatToPlayer(message);
+			ChatUtils.sendMessage(sender, message);
 		}
 	}
 

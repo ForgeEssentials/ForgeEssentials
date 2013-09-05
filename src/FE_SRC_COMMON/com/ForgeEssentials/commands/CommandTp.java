@@ -3,6 +3,7 @@ package com.ForgeEssentials.commands;
 import java.util.HashMap;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
@@ -59,12 +60,12 @@ public class CommandTp extends FEcmdModuleCommands
 		}
 		else if (args.length == 2 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			
+
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
 				EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[1]);
-				
+
 				if (target != null)
 				{
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
@@ -168,7 +169,7 @@ public class CommandTp extends FEcmdModuleCommands
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX));
 		}
 	}
 

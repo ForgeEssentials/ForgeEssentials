@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -43,7 +44,7 @@ public class CommandTop extends FEcmdModuleCommands
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
 		else
@@ -70,12 +71,12 @@ public class CommandTop extends FEcmdModuleCommands
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
@@ -88,7 +89,7 @@ public class CommandTop extends FEcmdModuleCommands
 			point.y--;
 		}
 		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y + 1, point.z, point.yaw, point.pitch);
-		player.sendChatToPlayer(Localization.get("message.tc.done"));
+		ChatUtils.sendMessage(player, Localization.get("message.tc.done"));
 	}
 
 	@Override

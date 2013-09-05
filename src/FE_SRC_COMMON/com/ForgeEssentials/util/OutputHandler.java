@@ -30,11 +30,11 @@ public final class OutputHandler
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			sender.sendChatToPlayer(FEChatFormatCodes.RED + FunctionHelper.formatColors(msg));
+			ChatUtils.sendMessage(sender, FEChatFormatCodes.RED + FunctionHelper.formatColors(msg));
 		}
 		else
 		{
-			sender.sendChatToPlayer(FunctionHelper.formatColors(msg));
+			ChatUtils.sendMessage(sender, FunctionHelper.formatColors(msg));
 		}
 	}
 
@@ -49,11 +49,11 @@ public final class OutputHandler
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			sender.sendChatToPlayer(FEChatFormatCodes.GREEN + FunctionHelper.formatColors(msg));
+			ChatUtils.sendMessage(sender, FEChatFormatCodes.GREEN + FunctionHelper.formatColors(msg));
 		}
 		else
 		{
-			sender.sendChatToPlayer(FunctionHelper.formatColors(msg));
+			ChatUtils.sendMessage(sender, FunctionHelper.formatColors(msg));
 		}
 	}
 
@@ -68,11 +68,11 @@ public final class OutputHandler
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			sender.sendChatToPlayer(FEChatFormatCodes.YELLOW + FunctionHelper.formatColors(msg));
+			ChatUtils.sendMessage(sender, FEChatFormatCodes.YELLOW + FunctionHelper.formatColors(msg));
 		}
 		else
 		{
-			sender.sendChatToPlayer(FunctionHelper.formatColors(msg));
+			ChatUtils.sendMessage(sender, FunctionHelper.formatColors(msg));
 		}
 	}
 

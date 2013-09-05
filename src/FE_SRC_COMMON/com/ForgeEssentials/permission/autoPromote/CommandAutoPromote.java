@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -72,19 +73,19 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 		if (args.length == 0 || args.length == 1 || args[1].equalsIgnoreCase("get"))
 		{
 			String header = "--- AutoPromote for: " + ap.zone + " ---";
-			sender.sendChatToPlayer(header);
-			sender.sendChatToPlayer("Enabled: " + (ap.enable ? FEChatFormatCodes.GREEN : FEChatFormatCodes.RED) + ap.enable);
-			sender.sendChatToPlayer("Promotion times: ");
+			ChatUtils.sendMessage(sender, header);
+			ChatUtils.sendMessage(sender, "Enabled: " + (ap.enable ? FEChatFormatCodes.GREEN : FEChatFormatCodes.RED) + ap.enable);
+			ChatUtils.sendMessage(sender, "Promotion times: ");
 			for (String i : ap.promoteList.keySet())
 			{
-				sender.sendChatToPlayer(" " + i + " > " + ap.promoteList.get(i));
+				ChatUtils.sendMessage(sender, " " + i + " > " + ap.promoteList.get(i));
 			}
 			StringBuilder footer = new StringBuilder();
 			for (int i = 3; i < header.length(); i++)
 			{
 				footer.append("-");
 			}
-			sender.sendChatToPlayer(footer.toString());
+			ChatUtils.sendMessage(sender, footer.toString());
 			return;
 		}
 
@@ -188,7 +189,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 			if (args.length == 2 || args[2].equalsIgnoreCase("get"))
 			{
 				OutputHandler.chatConfirmation(sender, "Current message:");
-				sender.sendChatToPlayer(FunctionHelper.formatColors(ap.msg));
+				ChatUtils.sendMessage(sender, FunctionHelper.formatColors(ap.msg));
 			}
 			else if (args[2].equalsIgnoreCase("set"))
 			{
@@ -199,7 +200,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 				}
 				ap.msg = newMsg.trim();
 				OutputHandler.chatConfirmation(sender, "New message:");
-				sender.sendChatToPlayer(FunctionHelper.formatColors(ap.msg));
+				ChatUtils.sendMessage(sender, FunctionHelper.formatColors(ap.msg));
 			}
 			else if (args[2].equalsIgnoreCase("enable"))
 			{
@@ -320,7 +321,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 				for (Group group : groups)
 				{
 					groupNames.add(group.name);
-					sender.sendChatToPlayer(group.name);
+					ChatUtils.sendMessage(sender, group.name);
 				}
 				return getListOfStringsFromIterableMatchingLastWord(args, groupNames);
 			}

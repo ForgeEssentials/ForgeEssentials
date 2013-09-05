@@ -62,7 +62,6 @@ public class ModuleChat
 	@FEModule.PreInit
 	public void load(FEModulePreInitEvent e)
 	{
-		Packet3Chat.maxChatLength = 200;
 	}
 
 	@FEModule.Init

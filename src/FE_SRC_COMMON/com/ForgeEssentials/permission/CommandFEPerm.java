@@ -3,6 +3,7 @@ package com.ForgeEssentials.permission;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -150,7 +151,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 					return;
 				}
 				APIRegistry.perms.setPlayerGroup(args[2], APIRegistry.perms.getEntryPlayer(), zone.getZoneName());
-				sender.sendChatToPlayer("Default group set to " + APIRegistry.perms.getGroupForName(args[2]).name + " in zone " + zone.getZoneName());
+				ChatUtils.sendMessage(sender, "Default group set to " + APIRegistry.perms.getGroupForName(args[2]).name + " in zone " + zone.getZoneName());
 			}
 			else if (args.length > 2 && args[1].equalsIgnoreCase("add"))
 			{
@@ -187,8 +188,8 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer("Base usage is /p user|group|default.");
-			sender.sendChatToPlayer("Type one of these for more information.");
+			ChatUtils.sendMessage(sender, "Base usage is /p user|group|default.");
+			ChatUtils.sendMessage(sender, "Type one of these for more information.");
 			return;
 		}
 		String first = args[0];
@@ -234,11 +235,11 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 				}
 				else if (args[2].equalsIgnoreCase("here"))
 				{
-					sender.sendChatToPlayer("Cannot use \"here\" as console");
+					ChatUtils.sendMessage(sender, "Cannot use \"here\" as console");
 				}
 				else
 				{
-					sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 					return;
 				}
 			}
@@ -246,42 +247,42 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 			{
 				if (zone.getZoneName() != APIRegistry.zones.getGLOBAL().getZoneName())
 				{
-					sender.sendChatToPlayer("WARNING: Setting the default group outside of _GLOBAL_ zone is not recommended.");
+					ChatUtils.sendMessage(sender, "WARNING: Setting the default group outside of _GLOBAL_ zone is not recommended.");
 				}
 				if (APIRegistry.perms.getGroupForName(args[2]) == null)
 				{
-					sender.sendChatToPlayer("ERROR: " + args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
+					ChatUtils.sendMessage(sender, "ERROR: " + args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
 					return;
 				}
 				APIRegistry.perms.setPlayerGroup(args[2], APIRegistry.perms.getEntryPlayer(), zone.getZoneName());
-				sender.sendChatToPlayer("Default group set to " + APIRegistry.perms.getGroupForName(args[2]).name + " in zone " + zone.getZoneName());
+				ChatUtils.sendMessage(sender, "Default group set to " + APIRegistry.perms.getGroupForName(args[2]).name + " in zone " + zone.getZoneName());
 			}
 			else if (args.length > 2 && args[1].equalsIgnoreCase("add"))
 			{
 				if (APIRegistry.perms.getGroupForName(args[2]) == null)
 				{
-					sender.sendChatToPlayer("ERROR: " + args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
+					ChatUtils.sendMessage(sender, "ERROR: " + args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
 					return;
 				}
 				APIRegistry.perms.addPlayerToGroup(args[2], APIRegistry.perms.getEntryPlayer(), zone.getZoneName());
-				sender.sendChatToPlayer("Group " + APIRegistry.perms.getGroupForName(args[2]).name + " in zone " + zone.getZoneName() + " added to defaults.");
+				ChatUtils.sendMessage(sender, "Group " + APIRegistry.perms.getGroupForName(args[2]).name + " in zone " + zone.getZoneName() + " added to defaults.");
 			}
 			else if (args.length == 1)
 			{
 				ArrayList<Group> groupList = APIRegistry.perms.getApplicableGroups(APIRegistry.perms.getEntryPlayer(), false, zone.getZoneName());
 				if (groupList.size() == 1)
 				{
-					sender.sendChatToPlayer("Default group in zone " + zone.getZoneName() + " is currently " + groupList.get(0).name);
+					ChatUtils.sendMessage(sender, "Default group in zone " + zone.getZoneName() + " is currently " + groupList.get(0).name);
 				}
 				else
 				{
-					sender.sendChatToPlayer("Default groups in zone " + zone.getZoneName() + " are currently:\n");
+					ChatUtils.sendMessage(sender, "Default groups in zone " + zone.getZoneName() + " are currently:\n");
 					for (Group group : groupList)
 					{
-						sender.sendChatToPlayer(" " + group.name);
+						ChatUtils.sendMessage(sender, " " + group.name);
 					}
 				}
-				sender.sendChatToPlayer("To change the default groups, type /p default add|set <groupname> [zone]");
+				ChatUtils.sendMessage(sender, "To change the default groups, type /p default add|set <groupname> [zone]");
 			}
 		}
 	}

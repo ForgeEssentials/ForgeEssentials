@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -53,7 +54,7 @@ public class CommandModlist extends FEcmdModuleCommands
 				break;
 			}
 			ModContainer mod = Loader.instance().getModList().get(i);
-			sender.sendChatToPlayer(mod.getName() + " - " + mod.getVersion());
+			ChatUtils.sendMessage(sender, mod.getName() + " - " + mod.getVersion());
 		}
 	}
 

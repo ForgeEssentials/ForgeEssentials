@@ -16,6 +16,7 @@ import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
+import com.ForgeEssentials.util.ChatUtils;
 
 public class CommandFEPermUser
 {
@@ -151,7 +152,7 @@ public class CommandFEPermUser
 					return;
 				}
 			}
-			
+
 			if (args.length >= 3)
 			{
 				if (args[2].equalsIgnoreCase("add")) // add player to group
@@ -394,11 +395,11 @@ public class CommandFEPermUser
 		if (args.length == 0) // display syntax & possible options for this
 								// level
 		{
-			sender.sendChatToPlayer("Possible usage:");
-			sender.sendChatToPlayer("/p user <player> : Display user statistics");
-			sender.sendChatToPlayer("/p user <player> supers : Player's superperms");
-			sender.sendChatToPlayer("/p user <player> group : Player's group settings");
-			sender.sendChatToPlayer("/p user <player> allow|true|deny|false|clear : Player's individual permissions");
+			ChatUtils.sendMessage(sender, "Possible usage:");
+			ChatUtils.sendMessage(sender, "/p user <player> : Display user statistics");
+			ChatUtils.sendMessage(sender, "/p user <player> supers : Player's superperms");
+			ChatUtils.sendMessage(sender, "/p user <player> group : Player's group settings");
+			ChatUtils.sendMessage(sender, "/p user <player> allow|true|deny|false|clear : Player's individual permissions");
 			return;
 		}
 
@@ -406,8 +407,8 @@ public class CommandFEPermUser
 		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (player == null)
 		{
-			sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_NOPLAYER, args[0]));
-			sender.sendChatToPlayer(args[0] + " will be used, but may be inaccurate.");
+			ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			ChatUtils.sendMessage(sender, args[0] + " will be used, but may be inaccurate.");
 		}
 		else
 		{
@@ -415,13 +416,13 @@ public class CommandFEPermUser
 		}
 
 		if (args.length == 1) // display user-specific settings & there values
-								// for this player
+		// for this player
 		{
 			ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(playerName, false, APIRegistry.zones.getGLOBAL().getZoneName());
-			sender.sendChatToPlayer(Localization.format("command.permissions.user.info.groups", playerName));
+			ChatUtils.sendMessage(sender, Localization.format("command.permissions.user.info.groups", playerName));
 			for (Group g : groups)
 			{
-				sender.sendChatToPlayer(" - " + g.name + " -- " + g.zoneName);
+				ChatUtils.sendMessage(sender, " - " + g.name + " -- " + g.zoneName);
 			}
 			return;
 		}
@@ -442,11 +443,11 @@ public class CommandFEPermUser
 					}
 					if (error)
 					{
-						sender.sendChatToPlayer("ERROR: " + line);
+						ChatUtils.sendMessage(sender, "ERROR: " + line);
 					}
 					else
 					{
-						sender.sendChatToPlayer(line);
+						ChatUtils.sendMessage(sender, line);
 					}
 				}
 				return;
@@ -458,19 +459,19 @@ public class CommandFEPermUser
 				if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("allow"))
 				{
 					APIRegistry.perms.setPlayerPermission(playerName, args[3], true, zone.getZoneName());
-					sender.sendChatToPlayer(playerName + " has been allowed " + args[3]);
+					ChatUtils.sendMessage(sender, playerName + " has been allowed " + args[3]);
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("clear") || args[2].equalsIgnoreCase("remove")) // remove super perm settings
 				{
 					APIRegistry.perms.clearPlayerPermission(playerName, args[3], zone.getZoneName());
-					sender.sendChatToPlayer(playerName + "'s access to " + args[2] + " cleared");
+					ChatUtils.sendMessage(sender, playerName + "'s access to " + args[2] + " cleared");
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("deny")) // deny super perm
 				{
 					APIRegistry.perms.setPlayerPermission(playerName, args[3], false, zone.getZoneName());
-					sender.sendChatToPlayer(playerName + " has been denied " + args[3]);
+					ChatUtils.sendMessage(sender, playerName + " has been denied " + args[3]);
 					return;
 				}
 				else if (args[2].equalsIgnoreCase("get"))
@@ -504,7 +505,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
 					return;
 				}
 			}
@@ -515,32 +516,32 @@ public class CommandFEPermUser
 					String result = APIRegistry.perms.addPlayerToGroup(args[3], playerName, zoneName);
 					if (result != null)
 					{
-						sender.sendChatToPlayer("ERROR: " + result);
+						ChatUtils.sendMessage(sender, "ERROR: " + result);
 					}
 					else
 					{
-						sender.sendChatToPlayer(playerName + " added to group " + args[3]);
+						ChatUtils.sendMessage(sender, playerName + " added to group " + args[3]);
 					}
 				}
 				else
 				{
-					sender.sendChatToPlayer("ERROR: " + Localization.get(Localization.ERROR_BADSYNTAX));
+					ChatUtils.sendMessage(sender, "ERROR: " + Localization.get(Localization.ERROR_BADSYNTAX));
 				}
 				return;
 			}
 			else if (args[2].equalsIgnoreCase("remove")) // remove player from
-															// group
+			// group
 			{
 				if (args.length > 3)
 				{
 					String result = APIRegistry.perms.clearPlayerGroup(args[3], playerName, zoneName);
 					if (result != null)
 					{
-						sender.sendChatToPlayer("ERROR: " + result);
+						ChatUtils.sendMessage(sender, "ERROR: " + result);
 					}
 					else
 					{
-						sender.sendChatToPlayer(playerName + " removed from group " + args[3]);
+						ChatUtils.sendMessage(sender, playerName + " removed from group " + args[3]);
 					}
 				}
 				return;
@@ -552,11 +553,11 @@ public class CommandFEPermUser
 					String result = APIRegistry.perms.setPlayerGroup(args[3], playerName, zoneName);
 					if (result != null)
 					{
-						sender.sendChatToPlayer("ERROR: " + result);
+						ChatUtils.sendMessage(sender, "ERROR: " + result);
 					}
 					else
 					{
-						sender.sendChatToPlayer(playerName + "'s group set to " + args[3]);
+						ChatUtils.sendMessage(sender, playerName + "'s group set to " + args[3]);
 					}
 				}
 				return;
@@ -573,7 +574,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
 					return;
 				}
 			}
@@ -587,12 +588,12 @@ public class CommandFEPermUser
 				if (args.length >= 2)
 				{
 					PlayerInfo.getPlayerInfo(playerName).prefix = args[2];
-					sender.sendChatToPlayer(playerName + "'s prefix set to &f" + args[2]);
+					ChatUtils.sendMessage(sender, playerName + "'s prefix set to &f" + args[2]);
 				}
 				else
 				{
 					PlayerInfo.getPlayerInfo(playerName).prefix = "";
-					sender.sendChatToPlayer(playerName + "'s removed");
+					ChatUtils.sendMessage(sender, playerName + "'s removed");
 				}
 				return;
 			}
@@ -605,12 +606,12 @@ public class CommandFEPermUser
 				if (args.length >= 2)
 				{
 					PlayerInfo.getPlayerInfo(playerName).suffix = args[2];
-					sender.sendChatToPlayer(playerName + "'s suffix set to &f" + args[2]);
+					ChatUtils.sendMessage(sender, playerName + "'s suffix set to &f" + args[2]);
 				}
 				else
 				{
 					PlayerInfo.getPlayerInfo(playerName).prefix = "";
-					sender.sendChatToPlayer(playerName + "'s removed");
+					ChatUtils.sendMessage(sender, playerName + "'s removed");
 				}
 				return;
 			}
@@ -621,11 +622,11 @@ public class CommandFEPermUser
 				String result = APIRegistry.perms.setPlayerPermission(playerName, args[2], true, zoneName);
 				if (result != null)
 				{
-					sender.sendChatToPlayer("ERROR: " + result);
+					ChatUtils.sendMessage(sender, "ERROR: " + result);
 				}
 				else
 				{
-					sender.sendChatToPlayer(playerName + "  allowed access to " + args[2] + ".");
+					ChatUtils.sendMessage(sender, playerName + "  allowed access to " + args[2] + ".");
 				}
 				return;
 			}
@@ -636,11 +637,11 @@ public class CommandFEPermUser
 				String result = APIRegistry.perms.clearPlayerPermission(playerName, args[2], zoneName);
 				if (result != null)
 				{
-					sender.sendChatToPlayer("ERROR: " + result);
+					ChatUtils.sendMessage(sender, "ERROR: " + result);
 				}
 				else
 				{
-					sender.sendChatToPlayer(playerName + " denied access to " + args[2] + ".");
+					ChatUtils.sendMessage(sender, playerName + " denied access to " + args[2] + ".");
 				}
 				return;
 			}
@@ -651,11 +652,11 @@ public class CommandFEPermUser
 				String result = APIRegistry.perms.setPlayerPermission(playerName, args[2], false, zoneName);
 				if (result != null)
 				{
-					sender.sendChatToPlayer("ERROR: " + result);
+					ChatUtils.sendMessage(sender, "ERROR: " + result);
 				}
 				else
 				{
-					sender.sendChatToPlayer(playerName + "'s  access to " + args[2] + "cleared.");
+					ChatUtils.sendMessage(sender, playerName + "'s  access to " + args[2] + "cleared.");
 				}
 				return;
 			}
@@ -671,12 +672,12 @@ public class CommandFEPermUser
 				}
 				else if (args[2].equalsIgnoreCase("here"))
 				{
-					sender.sendChatToPlayer("ERROR: You are not allowed to use the here keyword on console.");
+					ChatUtils.sendMessage(sender, "ERROR: You are not allowed to use the here keyword on console.");
 					return;
 				}
 				else
 				{
-					sender.sendChatToPlayer("ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
 					return;
 				}
 			}
@@ -688,7 +689,7 @@ public class CommandFEPermUser
 			{
 				if (perm.contains("has no individual permissions."))
 				{
-					sender.sendChatToPlayer(perm);
+					ChatUtils.sendMessage(sender, perm);
 					return;
 				}
 				if (perm.contains("ALLOW"))
@@ -700,14 +701,14 @@ public class CommandFEPermUser
 					messageDenied.add(" " + perm);
 				}
 			}
-			sender.sendChatToPlayer(playerName + ": Current permissions in zone " + zoneName + ":");
+			ChatUtils.sendMessage(sender, playerName + ": Current permissions in zone " + zoneName + ":");
 			for (String perm : messageAllowed)
 			{
-				sender.sendChatToPlayer(perm);
+				ChatUtils.sendMessage(sender, perm);
 			}
 			for (String perm : messageDenied)
 			{
-				sender.sendChatToPlayer(perm);
+				ChatUtils.sendMessage(sender, perm);
 			}
 			return;
 		}
@@ -715,15 +716,15 @@ public class CommandFEPermUser
 		// display user-specific settings & there values for this player
 		{
 			ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(playerName, false, args[1]);
-			sender.sendChatToPlayer(Localization.format("command.permissions.user.info.groups", playerName));
+			ChatUtils.sendMessage(sender, Localization.format("command.permissions.user.info.groups", playerName));
 			for (Group g : groups)
 			{
-				sender.sendChatToPlayer(" - " + g.name + " -- " + g.zoneName);
+				ChatUtils.sendMessage(sender, " - " + g.name + " -- " + g.zoneName);
 			}
 			return;
 		}
 
-		sender.sendChatToPlayer("ERROR: " + Localization.get(Localization.ERROR_BADSYNTAX) + "");
+		ChatUtils.sendMessage(sender, "ERROR: " + Localization.get(Localization.ERROR_BADSYNTAX) + "");
 	}
 
 }

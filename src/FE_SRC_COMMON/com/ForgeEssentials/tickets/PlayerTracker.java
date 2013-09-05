@@ -1,5 +1,6 @@
 package com.ForgeEssentials.tickets;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
@@ -17,7 +18,7 @@ public class PlayerTracker implements IPlayerTracker
 		{
 			if (!ModuleTickets.ticketList.isEmpty())
 			{
-				player.sendChatToPlayer(FEChatFormatCodes.DARKAQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
+				ChatUtils.sendMessage(player, FEChatFormatCodes.DARKAQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
 			}
 		}
 	}

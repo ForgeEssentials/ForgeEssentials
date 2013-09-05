@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -62,7 +63,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 
 				// teleport
 				FunctionHelper.setPlayer(player, point);
-				player.sendChatToPlayer(Localization.get("command.spawn.done"));
+				ChatUtils.sendMessage(player, Localization.get("command.spawn.done"));
 				return;
 			}
 			else
@@ -87,7 +88,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 			WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, sender.cameraYaw, sender.cameraPitch);
 			PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
 			TeleportCenter.addToTpQue(spawn, sender);
-			sender.sendChatToPlayer(Localization.get("command.spawn.done"));
+			ChatUtils.sendMessage(sender, Localization.get("command.spawn.done"));
 		}
 	}
 
@@ -105,7 +106,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 				ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
 				spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
 				TeleportCenter.addToTpQue(spawn, player);
-				player.sendChatToPlayer(Localization.get("command.spawn.done"));
+				ChatUtils.sendMessage(player, Localization.get("command.spawn.done"));
 				return;
 			}
 			else

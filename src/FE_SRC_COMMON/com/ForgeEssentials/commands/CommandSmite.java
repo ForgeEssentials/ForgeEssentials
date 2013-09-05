@@ -2,6 +2,7 @@ package com.ForgeEssentials.commands;
 
 import java.util.List;
 
+import com.ForgeEssentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +34,7 @@ public class CommandSmite extends FEcmdModuleCommands
 			if (args[0].toLowerCase().equals("me"))
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-				sender.sendChatToPlayer(Localization.get("command.smite.self"));
+				ChatUtils.sendMessage(sender, Localization.get("command.smite.self"));
 			}
 			else
 			{
@@ -41,7 +42,7 @@ public class CommandSmite extends FEcmdModuleCommands
 				if (player != null)
 				{
 					player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-					sender.sendChatToPlayer(Localization.get("command.smite.player"));
+					ChatUtils.sendMessage(sender, Localization.get("command.smite.player"));
 				}
 				else
 				{
@@ -59,7 +60,7 @@ public class CommandSmite extends FEcmdModuleCommands
 			else
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
-				sender.sendChatToPlayer(Localization.get("command.smite.ground"));
+				ChatUtils.sendMessage(sender, Localization.get("command.smite.ground"));
 			}
 		}
 	}
@@ -73,7 +74,7 @@ public class CommandSmite extends FEcmdModuleCommands
 			if (player != null)
 			{
 				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-				sender.sendChatToPlayer(Localization.get("command.smite.player"));
+				ChatUtils.sendMessage(sender, Localization.get("command.smite.player"));
 			}
 			else
 			{
@@ -82,7 +83,7 @@ public class CommandSmite extends FEcmdModuleCommands
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
