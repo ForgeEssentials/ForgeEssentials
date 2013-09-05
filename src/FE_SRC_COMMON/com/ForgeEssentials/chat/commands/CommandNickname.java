@@ -57,7 +57,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 		{
 			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				EntityPlayerMP player = func_82359_c(sender, args[0]);
+				EntityPlayerMP player = getPlayer(sender, args[0]);
 				if (args[1].equalsIgnoreCase("del"))
 				{
 					player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
@@ -86,7 +86,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayerMP player = func_82359_c(sender, args[0]);
+			EntityPlayerMP player = getPlayer(sender, args[0]);
 			if (args.length == 2)
 			{
 				player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
@@ -114,7 +114,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	{
 		if (args.length >= 1)
 		{
-			EntityPlayerMP player = func_82359_c(sender, args[0]);
+			EntityPlayerMP player = getPlayer(sender, args[0]);
 			if (args.length == 2)
 			{
 				player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);

@@ -52,7 +52,7 @@ public class PlayerInfoResonce extends Response
 		if (sendArmorAndHealth)
 		{
 			PlayerData.put("Armor", "" + player.inventory.getTotalArmorValue());
-			PlayerData.put("Health", "" + player.func_110143_aJ());
+			PlayerData.put("Health", "" + player.getHealth());
 		}
 		try
 		{

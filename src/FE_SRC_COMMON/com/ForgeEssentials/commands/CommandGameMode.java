@@ -62,7 +62,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 			if (gm == null)
 			{
 				// throws exception if there is no player
-				target = func_82359_c(sender, args[0]);
+				target = getPlayer(sender, args[0]);
 
 				gm = getToggledType(target);
 			}
@@ -142,7 +142,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 		if (args.length == 1)
 		{
 			// throws exception if there is no player
-			target = func_82359_c(sender, args[0]);
+			target = getPlayer(sender, args[0]);
 
 			gm = getToggledType(target);
 
@@ -163,7 +163,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 		if (args.length == 2)
 		{
 			// throws exception if there is no player
-			target = func_82359_c(sender, args[0]);
+			target = getPlayer(sender, args[0]);
 
 			target.setGameType(gm);
 			target.fallDistance = 0.0F;

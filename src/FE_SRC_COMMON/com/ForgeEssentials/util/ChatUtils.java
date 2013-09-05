@@ -16,7 +16,7 @@ public class ChatUtils
 	 */
 	public static void sendMessage(ICommandSender recipient, String message)
 	{
-		recipient.sendChatToPlayer(ChatMessageComponent.func_111066_d(message));
+		recipient.sendChatToPlayer(ChatMessageComponent.createFromText(message));
 	}
 
 	/**
@@ -28,7 +28,7 @@ public class ChatUtils
 	 */
 	public static void sendLocalizedMessage(ICommandSender recipient, String messageId, Object... args)
 	{
-		ChatMessageComponent message = ChatMessageComponent.func_111082_b(messageId, args);
+		ChatMessageComponent message = ChatMessageComponent.createFromTranslationWithSubstitutions(messageId, args);
 		recipient.sendChatToPlayer(message);
 	}
 
@@ -40,7 +40,7 @@ public class ChatUtils
 	 */
 	public static void sendMessage(ServerConfigurationManager configurationManager, String message)
 	{
-		configurationManager.sendChatMsg(ChatMessageComponent.func_111066_d(message));
+		configurationManager.sendChatMsg(ChatMessageComponent.createFromText(message));
 	}
 
 }

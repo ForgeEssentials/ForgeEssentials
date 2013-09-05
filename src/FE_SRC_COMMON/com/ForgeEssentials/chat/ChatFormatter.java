@@ -153,7 +153,7 @@ public class ChatFormatter
 			format = FunctionHelper.replaceAllIgnoreCase(format, "%gm", gmCode);
 		}
 
-		float health = event.player.func_110143_aJ(); // No nice name for player health yet
+		float health = event.player.getHealth(); // No nice name for player health yet
 
 		if (format.contains("%healthcolor"))
 		{
@@ -195,7 +195,7 @@ public class ChatFormatter
 
 		// finally make it the chat line.
 		// TODO: This is probably incorrect with regards to coloring
-		event.component = ChatMessageComponent.func_111066_d(format);
+		event.component = ChatMessageComponent.createFromText(format);
 
 		if (ConfigChat.logchat && ModuleChat.chatLog != null)
 	    {
