@@ -20,7 +20,7 @@ mkdir accesstransformers
 cp -rf $1/src/FE_SRC_COMMON/forgeessentials_at.cfg $1/forge/accesstransformers/
 
 echo "Installing Forge..."
-bash ./install.sh
+python install.py --no-assets
 cd mcp
 
 echo "Copying ForgeEssentials and related libraries into MCP..."
