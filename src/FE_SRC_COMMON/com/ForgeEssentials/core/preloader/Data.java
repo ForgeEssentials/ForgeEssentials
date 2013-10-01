@@ -8,6 +8,8 @@ import java.util.HashMap;
  * stuff is edited here and not in the actual coremod classes.
  */
 
+// Change me if this class is updated for future minecraft versions
+// MC version: 1.6.4
 public class Data
 {
 
@@ -32,15 +34,15 @@ public class Data
 	
 	static
 	{
-		IIWMob.put("className", "jd");
-		IIWMob.put("javaClassName", "jd");
+		IIWMob.put("className", "jv");
+		IIWMob.put("javaClassName", "jv");
 		IIWMob.put("targetMethodName", "d");// searge name func_73079_d
 		IIWMob.put("worldFieldName", "a"); // searge name field_73092_a
 		IIWMob.put("entityPlayerFieldName", "b");// searge name field_73090_b
-		IIWMob.put("worldJavaClassName", "aab");
+		IIWMob.put("worldJavaClassName", "ace");
 		IIWMob.put("getBlockMetadataMethodName", "h");// searge name func_72805_g
-		IIWMob.put("blockJavaClassName", "apa");
-		IIWMob.put("blocksListFieldName", "m");// searge name field_71973_m
+		IIWMob.put("blockJavaClassName", "aqw");
+		IIWMob.put("blocksListFieldName", "s");// searge name field_71973_m
 		IIWMob.put("entityPlayerJavaClassName", "sq");
 		IIWMob.put("entityPlayerMPJavaClassName", "jc");
 
@@ -56,12 +58,12 @@ public class Data
         IIWMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
         IIWMdev.put("entityPlayerMPJavaClassName", "net/minecraft/entity/player/EntityPlayerMP");
 
-        ISob.put("className", "wm");
-        ISob.put("javaClassName", "wm");
+        ISob.put("className", "yd");
+        ISob.put("javaClassName", "yd");
         ISob.put("targetMethodName", "a");// searge name func_77943_a
-        ISob.put("itemstackJavaClassName", "wm");
-        ISob.put("entityPlayerJavaClassName", "sq");
-        ISob.put("worldJavaClassName", "aab");
+        ISob.put("itemstackJavaClassName", "yd");
+        ISob.put("entityPlayerJavaClassName", "ue");
+        ISob.put("worldJavaClassName", "abv");
 
         ISdev.put("className", "net.minecraft.item.ItemStack");
         ISdev.put("javaClassName", "net/minecraft/item/ItemStack");
@@ -70,20 +72,20 @@ public class Data
         ISdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
         ISdev.put("worldJavaClassName", "net/minecraft/world/World");
         
-        MCob.put("className", "ch");
+        MCob.put("className", "cm");
         MCob.put("targetMethod1", "a");// searge name func_74429_a
         MCob.put("targetMethod2", "b");// searge name func_74436_b
-        MCob.put("packetName", "ei");
+        MCob.put("packetName", "ex");
         
         MCdev.put("className", "net.minecraft.network.MemoryConnection");
         MCdev.put("targetMethod1", "addToSendQueue");
         MCdev.put("targetMethod2", "processOrCachePacket");
         MCdev.put("packetName", "net/minecraft/network/packet/Packet");
         
-        TCob.put("className", "ci");
+        TCob.put("className", "cn");
         TCob.put("targetMethod1", "a");// searge namefunc_74429_a
         TCob.put("targetMethod2", "i");// searge name func_74447_i
-        TCob.put("packetName", "ei");
+        TCob.put("packetName", "ex");
         
         TCdev.put("className", "net.minecraft.network.TcpConnection");
         TCdev.put("targetMethod1", "addToSendQueue");
