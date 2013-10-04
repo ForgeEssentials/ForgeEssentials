@@ -28,6 +28,7 @@ public class FEModContainer extends DummyModContainer
 		myMeta.version = version;
 		myMeta.name = "Forge Essentials|PreLoader";
 		myMeta.url = "";
+		myMeta.parent = "ForgeEssentials";
 	}
 
 	@Override
