@@ -2,9 +2,9 @@ ForgeEssentialsMain
 ===================
 *******************
 ####Join us on our IRC channel [#forgeessentials](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on EsperNet.####
-####[This repo is for Minecraft 1.5.2. For newer versions, have a look at the new repo.](https://github.com/ForgeEssentials/ForgeEssentials)####
+This repo is for Minecraft 1.5.2. For the 1.6.4 version (no compileable build yet), you want the 16 branch. For the 1.7 version, will some kind soul make a PR? :D
 _________________________________________________________________________________________________________________________
-The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality
+The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality. Development by the team has officially stopped, though PRs are welcome.
 
 *More information can be found at the [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki).*
 
