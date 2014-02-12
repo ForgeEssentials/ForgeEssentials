@@ -6,7 +6,7 @@ The code on this branch is for Minecraft 1.6.4. File issues at the issue tracker
 *******************
 ####Join us on our IRC channel [#forgeessentials](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on EsperNet.####
 
-####This repo is for a port to Minecraft 1.6.4. There are NO compiled builds of this yet.####
+####This repo is for a port to Minecraft 1.6.4. There are NO compiled builds of this yet. Please do not attempt to use this on a live server, as it is extremely buggy and cases of world corruption have been reported. The 1.5.2 port is safer, use that.####
 
 The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality. Development by the team has officially stopped, though PRs are welcome. (be it to fix bugs, or add modules, or whatever)
 
