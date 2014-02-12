@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 
 import com.ForgeEssentials.core.preloader.Data;
 import com.ForgeEssentials.core.preloader.asm.FEeventAdder;
+import com.ForgeEssentials.util.ChatUtils;
 
 public class CommandFEDebug extends ForgeEssentialsCommandBase
 {
@@ -36,34 +37,34 @@ public class CommandFEDebug extends ForgeEssentialsCommandBase
 		{
 			if (FEeventAdder.addedBreak)
 			{
-				sender.sendChatToPlayer("The custom event 'PlayerBlockBreak' was added.");
+				ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockBreak' was added.");
 			}
 			else
 			{
-				sender.sendChatToPlayer("The custom event 'PlayerBlockBreak' was NOT added. Some functions might not work!");
-				sender.sendChatToPlayer("The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemInWorldManager.class.getName() + "'.");
+				ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockBreak' was NOT added. Some functions might not work!");
+				ChatUtils.sendMessage(sender, "The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemInWorldManager.class.getName() + "'.");
 			}
 		}
 		catch (Exception ex)
 		{
-			sender.sendChatToPlayer("Error finding custom event 'PlayerBlockBreak'");
+			ChatUtils.sendMessage(sender, "Error finding custom event 'PlayerBlockBreak'");
 		}
 
 		try
 		{
 			if (FEeventAdder.addedPlace)
 			{
-				sender.sendChatToPlayer("The custom event 'PlayerBlockPlace' was added.");
+				ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was added.");
 			}
 			else
 			{
-				sender.sendChatToPlayer("The custom event 'PlayerBlockPlace' was NOT added. Some functions might not work!");
-				sender.sendChatToPlayer("The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemStack.class.getName() + "'.");
+				ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was NOT added. Some functions might not work!");
+				ChatUtils.sendMessage(sender, "The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemStack.class.getName() + "'.");
 			}
 		}
 		catch (Exception ex)
 		{
-			sender.sendChatToPlayer("Error finding custom event 'PlayerBlockPlace'");
+			ChatUtils.sendMessage(sender, "Error finding custom event 'PlayerBlockPlace'");
 		}
 	}
 
@@ -84,7 +85,7 @@ public class CommandFEDebug extends ForgeEssentialsCommandBase
 	{
 		return null;
 	}
-	
+
 	@Override
 	public String getSyntaxConsole()
 	{

@@ -15,6 +15,7 @@ import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.Warp;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -44,7 +45,7 @@ public class CommandWarp extends FEcmdModuleCommands
 			{
 			    msg = warp + ", " + msg;
 			}
-			sender.sendChatToPlayer(msg);
+			ChatUtils.sendMessage(sender, msg);
 		}
 		else if (args.length == 1)
 		{

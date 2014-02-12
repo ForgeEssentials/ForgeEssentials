@@ -30,6 +30,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -190,7 +191,7 @@ public class CommandRules extends FEcmdModuleCommands
 		{
 			for (String rule : rules)
 			{
-				sender.sendChatToPlayer(rule);
+				ChatUtils.sendMessage(sender, rule);
 			}
 			return;
 		}
@@ -236,7 +237,7 @@ public class CommandRules extends FEcmdModuleCommands
 				return;
 			}
 
-			sender.sendChatToPlayer(rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+			ChatUtils.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
 			return;
 		}
 
@@ -312,7 +313,7 @@ public class CommandRules extends FEcmdModuleCommands
 		{
 			for (String rule : rules)
 			{
-				sender.sendChatToPlayer(rule);
+				ChatUtils.sendMessage(sender, rule);
 			}
 			return;
 		}
@@ -328,7 +329,7 @@ public class CommandRules extends FEcmdModuleCommands
 
 			}
 
-			sender.sendChatToPlayer(rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+			ChatUtils.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
 			return;
 		}
 

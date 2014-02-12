@@ -15,6 +15,7 @@ import com.ForgeEssentials.data.api.SaveableObject;
 import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChunkLoader;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
@@ -156,7 +157,7 @@ public class TickTaskFill implements ITickTask
 
 		if (ticks % (20 * 25) == 0)
 		{
-			source.sendChatToPlayer("Filler for " + dimID + ": " + getStatus());
+			ChatUtils.sendMessage(source, "Filler for " + dimID + ": " + getStatus());
 		}
 
 		for (int i = 0; i < speed; i++)

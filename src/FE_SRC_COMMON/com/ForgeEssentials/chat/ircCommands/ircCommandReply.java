@@ -4,8 +4,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import org.pircbotx.User;
 
-import com.ForgeEssentials.chat.IRCHelper;
 import com.ForgeEssentials.chat.commands.CommandMsg;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 
@@ -50,7 +50,7 @@ public class ircCommandReply extends ircCommand
 			String send = FEChatFormatCodes.GOLD + "(IRC)[" + user.getNick() + " -> me] " + FEChatFormatCodes.GREY + message;
 			String recipt = "(IRC)[me -> " + player.getCommandSenderName() + "] " + message;
 
-			player.sendChatToPlayer(send);
+			ChatUtils.sendMessage(player, send);
 			user.sendMessage(recipt);
 		}
 		catch (Exception ex)

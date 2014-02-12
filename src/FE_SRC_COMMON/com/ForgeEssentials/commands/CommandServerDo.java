@@ -10,6 +10,7 @@ import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -34,7 +35,7 @@ public class CommandServerDo extends FEcmdModuleCommands
 				cmd = cmd + " " + args[i];
 			}
 			String result = MinecraftServer.getServer().executeCommand(cmd);
-			player.sendChatToPlayer(result);
+			ChatUtils.sendMessage(player, result);
 		}
 	}
 

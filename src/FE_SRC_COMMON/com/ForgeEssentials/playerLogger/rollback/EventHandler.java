@@ -16,6 +16,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.AreaSelector.Point;
 
 public class EventHandler
@@ -41,11 +42,11 @@ public class EventHandler
 				st.execute("SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + p.x + " AND  `Y` = " + p.y + " AND  `Z` = " + p.z + " ORDER BY id DESC LIMIT " + limit);
 				ResultSet res = st.getResultSet();
 
-				e.entityPlayer.sendChatToPlayer("Results: " + p.x + ", " + p.y + ", " + p.z);
+				ChatUtils.sendMessage(e.entityPlayer, "Results: " + p.x + ", " + p.y + ", " + p.z);
 
 				while (res.next())
 				{
-					e.entityPlayer.sendChatToPlayer(res.getString("player") + " " + res.getString("category") + " block " + res.getString("block") + " at " + res.getTimestamp("time"));
+					ChatUtils.sendMessage(e.entityPlayer, res.getString("player") + " " + res.getString("category") + " block " + res.getString("block") + " at " + res.getTimestamp("time"));
 				}
 				res.close();
 				st.close();
@@ -53,7 +54,7 @@ public class EventHandler
 			}
 			catch (SQLException e1)
 			{
-				e.entityPlayer.sendChatToPlayer("Connection error!");
+				ChatUtils.sendMessage(e.entityPlayer, "Connection error!");
 				e1.printStackTrace();
 			}
 		}

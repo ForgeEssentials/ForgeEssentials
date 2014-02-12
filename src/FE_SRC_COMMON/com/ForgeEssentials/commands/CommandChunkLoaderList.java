@@ -16,6 +16,7 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.google.common.collect.HashMultimap;
 
@@ -29,7 +30,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
 	{
 		return "chunkloaderlist";
 	}
-	
+
 	@Override
 	public String[] getDefaultAliases()
     {
@@ -46,7 +47,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
 	        for (String s : args)
 	            target = target + " " + s;
 	        target = target.substring(1).trim();
-	        
+
 	        List<String> allUsernames = Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat());
 	        for (String username : allUsernames)
 	        {
@@ -56,7 +57,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
 	                break;
 	            }
 	        }
-	        
+
 	        for (ModContainer mod : Loader.instance().getActiveModList())
 	        {
 	            if (mod.getName().equalsIgnoreCase(target)) key = "m:" + mod.getModId();
@@ -77,57 +78,58 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
 	    for (int i : DimensionManager.getIDs())
 	        list(sender, i, key);
     }
-	
+
 	private void list(ICommandSender sender, int dim, String key)
 	{
 	    WorldServer world = DimensionManager.getWorld(dim);
-	    
+
 	    HashMultimap<String, Ticket> modTickets = HashMultimap.create();
 	    HashMultimap<String, Ticket> playerTickets = HashMultimap.create();
-	    
+
 	    for (Ticket ticket : ForgeChunkManager.getPersistentChunksFor(world).values())
 	        if (ticket.isPlayerTicket()) playerTickets.put(ticket.getPlayerName(), ticket);
 	        else modTickets.put(ticket.getModId(), ticket);
-	    
+
 	    if (modTickets.isEmpty() && playerTickets.isEmpty()) return;
-        
-	    if (!key.equals("*")) sender.sendChatToPlayer(FEChatFormatCodes.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
-	    
-        sender.sendChatToPlayer(FEChatFormatCodes.AQUA + "Dim " + world.provider.getDimensionName() + ":");
-	    
+
+		if (!key.equals("*"))
+			ChatUtils.sendMessage(sender, FEChatFormatCodes.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
+
+		ChatUtils.sendMessage(sender, FEChatFormatCodes.AQUA + "Dim " + world.provider.getDimensionName() + ":");
+
 	    if (key.startsWith("p:") || key.equals("*"))
 	    {
 	        for (String username : playerTickets.keySet())
 	        {
 	            if (key.replace("p:", "").equalsIgnoreCase(username) || key.equals("*"))
 	            {
-	                if(key.equals("*")) sender.sendChatToPlayer(FEChatFormatCodes.AQUA + username);
-	                
+					if (key.equals("*")) ChatUtils.sendMessage(sender, FEChatFormatCodes.AQUA + username);
+
 	                HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
-	                
+
 	                for (Ticket ticket : playerTickets.get(username))
 	                    for (Object obj : ticket.getChunkList())
 	                        chunks.add((ChunkCoordIntPair) obj);
-	                
+
 	                for(ChunkCoordIntPair coords : chunks)
-	                    sender.sendChatToPlayer(coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+						ChatUtils.sendMessage(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
 	            }
-	        }    
+	        }
 	    }
-	    
+
 	    if (key.startsWith("m:") || key.equals("*"))
 	    {
 	        for (String modID : modTickets.keySet())
 	        {
-	            if(key.equals("*")) sender.sendChatToPlayer(FEChatFormatCodes.AQUA + modID);
+				if (key.equals("*")) ChatUtils.sendMessage(sender, FEChatFormatCodes.AQUA + modID);
 	            HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
-                
+
                 for (Ticket ticket : playerTickets.get(modID))
                     for (Object obj : ticket.getChunkList())
                         chunks.add((ChunkCoordIntPair) obj);
-                    
+
                 for(ChunkCoordIntPair coords : chunks)
-                    sender.sendChatToPlayer(coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+					ChatUtils.sendMessage(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
 	        }
 	    }
     }
@@ -156,7 +158,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
             {
 	            options.add(mod.getName());
             }
-	        
+
 	        return getListOfStringsFromIterableMatchingLastWord(args, options);
 	    }
 		return null;

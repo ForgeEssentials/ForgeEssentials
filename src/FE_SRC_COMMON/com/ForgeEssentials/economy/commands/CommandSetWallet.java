@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -38,9 +39,9 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(Localization.get(Localization.wallet_SET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
+					ChatUtils.sendMessage(sender, Localization.get(Localization.wallet_SET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
 				}
-				player.sendChatToPlayer(Localization.get(Localization.wallet_SET_SELF) + APIRegistry.wallet.getMoneyString(player.username));
+				ChatUtils.sendMessage(player, Localization.get(Localization.wallet_SET_SELF) + APIRegistry.wallet.getMoneyString(player.username));
 			}
 		}
 		else
@@ -60,19 +61,19 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 
 			if (player == null)
 			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOPLAYER));
+				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_NOPLAYER));
 			}
 			else
 			{
 				APIRegistry.wallet.setWallet(amountToSet, player);
 
-				sender.sendChatToPlayer(Localization.get(Localization.wallet_SET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
-				player.sendChatToPlayer(Localization.get(Localization.wallet_SET_SELF) + APIRegistry.wallet.getMoneyString(player.username));
+				ChatUtils.sendMessage(sender, Localization.get(Localization.wallet_SET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
+				ChatUtils.sendMessage(player, Localization.get(Localization.wallet_SET_SELF) + APIRegistry.wallet.getMoneyString(player.username));
 			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

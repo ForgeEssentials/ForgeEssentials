@@ -11,6 +11,7 @@ import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.chat.IRCHelper;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -59,8 +60,8 @@ public class CommandR extends ForgeEssentialsCommandBase
 						senderMessage += " ";
 					}
 				}
-				MinecraftServer.getServer().sendChatToPlayer(receiverMessage);
-				sender.sendChatToPlayer(senderMessage);
+				ChatUtils.sendMessage(MinecraftServer.getServer(), receiverMessage);
+				ChatUtils.sendMessage(sender, senderMessage);
 			}
 			else if (target.toLowerCase().startsWith("irc"))
 			{
@@ -80,11 +81,11 @@ public class CommandR extends ForgeEssentialsCommandBase
 				try
 				{
 					IRCHelper.privateMessage(sender.getCommandSenderName(), target, receiverMessage);
-					sender.sendChatToPlayer(senderMessage);
+					ChatUtils.sendMessage(sender, senderMessage);
 				}
 				catch (Exception e)
 				{
-					sender.sendChatToPlayer("Unable to send message to: " + target);
+					ChatUtils.sendMessage(sender, "Unable to send message to: " + target);
 				}
 			}
 			else
@@ -107,8 +108,8 @@ public class CommandR extends ForgeEssentialsCommandBase
 						senderMessage += " ";
 					}
 				}
-				sender.sendChatToPlayer(senderMessage);
-				receiver.sendChatToPlayer(receiverMessage);
+				ChatUtils.sendMessage(sender, senderMessage);
+				ChatUtils.sendMessage(receiver, receiverMessage);
 			}
 		}
 	}
@@ -118,7 +119,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX + "/msg <player> <message>");
+			ChatUtils.sendMessage(sender, Localization.ERROR_BADSYNTAX + "/msg <player> <message>");
 			return;
 		}
 		if (args.length > 0)
@@ -126,13 +127,13 @@ public class CommandR extends ForgeEssentialsCommandBase
 			String target = CommandMsg.getPlayerReply("server");
 			if (target == null)
 			{
-				sender.sendChatToPlayer(Localization.get("message.error.r.noPrevious"));
+				ChatUtils.sendMessage(sender, Localization.get("message.error.r.noPrevious"));
 				return;
 			}
 			EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (receiver == null)
 			{
-				sender.sendChatToPlayer(target + " is not a valid username");
+				ChatUtils.sendMessage(sender, target + " is not a valid username");
 				return;
 			}
 			else
@@ -149,8 +150,8 @@ public class CommandR extends ForgeEssentialsCommandBase
 						senderMessage += " ";
 					}
 				}
-				sender.sendChatToPlayer(senderMessage);
-				receiver.sendChatToPlayer(receiverMessage);
+				ChatUtils.sendMessage(sender, senderMessage);
+				ChatUtils.sendMessage(receiver, receiverMessage);
 			}
 		}
 	}

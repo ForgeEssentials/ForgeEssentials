@@ -12,6 +12,7 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 
@@ -35,17 +36,17 @@ public class CommandKill extends FEcmdModuleCommands
 			if (player != null)
 			{
 				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				player.sendChatToPlayer(Localization.get("command.kill.msg"));
+				ChatUtils.sendMessage(player, Localization.get("command.kill.msg"));
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
 		else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
-			sender.sendChatToPlayer(Localization.get("command.kill.msg"));
+			ChatUtils.sendMessage(sender, Localization.get("command.kill.msg"));
 		}
 	}
 
@@ -58,16 +59,16 @@ public class CommandKill extends FEcmdModuleCommands
 			if (player != null)
 			{
 				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				player.sendChatToPlayer(Localization.get("command.kill.msg"));
+				ChatUtils.sendMessage(player, Localization.get("command.kill.msg"));
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -132,7 +133,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 				EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), world);
 				if (mob == null)
 				{
-					sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOMOB, args[0]));
+					ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOMOB, args[0]));
 					return;
 				}
 				mob.setPosition(x, y, z);
@@ -141,7 +142,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX));
 			OutputHandler.debug("test");
 		}
 	}

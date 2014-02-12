@@ -9,6 +9,7 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 
 public class CommandPing extends FEcmdModuleCommands
 {
@@ -35,13 +36,13 @@ public class CommandPing extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		sender.sendChatToPlayer(response.replaceAll("%time", ((EntityPlayerMP) sender).ping + "ms."));
+		ChatUtils.sendMessage(sender, response.replaceAll("%time", ((EntityPlayerMP) sender).ping + "ms."));
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		sender.sendChatToPlayer(response.replaceAll("%time", ""));
+		ChatUtils.sendMessage(sender, response.replaceAll("%time", ""));
 	}
 
 	@Override

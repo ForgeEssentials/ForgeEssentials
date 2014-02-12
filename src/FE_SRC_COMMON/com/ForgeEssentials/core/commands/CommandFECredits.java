@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -28,23 +29,23 @@ public class CommandFECredits extends ForgeEssentialsCommandBase
 		OutputHandler.chatConfirmation(sender, "Dries007: " + Localization.get(Localization.CREDITS_DRIES007));
 		OutputHandler.chatConfirmation(sender, "Malkierian: " + Localization.get(Localization.CREDITS_MALKIERIAN));
 
-		sender.sendChatToPlayer("More info:");
-		sender.sendChatToPlayer("https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information");
+		ChatUtils.sendMessage(sender, "More info:");
+		ChatUtils.sendMessage(sender, "https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information");
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		sender.sendChatToPlayer("AbrarSyed: " + Localization.get(Localization.CREDITS_ABRARSYED));
-		sender.sendChatToPlayer("Bob A Red Dino: " + Localization.get(Localization.CREDITS_BOBAREDDINO));
-		sender.sendChatToPlayer("bspkrs: " + Localization.get(Localization.CREDITS_BSPKRS));
-		sender.sendChatToPlayer("MysteriousAges: " + Localization.get(Localization.CREDITS_MYSTERIOUSAGES));
-		sender.sendChatToPlayer("luacs1998: " + Localization.get(Localization.CREDITS_LUACS1998));
-		sender.sendChatToPlayer("Dries007: " + Localization.get(Localization.CREDITS_DRIES007));
-		sender.sendChatToPlayer("Malkierian: " + Localization.get(Localization.CREDITS_MALKIERIAN));
-		
-		sender.sendChatToPlayer("More info:");
-		sender.sendChatToPlayer("https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information");
+		ChatUtils.sendMessage(sender, "AbrarSyed: " + Localization.get(Localization.CREDITS_ABRARSYED));
+		ChatUtils.sendMessage(sender, "Bob A Red Dino: " + Localization.get(Localization.CREDITS_BOBAREDDINO));
+		ChatUtils.sendMessage(sender, "bspkrs: " + Localization.get(Localization.CREDITS_BSPKRS));
+		ChatUtils.sendMessage(sender, "MysteriousAges: " + Localization.get(Localization.CREDITS_MYSTERIOUSAGES));
+		ChatUtils.sendMessage(sender, "luacs1998: " + Localization.get(Localization.CREDITS_LUACS1998));
+		ChatUtils.sendMessage(sender, "Dries007: " + Localization.get(Localization.CREDITS_DRIES007));
+		ChatUtils.sendMessage(sender, "Malkierian: " + Localization.get(Localization.CREDITS_MALKIERIAN));
+
+		ChatUtils.sendMessage(sender, "More info:");
+		ChatUtils.sendMessage(sender, "https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information");
 	}
 
 	@Override
@@ -64,8 +65,8 @@ public class CommandFECredits extends ForgeEssentialsCommandBase
 	{
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public String getSyntaxConsole()
 	{

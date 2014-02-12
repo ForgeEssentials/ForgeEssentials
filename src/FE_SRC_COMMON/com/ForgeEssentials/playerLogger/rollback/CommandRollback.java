@@ -14,6 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.playerLogger.ModulePlayerLogger;
 import com.ForgeEssentials.playerLogger.network.PacketRollback;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
@@ -29,7 +30,7 @@ import cpw.mods.fml.common.network.Player;
 public class CommandRollback extends ForgeEssentialsCommandBase
 {
 	HashMap<ICommandSender, String> que = new HashMap<ICommandSender, String>();
-	
+
 	@Override
 	public String getCommandName()
 	{
@@ -67,15 +68,15 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		 */
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer("--- Rollback usage ---");
-			sender.sendChatToPlayer("All actions must be confirmed with '/rb ok'.");
-			sender.sendChatToPlayer("All actions can be canceld with '/rb abort'.");
-			sender.sendChatToPlayer("'/rb clear <username>' => Removes a players data.");
-			sender.sendChatToPlayer("'/rb undo <username>' => Undo a rollback. You can specify time and radius");
-			sender.sendChatToPlayer("'/rb <undo|rollback> <username>' => Rolls back a players. All the way!");
-			sender.sendChatToPlayer("'/rb <undo|rollback> <username> <rad>' => Format like this: 10r");
-			sender.sendChatToPlayer("'/rb <undo|rollback> <username> <time>' => Format time like this: 10d = 10 days, 10h = 10 hours.");
-			sender.sendChatToPlayer("A combo of the above is possible too.");
+			ChatUtils.sendMessage(sender, "--- Rollback usage ---");
+			ChatUtils.sendMessage(sender, "All actions must be confirmed with '/rb ok'.");
+			ChatUtils.sendMessage(sender, "All actions can be canceld with '/rb abort'.");
+			ChatUtils.sendMessage(sender, "'/rb clear <username>' => Removes a players data.");
+			ChatUtils.sendMessage(sender, "'/rb undo <username>' => Undo a rollback. You can specify time and radius");
+			ChatUtils.sendMessage(sender, "'/rb <undo|rollback> <username>' => Rolls back a players. All the way!");
+			ChatUtils.sendMessage(sender, "'/rb <undo|rollback> <username> <rad>' => Format like this: 10r");
+			ChatUtils.sendMessage(sender, "'/rb <undo|rollback> <username> <time>' => Format time like this: 10d = 10 days, 10h = 10 hours.");
+			ChatUtils.sendMessage(sender, "A combo of the above is possible too.");
 			return;
 		}
 		
@@ -100,9 +101,9 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 			if (que.containsKey(sender))
 			{
 				que.remove(sender);
-				
+
 				PacketDispatcher.sendPacketToPlayer(new PacketRollback(((EntityPlayer)sender).dimension, null).getPayload(), (Player) sender);
-				
+
 				OutputHandler.chatConfirmation(sender, "Command aborted");
 			}
 			else
@@ -151,7 +152,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		if (args[0].equalsIgnoreCase("clear"))
 		{
 			try
-			{	
+			{
 				Statement st = ModulePlayerLogger.getConnection().createStatement();
 				st.execute("DELETE FROM `blockchange` WHERE `player` LIKE '" + args[1] + "'");
 				OutputHandler.chatConfirmation(sender, "Removed all records of " + args[1]);
@@ -178,7 +179,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		int time = 0;
 		WorldPoint point = (sender instanceof EntityPlayer) ? new WorldPoint((EntityPlayer) sender) : null;
 		int rad = 0;
-		
+
 		for (int i = 1; i < args.length; i++)
 		{
 			String arg = args[i];
@@ -195,7 +196,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 				rad = parseIntWithMin(sender, arg.replaceAll("r", ""), 0);
 			}
 		}
-		
+
 		if (execute)
 		{
 		    try
@@ -213,7 +214,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		    StringBuilder sb = new StringBuilder();
 		    for (String arg : args)
 		        sb.append(arg + " ");
-		    
+
 		    que.put(sender, sb.toString().trim());
 		    if (sender instanceof EntityPlayer)
 		    {
@@ -221,7 +222,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 		    }
 		}
 	}
-	
+
 	@Override
 	public boolean canConsoleUseCommand()
 	{

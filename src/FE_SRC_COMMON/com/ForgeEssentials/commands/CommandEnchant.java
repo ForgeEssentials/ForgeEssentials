@@ -22,6 +22,7 @@ import net.minecraft.util.StatCollector;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -42,7 +43,7 @@ public class CommandEnchant extends FEcmdModuleCommands
 			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
 			return;
 		}
-		
+
 		if (args.length == 0)
 		{
 			String msg = "";
@@ -78,10 +79,10 @@ public class CommandEnchant extends FEcmdModuleCommands
 			{
 				msg = "Efficiency, SilkTouch, Unbreaking";
 			}
-			sender.sendChatToPlayer(msg);
+			ChatUtils.sendMessage(sender, msg);
 			return;
 		}
-		
+
 		if(args[0].equalsIgnoreCase("listall"))
 		{
 			String msg = "";
@@ -94,12 +95,12 @@ public class CommandEnchant extends FEcmdModuleCommands
 				if(msg.length() > 100)
 				{
 					msg = msg.substring(0, msg.length() - 2);
-					sender.sendChatToPlayer(msg);
+					ChatUtils.sendMessage(sender, msg);
 					msg = "";
 				}
 			}
 			msg = msg.substring(0, msg.length() - 2);
-			sender.sendChatToPlayer(msg);
+			ChatUtils.sendMessage(sender, msg);
 			return;
 		}
 

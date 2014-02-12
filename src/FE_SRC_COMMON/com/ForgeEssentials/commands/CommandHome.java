@@ -12,6 +12,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.TeleportCenter;
@@ -50,7 +51,7 @@ public class CommandHome extends FEcmdModuleCommands
 			{
 				WarpPoint p = new WarpPoint(sender);
 				PlayerInfo.getPlayerInfo(sender.username).home = p;
-				sender.sendChatToPlayer(Localization.format("command.home.confirm", p.x, p.y, p.z));
+				ChatUtils.sendMessage(sender, Localization.format("command.home.confirm", p.x, p.y, p.z));
 			}
 		}
 	}

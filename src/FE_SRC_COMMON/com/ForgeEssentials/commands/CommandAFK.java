@@ -16,6 +16,7 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.AFKdata;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -75,9 +76,10 @@ public class CommandAFK extends FEcmdModuleCommands
 		afkData.player.sendPlayerAbilities();
 		afkList.remove(afkData.player.username);
 		TickHandlerCommands.afkListToRemove.add(afkData);
-		
+
 		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
-		    MinecraftServer.getServer().getConfigurationManager().sendChatMsg(Localization.format("command.afk.notice.out", afkData.player.username));
+			ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
+					Localization.format("command.afk.notice.out", afkData.player.username));
 		else
 		    OutputHandler.chatConfirmation(afkData.player, Localization.get("command.afk.out"));
 	}
@@ -87,13 +89,14 @@ public class CommandAFK extends FEcmdModuleCommands
 		afkData.player.capabilities.disableDamage = true;
 		afkData.player.sendPlayerAbilities();
 		afkList.add(afkData.player.username);
-		
+
 		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
-		    MinecraftServer.getServer().getConfigurationManager().sendChatMsg(Localization.format("command.afk.notice.in", afkData.player.username));
+			ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
+					Localization.format("command.afk.notice.in", afkData.player.username));
 		else
 		    OutputHandler.chatConfirmation(afkData.player, Localization.get("command.afk.in"));
 	}
-	
+
 	@Override
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{

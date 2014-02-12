@@ -14,6 +14,7 @@ import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.core.commands.PermissionDeniedException;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -220,7 +221,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 
 				data.password = newPass;
 				data.save();
-				
+
 				OutputHandler.chatConfirmation(sender, Localization.get("command.auth.change.success"));
 				return;
 
@@ -243,7 +244,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 
 				PlayerPassData data = PlayerPassData.getData(name);
 				String encrypted = ModuleAuth.encrypt(args[2]);
-				
+
 				if (data == null)
 				{
 					PlayerPassData.registerData(name, encrypted);
@@ -269,9 +270,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				sender.sendChatToPlayer(" - /auth kick <player>  - forces the player to login again");
-				sender.sendChatToPlayer(" - /auth setpass <player> <password>  - sets the players password to the specified");
-				sender.sendChatToPlayer(" - /auth unregister <player>  - forces the player to register again");
+				ChatUtils.sendMessage(sender, " - /auth kick <player>  - forces the player to login again");
+				ChatUtils.sendMessage(sender, " - /auth setpass <player> <password>  - sets the players password to the specified");
+				ChatUtils.sendMessage(sender, " - /auth unregister <player>  - forces the player to register again");
 				return;
 			}
 			else
@@ -286,7 +287,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
 		if (player == null)
 		{
-			sender.sendChatToPlayer("A player of that name is not on the server. Doing the action anyways.");
+			ChatUtils.sendMessage(sender, "A player of that name is not on the server. Doing the action anyways.");
 			isLogged = false;
 		}
 
@@ -301,7 +302,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				else
 				{
 					ModuleAuth.unLogged.add(name);
-					sender.sendChatToPlayer(Localization.format("command.auth.kick.user", name));
+					ChatUtils.sendMessage(sender, Localization.format("command.auth.kick.user", name));
 					OutputHandler.chatWarning(player, Localization.get("command.auth.kick.target"));
 					return;
 				}
@@ -330,7 +331,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			{
 				PlayerPassData data = PlayerPassData.getData(name);
 				String encrypted = ModuleAuth.encrypt(args[2]);
-				
+
 				if (data == null)
 				{
 					PlayerPassData.registerData(name, encrypted);
@@ -340,7 +341,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 					data.password = encrypted;
 					data.save();
 				}
-				sender.sendChatToPlayer(Localization.format("command.auth.setPass", name));
+				ChatUtils.sendMessage(sender, Localization.format("command.auth.setPass", name));
 			}
 		}
 	}

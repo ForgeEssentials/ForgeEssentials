@@ -1,15 +1,11 @@
 package com.ForgeEssentials.chat;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-import org.h2.bnf.Sentence;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
@@ -21,14 +17,9 @@ import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
-import com.ForgeEssentials.chat.commands.CommandMsg;
-import com.ForgeEssentials.chat.ircCommands.ircCommand;
-import com.ForgeEssentials.chat.ircCommands.ircCommandMessage;
-import com.ForgeEssentials.chat.ircCommands.ircCommandReply;
 import com.ForgeEssentials.chat.ircCommands.ircCommands;
-import com.ForgeEssentials.core.ForgeEssentials;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
-import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
 import cpw.mods.fml.common.IPlayerTracker;
@@ -112,11 +103,12 @@ public class IRCHelper extends ListenerAdapter implements Listener
 
 	private static void postMinecraft(String message)
 	{
-		MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
+		ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(), message);
 	}
 
 	public static void shutdown()
 	{
+		if(bot != null)
 		bot.disconnect();
 	}
 
@@ -128,15 +120,15 @@ public class IRCHelper extends ListenerAdapter implements Listener
 		}
 		catch (NickAlreadyInUseException e)
 		{
-			sender.sendChatToPlayer("Could not reconnect to the IRC server - the assigned nick is already in use. Try again in a few minutes.");
+			ChatUtils.sendMessage(sender, "Could not reconnect to the IRC server - the assigned nick is already in use. Try again in a few minutes.");
 		}
 		catch (IOException e)
 		{
-			sender.sendChatToPlayer("Could not reconnect to the IRC server - something went wrong.");
+			ChatUtils.sendMessage(sender, "Could not reconnect to the IRC server - something went wrong.");
 		}
 		catch (IrcException e)
 		{
-			sender.sendChatToPlayer("Could not reconnect to the IRC server - something went wrong, or you are already connected to the server.");
+			ChatUtils.sendMessage(sender, "Could not reconnect to the IRC server - something went wrong, or you are already connected to the server.");
 		}
 	}
 

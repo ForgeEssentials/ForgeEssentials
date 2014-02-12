@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 
 public class CommandPush extends FEcmdModuleCommands
@@ -28,7 +29,7 @@ public class CommandPush extends FEcmdModuleCommands
 
 	public String getCommandUsage(ICommandSender par1ICommandSender)
 	{
-		return par1ICommandSender.translateString("/push <X> <Y> <Z>", new Object[0]);
+		return "/push <X> <Y> <Z>";
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class CommandPush extends FEcmdModuleCommands
 			else
 			{
 				Block.blocksList[((World) var7).getBlockId(var3, var4, var5)].onBlockActivated((World) var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
-				var1.sendChatToPlayer("Button/Lever Pushed");
+				ChatUtils.sendMessage(var1, "Button/Lever Pushed");
 			}
 		}
 	}
@@ -106,7 +107,7 @@ public class CommandPush extends FEcmdModuleCommands
 			else
 			{
 				Block.blocksList[((World) var7).getBlockId(var3, var4, var5)].onBlockActivated((World) var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
-				sender.sendChatToPlayer("Button/Lever Pushed");
+				ChatUtils.sendMessage(sender, "Button/Lever Pushed");
 			}
 		}
 	}

@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.tasks.ITickTask;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
@@ -109,7 +110,7 @@ public class TickTaskBlockFinder implements ITickTask
 
     private void msg(String string)
     {
-        player.sendChatToPlayer(EnumChatFormatting.AQUA + string);
+        ChatUtils.sendMessage(player, EnumChatFormatting.AQUA + string);
     }
 
     @Override

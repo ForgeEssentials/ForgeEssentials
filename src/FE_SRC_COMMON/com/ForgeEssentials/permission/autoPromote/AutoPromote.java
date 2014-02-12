@@ -13,6 +13,7 @@ import com.ForgeEssentials.data.api.SaveableObject;
 import com.ForgeEssentials.data.api.SaveableObject.Reconstructor;
 import com.ForgeEssentials.data.api.SaveableObject.SaveableField;
 import com.ForgeEssentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 
 @SaveableObject
@@ -85,7 +86,7 @@ public class AutoPromote
 						msg = FunctionHelper.formatColors(msg);
 						msg = msg.replaceAll("%group", groupName);
 						msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).getTimePlayed() * 60));
-						player.sendChatToPlayer(msg);
+						ChatUtils.sendMessage(player, msg);
 					}
 				}
 			}

@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 
 public class CommandDrop extends FEcmdModuleCommands
@@ -37,7 +38,7 @@ public class CommandDrop extends FEcmdModuleCommands
 
 	public String getCommandUsage(ICommandSender par1ICommandSender)
 	{
-		return par1ICommandSender.translateString("/drop <X> <Y> <Z> <ItemID> <Meta> <Qty>", new Object[0]);
+		return "/drop <X> <Y> <Z> <ItemID> <Meta> <Qty>";
 	}
 
 	public void processCommand(ICommandSender var1, String[] var2)
@@ -187,7 +188,7 @@ public class CommandDrop extends FEcmdModuleCommands
 		{
 			throw new CommandException("Not enough Room for Items");
 		}
-		var1.sendChatToPlayer("Items Droped into container");
+		ChatUtils.sendMessage(var1, "Items Droped into container");
 	}
 
 	private double func_82368_a(ICommandSender par1ICommandSender, double par2, String par4Str)

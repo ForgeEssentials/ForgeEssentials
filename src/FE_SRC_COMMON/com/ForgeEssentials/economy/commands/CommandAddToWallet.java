@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -49,9 +50,9 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
+					ChatUtils.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
 				}
-				player.sendChatToPlayer(amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
+				ChatUtils.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
 			}
 		}
 		else
@@ -71,19 +72,19 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 
 			if (player == null)
 			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOPLAYER));
+				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_NOPLAYER));
 			}
 			else
 			{
 				APIRegistry.wallet.addToWallet(amountToAdd, player.username);
 
-				sender.sendChatToPlayer(amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
-				player.sendChatToPlayer(amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
+				ChatUtils.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
+				ChatUtils.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
 			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

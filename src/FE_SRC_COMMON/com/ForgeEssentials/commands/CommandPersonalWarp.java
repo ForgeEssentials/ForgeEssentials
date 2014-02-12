@@ -18,6 +18,7 @@ import com.ForgeEssentials.commands.util.CommandDataManager;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.PWarp;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -54,11 +55,11 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 		    map = new HashMap<String, PWarp>();
 		    CommandDataManager.pwMap.put(sender.username, map);
 		}
-		
+
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer(Localization.get("command.personalwarp.list"));
-			sender.sendChatToPlayer(FunctionHelper.niceJoin(map.keySet().toArray()));
+			ChatUtils.sendMessage(sender, Localization.get("command.personalwarp.list"));
+			ChatUtils.sendMessage(sender, FunctionHelper.niceJoin(map.keySet().toArray()));
 		}
 		else
 		{
@@ -128,7 +129,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
                     if (APIRegistry.perms.getGroupForName(args[1]) != null) target = "g:" + APIRegistry.perms.getGroupForName(args[1]).name;
                     else if (args[1].equalsIgnoreCase("me")) target = "p:" + sender.username;
                     else target = "p:" + FunctionHelper.getPlayerForName(sender, args[1]).username;
-                    
+
                     if (args.length == 2)
                     {
                         OutputHandler.chatConfirmation(sender, Localization.format("command.personalwarp.limit.current", getLimit(target)));
@@ -138,7 +139,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
                         setLimit(target, parseIntWithMin(sender, args[2], -1));
                         OutputHandler.chatConfirmation(sender, Localization.format("command.personalwarp.limit.new", getLimit(target)));
                     }
-                    
+
 			    }
 			}
 			else if (args[0].equalsIgnoreCase("limit"))
@@ -163,7 +164,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 	    else if (target.startsWith("g:")) return APIRegistry.perms.getPermissionPropForGroup(target.replaceFirst("g:", ""), APIRegistry.zones.getGLOBAL().getZoneName(), PERMPROP);
 	    else return "";
     }
-	
+
 	private void setLimit(String target, int limit)
     {
         if (target.startsWith("p:")) APIRegistry.perms.setPlayerPermissionProp(target.replaceFirst("p:", ""), PERMPROP, "" + limit, APIRegistry.zones.getGLOBAL().getZoneName());
@@ -225,12 +226,12 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 	{
 		return RegGroup.GUESTS;
 	}
-	
+
 	@Override
 	public void registerExtraPermissions(IPermRegisterEvent event)
     {
 	    event.registerPermissionLevel(PERMSETLIMIT, RegGroup.OWNERS);
-	    
+
 	    event.registerGroupPermissionprop(PERMPROP, 0, RegGroup.GUESTS);
 	    event.registerGroupPermissionprop(PERMPROP, 10, RegGroup.MEMBERS);
 	    event.registerGroupPermissionprop(PERMPROP, -1, RegGroup.OWNERS);

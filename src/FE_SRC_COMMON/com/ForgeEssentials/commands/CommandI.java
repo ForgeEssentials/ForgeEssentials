@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.misc.FriendlyItemList;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -58,13 +59,13 @@ public class CommandI extends FEcmdModuleCommands
 
 			ItemStack stack = new ItemStack(id, amount, dam);
 
-			String name = Item.itemsList[id].func_77653_i(stack);
+			String name = Item.itemsList[id].getItemStackDisplayName(stack);
 			OutputHandler.chatConfirmation(sender, Localization.format("command.i.given", amount, name));
 			receiver.inventory.addItemStackToInventory(stack);
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

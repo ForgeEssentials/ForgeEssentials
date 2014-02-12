@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.core.misc.FriendlyItemList;
+import com.ForgeEssentials.util.ChatUtils;
 
 public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 {
@@ -63,7 +64,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		sender.sendChatToPlayer("You cannot use the \"" + getCommandName() + "\" command from the console");
+		ChatUtils.sendMessage(sender, "You cannot use the \"" + getCommandName() + "\" command from the console");
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -95,11 +96,11 @@ public class CommandBurn extends FEcmdModuleCommands
 		if (player != null)
 		{
 			player.setFire(time);
-			sender.sendChatToPlayer(Localization.get("command.burn.player"));
+			ChatUtils.sendMessage(sender, Localization.get("command.burn.player"));
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 		}
 	}
 

@@ -9,6 +9,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -51,8 +52,8 @@ public class CommandServerSettings extends FEcmdModuleCommands
 		DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer(Localization.get("command.serversettings.list"));
-			sender.sendChatToPlayer(options.toString());
+			ChatUtils.sendMessage(sender, Localization.get("command.serversettings.list"));
+			ChatUtils.sendMessage(sender, options.toString());
 			return;
 		}
 

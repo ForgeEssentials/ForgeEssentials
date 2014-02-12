@@ -23,6 +23,7 @@ import com.ForgeEssentials.api.permissions.query.PropQueryPlayerSpot;
 import com.ForgeEssentials.commands.CommandBack;
 import com.ForgeEssentials.commands.CommandSetSpawn;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.WarpPoint;
 import com.ForgeEssentials.util.AreaSelector.WorldPoint;
@@ -62,12 +63,12 @@ public class EventHandler
 				}
 				else
 				{
-					e.entityPlayer.sendChatToPlayer("That is no sign!");
+					ChatUtils.sendMessage(e.entityPlayer, "That is no sign!");
 				}
 			}
 			else
 			{
-				e.entityPlayer.sendChatToPlayer("That is no sign!");
+				ChatUtils.sendMessage(e.entityPlayer, "That is no sign!");
 			}
 
 			e.entityPlayer.getEntityData().setBoolean("colorize", false);

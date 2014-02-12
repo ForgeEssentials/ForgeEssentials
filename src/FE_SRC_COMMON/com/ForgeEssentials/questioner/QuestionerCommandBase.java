@@ -11,6 +11,7 @@ import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -271,7 +272,7 @@ public abstract class QuestionerCommandBase extends CommandBase
 		}
 		else
 		{
-			sender.sendChatToPlayer(message);
+			ChatUtils.sendMessage(sender, message);
 		}
 	}
 

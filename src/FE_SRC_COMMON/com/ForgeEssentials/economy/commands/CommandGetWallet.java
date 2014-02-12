@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -35,9 +36,9 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 			{
 				if (sender != player)
 				{
-					sender.sendChatToPlayer(player.username + Localization.get(Localization.wallet_GET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
+					ChatUtils.sendMessage(sender, player.username + Localization.get(Localization.wallet_GET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
 				}
-				player.sendChatToPlayer(Localization.get(Localization.wallet_GET_SELF) + APIRegistry.wallet.getMoneyString(player.username));
+				ChatUtils.sendMessage(player, Localization.get(Localization.wallet_GET_SELF) + APIRegistry.wallet.getMoneyString(player.username));
 			}
 		}
 		else
@@ -55,16 +56,16 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase
 
 			if (player == null)
 			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_NOPLAYER));
+				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_NOPLAYER));
 			}
 			else
 			{
-				sender.sendChatToPlayer(player.username + Localization.get(Localization.wallet_GET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
+				ChatUtils.sendMessage(sender, player.username + Localization.get(Localization.wallet_GET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
 			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

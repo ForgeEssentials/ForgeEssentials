@@ -15,6 +15,8 @@ import static org.objectweb.asm.Opcodes.ISTORE;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import net.minecraft.launchwrapper.IClassTransformer;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -30,8 +32,6 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.ForgeEssentials.core.preloader.Data;
-
-import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class FEeventAdder implements IClassTransformer
 {

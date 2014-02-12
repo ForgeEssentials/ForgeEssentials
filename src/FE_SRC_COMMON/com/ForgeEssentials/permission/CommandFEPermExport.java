@@ -3,6 +3,7 @@ package com.ForgeEssentials.permission;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -13,14 +14,14 @@ public class CommandFEPermExport
 		String output = "export";
 		if (args.length > 1)
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
 			return;
 		}
 		else if (args.length == 1)
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
 				return;
 			}
 			else
@@ -38,14 +39,14 @@ public class CommandFEPermExport
 		String output = "export";
 		if (args.length > 1)
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
 			return;
 		}
 		else if (args.length == 1)
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
 				return;
 			}
 			else
@@ -54,7 +55,7 @@ public class CommandFEPermExport
 			}
 		}
 
-		sender.sendChatToPlayer(" {PermSQL} Starting permission export...");
+		ChatUtils.sendMessage(sender, " {PermSQL} Starting permission export...");
 		startThread(sender, output);
 	}
 

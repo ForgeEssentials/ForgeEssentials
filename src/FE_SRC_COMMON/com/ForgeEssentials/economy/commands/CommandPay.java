@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -31,9 +32,11 @@ public class CommandPay extends ForgeEssentialsCommandBase
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player == null)
 			{
-				sender.sendChatToPlayer(args[0] + " not found!");
-			}else if(player == sender){
-				sender.sendChatToPlayer("You can't pay yourself!");
+				ChatUtils.sendMessage(sender, args[0] + " not found!");
+			}
+			else if (player == sender)
+			{
+				ChatUtils.sendMessage(sender, "You can't pay yourself!");
 			}
 			else
 			{
@@ -69,7 +72,7 @@ public class CommandPay extends ForgeEssentialsCommandBase
 			}
 			if (player == null)
 			{
-				sender.sendChatToPlayer(args[0] + " not found!");
+				ChatUtils.sendMessage(sender, args[0] + " not found!");
 			}
 			else
 			{
@@ -81,7 +84,7 @@ public class CommandPay extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 

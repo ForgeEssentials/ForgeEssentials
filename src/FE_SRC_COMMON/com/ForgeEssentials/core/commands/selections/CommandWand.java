@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -71,7 +72,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 			else if (args[0].equalsIgnoreCase("unbind"))
 			{
 				info.wandEnabled = false;
-				sender.sendChatToPlayer(FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
+				ChatUtils.sendMessage(sender, FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
 				return;
 			}
 			else
@@ -98,7 +99,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 			if (info.wandEnabled)
 			{
 				info.wandEnabled = false;
-				sender.sendChatToPlayer(FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
+				ChatUtils.sendMessage(sender, FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
 				return;
 			}
 			else

@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
 import cpw.mods.fml.common.IPlayerTracker;
@@ -17,7 +18,7 @@ public class PlayerTracker implements IPlayerTracker
 		{
 			if (!ModuleTickets.ticketList.isEmpty())
 			{
-				player.sendChatToPlayer(FEChatFormatCodes.DARKAQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
+				ChatUtils.sendMessage(player, FEChatFormatCodes.DARKAQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
 			}
 		}
 	}

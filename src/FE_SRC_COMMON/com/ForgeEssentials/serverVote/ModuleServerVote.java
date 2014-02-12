@@ -23,6 +23,7 @@ import com.ForgeEssentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerInit;
 import com.ForgeEssentials.core.moduleLauncher.FEModule.ServerStop;
 import com.ForgeEssentials.serverVote.Votifier.VoteReceiver;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
@@ -196,7 +197,7 @@ public class ModuleServerVote implements IPlayerTracker
 
         if (!config.msgVoter.equals(""))
         {
-            player.sendChatToPlayer(FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
+            ChatUtils.sendMessage(player, FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
         }
 
         if (!config.freeStuff.isEmpty())

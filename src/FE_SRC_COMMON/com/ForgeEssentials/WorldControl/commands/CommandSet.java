@@ -1,6 +1,5 @@
 package com.ForgeEssentials.WorldControl.commands;
 
-//Depreciated - Huh? Do you mean depracated?
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -14,6 +13,7 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayerArea;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.misc.FriendlyItemList;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -80,7 +80,7 @@ public class CommandSet extends WorldControlCommandBase
 							return;
 					}
 			}
-			player.sendChatToPlayer("Working on set.");
+			ChatUtils.sendMessage(player, "Working on set.");
 		}
 		else
 		{

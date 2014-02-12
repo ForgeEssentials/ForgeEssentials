@@ -1,11 +1,13 @@
 package com.ForgeEssentials.WorldControl.commands;
 
 //Depreciated
+
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskSetBackup;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
@@ -37,6 +39,6 @@ public class CommandUndo extends WorldControlCommandBase
 
 		TaskRegistry.registerTask(new TickTaskSetBackup(player, back, false));
 
-		player.sendChatToPlayer("Working on undo.");
+		ChatUtils.sendMessage(player, "Working on undo.");
 	}
 }

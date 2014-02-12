@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 
 import com.ForgeEssentials.WorldBorder.WorldBorder;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 
 public class message implements IEffect
@@ -19,6 +20,6 @@ public class message implements IEffect
 	@Override
 	public void execute(WorldBorder wb, EntityPlayerMP player)
 	{
-		player.sendChatToPlayer(FunctionHelper.formatColors(message));
+		ChatUtils.sendMessage(player, FunctionHelper.formatColors(message));
 	}
 }

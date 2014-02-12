@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
-import com.ForgeEssentials.util.FEChatFormatCodes;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -53,7 +53,7 @@ public class CommandModlist extends FEcmdModuleCommands
 				break;
 			}
 			ModContainer mod = Loader.instance().getModList().get(i);
-			sender.sendChatToPlayer(mod.getName() + " - " + mod.getVersion());
+			ChatUtils.sendMessage(sender, mod.getName() + " - " + mod.getVersion());
 		}
 	}
 

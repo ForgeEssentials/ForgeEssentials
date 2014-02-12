@@ -33,7 +33,7 @@ public class TextFormatter
 		JSONObject data = new JSONObject();
 		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display") && stack.stackTagCompound.getCompoundTag("display").hasKey("Name"))
 		{
-			data.put("item", stack.getItemName().replaceAll("item.", "").replaceAll("tile.", ""));
+			data.put("item", stack.getDisplayName().replaceAll("item.", "").replaceAll("tile.", ""));
 		}
 		if (stack.stackSize != 1)
 		{

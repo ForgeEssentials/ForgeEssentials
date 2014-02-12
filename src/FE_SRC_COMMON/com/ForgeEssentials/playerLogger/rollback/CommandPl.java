@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
 import com.ForgeEssentials.playerLogger.network.PacketPlayerLogger;
+import com.ForgeEssentials.util.ChatUtils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -40,7 +41,7 @@ public class CommandPl extends ForgeEssentialsCommandBase
 			return;
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer("You must use /playerlogger enable");
+			ChatUtils.sendMessage(sender, "You must use /playerlogger enable");
 			return;
 		}
 		else if (args[0].equalsIgnoreCase("enable"))
@@ -52,7 +53,7 @@ public class CommandPl extends ForgeEssentialsCommandBase
 			}
 			sender.getEntityData().setBoolean("lb", true);
 			sender.getEntityData().setInteger("lb_limit", limit);
-			sender.sendChatToPlayer("Click a block and you will get the last " + limit + " changes.");
+			ChatUtils.sendMessage(sender, "Click a block and you will get the last " + limit + " changes.");
 		}
 		else if (args[0].equalsIgnoreCase("disable"))
 		{

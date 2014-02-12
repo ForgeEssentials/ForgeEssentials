@@ -12,6 +12,7 @@ import com.ForgeEssentials.api.EnumMobType;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.CommandButcherTickTask;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -181,7 +182,7 @@ public class CommandButcher extends FEcmdModuleCommands
 			}
 			catch (NumberFormatException e)
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NAN, args[0]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NAN, args[0]));
 				return;
 			}
 		}

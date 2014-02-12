@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.TickTaskPulseHelper;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.AreaSelector.Point;
 import com.ForgeEssentials.util.tasks.TaskRegistry;
@@ -35,7 +36,7 @@ public class CommandPulse extends FEcmdModuleCommands
 
 	public String getCommandUsage(ICommandSender par1ICommandSender)
 	{
-		return par1ICommandSender.translateString("/pulse <X> <Y> <Z> [PulseLength]", new Object[0]);
+		return "/pulse <X> <Y> <Z> [PulseLength]";
 	}
 
 	public void processCommand(ICommandSender var1, String[] var2)
@@ -75,7 +76,7 @@ public class CommandPulse extends FEcmdModuleCommands
 			}
 
 			TaskRegistry.registerTask(new TickTaskPulseHelper(var11, new Point(var3, var4, var5), var6));
-			var1.sendChatToPlayer("Redstone Pulsed for " + var6 + " Ticks");
+			ChatUtils.sendMessage(var1, "Redstone Pulsed for " + var6 + " Ticks");
 		}
 		else
 		{

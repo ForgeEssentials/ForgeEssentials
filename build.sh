@@ -1,5 +1,5 @@
-VERSION="SNAPSHOT"
-MC="1.5.2"
+VERSION="1.3pre1"
+MC="1.6.4"
 VERSION="`head -n 1 VERSION.TXT`"
 VERSIONBUILD="${VERSION}.$2"
 MC="`head -2 VERSION.TXT | tail -1 VERSION.TXT`"
@@ -7,8 +7,8 @@ echo "Building ForgeEssentials ${VERSIONBUILD} for MC ${MC} in $1"
 
 echo "Downloading Forge..."
 
-#wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
-wget -nv http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.5.2-7.8.1.738.zip
+wget http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip
+#wget -nv http://files.minecraftforge.net/minecraftforge/minecraftforge-src-1.5.2-7.8.1.738.zip
 
 unzip -q minecraftforge-src-*.zip
 rm minecraftforge-src-*.zip
@@ -20,7 +20,7 @@ mkdir accesstransformers
 cp -rf $1/src/FE_SRC_COMMON/forgeessentials_at.cfg $1/forge/accesstransformers/
 
 echo "Installing Forge..."
-bash ./install.sh
+python install.py --no-assets
 cd mcp
 
 echo "Copying ForgeEssentials and related libraries into MCP..."

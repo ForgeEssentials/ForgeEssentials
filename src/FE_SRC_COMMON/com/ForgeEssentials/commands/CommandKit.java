@@ -16,6 +16,7 @@ import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.commands.util.Kit;
 import com.ForgeEssentials.commands.util.TickHandlerCommands;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -41,7 +42,7 @@ public class CommandKit extends FEcmdModuleCommands
 		 */
 		if (args.length == 0)
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.KIT_LIST));
+			ChatUtils.sendMessage(sender, Localization.get(Localization.KIT_LIST));
 
 			String msg = "";
 			for (Kit kit : CommandDataManager.kits.values())
@@ -51,7 +52,7 @@ public class CommandKit extends FEcmdModuleCommands
 					msg = kit.getName() + ", " + msg;
 				}
 			}
-			sender.sendChatToPlayer(msg);
+			ChatUtils.sendMessage(sender, msg);
 			return;
 		}
 		/*
@@ -87,7 +88,7 @@ public class CommandKit extends FEcmdModuleCommands
 				{
 					int cooldown = parseIntWithMin(sender, args[2], 0);
 					new Kit(sender, args[0].toLowerCase(), cooldown);
-					sender.sendChatToPlayer(Localization.get(Localization.KIT_MADE).replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
+					ChatUtils.sendMessage(sender, Localization.get(Localization.KIT_MADE).replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
 				}
 				else
 				{
@@ -107,7 +108,7 @@ public class CommandKit extends FEcmdModuleCommands
 				if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
 				{
 					CommandDataManager.removeKit(CommandDataManager.kits.get(args[0].toLowerCase()));
-					sender.sendChatToPlayer(Localization.get(Localization.KIT_REMOVED));
+					ChatUtils.sendMessage(sender, Localization.get(Localization.KIT_REMOVED));
 				}
 				else
 				{
@@ -127,11 +128,11 @@ public class CommandKit extends FEcmdModuleCommands
 	{
 		if (PlayerInfo.getPlayerInfo(player.username).kitCooldown.containsKey(kit.getName()))
 		{
-			player.sendChatToPlayer(Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName()))));
+			ChatUtils.sendMessage(player, Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName()))));
 		}
 		else
 		{
-			player.sendChatToPlayer(Localization.get(Localization.KIT_DONE));
+			ChatUtils.sendMessage(player, Localization.get(Localization.KIT_DONE));
 
 			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
 			{

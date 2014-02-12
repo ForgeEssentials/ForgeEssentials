@@ -7,6 +7,7 @@ import java.util.HashMap;
 import net.minecraft.command.ICommandSender;
 
 import com.ForgeEssentials.api.permissions.Group;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.OutputHandler;
 
 @SuppressWarnings({ "unchecked" })
@@ -64,7 +65,7 @@ public class ExportThread extends Thread
 	{
 		if (user != null)
 		{
-			user.sendChatToPlayer("[PermSQL]" + msg);
+			ChatUtils.sendMessage(user, "[PermSQL]" + msg);
 		}
 		else
 		{

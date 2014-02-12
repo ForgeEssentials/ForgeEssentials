@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.ForgeEssentials.WorldControl.TickTasks.TickTaskTopManipulator;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.util.BackupArea;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.AreaSelector.Point;
@@ -82,7 +83,7 @@ public class CommandTopManipulate extends WorldControlCommandBase
 
 				TaskRegistry.registerTask(new TickTaskTopManipulator(player, back, effectPosition, radius, manipulateMode));
 			}
-			player.sendChatToPlayer("Working on " + name + ".");
+			ChatUtils.sendMessage(player, "Working on " + name + ".");
 		}
 		else
 		{

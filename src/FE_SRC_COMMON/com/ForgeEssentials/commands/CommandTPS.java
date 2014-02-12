@@ -11,6 +11,7 @@ import net.minecraftforge.common.DimensionManager;
 
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -81,7 +82,7 @@ public class CommandTPS extends FEcmdModuleCommands
 	{
 		if (!doCommand(sender, args))
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
@@ -92,17 +93,17 @@ public class CommandTPS extends FEcmdModuleCommands
 		{
 			long var1 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
-			sender.sendChatToPlayer("Memory use: " + var1 / 1024L / 1024L + " mb (" + Runtime.getRuntime().freeMemory() * 100L / Runtime.getRuntime().maxMemory() + "% free)");
-			sender.sendChatToPlayer("Threads: " + TcpConnection.field_74471_a.get() + " + " + TcpConnection.field_74469_b.get());
-			sender.sendChatToPlayer("Avg tick: " + getTPS(server.tickTimeArray));
-			sender.sendChatToPlayer("Avg sent: " + (int) func_79015_a(server.sentPacketCountArray) + ", Avg size: " + (int) func_79015_a(server.sentPacketSizeArray));
-			sender.sendChatToPlayer("Avg rec: " + (int) func_79015_a(server.receivedPacketCountArray) + ", Avg size: " + (int) func_79015_a(server.receivedPacketSizeArray));
+			ChatUtils.sendMessage(sender, "Memory use: " + var1 / 1024L / 1024L + " mb (" + Runtime.getRuntime().freeMemory() * 100L / Runtime.getRuntime().maxMemory() + "% free)");
+			ChatUtils.sendMessage(sender, "Threads: " + TcpConnection.field_74471_a.get() + " + " + TcpConnection.field_74469_b.get());
+			ChatUtils.sendMessage(sender, "Avg tick: " + getTPS(server.tickTimeArray));
+			ChatUtils.sendMessage(sender, "Avg sent: " + (int) func_79015_a(server.sentPacketCountArray) + ", Avg size: " + (int) func_79015_a(server.sentPacketSizeArray));
+			ChatUtils.sendMessage(sender, "Avg rec: " + (int) func_79015_a(server.receivedPacketCountArray) + ", Avg size: " + (int) func_79015_a(server.receivedPacketSizeArray));
 
 			if (server.worldServers != null)
 			{
 				for (Integer id : DimensionManager.getIDs())
 				{
-					sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + getTickTime(server.worldTickTimes.get(id)) + "ms");
+					ChatUtils.sendMessage(sender, "Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + getTickTime(server.worldTickTimes.get(id)) + "ms");
 				}
 			}
 			return true;
@@ -115,7 +116,7 @@ public class CommandTPS extends FEcmdModuleCommands
 				{
 					for (Integer id : DimensionManager.getIDs())
 					{
-						sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
+						ChatUtils.sendMessage(sender, "Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
 					}
 				}
 				return true;
@@ -123,7 +124,7 @@ public class CommandTPS extends FEcmdModuleCommands
 			else
 			{
 				int id = parseIntBounded(sender, args[0], DimensionManager.getIDs()[0], DimensionManager.getNextFreeDimId() - 1);
-				sender.sendChatToPlayer("Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
+				ChatUtils.sendMessage(sender, "Lvl " + id + " TPS: " + getTPS(server.worldTickTimes.get(id)) + " TickTime: " + server.worldTickTimes.get(id)[0] + "ms");
 			}
 			return true;
 		}

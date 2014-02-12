@@ -11,6 +11,7 @@ import com.ForgeEssentials.api.permissions.IPermRegisterEvent;
 import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -41,7 +42,7 @@ public class CommandHeal extends FEcmdModuleCommands
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
 		else
@@ -62,12 +63,12 @@ public class CommandHeal extends FEcmdModuleCommands
 			}
 			else
 			{
-				sender.sendChatToPlayer(Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
 			}
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
 		}
 	}
 
@@ -76,7 +77,7 @@ public class CommandHeal extends FEcmdModuleCommands
 		target.heal(20);
 		target.extinguish();
 		target.getFoodStats().addStats(20, 1.0F);
-		target.sendChatToPlayer(Localization.get("command.heal.healed"));
+		ChatUtils.sendMessage(target, Localization.get("command.heal.healed"));
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.chat.IRCHelper;
 import com.ForgeEssentials.chat.ModuleChat;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -74,8 +75,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 						senderMessage += " ";
 					}
 				}
-				MinecraftServer.getServer().sendChatToPlayer(receiverMessage);
-				sender.sendChatToPlayer(senderMessage);
+				ChatUtils.sendMessage(MinecraftServer.getServer(), receiverMessage);
+				ChatUtils.sendMessage(sender, senderMessage);
 			}
 
 			// IRC messages.
@@ -101,11 +102,11 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				try
 				{
 					IRCHelper.privateMessage(sender.getCommandSenderName(), args[1], receiverMessage);
-					sender.sendChatToPlayer(senderMessage);
+					ChatUtils.sendMessage(sender, senderMessage);
 				}
 				catch (Exception e)
 				{
-					sender.sendChatToPlayer("Unable to send message to: " + args[1]);
+					ChatUtils.sendMessage(sender, "Unable to send message to: " + args[1]);
 				}
 			}
 
@@ -135,8 +136,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 						senderMessage += " ";
 					}
 				}
-				sender.sendChatToPlayer(senderMessage);
-				receiver.sendChatToPlayer(receiverMessage);
+				ChatUtils.sendMessage(sender, senderMessage);
+				ChatUtils.sendMessage(receiver, receiverMessage);
 			}
 		}
 	}
@@ -146,7 +147,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0 || args.length == 1)
 		{
-			sender.sendChatToPlayer(Localization.ERROR_BADSYNTAX + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.ERROR_BADSYNTAX + getSyntaxConsole());
 			return;
 		}
 		if (args.length > 1)
@@ -175,8 +176,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 						senderMessage += " ";
 					}
 				}
-				sender.sendChatToPlayer(senderMessage);
-				receiver.sendChatToPlayer(receiverMessage);
+				ChatUtils.sendMessage(sender, senderMessage);
+				ChatUtils.sendMessage(receiver, receiverMessage);
 			}
 		}
 	}

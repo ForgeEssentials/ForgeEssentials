@@ -16,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.PlayerInfo;
 import com.ForgeEssentials.core.compat.CompatReiMinimap;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.OutputHandler;
 
@@ -108,16 +109,16 @@ public class LoginMessage
 			{
 				if (sender instanceof EntityPlayer)
 				{
-					sender.sendChatToPlayer(CompatReiMinimap.reimotd((EntityPlayer) sender) + Format(messageList.get(id), sender.getCommandSenderName()));
+					ChatUtils.sendMessage(sender, CompatReiMinimap.reimotd((EntityPlayer) sender) + Format(messageList.get(id), sender.getCommandSenderName()));
 				}
 				else
 				{
-					sender.sendChatToPlayer(Format(messageList.get(id), sender.getCommandSenderName()));
+					ChatUtils.sendMessage(sender, Format(messageList.get(id), sender.getCommandSenderName()));
 				}
 			}
 			else
 			{
-				sender.sendChatToPlayer(Format(messageList.get(id), sender.getCommandSenderName()));
+				ChatUtils.sendMessage(sender, Format(messageList.get(id), sender.getCommandSenderName()));
 			}
 		}
 	}

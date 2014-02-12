@@ -25,6 +25,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.ForgeEssentials.api.EnumMobType;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -146,11 +147,7 @@ public class CommandButcherTickTask implements ITickTask
 					world.getChunkFromChunkCoords(var9, var10).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, (IEntitySelector) null);
 					for (EntityLiving entity : list)
 					{
-						if (entity instanceof EntityPlayer)
-						{
-							continue;
-						}
-						else if (mobType.equalsIgnoreCase("boss") || mobType.equalsIgnoreCase("all"))
+						if (mobType.equalsIgnoreCase("boss") || mobType.equalsIgnoreCase("all"))
 						{
 							typeSet = MobTypeRegistry.getCollectionForMobType(EnumMobType.BOSS);
 							if (entity instanceof EntityDragon)
@@ -265,7 +262,7 @@ public class CommandButcherTickTask implements ITickTask
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.format("command.butcher.done", counter));
+			ChatUtils.sendMessage(sender, Localization.format("command.butcher.done", counter));
 		}
 	}
 

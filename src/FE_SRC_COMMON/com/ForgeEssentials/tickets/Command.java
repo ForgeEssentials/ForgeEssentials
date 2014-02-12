@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.ForgeEssentials.api.APIRegistry;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.commands.ForgeEssentialsCommandBase;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
@@ -69,7 +70,7 @@ public class Command extends ForgeEssentialsCommandBase
 			}
 			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
 			Ticket t = ModuleTickets.getID(id);
-			sender.sendChatToPlayer(c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
+			ChatUtils.sendMessage(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
 		}
 
 		if (args[0].equalsIgnoreCase("list") && permcheck(sender, "view"))
@@ -80,20 +81,20 @@ public class Command extends ForgeEssentialsCommandBase
 			{
 				page = parseIntBounded(sender, args[1], 0, pages);
 			}
-			sender.sendChatToPlayer(c + Localization.get("message.other.ticketList.header"));
+			ChatUtils.sendMessage(sender, c + Localization.get("message.other.ticketList.header"));
 			for (int i = page * 7; i < (page + 1) * 7; i++)
 			{
 				try
 				{
 					Ticket t = ModuleTickets.ticketList.get(i);
-					sender.sendChatToPlayer("#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
+					ChatUtils.sendMessage(sender, "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
 				}
 				catch (Exception e)
 				{
 					break;
 				}
 			}
-			sender.sendChatToPlayer(c + Localization.format("message.other.ticketList.pages", page, pages));
+			ChatUtils.sendMessage(sender, c + Localization.format("message.other.ticketList.pages", page, pages));
 			return;
 		}
 
@@ -117,7 +118,7 @@ public class Command extends ForgeEssentialsCommandBase
 			msg = msg.substring(1);
 			Ticket t = new Ticket(sender, args[1], msg);
 			ModuleTickets.ticketList.add(t);
-			sender.sendChatToPlayer(c + Localization.format("message.confim.ticketPost", t.id));
+			ChatUtils.sendMessage(sender, c + Localization.format("message.confim.ticketPost", t.id));
 			return;
 		}
 
@@ -141,7 +142,7 @@ public class Command extends ForgeEssentialsCommandBase
 			}
 			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
 			ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
-			sender.sendChatToPlayer(c + Localization.format("message.confim.ticketPost", id));
+			ChatUtils.sendMessage(sender, c + Localization.format("message.confim.ticketPost", id));
 		}
 	}
 

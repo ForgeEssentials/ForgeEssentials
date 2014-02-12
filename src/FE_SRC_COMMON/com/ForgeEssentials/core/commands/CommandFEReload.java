@@ -6,6 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.ForgeEssentials.core.moduleLauncher.ModuleLauncher;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 
 public class CommandFEReload extends ForgeEssentialsCommandBase
@@ -19,19 +20,19 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		sender.sendChatToPlayer("Reloading ForgeEssentials configs. May not work for all settings!");
-		sender.sendChatToPlayer(FEChatFormatCodes.RED + "This is experimental!");
+		ChatUtils.sendMessage(sender, "Reloading ForgeEssentials configs. May not work for all settings!");
+		ChatUtils.sendMessage(sender, FEChatFormatCodes.RED + "This is experimental!");
 		ModuleLauncher.instance.reloadConfigs(sender);
-		sender.sendChatToPlayer("Done!");
+		ChatUtils.sendMessage(sender, "Done!");
 	}
 
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		sender.sendChatToPlayer("Reloading ForgeEssentials configs. May not work for all settings!");
-		sender.sendChatToPlayer(FEChatFormatCodes.RED + "This is experimental!");
+		ChatUtils.sendMessage(sender, "Reloading ForgeEssentials configs. May not work for all settings!");
+		ChatUtils.sendMessage(sender, FEChatFormatCodes.RED + "This is experimental!");
 		ModuleLauncher.instance.reloadConfigs(sender);
-		sender.sendChatToPlayer("Done!");
+		ChatUtils.sendMessage(sender, "Done!");
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.CoreCommands." + getCommandName();
 	}
-	
+
 	@Override
 	public String getSyntaxConsole()
 	{
@@ -69,7 +70,7 @@ public class CommandFEReload extends ForgeEssentialsCommandBase
 	{
 		return "Reload FE configs";
 	}
-	
+
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

@@ -18,6 +18,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.core.ForgeEssentials;
 import com.ForgeEssentials.core.moduleLauncher.FEModule;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FEChatFormatCodes;
 import com.ForgeEssentials.util.OutputHandler;
 import com.ForgeEssentials.util.events.modules.FEModuleInitEvent;
@@ -99,7 +100,7 @@ public class ModuleBackup
 				OutputHandler.felog.info(msg);
 			}
 			else{
-			server.sendChatToPlayer("[ForgeEssentials] " + msg);
+			ChatUtils.sendMessage(server, "[ForgeEssentials] " + msg);
 			}
 			ServerConfigurationManager manager = server.getConfigurationManager();
 			for (String username : manager.getAllUsernames())
@@ -107,7 +108,7 @@ public class ModuleBackup
 				EntityPlayerMP player = manager.getPlayerForUsername(username);
 				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
 				{
-					player.sendChatToPlayer(FEChatFormatCodes.AQUA + "[ForgeEssentials] " + msg);
+					ChatUtils.sendMessage(player, FEChatFormatCodes.AQUA + "[ForgeEssentials] " + msg);
 				}
 			}
 		}

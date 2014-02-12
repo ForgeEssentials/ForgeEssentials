@@ -13,6 +13,7 @@ import com.ForgeEssentials.api.permissions.RegGroup;
 import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
 import com.ForgeEssentials.commands.util.FEcmdModuleCommands;
 import com.ForgeEssentials.core.PlayerInfo;
+import com.ForgeEssentials.util.ChatUtils;
 import com.ForgeEssentials.util.FunctionHelper;
 import com.ForgeEssentials.util.Localization;
 import com.ForgeEssentials.util.OutputHandler;
@@ -59,12 +60,12 @@ public class CommandTp extends FEcmdModuleCommands
 		}
 		else if (args.length == 2 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 		{
-			
+
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
 				EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[1]);
-				
+
 				if (target != null)
 				{
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
@@ -168,7 +169,7 @@ public class CommandTp extends FEcmdModuleCommands
 		}
 		else
 		{
-			sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX));
+			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX));
 		}
 	}
 
