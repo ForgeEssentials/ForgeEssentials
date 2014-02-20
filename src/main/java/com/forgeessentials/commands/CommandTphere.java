@@ -1,0 +1,96 @@
+package com.forgeessentials.commands;
+
+import java.util.HashMap;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+
+import com.forgeessentials.api.permissions.RegGroup;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.Localization;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.TeleportCenter;
+import com.forgeessentials.util.AreaSelector.Point;
+import com.forgeessentials.util.AreaSelector.WarpPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+
+public class CommandTphere extends FEcmdModuleCommands
+{
+
+	/** Spawn point for each dimension */
+	public static HashMap<Integer, Point>	spawnPoints	= new HashMap<Integer, Point>();
+
+	@Override
+	public String getCommandName()
+	{
+		return "tphere";
+	}
+
+	@Override
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	{
+		if (args.length == 1)
+		{
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			if (player != null)
+			{
+				EntityPlayerMP target = (EntityPlayerMP) sender;
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+				playerInfo.back = new WarpPoint(player);
+				TeleportCenter.addToTpQue(new WarpPoint(target), player);
+			}
+			else
+			{
+				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			}
+		}
+		else
+		{
+			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX + getCommandUsage(sender)));
+		}
+	}
+
+	@Override
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+
+	}
+
+	@Override
+	public boolean canConsoleUseCommand()
+	{
+		return false;
+	}
+
+	@Override
+	public String getCommandPerm()
+	{
+		return "ForgeEssentials.BasicCommands." + getCommandName();
+	}
+
+	@Override
+	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		if (args.length == 1)
+			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+		else
+			return null;
+	}
+
+	@Override
+	public RegGroup getReggroup()
+	{
+		return RegGroup.OWNERS;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+}

@@ -1,0 +1,150 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+	}
+	dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'}
+
+}
+
+apply plugin: 'forge'
+
+version = "SNAPSHOT-MC164"
+group= "com.forgeessentials"
+archivesBaseName = "forgeessentials"
+
+minecraft {
+	version = "1.6.4-9.11.1.964"
+	assetDir = "rundir/assets"
+        accessTransformers += "src/main/resources/forgeessentials_at.cfg"
+}
+
+repositories{ mavenLocal() }
+
+processResources
+{
+	from(sourceSets.main.resources.srcDirs) {
+		include 'mcmod.info'
+		expand 'version':project.version, 'mcversion':project.minecraft.version
+	}
+
+	from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
+}
+
+jar{
+from project.sourceSets.main.output
+include "com/forgeessentials/core/**"
+include "com/forgeessentials/permission/**"
+include "com/forgeessentials/util/**"
+include "com/forgeessentials/data/**"
+include "com/forgeessentials/api/*.class"
+include "com/forgeessentials/api/permissions/**"
+include "com/forgeessentials/api/packetInspector/**"
+include "com/forgeessentials/api/json/**"
+include "logo.png"
+include "mcmod.info"
+include "forgeessentials_at.cfg"
+
+}
+
+task authJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'auth'
+        include "com/forgeessentials/auth/**"
+    }
+task backupsJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'backup'
+        include "com/forgeessentials/backup/**"
+    }
+task chatJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'chat'
+        include "com/forgeessentials/chat/**"
+    }
+task commandsJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'commands'
+        include "com/forgeessentials/api/commands/**"
+        include "com/forgeessentials/commands/**"
+    }
+task economyJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'economy'
+        include "com/forgeessentials/economy/**"
+    }
+task plJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'playerlogger'
+        include "com/forgeessentials/playerlogger/**"
+    }
+task protectJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'protection'
+        include "com/forgeessentials/protection/**"
+
+    }
+task questionJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'questioner'
+        include "com/forgeessentials/questioner/**"
+    }
+task snooperJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'snooper'
+        include "com/forgeessentials/snooper/**"
+	   include "com/forgeessentials/api/snooper/**"
+    }
+task svJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'servervote'
+        include "com/forgeessentials/servervote/**"
+    }
+task scriptJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'scripting'
+        include "com/forgeessentials/scripting/**"
+    }
+task ticketsJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'tickets'
+        include "com/forgeessentials/tickets/**"
+    }
+task wbJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'world-border'
+        include "com/forgeessentials/worldborder/**"
+    }
+task wcJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'worldcontrol'
+        include "com/forgeessentials/worldcontrol/**"
+    }
+task afterlifeJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'afterlife'
+        include "com/forgeessentials/afterlife/**"
+    }
+task clientJar(type: Jar) {
+        from sourceSets.main.output
+        appendix = 'client'
+        include "com/forgeessentials/client/**"
+include "logo.png"
+include "mcmod.info"
+include "FEReadme.txt"
+include "HowToGetFESupport.txt"
+    }
+
+artifacts {
+
+
+}
+
+dependencies {
+compile 'org.pircbotx:pircbotx:1.9'
+compile 'com.h2database:h2:1.3.175'
+compile 'mysql:mysql-connector-java:5.1.22'
+}

@@ -1,5 +1,7 @@
 *.class
 *.DS_Store
+.classpath
+.project
 
 /bin/*
 /conf/*
@@ -11,6 +13,9 @@
 /runtime/*
 /temp/*
 /lib/*
+/rundir/*
+/.gradle/*
+/.settings/*
 
 /eclipse/.metadata/
 /eclipse/Minecraft/bin/
@@ -31,3 +36,5 @@
 *.db
 CHANGELOG
 modlist.txt
+/build
+/bin
