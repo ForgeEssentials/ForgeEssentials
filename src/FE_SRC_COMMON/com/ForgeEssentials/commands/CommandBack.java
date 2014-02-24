@@ -99,5 +99,12 @@ public class CommandBack extends FEcmdModuleCommands
 	{
 		return RegGroup.MEMBERS;
 	}
+	
+	@Override
+	public void registerExtraPermissions(IPermRegisterEvent event)
+	{
+		event.registerPermissionLevel(getCommandPerm() + ".ondeath", RegGroup.MEMBERS);
+		event.registerPermissionLevel(getCommandPerm() + ".ontp", RegGroup.MEMBERS);
+	}
 
 }
