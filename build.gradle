@@ -19,7 +19,6 @@ archivesBaseName = "forgeessentials"
 minecraft {
 	version = "1.6.4-9.11.1.964"
 	assetDir = "rundir/assets"
-        accessTransformers += "src/main/resources/forgeessentials_at.cfg"
 }
 
 repositories{ mavenLocal() }
@@ -34,117 +33,78 @@ processResources
 	from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
 }
 
+// core
 jar{
-from project.sourceSets.main.output
-include "com/forgeessentials/core/**"
-include "com/forgeessentials/permission/**"
-include "com/forgeessentials/util/**"
-include "com/forgeessentials/data/**"
-include "com/forgeessentials/api/*.class"
-include "com/forgeessentials/api/permissions/**"
-include "com/forgeessentials/api/packetInspector/**"
-include "com/forgeessentials/api/json/**"
-include "logo.png"
-include "mcmod.info"
-include "forgeessentials_at.cfg"
-
+    from project.sourceSets.main.output
+    include "com/forgeessentials/core/**"
+    include "com/forgeessentials/permission/**"
+    include "com/forgeessentials/util/**"
+    include "com/forgeessentials/data/**"
+    include "com/forgeessentials/api/*.class"
+    include "com/forgeessentials/api/permissions/**"
+    include "com/forgeessentials/api/packetInspector/**"
+    include "com/forgeessentials/api/json/**"
+    include "logo.png"
+    include "mcmod.info"
+    include "forgeessentials_at.cfg"
 }
 
-task authJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'auth'
-        include "com/forgeessentials/auth/**"
-    }
-task backupsJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'backup'
-        include "com/forgeessentials/backup/**"
-    }
-task chatJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'chat'
-        include "com/forgeessentials/chat/**"
-    }
-task commandsJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'commands'
-        include "com/forgeessentials/api/commands/**"
-        include "com/forgeessentials/commands/**"
-    }
-task economyJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'economy'
-        include "com/forgeessentials/economy/**"
-    }
-task plJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'playerlogger'
-        include "com/forgeessentials/playerlogger/**"
-    }
-task protectJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'protection'
-        include "com/forgeessentials/protection/**"
+//server complete
+task completeZip(type: Zip, dependsOn: 'jar') {
+    into('coremods') { from project.tasks.jar.getArchivePath() }
+}
 
-    }
-task questionJar(type: Jar) {
+def list = [
+    'auth',
+    'backup',
+    'chat',
+    'commands',
+    'economy',
+    'playerlogger',
+    'protection',
+    'questioner',
+    'snooper',
+    'servervote',
+    'scripting',
+    'tickets',
+    'worldborder',
+    'worldcontrol',
+    'afterlife',
+    'client'
+]
+
+list.each { name ->
+    def taskName = name + "Jar"
+    def newTask = task(name: taskName, dependsOn: "jar", type: Jar) {
         from sourceSets.main.output
-        appendix = 'questioner'
-        include "com/forgeessentials/questioner/**"
+        appendix = name
+        include "com/forgeessentials/$name/**"
+        include "com/forgeessentials/api/$name/**"
+        if (name == 'client') {
+                include 'logo.png', 'mcmod.info', 'FEReadme.txt', 'HowToGetFESupport.txt'
+        }
     }
-task snooperJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'snooper'
-        include "com/forgeessentials/snooper/**"
-	   include "com/forgeessentials/api/snooper/**"
-    }
-task svJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'servervote'
-        include "com/forgeessentials/servervote/**"
-    }
-task scriptJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'scripting'
-        include "com/forgeessentials/scripting/**"
-    }
-task ticketsJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'tickets'
-        include "com/forgeessentials/tickets/**"
-    }
-task wbJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'world-border'
-        include "com/forgeessentials/worldborder/**"
-    }
-task wcJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'worldcontrol'
-        include "com/forgeessentials/worldcontrol/**"
-    }
-task afterlifeJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'afterlife'
-        include "com/forgeessentials/afterlife/**"
-    }
-task clientJar(type: Jar) {
-        from sourceSets.main.output
-        appendix = 'client'
-        include "com/forgeessentials/client/**"
-include "logo.png"
-include "mcmod.info"
-include "FEReadme.txt"
-include "HowToGetFESupport.txt"
+    
+    reobf {
+        reobf(newTask) { reobfSpec ->
+            reobfSpec.classpath = project.sourceSets.main.compileClasspath
+        }
     }
 
-artifacts {
+    artifacts {
+        archives newTask
+    }
 
+    if (name == 'client')
+        return;
 
+    project.tasks.completeZip {
+        into('mods') { from newTask.getArchivePath() }
+    }        
 }
 
 dependencies {
-compile 'org.pircbotx:pircbotx:1.9'
-compile 'com.h2database:h2:1.3.175'
-compile 'mysql:mysql-connector-java:5.1.22'
+    compile 'org.pircbotx:pircbotx:1.9'
+    compile 'com.h2database:h2:1.3.175'
+    compile 'mysql:mysql-connector-java:5.1.22'
 }
