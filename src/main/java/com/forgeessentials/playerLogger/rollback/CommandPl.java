@@ -1,4 +1,4 @@
-package com.forgeessentials.playerLogger.rollback;
+package com.forgeessentials.playerlogger.rollback;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.playerLogger.network.PacketPlayerLogger;
+import com.forgeessentials.playerlogger.network.PacketPlayerLogger;
 import com.forgeessentials.util.ChatUtils;
 
 import cpw.mods.fml.common.FMLCommonHandler;

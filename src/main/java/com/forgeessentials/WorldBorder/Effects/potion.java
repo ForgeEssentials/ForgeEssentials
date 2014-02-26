@@ -1,4 +1,4 @@
-package com.forgeessentials.WorldBorder.Effects;
+package com.forgeessentials.worldborder.Effects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.Configuration;
 
-import com.forgeessentials.WorldBorder.WorldBorder;
+import com.forgeessentials.worldborder.WorldBorder;
 
 public class potion implements IEffect
 {

@@ -1,4 +1,4 @@
-package com.forgeessentials.playerLogger;
+package com.forgeessentials.playerlogger;
 
 import java.sql.Blob;
 /**

@@ -1,4 +1,4 @@
-package com.forgeessentials.WorldBorder;
+package com.forgeessentials.worldborder;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 

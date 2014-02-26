@@ -1,4 +1,4 @@
-package com.forgeessentials.playerLogger.types;
+package com.forgeessentials.playerlogger.types;
 
 import java.sql.Timestamp;
 import java.util.Date;

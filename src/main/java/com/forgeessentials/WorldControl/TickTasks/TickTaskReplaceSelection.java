@@ -1,4 +1,4 @@
-package com.forgeessentials.WorldControl.TickTasks;
+package com.forgeessentials.worldcontrol.TickTasks;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.forgeessentials.WorldControl.ConfigWorldControl;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.BlockSaveable;
@@ -16,6 +15,7 @@ import com.forgeessentials.util.AreaSelector.AreaBase;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.tasks.ITickTask;
+import com.forgeessentials.worldcontrol.ConfigWorldControl;
 
 public class TickTaskReplaceSelection implements ITickTask
 {

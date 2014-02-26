@@ -1,11 +1,11 @@
-package com.forgeessentials.WorldBorder.Effects;
+package com.forgeessentials.worldborder.Effects;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 
-import com.forgeessentials.WorldBorder.WorldBorder;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.worldborder.WorldBorder;
 
 public class message implements IEffect
 {

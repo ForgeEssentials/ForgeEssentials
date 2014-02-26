@@ -1,4 +1,4 @@
-package com.forgeessentials.WorldControl.commands;
+package com.forgeessentials.worldcontrol.commands;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.forgeessentials.WorldControl.TickTasks.TickTaskSetSelection;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
@@ -19,6 +18,7 @@ import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.tasks.TaskRegistry;
+import com.forgeessentials.worldcontrol.TickTasks.TickTaskSetSelection;
 
 public class CommandSet extends WorldControlCommandBase
 {

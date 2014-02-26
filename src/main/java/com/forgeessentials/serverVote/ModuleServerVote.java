@@ -1,4 +1,4 @@
-package com.forgeessentials.serverVote;
+package com.forgeessentials.servervote;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,7 +22,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Init;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerInit;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerStop;
-import com.forgeessentials.serverVote.Votifier.VoteReceiver;
+import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;

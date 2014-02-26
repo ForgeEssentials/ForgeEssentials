@@ -1,4 +1,4 @@
-package com.forgeessentials.WorldControl;
+package com.forgeessentials.worldcontrol;
 
 //Depreciated
 import java.util.Collection;

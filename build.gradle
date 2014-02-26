@@ -51,8 +51,11 @@ jar{
 
 //server complete
 task completeZip(type: Zip, dependsOn: 'reobf') {
-    from (project.tasks.jar.getArchivePath()) { into('coremods') }
+    appendix = 'server'
+from (project.tasks.jar.getArchivePath()) { into('mods') }
     destinationDir = jar.destinationDir
+
+from(sourceSets.main.output) { include 'FEReadme.txt', 'HowToGetFESupport.txt' }
 }
 
 def list = [
@@ -100,9 +103,9 @@ list.each { name ->
         return;
 
     project.tasks.completeZip {
-        from(newTask.getArchivePath()) { into 'mods' }
+        from(newTask.getArchivePath()) { into 'ForgeEssentials/modules' }
         dependsOn newTask
-    }        
+    }
 }
 
 build.dependsOn "completeZip"

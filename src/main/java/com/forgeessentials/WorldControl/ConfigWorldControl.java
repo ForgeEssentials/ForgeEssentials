@@ -1,4 +1,4 @@
-package com.forgeessentials.WorldControl;
+package com.forgeessentials.worldcontrol;
 
 import java.io.File;
 

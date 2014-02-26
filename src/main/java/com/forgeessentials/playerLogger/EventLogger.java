@@ -1,4 +1,4 @@
-package com.forgeessentials.playerLogger;
+package com.forgeessentials.playerlogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +14,12 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
-import com.forgeessentials.playerLogger.network.PacketPlayerLogger;
-import com.forgeessentials.playerLogger.types.blockChangeLog;
-import com.forgeessentials.playerLogger.types.blockChangeLog.blockChangeLogCategory;
-import com.forgeessentials.playerLogger.types.commandLog;
-import com.forgeessentials.playerLogger.types.playerTrackerLog;
-import com.forgeessentials.playerLogger.types.playerTrackerLog.playerTrackerLogCategory;
+import com.forgeessentials.playerlogger.network.PacketPlayerLogger;
+import com.forgeessentials.playerlogger.types.blockChangeLog;
+import com.forgeessentials.playerlogger.types.commandLog;
+import com.forgeessentials.playerlogger.types.playerTrackerLog;
+import com.forgeessentials.playerlogger.types.blockChangeLog.blockChangeLogCategory;
+import com.forgeessentials.playerlogger.types.playerTrackerLog.playerTrackerLogCategory;
 import com.forgeessentials.util.events.PlayerBlockBreak;
 import com.forgeessentials.util.events.PlayerBlockPlace;
 

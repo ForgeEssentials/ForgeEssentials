@@ -1,9 +1,9 @@
-package com.forgeessentials.playerLogger.types;
+package com.forgeessentials.playerlogger.types;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.forgeessentials.playerLogger.ModulePlayerLogger;
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
 
 public class commandLog extends logEntry
 {

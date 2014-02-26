@@ -1,4 +1,4 @@
-package com.forgeessentials.playerLogger.rollback;
+package com.forgeessentials.playerlogger.rollback;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,8 +12,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.playerLogger.ModulePlayerLogger;
-import com.forgeessentials.playerLogger.network.PacketRollback;
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
+import com.forgeessentials.playerlogger.network.PacketRollback;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.WorldPoint;

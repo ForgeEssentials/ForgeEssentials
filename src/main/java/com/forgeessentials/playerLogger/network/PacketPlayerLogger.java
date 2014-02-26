@@ -1,4 +1,4 @@
-package com.forgeessentials.playerLogger.network;
+package com.forgeessentials.playerlogger.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;

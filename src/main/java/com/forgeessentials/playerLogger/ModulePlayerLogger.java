@@ -1,4 +1,4 @@
-package com.forgeessentials.playerLogger;
+package com.forgeessentials.playerlogger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,13 +23,13 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Init;
 import com.forgeessentials.core.moduleLauncher.FEModule.PreInit;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerInit;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerStop;
-import com.forgeessentials.playerLogger.rollback.CommandPl;
-import com.forgeessentials.playerLogger.rollback.CommandRollback;
-import com.forgeessentials.playerLogger.rollback.EventHandler;
-import com.forgeessentials.playerLogger.types.blockChangeLog;
-import com.forgeessentials.playerLogger.types.commandLog;
-import com.forgeessentials.playerLogger.types.logEntry;
-import com.forgeessentials.playerLogger.types.playerTrackerLog;
+import com.forgeessentials.playerlogger.rollback.CommandPl;
+import com.forgeessentials.playerlogger.rollback.CommandRollback;
+import com.forgeessentials.playerlogger.rollback.EventHandler;
+import com.forgeessentials.playerlogger.types.blockChangeLog;
+import com.forgeessentials.playerlogger.types.commandLog;
+import com.forgeessentials.playerlogger.types.logEntry;
+import com.forgeessentials.playerlogger.types.playerTrackerLog;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;

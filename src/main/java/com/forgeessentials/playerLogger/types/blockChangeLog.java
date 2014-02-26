@@ -1,4 +1,4 @@
-package com.forgeessentials.playerLogger.types;
+package com.forgeessentials.playerlogger.types;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.api.snooper.TextFormatter;
-import com.forgeessentials.playerLogger.ModulePlayerLogger;
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.OutputHandler;
 
 public class blockChangeLog extends logEntry

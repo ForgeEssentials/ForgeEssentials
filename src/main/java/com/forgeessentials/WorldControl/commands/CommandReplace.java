@@ -1,9 +1,8 @@
-package com.forgeessentials.WorldControl.commands;
+package com.forgeessentials.worldcontrol.commands;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.forgeessentials.WorldControl.TickTasks.TickTaskReplaceSelection;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
@@ -15,6 +14,7 @@ import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.tasks.TaskRegistry;
+import com.forgeessentials.worldcontrol.TickTasks.TickTaskReplaceSelection;
 
 public class CommandReplace extends WorldControlCommandBase
 {

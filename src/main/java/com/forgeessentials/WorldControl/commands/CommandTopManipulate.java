@@ -1,8 +1,7 @@
-package com.forgeessentials.WorldControl.commands;
+package com.forgeessentials.worldcontrol.commands;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.forgeessentials.WorldControl.TickTasks.TickTaskTopManipulator;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.ChatUtils;
@@ -10,6 +9,7 @@ import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.tasks.TaskRegistry;
+import com.forgeessentials.worldcontrol.TickTasks.TickTaskTopManipulator;
 
 public class CommandTopManipulate extends WorldControlCommandBase
 {

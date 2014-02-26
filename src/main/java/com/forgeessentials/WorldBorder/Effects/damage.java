@@ -1,10 +1,10 @@
-package com.forgeessentials.WorldBorder.Effects;
+package com.forgeessentials.worldborder.Effects;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.Configuration;
 
-import com.forgeessentials.WorldBorder.WorldBorder;
+import com.forgeessentials.worldborder.WorldBorder;
 
 public class damage implements IEffect
 {

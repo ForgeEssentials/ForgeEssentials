@@ -1,4 +1,4 @@
-package com.forgeessentials.playerLogger.rollback;
+package com.forgeessentials.playerlogger.rollback;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,7 +15,7 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.forgeessentials.playerLogger.ModulePlayerLogger;
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.AreaSelector.Point;
 

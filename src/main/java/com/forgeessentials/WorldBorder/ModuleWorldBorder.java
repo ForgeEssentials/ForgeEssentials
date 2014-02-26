@@ -1,4 +1,4 @@
-package com.forgeessentials.WorldBorder;
+package com.forgeessentials.worldborder;
 
 import java.util.HashMap;
 
@@ -8,7 +8,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
-import com.forgeessentials.WorldBorder.Effects.IEffect;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
@@ -26,6 +25,7 @@ import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 import com.forgeessentials.util.vector.Vector2;
+import com.forgeessentials.worldborder.Effects.IEffect;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

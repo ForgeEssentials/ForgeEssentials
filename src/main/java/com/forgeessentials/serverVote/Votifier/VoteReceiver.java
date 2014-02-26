@@ -16,7 +16,7 @@
  * along with Votifier.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.forgeessentials.serverVote.Votifier;
+package com.forgeessentials.servervote.Votifier;
 
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -35,7 +35,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.api.snooper.VoteEvent;
-import com.forgeessentials.serverVote.ModuleServerVote;
+import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 

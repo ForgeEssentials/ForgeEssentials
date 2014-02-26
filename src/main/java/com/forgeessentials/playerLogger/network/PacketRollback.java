@@ -1,4 +1,4 @@
-package com.forgeessentials.playerLogger.network;
+package com.forgeessentials.playerlogger.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
 import com.forgeessentials.core.network.IForgeEssentialsPacket;
-import com.forgeessentials.playerLogger.blockChange;
+import com.forgeessentials.playerlogger.blockChange;
 import com.forgeessentials.util.OutputHandler;
 
 public class PacketRollback implements IForgeEssentialsPacket

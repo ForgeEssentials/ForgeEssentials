@@ -1,10 +1,10 @@
-package com.forgeessentials.WorldBorder.Effects;
+package com.forgeessentials.worldborder.Effects;
 
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 
-import com.forgeessentials.WorldBorder.WorldBorder;
+import com.forgeessentials.worldborder.WorldBorder;
 
 public class smite implements IEffect
 {

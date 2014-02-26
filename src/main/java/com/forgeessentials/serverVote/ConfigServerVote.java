@@ -1,4 +1,4 @@
-package com.forgeessentials.serverVote;
+package com.forgeessentials.servervote;
 
 import java.io.File;
 import java.io.FileInputStream;

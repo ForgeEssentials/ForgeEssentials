@@ -1,15 +1,8 @@
-package com.forgeessentials.WorldControl;
+package com.forgeessentials.worldcontrol;
 
 //Depreciated
 import java.util.ArrayList;
 
-import com.forgeessentials.WorldControl.TickTasks.TickTaskTopManipulator.Mode;
-import com.forgeessentials.WorldControl.commands.CommandRedo;
-import com.forgeessentials.WorldControl.commands.CommandReplace;
-import com.forgeessentials.WorldControl.commands.CommandSet;
-import com.forgeessentials.WorldControl.commands.CommandTopManipulate;
-import com.forgeessentials.WorldControl.commands.CommandUndo;
-import com.forgeessentials.WorldControl.commands.WorldControlCommandBase;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
@@ -21,6 +14,13 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ServerInit;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
+import com.forgeessentials.worldcontrol.TickTasks.TickTaskTopManipulator.Mode;
+import com.forgeessentials.worldcontrol.commands.CommandRedo;
+import com.forgeessentials.worldcontrol.commands.CommandReplace;
+import com.forgeessentials.worldcontrol.commands.CommandSet;
+import com.forgeessentials.worldcontrol.commands.CommandTopManipulate;
+import com.forgeessentials.worldcontrol.commands.CommandUndo;
+import com.forgeessentials.worldcontrol.commands.WorldControlCommandBase;
 
 // central class for all the WorldControl stuff
 @FEModule(name = "WorldControl", parentMod = ForgeEssentials.class, configClass = ConfigWorldControl.class)
