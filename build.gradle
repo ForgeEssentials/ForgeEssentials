@@ -21,6 +21,10 @@ minecraft {
 	assetDir = "rundir/assets"
 }
 
+configurations{
+    serverLibs
+}
+
 repositories{ mavenLocal() }
 
 processResources
@@ -31,6 +35,22 @@ processResources
 	}
 
 	from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
+}
+
+dependencies {
+    
+    /*
+    [serverLibs, compile]add("org.pircbotx:pircbotx:1.9")
+    [serverLibs, compile]add("com.h2database:h2:1.3.175")
+    [serverLibs, compile]add("mysql:mysql-connector-java:5.1.22")
+    */
+    compile 'org.pircbotx:pircbotx:1.9'
+    compile 'com.h2database:h2:1.3.175'
+    compile 'mysql:mysql-connector-java:5.1.22'
+    
+    serverLibs 'org.pircbotx:pircbotx:1.9'
+    serverLibs 'com.h2database:h2:1.3.175'
+    serverLibs 'mysql:mysql-connector-java:5.1.22'
 }
 
 // core
@@ -47,6 +67,9 @@ jar{
     include "logo.png"
     include "mcmod.info"
     include "forgeessentials_at.cfg"
+manifest {
+        attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
+    }
 }
 
 //server complete
@@ -56,6 +79,9 @@ from (project.tasks.jar.getArchivePath()) { into('mods') }
     destinationDir = jar.destinationDir
 
 from(sourceSets.main.output) { include 'FEReadme.txt', 'HowToGetFESupport.txt' }
+from (project.configurations.serverLibs) {
+include '*'
+into('ForgeEssentials/lib')}
 }
 
 def list = [
@@ -110,8 +136,3 @@ list.each { name ->
 
 build.dependsOn "completeZip"
 
-dependencies {
-    compile 'org.pircbotx:pircbotx:1.9'
-    compile 'com.h2database:h2:1.3.175'
-    compile 'mysql:mysql-connector-java:5.1.22'
-}
