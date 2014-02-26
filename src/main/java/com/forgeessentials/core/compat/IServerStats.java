@@ -1,5 +1,7 @@
 package com.forgeessentials.core.compat;
 
+import org.mcstats.Metrics;
+
 import com.forgeessentials.api.json.JSONException;
 import com.forgeessentials.api.json.JSONObject;
 

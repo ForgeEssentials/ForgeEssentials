@@ -1,9 +1,12 @@
 package com.forgeessentials.commands.util;
 
+import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
+import org.mcstats.Metrics.Plotter;
+
 import com.forgeessentials.api.json.JSONException;
 import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.core.compat.IServerStats;
-import com.sun.corba.se.impl.orbutil.graph.Graph;
 
 public class MCStatsHelper implements IServerStats
 {

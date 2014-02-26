@@ -1,14 +1,18 @@
-package com.ForgeEssentials.core.compat;
+package com.forgeessentials.core.compat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
 
+import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
+import org.mcstats.Metrics.Plotter;
+
 import com.forgeessentials.api.json.JSONException;
+import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.sun.corba.se.impl.orbutil.graph.Graph;
 
 // Obfuscated code handler for MCStats
 public class CompatMCStats implements IServerStats
