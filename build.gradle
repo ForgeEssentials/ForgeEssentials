@@ -51,7 +51,8 @@ jar{
 
 //server complete
 task completeZip(type: Zip, dependsOn: 'reobf') {
-    into('coremods') { from project.tasks.jar.getArchivePath() }
+    from (project.tasks.jar.getArchivePath()) { into('coremods') }
+    destinationDir = jar.destinationDir
 }
 
 def list = [
@@ -99,7 +100,8 @@ list.each { name ->
         return;
 
     project.tasks.completeZip {
-        into('mods') { from newTask.getArchivePath() }
+        from(newTask.getArchivePath()) { into 'mods' }
+        dependsOn newTask
     }        
 }
 
