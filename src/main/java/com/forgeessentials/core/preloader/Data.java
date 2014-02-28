@@ -9,7 +9,7 @@ import java.util.HashMap;
  */
 
 // Change me if this class is updated for future minecraft versions
-// MC version: 1.6.4-srg
+// MC version: 1.6.4
 public class Data
 {
 
@@ -35,18 +35,17 @@ public class Data
 	static
 	{
 		
-		IIWMob.put("className", "net.minecraft.item.ItemInWorldManager");
-        IIWMob.put("javaClassName", "net/minecraft/item/ItemInWorldManager");
-		IIWMob.put("targetMethodName", "func_73079_d");// searge name func_73079_d
-		IIWMob.put("worldFieldName", "field_73092_a"); // searge name field_73092_a
-		IIWMob.put("entityPlayerFieldName", "field_73090_b");// searge name field_73090_b
-		IIWMob.put("worldJavaClassName", "net/minecraft/world/World");
-		IIWMob.put("getBlockMetadataMethodName", "func_72805_g");// searge name func_72805_g
-		IIWMob.put("blockJavaClassName", "net/minecraft/block/Block");
-		IIWMob.put("blocksListFieldName", "field_71973_m");// searge name field_71973_m
-		IIWMob.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
-        IIWMob.put("entityPlayerMPJavaClassName", "net/minecraft/entity/player/EntityPlayerMP");
-		
+		IIWMob.put("className", "jv");
+		IIWMob.put("javaClassName", "jv");
+		IIWMob.put("targetMethodName", "d");// searge name func_73079_d
+		IIWMob.put("worldFieldName", "a"); // searge name field_73092_a
+		IIWMob.put("entityPlayerFieldName", "b");// searge name field_73090_b
+		IIWMob.put("worldJavaClassName", "ace");
+		IIWMob.put("getBlockMetadataMethodName", "h");// searge name func_72805_g
+		IIWMob.put("blockJavaClassName", "aqw");
+		IIWMob.put("blocksListFieldName", "s");// searge name field_71973_m
+		IIWMob.put("entityPlayerJavaClassName", "sq");
+		IIWMob.put("entityPlayerMPJavaClassName", "jc");
 
 	    IIWMdev.put("className", "net.minecraft.item.ItemInWorldManager");
         IIWMdev.put("javaClassName", "net/minecraft/item/ItemInWorldManager");
@@ -60,12 +59,13 @@ public class Data
         IIWMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
         IIWMdev.put("entityPlayerMPJavaClassName", "net/minecraft/entity/player/EntityPlayerMP");
 
-        ISdev.put("className", "net.minecraft.item.ItemStack");
-        ISdev.put("javaClassName", "net/minecraft/item/ItemStack");
-        ISob.put("targetMethodName", "func_77943_a");// searge name func_77943_a
-        ISdev.put("itemstackJavaClassName", "net/minecraft/item/ItemStack");
-        ISdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
-        ISdev.put("worldJavaClassName", "net/minecraft/world/World");
+        ISob.put("className", "yd");
+        ISob.put("javaClassName", "yd");
+        ISob.put("targetMethodName", "a");// searge name func_77943_a
+        ISob.put("itemstackJavaClassName", "yd");
+        ISob.put("entityPlayerJavaClassName", "ue");
+        ISob.put("worldJavaClassName", "abv");
+
         ISdev.put("className", "net.minecraft.item.ItemStack");
         ISdev.put("javaClassName", "net/minecraft/item/ItemStack");
         ISdev.put("targetMethodName", "tryPlaceItemIntoWorld");
@@ -73,20 +73,20 @@ public class Data
         ISdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
         ISdev.put("worldJavaClassName", "net/minecraft/world/World");
         
-        MCdev.put("className", "net.minecraft.network.MemoryConnection");
-        MCob.put("targetMethod1", "func_74429_a");// searge name func_74429_a
-        MCob.put("targetMethod2", "func_74436_b");// searge name func_74436_b
-        MCdev.put("packetName", "net/minecraft/network/packet/Packet");
+        MCob.put("className", "cm");
+        MCob.put("targetMethod1", "a");// searge name func_74429_a
+        MCob.put("targetMethod2", "b");// searge name func_74436_b
+        MCob.put("packetName", "ex");
         
         MCdev.put("className", "net.minecraft.network.MemoryConnection");
         MCdev.put("targetMethod1", "addToSendQueue");
         MCdev.put("targetMethod2", "processOrCachePacket");
         MCdev.put("packetName", "net/minecraft/network/packet/Packet");
         
-        TCdev.put("className", "net.minecraft.network.TcpConnection");
-        TCob.put("targetMethod1", "func_74429_a");// searge namefunc_74429_a
-        TCob.put("targetMethod2", "func_74447_i");// searge name func_74447_i
-        TCdev.put("packetName", "net/minecraft/network/packet/Packet");
+        TCob.put("className", "cn");
+        TCob.put("targetMethod1", "a");// searge namefunc_74429_a
+        TCob.put("targetMethod2", "i");// searge name func_74447_i
+        TCob.put("packetName", "ex");
         
         TCdev.put("className", "net.minecraft.network.TcpConnection");
         TCdev.put("targetMethod1", "addToSendQueue");
