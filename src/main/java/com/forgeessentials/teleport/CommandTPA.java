@@ -1,4 +1,4 @@
-package com.forgeessentials.commands;
+package com.forgeessentials.teleport;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,8 +15,9 @@ import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.TPAdata;
-import com.forgeessentials.commands.util.TickHandlerCommands;
+import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.teleport.util.TPAdata;
+import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.Localization;
@@ -24,7 +25,7 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 
-public class CommandTPAhere extends FEcmdModuleCommands
+public class CommandTPA extends FEcmdModuleCommands
 {
 	/*
 	 * Config
@@ -34,13 +35,13 @@ public class CommandTPAhere extends FEcmdModuleCommands
 	@Override
 	public void doConfig(Configuration config, String category)
 	{
-		timeout = config.get(category, "timeout", 25, "Amount of sec a user has to accept a TPAhere request").getInt();
+		timeout = config.get(category, "timeout", 25, "Amount of sec a user has to accept a TPA request").getInt();
 	}
 
 	@Override
 	public String getCommandName()
 	{
-		return "tpahere";
+		return "tpa";
 	}
 
 	@Override
@@ -54,16 +55,19 @@ public class CommandTPAhere extends FEcmdModuleCommands
 
 		if (args[0].equalsIgnoreCase("accept"))
 		{
-			for (TPAdata data : TickHandlerCommands.tpaList)
+			for (TPAdata data : TickHandlerTP.tpaList)
 			{
-				if (data.tphere)
+				if (!data.tphere)
 				{
-					if (data.receiver.username.equalsIgnoreCase(sender.username))
+					if (data.receiver == sender)
 					{
-						ChatUtils.sendMessage(data.sender, Localization.get("command.tpahere.accepted"));
-						ChatUtils.sendMessage(data.receiver, Localization.get("command.tpahere.accepted"));
-						TickHandlerCommands.tpaListToRemove.add(data);
-						TeleportCenter.addToTpQue(new WarpPoint(data.sender), data.receiver);
+						ChatUtils.sendMessage(data.sender, Localization.get("command.tpa.accepted"));
+						ChatUtils.sendMessage(data.receiver, Localization.get("command.tpa.accepted"));
+						PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(data.sender.username);
+						playerInfo.back = new WarpPoint(data.sender);
+						CommandBack.justDied.remove(data.sender.username);
+						TickHandlerTP.tpaListToRemove.add(data);
+						TeleportCenter.addToTpQue(new WarpPoint(data.receiver), data.sender);
 						return;
 					}
 				}
@@ -73,15 +77,15 @@ public class CommandTPAhere extends FEcmdModuleCommands
 
 		if (args[0].equalsIgnoreCase("decline"))
 		{
-			for (TPAdata data : TickHandlerCommands.tpaList)
+			for (TPAdata data : TickHandlerTP.tpaList)
 			{
-				if (data.tphere)
+				if (!data.tphere)
 				{
-					if (data.receiver.username.equalsIgnoreCase(sender.username))
+					if (data.receiver == sender)
 					{
-						ChatUtils.sendMessage(data.sender, Localization.get("command.tpahere.declined"));
-						ChatUtils.sendMessage(data.receiver, Localization.get("command.tpahere.declined"));
-						TickHandlerCommands.tpaListToRemove.add(data);
+						ChatUtils.sendMessage(data.sender, Localization.get("command.tpa.declined"));
+						ChatUtils.sendMessage(data.receiver, Localization.get("command.tpa.declined"));
+						TickHandlerTP.tpaListToRemove.add(data);
 						return;
 					}
 				}
@@ -102,10 +106,10 @@ public class CommandTPAhere extends FEcmdModuleCommands
 		}
 		else
 		{
-			TickHandlerCommands.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
+			TickHandlerTP.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, false));
 
-			ChatUtils.sendMessage(sender, Localization.format("command.tpahere.sendRequest", receiver.username));
-			ChatUtils.sendMessage(receiver, Localization.format("command.tpahere.gotRequest", sender.username));
+			ChatUtils.sendMessage(sender, Localization.format("command.tpa.sendRequest", receiver.username));
+			ChatUtils.sendMessage(receiver, Localization.format("command.tpa.gotRequest", sender.username));
 		}
 	}
 

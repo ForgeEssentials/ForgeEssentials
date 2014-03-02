@@ -3,6 +3,7 @@ package com.forgeessentials.commands.util;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.commands.CommandAFK;
+import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 
@@ -26,7 +27,7 @@ public class AFKdata
 	{
 		if (player == null)
 		{
-			TickHandlerCommands.afkListToRemove.add(this);
+			TickHandlerTP.afkListToRemove.add(this);
 			return;
 		}
 

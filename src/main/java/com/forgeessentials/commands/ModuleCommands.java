@@ -20,10 +20,10 @@ import com.forgeessentials.commands.util.MCStatsHelper;
 import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.commands.util.PacketAnalyzerCmd;
 import com.forgeessentials.commands.util.PlayerTrackerCommands;
-import com.forgeessentials.commands.util.TickHandlerCommands;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.CompatMCStats;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
@@ -82,19 +82,8 @@ public class ModuleCommands
 	@FEModule.ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
+		TickRegistry.registerScheduledTickHandler(new TickHandlerTP(), Side.SERVER);
 		CommandDataManager.load();
-
-		PropQueryBlanketZone query = new PropQueryBlanketZone(CommandSetSpawn.SPAWN_PROP, APIRegistry.zones.getGLOBAL(), false);
-		APIRegistry.perms.getPermissionProp(query);
-
-		// nothing set for the global??
-		if (!query.hasValue())
-		{
-			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
-			String val = "0;" + point.posX + ";" + point.posY + ";" + point.posZ;
-			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val, APIRegistry.zones.getGLOBAL().getZoneName());
-		}
 	}
 
 	@PermRegister
@@ -102,10 +91,6 @@ public class ModuleCommands
 	{
 		CommandRegistrar.registerPermissions(event);
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands._ALL_", RegGroup.OWNERS);
-
-		// ensures on ServerStart
-		// event.registerPermissionProp("ForgeEssentials.BasicCommands.spawnPoint", "0;0;0;0");
-		event.registerPermissionProp(CommandSetSpawn.SPAWN_TYPE_PROP, "bed"); // bed, point, none
 	}
 
 	@FEModule.ServerStop

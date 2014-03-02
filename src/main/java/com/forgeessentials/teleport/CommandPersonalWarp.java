@@ -1,4 +1,4 @@
-package com.forgeessentials.commands;
+package com.forgeessentials.teleport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +16,9 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PropQueryPlayerSpot;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.PWarp;
 import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.teleport.util.PWarp;
+import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.Localization;
@@ -48,12 +49,12 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		HashMap<String, PWarp> map = CommandDataManager.pwMap.get(sender.username);
+		HashMap<String, PWarp> map = TeleportDataManager.pwMap.get(sender.username);
 
 		if (map == null)
 		{
 		    map = new HashMap<String, PWarp>();
-		    CommandDataManager.pwMap.put(sender.username, map);
+		    TeleportDataManager.pwMap.put(sender.username, map);
 		}
 
 		if (args.length == 0)
@@ -108,7 +109,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 			{
 				if (map.containsKey(args[1]))
 				{
-					CommandDataManager.removePWarp(map.get(args[1]));
+					TeleportDataManager.removePWarp(map.get(args[1]));
 					map.remove(args[1]);
 					OutputHandler.chatConfirmation(sender, Localization.get("command.personalwarp.remove"));
 				}
@@ -147,8 +148,8 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 			    OutputHandler.chatConfirmation(sender, Localization.format("command.personalwarp.limit.current", getLimit(sender)));
 			}
 		}
-		CommandDataManager.pwMap.put(sender.username, map);
-		CommandDataManager.savePWarps(sender.username);
+		TeleportDataManager.pwMap.put(sender.username, map);
+		TeleportDataManager.savePWarps(sender.username);
 	}
 
 	private String getLimit(EntityPlayer sender)
@@ -212,11 +213,11 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 		}
 		if (args.length == 2)
 		{
-			if (CommandDataManager.pwMap.get(sender.getCommandSenderName()) == null)
+			if (TeleportDataManager.pwMap.get(sender.getCommandSenderName()) == null)
 			{
-				CommandDataManager.pwMap.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
+				TeleportDataManager.pwMap.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
 			}
-			return getListOfStringsFromIterableMatchingLastWord(args, CommandDataManager.pwMap.get(sender.getCommandSenderName()).keySet());
+			return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.pwMap.get(sender.getCommandSenderName()).keySet());
 		}
 		return null;
 	}

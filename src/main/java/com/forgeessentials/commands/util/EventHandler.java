@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.util;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -8,25 +7,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.api.permissions.query.PropQueryPlayerSpot;
-import com.forgeessentials.commands.CommandBack;
-import com.forgeessentials.commands.CommandSetSpawn;
-import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.google.common.base.Strings;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -119,84 +108,6 @@ public class EventHandler
 		            e.setCanceled(true);
 	            }
 		    }
-		}
-	}
-
-	@ForgeSubscribe(priority = EventPriority.LOW)
-	public void onPlayerDeath(LivingDeathEvent e)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-			return;
-
-		if (e.entity instanceof EntityPlayer)
-		{
-			EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
-			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
-			CommandBack.justDied.add(player.username);
-
-			// generate for un-generated dimension
-			{
-				int currentDim = player.worldObj.provider.dimensionId;
-				int spawnDim = player.worldObj.provider.getRespawnDimension(player);
-
-				if (spawnDim != 0 && spawnDim == currentDim && !CommandSetSpawn.dimsWithProp.contains(currentDim))
-				{
-					Zone z = APIRegistry.zones.getWorldZone(player.worldObj);
-					ChunkCoordinates dimPoint = player.worldObj.getSpawnPoint();
-					WorldPoint point = new WorldPoint(spawnDim, dimPoint.posX, dimPoint.posY, dimPoint.posZ);
-					CommandSetSpawn.setSpawnPoint(point, z);
-					CommandSetSpawn.dimsWithProp.add(currentDim);
-
-					WarpPoint p = new WarpPoint(currentDim, dimPoint.posX + .5, dimPoint.posY + 1, dimPoint.posZ + .5, player.cameraYaw, player.cameraPitch);
-					CommandSetSpawn.spawns.put(player.username, p);
-					return;
-				}
-			}
-			
-			PropQueryPlayerSpot query = new PropQueryPlayerSpot(player, "ForgeEssentials.BasicCommands.spawnType");
-			APIRegistry.perms.getPermissionProp(query);
-			
-			if (query.getStringValue().equalsIgnoreCase("none"))
-			{
-				return;
-			}
-			else if (query.getStringValue().equalsIgnoreCase("bed"))
-			{
-				if (player.getBedLocation() != null)
-				{
-					ChunkCoordinates spawn = player.getBedLocation();
-					EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
-					
-					WarpPoint point = new WarpPoint(player.worldObj.provider.dimensionId, spawn.posX + .5, spawn.posY + 1, spawn.posZ + .5, player.cameraYaw, player.cameraPitch);
-					CommandSetSpawn.spawns.put(player.username, point);
-					
-					return;
-				}
-			}
-
-			query = new PropQueryPlayerSpot(player, "ForgeEssentials.BasicCommands.spawnPoint");
-			APIRegistry.perms.getPermissionProp(query);
-
-			if (!query.hasValue())
-				throw new RuntimeException("NO GLOBAL SPAWN SET!!!");
-
-			String val = query.getStringValue();
-			String[] split = val.split("[;_]");
-
-			try
-			{
-				int dim = Integer.parseInt(split[0]);
-				int x = Integer.parseInt(split[1]);
-				int y = Integer.parseInt(split[2]);
-				int z = Integer.parseInt(split[3]);
-
-				WarpPoint point = new WarpPoint(dim, x + .5, y + 1, z + .5, player.cameraYaw, player.cameraPitch);
-				CommandSetSpawn.spawns.put(player.username, point);
-			}
-			catch (Exception exception)
-			{
-				CommandSetSpawn.spawns.put(player.username, null);
-			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.forgeessentials.commands.util;
+package com.forgeessentials.teleport.util;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -8,6 +8,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
+import com.forgeessentials.commands.util.AFKdata;
+import com.forgeessentials.commands.util.CommandDataManager;
+import com.forgeessentials.commands.util.WeatherTimeData;
 import com.forgeessentials.core.PlayerInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -20,7 +23,7 @@ import cpw.mods.fml.common.TickType;
  * @author Dries007
  */
 
-public class TickHandlerCommands implements IScheduledTickHandler
+public class TickHandlerTP implements IScheduledTickHandler
 {
 	/*
 	 * For AFK system

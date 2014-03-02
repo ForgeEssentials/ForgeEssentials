@@ -1,4 +1,4 @@
-package com.forgeessentials.commands;
+package com.forgeessentials.teleport;
 
 import java.util.List;
 
@@ -13,8 +13,9 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.Warp;
 import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.teleport.util.TeleportDataManager;
+import com.forgeessentials.teleport.util.Warp;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.Localization;
@@ -41,7 +42,7 @@ public class CommandWarp extends FEcmdModuleCommands
 		if (args.length == 0)
 		{
 			String msg = "";
-			for (String warp : CommandDataManager.warps.keySet())
+			for (String warp : TeleportDataManager.warps.keySet())
 			{
 			    msg = warp + ", " + msg;
 			}
@@ -49,11 +50,11 @@ public class CommandWarp extends FEcmdModuleCommands
 		}
 		else if (args.length == 1)
 		{
-			if (CommandDataManager.warps.containsKey(args[0].toLowerCase()))
+			if (TeleportDataManager.warps.containsKey(args[0].toLowerCase()))
 			{
 				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
-					Warp warp = CommandDataManager.warps.get(args[0].toLowerCase());
+					Warp warp = TeleportDataManager.warps.get(args[0].toLowerCase());
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.username);
 					playerInfo.back = new WarpPoint(sender);
 					CommandBack.justDied.remove(sender.username);
@@ -75,21 +76,21 @@ public class CommandWarp extends FEcmdModuleCommands
 			{
 				if (args[0].equalsIgnoreCase("set"))
 				{
-					if (CommandDataManager.warps.containsKey(args[1].toLowerCase()))
+					if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
 					{
 						OutputHandler.chatError(sender, Localization.get("command.warp.alreadyexists"));
 					}
 					else
 					{
-						CommandDataManager.addWarp(new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
+						TeleportDataManager.addWarp(new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
 						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
 					}
 				}
 				else if (args[0].equalsIgnoreCase("del"))
 				{
-					if (CommandDataManager.warps.containsKey(args[1].toLowerCase()))
+					if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
 					{
-						CommandDataManager.removeWarp(CommandDataManager.warps.get(args[1]));
+						TeleportDataManager.removeWarp(TeleportDataManager.warps.get(args[1]));
 						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
 					}
 					else
@@ -114,12 +115,12 @@ public class CommandWarp extends FEcmdModuleCommands
 	{
 		if (args.length == 2)
 		{
-			if (CommandDataManager.warps.containsKey(args[1].toLowerCase()))
+			if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
 			{
 				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (player != null)
 				{
-					Warp warp = CommandDataManager.warps.get(args[1].toLowerCase());
+					Warp warp = TeleportDataManager.warps.get(args[1].toLowerCase());
 					PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
 					TeleportCenter.addToTpQue(warp.getPoint(), player);
 				}
@@ -163,7 +164,7 @@ public class CommandWarp extends FEcmdModuleCommands
 	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
-			return getListOfStringsFromIterableMatchingLastWord(args, CommandDataManager.warps.keySet());
+			return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.warps.keySet());
 		else if (args.length == 2)
 			return getListOfStringsMatchingLastWord(args, "set", "del");
 		else

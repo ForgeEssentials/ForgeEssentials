@@ -10,8 +10,8 @@ import net.minecraftforge.common.DimensionManager;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.TickHandlerCommands;
 import com.forgeessentials.commands.util.WeatherTimeData;
+import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
@@ -135,9 +135,9 @@ public class CommandTime extends FEcmdModuleCommands
         else if (args[0].equalsIgnoreCase("set"))
         {
             if (args[1].equalsIgnoreCase("day"))
-                TickHandlerCommands.makeWorldTimeHours(world, WeatherTimeData.dayTimeStart);
+                TickHandlerTP.makeWorldTimeHours(world, WeatherTimeData.dayTimeStart);
             else if (args[1].equalsIgnoreCase("night"))
-                TickHandlerCommands.makeWorldTimeHours(world, WeatherTimeData.nightTimeStart);
+                TickHandlerTP.makeWorldTimeHours(world, WeatherTimeData.nightTimeStart);
             else
                 world.setWorldTime(parseInt(sender, args[1]));
             

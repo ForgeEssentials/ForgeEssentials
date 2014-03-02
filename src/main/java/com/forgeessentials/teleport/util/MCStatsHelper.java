@@ -1,4 +1,4 @@
-package com.forgeessentials.commands.util;
+package com.forgeessentials.teleport.util;
 
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
@@ -13,14 +13,14 @@ public class MCStatsHelper implements IServerStats
 	@Override
 	public void makeGraphs(Metrics metrics)
 	{
-		Graph graph = metrics.createGraph("ModuleCommands");
+		Graph graph = metrics.createGraph("ModuleTeleport");
 
-		Plotter plotter = new Plotter("Kits")
+		Plotter plotter = new Plotter("Warps")
 		{
 			@Override
 			public int getValue()
 			{
-				return CommandDataManager.kits.size();
+				return TeleportDataManager.warps.size();
 			}
 		};
 
@@ -31,7 +31,7 @@ public class MCStatsHelper implements IServerStats
 	public JSONObject addToServerInfo() throws JSONException
 	{
 		JSONObject data = new JSONObject();
-		data.put("Kits", CommandDataManager.kits.size());
+		data.put("Warps", TeleportDataManager.warps.size());
 		return data;
 	}
 

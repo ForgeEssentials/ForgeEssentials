@@ -14,8 +14,8 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
-import com.forgeessentials.commands.util.TickHandlerCommands;
 import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.Localization;
@@ -134,7 +134,7 @@ public class CommandKit extends FEcmdModuleCommands
 		{
 			ChatUtils.sendMessage(player, Localization.get(Localization.KIT_DONE));
 
-			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
+			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerTP.BYPASS_KIT_COOLDOWN)))
 			{
 				PlayerInfo.getPlayerInfo(player.username).kitCooldown.put(kit.getName(), kit.getCooldown());
 			}

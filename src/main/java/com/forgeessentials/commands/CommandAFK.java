@@ -15,7 +15,7 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.AFKdata;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.TickHandlerCommands;
+import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
@@ -48,7 +48,7 @@ public class CommandAFK extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		TickHandlerCommands.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
+		TickHandlerTP.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
 		OutputHandler.chatConfirmation(sender, Localization.format("command.afk.warmup", warmup));
 	}
 
@@ -75,7 +75,7 @@ public class CommandAFK extends FEcmdModuleCommands
 			afkData.player.capabilities.disableDamage = false;
 		afkData.player.sendPlayerAbilities();
 		afkList.remove(afkData.player.username);
-		TickHandlerCommands.afkListToRemove.add(afkData);
+		TickHandlerTP.afkListToRemove.add(afkData);
 
 		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
 			ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),

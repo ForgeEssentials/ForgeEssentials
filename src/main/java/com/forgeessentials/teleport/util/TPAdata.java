@@ -1,8 +1,8 @@
-package com.forgeessentials.commands.util;
+package com.forgeessentials.teleport.util;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.commands.CommandTPA;
+import com.forgeessentials.teleport.CommandTPA;
 import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
@@ -26,19 +26,19 @@ public class TPAdata
 	{
 		if (sender == null)
 		{
-			TickHandlerCommands.tpaListToRemove.add(this);
+			TickHandlerTP.tpaListToRemove.add(this);
 			return;
 		}
 
 		if (receiver == null)
 		{
-			TickHandlerCommands.tpaListToRemove.add(this);
+			TickHandlerTP.tpaListToRemove.add(this);
 			return;
 		}
 
 		if (timeout == 0)
 		{
-			TickHandlerCommands.tpaListToRemove.add(this);
+			TickHandlerTP.tpaListToRemove.add(this);
 			if (tphere)
 			{
 				OutputHandler.chatWarning(receiver, Localization.format("command.tpahere.gotTimeout", sender.username));

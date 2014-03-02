@@ -1,4 +1,4 @@
-package com.forgeessentials.commands.util;
+package com.forgeessentials.teleport.util;
 
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;

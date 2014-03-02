@@ -1,4 +1,4 @@
-package com.forgeessentials.commands;
+package com.forgeessentials.teleport;
 
 import java.util.ArrayList;
 import java.util.List;
