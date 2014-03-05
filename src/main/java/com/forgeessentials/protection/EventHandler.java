@@ -18,6 +18,7 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQuery;
@@ -27,7 +28,6 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
 import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
-import com.forgeessentials.util.events.PlayerBlockBreak;
 import com.forgeessentials.util.events.PlayerBlockPlace;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -146,18 +146,18 @@ public class EventHandler
 	}
 
 	@ForgeSubscribe(priority = EventPriority.LOW)
-	public void breakEvent(PlayerBlockBreak e)
+	public void breakEvent(BreakEvent e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
 
-		WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
-		PermQuery query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point);
+		WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
+		PermQuery query = new PermQueryPlayerArea(e.getPlayer(), ModuleProtection.PERM_OVERRIDE, point);
 		boolean result = APIRegistry.perms.checkPermAllowed(query);
 
 		if (!result)
 		{
-			query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_EDITS, point);
+			query = new PermQueryPlayerArea(e.getPlayer(), ModuleProtection.PERM_EDITS, point);
 			result = APIRegistry.perms.checkPermAllowed(query);
 		}
 

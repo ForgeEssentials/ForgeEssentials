@@ -16,6 +16,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
@@ -24,7 +25,6 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
-import com.forgeessentials.util.events.PlayerBlockBreak;
 
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -168,14 +168,14 @@ public class Deathchest
 	}
 
 	@ForgeSubscribe
-	public void mineGrave(PlayerBlockBreak e)
+	public void mineGrave(BreakEvent e)
 	{
 		if (e.world.isRemote)
 			return;
 		if (enableFencePost)
 		{
-			WorldPoint point = new WorldPoint(e.world, e.blockX, e.blockY, e.blockZ);
-			WorldPoint point2 = new WorldPoint(e.world, e.blockX, e.blockY + 1, e.blockZ);
+			WorldPoint point = new WorldPoint(e.world, e.x, e.y, e.z);
+			WorldPoint point2 = new WorldPoint(e.world, e.x, e.y + 1, e.z);
 			if (gravemap.containsKey(point.toString()))
 			{
 				e.setCanceled(true);
@@ -191,7 +191,7 @@ public class Deathchest
 		}
 		else
 		{
-			WorldPoint point = new WorldPoint(e.world, e.blockX, e.blockY, e.blockZ);
+			WorldPoint point = new WorldPoint(e.world, e.x, e.y, e.z);
 			if (gravemap.containsKey(point.toString()))
 			{
 				e.setCanceled(true);

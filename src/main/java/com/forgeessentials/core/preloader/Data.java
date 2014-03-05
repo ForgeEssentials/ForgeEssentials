@@ -58,20 +58,6 @@ public class Data
         IIWMdev.put("blocksListFieldName", "blocksList");
         IIWMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
         IIWMdev.put("entityPlayerMPJavaClassName", "net/minecraft/entity/player/EntityPlayerMP");
-
-        ISob.put("className", "yd");
-        ISob.put("javaClassName", "yd");
-        ISob.put("targetMethodName", "a");// searge name func_77943_a
-        ISob.put("itemstackJavaClassName", "yd");
-        ISob.put("entityPlayerJavaClassName", "ue");
-        ISob.put("worldJavaClassName", "abv");
-
-        ISdev.put("className", "net.minecraft.item.ItemStack");
-        ISdev.put("javaClassName", "net/minecraft/item/ItemStack");
-        ISdev.put("targetMethodName", "tryPlaceItemIntoWorld");
-        ISdev.put("itemstackJavaClassName", "net/minecraft/item/ItemStack");
-        ISdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
-        ISdev.put("worldJavaClassName", "net/minecraft/world/World");
         
         MCob.put("className", "cm");
         MCob.put("targetMethod1", "a");// searge name func_74429_a

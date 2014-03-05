@@ -39,15 +39,7 @@ public class FEeventAdder implements IClassTransformer
 	public static boolean					addedPlace	= false;
 
 	@Override
-	public byte[] transform(String name, String transformedName, byte[] bytes)
-	{
-		if (name.equals(Data.IIWMob.get("className")))
-			// ItemInWorldManager, Obfuscated
-			return transformItemInWorldManager(bytes, Data.IIWMob);
-
-		if (name.equals(Data.IIWMdev.get("className")))
-			// ItemInWorldManager, NOT Obfuscated
-			return transformItemInWorldManager(bytes, Data.IIWMdev);
+	public byte[] transform(String name, String transformedName, byte[] bytes){
 
 		if (name.equals(Data.ISob.get("className")))
 			// ItemStack, Obfuscated
@@ -119,107 +111,6 @@ public class FEeventAdder implements IClassTransformer
 			msg("##########################################################");
 			msg("#####                    WARNING                     #####");
 			msg("##        [FE coremod] Patching ItemStack FAILED!       ##");
-			msg("##########################################################");
-		}
-		return writer.toByteArray();
-	}
-
-	private byte[] transformItemInWorldManager(byte[] bytes, HashMap<String, String> hm)
-	{
-		msg("[FE coremod] Patching ItemInWorldManager...");
-
-		ClassNode classNode = new ClassNode();
-		ClassReader classReader = new ClassReader(bytes);
-		classReader.accept(classNode, 0);
-
-		Iterator<MethodNode> methods = classNode.methods.iterator();
-		while (methods.hasNext())
-		{
-			MethodNode m = methods.next();
-			if (m.name.equals(hm.get("targetMethodName")) && m.desc.equals("(III)Z"))
-			{
-				int blockIndex = 4;
-				int mdIndex = 5;
-
-				for (int index = 0; index < m.instructions.size(); index++)
-				{
-
-					if (m.instructions.get(index).getType() == AbstractInsnNode.FIELD_INSN)
-					{
-						FieldInsnNode blocksListNode = (FieldInsnNode) m.instructions.get(index);
-						if (blocksListNode.owner.equals(hm.get("blockJavaClassName")) && blocksListNode.name.equals(hm.get("blocksListFieldName")))
-						{
-							int offset = 1;
-							while (m.instructions.get(index + offset).getOpcode() != ASTORE)
-							{
-								offset++;
-							}
-							VarInsnNode blockNode = (VarInsnNode) m.instructions.get(index + offset);
-							blockIndex = blockNode.var;
-						}
-					}
-
-					if (m.instructions.get(index).getType() == AbstractInsnNode.METHOD_INSN)
-					{
-						MethodInsnNode mdNode = (MethodInsnNode) m.instructions.get(index);
-						if (mdNode.owner.equals(hm.get("worldJavaClassName")) && mdNode.name.equals(hm.get("getBlockMetadataMethodName")))
-						{
-							int offset = 1;
-							while (m.instructions.get(index + offset).getOpcode() != ISTORE)
-							{
-								offset++;
-							}
-							VarInsnNode mdFieldNode = (VarInsnNode) m.instructions.get(index + offset);
-							mdIndex = mdFieldNode.var;
-						}
-					}
-
-					if (m.instructions.get(index).getOpcode() == IFNULL)
-					{
-
-						int offset = 1;
-						while (m.instructions.get(index + offset).getOpcode() != ALOAD)
-						{
-							offset++;
-						}
-
-						LabelNode lmm1Node = new LabelNode(new Label());
-						LabelNode lmm2Node = new LabelNode(new Label());
-
-						InsnList toInject = new InsnList();
-
-						toInject.add(new VarInsnNode(ALOAD, 0));
-						toInject.add(new FieldInsnNode(GETFIELD, hm.get("javaClassName"), hm.get("worldFieldName"), "L" + hm.get("worldJavaClassName") + ";"));
-						toInject.add(new VarInsnNode(ILOAD, 1));
-						toInject.add(new VarInsnNode(ILOAD, 2));
-						toInject.add(new VarInsnNode(ILOAD, 3));
-						toInject.add(new VarInsnNode(ALOAD, blockIndex));
-						toInject.add(new VarInsnNode(ILOAD, mdIndex));
-						toInject.add(new VarInsnNode(ALOAD, 0));
-						toInject.add(new FieldInsnNode(GETFIELD, hm.get("javaClassName"), hm.get("entityPlayerFieldName"), "L" + hm.get("entityPlayerMPJavaClassName") + ";"));
-						toInject.add(new MethodInsnNode(INVOKESTATIC, "com/ForgeEssentials/util/events/ForgeEssentialsEventFactory", "onBlockHarvested", "(L" + hm.get("worldJavaClassName") + ";IIIL" + hm.get("blockJavaClassName") + ";IL"
-								+ hm.get("entityPlayerJavaClassName") + ";)Z"));
-						toInject.add(new JumpInsnNode(IFNE, lmm2Node));
-						toInject.add(new InsnNode(ICONST_0));
-						toInject.add(new InsnNode(IRETURN));
-						toInject.add(lmm2Node);
-						toInject.add(lmm1Node);
-
-						m.instructions.insertBefore(m.instructions.get(index + offset), toInject);
-						addedBreak = true;
-						msg("[FE coremod] Patching ItemInWorldManager Complete!");
-						break;
-					}
-				}
-			}
-		}
-
-		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		classNode.accept(writer);
-		if (!addedBreak){
-			msg("##########################################################");
-			msg("#####                    WARNING                     #####");
-			msg("##   [FE coremod] Patching ItemInWorldManager FAILED!   ##");
 			msg("##########################################################");
 		}
 		return writer.toByteArray();

@@ -11,16 +11,16 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.playerlogger.network.PacketPlayerLogger;
 import com.forgeessentials.playerlogger.types.blockChangeLog;
+import com.forgeessentials.playerlogger.types.blockChangeLog.blockChangeLogCategory;
 import com.forgeessentials.playerlogger.types.commandLog;
 import com.forgeessentials.playerlogger.types.playerTrackerLog;
-import com.forgeessentials.playerlogger.types.blockChangeLog.blockChangeLogCategory;
 import com.forgeessentials.playerlogger.types.playerTrackerLog.playerTrackerLogCategory;
-import com.forgeessentials.util.events.PlayerBlockBreak;
 import com.forgeessentials.util.events.PlayerBlockPlace;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -123,14 +123,14 @@ public class EventLogger implements IPlayerTracker
 	}
 
 	@ForgeSubscribe(priority = EventPriority.LOWEST)
-	public void playerBlockBreak(PlayerBlockBreak e)
+	public void playerBlockBreak(BreakEvent e)
 	{
 		if (logBlockChanges && !e.isCanceled() && side.isServer())
 		{
-			if (exempt(e.player))
+			if (exempt(e.getPlayer()))
 				return;
 			
-			new blockChangeLog(blockChangeLogCategory.broke, e.player, e.world.getBlockId(e.blockX, e.blockY, e.blockZ) + ":" + e.world.getBlockMetadata(e.blockX, e.blockY, e.blockZ), e.blockX, e.blockY, e.blockZ, e.world.getBlockTileEntity(e.blockX, e.blockY, e.blockZ));
+			new blockChangeLog(blockChangeLogCategory.broke, e.getPlayer(), e.block.blockID + ":" + e.blockMetadata, e.x, e.y, e.z, e.world.getBlockTileEntity(e.x, e.y, e.z));
 		}
 	}
 
