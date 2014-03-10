@@ -4,8 +4,8 @@
   "name": "Forge Essentials Client Addon",
   "description": "The client addon for the ForgeEssentials server-side mod. 
 	/n This addon provides some clientside functionality to add on to the ForgeEssentials server side experience and is optional.",
-  "version": "@VERSION@",
-  "mcversion": "@MC@",
+"version": "${version}",
+  "mcversion": "${mcversion}",
   "url": "https://github.com/ForgeEssentials/ForgeEssentialsMain",
   "updateUrl": "",
   "authorList": [

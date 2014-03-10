@@ -3,8 +3,8 @@
   "modid": "ForgeEssentials",
   "name": "Forge Essentials",
   "description": "A Forge mod striving to provide Bukkit plugin functionality on a pure forge base",
-  "version": "@VERSION@",
-  "mcversion": "@MC@",
+"version": "${version}",
+  "mcversion": "${mcversion}",
   "url": "https://github.com/ForgeEssentials/ForgeEssentialsMain",
   "updateUrl": "",
   "authorList": [

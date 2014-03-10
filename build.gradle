@@ -12,13 +12,20 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "SNAPSHOT-MC164"
+version = "1.3pre1"
 group= "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 
 minecraft {
 	version = "1.6.4-9.11.1.964"
 	assetDir = "rundir/assets"
+}
+
+sourceSets{
+main
+client{
+compileClasspath = project.sourceSets.main.compileClasspath
+}
 }
 
 configurations{
@@ -35,6 +42,15 @@ processResources
 	}
 
 	from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
+	
+}
+processClientResources{
+from(sourceSets.client.resources.srcDirs) {
+		include 'mcmod.info'
+		expand 'version':project.version, 'mcversion':project.minecraft.version
+	}
+
+	from(sourceSets.client.resources.srcDirs) { exclude 'mcmod.info' }
 }
 
 dependencies {
@@ -101,7 +117,6 @@ def list = [
     'worldcontrol',
     'afterlife',
     'teleport',
-    'client'
 ]
 
 list.each { name ->
@@ -125,15 +140,27 @@ list.each { name ->
     artifacts {
         archives newTask
     }
-
-    if (name == 'client')
-        return;
-
+    
     project.tasks.completeZip {
         from(newTask.getArchivePath()) { into 'ForgeEssentials/modules' }
         dependsOn newTask
     }
 }
+
+task clientJar(dependsOn: "jar", type: Jar){
+from sourceSets.client.output
+        appendix = "client"
+        include "**"
+        }
+        artifacts {
+        archives clientJar
+    }
+    reobf {
+        reobf(clientJar) { reobfSpec ->
+            reobfSpec.classpath = project.sourceSets.main.compileClasspath
+        }
+    }
+    
 
 build.dependsOn "completeZip"
 

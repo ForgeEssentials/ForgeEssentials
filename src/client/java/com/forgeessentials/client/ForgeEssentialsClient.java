@@ -1,4 +1,4 @@
-package com.ForgeEssentials.client;
+package com.forgeessentials.client;
 
 import java.util.logging.Logger;
 
@@ -7,16 +7,15 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 
-import com.ForgeEssentials.client.cui.CUIPlayerLogger;
-import com.ForgeEssentials.client.cui.CUIRenderrer;
-import com.ForgeEssentials.client.cui.CUIRollback;
-import com.ForgeEssentials.client.gui.FEKeyBinding;
+import com.forgeessentials.client.cui.CUIPlayerLogger;
+import com.forgeessentials.client.cui.CUIRenderrer;
+import com.forgeessentials.client.cui.CUIRollback;
+import com.forgeessentials.client.gui.FEKeyBinding;
 
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
@@ -26,8 +25,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels =
-{ "ForgeEssentials" }, packetHandler = com.ForgeEssentials.client.network.PacketHandler.class))
-@Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = "@VERSION@")
+{ "ForgeEssentials" }, packetHandler = com.forgeessentials.client.network.PacketHandler.class))
+@Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = "1.3pre1")
 public class ForgeEssentialsClient
 {
 
@@ -50,7 +49,7 @@ public class ForgeEssentialsClient
 			return false;
 	}
 	
-	@PreInit
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		feclientlog = e.getModLog();
@@ -81,7 +80,7 @@ public class ForgeEssentialsClient
 	
 
 	@SideOnly(Side.CLIENT)
-	@Init
+	@EventHandler
 	public void load(FMLInitializationEvent e)
 	{
 		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
