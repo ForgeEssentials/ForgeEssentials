@@ -26,12 +26,12 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
 
 	@Override
 	public String getModContainerClass() {
-		return "com.ForgeEssentials.core.preloader.FEModContainer";
+		return "com.forgeessentials.core.preloader.FEModContainer";
 	}
 
 	@Override
 	public String getSetupClass() {
-		return "com.ForgeEssentials.core.preloader.FEPreLoader";
+		return "com.forgeessentials.core.preloader.FEPreLoader";
 	}
 
 	@Override
