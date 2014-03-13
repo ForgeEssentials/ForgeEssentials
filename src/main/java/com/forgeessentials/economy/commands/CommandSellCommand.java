@@ -96,7 +96,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 						cmd.append(args[i]);
 						cmd.append(" ");
 					}
-					MinecraftServer.getServer().executeCommand(cmd.toString());
+					MinecraftServer.getServer().getCommandManager().executeCommand(player, cmd.toString());
 					OutputHandler.chatConfirmation(player, "That cost you " + amount + " x " + target.getDisplayName());
 				}
 				else
