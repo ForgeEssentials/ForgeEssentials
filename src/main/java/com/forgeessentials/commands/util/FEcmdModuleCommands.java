@@ -91,4 +91,6 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase
 				return canConsoleUseCommand();
 		}
 	}
+	
+	public abstract String getCommandName();
 }

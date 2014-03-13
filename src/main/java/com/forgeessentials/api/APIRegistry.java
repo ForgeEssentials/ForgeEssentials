@@ -39,7 +39,7 @@ public class APIRegistry {
 		{
 			if (ResponseRegistry_regsisterResponce == null)
 			{
-				ResponseRegistry_regsisterResponce = Class.forName("com.ForgeEssentials.snooper.ResponseRegistry").getMethod("registerResponse", Integer.class, Response.class);
+				ResponseRegistry_regsisterResponce = Class.forName("com.forgeessentials.snooper.ResponseRegistry").getMethod("registerResponse", Integer.class, Response.class);
 			}
 			ResponseRegistry_regsisterResponce.invoke(null, ID, response);
 		}
@@ -62,7 +62,7 @@ public class APIRegistry {
 		{
 			if (PacketAnalyzerRegistry_register == null)
 			{
-				PacketAnalyzerRegistry_register= Class.forName("com.ForgeEssentials.core.misc.PacketAnalyzerRegistry").getMethod("register", IPacketAnalyzer.class);
+				PacketAnalyzerRegistry_register= Class.forName("com.forgeessentials.core.misc.PacketAnalyzerRegistry").getMethod("register", IPacketAnalyzer.class);
 			}
 			PacketAnalyzerRegistry_register.invoke(null, analyzer);
 		}
