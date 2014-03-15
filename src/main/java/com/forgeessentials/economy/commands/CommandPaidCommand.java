@@ -59,7 +59,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 						cmd.append(" ");
 					}
 
-					MinecraftServer.getServer().executeCommand(cmd.toString());
+					MinecraftServer.getServer().getCommandManager().executeCommand(player, cmd.toString());
 					OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + APIRegistry.wallet.currency(amount));
 				}
 				else
