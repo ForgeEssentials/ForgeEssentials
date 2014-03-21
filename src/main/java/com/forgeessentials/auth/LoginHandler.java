@@ -2,7 +2,6 @@ package com.forgeessentials.auth;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.IPlayerTracker;
@@ -25,20 +24,19 @@ public class LoginHandler implements IPlayerTracker
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
+		if (!ModuleAuth.isEnabled()){
+			return;
+		}
 		PlayerPassData data = PlayerPassData.getData(player.username);
 
 		if (data == null)
 		{
-			OutputHandler.chatError(player, Localization.format("message.auth.needregister"));
+			OutputHandler.chatError(player, "Registration required. Try /auth help.");
 			ModuleAuth.unRegistered.add(player.username);
 		}
 		else
 		{
-			if (ModuleAuth.isEnabled())
-			{
-				OutputHandler.chatError(player, Localization.format("message.auth.needlogin"));
-			}
-			ModuleAuth.unLogged.add(player.username);
+			OutputHandler.chatError(player, "Login required. Try /auth help.");
 		}
 	}
 

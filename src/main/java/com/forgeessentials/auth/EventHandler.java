@@ -14,7 +14,6 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 
@@ -36,13 +35,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
 		}
 	}
 
@@ -54,13 +53,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(event.player, "Login required. Try /auth help.");
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(event.player, "Registration required. Try /auth help.");
 		}
 	}
 
@@ -75,13 +74,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(player.username) && !(event.command instanceof CommandAuth))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(player, "Login required. Try /auth help.");
 		}
 
 		if (ModuleAuth.unRegistered.contains(player.username) && !(event.command instanceof CommandAuth))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(player, "Registration required. Try /auth help.");
 		}
 	}
 
@@ -93,13 +92,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
 		}
 	}
 
@@ -111,13 +110,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
 		}
 	}
 
@@ -129,13 +128,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(event.player, "Login required. Try /auth help.");
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(event.player, "Registration required. Try /auth help.");
 		}
 	}
 
@@ -150,13 +149,13 @@ public class EventHandler
 		{
 			cancel = true;
 
-			OutputHandler.chatError(event.player, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(event.player, "Login required. Try /auth help.");
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			cancel = true;
-			OutputHandler.chatError(event.player, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(event.player, "Registration required. Try /auth help.");
 		}
 
 		if (cancel)
@@ -176,13 +175,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
 		}
 	}
 
@@ -197,13 +196,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(player.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(player, "Login required. Try /auth help.");
 		}
 
 		if (ModuleAuth.unRegistered.contains(player.username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(player, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(player, "Registration required. Try /auth help.");
 		}
 	}
 
@@ -215,13 +214,13 @@ public class EventHandler
 		if (ModuleAuth.unLogged.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needlogin"));
+			OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
 		}
 
 		if (ModuleAuth.unRegistered.contains(username))
 		{
 			event.setCanceled(true);
-			OutputHandler.chatError(event.entityPlayer, Localization.get("message.auth.needregister"));
+			OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
 		}
 	}
 

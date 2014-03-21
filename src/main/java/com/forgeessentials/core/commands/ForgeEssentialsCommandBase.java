@@ -10,7 +10,6 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase
@@ -42,7 +41,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		}
 	}
 
-	public abstract void processCommandPlayer(EntityPlayer sender, String[] args);
+	public void processCommandPlayer(EntityPlayer sender, String[] args){}
 
 	/**
 	 * Override is optional.
@@ -52,93 +51,14 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		processCommandConsole(block, args);
 	}
 
-	public abstract void processCommandConsole(ICommandSender sender, String[] args);
+	public void processCommandConsole(ICommandSender sender, String[] args){};
 
 	// ---------------------------
 	// command usage
 	// ---------------------------
 
 	@Override
-	public String getCommandUsage(ICommandSender sender)
-	{
-		if (sender instanceof EntityPlayer)
-		{
-			String usage;
-			try
-			{
-				usage = "/" + getCommandName() + " " + getCommandSyntax(sender) + " " + getCommandInfo(sender);
-			}
-			catch (NullPointerException e)
-			{
-				usage = "Not usable by player";
-			}
-			return usage;
-		}
-		else if (sender instanceof TileEntityCommandBlock)
-			return getSyntaxCommandBlock((TileEntityCommandBlock) sender);
-		else
-		{
-			String usage;
-			try
-			{
-				usage = getCommandSyntax(sender) + " " + getCommandInfo(sender);
-			}
-			catch (NullPointerException e)
-			{
-				usage = "Not usable by console";
-			}
-			return usage;
-		}
-	}
-
-	public String getCommandInfo(ICommandSender sender)
-	{
-		if (sender instanceof EntityPlayer)
-			return getInfoPlayer((EntityPlayer) sender);
-		else
-			return getInfoConsole();
-	}
-
-	public String getCommandSyntax(ICommandSender sender)
-	{
-		if (sender instanceof EntityPlayer)
-			return getSyntaxPlayer((EntityPlayer) sender);
-		else
-			return getSyntaxConsole();
-	}
-
-	public String getSyntaxConsole()
-	{
-		if (canConsoleUseCommand())
-			return Localization.get("command." + getCommandName() + ".syntax.console");
-		return null;
-	}
-
-	public String getSyntaxCommandBlock(TileEntityCommandBlock block)
-	{
-		return "/" + getCommandName();
-	}
-
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		if (canPlayerUseCommand(player))
-			return Localization.get("command." + getCommandName() + ".syntax.player");
-		return null;
-	}
-
-	public String getInfoConsole()
-	{
-		if (canConsoleUseCommand())
-			return Localization.get("command." + getCommandName() + ".info.console");
-		return null;
-	}
-
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		if (canPlayerUseCommand(player))
-			return Localization.get("command." + getCommandName() + ".info.player");
-		return null;
-	}
+	public abstract String getCommandUsage(ICommandSender sender);
 
 	// ---------------------------
 	// permissions
@@ -217,7 +137,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	}
 
 	@Override
-	public abstract List<?> addTabCompletionOptions(ICommandSender sender, String[] args);
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args){return null;}
 
 	public abstract String getCommandPerm();
 

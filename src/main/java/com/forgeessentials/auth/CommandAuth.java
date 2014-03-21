@@ -16,7 +16,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.PermissionDeniedException;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -66,7 +65,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				return;
 			}
 			else
-				throw new WrongUsageException("command.auth.usage");
+				throw new WrongUsageException("/auth help");
 		}
 
 		// 2 args? seconds needs to be the player.
@@ -78,7 +77,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				PlayerPassData data = PlayerPassData.getData(sender.username);
 				if (data == null)
 				{
-					OutputHandler.chatError(sender, Localization.format("message.auth.error.notregisterred", sender.username));
+					OutputHandler.chatError(sender, String.format("Player %s is not registered!", sender.username));
 					return;
 				}
 
@@ -88,11 +87,11 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				if (data.password.equals(pass))
 				{
 					ModuleAuth.unLogged.remove(sender.username);
-					OutputHandler.chatConfirmation(sender, Localization.get("command.auth.login.success"));
+					OutputHandler.chatConfirmation(sender, "Login successful.");
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get("command.auth.login.fail"));
+					OutputHandler.chatError(sender, "Login failed.");
 				}
 
 				return;
@@ -103,32 +102,32 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			{
 				if (PlayerPassData.getData(sender.username) != null)
 				{
-					OutputHandler.chatError(sender, Localization.format("message.auth.error.yesregisterred", sender.username));
+					OutputHandler.chatError(sender, String.format("Player %s is already registered!", sender.username));
 					return;
 				}
 
 				if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineReg)
 				{
-					OutputHandler.chatError(sender, Localization.format("message.auth.error.disabledreg"));
+					OutputHandler.chatError(sender, "Registrations have been disabled.");
 					return;
 				}
 
 				String pass = ModuleAuth.encrypt(args[1]);
 				PlayerPassData.registerData(sender.username, pass);
 				ModuleAuth.unRegistered.remove(sender.username);
-				OutputHandler.chatConfirmation(sender, Localization.get("command.auth.register.success"));
+				OutputHandler.chatConfirmation(sender, "Registration successful.");
 				return;
 			}
 
 			// stop if unlogged.
 			if (ModuleAuth.unLogged.contains(sender.username))
 			{
-				OutputHandler.chatError(sender, Localization.get("message.auth.needlogin"));
+				OutputHandler.chatError(sender, "Login required. Try /auth help.");
 				return;
 			}
 			else if (ModuleAuth.unRegistered.contains(sender.username))
 			{
-				OutputHandler.chatError(sender, Localization.get("message.auth.needregister"));
+				OutputHandler.chatError(sender, "Registration required. Try /auth help.");
 				return;
 			}
 
@@ -154,8 +153,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				else
 				{
 					ModuleAuth.unLogged.add(name);
-					OutputHandler.chatConfirmation(sender, Localization.format("command.auth.kick.user", name));
-					OutputHandler.chatWarning(player, Localization.get("command.auth.kick.target"));
+					OutputHandler.chatConfirmation(sender, String.format("Player %s was logged out from the authentication service.", name));
+					OutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
 					return;
 				}
 			}
@@ -165,7 +164,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				if (!hasAdmin)
 					throw new PermissionDeniedException();
 
-				throw new WrongUsageException("command.auth.usage.setpass");
+				throw new WrongUsageException("/auth setpass <player> <password>");
 			}
 
 			// parse ./auth unregister
@@ -175,28 +174,28 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 					throw new PermissionDeniedException();
 
 				if (PlayerPassData.getData(name) == null)
-					throw new WrongUsageException("message.auth.error.notregisterred", name);
+					throw new WrongUsageException(String.format("Player %s is not registered!", name));
 
 				PlayerPassData.deleteData(name);
-				OutputHandler.chatConfirmation(sender, Localization.format("command.auth.unregister", name));
+				OutputHandler.chatConfirmation(sender, String.format("Player %s has been removed from the authentication service.", name));
 				return;
 			}
 
 			// ERROR! :D
 			else
-				throw new WrongUsageException("command.auth.usage");
+				throw new WrongUsageException("/auth help");
 		}
 		// 3 args? must be a comtmand - player - pass
 		else if (args.length == 3)
 		{
 			if (ModuleAuth.unLogged.contains(sender.username))
 			{
-				OutputHandler.chatError(sender, Localization.get("message.auth.needlogin"));
+				OutputHandler.chatError(sender, "Login required. Try /auth help.");
 				return;
 			}
 			else if (ModuleAuth.unRegistered.contains(sender.username))
 			{
-				OutputHandler.chatError(sender, Localization.get("message.auth.needregister"));
+				OutputHandler.chatError(sender, "Registration required. Try /auth help.");
 				return;
 			}
 
@@ -209,20 +208,20 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 
 				if (args[1].equals(args[2]))
 				{
-					OutputHandler.chatConfirmation(sender, Localization.get("command.auth.change.same"));
+					OutputHandler.chatConfirmation(sender, "You can't use this new password - it's the same as what was previously there.");
 					return;
 				}
 
 				if (!data.password.equals(oldpass))
 				{
-					OutputHandler.chatConfirmation(sender, Localization.get("command.auth.change.wrongpass"));
+					OutputHandler.chatConfirmation(sender, "Could not change the password - your old password is wrong");
 					return;
 				}
 
 				data.password = newPass;
 				data.save();
 
-				OutputHandler.chatConfirmation(sender, Localization.get("command.auth.change.success"));
+				OutputHandler.chatConfirmation(sender, "Password change successful.");
 				return;
 
 			}
@@ -254,7 +253,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 					data.password = encrypted;
 					data.save();
 				}
-				OutputHandler.chatConfirmation(sender, Localization.format("command.auth.setPass", name));
+				OutputHandler.chatConfirmation(sender, String.format("Password set for %s", name));
 			}
 		}
 	}
@@ -263,7 +262,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		if (args.length == 0)
-			throw new WrongUsageException("command.auth.usage");
+			throw new WrongUsageException("/auth help");
 
 		// one arg? must be help.
 		if (args.length == 1)
@@ -276,7 +275,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 				return;
 			}
 			else
-				throw new WrongUsageException("command.auth.usage");
+				throw new WrongUsageException("/auth help");
 		}
 
 		// check for players.. all the rest of these should be greated than 1.
@@ -298,18 +297,18 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 			if (args[0].equalsIgnoreCase("kick"))
 			{
 				if (!isLogged)
-					throw new WrongUsageException("command.auth.usage.kick");
+					throw new WrongUsageException("/auth kick <player");
 				else
 				{
 					ModuleAuth.unLogged.add(name);
-					ChatUtils.sendMessage(sender, Localization.format("command.auth.kick.user", name));
-					OutputHandler.chatWarning(player, Localization.get("command.auth.kick.target"));
+					OutputHandler.chatConfirmation(sender, String.format("Player %s was logged out from the authentication service.", name));
+					OutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
 					return;
 				}
 			}
 			// parse ./auth setpass
 			else if (args[0].equalsIgnoreCase("setPass"))
-				throw new WrongUsageException("command.auth.usage.setpass");
+				throw new WrongUsageException("/auth setpass <player> <password>");
 			else if (args[0].equalsIgnoreCase("unregister"))
 			{
 				if (PlayerPassData.getData(name) == null)
@@ -341,7 +340,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 					data.password = encrypted;
 					data.save();
 				}
-				ChatUtils.sendMessage(sender, Localization.format("command.auth.setPass", name));
+				ChatUtils.sendMessage(sender, String.format("Password set for %s", name));
 			}
 		}
 	}
@@ -354,7 +353,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		switch (args.length)
@@ -389,5 +388,15 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 	public int compareTo(Object arg0) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender){
+		String s = "/auth help";
+		if (sender instanceof EntityPlayer){
+			s = s + " Manages your authentication profile.";
+		}
+		else s = s + " Controls the authentication module.";
+		return s;
 	}
 }
