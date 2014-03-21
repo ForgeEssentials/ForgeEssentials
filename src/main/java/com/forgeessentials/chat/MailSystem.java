@@ -1,13 +1,12 @@
 package com.forgeessentials.chat;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.IPlayerTracker;
@@ -50,13 +49,13 @@ public class MailSystem implements IPlayerTracker
 	{
 		if (map.containsKey(receiver.username))
 		{
-			ChatUtils.sendMessage(receiver, FEChatFormatCodes.GREEN + Localization.get("message.mail.header"));
+			ChatUtils.sendMessage(receiver, EnumChatFormatting.GREEN + "--- Your mail ---");
 			for (Mail mail : map.get(receiver.username))
 			{
-				ChatUtils.sendMessage(receiver, FEChatFormatCodes.GREEN + "{" + mail.getSender() + "} " + FEChatFormatCodes.WHITE + mail.getMessage());
+				ChatUtils.sendMessage(receiver, EnumChatFormatting.GREEN + "{" + mail.getSender() + "} " + EnumChatFormatting.WHITE + mail.getMessage());
 				DataStorageManager.getReccomendedDriver().deleteObject(new ClassContainer(Mail.class), mail.getKey());
 			}
-			ChatUtils.sendMessage(receiver, FEChatFormatCodes.GREEN + Localization.get("message.mail.footer"));
+			ChatUtils.sendMessage(receiver, EnumChatFormatting.GREEN + "--- End of mail ---");
 		}
 	}
 

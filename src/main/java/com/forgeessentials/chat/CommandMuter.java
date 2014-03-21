@@ -8,7 +8,6 @@ import net.minecraftforge.event.ForgeSubscribe;
 
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -29,7 +28,7 @@ public class CommandMuter
             {
                 if (mutedCommands.contains(e.command.getCommandName()))
                 {
-					ChatUtils.sendMessage(player, Localization.get("message.muted"));
+					ChatUtils.sendMessage(player, "You are currently muted.");
                     e.setCanceled(true);
                     return;
                 }
@@ -39,7 +38,7 @@ public class CommandMuter
                     {
                         if(mutedCommands.contains(obj.toString()))
                         {
-							ChatUtils.sendMessage(player, Localization.get("message.muted"));
+							ChatUtils.sendMessage(player, "You are currently muted.");
                             e.setCanceled(true);
                             return;
                         }

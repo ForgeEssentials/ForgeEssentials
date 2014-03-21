@@ -164,5 +164,10 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
             return parseInt(sender, string);
         }
     }
+
+	@Override
+	public int compareTo(Object o) {
+		return 0;
+	}
     
 }

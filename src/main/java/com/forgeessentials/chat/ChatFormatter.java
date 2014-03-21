@@ -19,7 +19,6 @@ import com.forgeessentials.chat.commands.CommandPm;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.google.common.base.Strings;
 
@@ -41,7 +40,7 @@ public class ChatFormatter
 		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
 		{
 			event.setCanceled(true);
-			ChatUtils.sendMessage(event.player, Localization.get("message.muted"));
+			ChatUtils.sendMessage(event.player, "You are currently muted.");
 			return;
 		}
 

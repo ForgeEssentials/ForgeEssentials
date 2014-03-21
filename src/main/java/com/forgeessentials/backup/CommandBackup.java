@@ -102,14 +102,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
-	@Override
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String getCommandUsage(ICommandSender sender) {
+		return "/backup [dimID|foldername] Make a backup of everything or only specified folder/world.";
 	}
 }

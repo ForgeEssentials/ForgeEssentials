@@ -1,7 +1,8 @@
 package com.forgeessentials.api.permissions;
 
+import net.minecraft.util.EnumChatFormatting;
+
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.FEChatFormatCodes;
 
 /**
  * RegistrationGroups
@@ -28,7 +29,7 @@ public enum RegGroup
 	 * first log in. The players in this group are usually denied commands and
 	 * breaking blocks before they are promoted to members.
 	 */
-	GUESTS("Guests", FEChatFormatCodes.GREY + "[GUEST]", " ", null, 0),
+	GUESTS("Guests", EnumChatFormatting.GRAY + "[GUEST]", " ", null, 0),
 
 	/**
 	 * This is usually for players that are actually members of the server. They
@@ -42,14 +43,14 @@ public enum RegGroup
 	 * They will most likely have WorldEdit access, as well as the power to edit
 	 * permissions in the zone.
 	 */
-	ZONE_ADMINS("ZoneAdmins", FEChatFormatCodes.RED + "[ZoneAdmin]", " ", null, 0),
+	ZONE_ADMINS("ZoneAdmins", EnumChatFormatting.RED + "[ZoneAdmin]", " ", null, 0),
 
 	/**
 	 * This is automatically assigned to the server owner when they make a world
 	 * available to the LAN. This is also best kept for players that have direct
 	 * access to the server's console and filesystem.
 	 */
-	OWNERS("Owners", FEChatFormatCodes.RED + "[OWNER]", " ", null, 999);
+	OWNERS("Owners", EnumChatFormatting.RED + "[OWNER]", " ", null, 999);
 
 	private RegGroup(String name, String parent, String prefix, String suffix, int priority)
 	{
