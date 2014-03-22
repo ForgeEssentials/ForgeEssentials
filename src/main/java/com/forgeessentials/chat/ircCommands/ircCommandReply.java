@@ -1,12 +1,12 @@
 package com.forgeessentials.chat.ircCommands;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.pircbotx.User;
 
 import com.forgeessentials.chat.commands.CommandMsg;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
 
 public class ircCommandReply extends ircCommand
@@ -47,7 +47,7 @@ public class ircCommandReply extends ircCommand
 				return;
 			}
 
-			String send = FEChatFormatCodes.GOLD + "(IRC)[" + user.getNick() + " -> me] " + FEChatFormatCodes.GREY + message;
+			String send = EnumChatFormatting.GOLD + "(IRC)[" + user.getNick() + " -> me] " + EnumChatFormatting.GRAY + message;
 			String recipt = "(IRC)[me -> " + player.getCommandSenderName() + "] " + message;
 
 			ChatUtils.sendMessage(player, send);

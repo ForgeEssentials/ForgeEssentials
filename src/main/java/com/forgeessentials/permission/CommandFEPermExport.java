@@ -4,7 +4,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandFEPermExport
@@ -14,14 +13,14 @@ public class CommandFEPermExport
 		String output = "export";
 		if (args.length > 1)
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + " /feperm export [folderName]");
 			return;
 		}
 		else if (args.length == 1)
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+				ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + " /feperm export [folderName]");
 				return;
 			}
 			else
@@ -39,14 +38,14 @@ public class CommandFEPermExport
 		String output = "export";
 		if (args.length > 1)
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + " /feperm export [folderName]");
 			return;
 		}
 		else if (args.length == 1)
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + " /feperm export [folderName]");
+				ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + " /feperm export [folderName]");
 				return;
 			}
 			else

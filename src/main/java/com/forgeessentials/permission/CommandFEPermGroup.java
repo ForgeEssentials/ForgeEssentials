@@ -5,13 +5,12 @@ import java.util.Collections;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 
@@ -28,7 +27,7 @@ public class CommandFEPermGroup
 			OutputHandler.chatConfirmation(sender, "/p group <groupName>");
 			OutputHandler.chatConfirmation(sender, "/p group list ");
 			// OutputHandler.chatError(sender,
-			// Localization.get(Localization.ERROR_BADSYNTAX) + "");
+			// "Improper syntax. Please try this instead: " + "");
 			return;
 		}
 
@@ -56,7 +55,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 				}
 			}
 			APIRegistry.perms.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
@@ -88,7 +87,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 				}
 			}
 			// Remove zone
@@ -122,7 +121,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 				}
 			}
 			ArrayList<?> list = APIRegistry.perms.getGroupsInZone(zone.getZoneName());
@@ -173,7 +172,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 				}
 			}
 		}
@@ -189,7 +188,7 @@ public class CommandFEPermGroup
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+				OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 			}
 		}
 		if (args[1].equalsIgnoreCase("prefix"))
@@ -341,7 +340,7 @@ public class CommandFEPermGroup
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+				OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[4]));
 			}
 		}
 		if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow"))
@@ -414,7 +413,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[4]));
 				}
 			}
 
@@ -431,15 +430,15 @@ public class CommandFEPermGroup
 				}
 				if (perm.toLowerCase().contains("allow") || perm.toLowerCase().contains("true"))
 				{
-					messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + perm.substring(0, perm.indexOf(":")));
+					messageAllowed.add(" " + EnumChatFormatting.DARK_GREEN + perm.substring(0, perm.indexOf(":")));
 				}
 				else
 				{
-					messageDenied.add(" " + FEChatFormatCodes.DARKRED + perm.substring(0, perm.indexOf(":")));
+					messageDenied.add(" " + EnumChatFormatting.DARK_RED + perm.substring(0, perm.indexOf(":")));
 				}
 			}
 			OutputHandler.chatConfirmation(sender, group.name + (group.parent != null ? " inherits from " + group.parent : "") + ".\nCurrent permissions in zone " + zone.getZoneName() + ":");
-			OutputHandler.chatConfirmation(sender, " (" + FEChatFormatCodes.DARKGREEN + "ALLOWED" + FEChatFormatCodes.DARKRED + " DENIED" + FEChatFormatCodes.GREEN + ")");
+			OutputHandler.chatConfirmation(sender, " (" + EnumChatFormatting.DARK_GREEN + "ALLOWED" + EnumChatFormatting.DARK_RED + " DENIED" + EnumChatFormatting.GREEN + ")");
 			for (String perm : messageAllowed)
 			{
 				OutputHandler.chatConfirmation(sender, perm);
@@ -451,7 +450,7 @@ public class CommandFEPermGroup
 			return;
 		}
 
-		OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
+		OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + "");
 	}
 
 	public static void processCommandConsole(ICommandSender sender, String[] args)
@@ -464,7 +463,7 @@ public class CommandFEPermGroup
 			ChatUtils.sendMessage(sender, "/p group create|delete");
 			ChatUtils.sendMessage(sender, "/p group <groupName>");
 			ChatUtils.sendMessage(sender, "/p group list ");
-			// sender.sendChatToPlayer(Localization.get(Localization.ERROR_BADSYNTAX)
+			// sender.sendChatToPlayer("Improper syntax. Please try this instead: "
 			// + "");
 			return;
 		}
@@ -489,7 +488,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, String.format("No zone by the name %s exists!", args[2]));
 				}
 			}
 			APIRegistry.perms.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
@@ -517,7 +516,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, String.format("No zone by the name %s exists!", args[2]));
 				}
 			}
 			// Remove zone
@@ -537,7 +536,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, String.format("No zone by the name %s exists!", args[2]));
 				}
 			}
 			ArrayList<?> list = APIRegistry.perms.getGroupsInZone(zone.getZoneName());
@@ -584,7 +583,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, String.format("No zone by the name %s exists!", args[2]));
 				}
 			}
 		}
@@ -596,7 +595,7 @@ public class CommandFEPermGroup
 			}
 			else
 			{
-				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+				ChatUtils.sendMessage(sender, String.format("No zone by the name %s exists!", args[2]));
 			}
 		}
 		if (args[1].equalsIgnoreCase("prefix"))
@@ -744,7 +743,7 @@ public class CommandFEPermGroup
 			}
 			else
 			{
-				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+				ChatUtils.sendMessage(sender, String.format("No zone by the name %s exists!", args[4]));
 			}
 		}
 		if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("allow"))
@@ -817,7 +816,7 @@ public class CommandFEPermGroup
 				}
 				else
 				{
-					ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					ChatUtils.sendMessage(sender, "ERROR: " + String.format("No zone by the name %s exists!", args[4]));
 				}
 			}
 			ArrayList<String> list = APIRegistry.perms.getGroupPermissions(group.name, zone.getZoneName());
@@ -852,7 +851,7 @@ public class CommandFEPermGroup
 			return;
 		}
 
-		ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
+		ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + "");
 	}
 
 }

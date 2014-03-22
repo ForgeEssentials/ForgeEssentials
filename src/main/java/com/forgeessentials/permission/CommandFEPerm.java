@@ -135,7 +135,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[zoneIndex]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[zoneIndex]));
 					return;
 				}
 			}
@@ -239,7 +239,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, "ERROR: " + String.format("No zone by the name %s exists!", args[2]));
 					return;
 				}
 			}
@@ -301,7 +301,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, args2);

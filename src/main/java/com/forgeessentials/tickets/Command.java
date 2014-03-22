@@ -6,14 +6,13 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.TeleportCenter;
 
@@ -45,7 +44,7 @@ public class Command extends ForgeEssentialsCommandBase
 
 	public void doStuff(ICommandSender sender, String[] args)
 	{
-		String c = FEChatFormatCodes.DARKAQUA.toString();
+		String c = EnumChatFormatting.DARK_AQUA.toString();
 		if (args.length == 0)
 		{
 			String usage = "list|new|view";
@@ -159,7 +158,7 @@ public class Command extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, "list", "new", "view", "tp", "del");

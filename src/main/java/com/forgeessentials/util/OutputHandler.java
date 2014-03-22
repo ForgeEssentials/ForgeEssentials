@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 import cpw.mods.fml.common.FMLLog;
 
 public final class OutputHandler
@@ -30,7 +31,7 @@ public final class OutputHandler
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			ChatUtils.sendMessage(sender, FEChatFormatCodes.RED + FunctionHelper.formatColors(msg));
+			ChatUtils.sendMessage(sender, EnumChatFormatting.RED + FunctionHelper.formatColors(msg));
 		}
 		else
 		{
@@ -49,7 +50,7 @@ public final class OutputHandler
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			ChatUtils.sendMessage(sender, FEChatFormatCodes.GREEN + FunctionHelper.formatColors(msg));
+			ChatUtils.sendMessage(sender, EnumChatFormatting.GREEN + FunctionHelper.formatColors(msg));
 		}
 		else
 		{
@@ -68,7 +69,7 @@ public final class OutputHandler
 	{
 		if (sender instanceof EntityPlayer)
 		{
-			ChatUtils.sendMessage(sender, FEChatFormatCodes.YELLOW + FunctionHelper.formatColors(msg));
+			ChatUtils.sendMessage(sender, EnumChatFormatting.YELLOW + FunctionHelper.formatColors(msg));
 		}
 		else
 		{

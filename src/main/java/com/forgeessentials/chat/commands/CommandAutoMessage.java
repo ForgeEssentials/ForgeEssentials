@@ -133,7 +133,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, "select", "broadcast", "add", "del");
@@ -142,8 +142,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public int compareTo(Object arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String getCommandUsage(ICommandSender sender) {
+		return "/automessage [select|broadcast|add|del] Select, broadcast, add or remove messages";
 	}
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
@@ -19,7 +20,6 @@ import org.pircbotx.hooks.events.QuitEvent;
 
 import com.forgeessentials.chat.ircCommands.ircCommands;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.IPlayerTracker;
@@ -183,7 +183,7 @@ public class IRCHelper extends ListenerAdapter implements Listener
 		{
 			if (!e.getUser().getNick().equalsIgnoreCase(channel))
 			{
-				postMinecraft(FEChatFormatCodes.YELLOW + e.getUser().getNick() + " left the channel");
+				postMinecraft(EnumChatFormatting.YELLOW + e.getUser().getNick() + " left the channel");
 			}
 		}
 	}
@@ -195,7 +195,7 @@ public class IRCHelper extends ListenerAdapter implements Listener
 		{
 			if (!e.getRecipient().getNick().equalsIgnoreCase(channel))
 			{
-				postMinecraft(FEChatFormatCodes.YELLOW + e.getRecipient().getNick() + " was kicked from " + e.getChannel().getName() + " by " + e.getSource().getNick() + " with reason " + e.getReason());
+				postMinecraft(EnumChatFormatting.YELLOW + e.getRecipient().getNick() + " was kicked from " + e.getChannel().getName() + " by " + e.getSource().getNick() + " with reason " + e.getReason());
 			}
 		}
 		OutputHandler.felog.warning("The IRC bot was kicked from " + e.getChannel().getName() + " by " + e.getSource().getNick() + " with reason " + e.getReason() + " , please attempt to reconnect.");
@@ -207,7 +207,7 @@ public class IRCHelper extends ListenerAdapter implements Listener
 	{
 		if (!suppressEvents)
 		{
-			postMinecraft(FEChatFormatCodes.YELLOW + e.getOldNick() + " changed nick to " + e.getNewNick());
+			postMinecraft(EnumChatFormatting.YELLOW + e.getOldNick() + " changed nick to " + e.getNewNick());
 		}
 
 		// Minecraft events

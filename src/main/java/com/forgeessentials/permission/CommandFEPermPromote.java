@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandFEPermPromote
@@ -18,7 +17,7 @@ public class CommandFEPermPromote
 		if (args.length == 0)
 			// Not possible
 			// OutputHandler.chatError(sender,
-			// Localization.get(Localization.ERROR_BADSYNTAX) + "");
+			// "Improper syntax. Please try this instead: " + "");
 			return;
 
 		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
@@ -58,7 +57,7 @@ public class CommandFEPermPromote
 			return;
 		}
 
-		OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
+		OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + "");
 	}
 
 	public static void processCommandConsole(ICommandSender sender, String[] args)

@@ -9,6 +9,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
@@ -16,9 +17,7 @@ import com.forgeessentials.chat.IRCHelper;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandMsg extends ForgeEssentialsCommandBase
@@ -63,8 +62,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				clearReply("server");
 				addReply(sender.getCommandSenderName(), "server");
 				addReply("server", sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.GREY;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
+				String senderMessage = EnumChatFormatting.GOLD + "[ me -> " + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + "] " + EnumChatFormatting.GRAY;
+				String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + " -> me ] ";
 				for (int i = 0; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -87,7 +86,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				clearReply("irc" + args[1].toLowerCase());
 				addReply(sender.getCommandSenderName(), "irc" + args[1].toLowerCase());
 				addReply("irc" + args[1].toLowerCase(), sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "(IRC)[me -> " + args[1] + "] " + FEChatFormatCodes.GREY;
+				String senderMessage = EnumChatFormatting.GOLD + "(IRC)[me -> " + args[1] + "] " + EnumChatFormatting.GRAY;
 				String receiverMessage = new String();
 				for (int i = 2; i < args.length; i++)
 				{
@@ -124,8 +123,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				clearReply(receiver.getCommandSenderName());
 				addReply(sender.getCommandSenderName(), receiver.getCommandSenderName());
 				addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.WHITE;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.WHITE;
+				String senderMessage = EnumChatFormatting.GOLD + "[ me -> " + EnumChatFormatting.GRAY + receiver.getCommandSenderName() + EnumChatFormatting.GOLD + "] " + EnumChatFormatting.WHITE;
+				String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.GRAY + sender.getCommandSenderName() + EnumChatFormatting.GOLD + " -> me ] " + EnumChatFormatting.WHITE;
 				for (int i = 1; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -165,7 +164,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				addReply(receiver.getCommandSenderName(), "server");
 				addReply("server", receiver.getCommandSenderName());
 				String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.GREY;
+				String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + " -> me ] " + EnumChatFormatting.GRAY;
 				for (int i = 1; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -216,12 +215,6 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	public static void addReply(String player, String target)
 	{
 		playerReply.put(player, target);
-	}
-
-	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
 	}
 
 	@Override

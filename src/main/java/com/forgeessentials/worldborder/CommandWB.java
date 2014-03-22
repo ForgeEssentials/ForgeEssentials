@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -13,7 +14,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Point;
@@ -112,7 +112,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 			String header = "--- WorldBorder for " + zone.getZoneName() + " ---";
 			ChatUtils.sendMessage(sender, header);
 			// Actual info
-			ChatUtils.sendMessage(sender, "Enabled: " + (border.enabled ? FEChatFormatCodes.GREEN : FEChatFormatCodes.RED) + border.enabled);
+			ChatUtils.sendMessage(sender, "Enabled: " + (border.enabled ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + border.enabled);
 			ChatUtils.sendMessage(sender, "Center: " + border.center.toString());
 			ChatUtils.sendMessage(sender, "Radius: " + border.rad);
 			ChatUtils.sendMessage(sender, "Shape: " + border.getShape());
@@ -240,7 +240,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		// Zone selection
 		if (args.length == 1)

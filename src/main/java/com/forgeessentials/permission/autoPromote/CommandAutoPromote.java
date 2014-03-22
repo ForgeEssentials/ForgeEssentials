@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
@@ -14,7 +15,6 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.permission.SqlHelper;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
@@ -74,7 +74,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 		{
 			String header = "--- AutoPromote for: " + ap.zone + " ---";
 			ChatUtils.sendMessage(sender, header);
-			ChatUtils.sendMessage(sender, "Enabled: " + (ap.enable ? FEChatFormatCodes.GREEN : FEChatFormatCodes.RED) + ap.enable);
+			ChatUtils.sendMessage(sender, "Enabled: " + (ap.enable ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + ap.enable);
 			ChatUtils.sendMessage(sender, "Promotion times: ");
 			for (String i : ap.promoteList.keySet())
 			{
@@ -259,7 +259,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsFromIterableMatchingLastWord(args, getZoneNames());

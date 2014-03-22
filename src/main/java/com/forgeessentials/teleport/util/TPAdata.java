@@ -3,7 +3,6 @@ package com.forgeessentials.teleport.util;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.teleport.CommandTPA;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class TPAdata
@@ -41,13 +40,13 @@ public class TPAdata
 			TickHandlerTP.tpaListToRemove.add(this);
 			if (tphere)
 			{
-				OutputHandler.chatWarning(receiver, Localization.format("command.tpahere.gotTimeout", sender.username));
-				OutputHandler.chatWarning(sender, Localization.format("command.tpahere.sendTimeout", receiver.username));
+				OutputHandler.chatWarning(receiver, String.format("TPA from %s timed out.", sender.username));
+				OutputHandler.chatWarning(sender, String.format("TPA to %s timed out.", receiver.username));
 			}
 			else
 			{
-				OutputHandler.chatWarning(receiver, Localization.format("command.tpa.gotTimeout", sender.username));
-				OutputHandler.chatWarning(sender, Localization.format("command.tpa.sendTimeout", receiver.username));
+				OutputHandler.chatWarning(receiver, String.format("TPA from %s timed out", sender.username));
+				OutputHandler.chatWarning(sender, String.format("TPA to %s timed out.", receiver.username));
 			}
 		}
 		timeout--;

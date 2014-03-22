@@ -10,7 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import com.forgeessentials.chat.Mail;
 import com.forgeessentials.chat.MailSystem;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -34,7 +33,7 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	{
 		if (!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
 		{
-			OutputHandler.chatError(sender, Localization.format("command.mail.unknown", args[0]));
+			OutputHandler.chatError(sender, String.format("No player by the name: %s is registered on this server. Please try again.", args[0]));
 			return;
 		}
 		StringBuilder cmd = new StringBuilder(args.toString().length());
@@ -44,7 +43,7 @@ public class CommandMail extends ForgeEssentialsCommandBase
 			cmd.append(" ");
 		}
 		MailSystem.AddMail(new Mail("", sender.getCommandSenderName(), args[0], cmd.toString()));
-		OutputHandler.chatConfirmation(sender, Localization.format("command.mail.posted", args[0]));
+		OutputHandler.chatConfirmation(sender, String.format("Posted message to %s.", args[0]));
 	}
 
 	@Override
@@ -52,7 +51,7 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	{
 		if (!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
 		{
-			OutputHandler.chatError(sender, Localization.format("command.mail.unknown", args[0]));
+			OutputHandler.chatError(sender, String.format("No player by the name: %s is registered on this server. Please try again.", args[0]));
 			return;
 		}
 		StringBuilder cmd = new StringBuilder(args.toString().length());
@@ -62,7 +61,7 @@ public class CommandMail extends ForgeEssentialsCommandBase
 			cmd.append(" ");
 		}
 		MailSystem.AddMail(new Mail("", sender.getCommandSenderName(), args[0], cmd.toString()));
-		OutputHandler.chatConfirmation(sender, Localization.format("command.mail.posted", args[0]));
+		OutputHandler.chatConfirmation(sender, String.format("Posted message to %s.", args[0]));
 	}
 
 	@Override
@@ -78,7 +77,7 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 2)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -90,6 +89,11 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "/mail <player> <message> Sends a message to someone which can be read later.";
 	}
 
 }

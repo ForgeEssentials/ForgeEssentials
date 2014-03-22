@@ -6,7 +6,9 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class CommandNegative extends QuestionerCommandBase
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+
+public class CommandNegative extends ForgeEssentialsCommandBase
 {
 
 	@Override

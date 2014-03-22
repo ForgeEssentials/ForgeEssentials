@@ -9,14 +9,13 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.IPlayerTracker;
@@ -157,7 +156,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 				persistentMessage.put(sender.getCommandSenderName(), receiver.getCommandSenderName());
 				OutputHandler.chatConfirmation(sender, "Persistent message to " + receiver.getCommandSenderName() + " enabled.");
 				String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.GREY;
+				String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + " -> me ] " + EnumChatFormatting.GRAY;
 				for (int i = 1; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -206,8 +205,8 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 			{
 				CommandMsg.clearReply("server");
 				CommandMsg.addReply("server", sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.GREY;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.PURPLE + "Server" + FEChatFormatCodes.GOLD + " -> me ] ";
+				String senderMessage = EnumChatFormatting.GOLD + "[ me -> " + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + "] " + EnumChatFormatting.GRAY;
+				String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + " -> me ] ";
 				for (int i = 0; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -231,8 +230,8 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 				}
 				CommandMsg.clearReply(receiver.getCommandSenderName());
 				CommandMsg.addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
-				String senderMessage = FEChatFormatCodes.GOLD + "[ me -> " + FEChatFormatCodes.GREY + receiver.getCommandSenderName() + FEChatFormatCodes.GOLD + "] " + FEChatFormatCodes.WHITE;
-				String receiverMessage = FEChatFormatCodes.GOLD + "[" + FEChatFormatCodes.GREY + sender.getCommandSenderName() + FEChatFormatCodes.GOLD + " -> me ] " + FEChatFormatCodes.WHITE;
+				String senderMessage = EnumChatFormatting.GOLD + "[ me -> " + EnumChatFormatting.GRAY + receiver.getCommandSenderName() + EnumChatFormatting.GOLD + "] " + EnumChatFormatting.WHITE;
+				String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.GRAY + sender.getCommandSenderName() + EnumChatFormatting.GOLD + " -> me ] " + EnumChatFormatting.WHITE;
 				for (int i = 1; i < args.length; i++)
 				{
 					receiverMessage += args[i];
@@ -250,7 +249,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return null;
 	}

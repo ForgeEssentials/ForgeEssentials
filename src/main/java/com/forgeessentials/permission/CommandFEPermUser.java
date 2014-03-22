@@ -6,15 +6,14 @@ import java.util.Collections;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 
@@ -41,7 +40,7 @@ public class CommandFEPermUser
 		}
 		else if (player == null)
 		{
-			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			OutputHandler.chatConfirmation(sender, args[0] + " will be used, but may be inaccurate.");
 		}
 		else
@@ -52,7 +51,7 @@ public class CommandFEPermUser
 		if (args.length == 1) // display user-specific settings & there values for this player
 		{
 			ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(playerName, false, APIRegistry.zones.getGLOBAL().getZoneName());
-			OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.user.info.groups", playerName));
+			OutputHandler.chatConfirmation(sender, String.format("command.permissions.user.info.groups", playerName));
 			for (Group g : groups)
 			{
 				OutputHandler.chatConfirmation(sender, " - " + g.name + " -- " + g.zoneName);
@@ -148,7 +147,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[4]));
 					return;
 				}
 			}
@@ -171,7 +170,7 @@ public class CommandFEPermUser
 					}
 					else
 					{
-						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+						OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
 					}
 					return;
 				}
@@ -288,7 +287,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[3]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[3]));
 					return;
 				}
 			}
@@ -349,7 +348,7 @@ public class CommandFEPermUser
 					}
 					else
 					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+						OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 						return;
 					}
 				}
@@ -366,15 +365,15 @@ public class CommandFEPermUser
 					}
 					if (permission.contains("true"))
 					{
-						messageAllowed.add(" " + FEChatFormatCodes.DARKGREEN + permission.substring(0, permission.indexOf(":")));
+						messageAllowed.add(" " + EnumChatFormatting.DARK_GREEN + permission.substring(0, permission.indexOf(":")));
 					}
 					else
 					{
-						messageDenied.add(" " + FEChatFormatCodes.DARKRED + permission.substring(0, permission.indexOf(":")));
+						messageDenied.add(" " + EnumChatFormatting.DARK_RED + permission.substring(0, permission.indexOf(":")));
 					}
 				}
 				OutputHandler.chatConfirmation(sender, playerName + ": Current permissions in zone " + zoneName + ":");
-				OutputHandler.chatConfirmation(sender, " (" + FEChatFormatCodes.DARKGREEN + "ALLOWED" + FEChatFormatCodes.DARKRED + " DENIED" + FEChatFormatCodes.GREEN + ")");
+				OutputHandler.chatConfirmation(sender, " (" + EnumChatFormatting.DARK_GREEN + "ALLOWED" + EnumChatFormatting.DARK_RED + " DENIED" + EnumChatFormatting.GREEN + ")");
 				for (String permission : messageAllowed)
 				{
 					OutputHandler.chatConfirmation(sender, permission);
@@ -387,7 +386,7 @@ public class CommandFEPermUser
 			}
 		}
 
-		OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "");
+		OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + "");
 	}
 
 	public static void processCommandConsole(ICommandSender sender, String[] args)
@@ -407,7 +406,7 @@ public class CommandFEPermUser
 		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (player == null)
 		{
-			ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			ChatUtils.sendMessage(sender, "ERROR: " + String.format("Player %s does not exist, or is not online.", args[0]));
 			ChatUtils.sendMessage(sender, args[0] + " will be used, but may be inaccurate.");
 		}
 		else
@@ -419,7 +418,7 @@ public class CommandFEPermUser
 		// for this player
 		{
 			ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(playerName, false, APIRegistry.zones.getGLOBAL().getZoneName());
-			ChatUtils.sendMessage(sender, Localization.format("command.permissions.user.info.groups", playerName));
+			ChatUtils.sendMessage(sender, String.format("command.permissions.user.info.groups", playerName));
 			for (Group g : groups)
 			{
 				ChatUtils.sendMessage(sender, " - " + g.name + " -- " + g.zoneName);
@@ -505,7 +504,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					ChatUtils.sendMessage(sender, "ERROR: " + String.format("No zone by the name %s exists!", args[4]));
 					return;
 				}
 			}
@@ -525,7 +524,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					ChatUtils.sendMessage(sender, "ERROR: " + Localization.get(Localization.ERROR_BADSYNTAX));
+					ChatUtils.sendMessage(sender, "ERROR: " + "Improper syntax. Please try this instead: ");
 				}
 				return;
 			}
@@ -574,7 +573,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[4]));
+					ChatUtils.sendMessage(sender, "ERROR: " + String.format("No zone by the name %s exists!", args[4]));
 					return;
 				}
 			}
@@ -677,7 +676,7 @@ public class CommandFEPermUser
 				}
 				else
 				{
-					ChatUtils.sendMessage(sender, "ERROR: " + Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					ChatUtils.sendMessage(sender, "ERROR: " + String.format("No zone by the name %s exists!", args[2]));
 					return;
 				}
 			}
@@ -716,7 +715,7 @@ public class CommandFEPermUser
 		// display user-specific settings & there values for this player
 		{
 			ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(playerName, false, args[1]);
-			ChatUtils.sendMessage(sender, Localization.format("command.permissions.user.info.groups", playerName));
+			ChatUtils.sendMessage(sender, String.format("command.permissions.user.info.groups", playerName));
 			for (Group g : groups)
 			{
 				ChatUtils.sendMessage(sender, " - " + g.name + " -- " + g.zoneName);
@@ -724,7 +723,7 @@ public class CommandFEPermUser
 			return;
 		}
 
-		ChatUtils.sendMessage(sender, "ERROR: " + Localization.get(Localization.ERROR_BADSYNTAX) + "");
+		ChatUtils.sendMessage(sender, "ERROR: " + "Improper syntax. Please try this instead: " + "");
 	}
 
 }

@@ -2,6 +2,7 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -9,8 +10,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
 import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.util.FEChatFormatCodes;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Point;
 
@@ -43,7 +42,7 @@ public class WandController
 
 		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, "ForgeEssentials.CoreCommands.select.pos", point)))
 		{
-			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+			OutputHandler.chatError(player, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 			return;
 		}
 
@@ -51,14 +50,14 @@ public class WandController
 		if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
 		{
 			info.setPoint1(point);
-			player.addChatMessage(FEChatFormatCodes.PURPLE + "Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
+			player.addChatMessage(EnumChatFormatting.DARK_PURPLE + "Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
 			event.setCanceled(true);
 		}
 		// right Click
 		else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
 		{
 			info.setPoint2(point);
-			player.addChatMessage(FEChatFormatCodes.PURPLE + "Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
+			player.addChatMessage(EnumChatFormatting.DARK_PURPLE + "Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
 			event.setCanceled(true);
 		}
 	}

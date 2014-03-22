@@ -27,7 +27,6 @@ import net.minecraft.world.World;
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.ITickTask;
 
@@ -258,11 +257,11 @@ public class CommandButcherTickTask implements ITickTask
 	{
 		if (playerCommand)
 		{
-			OutputHandler.chatConfirmation(player, Localization.format("command.butcher.done", counter));
+			OutputHandler.chatConfirmation(player, String.format("%s mobs killed.", counter));
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.format("command.butcher.done", counter));
+			ChatUtils.sendMessage(sender, String.format("%s mobs killed.", counter));
 		}
 	}
 

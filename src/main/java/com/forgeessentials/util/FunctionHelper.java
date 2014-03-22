@@ -30,6 +30,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -239,7 +240,7 @@ public final class FunctionHelper
 			}
 			catch (NumberFormatException e)
 			{
-				throw new NumberFormatException(Localization.format(Localization.ERROR_NAN, pair[1]));
+				throw new NumberFormatException(String.format("%s param was not recognized as number. Please try again.", pair[1]));
 			}
 		}
 		else
@@ -477,30 +478,30 @@ public final class FunctionHelper
 		format = replaceAllIgnoreCase(format, "%male", "\u2642");
 
 		// replace colors
-		format = replaceAllIgnoreCase(format, "%red", FEChatFormatCodes.RED.toString());
-		format = replaceAllIgnoreCase(format, "%yellow", FEChatFormatCodes.YELLOW.toString());
-		format = replaceAllIgnoreCase(format, "%black", FEChatFormatCodes.BLACK.toString());
-		format = replaceAllIgnoreCase(format, "%darkblue", FEChatFormatCodes.DARKBLUE.toString());
-		format = replaceAllIgnoreCase(format, "%darkgreen", FEChatFormatCodes.DARKGREEN.toString());
-		format = replaceAllIgnoreCase(format, "%darkaqua", FEChatFormatCodes.DARKAQUA.toString());
-		format = replaceAllIgnoreCase(format, "%darkred", FEChatFormatCodes.DARKRED.toString());
-		format = replaceAllIgnoreCase(format, "%purple", FEChatFormatCodes.PURPLE.toString());
-		format = replaceAllIgnoreCase(format, "%gold", FEChatFormatCodes.GOLD.toString());
-		format = replaceAllIgnoreCase(format, "%grey", FEChatFormatCodes.GREY.toString());
-		format = replaceAllIgnoreCase(format, "%darkgrey", FEChatFormatCodes.DARKGREY.toString());
-		format = replaceAllIgnoreCase(format, "%indigo", FEChatFormatCodes.INDIGO.toString());
-		format = replaceAllIgnoreCase(format, "%green", FEChatFormatCodes.GREEN.toString());
-		format = replaceAllIgnoreCase(format, "%aqua", FEChatFormatCodes.AQUA.toString());
-		format = replaceAllIgnoreCase(format, "%pink", FEChatFormatCodes.PINK.toString());
-		format = replaceAllIgnoreCase(format, "%white", FEChatFormatCodes.WHITE.toString());
+		format = replaceAllIgnoreCase(format, "%red", EnumChatFormatting.RED.toString());
+		format = replaceAllIgnoreCase(format, "%yellow", EnumChatFormatting.YELLOW.toString());
+		format = replaceAllIgnoreCase(format, "%black", EnumChatFormatting.BLACK.toString());
+		format = replaceAllIgnoreCase(format, "%darkblue", EnumChatFormatting.DARK_BLUE.toString());
+		format = replaceAllIgnoreCase(format, "%darkgreen", EnumChatFormatting.DARK_GREEN.toString());
+		format = replaceAllIgnoreCase(format, "%darkaqua", EnumChatFormatting.DARK_AQUA.toString());
+		format = replaceAllIgnoreCase(format, "%darkred", EnumChatFormatting.DARK_RED.toString());
+		format = replaceAllIgnoreCase(format, "%purple", EnumChatFormatting.DARK_PURPLE.toString());
+		format = replaceAllIgnoreCase(format, "%gold", EnumChatFormatting.GOLD.toString());
+		format = replaceAllIgnoreCase(format, "%grey", EnumChatFormatting.GRAY.toString());
+		format = replaceAllIgnoreCase(format, "%darkgrey", EnumChatFormatting.DARK_GRAY.toString());
+		format = replaceAllIgnoreCase(format, "%indigo", EnumChatFormatting.BLUE.toString());
+		format = replaceAllIgnoreCase(format, "%green", EnumChatFormatting.GREEN.toString());
+		format = replaceAllIgnoreCase(format, "%aqua", EnumChatFormatting.AQUA.toString());
+		format = replaceAllIgnoreCase(format, "%pink", EnumChatFormatting.LIGHT_PURPLE.toString());
+		format = replaceAllIgnoreCase(format, "%white", EnumChatFormatting.WHITE.toString());
 
 		// replace MC formating
-		format = replaceAllIgnoreCase(format, "%random", FEChatFormatCodes.RANDOM.toString());
-		format = replaceAllIgnoreCase(format, "%bold", FEChatFormatCodes.BOLD.toString());
-		format = replaceAllIgnoreCase(format, "%strike", FEChatFormatCodes.STRIKE.toString());
-		format = replaceAllIgnoreCase(format, "%underline", FEChatFormatCodes.UNDERLINE.toString());
-		format = replaceAllIgnoreCase(format, "%italics", FEChatFormatCodes.ITALICS.toString());
-		format = replaceAllIgnoreCase(format, "%reset", FEChatFormatCodes.RESET.toString());
+		format = replaceAllIgnoreCase(format, "%random", EnumChatFormatting.OBFUSCATED.toString());
+		format = replaceAllIgnoreCase(format, "%bold", EnumChatFormatting.BOLD.toString());
+		format = replaceAllIgnoreCase(format, "%strike", EnumChatFormatting.STRIKETHROUGH.toString());
+		format = replaceAllIgnoreCase(format, "%underline", EnumChatFormatting.UNDERLINE.toString());
+		format = replaceAllIgnoreCase(format, "%italics", EnumChatFormatting.ITALIC.toString());
+		format = replaceAllIgnoreCase(format, "%reset", EnumChatFormatting.RESET.toString());
 
 		return format;
 	}
@@ -784,7 +785,7 @@ public final class FunctionHelper
 				List<String> lines = new ArrayList<String>();
 				try
 				{
-					lines.add(FEChatFormatCodes.GREEN + "START" + FEChatFormatCodes.BLACK);
+					lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
 					lines.add("");
 					FileInputStream stream = new FileInputStream(file);
 					InputStreamReader streamReader = new InputStreamReader(stream);
@@ -804,7 +805,7 @@ public final class FunctionHelper
 					streamReader.close();
 					stream.close();
 					lines.add("");
-					lines.add(FEChatFormatCodes.RED + "END" + FEChatFormatCodes.BLACK);
+					lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
 
 				}
 				catch (Exception e)
@@ -825,7 +826,7 @@ public final class FunctionHelper
 						temp += lines.get(0) + "\n";
 						lines.remove(0);
 					}
-					map.put(FEChatFormatCodes.GOLD + " File: " + FEChatFormatCodes.GREY + filename + FEChatFormatCodes.DARKGREY + "\nPart " + part + " of " + parts + FEChatFormatCodes.BLACK + "\n\n", temp);
+					map.put(EnumChatFormatting.GOLD + " File: " + EnumChatFormatting.GRAY + filename + EnumChatFormatting.DARK_GRAY + "\nPart " + part + " of " + parts + EnumChatFormatting.BLACK + "\n\n", temp);
 				}
 			}
 		}
@@ -858,7 +859,7 @@ public final class FunctionHelper
 				List<String> lines = new ArrayList<String>();
 				try
 				{
-					lines.add(FEChatFormatCodes.GREEN + "START" + FEChatFormatCodes.BLACK);
+					lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
 					lines.add("");
 					FileInputStream stream = new FileInputStream(file);
 					InputStreamReader streamReader = new InputStreamReader(stream);
@@ -878,7 +879,7 @@ public final class FunctionHelper
 					streamReader.close();
 					stream.close();
 					lines.add("");
-					lines.add(FEChatFormatCodes.RED + "END" + FEChatFormatCodes.BLACK);
+					lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
 
 				}
 				catch (Exception e)
@@ -899,7 +900,7 @@ public final class FunctionHelper
 						temp += lines.get(0) + "\n";
 						lines.remove(0);
 					}
-					map.put(FEChatFormatCodes.GOLD + " File: " + FEChatFormatCodes.GREY + filename + FEChatFormatCodes.DARKGREY + "\nPart " + part + " of " + parts + FEChatFormatCodes.BLACK + "\n\n", temp);
+					map.put(EnumChatFormatting.GOLD + " File: " + EnumChatFormatting.GRAY + filename + EnumChatFormatting.DARK_GRAY + "\nPart " + part + " of " + parts + EnumChatFormatting.BLACK + "\n\n", temp);
 				}
 			}
 		}
@@ -1055,7 +1056,7 @@ public final class FunctionHelper
 					List<String> lines = new ArrayList<String>();
 					try
 					{
-						lines.add(FEChatFormatCodes.GREEN + "START" + FEChatFormatCodes.BLACK);
+						lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
 						lines.add("");
 						FileInputStream stream = new FileInputStream(file);
 						InputStreamReader streamReader = new InputStreamReader(stream);
@@ -1075,7 +1076,7 @@ public final class FunctionHelper
 						streamReader.close();
 						stream.close();
 						lines.add("");
-						lines.add(FEChatFormatCodes.RED + "END" + FEChatFormatCodes.BLACK);
+						lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
 
 					}
 					catch (Exception e)
@@ -1096,7 +1097,7 @@ public final class FunctionHelper
 							temp += lines.get(0) + "\n";
 							lines.remove(0);
 						}
-						map.put(FEChatFormatCodes.GOLD + " File: " + FEChatFormatCodes.GREY + filename + FEChatFormatCodes.DARKGREY + "\nPart " + part + " of " + parts + FEChatFormatCodes.BLACK + "\n\n", temp);
+						map.put(EnumChatFormatting.GOLD + " File: " + EnumChatFormatting.GRAY + filename + EnumChatFormatting.DARK_GRAY + "\nPart " + part + " of " + parts + EnumChatFormatting.BLACK + "\n\n", temp);
 					}
 				}
 			}
@@ -1135,7 +1136,7 @@ public final class FunctionHelper
 					List<String> lines = new ArrayList<String>();
 					try
 					{
-						lines.add(FEChatFormatCodes.GREEN + "START" + FEChatFormatCodes.BLACK);
+						lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
 						lines.add("");
 						FileInputStream stream = new FileInputStream(file);
 						InputStreamReader streamReader = new InputStreamReader(stream);
@@ -1155,7 +1156,7 @@ public final class FunctionHelper
 						streamReader.close();
 						stream.close();
 						lines.add("");
-						lines.add(FEChatFormatCodes.RED + "END" + FEChatFormatCodes.BLACK);
+						lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
 
 					}
 					catch (Exception e)
@@ -1176,7 +1177,7 @@ public final class FunctionHelper
 							temp += lines.get(0) + "\n";
 							lines.remove(0);
 						}
-						map.put(FEChatFormatCodes.GOLD + " File: " + FEChatFormatCodes.GREY + filename + FEChatFormatCodes.DARKGREY + "\nPart " + part + " of " + parts + FEChatFormatCodes.BLACK + "\n\n", temp);
+						map.put(EnumChatFormatting.GOLD + " File: " + EnumChatFormatting.GRAY + filename + EnumChatFormatting.DARK_GRAY + "\nPart " + part + " of " + parts + EnumChatFormatting.BLACK + "\n\n", temp);
 					}
 				}
 			}

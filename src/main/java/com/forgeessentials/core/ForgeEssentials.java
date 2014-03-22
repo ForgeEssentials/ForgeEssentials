@@ -33,7 +33,6 @@ import com.forgeessentials.data.typeInfo.TypeInfoItemStack;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTCompound;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.TeleportCenter;
@@ -76,7 +75,6 @@ public class ForgeEssentials
 
 	public static CoreConfig		config;
 	public ModuleLauncher			mdlaunch;
-	public Localization				localization;
 	public static boolean			verCheck	= true;
 	public static boolean			preload;
 
@@ -152,8 +150,6 @@ public class ForgeEssentials
 		LoginMessage.loadFile();
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
-
-		localization = new Localization();
 	}
 
 	@EventHandler
@@ -163,7 +159,6 @@ public class ForgeEssentials
 		((StorageManager) DataStorageManager.manager).setupManager();
 
 		mdlaunch.load(e);
-		localization.load();
 
 		//other stuff
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();

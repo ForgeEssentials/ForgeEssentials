@@ -69,7 +69,7 @@ public class cmdWrapper extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         return cmd.addTabCompletionOptions(sender, args);
     }

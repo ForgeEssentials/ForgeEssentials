@@ -15,7 +15,6 @@ import com.forgeessentials.api.permissions.query.PermQuery;
 import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PropQuery;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.events.ModifyPlayerGroupEvent.AddPlayerGroupEvent;
 import com.forgeessentials.util.events.ModifyPlayerGroupEvent.RemovePlayerGroupEvent;
@@ -87,7 +86,7 @@ public class PermissionsHelper implements IPermissionsHelper
 		{
 			Zone zone = APIRegistry.zones.getZone(zoneID);
 			if (zone == null)
-				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
+				return String.format("No zone by the name %s exists!", zoneID);
 
 			Permission perm = new Permission(permission, allow);
 
@@ -100,7 +99,7 @@ public class PermissionsHelper implements IPermissionsHelper
 			boolean worked = SqlHelper.setPermission(username, false, perm, zoneID);
 
 			if (!worked)
-				return Localization.get(Localization.ERROR_PERM_SQL);
+				return "An error has occurred processing your action. Please report this error to a server admin.";
 		}
 		catch (Throwable t)
 		{
@@ -117,7 +116,7 @@ public class PermissionsHelper implements IPermissionsHelper
 		{
 			Zone zone = APIRegistry.zones.getZone(zoneID);
 			if (zone == null)
-				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
+				return String.format("No zone by the name %s exists!", zoneID);
 
 			PermissionProp perm = new PermissionProp(permission, value);
 
@@ -130,7 +129,7 @@ public class PermissionsHelper implements IPermissionsHelper
 			boolean worked = SqlHelper.setPermProp(username, false, perm, zoneID);
 
 			if (!worked)
-				return Localization.get(Localization.ERROR_PERM_SQL);
+				return "An error has occurred processing your action. Please report this error to a server admin.";
 		}
 		catch (Throwable t)
 		{
@@ -148,11 +147,11 @@ public class PermissionsHelper implements IPermissionsHelper
 			Zone zone = APIRegistry.zones.getZone(zoneID);
 
 			if (zone == null)
-				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
+				return String.format("No zone by the name %s exists!", zoneID);
 
 			Group g = SqlHelper.getGroupForName(group);
 			if (g == null)
-				return Localization.format("message.error.nogroup", group);
+				return String.format("No group of name %s exists!", group);
 
 			Permission perm = new Permission(permission, allow);
 
@@ -164,7 +163,7 @@ public class PermissionsHelper implements IPermissionsHelper
 			boolean worked = SqlHelper.setPermission(group, true, perm, zoneID);
 
 			if (!worked)
-				return Localization.get(Localization.ERROR_PERM_SQL);
+				return "An error has occurred processing your action. Please report this error to a server admin.";
 		}
 		catch (Throwable t)
 		{
@@ -181,11 +180,11 @@ public class PermissionsHelper implements IPermissionsHelper
 		{
 			Zone zone = APIRegistry.zones.getZone(zoneID);
 			if (zone == null)
-				return Localization.format(Localization.ERROR_ZONE_NOZONE, zoneID);
+				return String.format("No zone by the name %s exists!", zoneID);
 
 			Group g = SqlHelper.getGroupForName(group);
 			if (g == null)
-				return Localization.format("message.error.nogroup", group);
+				return String.format("No group of name %s exists!", group);
 
 			PermissionProp perm = new PermissionProp(permission, value);
 
@@ -197,7 +196,7 @@ public class PermissionsHelper implements IPermissionsHelper
 			boolean worked = SqlHelper.setPermProp(group, true, perm, zoneID);
 
 			if (!worked)
-				return Localization.get(Localization.ERROR_PERM_SQL);
+				return "An error has occurred processing your action. Please report this error to a server admin.";
 		}
 		catch (Throwable t)
 		{
@@ -394,7 +393,7 @@ public class PermissionsHelper implements IPermissionsHelper
 
 		if (zone == null)
 		{
-			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
+			output.add(String.format("No zone by the name %s exists!", zone));
 		}
 		else
 		{
@@ -412,7 +411,7 @@ public class PermissionsHelper implements IPermissionsHelper
 
 		if (zone == null)
 		{
-			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
+			output.add(String.format("No zone by the name %s exists!", zone));
 		}
 		else
 		{
@@ -431,11 +430,11 @@ public class PermissionsHelper implements IPermissionsHelper
 
 		if (zone == null)
 		{
-			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
+			output.add(String.format("No zone by the name %s exists!", zone));
 		}
 		else if (g == null)
 		{
-			output.add(Localization.format("message.error.nogroup", target));
+			output.add(String.format("No group of name %s exists!", target));
 		}
 		else
 		{
@@ -454,11 +453,11 @@ public class PermissionsHelper implements IPermissionsHelper
 
 		if (zone == null)
 		{
-			output.add(Localization.format(Localization.ERROR_ZONE_NOZONE, zone));
+			output.add(String.format("No zone by the name %s exists!", zone));
 		}
 		else if (g == null)
 		{
-			output.add(Localization.format("message.error.nogroup", target));
+			output.add(String.format("No group of name %s exists!", target));
 		}
 		else
 		{

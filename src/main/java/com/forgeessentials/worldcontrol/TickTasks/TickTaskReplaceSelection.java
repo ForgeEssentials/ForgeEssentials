@@ -132,7 +132,7 @@ public class TickTaskReplaceSelection implements ITickTask
 		// Determine the target block name
 		if (targetId == 0)
 		{
-			targetName = Localization.get("tile.air.name");
+			targetName = "Air";
 		}
 		else
 		{
@@ -149,7 +149,7 @@ public class TickTaskReplaceSelection implements ITickTask
 		// Determine the new block name.
 		if (newId == 0)
 		{
-			newName = Localization.get("tile.air.name");
+			newName = "Air";
 		}
 		else
 		{

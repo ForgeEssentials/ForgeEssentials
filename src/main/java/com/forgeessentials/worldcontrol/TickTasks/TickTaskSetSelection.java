@@ -123,7 +123,7 @@ public class TickTaskSetSelection implements ITickTask
 
 		if (blockID == 0)
 		{
-			blockName = Localization.get("tile.air.name");
+			blockName = "Air";
 		}
 		else
 		{
