@@ -3,6 +3,8 @@ package com.forgeessentials.permission.mcoverride;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 // Hopefully we can transform the stuff in and we won't need this class.
+// All commands as of Minecraft 1.5. I'm simply too lazy to do anymore.
+// Won't be needed as and when Forge gets a Permission API.
 
 public class OverrideManager
 {

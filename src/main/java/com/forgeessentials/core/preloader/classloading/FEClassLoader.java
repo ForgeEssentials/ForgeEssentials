@@ -37,5 +37,9 @@ public class FEClassLoader {
 		}
 		System.out.println("[ForgeEssentials] Loaded " + module.listFiles().length + " modules");
 	}
+	
+	public boolean testLibraries(){
+		return true;
+	}
 
 }

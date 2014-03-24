@@ -51,7 +51,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0 || args.length == 1)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
 			return;
 		}
 		if (args.length > 1)
@@ -116,7 +116,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 				EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (receiver == null)
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 					return;
 				}
 				clearReply(sender.getCommandSenderName());
@@ -146,7 +146,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0 || args.length == 1)
 		{
-			ChatUtils.sendMessage(sender, Localization.ERROR_BADSYNTAX + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
 			return;
 		}
 		if (args.length > 1)
@@ -154,7 +154,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 			EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (receiver == null)
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				return;
 			}
 			else

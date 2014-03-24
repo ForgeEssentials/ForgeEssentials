@@ -40,18 +40,9 @@ public class CommandWB extends ForgeEssentialsCommandBase
 		return Arrays.asList(new String[]
 		{ "wb" });
 	}
-
+	
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-			return;
-
-		execute(sender, args);
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
@@ -270,6 +261,12 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/worldborder <global|world|dimID> [info|enable|disable|center|radius|shape] Configure FE WorldBorder.";
 	}
 
 }

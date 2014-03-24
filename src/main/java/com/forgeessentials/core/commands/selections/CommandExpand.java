@@ -205,21 +205,9 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/" + getCommandName() + "[direction] <number of blocks to expand>";
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Expands the currently selected area.";
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands.pos";
+		return "fe.core.pos";
 	}
 
 	@Override
@@ -234,16 +222,17 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return getListOfStringsMatchingLastWord(args, new String[]
-		{ "North", "South", "East", "West", "Up", "Down" });
-	}
-
-	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "//expand [direction] <number of blocks to expand> Expands the currently selected area.";
+	}
+	
+	
 
 }

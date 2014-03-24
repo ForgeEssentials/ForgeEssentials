@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
@@ -15,9 +16,7 @@ import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
@@ -151,8 +150,8 @@ public class CommandZone extends ForgeEssentialsCommandBase
 						OutputHandler.chatConfirmation(sender, "Parent: " + zone.parent);
 						OutputHandler.chatConfirmation(sender, "Priority: " + zone.priority);
 						OutputHandler.chatConfirmation(sender, "Dimension: " + zone.dim + "     World: " + FunctionHelper.getDimension(zone.dim).provider.getDimensionName());
-						ChatUtils.sendMessage(sender, FunctionHelper.formatColors(FEChatFormatCodes.GREEN + "Entry Message: " + FEChatFormatCodes.RESET + query1.getStringValue()));
-						ChatUtils.sendMessage(sender, FunctionHelper.formatColors(FEChatFormatCodes.GREEN + "Exit Message: " + FEChatFormatCodes.RESET + query2.getStringValue()));
+						ChatUtils.sendMessage(sender, FunctionHelper.formatColors(EnumChatFormatting.GREEN + "Entry Message: " + EnumChatFormatting.RESET + query1.getStringValue()));
+						ChatUtils.sendMessage(sender, FunctionHelper.formatColors(EnumChatFormatting.GREEN + "Exit Message: " + EnumChatFormatting.RESET + query2.getStringValue()));
 						Point high = zone.getHighPoint();
 						Point low = zone.getLowPoint();
 						OutputHandler.chatConfirmation(sender, high.x + ", " + high.y + ", " + high.z + " -> " + low.x + ", " + low.y + ", " + low.z);
@@ -360,7 +359,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		switch (args.length)

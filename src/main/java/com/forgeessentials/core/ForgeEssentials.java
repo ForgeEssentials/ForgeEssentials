@@ -10,7 +10,11 @@ import net.minecraftforge.common.MinecraftForge;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.CoreCommands;
+import com.forgeessentials.core.commands.CommandFEInfo;
+import com.forgeessentials.core.commands.selections.CommandDeselect;
+import com.forgeessentials.core.commands.selections.CommandExpand;
+import com.forgeessentials.core.commands.selections.CommandPos;
+import com.forgeessentials.core.commands.selections.CommandWand;
 import com.forgeessentials.core.commands.selections.WandController;
 import com.forgeessentials.core.compat.CompatMCStats;
 import com.forgeessentials.core.compat.DuplicateCommandRemoval;
@@ -91,8 +95,6 @@ public class ForgeEssentials
 
 	private SanityChecker			bc;
 	public static boolean			sanitycheck;
-
-	private CoreCommands			cmds;
 
 	private TaskRegistry			tasks;
 	private OutputHandler log;
@@ -204,8 +206,15 @@ public class ForgeEssentials
 		// Central TP system
 		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
 
-		cmds = new CoreCommands();
-		cmds.load(e);
+		// commands
+		e.registerServerCommand(new CommandFEInfo());
+		
+		// if worldedit isnt loaded TODO: add check
+		e.registerServerCommand(new CommandPos(1));
+		e.registerServerCommand(new CommandPos(2));
+		e.registerServerCommand(new CommandWand());
+		e.registerServerCommand(new CommandDeselect());
+		e.registerServerCommand(new CommandExpand());
 
 		tasks.onServerStart();
 

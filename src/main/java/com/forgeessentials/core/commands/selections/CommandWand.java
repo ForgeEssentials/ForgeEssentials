@@ -5,13 +5,12 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandWand extends ForgeEssentialsCommandBase
@@ -65,14 +64,14 @@ public class CommandWand extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOUSEWAND));
+					OutputHandler.chatError(sender, "Could not bind wand to " + currentName);
 					return;
 				}
 			}
 			else if (args[0].equalsIgnoreCase("unbind"))
 			{
 				info.wandEnabled = false;
-				ChatUtils.sendMessage(sender, FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
+				ChatUtils.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
 				return;
 			}
 			else
@@ -89,7 +88,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOUSEWAND));
+					OutputHandler.chatError(sender, "Could not bind wand to " + currentName);
 					return;
 				}
 			}
@@ -99,7 +98,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 			if (info.wandEnabled)
 			{
 				info.wandEnabled = false;
-				ChatUtils.sendMessage(sender, FEChatFormatCodes.PINK + "Wand unbound from " + wandName);
+				ChatUtils.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
 				return;
 			}
 			else
@@ -114,23 +113,11 @@ public class CommandWand extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOUSEWAND));
+					OutputHandler.chatError(sender, "Could not bind wand to " + currentName);
 					return;
 				}
 			}
 		}
-	}
-
-	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/" + getCommandName() + " [rebind|unbind|ITEM]";
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "Toggle the wand";
 	}
 
 	@Override
@@ -161,15 +148,13 @@ public class CommandWand extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-
-		return null;
-	}
-
-	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "/" + getCommandName() + " [rebind|unbind|ITEM] Toggles the wand";
 	}
 }

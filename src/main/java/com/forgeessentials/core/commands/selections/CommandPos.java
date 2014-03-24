@@ -1,8 +1,6 @@
 package com.forgeessentials.core.commands.selections;
 
 //Depreciated
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
@@ -12,7 +10,6 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Point;
 
@@ -101,7 +98,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
 
 		if (mop == null)
 		{
-			OutputHandler.chatError(player, Localization.get(Localization.ERROR_TARGET));
+			OutputHandler.chatError(player, "You must first look at the ground!");
 			return;
 		}
 
@@ -112,7 +109,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
 		Point point = new Point(x, y, z);
 		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, getCommandPerm(), point)))
 		{
-			OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+			OutputHandler.chatError(player, "Insufficient permissions.");
 			return;
 		}
 
@@ -130,21 +127,9 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public String getSyntaxPlayer(EntityPlayer player)
-	{
-		return "/" + getCommandName() + " [<x> <y> <z] or [here]";
-	}
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return "set Selection Positions";
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.CoreCommands.select.pos";
+		return "fe.core.pos";
 	}
 
 	@Override
@@ -159,15 +144,15 @@ public class CommandPos extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
-	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/" + getCommandName() + " [<x> <y> <z] or [here] Sets selection positions";
 	}
 
 }

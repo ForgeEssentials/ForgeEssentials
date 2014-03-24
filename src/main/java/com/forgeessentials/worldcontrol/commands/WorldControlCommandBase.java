@@ -80,7 +80,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getBlockList());
 	}

@@ -1,6 +1,7 @@
 package com.forgeessentials.worldcontrol.commands;
 
 import net.minecraft.block.Block;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.api.APIRegistry;
@@ -10,7 +11,6 @@ import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.tasks.TaskRegistry;
@@ -38,7 +38,7 @@ public class CommandReplace extends WorldControlCommandBase
 			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
 			if (info.getSelection() == null)
 			{
-				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
+				OutputHandler.chatError(player, "Invalid selection detected. Please check your selection.");
 				return;
 			}
 			int[] temp;
@@ -76,15 +76,15 @@ public class CommandReplace extends WorldControlCommandBase
 
 			if (firstID >= Block.blocksList.length || secondID >= Block.blocksList.length)
 			{
-				error(player, Localization.format("message.wc.blockIdOutOfRange", Block.blocksList.length));
+				error(player, String.format("Block IDs cannot exceed %d!", Block.blocksList.length));
 			}
 			else if (firstID != 0 && Block.blocksList[firstID] == null)
 			{
-				error(player, Localization.format("message.wc.invalidBlockId", firstID));
+				error(player, String.format("message.wc.invalidBlockId", firstID));
 			}
 			else if (secondID != 0 && Block.blocksList[secondID] == null)
 			{
-				error(player, Localization.format("message.wc.invalidBlockId", secondID));
+				error(player, String.format("%d is not a valid block ID!", secondID));
 			}
 			else
 			{
@@ -102,7 +102,7 @@ public class CommandReplace extends WorldControlCommandBase
 						case PARTIAL:
 							TaskRegistry.registerTask(new TickTaskReplaceSelection(player, firstID, firstMeta, secondID, secondMeta, back, sel, query.applicable));
 						default:
-							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+							OutputHandler.chatError(player, "Insufficient permission.");
 							return;
 					}
 
@@ -118,9 +118,8 @@ public class CommandReplace extends WorldControlCommandBase
 	}
 
 	@Override
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String getCommandUsage(ICommandSender sender) {
+		return "//replace <blockID[:metadata]> <blockID[:metadata]> Replaces blocks of the first ID with blocks of the second.";
 	}
 
 }

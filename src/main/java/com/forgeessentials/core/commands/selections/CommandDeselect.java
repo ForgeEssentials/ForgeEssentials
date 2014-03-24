@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandDeselect extends ForgeEssentialsCommandBase
@@ -23,7 +22,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 	@Override
 	public List<String> getCommandAliases()
 	{
-		return Arrays.asList("/fedeselect");
+		return Arrays.asList("/fedeselect", "/deselect", "/sel");
 	}
 
 	@Override
@@ -32,12 +31,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 		PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
 		info.clearSelection();
 
-		OutputHandler.chatConfirmation(sender, Localization.get(Localization.COMMAND_DESELECT));
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
+		OutputHandler.chatConfirmation(sender, "Selection cleared.");
 	}
 
 	@Override
@@ -49,18 +43,18 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.CoreCommands.select.deselect";
-	}
-
-	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
+		return "fe.core.pos";
 	}
 
 	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "//fedesel Deselects the selection";
 	}
 }
