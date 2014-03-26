@@ -1,9 +1,6 @@
 package com.forgeessentials.chat.commands;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.chat.IRCHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;

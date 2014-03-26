@@ -2,12 +2,12 @@ package com.forgeessentials.worldcontrol.commands;
 
 //Depreciated
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.TaskRegistry;
 import com.forgeessentials.worldcontrol.TickTasks.TickTaskSetBackup;
@@ -33,7 +33,7 @@ public class CommandUndo extends WorldControlCommandBase
 
 		if (back == null)
 		{
-			OutputHandler.chatError(player, Localization.get(Localization.WC_NOUNDO));
+			OutputHandler.chatError(player, "Nothing to undo.");
 			return;
 		}
 
@@ -46,5 +46,11 @@ public class CommandUndo extends WorldControlCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/undo";
 	}
 }

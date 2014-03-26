@@ -1,7 +1,5 @@
 package com.forgeessentials.commands;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -12,7 +10,6 @@ import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.WeatherTimeData;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandWeather extends FEcmdModuleCommands
@@ -100,7 +97,7 @@ public class CommandWeather extends FEcmdModuleCommands
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
             throw new Exception();
         }
         WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
@@ -115,7 +112,7 @@ public class CommandWeather extends FEcmdModuleCommands
                 else if (args[1].equalsIgnoreCase("off")) wt.rain = false;
                 else
                 {
-                    OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+                    OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
                     throw new Exception();
                 }
             }
@@ -131,7 +128,7 @@ public class CommandWeather extends FEcmdModuleCommands
                 else if (args[1].equalsIgnoreCase("off")) wt.storm = false;
                 else
                 {
-                    OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+                    OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
                     throw new Exception();
                 }
             }
@@ -140,7 +137,7 @@ public class CommandWeather extends FEcmdModuleCommands
         }
         else
         {
-            OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
             throw new Exception();
         }
     }
@@ -149,12 +146,6 @@ public class CommandWeather extends FEcmdModuleCommands
     public boolean canConsoleUseCommand()
     {
         return true;
-    }
-
-    @Override
-    public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        return null;
     }
 
     @Override

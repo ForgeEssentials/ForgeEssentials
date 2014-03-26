@@ -14,7 +14,6 @@ import com.forgeessentials.core.misc.FriendlyItemList;
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.tasks.TaskRegistry;
@@ -76,7 +75,7 @@ public class CommandSet extends WorldControlCommandBase
 						case PARTIAL:
 							TaskRegistry.registerTask(new TickTaskSetSelection(player, ID, metadata, back, sel, query.applicable));
 						default:
-							OutputHandler.chatError(player, Localization.get(Localization.ERROR_PERMDENIED));
+							OutputHandler.chatError(player, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 							return;
 					}
 			}

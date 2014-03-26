@@ -13,7 +13,6 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;

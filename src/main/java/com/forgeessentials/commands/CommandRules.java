@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.Configuration;
 
 import com.forgeessentials.api.APIRegistry;
@@ -31,9 +32,7 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandRules extends FEcmdModuleCommands
@@ -204,7 +203,7 @@ public class CommandRules extends FEcmdModuleCommands
 
 			for (int i = 0; i < rules.size(); i++)
 			{
-				map.put(FEChatFormatCodes.UNDERLINE + "Rule #" + (i + 1) + "\n\n", FEChatFormatCodes.RESET + FunctionHelper.formatColors(rules.get(i)));
+				map.put(EnumChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", EnumChatFormatting.RESET + FunctionHelper.formatColors(rules.get(i)));
 			}
 
 			SortedSet<String> keys = new TreeSet<String>(map.keySet());
@@ -411,7 +410,7 @@ public class CommandRules extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, autocomargs);

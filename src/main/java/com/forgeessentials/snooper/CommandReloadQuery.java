@@ -1,7 +1,5 @@
 package com.forgeessentials.snooper;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 

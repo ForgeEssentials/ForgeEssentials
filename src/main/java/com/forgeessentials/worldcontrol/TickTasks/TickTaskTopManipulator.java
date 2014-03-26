@@ -7,7 +7,6 @@ import net.minecraft.world.World;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.BlockSaveable;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.tasks.ITickTask;

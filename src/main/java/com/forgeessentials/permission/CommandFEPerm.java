@@ -14,7 +14,6 @@ import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 
@@ -42,28 +41,6 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 		list.add("fep");
 		list.add("p");
 		return list;
-	}
-
-	@Override
-	public String getCommandSyntax(ICommandSender sender)
-	{
-		return Localization.get("command.permissions.feperm.syntax");
-	}
-
-	@Override
-	public String getCommandInfo(ICommandSender sender)
-	{
-		return Localization.get("command.permissions.feperm.info");
-	}
-
-	// ------------------------------------------
-	// -------STUFF-THAT-DOESNT-MATTER-----------
-	// ------------------------------------------
-
-	@Override
-	public String getInfoPlayer(EntityPlayer player)
-	{
-		return null;
 	}
 
 	@Override
@@ -357,6 +334,12 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/feperm Configure FE permissions.";
 	}
 
 }

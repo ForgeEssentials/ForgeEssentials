@@ -19,7 +19,6 @@ import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.AreaSelector.WarpPoint;

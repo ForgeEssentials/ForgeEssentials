@@ -1,7 +1,6 @@
 package com.forgeessentials.commands;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -14,11 +13,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FEChatFormatCodes;
 
 public class CommandGetCommandBook extends FEcmdModuleCommands
 {
@@ -89,26 +88,26 @@ public class CommandGetCommandBook extends FEcmdModuleCommands
 			// List command aliases.
 			if (cmd.getCommandAliases() != null && cmd.getCommandAliases().size() != 0)
 			{
-				text += FEChatFormatCodes.GOLD + joinAliases(cmd.getCommandAliases().toArray()) + "\n\n";
+				text += EnumChatFormatting.GOLD + joinAliases(cmd.getCommandAliases().toArray()) + "\n\n";
 			}
 			else
 			{
-				text += FEChatFormatCodes.GOLD + "No aliases.\n\n";
+				text += EnumChatFormatting.GOLD + "No aliases.\n\n";
 			}
 
 			// Display permission node (If applicable)
 			if (cmd instanceof ForgeEssentialsCommandBase)// Was: FEcmdModuleCommands
 			{
-				text += FEChatFormatCodes.DARKRED + ((ForgeEssentialsCommandBase) cmd).getCommandPerm() + "\n\n";
+				text += EnumChatFormatting.DARK_RED + ((ForgeEssentialsCommandBase) cmd).getCommandPerm() + "\n\n";
 			}
 
 			// Display usage
-			text += FEChatFormatCodes.BLACK + cmd.getCommandUsage(sender);
+			text += EnumChatFormatting.BLACK + cmd.getCommandUsage(sender);
 
 			// Finally post to map
 			if (!text.equals(""))
 			{
-				map.put(FEChatFormatCodes.GOLD + "/" + cmd.getCommandName() + "\n" + FEChatFormatCodes.RESET, text);
+				map.put(EnumChatFormatting.GOLD + "/" + cmd.getCommandName() + "\n" + EnumChatFormatting.RESET, text);
 			}
 		}
 
@@ -164,12 +163,6 @@ public class CommandGetCommandBook extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
-	@Override
 	public RegGroup getReggroup()
 	{
 		return RegGroup.GUESTS;
@@ -179,5 +172,11 @@ public class CommandGetCommandBook extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/getcommandbook Get a command book listing all commands.";
 	}
 }

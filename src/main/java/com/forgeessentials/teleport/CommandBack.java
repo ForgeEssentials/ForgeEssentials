@@ -13,7 +13,6 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
@@ -87,12 +86,6 @@ public class CommandBack extends FEcmdModuleCommands
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
-	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
 	}
 	
 	@Override

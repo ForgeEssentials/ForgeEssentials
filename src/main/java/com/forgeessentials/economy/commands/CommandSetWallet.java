@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;

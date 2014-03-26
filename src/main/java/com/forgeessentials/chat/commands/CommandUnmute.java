@@ -8,7 +8,6 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -23,7 +22,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -39,15 +38,15 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 			EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (receiver == null)
 			{
-				OutputHandler.chatError(receiver, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(receiver, String.format("Player %s does not exist, or is not online.", args[0]));
 				return;
 			}
 			NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 			tag.setBoolean("mute", false);
 			receiver.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
 
-			OutputHandler.chatError(sender, Localization.format("command.unmute.youMuted", args[0]));
-			OutputHandler.chatError(receiver, Localization.format("command.unmute.muted", sender.getCommandSenderName()));
+			OutputHandler.chatError(sender, String.format("command.unmute.youMuted", args[0]));
+			OutputHandler.chatError(receiver, String.format("command.unmute.muted", sender.getCommandSenderName()));
 		}
 	}
 
@@ -59,15 +58,15 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 			EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (receiver == null)
 			{
-				OutputHandler.chatError(receiver, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(receiver, String.format("Player %s does not exist, or is not online.", args[0]));
 				return;
 			}
 			NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 			tag.setBoolean("mute", false);
 			receiver.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
 
-			OutputHandler.chatError(sender, Localization.format("command.unmute.youMuted", args[0]));
-			OutputHandler.chatError(receiver, Localization.format("command.unmute.muted", sender.getCommandSenderName()));
+			OutputHandler.chatError(sender, String.format("command.unmute.youMuted", args[0]));
+			OutputHandler.chatError(receiver, String.format("command.unmute.muted", sender.getCommandSenderName()));
 		}
 	}
 

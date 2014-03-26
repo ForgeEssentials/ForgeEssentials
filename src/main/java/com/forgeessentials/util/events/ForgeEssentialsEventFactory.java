@@ -3,7 +3,6 @@ package com.forgeessentials.util.events;
 import java.util.EnumSet;
 import java.util.HashMap;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;

@@ -29,15 +29,6 @@
 
 package org.mcstats;
 
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.IScheduledTickHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.Configuration;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -57,6 +48,15 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
+
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.Configuration;
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.IScheduledTickHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 public class Metrics {
 

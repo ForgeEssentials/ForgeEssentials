@@ -55,11 +55,11 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 			if (persistentMessage.containsKey(sender.getCommandSenderName()))
 			{
 				persistentMessage.remove(sender.getCommandSenderName());
-				OutputHandler.chatConfirmation(sender, Localization.get("command.pm.disabled"));
+				OutputHandler.chatConfirmation(sender, "Persistent message has been disabled.");
 			}
 			else
 			{
-				OutputHandler.chatWarning(sender, Localization.get("command.pm.alreadyDisabled"));
+				OutputHandler.chatWarning(sender, "Persistent message is already disabled.");
 			}
 			return;
 		}
@@ -67,14 +67,14 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				OutputHandler.chatConfirmation(sender, Localization.get("command.pm.help"));
+				OutputHandler.chatConfirmation(sender, "Use /pm <player> to engage persistent message. /pm to return to normal chat.");
 			}
 			else
 			{
 				EntityPlayerMP target = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (target == null)
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 					return;
 				}
 				if (persistentMessage.containsKey(sender.getCommandSenderName()))
@@ -83,7 +83,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 				}
 				persistentMessage.put(sender.getCommandSenderName(), target.getCommandSenderName());
 
-				OutputHandler.chatConfirmation(sender, Localization.format("command.pm.enable", target.getCommandSenderName()));
+				OutputHandler.chatConfirmation(sender, String.format("Persistent message to %s enabled.", target.getCommandSenderName()));
 			}
 			return;
 		}
@@ -106,11 +106,11 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 			if (persistentMessage.containsKey(sender.getCommandSenderName()))
 			{
 				persistentMessage.remove(sender.getCommandSenderName());
-				OutputHandler.chatConfirmation(sender, Localization.get("command.pm.disabled"));
+				OutputHandler.chatConfirmation(sender, "Persistent message has been disabled.");
 			}
 			else
 			{
-				OutputHandler.chatWarning(sender, Localization.get("command.pm.alreadyDisabled"));
+				OutputHandler.chatWarning(sender, "Persistent message is already disabled.");
 			}
 			return;
 		}
@@ -118,14 +118,14 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				OutputHandler.chatConfirmation(sender, Localization.get("command.pm.help"));
+				OutputHandler.chatConfirmation(sender, "Use /pm <player> to engage persistent message. /pm to return to normal chat.");
 			}
 			else
 			{
 				EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (target == null)
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 					return;
 				}
 				if (persistentMessage.containsKey(sender.getCommandSenderName()))
@@ -133,7 +133,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 					persistentMessage.remove(sender.getCommandSenderName());
 				}
 				persistentMessage.put(sender.getCommandSenderName(), target.getCommandSenderName());
-				OutputHandler.chatConfirmation(sender, Localization.format("command.pm.enable", target.getCommandSenderName()));
+				OutputHandler.chatConfirmation(sender, String.format("Persistent message to %s enabled.", target.getCommandSenderName()));
 			}
 			return;
 		}
@@ -142,7 +142,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 			EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (receiver == null)
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				return;
 			}
 			else
@@ -225,7 +225,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 				EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (receiver == null)
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 					return;
 				}
 				CommandMsg.clearReply(receiver.getCommandSenderName());

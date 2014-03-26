@@ -8,6 +8,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
@@ -17,7 +18,6 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FEChatFormatCodes;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.Loader;
@@ -93,9 +93,9 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
 	    if (modTickets.isEmpty() && playerTickets.isEmpty()) return;
 
 		if (!key.equals("*"))
-			ChatUtils.sendMessage(sender, FEChatFormatCodes.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
+			ChatUtils.sendMessage(sender, EnumChatFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
 
-		ChatUtils.sendMessage(sender, FEChatFormatCodes.AQUA + "Dim " + world.provider.getDimensionName() + ":");
+		ChatUtils.sendMessage(sender, EnumChatFormatting.AQUA + "Dim " + world.provider.getDimensionName() + ":");
 
 	    if (key.startsWith("p:") || key.equals("*"))
 	    {
@@ -103,7 +103,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
 	        {
 	            if (key.replace("p:", "").equalsIgnoreCase(username) || key.equals("*"))
 	            {
-					if (key.equals("*")) ChatUtils.sendMessage(sender, FEChatFormatCodes.AQUA + username);
+					if (key.equals("*")) ChatUtils.sendMessage(sender, EnumChatFormatting.AQUA + username);
 
 	                HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
 
@@ -121,7 +121,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
 	    {
 	        for (String modID : modTickets.keySet())
 	        {
-				if (key.equals("*")) ChatUtils.sendMessage(sender, FEChatFormatCodes.AQUA + modID);
+				if (key.equals("*")) ChatUtils.sendMessage(sender, EnumChatFormatting.AQUA + modID);
 	            HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
 
                 for (Ticket ticket : playerTickets.get(modID))
@@ -147,7 +147,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 	    if (args.length == 1)
 	    {
@@ -174,5 +174,11 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/chunkloaderlist Lists all active chunk loaders.";
 	}
 }

@@ -3,14 +3,11 @@ package com.forgeessentials.commands;
 import java.io.File;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PropQueryBlanketZone;
 import com.forgeessentials.commands.shortcut.ShortcutCommands;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandRegistrar;
@@ -24,7 +21,6 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.CompatMCStats;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.teleport.util.TickHandlerTP;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;

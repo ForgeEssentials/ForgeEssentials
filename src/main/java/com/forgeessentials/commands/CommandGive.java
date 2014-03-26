@@ -12,7 +12,6 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.FriendlyItemList;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;

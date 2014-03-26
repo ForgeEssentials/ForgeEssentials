@@ -64,7 +64,7 @@ public class Command extends ForgeEssentialsCommandBase
 		{
 			if (args.length != 2)
 			{
-				OutputHandler.chatError(sender, Localization.get("command.ticket.view.usage"));
+				OutputHandler.chatError(sender, "Usage: /ticket view <id>");
 				return;
 			}
 			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
@@ -80,7 +80,7 @@ public class Command extends ForgeEssentialsCommandBase
 			{
 				page = parseIntBounded(sender, args[1], 0, pages);
 			}
-			ChatUtils.sendMessage(sender, c + Localization.get("message.other.ticketList.header"));
+			ChatUtils.sendMessage(sender, c + "--- Ticket List ---");
 			for (int i = page * 7; i < (page + 1) * 7; i++)
 			{
 				try
@@ -93,7 +93,7 @@ public class Command extends ForgeEssentialsCommandBase
 					break;
 				}
 			}
-			ChatUtils.sendMessage(sender, c + Localization.format("message.other.ticketList.pages", page, pages));
+			ChatUtils.sendMessage(sender, c + String.format("--- Page %1$d of %2$d ---", page, pages));
 			return;
 		}
 
@@ -101,12 +101,12 @@ public class Command extends ForgeEssentialsCommandBase
 		{
 			if (args.length < 3)
 			{
-				OutputHandler.chatError(sender, Localization.get("command.ticket.new.usage"));
+				OutputHandler.chatError(sender, "Usage: /ticket new <category> <message ...>");
 				return;
 			}
 			if (!ModuleTickets.categories.contains(args[1]))
 			{
-				OutputHandler.chatError(sender, Localization.format("message.error.illegalCategory", args[1]));
+				OutputHandler.chatError(sender, String.format("message.error.illegalCategory", args[1]));
 				return;
 			}
 			String msg = "";
@@ -117,7 +117,7 @@ public class Command extends ForgeEssentialsCommandBase
 			msg = msg.substring(1);
 			Ticket t = new Ticket(sender, args[1], msg);
 			ModuleTickets.ticketList.add(t);
-			ChatUtils.sendMessage(sender, c + Localization.format("message.confim.ticketPost", t.id));
+			ChatUtils.sendMessage(sender, c + String.format("message.confim.ticketPost", t.id));
 			return;
 		}
 
@@ -125,7 +125,7 @@ public class Command extends ForgeEssentialsCommandBase
 		{
 			if (args.length != 2)
 			{
-				OutputHandler.chatError(sender, Localization.get("command.ticket.tp.usage"));
+				OutputHandler.chatError(sender, "Usage: /ticket tp <id>");
 				return;
 			}
 			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
@@ -136,12 +136,12 @@ public class Command extends ForgeEssentialsCommandBase
 		{
 			if (args.length != 2)
 			{
-				OutputHandler.chatError(sender, Localization.get("command.ticket.dev.usage"));
+				OutputHandler.chatError(sender, "Usage: /ticket del <id>");
 				return;
 			}
 			int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
 			ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
-			ChatUtils.sendMessage(sender, c + Localization.format("message.confim.ticketPost", id));
+			ChatUtils.sendMessage(sender, c + String.format("Your ticket has been posted. ID: %d", id));
 		}
 	}
 
@@ -190,5 +190,19 @@ public class Command extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		String usage = "list|new|view";
+		if (permcheck(sender, "tp"))
+		{
+			usage += "|tp <id>";
+		}
+		if (permcheck(sender, "admin"))
+		{
+			usage += "|del <id>";
+		}
+		return "Usage: /ticket <" + usage + ">";
 	}
 }

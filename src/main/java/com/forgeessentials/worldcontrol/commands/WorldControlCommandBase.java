@@ -35,27 +35,6 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	public abstract String getName();
 
 	@Override
-	public String getSyntaxConsole()
-	{
-		// almost never called.
-		return getCommandName();
-	}
-
-	@Override
-	public String getInfoConsole()
-	{
-		// almost never called.
-		return "";
-	}
-
-	@Override
-	public String getSyntaxCommandBlock(TileEntityCommandBlock block)
-	{
-		// almost never called.
-		return getCommandName();
-	}
-
-	@Override
 	public void processCommandBlock(TileEntityCommandBlock block, String[] args)
 	{
 		// most probably never used.

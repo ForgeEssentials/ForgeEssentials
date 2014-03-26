@@ -51,7 +51,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".list")))
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 				}
 				else
 				{
@@ -86,7 +86,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".list")))
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 				}
 				else
 				{
@@ -130,13 +130,13 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
+					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[1]));
 				}
 				else
 				{
 					if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".info." + args[1])))
 					{
-						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+						OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 					}
 					else
 					{
@@ -163,13 +163,13 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
+					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[1]));
 				}
 				else
 				{
 					if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".remove." + args[1])))
 					{
-						OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+						OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 					}
 					else
 					{
@@ -192,7 +192,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".define", info.getSelection(), true)))
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 				}
 				else
 				{
@@ -214,7 +214,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".redefine." + args[1], info.getSelection(), true)))
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 				}
 				else
 				{
@@ -233,15 +233,15 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
+					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[1]));
 				}
 				else if (!APIRegistry.zones.doesZoneExist(args[2]))
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[2]));
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".setparent." + args[1])))
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 				}
 				else
 				{
@@ -257,12 +257,12 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
+					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[1]));
 					return;
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".entry." + args[1])))
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 				}
 				else if (args[2].equalsIgnoreCase("get"))
 				{
@@ -294,12 +294,12 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[1]));
+					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[1]));
 					return;
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".exit." + args[1])))
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 				}
 				else if (args[2].equalsIgnoreCase("get"))
 				{

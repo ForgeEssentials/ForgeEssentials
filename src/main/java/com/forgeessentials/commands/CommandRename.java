@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandRename extends FEcmdModuleCommands

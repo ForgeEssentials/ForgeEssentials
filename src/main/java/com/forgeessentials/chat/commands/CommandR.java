@@ -34,7 +34,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "/r <message>");
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + "/r <message>");
 			return;
 		}
 		if (args.length > 0)
@@ -42,7 +42,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 			String target = CommandMsg.getPlayerReply(sender.getCommandSenderName());
 			if (target == null)
 			{
-				OutputHandler.chatError(sender, Localization.get("message.error.r.noPrevious"));
+				OutputHandler.chatError(sender, "You have no previous recorded message recipient.");
 				return;
 			}
 			if (target.equalsIgnoreCase("server"))
@@ -118,7 +118,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 	{
 		if (args.length == 0)
 		{
-			ChatUtils.sendMessage(sender, Localization.ERROR_BADSYNTAX + "/msg <player> <message>");
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: /msg <player> <message>");
 			return;
 		}
 		if (args.length > 0)
@@ -126,7 +126,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 			String target = CommandMsg.getPlayerReply("server");
 			if (target == null)
 			{
-				ChatUtils.sendMessage(sender, Localization.get("message.error.r.noPrevious"));
+				ChatUtils.sendMessage(sender, "You have no previous recorded message recipient.");
 				return;
 			}
 			EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
@@ -181,7 +181,11 @@ public class CommandR extends ForgeEssentialsCommandBase
 
 	@Override
 	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "/r <message>";
 	}
 }

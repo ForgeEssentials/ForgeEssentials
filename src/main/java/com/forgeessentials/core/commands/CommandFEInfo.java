@@ -1,15 +1,15 @@
 package com.forgeessentials.core.commands;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.item.ItemInWorldManager;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.Data;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.forgeessentials.core.preloader.asm.FEeventAdder;
 import com.forgeessentials.util.ChatUtils;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.item.ItemInWorldManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 
 public class CommandFEInfo extends ForgeEssentialsCommandBase {
 

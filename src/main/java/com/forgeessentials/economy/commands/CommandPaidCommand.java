@@ -12,7 +12,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandPaidCommand extends ForgeEssentialsCommandBase

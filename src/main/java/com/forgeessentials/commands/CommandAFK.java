@@ -17,7 +17,6 @@ import com.forgeessentials.commands.util.AFKdata;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandAFK extends FEcmdModuleCommands
@@ -101,12 +100,6 @@ public class CommandAFK extends FEcmdModuleCommands
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{
 	    event.registerPermissionLevel(NOTICEPERM, RegGroup.MEMBERS);
-	}
-
-	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
 	}
 
 	@Override

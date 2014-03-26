@@ -8,16 +8,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.FEChatFormatCodes;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandBind extends FEcmdModuleCommands
 {
-    public static final String  color = FEChatFormatCodes.RESET + "" + FEChatFormatCodes.AQUA;
+    public static final String  color = EnumChatFormatting.RESET + "" + EnumChatFormatting.AQUA;
     @Override
     public boolean isUsernameIndex(String[] par1ArrayOfStr, int par1)
     {
@@ -41,7 +40,7 @@ public class CommandBind extends FEcmdModuleCommands
     {
         if (args.length == 0 || !(args[0].equalsIgnoreCase("left") || args[0].equalsIgnoreCase("right") || args[0].equalsIgnoreCase("clear")))
         {
-            OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+            OutputHandler.chatError(sender, Localization.get("Improper syntax. Please try this instead: ") + getSyntaxPlayer(sender));
         }
         else if (sender.inventory.getCurrentItem() == null)
         {
@@ -102,7 +101,7 @@ public class CommandBind extends FEcmdModuleCommands
     }
 
     @Override
-    public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1) return getListOfStringsMatchingLastWord(args, "left", "right", "clear");
         return null;
