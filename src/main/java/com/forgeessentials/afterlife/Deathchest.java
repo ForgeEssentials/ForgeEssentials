@@ -22,7 +22,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.util.Localization;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 
@@ -137,7 +136,7 @@ public class Deathchest
 				{
 					if (!grave.canOpen(e.entityPlayer))
 					{
-						OutputHandler.chatWarning(e.entityPlayer, Localization.get("message.afterlife.protectionEnabled"));
+						OutputHandler.chatWarning(e.entityPlayer, "This grave is still under divine protection.");
 						e.setCanceled(true);
 					}
 					else

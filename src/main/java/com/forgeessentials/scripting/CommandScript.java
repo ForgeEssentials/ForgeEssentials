@@ -44,11 +44,6 @@ public class CommandScript extends ForgeEssentialsCommandBase {
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args) {
-		return null;
-	}
-
-	@Override
 	public String getCommandPerm() {
 		return "ForgeEssentials.Scripting.script";
 	}
@@ -57,6 +52,12 @@ public class CommandScript extends ForgeEssentialsCommandBase {
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/script run [login|respawn] <player> Manually trigger scripts for a player.";
 	}
 
 }

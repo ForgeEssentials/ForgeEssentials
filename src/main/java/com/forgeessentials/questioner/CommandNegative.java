@@ -63,4 +63,10 @@ public class CommandNegative extends ForgeEssentialsCommandBase
 		return 0;
 	}
 
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/no Answer no to a question";
+	}
+
 }

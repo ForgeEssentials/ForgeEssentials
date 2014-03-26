@@ -45,13 +45,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
-		doRollback(sender, args);
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
 		doRollback(sender, args);
 	}
@@ -252,5 +246,10 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "/rollback <username> [undo|clear] Configure rollbacks.";
 	}
 }

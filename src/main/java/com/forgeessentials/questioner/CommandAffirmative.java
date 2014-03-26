@@ -59,8 +59,12 @@ public class CommandAffirmative extends ForgeEssentialsCommandBase
 
 	@Override
 	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "/yes Answer yes to a question";
 	}
 
 }

@@ -48,17 +48,17 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase
 	{
 		return "ForgeEssentials.Snooper.commands." + getCommandName();
 	}
-
-	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
+	
 	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/queryreload Reload queries from the SQL database";
 	}
 
 }

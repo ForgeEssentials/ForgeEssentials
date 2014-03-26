@@ -341,4 +341,10 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 		return 0;
 	}
 
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/autopromote <zone> [get|enable|disable|edit|add|message] [other options] Configure auto promotion.";
+	}
+
 }

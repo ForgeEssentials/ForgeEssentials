@@ -49,11 +49,6 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		if (args.length == 0 || args.length == 1)
-		{
-			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
-			return;
-		}
 		if (args.length > 1)
 		{
 			if (args[0].equalsIgnoreCase("server") || args[0].equalsIgnoreCase("console"))
@@ -144,11 +139,6 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length == 0 || args.length == 1)
-		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
-			return;
-		}
 		if (args.length > 1)
 		{
 			EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
@@ -221,5 +211,11 @@ public class CommandMsg extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/msg <irc> <player> <message> Send a message to another player, who is either logged on to the server or online in IRC.";
 	}
 }

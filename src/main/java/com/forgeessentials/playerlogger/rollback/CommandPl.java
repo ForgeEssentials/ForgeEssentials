@@ -97,4 +97,9 @@ public class CommandPl extends ForgeEssentialsCommandBase
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "/playerlogger [enable|disable]";
+	}
 }

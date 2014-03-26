@@ -33,7 +33,6 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 
 	// Syntax: /nick [nickname|del]
 	// Syntax: /nick <username> [nickname|del]
-	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		if (args.length == 1)
@@ -71,19 +70,22 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+				OutputHandler.chatError(sender, "You don't have permission for that.");
 			}
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
 		}
 	}
 
 	// Syntax: /nick <username> [nickname|del]
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
+		if (sender instanceof EntityPlayer){
+			processCommandPlayer((EntityPlayer)sender, args);
+		}
 		if (args.length >= 1)
 		{
 			EntityPlayerMP player = getPlayer(sender, args[0]);
@@ -99,40 +101,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 			}
 			else
 			{
-				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+				ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
 			}
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-		}
-	}
-
-	// Syntax: /nick <username> [nickname|del]
-	@Override
-	public void processCommandBlock(TileEntityCommandBlock sender, String[] args)
-	{
-		if (args.length >= 1)
-		{
-			EntityPlayerMP player = getPlayer(sender, args[0]);
-			if (args.length == 2)
-			{
-				player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-				ChatUtils.sendMessage(sender, "Nickname of player " + player.username + " set to " + args[1]);
-			}
-			else if (args.length == 1)
-			{
-				player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
-				ChatUtils.sendMessage(sender, "Nickname of player " + player.username + " removed");
-			}
-			else
-			{
-				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-			}
-		}
-		else
-		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
 		}
 	}
 
@@ -146,12 +120,6 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.Chat.commands." + getCommandName();
-	}
-
-	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
 	}
 
 	@Override
