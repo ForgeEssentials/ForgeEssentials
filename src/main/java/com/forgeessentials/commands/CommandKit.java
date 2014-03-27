@@ -67,7 +67,7 @@ public class CommandKit extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_PERMDENIED));
+					OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 				}
 			}
 			else
@@ -168,11 +168,6 @@ public class CommandKit extends FEcmdModuleCommands
 	}
 
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-	}
-
-	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
@@ -191,7 +186,7 @@ public class CommandKit extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 		{

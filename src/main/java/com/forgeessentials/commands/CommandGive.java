@@ -60,7 +60,7 @@ public class CommandGive extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			OutputHandler.chatError(sender, Localization.format("Player %s does not exist, or is not online.", args[0]));
 		}
 	}
 
@@ -102,7 +102,7 @@ public class CommandGive extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			OutputHandler.chatError(sender, Localization.format("Player %s does not exist, or is not online.", args[0]));
 		}
 	}
 
@@ -119,7 +119,7 @@ public class CommandGive extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

@@ -43,12 +43,12 @@ public class CommandTop extends FEcmdModuleCommands
 			}
 			else
 			{
-				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: "+ getSyntaxPlayer(sender));
 		}
 	}
 
@@ -70,12 +70,12 @@ public class CommandTop extends FEcmdModuleCommands
 			}
 			else
 			{
-				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
 		}
 	}
 
@@ -104,7 +104,7 @@ public class CommandTop extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

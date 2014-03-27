@@ -1,7 +1,5 @@
 package com.forgeessentials.commands;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -60,11 +58,6 @@ public class CommandVirtualchest extends FEcmdModuleCommands
 	}
 
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-	}
-
-	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
@@ -77,21 +70,15 @@ public class CommandVirtualchest extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
-	@Override
 	public RegGroup getReggroup()
 	{
 		return RegGroup.OWNERS;
 	}
 
 	@Override
-	public int compareTo(Object o) {
+	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
-		return 0;
+		return "/vchest Open a virtual chest";
 	}
 
 }

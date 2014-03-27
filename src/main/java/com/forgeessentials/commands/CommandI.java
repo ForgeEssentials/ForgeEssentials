@@ -64,7 +64,7 @@ public class CommandI extends FEcmdModuleCommands
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
 		}
 	}
 
@@ -86,7 +86,7 @@ public class CommandI extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getItemList());

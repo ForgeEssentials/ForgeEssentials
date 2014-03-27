@@ -1,9 +1,6 @@
 package com.forgeessentials.commands;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
@@ -23,18 +20,7 @@ public class CommandModlist extends FEcmdModuleCommands
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
-		printList(sender, args);
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		printList(sender, args);
-	}
-
-	public void printList(ICommandSender sender, String[] args)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
 		int size = Loader.instance().getModList().size();
 		int perPage = 7;
@@ -43,7 +29,7 @@ public class CommandModlist extends FEcmdModuleCommands
 		int page = args.length == 0 ? 0 : parseIntBounded(sender, args[0], 1, pages) - 1;
 		int min = Math.min(page * perPage, size);
 
-		OutputHandler.chatConfirmation(sender, Localization.format("command.modlist.header", page + 1, pages));
+		OutputHandler.chatConfirmation(sender, String.format("--- Showing modlist page %1$d of %2$d ---", page + 1, pages));
 
 		for (int i = page * perPage; i < min + perPage; i++)
 		{
@@ -54,6 +40,11 @@ public class CommandModlist extends FEcmdModuleCommands
 			ModContainer mod = Loader.instance().getModList().get(i);
 			ChatUtils.sendMessage(sender, mod.getName() + " - " + mod.getVersion());
 		}
+	}
+
+	public void printList(ICommandSender sender, String[] args)
+	{
+		
 	}
 
 	@Override
@@ -69,12 +60,6 @@ public class CommandModlist extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
-	@Override
 	public RegGroup getReggroup()
 	{
 		return RegGroup.GUESTS;
@@ -84,6 +69,12 @@ public class CommandModlist extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/modlist Get a list of all mods running on this server.";
 	}
 
 }

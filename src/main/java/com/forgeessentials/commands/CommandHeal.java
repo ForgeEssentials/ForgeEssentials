@@ -41,12 +41,12 @@ public class CommandHeal extends FEcmdModuleCommands
 			}
 			else
 			{
-				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
 		}
 	}
 
@@ -62,12 +62,12 @@ public class CommandHeal extends FEcmdModuleCommands
 			}
 			else
 			{
-				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
 		}
 	}
 
@@ -98,7 +98,7 @@ public class CommandHeal extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -116,6 +116,12 @@ public class CommandHeal extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/heal <player> Heal yourself. You can also heal other players if you have permission.";
 	}
 
 }

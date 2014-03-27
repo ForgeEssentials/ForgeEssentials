@@ -1,7 +1,5 @@
 package com.forgeessentials.commands;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -64,20 +62,13 @@ public class CommandList extends FEcmdModuleCommands
     }
 
     @Override
-    public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        return null;
-    }
-
-    @Override
     public String getCommandPerm()
     {
         return "ForgeEssentials.BasicCommands." + getCommandName();
     }
 
 	@Override
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String getCommandUsage(ICommandSender sender) {
+		return "/list List all online players.";
 	}
 }

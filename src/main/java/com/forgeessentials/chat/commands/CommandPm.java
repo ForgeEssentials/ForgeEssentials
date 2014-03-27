@@ -274,4 +274,10 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/pm <player> Enable persistent message for a player. Use /pm to turn off.";
+	}
 }

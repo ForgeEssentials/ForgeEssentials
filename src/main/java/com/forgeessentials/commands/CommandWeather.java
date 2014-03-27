@@ -1,7 +1,6 @@
 package com.forgeessentials.commands;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -28,40 +27,7 @@ public class CommandWeather extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
-    {
-        if (args.length != 0 && FunctionHelper.isNumeric(args[0]))
-        {
-            try
-            {
-                String[] newArgs = new String[args.length - 1];
-                for (int i = 0; i < args.length - 1; i++)
-                    newArgs[i] = args[i + 1];
-                String msg = doCmd(sender, DimensionManager.getWorld(parseInt(sender, args[0])), newArgs);
-                if(msg != null) OutputHandler.chatConfirmation(sender, msg);
-            }
-            catch (Exception e)
-            {
-            }
-        }
-        else
-        {
-            String msg = null;
-            for (World world : DimensionManager.getWorlds())
-                try
-                {
-                    msg = doCmd(sender, world, args);
-                }
-                catch (Exception e)
-                {
-                    break;
-                }
-            if(msg != null) OutputHandler.chatConfirmation(sender, msg);
-        }
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args)
     {
         if (args.length != 0 && FunctionHelper.isNumeric(args[0]))
         {

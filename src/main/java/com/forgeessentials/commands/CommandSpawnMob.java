@@ -107,7 +107,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+			OutputHandler.chatError(sender, "Improper syntax.");
 		}
 	}
 
@@ -141,7 +141,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+			ChatUtils.sendMessage(sender, "Improper syntax.");
 			OutputHandler.debug("test");
 		}
 	}
@@ -159,7 +159,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsFromIterableMatchingLastWord(args, mobNames.keySet());

@@ -1,7 +1,6 @@
 package com.forgeessentials.commands;
 
 import java.util.HashSet;
-import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,21 +57,9 @@ public class CommandVanish extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-        
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        return null;
     }
 
     @Override
@@ -85,5 +72,11 @@ public class CommandVanish extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/vanish Makes yourself invisible";
 	}
 }

@@ -1,7 +1,5 @@
 package com.forgeessentials.commands;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -29,7 +27,7 @@ public class CommandRename extends FEcmdModuleCommands
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
         }
         else
         {
@@ -49,20 +47,9 @@ public class CommandRename extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        return null;
     }
 
     @Override
@@ -75,5 +62,11 @@ public class CommandRename extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/rename <new name> Renames the item you are currently holding.";
 	}
 }

@@ -51,7 +51,7 @@ public class CommandMotd extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, "reload");
@@ -69,5 +69,11 @@ public class CommandMotd extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/motd Get the server message of the day.";
 	}
 }

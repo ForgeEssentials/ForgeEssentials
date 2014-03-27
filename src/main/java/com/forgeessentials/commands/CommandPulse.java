@@ -1,7 +1,5 @@
 package com.forgeessentials.commands;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
@@ -24,14 +22,6 @@ public class CommandPulse extends FEcmdModuleCommands
 	public String getCommandName()
 	{
 		return "pulse";
-	}
-
-	/**
-	 * Return the required permission level for this command.
-	 */
-	public int getRequiredPermissionLevel()
-	{
-		return 2;
 	}
 
 	public String getCommandUsage(ICommandSender par1ICommandSender)
@@ -150,12 +140,6 @@ public class CommandPulse extends FEcmdModuleCommands
 	public boolean canConsoleUseCommand()
 	{
 		return true;
-	}
-
-	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
 	}
 
 	@Override

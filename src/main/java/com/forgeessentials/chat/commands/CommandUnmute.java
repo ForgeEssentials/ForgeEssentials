@@ -31,27 +31,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
-		if (args.length == 1)
-		{
-			EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
-			if (receiver == null)
-			{
-				OutputHandler.chatError(receiver, String.format("Player %s does not exist, or is not online.", args[0]));
-				return;
-			}
-			NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-			tag.setBoolean("mute", false);
-			receiver.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-
-			OutputHandler.chatError(sender, String.format("command.unmute.youMuted", args[0]));
-			OutputHandler.chatError(receiver, String.format("command.unmute.muted", sender.getCommandSenderName()));
-		}
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 		{
@@ -86,5 +66,11 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/unmute <player> Unmutes a player.";
 	}
 }

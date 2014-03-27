@@ -58,12 +58,6 @@ public class CommandPing extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
-	@Override
 	public RegGroup getReggroup()
 	{
 		return RegGroup.GUESTS;
@@ -73,5 +67,11 @@ public class CommandPing extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/ping Ping the server.";
 	}
 }

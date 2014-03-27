@@ -29,10 +29,7 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase
 	 * @param config
 	 * @param category
 	 */
-	public void doConfig(Configuration config, String category)
-	{
-
-	}
+	public void doConfig(Configuration config, String category){}
 
 	@Override
 	public List<String> getCommandAliases()
@@ -61,10 +58,7 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase
 	 * You don't need to register the commandpermission.
 	 * @param event
 	 */
-	public void registerExtraPermissions(IPermRegisterEvent event)
-	{
-
-	}
+	public void registerExtraPermissions(IPermRegisterEvent event){}
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender sender)

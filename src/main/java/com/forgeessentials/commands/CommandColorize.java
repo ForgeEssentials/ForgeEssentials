@@ -1,7 +1,5 @@
 package com.forgeessentials.commands;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -22,7 +20,7 @@ public class CommandColorize extends FEcmdModuleCommands
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		sender.getEntityData().setBoolean("colorize", true);
-		OutputHandler.chatConfirmation(sender, Localization.get("command.colorize.msg"));
+		OutputHandler.chatConfirmation(sender, "Right click a sign to colourize it!");
 	}
 
 	@Override
@@ -43,12 +41,6 @@ public class CommandColorize extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
-	@Override
 	public RegGroup getReggroup()
 	{
 		return RegGroup.MEMBERS;
@@ -58,5 +50,11 @@ public class CommandColorize extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/colorize Apply pre-existing colour codes to a sign.";
 	}
 }

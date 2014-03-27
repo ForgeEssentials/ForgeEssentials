@@ -44,7 +44,7 @@ public class CommandRemove extends FEcmdModuleCommands
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
 			return;
 		}
 
@@ -81,7 +81,7 @@ public class CommandRemove extends FEcmdModuleCommands
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
 			return;
 		}
 
@@ -108,12 +108,6 @@ public class CommandRemove extends FEcmdModuleCommands
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
-	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
 	}
 
 	@Override

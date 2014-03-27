@@ -45,7 +45,7 @@ public class CommandFindblock extends FEcmdModuleCommands
 	{
 	    if (args.length == 0)
 	    {
-	        OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getCommandInfo(sender));
+	        OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getCommandInfo(sender));
 	        return;
 	    }
 	    int[] id = FunctionHelper.parseIdAndMetaFromString(args[0], true);
@@ -74,7 +74,7 @@ public class CommandFindblock extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 		    return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getItemList());
@@ -98,5 +98,11 @@ public class CommandFindblock extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/fb <block> [max distance] [amount of blocks] [speed] Finds a block.";
 	}
 }

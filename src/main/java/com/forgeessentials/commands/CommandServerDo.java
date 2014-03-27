@@ -1,14 +1,10 @@
 package com.forgeessentials.commands;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 
@@ -45,39 +41,10 @@ public class CommandServerDo extends FEcmdModuleCommands
 		return false;
 	}
 
-	/**
-	 * Restricts the usage of this command to ops so random jerkbags can't op
-	 * themselves. Once our permissions system gets working, we can use
-	 * canPlayerUseCommand instead.
-	 */
-	@Override
-	public int getRequiredPermissionLevel()
-	{
-		return 3;
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		// Does nothing on the console.
-	}
-
-	@Override
-	public boolean canPlayerUseCommand(EntityPlayer player)
-	{
-		return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
-	}
-
 	@Override
 	public String getCommandPerm()
 	{
 		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
-	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
 	}
 
 	@Override
@@ -90,5 +57,11 @@ public class CommandServerDo extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/serverdo Run a command as the console.";
 	}
 }

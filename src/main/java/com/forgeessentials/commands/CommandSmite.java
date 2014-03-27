@@ -45,7 +45,7 @@ public class CommandSmite extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, Localization.format("Player %s does not exist, or is not online.", args[0]));
 				}
 			}
 		}
@@ -77,12 +77,12 @@ public class CommandSmite extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, Localization.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, Localization.get("Player %s does not exist, or is not online.") + getSyntaxConsole());
 		}
 	}
 
@@ -99,7 +99,7 @@ public class CommandSmite extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

@@ -154,7 +154,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsFromIterableMatchingLastWord(args, options);

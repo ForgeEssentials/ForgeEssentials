@@ -37,7 +37,7 @@ public class CommandButcher extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, "-1");
@@ -68,7 +68,7 @@ public class CommandButcher extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + FunctionHelper.niceJoin(typeList.toArray()));
+				OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + FunctionHelper.niceJoin(typeList.toArray()));
 				return;
 			}
 		}
@@ -91,7 +91,7 @@ public class CommandButcher extends FEcmdModuleCommands
 			String[] split = args[2].split(splitter);
 			if (split.length != 3)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "x, y, z");
+				OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + "x, y, z");
 				return;
 			}
 			else
@@ -125,7 +125,7 @@ public class CommandButcher extends FEcmdModuleCommands
 
 		if (args.length != 4 && !(sender instanceof TileEntityCommandBlock))
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
 			return;
 		}
 		if (args.length > 0)
@@ -140,7 +140,7 @@ public class CommandButcher extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + FunctionHelper.niceJoin(typeList.toArray()));
+				OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + FunctionHelper.niceJoin(typeList.toArray()));
 				return;
 			}
 		}
@@ -163,7 +163,7 @@ public class CommandButcher extends FEcmdModuleCommands
 			String[] split = args[2].split(splitter);
 			if (split.length != 3)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + "x, y, z");
+				OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + "x, y, z");
 				return;
 			}
 			else

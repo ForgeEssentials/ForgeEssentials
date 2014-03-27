@@ -1,4 +1,3 @@
-package com.forgeessentials.commands;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class CommandKill extends FEcmdModuleCommands
 			}
 			else
 			{
-				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
@@ -62,12 +61,12 @@ public class CommandKill extends FEcmdModuleCommands
 			}
 			else
 			{
-				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
 		}
 	}
 

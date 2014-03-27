@@ -70,7 +70,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		}
 		else if (args.length != 3)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
 			return;
 		}
 
@@ -119,7 +119,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		}
 		else if (args.length != 3)
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
 			return;
 		}
 
@@ -151,7 +151,7 @@ public class CommandPotion extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

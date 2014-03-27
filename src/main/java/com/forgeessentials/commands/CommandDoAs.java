@@ -3,7 +3,6 @@ package com.forgeessentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.api.permissions.RegGroup;
@@ -22,18 +21,7 @@ public class CommandDoAs extends FEcmdModuleCommands
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
-		ex(sender, args);
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		ex(sender, args);
-	}
-
-	private void ex(ICommandSender sender, String[] args)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
 		StringBuilder cmd = new StringBuilder(args.toString().length());
 		for (int i = 1; i < args.length; i++)
@@ -44,13 +32,13 @@ public class CommandDoAs extends FEcmdModuleCommands
 		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 		if (player != null)
 		{
-			OutputHandler.chatWarning(player, Localization.format("command.doas.attempt", sender.getCommandSenderName()));
+			OutputHandler.chatWarning(player, String.format("Player %s is attempting to issue a command as you.", sender.getCommandSenderName()));
 			FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, cmd.toString());
-			OutputHandler.chatConfirmation(sender, Localization.format("command.doas.success", args[0]));
+			OutputHandler.chatConfirmation(sender, String.format("Successfully issued command as %s", args[0]));
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 		}
 	}
 
@@ -67,7 +55,7 @@ public class CommandDoAs extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -85,5 +73,11 @@ public class CommandDoAs extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/doas <player> <command> Run a command as another player.";
 	}
 }

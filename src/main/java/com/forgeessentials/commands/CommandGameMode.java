@@ -227,7 +227,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 2)
 			return getListOfStringsMatchingLastWord(args, new String[]
