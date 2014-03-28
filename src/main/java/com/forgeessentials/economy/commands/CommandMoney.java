@@ -27,12 +27,7 @@ public class CommandMoney extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		OutputHandler.chatConfirmation(sender, Localization.get(Localization.wallet_GET_SELF) + APIRegistry.wallet.getMoneyString(sender.username));
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
+		OutputHandler.chatConfirmation(sender, "Your wallet contains: " + APIRegistry.wallet.getMoneyString(sender.username));
 	}
 
 	@Override
@@ -48,14 +43,14 @@ public class CommandMoney extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
-	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/money Get the amound of money you have in your wallet.";
 	}
 }

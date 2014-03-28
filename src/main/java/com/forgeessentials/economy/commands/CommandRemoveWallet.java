@@ -38,7 +38,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 
 			if (player == null)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPLAYER));
+				OutputHandler.chatError(sender, "Player does not exist, or is not online.");
 			}
 			else
 			{
@@ -46,14 +46,14 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 
 				if (sender != player)
 				{
-					ChatUtils.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_TARGET));
+					ChatUtils.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
 				}
-				ChatUtils.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_SELF));
+				ChatUtils.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");
 			}
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amounttoremove>");
 		}
 	}
 
@@ -67,19 +67,19 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 
 			if (player == null)
 			{
-				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_NOPLAYER));
+				ChatUtils.sendMessage(sender, "Player does not exist, or is not online.");
 			}
 			else
 			{
 				APIRegistry.wallet.removeFromWallet(amountToSubtract, player.username);
 
-				ChatUtils.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_TARGET));
-				ChatUtils.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + Localization.get(Localization.wallet_REMOVE_SELF));
+				ChatUtils.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
+				ChatUtils.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");
 			}
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amounttoremove>");
 		}
 	}
 
@@ -96,7 +96,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -108,5 +108,11 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/removewallet <player> <amounttoremove> Remove an amount of money from a player's wallet.";
 	}
 }

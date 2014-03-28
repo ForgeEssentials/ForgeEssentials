@@ -32,18 +32,18 @@ public class CommandLocate extends FEcmdModuleCommands
 	{
 		if (args.length != 1)
 		{
-			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+			OutputHandler.chatError(sender, "Improper syntax. Please specify a player name.");
 		}
 		else
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, username);
+			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player == null)
 			{
-				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", username));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 			else
 			{
-				OutputHandler.chatConfirmation(sender, Localization.format("command.locate.msg", player.username, (int) player.posX, (int) player.posY, (int) player.posZ, player.dimension, player.theItemInWorldManager.getGameType().getName()));
+				OutputHandler.chatConfirmation(sender, String.format("%1$s is at %2$d, %3$d, %4$d in dim %5$d with gamemode %6$s", player.username, (int) player.posX, (int) player.posY, (int) player.posZ, player.dimension, player.theItemInWorldManager.getGameType().getName()));
 			}
 		}
 	}

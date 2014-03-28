@@ -28,11 +28,6 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 		return Arrays.asList("pc", "pcmd");
 	}
 
-	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
-	}
-
 	/*
 	 * Expected structure: "/paidcommand <player> <amount> <command [args]>"
 	 */
@@ -69,13 +64,13 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 			else
 			{
 				//this should be removed
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
 		{
 			//this should be removed
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amount> <command [args]>");
 		}
 	}
 
@@ -98,15 +93,15 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
-	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/paidcommand <player> <amount> <command [args]>";
 	}
 
 }

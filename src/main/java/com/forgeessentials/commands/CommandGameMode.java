@@ -234,7 +234,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 			{ "survival", "creative", "adventure" });
 		else if (args.length == 1)
 		{
-			List<?> match = getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+			List<String> match = getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
 			if (match == null)
 			{
 				match = getListOfStringsMatchingLastWord(args, new String[]

@@ -55,7 +55,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else
 				{
-					OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.zone.list.header", 1, zonePages));
+					OutputHandler.chatConfirmation(sender, String.format("command.permissions.zone.list.header", 1, zonePages));
 					int itterrator = 0;
 					String output;
 					for (Zone zone : zones)
@@ -99,7 +99,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 						}
 						else
 						{
-							OutputHandler.chatConfirmation(sender, Localization.format("command.permissions.zone.list.header", page, zonePages));
+							OutputHandler.chatConfirmation(sender, String.format("command.permissions.zone.list.header", page, zonePages));
 							String output;
 							Zone zone;
 							for (int i = (page - 1) * 15; i < page * 15; i++)
@@ -116,7 +116,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					}
 					catch (NumberFormatException e)
 					{
-						OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, 1));
+						OutputHandler.chatError(sender, String.format(Localization.ERROR_NAN, 1));
 					}
 				}
 				return;
@@ -130,7 +130,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[1]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
 				}
 				else
 				{
@@ -163,7 +163,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[1]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
 				}
 				else
 				{
@@ -174,7 +174,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					else
 					{
 						APIRegistry.zones.deleteZone(args[1]);
-						OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_REMOVE, args[1]));
+						OutputHandler.chatConfirmation(sender, String.format(Localization.CONFIRM_ZONE_REMOVE, args[1]));
 					}
 				}
 				return;
@@ -183,7 +183,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_YESZONE, args[1]));
+					OutputHandler.chatError(sender, String.format(Localization.ERROR_ZONE_YESZONE, args[1]));
 				}
 				else if (info.getSelection() == null)
 				{
@@ -197,7 +197,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				else
 				{
 					APIRegistry.zones.createZone(args[1], info.getSelection(), sender.worldObj);
-					OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_DEFINE, args[1]));
+					OutputHandler.chatConfirmation(sender, String.format(Localization.CONFIRM_ZONE_DEFINE, args[1]));
 				}
 				return;
 			}
@@ -205,7 +205,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_YESZONE, args[1]));
+					OutputHandler.chatError(sender, String.format(Localization.ERROR_ZONE_YESZONE, args[1]));
 				}
 				else if (info.getSelection() == null)
 				{
@@ -221,7 +221,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					Zone z = APIRegistry.zones.getZone(args[1]);
 					z.redefine(info.getPoint1(), info.getPoint2());
 					saveZone(z);
-					OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_REDEFINE, args[1]));
+					OutputHandler.chatConfirmation(sender, String.format(Localization.CONFIRM_ZONE_REDEFINE, args[1]));
 				}
 				return;
 			}
@@ -233,11 +233,11 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[1]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
 				}
 				else if (!APIRegistry.zones.doesZoneExist(args[2]))
 				{
-					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[2]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".setparent." + args[1])))
 				{
@@ -248,7 +248,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					Zone z = APIRegistry.zones.getZone(args[1]);
 					z.parent = args[2];
 					saveZone(z);
-					OutputHandler.chatConfirmation(sender, Localization.format(Localization.CONFIRM_ZONE_SETPARENT, args[1], args[2]));
+					OutputHandler.chatConfirmation(sender, String.format(Localization.CONFIRM_ZONE_SETPARENT, args[1], args[2]));
 				}
 				return;
 			}
@@ -257,7 +257,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[1]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
 					return;
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".entry." + args[1])))
@@ -294,7 +294,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, Localization.format("No zone by the name %s exists!", args[1]));
+					OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
 					return;
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".exit." + args[1])))
@@ -333,12 +333,6 @@ public class CommandZone extends ForgeEssentialsCommandBase
 		{
 			error(sender);
 		}
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		// no defining zones from the console.
 	}
 
 	private void saveZone(Zone z)

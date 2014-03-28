@@ -42,7 +42,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amountRequested>" );
 		}
 	}
 
@@ -65,7 +65,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amountRequested>");
 		}
 	}
 
@@ -82,7 +82,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -94,5 +94,11 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/requestpayment <player> <amountRequested> Request a player to pay you a specified amount.";
 	}
 }

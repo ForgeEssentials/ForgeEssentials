@@ -10,7 +10,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -30,9 +29,9 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 	{
 		return Arrays.asList("walletadd");
 	}
-
+	
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
 		if (args.length == 2)
 		{
@@ -41,49 +40,19 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 
 			if (player == null)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPLAYER));
+				ChatUtils.sendMessage(sender, "Player %s does not exist, or is not online.");
 			}
 			else
 			{
 				APIRegistry.wallet.addToWallet(amountToAdd, player.username);
 
-				if (sender != player)
-				{
-					ChatUtils.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
-				}
-				ChatUtils.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
+				ChatUtils.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to wallet.");
+				ChatUtils.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to your wallet.");
 			}
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
-		}
-
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		if (args.length == 2)
-		{
-			EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[0]);
-			int amountToAdd = Integer.parseInt(args[1]);
-
-			if (player == null)
-			{
-				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_NOPLAYER));
-			}
-			else
-			{
-				APIRegistry.wallet.addToWallet(amountToAdd, player.username);
-
-				ChatUtils.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_TARGET));
-				ChatUtils.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + Localization.get(Localization.wallet_ADD_SELF));
-			}
-		}
-		else
-		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amounttoadd>");
 		}
 	}
 
@@ -100,7 +69,7 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -112,6 +81,12 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/walletadd <player> <amounttoadd> Add an amount to a wallet.";
 	}
 
 }

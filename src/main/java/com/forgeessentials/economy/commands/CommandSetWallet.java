@@ -21,7 +21,7 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
 		if (args.length == 2)
 		{
@@ -30,37 +30,7 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 
 			if (player == null)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPLAYER));
-			}
-			else
-			{
-				APIRegistry.wallet.setWallet(amountToSet, player);
-
-				if (sender != player)
-				{
-					ChatUtils.sendMessage(sender, Localization.get(Localization.wallet_SET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
-				}
-				ChatUtils.sendMessage(player, Localization.get(Localization.wallet_SET_SELF) + APIRegistry.wallet.getMoneyString(player.username));
-			}
-		}
-		else
-		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
-		}
-
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		if (args.length == 2)
-		{
-			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			int amountToSet = Integer.parseInt(args[1]);
-
-			if (player == null)
-			{
-				ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_NOPLAYER));
+				ChatUtils.sendMessage(sender, Localization.get("Player %s does not exist, or is not online."));
 			}
 			else
 			{
@@ -72,7 +42,7 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
 		}
 	}
 
@@ -89,7 +59,7 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
