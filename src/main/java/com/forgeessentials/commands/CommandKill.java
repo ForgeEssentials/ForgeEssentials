@@ -1,3 +1,5 @@
+package com.forgeessentials.commands;
+
 
 import java.util.List;
 
@@ -89,7 +91,7 @@ public class CommandKill extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());

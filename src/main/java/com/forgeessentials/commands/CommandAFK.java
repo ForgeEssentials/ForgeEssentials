@@ -31,11 +31,17 @@ public class CommandAFK extends FEcmdModuleCommands
 
 	// Config
 	public static int			warmup	= 5;
+	public static String outMessage, inMessage, selfOutMessage, selfInMessage;
 
 	@Override
 	public void doConfig(Configuration config, String category)
 	{
 		warmup = config.get(category, "warmup", 5, "Time in sec. you have to stand still to activate AFK.").getInt();
+		String messages = category + ".messages";
+		outMessage = config.get(messages, "outMessage", "Player %s is now away").getString();
+		inMessage = config.get(messages, "inMessage", "Player %s is no longer away").getString();
+		selfOutMessage = config.get(messages, "selfOutMessage", "You are now away").getString();
+		selfInMessage = config.get(messages, "selfInMessage", "You are no longer away").getString();
 	}
 
 	@Override
@@ -48,12 +54,7 @@ public class CommandAFK extends FEcmdModuleCommands
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
 		TickHandlerTP.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
-		OutputHandler.chatConfirmation(sender, Localization.format("command.afk.warmup", warmup));
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
+		OutputHandler.chatConfirmation(sender, String.format("Stand still for %d seconds.", warmup));
 	}
 
 	@Override
@@ -78,9 +79,9 @@ public class CommandAFK extends FEcmdModuleCommands
 
 		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
 			ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-					Localization.format("command.afk.notice.out", afkData.player.username));
+					String.format(outMessage, afkData.player.username));
 		else
-		    OutputHandler.chatConfirmation(afkData.player, Localization.get("command.afk.out"));
+		    OutputHandler.chatConfirmation(afkData.player, selfOutMessage);
 	}
 
 	public void makeAFK(AFKdata afkData)
@@ -91,9 +92,9 @@ public class CommandAFK extends FEcmdModuleCommands
 
 		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
 			ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-					Localization.format("command.afk.notice.in", afkData.player.username));
+					String.format(inMessage, afkData.player.username));
 		else
-		    OutputHandler.chatConfirmation(afkData.player, Localization.get("command.afk.in"));
+		    OutputHandler.chatConfirmation(afkData.player, selfInMessage);
 	}
 
 	@Override
@@ -112,5 +113,11 @@ public class CommandAFK extends FEcmdModuleCommands
 	public int compareTo(Object arg0) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/afk Mark yourself as away.";
 	}
 }

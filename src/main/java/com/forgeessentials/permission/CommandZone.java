@@ -95,7 +95,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 						int page = Integer.parseInt(args[1]);
 						if (page <= 0 || page > zonePages)
 						{
-							OutputHandler.chatConfirmation(sender, Localization.get(Localization.ERROR_NOPAGE));
+							OutputHandler.chatConfirmation(sender, "No page by that number exists!");
 						}
 						else
 						{
@@ -116,7 +116,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					}
 					catch (NumberFormatException e)
 					{
-						OutputHandler.chatError(sender, String.format(Localization.ERROR_NAN, 1));
+						OutputHandler.chatError(sender, String.format("%s param was not recognized as number. Please try again.", 1));
 					}
 				}
 				return;
@@ -174,7 +174,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					else
 					{
 						APIRegistry.zones.deleteZone(args[1]);
-						OutputHandler.chatConfirmation(sender, String.format(Localization.CONFIRM_ZONE_REMOVE, args[1]));
+						OutputHandler.chatConfirmation(sender, String.format("%s was removed successfully!", args[1]));
 					}
 				}
 				return;
@@ -183,11 +183,11 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, String.format(Localization.ERROR_ZONE_YESZONE, args[1]));
+					OutputHandler.chatError(sender, String.format("A zone by the name %s already exists!", args[1]));
 				}
 				else if (info.getSelection() == null)
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOSELECTION));
+					OutputHandler.chatError(sender, "Invalid selection detected. Please check your selection.");
 					return;
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".define", info.getSelection(), true)))
@@ -197,7 +197,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				else
 				{
 					APIRegistry.zones.createZone(args[1], info.getSelection(), sender.worldObj);
-					OutputHandler.chatConfirmation(sender, String.format(Localization.CONFIRM_ZONE_DEFINE, args[1]));
+					OutputHandler.chatConfirmation(sender, String.format("%s was defined successfully", args[1]));
 				}
 				return;
 			}
@@ -205,11 +205,11 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			{
 				if (!APIRegistry.zones.doesZoneExist(args[1]))
 				{
-					OutputHandler.chatError(sender, String.format(Localization.ERROR_ZONE_YESZONE, args[1]));
+					OutputHandler.chatError(sender, String.format("A zone by the name %s already exists!", args[1]));
 				}
 				else if (info.getSelection() == null)
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOSELECTION));
+					OutputHandler.chatError(sender, "Invalid selection detected. Please check your selection.");
 					return;
 				}
 				else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(sender, getCommandPerm() + ".redefine." + args[1], info.getSelection(), true)))
@@ -221,7 +221,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					Zone z = APIRegistry.zones.getZone(args[1]);
 					z.redefine(info.getPoint1(), info.getPoint2());
 					saveZone(z);
-					OutputHandler.chatConfirmation(sender, String.format(Localization.CONFIRM_ZONE_REDEFINE, args[1]));
+					OutputHandler.chatConfirmation(sender, String.format("%s redefined successfully!", args[1]));
 				}
 				return;
 			}
@@ -248,7 +248,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					Zone z = APIRegistry.zones.getZone(args[1]);
 					z.parent = args[2];
 					saveZone(z);
-					OutputHandler.chatConfirmation(sender, String.format(Localization.CONFIRM_ZONE_SETPARENT, args[1], args[2]));
+					OutputHandler.chatConfirmation(sender, String.format("The parent of %s was successfully set to %s.", args[1], args[2]));
 				}
 				return;
 			}
@@ -329,8 +329,15 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			}
 
 		}
-		else
-		{
+		else if (args[0].equalsIgnoreCase("help")){
+			ChatUtils.sendMessage(sender, "/zone list [#page] Lists all zones");
+			ChatUtils.sendMessage(sender, "/zone info <zone|here> Displays information about the zone such as parent, priority, and location");
+			ChatUtils.sendMessage(sender, "/zone <define|redefine|delete> define, redefine or delete a zone.");
+			ChatUtils.sendMessage(sender, "/zone setparent <parentzone> <childzone> Set a zone as a parent of another zone.");
+			ChatUtils.sendMessage(sender, "/zone entry|exit <name> [... message ...] Set the zone entry or exit message to a particular message. Set the message to 'remove' to delete it.");
+			
+		}
+		else{
 			error(sender);
 		}
 	}
@@ -388,6 +395,12 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/zone help";
 	}
 
 }

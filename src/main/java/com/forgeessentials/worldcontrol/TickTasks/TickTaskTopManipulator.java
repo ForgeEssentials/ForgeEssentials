@@ -168,22 +168,22 @@ public class TickTaskTopManipulator implements ITickTask
 		switch (effectMode)
 			{
 				case THAW:
-					confirmMessage = "thaw";
+					confirmMessage = "thawed.";
 					break;
 				case FREEZE:
-					confirmMessage = "freeze";
+					confirmMessage = "frozen.";
 					break;
 				case SNOW:
-					confirmMessage = "snow";
+					confirmMessage = "dusted with snow.";
 					break;
 				case TILL:
-					confirmMessage = "till";
+					confirmMessage = "tilled.";
 					break;
 				case UNTILL:
-					confirmMessage = "untill";
+					confirmMessage = "untilled.";
 					break;
 			}
-		OutputHandler.chatConfirmation(player, Localization.format("message.wc." + confirmMessage + "Confirm", changed));
+		OutputHandler.chatConfirmation(player, String.format("%d blocks have been " + confirmMessage, changed));
 	}
 
 	@Override

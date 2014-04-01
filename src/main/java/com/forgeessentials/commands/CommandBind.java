@@ -40,11 +40,11 @@ public class CommandBind extends FEcmdModuleCommands
     {
         if (args.length == 0 || !(args[0].equalsIgnoreCase("left") || args[0].equalsIgnoreCase("right") || args[0].equalsIgnoreCase("clear")))
         {
-            OutputHandler.chatError(sender, Localization.get("Improper syntax. Please try this instead: ") + getSyntaxPlayer(sender));
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <left|right|clear> <command [args]>");
         }
         else if (sender.inventory.getCurrentItem() == null)
         {
-            OutputHandler.chatError(sender, Localization.get("message.error.noItemPlayer"));
+            OutputHandler.chatError(sender, "You are not holding a valid item.");
         }
         else
         {
@@ -85,7 +85,7 @@ public class CommandBind extends FEcmdModuleCommands
                 is.getTagCompound().setCompoundTag("display", display);
                 is.getTagCompound().setCompoundTag("FEbinding", nbt);
             }
-            OutputHandler.chatConfirmation(sender, Localization.get("command.bind.bound"));
+            OutputHandler.chatConfirmation(sender, "Command bound to object.");
         }
     }
 
@@ -117,5 +117,11 @@ public class CommandBind extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/bind <left|right|clear> <command[args]> Bind a command to an object.";
 	}
 }

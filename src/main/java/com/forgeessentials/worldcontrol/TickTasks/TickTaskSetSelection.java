@@ -137,7 +137,7 @@ public class TickTaskSetSelection implements ITickTask
 						+ ". This is a problem in the mod that provides the block, caused by not supporting getDisplayName for their block.");
 			}
 		}
-			OutputHandler.chatConfirmation(player, Localization.format("message.wc.setConfirmBlocksChanged", changed, blockName));
+			OutputHandler.chatConfirmation(player, String.format("Set %1$d blocks changed to %2$s.", changed, blockName));
 	}
 
 	@Override

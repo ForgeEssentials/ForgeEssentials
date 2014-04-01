@@ -23,26 +23,26 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 	@Override
 	public void processCommand(ICommandSender sender, String[] args)
 	{
-		if (args.length == 2)
+		if (args.length == 1)
 		{
 			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
 			int amountToSet = Integer.parseInt(args[1]);
 
 			if (player == null)
 			{
-				ChatUtils.sendMessage(sender, Localization.get("Player %s does not exist, or is not online."));
+				ChatUtils.sendMessage(sender, "Player does not exist, or is not online.");
 			}
 			else
 			{
 				APIRegistry.wallet.setWallet(amountToSet, player);
 
-				ChatUtils.sendMessage(sender, Localization.get(Localization.wallet_SET_TARGET) + APIRegistry.wallet.getMoneyString(player.username));
-				ChatUtils.sendMessage(player, Localization.get(Localization.wallet_SET_SELF) + APIRegistry.wallet.getMoneyString(player.username));
+				ChatUtils.sendMessage(sender, "Wallet set to: " + APIRegistry.wallet.getMoneyString(player.username));
+				ChatUtils.sendMessage(player, "Your wallet was set to " + APIRegistry.wallet.getMoneyString(player.username));
 			}
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amount>");
 		}
 	}
 
@@ -71,6 +71,12 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/setwallet <player> <amount> Set a player's wallet to a certain amount.";
 	}
 
 }

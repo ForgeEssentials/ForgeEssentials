@@ -47,18 +47,18 @@ public class CommandSet extends WorldControlCommandBase
 
 			if (ID >= Block.blocksList.length)
 			{
-				error(player, Localization.format("message.wc.blockIdOutOfRange", Block.blocksList.length));
+				error(player, String.format("Block IDs cannot exceed %d!", Block.blocksList.length));
 			}
 			else if (ID != 0 && Block.blocksList[ID] == null)
 			{
-				error(player, Localization.format("message.wc.invalidBlockId", ID));
+				error(player, String.format("%d is not a valid block ID!", ID));
 			}
 			else
 			{
 				PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
 				if (info.getSelection() == null)
 				{
-					OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
+					OutputHandler.chatError(player, "Invalid selection detected. Please check your selection.");
 					return;
 				}
 				Selection sel = info.getSelection();
@@ -88,7 +88,7 @@ public class CommandSet extends WorldControlCommandBase
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getBlockList());
@@ -99,5 +99,11 @@ public class CommandSet extends WorldControlCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "//set [id|id:meta|name]";
 	}
 }

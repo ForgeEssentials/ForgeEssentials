@@ -1,5 +1,6 @@
 package com.forgeessentials.worldcontrol.commands;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.core.PlayerInfo;
@@ -37,7 +38,7 @@ public class CommandTopManipulate extends WorldControlCommandBase
 			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
 			if (info.getSelection() == null)
 			{
-				OutputHandler.chatError(player, Localization.get(Localization.ERROR_NOSELECTION));
+				OutputHandler.chatError(player, "Invalid selection detected. Please check your selection.");
 				return;
 			}
 			int radius = -1;
@@ -94,6 +95,12 @@ public class CommandTopManipulate extends WorldControlCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "//" + name;
 	}
 
 }

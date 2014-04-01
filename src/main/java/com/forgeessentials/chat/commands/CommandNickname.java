@@ -40,14 +40,14 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 				NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 				tag.removeTag("nickname");
 				sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-				ChatUtils.sendMessage(sender, Localization.get("command.nickname.self.remove"));
+				ChatUtils.sendMessage(sender, "Nickname removed.");
 			}
 			else
 			{
 				NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 				tag.setString("nickname", args[0]);
 				sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-				ChatUtils.sendMessage(sender, Localization.get("command.nickname.self.set").replace("%n", args[0]));
+				ChatUtils.sendMessage(sender, "Nickname set to " + args[0]);
 			}
 		}
 		else if (args.length == 2)
@@ -58,12 +58,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 				if (args[1].equalsIgnoreCase("del"))
 				{
 					player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
-					ChatUtils.sendMessage(sender, Localization.get("command.nickname.others.remove").replace("%p", args[0]));
+					ChatUtils.sendMessage(sender, "Nickname of player " + args[0] + " removed");
 				}
 				else
 				{
 					player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-					ChatUtils.sendMessage(sender, Localization.get("command.nickname.others.set").replace("%p", args[0]).replace("%n", args[1]));
+					ChatUtils.sendMessage(sender, "Nickname of player " + args[0] + " set to " + args[1]);
 				}
 			}
 			else
@@ -73,7 +73,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
 		}
 	}
 
@@ -124,5 +124,10 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "/nick <username> [nickname|del> Edit a player's nickname.";
 	}
 }

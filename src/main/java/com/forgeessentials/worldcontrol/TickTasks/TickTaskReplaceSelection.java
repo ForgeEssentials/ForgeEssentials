@@ -161,7 +161,7 @@ public class TickTaskReplaceSelection implements ITickTask
 				newName = new ItemStack(newId, 1, newMeta).getDisplayName();
 			}
 		}
-		OutputHandler.chatConfirmation(player, Localization.format("message.wc.replaceConfirmBlocksChanged", changed, targetName, newName));
+		OutputHandler.chatConfirmation(player, String.format("Replaced %1$d %2$s blocks with %3$s.", changed, targetName, newName));
 	}
 
 	@Override
