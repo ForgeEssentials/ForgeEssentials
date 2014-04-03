@@ -47,11 +47,6 @@ public class CommandTppos extends FEcmdModuleCommands
 	}
 
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-	}
-
-	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
@@ -64,7 +59,7 @@ public class CommandTppos extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1 || args.length == 2)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -82,5 +77,11 @@ public class CommandTppos extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/tppos <x y z> Teleport to a position.";
 	}
 }

@@ -63,7 +63,7 @@ public class CommandWeather extends FEcmdModuleCommands
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [DimID, none for all] <rain|storm> [on|off]");
             throw new Exception();
         }
         WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
@@ -78,12 +78,12 @@ public class CommandWeather extends FEcmdModuleCommands
                 else if (args[1].equalsIgnoreCase("off")) wt.rain = false;
                 else
                 {
-                    OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+                    OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [DimID, none for all] <rain|storm> [on|off]");
                     throw new Exception();
                 }
             }
             CommandDataManager.WTmap.put(wt.dimID, wt);
-            return Localization.get("command.weather.rain." + (wt.rain ? "on" : "off"));
+            return "Rain permanently turned " + (wt.rain ? "on" : "off");
         }
         else if (args[0].equalsIgnoreCase("storm"))
         {
@@ -94,16 +94,16 @@ public class CommandWeather extends FEcmdModuleCommands
                 else if (args[1].equalsIgnoreCase("off")) wt.storm = false;
                 else
                 {
-                    OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+                    OutputHandler.chatError(sender, "Improper syntax. Please try this instead:[DimID, none for all] <rain|storm> [on|off]");
                     throw new Exception();
                 }
             }
             CommandDataManager.WTmap.put(wt.dimID, wt);
-            return Localization.get("command.weather.storm." + (wt.storm ? "on" : "off"));
+            return "Storms permanently turned " + (wt.storm ? "on" : "off");
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [DimID, none for all] <rain|storm> [on|off]");
             throw new Exception();
         }
     }
@@ -124,5 +124,11 @@ public class CommandWeather extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/weather  [DimID, none for all] <rain|storm> [on|off] Allows for permanent manipulation of the weather.";
 	}
 }

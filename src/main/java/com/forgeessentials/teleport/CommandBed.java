@@ -46,7 +46,7 @@ public class CommandBed extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
@@ -98,7 +98,7 @@ public class CommandBed extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 	}

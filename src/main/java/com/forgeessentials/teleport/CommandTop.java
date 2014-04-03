@@ -1,4 +1,4 @@
-package com.forgeessentials.commands;
+package com.forgeessentials.teleport;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class CommandTop extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: "+ getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
 		}
 	}
 
@@ -75,7 +75,7 @@ public class CommandTop extends FEcmdModuleCommands
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
 		}
 	}
 
@@ -88,7 +88,7 @@ public class CommandTop extends FEcmdModuleCommands
 			point.y--;
 		}
 		((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y + 1, point.z, point.yaw, point.pitch);
-		ChatUtils.sendMessage(player, Localization.get("message.tc.done"));
+		ChatUtils.sendMessage(player, "Teleported.");
 	}
 
 	@Override
@@ -122,6 +122,12 @@ public class CommandTop extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/top <player> Teleport you or another player to the top of the world.";
 	}
 
 }

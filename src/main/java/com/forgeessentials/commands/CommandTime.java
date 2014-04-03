@@ -99,7 +99,7 @@ public class CommandTime extends FEcmdModuleCommands
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender, Localization.get("Improper syntax. Please try this instead: ") + getSyntaxConsole());
+            OutputHandler.chatError(sender,"Improper syntax. Please try this instead: " + getSyntaxConsole());
             throw new Exception();
         }
         if (args[0].equalsIgnoreCase("freeze"))
@@ -124,7 +124,7 @@ public class CommandTime extends FEcmdModuleCommands
                 else if (args[1].equalsIgnoreCase("night")) wt.day = false;
                 else
                 {
-                    OutputHandler.chatError(sender, Localization.get("Improper syntax. Please try this instead: ") + getSyntaxConsole());
+                    OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
                     throw new Exception();
                 }
             }
@@ -146,7 +146,7 @@ public class CommandTime extends FEcmdModuleCommands
         {
             if (args.length == 1)
             {
-                OutputHandler.chatError(sender, Localization.get("Improper syntax. Please try this instead: ") + getSyntaxConsole());
+                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
                 throw new Exception();
             }
             world.setWorldTime(world.getWorldTime() + parseInt(sender, args[1]));
@@ -154,7 +154,7 @@ public class CommandTime extends FEcmdModuleCommands
         }
         else
         {
-            OutputHandler.chatError(sender, Localization.get("Improper syntax. Please try this instead: ") + getSyntaxConsole());
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
             throw new Exception();
         }
     }

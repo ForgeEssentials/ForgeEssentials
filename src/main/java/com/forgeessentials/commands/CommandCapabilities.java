@@ -41,37 +41,19 @@ public class CommandCapabilities extends FEcmdModuleCommands
 	{
 		return "capabilities";
 	}
-
-	/*
-	 * Expected syntax /capabilities [player] [capability] [value]
-	 */
+	
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
 		if (args.length > 3)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: [player] [capability] [value|default]");
 			return;
 		}
-		execute(sender, args);
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		if (args.length > 3)
-		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxConsole());
-			return;
-		}
-		execute(sender, args);
-	}
-
-	public void execute(ICommandSender sender, String[] args)
-	{
+		
 		if (args.length == 0)
 		{
-			OutputHandler.chatConfirmation(sender, Localization.get("command.capabilities.list"));
+			OutputHandler.chatConfirmation(sender, "Possible capabilities:");
 			OutputHandler.chatConfirmation(sender, FunctionHelper.niceJoin(names.toArray()));
 		}
 		else if (args.length == 1)
@@ -79,7 +61,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 			if (player != null)
 			{
-				OutputHandler.chatConfirmation(sender, Localization.format("command.capabilities.listForX", player.username));
+				OutputHandler.chatConfirmation(sender, String.format("Capabilities for %s:", player.username));
 				ChatUtils.sendMessage(sender, names.get(0) + " = " + player.capabilities.disableDamage);
 				ChatUtils.sendMessage(sender, names.get(1) + " = " + player.capabilities.isFlying);
 				ChatUtils.sendMessage(sender, names.get(2) + " = " + player.capabilities.allowFlying);
@@ -88,7 +70,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else if (args.length == 2)
@@ -97,7 +79,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 			{
 				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+					OutputHandler.chatError(sender, "You don't have permission for that.");
 					return;
 				}
 			}
@@ -126,7 +108,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format("command.capabilities.capabilityUnknown", args[1]));
+					OutputHandler.chatError(sender, String.format("Capability '%s' unknown.", args[1]));
 					return;
 				}
 			}
@@ -137,7 +119,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 			{
 				if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+					OutputHandler.chatError(sender, "You don't have permission for that.");
 					return;
 				}
 			}
@@ -176,7 +158,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format("command.capabilities.capabilityUnknown", args[1]));
+					OutputHandler.chatError(sender, String.format("command.capabilities.capabilityUnknown", args[1]));
 					return;
 				}
 				player.sendPlayerAbilities();
@@ -203,7 +185,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -225,6 +207,12 @@ public class CommandCapabilities extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/capabilities [player] [capability] [value|default] Allows you to modify player capabilities.";
 	}
 
 }

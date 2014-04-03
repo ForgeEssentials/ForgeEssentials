@@ -49,6 +49,7 @@ public class TeleportModule {
 		e.registerServerCommand(new CommandTPA());
 		e.registerServerCommand(new CommandTPAhere());
 		e.registerServerCommand(new CommandPersonalWarp());
+		e.registerServerCommand(new CommandTop());
 	}
 	
 	@FEModule.ServerPostInit
