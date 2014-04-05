@@ -46,7 +46,7 @@ public class CommandHeal extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
 		}
 	}
 
@@ -67,7 +67,7 @@ public class CommandHeal extends FEcmdModuleCommands
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
 		}
 	}
 
@@ -76,7 +76,7 @@ public class CommandHeal extends FEcmdModuleCommands
 		target.heal(20);
 		target.extinguish();
 		target.getFoodStats().addStats(20, 1.0F);
-		ChatUtils.sendMessage(target, Localization.get("command.heal.healed"));
+		ChatUtils.sendMessage(target, "You were healed");
 	}
 
 	@Override

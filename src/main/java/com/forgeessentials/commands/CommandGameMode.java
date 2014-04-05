@@ -48,7 +48,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 			target.setGameType(gm);
 			target.fallDistance = 0.0F;
 			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", target.username, modeName));
+			OutputHandler.chatConfirmation(sender, String.format("Gamemode changed of %1$s to %2$s", target.username, modeName));
 			return;
 		}
 
@@ -69,7 +69,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 			target.setGameType(gm);
 			target.fallDistance = 0.0F;
 			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", target.username, modeName));
+			OutputHandler.chatConfirmation(sender, String.format("command.gamemode.changed", target.username, modeName));
 			return;
 		}
 
@@ -90,7 +90,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 			target.setGameType(gm);
 			target.fallDistance = 0.0F;
 			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", target.username, modeName));
+			OutputHandler.chatConfirmation(sender, String.format("command.gamemode.changed", target.username, modeName));
 			return;
 		}
 
@@ -117,7 +117,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 				victim.fallDistance = 0.0F;
 			}
 
-			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", "all specified players", modeName));
+			OutputHandler.chatConfirmation(sender, String.format("Gamemode changed of %1$s to %2$s", "all specified players", modeName));
 			return;
 		}
 
@@ -148,7 +148,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 			target.setGameType(gm);
 			target.fallDistance = 0.0F;
 			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", target.username, modeName));
+			OutputHandler.chatConfirmation(sender, String.format("Gamemode changed of %1$s to %2$s", target.username, modeName));
 			return;
 		}
 
@@ -167,7 +167,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 			target.setGameType(gm);
 			target.fallDistance = 0.0F;
 			String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", target.username, modeName));
+			OutputHandler.chatConfirmation(sender, String.format("Gamemode changed of %1$s to %2$s", target.username, modeName));
 			return;
 		}
 
@@ -187,7 +187,7 @@ public class CommandGameMode extends FEcmdModuleCommands
 				player.fallDistance = 0.0F;
 			}
 
-			OutputHandler.chatConfirmation(sender, Localization.format("command.gamemode.changed", "all specified players", modeName));
+			OutputHandler.chatConfirmation(sender, String.format("Gamemode changed of %1$s to %2$s", "all specified players", modeName));
 			return;
 		}
 
@@ -262,5 +262,11 @@ public class CommandGameMode extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/gamemode <player> [gamemode] Change a player's gamemode.";
 	}
 }

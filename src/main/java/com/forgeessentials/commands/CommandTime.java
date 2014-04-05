@@ -99,7 +99,7 @@ public class CommandTime extends FEcmdModuleCommands
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender,"Improper syntax. Please try this instead: " + getSyntaxConsole());
+            OutputHandler.chatError(sender,"Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
             throw new Exception();
         }
         if (args[0].equalsIgnoreCase("freeze"))
@@ -108,7 +108,7 @@ public class CommandTime extends FEcmdModuleCommands
             wt.freezeTime = world.getWorldTime();
             wt.timeFreeze = !wt.timeFreeze;
             CommandDataManager.WTmap.put(wt.dimID, wt);
-            return Localization.get("command.time.freeze." + (wt.timeFreeze ? "on" : "off"));
+            return "Time freeze" + (wt.timeFreeze ? "on" : "off");
         }
         else if (args[0].equalsIgnoreCase("lock"))
         {
@@ -124,12 +124,12 @@ public class CommandTime extends FEcmdModuleCommands
                 else if (args[1].equalsIgnoreCase("night")) wt.day = false;
                 else
                 {
-                    OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+                    OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
                     throw new Exception();
                 }
             }
             CommandDataManager.WTmap.put(wt.dimID, wt);
-            return Localization.format("command.time.lock", args[1]);
+            return String.format("Locked time to %s.", args[1]);
         }
         else if (args[0].equalsIgnoreCase("set"))
         {
@@ -140,21 +140,21 @@ public class CommandTime extends FEcmdModuleCommands
             else
                 world.setWorldTime(parseInt(sender, args[1]));
             
-            return Localization.format("command.time.set", args[1]);
+            return String.format("Set time to %s.", args[1]);
         }
         else if (args[0].equalsIgnoreCase("add"))
         {
             if (args.length == 1)
             {
-                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
                 throw new Exception();
             }
             world.setWorldTime(world.getWorldTime() + parseInt(sender, args[1]));
-            return Localization.format("command.time.add", args[1]);
+            return String.format("Added %d to the current time.", args[1]);
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
             throw new Exception();
         }
     }
@@ -184,5 +184,11 @@ public class CommandTime extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/time [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night> Manipulate time.";
 	}
 }

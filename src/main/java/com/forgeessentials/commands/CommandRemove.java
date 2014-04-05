@@ -44,7 +44,7 @@ public class CommandRemove extends FEcmdModuleCommands
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
 			return;
 		}
 
@@ -58,7 +58,7 @@ public class CommandRemove extends FEcmdModuleCommands
 			counter++;
 			entity.setDead();
 		}
-		OutputHandler.chatConfirmation(sender, Localization.format("command.remove.done", counter));
+		OutputHandler.chatConfirmation(sender, String.format("%d items removed.", counter));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -81,7 +81,7 @@ public class CommandRemove extends FEcmdModuleCommands
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
 			return;
 		}
 
@@ -95,7 +95,7 @@ public class CommandRemove extends FEcmdModuleCommands
 			counter++;
 			entity.setDead();
 		}
-		OutputHandler.chatConfirmation(sender, Localization.format("command.remove.done", counter));
+		OutputHandler.chatConfirmation(sender, String.format("%d items removed.", counter));
 	}
 
 	@Override
@@ -120,6 +120,12 @@ public class CommandRemove extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/remove <radius> <x, y, z> Remove all items within a specified radius from the given coordinates.";
 	}
 
 }

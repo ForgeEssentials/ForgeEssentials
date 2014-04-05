@@ -57,7 +57,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 
 		if (args.length == 0)
 		{
-			ChatUtils.sendMessage(sender, Localization.get("command.personalwarp.list"));
+			ChatUtils.sendMessage(sender, "Your personal warps:");
 			ChatUtils.sendMessage(sender, FunctionHelper.niceJoin(map.keySet().toArray()));
 		}
 		else
@@ -74,7 +74,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get("command.personalwarp.notfound"));
+					OutputHandler.chatError(sender, "That personal warp doesn't exist!");
 				}
 			}
 			else if (args[0].equalsIgnoreCase("add"))
@@ -86,21 +86,21 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 			        if (!prop.hasValue() ||  prop.getNumberValue() == -1)
 			        {
 			            map.put(args[1], new PWarp(sender.username, args[1], new WarpPoint(sender)));
-			            OutputHandler.chatConfirmation(sender, Localization.get("command.personalwarp.made"));
+			            OutputHandler.chatConfirmation(sender, "Personal warp sucessfully added.");
 			        }
 			        else if (map.size() < prop.getNumberValue())
 			        {
 			            map.put(args[1], new PWarp(sender.username, args[1], new WarpPoint(sender)));
-                        OutputHandler.chatConfirmation(sender, Localization.get("command.personalwarp.made"));
+                        OutputHandler.chatConfirmation(sender, "Personal warp sucessfully added.");
 			        }
 			        else
 			        {
-			            OutputHandler.chatError(sender, Localization.get("command.personalwarp.limitmsg"));
+			            OutputHandler.chatError(sender, "You have reached your limit.");
 			        }
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get("command.personalwarp.alreadyexists"));
+					OutputHandler.chatError(sender, "That personal warp already exists.");
 				}
 			}
 			else if (args[0].equalsIgnoreCase("remove"))
@@ -109,18 +109,18 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 				{
 					TeleportDataManager.removePWarp(map.get(args[1]));
 					map.remove(args[1]);
-					OutputHandler.chatConfirmation(sender, Localization.get("command.personalwarp.remove"));
+					OutputHandler.chatConfirmation(sender, "Personal warp sucessfully removed.");
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get("command.personalwarp.notfound"));
+					OutputHandler.chatError(sender, "That personal warp doesn't exist!");
 				}
 			}
 			else if (args[0].equalsIgnoreCase("limit") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, PERMSETLIMIT)))
 			{
 			    if (args.length == 1)
 			    {
-			        OutputHandler.chatError(sender, Localization.get("command.personalwarp.limit.syntax"));
+			        OutputHandler.chatError(sender, "Specify a group or player. (-1 means no limit.)");
 			    }
 			    else
 			    {
@@ -131,19 +131,19 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 
                     if (args.length == 2)
                     {
-                        OutputHandler.chatConfirmation(sender, Localization.format("command.personalwarp.limit.current", getLimit(target)));
+                        OutputHandler.chatConfirmation(sender, String.format("The current limit is %s.", getLimit(target)));
                     }
                     else
                     {
                         setLimit(target, parseIntWithMin(sender, args[2], -1));
-                        OutputHandler.chatConfirmation(sender, Localization.format("command.personalwarp.limit.new", getLimit(target)));
+                        OutputHandler.chatConfirmation(sender, String.format("Limit changed to %s.", getLimit(target)));
                     }
 
 			    }
 			}
 			else if (args[0].equalsIgnoreCase("limit"))
 			{
-			    OutputHandler.chatConfirmation(sender, Localization.format("command.personalwarp.limit.current", getLimit(sender)));
+			    OutputHandler.chatConfirmation(sender, String.format("The current limit is %s.", getLimit(sender)));
 			}
 		}
 		TeleportDataManager.pwMap.put(sender.username, map);
@@ -171,11 +171,6 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
         else return;
     }
 
-    @Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-	}
-
 	@Override
 	public boolean canConsoleUseCommand()
 	{
@@ -189,7 +184,7 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, "goto", "add", "remove", "limit");
@@ -240,5 +235,11 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/pwarp goto [name] OR <add|remove> <name> Teleports you to a personal warp.";
 	}
 }

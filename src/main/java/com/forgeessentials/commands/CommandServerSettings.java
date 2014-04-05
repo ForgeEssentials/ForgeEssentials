@@ -51,7 +51,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
 		DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
 		if (args.length == 0)
 		{
-			ChatUtils.sendMessage(sender, Localization.get("command.serversettings.list"));
+			ChatUtils.sendMessage(sender, "Available options:");
 			ChatUtils.sendMessage(sender, options.toString());
 			return;
 		}
@@ -172,5 +172,11 @@ public class CommandServerSettings extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/serversettings [option] [value] View or change server settings (in server.properties).";
 	}
 }

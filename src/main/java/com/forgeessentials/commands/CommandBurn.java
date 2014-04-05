@@ -33,19 +33,19 @@ public class CommandBurn extends FEcmdModuleCommands
 			if (args[0].toLowerCase().equals("me"))
 			{
 				sender.setFire(15);
-				OutputHandler.chatError(sender, Localization.get("command.burn.self"));
+				OutputHandler.chatError(sender, "Ouch! Hot!");
 			}
 			else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
 				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 				if (player != null)
 				{
-					OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
+					OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
 					player.setFire(15);
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				}
 			}
 		}
@@ -56,11 +56,11 @@ public class CommandBurn extends FEcmdModuleCommands
 				try
 				{
 					sender.setFire(Integer.parseInt(args[1]));
-					OutputHandler.chatError(sender, Localization.get("command.burn.self"));
+					OutputHandler.chatError(sender, "Ouch! Hot!");
 				}
 				catch (NumberFormatException e)
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NAN, args[1]));
+					OutputHandler.chatError(sender, String.format("%s param was not recognized as number. Please try again.", args[1]));
 				}
 			}
 			else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
@@ -69,17 +69,17 @@ public class CommandBurn extends FEcmdModuleCommands
 				if (player != null)
 				{
 					player.setFire(parseIntWithMin(sender, args[1], 0));
-					OutputHandler.chatConfirmation(sender, Localization.get("command.burn.player"));
+					OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				}
 			}
 		}
 		else
 		{
-			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [me|<player>]");
 		}
 	}
 
@@ -95,11 +95,11 @@ public class CommandBurn extends FEcmdModuleCommands
 		if (player != null)
 		{
 			player.setFire(time);
-			ChatUtils.sendMessage(sender, Localization.get("command.burn.player"));
+			ChatUtils.sendMessage(sender, "You should feel bad about doing that.");
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 		}
 	}
 
@@ -140,5 +140,11 @@ public class CommandBurn extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/burn <player> Set a player on fire.";
 	}
 }

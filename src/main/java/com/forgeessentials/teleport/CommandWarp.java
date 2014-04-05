@@ -98,7 +98,7 @@ public class CommandWarp extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+					OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
 				}
 			}
 			else
@@ -124,7 +124,7 @@ public class CommandWarp extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, Localization.format("Player %s does not exist, or is not online.", args[0]));
 				}
 			}
 			else

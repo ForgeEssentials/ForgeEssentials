@@ -22,7 +22,6 @@ import com.forgeessentials.commands.CommandGameMode;
 import com.forgeessentials.commands.CommandGetCommandBook;
 import com.forgeessentials.commands.CommandGive;
 import com.forgeessentials.commands.CommandHeal;
-import com.forgeessentials.commands.CommandI;
 import com.forgeessentials.commands.CommandInventorySee;
 import com.forgeessentials.commands.CommandJump;
 import com.forgeessentials.commands.CommandKill;
@@ -82,7 +81,6 @@ public class CommandRegistrar
 		cmdList.add(new CommandHeal());
 		cmdList.add(new CommandKill());
 		cmdList.add(new CommandGive());
-		cmdList.add(new CommandI());
 		cmdList.add(new CommandGameMode());
 		cmdList.add(new CommandDoAs());
 		cmdList.add(new CommandServerSettings());

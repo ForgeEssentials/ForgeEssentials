@@ -45,7 +45,7 @@ public class CommandFindblock extends FEcmdModuleCommands
 	{
 	    if (args.length == 0)
 	    {
-	        OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getCommandInfo(sender));
+	        OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <block> [max distance] [amount of blocks] [speed]");
 	        return;
 	    }
 	    int[] id = FunctionHelper.parseIdAndMetaFromString(args[0], true);
@@ -54,11 +54,6 @@ public class CommandFindblock extends FEcmdModuleCommands
 	    int speed = (args.length < 4) ? defaultSpeed : parseIntWithMin(sender, args[3], 1);
 	    
 	    new TickTaskBlockFinder(sender, id, range, amount, speed);
-	}
-	
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
 	}
 
 	@Override

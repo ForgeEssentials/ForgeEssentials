@@ -70,7 +70,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		}
 		else if (args.length != 3)
 		{
-			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <effect> <duration> [ampl]");
 			return;
 		}
 
@@ -80,7 +80,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get("command.potion.effectnotfound"));
+			OutputHandler.chatError(sender, "That potion effect was not found.");
 			return;
 		}
 
@@ -101,7 +101,7 @@ public class CommandPotion extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 	}
@@ -119,7 +119,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		}
 		else if (args.length != 3)
 		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <effect> <duration> [ampl]");
 			return;
 		}
 
@@ -134,7 +134,7 @@ public class CommandPotion extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+			OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 		}
 	}
 
@@ -177,6 +177,12 @@ public class CommandPotion extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/potion <player> <effect> <duration> [ampl] Give the specified player a potion effect.";
 	}
 
 }

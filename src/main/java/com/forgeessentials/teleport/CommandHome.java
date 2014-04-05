@@ -33,7 +33,7 @@ public class CommandHome extends FEcmdModuleCommands
 			WarpPoint home = PlayerInfo.getPlayerInfo(sender.username).home;
 			if (home == null)
 			{
-				OutputHandler.chatError(sender, Localization.get("message.error.nohome") + getSyntaxPlayer(sender));
+				OutputHandler.chatError(sender, "No home set. Try this: [here|x, y, z]");
 			}
 			else
 			{
@@ -50,14 +50,9 @@ public class CommandHome extends FEcmdModuleCommands
 			{
 				WarpPoint p = new WarpPoint(sender);
 				PlayerInfo.getPlayerInfo(sender.username).home = p;
-				ChatUtils.sendMessage(sender, Localization.format("command.home.confirm", p.x, p.y, p.z));
+				ChatUtils.sendMessage(sender, String.format("Home set to: %1$d, %2$d, %3$d", p.x, p.y, p.z));
 			}
 		}
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
 	}
 
 	@Override
@@ -67,7 +62,7 @@ public class CommandHome extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, "here");
@@ -97,5 +92,12 @@ public class CommandHome extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		if (sender instanceof EntityPlayer)
+			return "/home [here|x, y, z] Set your home location.";
+		else return null;
 	}
 }

@@ -36,7 +36,7 @@ public class CommandKill extends FEcmdModuleCommands
 			if (player != null)
 			{
 				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				ChatUtils.sendMessage(player, Localization.get("command.kill.msg"));
+				ChatUtils.sendMessage(player, "You were killed. You probably deserved it.");
 			}
 			else
 			{
@@ -46,7 +46,7 @@ public class CommandKill extends FEcmdModuleCommands
 		else
 		{
 			sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
-			ChatUtils.sendMessage(sender, Localization.get("command.kill.msg"));
+			ChatUtils.sendMessage(sender, "You were killed. You probably deserved it.");
 		}
 	}
 
@@ -59,7 +59,7 @@ public class CommandKill extends FEcmdModuleCommands
 			if (player != null)
 			{
 				player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-				ChatUtils.sendMessage(player, Localization.get("command.kill.msg"));
+				ChatUtils.sendMessage(player, "You were killed. You probably deserved it.");
 			}
 			else
 			{
@@ -68,7 +68,7 @@ public class CommandKill extends FEcmdModuleCommands
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
 		}
 	}
 
@@ -109,6 +109,12 @@ public class CommandKill extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/kill <player> Commit suicide, or kill other players (with permission)";
 	}
 
 }

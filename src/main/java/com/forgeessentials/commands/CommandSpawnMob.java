@@ -75,7 +75,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
 			if (mop == null)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_TARGET));
+				OutputHandler.chatError(sender, "You must first look at the ground!");
 				return;
 			}
 			int amount = 1;
@@ -98,7 +98,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 				EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), sender.worldObj);
 				if (mob == null)
 				{
-					OutputHandler.chatError(sender, Localization.format("command.spawnmob.noMobX", args[0]));
+					OutputHandler.chatError(sender, String.format("%s was not recognized as a mob.", args[0]));
 					return;
 				}
 				mob.setPosition(x, y, z);
@@ -132,7 +132,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 				EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), world);
 				if (mob == null)
 				{
-					ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NOMOB, args[0]));
+					ChatUtils.sendMessage(sender, String.format("%s was not recognized as a mob.", args[0]));
 					return;
 				}
 				mob.setPosition(x, y, z);
@@ -177,6 +177,12 @@ public class CommandSpawnMob extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/spawnmob <mob type> <amount> [<x> <y> <z>] [dimension] Spawns a mob at a location.";
 	}
 
 }

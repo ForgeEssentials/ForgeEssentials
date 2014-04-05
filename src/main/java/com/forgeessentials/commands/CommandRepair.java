@@ -35,7 +35,7 @@ public class CommandRepair extends FEcmdModuleCommands
 
 			if (item == null)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
+				OutputHandler.chatError(sender, "You are not holding a valid item.");
 			}
 
 			item.setItemDamage(0);
@@ -62,7 +62,7 @@ public class CommandRepair extends FEcmdModuleCommands
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get("Improper syntax. Please try this instead: ") + getSyntaxPlayer(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
 		}
 	}
 
@@ -91,7 +91,7 @@ public class CommandRepair extends FEcmdModuleCommands
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get("Improper syntax. Please try this instead: ") + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: ");
 		}
 	}
 
@@ -132,6 +132,12 @@ public class CommandRepair extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/repair [player] Repair the item you or another player is holding.";
 	}
 
 }

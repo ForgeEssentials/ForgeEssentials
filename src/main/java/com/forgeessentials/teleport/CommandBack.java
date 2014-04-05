@@ -43,14 +43,14 @@ public class CommandBack extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get("command.back.noback"));
+					OutputHandler.chatError(sender, "You have nowhere to get back to");
 				}
 				justDied.remove(sender.username);
 				return;
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get("command.back.nodeath"));
+				OutputHandler.chatError(sender, "You have nowhere to get back to");
 			}
 		}
 		else if(APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.BasicCommands.back.ontp")))
@@ -65,15 +65,10 @@ public class CommandBack extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get("command.back.noback"));
+				OutputHandler.chatError(sender, "You have nowhere to get back to");
 			}
 			return;
 		}
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
 	}
 
 	@Override
@@ -105,6 +100,12 @@ public class CommandBack extends FEcmdModuleCommands
 	public int compareTo(Object arg0) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/back Teleport you to your last death or teleport location.";
 	}
 
 }

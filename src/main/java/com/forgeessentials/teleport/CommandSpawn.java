@@ -39,7 +39,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 		{
 			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+				OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 				return;
 			}
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
@@ -62,12 +62,12 @@ public class CommandSpawn extends FEcmdModuleCommands
 
 				// teleport
 				FunctionHelper.setPlayer(player, point);
-				ChatUtils.sendMessage(player, Localization.get("command.spawn.done"));
+				ChatUtils.sendMessage(player, "Teleported to spawn.");
 				return;
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				return;
 			}
 		}
@@ -87,7 +87,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 			WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, sender.cameraYaw, sender.cameraPitch);
 			PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
 			TeleportCenter.addToTpQue(spawn, sender);
-			ChatUtils.sendMessage(sender, Localization.get("command.spawn.done"));
+			ChatUtils.sendMessage(sender, "Teleported to spawn.");
 		}
 	}
 
@@ -105,12 +105,12 @@ public class CommandSpawn extends FEcmdModuleCommands
 				ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
 				spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
 				TeleportCenter.addToTpQue(spawn, player);
-				ChatUtils.sendMessage(player, Localization.get("command.spawn.done"));
+				ChatUtils.sendMessage(player, "Teleported to spawn.");
 				return;
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				return;
 			}
 		}
@@ -135,7 +135,7 @@ public class CommandSpawn extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -153,5 +153,12 @@ public class CommandSpawn extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		if (sender instanceof EntityPlayer)
+			return "/spawn [player] [dimension] Teleport you or another player to their spawn point.";
+		else return "/spawn <player> [dimension] Teleport a player to their spawn point.";
 	}
 }

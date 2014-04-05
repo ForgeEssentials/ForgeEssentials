@@ -27,14 +27,14 @@ public class CommandRename extends FEcmdModuleCommands
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <name>");
         }
         else
         {
             ItemStack is = sender.inventory.getCurrentItem();
             if (is == null)
             {
-                OutputHandler.chatError(sender, Localization.get("message.error.noItemPlayer"));
+                OutputHandler.chatError(sender, "You are not holding a valid item.");
             }
             else
             {

@@ -33,7 +33,7 @@ public class CommandSmite extends FEcmdModuleCommands
 			if (args[0].toLowerCase().equals("me"))
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-				ChatUtils.sendMessage(sender, Localization.get("command.smite.self"));
+				ChatUtils.sendMessage(sender, "Was that really a good idea?");
 			}
 			else
 			{
@@ -41,11 +41,11 @@ public class CommandSmite extends FEcmdModuleCommands
 				if (player != null)
 				{
 					player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-					ChatUtils.sendMessage(sender, Localization.get("command.smite.player"));
+					ChatUtils.sendMessage(sender, "You should feel bad about doing that.");
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format("Player %s does not exist, or is not online.", args[0]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				}
 			}
 		}
@@ -54,12 +54,12 @@ public class CommandSmite extends FEcmdModuleCommands
 			MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
 			if (mop == null)
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_TARGET));
+				OutputHandler.chatError(sender, "You must first look at the ground!");
 			}
 			else
 			{
 				sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
-				ChatUtils.sendMessage(sender, Localization.get("command.smite.ground"));
+				ChatUtils.sendMessage(sender, "I hope that didn't start a fire.");
 			}
 		}
 	}
@@ -73,16 +73,16 @@ public class CommandSmite extends FEcmdModuleCommands
 			if (player != null)
 			{
 				player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-				ChatUtils.sendMessage(sender, Localization.get("command.smite.player"));
+				ChatUtils.sendMessage(sender, "You should feel bad about doing that.");
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format("Player %s does not exist, or is not online.", args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get("Player %s does not exist, or is not online.") + getSyntaxConsole());
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
 		}
 	}
 
@@ -117,6 +117,13 @@ public class CommandSmite extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		if (sender instanceof EntityPlayer)
+			return "/smite [me] <player> Smite yourself or another player.";
+		else return "/smite <player> Smite someone.";
 	}
 
 }
