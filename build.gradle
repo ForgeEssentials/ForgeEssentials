@@ -23,11 +23,10 @@ minecraft {
 	assetDir = "rundir/assets"
 }
 
-sourceSets{
-main
-client{
-compileClasspath = project.sourceSets.main.compileClasspath
-}
+sourceSets {
+    client{
+        compileClasspath = project.sourceSets.main.compileClasspath
+    }
 }
 
 configurations{
@@ -46,11 +45,12 @@ processResources
 	from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
 	
 }
+
 processClientResources{
-from(sourceSets.client.resources.srcDirs) {
+    from(sourceSets.client.resources.srcDirs) {
 		include 'mcmod.info'
 		expand 'version':project.version, 'mcversion':project.minecraft.version
-	}
+    }
 
 	from(sourceSets.client.resources.srcDirs) { exclude 'mcmod.info' }
 }
@@ -131,7 +131,7 @@ list.each { name ->
     
     reobf {
         reobf(newTask) { reobfSpec ->
-            reobfSpec.classpath = project.sourceSets.main.compileClasspath
+            reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
         }
     }
 
