@@ -39,7 +39,7 @@ public class CommandEnchant extends FEcmdModuleCommands
 		ItemStack var6 = sender.getCurrentEquippedItem();
 		if (var6 == null)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOITEMPLAYER));
+			OutputHandler.chatError(sender, "You are not holding a valid item.");
 			return;
 		}
 
@@ -136,7 +136,7 @@ public class CommandEnchant extends FEcmdModuleCommands
 		}
 		if (ench == null)
 		{
-			OutputHandler.chatError(sender, Localization.format("commands.enchant.notFound", args[0]));
+			OutputHandler.chatError(sender, String.format("'%s' is not a recognized enchantment.", args[0]));
 			return;
 		}
 
@@ -210,5 +210,11 @@ public class CommandEnchant extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/enchant [ench name] [lvl] Enchants the item you are currently holding.";
 	}
 }

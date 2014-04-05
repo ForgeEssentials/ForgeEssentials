@@ -48,7 +48,7 @@ public class CommandTPA extends FEcmdModuleCommands
 	{
 		if (args.length == 0)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
 			return;
 		}
 
@@ -60,8 +60,8 @@ public class CommandTPA extends FEcmdModuleCommands
 				{
 					if (data.receiver == sender)
 					{
-						ChatUtils.sendMessage(data.sender, Localization.get("command.tpa.accepted"));
-						ChatUtils.sendMessage(data.receiver, Localization.get("command.tpa.accepted"));
+						ChatUtils.sendMessage(data.sender, "Teleport request accepted.");
+						ChatUtils.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
 						PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(data.sender.username);
 						playerInfo.back = new WarpPoint(data.sender);
 						CommandBack.justDied.remove(data.sender.username);
@@ -82,8 +82,8 @@ public class CommandTPA extends FEcmdModuleCommands
 				{
 					if (data.receiver == sender)
 					{
-						ChatUtils.sendMessage(data.sender, Localization.get("command.tpa.declined"));
-						ChatUtils.sendMessage(data.receiver, Localization.get("command.tpa.declined"));
+						ChatUtils.sendMessage(data.sender, "Teleport request declined.");
+						ChatUtils.sendMessage(data.receiver, "Teleport request declined by other party.");
 						TickHandlerTP.tpaListToRemove.add(data);
 						return;
 					}
@@ -94,7 +94,7 @@ public class CommandTPA extends FEcmdModuleCommands
 
 		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".sendrequest")))
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+			OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 			return;
 		}
 
@@ -107,14 +107,9 @@ public class CommandTPA extends FEcmdModuleCommands
 		{
 			TickHandlerTP.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, false));
 
-			ChatUtils.sendMessage(sender, Localization.format("command.tpa.sendRequest", receiver.username));
-			ChatUtils.sendMessage(receiver, Localization.format("command.tpa.gotRequest", sender.username));
+			ChatUtils.sendMessage(sender, String.format("Teleport request sent to %s", receiver.username));
+			ChatUtils.sendMessage(receiver, String.format("Received teleport request from %s. Enter '/tpahere accept' to accept, '/tpahere decline' to decline.", sender.username));
 		}
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
 	}
 
 	@Override
@@ -130,7 +125,7 @@ public class CommandTPA extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
 	{
 		if (args.length == 1)
 		{
@@ -160,5 +155,11 @@ public class CommandTPA extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/tpa [player] <player|<x> <y> <z|accept|decline>> Request to teleport yourself or another player.";
 	}
 }

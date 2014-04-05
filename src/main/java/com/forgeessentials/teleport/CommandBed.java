@@ -75,14 +75,14 @@ public class CommandBed extends FEcmdModuleCommands
 				if (sleepPoint != null){
 				FunctionHelper.setPlayer(player, sleepPoint, world);
 				}else{
-					OutputHandler.chatError(player, Localization.get("command.bed.noExist"));
+					OutputHandler.chatError(player, "No bed found.");
 				}
-				OutputHandler.chatConfirmation(player, Localization.get("command.bed.done"));
+				OutputHandler.chatConfirmation(player, "Teleported to bed last used.");
 			} else {
-				OutputHandler.chatError(player, Localization.get("command.bed.obstructed"));
+				OutputHandler.chatError(player, "Your bed is obstructed.");
 			}
 		} else {
-			OutputHandler.chatError(player, Localization.get("command.bed.noExist"));			
+			OutputHandler.chatError(player, "No bed found.");			
 		}
 	}
 
@@ -147,5 +147,11 @@ public class CommandBed extends FEcmdModuleCommands
 	public int compareTo(Object arg0) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/bed [player] Teleport you or another player to the bed last used.";
 	}
 }

@@ -47,7 +47,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 	{
 		if (args.length == 0)
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
 			return;
 		}
 
@@ -59,8 +59,8 @@ public class CommandTPAhere extends FEcmdModuleCommands
 				{
 					if (data.receiver.username.equalsIgnoreCase(sender.username))
 					{
-						ChatUtils.sendMessage(data.sender, Localization.get("command.tpahere.accepted"));
-						ChatUtils.sendMessage(data.receiver, Localization.get("command.tpahere.accepted"));
+						ChatUtils.sendMessage(data.sender, "Teleport request accepted.");
+						ChatUtils.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
 						TickHandlerTP.tpaListToRemove.add(data);
 						TeleportCenter.addToTpQue(new WarpPoint(data.sender), data.receiver);
 						return;
@@ -78,8 +78,8 @@ public class CommandTPAhere extends FEcmdModuleCommands
 				{
 					if (data.receiver.username.equalsIgnoreCase(sender.username))
 					{
-						ChatUtils.sendMessage(data.sender, Localization.get("command.tpahere.declined"));
-						ChatUtils.sendMessage(data.receiver, Localization.get("command.tpahere.declined"));
+						ChatUtils.sendMessage(data.sender, "Teleport request declined.");
+						ChatUtils.sendMessage(data.receiver, "Teleport request declined by other party.");
 						TickHandlerTP.tpaListToRemove.add(data);
 						return;
 					}
@@ -90,7 +90,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 
 		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".sendrequest")))
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+			OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 			return;
 		}
 
@@ -103,8 +103,8 @@ public class CommandTPAhere extends FEcmdModuleCommands
 		{
 			TickHandlerTP.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
 
-			ChatUtils.sendMessage(sender, Localization.format("command.tpahere.sendRequest", receiver.username));
-			ChatUtils.sendMessage(receiver, Localization.format("command.tpahere.gotRequest", sender.username));
+			ChatUtils.sendMessage(sender, String.format("Teleport request sent to %s", receiver.username));
+			ChatUtils.sendMessage(receiver, String.format("Received teleport request from %s. Enter '/tpahere accept' to accept, '/tpahere decline' to decline.", sender.username));
 		}
 	}
 
@@ -126,7 +126,7 @@ public class CommandTPAhere extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
 	{
 		if (args.length == 1)
 		{
@@ -156,5 +156,11 @@ public class CommandTPAhere extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/tpahere [player] <player|<x> <y> <z|accept|decline>> Teleports you or a player to a player or x y z.";
 	}
 }

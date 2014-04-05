@@ -41,7 +41,7 @@ public class CommandKit extends FEcmdModuleCommands
 		 */
 		if (args.length == 0)
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.KIT_LIST));
+			ChatUtils.sendMessage(sender, "Available kits:");
 
 			String msg = "";
 			for (Kit kit : CommandDataManager.kits.values())
@@ -72,7 +72,7 @@ public class CommandKit extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.KIT_NOTEXISTS));
+				OutputHandler.chatError(sender, "Kit doesn't exist - either make it or try another kit?");
 			}
 			return;
 		}
@@ -87,11 +87,11 @@ public class CommandKit extends FEcmdModuleCommands
 				{
 					int cooldown = parseIntWithMin(sender, args[2], 0);
 					new Kit(sender, args[0].toLowerCase(), cooldown);
-					ChatUtils.sendMessage(sender, Localization.get(Localization.KIT_MADE).replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
+					ChatUtils.sendMessage(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.KIT_ALREADYEXISTS));
+					OutputHandler.chatError(sender, "This kit already exists.");
 				}
 				return;
 			}
@@ -107,11 +107,11 @@ public class CommandKit extends FEcmdModuleCommands
 				if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
 				{
 					CommandDataManager.removeKit(CommandDataManager.kits.get(args[0].toLowerCase()));
-					ChatUtils.sendMessage(sender, Localization.get(Localization.KIT_REMOVED));
+					ChatUtils.sendMessage(sender, "Kit removed.");
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.get(Localization.KIT_NOTEXISTS));
+					OutputHandler.chatError(sender, "Kit doesn't exist - either make it or try another kit?");
 				}
 				return;
 			}
@@ -120,18 +120,18 @@ public class CommandKit extends FEcmdModuleCommands
 		/*
 		 * You're doing it wrong!
 		 */
-		OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX) + getSyntaxPlayer(sender));
+		OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [name] OR [name] [set|del] <cooldown>");
 	}
 
 	public void giveKit(EntityPlayer player, Kit kit)
 	{
 		if (PlayerInfo.getPlayerInfo(player.username).kitCooldown.containsKey(kit.getName()))
 		{
-			ChatUtils.sendMessage(player, Localization.get(Localization.KIT_STILLINCOOLDOWN).replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName()))));
+			ChatUtils.sendMessage(player, "Kit cooldown active, %c seconds to go!".replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName()))));
 		}
 		else
 		{
-			ChatUtils.sendMessage(player, Localization.get(Localization.KIT_DONE));
+			ChatUtils.sendMessage(player, "Kit dropped.");
 
 			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerTP.BYPASS_KIT_COOLDOWN)))
 			{
@@ -211,6 +211,12 @@ public class CommandKit extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/kit [name] OR [name] [set|del] <cooldown> Allows you to receive free kits which are pre-defined by the server owner.";
 	}
 
 }

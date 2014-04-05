@@ -65,7 +65,7 @@ public class CommandWarp extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get("command.warp.notfound"));
+				OutputHandler.chatError(sender, "That warp doesn't exist!");
 			}
 		}
 		else if (args.length == 2)
@@ -76,12 +76,12 @@ public class CommandWarp extends FEcmdModuleCommands
 				{
 					if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
 					{
-						OutputHandler.chatError(sender, Localization.get("command.warp.alreadyexists"));
+						OutputHandler.chatError(sender, "That warp already exists. Use '/warp del <name>' to delete.");
 					}
 					else
 					{
 						TeleportDataManager.addWarp(new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
-						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
+						OutputHandler.chatConfirmation(sender, "Done!");
 					}
 				}
 				else if (args[0].equalsIgnoreCase("del"))
@@ -89,16 +89,16 @@ public class CommandWarp extends FEcmdModuleCommands
 					if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
 					{
 						TeleportDataManager.removeWarp(TeleportDataManager.warps.get(args[1]));
-						OutputHandler.chatConfirmation(sender, Localization.get(Localization.DONE));
+						OutputHandler.chatConfirmation(sender, "Done!");
 					}
 					else
 					{
-						OutputHandler.chatError(sender, Localization.get("command.warp.notfound"));
+						OutputHandler.chatError(sender, "That warp doesn't exist!");
 					}
 				}
 				else
 				{
-					OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxPlayer(sender));
+					OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [name] OR <set|del> <name> ");
 				}
 			}
 			else
@@ -124,12 +124,12 @@ public class CommandWarp extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format("Player %s does not exist, or is not online.", args[0]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				}
 			}
 			else
 			{
-				OutputHandler.felog.info("CommandBlock Error: " + Localization.get("command.warp.notfound"));
+				OutputHandler.felog.info("CommandBlock Error: That warp doesn't exist!");
 			}
 		}
 	}
@@ -159,7 +159,7 @@ public class CommandWarp extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)
 			return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.warps.keySet());
@@ -179,6 +179,12 @@ public class CommandWarp extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/warp [name] OR <set|del> <name> Teleports you to a warp point. You can also manipulate warps if you have permission.";
 	}
 
 }

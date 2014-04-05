@@ -68,7 +68,7 @@ public class CommandButcher extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + FunctionHelper.niceJoin(typeList.toArray()));
+				OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [radius|-1|world] [type] [x, y, z]");
 				return;
 			}
 		}
@@ -125,7 +125,7 @@ public class CommandButcher extends FEcmdModuleCommands
 
 		if (args.length != 4 && !(sender instanceof TileEntityCommandBlock))
 		{
-			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + getSyntaxConsole());
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: &lt;radius|-1|world> &lt;type> &lt;x, y, z> &lt;dimID>");
 			return;
 		}
 		if (args.length > 0)
@@ -181,7 +181,7 @@ public class CommandButcher extends FEcmdModuleCommands
 			}
 			catch (NumberFormatException e)
 			{
-				ChatUtils.sendMessage(sender, Localization.format(Localization.ERROR_NAN, args[0]));
+				ChatUtils.sendMessage(sender, String.format("'%s' param was not recognized as number. Please try again.", args[0]));
 				return;
 			}
 		}
@@ -212,6 +212,12 @@ public class CommandButcher extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/butcher [radius|-1|world] [type] [x, y, z] Kills the type of mobs within the specified radius around the specified point in the specified world.";
 	}
 
 }

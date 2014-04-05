@@ -48,11 +48,11 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				OutputHandler.chatConfirmation(sender, Localization.get("command.setspawn.help.1"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.setspawn.help.2"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.setspawn.help.3"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.setspawn.help.4"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.setspawn.help.5"));
+				OutputHandler.chatConfirmation(sender, " - /setspawn type <player|group|zone> <name> <none|bed|point> [zone]");
+				OutputHandler.chatConfirmation(sender, " - - sets the spawn type of the player, group, or zone");
+				OutputHandler.chatConfirmation(sender, " - /setspawn point <player|group|zone> <name> <here|revert|<x> <y> <z>> [zone]");
+				OutputHandler.chatConfirmation(sender, " - - sets the spawn type of the player, group, or zone");
+				OutputHandler.chatConfirmation(sender, " - the final [zone] argument is not necessary if the 2nd argument is zone");
 				return;
 			}
 			else
@@ -106,7 +106,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				error(sender);
 
 			prop = dim + ";" + x + ";" + y + ";" + z;
-			output = Localization.format("command.setspawn.setPoint", x, y, z);
+			output = String.format("Spawn point set to %1$d, %2$d, %3$d", x, y, z);
 		}
 		else if (args[0].equalsIgnoreCase("type"))
 		{
@@ -127,7 +127,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			else
 				error(sender);
 
-			output = Localization.format("command.setspawn.setType", prop);
+			output = String.format("Spawn type set to %1$se", prop);
 		}
 		else
 		{
@@ -154,7 +154,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[5]));
+				OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[5]));
 				return;
 			}
 		}
@@ -176,7 +176,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[7]));
+				OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[7]));
 				return;
 			}
 		}
@@ -193,7 +193,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
 				if (player == null)
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, name));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", name));
 					OutputHandler.chatConfirmation(sender, name + " will be used, but may be inaccurate.");
 				}
 				else
@@ -228,7 +228,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+				OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 				return;
 			}
 
@@ -252,11 +252,11 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				OutputHandler.chatConfirmation(sender, Localization.get("command.setspawn.help.1"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.setspawn.help.2"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.setspawn.help.3"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.setspawn.help.4"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.setspawn.help.5"));
+				OutputHandler.chatConfirmation(sender, " - /setspawn type <player|group|zone> <name> <none|bed|point> [zone]");
+				OutputHandler.chatConfirmation(sender, " - - sets the spawn type of the player, group, or zone");
+				OutputHandler.chatConfirmation(sender, " - /setspawn point <player|group|zone> <name> <here|revert|<x> <y> <z>> [zone]");
+				OutputHandler.chatConfirmation(sender, " - - sets the spawn type of the player, group, or zone");
+				OutputHandler.chatConfirmation(sender, " - the final [zone] argument is not necessary if the 2nd argument is zone");
 				return;
 			}
 			else
@@ -286,7 +286,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 
 			prop = dim + ";" + x + ";" + y + ";" + z;
-			output = Localization.format("command.setspawn.setPoint", x, y, z);
+			output = String.format("Spawn point set to %1$d, %2$d, %3$d", x, y, z);
 		}
 		else if (args[0].equalsIgnoreCase("type"))
 		{
@@ -307,7 +307,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			else
 				error(sender);
 
-			output = Localization.format("command.setspawn.setType", prop);
+			output = String.format("Spawn type set to %1$s", prop);
 		}
 		else
 		{
@@ -324,7 +324,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[5]));
+				OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[5]));
 				return;
 			}
 		}
@@ -336,7 +336,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[7]));
+				OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[7]));
 				return;
 			}
 		}
@@ -347,7 +347,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
 			if (player == null)
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				OutputHandler.chatConfirmation(sender, name + " will be used, but may be inaccurate.");
 			}
 			else
@@ -377,7 +377,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_ZONE_NOZONE, args[2]));
+				OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 				return;
 			}
 
@@ -407,7 +407,7 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		ArrayList<String> completes = new ArrayList<String>();
 
@@ -500,5 +500,11 @@ public class CommandSetSpawn extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/setspawn help Set the spawn point.";
 	}
 }

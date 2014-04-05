@@ -225,13 +225,13 @@ public class CommandRules extends FEcmdModuleCommands
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
+				OutputHandler.chatConfirmation(sender, " - /rules [#]");
 				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
 				{
-					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
-					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
-					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.4"));
-					OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.5"));
+					OutputHandler.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
+					OutputHandler.chatConfirmation(sender, " - /rules add &lt;newRule>");
+					OutputHandler.chatConfirmation(sender, " - /rules remove &lt;#>");
+					OutputHandler.chatConfirmation(sender, " - /rules move &lt;#> &lt;#>");
 				}
 				return;
 			}
@@ -242,7 +242,7 @@ public class CommandRules extends FEcmdModuleCommands
 
 		if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_NOPERMISSION));
+			OutputHandler.chatError(sender, "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
 			return;
 		}
 
@@ -253,7 +253,7 @@ public class CommandRules extends FEcmdModuleCommands
 			index = parseIntBounded(sender, args[1], 1, rules.size());
 
 			rules.remove(index - 1);
-			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.remove", args[1]));
+			OutputHandler.chatConfirmation(sender, String.format("Rule # %s removed", args[1]));
 		}
 		else if (args[0].equalsIgnoreCase("add"))
 		{
@@ -264,7 +264,7 @@ public class CommandRules extends FEcmdModuleCommands
 			}
 			newRule = FunctionHelper.formatColors(newRule);
 			rules.add(newRule);
-			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.added", args[1]));
+			OutputHandler.chatConfirmation(sender, String.format("Rule added as # %s.", args[1]));
 		}
 		else if (args[0].equalsIgnoreCase("move"))
 		{
@@ -277,12 +277,12 @@ public class CommandRules extends FEcmdModuleCommands
 			if (index < rules.size())
 			{
 				rules.add(index - 1, temp);
-				OutputHandler.chatConfirmation(sender, Localization.format("command.rules.moved", args[1], args[2]));
+				OutputHandler.chatConfirmation(sender, String.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
 			}
 			else
 			{
 				rules.add(temp);
-				OutputHandler.chatConfirmation(sender, Localization.format("command.rules.movedToLast", args[1]));
+				OutputHandler.chatConfirmation(sender, String.format("Rule # %1$s moved to last position.", args[1]));
 			}
 		}
 		else if (args[0].equalsIgnoreCase("change"))
@@ -296,7 +296,7 @@ public class CommandRules extends FEcmdModuleCommands
 			}
 			newRule = FunctionHelper.formatColors(newRule);
 			rules.set(index - 1, newRule);
-			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.changed", index + "", newRule));
+			OutputHandler.chatConfirmation(sender, String.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
 		}
 		else
 		{
@@ -320,11 +320,11 @@ public class CommandRules extends FEcmdModuleCommands
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.1"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.2"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.3"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.4"));
-				OutputHandler.chatConfirmation(sender, Localization.get("command.rules.help.5"));
+				OutputHandler.chatConfirmation(sender, " - /rules [#]");
+				OutputHandler.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
+				OutputHandler.chatConfirmation(sender, " - /rules add &lt;newRule>");
+				OutputHandler.chatConfirmation(sender, " - /rules remove &lt;#>");
+				OutputHandler.chatConfirmation(sender, " - /rules move &lt;#> &lt;#>");
 
 			}
 
@@ -339,7 +339,7 @@ public class CommandRules extends FEcmdModuleCommands
 			index = parseIntBounded(sender, args[1], 1, rules.size());
 
 			rules.remove(index - 1);
-			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.remove", args[1]));
+			OutputHandler.chatConfirmation(sender, String.format("Rule # %s removed", args[1]));
 		}
 		else if (args[0].equalsIgnoreCase("add"))
 		{
@@ -350,7 +350,7 @@ public class CommandRules extends FEcmdModuleCommands
 			}
 			newRule = FunctionHelper.formatColors(newRule);
 			rules.add(newRule);
-			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.added", args[1]));
+			OutputHandler.chatConfirmation(sender, String.format("Rule added as # %s.", args[1]));
 		}
 		else if (args[0].equalsIgnoreCase("move"))
 		{
@@ -363,12 +363,12 @@ public class CommandRules extends FEcmdModuleCommands
 			if (index < rules.size())
 			{
 				rules.add(index - 1, temp);
-				OutputHandler.chatConfirmation(sender, Localization.format("command.rules.moved", args[1], args[2]));
+				OutputHandler.chatConfirmation(sender, String.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
 			}
 			else
 			{
 				rules.add(temp);
-				OutputHandler.chatConfirmation(sender, Localization.format("command.rules.movedToLast", args[1]));
+				OutputHandler.chatConfirmation(sender, String.format("Rule # %1$s moved to last position.", args[1]));
 			}
 		}
 		else if (args[0].equalsIgnoreCase("change"))
@@ -382,7 +382,7 @@ public class CommandRules extends FEcmdModuleCommands
 			}
 			newRule = FunctionHelper.formatColors(newRule);
 			rules.set(index - 1, newRule);
-			OutputHandler.chatConfirmation(sender, Localization.format("command.rules.changed", index + "", newRule));
+			OutputHandler.chatConfirmation(sender, String.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
 		}
 		else
 		{
@@ -446,6 +446,12 @@ public class CommandRules extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/rules [#] help Gets or sets the rules of the server.";
 	}
 
 }

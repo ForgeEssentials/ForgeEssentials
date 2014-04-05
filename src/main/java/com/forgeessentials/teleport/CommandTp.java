@@ -54,7 +54,7 @@ public class CommandTp extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else if (args.length == 2 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
@@ -74,13 +74,13 @@ public class CommandTp extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[1]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[1]));
 					return;
 				}
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				return;
 			}
 		}
@@ -106,17 +106,17 @@ public class CommandTp extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				}
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+				OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
 			}
 		}
 		else
 		{
-			OutputHandler.chatError(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
 		}
 	}
 
@@ -141,13 +141,13 @@ public class CommandTp extends FEcmdModuleCommands
 				}
 				else
 				{
-					OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[1]));
+					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[1]));
 					return;
 				}
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 				return;
 			}
 		}
@@ -163,12 +163,12 @@ public class CommandTp extends FEcmdModuleCommands
 			}
 			else
 			{
-				OutputHandler.chatError(sender, Localization.format(Localization.ERROR_NOPLAYER, args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, Localization.get(Localization.ERROR_BADSYNTAX));
+			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: ");
 		}
 	}
 
@@ -185,7 +185,7 @@ public class CommandTp extends FEcmdModuleCommands
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender sender, String[] args)
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1 || args.length == 2)
 			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
@@ -203,5 +203,11 @@ public class CommandTp extends FEcmdModuleCommands
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		// TODO Auto-generated method stub
+		return "/tp [player] <player|<x> <y> <z>> Teleport to a location.";
 	}
 }
