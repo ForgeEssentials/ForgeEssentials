@@ -14,8 +14,8 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PropQueryPlayerSpot;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.PWarp;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.ChatUtils;
@@ -27,7 +27,7 @@ import com.forgeessentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandPersonalWarp extends FEcmdModuleCommands
+public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 {
     public final String PERMSETLIMIT = getCommandPerm() + ".setLimit";
     public final String PERMPROP = getCommandPerm() + ".max";
@@ -36,12 +36,14 @@ public class CommandPersonalWarp extends FEcmdModuleCommands
 	{
 		return "personalwarp";
 	}
-
+	
 	@Override
-	public String[] getDefaultAliases()
+	public List<String> getCommandAliases()
 	{
-		return new String[]
-		{ "pw", "pwarp" };
+		List<String> aliases = new ArrayList<String>();
+		aliases.add("pw");
+		aliases.add("pwarp");
+		return aliases;
 	}
 
 	@Override

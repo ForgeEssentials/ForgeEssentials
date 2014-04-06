@@ -8,6 +8,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
@@ -168,6 +170,14 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	@Override
 	public int compareTo(Object o) {
 		return 0;
+	}
+
+	public void registerExtraPermissions(IPermRegisterEvent event){
+		
+	}
+
+	public RegGroup getReggroup() {
+		return null;
 	}
     
 }

@@ -20,7 +20,6 @@ import com.forgeessentials.commands.util.PlayerTrackerCommands;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.CompatMCStats;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
@@ -29,8 +28,6 @@ import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 @FEModule(configClass = ConfigCmd.class, name = "CommandsModule", parentMod = ForgeEssentials.class)
 public class ModuleCommands
@@ -78,7 +75,7 @@ public class ModuleCommands
 	@FEModule.ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		TickRegistry.registerScheduledTickHandler(new TickHandlerTP(), Side.SERVER);
+		
 		CommandDataManager.load();
 	}
 

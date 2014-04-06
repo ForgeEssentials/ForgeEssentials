@@ -2,7 +2,7 @@ package com.forgeessentials.teleport.util;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.teleport.CommandTPA;
+import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.OutputHandler;
 
 public class TPAdata
@@ -17,7 +17,7 @@ public class TPAdata
 		this.sender = sender;
 		this.receiver = receiver;
 
-		timeout = CommandTPA.timeout;
+		timeout = TeleportModule.timeout;
 		tphere = tpaHere;
 	}
 

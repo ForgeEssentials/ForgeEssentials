@@ -1,8 +1,12 @@
 package com.forgeessentials.teleport;
 
+import java.io.File;
+
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -17,6 +21,8 @@ import com.forgeessentials.api.permissions.query.PropQueryPlayerSpot;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
@@ -25,9 +31,13 @@ import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @FEModule(name = "TeleportModule", parentMod = ForgeEssentials.class)
 public class TeleportModule {
+	
+	public static int timeout;
 	
 	@FEModule.Init
 	public void load(FEModuleInitEvent e){
@@ -65,6 +75,8 @@ public class TeleportModule {
 			String val = "0;" + point.posX + ";" + point.posY + ";" + point.posZ;
 			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val, APIRegistry.zones.getGLOBAL().getZoneName());
 		}
+		
+		TickRegistry.registerScheduledTickHandler(new TickHandlerTP(), Side.SERVER);
 	}
 
 	@PermRegister
@@ -152,6 +164,37 @@ public class TeleportModule {
 				CommandSetSpawn.spawns.put(player.username, null);
 			}
 		}
+	}
+	public class ConfigTeleport extends ModuleConfigBase{
+
+		private Configuration config;
+		
+		public ConfigTeleport(File file) {
+			super(file);
+		}
+
+		@Override
+		public void init() {
+			config = new Configuration (file, true);
+			timeout = config.get("main", "timeout", 25, "Amount of sec a user has to accept a TPA request").getInt();
+			config.save();
+
+		}
+
+		@Override
+		public void forceSave() {
+			config = new Configuration (file, true);
+			config.get("main", "timeout", 25, "Amount of sec a user has to accept a TPA request").set(timeout);
+			config.save();
+		}
+
+		@Override
+		public void forceLoad(ICommandSender sender) {
+			config = new Configuration (file, true);
+			timeout = config.get("main", "timeout", 25, "Amount of sec a user has to accept a TPA request").getInt();
+			config.save();
+		}
+		
 	}
 
 }

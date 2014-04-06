@@ -11,8 +11,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.teleport.util.Warp;
 import com.forgeessentials.util.ChatUtils;
@@ -26,7 +26,7 @@ import com.forgeessentials.util.AreaSelector.WarpPoint;
  * @author Dries007
  */
 
-public class CommandWarp extends FEcmdModuleCommands
+public class CommandWarp extends ForgeEssentialsCommandBase
 {
 	@Override
 	public String getCommandName()

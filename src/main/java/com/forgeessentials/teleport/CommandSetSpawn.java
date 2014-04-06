@@ -14,7 +14,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
@@ -22,7 +22,7 @@ import com.forgeessentials.util.AreaSelector.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandSetSpawn extends FEcmdModuleCommands
+public class CommandSetSpawn extends ForgeEssentialsCommandBase
 {
 	public static HashMap<String, WarpPoint>	spawns			= new HashMap<String, WarpPoint>();
 	public static final String					SPAWN_PROP		= "ForgeEssentials.BasicCommands.spawnPoint";

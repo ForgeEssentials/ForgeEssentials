@@ -15,8 +15,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Point;
@@ -24,7 +24,7 @@ import com.forgeessentials.util.AreaSelector.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandBed extends FEcmdModuleCommands
+public class CommandBed extends ForgeEssentialsCommandBase
 {
 	private Point sleepPoint;
 	

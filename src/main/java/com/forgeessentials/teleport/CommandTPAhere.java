@@ -14,7 +14,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.ChatUtils;
@@ -23,18 +23,9 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 
-public class CommandTPAhere extends FEcmdModuleCommands
+public class CommandTPAhere extends ForgeEssentialsCommandBase
 {
-	/*
-	 * Config
-	 */
-	public static int	timeout	= 25;
-
-	@Override
-	public void doConfig(Configuration config, String category)
-	{
-		timeout = config.get(category, "timeout", 25, "Amount of sec a user has to accept a TPAhere request").getInt();
-	}
+	
 
 	@Override
 	public String getCommandName()
