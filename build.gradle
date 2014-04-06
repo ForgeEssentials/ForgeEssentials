@@ -12,7 +12,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.3pre3"
+version = "1.3pre3a"
 group= "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7

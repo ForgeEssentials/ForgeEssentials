@@ -20,7 +20,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/feinfo help";
+		return "/feinfo";
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
 			ChatUtils.sendMessage(sender, "You are currently running ForgeEssentials version " + FEModContainer.version);
 			ChatUtils.sendMessage(sender, "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
 		}
-		else if (args[0].equalsIgnoreCase("help")){
+		else if (args.length == 0){
 			ChatUtils.sendMessage(sender, "/feinfo debug Produces ASM transformer debug output.");
 			ChatUtils.sendMessage(sender, "/feinfo reload Reloads all configs.");
 			ChatUtils.sendMessage(sender, "/feinfo about About ForgeEssentials");
