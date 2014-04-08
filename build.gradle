@@ -5,6 +5,10 @@ buildscript {
 			name = "forge"
 			url = "http://files.minecraftforge.net/maven"
 		}
+		maven {
+			name = "sk89q"
+			url = "http://maven.sk89q.com/repo/"
+		}
 	}
 	dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'}
 
@@ -21,6 +25,12 @@ targetCompatibility = 1.7
 minecraft {
 	version = "1.6.4-9.11.1.964"
 	assetDir = "rundir/assets"
+	forgeVersion = "9.11.1.964"
+	
+	replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
+    replace "%VERSION%", project.version
+    replaceIn "com/forgeessentials/client/ForgeEssentialsClient.java"
+    replace "%VERSION%", project.version
 }
 
 sourceSets {
@@ -33,26 +43,36 @@ configurations{
     serverLibs
 }
 
-repositories{ mavenLocal() }
-
-processResources
-{
-	from(sourceSets.main.resources.srcDirs) {
-		include 'mcmod.info'
-		expand 'version':project.version, 'mcversion':project.minecraft.version
+repositories{
+	mavenLocal()
+	maven {
+			name = "sk89q"
+			url = "http://maven.sk89q.com/repo/"
+	}
 	}
 
-	from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
-	
-}
-
 processClientResources{
-    from(sourceSets.client.resources.srcDirs) {
-		include 'mcmod.info'
-		expand 'version':project.version, 'mcversion':project.minecraft.version
+    from (sourceSets.main.resources.srcDirs) {
+        expand 'version': project.version, 'mcversion': project.minecraft.version,
+                'forgeversion': project.minecraft.forgeVersion
+        include 'mcmod.info'
     }
 
-	from(sourceSets.client.resources.srcDirs) { exclude 'mcmod.info' }
+    from (sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+processResources {
+    from (sourceSets.main.resources.srcDirs) {
+        expand 'version': project.version, 'mcVersion': project.minecraft.version,
+                'forgeVersion': project.minecraft.forgeVersion
+        include 'mcmod.info'
+    }
+
+    from (sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
 }
 
 dependencies {
@@ -60,6 +80,7 @@ dependencies {
     compile 'org.pircbotx:pircbotx:1.9'
     compile 'com.h2database:h2:1.3.175'
     compile 'mysql:mysql-connector-java:5.1.22'
+    compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT'
     
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
@@ -124,9 +145,6 @@ list.each { name ->
         appendix = name
         include "com/forgeessentials/$name/**"
         include "com/forgeessentials/api/$name/**"
-        if (name == 'client') {
-                include 'logo.png', 'mcmod.info', 'FEReadme.txt', 'HowToGetFESupport.txt'
-        }
     }
     
     reobf {

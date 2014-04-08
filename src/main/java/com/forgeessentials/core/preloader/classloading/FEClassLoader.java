@@ -2,6 +2,8 @@ package com.forgeessentials.core.preloader.classloading;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
@@ -36,10 +38,30 @@ public class FEClassLoader {
 			}
 		}
 		System.out.println("[ForgeEssentials] Loaded " + module.listFiles().length + " modules");
+		
+		checkLibs();
 	}
 	
-	public boolean testLibraries(){
-		return true;
+	private static String[] compulsoryLibs = {"com.mysql.jdbc.Driver", "org.pircbotx.PircBotX", "org.h2.Driver"};
+	
+	public void checkLibs(){
+		List<String> erroredLibs = new ArrayList<String>();
+		for (String clazz : compulsoryLibs){
+			try{
+				Class.forName(clazz);
+				System.out.println("[ForgeEssentials] Found library " + clazz);
+			}
+			catch (ClassNotFoundException cnfe){
+				erroredLibs.add(clazz);
+			}
+		}
+		if (!erroredLibs.isEmpty()){
+			for (Object error : erroredLibs.toArray()){
+				System.err.println(error);
+			}
+			throw new RuntimeException("[ForgeEssentials] You are missing one or more library files. See your FML log for details.");
+		}
+		
 	}
 
 }

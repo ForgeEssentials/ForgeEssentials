@@ -18,7 +18,7 @@ import com.forgeessentials.core.commands.selections.CommandWand;
 import com.forgeessentials.core.commands.selections.WandController;
 import com.forgeessentials.core.compat.CompatMCStats;
 import com.forgeessentials.core.compat.DuplicateCommandRemoval;
-import com.forgeessentials.core.compat.SanityChecker;
+import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.misc.BannedItems;
 import com.forgeessentials.core.misc.FriendlyItemList;
 import com.forgeessentials.core.misc.LoginMessage;
@@ -92,8 +92,6 @@ public class ForgeEssentials
 	public static String			version;
 
 	private CompatMCStats			mcstatscompat;
-
-	private SanityChecker			bc;
 	public static boolean			sanitycheck;
 
 	private TaskRegistry			tasks;
@@ -120,8 +118,7 @@ public class ForgeEssentials
 
 		// setup fedir stuff
 		config = new CoreConfig();
-		bc = new SanityChecker();
-		bc.run();
+		EnvironmentChecker.checkBukkit();
 
 		mcstatscompat = new CompatMCStats();
 
@@ -188,11 +185,13 @@ public class ForgeEssentials
 	@PermRegister
 	private static void registerPerms(IPermRegisterEvent event)
 	{
+		if (!EnvironmentChecker.worldEditInstalled){
 		event.registerPermissionLevel("ForgeEssentials.CoreCommands.select.pos", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.CoreCommands.select.wand", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.CoreCommands.select.deselect", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.CoreCommands.fedebug", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.CoreCommands.fereload", RegGroup.OWNERS);
+		}
 	}
 
 	@EventHandler
@@ -209,12 +208,13 @@ public class ForgeEssentials
 		// commands
 		e.registerServerCommand(new CommandFEInfo());
 		
-		// if worldedit isnt loaded TODO: add check
-		e.registerServerCommand(new CommandPos(1));
-		e.registerServerCommand(new CommandPos(2));
-		e.registerServerCommand(new CommandWand());
-		e.registerServerCommand(new CommandDeselect());
-		e.registerServerCommand(new CommandExpand());
+		if (!EnvironmentChecker.worldEditInstalled){
+			e.registerServerCommand(new CommandPos(1));
+			e.registerServerCommand(new CommandPos(2));
+			e.registerServerCommand(new CommandWand());
+			e.registerServerCommand(new CommandDeselect());
+			e.registerServerCommand(new CommandExpand());
+		}
 
 		tasks.onServerStart();
 
