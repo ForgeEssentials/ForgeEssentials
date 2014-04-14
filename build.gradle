@@ -180,3 +180,7 @@ from sourceSets.client.output
 
 build.dependsOn "completeZip"
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
+

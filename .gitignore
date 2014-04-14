@@ -31,7 +31,6 @@
 
 !/jars/coremods/
 
-*.bat
 *.sh
 *.db
 CHANGELOG
