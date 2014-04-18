@@ -12,7 +12,6 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.PlayerInfo;
@@ -112,7 +111,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
+		return "fe.teleport." + getCommandName();
 	}
 
 	@Override
@@ -128,12 +127,6 @@ public class CommandBed extends ForgeEssentialsCommandBase
 	public RegGroup getReggroup()
 	{
 		return RegGroup.MEMBERS;
-	}
-
-	@Override
-	public void registerExtraPermissions(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
 	}
 	
 	@ForgeSubscribe

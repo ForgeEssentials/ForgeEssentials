@@ -6,7 +6,8 @@ import cpw.mods.fml.common.Loader;
 
 public class EnvironmentChecker
 {
-	public static boolean worldEditInstalled = checkWorldEdit();
+	public static boolean worldEditInstalled = false;
+	public static boolean worldEditFEtoolsInstalled = false;
 	
 	public static void checkBukkit()
 	{
@@ -37,25 +38,30 @@ public class EnvironmentChecker
 				// Safe!
 			}
 		}
-		OutputHandler.felog.fine("Sanity check passed, it's all good to go!");
+		OutputHandler.felog.fine("Check passed, it's all good to go!");
 
 	}
 	
-	public static boolean checkWorldEdit(){
+	public static void checkWorldEdit(){
 		if (!Loader.isModLoaded("WorldEdit")){
 			OutputHandler.felog.info("WorldEdit Forge not found, continuing as per normal.");
-			return false;
+			return;
 		}
-		else try{
-			Class.forName("com.forgeessentials.worldedit.compat.WorldEditIntegration");
+		else{
+			worldEditInstalled = true;
+		}
+		try{
+		
+			Class.forName("com.forgeessentials.worldedit.compat.WEIntegration");
 			OutputHandler.felog.info("Found WorldEdit Forge and FE integration tools, using FE integration tools.");
 			OutputHandler.felog.info("FEClient graphical selections have been disabled, please use WorldEditCUI.");
-			return true;
+			worldEditFEtoolsInstalled = true;
+			return;
 		}catch (ClassNotFoundException cnfe){
 			
 		}OutputHandler.felog.warning("WorldEdit Forge found but FE integration tools not found.");
 		OutputHandler.felog.warning("You are strongly recommended to install the FE integration tools for a better experience.");
-		return true;
+		return;
 	}
 
 }

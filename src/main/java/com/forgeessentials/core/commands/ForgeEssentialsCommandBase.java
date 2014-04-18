@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.util.ChatUtils;
@@ -141,7 +140,11 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 	@Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args){return null;}
 
+	// permissions
+	
 	public abstract String getCommandPerm();
+
+	public abstract RegGroup getReggroup();
 
 	/*
 	 * Helper methods
@@ -172,12 +175,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 		return 0;
 	}
 
-	public void registerExtraPermissions(IPermRegisterEvent event){
-		
-	}
-
-	public RegGroup getReggroup() {
-		return null;
-	}
+	
     
 }

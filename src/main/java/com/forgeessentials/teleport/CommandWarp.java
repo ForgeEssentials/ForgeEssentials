@@ -147,15 +147,9 @@ public class CommandWarp extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void registerExtraPermissions(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel(getCommandPerm() + ".admin", RegGroup.OWNERS);
-	}
-
-	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
+		return "fe.teleport." + getCommandName();
 	}
 
 	@Override

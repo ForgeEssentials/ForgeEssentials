@@ -64,8 +64,7 @@ public class ModuleBackup
 	@PermRegister
 	public void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel("ForgeEssentials.backup.msg", RegGroup.GUESTS);
-		event.registerPermissionLevel("ForgeEssentials.backup", RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.backup.msg", RegGroup.GUESTS);
 	}
 
 	@ForgeSubscribe

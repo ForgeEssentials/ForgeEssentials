@@ -3,6 +3,7 @@ package com.forgeessentials.scripting;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 
@@ -43,7 +44,7 @@ public class CommandScript extends ForgeEssentialsCommandBase {
 
 	@Override
 	public String getCommandPerm() {
-		return "ForgeEssentials.Scripting.script";
+		return "fe.script";
 	}
 
 	@Override
@@ -56,6 +57,12 @@ public class CommandScript extends ForgeEssentialsCommandBase {
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "/script run [login|respawn] <player> Manually trigger scripts for a player.";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.ZONE_ADMINS;
 	}
 
 }

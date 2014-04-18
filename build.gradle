@@ -16,7 +16,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.3pre3a"
+version = "1.3pre4"
 group= "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
@@ -77,10 +77,15 @@ processResources {
 
 dependencies {
     
-    compile 'org.pircbotx:pircbotx:1.9'
+    compile 'org.pircbotx:pircbotx:1.9' //chat - irc stuff
+    
+    //datasaving
     compile 'com.h2database:h2:1.3.175'
     compile 'mysql:mysql-connector-java:5.1.22'
-    compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT'
+    
+    // WE integration - 
+    // compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT' don't use this for time being, we want one with forge
+    compile files('lib/worldedit-forge-6.0.0-SNAPSHOT.jar')
     
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'

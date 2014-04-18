@@ -111,18 +111,18 @@ public class ModulePermissions
 	{
 		event.registerPermissionLevel("ForgeEssentials.perm", RegGroup.OWNERS);
 		event.registerPermissionLevel("ForgeEssentials.perm._ALL_", RegGroup.OWNERS, true);
-		event.registerPermissionLevel("ForgeEssentials.permissions.zone.define", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.permissions.zone.redefine._ALL_", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.permissions.zone.remove._ALL_", RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.perm.zone.define", RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.perm.zone.redefine._ALL_", RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.perm.zone.remove._ALL_", RegGroup.OWNERS);
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 		event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 
-		event.registerPermissionLevel("ForgeEssentials.permissions.zone", RegGroup.ZONE_ADMINS);
-		event.registerPermissionLevel("ForgeEssentials.permissions.zone.setparent", RegGroup.ZONE_ADMINS);
-		event.registerPermissionLevel("ForgeEssentials.autoPromote", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("fe.perm.zone", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("fe.perm.zone.setparent", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("fe.perm.autoPromote", RegGroup.ZONE_ADMINS);
 
-		event.registerPermissionLevel("ForgeEssentials.permissions.zone.info._ALL_", RegGroup.MEMBERS);
-		event.registerPermissionLevel("ForgeEssentials.permissions.zone.list", RegGroup.MEMBERS);
+		event.registerPermissionLevel("fe.perm.zone.info._ALL_", RegGroup.MEMBERS);
+		event.registerPermissionLevel("fe.perm.zone.list", RegGroup.MEMBERS);
 
 		event.registerPermissionLevel("ForgeEssentials.BasicCommands.list", RegGroup.GUESTS);
 		

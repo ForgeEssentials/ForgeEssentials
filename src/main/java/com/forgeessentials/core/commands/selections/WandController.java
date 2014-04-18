@@ -10,6 +10,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
 import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Point;
 
@@ -20,6 +21,11 @@ public class WandController
 	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void playerInteractEvent(PlayerInteractEvent event)
 	{
+		// if worldedit is installed, don't do anything
+		if (EnvironmentChecker.worldEditFEtoolsInstalled){
+			return;
+		}
+		
 		// only server events please.
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;

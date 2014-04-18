@@ -95,7 +95,6 @@ public class ForgeEssentials
 	public static boolean			sanitycheck;
 
 	private TaskRegistry			tasks;
-	private OutputHandler log;
 
 	public ForgeEssentials()
 	{
@@ -107,7 +106,7 @@ public class ForgeEssentials
 	{
 		FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
 		
-		log = new OutputHandler();
+		OutputHandler log = new OutputHandler(); // init the logger
 		
 		OutputHandler.felog.info("Forge Essentials version " + FEModContainer.version + " loading, reading config from " + FEDIR.getAbsolutePath());
 		
@@ -119,6 +118,7 @@ public class ForgeEssentials
 		// setup fedir stuff
 		config = new CoreConfig();
 		EnvironmentChecker.checkBukkit();
+		EnvironmentChecker.checkWorldEdit();
 
 		mcstatscompat = new CompatMCStats();
 

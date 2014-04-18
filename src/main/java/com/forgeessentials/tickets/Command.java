@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
@@ -204,5 +205,11 @@ public class Command extends ForgeEssentialsCommandBase
 			usage += "|del <id>";
 		}
 		return "Usage: /ticket <" + usage + ">";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.GUESTS;
 	}
 }

@@ -2,6 +2,7 @@ package com.forgeessentials.chat.commands;
 
 import net.minecraft.command.ICommandSender;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.chat.IRCHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
@@ -27,7 +28,7 @@ public class CommandIRC extends ForgeEssentialsCommandBase {
 
 	@Override
 	public String getCommandPerm() {
-	return "ForgeEssentials.Chat.irc";
+	return "fe.chat.irc";
 	}
 
 	@Override
@@ -37,6 +38,12 @@ public class CommandIRC extends ForgeEssentialsCommandBase {
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
 		return "/irc [reconnect|disconnect] Connect or disconnect the IRC server bot.";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.ZONE_ADMINS;
 	}
 
 }

@@ -3,9 +3,6 @@ package com.forgeessentials.economy;
 import java.io.File;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.economy.commands.CommandAddToWallet;
@@ -54,20 +51,5 @@ public class ModuleEconomy
 		e.registerServerCommand(new CommandPaidCommand());
 		e.registerServerCommand(new CommandSellCommand());
 		e.registerServerCommand(new CommandMoney());
-	}
-
-	@PermRegister
-	public static void registerPerms(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel("ForgeEssentials.Economy.pay", RegGroup.MEMBERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.requestpayment", RegGroup.MEMBERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.money", RegGroup.MEMBERS);
-
-		event.registerPermissionLevel("ForgeEssentials.Economy.getwallet", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.paidcommand", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.addtowallet", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.sellcommand", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.removewallet", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Economy.setwallet", RegGroup.OWNERS);
 	}
 }

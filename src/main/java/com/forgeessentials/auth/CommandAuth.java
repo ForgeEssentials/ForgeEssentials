@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.PermissionDeniedException;
@@ -381,7 +382,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return null;
+		return "fe.auth";
 	}
 
 	@Override
@@ -398,5 +399,10 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 		}
 		else s = s + " Controls the authentication module.";
 		return s;
+	}
+
+	@Override
+	public RegGroup getReggroup() {
+		return RegGroup.GUESTS;
 	}
 }

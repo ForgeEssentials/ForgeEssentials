@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandNegative extends ForgeEssentialsCommandBase
@@ -34,12 +35,6 @@ public class CommandNegative extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		
-	}
-
-	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
@@ -54,7 +49,7 @@ public class CommandNegative extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return null;
+		return "fe.questioner.no";
 	}
 
 	@Override
@@ -67,6 +62,12 @@ public class CommandNegative extends ForgeEssentialsCommandBase
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "/no Answer no to a question";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.GUESTS;
 	}
 
 }

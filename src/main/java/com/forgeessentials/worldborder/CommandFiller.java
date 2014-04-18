@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
@@ -192,7 +193,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldBorder.filler";
+		return "fe.worldborder.filler";
 	}
 
 	@Override
@@ -205,6 +206,12 @@ public class CommandFiller extends ForgeEssentialsCommandBase
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.OWNERS;
 	}
 
 }

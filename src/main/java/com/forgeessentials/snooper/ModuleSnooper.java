@@ -10,9 +10,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.snooper.response.MCstatsInfo;
@@ -124,12 +121,6 @@ public class ModuleSnooper
 	public static void stop()
 	{
 		socketListner.stop();
-	}
-
-	@PermRegister
-	public void registerPermissions(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel("ForgeEssentials.Snooper.commands.queryreload", RegGroup.OWNERS);
 	}
 
 	public static int id()

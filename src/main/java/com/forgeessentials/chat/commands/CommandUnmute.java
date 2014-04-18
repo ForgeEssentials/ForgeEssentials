@@ -6,6 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -59,7 +60,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.Chat.commands." + getCommandName();
+		return "fe.chat." + getCommandName();
 	}
 
 	@Override
@@ -72,5 +73,11 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "/unmute <player> Unmutes a player.";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.OWNERS;
 	}
 }

@@ -3,6 +3,7 @@ package com.forgeessentials.auth.lists;
 import net.minecraft.command.ICommandSender;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 
@@ -37,11 +38,11 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 		else if (args.length == 2){
 			if (args[0].equalsIgnoreCase("add"))
 			{
-				APIRegistry.perms.setPlayerPermission(args[1], "ForgeEssentials.Auth.isWhiteListed", true, "_GLOBAL_");
+				APIRegistry.perms.setPlayerPermission(args[1], "fe.auth.whitelist", true, "_GLOBAL_");
 			}
 			else if (args[0].equalsIgnoreCase("remove"))
 			{
-				APIRegistry.perms.setPlayerPermission(args[1], "ForgeEssentials.Auth.isWhiteListed", false, "_GLOBAL_");
+				APIRegistry.perms.setPlayerPermission(args[1], "fe.auth.whitelist", false, "_GLOBAL_");
 			}
 		}
 	}
@@ -54,8 +55,7 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 
 	@Override
 	public String getCommandPerm() {
-		// TODO Auto-generated method stub
-		return "ForgeEssentials.Auth.whitelist";
+		return "fe.auth.whitelist.admin";
 	}
 
 	@Override
@@ -68,6 +68,12 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "/whitelist ";
+	}
+
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.ZONE_ADMINS;
 	}
 
 }

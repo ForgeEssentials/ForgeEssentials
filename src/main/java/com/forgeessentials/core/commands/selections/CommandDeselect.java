@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
@@ -56,5 +57,11 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "//fedesel Deselects the selection";
+	}
+
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.MEMBERS;
 	}
 }

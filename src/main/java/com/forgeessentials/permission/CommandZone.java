@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
@@ -356,7 +357,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.permissions.zone";
+		return "fe.perm.zone";
 	}
 
 	@Override
@@ -401,6 +402,12 @@ public class CommandZone extends ForgeEssentialsCommandBase
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "/zone help";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.ZONE_ADMINS;
 	}
 
 }

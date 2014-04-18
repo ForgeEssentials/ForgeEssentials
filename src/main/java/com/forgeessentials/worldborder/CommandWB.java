@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
@@ -227,7 +228,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldBorder.admin";
+		return "fe.worldborder.admin";
 	}
 
 	@Override
@@ -267,6 +268,12 @@ public class CommandWB extends ForgeEssentialsCommandBase
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "/worldborder <global|world|dimID> [info|enable|disable|center|radius|shape] Configure FE WorldBorder.";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.OWNERS;
 	}
 
 }

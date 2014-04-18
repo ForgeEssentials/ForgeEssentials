@@ -39,7 +39,7 @@ public class ForgeEssentialsClient
 
 	private boolean getDevOverride() 
 	{
-		String prop = System.getProperty("forgeessentials.client.developermode");
+		String prop = System.getProperty("forgeessentials.developermode");
 		if (prop != null && prop.equals("true")){ // FOR DEVS ONLY! THAT IS WHY IT IS A PROPERTY!!!
 		
 			feclientlog.severe("Developer mode has been enabled, things may break.");

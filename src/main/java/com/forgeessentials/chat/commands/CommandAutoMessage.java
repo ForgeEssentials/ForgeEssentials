@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.chat.AutoMessage;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -129,7 +130,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.Chat.commands." + getCommandName();
+		return "fe.chat." + getCommandName();
 	}
 
 	@Override
@@ -144,5 +145,11 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
 		return "/automessage [select|broadcast|add|del] Select, broadcast, add or remove messages";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.OWNERS;
 	}
 }

@@ -2,9 +2,6 @@ package com.forgeessentials.scripting;
 
 import java.io.File;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.OutputHandler;
@@ -46,9 +43,5 @@ static File loginplayer = new File(moduleDir, "login/player/");
 		}catch (Exception e){
 			OutputHandler.felog.warning("Could not setup scripting folders - you might have to do it yourself.");
 		}
-	}
-	@PermRegister
-	public void registerPerms(IPermRegisterEvent e){
-		e.registerPermissionLevel("ForgeEssentials.Scripting.script", RegGroup.ZONE_ADMINS);
 	}
 }

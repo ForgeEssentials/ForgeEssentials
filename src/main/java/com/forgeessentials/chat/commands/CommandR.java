@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.chat.IRCHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -170,7 +171,7 @@ public class CommandR extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.Chat.commands." + getCommandName();
+		return "fe.chat." + getCommandName();
 	}
 
 	@Override
@@ -187,5 +188,11 @@ public class CommandR extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
 		return "/r <message>";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.GUESTS;
 	}
 }

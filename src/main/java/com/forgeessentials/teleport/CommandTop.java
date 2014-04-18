@@ -53,12 +53,6 @@ public class CommandTop extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void registerExtraPermissions(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
-	}
-
-	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)

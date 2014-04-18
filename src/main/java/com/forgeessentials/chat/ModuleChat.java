@@ -149,18 +149,8 @@ public class ModuleChat
 	@PermRegister
 	public static void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel("ForgeEssentials.Chat.commands.r", RegGroup.GUESTS);
-		event.registerPermissionLevel("ForgeEssentials.Chat.commands.msg", RegGroup.GUESTS);
-		event.registerPermissionLevel("ForgeEssentials.Chat.commands.mail", RegGroup.GUESTS);
-
-		event.registerPermissionLevel("ForgeEssentials.Chat.commands.nickname", RegGroup.MEMBERS);
-		event.registerPermissionLevel("ForgeEssentials.Chat.usecolor", RegGroup.MEMBERS);
-
-		event.registerPermissionLevel("ForgeEssentials.Chat.commands.nickname.others", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Chat.commands.mute", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Chat.commands.unmute", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Chat.commands.automessage", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.Chat.irc", RegGroup.ZONE_ADMINS);
+		event.registerPermissionLevel("fe.chat.usecolor", RegGroup.MEMBERS);
+		event.registerPermissionLevel("fe.chat.nickname.others", RegGroup.OWNERS);
 	}
 
 	private void removeTell(MinecraftServer server)
@@ -218,4 +208,5 @@ public class ModuleChat
 			}
 		}
 	}
+	
 }

@@ -223,7 +223,6 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase
 		return RegGroup.GUESTS;
 	}
 
-	@Override
 	public void registerExtraPermissions(IPermRegisterEvent event)
     {
 	    event.registerPermissionLevel(PERMSETLIMIT, RegGroup.OWNERS);

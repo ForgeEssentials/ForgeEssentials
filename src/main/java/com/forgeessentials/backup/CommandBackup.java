@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
@@ -85,7 +86,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.backup.command";
+		return "fe.backup";
 	}
 
 	public static boolean isInteger(String s)
@@ -104,5 +105,11 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
 		return "/backup [dimID|foldername] Make a backup of everything or only specified folder/world.";
+	}
+
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.ZONE_ADMINS;
 	}
 }

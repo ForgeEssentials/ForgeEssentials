@@ -14,9 +14,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Init;
@@ -164,13 +161,6 @@ public class ModulePlayerLogger
 			OutputHandler.felog.warning("WARNING! MySQLConnector for playerLogger failed!");
 			ex.printStackTrace();
 		}
-	}
-
-	@PermRegister
-	public static void registerPerms(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel("ForgeEssentials.playerLogger.rollback", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.playerLogger.playerlogger", RegGroup.OWNERS);
 	}
 
 	public static Connection getConnection()

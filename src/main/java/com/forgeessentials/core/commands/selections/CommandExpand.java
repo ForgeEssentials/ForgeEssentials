@@ -4,6 +4,7 @@ package com.forgeessentials.core.commands.selections;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
@@ -231,6 +232,10 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 		return "//expand [direction] <number of blocks to expand> Expands the currently selected area.";
 	}
 	
-	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.MEMBERS;
+	}
 
 }

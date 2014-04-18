@@ -5,6 +5,7 @@ import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.Data;
 import com.forgeessentials.core.preloader.FEModContainer;
@@ -35,7 +36,12 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
 	
 	@Override
 	public void processCommand(ICommandSender sender, String[] args){
-		if (args[0].equalsIgnoreCase("debug")){
+		if (args.length == 0){
+			ChatUtils.sendMessage(sender, "/feinfo debug Produces ASM transformer debug output.");
+			ChatUtils.sendMessage(sender, "/feinfo reload Reloads all configs.");
+			ChatUtils.sendMessage(sender, "/feinfo about About ForgeEssentials");
+		}
+		else if (args[0].equalsIgnoreCase("debug")){
 			try
 			{
 				if (FEeventAdder.addedBreak)
@@ -81,11 +87,12 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
 			ChatUtils.sendMessage(sender, "You are currently running ForgeEssentials version " + FEModContainer.version);
 			ChatUtils.sendMessage(sender, "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
 		}
-		else if (args.length == 0){
-			ChatUtils.sendMessage(sender, "/feinfo debug Produces ASM transformer debug output.");
-			ChatUtils.sendMessage(sender, "/feinfo reload Reloads all configs.");
-			ChatUtils.sendMessage(sender, "/feinfo about About ForgeEssentials");
-		}
+	}
+
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.MEMBERS;
 	}
 
 }

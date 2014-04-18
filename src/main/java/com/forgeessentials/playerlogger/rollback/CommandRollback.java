@@ -11,6 +11,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.network.PacketRollback;
@@ -226,7 +227,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.playerLogger." + getCommandName();
+		return "fe.pl.rollback";
 	}
 
 	@Override
@@ -251,5 +252,11 @@ public class CommandRollback extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
 		return "/rollback <username> [undo|clear] Configure rollbacks.";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.OWNERS;
 	}
 }

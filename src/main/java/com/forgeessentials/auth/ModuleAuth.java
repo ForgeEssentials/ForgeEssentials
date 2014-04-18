@@ -89,12 +89,12 @@ public class ModuleAuth
 	}
 
 	@PermRegister
-	public static void regierPerms(IPermRegisterEvent event)
+	public static void registerPerms(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel("ForgeEssentials.ModuleAuth.admin", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.ModuleAuth", RegGroup.GUESTS);
-		event.registerPermissionLevel("ForgeEssentials.Auth.isVIP", null);
-		event.registerPermissionLevel("ForgeEssentials.Auth.isWhiteListed", RegGroup.GUESTS);
+		event.registerPermissionLevel("fe.auth.admin", RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.auth", RegGroup.GUESTS);
+		event.registerPermissionLevel("fe.auth.vip", null);
+		event.registerPermissionLevel("fe.auth.whitelist", RegGroup.GUESTS);
 	}
 
 	public static boolean vanillaMode()

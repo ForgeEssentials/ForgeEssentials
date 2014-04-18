@@ -15,6 +15,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PropQueryBlanketZone;
 import com.forgeessentials.api.permissions.query.PropQueryPlayerSpot;
@@ -84,9 +85,16 @@ public class TeleportModule {
 	{// ensures on ServerStart
 		// event.registerPermissionProp("ForgeEssentials.BasicCommands.spawnPoint", "0;0;0;0");
 		event.registerPermissionProp(CommandSetSpawn.SPAWN_TYPE_PROP, "bed"); // bed, point, none
+		event.registerPermissionLevel("fe.teleport.back.ondeath", RegGroup.MEMBERS);
+	 	event.registerPermissionLevel("fe.teleport.back.ontp", RegGroup.MEMBERS);
+	 	event.registerPermissionLevel("fe.teleport.bed.others", RegGroup.OWNERS);
+	 	event.registerPermissionLevel("fe.teleport.home.set", RegGroup.MEMBERS);
+	 	event.registerPermissionLevel("fe.teleport.spawn.others", RegGroup.OWNERS);
+	 	event.registerPermissionLevel("fe.teleport.top.others", RegGroup.OWNERS);
+	 	event.registerPermissionLevel("fe.teleport.tpa.sendrequest", RegGroup.MEMBERS);
+	 	event.registerPermissionLevel("fe.teleport.tpahere.sendrequest", RegGroup.MEMBERS);
+	 	event.registerPermissionLevel("fe.teleport.warp.admin", RegGroup.OWNERS);
 	}
-	
-
 
 	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void onPlayerDeath(LivingDeathEvent e)

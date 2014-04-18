@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandAffirmative extends ForgeEssentialsCommandBase
@@ -32,13 +33,6 @@ public class CommandAffirmative extends ForgeEssentialsCommandBase
 	{
 		QuestionCenter.processAnswer(sender, true);
 	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		
-	}
-
 	@Override
 	public boolean canConsoleUseCommand()
 	{
@@ -54,7 +48,7 @@ public class CommandAffirmative extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return null;
+		return "fe.questioner.yes";
 	}
 
 	@Override
@@ -65,6 +59,12 @@ public class CommandAffirmative extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
 		return "/yes Answer yes to a question";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.GUESTS;
 	}
 
 }

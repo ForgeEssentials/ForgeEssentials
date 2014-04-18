@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.PlayerInfo;
@@ -80,15 +79,8 @@ public class CommandBack extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
+		return "fe.teleport." + getCommandName();
 	}
-	
-	@Override
-	 public void registerExtraPermissions(IPermRegisterEvent event)
-	 {
-	 	event.registerPermissionLevel(getCommandPerm() + ".ondeath", RegGroup.MEMBERS);
-	 	event.registerPermissionLevel(getCommandPerm() + ".ontp", RegGroup.MEMBERS);
-	 }
 
 	@Override
 	public RegGroup getReggroup()

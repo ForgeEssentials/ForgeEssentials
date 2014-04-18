@@ -3,6 +3,7 @@ package com.forgeessentials.auth.lists;
 import net.minecraft.command.ICommandSender;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandVIP extends ForgeEssentialsCommandBase{
@@ -15,9 +16,9 @@ public class CommandVIP extends ForgeEssentialsCommandBase{
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
 		if(args.length >= 2 && args[0].equalsIgnoreCase("add")){
-			APIRegistry.perms.setPlayerPermission(args[1], "ForgeEssentials.Auth.isVIP", true, "_GLOBAL_");
+			APIRegistry.perms.setPlayerPermission(args[1], "fe.auth.vip", true, "_GLOBAL_");
 		}else if(args.length >= 2 && args[0].equalsIgnoreCase("remove")){
-			APIRegistry.perms.setPlayerPermission(args[1], "ForgeEssentials.Auth.isVIP", false, "_GLOBAL_");
+			APIRegistry.perms.setPlayerPermission(args[1], "fe.auth.vip", false, "_GLOBAL_");
 		}
 	}
 
@@ -28,7 +29,7 @@ public class CommandVIP extends ForgeEssentialsCommandBase{
 
 	@Override
 	public String getCommandPerm() {
-		return "ForgeEssentials.Auth.vipcmd";
+		return "fe.auth.vipcmd";
 	}
 
 	@Override
@@ -40,6 +41,12 @@ public class CommandVIP extends ForgeEssentialsCommandBase{
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "/vip [add|remove} <player> Adds or removes a player from the VIP list";
+	}
+
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.OWNERS;
 	}
 
 }

@@ -23,7 +23,7 @@ public class ModuleTickets
 	@FEModule.Config
 	public static ConfigTickets		config;
 
-	public static final String		PERMBASE		= "ForgeEssentials.Tickets";
+	public static final String		PERMBASE		= "fe.tickets";
 
 	@FEModule.ModuleDir
 	public static File				moduleDir;
@@ -60,7 +60,6 @@ public class ModuleTickets
 	@PermRegister
 	public static void registerPermissions(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel(PERMBASE + ".command", RegGroup.GUESTS);
 		event.registerPermissionLevel(PERMBASE + ".new", RegGroup.GUESTS);
 		event.registerPermissionLevel(PERMBASE + ".view", RegGroup.GUESTS);
 

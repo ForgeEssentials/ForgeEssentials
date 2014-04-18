@@ -3,6 +3,7 @@ package com.forgeessentials.worldcontrol.commands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.ChatUtils;
@@ -101,6 +102,12 @@ public class CommandTopManipulate extends WorldControlCommandBase
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "//" + name;
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.OWNERS;
 	}
 
 }

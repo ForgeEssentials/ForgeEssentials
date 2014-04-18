@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
@@ -120,7 +121,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "";
+		return "fe.economy." + getCommandName();
 	}
 
 	@Override
@@ -139,6 +140,12 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "/sellcommand <player> <['amount'x]item[:'meta']> <command [args]>";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -3,9 +3,6 @@ package com.forgeessentials.worldcontrol;
 //Depreciated
 import java.util.ArrayList;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Init;
@@ -57,20 +54,6 @@ public class ModuleWorldControl
 		e.registerServerCommand(new CommandTopManipulate("till", Mode.TILL));
 		e.registerServerCommand(new CommandTopManipulate("untill", Mode.UNTILL));
 		// WEIntegration.serverStarting(e);
-	}
-
-	@PermRegister
-	public static void registerPerms(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.set", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.undo", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.redo", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.replace", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.thaw", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.freeze", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.snow", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.till", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.WorldControl.commands.untill", RegGroup.OWNERS);
 	}
 
 }

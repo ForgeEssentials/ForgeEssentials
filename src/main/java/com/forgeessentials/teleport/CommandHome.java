@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.PlayerInfo;
@@ -58,7 +57,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
+		return "fe.teleport." + getCommandName();
 	}
 
 	@Override
@@ -74,12 +73,6 @@ public class CommandHome extends ForgeEssentialsCommandBase
 	public boolean canConsoleUseCommand()
 	{
 		return false;
-	}
-
-	@Override
-	public void registerExtraPermissions(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel(getCommandPerm() + ".set", getReggroup());
 	}
 
 	@Override

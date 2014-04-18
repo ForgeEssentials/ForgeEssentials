@@ -8,7 +8,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.Configuration;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
@@ -111,7 +110,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
+		return "fe.teleport." + getCommandName();
 	}
 
 	@Override
@@ -133,12 +132,6 @@ public class CommandTPA extends ForgeEssentialsCommandBase
 	public RegGroup getReggroup()
 	{
 		return RegGroup.MEMBERS;
-	}
-
-	@Override
-	public void registerExtraPermissions(IPermRegisterEvent event)
-	{
-		event.registerPermissionLevel(getCommandPerm() + ".sendrequest", getReggroup());
 	}
 
 	@Override

@@ -93,6 +93,13 @@ public @interface FEModule
 	public @interface ServerStop
 	{
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(
+	{ ElementType.METHOD })
+	public @interface ModuleEventHandler
+	{
+	}
 
 	/**
 	 * this should be obvious, This is the method that will be called when the

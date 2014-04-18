@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
 import com.forgeessentials.core.PlayerInfo;
@@ -120,6 +121,12 @@ public class CommandReplace extends WorldControlCommandBase
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
 		return "//replace <blockID[:metadata]> <blockID[:metadata]> Replaces blocks of the first ID with blocks of the second.";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.OWNERS;
 	}
 
 }

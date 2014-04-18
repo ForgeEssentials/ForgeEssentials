@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.chat.Mail;
 import com.forgeessentials.chat.MailSystem;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -73,7 +74,7 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.Chat.commands." + getCommandName();
+		return "fe.chat." + getCommandName();
 	}
 
 	@Override
@@ -94,6 +95,12 @@ public class CommandMail extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
 		return "/mail <player> <message> Sends a message to someone which can be read later.";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.GUESTS;
 	}
 
 }

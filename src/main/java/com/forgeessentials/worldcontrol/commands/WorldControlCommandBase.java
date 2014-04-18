@@ -55,7 +55,7 @@ public abstract class WorldControlCommandBase extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.WorldControl.commands." + getName();
+		return "fe.worldcontrol.commands." + getName();
 	}
 
 	@Override

@@ -45,6 +45,12 @@ public class FEClassLoader {
 	private static String[] compulsoryLibs = {"com.mysql.jdbc.Driver", "org.pircbotx.PircBotX", "org.h2.Driver"};
 	
 	public void checkLibs(){
+		String prop = System.getProperty("forgeessentials.developermode");
+		if (prop != null && prop.equals("true")){ // FOR DEVS ONLY! THAT IS WHY IT IS A PROPERTY!!!
+		
+			System.out.println("[ForgeEssentials] Running in developer mode. Libraries will not be checked.");
+			return;
+		}
 		List<String> erroredLibs = new ArrayList<String>();
 		for (String clazz : compulsoryLibs){
 			try{

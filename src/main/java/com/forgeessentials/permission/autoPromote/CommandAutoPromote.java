@@ -11,6 +11,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.permission.SqlHelper;
@@ -242,7 +243,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.autoPromote";
+		return "fe.perm.autoPromote";
 	}
 
 	private List<String> getZoneNames()
@@ -345,6 +346,12 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase
 	public String getCommandUsage(ICommandSender sender) {
 		// TODO Auto-generated method stub
 		return "/autopromote <zone> [get|enable|disable|edit|add|message] [other options] Configure auto promotion.";
+	}
+	
+	@Override
+	public RegGroup getReggroup() {
+		// TODO Auto-generated method stub
+		return RegGroup.ZONE_ADMINS;
 	}
 
 }
