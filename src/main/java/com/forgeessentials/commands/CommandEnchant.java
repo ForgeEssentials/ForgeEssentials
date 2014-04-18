@@ -141,7 +141,7 @@ public class CommandEnchant extends FEcmdModuleCommands
 		}
 
 		int lvl = ench.getMaxLevel();
-		if (args.length >= 3)
+		if (args.length >= 2)
 		{
 			lvl = parseIntWithMin(sender, args[1], ench.getMinLevel());
 		}
