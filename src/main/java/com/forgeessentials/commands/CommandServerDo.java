@@ -42,12 +42,6 @@ public class CommandServerDo extends FEcmdModuleCommands
 	}
 
 	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
-	@Override
 	public RegGroup getReggroup()
 	{
 		return RegGroup.OWNERS;

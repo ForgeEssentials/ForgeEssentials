@@ -22,14 +22,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
 @FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true, configClass = ConfigProtection.class)
 public class ModuleProtection
 {
-	public final static String									PERM_EDITS				= "ForgeEssentials.Protection.allowEdits";
-	public final static String									PERM_ITEM_USE			= "ForgeEssentials.Protection.itemUse";
-	public final static String									PERM_INTERACT_BLOCK		= "ForgeEssentials.Protection.allowBlockInteractions";
-	public final static String									PERM_INTERACT_ENTITY	= "ForgeEssentials.Protection.allowEntityInteractions";
-	public final static String									PERM_OVERRIDE			= "ForgeEssentials.Protection.overrideProtection";
-	public final static String									PERM_PVP				= "ForgeEssentials.Protection.pvp";
-	public final static String									PERM_MOB_SPAWN_NATURAL	= "ForgeEssentials.Protection.mobSpawn.natural";
-	public final static String									PERM_MOB_SPAWN_FORCED	= "ForgeEssentials.Protection.mobSpawn.forced";
+	public final static String									PERM_EDITS				= "fe.protection.allowEdits";
+	public final static String									PERM_ITEM_USE			= "fe.protection.itemUse";
+	public final static String									PERM_INTERACT_BLOCK		= "fe.protection.allowBlockInteractions";
+	public final static String									PERM_INTERACT_ENTITY	= "fe.protection.allowEntityInteractions";
+	public final static String									PERM_OVERRIDE			= "fe.protection.overrideProtection";
+	public final static String									PERM_PVP				= "fe.protection.pvp";
+	public final static String									PERM_MOB_SPAWN_NATURAL	= "fe.protection.mobSpawn.natural";
+	public final static String									PERM_MOB_SPAWN_FORCED	= "fe.protection.mobSpawn.forced";
 
 	@FEModule.Config
 	public static ConfigProtection								config;

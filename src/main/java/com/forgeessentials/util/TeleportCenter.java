@@ -28,8 +28,8 @@ public class TeleportCenter implements IScheduledTickHandler
 	public static int					tpWarmup;
 	public static int					tpCooldown;
 
-	public static final String			BYPASS_WARMUP	= "ForgeEssentials.TeleportCenter.BypassWarmup";
-	public static final String			BYPASS_COOLDOWN	= "ForgeEssentials.TeleportCenter.BypassCooldown";
+	public static final String			BYPASS_WARMUP	= "fe.teleport.bypasswarmup";
+	public static final String			BYPASS_COOLDOWN	= "fe.teleport.bypasscooldown";
 
 	public static void addToTpQue(WarpPoint point, EntityPlayer player)
 	{

@@ -52,8 +52,8 @@ public class ModuleWorldBorder
 	@PermRegister
 	public static void registerPerms(IPermRegisterEvent event)
 	{
-		event.registerPermissionLevel("ForgeEssentials.WorldBorder.admin", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.WorldBorder.filler", RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.worldborder.admin", RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.worldborder.filler", RegGroup.OWNERS);
 	}
 
 	@FEModule.Init

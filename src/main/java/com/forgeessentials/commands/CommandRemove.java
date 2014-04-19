@@ -105,12 +105,6 @@ public class CommandRemove extends FEcmdModuleCommands
 	}
 
 	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
-	@Override
 	public RegGroup getReggroup()
 	{
 		return RegGroup.ZONE_ADMINS;

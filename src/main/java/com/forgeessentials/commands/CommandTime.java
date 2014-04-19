@@ -174,12 +174,6 @@ public class CommandTime extends FEcmdModuleCommands
         return null;
     }
 
-    @Override
-    public String getCommandPerm()
-    {
-        return "ForgeEssentials.BasicCommands." + getCommandName();
-    }
-
 	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub

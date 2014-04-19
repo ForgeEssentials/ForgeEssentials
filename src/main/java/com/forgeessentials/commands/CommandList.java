@@ -61,12 +61,6 @@ public class CommandList extends FEcmdModuleCommands
         return true;
     }
 
-    @Override
-    public String getCommandPerm()
-    {
-        return "ForgeEssentials.BasicCommands." + getCommandName();
-    }
-
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
 		return "/list List all online players.";

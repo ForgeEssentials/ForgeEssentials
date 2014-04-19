@@ -257,12 +257,6 @@ public class CommandDrop extends FEcmdModuleCommands
 	}
 
 	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
-	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;

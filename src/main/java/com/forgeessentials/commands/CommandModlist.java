@@ -42,23 +42,11 @@ public class CommandModlist extends FEcmdModuleCommands
 		}
 	}
 
-	public void printList(ICommandSender sender, String[] args)
-	{
-		
-	}
-
 	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return true;
 	}
-
-	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
 	@Override
 	public RegGroup getReggroup()
 	{

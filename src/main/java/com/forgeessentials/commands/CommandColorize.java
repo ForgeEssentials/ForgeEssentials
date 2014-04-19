@@ -35,12 +35,6 @@ public class CommandColorize extends FEcmdModuleCommands
 	}
 
 	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
-	@Override
 	public RegGroup getReggroup()
 	{
 		return RegGroup.MEMBERS;

@@ -59,6 +59,10 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase
 	 * @param event
 	 */
 	public void registerExtraPermissions(IPermRegisterEvent event){}
+	
+	public String getCommandPerm(){
+		return "fe.commands." + getCommandName();
+	}
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender sender)

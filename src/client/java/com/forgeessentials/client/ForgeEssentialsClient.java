@@ -52,7 +52,7 @@ public class ForgeEssentialsClient
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		feclientlog = e.getModLog();
+		feclientlog = Logger.getLogger("[ForgeEssentialsClient]");
 		
 		if (FMLCommonHandler.instance().getSide().isServer() && getDevOverride() == false)
 			throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");

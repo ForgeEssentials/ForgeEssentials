@@ -63,12 +63,6 @@ public class CommandAFK extends FEcmdModuleCommands
 		return false;
 	}
 
-	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
 	public void abort(AFKdata afkData)
 	{
 		if (!afkData.player.capabilities.isCreativeMode)

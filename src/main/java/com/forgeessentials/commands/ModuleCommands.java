@@ -83,7 +83,7 @@ public class ModuleCommands
 	public static void registerPermissions(IPermRegisterEvent event)
 	{
 		CommandRegistrar.registerPermissions(event);
-		event.registerPermissionLevel("ForgeEssentials.BasicCommands._ALL_", RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.commands._ALL_", RegGroup.OWNERS);
 	}
 
 	@FEModule.ServerStop

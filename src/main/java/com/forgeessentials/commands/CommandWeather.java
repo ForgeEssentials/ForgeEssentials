@@ -114,12 +114,6 @@ public class CommandWeather extends FEcmdModuleCommands
         return true;
     }
 
-    @Override
-    public String getCommandPerm()
-    {
-        return "ForgeEssentials.BasicCommands." + getCommandName();
-    }
-
 	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub

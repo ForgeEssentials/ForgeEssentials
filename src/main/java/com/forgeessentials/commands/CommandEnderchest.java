@@ -47,20 +47,9 @@ public class CommandEnderchest extends FEcmdModuleCommands
 	}
 
 	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-	}
-
-	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
-	}
-
-	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
 	}
 
 	@Override

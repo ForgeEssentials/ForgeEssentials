@@ -37,6 +37,11 @@ sourceSets {
     client{
         compileClasspath = project.sourceSets.main.compileClasspath
     }
+    
+    weintegration{
+        compileClasspath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
+    
+    }
 }
 
 configurations{
@@ -179,6 +184,20 @@ from sourceSets.client.output
     reobf {
         reobf(clientJar) { reobfSpec ->
             reobfSpec.classpath = project.sourceSets.main.compileClasspath
+        }
+    }
+    
+    task weJar(dependsOn: "jar", type: Jar){
+from sourceSets.weintegration.output
+        appendix = "weintegrationtools"
+        include "**"
+        }
+        artifacts {
+        archives weJar
+    }
+    reobf {
+        reobf(clientJar) { reobfSpec ->
+            reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
         }
     }
     

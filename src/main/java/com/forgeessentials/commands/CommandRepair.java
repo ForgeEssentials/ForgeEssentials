@@ -102,12 +102,6 @@ public class CommandRepair extends FEcmdModuleCommands
 	}
 
 	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
-	@Override
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);

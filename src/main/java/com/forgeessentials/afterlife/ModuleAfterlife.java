@@ -22,7 +22,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @FEModule(name = "Afterlife", parentMod = ForgeEssentials.class, configClass = ConfigAfterlife.class)
 public class ModuleAfterlife
 {
-	public static final String		BASEPERM	= "ForgeEssentials.Afterlife";
+	public static final String		BASEPERM	= "fe.afterlife";
 	@FEModule.Config
 	public static ConfigAfterlife	conf;
 	@FEModule.Instance

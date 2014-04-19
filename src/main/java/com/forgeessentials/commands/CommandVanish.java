@@ -62,12 +62,6 @@ public class CommandVanish extends FEcmdModuleCommands
         return false;
     }
 
-    @Override
-    public String getCommandPerm()
-    {
-        return "ForgeEssentials.BasicCommands." + getCommandName();
-    }
-
 	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub

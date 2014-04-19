@@ -148,12 +148,6 @@ public class CommandServerSettings extends FEcmdModuleCommands
 	}
 
 	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
-	@Override
 	public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
 	{
 		if (args.length == 1)

@@ -90,11 +90,6 @@ public class CommandBind extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -105,12 +100,6 @@ public class CommandBind extends FEcmdModuleCommands
     {
         if (args.length == 1) return getListOfStringsMatchingLastWord(args, "left", "right", "clear");
         return null;
-    }
-
-    @Override
-    public String getCommandPerm()
-    {
-        return "ForgeEssentials.BasicCommands." + getCommandName();
     }
 
 	@Override

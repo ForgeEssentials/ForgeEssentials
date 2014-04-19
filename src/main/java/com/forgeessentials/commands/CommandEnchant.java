@@ -189,12 +189,6 @@ public class CommandEnchant extends FEcmdModuleCommands
 	}
 
 	@Override
-	public String getCommandPerm()
-	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
-	}
-
-	@Override
 	public boolean canConsoleUseCommand()
 	{
 		return false;
