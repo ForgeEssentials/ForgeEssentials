@@ -12,7 +12,6 @@
 /reobf/*
 /runtime/*
 /temp/*
-/lib/*
 /rundir/*
 /.gradle/*
 /.settings/*
@@ -22,12 +21,7 @@
 
 /src/minecraft/
 
-!/lib/H2DB.jar
-!/lib/mysql-connector-java-bin.jar
-!/lib/metrics-R6-FEmod.jar
-!/lib/metrics-R7-FEmod.jar
-!/lib/worldedit-5.4.6-snapshot.jar
-!/lib/pircbotx-1.9.jar
+
 
 !/jars/coremods/
 

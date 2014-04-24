@@ -92,9 +92,13 @@ dependencies {
     // compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT' don't use this for time being, we want one with forge
     compile files('lib/worldedit-forge-6.0.0-SNAPSHOT.jar')
     
+    // perms API (TEMPORARY, until it gets pulled into Forge!)
+    compile files('lib/minecraftforge-9.11.1.965-permsAPIonly.jar')
+    
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
     serverLibs 'mysql:mysql-connector-java:5.1.22'
+    serverLibs files('lib/minecraftforge-9.11.1.965-permsAPIonly.jar')
 }
 
 // core
@@ -109,6 +113,7 @@ jar{
     include "com/forgeessentials/api/packetInspector/**"
     include "com/forgeessentials/api/json/**"
     include "org/mcstats/**"
+    include "net/minecraftforge/permissions/**"
     include "logo.png"
     include "mcmod.info"
     include "forgeessentials_at.cfg"
@@ -196,7 +201,7 @@ from sourceSets.weintegration.output
         archives weJar
     }
     reobf {
-        reobf(clientJar) { reobfSpec ->
+        reobf(weJar) { reobfSpec ->
             reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
         }
     }
