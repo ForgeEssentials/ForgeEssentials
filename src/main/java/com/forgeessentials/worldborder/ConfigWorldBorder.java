@@ -1,14 +1,13 @@
 package com.forgeessentials.worldborder;
 
-import java.io.File;
-
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.worldborder.Effects.IEffect;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.worldborder.Effects.IEffect;
+import java.io.File;
 
 /**
  * This generates the configuration structure
@@ -32,7 +31,7 @@ public class ConfigWorldBorder extends ModuleConfigBase
 	{
 		ModuleWorldBorder.effectsList.clear();
 
-		String penaltyBasePackage = IEffect.class.getPackage();
+		String penaltyBasePackage = IEffect.class.getPackage().getName();
 		config.addCustomCategoryComment("Penalties", "This is what will happen to the player if he passes the world border.");
 
 		String[] stages =
@@ -66,11 +65,13 @@ public class ConfigWorldBorder extends ModuleConfigBase
 					catch (Exception e)
 					{
 						OutputHandler.felog.info("Could not initialize '" + effect + "' in stage '" + stage + "'");
+                        e.printStackTrace();
 					}
 				}
 				catch (ClassNotFoundException e)
 				{
 					OutputHandler.felog.info("'" + effect + "' in the stage '" + stage + "' does not exist!");
+                    e.printStackTrace();
 				}
 			}
 

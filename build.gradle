@@ -58,8 +58,7 @@ repositories{
 
 processClientResources{
     from (sourceSets.main.resources.srcDirs) {
-        expand 'version': project.version, 'mcversion': project.minecraft.version,
-                'forgeversion': project.minecraft.forgeVersion
+        expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeversion': project.minecraft.forgeVersion
         include 'mcmod.info'
     }
 
@@ -70,8 +69,7 @@ processClientResources{
 
 processResources {
     from (sourceSets.main.resources.srcDirs) {
-        expand 'version': project.version, 'mcVersion': project.minecraft.version,
-                'forgeVersion': project.minecraft.forgeVersion
+        expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeVersion': project.minecraft.forgeVersion
         include 'mcmod.info'
     }
 

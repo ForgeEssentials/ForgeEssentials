@@ -21,7 +21,10 @@
 
 /src/minecraft/
 
-
+*.iml
+*.ipr
+*.iws
+out/
 
 !/jars/coremods/
 
