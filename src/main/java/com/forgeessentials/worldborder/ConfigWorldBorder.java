@@ -32,7 +32,7 @@ public class ConfigWorldBorder extends ModuleConfigBase
 	{
 		ModuleWorldBorder.effectsList.clear();
 
-		String penaltyBasePackage = "com.ForgeEssentials.WorldBorder.Effects.";
+		String penaltyBasePackage = IEffect.class.getPackage();
 		config.addCustomCategoryComment("Penalties", "This is what will happen to the player if he passes the world border.");
 
 		String[] stages =
