@@ -22,6 +22,9 @@ As you would for any other ForgeGradle-based mod, clone this repo to a folder an
 
 Downloads
 =========
+
+If you would like test builds, go [here](http://dries007.net:8080/job/FE_164/). Untested and probably buggy!
+
 FE Team Members:
 ================
 ________________
