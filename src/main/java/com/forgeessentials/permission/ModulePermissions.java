@@ -124,7 +124,7 @@ public class ModulePermissions
 		event.registerPermissionLevel("fe.perm.zone.info._ALL_", RegGroup.MEMBERS);
 		event.registerPermissionLevel("fe.perm.zone.list", RegGroup.MEMBERS);
 
-		event.registerPermissionLevel("ForgeEssentials.BasicCommands.list", RegGroup.GUESTS);
+		event.registerPermissionLevel("fe.perm.list", RegGroup.GUESTS);
 		
 		// somehow the perms stuff doesn't read this where they were, try here
 		event.registerPermissionLevel("mc.ban", RegGroup.ZONE_ADMINS);

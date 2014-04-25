@@ -206,12 +206,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "fe.core.pos";
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
+		return "fe.core.pos.expand";
 	}
 
 	@Override

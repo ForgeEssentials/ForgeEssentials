@@ -138,7 +138,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.CoreCommands.select.wand";
+		return "fe.core.pos.wand";
 	}
 
 	@Override

@@ -44,7 +44,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "fe.core.pos";
+		return "fe.core.pos.deselect";
 	}
 
 	@Override
