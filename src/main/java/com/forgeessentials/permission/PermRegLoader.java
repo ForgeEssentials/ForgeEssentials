@@ -73,18 +73,18 @@ public class PermRegLoader
 		@Override
 		public void registerPermission(String permission)
 		{
-			registerred.add(permission);
+			registerred.add(permission.toLowerCase());
 		}
 
 		@Override
 		public void registerPermissionLevel(String permission, RegGroup group, boolean alone)
 		{
-			Permission deny = new Permission(permission, false);
-			Permission allow = new Permission(permission, true);
+			Permission deny = new Permission(permission.toLowerCase(), false);
+			Permission allow = new Permission(permission.toLowerCase(), true);
 
 			if (!deny.isAll)
 			{
-				registerred.add(permission);
+				registerred.add(permission.toLowerCase());
 			}
 
 			if (group == null)
@@ -153,28 +153,28 @@ public class PermRegLoader
 		@Override
 		public void registerPermissionProp(String permission, String globalDefault)
 		{
-			PermissionProp prop = new PermissionProp(permission, globalDefault);
+			PermissionProp prop = new PermissionProp(permission.toLowerCase(), globalDefault);
 			perms.put(RegGroup.ZONE, prop);
 		}
 
 		@Override
 		public void registerPermissionProp(String permission, int globalDefault)
 		{
-			PermissionProp prop = new PermissionProp(permission, "" + globalDefault);
+			PermissionProp prop = new PermissionProp(permission.toLowerCase(), "" + globalDefault);
 			perms.put(RegGroup.ZONE, prop);
 		}
 
 		@Override
 		public void registerPermissionProp(String permission, float globalDefault)
 		{
-			PermissionProp prop = new PermissionProp(permission, "" + globalDefault);
+			PermissionProp prop = new PermissionProp(permission.toLowerCase(), "" + globalDefault);
 			perms.put(RegGroup.ZONE, prop);
 		}
 
 		@Override
 		public void registerGroupPermissionprop(String permission, String value, RegGroup group)
 		{
-			PermissionProp prop = new PermissionProp(permission, "" + value);
+			PermissionProp prop = new PermissionProp(permission.toLowerCase(), "" + value);
 			perms.put(group, prop);
 		}
 
