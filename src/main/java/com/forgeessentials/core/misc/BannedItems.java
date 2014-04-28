@@ -1,19 +1,17 @@
 package com.forgeessentials.core.misc;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.Configuration;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.OutputHandler;
-
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BannedItems
 {
@@ -25,7 +23,7 @@ public class BannedItems
 		Configuration config = new Configuration(new File(ForgeEssentials.FEDIR, "banneditems.cfg"));
 
 		config.addCustomCategoryComment("NoCraft", "Configuration options to remove an item's crafting recipe.");
-		config.addCustomCategoryComment("NoUse", "Configuration options to make an item unusable.");
+		//config.addCustomCategoryComment("NoUse", "Configuration options to make an item unusable.");
 
 		noCraft = Arrays.asList(config.get("NoCraft", "List", new String[] {}, "Use this format: \"id:meta\". Use meta -1 to ban ALL variants of an item/block.").getStringList());
 
