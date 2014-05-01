@@ -111,7 +111,6 @@ jar{
     include "com/forgeessentials/api/packetInspector/**"
     include "com/forgeessentials/api/json/**"
     include "org/mcstats/**"
-    include "net/minecraftforge/permissions/**"
     include "logo.png"
     include "mcmod.info"
     include "forgeessentials_at.cfg"

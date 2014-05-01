@@ -29,7 +29,6 @@ import com.forgeessentials.core.preloader.Data;
 
 public class FEeventAdder implements IClassTransformer
 {
-	public static boolean					addedBreak	= false;
 	public static boolean					addedPlace	= false;
 
 	@Override
@@ -84,7 +83,7 @@ public class FEeventAdder implements IClassTransformer
 				toInject.add(new VarInsnNode(FLOAD, 7));
 				toInject.add(new VarInsnNode(FLOAD, 8));
 				toInject.add(new VarInsnNode(FLOAD, 9));
-				toInject.add(new MethodInsnNode(INVOKESTATIC, "com/ForgeEssentials/util/events/ForgeEssentialsEventFactory", "onBlockPlace", "(L" + hm.get("itemstackJavaClassName") + ";L" + hm.get("entityPlayerJavaClassName") + ";L" + hm.get("worldJavaClassName")
+				toInject.add(new MethodInsnNode(INVOKESTATIC, "com/forgeessentials/util/events/ForgeEssentialsEventFactory", "onBlockPlace", "(L" + hm.get("itemstackJavaClassName") + ";L" + hm.get("entityPlayerJavaClassName") + ";L" + hm.get("worldJavaClassName")
 						+ ";IIIIFFF)Z"));
 				toInject.add(new JumpInsnNode(IFNE, lmm2Node));
 				toInject.add(new InsnNode(ICONST_0));

@@ -44,23 +44,6 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
 		else if (args[0].equalsIgnoreCase("debug")){
 			try
 			{
-				if (FEeventAdder.addedBreak)
-				{
-					ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockBreak' was added.");
-				}
-				else
-				{
-					ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockBreak' was NOT added. Some functions might not work!");
-					ChatUtils.sendMessage(sender, "The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemInWorldManager.class.getName() + "'.");
-				}
-			}
-			catch (Exception ex)
-			{
-				ChatUtils.sendMessage(sender, "Error finding custom event 'PlayerBlockBreak'");
-			}
-
-			try
-			{
 				if (FEeventAdder.addedPlace)
 				{
 					ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was added.");

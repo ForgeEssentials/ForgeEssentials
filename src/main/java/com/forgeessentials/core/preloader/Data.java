@@ -13,16 +13,9 @@ import java.util.HashMap;
 public class Data
 {
 
-	protected static String[]	libraries		=
-												{ "mysql-connector-java-bin.jar", "H2DB.jar", "metrics-R7-FEmod.jar", "pircbotx-1.9.jar"};
-	protected static String[]	checksums		=
-												{ "3ae0cff91d7f40d5b4c7cefbbd1eab34025bdc15", "32f12e53b4dab80b721525c01d766b95d22129bb", "bfffcaf975982b45d568f95526eba337652eecfb", "c84e54d65043af5ad7cf45c54820225d14665769" };
 	protected static String[]	transformers	=
 												{ "com.forgeessentials.core.preloader.asm.FEAccessTransformer", "com.forgeessentials.core.preloader.asm.FEeventAdder", "com.forgeessentials.core.preloader.asm.FEPacketAnalyzer"};
 	
-	public static HashMap<String, String>	IIWMob     = new HashMap<String, String>();
-	public static HashMap<String, String>	IIWMdev    = new HashMap<String, String>();
-
 	public static HashMap<String, String>	ISob       = new HashMap<String, String>();
 	public static HashMap<String, String>	ISdev      = new HashMap<String, String>();
 	
@@ -35,29 +28,19 @@ public class Data
 	static
 	{
 		
-		IIWMob.put("className", "jv");
-		IIWMob.put("javaClassName", "jv");
-		IIWMob.put("targetMethodName", "d");// searge name func_73079_d
-		IIWMob.put("worldFieldName", "a"); // searge name field_73092_a
-		IIWMob.put("entityPlayerFieldName", "b");// searge name field_73090_b
-		IIWMob.put("worldJavaClassName", "ace");
-		IIWMob.put("getBlockMetadataMethodName", "h");// searge name func_72805_g
-		IIWMob.put("blockJavaClassName", "aqw");
-		IIWMob.put("blocksListFieldName", "s");// searge name field_71973_m
-		IIWMob.put("entityPlayerJavaClassName", "sq");
-		IIWMob.put("entityPlayerMPJavaClassName", "jc");
+		ISob.put("className", "yd");
+        ISob.put("javaClassName", "yd");
+        ISob.put("targetMethodName", "a");// searge name func_77943_a
+        ISob.put("itemstackJavaClassName", "yd");
+        ISob.put("entityPlayerJavaClassName", "ue");
+        ISob.put("worldJavaClassName", "abv");
 
-	    IIWMdev.put("className", "net.minecraft.item.ItemInWorldManager");
-        IIWMdev.put("javaClassName", "net/minecraft/item/ItemInWorldManager");
-        IIWMdev.put("targetMethodName", "removeBlock");
-        IIWMdev.put("worldFieldName", "theWorld");
-        IIWMdev.put("entityPlayerFieldName", "thisPlayerMP");
-        IIWMdev.put("worldJavaClassName", "net/minecraft/world/World");
-        IIWMdev.put("getBlockMetaiiwmHMdevMethodName", "getBlockMetadata");
-        IIWMdev.put("blockJavaClassName", "net/minecraft/block/Block");
-        IIWMdev.put("blocksListFieldName", "blocksList");
-        IIWMdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
-        IIWMdev.put("entityPlayerMPJavaClassName", "net/minecraft/entity/player/EntityPlayerMP");
+        ISdev.put("className", "net.minecraft.item.ItemStack");
+        ISdev.put("javaClassName", "net/minecraft/item/ItemStack");
+        ISdev.put("targetMethodName", "tryPlaceItemIntoWorld");
+        ISdev.put("itemstackJavaClassName", "net/minecraft/item/ItemStack");
+        ISdev.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
+        ISdev.put("worldJavaClassName", "net/minecraft/world/World");
         
         MCob.put("className", "cm");
         MCob.put("targetMethod1", "a");// searge name func_74429_a

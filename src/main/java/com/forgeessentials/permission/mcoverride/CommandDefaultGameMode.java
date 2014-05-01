@@ -13,8 +13,8 @@ public class CommandDefaultGameMode extends net.minecraft.command.CommandDefault
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
-			return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, "Minecraft.commands." + getCommandName()));
+			return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, "mc." + getCommandName()));
 		else
-			return true;
+			return super.canCommandSenderUseCommand(sender);
 	}
 }

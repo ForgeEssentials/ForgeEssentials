@@ -13,8 +13,8 @@ public class CommandTestFor extends ServerCommandTestFor{
 	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
 		if (sender instanceof EntityPlayer)
-			return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, "Minecraft.commands." + getCommandName()));
+			return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, "mc." + getCommandName()));
 		else
-			return true;
+			return super.canCommandSenderUseCommand(sender);
 	}
 }
