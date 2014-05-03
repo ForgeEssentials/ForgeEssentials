@@ -3,7 +3,7 @@ package com.forgeessentials.chat.commands;
 import net.minecraft.command.ICommandSender;
 
 import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.chat.IRCHelper;
+import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandIRC extends ForgeEssentialsCommandBase {

@@ -1,4 +1,4 @@
-package com.forgeessentials.chat;
+package com.forgeessentials.chat.irc;
 
 import java.io.IOException;
 
@@ -18,7 +18,8 @@ import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
-import com.forgeessentials.chat.ircCommands.ircCommands;
+import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.chat.irc.commands.ircCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 
@@ -28,16 +29,14 @@ public class IRCHelper extends ListenerAdapter implements Listener
 {
 
 	public static int					port;
-	public static String				server;
-	public static String				name;
-	public static String				channel;
+	public static String				server, name, channel, password, serverPass;
 	private static PircBotX				bot;
 	public static boolean				suppressEvents;
 	public static ircCommands			ircCmds;
 
 	public static void connectToServer()
 	{
-		OutputHandler.felog.info("Initializing IRC.");
+		OutputHandler.felog.info("Initializing IRC connection");
 		bot = new PircBotX();
 		bot.setName(name);
 		bot.getListenerManager().addListener(new IRCHelper());
@@ -48,7 +47,12 @@ public class IRCHelper extends ListenerAdapter implements Listener
 		try
 		{
 			OutputHandler.felog.info("Attempting to join IRC server: " + server + " on port: " + port);
-			bot.connect(server, port);
+			if (serverPass == ""){
+				bot.connect(server, port);
+			}
+			else
+				bot.connect(server, port, serverPass);
+			bot.identify(password);
 			OutputHandler.felog.info("Successfully joined IRC server!");
 			OutputHandler.felog.info("Attempting to join " + server + " channel: " + channel);
 			bot.joinChannel(channel);

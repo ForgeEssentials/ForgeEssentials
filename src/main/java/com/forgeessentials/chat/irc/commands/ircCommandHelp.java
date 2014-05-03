@@ -1,4 +1,4 @@
-package com.forgeessentials.chat.ircCommands;
+package com.forgeessentials.chat.irc.commands;
 
 import org.pircbotx.User;
 

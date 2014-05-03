@@ -1,4 +1,4 @@
-package com.forgeessentials.chat.ircCommands;
+package com.forgeessentials.chat.irc.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;

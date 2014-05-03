@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 
+import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 
@@ -51,8 +52,20 @@ public class CommandMuter
         {
             ModuleChat.cmdLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + e.sender.getCommandSenderName() + "] /" + e.command.getCommandName() + " " + join(e.parameters));
         }
+        
+        StringBuilder unpacked = new StringBuilder();
+        
         if (e.command.getCommandName().equalsIgnoreCase("me")){
-        	IRCHelper.postIRC(e.sender.getCommandSenderName() + " " + e.parameters.toString());
+        	for (String takeout : e.parameters){
+        		unpacked.append(takeout + " ");
+        	}
+        	IRCHelper.postIRC(e.sender.getCommandSenderName() + " " + unpacked.toString());
+        }
+        if (e.command.getCommandName().equalsIgnoreCase("say")){
+        	for (String takeout : e.parameters){
+        		unpacked.append(takeout + " ");
+        	}
+        	IRCHelper.postIRC("[CONSOLE] " + unpacked.toString());
         }
 
     }

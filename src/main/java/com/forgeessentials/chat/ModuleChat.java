@@ -21,6 +21,8 @@ import com.forgeessentials.chat.commands.CommandNickname;
 import com.forgeessentials.chat.commands.CommandPm;
 import com.forgeessentials.chat.commands.CommandR;
 import com.forgeessentials.chat.commands.CommandUnmute;
+import com.forgeessentials.chat.irc.IRCHelper;
+import com.forgeessentials.chat.irc.PlayerEventHandler;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.DuplicateCommandRemoval;
 import com.forgeessentials.core.misc.packetInspector.PacketAnalyzerRegistry;
@@ -52,6 +54,7 @@ public class ModuleChat
 	public static File logdir;
 
 	private MailSystem         mailsystem;
+	private PlayerEventHandler ircPlayerHandler;
 	public static boolean connectToIRC;
 
 	public ModuleChat()
@@ -66,11 +69,17 @@ public class ModuleChat
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
+		
 		MinecraftForge.EVENT_BUS.register(new ChatFormatter());
 		MinecraftForge.EVENT_BUS.register(new CommandMuter());
 		
+		if (!IRCHelper.suppressEvents && connectToIRC){
+			ircPlayerHandler = new PlayerEventHandler();
+			MinecraftForge.EVENT_BUS.register(ircPlayerHandler);
+			GameRegistry.registerPlayerTracker(ircPlayerHandler);
+		}
+		
 		PacketAnalyzerRegistry.register(new PacketAnalyzerChat(), new int [] { 201 });
-		System.out.println("Starting irc connection");
 	}
 
 	@FEModule.PostInit

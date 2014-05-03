@@ -1,12 +1,12 @@
-package com.forgeessentials.chat.ircCommands;
+package com.forgeessentials.chat.irc.commands;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumChatFormatting;
 
 import org.pircbotx.User;
 
-import com.forgeessentials.chat.IRCHelper;
 import com.forgeessentials.chat.commands.CommandMsg;
+import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 

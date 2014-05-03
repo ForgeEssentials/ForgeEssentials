@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -97,6 +98,8 @@ public class ConfigChat extends ModuleConfigBase
 		IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
 		IRCHelper.channel = config.get("irc", "channel", "#something", "Channel to connect to").getString();
 		IRCHelper.suppressEvents = config.get("irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.").getBoolean(true);
+		IRCHelper.password = config.get("irc", "nickservPass", "", "Nickserv password for the bot.").getString();
+		IRCHelper.serverPass = config.get("irc", "serverPass", "", "Server password for the bot.").getString();
 		
 		config.save();
 	}
@@ -145,6 +148,8 @@ public class ConfigChat extends ModuleConfigBase
 		config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").set(IRCHelper.server);
 		config.get("irc", "channel", "#something", "Channel to connect to").set(IRCHelper.channel);
 		config.get("irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.").set(IRCHelper.suppressEvents);
+		config.get("irc", "nickservPass", "", "Nickserv password for the bot.").set(IRCHelper.password);
+		config.get("irc", "serverPass", "", "Server password for the bot.").set(IRCHelper.serverPass);
 		
 		config.save();
 	}
@@ -195,6 +200,8 @@ public class ConfigChat extends ModuleConfigBase
 		IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
 		IRCHelper.channel = config.get("irc", "channel", "#something", "Channels to connect to").getString();
 		IRCHelper.suppressEvents = config.get("irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.").getBoolean(true);
+		IRCHelper.password = config.get("irc", "nickservPass", "", "Nickserv password for the bot.").getString();
+		IRCHelper.serverPass = config.get("irc", "serverPass", "", "Server password for the bot.").getString();
         
 		config.save();
 	}
