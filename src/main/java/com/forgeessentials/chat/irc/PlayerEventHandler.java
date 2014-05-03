@@ -25,7 +25,9 @@ public class PlayerEventHandler implements IPlayerTracker{
 	
 	@ForgeSubscribe
 	public void onPlayerDeath(LivingDeathEvent e){
+		if (e.entityLiving instanceof EntityPlayer){
 		IRCHelper.postIRC(e.source.getDeathMessage(e.entityLiving).toString());
+		}
 	}
 
 }
