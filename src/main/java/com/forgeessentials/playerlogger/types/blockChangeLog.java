@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
+import com.forgeessentials.api.TextFormatter;
 import com.forgeessentials.api.json.JSONObject;
-import com.forgeessentials.api.snooper.TextFormatter;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.OutputHandler;
 

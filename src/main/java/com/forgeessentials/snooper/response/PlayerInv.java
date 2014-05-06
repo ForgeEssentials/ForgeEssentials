@@ -4,11 +4,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 
+import com.forgeessentials.api.TextFormatter;
 import com.forgeessentials.api.json.JSONArray;
 import com.forgeessentials.api.json.JSONException;
 import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.api.snooper.Response;
-import com.forgeessentials.api.snooper.TextFormatter;
 
 public class PlayerInv extends Response
 {

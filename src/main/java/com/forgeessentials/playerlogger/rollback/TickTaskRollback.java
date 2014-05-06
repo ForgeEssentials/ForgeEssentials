@@ -9,7 +9,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
 
-import com.forgeessentials.api.snooper.TextFormatter;
+import com.forgeessentials.api.TextFormatter;
 import com.forgeessentials.playerlogger.blockChange;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;

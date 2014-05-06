@@ -4,10 +4,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.Configuration;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.TextFormatter;
 import com.forgeessentials.api.json.JSONException;
 import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.api.snooper.Response;
-import com.forgeessentials.api.snooper.TextFormatter;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 

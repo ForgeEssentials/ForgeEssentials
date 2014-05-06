@@ -1,4 +1,4 @@
-package com.forgeessentials.api.snooper;
+package com.forgeessentials.api;
 
 import java.util.Collection;
 import java.util.Iterator;
