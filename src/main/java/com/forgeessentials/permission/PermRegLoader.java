@@ -46,6 +46,7 @@ public class PermRegLoader
 
 		perms = event.registerred;
 		registerredPerms = event.perms;
+		OutputHandler.felog.info("Registered " + registerredPerms.size() + " permission nodes");
 	}
 
 	protected void clearMethods()

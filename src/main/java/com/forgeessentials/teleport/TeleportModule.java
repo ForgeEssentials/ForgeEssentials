@@ -1,12 +1,8 @@
 package com.forgeessentials.teleport;
 
-import java.io.File;
-
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -22,7 +18,7 @@ import com.forgeessentials.api.permissions.query.PropQueryPlayerSpot;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.teleport.util.ConfigTeleport;
 import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
@@ -35,7 +31,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@FEModule(name = "TeleportModule", parentMod = ForgeEssentials.class)
+@FEModule(name = "TeleportModule", parentMod = ForgeEssentials.class, configClass = ConfigTeleport.class)
 public class TeleportModule {
 	
 	public static int timeout;
@@ -45,7 +41,7 @@ public class TeleportModule {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
-	@FEModule.ServerInit()
+	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandBack());
@@ -83,7 +79,7 @@ public class TeleportModule {
 	@PermRegister
 	public static void registerPermissions(IPermRegisterEvent event)
 	{// ensures on ServerStart
-		// event.registerPermissionProp("ForgeEssentials.BasicCommands.spawnPoint", "0;0;0;0");
+		// event.registerPermissionProp("fe.teleport.spawnPoint", "0;0;0;0");
 		event.registerPermissionProp(CommandSetSpawn.SPAWN_TYPE_PROP, "bed"); // bed, point, none
 		event.registerPermissionLevel("fe.teleport.back.ondeath", RegGroup.MEMBERS);
 	 	event.registerPermissionLevel("fe.teleport.back.ontp", RegGroup.MEMBERS);
@@ -127,7 +123,7 @@ public class TeleportModule {
 				}
 			}
 			
-			PropQueryPlayerSpot query = new PropQueryPlayerSpot(player, "ForgeEssentials.BasicCommands.spawnType");
+			PropQueryPlayerSpot query = new PropQueryPlayerSpot(player, "fe.teleport.spawnType");
 			APIRegistry.perms.getPermissionProp(query);
 			
 			if (query.getStringValue().equalsIgnoreCase("none"))
@@ -148,7 +144,7 @@ public class TeleportModule {
 				}
 			}
 
-			query = new PropQueryPlayerSpot(player, "ForgeEssentials.BasicCommands.spawnPoint");
+			query = new PropQueryPlayerSpot(player, "fe.teleport.spawnPoint");
 			APIRegistry.perms.getPermissionProp(query);
 
 			if (!query.hasValue())
@@ -172,37 +168,6 @@ public class TeleportModule {
 				CommandSetSpawn.spawns.put(player.username, null);
 			}
 		}
-	}
-	public class ConfigTeleport extends ModuleConfigBase{
-
-		private Configuration config;
-		
-		public ConfigTeleport(File file) {
-			super(file);
-		}
-
-		@Override
-		public void init() {
-			config = new Configuration (file, true);
-			timeout = config.get("main", "timeout", 25, "Amount of sec a user has to accept a TPA request").getInt();
-			config.save();
-
-		}
-
-		@Override
-		public void forceSave() {
-			config = new Configuration (file, true);
-			config.get("main", "timeout", 25, "Amount of sec a user has to accept a TPA request").set(timeout);
-			config.save();
-		}
-
-		@Override
-		public void forceLoad(ICommandSender sender) {
-			config = new Configuration (file, true);
-			timeout = config.get("main", "timeout", 25, "Amount of sec a user has to accept a TPA request").getInt();
-			config.save();
-		}
-		
 	}
 
 }

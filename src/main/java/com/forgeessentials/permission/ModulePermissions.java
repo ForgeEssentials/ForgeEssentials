@@ -21,9 +21,9 @@ import com.forgeessentials.permission.mcoverride.OverrideManager;
 import com.forgeessentials.permission.network.PacketPermNodeList;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModulePostInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -71,20 +71,6 @@ public class ModulePermissions
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
-	@FEModule.PostInit
-	public void postload(FEModulePostInitEvent e)
-	{
-		permLoader.loadAllPerms();
-		permLoader.clearMethods();
-		sql.putRegistrationPerms(permLoader.registerredPerms);
-
-		PermissionsList list = new PermissionsList();
-		if (list.shouldMake())
-		{
-			list.output(permLoader.perms);
-		}
-	}
-
 	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
@@ -104,6 +90,19 @@ public class ModulePermissions
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
 
 		autoPromoteManager = new AutoPromoteManager();
+	}
+	
+	@FEModule.ServerPostInit
+	public void serverStarted(FEModuleServerPostInitEvent e){
+		permLoader.loadAllPerms();
+		permLoader.clearMethods();
+		sql.putRegistrationPerms(permLoader.registerredPerms);
+
+		PermissionsList list = new PermissionsList();
+		if (list.shouldMake())
+		{
+			list.output(permLoader.perms);
+		}
 	}
 
 	@PermRegister

@@ -30,7 +30,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 	{
 		if(justDied.contains(sender.username))
 		{
-			if(APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.BasicCommands.back.ondeath")))
+			if(APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "fe.teleport.back.ondeath")))
 			{
 				PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
 				if (info.back != null)
@@ -52,7 +52,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
 				OutputHandler.chatError(sender, "You have nowhere to get back to");
 			}
 		}
-		else if(APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "ForgeEssentials.BasicCommands.back.ontp")))
+		else if(APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "fe.teleport.back.ontp")))
 		{
 			PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
 			if (info.back != null)

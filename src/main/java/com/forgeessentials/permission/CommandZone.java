@@ -142,8 +142,8 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					else
 					{
 						Zone zone = APIRegistry.zones.getZone(args[1]);
-						PropQueryBlanketZone query1 = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.entry", zone, false);
-						PropQueryBlanketZone query2 = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.exit", zone, false);
+						PropQueryBlanketZone query1 = new PropQueryBlanketZone("fe.perm.Zone.entry", zone, false);
+						PropQueryBlanketZone query2 = new PropQueryBlanketZone("fe.perm.Zone.exit", zone, false);
 						APIRegistry.perms.getPermissionProp(query1);
 						APIRegistry.perms.getPermissionProp(query2);
 
@@ -267,7 +267,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else if (args[2].equalsIgnoreCase("get"))
 				{
-					PropQueryBlanketZone query = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.entry", APIRegistry.zones.getZone(args[1]), false);
+					PropQueryBlanketZone query = new PropQueryBlanketZone("fe.perm.Zone.entry", APIRegistry.zones.getZone(args[1]), false);
 					APIRegistry.perms.getPermissionProp(query);
 					OutputHandler.chatConfirmation(sender, query.getStringValue());
 
@@ -275,7 +275,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else if (args[2].equalsIgnoreCase("remove"))
                 {
-                    APIRegistry.perms.clearGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.entry", args[1]);
+                    APIRegistry.perms.clearGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "fe.perm.Zone.entry", args[1]);
                     OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Entry Message removed.");
                 }
 				else
@@ -285,7 +285,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					{
 						tempEntry += args[i] + " ";
 					}
-					APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.entry", tempEntry, args[1]);
+					APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "fe.perm.Zone.entry", tempEntry, args[1]);
 
 					OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Entry Message set to: " + tempEntry);
 					return;
@@ -304,7 +304,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else if (args[2].equalsIgnoreCase("get"))
 				{
-					PropQueryBlanketZone query = new PropQueryBlanketZone("ForgeEssentials.Permissions.Zone.exit", APIRegistry.zones.getZone(args[1]), false);
+					PropQueryBlanketZone query = new PropQueryBlanketZone("fe.perm.Zone.exit", APIRegistry.zones.getZone(args[1]), false);
 					APIRegistry.perms.getPermissionProp(query);
 					OutputHandler.chatConfirmation(sender, query.getStringValue());
 
@@ -312,7 +312,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 				}
 				else if (args[2].equalsIgnoreCase("remove"))
 				{
-				    APIRegistry.perms.clearGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.exit", args[1]);
+				    APIRegistry.perms.clearGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "fe.perm.Zone.exit", args[1]);
 				    OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Exit Message removed.");
 				}
 				else
@@ -322,7 +322,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 					{
 						tempEntry += args[i] + " ";
 					}
-					APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "ForgeEssentials.Permissions.Zone.exit", tempEntry, args[1]);
+					APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "fe.perm.Zone.exit", tempEntry, args[1]);
 
 					OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Exit Message set to: " + tempEntry);
 					return;

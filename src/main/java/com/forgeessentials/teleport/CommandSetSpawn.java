@@ -25,8 +25,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class CommandSetSpawn extends ForgeEssentialsCommandBase
 {
 	public static HashMap<String, WarpPoint>	spawns			= new HashMap<String, WarpPoint>();
-	public static final String					SPAWN_PROP		= "ForgeEssentials.BasicCommands.spawnPoint";
-	public static final String					SPAWN_TYPE_PROP	= "ForgeEssentials.BasicCommands.spawnType";
+	public static final String					SPAWN_PROP		= "fe.teleport.spawnPoint";
+	public static final String					SPAWN_TYPE_PROP	= "fe.teleport.spawnType";
 	public static HashSet<Integer>				dimsWithProp	= new HashSet<Integer>();
 
 	@Override
@@ -403,7 +403,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase
 	@Override
 	public String getCommandPerm()
 	{
-		return "ForgeEssentials.BasicCommands." + getCommandName();
+		return "fe.teleport." + getCommandName();
 	}
 
 	@Override

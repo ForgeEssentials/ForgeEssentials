@@ -6,7 +6,6 @@ import java.util.Map;
 
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
@@ -40,13 +39,13 @@ public class FEModuleServerInitEvent extends FEModuleEvent
 
 	public void registerServerCommand(ForgeEssentialsCommandBase command)
 	{
-		this.permList.put(command.getCommandPerm(), command.getReggroup());
+		permList.put(command.getCommandPerm(), command.getReggroup());
 		event.registerServerCommand(command);
 	}
 	
 	@PermRegister
 	public void registerPermissions(IPermRegisterEvent e){
-		Iterator it = this.permList.entrySet().iterator();
+		Iterator it = permList.entrySet().iterator();
 	    while (it.hasNext()) {
 	        Map.Entry pairs = (Map.Entry)it.next();
 	        e.registerPermissionLevel((String)pairs.getKey(), (RegGroup)pairs.getValue());

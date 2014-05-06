@@ -72,7 +72,7 @@ public class EventHandler
 			{
 				if (e.entityPlayer.getCurrentEquippedItem().itemID == Item.compass.itemID)
 				{
-					if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, "ForgeEssentials.BasicCommands.jump")))
+					if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, "fe.commands.jump")))
 					{
 						try
 						{
