@@ -1,4 +1,4 @@
-package com.forgeessentials.chat;
+package com.forgeessentials.chat.irc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -14,17 +13,15 @@ import net.minecraftforge.event.ServerChatEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.chat.commands.CommandPm;
-import com.forgeessentials.chat.irc.IRCHelper;
+import com.forgeessentials.chat.ConfigChat;
 import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.google.common.base.Strings;
 
-public class ChatFormatter
-{
+// Largely copied from ChatFormatter, to deal with special cases for IRC
+public class IRCChatFormatter {
+	
 	public static List<String>	bannedWords	= new ArrayList<String>();
 	public static boolean		censor;
 	public static String		censorSymbol;
@@ -41,15 +38,6 @@ public class ChatFormatter
 		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
 		{
 			event.setCanceled(true);
-			ChatUtils.sendMessage(event.player, "You are currently muted.");
-			return;
-		}
-
-		// PMs
-		if (CommandPm.isMessagePersistent(event.player.getCommandSenderName()))
-		{
-			event.setCanceled(true);
-			CommandPm.processChat(event.player, event.message.split(" "));
 			return;
 		}
 
@@ -86,17 +74,6 @@ public class ChatFormatter
 		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).hasKey("nickname"))
 		{
 			nickname = event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
-		}
-
-		/*
-		 * Colorize!
-		 */
-		if (event.message.contains("&"))
-		{
-			if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.Chat.usecolor")))
-			{
-				message = FunctionHelper.formatColors(event.message);
-			}
 		}
 
 		// replacing stuff...
@@ -155,23 +132,7 @@ public class ChatFormatter
 
 		float health = event.player.getHealth(); // No nice name for player health yet
 
-		if (format.contains("%healthcolor"))
-		{
-			String c = "";
-			if (health < 6)
-			{
-				c = "%red";
-			}
-			else if (health < 12)
-			{
-				c = "%yellow";
-			}
-			else
-			{
-				c = "%green";
-			}
-			format = FunctionHelper.replaceAllIgnoreCase(format, "%healthcolor", c);
-		}
+		format = FunctionHelper.replaceAllIgnoreCase(format, "%healthcolor", "");
 
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%rank", rank);
 		format = FunctionHelper.replaceAllIgnoreCase(format, "%zone", zoneID);
@@ -195,12 +156,7 @@ public class ChatFormatter
 
 		// finally make it the chat line.
 		// TODO: This is probably incorrect with regards to coloring
-		event.component = ChatMessageComponent.createFromText(format);
-
-		if (ConfigChat.logchat && ModuleChat.chatLog != null)
-	    {
-	        ModuleChat.chatLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + event.username + "] " + event.message); // don't use event.line - it shows colour codes and everything
-	    }
-		
+		IRCHelper.postIRC("<" + event.username + "> " + event.message);
 	}
+
 }

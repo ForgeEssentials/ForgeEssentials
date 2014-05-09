@@ -21,6 +21,7 @@ import com.forgeessentials.chat.commands.CommandNickname;
 import com.forgeessentials.chat.commands.CommandPm;
 import com.forgeessentials.chat.commands.CommandR;
 import com.forgeessentials.chat.commands.CommandUnmute;
+import com.forgeessentials.chat.irc.IRCChatFormatter;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.chat.irc.PlayerEventHandler;
 import com.forgeessentials.core.ForgeEssentials;
@@ -76,6 +77,7 @@ public class ModuleChat
 		if (!IRCHelper.suppressEvents && connectToIRC){
 			ircPlayerHandler = new PlayerEventHandler();
 			MinecraftForge.EVENT_BUS.register(ircPlayerHandler);
+			MinecraftForge.EVENT_BUS.register(new IRCChatFormatter());
 			GameRegistry.registerPlayerTracker(ircPlayerHandler);
 		}
 		
