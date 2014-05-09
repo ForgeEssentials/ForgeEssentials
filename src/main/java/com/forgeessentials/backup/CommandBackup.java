@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.WorldServer;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
@@ -24,31 +25,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
-		Backup b;
-		if (args.length != 1)
-		{
-			b = new Backup(true);
-		}
-		else
-		{
-			if (isInteger(args[0]))
-			{
-				b = new Backup(parseInt(sender, args[0]), true);
-			}
-			else
-			{
-				b = new Backup(new File(args[0]));
-			}
-		}
-		
-		if (b != null)
-			b.startThread();
-	}
-
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
 		Backup b = null;
 		if (args.length != 1)
@@ -61,7 +38,11 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 			{
 				b = new Backup(parseInt(sender, args[0]), true);
 			}
-			else
+			else if (args[0].equalsIgnoreCase("all")){
+				b = new Backup(((WorldServer)sender.getEntityWorld()).getChunkSaveLocation());
+				
+			}
+			else if (!args[0].equalsIgnoreCase("all"))
 			{
 				b = new Backup(new File(args[0]));
 			}
@@ -104,7 +85,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/backup [dimID|foldername] Make a backup of everything or only specified folder/world.";
+		return "/backup [dimID|foldername|all] Make a backup of everything or only specified folder/world.";
 	}
 
 	@Override

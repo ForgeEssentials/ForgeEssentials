@@ -20,7 +20,7 @@ public class Backup implements Runnable
 	private Thread			thread;
 	private WorldServer		world;
 	private boolean			isWorld;
-	private String			name;
+	private String			name, nameDim;
 	private File			basefolder	= ModuleBackup.baseFolder;
 	private File			folder;
 	private List<String>	fileList;
@@ -59,7 +59,7 @@ public class Backup implements Runnable
 
 		name = world.getWorldInfo().getWorldName() + " DIM " + dim;
 		source = world.getChunkSaveLocation();
-		folder = new File(basefolder, name.replaceAll(" ", "_"));
+		folder = new File(basefolder, (world.getWorldInfo().getWorldName() + "/DIM " + world.provider.dimensionId).replaceAll(" ", "_"));
 		backupName = getFilename() + ".zip";
 
 		thread = new Thread(this, "ForgeEssentials - Backup - " + name);
@@ -73,7 +73,7 @@ public class Backup implements Runnable
 
 		name = world.getWorldInfo().getWorldName() + " DIM " + world.provider.dimensionId;
 		source = world.getChunkSaveLocation();
-		folder = new File(basefolder, name.replaceAll(" ", "_"));
+		folder = new File(basefolder, (world.getWorldInfo().getWorldName() + "/DIM " + world.provider.dimensionId).replaceAll(" ", "_"));
 		backupName = getFilename() + ".zip";
 
 		thread = new Thread(this, "ForgeEssentials - Backup - " + name);
