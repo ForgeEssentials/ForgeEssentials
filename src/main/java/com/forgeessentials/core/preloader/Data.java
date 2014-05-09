@@ -39,6 +39,7 @@ public class Data
     public static List<String> cmdClassesdev = new ArrayList<String>();// any class with canCommandSenderUseCommand, DEV, permission checks
     
     public static final String cCSUC = "a";//canCommandSenderUseCommand method name, OBF, permission checks
+    public static final String ics = "ad";// ICommandSender class name, OBF, permission checks
     
 	static
 	{
