@@ -2,22 +2,19 @@
 {
   "modid": "ForgeEssentials",
   "name": "Forge Essentials",
-  "description": "A Forge mod striving to provide Bukkit plugin functionality on a pure forge base",
+  "description": "A suite of server mods for Minecraft Forge",
 "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "https://github.com/ForgeEssentials/ForgeEssentialsMain",
   "updateUrl": "",
   "authorList": [
 	"AbrarSyed",
-    "Bob A Red Dino",
 	"luacs1998",
-	"bspkrs",
-	"MysteriousAges",
 	"dries007",
 	"Malkierian",
-	"And a few others"
+	"and others"
   ],
-  "credits": "Thanks to ModdedMiners for hosting the Test Server, and all our Testers.",
+  "credits": "Thanks to everyone who has helped us so far",
   "logoFile": "/logo.png",
   "screenshots": [
   ],
