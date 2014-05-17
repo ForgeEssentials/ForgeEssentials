@@ -18,7 +18,6 @@ buildscript {
 apply plugin: 'forge'
 
 version = "1.3rc1"
-appendix = "164"
 group= "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
@@ -35,18 +34,6 @@ minecraft {
     replace "%VERSION%", project.version
 }
 
-
-sourceSets {
-    client{
-        compileClasspath = project.sourceSets.main.compileClasspath
-    }
-    
-    weintegration{
-        compileClasspath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
-    
-    }
-}
-
 configurations{
     serverLibs
 modules
@@ -59,28 +46,6 @@ repositories{
 			url = "http://maven.sk89q.com/repo/"
 	}
 	}
-
-processClientResources{
-    from (sourceSets.main.resources.srcDirs) {
-        expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeversion': project.minecraft.forgeVersion
-        include 'mcmod.info'
-    }
-
-    from (sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
-
-processResources {
-    from (sourceSets.main.resources.srcDirs) {
-        expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeVersion': project.minecraft.forgeVersion
-        include 'mcmod.info'
-    }
-
-    from (sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
 
 dependencies {
     
@@ -117,10 +82,46 @@ from project.sourceSets.main.output
     include "logo.png"
     include "mcmod.info"
     include "forgeessentials_at.cfg"
+appendix = project.minecraft.version
 manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
     }
 }
+
+sourceSets {
+    client{
+        compileClasspath = project.sourceSets.main.compileClasspath
+    }
+    
+    weintegration{
+        compileClasspath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
+    
+    }
+}
+
+
+processClientResources{
+    from (sourceSets.main.resources.srcDirs) {
+        expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeversion': project.minecraft.forgeVersion
+        include 'mcmod.info'
+    }
+
+    from (sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+processResources {
+    from (sourceSets.main.resources.srcDirs) {
+        expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeVersion': project.minecraft.forgeVersion
+        include 'mcmod.info'
+    }
+
+    from (sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
 
 //core DEOBF use for development
 task devDeobfJar(dependsOn: "jar", type: Jar){
@@ -138,6 +139,7 @@ manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
     }
 classifier = "dev"
+appendix = project.minecraft.version
 artifacts {
         archives devDeobfJar
     }
@@ -153,6 +155,7 @@ from(sourceSets.main.output) { include 'FEReadme.txt', 'HowToGetFESupport.txt' }
 from (project.configurations.serverLibs) {
 include '*'
 into('ForgeEssentials/lib')}
+appendix = project.minecraft.version
 }
 
 
@@ -184,6 +187,7 @@ list.each { name ->
     def newTask = project.tasks.create(name: taskName, dependsOn: "jar", type: Jar) {
         from sourceSets.main.output
         classifier = name
+appendix = project.minecraft.version
         include "com/forgeessentials/$name/**"
         include "com/forgeessentials/api/$name/**"
     }
@@ -212,6 +216,7 @@ delete(newTask.getArchivePath())
 task clientJar(dependsOn: "jar", type: Jar){
 from sourceSets.client.output
         classifier = "client"
+appendix = project.minecraft.version
         include "**"
         }
         artifacts {
@@ -225,8 +230,10 @@ from sourceSets.client.output
     
 //worldedit
 task weJar(dependsOn: "jar", type: Jar){
+weJar.mustRunAfter jar
 from sourceSets.weintegration.output
         classifier = "weintegrationtools"
+appendix = project.minecraft.version
         include "**"
         }
         artifacts {
