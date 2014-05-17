@@ -17,6 +17,7 @@ buildscript {
 apply plugin: 'forge'
 
 version = "1.3rc1"
+mc = "164-"
 group= "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
@@ -129,6 +130,8 @@ from(sourceSets.main.output) { include 'FEReadme.txt', 'HowToGetFESupport.txt' }
 from (project.configurations.serverLibs) {
 include '*'
 into('ForgeEssentials/lib')}
+
+version = mc + version
 }
 
 def list = [
@@ -187,6 +190,8 @@ from sourceSets.client.output
         reobf(clientJar) { reobfSpec ->
             reobfSpec.classpath = project.sourceSets.main.compileClasspath
         }
+        
+        version = mc + version
     }
     
     task weJar(dependsOn: "jar", type: Jar){
@@ -201,6 +206,8 @@ from sourceSets.weintegration.output
         reobf(weJar) { reobfSpec ->
             reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
         }
+        
+        version = mc + version
     }
     
 
