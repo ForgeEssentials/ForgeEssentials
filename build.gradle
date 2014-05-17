@@ -9,6 +9,7 @@ buildscript {
 			name = "sk89q"
 			url = "http://maven.sk89q.com/repo/"
 		}
+
 	}
 	dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'}
 
@@ -17,7 +18,7 @@ buildscript {
 apply plugin: 'forge'
 
 version = "1.3rc1"
-mc = "164-"
+appendix = "164"
 group= "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
@@ -34,6 +35,7 @@ minecraft {
     replace "%VERSION%", project.version
 }
 
+
 sourceSets {
     client{
         compileClasspath = project.sourceSets.main.compileClasspath
@@ -47,6 +49,7 @@ sourceSets {
 
 configurations{
     serverLibs
+modules
 }
 
 repositories{
@@ -100,9 +103,8 @@ dependencies {
     serverLibs files('lib/minecraftforge-9.11.1.965-permsAPIonly.jar')
 }
 
-// core
 jar{
-    from project.sourceSets.main.output
+from project.sourceSets.main.output
     include "com/forgeessentials/core/**"
     include "com/forgeessentials/permission/**"
     include "com/forgeessentials/util/**"
@@ -120,19 +122,43 @@ manifest {
     }
 }
 
+//core DEOBF use for development
+task devDeobfJar(dependsOn: "jar", type: Jar){
+    from project.sourceSets.main.output
+    include "com/forgeessentials/core/**"
+    include "com/forgeessentials/permission/**"
+    include "com/forgeessentials/util/**"
+    include "com/forgeessentials/data/**"
+    include "com/forgeessentials/api/**"
+    include "org/mcstats/**"
+    include "logo.png"
+    include "mcmod.info"
+    include "forgeessentials_at.cfg"
+manifest {
+        attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
+    }
+classifier = "dev"
+artifacts {
+        archives devDeobfJar
+    }
+}
+
 //server complete
 task completeZip(type: Zip, dependsOn: 'reobf') {
-    appendix = 'server'
-from (project.tasks.jar.getArchivePath()) { into('mods') }
+    classifier = 'server'
     destinationDir = jar.destinationDir
+from(project.tasks.jar.getArchivePath()) { into 'mods' }
 
 from(sourceSets.main.output) { include 'FEReadme.txt', 'HowToGetFESupport.txt' }
 from (project.configurations.serverLibs) {
 include '*'
 into('ForgeEssentials/lib')}
-
-version = mc + version
 }
+
+
+task cleanModules(dependsOn: "completeZip", type: Delete){
+}
+
 
 def list = [
     'auth',
@@ -157,7 +183,7 @@ list.each { name ->
     def taskName = name + "Jar"
     def newTask = project.tasks.create(name: taskName, dependsOn: "jar", type: Jar) {
         from sourceSets.main.output
-        appendix = name
+        classifier = name
         include "com/forgeessentials/$name/**"
         include "com/forgeessentials/api/$name/**"
     }
@@ -169,18 +195,23 @@ list.each { name ->
     }
 
     artifacts {
-        archives newTask
+        modules newTask
     }
     
     project.tasks.completeZip {
         from(newTask.getArchivePath()) { into 'ForgeEssentials/modules' }
         dependsOn newTask
     }
+
+    project.tasks.cleanModules {
+delete(newTask.getArchivePath())
+}
 }
 
+//client
 task clientJar(dependsOn: "jar", type: Jar){
 from sourceSets.client.output
-        appendix = "client"
+        classifier = "client"
         include "**"
         }
         artifacts {
@@ -190,13 +221,12 @@ from sourceSets.client.output
         reobf(clientJar) { reobfSpec ->
             reobfSpec.classpath = project.sourceSets.main.compileClasspath
         }
-        
-        version = mc + version
     }
     
-    task weJar(dependsOn: "jar", type: Jar){
+//worldedit
+task weJar(dependsOn: "jar", type: Jar){
 from sourceSets.weintegration.output
-        appendix = "weintegrationtools"
+        classifier = "weintegrationtools"
         include "**"
         }
         artifacts {
@@ -206,12 +236,9 @@ from sourceSets.weintegration.output
         reobf(weJar) { reobfSpec ->
             reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
         }
-        
-        version = mc + version
     }
-    
 
-build.dependsOn "completeZip"
+build.dependsOn "cleanModules"
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
