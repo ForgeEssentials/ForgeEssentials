@@ -14,8 +14,8 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
+import com.forgeessentials.commands.util.TickHandlerCommands;
 import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -133,7 +133,7 @@ public class CommandKit extends FEcmdModuleCommands
 		{
 			ChatUtils.sendMessage(player, "Kit dropped.");
 
-			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerTP.BYPASS_KIT_COOLDOWN)))
+			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
 			{
 				PlayerInfo.getPlayerInfo(player.username).kitCooldown.put(kit.getName(), kit.getCooldown());
 			}
@@ -177,6 +177,7 @@ public class CommandKit extends FEcmdModuleCommands
 	public void registerExtraPermissions(IPermRegisterEvent event)
 	{
 		event.registerPermissionLevel(getCommandPerm() + ".admin", RegGroup.OWNERS);
+		event.registerPermissionLevel(TickHandlerCommands.BYPASS_KIT_COOLDOWN, RegGroup.OWNERS);
 	}
 
 	@Override

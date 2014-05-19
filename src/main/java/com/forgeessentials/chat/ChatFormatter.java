@@ -16,7 +16,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.chat.commands.CommandPm;
-import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;

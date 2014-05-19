@@ -6,9 +6,6 @@ import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 
-
-
-
 @SaveableObject
 public class WeatherTimeData
 {

@@ -8,9 +8,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.event.world.WorldEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
@@ -22,7 +24,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class EventHandler
 {
-	@ForgeSubscribe()
+	@ForgeSubscribe
 	public void playerInteractEvent(PlayerInteractEvent e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -108,6 +110,31 @@ public class EventHandler
 		            e.setCanceled(true);
 	            }
 		    }
+		}
+	}
+	
+	@ForgeSubscribe
+	public void setWeather(WorldEvent.Load e){
+		if (e.world.isRemote) return;
+		for(int i : DimensionManager.getIDs()){
+			WeatherTimeData wt = CommandDataManager.WTmap.get(i);
+			if (wt.weatherSpecified){
+			if (!wt.rain)
+				e.world.setRainStrength(0);
+			if (!wt.storm)
+				e.world.thunderingStrength = 0;
+			}
+			if (wt.timeFreeze)
+				e.world.setWorldTime(wt.freezeTime);
+			if (wt.timeSpecified){
+				if (wt.day = true){
+					TickHandlerCommands.makeWorldTimeHours(e.world, WeatherTimeData.dayTimeStart);
+				}
+				if (wt.day = false){
+					TickHandlerCommands.makeWorldTimeHours(e.world, WeatherTimeData.nightTimeStart);
+				}
+			}
+			
 		}
 	}
 }

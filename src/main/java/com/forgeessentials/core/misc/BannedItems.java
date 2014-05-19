@@ -1,17 +1,19 @@
 package com.forgeessentials.core.misc;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.Configuration;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
 public class BannedItems
 {

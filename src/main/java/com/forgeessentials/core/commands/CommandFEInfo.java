@@ -1,7 +1,6 @@
 package com.forgeessentials.core.commands;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
