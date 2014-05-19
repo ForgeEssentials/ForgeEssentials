@@ -88,6 +88,10 @@ manifest {
     }
 }
 
+javadoc{
+include "com/forgeessentials/api/**"
+}
+
 sourceSets {
     client{
         compileClasspath = project.sourceSets.main.compileClasspath
@@ -119,29 +123,6 @@ processResources {
 
     from (sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-    }
-}
-
-
-//core DEOBF use for development
-task devDeobfJar(dependsOn: "jar", type: Jar){
-    from project.sourceSets.main.output
-    include "com/forgeessentials/core/**"
-    include "com/forgeessentials/permission/**"
-    include "com/forgeessentials/util/**"
-    include "com/forgeessentials/data/**"
-    include "com/forgeessentials/api/**"
-    include "org/mcstats/**"
-    include "logo.png"
-    include "mcmod.info"
-    include "forgeessentials_at.cfg"
-manifest {
-        attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
-    }
-classifier = "dev"
-appendix = project.minecraft.version
-artifacts {
-        archives devDeobfJar
     }
 }
 
@@ -214,35 +195,71 @@ delete(newTask.getArchivePath())
 
 //client
 task clientJar(dependsOn: "jar", type: Jar){
-from sourceSets.client.output
-        classifier = "client"
-appendix = project.minecraft.version
-        include "**"
-        }
-        artifacts {
-        archives clientJar
+    from sourceSets.client.output
+    classifier = "client"
+    appendix = project.minecraft.version
+    include "**"
+}
+    
+//worldedit
+task weJar(dependsOn: "jar", type: Jar){
+    weJar.mustRunAfter jar
+    from sourceSets.weintegration.output
+    classifier = "weintegrationtools"
+    appendix = project.minecraft.version
+    include "**"
+}
+
+//core DEOBF use for development
+task devDeobfJar(dependsOn: "jar", type: Jar){
+    from project.sourceSets.main.output
+    include "com/forgeessentials/core/**"
+    include "com/forgeessentials/permission/**"
+    include "com/forgeessentials/util/**"
+    include "com/forgeessentials/data/**"
+    include "com/forgeessentials/api/**"
+    include "org/mcstats/**"
+    include "logo.png"
+    include "mcmod.info"
+    include "forgeessentials_at.cfg"
+    
+manifest {
+        attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
     }
-    reobf {
+classifier = "deobf"
+appendix = project.minecraft.version
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    include "com/forgeessentials/api/**"
+    classifier = 'sources'
+    appendix = project.minecraft.version
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+    appendix = project.minecraft.version
+}
+    
+reobf {
+        reobf(weJar) { reobfSpec ->
+            reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
+        }
         reobf(clientJar) { reobfSpec ->
             reobfSpec.classpath = project.sourceSets.main.compileClasspath
         }
     }
+
     
-//worldedit
-task weJar(dependsOn: "jar", type: Jar){
-weJar.mustRunAfter jar
-from sourceSets.weintegration.output
-        classifier = "weintegrationtools"
-appendix = project.minecraft.version
-        include "**"
-        }
-        artifacts {
+
+artifacts {
+        archives clientJar
         archives weJar
-    }
-    reobf {
-        reobf(weJar) { reobfSpec ->
-            reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
-        }
+        archives devDeobfJar
+        archives javadocJar
+        archives sourceJar
     }
 
 build.dependsOn "cleanModules"
