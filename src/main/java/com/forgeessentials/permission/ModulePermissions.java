@@ -144,7 +144,6 @@ public class ModulePermissions
 		event.registerPermissionLevel("mc.save-off", RegGroup.ZONE_ADMINS);
 		event.registerPermissionLevel("mc.say", RegGroup.OWNERS);
 		event.registerPermissionLevel("mc.seed", RegGroup.MEMBERS);
-		event.registerPermissionLevel("mc.stop", RegGroup.GUESTS);
 		event.registerPermissionLevel("mc.whitelist", RegGroup.OWNERS);
 		event.registerPermissionLevel("mc.xp", RegGroup.ZONE_ADMINS);
 		event.registerPermissionLevel("mc.toggledownfall", RegGroup.ZONE_ADMINS);
