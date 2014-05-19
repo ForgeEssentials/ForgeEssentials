@@ -112,29 +112,4 @@ public class EventHandler
 		    }
 		}
 	}
-	
-	@ForgeSubscribe
-	public void setWeather(WorldEvent.Load e){
-		if (e.world.isRemote) return;
-		for(int i : DimensionManager.getIDs()){
-			WeatherTimeData wt = CommandDataManager.WTmap.get(i);
-			if (wt.weatherSpecified){
-			if (!wt.rain)
-				e.world.setRainStrength(0);
-			if (!wt.storm)
-				e.world.thunderingStrength = 0;
-			}
-			if (wt.timeFreeze)
-				e.world.setWorldTime(wt.freezeTime);
-			if (wt.timeSpecified){
-				if (wt.day = true){
-					TickHandlerCommands.makeWorldTimeHours(e.world, WeatherTimeData.dayTimeStart);
-				}
-				if (wt.day = false){
-					TickHandlerCommands.makeWorldTimeHours(e.world, WeatherTimeData.nightTimeStart);
-				}
-			}
-			
-		}
-	}
 }

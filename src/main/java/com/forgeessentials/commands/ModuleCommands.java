@@ -17,17 +17,19 @@ import com.forgeessentials.commands.util.MCStatsHelper;
 import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.commands.util.PacketAnalyzerCmd;
 import com.forgeessentials.commands.util.PlayerTrackerCommands;
+import com.forgeessentials.commands.util.TickHandlerCommands;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.CompatMCStats;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @FEModule(configClass = ConfigCmd.class, name = "CommandsModule", parentMod = ForgeEssentials.class)
 public class ModuleCommands
@@ -55,6 +57,7 @@ public class ModuleCommands
 		CommandRegistrar.commandConfigs(conf.config);
 		ShortcutCommands.loadConfig(cmddir);
 		CompatMCStats.registerStats(mcstats);
+		TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
 		new PacketAnalyzerCmd();
 	}
 
@@ -63,6 +66,7 @@ public class ModuleCommands
 	{
 		CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
 		ShortcutCommands.load();
+		CommandDataManager.load();
 	}
 	
 	@FEModule.Reload
@@ -70,13 +74,6 @@ public class ModuleCommands
 	{
 	    ShortcutCommands.parseConfig();
 	    ShortcutCommands.load();
-	}
-
-	@FEModule.ServerPostInit
-	public void serverStarted(FEModuleServerPostInitEvent e)
-	{
-		
-		CommandDataManager.load();
 	}
 
 	@PermRegister
