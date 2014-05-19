@@ -50,7 +50,7 @@ public class CommandMuter
 
         if (ConfigChat.logcmd && ModuleChat.cmdLog != null)
         {
-            ModuleChat.cmdLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + e.sender.getCommandSenderName() + "] /" + e.command.getCommandName() + " " + join(e.parameters));
+            ModuleChat.cmdLog.printf(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + e.sender.getCommandSenderName() + "] /" + e.command.getCommandName() + " " + join(e.parameters));
         }
         
         StringBuilder unpacked = new StringBuilder();

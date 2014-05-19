@@ -100,7 +100,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 						}
 						else
 						{
-							OutputHandler.chatConfirmation(sender, String.format("command.permissions.zone.list.header", page, zonePages));
+							OutputHandler.chatConfirmation(sender, String.format(">--- Showing the zonelist page %1$d of %2$d ---", page, zonePages));
 							String output;
 							Zone zone;
 							for (int i = (page - 1) * 15; i < page * 15; i++)
@@ -330,17 +330,17 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			}
 
 		}
-		else if (args[0].equalsIgnoreCase("help") || args.length == 0){
-			ChatUtils.sendMessage(sender, "/zone list [#page] Lists all zones");
-			ChatUtils.sendMessage(sender, "/zone info <zone|here> Displays information about the zone such as parent, priority, and location");
-			ChatUtils.sendMessage(sender, "/zone <define|redefine|delete> define, redefine or delete a zone.");
-			ChatUtils.sendMessage(sender, "/zone setparent <parentzone> <childzone> Set a zone as a parent of another zone.");
-			ChatUtils.sendMessage(sender, "/zone entry|exit <name> [... message ...] Set the zone entry or exit message to a particular message. Set the message to 'remove' to delete it.");
-			
-		}
 		else{
-			error(sender);
+			help(sender);
 		}
+	}
+	
+	private void help(ICommandSender sender){
+		ChatUtils.sendMessage(sender, "/zone list [#page] Lists all zones");
+		ChatUtils.sendMessage(sender, "/zone info <zone|here> Displays information about the zone such as parent, priority, and location");
+		ChatUtils.sendMessage(sender, "/zone <define|redefine|delete> define, redefine or delete a zone.");
+		ChatUtils.sendMessage(sender, "/zone setparent <parentzone> <childzone> Set a zone as a parent of another zone.");
+		ChatUtils.sendMessage(sender, "/zone entry|exit <name> [... message ...] Set the zone entry or exit message to a particular message. Set the message to 'remove' to delete it.");
 	}
 
 	private void saveZone(Zone z)
