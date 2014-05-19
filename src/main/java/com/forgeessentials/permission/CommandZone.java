@@ -330,7 +330,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 			}
 
 		}
-		else if (args[0].equalsIgnoreCase("help")){
+		else if (args[0].equalsIgnoreCase("help") || args.length == 0){
 			ChatUtils.sendMessage(sender, "/zone list [#page] Lists all zones");
 			ChatUtils.sendMessage(sender, "/zone info <zone|here> Displays information about the zone such as parent, priority, and location");
 			ChatUtils.sendMessage(sender, "/zone <define|redefine|delete> define, redefine or delete a zone.");
