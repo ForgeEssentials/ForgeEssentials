@@ -6,11 +6,16 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
 
 @SaveableObject
 public class Kit
@@ -23,7 +28,7 @@ public class Kit
 	private Integer		cooldown;
 
 	@SaveableField
-	private ItemStack[]	items;
+	private ItemStack[] items;
 
 	@SaveableField
 	private ItemStack[]	armor;
@@ -66,8 +71,23 @@ public class Kit
 	{
 		this.name = (String) name;
 		this.cooldown = (Integer) cooldown;
-		this.items = (ItemStack[]) items;
-		this.armor = (ItemStack[]) armor;
+		
+		this.items = new ItemStack[((Object[])items).length];
+		this.armor = new ItemStack[4];
+		
+		for (ItemStack is : (ItemStack[])items){
+			for (int i = 0; i < ((ItemStack[])items).length; i++)
+			{
+				this.items[i] = is;
+			}
+		}
+		
+		for (ItemStack is : (ItemStack[])armor){
+			for (int i = 0; i < 4; i++)
+			{
+				this.armor[i] = is;
+			}
+		}
 	}
 
 	@Reconstructor
@@ -88,11 +108,58 @@ public class Kit
 
 	public ItemStack[] getItems()
 	{
-		return items.clone();
+		return items;
 	}
 
 	public ItemStack[] getArmor()
 	{
-		return armor.clone();
+		return armor;
+	}
+	
+	public void giveKit(EntityPlayer player)
+	{
+		if (PlayerInfo.getPlayerInfo(player.username).kitCooldown.containsKey(getName()))
+		{
+			ChatUtils.sendMessage(player, "Kit cooldown active, %c seconds to go!".replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(getName()))));
+		}
+		else
+		{
+			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
+			{
+				PlayerInfo.getPlayerInfo(player.username).kitCooldown.put(getName(), getCooldown());
+			}
+
+			/*
+			 * Main inv.
+			 */
+			
+			for (ItemStack stack : getItems())
+			{
+				if (player.inventory.addItemStackToInventory(ItemStack.copyItemStack(stack)))
+				System.out.println(stack.getDisplayName());
+				else System.out.println("Couldn't give " + stack.getDisplayName());
+			}
+			
+			/*
+			 * Armor
+			 */
+			for (int i = 0; i < 4; i++)
+			{
+				if (getArmor()[i] != null)
+				{
+					ItemStack stack = getArmor()[i];
+					if (player.inventory.armorInventory[i] == null)
+					{
+						player.inventory.armorInventory[i] = stack;
+					}
+					else
+					{
+						player.inventory.addItemStackToInventory(ItemStack.copyItemStack(stack));
+					}
+				}
+			}
+			
+			ChatUtils.sendMessage(player, "Kit dropped.");
+		}
 	}
 }

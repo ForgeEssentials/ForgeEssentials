@@ -63,7 +63,7 @@ public class CommandKit extends FEcmdModuleCommands
 			{
 				if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
 				{
-					giveKit(sender, CommandDataManager.kits.get(args[0].toLowerCase()));
+					CommandDataManager.kits.get(args[0].toLowerCase()).giveKit(sender);
 				}
 				else
 				{
@@ -121,50 +121,6 @@ public class CommandKit extends FEcmdModuleCommands
 		 * You're doing it wrong!
 		 */
 		OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [name] OR [name] [set|del] <cooldown>");
-	}
-
-	public void giveKit(EntityPlayer player, Kit kit)
-	{
-		if (PlayerInfo.getPlayerInfo(player.username).kitCooldown.containsKey(kit.getName()))
-		{
-			ChatUtils.sendMessage(player, "Kit cooldown active, %c seconds to go!".replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(kit.getName()))));
-		}
-		else
-		{
-			ChatUtils.sendMessage(player, "Kit dropped.");
-
-			if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
-			{
-				PlayerInfo.getPlayerInfo(player.username).kitCooldown.put(kit.getName(), kit.getCooldown());
-			}
-
-			/*
-			 * Main inv.
-			 */
-			for (ItemStack stack : kit.getItems())
-			{
-				player.inventory.addItemStackToInventory(stack);
-			}
-
-			/*
-			 * Armor
-			 */
-			for (int i = 0; i < 4; i++)
-			{
-				if (kit.getArmor()[i] != null)
-				{
-					ItemStack stack = kit.getArmor()[i];
-					if (player.inventory.armorInventory[i] == null)
-					{
-						player.inventory.armorInventory[i] = stack;
-					}
-					else
-					{
-						player.inventory.addItemStackToInventory(stack);
-					}
-				}
-			}
-		}
 	}
 
 	@Override
