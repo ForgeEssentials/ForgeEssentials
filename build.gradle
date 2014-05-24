@@ -5,10 +5,6 @@ buildscript {
 			name = "forge"
 			url = "http://files.minecraftforge.net/maven"
 		}
-		maven {
-			name = "sk89q"
-			url = "http://maven.sk89q.com/repo/"
-		}
 
 	}
 	dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'}
@@ -37,6 +33,7 @@ minecraft {
 configurations{
     serverLibs
 modules
+devDeps
 }
 
 repositories{
@@ -56,16 +53,18 @@ dependencies {
     compile 'mysql:mysql-connector-java:5.1.22'
     
     // WE integration - 
-    // compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT' don't use this for time being, we want one with forge
-    compile files('lib/worldedit-forge-6.0.0-SNAPSHOT.jar')
+    // compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT' don't use this for time being, we want one with forge, and deobfed
+    compile files('lib/worldedit-forge-6.0.0-SNAPSHOT-deobf.jar')
     
-    // perms API (TEMPORARY, until it gets pulled into Forge!)
-    compile files('lib/minecraftforge-9.11.1.965-permsAPIonly.jar')
+    // perms API (TEMPORARY, until it gets pulled into Forge!) use deobf one to compile
+    compile files('lib/minecraftforge-9.11.1.965-permsAPIonly-deobf.jar')
     
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
     serverLibs 'mysql:mysql-connector-java:5.1.22'
     serverLibs files('lib/minecraftforge-9.11.1.965-permsAPIonly.jar')
+    
+    devDeps files('lib/minecraftforge-9.11.1.965-permsAPIonly-deobf.jar')
 }
 
 jar{
@@ -222,6 +221,9 @@ task devDeobfJar(dependsOn: "jar", type: Jar){
     include "logo.png"
     include "mcmod.info"
     include "forgeessentials_at.cfg"
+    
+    from project.configurations.devDeps
+    include "**"
     
 manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
