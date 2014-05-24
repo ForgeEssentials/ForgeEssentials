@@ -1,6 +1,7 @@
 package com.forgeessentials.worldedit.compat;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -8,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.AreaSelector.Point;
+import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.Vector;
@@ -46,6 +48,8 @@ public class SelectionSyncHandler implements IScheduledTickHandler{
 			try {
 	            Region region = selector.getRegion();
 	            World world = session.getSelectionWorld();
+	            
+	            PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 
 	            if (region instanceof CuboidRegion) {
 	                Vector wepos1 = ((CuboidRegion) region).getPos1();
@@ -53,11 +57,18 @@ public class SelectionSyncHandler implements IScheduledTickHandler{
 	                Point fepos1 = new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ());
 	                Point fepos2 = new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ());
 	            	
-	            	PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 	            	info.setPoint1(fepos1);
 	            	info.setPoint2(fepos2);
 	            	return;
-	            } else {
+	            } else if (region instanceof Polygonal2DRegion) {
+	                Polygonal2DRegion polygon = (Polygonal2DRegion) region;
+	                Point fepos1 = new Point(polygon.getMinimumPoint().getBlockX(), polygon.getMinimumPoint().getBlockY(), polygon.getMinimumPoint().getBlockZ());
+	                Point fepos2 = new Point(polygon.getMaximumPoint().getBlockX(), polygon.getMaximumPoint().getBlockY(), polygon.getMaximumPoint().getBlockZ());
+	                info.setPoint1(fepos1);
+	            	info.setPoint2(fepos2);
+	            	return;
+	            }
+	            else {
 	                return;
 	            }
 	        } catch (IncompleteRegionException e) {
