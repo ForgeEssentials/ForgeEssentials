@@ -10,8 +10,7 @@ public class GuiEconomy extends GuiScreen{
     /** Counts the number of screen updates. */
     private int updateCounter = 0;
     
-    // Get the amount of money from the player tracker/whatever - temp hardcoded until network functionality is in.
-    public int amount = 0;
+    public static int amount;
     
 	public void initGui(){
 		byte b0 = -16;

@@ -1,29 +1,25 @@
-package com.forgeessentials.permission.network;
+package com.forgeessentials.economy;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.network.IForgeEssentialsPacket;
-import com.forgeessentials.permission.ModulePermissions;
 import com.forgeessentials.util.OutputHandler;
 
+import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
-public class PacketPermNodeList implements IForgeEssentialsPacket {
+public class PacketEconomy implements IForgeEssentialsPacket {
 
-	public static final byte		packetID	= 3;
-	
 	private Packet250CustomPayload packet;
-	private static ModulePermissions sendthru;
 	
-	public PacketPermNodeList(Set<String> permissions){
-		
+	public PacketEconomy(int amount){
 		packet = new Packet250CustomPayload();
 
 		ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
@@ -31,11 +27,10 @@ public class PacketPermNodeList implements IForgeEssentialsPacket {
 
 		try
 		{
-			stream.write(packetID);
+			stream.write(3);
 
-			for (String perm : permissions){
-			stream.writeBytes(perm + ":");
-			}
+			stream.write(amount);
+			
 
 			stream.close();
 			streambyte.close();
@@ -44,23 +39,23 @@ public class PacketPermNodeList implements IForgeEssentialsPacket {
 			packet.data = streambyte.toByteArray();
 			packet.length = packet.data.length;
 		}
-
+		
 		catch (Exception e)
 		{
 			OutputHandler.felog.info("Error creating packet >> " + this.getClass());
 		}
 	}
-	
+
 	@Override
 	public Packet250CustomPayload getPayload() {
-
+		// TODO Auto-generated method stub
 		return packet;
 	}
-
+	
 	public static void readServer(DataInputStream stream, WorldServer world,
 			EntityPlayer player) {
-		sendthru.sendPermList((Player) player);
-		
+		PacketEconomy packet = new PacketEconomy(APIRegistry.wallet.getWallet(player.username));
+		PacketDispatcher.sendPacketToPlayer(packet.getPayload(), (Player) player);
 	}
 
 }

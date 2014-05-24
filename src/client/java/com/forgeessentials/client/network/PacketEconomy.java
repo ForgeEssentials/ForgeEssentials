@@ -5,63 +5,58 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import com.forgeessentials.client.ForgeEssentialsClient;
+import com.forgeessentials.client.gui.GuiEconomy;
+
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.gui.GuiPermNodeList;
+public class PacketEconomy implements IForgeEssentialsPacketClient {
 
+	public static final byte packetID = 4;
 
-public class PacketPermNodeList implements IForgeEssentialsPacketClient {
-
-	public static final byte		packetID	= 3;
-	
 	private Packet250CustomPayload packet;
-	
-	public PacketPermNodeList(){
-		
+
+	public PacketEconomy() {
+
 		packet = new Packet250CustomPayload();
 
 		ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
 		DataOutputStream stream = new DataOutputStream(streambyte);
 
-		try
-		{
-			stream.write(packetID);{
-			stream.writeBytes("REQUEST");
-			
+		try {
+			stream.write(packetID);
+			{
+				stream.writeBytes("REQUEST");
 
-			stream.close();
-			streambyte.close();
+				stream.close();
+				streambyte.close();
 
-			packet.channel = FECHANNEL;
-			packet.data = streambyte.toByteArray();
-			packet.length = packet.data.length;
+				packet.channel = FECHANNEL;
+				packet.data = streambyte.toByteArray();
+				packet.length = packet.data.length;
 			}
 		}
-		
 
-		catch (Exception e)
-		{
-			ForgeEssentialsClient.feclientlog.info("Error creating packet PermNodeList");
+		catch (Exception e) {
+			ForgeEssentialsClient.feclientlog.info("Error creating packet EconRequest");
 		}
 	}
-	
+
 	@Override
 	public Packet250CustomPayload getPayload() {
-
+		// TODO Auto-generated method stub
 		return packet;
 	}
-
+	
 	public static void readClient(DataInputStream stream, WorldClient world,
 			EntityPlayer player) {
 		try {
-			GuiPermNodeList.nodes = stream.readUTF().split(":");
+			GuiEconomy.amount = stream.readInt();
 		} catch (IOException e) {
-			ForgeEssentialsClient.feclientlog.severe("Failed to read packet PermNodeList");
+			ForgeEssentialsClient.feclientlog.severe("Failed to read packet EconRequest");
 		}
-		
 	}
 
 }

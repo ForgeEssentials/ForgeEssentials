@@ -13,7 +13,7 @@ import com.forgeessentials.client.util.ClientPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PacketRollback implements IForgeEssentialsPacket
+public class PacketRollback implements IForgeEssentialsPacketClient
 {
     public static final byte        packetID    = 2;
 
