@@ -51,7 +51,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase
 				OutputHandler.chatConfirmation(sender, " - /setspawn type <player|group|zone> <name> <none|bed|point> [zone]");
 				OutputHandler.chatConfirmation(sender, " - - sets the spawn type of the player, group, or zone");
 				OutputHandler.chatConfirmation(sender, " - /setspawn point <player|group|zone> <name> <here|revert|<x> <y> <z>> [zone]");
-				OutputHandler.chatConfirmation(sender, " - - sets the spawn type of the player, group, or zone");
+				OutputHandler.chatConfirmation(sender, " - - sets the spawn point of the player, group, or zone");
 				OutputHandler.chatConfirmation(sender, " - the final [zone] argument is not necessary if the 2nd argument is zone");
 				return;
 			}
@@ -116,18 +116,18 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase
 			{
 				prop = "none";
 			}
-			else if (args[3].equalsIgnoreCase("none"))
+			else if (args[3].equalsIgnoreCase("bed"))
 			{
 				prop = "bed";
 			}
-			else if (args[3].equalsIgnoreCase("none"))
+			else if (args[3].equalsIgnoreCase("point"))
 			{
 				prop = "point";
 			}
 			else
 				error(sender);
 
-			output = String.format("Spawn type set to %1$se", prop);
+			output = String.format("Spawn type set to %1$s", prop);
 		}
 		else
 		{
