@@ -66,53 +66,49 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@NetworkMod(
-		clientSideRequired = false,
-		serverSideRequired = false,
-		serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = PacketHandler.class))
+@NetworkMod(clientSideRequired = false, serverSideRequired = false, serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = PacketHandler.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version)
-public class ForgeEssentials
-{
+public class ForgeEssentials {
 
 	@Instance(value = "ForgeEssentials")
-	public static ForgeEssentials	instance;
+	public static ForgeEssentials instance;
 
-	public static CoreConfig		config;
-	public ModuleLauncher			mdlaunch;
-	public static boolean			verCheck	= true;
-	public static boolean			preload;
+	public static CoreConfig config;
+	public ModuleLauncher mdlaunch;
+	public static boolean verCheck = true;
+	public static boolean preload;
 
-	public static String			modlistLocation;
+	public static String modlistLocation;
 
-	public static File				FEDIR;
+	public static File FEDIR;
 
-	public static boolean			mcstats;
+	public static boolean mcstats;
 
-	public BannedItems				bannedItems;
-	public static String			version;
+	public BannedItems bannedItems;
+	public static String version;
 
-	private CompatMCStats			mcstatscompat;
-	public static boolean			sanitycheck;
+	private CompatMCStats mcstatscompat;
+	public static boolean sanitycheck;
 
-	private TaskRegistry			tasks;
+	private TaskRegistry tasks;
 
-	public ForgeEssentials()
-	{
-        tasks = new TaskRegistry();
+	public ForgeEssentials() {
+		tasks = new TaskRegistry();
 	}
-	
+
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent e)
-	{
+	public void preInit(FMLPreInitializationEvent e) {
 		FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
-		
+
 		OutputHandler log = new OutputHandler(); // init the logger
-		
-		OutputHandler.felog.info("Forge Essentials version " + FEModContainer.version + " loading, reading config from " + FEDIR.getAbsolutePath());
-		
+
+		OutputHandler.felog.info("Forge Essentials version "
+				+ FEModContainer.version + " loading, reading config from "
+				+ FEDIR.getAbsolutePath());
+
 		// FE MUST BE FIRST!!
 		GameRegistry.registerPlayerTracker(new PlayerTracker());
-		
+
 		version = e.getModMetadata().version;
 
 		// setup fedir stuff
@@ -128,7 +124,8 @@ public class ForgeEssentials
 			DataStorageManager.manager = new StorageManager(config.config);
 
 			// register DataDrivers
-			DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
+			DataStorageManager.registerDriver("ForgeConfig",
+					ForgeConfigDataDriver.class);
 			DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
 			DataStorageManager.registerDriver("SQL_DB", SQLDataDriver.class);
 
@@ -139,8 +136,10 @@ public class ForgeEssentials
 			DataStorageManager.registerSaveableType(WorldPoint.class);
 			DataStorageManager.registerSaveableType(WarpPoint.class);
 
-			DataStorageManager.registerSaveableType(TypeInfoItemStack.class, new ClassContainer(ItemStack.class));
-			DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
+			DataStorageManager.registerSaveableType(TypeInfoItemStack.class,
+					new ClassContainer(ItemStack.class));
+			DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class,
+					new ClassContainer(NBTTagCompound.class));
 		}
 
 		new MiscEventHandler();
@@ -152,14 +151,13 @@ public class ForgeEssentials
 	}
 
 	@EventHandler
-	public void load(FMLInitializationEvent e)
-	{
+	public void load(FMLInitializationEvent e) {
 		// load up DataAPI
 		((StorageManager) DataStorageManager.manager).setupManager();
 
 		mdlaunch.load(e);
 
-		//other stuff
+		// other stuff
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		TickRegistry.registerTickHandler(factory, Side.SERVER);
 		GameRegistry.registerPlayerTracker(factory);
@@ -171,8 +169,7 @@ public class ForgeEssentials
 	}
 
 	@EventHandler
-	public void postLoad(FMLPostInitializationEvent e)
-	{
+	public void postLoad(FMLPostInitializationEvent e) {
 		UnfriendlyItemList.modStep();
 		UnfriendlyItemList.output(new File(FEDIR, "UnfriendlyItemList.txt"));
 
@@ -181,34 +178,39 @@ public class ForgeEssentials
 
 		new FriendlyItemList();
 	}
-	
+
 	@PermRegister
-	private static void registerPerms(IPermRegisterEvent event)
-	{
-		if (!EnvironmentChecker.worldEditInstalled){
-		event.registerPermissionLevel("ForgeEssentials.CoreCommands.select.pos", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.CoreCommands.select.wand", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.CoreCommands.select.deselect", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.CoreCommands.fedebug", RegGroup.OWNERS);
-		event.registerPermissionLevel("ForgeEssentials.CoreCommands.fereload", RegGroup.OWNERS);
+	private static void registerPerms(IPermRegisterEvent event) {
+		if (!EnvironmentChecker.worldEditInstalled) {
+			event.registerPermissionLevel(
+					"ForgeEssentials.CoreCommands.select.pos", RegGroup.OWNERS);
+			event.registerPermissionLevel(
+					"ForgeEssentials.CoreCommands.select.wand", RegGroup.OWNERS);
+			event.registerPermissionLevel(
+					"ForgeEssentials.CoreCommands.select.deselect",
+					RegGroup.OWNERS);
+			event.registerPermissionLevel(
+					"ForgeEssentials.CoreCommands.fedebug", RegGroup.OWNERS);
+			event.registerPermissionLevel(
+					"ForgeEssentials.CoreCommands.fereload", RegGroup.OWNERS);
 		}
 	}
 
 	@EventHandler
-	public void serverStarting(FMLServerStartingEvent e)
-	{
+	public void serverStarting(FMLServerStartingEvent e) {
 		// load up DataAPI
 		((StorageManager) DataStorageManager.manager).serverStart(e);
 
 		ModListFile.makeModList();
 
 		// Central TP system
-		TickRegistry.registerScheduledTickHandler(new TeleportCenter(), Side.SERVER);
+		TickRegistry.registerScheduledTickHandler(new TeleportCenter(),
+				Side.SERVER);
 
 		// commands
 		e.registerServerCommand(new CommandFEInfo());
-		
-		if (!EnvironmentChecker.worldEditInstalled){
+
+		if (!EnvironmentChecker.worldEditInstalled) {
 			e.registerServerCommand(new CommandPos(1));
 			e.registerServerCommand(new CommandPos(2));
 			e.registerServerCommand(new CommandWand());
@@ -221,12 +223,12 @@ public class ForgeEssentials
 		// do modules last... just in case...
 		mdlaunch.serverStarting(e);
 
-		ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
+		ForgeChunkManager.setForcedChunkLoadingCallback(this,
+				new FEChunkLoader());
 	}
 
 	@EventHandler
-	public void serverStarted(FMLServerStartedEvent e)
-	{
+	public void serverStarted(FMLServerStartedEvent e) {
 		mdlaunch.serverStarted(e);
 		DuplicateCommandRemoval.remove();
 
@@ -234,15 +236,13 @@ public class ForgeEssentials
 	}
 
 	@EventHandler
-	public void serverStopping(FMLServerStoppingEvent e)
-	{
+	public void serverStopping(FMLServerStoppingEvent e) {
 		mdlaunch.serverStopping(e);
 		tasks.onServerStop();
 	}
 
 	@VersionCheckHandler
-	public boolean versionCheck(String version)
-	{
+	public boolean versionCheck(String version) {
 		return true;
 	}
 

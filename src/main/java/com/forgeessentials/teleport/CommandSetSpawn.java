@@ -296,11 +296,11 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase
 			{
 				prop = "none";
 			}
-			else if (args[3].equalsIgnoreCase("none"))
+			else if (args[3].equalsIgnoreCase("bed"))
 			{
 				prop = "bed";
 			}
-			else if (args[3].equalsIgnoreCase("none"))
+			else if (args[3].equalsIgnoreCase("point"))
 			{
 				prop = "point";
 			}

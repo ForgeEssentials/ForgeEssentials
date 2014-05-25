@@ -19,6 +19,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.teleport.util.ConfigTeleport;
+import com.forgeessentials.teleport.util.PlayerTrackerTP;
 import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
@@ -28,22 +29,22 @@ import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @FEModule(name = "TeleportModule", parentMod = ForgeEssentials.class, configClass = ConfigTeleport.class)
 public class TeleportModule {
-	
+
 	public static int timeout;
-	
+
 	@FEModule.Init
-	public void load(FEModuleInitEvent e){
+	public void load(FEModuleInitEvent e) {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
-	
+
 	@FEModule.ServerInit
-	public void serverStarting(FEModuleServerInitEvent e)
-	{
+	public void serverStarting(FEModuleServerInitEvent e) {
 		e.registerServerCommand(new CommandBack());
 		e.registerServerCommand(new CommandBed());
 		e.registerServerCommand(new CommandHome());
@@ -58,88 +59,106 @@ public class TeleportModule {
 		e.registerServerCommand(new CommandPersonalWarp());
 		e.registerServerCommand(new CommandTop());
 	}
-	
+
 	@FEModule.ServerPostInit
-	public void serverStarted(FEModuleServerPostInitEvent e)
-	{
-		PropQueryBlanketZone query = new PropQueryBlanketZone(CommandSetSpawn.SPAWN_PROP, APIRegistry.zones.getGLOBAL(), false);
+	public void serverStarted(FEModuleServerPostInitEvent e) {
+		PropQueryBlanketZone query = new PropQueryBlanketZone(
+				CommandSetSpawn.SPAWN_PROP, APIRegistry.zones.getGLOBAL(),
+				false);
 		APIRegistry.perms.getPermissionProp(query);
 
 		// nothing set for the global??
-		if (!query.hasValue())
-		{
-			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
-			String val = "0;" + point.posX + ";" + point.posY + ";" + point.posZ;
-			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val, APIRegistry.zones.getGLOBAL().getZoneName());
+		if (!query.hasValue()) {
+			ChunkCoordinates point = FunctionHelper.getDimension(0).provider
+					.getSpawnPoint();
+			String val = "0;" + point.posX + ";" + point.posY + ";"
+					+ point.posZ;
+			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms
+					.getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val,
+					APIRegistry.zones.getGLOBAL().getZoneName());
 		}
-		
-		TickRegistry.registerScheduledTickHandler(new TickHandlerTP(), Side.SERVER);
+
+		GameRegistry.registerPlayerTracker(new PlayerTrackerTP());
+		TickRegistry.registerScheduledTickHandler(new TickHandlerTP(),
+				Side.SERVER);
 	}
 
 	@PermRegister
-	public static void registerPermissions(IPermRegisterEvent event)
-	{// ensures on ServerStart
-		// event.registerPermissionProp("fe.teleport.spawnPoint", "0;0;0;0");
-		event.registerPermissionProp(CommandSetSpawn.SPAWN_TYPE_PROP, "bed"); // bed, point, none
-		event.registerPermissionLevel("fe.teleport.back.ondeath", RegGroup.MEMBERS);
-	 	event.registerPermissionLevel("fe.teleport.back.ontp", RegGroup.MEMBERS);
-	 	event.registerPermissionLevel("fe.teleport.bed.others", RegGroup.OWNERS);
-	 	event.registerPermissionLevel("fe.teleport.home.set", RegGroup.MEMBERS);
-	 	event.registerPermissionLevel("fe.teleport.spawn.others", RegGroup.OWNERS);
-	 	event.registerPermissionLevel("fe.teleport.top.others", RegGroup.OWNERS);
-	 	event.registerPermissionLevel("fe.teleport.tpa.sendrequest", RegGroup.MEMBERS);
-	 	event.registerPermissionLevel("fe.teleport.tpahere.sendrequest", RegGroup.MEMBERS);
-	 	event.registerPermissionLevel("fe.teleport.warp.admin", RegGroup.OWNERS);
+	public static void registerPermissions(IPermRegisterEvent event) {// ensures
+																		// on
+																		// ServerStart
+																		// event.registerPermissionProp("fe.teleport.spawnPoint",
+																		// "0;0;0;0");
+		event.registerPermissionProp(CommandSetSpawn.SPAWN_TYPE_PROP, "bed"); // bed,
+																				// point,
+																				// none
+		event.registerPermissionLevel("fe.teleport.back.ondeath",
+				RegGroup.MEMBERS);
+		event.registerPermissionLevel("fe.teleport.back.ontp", RegGroup.MEMBERS);
+		event.registerPermissionLevel("fe.teleport.bed.others", RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.teleport.home.set", RegGroup.MEMBERS);
+		event.registerPermissionLevel("fe.teleport.spawn.others",
+				RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.teleport.top.others", RegGroup.OWNERS);
+		event.registerPermissionLevel("fe.teleport.tpa.sendrequest",
+				RegGroup.MEMBERS);
+		event.registerPermissionLevel("fe.teleport.tpahere.sendrequest",
+				RegGroup.MEMBERS);
+		event.registerPermissionLevel("fe.teleport.warp.admin", RegGroup.OWNERS);
 	}
 
 	@ForgeSubscribe(priority = EventPriority.LOW)
-	public void onPlayerDeath(LivingDeathEvent e)
-	{
+	public void onPlayerDeath(LivingDeathEvent e) {
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			return;
 
-		if (e.entity instanceof EntityPlayer)
-		{
+		if (e.entity instanceof EntityPlayer) {
 			EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
-			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+			PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(
+					player);
 			CommandBack.justDied.add(player.username);
 
 			// generate for un-generated dimension
 			{
 				int currentDim = player.worldObj.provider.dimensionId;
-				int spawnDim = player.worldObj.provider.getRespawnDimension(player);
+				int spawnDim = player.worldObj.provider
+						.getRespawnDimension(player);
 
-				if (spawnDim != 0 && spawnDim == currentDim && !CommandSetSpawn.dimsWithProp.contains(currentDim))
-				{
+				if (spawnDim != 0 && spawnDim == currentDim
+						&& !CommandSetSpawn.dimsWithProp.contains(currentDim)) {
 					Zone z = APIRegistry.zones.getWorldZone(player.worldObj);
 					ChunkCoordinates dimPoint = player.worldObj.getSpawnPoint();
-					WorldPoint point = new WorldPoint(spawnDim, dimPoint.posX, dimPoint.posY, dimPoint.posZ);
+					WorldPoint point = new WorldPoint(spawnDim, dimPoint.posX,
+							dimPoint.posY, dimPoint.posZ);
 					CommandSetSpawn.setSpawnPoint(point, z);
 					CommandSetSpawn.dimsWithProp.add(currentDim);
 
-					WarpPoint p = new WarpPoint(currentDim, dimPoint.posX + .5, dimPoint.posY + 1, dimPoint.posZ + .5, player.cameraYaw, player.cameraPitch);
+					WarpPoint p = new WarpPoint(currentDim, dimPoint.posX + .5,
+							dimPoint.posY + 1, dimPoint.posZ + .5,
+							player.cameraYaw, player.cameraPitch);
 					CommandSetSpawn.spawns.put(player.username, p);
 					return;
 				}
 			}
-			
-			PropQueryPlayerSpot query = new PropQueryPlayerSpot(player, "fe.teleport.spawnType");
+
+			PropQueryPlayerSpot query = new PropQueryPlayerSpot(player,
+					"fe.teleport.spawnType");
 			APIRegistry.perms.getPermissionProp(query);
-			
-			if (query.getStringValue().equalsIgnoreCase("none"))
-			{
+
+			if (query.getStringValue().equalsIgnoreCase("none")) {
 				return;
-			}
-			else if (query.getStringValue().equalsIgnoreCase("bed"))
-			{
-				if (player.getBedLocation() != null)
-				{
+			} else if (query.getStringValue().equalsIgnoreCase("bed")) {
+				if (player.getBedLocation() != null) {
 					ChunkCoordinates spawn = player.getBedLocation();
-					EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
-					
-					WarpPoint point = new WarpPoint(player.worldObj.provider.dimensionId, spawn.posX + .5, spawn.posY + 1, spawn.posZ + .5, player.cameraYaw, player.cameraPitch);
+					EntityPlayer.verifyRespawnCoordinates(player.worldObj,
+							spawn, true);
+
+					WarpPoint point = new WarpPoint(
+							player.worldObj.provider.dimensionId,
+							spawn.posX + .5, spawn.posY + 1, spawn.posZ + .5,
+							player.cameraYaw, player.cameraPitch);
 					CommandSetSpawn.spawns.put(player.username, point);
-					
+
 					return;
 				}
 			}
@@ -153,18 +172,16 @@ public class TeleportModule {
 			String val = query.getStringValue();
 			String[] split = val.split("[;_]");
 
-			try
-			{
+			try {
 				int dim = Integer.parseInt(split[0]);
 				int x = Integer.parseInt(split[1]);
 				int y = Integer.parseInt(split[2]);
 				int z = Integer.parseInt(split[3]);
 
-				WarpPoint point = new WarpPoint(dim, x + .5, y + 1, z + .5, player.cameraYaw, player.cameraPitch);
+				WarpPoint point = new WarpPoint(dim, x + .5, y + 1, z + .5,
+						player.cameraYaw, player.cameraPitch);
 				CommandSetSpawn.spawns.put(player.username, point);
-			}
-			catch (Exception exception)
-			{
+			} catch (Exception exception) {
 				CommandSetSpawn.spawns.put(player.username, null);
 			}
 		}

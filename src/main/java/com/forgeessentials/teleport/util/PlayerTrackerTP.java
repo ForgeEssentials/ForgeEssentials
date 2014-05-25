@@ -35,5 +35,8 @@ public class PlayerTrackerTP implements IPlayerTracker
 			player.posY = p.yd;
 			player.posZ = p.zd;
 		}
+		else{
+			
+		}
 	}
 }
