@@ -5,6 +5,7 @@ import java.util.Set;
 
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
@@ -30,6 +31,7 @@ public class ModuleProtection
 	public final static String									PERM_PVP				= "fe.protection.pvp";
 	public final static String									PERM_MOB_SPAWN_NATURAL	= "fe.protection.mobSpawn.natural";
 	public final static String									PERM_MOB_SPAWN_FORCED	= "fe.protection.mobSpawn.forced";
+	public final static String PERM_DIMENSION = "fe.protection.dimension.";
 
 	@FEModule.Config
 	public static ConfigProtection								config;
@@ -84,5 +86,9 @@ public class ModuleProtection
 		}
 		
 		event.registerPermissionLevel(PERM_ITEM_USE + "." + Permission.ALL, RegGroup.MEMBERS);
+		
+		for (int i : DimensionManager.getIDs()){
+			event.registerPermissionLevel(PERM_DIMENSION + i, RegGroup.MEMBERS);
+		}
 	}
 }

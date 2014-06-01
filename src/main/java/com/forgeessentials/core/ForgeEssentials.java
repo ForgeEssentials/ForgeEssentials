@@ -25,7 +25,7 @@ import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.misc.ModListFile;
 import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.network.PacketHandler;
+import com.forgeessentials.core.network.FEServerPacketHandler;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.forgeessentials.data.ForgeConfigDataDriver;
 import com.forgeessentials.data.NBTDataDriver;
@@ -66,7 +66,7 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false, serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = PacketHandler.class))
+@NetworkMod(clientSideRequired = false, serverSideRequired = false, serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = FEServerPacketHandler.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version)
 public class ForgeEssentials {
 
