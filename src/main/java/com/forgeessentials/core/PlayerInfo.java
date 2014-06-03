@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
 import com.forgeessentials.core.network.PacketSelectionUpdate;
 import com.forgeessentials.data.api.ClassContainer;
@@ -136,6 +137,9 @@ public class PlayerInfo
 
 	public int						TPcooldown	= 0;
 	public HashMap<String, Integer>	kitCooldown	= new HashMap<String, Integer>();
+	
+	@SaveableField
+	private ItemStack[] hiddenItems;
 
 	private PlayerInfo(String username)
 	{
@@ -154,6 +158,8 @@ public class PlayerInfo
 		loginTime = System.currentTimeMillis();
 
 		timePlayed = 0;
+		
+		hiddenItems = new ItemStack[54];
 	}
 
 	/**
@@ -319,5 +325,9 @@ public class PlayerInfo
 		sel2 = null;
 		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
 		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
+	}
+	
+	public void addHiddenItems(ItemStack stack)
+	{// noop for now
 	}
 }

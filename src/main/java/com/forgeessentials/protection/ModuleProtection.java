@@ -1,5 +1,6 @@
 package com.forgeessentials.protection;
 
+import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -14,6 +15,8 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.data.AbstractDataDriver;
+import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.permission.Permission;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
@@ -32,11 +35,16 @@ public class ModuleProtection
 	public final static String									PERM_MOB_SPAWN_NATURAL	= "fe.protection.mobSpawn.natural";
 	public final static String									PERM_MOB_SPAWN_FORCED	= "fe.protection.mobSpawn.forced";
 	public final static String PERM_DIMENSION = "fe.protection.dimension.";
+	public final static String PERM_OVERRIDE_BANNEDITEMS = "fe.protection.overrideProtection.banneditems";
 
 	@FEModule.Config
 	public static ConfigProtection								config;
 	public static boolean										enable					= false;
 	public static boolean										enableMobSpawns			= false;
+	
+	private static AbstractDataDriver data;
+	private static ClassContainer zoneBannedItems = new ClassContainer(AdditionalZoneData.class);
+	public static HashMap<String, AdditionalZoneData> itemsList = new HashMap<String, AdditionalZoneData>();
 	
 	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
@@ -57,6 +65,12 @@ public class ModuleProtection
 		}
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
+		
+		Object[] objs = data.loadAllObjects(zoneBannedItems);
+		for (Object obj : objs) {
+			AdditionalZoneData bi = (AdditionalZoneData) obj;
+			itemsList.put(bi.getName(), bi);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -68,6 +82,7 @@ public class ModuleProtection
 		event.registerPermissionLevel(PERM_INTERACT_BLOCK, RegGroup.MEMBERS);
 		event.registerPermissionLevel(PERM_INTERACT_ENTITY, RegGroup.MEMBERS);
 		event.registerPermissionLevel(PERM_OVERRIDE, RegGroup.OWNERS);
+		event.registerPermissionLevel(PERM_OVERRIDE_BANNEDITEMS, RegGroup.OWNERS);
 
 		for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
 		{
