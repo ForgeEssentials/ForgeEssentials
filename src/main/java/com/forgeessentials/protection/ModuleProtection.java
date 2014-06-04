@@ -17,6 +17,7 @@ import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.permission.Permission;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
@@ -59,10 +60,13 @@ public class ModuleProtection
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
+		
 		if (!enable)
 		{
 			e.getModuleContainer().isLoadable = false;
 		}
+		
+		data = DataStorageManager.getReccomendedDriver();
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		
