@@ -31,6 +31,7 @@ static File loginplayer = new File(moduleDir, "login/player/");
 	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e){
 		e.registerServerCommand(new CommandScript());
+		e.registerServerCommand(new TimedTaskManager());
 	}
 	
 	public static void startup(){
