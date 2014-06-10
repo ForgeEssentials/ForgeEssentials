@@ -6,11 +6,11 @@ import java.util.ArrayList;
 
 import net.minecraft.network.packet.Packet250CustomPayload;
 
-import com.forgeessentials.core.network.IForgeEssentialsPacket;
+import com.forgeessentials.core.network.ForgeEssentialsPacket;
 import com.forgeessentials.playerlogger.blockChange;
 import com.forgeessentials.util.OutputHandler;
 
-public class PacketRollback implements IForgeEssentialsPacket
+public class PacketRollback extends ForgeEssentialsPacket
 {
     public static final byte        packetID    = 2;
 

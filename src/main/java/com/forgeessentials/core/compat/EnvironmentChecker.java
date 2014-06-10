@@ -27,7 +27,7 @@ public class EnvironmentChecker
 
 		else
 		{
-			// Check for MCPC+ or LavaBukkit
+			// Check for Cauldron or LavaBukkit
 			try
 			{
 				Class.forName("org.bukkit.craftbukkit.Main");
@@ -43,6 +43,13 @@ public class EnvironmentChecker
 	}
 	
 	public static void checkWorldEdit(){
+		if (Boolean.parseBoolean(System.getProperty("forgeessentials.developermode.we"))){
+			OutputHandler.felog.warning("WorldEdit integration tools force disabled.");
+			worldEditInstalled = false;
+			worldEditFEtoolsInstalled = false;
+			return;
+		}
+		
 		if (!Loader.isModLoaded("WorldEdit")){
 			OutputHandler.felog.info("WorldEdit Forge not found, continuing as per normal.");
 			return;

@@ -9,13 +9,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
-import com.forgeessentials.core.network.IForgeEssentialsPacket;
+import com.forgeessentials.core.network.ForgeEssentialsPacket;
 import com.forgeessentials.permission.ModulePermissions;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.network.Player;
 
-public class PacketPermNodeList implements IForgeEssentialsPacket {
+public class PacketPermNodeList extends ForgeEssentialsPacket {
 
 	public static final byte		packetID	= 3;
 	

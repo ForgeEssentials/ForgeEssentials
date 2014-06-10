@@ -9,13 +9,13 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.network.IForgeEssentialsPacket;
+import com.forgeessentials.core.network.ForgeEssentialsPacket;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
-public class PacketEconomy implements IForgeEssentialsPacket {
+public class PacketEconomy  extends ForgeEssentialsPacket {
 
 	private Packet250CustomPayload packet;
 	

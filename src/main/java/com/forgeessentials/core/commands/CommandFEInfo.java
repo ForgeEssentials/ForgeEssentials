@@ -4,6 +4,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.Data;

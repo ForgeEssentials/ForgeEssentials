@@ -148,6 +148,8 @@ public class ForgeEssentials {
 		LoginMessage.loadFile();
 		mdlaunch = new ModuleLauncher();
 		mdlaunch.preLoad(e);
+		
+		FEServerPacketHandler.init();
 	}
 
 	@EventHandler
@@ -183,16 +185,14 @@ public class ForgeEssentials {
 	private static void registerPerms(IPermRegisterEvent event) {
 		if (!EnvironmentChecker.worldEditInstalled) {
 			event.registerPermissionLevel(
-					"ForgeEssentials.CoreCommands.select.pos", RegGroup.OWNERS);
+					"fe.select.pos", RegGroup.GUESTS);
 			event.registerPermissionLevel(
-					"ForgeEssentials.CoreCommands.select.wand", RegGroup.OWNERS);
+					"fe.select.wand", RegGroup.GUESTS);
 			event.registerPermissionLevel(
-					"ForgeEssentials.CoreCommands.select.deselect",
-					RegGroup.OWNERS);
+					"fe.select.deselect",
+					RegGroup.GUESTS);
 			event.registerPermissionLevel(
-					"ForgeEssentials.CoreCommands.fedebug", RegGroup.OWNERS);
-			event.registerPermissionLevel(
-					"ForgeEssentials.CoreCommands.fereload", RegGroup.OWNERS);
+					"fe.core.info", RegGroup.OWNERS);
 		}
 	}
 

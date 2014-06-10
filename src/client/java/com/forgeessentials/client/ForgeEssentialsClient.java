@@ -11,6 +11,7 @@ import com.forgeessentials.client.cui.CUIPlayerLogger;
 import com.forgeessentials.client.cui.CUIRenderrer;
 import com.forgeessentials.client.cui.CUIRollback;
 import com.forgeessentials.client.gui.FEKeyBinding;
+import com.forgeessentials.client.network.FEClientPacketHandler;
 
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -25,7 +26,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @NetworkMod(clientSideRequired = false, serverSideRequired = false, clientPacketHandlerSpec = @SidedPacketHandler(channels =
-{ "ForgeEssentials" }, packetHandler = com.forgeessentials.client.network.PacketHandler.class))
+{ "ForgeEssentials" }, packetHandler = FEClientPacketHandler.class))
 @Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = "%VERSION%")
 public class ForgeEssentialsClient
 {

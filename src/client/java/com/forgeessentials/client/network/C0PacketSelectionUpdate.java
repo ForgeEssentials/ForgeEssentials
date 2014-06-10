@@ -15,14 +15,14 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class PacketSelectionUpdate implements IForgeEssentialsPacketClient
+public class C0PacketSelectionUpdate extends ForgeEssentialsPacketClient
 {
 	public static final byte		packetID	= 0;
 
 	private Packet250CustomPayload	packet;
 
 	@Deprecated
-	public PacketSelectionUpdate()
+	public C0PacketSelectionUpdate()
 	{
 		// should never be sent from the client..
 	}

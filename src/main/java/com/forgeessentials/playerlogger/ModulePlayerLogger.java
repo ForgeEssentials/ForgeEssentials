@@ -20,6 +20,9 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Init;
 import com.forgeessentials.core.moduleLauncher.FEModule.PreInit;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerInit;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerStop;
+import com.forgeessentials.core.network.FEServerPacketHandler;
+import com.forgeessentials.playerlogger.network.PacketPlayerLogger;
+import com.forgeessentials.playerlogger.network.PacketRollback;
 import com.forgeessentials.playerlogger.rollback.CommandPl;
 import com.forgeessentials.playerlogger.rollback.CommandRollback;
 import com.forgeessentials.playerlogger.rollback.EventHandler;
@@ -90,6 +93,9 @@ public class ModulePlayerLogger
 		{
 			throw new RuntimeException("Could not find MySQL JDBC Driver.");
 		}
+		
+		FEServerPacketHandler.registerPacket(1, PacketPlayerLogger.class);
+		FEServerPacketHandler.registerPacket(2, PacketRollback.class);
 	}
 
 	@ServerInit

@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class PacketPlayerLogger implements IForgeEssentialsPacketClient
+public class C1PacketPlayerLogger extends ForgeEssentialsPacketClient
 {
 	public static final byte		packetID	= 1;
 

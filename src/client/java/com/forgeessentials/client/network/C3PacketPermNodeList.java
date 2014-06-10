@@ -13,13 +13,13 @@ import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.gui.GuiPermNodeList;
 
 
-public class PacketPermNodeList implements IForgeEssentialsPacketClient {
+public class C3PacketPermNodeList extends ForgeEssentialsPacketClient {
 
 	public static final byte		packetID	= 3;
 	
 	private Packet250CustomPayload packet;
 	
-	public PacketPermNodeList(){
+	public C3PacketPermNodeList(){
 		
 		packet = new Packet250CustomPayload();
 

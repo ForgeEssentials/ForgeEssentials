@@ -42,6 +42,7 @@ public class WEIntegration{
 	public void load(FEModuleInitEvent e){
 		if (getDevOverride()){
 			e.getModuleContainer().isLoadable = false;
+			return;
 		}
 		
 		if (!EnvironmentChecker.worldEditInstalled){

@@ -38,19 +38,19 @@ public class FEClientPacketHandler implements IPacketHandler
 				// cast to the correct instance of ForgeEssentialsPacketbase and use
 				// the read methods.
 					case 0:
-						PacketSelectionUpdate.readClient(stream, world, player);
+						C0PacketSelectionUpdate.readClient(stream, world, player);
 						break;
 					case 1:
-						PacketPlayerLogger.readClient(stream, world, player);
+						C1PacketPlayerLogger.readClient(stream, world, player);
 						break;
 					case 2:
-					    PacketRollback.readClient(stream, world, player);
+					    C2PacketRollback.readClient(stream, world, player);
 					    break;
 					case 3:
-						PacketPermNodeList.readClient(stream, world, player);
+						C3PacketPermNodeList.readClient(stream, world, player);
 						break;
 					case 4:
-						PacketEconomy.readClient(stream, world, player);
+						C4PacketEconomy.readClient(stream, world, player);
 						break;
 				}
 		}

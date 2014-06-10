@@ -13,7 +13,7 @@ import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.AreaSelector.Point;
 
-public class PacketSelectionUpdate implements IForgeEssentialsPacket
+public class PacketSelectionUpdate extends ForgeEssentialsPacket
 {
 	public static final byte		packetID	= 0;
 

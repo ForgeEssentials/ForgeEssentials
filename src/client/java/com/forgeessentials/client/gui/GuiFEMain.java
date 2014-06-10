@@ -1,6 +1,6 @@
 package com.forgeessentials.client.gui;
 
-import com.forgeessentials.client.network.PacketEconomy;
+import com.forgeessentials.client.network.C4PacketEconomy;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
 import net.minecraft.client.gui.GuiButton;
@@ -49,7 +49,7 @@ public class GuiFEMain extends GuiScreen{
         this.drawCenteredString(this.fontRenderer, "ForgeEssentials Main Menu - this is a placeholder", this.width / 2, 40, 16777215);
 
         // init data for other guis
-        PacketDispatcher.sendPacketToServer(new PacketEconomy().getPayload());
+        PacketDispatcher.sendPacketToServer(new C4PacketEconomy().getPayload());
         super.drawScreen(par1, par2, par3);
     }
 

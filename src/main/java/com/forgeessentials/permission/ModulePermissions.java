@@ -11,6 +11,7 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.network.FEServerPacketHandler;
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -69,6 +70,8 @@ public class ModulePermissions
 		DataStorageManager.registerSaveableType(AutoPromote.class);
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
+		
+		FEServerPacketHandler.registerPacket(3, PacketPermNodeList.class);
 	}
 
 	@FEModule.ServerInit
@@ -90,12 +93,14 @@ public class ModulePermissions
 		OverrideManager.regOverrides((FMLServerStartingEvent) e.getFMLEvent());
 
 		autoPromoteManager = new AutoPromoteManager();
+		
+		permLoader.loadAllPerms();
+		permLoader.clearMethods();
 	}
 	
 	@FEModule.ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e){
-		permLoader.loadAllPerms();
-		permLoader.clearMethods();
+		
 		sql.putRegistrationPerms(permLoader.registerredPerms);
 
 		PermissionsList list = new PermissionsList();

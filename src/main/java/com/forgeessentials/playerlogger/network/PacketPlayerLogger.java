@@ -9,10 +9,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
-import com.forgeessentials.core.network.IForgeEssentialsPacket;
+import com.forgeessentials.core.network.ForgeEssentialsPacket;
 import com.forgeessentials.util.OutputHandler;
 
-public class PacketPlayerLogger implements IForgeEssentialsPacket
+public class PacketPlayerLogger extends ForgeEssentialsPacket
 {
 	public static final byte		packetID	= 1;
 

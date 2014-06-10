@@ -3,7 +3,7 @@ package com.forgeessentials.client.gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 
-import com.forgeessentials.client.network.PacketPermNodeList;
+import com.forgeessentials.client.network.C3PacketPermNodeList;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
 
@@ -30,7 +30,7 @@ public class GuiPermissions extends GuiScreen {
                 break;
             case 1:
             	this.mc.displayGuiScreen(new GuiPermNodeList());
-            	PacketDispatcher.sendPacketToServer(new PacketPermNodeList().getPayload());
+            	PacketDispatcher.sendPacketToServer(new C3PacketPermNodeList().getPayload());
             	break;
             
         }

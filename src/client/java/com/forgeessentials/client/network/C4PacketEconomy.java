@@ -12,13 +12,13 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
-public class PacketEconomy implements IForgeEssentialsPacketClient {
+public class C4PacketEconomy extends ForgeEssentialsPacketClient {
 
 	public static final byte packetID = 4;
 
 	private Packet250CustomPayload packet;
 
-	public PacketEconomy() {
+	public C4PacketEconomy() {
 
 		packet = new Packet250CustomPayload();
 

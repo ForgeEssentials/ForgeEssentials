@@ -5,6 +5,7 @@ import java.io.File;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.network.FEServerPacketHandler;
 import com.forgeessentials.economy.commands.CommandAddToWallet;
 import com.forgeessentials.economy.commands.CommandGetWallet;
 import com.forgeessentials.economy.commands.CommandMoney;
@@ -38,6 +39,7 @@ public class ModuleEconomy
 	{
 		APIRegistry.wallet = new WalletHandler();
 		GameRegistry.registerPlayerTracker((IPlayerTracker) APIRegistry.wallet);
+		FEServerPacketHandler.registerPacket(4, PacketEconomy.class);
 	}
 
 	@FEModule.ServerInit
