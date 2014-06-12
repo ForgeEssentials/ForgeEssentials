@@ -12,13 +12,20 @@ The Forge Essentials project consists of a permissions and protection system to 
 
 *More information can be found at the [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki).*
 
-####This repo is for a port to Minecraft 1.6.4. There are compiled builds available on luacs blog (link on the curseforge site). Please do not attempt to use this on a live server, as it is extremely buggy and cases of world corruption have been reported. The 1.5.2 port is safer, use that.####
+####This repo is for a port to Minecraft 1.6.4. There are compiled builds [here](http://dries007.net:8080/job/FE_164/). Please do not attempt to use this on a live server, as it is extremely buggy and cases of world corruption have been reported. The 1.5.2 port is safer, and recommended for use.####
 
 <br>
 
-Setup
-=====
-As you would for any other ForgeGradle-based mod, clone this repo to a folder and run gradlew eclipse.
+Development Setup
+=================
+Set up for ForgeEssentials development is simalar to any other ForgeGradle-based mod.
+
+1. Clone this repo.
+2. Open a terminal, and navigate to the cloned repo.
+3. Depending on your system, run either 'gradlew.bat eclipse' (Windows) or './gradlew eclipse' (Unix)
+4. Open the newly created workspace in Eclipse, and you will be good to go!
+
+*Note: Please consider squashing all commits before initially sumitting pull requests.*
 
 <br>
 
@@ -29,6 +36,8 @@ If you would like test builds, go [here](http://dries007.net:8080/job/FE_164/). 
 
 FE Team Members:
 ================
+<a href="https://github.com/luacs1998">luacs1998</a>
+
 <a href="https://github.com/AbrarSyed">AbrarSyed</a>  (inactive)
 
 <a href="https://github.com/Bob-A-Red-Dino">Bob A Red Dino</a>  (inactive)
@@ -36,8 +45,6 @@ FE Team Members:
 <a href="https://github.com/bspkrs">bspkrs</a> (inactive)
 
 <a href="https://github.com/MysteriousAges">MysteriousAges</a> (inactive)
-
-<a href="https://github.com/luacs1998">luacs1998</a>
 
 <a href="https://github.com/dries007">Dries007</a>
 
