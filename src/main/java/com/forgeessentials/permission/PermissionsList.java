@@ -15,6 +15,8 @@ public class PermissionsList
 	public PermissionsList()
 	{
 		output = new File(ModulePermissions.permsFolder, OUTPUT_FILE);
+		if (output.exists())
+			output.delete();
 	}
 
 	public boolean shouldMake()
