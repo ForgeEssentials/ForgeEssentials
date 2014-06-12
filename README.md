@@ -20,6 +20,8 @@ Development Setup
 =================
 Set up for ForgeEssentials development is simalar to any other ForgeGradle-based mod.
 
+*Note: ForgeGradle versions for Minecraft 1.6 requires Java 7.*
+
 1. Clone this repo.
 2. Open a terminal, and navigate to the cloned repo.
 3. Depending on your system, run either 'gradlew.bat eclipse' (Windows) or './gradlew eclipse' (Unix)
