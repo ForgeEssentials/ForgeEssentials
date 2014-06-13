@@ -40,7 +40,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
  			if (info.getPoint1() == null || info.getPoint2() == null)
  			{
  
-				player.sendChatToPlayer("Invalid previous selection.");
+				ChatUtils.sendMessage(player, "Invalid previous selection.");
  				return;
  			}
  
