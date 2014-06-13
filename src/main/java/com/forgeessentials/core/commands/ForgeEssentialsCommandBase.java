@@ -3,6 +3,7 @@ package com.forgeessentials.core.commands;
 import java.util.List;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -172,7 +173,11 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
 	@Override
 	public int compareTo(Object o) {
-		return 0;
+		if (o instanceof ICommand)
+		{
+			return this.compareTo((ICommand) o);
+		}
+		else return 0;
 	}
 
 	
