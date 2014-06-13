@@ -1,5 +1,6 @@
 package com.forgeessentials.client;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.minecraft.client.settings.KeyBinding;
@@ -53,13 +54,17 @@ public class ForgeEssentialsClient
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		feclientlog = Logger.getLogger("[ForgeEssentialsClient]");
+		feclientlog = e.getModLog();
 		
 		if (FMLCommonHandler.instance().getSide().isServer() && getDevOverride() == false)
 			throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
 		
 		if (FMLCommonHandler.instance().getSide().isClient()){
 			config(new Configuration(e.getSuggestedConfigurationFile()));
+		}
+		
+		if (getDevOverride()){
+			feclientlog.setLevel(Level.ALL);
 		}
 	}
 	

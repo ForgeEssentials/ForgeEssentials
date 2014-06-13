@@ -15,6 +15,7 @@
 /rundir/*
 /.gradle/*
 /.settings/*
+/.idea/*
 
 /eclipse/.metadata/
 /eclipse/Minecraft/bin/
