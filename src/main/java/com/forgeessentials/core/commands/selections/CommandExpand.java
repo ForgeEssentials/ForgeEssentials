@@ -35,6 +35,16 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 			int z = Math.round((float) player.getLookVec().zCoord);
 			PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
 			int expandby = Integer.decode(args[0]);
+			
+			// Check to see if selection is valid for expand.
+ 			if (info.getPoint1() == null || info.getPoint2() == null)
+ 			{
+ 
+				player.sendChatToPlayer("Invalid previous selection.");
+ 				return;
+ 			}
+ 
+
 			if (x == -1)
 			{
 				if (info.getPoint1().x < info.getPoint2().x)
