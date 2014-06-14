@@ -79,7 +79,8 @@ public class CommandBed extends ForgeEssentialsCommandBase
 				// FunctionHelper.setPlayer(player, new Point(spawn), world);
 				//player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 				if (sleepPoint != null){
-				TeleportCenter.addToTpQue(sleepPoint, player);
+				    TeleportCenter.addToTpQue(sleepPoint, player);
+                    OutputHandler.chatConfirmation(player, "Teleported to bed last used.");
 				}else{
 					OutputHandler.chatError(player, "No bed found.");
 				}
@@ -138,8 +139,13 @@ public class CommandBed extends ForgeEssentialsCommandBase
 	}
 	
 	@ForgeSubscribe
-	private void getCoords(PlayerSleepInBedEvent e){
-		this.sleepPoint.x = e.x;
+	public void getCoords(PlayerSleepInBedEvent e){
+		if (sleepPoint == null)
+        {
+            this.sleepPoint = new WarpPoint(e.entityPlayer.dimension, e.x, e.y, e.z, 0, 0);
+        }
+        else
+        this.sleepPoint.x = e.x;
 		this.sleepPoint.y = e.y;
 		this.sleepPoint.z = e.z;
 	}
