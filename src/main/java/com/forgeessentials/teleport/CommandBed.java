@@ -2,12 +2,14 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
+import com.forgeessentials.util.TeleportCenter;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 
@@ -25,7 +27,12 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandBed extends ForgeEssentialsCommandBase
 {
-	private Point sleepPoint;
+	private WarpPoint sleepPoint;
+
+    public CommandBed()
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 	
 	@Override
 	public String getCommandName()
@@ -72,10 +79,11 @@ public class CommandBed extends ForgeEssentialsCommandBase
 				// FunctionHelper.setPlayer(player, new Point(spawn), world);
 				//player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
 				if (sleepPoint != null){
-				FunctionHelper.setPlayer(player, sleepPoint, world);
+				TeleportCenter.addToTpQue(sleepPoint, player);
 				}else{
 					OutputHandler.chatError(player, "No bed found.");
 				}
+
 				OutputHandler.chatConfirmation(player, "Teleported to bed last used.");
 			} else {
 				OutputHandler.chatError(player, "Your bed is obstructed.");
