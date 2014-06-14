@@ -1,55 +1,54 @@
 package com.forgeessentials.util.events.modules;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import net.minecraft.server.MinecraftServer;
-
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.moduleLauncher.ModuleContainer;
-
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLStateEvent;
+import net.minecraft.server.MinecraftServer;
 
-public class FEModuleServerInitEvent extends FEModuleEvent
-{
-	private FMLServerStartingEvent	event;
-	private static Map<String, RegGroup> permList = new HashMap<String, RegGroup>();
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-	public FEModuleServerInitEvent(ModuleContainer container, FMLServerStartingEvent event)
-	{
-		super(container);
-		this.event = event;
-	}
+public class FEModuleServerInitEvent extends FEModuleEvent {
+    private FMLServerStartingEvent event;
+    private static Map<String, RegGroup> permList = new HashMap<String, RegGroup>();
 
-	@Override
-	public FMLStateEvent getFMLEvent()
-	{
-		return event;
-	}
+    public FEModuleServerInitEvent(ModuleContainer container, FMLServerStartingEvent event)
+    {
+        super(container);
+        this.event = event;
+    }
 
-	public MinecraftServer getServer()
-	{
-		return event.getServer();
-	}
+    @Override
+    public FMLStateEvent getFMLEvent()
+    {
+        return event;
+    }
 
-	public void registerServerCommand(ForgeEssentialsCommandBase command)
-	{
-		permList.put(command.getCommandPerm(), command.getReggroup());
-		event.registerServerCommand(command);
-	}
-	
-	@PermRegister
-	public void registerPermissions(IPermRegisterEvent e){
-		Iterator it = permList.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry pairs = (Map.Entry)it.next();
-	        e.registerPermissionLevel((String)pairs.getKey(), (RegGroup)pairs.getValue());
-	        it.remove(); // avoids a ConcurrentModificationException
-	    }
-	}
+    public MinecraftServer getServer()
+    {
+        return event.getServer();
+    }
+
+    public void registerServerCommand(ForgeEssentialsCommandBase command)
+    {
+        permList.put(command.getCommandPerm(), command.getReggroup());
+        event.registerServerCommand(command);
+    }
+
+    @PermRegister
+    public void registerPermissions(IPermRegisterEvent e)
+    {
+        Iterator it = permList.entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry pairs = (Map.Entry) it.next();
+            e.registerPermissionLevel((String) pairs.getKey(), (RegGroup) pairs.getValue());
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+    }
 }

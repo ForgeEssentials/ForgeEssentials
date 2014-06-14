@@ -1,122 +1,119 @@
 package com.forgeessentials.core.compat;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.server.MinecraftServer;
-
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
-import org.mcstats.Metrics.Plotter;
-
 import com.forgeessentials.api.json.JSONException;
 import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import net.minecraft.server.MinecraftServer;
+import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
+import org.mcstats.Metrics.Plotter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // Obfuscated code handler for MCStats
-public class CompatMCStats implements IServerStats
-{
-	public void load()
-	{
-		registerStats(this);
-	}
+public class CompatMCStats implements IServerStats {
+    public void load()
+    {
+        registerStats(this);
+    }
 
-	private static List<IServerStats>	handlers	= new ArrayList<IServerStats>();
-	private static Metrics				metrics;
-	
-	public static void registerStats(IServerStats generator)
-	{
-		if (generator != null)
-		{
-			handlers.add(generator);
-		}
-		else
-			throw new RuntimeException("Why would you register null?");
-	}
+    private static List<IServerStats> handlers = new ArrayList<IServerStats>();
+    private static Metrics metrics;
 
-	
-	public static void doMCStats()
-	{
-		try
-		{
-			metrics = new Metrics("ForgeEssentials", ForgeEssentials.version);
+    public static void registerStats(IServerStats generator)
+    {
+        if (generator != null)
+        {
+            handlers.add(generator);
+        }
+        else
+        {
+            throw new RuntimeException("Why would you register null?");
+        }
+    }
 
-			for (IServerStats obj : handlers)
-			{
-				obj.makeGraphs(metrics);
-			}
+    public static void doMCStats()
+    {
+        try
+        {
+            metrics = new Metrics("ForgeEssentials", ForgeEssentials.version);
 
-			if (ForgeEssentials.mcstats)
-			{
-				metrics.start();
-			}
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
-	}
+            for (IServerStats obj : handlers)
+            {
+                obj.makeGraphs(metrics);
+            }
 
-	public static JSONObject doSnooperStats() throws JSONException
-	{
-		JSONObject data = new JSONObject();
+            if (ForgeEssentials.mcstats)
+            {
+                metrics.start();
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 
-		for (IServerStats obj : handlers)
-		{
-			JSONObject temp = obj.addToServerInfo();
-			for (String name : JSONObject.getNames(temp))
-			{
-				data.put(name, temp.get(name));
-			}
-		}
+    public static JSONObject doSnooperStats() throws JSONException
+    {
+        JSONObject data = new JSONObject();
 
-		return data;
-	}
+        for (IServerStats obj : handlers)
+        {
+            JSONObject temp = obj.addToServerInfo();
+            for (String name : JSONObject.getNames(temp))
+            {
+                data.put(name, temp.get(name));
+            }
+        }
 
-	@Override
-	public void makeGraphs(Metrics metrics)
-	{
-		Graph graph = metrics.createGraph("Modules used");
-		for (String module : ModuleLauncher.getModuleList())
-		{
-			Plotter plotter = new Plotter(module)
-			{
-				@Override
-				public int getValue()
-				{
-					return 1;
-				}
-			};
-			graph.addPlotter(plotter);
-		}
-	}
+        return data;
+    }
 
-	@Override
-	public JSONObject addToServerInfo() throws JSONException
-	{
-		return new JSONObject().put("FEmodules", ModuleLauncher.getModuleList());
-	}
+    @Override
+    public void makeGraphs(Metrics metrics)
+    {
+        Graph graph = metrics.createGraph("Modules used");
+        for (String module : ModuleLauncher.getModuleList())
+        {
+            Plotter plotter = new Plotter(module) {
+                @Override
+                public int getValue()
+                {
+                    return 1;
+                }
+            };
+            graph.addPlotter(plotter);
+        }
+    }
 
-	// leave this here, it's to remove the need to obf mcstats
-	public static boolean isOnlineMode()
-	{
-		return MinecraftServer.getServer().isServerInOnlineMode();
-	}
+    @Override
+    public JSONObject addToServerInfo() throws JSONException
+    {
+        return new JSONObject().put("FEmodules", ModuleLauncher.getModuleList());
+    }
 
-	public static boolean isDediServer()
-	{
-		return MinecraftServer.getServer().isDedicatedServer();
-	}
+    // leave this here, it's to remove the need to obf mcstats
+    public static boolean isOnlineMode()
+    {
+        return MinecraftServer.getServer().isServerInOnlineMode();
+    }
 
-	public static int getPlayers()
-	{
-		return MinecraftServer.getServer().getCurrentPlayerCount();
-	}
+    public static boolean isDediServer()
+    {
+        return MinecraftServer.getServer().isDedicatedServer();
+    }
 
-	public static String getMCVer()
-	{
-		return MinecraftServer.getServer().getMinecraftVersion();
-	}
+    public static int getPlayers()
+    {
+        return MinecraftServer.getServer().getCurrentPlayerCount();
+    }
+
+    public static String getMCVer()
+    {
+        return MinecraftServer.getServer().getMinecraftVersion();
+    }
 
 }

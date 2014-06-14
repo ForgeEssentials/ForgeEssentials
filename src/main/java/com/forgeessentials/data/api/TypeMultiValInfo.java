@@ -1,176 +1,180 @@
 package com.forgeessentials.data.api;
 
-import java.rmi.server.UID;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.forgeessentials.data.StorageManager;
 
-public abstract class TypeMultiValInfo implements ITypeInfo
-{
-	protected ClassContainer				container;
-	private HashMap<String, ClassContainer>	entryFields;
-	private HashMap<String, ClassContainer>	fields;
-	private TypeEntryInfo					entryInfo;
+import java.rmi.server.UID;
+import java.util.*;
+import java.util.Map.Entry;
 
-	public static final String				UID	= "_$EntryID$_";
+public abstract class TypeMultiValInfo implements ITypeInfo {
+    protected ClassContainer container;
+    private HashMap<String, ClassContainer> entryFields;
+    private HashMap<String, ClassContainer> fields;
+    private TypeEntryInfo entryInfo;
 
-	public TypeMultiValInfo(ClassContainer container)
-	{
-		this.container = container;
-		fields = new HashMap<String, ClassContainer>();
-		entryFields = new HashMap<String, ClassContainer>();
-		entryFields.put(UID, new ClassContainer(String.class));
-	}
+    public static final String UID = "_$EntryID$_";
 
-	@Override
-	public final void build()
-	{
-		build(fields);
-		buildEntry(entryFields);
-		entryInfo = new TypeEntryInfo(entryFields, container);
-	}
+    public TypeMultiValInfo(ClassContainer container)
+    {
+        this.container = container;
+        fields = new HashMap<String, ClassContainer>();
+        entryFields = new HashMap<String, ClassContainer>();
+        entryFields.put(UID, new ClassContainer(String.class));
+    }
 
-	/**
-	 * Fields that the elements of this MultiVal opbject should have.
-	 * @param entryFields
-	 */
-	public abstract void buildEntry(HashMap<String, ClassContainer> entryFields);
+    @Override
+    public final void build()
+    {
+        build(fields);
+        buildEntry(entryFields);
+        entryInfo = new TypeEntryInfo(entryFields, container);
+    }
 
-	public void build(HashMap<String, ClassContainer> entryFields)
-	{
-		// optional override
-	}
+    /**
+     * Fields that the elements of this MultiVal opbject should have.
+     *
+     * @param entryFields
+     */
+    public abstract void buildEntry(HashMap<String, ClassContainer> entryFields);
 
-	@Override
-	public boolean canSaveInline()
-	{
-		return false;
-	}
+    public void build(HashMap<String, ClassContainer> entryFields)
+    {
+        // optional override
+    }
 
-	@Override
-	public ClassContainer getTypeOfField(String field)
-	{
-		if (field == null)
-			return null;
+    @Override
+    public boolean canSaveInline()
+    {
+        return false;
+    }
 
-		if (field.toLowerCase().contains(getEntryName().toLowerCase()))
-			return entryInfo.getType();
-		return fields.get(field);
-	}
+    @Override
+    public ClassContainer getTypeOfField(String field)
+    {
+        if (field == null)
+        {
+            return null;
+        }
 
-	@Override
-	public ClassContainer getType()
-	{
-		return container;
-	}
+        if (field.toLowerCase().contains(getEntryName().toLowerCase()))
+        {
+            return entryInfo.getType();
+        }
+        return fields.get(field);
+    }
 
-	@Override
-	public Class[] getGenericTypes()
-	{
-		return container.getParameters();
-	}
+    @Override
+    public ClassContainer getType()
+    {
+        return container;
+    }
 
-	@Override
-	public String[] getFieldList()
-	{
-		return fields.keySet().toArray(new String[fields.size()]);
-	}
+    @Override
+    public Class[] getGenericTypes()
+    {
+        return container.getParameters();
+    }
 
-	public String[] getEntryFieldList()
-	{
-		return entryFields.keySet().toArray(new String[entryFields.size()]);
-	}
+    @Override
+    public String[] getFieldList()
+    {
+        return fields.keySet().toArray(new String[fields.size()]);
+    }
 
-	@Override
-	public final TypeData getTypeDataFromObject(Object obj)
-	{
-		Set<TypeData> datas = getTypeDatasFromObject(obj);
-		TypeData data = DataStorageManager.getDataForType(container);
+    public String[] getEntryFieldList()
+    {
+        return entryFields.keySet().toArray(new String[entryFields.size()]);
+    }
 
-		ITypeInfo entry = getEntryInfo();
-		ITypeInfo tempInfo;
+    @Override
+    public final TypeData getTypeDataFromObject(Object obj)
+    {
+        Set<TypeData> datas = getTypeDatasFromObject(obj);
+        TypeData data = DataStorageManager.getDataForType(container);
 
-		String id = new UID().toString();
-		String unique = container.getFileSafeName() + id;
+        ITypeInfo entry = getEntryInfo();
+        ITypeInfo tempInfo;
 
-		int i = 0;
-		for (TypeData dat : datas)
-		{
-			for (Entry<String, Object> e : dat.getAllFields())
-			{
-				if (e.getValue() != null && !(e.getValue() instanceof TypeData) && StorageManager.isTypeComplex(e.getValue().getClass()))
-				{
-					tempInfo = entry.getInfoForField(e.getKey());
-					dat.putField(e.getKey(), DataStorageManager.getDataForObject(tempInfo.getType(), e.getValue()));
-				}
-			}
+        String id = new UID().toString();
+        String unique = container.getFileSafeName() + id;
 
-			dat.putField(UID, id);
-			data.putField(getEntryName() + i++, dat);
-		}
+        int i = 0;
+        for (TypeData dat : datas)
+        {
+            for (Entry<String, Object> e : dat.getAllFields())
+            {
+                if (e.getValue() != null && !(e.getValue() instanceof TypeData) && StorageManager.isTypeComplex(e.getValue().getClass()))
+                {
+                    tempInfo = entry.getInfoForField(e.getKey());
+                    dat.putField(e.getKey(), DataStorageManager.getDataForObject(tempInfo.getType(), e.getValue()));
+                }
+            }
 
-		addExtraDataForObject(data, obj);
+            dat.putField(UID, id);
+            data.putField(getEntryName() + i++, dat);
+        }
 
-		data.setUniqueKey(unique);
-		return data;
-	}
+        addExtraDataForObject(data, obj);
 
-	public String getEntryName()
-	{
-		return "DataVal";
-	}
+        data.setUniqueKey(unique);
+        return data;
+    }
 
-	public static String getUIDFromUnique(String unique)
-	{
-		return unique.substring(unique.lastIndexOf('_'));
-	}
+    public String getEntryName()
+    {
+        return "DataVal";
+    }
 
-	public abstract Set<TypeData> getTypeDatasFromObject(Object obj);
+    public static String getUIDFromUnique(String unique)
+    {
+        return unique.substring(unique.lastIndexOf('_'));
+    }
 
-	public void addExtraDataForObject(TypeData data, Object obj)
-	{
-		// optional override
-	}
+    public abstract Set<TypeData> getTypeDatasFromObject(Object obj);
 
-	@Override
-	public final Object reconstruct(IReconstructData data)
-	{
-		Collection values = data.getAllValues();
-		ArrayList<TypeData> list = new ArrayList();
-		for (Object obj : values)
-		{
-			if (obj instanceof TypeData)
-			{
-				list.add((TypeData) obj);
-			}
-		}
-		TypeData[] datas = list.toArray(new TypeData[list.size()]);
-		return reconstruct(datas, data);
-	}
+    public void addExtraDataForObject(TypeData data, Object obj)
+    {
+        // optional override
+    }
 
-	public abstract Object reconstruct(TypeData[] data, IReconstructData rawData);
+    @Override
+    public final Object reconstruct(IReconstructData data)
+    {
+        Collection values = data.getAllValues();
+        ArrayList<TypeData> list = new ArrayList();
+        for (Object obj : values)
+        {
+            if (obj instanceof TypeData)
+            {
+                list.add((TypeData) obj);
+            }
+        }
+        TypeData[] datas = list.toArray(new TypeData[list.size()]);
+        return reconstruct(datas, data);
+    }
 
-	@Override
-	public final ITypeInfo getInfoForField(String field)
-	{
-		if (field.toLowerCase().contains(getEntryName().toLowerCase()))
-			return getEntryInfo();
-		else
-			return DataStorageManager.getInfoForType(getTypeOfField(field));
-	}
+    public abstract Object reconstruct(TypeData[] data, IReconstructData rawData);
 
-	public TypeEntryInfo getEntryInfo()
-	{
-		return entryInfo;
-	}
+    @Override
+    public final ITypeInfo getInfoForField(String field)
+    {
+        if (field.toLowerCase().contains(getEntryName().toLowerCase()))
+        {
+            return getEntryInfo();
+        }
+        else
+        {
+            return DataStorageManager.getInfoForType(getTypeOfField(field));
+        }
+    }
 
-	protected TypeData getEntryData()
-	{
-		return new TypeData(new ClassContainer(Map.Entry.class, container.parameters));
-	}
+    public TypeEntryInfo getEntryInfo()
+    {
+        return entryInfo;
+    }
+
+    protected TypeData getEntryData()
+    {
+        return new TypeData(new ClassContainer(Map.Entry.class, container.parameters));
+    }
 }

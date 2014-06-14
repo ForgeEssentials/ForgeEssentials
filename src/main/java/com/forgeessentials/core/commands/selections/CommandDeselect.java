@@ -1,67 +1,68 @@
 package com.forgeessentials.core.commands.selections;
 
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 
-public class CommandDeselect extends ForgeEssentialsCommandBase
-{
+import java.util.Arrays;
+import java.util.List;
 
-	@Override
-	public String getCommandName()
-	{
-		return "/fedesel";
-	}
-	
-	@Override
-	public List<String> getCommandAliases()
-	{
-		return Arrays.asList("/fedeselect", "/deselect", "/sel");
-	}
+public class CommandDeselect extends ForgeEssentialsCommandBase {
 
-	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
-		info.clearSelection();
+    @Override
+    public String getCommandName()
+    {
+        return "/fedesel";
+    }
 
-		OutputHandler.chatConfirmation(sender, "Selection cleared.");
-	}
+    @Override
+    public List<String> getCommandAliases()
+    {
+        return Arrays.asList("/fedeselect", "/deselect", "/sel");
+    }
 
-	@Override
-	public boolean canConsoleUseCommand()
-	{
-		return false;
-	}
+    @Override
+    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    {
+        PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
+        info.clearSelection();
 
-	@Override
-	public String getCommandPerm()
-	{
-		return "fe.core.pos.deselect";
-	}
+        OutputHandler.chatConfirmation(sender, "Selection cleared.");
+    }
 
-	@Override
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		// TODO Auto-generated method stub
-		return "//fedesel Deselects the selection";
-	}
+    @Override
+    public String getCommandPerm()
+    {
+        return "fe.core.pos.deselect";
+    }
 
-	@Override
-	public RegGroup getReggroup() {
-		// TODO Auto-generated method stub
-		return RegGroup.MEMBERS;
-	}
+    @Override
+    public int compareTo(Object o)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        // TODO Auto-generated method stub
+        return "//fedesel Deselects the selection";
+    }
+
+    @Override
+    public RegGroup getReggroup()
+    {
+        // TODO Auto-generated method stub
+        return RegGroup.MEMBERS;
+    }
 }

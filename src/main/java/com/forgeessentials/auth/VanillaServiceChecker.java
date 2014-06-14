@@ -1,61 +1,60 @@
 package com.forgeessentials.auth;
 
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.TimerTask;
 
-import com.forgeessentials.util.OutputHandler;
+public class VanillaServiceChecker extends TimerTask {
+    private boolean online = true;
+    private boolean oldOnline;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+    private static final String MC_SERVER = "http://session.minecraft.net/game/checkserver.jsp";
+    private static final String ONLINE = "NOT YET";
 
-public class VanillaServiceChecker extends TimerTask
-{
-	private boolean				online		= true;
-	private boolean				oldOnline;
+    public VanillaServiceChecker()
+    {
+        online = oldOnline = check();
+        OutputHandler.felog
+                .info("VanillaServiceChecker initialized. Vanilla online mode: '" + ModuleAuth.vanillaMode() + "' Mojang login servers: '" + online + "'");
+    }
 
-	private static final String	MC_SERVER	= "http://session.minecraft.net/game/checkserver.jsp";
-	private static final String	ONLINE		= "NOT YET";
+    @Override
+    public void run()
+    {
+        oldOnline = online;
+        online = check();
 
-	public VanillaServiceChecker()
-	{
-		online = oldOnline = check();
-		OutputHandler.felog.info("VanillaServiceChecker initialized. Vanilla online mode: '" + ModuleAuth.vanillaMode() + "' Mojang login servers: '" + online + "'");
-	}
+        if (oldOnline != online)
+        {
+            FMLCommonHandler.instance().getSidedDelegate().getServer().setOnlineMode(online);
+            ModuleAuth.onStatusChange();
+        }
+    }
 
-	@Override
-	public void run()
-	{
-		oldOnline = online;
-		online = check();
+    private static boolean check()
+    {
+        try
+        {
+            URL url = new URL(MC_SERVER);
+            BufferedReader stream = new BufferedReader(new InputStreamReader(url.openStream()));
+            String input = stream.readLine();
+            stream.close();
 
-		if (oldOnline != online)
-		{
-			FMLCommonHandler.instance().getSidedDelegate().getServer().setOnlineMode(online);
-			ModuleAuth.onStatusChange();
-		}
-	}
+            return ONLINE.equals(input);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
 
-	private static boolean check()
-	{
-		try
-		{
-			URL url = new URL(MC_SERVER);
-			BufferedReader stream = new BufferedReader(new InputStreamReader(url.openStream()));
-			String input = stream.readLine();
-			stream.close();
-
-			return ONLINE.equals(input);
-		}
-		catch (Exception e)
-		{
-			return false;
-		}
-	}
-
-	public boolean isServiceUp()
-	{
-		return online;
-	}
+    public boolean isServiceUp()
+    {
+        return online;
+    }
 
 }

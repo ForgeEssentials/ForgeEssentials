@@ -1,15 +1,13 @@
 package com.forgeessentials.commands;
 
+import com.forgeessentials.api.permissions.RegGroup;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-
-public class CommandRename extends FEcmdModuleCommands
-{
+public class CommandRename extends FEcmdModuleCommands {
     @Override
     public String getCommandName()
     {
@@ -40,7 +38,9 @@ public class CommandRename extends FEcmdModuleCommands
             {
                 StringBuilder sb = new StringBuilder();
                 for (String arg : args)
+                {
                     sb.append(arg + " ");
+                }
                 is.setItemName(sb.toString().trim());
             }
         }
@@ -52,15 +52,17 @@ public class CommandRename extends FEcmdModuleCommands
         return false;
     }
 
-	@Override
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public int compareTo(Object o)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		// TODO Auto-generated method stub
-		return "/rename <new name> Renames the item you are currently holding.";
-	}
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        // TODO Auto-generated method stub
+        return "/rename <new name> Renames the item you are currently holding.";
+    }
 }

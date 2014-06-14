@@ -2,13 +2,12 @@ package com.forgeessentials.client.util;
 
 import java.util.Collection;
 
-public interface IReconstructData
-{
-	public Object getFieldValue(String name);
+public interface IReconstructData {
+    public Object getFieldValue(String name);
 
-	public String getUniqueKey();
+    public String getUniqueKey();
 
-	public Class<?> getType();
+    public Class<?> getType();
 
-	public Collection<?> getAllValues();
+    public Collection<?> getAllValues();
 }

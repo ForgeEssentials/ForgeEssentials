@@ -1,61 +1,61 @@
 package com.forgeessentials.economy;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.network.ForgeEssentialsPacket;
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.network.ForgeEssentialsPacket;
-import com.forgeessentials.util.OutputHandler;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
+public class PacketEconomy extends ForgeEssentialsPacket {
 
-public class PacketEconomy  extends ForgeEssentialsPacket {
+    private Packet250CustomPayload packet;
 
-	private Packet250CustomPayload packet;
-	
-	public PacketEconomy(int amount){
-		packet = new Packet250CustomPayload();
+    public PacketEconomy(int amount)
+    {
+        packet = new Packet250CustomPayload();
 
-		ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
-		DataOutputStream stream = new DataOutputStream(streambyte);
+        ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
+        DataOutputStream stream = new DataOutputStream(streambyte);
 
-		try
-		{
-			stream.write(3);
+        try
+        {
+            stream.write(3);
 
-			stream.write(amount);
-			
+            stream.write(amount);
 
-			stream.close();
-			streambyte.close();
+            stream.close();
+            streambyte.close();
 
-			packet.channel = FECHANNEL;
-			packet.data = streambyte.toByteArray();
-			packet.length = packet.data.length;
-		}
-		
-		catch (Exception e)
-		{
-			OutputHandler.felog.info("Error creating packet >> " + this.getClass());
-		}
-	}
+            packet.channel = FECHANNEL;
+            packet.data = streambyte.toByteArray();
+            packet.length = packet.data.length;
+        }
 
-	@Override
-	public Packet250CustomPayload getPayload() {
-		// TODO Auto-generated method stub
-		return packet;
-	}
-	
-	public static void readServer(DataInputStream stream, WorldServer world,
-			EntityPlayer player) {
-		PacketEconomy packet = new PacketEconomy(APIRegistry.wallet.getWallet(player.username));
-		PacketDispatcher.sendPacketToPlayer(packet.getPayload(), (Player) player);
-	}
+        catch (Exception e)
+        {
+            OutputHandler.felog.info("Error creating packet >> " + this.getClass());
+        }
+    }
+
+    @Override
+    public Packet250CustomPayload getPayload()
+    {
+        // TODO Auto-generated method stub
+        return packet;
+    }
+
+    public static void readServer(DataInputStream stream, WorldServer world,
+            EntityPlayer player)
+    {
+        PacketEconomy packet = new PacketEconomy(APIRegistry.wallet.getWallet(player.username));
+        PacketDispatcher.sendPacketToPlayer(packet.getPayload(), (Player) player);
+    }
 
 }

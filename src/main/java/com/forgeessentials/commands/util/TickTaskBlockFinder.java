@@ -1,19 +1,17 @@
 package com.forgeessentials.commands.util;
 
-import java.util.ArrayList;
-
+import com.forgeessentials.util.AreaSelector.Point;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.tasks.ITickTask;
+import com.forgeessentials.util.tasks.TaskRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.tasks.ITickTask;
-import com.forgeessentials.util.tasks.TaskRegistry;
+import java.util.ArrayList;
 
-public class TickTaskBlockFinder implements ITickTask
-{
+public class TickTaskBlockFinder implements ITickTask {
     World world;
     EntityPlayer player;
     int id;
@@ -23,9 +21,9 @@ public class TickTaskBlockFinder implements ITickTask
     int centerX, centerZ;
     ItemStack stack;
     int speed;
-    
+
     int count;
-    
+
     // (di, dj) is a vector - direction in which we move right now
     int di = 1;
     int dj = 0;
@@ -36,9 +34,9 @@ public class TickTaskBlockFinder implements ITickTask
     int i = 0;
     int j = 0;
     int segment_passed = 0;
-    
+
     ArrayList<Point> results = new ArrayList<Point>();
-    
+
     public TickTaskBlockFinder(EntityPlayer player, int[] id, int range, int amount, int speed)
     {
         this.player = player;
@@ -58,7 +56,7 @@ public class TickTaskBlockFinder implements ITickTask
         else
         {
             msg("Start the hunt for " + stack.getDisplayName() + " " + speed);
-            TaskRegistry.registerTask(this);    
+            TaskRegistry.registerTask(this);
         }
     }
 
@@ -68,9 +66,9 @@ public class TickTaskBlockFinder implements ITickTask
         int speedcounter = 0;
         while (!isComplete() && speedcounter < speed)
         {
-            speedcounter ++;
-            count ++;
-            
+            speedcounter++;
+            count++;
+
             int y = world.getActualHeight();
             while (!isComplete() && y >= 0)
             {
@@ -79,28 +77,28 @@ public class TickTaskBlockFinder implements ITickTask
                     Point p = new Point(centerX + i, y, centerZ + j);
                     results.add(p);
                     msg("Found " + stack.getDisplayName() + " at " + p.x + ";" + p.y + ";" + p.z);
-                    
+
                 }
                 y--;
             }
-            
+
             // make a step, add 'direction' vector (di, dj) to current position (i, j)
             i += di;
             j += dj;
             ++segment_passed;
-            
-            if (segment_passed == segment_length) 
+
+            if (segment_passed == segment_length)
             {
                 // done with current segment
                 segment_passed = 0;
-                
+
                 // 'rotate' directions
                 int buffer = di;
                 di = -dj;
                 dj = buffer;
-                
+
                 // increase segment length if necessary
-                if (dj == 0) 
+                if (dj == 0)
                 {
                     ++segment_length;
                 }
@@ -116,10 +114,14 @@ public class TickTaskBlockFinder implements ITickTask
     @Override
     public void onComplete()
     {
-        if(results.isEmpty())
+        if (results.isEmpty())
+        {
             msg("Found nothing withing target range.");
+        }
         else
+        {
             msg("Stoped looking for " + stack.getDisplayName());
+        }
     }
 
     @Override

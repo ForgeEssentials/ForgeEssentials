@@ -1,11 +1,5 @@
 package com.forgeessentials.core;
 
-import java.util.HashMap;
-import java.util.Stack;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-
 import com.forgeessentials.core.network.PacketSelectionUpdate;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -14,320 +8,329 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
-
+import com.forgeessentials.util.BackupArea;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
+import java.util.HashMap;
+import java.util.Stack;
 
 @SaveableObject
-public class PlayerInfo
-{
-	private static HashMap<String, PlayerInfo>	playerInfoMap	= new HashMap<String, PlayerInfo>();
+public class PlayerInfo {
+    private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
 
-	// @Deprecated Why? it doesn't have to be removed?
-	public static PlayerInfo getPlayerInfo(EntityPlayer player)
-	{
-		return getPlayerInfo(player.username);
-	}
+    // @Deprecated Why? it doesn't have to be removed?
+    public static PlayerInfo getPlayerInfo(EntityPlayer player)
+    {
+        return getPlayerInfo(player.username);
+    }
 
-	public static PlayerInfo getPlayerInfo(String username)
-	{
-		PlayerInfo info = playerInfoMap.get(username);
+    public static PlayerInfo getPlayerInfo(String username)
+    {
+        PlayerInfo info = playerInfoMap.get(username);
 
-		// load or create one
-		if (info == null)
-		{
-			// Attempt to populate this info with some data from our storage.
-			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), username);
+        // load or create one
+        if (info == null)
+        {
+            // Attempt to populate this info with some data from our storage.
+            info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), username);
 
-			if (info == null)
-			{
-				info = new PlayerInfo(username);
-			}
+            if (info == null)
+            {
+                info = new PlayerInfo(username);
+            }
 
-			playerInfoMap.put(username, info);
-		}
+            playerInfoMap.put(username, info);
+        }
 
-		return info;
-	}
+        return info;
+    }
 
-	public static void discardInfo(String username)
-	{
-		PlayerInfo info = playerInfoMap.remove(username);
-		if (info != null)
-			info.save();
-	}
+    public static void discardInfo(String username)
+    {
+        PlayerInfo info = playerInfoMap.remove(username);
+        if (info != null)
+        {
+            info.save();
+        }
+    }
 
-	@Reconstructor()
-	public static PlayerInfo reconstruct(IReconstructData tag)
-	{
-		String username = (String) tag.getFieldValue("username");
+    @Reconstructor()
+    public static PlayerInfo reconstruct(IReconstructData tag)
+    {
+        String username = (String) tag.getFieldValue("username");
 
-		PlayerInfo info = new PlayerInfo(username);
+        PlayerInfo info = new PlayerInfo(username);
 
-		info.setPoint1((Point) tag.getFieldValue("sel1"));
-		info.setPoint2((Point) tag.getFieldValue("sel2"));
+        info.setPoint1((Point) tag.getFieldValue("sel1"));
+        info.setPoint2((Point) tag.getFieldValue("sel2"));
 
-		info.home = (WarpPoint) tag.getFieldValue("home");
-		info.back = (WarpPoint) tag.getFieldValue("back");
+        info.home = (WarpPoint) tag.getFieldValue("home");
+        info.back = (WarpPoint) tag.getFieldValue("back");
 
-		info.spawnType = (Integer) tag.getFieldValue("spawnType");
+        info.spawnType = (Integer) tag.getFieldValue("spawnType");
 
-		info.prefix = (String) tag.getFieldValue("prefix");
-		info.suffix = (String) tag.getFieldValue("suffix");
+        info.prefix = (String) tag.getFieldValue("prefix");
+        info.suffix = (String) tag.getFieldValue("suffix");
 
-		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
+        info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
 
-		info.firstJoin = (Long) tag.getFieldValue("firstJoin");
-		return info;
-	}
+        info.firstJoin = (Long) tag.getFieldValue("firstJoin");
+        return info;
+    }
 
-	// -------------------------------------------------------------------------------------------
-	// ---------------------------------- Actual Class Starts Now --------------------------------
-	// -------------------------------------------------------------------------------------------
-	@UniqueLoadingKey()
-	@SaveableField()
-	public final String				username;
+    // -------------------------------------------------------------------------------------------
+    // ---------------------------------- Actual Class Starts Now --------------------------------
+    // -------------------------------------------------------------------------------------------
+    @UniqueLoadingKey()
+    @SaveableField()
+    public final String username;
 
-	// wand stuff
-	public int						wandID		= 0;
-	public int						wandDmg		= 0;
-	public boolean					wandEnabled	= false;
+    // wand stuff
+    public int wandID = 0;
+    public int wandDmg = 0;
+    public boolean wandEnabled = false;
 
-	// selection stuff
-	@SaveableField()
-	private Point					sel1;
+    // selection stuff
+    @SaveableField()
+    private Point sel1;
 
-	@SaveableField()
-	private Point					sel2;
+    @SaveableField()
+    private Point sel2;
 
-	private Selection				selection;
+    private Selection selection;
 
-	@SaveableField()
-	public WarpPoint				home;
+    @SaveableField()
+    public WarpPoint home;
 
-	@SaveableField()
-	public WarpPoint				back;
+    @SaveableField()
+    public WarpPoint back;
 
-	@SaveableField()
-	public String					prefix;
+    @SaveableField()
+    public String prefix;
 
-	@SaveableField()
-	public String					suffix;
+    @SaveableField()
+    public String suffix;
 
-	// 0: Normal 1: World spawn 2: Bed 3: Home
-	@SaveableField()
-	public int						spawnType;
+    // 0: Normal 1: World spawn 2: Bed 3: Home
+    @SaveableField()
+    public int spawnType;
 
-	@SaveableField()
-	private int						timePlayed;
+    @SaveableField()
+    private int timePlayed;
 
-	private long					loginTime;
+    private long loginTime;
 
-	@SaveableField()
-	private long					firstJoin;
+    @SaveableField()
+    private long firstJoin;
 
-	// undo and redo stuff
-	private Stack<BackupArea>		undos;
-	private Stack<BackupArea>		redos;
+    // undo and redo stuff
+    private Stack<BackupArea> undos;
+    private Stack<BackupArea> redos;
 
-	public int						TPcooldown	= 0;
-	public HashMap<String, Integer>	kitCooldown	= new HashMap<String, Integer>();
-	
-	@SaveableField
-	private ItemStack[] hiddenItems;
+    public int TPcooldown = 0;
+    public HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
 
-	private PlayerInfo(String username)
-	{
-		sel1 = null;
-		sel2 = null;
-		selection = null;
-		this.username = username;
+    @SaveableField
+    private ItemStack[] hiddenItems;
 
-		undos = new Stack<BackupArea>();
-		redos = new Stack<BackupArea>();
+    private PlayerInfo(String username)
+    {
+        sel1 = null;
+        sel2 = null;
+        selection = null;
+        this.username = username;
 
-		prefix = "";
-		suffix = "";
+        undos = new Stack<BackupArea>();
+        redos = new Stack<BackupArea>();
 
-		firstJoin = System.currentTimeMillis();
-		loginTime = System.currentTimeMillis();
+        prefix = "";
+        suffix = "";
 
-		timePlayed = 0;
-		
-		hiddenItems = new ItemStack[54];
-	}
+        firstJoin = System.currentTimeMillis();
+        loginTime = System.currentTimeMillis();
 
-	/**
-	 * Notifies the PlayerInfo to save itself to the Data store.
-	 */
-	public void save()
-	{
-		recalcTimePlayed();
-		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
-	}
+        timePlayed = 0;
 
-	public long getFirstJoin()
-	{
-		return firstJoin;
-	}
+        hiddenItems = new ItemStack[54];
+    }
 
-	public int getTimePlayed()
-	{
-		recalcTimePlayed();
-		return timePlayed;
-	}
+    /**
+     * Notifies the PlayerInfo to save itself to the Data store.
+     */
+    public void save()
+    {
+        recalcTimePlayed();
+        DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
+    }
 
-	public void recalcTimePlayed()
-	{
-		long current = System.currentTimeMillis() - loginTime;
-		int min = (int) (current / 60000);
-		timePlayed += min;
-		loginTime = System.currentTimeMillis();
-	}
+    public long getFirstJoin()
+    {
+        return firstJoin;
+    }
 
-	// ----------------------------------------------
-	// ---------------- TP stuff --------------------
-	// ----------------------------------------------
+    public int getTimePlayed()
+    {
+        recalcTimePlayed();
+        return timePlayed;
+    }
 
-	public void TPcooldownTick()
-	{
-		if (TPcooldown != 0)
-		{
-			TPcooldown--;
-		}
-	}
+    public void recalcTimePlayed()
+    {
+        long current = System.currentTimeMillis() - loginTime;
+        int min = (int) (current / 60000);
+        timePlayed += min;
+        loginTime = System.currentTimeMillis();
+    }
 
-	// ----------------------------------------------
-	// ------------- Command stuff ------------------
-	// ----------------------------------------------
+    // ----------------------------------------------
+    // ---------------- TP stuff --------------------
+    // ----------------------------------------------
 
-	public void KitCooldownTick()
-	{
-		for (String key : kitCooldown.keySet())
-		{
-			if (kitCooldown.get(key) == 0)
-			{
-				kitCooldown.remove(key);
-			}
-			else
-			{
-				kitCooldown.put(key, kitCooldown.get(key) - 1);
-			}
-		}
-	}
+    public void TPcooldownTick()
+    {
+        if (TPcooldown != 0)
+        {
+            TPcooldown--;
+        }
+    }
 
-	// ----------------------------------------------
-	// ------------ Selection stuff -----------------
-	// ----------------------------------------------
+    // ----------------------------------------------
+    // ------------- Command stuff ------------------
+    // ----------------------------------------------
 
-	public Point getPoint1()
-	{
-		return sel1;
-	}
+    public void KitCooldownTick()
+    {
+        for (String key : kitCooldown.keySet())
+        {
+            if (kitCooldown.get(key) == 0)
+            {
+                kitCooldown.remove(key);
+            }
+            else
+            {
+                kitCooldown.put(key, kitCooldown.get(key) - 1);
+            }
+        }
+    }
 
-	public void setPoint1(Point sel1)
-	{
-		this.sel1 = sel1;
+    // ----------------------------------------------
+    // ------------ Selection stuff -----------------
+    // ----------------------------------------------
 
-		if (sel1 != null)
-		{
-			if (selection == null)
-			{
-				if (sel1 != null && sel2 != null)
-				{
-					selection = new Selection(sel1, sel2);
-				}
-			}
-			else
-			{
-				selection.setStart(sel1);
-			}
-		}
+    public Point getPoint1()
+    {
+        return sel1;
+    }
 
-		// send packets.
-		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
-	}
+    public void setPoint1(Point sel1)
+    {
+        this.sel1 = sel1;
 
-	public Point getPoint2()
-	{
-		return sel2;
-	}
+        if (sel1 != null)
+        {
+            if (selection == null)
+            {
+                if (sel1 != null && sel2 != null)
+                {
+                    selection = new Selection(sel1, sel2);
+                }
+            }
+            else
+            {
+                selection.setStart(sel1);
+            }
+        }
 
-	public void setPoint2(Point sel2)
-	{
-		this.sel2 = sel2;
+        // send packets.
+        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+        PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
+    }
 
-		if (sel2 != null)
-		{
-			if (selection == null)
-			{
-				if (sel1 != null && sel2 != null)
-				{
-					selection = new Selection(sel1, sel2);
-				}
-			}
-			else
-			{
-				selection.setEnd(sel2);
-			}
-		}
+    public Point getPoint2()
+    {
+        return sel2;
+    }
 
-		// send packets.
-		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
-	}
+    public void setPoint2(Point sel2)
+    {
+        this.sel2 = sel2;
 
-	public Selection getSelection()
-	{
-		return selection;
-	}
+        if (sel2 != null)
+        {
+            if (selection == null)
+            {
+                if (sel1 != null && sel2 != null)
+                {
+                    selection = new Selection(sel1, sel2);
+                }
+            }
+            else
+            {
+                selection.setEnd(sel2);
+            }
+        }
 
-	// ----------------------------------------------
-	// ------------ Undo/Redo stuff -----------------
-	// ----------------------------------------------
+        // send packets.
+        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+        PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
+    }
 
-	public void addUndoAction(BackupArea backup)
-	{
-		undos.push(backup);
-		redos.clear();
-	}
+    public Selection getSelection()
+    {
+        return selection;
+    }
 
-	public BackupArea getNextUndo()
-	{
-		if (undos.empty())
-			return null;
+    // ----------------------------------------------
+    // ------------ Undo/Redo stuff -----------------
+    // ----------------------------------------------
 
-		BackupArea back = undos.pop();
-		redos.push(back);
-		return back;
-	}
+    public void addUndoAction(BackupArea backup)
+    {
+        undos.push(backup);
+        redos.clear();
+    }
 
-	public BackupArea getNextRedo()
-	{
-		if (redos.empty())
-			return null;
+    public BackupArea getNextUndo()
+    {
+        if (undos.empty())
+        {
+            return null;
+        }
 
-		BackupArea back = redos.pop();
-		undos.push(back);
-		return back;
-	}
+        BackupArea back = undos.pop();
+        redos.push(back);
+        return back;
+    }
 
-	public void clearSelection()
-	{
-		selection = null;
-		sel1 = null;
-		sel2 = null;
-		EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-		PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
-	}
-	
-	public void addHiddenItems(ItemStack stack)
-	{// noop for now
-	}
+    public BackupArea getNextRedo()
+    {
+        if (redos.empty())
+        {
+            return null;
+        }
+
+        BackupArea back = redos.pop();
+        undos.push(back);
+        return back;
+    }
+
+    public void clearSelection()
+    {
+        selection = null;
+        sel1 = null;
+        sel2 = null;
+        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
+        PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
+    }
+
+    public void addHiddenItems(ItemStack stack)
+    {// noop for now
+    }
 }

@@ -1,41 +1,36 @@
 package com.forgeessentials.playerlogger.rollback;
 
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.WorldServer;
-
 import com.forgeessentials.api.TextFormatter;
 import com.forgeessentials.playerlogger.blockChange;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.forgeessentials.worldcontrol.ConfigWorldControl;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldServer;
 
-public class TickTaskRollback implements ITickTask
-{
-    private boolean                isComplete = false;
-    private ICommandSender         sender;
-    private int                    changed    = 0;
-    private boolean                undo;
-    private WorldServer            world;
-    private Iterator<blockChange>  i;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class TickTaskRollback implements ITickTask {
+    private boolean isComplete = false;
+    private ICommandSender sender;
+    private int changed = 0;
+    private boolean undo;
+    private WorldServer world;
+    private Iterator<blockChange> i;
     private blockChange bc;
 
     /**
      * @param sender
      * @param username
      * @param undo
-     * @param timeBack
-     *            0 means forever. Time in hours
-     * @param p
-     *            null means no radius. (console)
-     * @param rad
-     *            0 means no radius.
+     * @param timeBack 0 means forever. Time in hours
+     * @param p        null means no radius. (console)
+     * @param rad      0 means no radius.
      * @throws SQLException
      */
     public TickTaskRollback(ICommandSender sender, boolean undo, ArrayList<blockChange> changes) throws SQLException
@@ -59,16 +54,28 @@ public class TickTaskRollback implements ITickTask
                 {
                     bc = i.next();
                     world = FunctionHelper.getDimension(bc.dim);
-                    
+
                     if (bc.type == 0)
                     {
-                        if (!undo) place();
-                        else remove();
+                        if (!undo)
+                        {
+                            place();
+                        }
+                        else
+                        {
+                            remove();
+                        }
                     }
                     else if (bc.type == 1)
                     {
-                        if (undo) place();
-                        else remove();
+                        if (undo)
+                        {
+                            place();
+                        }
+                        else
+                        {
+                            remove();
+                        }
                     }
                     currentTickChanged++;
                     world.markBlockForUpdate(bc.X, bc.Y, bc.Z);

@@ -1,30 +1,28 @@
 package com.forgeessentials.util.events.modules;
 
-import java.io.File;
-
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleContainer;
-
 import cpw.mods.fml.common.event.FMLStateEvent;
 
-public abstract class FEModuleEvent
-{
-	protected ModuleContainer	container;
+import java.io.File;
 
-	public FEModuleEvent(ModuleContainer container)
-	{
-		this.container = container;
-	}
+public abstract class FEModuleEvent {
+    protected ModuleContainer container;
 
-	public ModuleContainer getModuleContainer()
-	{
-		return container;
-	}
+    public FEModuleEvent(ModuleContainer container)
+    {
+        this.container = container;
+    }
 
-	public File getModuleDir()
-	{
-		return new File(ForgeEssentials.FEDIR, container.name);
-	}
+    public ModuleContainer getModuleContainer()
+    {
+        return container;
+    }
 
-	public abstract FMLStateEvent getFMLEvent();
+    public File getModuleDir()
+    {
+        return new File(ForgeEssentials.FEDIR, container.name);
+    }
+
+    public abstract FMLStateEvent getFMLEvent();
 }

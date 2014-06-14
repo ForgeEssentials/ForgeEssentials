@@ -1,84 +1,83 @@
 package com.forgeessentials.worldcontrol.TickTasks;
 
 //Depreciated
-import java.util.ArrayList;
-
-import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.BlockSaveable;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.forgeessentials.worldcontrol.ConfigWorldControl;
+import net.minecraft.entity.player.EntityPlayer;
 
-public class TickTaskSetBackup implements ITickTask
-{
-	// stuff needed
-	private final EntityPlayer			player;
-	// actually used
-	private final int					last;
-	private int							current;
-	private int							changed;
-	private ArrayList<BlockSaveable>	list;
+import java.util.ArrayList;
 
-	/**
-	 * @param player
-	 * @param back
-	 * BackupArea
-	 * @param before
-	 * true = redo -- false = undo
-	 */
-	public TickTaskSetBackup(EntityPlayer player, BackupArea back, boolean redo)
-	{
-		this.player = player;
-		if (redo)
-		{
-			list = back.after;
-		}
-		else
-		{
-			list = back.before;
-		}
+public class TickTaskSetBackup implements ITickTask {
+    // stuff needed
+    private final EntityPlayer player;
+    // actually used
+    private final int last;
+    private int current;
+    private int changed;
+    private ArrayList<BlockSaveable> list;
 
-		last = list.size() - 1;
-		current = -1;
-	}
+    /**
+     * @param player
+     * @param back   BackupArea
+     * @param before true = redo -- false = undo
+     */
+    public TickTaskSetBackup(EntityPlayer player, BackupArea back, boolean redo)
+    {
+        this.player = player;
+        if (redo)
+        {
+            list = back.after;
+        }
+        else
+        {
+            list = back.before;
+        }
 
-	@Override
-	public void tick()
-	{
-		int lastChanged = changed;
+        last = list.size() - 1;
+        current = -1;
+    }
 
-		for (int i = (current == -1? 0:current); i <= last; i++)
-		{
-			current = i;
+    @Override
+    public void tick()
+    {
+        int lastChanged = changed;
 
-			if (list.get(i).setinWorld(player.worldObj))
-			{
-				changed++;
-			}
+        for (int i = (current == -1 ? 0 : current); i <= last; i++)
+        {
+            current = i;
 
-			if (lastChanged >= ConfigWorldControl.blocksPerTick)
-				return;
-		}
-	}
+            if (list.get(i).setinWorld(player.worldObj))
+            {
+                changed++;
+            }
 
-	@Override
-	public void onComplete()
-	{			
-		OutputHandler.chatConfirmation(player, "" + changed + " blocks changed");
-	}
+            if (lastChanged >= ConfigWorldControl.blocksPerTick)
+            {
+                return;
+            }
+        }
+    }
 
-	@Override
-	public boolean isComplete()
-	{
-		return current == last;
-	}
+    @Override
+    public void onComplete()
+    {
+        OutputHandler.chatConfirmation(player, "" + changed + " blocks changed");
+    }
 
-	@Override
-	public boolean editsBlocks()
-	{
-		return true;
-	}
+    @Override
+    public boolean isComplete()
+    {
+        return current == last;
+    }
+
+    @Override
+    public boolean editsBlocks()
+    {
+        return true;
+    }
 
 }

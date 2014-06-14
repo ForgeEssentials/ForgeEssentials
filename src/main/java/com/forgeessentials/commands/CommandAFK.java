@@ -1,14 +1,5 @@
 package com.forgeessentials.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.Configuration;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
@@ -18,100 +9,121 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickHandlerCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.Configuration;
 
-public class CommandAFK extends FEcmdModuleCommands
-{
+import java.util.ArrayList;
+import java.util.List;
+
+public class CommandAFK extends FEcmdModuleCommands {
     public static CommandAFK instance;
+
     public CommandAFK()
     {
         instance = this;
     }
-    public final String         NOTICEPERM = getCommandPerm() + ".notice";
-	public static List<String>	afkList	= new ArrayList<String>();
 
-	// Config
-	public static int			warmup	= 5;
-	public static String outMessage, inMessage, selfOutMessage, selfInMessage;
+    public final String NOTICEPERM = getCommandPerm() + ".notice";
+    public static List<String> afkList = new ArrayList<String>();
 
-	@Override
-	public void doConfig(Configuration config, String category)
-	{
-		warmup = config.get(category, "warmup", 5, "Time in sec. you have to stand still to activate AFK.").getInt();
-		String messages = category + ".messages";
-		outMessage = config.get(messages, "outMessage", "Player %s is now away").getString();
-		inMessage = config.get(messages, "inMessage", "Player %s is no longer away").getString();
-		selfOutMessage = config.get(messages, "selfOutMessage", "You are now away").getString();
-		selfInMessage = config.get(messages, "selfInMessage", "You are no longer away").getString();
-	}
+    // Config
+    public static int warmup = 5;
+    public static String outMessage, inMessage, selfOutMessage, selfInMessage;
 
-	@Override
-	public String getCommandName()
-	{
-		return "afk";
-	}
+    @Override
+    public void doConfig(Configuration config, String category)
+    {
+        warmup = config.get(category, "warmup", 5, "Time in sec. you have to stand still to activate AFK.").getInt();
+        String messages = category + ".messages";
+        outMessage = config.get(messages, "outMessage", "Player %s is now away").getString();
+        inMessage = config.get(messages, "inMessage", "Player %s is no longer away").getString();
+        selfOutMessage = config.get(messages, "selfOutMessage", "You are now away").getString();
+        selfInMessage = config.get(messages, "selfInMessage", "You are no longer away").getString();
+    }
 
-	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
-		TickHandlerCommands.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
-		OutputHandler.chatConfirmation(sender, String.format("Stand still for %d seconds.", warmup));
-	}
+    @Override
+    public String getCommandName()
+    {
+        return "afk";
+    }
 
-	@Override
-	public boolean canConsoleUseCommand()
-	{
-		return false;
-	}
+    @Override
+    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    {
+        TickHandlerCommands.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
+        OutputHandler.chatConfirmation(sender, String.format("Stand still for %d seconds.", warmup));
+    }
 
-	public void abort(AFKdata afkData)
-	{
-		if (!afkData.player.capabilities.isCreativeMode)
-			afkData.player.capabilities.disableDamage = false;
-		afkData.player.sendPlayerAbilities();
-		afkList.remove(afkData.player.username);
-		TickHandlerCommands.afkListToRemove.add(afkData);
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
-			ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-					String.format(outMessage, afkData.player.username));
-		else
-		    OutputHandler.chatConfirmation(afkData.player, selfOutMessage);
-	}
+    public void abort(AFKdata afkData)
+    {
+        if (!afkData.player.capabilities.isCreativeMode)
+        {
+            afkData.player.capabilities.disableDamage = false;
+        }
+        afkData.player.sendPlayerAbilities();
+        afkList.remove(afkData.player.username);
+        TickHandlerCommands.afkListToRemove.add(afkData);
 
-	public void makeAFK(AFKdata afkData)
-	{
-		afkData.player.capabilities.disableDamage = true;
-		afkData.player.sendPlayerAbilities();
-		afkList.add(afkData.player.username);
+        if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
+        {
+            ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
+                    String.format(outMessage, afkData.player.username));
+        }
+        else
+        {
+            OutputHandler.chatConfirmation(afkData.player, selfOutMessage);
+        }
+    }
 
-		if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
-			ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-					String.format(inMessage, afkData.player.username));
-		else
-		    OutputHandler.chatConfirmation(afkData.player, selfInMessage);
-	}
+    public void makeAFK(AFKdata afkData)
+    {
+        afkData.player.capabilities.disableDamage = true;
+        afkData.player.sendPlayerAbilities();
+        afkList.add(afkData.player.username);
 
-	@Override
-	public void registerExtraPermissions(IPermRegisterEvent event)
-	{
-	    event.registerPermissionLevel(NOTICEPERM, RegGroup.MEMBERS);
-	}
+        if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
+        {
+            ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
+                    String.format(inMessage, afkData.player.username));
+        }
+        else
+        {
+            OutputHandler.chatConfirmation(afkData.player, selfInMessage);
+        }
+    }
 
-	@Override
-	public RegGroup getReggroup()
-	{
-		return RegGroup.MEMBERS;
-	}
+    @Override
+    public void registerExtraPermissions(IPermRegisterEvent event)
+    {
+        event.registerPermissionLevel(NOTICEPERM, RegGroup.MEMBERS);
+    }
 
-	@Override
-	public int compareTo(Object arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public RegGroup getReggroup()
+    {
+        return RegGroup.MEMBERS;
+    }
 
-	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		// TODO Auto-generated method stub
-		return "/afk Mark yourself as away.";
-	}
+    @Override
+    public int compareTo(Object arg0)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        // TODO Auto-generated method stub
+        return "/afk Mark yourself as away.";
+    }
 }

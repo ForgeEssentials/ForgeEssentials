@@ -1,5 +1,8 @@
 package com.forgeessentials.snooper;
 
+import com.forgeessentials.util.OutputHandler;
+import net.minecraft.server.MinecraftServer;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -7,120 +10,115 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.server.MinecraftServer;
+public class SocketListner implements Runnable {
+    private int port;
+    private String hostname;
+    private Thread thread;
+    private ServerSocket socket;
+    private boolean running = false;
+    private InetAddress inetAddress;
+    public List<SocketHandler> socketList = new ArrayList<SocketHandler>();
 
-import com.forgeessentials.util.OutputHandler;
+    public SocketListner()
+    {
+        port = ModuleSnooper.port;
+        hostname = ModuleSnooper.hostname;
 
-public class SocketListner implements Runnable
-{
-	private int					port;
-	private String				hostname;
-	private Thread				thread;
-	private ServerSocket		socket;
-	private boolean				running		= false;
-	private InetAddress			inetAddress;
-	public List<SocketHandler>	socketList	= new ArrayList<SocketHandler>();
+        if (hostname.length() > 0)
+        {
+            try
+            {
+                inetAddress = InetAddress.getByName(hostname);
+            }
+            catch (UnknownHostException e)
+            {
+                e.printStackTrace();
+            }
+        }
 
-	public SocketListner()
-	{
-		port = ModuleSnooper.port;
-		hostname = ModuleSnooper.hostname;
+        if (port == 0)
+        {
+            port = MinecraftServer.getServer().getPort();
+        }
 
-		if (hostname.length() > 0)
-		{
-			try
-			{
-				inetAddress = InetAddress.getByName(hostname);
-			}
-			catch (UnknownHostException e)
-			{
-				e.printStackTrace();
-			}
-		}
+        thread = new Thread(this, "ForgeEssentials - Snooper - SocketListner");
+        thread.start();
+    }
 
-		if (port == 0)
-		{
-			port = MinecraftServer.getServer().getPort();
-		}
+    @Override
+    public void run()
+    {
+        OutputHandler.felog.info("Starting snooper on " + inetAddress + ":" + port);
+        if (!init())
+        {
+            OutputHandler.felog.severe("Unable to start the snooper!");
+            return;
+        }
 
-		thread = new Thread(this, "ForgeEssentials - Snooper - SocketListner");
-		thread.start();
-	}
+        try
+        {
+            while (running)
+            {
+                try
+                {
+                    socketList.add(new SocketHandler(socket.accept(), this));
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                socket.close();
+                closeAll();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	@Override
-	public void run()
-	{
-	    OutputHandler.felog.info("Starting snooper on " + inetAddress + ":" + port);
-		if (!init())
-		{
-			OutputHandler.felog.severe("Unable to start the snooper!");
-			return;
-		}
+    private void closeAll()
+    {
+        for (SocketHandler handler : socketList)
+        {
+            try
+            {
+                handler.close();
+            }
+            catch (Exception e)
+            {
+            }
+        }
+        socketList.clear();
+    }
 
-		try
-		{
-			while (running)
-			{
-				try
-				{
-					socketList.add(new SocketHandler(socket.accept(), this));
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				socket.close();
-				closeAll();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
+    private boolean init()
+    {
+        try
+        {
+            socket = new ServerSocket(port, 0, inetAddress);
+            running = true;
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	private void closeAll()
-	{
-		for (SocketHandler handler : socketList)
-		{
-			try
-			{
-				handler.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
-		socketList.clear();
-	}
-
-	private boolean init()
-	{
-	    try
-		{
-			socket = new ServerSocket(port, 0, inetAddress);
-			running = true;
-			return true;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	public void stop()
-	{
-		running = false;
-	}
+    public void stop()
+    {
+        running = false;
+    }
 }

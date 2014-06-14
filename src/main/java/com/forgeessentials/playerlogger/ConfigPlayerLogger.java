@@ -1,142 +1,142 @@
 package com.forgeessentials.playerlogger;
 
-import java.io.File;
-import java.util.Arrays;
-
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import java.io.File;
+import java.util.Arrays;
 
-public class ConfigPlayerLogger extends ModuleConfigBase
-{
-	public static final String[]	exemptDefPlayers = {"\"[Forestry]\"", "\"[Buildcraft]\""};
-	public Configuration			config;
+public class ConfigPlayerLogger extends ModuleConfigBase {
+    public static final String[] exemptDefPlayers = { "\"[Forestry]\"", "\"[Buildcraft]\"" };
+    public Configuration config;
 
-	public ConfigPlayerLogger(File file)
-	{
-		super(file);
-	}
+    public ConfigPlayerLogger(File file)
+    {
+        super(file);
+    }
 
-	@Override
-	public void init()
-	{
-		config = new Configuration(file, true);
+    @Override
+    public void init()
+    {
+        config = new Configuration(file, true);
 
-		String cat = "playerLogger";
-		String subcat = cat;
+        String cat = "playerLogger";
+        String subcat = cat;
 
-		ModulePlayerLogger.enable = config.get(subcat, "enable", false).getBoolean(false);
+        ModulePlayerLogger.enable = config.get(subcat, "enable", false).getBoolean(false);
 
-		subcat = cat + ".DB";
-		config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
+        subcat = cat + ".DB";
+        config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
 
-		ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").getString();
-		ModulePlayerLogger.username = config.get(subcat, "username", "root").getString();
-		ModulePlayerLogger.password = config.get(subcat, "password", "root").getString();
-		ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
+        ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").getString();
+        ModulePlayerLogger.username = config.get(subcat, "username", "root").getString();
+        ModulePlayerLogger.password = config.get(subcat, "password", "root").getString();
+        ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
 
-		subcat = cat + ".exempt";
-		config.addCustomCategoryComment(subcat, "Don't log stuff from these players/group.\nCase sensitive.\nMods should not be using fake players. But if they do, you can add them here if you don't logs from them.");
-		
-		EventLogger.exempt_players = Arrays.asList(config.get(subcat, "players", exemptDefPlayers).getStringList());
-		EventLogger.exempt_groups = Arrays.asList(config.get(subcat, "groups", new String[] {}).getStringList());
-		
-		subcat = cat + ".events";
-		config.addCustomCategoryComment(subcat, "Toggle events to log here.");
+        subcat = cat + ".exempt";
+        config.addCustomCategoryComment(subcat,
+                "Don't log stuff from these players/group.\nCase sensitive.\nMods should not be using fake players. But if they do, you can add them here if you don't logs from them.");
 
-		EventLogger.logPlayerLoginLogout = config.get(subcat, "playerLoginLogout", true).getBoolean(true);
-		EventLogger.logPlayerChangedDimension = config.get(subcat, "playerChangeDimension", true).getBoolean(true);
-		EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
+        EventLogger.exempt_players = Arrays.asList(config.get(subcat, "players", exemptDefPlayers).getStringList());
+        EventLogger.exempt_groups = Arrays.asList(config.get(subcat, "groups", new String[] { }).getStringList());
 
-		String subcat2 = subcat + ".commands";
+        subcat = cat + ".events";
+        config.addCustomCategoryComment(subcat, "Toggle events to log here.");
 
-		EventLogger.logCommands_Player = config.get(subcat2, "Enable_Player", true).getBoolean(true);
-		EventLogger.logCommands_Block = config.get(subcat2, "Enable_CmdBlock", true).getBoolean(true);
-		EventLogger.logCommands_rest = config.get(subcat2, "Enable_Rest", true).getBoolean(true);
+        EventLogger.logPlayerLoginLogout = config.get(subcat, "playerLoginLogout", true).getBoolean(true);
+        EventLogger.logPlayerChangedDimension = config.get(subcat, "playerChangeDimension", true).getBoolean(true);
+        EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
 
-		subcat2 = subcat + ".blockChanges";
+        String subcat2 = subcat + ".commands";
 
-		EventLogger.logBlockChanges = config.get(subcat2, "Enable", true).getBoolean(true);
-		EventLogger.BlockChange_WhiteList_Use = config.get(subcat2, "UseWhitelist", false, "If true, only log in dimensions that are in the whitelist.").getBoolean(false);
+        EventLogger.logCommands_Player = config.get(subcat2, "Enable_Player", true).getBoolean(true);
+        EventLogger.logCommands_Block = config.get(subcat2, "Enable_CmdBlock", true).getBoolean(true);
+        EventLogger.logCommands_rest = config.get(subcat2, "Enable_Rest", true).getBoolean(true);
 
-		int[] intArray1 = config.get(subcat2, "WhiteList", new int[]
-		{ 0, 1, -1 }, "WhiteList overrides blacklist!").getIntList();
-		for (int i : intArray1)
-		{
-			EventLogger.BlockChange_WhiteList.add(i);
-		}
+        subcat2 = subcat + ".blockChanges";
 
-		int[] intArray2 = config.get(subcat2, "BlackList", new int[] {}, "Don't make logs in these dimensions.").getIntList();
-		for (int i : intArray2)
-		{
-			EventLogger.BlockChange_BlackList.add(i);
-		}
-		
-		
+        EventLogger.logBlockChanges = config.get(subcat2, "Enable", true).getBoolean(true);
+        EventLogger.BlockChange_WhiteList_Use = config.get(subcat2, "UseWhitelist", false, "If true, only log in dimensions that are in the whitelist.")
+                .getBoolean(false);
 
-		config.save();
-	}
+        int[] intArray1 = config.get(subcat2, "WhiteList", new int[]
+                { 0, 1, -1 }, "WhiteList overrides blacklist!").getIntList();
+        for (int i : intArray1)
+        {
+            EventLogger.BlockChange_WhiteList.add(i);
+        }
 
-	@Override
-	public void forceSave()
-	{
-	}
+        int[] intArray2 = config.get(subcat2, "BlackList", new int[] { }, "Don't make logs in these dimensions.").getIntList();
+        for (int i : intArray2)
+        {
+            EventLogger.BlockChange_BlackList.add(i);
+        }
 
-	@Override
-	public void forceLoad(ICommandSender sender)
-	{
-		config = new Configuration(file, true);
+        config.save();
+    }
 
-		String cat = "playerLogger";
-		String subcat = cat;
+    @Override
+    public void forceSave()
+    {
+    }
 
-		ModulePlayerLogger.enable = config.get(subcat, "enable", false).getBoolean(false);
+    @Override
+    public void forceLoad(ICommandSender sender)
+    {
+        config = new Configuration(file, true);
 
-		subcat = cat + ".DB";
-		config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
+        String cat = "playerLogger";
+        String subcat = cat;
 
-		ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").getString();
-		ModulePlayerLogger.username = config.get(subcat, "username", "root").getString();
-		ModulePlayerLogger.password = config.get(subcat, "password", "root").getString();
-		ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
+        ModulePlayerLogger.enable = config.get(subcat, "enable", false).getBoolean(false);
 
-		subcat = cat + ".exempt";
-		config.addCustomCategoryComment(subcat, "Don't log stuff from these players/group.\nCase sensitive.\nMods should not be using fake players. But if they do, you can add them here if you don't logs from them.");
-		
-		EventLogger.exempt_players = Arrays.asList(config.get(subcat, "players", exemptDefPlayers).getStringList());
-		EventLogger.exempt_groups = Arrays.asList(config.get(subcat, "groups", new String[] {}).getStringList());
-		
-		subcat = cat + ".events";
-		config.addCustomCategoryComment(subcat, "Toggle events to log here.");
+        subcat = cat + ".DB";
+        config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
 
-		EventLogger.logPlayerLoginLogout = config.get(subcat, "playerLoginLogout", true).getBoolean(true);
-		EventLogger.logPlayerChangedDimension = config.get(subcat, "playerChangeDimension", true).getBoolean(true);
-		EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
+        ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").getString();
+        ModulePlayerLogger.username = config.get(subcat, "username", "root").getString();
+        ModulePlayerLogger.password = config.get(subcat, "password", "root").getString();
+        ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
 
-		String subcat2 = subcat + ".commands";
+        subcat = cat + ".exempt";
+        config.addCustomCategoryComment(subcat,
+                "Don't log stuff from these players/group.\nCase sensitive.\nMods should not be using fake players. But if they do, you can add them here if you don't logs from them.");
 
-		EventLogger.logCommands_Player = config.get(subcat2, "Enable_Player", true).getBoolean(true);
-		EventLogger.logCommands_Block = config.get(subcat2, "Enable_CmdBlock", true).getBoolean(true);
-		EventLogger.logCommands_rest = config.get(subcat2, "Enable_Rest", true).getBoolean(true);
+        EventLogger.exempt_players = Arrays.asList(config.get(subcat, "players", exemptDefPlayers).getStringList());
+        EventLogger.exempt_groups = Arrays.asList(config.get(subcat, "groups", new String[] { }).getStringList());
 
-		subcat2 = subcat + ".blockChanges";
+        subcat = cat + ".events";
+        config.addCustomCategoryComment(subcat, "Toggle events to log here.");
 
-		EventLogger.logBlockChanges = config.get(subcat2, "Enable", true).getBoolean(true);
-		EventLogger.BlockChange_WhiteList_Use = config.get(subcat2, "UseWhitelist", false, "If true: Only log in dimensions that are in the whitelist.").getBoolean(false);
+        EventLogger.logPlayerLoginLogout = config.get(subcat, "playerLoginLogout", true).getBoolean(true);
+        EventLogger.logPlayerChangedDimension = config.get(subcat, "playerChangeDimension", true).getBoolean(true);
+        EventLogger.logPlayerRespawn = config.get(subcat, "playerRespawn", true).getBoolean(true);
 
-		int[] intArray1 = config.get(subcat2, "WhiteList", new int[]
-		{ 0, 1, -1 }, "WhiteList overrides blacklist!").getIntList();
-		for (int i : intArray1)
-		{
-			EventLogger.BlockChange_WhiteList.add(i);
-		}
+        String subcat2 = subcat + ".commands";
 
-		int[] intArray2 = config.get(subcat2, "BlackList", new int[] {}, "Don't make logs in these dimensions.").getIntList();
-		for (int i : intArray2)
-		{
-			EventLogger.BlockChange_BlackList.add(i);
-		}
-		config.save();
-	}
+        EventLogger.logCommands_Player = config.get(subcat2, "Enable_Player", true).getBoolean(true);
+        EventLogger.logCommands_Block = config.get(subcat2, "Enable_CmdBlock", true).getBoolean(true);
+        EventLogger.logCommands_rest = config.get(subcat2, "Enable_Rest", true).getBoolean(true);
+
+        subcat2 = subcat + ".blockChanges";
+
+        EventLogger.logBlockChanges = config.get(subcat2, "Enable", true).getBoolean(true);
+        EventLogger.BlockChange_WhiteList_Use = config.get(subcat2, "UseWhitelist", false, "If true: Only log in dimensions that are in the whitelist.")
+                .getBoolean(false);
+
+        int[] intArray1 = config.get(subcat2, "WhiteList", new int[]
+                { 0, 1, -1 }, "WhiteList overrides blacklist!").getIntList();
+        for (int i : intArray1)
+        {
+            EventLogger.BlockChange_WhiteList.add(i);
+        }
+
+        int[] intArray2 = config.get(subcat2, "BlackList", new int[] { }, "Don't make logs in these dimensions.").getIntList();
+        for (int i : intArray2)
+        {
+            EventLogger.BlockChange_BlackList.add(i);
+        }
+        config.save();
+    }
 }

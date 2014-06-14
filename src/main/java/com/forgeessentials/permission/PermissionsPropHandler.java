@@ -1,181 +1,177 @@
 package com.forgeessentials.permission;
 
-import java.util.ArrayList;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.api.permissions.query.PropQuery;
-import com.forgeessentials.api.permissions.query.PropQueryBlanketSpot;
-import com.forgeessentials.api.permissions.query.PropQueryBlanketZone;
-import com.forgeessentials.api.permissions.query.PropQueryPlayer;
-import com.forgeessentials.api.permissions.query.PropQueryPlayerSpot;
-import com.forgeessentials.api.permissions.query.PropQueryPlayerZone;
+import com.forgeessentials.api.permissions.query.*;
 
-public final class PermissionsPropHandler
-{
-	private PermissionsPropHandler()
-	{
-	}
+import java.util.ArrayList;
 
-	public static void handleQuery(PropQuery query)
-	{
-		Zone applied = null;
-		String result = null;
+public final class PermissionsPropHandler {
+    private PermissionsPropHandler()
+    {
+    }
 
-		if (query instanceof PropQueryBlanketZone)
-		{
-			applied = ((PropQueryBlanketZone) query).zone;
-		}
-		else if (query instanceof PropQueryPlayerZone)
-		{
-			applied = ((PropQueryPlayerZone) query).zone;
-		}
-		else if (query instanceof PropQueryBlanketSpot)
-		{
-			applied = APIRegistry.zones.getWhichZoneIn(((PropQueryBlanketSpot) query).spot);
-		}
-		else if (query instanceof PropQueryPlayerSpot)
-		{
-			applied = APIRegistry.zones.getWhichZoneIn(((PropQueryPlayerSpot) query).spot);
-		}
+    public static void handleQuery(PropQuery query)
+    {
+        Zone applied = null;
+        String result = null;
 
-		if (query instanceof PropQueryPlayer)
-		{
-			result = getResultFromZone(applied, (PropQueryPlayer) query);
-		}
-		else if (query instanceof PropQueryBlanketZone)
-		{
-			result = getResultFromZone(applied, query.perm, ((PropQueryBlanketZone) query).checkParents);
-		}
-		else
-		{
-			result = getResultFromZone(applied, query.perm, true);
-		}
+        if (query instanceof PropQueryBlanketZone)
+        {
+            applied = ((PropQueryBlanketZone) query).zone;
+        }
+        else if (query instanceof PropQueryPlayerZone)
+        {
+            applied = ((PropQueryPlayerZone) query).zone;
+        }
+        else if (query instanceof PropQueryBlanketSpot)
+        {
+            applied = APIRegistry.zones.getWhichZoneIn(((PropQueryBlanketSpot) query).spot);
+        }
+        else if (query instanceof PropQueryPlayerSpot)
+        {
+            applied = APIRegistry.zones.getWhichZoneIn(((PropQueryPlayerSpot) query).spot);
+        }
 
-		query.setValue(result);
-	}
+        if (query instanceof PropQueryPlayer)
+        {
+            result = getResultFromZone(applied, (PropQueryPlayer) query);
+        }
+        else if (query instanceof PropQueryBlanketZone)
+        {
+            result = getResultFromZone(applied, query.perm, ((PropQueryBlanketZone) query).checkParents);
+        }
+        else
+        {
+            result = getResultFromZone(applied, query.perm, true);
+        }
 
-	public static Zone getZone(PropQuery query)
-	{
-		// this should never happen;
-		return null;
-	}
+        query.setValue(result);
+    }
 
-	private static Zone getZone(PropQueryPlayerZone query)
-	{
-		return query.zone;
-	}
+    public static Zone getZone(PropQuery query)
+    {
+        // this should never happen;
+        return null;
+    }
 
-	private static Zone getZone(PropQueryPlayerSpot query)
-	{
-		return APIRegistry.zones.getWhichZoneIn(query.spot);
-	}
+    private static Zone getZone(PropQueryPlayerZone query)
+    {
+        return query.zone;
+    }
 
-	private static Zone getZone(PropQueryBlanketSpot query)
-	{
-		return APIRegistry.zones.getWhichZoneIn(query.spot);
-	}
-	
-	private static Zone getZone(PropQueryBlanketZone query)
-	{
-		return query.zone;
-	}
+    private static Zone getZone(PropQueryPlayerSpot query)
+    {
+        return APIRegistry.zones.getWhichZoneIn(query.spot);
+    }
 
-	/**
-	 * @param zone Zone to check permProps in.
-	 * @param perm The permission to check.
-	 * @param player Player to check/
-	 * @return the resulting permProp
-	 */
-	private static String getResultFromZone(Zone zone, PropQueryPlayer event)
-	{
-		ArrayList<Group> groups;
-		String result = null;
-		Zone tempZone = zone;
-		Group group;
-		while (result == null)
-		{
-			// get the permissions... Tis automatically checks permision
-			// parents...
-			result = SqlHelper.getPermissionProp(event.player.username, false, event.perm, tempZone.getZoneName());
+    private static Zone getZone(PropQueryBlanketSpot query)
+    {
+        return APIRegistry.zones.getWhichZoneIn(query.spot);
+    }
 
-			// if its unknown still
-			if (result == null)
-			{
-				// get all the players groups here.
-				groups = APIRegistry.perms.getApplicableGroups(event.player.username, false, tempZone.getZoneName());
+    private static Zone getZone(PropQueryBlanketZone query)
+    {
+        return query.zone;
+    }
 
-				// iterates through the groups.
-				for (int i = 0; result == null && i < groups.size(); i++)
-				{
-					group = groups.get(i);
-					while (group != null && result == null)
-					{
-						// checks the permissions for the group.
-						result = SqlHelper.getPermissionProp(group.name, true, event.perm, tempZone.getZoneName());
+    /**
+     * @param zone   Zone to check permProps in.
+     * @param perm   The permission to check.
+     * @param player Player to check/
+     * @return the resulting permProp
+     */
+    private static String getResultFromZone(Zone zone, PropQueryPlayer event)
+    {
+        ArrayList<Group> groups;
+        String result = null;
+        Zone tempZone = zone;
+        Group group;
+        while (result == null)
+        {
+            // get the permissions... Tis automatically checks permision
+            // parents...
+            result = SqlHelper.getPermissionProp(event.player.username, false, event.perm, tempZone.getZoneName());
 
-						// sets the group to its parent.
-						group = SqlHelper.getGroupForName(group.parent);
-					}
-				}
-			}
+            // if its unknown still
+            if (result == null)
+            {
+                // get all the players groups here.
+                groups = APIRegistry.perms.getApplicableGroups(event.player.username, false, tempZone.getZoneName());
 
-			// check defaults... unless it has the override..
-			if (result == null)
-			{
-				result = SqlHelper.getPermissionProp(APIRegistry.perms.getDEFAULT().name, true, event.perm, tempZone.getZoneName());
-			}
+                // iterates through the groups.
+                for (int i = 0; result == null && i < groups.size(); i++)
+                {
+                    group = groups.get(i);
+                    while (group != null && result == null)
+                    {
+                        // checks the permissions for the group.
+                        result = SqlHelper.getPermissionProp(group.name, true, event.perm, tempZone.getZoneName());
 
-			// still unknown? check parent zones.
-			if (result == null)
-			{
-				if (tempZone == APIRegistry.zones.getGLOBAL())
-				{
-					// default deny.
-					result = "";
-				}
-				else
-				{
-					// get the parent of the zone.
-					tempZone = APIRegistry.zones.getZone(tempZone.parent);
-				}
-			}
-		}
-		return result;
-	}
+                        // sets the group to its parent.
+                        group = SqlHelper.getGroupForName(group.parent);
+                    }
+                }
+            }
 
-	/**
-	 * @param zone Zone to check permissions in.
-	 * @param perm The permission to check.
-	 * @param player Player to check/
-	 * @return the result for the perm.
-	 */
-	private static String getResultFromZone(Zone zone, String perm, boolean checkParents)
-	{
-		String result = null;
-		Zone tempZone = zone;
-		while (result == null)
-		{
-			result = SqlHelper.getPermissionProp(APIRegistry.perms.getDEFAULT().name, true, perm, tempZone.getZoneName());
+            // check defaults... unless it has the override..
+            if (result == null)
+            {
+                result = SqlHelper.getPermissionProp(APIRegistry.perms.getDEFAULT().name, true, event.perm, tempZone.getZoneName());
+            }
 
-			// still unknown? check parent zones.
-			if (result == null)
-			{
-				if (checkParents == false)
-					return result;
-				else if (tempZone == APIRegistry.zones.getGLOBAL())
-				{
-					// default deny.
-					result = null;
-				}
-				else
-				{
-					// get the parent of the zone.
-					tempZone = APIRegistry.zones.getZone(tempZone.parent);
-				}
-			}
-		}
-		return result;
-	}
+            // still unknown? check parent zones.
+            if (result == null)
+            {
+                if (tempZone == APIRegistry.zones.getGLOBAL())
+                {
+                    // default deny.
+                    result = "";
+                }
+                else
+                {
+                    // get the parent of the zone.
+                    tempZone = APIRegistry.zones.getZone(tempZone.parent);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param zone   Zone to check permissions in.
+     * @param perm   The permission to check.
+     * @param player Player to check/
+     * @return the result for the perm.
+     */
+    private static String getResultFromZone(Zone zone, String perm, boolean checkParents)
+    {
+        String result = null;
+        Zone tempZone = zone;
+        while (result == null)
+        {
+            result = SqlHelper.getPermissionProp(APIRegistry.perms.getDEFAULT().name, true, perm, tempZone.getZoneName());
+
+            // still unknown? check parent zones.
+            if (result == null)
+            {
+                if (checkParents == false)
+                {
+                    return result;
+                }
+                else if (tempZone == APIRegistry.zones.getGLOBAL())
+                {
+                    // default deny.
+                    result = null;
+                }
+                else
+                {
+                    // get the parent of the zone.
+                    tempZone = APIRegistry.zones.getZone(tempZone.parent);
+                }
+            }
+        }
+        return result;
+    }
 }

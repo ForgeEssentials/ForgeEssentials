@@ -1,59 +1,57 @@
 package com.forgeessentials.playerlogger.network;
 
+import com.forgeessentials.core.network.ForgeEssentialsPacket;
+import com.forgeessentials.util.OutputHandler;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.world.WorldServer;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.world.WorldServer;
+public class PacketPlayerLogger extends ForgeEssentialsPacket {
+    public static final byte packetID = 1;
 
-import com.forgeessentials.core.network.ForgeEssentialsPacket;
-import com.forgeessentials.util.OutputHandler;
+    private Packet250CustomPayload packet;
 
-public class PacketPlayerLogger extends ForgeEssentialsPacket
-{
-	public static final byte		packetID	= 1;
+    public PacketPlayerLogger(EntityPlayer player)
+    {
+        packet = new Packet250CustomPayload();
 
-	private Packet250CustomPayload	packet;
+        ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
+        DataOutputStream stream = new DataOutputStream(streambyte);
 
-	public PacketPlayerLogger(EntityPlayer player)
-	{
-		packet = new Packet250CustomPayload();
+        try
+        {
+            stream.write(packetID);
 
-		ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
-		DataOutputStream stream = new DataOutputStream(streambyte);
+            stream.writeBoolean(player.getEntityData().getBoolean("lb"));
 
-		try
-		{
-			stream.write(packetID);
+            stream.close();
+            streambyte.close();
 
-			stream.writeBoolean(player.getEntityData().getBoolean("lb"));
+            packet.channel = FECHANNEL;
+            packet.data = streambyte.toByteArray();
+            packet.length = packet.data.length;
+        }
 
-			stream.close();
-			streambyte.close();
+        catch (Exception e)
+        {
+            OutputHandler.felog.info("Error creating packet >> " + this.getClass());
+        }
+    }
 
-			packet.channel = FECHANNEL;
-			packet.data = streambyte.toByteArray();
-			packet.length = packet.data.length;
-		}
+    public static void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException
+    {
+        // should never be received here.
+    }
 
-		catch (Exception e)
-		{
-			OutputHandler.felog.info("Error creating packet >> " + this.getClass());
-		}
-	}
-
-	public static void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException
-	{
-		// should never be received here.
-	}
-
-	@Override
-	public Packet250CustomPayload getPayload()
-	{
-		return packet;
-	}
+    @Override
+    public Packet250CustomPayload getPayload()
+    {
+        return packet;
+    }
 
 }

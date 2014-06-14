@@ -1,82 +1,81 @@
 package com.forgeessentials.data.typeInfo;
 
-import java.lang.reflect.Array;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.data.api.TypeMultiValInfo;
 
-public class TypeInfoArray extends TypeMultiValInfo
-{
-	public static final String	POS		= "ElementPos";
-	public static final String	ELEMENT	= "Element";
-	public static final String	LENGTH	= "length";
+import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
-	public TypeInfoArray(ClassContainer container)
-	{
-		super(container);
-	}
+public class TypeInfoArray extends TypeMultiValInfo {
+    public static final String POS = "ElementPos";
+    public static final String ELEMENT = "Element";
+    public static final String LENGTH = "length";
 
-	@Override
-	public void buildEntry(HashMap<String, ClassContainer> entryFields)
-	{
-		entryFields.put(POS, new ClassContainer(int.class));
-		entryFields.put(ELEMENT, new ClassContainer(container.getType().getComponentType()));
-	}
+    public TypeInfoArray(ClassContainer container)
+    {
+        super(container);
+    }
 
-	@Override
-	public void build(HashMap<String, ClassContainer> fields)
-	{
-		fields.put(LENGTH, new ClassContainer(int.class));
-	}
+    @Override
+    public void buildEntry(HashMap<String, ClassContainer> entryFields)
+    {
+        entryFields.put(POS, new ClassContainer(int.class));
+        entryFields.put(ELEMENT, new ClassContainer(container.getType().getComponentType()));
+    }
 
-	@Override
-	public Set<TypeData> getTypeDatasFromObject(Object obj)
-	{
-		HashSet<TypeData> datas = new HashSet<TypeData>();
+    @Override
+    public void build(HashMap<String, ClassContainer> fields)
+    {
+        fields.put(LENGTH, new ClassContainer(int.class));
+    }
 
-		Object[] array = (Object[]) obj;
+    @Override
+    public Set<TypeData> getTypeDatasFromObject(Object obj)
+    {
+        HashSet<TypeData> datas = new HashSet<TypeData>();
 
-		int i = 0;
-		TypeData data;
-		for (Object element : array)
-		{
-			if (element == null)
-			{
-				continue;
-			}
+        Object[] array = (Object[]) obj;
 
-			data = getEntryData();
-			data.putField(POS, i);
-			data.putField(ELEMENT, element);
-			datas.add(data);
-		}
+        int i = 0;
+        TypeData data;
+        for (Object element : array)
+        {
+            if (element == null)
+            {
+                continue;
+            }
 
-		return datas;
-	}
+            data = getEntryData();
+            data.putField(POS, i);
+            data.putField(ELEMENT, element);
+            datas.add(data);
+        }
 
-	@Override
-	public void addExtraDataForObject(TypeData data, Object obj)
-	{
-		Object[] array = (Object[]) obj;
-		data.putField(LENGTH, array.length);
-	}
+        return datas;
+    }
 
-	@Override
-	public Object reconstruct(TypeData[] data, IReconstructData rawData)
-	{
-		int size = (Integer) rawData.getFieldValue(LENGTH);
-		Object array = Array.newInstance(container.getType().getComponentType(), size);
+    @Override
+    public void addExtraDataForObject(TypeData data, Object obj)
+    {
+        Object[] array = (Object[]) obj;
+        data.putField(LENGTH, array.length);
+    }
 
-		for (TypeData dat : data)
-		{
-			Array.set(array, (Integer) dat.getFieldValue(POS), dat.getFieldValue(ELEMENT));
-		}
+    @Override
+    public Object reconstruct(TypeData[] data, IReconstructData rawData)
+    {
+        int size = (Integer) rawData.getFieldValue(LENGTH);
+        Object array = Array.newInstance(container.getType().getComponentType(), size);
 
-		return array;
-	}
+        for (TypeData dat : data)
+        {
+            Array.set(array, (Integer) dat.getFieldValue(POS), dat.getFieldValue(ELEMENT));
+        }
+
+        return array;
+    }
 }

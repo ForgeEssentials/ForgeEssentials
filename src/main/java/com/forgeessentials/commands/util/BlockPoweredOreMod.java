@@ -1,16 +1,15 @@
 package com.forgeessentials.commands.util;
 
-import java.util.Random;
-
 import net.minecraft.block.BlockOreStorage;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockPoweredOreMod extends BlockOreStorage
-{
-	public boolean isPulsed = false;
+import java.util.Random;
+
+public class BlockPoweredOreMod extends BlockOreStorage {
+    public boolean isPulsed = false;
     public int previousBlockID = 0;
     public int strength = 15;
     public Object previusEntity = null;
@@ -37,7 +36,7 @@ public class BlockPoweredOreMod extends BlockOreStorage
      */
     public int isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-        return isPulsed? this.strength:15;
+        return isPulsed ? this.strength : 15;
     }
 
     /**
@@ -52,9 +51,9 @@ public class BlockPoweredOreMod extends BlockOreStorage
 
             if (this.previusEntity != null)
             {
-            	((TileEntity)this.previusEntity).validate();
-                ((TileEntity)this.previusEntity).blockMetadata = this.previusMetaData;
-                var1.setBlockTileEntity(var2, var3, var4, (TileEntity)this.previusEntity);
+                ((TileEntity) this.previusEntity).validate();
+                ((TileEntity) this.previusEntity).blockMetadata = this.previusMetaData;
+                var1.setBlockTileEntity(var2, var3, var4, (TileEntity) this.previusEntity);
             }
         }
     }

@@ -1,53 +1,54 @@
 package com.forgeessentials.afterlife;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 
-public class InventoryGrave extends InventoryBasic
-{
-	private Grave	grave;
+import java.util.ArrayList;
+import java.util.List;
 
-	public InventoryGrave(Grave grave)
-	{
-		super(grave.owner + "'s grave.", false, grave.getSize());
-		this.grave = grave;
-	}
+public class InventoryGrave extends InventoryBasic {
+    private Grave grave;
 
-	@Override
-	public void openChest()
-	{
-		for (int i = 0; i < getSizeInventory(); i++)
-		{
-			setInventorySlotContents(i, (ItemStack) null);
-		}
+    public InventoryGrave(Grave grave)
+    {
+        super(grave.owner + "'s grave.", false, grave.getSize());
+        this.grave = grave;
+    }
 
-		for (int i = 0; i < grave.inv.length; i++)
-		{
-			if (grave.inv[i] != null)
-				setInventorySlotContents(i, grave.inv[i].copy());
-		}
+    @Override
+    public void openChest()
+    {
+        for (int i = 0; i < getSizeInventory(); i++)
+        {
+            setInventorySlotContents(i, (ItemStack) null);
+        }
 
-		super.openChest();
-	}
+        for (int i = 0; i < grave.inv.length; i++)
+        {
+            if (grave.inv[i] != null)
+            {
+                setInventorySlotContents(i, grave.inv[i].copy());
+            }
+        }
 
-	@Override
-	public void closeChest()
-	{
-		List<ItemStack> list = new ArrayList<ItemStack>();
-		for (int i = 0; i < getSizeInventory(); i++)
-		{
-			ItemStack is = getStackInSlot(i);
-			if (is != null)
-			{
-				list.add(is);
-			}
-		}
-		grave.inv = list.toArray(new ItemStack[list.size()]);
+        super.openChest();
+    }
 
-		grave.checkGrave();
-		super.closeChest();
-	}
+    @Override
+    public void closeChest()
+    {
+        List<ItemStack> list = new ArrayList<ItemStack>();
+        for (int i = 0; i < getSizeInventory(); i++)
+        {
+            ItemStack is = getStackInSlot(i);
+            if (is != null)
+            {
+                list.add(is);
+            }
+        }
+        grave.inv = list.toArray(new ItemStack[list.size()]);
+
+        grave.checkGrave();
+        super.closeChest();
+    }
 }

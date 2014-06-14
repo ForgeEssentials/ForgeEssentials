@@ -5,13 +5,13 @@ import net.minecraft.network.packet.Packet;
 /**
  * Register with PacketAnalyzerRegistry.
  * Read the notes in that class!
- * @author Dries007
  *
+ * @author Dries007
  */
-public interface IPacketAnalyzer
-{
+public interface IPacketAnalyzer {
     /**
      * Analyze incoming packets.
+     *
      * @param packet
      * @return null if you want to cancel the packet.
      */
@@ -19,6 +19,7 @@ public interface IPacketAnalyzer
 
     /**
      * Analyze outgoing packets.
+     *
      * @param packet
      * @return null if you want to cancel the packet.
      */

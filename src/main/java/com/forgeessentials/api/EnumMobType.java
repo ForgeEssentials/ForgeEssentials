@@ -5,32 +5,30 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-public enum EnumMobType
-{
-	BOSS, GOLEM, HOSTILE, PASSIVE, VILLAGER, TAMEABLE;
+public enum EnumMobType {
+    BOSS, GOLEM, HOSTILE, PASSIVE, VILLAGER, TAMEABLE;
 
-	public static boolean isMobType(String type)
-	{
-		try
-		{
-			EnumMobType.valueOf(type.toUpperCase());
-			return true;
-		}
-		catch (IllegalArgumentException e)
-		{
-			return false;
-		}
-	}
-	@Retention(RetentionPolicy.RUNTIME)
-	public @interface FEMob
-	{
-		EnumMobType type() default EnumMobType.HOSTILE;
+    public static boolean isMobType(String type)
+    {
+        try
+        {
+            EnumMobType.valueOf(type.toUpperCase());
+            return true;
+        }
+        catch (IllegalArgumentException e)
+        {
+            return false;
+        }
+    }
 
-		@Retention(RetentionPolicy.RUNTIME)
-		@Target(
-		{ ElementType.METHOD, ElementType.FIELD })
-		public @interface IsTamed
-		{
-		}
-	}
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface FEMob {
+        EnumMobType type() default EnumMobType.HOSTILE;
+
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(
+                { ElementType.METHOD, ElementType.FIELD })
+        public @interface IsTamed {
+        }
+    }
 }

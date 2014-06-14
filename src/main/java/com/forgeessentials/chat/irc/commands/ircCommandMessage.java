@@ -1,83 +1,82 @@
 package com.forgeessentials.chat.irc.commands;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumChatFormatting;
-
-import org.pircbotx.User;
-
 import com.forgeessentials.chat.commands.CommandMsg;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumChatFormatting;
+import org.pircbotx.User;
 
-public class ircCommandMessage extends ircCommand
-{
+public class ircCommandMessage extends ircCommand {
 
-	@Override
-	public String getCommandInfo()
-	{
-		return "Privately messages a player from IRC.";
-	}
-	@Override
-	public String getCommandUsage()
-	{
-		return "%Message <player> [message]";
-	}
-	@Override
-	public String[] getAliases()
-	{
-		return new String[]{"msg", "m"};
-	}
+    @Override
+    public String getCommandInfo()
+    {
+        return "Privately messages a player from IRC.";
+    }
 
-	@Override
-	public void execute(String[] args, User user)
-	{
-		try
-		{
+    @Override
+    public String getCommandUsage()
+    {
+        return "%Message <player> [message]";
+    }
 
-			if (args.length < 1)
-			{
-				user.sendMessage("Unable to send message: No player.");
-				user.sendMessage("Did you forget the :?");
-				user.sendMessage("Sytax: /privmsg " + IRCHelper.getBotName() + " :%msg playername message");
-				user.sendMessage("Or to reply to a previous private message.");
-				user.sendMessage("Sytax: /privmsg " + IRCHelper.getBotName() + " :%r message");
-				return;
-			}
+    @Override
+    public String[] getAliases()
+    {
+        return new String[] { "msg", "m" };
+    }
 
-			String playername = args[0].toLowerCase();
-			String message = "";
+    @Override
+    public void execute(String[] args, User user)
+    {
+        try
+        {
 
-			for (int i = 1; i < args.length; i++)
-			{
-				message += " " + args[i];
-			}
+            if (args.length < 1)
+            {
+                user.sendMessage("Unable to send message: No player.");
+                user.sendMessage("Did you forget the :?");
+                user.sendMessage("Sytax: /privmsg " + IRCHelper.getBotName() + " :%msg playername message");
+                user.sendMessage("Or to reply to a previous private message.");
+                user.sendMessage("Sytax: /privmsg " + IRCHelper.getBotName() + " :%r message");
+                return;
+            }
 
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(playername);
+            String playername = args[0].toLowerCase();
+            String message = "";
 
-			if (player == null)
-			{
-				user.sendMessage("Unable to send message: Player not found.");
-				return;
-			}
+            for (int i = 1; i < args.length; i++)
+            {
+                message += " " + args[i];
+            }
 
-			String send = EnumChatFormatting.GOLD + "(IRC)[" + user.getNick() + " -> me] " + EnumChatFormatting.GRAY + message;
-			String recipt = "(IRC)[me -> " + player.getCommandSenderName() + "] " + message;
+            EntityPlayerMP player = FunctionHelper.getPlayerForName(playername);
 
-			ChatUtils.sendMessage(player, send);
-			IRCHelper.privateMessage(user.getNick(), recipt);
+            if (player == null)
+            {
+                user.sendMessage("Unable to send message: Player not found.");
+                return;
+            }
 
-			// Add in /r stuff
-			CommandMsg.clearReply(user.getNick());
-			CommandMsg.clearReply(player.getEntityName());
-			CommandMsg.addReply("irc" + user.getNick().toLowerCase(), player.getCommandSenderName());
-			CommandMsg.addReply(player.getCommandSenderName(), "irc" + user.getNick().toLowerCase());
-		}
-		catch (Exception ex)
-		{
-			user.sendMessage("Unable to send message: Something went really wrong.");
-			return;
-		}
-	}
+            String send = EnumChatFormatting.GOLD + "(IRC)[" + user.getNick() + " -> me] " + EnumChatFormatting.GRAY + message;
+            String recipt = "(IRC)[me -> " + player.getCommandSenderName() + "] " + message;
+
+            ChatUtils.sendMessage(player, send);
+            IRCHelper.privateMessage(user.getNick(), recipt);
+
+            // Add in /r stuff
+            CommandMsg.clearReply(user.getNick());
+            CommandMsg.clearReply(player.getEntityName());
+            CommandMsg.addReply("irc" + user.getNick().toLowerCase(), player.getCommandSenderName());
+            CommandMsg.addReply(player.getCommandSenderName(), "irc" + user.getNick().toLowerCase());
+        }
+        catch (Exception ex)
+        {
+            user.sendMessage("Unable to send message: Something went really wrong.");
+            return;
+        }
+    }
 
 }

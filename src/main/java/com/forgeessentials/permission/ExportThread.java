@@ -1,75 +1,73 @@
 package com.forgeessentials.permission;
 
+import com.forgeessentials.api.permissions.Group;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import net.minecraft.command.ICommandSender;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.minecraft.command.ICommandSender;
-
-import com.forgeessentials.api.permissions.Group;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
-
 @SuppressWarnings({ "unchecked" })
-public class ExportThread extends Thread
-{
-	File			exportDir;
-	ICommandSender	user;
+public class ExportThread extends Thread {
+    File exportDir;
+    ICommandSender user;
 
-	public ExportThread(String exportDir, ICommandSender sender)
-	{
-		this.exportDir = new File(ModulePermissions.permsFolder, exportDir);
-		user = sender;
-	}
-	
-	@Override
-	public void run()
-	{
-		output("Exporting to " + exportDir.getName() + " folder");
+    public ExportThread(String exportDir, ICommandSender sender)
+    {
+        this.exportDir = new File(ModulePermissions.permsFolder, exportDir);
+        user = sender;
+    }
 
-		output("getting dump...");
-		HashMap<String, Object> map = SqlHelper.dump();
-		output("dump complete.");
+    @Override
+    public void run()
+    {
+        output("Exporting to " + exportDir.getName() + " folder");
 
-		// make placeholder objects...
-		Object obj1, obj2, obj3;
+        output("getting dump...");
+        HashMap<String, Object> map = SqlHelper.dump();
+        output("dump complete.");
 
-		output("Saving Permissions");
-		obj1 = map.get("playerPerms");
-		obj2 = map.get("groupPerms");
-		FlatFilePermissions permissions = new FlatFilePermissions(exportDir);
-		permissions.save((ArrayList<PermissionHolder>) obj1, (ArrayList<PermissionHolder>) obj2);
+        // make placeholder objects...
+        Object obj1, obj2, obj3;
 
-		output("Saving Permission Properties");
-		obj1 = map.get("playerPermProps");
-		obj2 = map.get("groupPermProps");
-		FlatFilePermProps permProps = new FlatFilePermProps(exportDir);
-		permProps.save((ArrayList<PermissionPropHolder>) obj1, (ArrayList<PermissionPropHolder>) obj2);
+        output("Saving Permissions");
+        obj1 = map.get("playerPerms");
+        obj2 = map.get("groupPerms");
+        FlatFilePermissions permissions = new FlatFilePermissions(exportDir);
+        permissions.save((ArrayList<PermissionHolder>) obj1, (ArrayList<PermissionHolder>) obj2);
 
-		output("Saving Groups");
-		obj1 = map.get("groups");
-		obj2 = map.get("ladders");
-		obj3 = map.get("groupConnectors");
-		FlatFileGroups groups = new FlatFileGroups(exportDir);
-		groups.save((ArrayList<Group>) obj1, (ArrayList<PromotionLadder>) obj2, (HashMap<String, HashMap<String, ArrayList<String>>>) obj3);
+        output("Saving Permission Properties");
+        obj1 = map.get("playerPermProps");
+        obj2 = map.get("groupPermProps");
+        FlatFilePermProps permProps = new FlatFilePermProps(exportDir);
+        permProps.save((ArrayList<PermissionPropHolder>) obj1, (ArrayList<PermissionPropHolder>) obj2);
 
-		output("Saving Players");
-		obj1 = map.get("players");
-		FlatFilePlayers players = new FlatFilePlayers(exportDir);
-		players.save((ArrayList<String>) obj1);
+        output("Saving Groups");
+        obj1 = map.get("groups");
+        obj2 = map.get("ladders");
+        obj3 = map.get("groupConnectors");
+        FlatFileGroups groups = new FlatFileGroups(exportDir);
+        groups.save((ArrayList<Group>) obj1, (ArrayList<PromotionLadder>) obj2, (HashMap<String, HashMap<String, ArrayList<String>>>) obj3);
 
-		output("Export Complete");
-	}
+        output("Saving Players");
+        obj1 = map.get("players");
+        FlatFilePlayers players = new FlatFilePlayers(exportDir);
+        players.save((ArrayList<String>) obj1);
 
-	private void output(String msg)
-	{
-		if (user != null)
-		{
-			ChatUtils.sendMessage(user, "[PermSQL]" + msg);
-		}
-		else
-		{
-			OutputHandler.felog.finest(msg);
-		}
-	}
+        output("Export Complete");
+    }
+
+    private void output(String msg)
+    {
+        if (user != null)
+        {
+            ChatUtils.sendMessage(user, "[PermSQL]" + msg);
+        }
+        else
+        {
+            OutputHandler.felog.finest(msg);
+        }
+    }
 }

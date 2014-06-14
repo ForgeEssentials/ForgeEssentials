@@ -8,46 +8,46 @@ import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 
 @SaveableObject
-public class PWarp
-{
+public class PWarp {
     public static final String SEPERATOR = "#";
-    
-	@UniqueLoadingKey
-	@SaveableField
-	private String		name;
 
-	@SaveableField
-	private WarpPoint	point;
+    @UniqueLoadingKey
+    @SaveableField
+    private String name;
 
-	public PWarp(String username, String name, WarpPoint point)
-	{
-		this.name = username + SEPERATOR + name;
-		this.point = point;
-	}
+    @SaveableField
+    private WarpPoint point;
 
-	public String getFilename()
-	{
-		return name;
-	}
+    public PWarp(String username, String name, WarpPoint point)
+    {
+        this.name = username + SEPERATOR + name;
+        this.point = point;
+    }
 
-	public String getUsername()
-	{
-		return name.split(SEPERATOR)[0];
-	}
+    public String getFilename()
+    {
+        return name;
+    }
 
-	public String getName()
-	{
-		return name.split(SEPERATOR)[1];
-	}
+    public String getUsername()
+    {
+        return name.split(SEPERATOR)[0];
+    }
 
-	public WarpPoint getPoint()
-	{
-		return point;
-	}
+    public String getName()
+    {
+        return name.split(SEPERATOR)[1];
+    }
 
-	@Reconstructor
-	private static PWarp reconstruct(IReconstructData tag)
-	{
-		return new PWarp(((String) tag.getFieldValue("name")).split(SEPERATOR)[0], ((String) tag.getFieldValue("name")).split(SEPERATOR)[1], (WarpPoint) tag.getFieldValue("point"));
-	}
+    public WarpPoint getPoint()
+    {
+        return point;
+    }
+
+    @Reconstructor
+    private static PWarp reconstruct(IReconstructData tag)
+    {
+        return new PWarp(((String) tag.getFieldValue("name")).split(SEPERATOR)[0], ((String) tag.getFieldValue("name")).split(SEPERATOR)[1],
+                (WarpPoint) tag.getFieldValue("point"));
+    }
 }

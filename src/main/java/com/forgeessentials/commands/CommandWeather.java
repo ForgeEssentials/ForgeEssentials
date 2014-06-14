@@ -1,18 +1,16 @@
 package com.forgeessentials.commands;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.WeatherTimeData;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 
-public class CommandWeather extends FEcmdModuleCommands
-{
+public class CommandWeather extends FEcmdModuleCommands {
 
     @Override
     public String getCommandName()
@@ -35,9 +33,14 @@ public class CommandWeather extends FEcmdModuleCommands
             {
                 String[] newArgs = new String[args.length - 1];
                 for (int i = 0; i < args.length - 1; i++)
+                {
                     newArgs[i] = args[i + 1];
+                }
                 String msg = doCmd(sender, DimensionManager.getWorld(parseInt(sender, args[0])), newArgs);
-                if(msg != null) OutputHandler.chatConfirmation(sender, msg);    
+                if (msg != null)
+                {
+                    OutputHandler.chatConfirmation(sender, msg);
+                }
             }
             catch (Exception e)
             {
@@ -47,6 +50,7 @@ public class CommandWeather extends FEcmdModuleCommands
         {
             String msg = null;
             for (World world : DimensionManager.getWorlds())
+            {
                 try
                 {
                     msg = doCmd(sender, world, args);
@@ -55,10 +59,14 @@ public class CommandWeather extends FEcmdModuleCommands
                 {
                     break;
                 }
-            if(msg != null) OutputHandler.chatConfirmation(sender, msg);
+            }
+            if (msg != null)
+            {
+                OutputHandler.chatConfirmation(sender, msg);
+            }
         }
     }
-    
+
     public String doCmd(ICommandSender sender, World world, String[] args) throws Exception
     {
         if (args.length == 0)
@@ -68,14 +76,23 @@ public class CommandWeather extends FEcmdModuleCommands
         }
         WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
         wt.weatherSpecified = true;
-        
+
         if (args[0].equalsIgnoreCase("rain"))
         {
-            if (args.length == 1) wt.rain = !wt.rain;
+            if (args.length == 1)
+            {
+                wt.rain = !wt.rain;
+            }
             else
             {
-                if (args[1].equalsIgnoreCase("on")) wt.rain = true;
-                else if (args[1].equalsIgnoreCase("off")) wt.rain = false;
+                if (args[1].equalsIgnoreCase("on"))
+                {
+                    wt.rain = true;
+                }
+                else if (args[1].equalsIgnoreCase("off"))
+                {
+                    wt.rain = false;
+                }
                 else
                 {
                     OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [DimID, none for all] <rain|storm> [on|off]");
@@ -87,11 +104,20 @@ public class CommandWeather extends FEcmdModuleCommands
         }
         else if (args[0].equalsIgnoreCase("storm"))
         {
-            if (args.length == 1) wt.storm = !wt.storm;
+            if (args.length == 1)
+            {
+                wt.storm = !wt.storm;
+            }
             else
             {
-                if (args[1].equalsIgnoreCase("on")) wt.storm = true;
-                else if (args[1].equalsIgnoreCase("off")) wt.storm = false;
+                if (args[1].equalsIgnoreCase("on"))
+                {
+                    wt.storm = true;
+                }
+                else if (args[1].equalsIgnoreCase("off"))
+                {
+                    wt.storm = false;
+                }
                 else
                 {
                     OutputHandler.chatError(sender, "Improper syntax. Please try this instead:[DimID, none for all] <rain|storm> [on|off]");
@@ -114,15 +140,17 @@ public class CommandWeather extends FEcmdModuleCommands
         return true;
     }
 
-	@Override
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public int compareTo(Object o)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		// TODO Auto-generated method stub
-		return "/weather  [DimID, none for all] <rain|storm> [on|off] Allows for permanent manipulation of the weather.";
-	}
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        // TODO Auto-generated method stub
+        return "/weather  [DimID, none for all] <rain|storm> [on|off] Allows for permanent manipulation of the weather.";
+    }
 }

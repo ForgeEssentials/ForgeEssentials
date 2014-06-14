@@ -1,213 +1,207 @@
 package com.forgeessentials.core.moduleLauncher;
 
+import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
+import cpw.mods.fml.common.event.*;
+import net.minecraft.command.ICommandSender;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeMap;
 
-import net.minecraft.command.ICommandSender;
+public class ModuleLauncher {
+    public ModuleLauncher()
+    {
+        instance = this;
+    }
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.OutputHandler;
+    public static ModuleLauncher instance;
+    private static TreeMap<String, ModuleContainer> containerMap = new TreeMap<String, ModuleContainer>();
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+    public void preLoad(FMLPreInitializationEvent e)
+    {
+        OutputHandler.felog.info("Discovering and loading modules...");
 
-public class ModuleLauncher
-{
-	public ModuleLauncher()
-	{
-		instance = this;
-	}
+        // started ASM handling for the module loading.
+        Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
 
-	public static ModuleLauncher					instance;
-	private static TreeMap<String, ModuleContainer>	containerMap	= new TreeMap<String, ModuleContainer>();
+        // LOAD THE MODULES!
+        ModuleContainer temp, other;
+        for (ASMData asm : data)
+        {
+            temp = new ModuleContainer(asm);
+            if (temp.isLoadable)
+            {
+                if (containerMap.containsKey(temp.name))
+                {
+                    other = containerMap.get(temp.name);
+                    if (temp.doesOverride && other.mod == ForgeEssentials.instance)
+                    {
+                        containerMap.put(temp.name, temp);
+                    }
+                    else if (temp.mod == ForgeEssentials.instance && other.doesOverride)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        throw new RuntimeException("{FE-Module-Launcher} " + temp.name + " is conflicting with " + other.name);
+                    }
+                }
+                else
+                {
+                    containerMap.put(temp.name, temp);
+                }
 
-	public void preLoad(FMLPreInitializationEvent e)
-	{
-		OutputHandler.felog.info("Discovering and loading modules...");
+                temp.createAndPopulate();
+                OutputHandler.felog.info("Loaded " + temp.name);
+            }
+        }
 
-		// started ASM handling for the module loading.
-		Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
+        Collection<ModuleContainer> modules = containerMap.values();
 
-		// LOAD THE MODULES!
-		ModuleContainer temp, other;
-		for (ASMData asm : data)
-		{
-			temp = new ModuleContainer(asm);
-			if (temp.isLoadable)
-			{
-				if (containerMap.containsKey(temp.name))
-				{
-					other = containerMap.get(temp.name);
-					if (temp.doesOverride && other.mod == ForgeEssentials.instance)
-					{
-						containerMap.put(temp.name, temp);
-					}
-					else if (temp.mod == ForgeEssentials.instance && other.doesOverride)
-					{
-						continue;
-					}
-					else
-						throw new RuntimeException("{FE-Module-Launcher} " + temp.name + " is conflicting with " + other.name);
-				}
-				else
-				{
-					containerMap.put(temp.name, temp);
-				}
+        CallableMap map = new CallableMap();
 
-				temp.createAndPopulate();
-				OutputHandler.felog.info("Loaded " + temp.name);
-			}
-		}
+        data = e.getAsmData().getAll(ForgeEssentialsRegistrar.class.getName());
+        Class<?> c;
+        Object obj = null;
+        for (ASMData asm : data)
+        {
+            try
+            {
+                obj = null;
+                c = Class.forName(asm.getClassName());
 
-		Collection<ModuleContainer> modules = containerMap.values();
+                try
+                {
+                    obj = c.newInstance();
+                    map.scanObject(obj);
+                    // this works?? skip everything else and go on to the next one.
+                    continue;
+                }
+                catch (Exception e1)
+                {
+                    // do nothing.
+                }
 
-		CallableMap map = new CallableMap();
+                // if this isn't skipped.. it grabs the class, and all static methods.
+                map.scanClass(c);
 
-		data = e.getAsmData().getAll(ForgeEssentialsRegistrar.class.getName());
-		Class<?> c;
-		Object obj = null;
-		for (ASMData asm : data)
-		{
-			try
-			{
-				obj = null;
-				c = Class.forName(asm.getClassName());
+            }
+            catch (ClassNotFoundException e1)
+            {
+                // nothing needed.
+            }
+        }
 
-				try
-				{
-					obj = c.newInstance();
-					map.scanObject(obj);
-					// this works?? skip everything else and go on to the next one.
-					continue;
-				}
-				catch (Exception e1)
-				{
-					// do nothing.
-				}
+        for (ModContainer container : Loader.instance().getModList())
+        {
+            if (container.getMod() != null)
+            {
+                map.scanObject(container);
+            }
+        }
 
-				// if this isn't skipped.. it grabs the class, and all static methods.
-				map.scanClass(c);
+        // check modules for the CallableMap stuff.
+        for (ModuleContainer module : modules)
+        {
+            map.scanObject(module);
+        }
 
-			}
-			catch (ClassNotFoundException e1)
-			{
-				// nothing needed.
-			}
-		}
+        // run the preinits.
+        for (ModuleContainer module : modules)
+        {
+            module.runPreInit(e, map);
+        }
 
-		for (ModContainer container : Loader.instance().getModList())
-		{
-			if (container.getMod() != null)
-			{
-				map.scanObject(container);
-			}
-		}
+        // run the config init methods..
+        boolean generate = false;
+        for (ModuleContainer module : modules)
+        {
+            ModuleConfigBase cfg = module.getConfig();
 
-		// check modules for the CallableMap stuff.
-		for (ModuleContainer module : modules)
-		{
-			map.scanObject(module);
-		}
+            if (cfg != null)
+            {
+                File file = cfg.getFile();
 
-		// run the preinits.
-		for (ModuleContainer module : modules)
-		{
-			module.runPreInit(e, map);
-		}
+                if (!file.getParentFile().exists())
+                {
+                    generate = true;
+                    file.getParentFile().mkdirs();
+                }
 
-		// run the config init methods..
-		boolean generate = false;
-		for (ModuleContainer module : modules)
-		{
-			ModuleConfigBase cfg = module.getConfig();
+                if (!generate && (!file.exists() || !file.isFile()))
+                {
+                    generate = true;
+                }
 
-			if (cfg != null)
-			{
-				File file = cfg.getFile();
+                cfg.setGenerate(generate);
+                cfg.init();
+            }
+        }
+    }
 
-				if (!file.getParentFile().exists())
-				{
-					generate = true;
-					file.getParentFile().mkdirs();
-				}
+    public void load(FMLInitializationEvent e)
+    {
+        for (ModuleContainer module : containerMap.values())
+        {
+            module.runInit(e);
+        }
+    }
 
-				if (!generate && (!file.exists() || !file.isFile()))
-				{
-					generate = true;
-				}
+    public void postLoad(FMLPostInitializationEvent e)
+    {
+        for (ModuleContainer module : containerMap.values())
+        {
+            module.runPostInit(e);
+        }
+    }
 
-				cfg.setGenerate(generate);
-				cfg.init();
-			}
-		}
-	}
+    public void serverStarting(FMLServerStartingEvent e)
+    {
+        for (ModuleContainer module : containerMap.values())
+        {
+            module.runServerInit(e);
+        }
+    }
 
-	public void load(FMLInitializationEvent e)
-	{
-		for (ModuleContainer module : containerMap.values())
-		{
-			module.runInit(e);
-		}
-	}
+    public void serverStarted(FMLServerStartedEvent e)
+    {
+        for (ModuleContainer module : containerMap.values())
+        {
+            module.runServerPostInit(e);
+        }
+    }
 
-	public void postLoad(FMLPostInitializationEvent e)
-	{
-		for (ModuleContainer module : containerMap.values())
-		{
-			module.runPostInit(e);
-		}
-	}
+    public void serverStopping(FMLServerStoppingEvent e)
+    {
+        for (ModuleContainer module : containerMap.values())
+        {
+            module.runServerStop(e);
+        }
+    }
 
-	public void serverStarting(FMLServerStartingEvent e)
-	{
-		for (ModuleContainer module : containerMap.values())
-		{
-			module.runServerInit(e);
-		}
-	}
+    public void reloadConfigs(ICommandSender sender)
+    {
+        ModuleConfigBase config;
+        for (ModuleContainer module : containerMap.values())
+        {
+            config = module.getConfig();
+            if (config != null)
+            {
+                config.forceLoad(sender);
+            }
+            module.runReload(sender);
+        }
+    }
 
-	public void serverStarted(FMLServerStartedEvent e)
-	{
-		for (ModuleContainer module : containerMap.values())
-		{
-			module.runServerPostInit(e);
-		}
-	}
-
-	public void serverStopping(FMLServerStoppingEvent e)
-	{
-		for (ModuleContainer module : containerMap.values())
-		{
-			module.runServerStop(e);
-		}
-	}
-
-	public void reloadConfigs(ICommandSender sender)
-	{
-		ModuleConfigBase config;
-		for (ModuleContainer module : containerMap.values())
-		{
-			config = module.getConfig();
-			if (config != null)
-			{
-				config.forceLoad(sender);
-			}
-			module.runReload(sender);
-		}
-	}
-
-	public static String[] getModuleList()
-	{
-		return containerMap.keySet().toArray(new String[] {});
-	}
+    public static String[] getModuleList()
+    {
+        return containerMap.keySet().toArray(new String[] { });
+    }
 }

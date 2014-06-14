@@ -1,46 +1,45 @@
 package com.forgeessentials.util.events.modules;
 
-import java.util.logging.Logger;
-
 import com.forgeessentials.core.moduleLauncher.CallableMap;
 import com.forgeessentials.core.moduleLauncher.ModuleContainer;
 import com.forgeessentials.util.OutputHandler;
-
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLStateEvent;
 
-public class FEModulePreInitEvent extends FEModuleEvent
-{
-	private FMLPreInitializationEvent	event;
-	private CallableMap					callables;
+import java.util.logging.Logger;
 
-	public FEModulePreInitEvent(ModuleContainer container, FMLPreInitializationEvent event, CallableMap map)
-	{
-		super(container);
-		this.event = event;
-		callables = map;
-	}
+public class FEModulePreInitEvent extends FEModuleEvent {
+    private FMLPreInitializationEvent event;
+    private CallableMap callables;
 
-	/**
-	 * Get a logger instance configured to write to the FE Log as a parent,
-	 * identified by ModuleName. Handy for module logging!
-	 * @return A logger
-	 */
-	public Logger getModLog()
-	{
-		Logger log = Logger.getLogger(container.name);
-		log.setParent(OutputHandler.felog);
-		return log;
-	}
+    public FEModulePreInitEvent(ModuleContainer container, FMLPreInitializationEvent event, CallableMap map)
+    {
+        super(container);
+        this.event = event;
+        callables = map;
+    }
 
-	@Override
-	public FMLStateEvent getFMLEvent()
-	{
-		return event;
-	}
+    /**
+     * Get a logger instance configured to write to the FE Log as a parent,
+     * identified by ModuleName. Handy for module logging!
+     *
+     * @return A logger
+     */
+    public Logger getModLog()
+    {
+        Logger log = Logger.getLogger(container.name);
+        log.setParent(OutputHandler.felog);
+        return log;
+    }
 
-	public CallableMap getCallableMap()
-	{
-		return callables;
-	}
+    @Override
+    public FMLStateEvent getFMLEvent()
+    {
+        return event;
+    }
+
+    public CallableMap getCallableMap()
+    {
+        return callables;
+    }
 }

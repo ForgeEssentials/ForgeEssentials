@@ -1,108 +1,123 @@
 package com.forgeessentials.commands.util;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Set;
-
-import net.minecraft.entity.passive.EntityTameable;
-
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.api.EnumMobType.FEMob;
 import com.forgeessentials.api.EnumMobType.FEMob.IsTamed;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
-
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.entity.passive.EntityTameable;
 
-public class MobTypeLoader
-{
-	public static void preLoad(FEModulePreInitEvent event)
-	{
-		OutputHandler.felog.info("Discovering and loading FEMob data...");
-		// started ASM handling for the module loading.
-		Set<ASMData> data = ((FMLPreInitializationEvent) event.getFMLEvent()).getAsmData().getAll(FEMob.class.getName());
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Set;
 
-		String className;
-		EnumMobType type;
-		for (ASMData asm : data)
-		{
-			Class<?> c = null;
-			className = asm.getClassName();
+public class MobTypeLoader {
+    public static void preLoad(FEModulePreInitEvent event)
+    {
+        OutputHandler.felog.info("Discovering and loading FEMob data...");
+        // started ASM handling for the module loading.
+        Set<ASMData> data = ((FMLPreInitializationEvent) event.getFMLEvent()).getAsmData().getAll(FEMob.class.getName());
 
-			try
-			{
-				c = Class.forName(className);
-			}
-			catch (Exception e)
-			{
-				OutputHandler.felog.info("Error trying to load " + asm.getClassName() + " as a FEMob!");
-				e.printStackTrace();
-				return;
-			}
+        String className;
+        EnumMobType type;
+        for (ASMData asm : data)
+        {
+            Class<?> c = null;
+            className = asm.getClassName();
 
-			FEMob annot = c.getAnnotation(FEMob.class);
-			if (annot == null)
-				throw new IllegalArgumentException(c.getName() + " doesn't have the @FEMob annotation!");
+            try
+            {
+                c = Class.forName(className);
+            }
+            catch (Exception e)
+            {
+                OutputHandler.felog.info("Error trying to load " + asm.getClassName() + " as a FEMob!");
+                e.printStackTrace();
+                return;
+            }
 
-			type = annot.type();
-			if (type != EnumMobType.TAMEABLE)
-			{
-				// for all the others.. return...
-				MobTypeRegistry.addMob(type, className);
-				continue;
-			}
+            FEMob annot = c.getAnnotation(FEMob.class);
+            if (annot == null)
+            {
+                throw new IllegalArgumentException(c.getName() + " doesn't have the @FEMob annotation!");
+            }
 
-			// continue cuz its a tameable...
+            type = annot.type();
+            if (type != EnumMobType.TAMEABLE)
+            {
+                // for all the others.. return...
+                MobTypeRegistry.addMob(type, className);
+                continue;
+            }
 
-			if (EntityTameable.class.isAssignableFrom(c))
-			{
-				// do NOT add to the map.. its unnecessary...
-				continue;
-			}
+            // continue cuz its a tameable...
 
-			String isTameableName = null;
+            if (EntityTameable.class.isAssignableFrom(c))
+            {
+                // do NOT add to the map.. its unnecessary...
+                continue;
+            }
 
-			// check teh fields
-			for (Field f : c.getDeclaredFields())
-			{
-				if (f.isAnnotationPresent(IsTamed.class))
-				{
-					if (isTameableName != null)
-						throw new RuntimeException("Two elements in " + className + " cannot be marked @IsTamed!");
-					else if (!f.getType().equals(boolean.class))
-						throw new RuntimeException(f.getName() + " in " + className + " must be of type boolean!");
-					else if (Modifier.isStatic(f.getModifiers()))
-						throw new RuntimeException(f.getName() + " in " + className + " cannot be static!");
+            String isTameableName = null;
 
-					isTameableName = f.getName();
-				}
-			}
+            // check teh fields
+            for (Field f : c.getDeclaredFields())
+            {
+                if (f.isAnnotationPresent(IsTamed.class))
+                {
+                    if (isTameableName != null)
+                    {
+                        throw new RuntimeException("Two elements in " + className + " cannot be marked @IsTamed!");
+                    }
+                    else if (!f.getType().equals(boolean.class))
+                    {
+                        throw new RuntimeException(f.getName() + " in " + className + " must be of type boolean!");
+                    }
+                    else if (Modifier.isStatic(f.getModifiers()))
+                    {
+                        throw new RuntimeException(f.getName() + " in " + className + " cannot be static!");
+                    }
 
-			// check the methods...
-			for (Method m : c.getDeclaredMethods())
-			{
-				if (m.isAnnotationPresent(IsTamed.class))
-				{
-					if (isTameableName != null)
-						throw new RuntimeException("Two elements in " + className + " cannot be marked @IsTamed!");
-					else if (!m.getReturnType().equals(boolean.class))
-						throw new RuntimeException(m.getName() + " in " + className + " must return a boolean!");
-					else if (m.getParameterTypes().length > 0)
-						throw new RuntimeException(m.getName() + " in " + className + " must take no parameters or arguments!");
-					else if (Modifier.isStatic(m.getModifiers()))
-						throw new RuntimeException(m.getName() + " in " + className + " cannot be static!");
+                    isTameableName = f.getName();
+                }
+            }
 
-					isTameableName = m.getName() + "()";
-				}
-			}
+            // check the methods...
+            for (Method m : c.getDeclaredMethods())
+            {
+                if (m.isAnnotationPresent(IsTamed.class))
+                {
+                    if (isTameableName != null)
+                    {
+                        throw new RuntimeException("Two elements in " + className + " cannot be marked @IsTamed!");
+                    }
+                    else if (!m.getReturnType().equals(boolean.class))
+                    {
+                        throw new RuntimeException(m.getName() + " in " + className + " must return a boolean!");
+                    }
+                    else if (m.getParameterTypes().length > 0)
+                    {
+                        throw new RuntimeException(m.getName() + " in " + className + " must take no parameters or arguments!");
+                    }
+                    else if (Modifier.isStatic(m.getModifiers()))
+                    {
+                        throw new RuntimeException(m.getName() + " in " + className + " cannot be static!");
+                    }
 
-			if (isTameableName == null)
-				throw new RuntimeException(className + " MUST have an elemnt marked @isTamed! Override an inhertied method even!");
+                    isTameableName = m.getName() + "()";
+                }
+            }
 
-			// add to list and return...
-			MobTypeRegistry.addMob(type, className, isTameableName);
-		}
-	}
+            if (isTameableName == null)
+            {
+                throw new RuntimeException(className + " MUST have an elemnt marked @isTamed! Override an inhertied method even!");
+            }
+
+            // add to list and return...
+            MobTypeRegistry.addMob(type, className, isTameableName);
+        }
+    }
 }

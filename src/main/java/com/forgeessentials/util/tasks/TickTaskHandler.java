@@ -1,63 +1,63 @@
 package com.forgeessentials.util.tasks;
 
 //Depreciated
-import java.util.EnumSet;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
-public final class TickTaskHandler implements ITickHandler
-{
-	public static final int						MAX_BLOCK_UPDATES	= 10;
-	protected ConcurrentLinkedQueue<ITickTask>	tasks				= new ConcurrentLinkedQueue<ITickTask>();
+import java.util.EnumSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
-	{
+public final class TickTaskHandler implements ITickHandler {
+    public static final int MAX_BLOCK_UPDATES = 10;
+    protected ConcurrentLinkedQueue<ITickTask> tasks = new ConcurrentLinkedQueue<ITickTask>();
 
-		int blockCounter = 0;
+    @Override
+    public void tickStart(EnumSet<TickType> type, Object... tickData)
+    {
 
-		for (ITickTask task : tasks)
-		{
-			// remove the compelte ones
-			if (task.isComplete())
-			{
-				task.onComplete();
-				tasks.remove(task);
-			}
+        int blockCounter = 0;
 
-			// add the blockCounter if it edits blocks
-			else if (task.editsBlocks() && blockCounter <= MAX_BLOCK_UPDATES)
-			{
-				task.tick();
-				blockCounter++;
-			}
+        for (ITickTask task : tasks)
+        {
+            // remove the compelte ones
+            if (task.isComplete())
+            {
+                task.onComplete();
+                tasks.remove(task);
+            }
 
-			// otherwise just tick
-			else
-			{
-				task.tick();
-			}
-		}
-	}
+            // add the blockCounter if it edits blocks
+            else if (task.editsBlocks() && blockCounter <= MAX_BLOCK_UPDATES)
+            {
+                task.tick();
+                blockCounter++;
+            }
 
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
-	{
-		// DO NOTHING!!!! NOTHING HERE!!!!
-	}
+            // otherwise just tick
+            else
+            {
+                task.tick();
+            }
+        }
+    }
 
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of(TickType.SERVER);
-	}
+    @Override
+    public void tickEnd(EnumSet<TickType> type, Object... tickData)
+    {
+        // DO NOTHING!!!! NOTHING HERE!!!!
+    }
 
-	@Override
-	public String getLabel()
-	{
-		return "FE_TickTasks";
-	}
+    @Override
+    public EnumSet<TickType> ticks()
+    {
+        return EnumSet.of(TickType.SERVER);
+    }
+
+    @Override
+    public String getLabel()
+    {
+        return "FE_TickTasks";
+    }
 
 }

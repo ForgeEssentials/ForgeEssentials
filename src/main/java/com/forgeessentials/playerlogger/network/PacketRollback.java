@@ -1,22 +1,20 @@
 package com.forgeessentials.playerlogger.network;
 
+import com.forgeessentials.core.network.ForgeEssentialsPacket;
+import com.forgeessentials.playerlogger.blockChange;
+import com.forgeessentials.util.OutputHandler;
+import net.minecraft.network.packet.Packet250CustomPayload;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
-import net.minecraft.network.packet.Packet250CustomPayload;
+public class PacketRollback extends ForgeEssentialsPacket {
+    public static final byte packetID = 2;
 
-import com.forgeessentials.core.network.ForgeEssentialsPacket;
-import com.forgeessentials.playerlogger.blockChange;
-import com.forgeessentials.util.OutputHandler;
+    private Packet250CustomPayload packet = new Packet250CustomPayload();
 
-public class PacketRollback extends ForgeEssentialsPacket
-{
-    public static final byte        packetID    = 2;
-
-    private Packet250CustomPayload  packet = new Packet250CustomPayload();
-    
-    public PacketRollback (int dim, ArrayList<blockChange> changes)
+    public PacketRollback(int dim, ArrayList<blockChange> changes)
     {
         ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
         DataOutputStream stream = new DataOutputStream(streambyte);
@@ -46,11 +44,11 @@ public class PacketRollback extends ForgeEssentialsPacket
                     }
                 }
             }
-            
+
             packet.channel = FECHANNEL;
             packet.data = streambyte.toByteArray();
             packet.length = packet.data.length;
-            
+
             stream.close();
             streambyte.close();
         }
@@ -60,7 +58,7 @@ public class PacketRollback extends ForgeEssentialsPacket
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public Packet250CustomPayload getPayload()
     {

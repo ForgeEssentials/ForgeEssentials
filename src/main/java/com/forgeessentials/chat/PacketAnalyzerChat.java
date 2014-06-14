@@ -1,15 +1,13 @@
 package com.forgeessentials.chat;
 
+import com.forgeessentials.api.IPacketAnalyzer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet201PlayerInfo;
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.api.IPacketAnalyzer;
-
-public class PacketAnalyzerChat implements IPacketAnalyzer
-{
+public class PacketAnalyzerChat implements IPacketAnalyzer {
     /*
      * We arn't expecting any incoming packets.
      */
@@ -21,7 +19,7 @@ public class PacketAnalyzerChat implements IPacketAnalyzer
 
     @Override
     public Packet analyzeOutgoing(Packet packet)
-    {   
+    {
         if (packet instanceof Packet201PlayerInfo)
         {
             Packet201PlayerInfo p201 = (Packet201PlayerInfo) packet;
@@ -31,7 +29,7 @@ public class PacketAnalyzerChat implements IPacketAnalyzer
                 p201.playerName = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
             }
         }
-        
+
         return packet;
     }
 }

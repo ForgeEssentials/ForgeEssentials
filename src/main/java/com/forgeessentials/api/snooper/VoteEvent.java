@@ -1,61 +1,60 @@
 package com.forgeessentials.api.snooper;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.forgeessentials.api.json.JSONException;
+import com.forgeessentials.api.json.JSONObject;
 import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.Event;
 
-import com.forgeessentials.api.json.JSONException;
-import com.forgeessentials.api.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Event triggered when the snooper gets a vote from a service.
- *
+ * <p/>
  * Note that the player might be offline or not even play on the server.
+ *
  * @author Dries007
  */
 
 @Cancelable
-public class VoteEvent extends Event
-{  
-	public String	player;
-	public String	serviceName;
-	public String	ip;
-	public String	timeStamp;
-	private boolean	sane		= false;
-	List<String>	feedback	= new ArrayList<String>();
+public class VoteEvent extends Event {
+    public String player;
+    public String serviceName;
+    public String ip;
+    public String timeStamp;
+    private boolean sane = false;
+    List<String> feedback = new ArrayList<String>();
 
-	public VoteEvent(String player, String serviceName, String ip, String timeStamp)
-	{
-		this.player = player;
-		this.serviceName = serviceName;
-		this.ip = ip;
-		this.timeStamp = timeStamp;
-		sane = true;
-	}
+    public VoteEvent(String player, String serviceName, String ip, String timeStamp)
+    {
+        this.player = player;
+        this.serviceName = serviceName;
+        this.ip = ip;
+        this.timeStamp = timeStamp;
+        sane = true;
+    }
 
-	public VoteEvent(String decoded)
-	{
-		try
-		{
-			JSONObject json = new JSONObject(decoded);
-			player = json.getString("player");
-			serviceName = json.getString("serviceName");
-			ip = json.getString("ip");
-			timeStamp = json.getJSONObject("timeStamp").getString("date");
-			sane = true;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
+    public VoteEvent(String decoded)
+    {
+        try
+        {
+            JSONObject json = new JSONObject(decoded);
+            player = json.getString("player");
+            serviceName = json.getString("serviceName");
+            ip = json.getString("ip");
+            timeStamp = json.getJSONObject("timeStamp").getString("date");
+            sane = true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	public String toString()
-	{
-	    try
+    @Override
+    public String toString()
+    {
+        try
         {
             JSONObject json = new JSONObject();
             json.put("player", player);
@@ -69,21 +68,21 @@ public class VoteEvent extends Event
         {
             e.printStackTrace();
         }
-	    return "";
-	}
+        return "";
+    }
 
-	public boolean isSane()
-	{
-		return sane;
-	}
+    public boolean isSane()
+    {
+        return sane;
+    }
 
-	public void setFeedback(String text)
-	{
-		feedback.add(text);
-	}
+    public void setFeedback(String text)
+    {
+        feedback.add(text);
+    }
 
-	public List<String> getFeedback()
-	{
-		return feedback;
-	}
+    public List<String> getFeedback()
+    {
+        return feedback;
+    }
 }

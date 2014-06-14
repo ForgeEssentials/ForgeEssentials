@@ -1,15 +1,5 @@
 package com.forgeessentials.auth;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
@@ -18,391 +8,437 @@ import com.forgeessentials.core.commands.PermissionDeniedException;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
+import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
-public class CommandAuth extends ForgeEssentialsCommandBase
-{
-	private static String[]	playerCommands	= new String[] { "help", "login", "register", "changepass", "kick", "setpass", "unregister" };
-	private static String[]	serverCommands	= new String[] { "help", "kick", "setpass", "unregister" };
+import java.util.ArrayList;
+import java.util.List;
 
-	@Override
-	public String getCommandName()
-	{
-		return "auth";
-	}
+public class CommandAuth extends ForgeEssentialsCommandBase {
+    private static String[] playerCommands = new String[] { "help", "login", "register", "changepass", "kick", "setpass", "unregister" };
+    private static String[] serverCommands = new String[] { "help", "kick", "setpass", "unregister" };
 
-	@Override
-	public List<?> getCommandAliases()
-	{
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("AUTH");
-		return list;
-	}
+    @Override
+    public String getCommandName()
+    {
+        return "auth";
+    }
 
-	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
-	{
-		if (args.length == 0)
-			throw new WrongUsageException("command.auth.usage");
+    @Override
+    public List<?> getCommandAliases()
+    {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("AUTH");
+        return list;
+    }
 
-		boolean hasAdmin = APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin"));
+    @Override
+    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    {
+        if (args.length == 0)
+        {
+            throw new WrongUsageException("command.auth.usage");
+        }
 
-		// one arg? must be help.
-		if (args.length == 1)
-		{
-			if (args[0].equalsIgnoreCase("help"))
-			{
-				OutputHandler.chatConfirmation(sender, " - /auth register <password>");
-				OutputHandler.chatConfirmation(sender, " - /auth login <password>");
-				OutputHandler.chatConfirmation(sender, " - /auth changepass <oldpass> <newpass>  - changes your password");
+        boolean hasAdmin = APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin"));
 
-				if (!hasAdmin)
-					return;
+        // one arg? must be help.
+        if (args.length == 1)
+        {
+            if (args[0].equalsIgnoreCase("help"))
+            {
+                OutputHandler.chatConfirmation(sender, " - /auth register <password>");
+                OutputHandler.chatConfirmation(sender, " - /auth login <password>");
+                OutputHandler.chatConfirmation(sender, " - /auth changepass <oldpass> <newpass>  - changes your password");
 
-				OutputHandler.chatConfirmation(sender, " - /auth kick <player>  - forces the player to login again");
-				OutputHandler.chatConfirmation(sender, " - /auth setpass <player> <password>  - sets the players password");
-				OutputHandler.chatConfirmation(sender, " - /auth unregister <player>  - forces the player to register again");
-				return;
-			}
-			else
-				throw new WrongUsageException("/auth help");
-		}
+                if (!hasAdmin)
+                {
+                    return;
+                }
 
-		// 2 args? seconds needs to be the player.
-		if (args.length == 2)
-		{
-			// parse login
-			if (args[0].equalsIgnoreCase("login"))
-			{
-				PlayerPassData data = PlayerPassData.getData(sender.username);
-				if (data == null)
-				{
-					OutputHandler.chatError(sender, String.format("Player %s is not registered!", sender.username));
-					return;
-				}
+                OutputHandler.chatConfirmation(sender, " - /auth kick <player>  - forces the player to login again");
+                OutputHandler.chatConfirmation(sender, " - /auth setpass <player> <password>  - sets the players password");
+                OutputHandler.chatConfirmation(sender, " - /auth unregister <player>  - forces the player to register again");
+                return;
+            }
+            else
+            {
+                throw new WrongUsageException("/auth help");
+            }
+        }
 
-				String pass = ModuleAuth.encrypt(args[1]);
+        // 2 args? seconds needs to be the player.
+        if (args.length == 2)
+        {
+            // parse login
+            if (args[0].equalsIgnoreCase("login"))
+            {
+                PlayerPassData data = PlayerPassData.getData(sender.username);
+                if (data == null)
+                {
+                    OutputHandler.chatError(sender, String.format("Player %s is not registered!", sender.username));
+                    return;
+                }
 
-				// login worked
-				if (data.password.equals(pass))
-				{
-					ModuleAuth.unLogged.remove(sender.username);
-					OutputHandler.chatConfirmation(sender, "Login successful.");
-				}
-				else
-				{
-					OutputHandler.chatError(sender, "Login failed.");
-				}
+                String pass = ModuleAuth.encrypt(args[1]);
 
-				return;
+                // login worked
+                if (data.password.equals(pass))
+                {
+                    ModuleAuth.unLogged.remove(sender.username);
+                    OutputHandler.chatConfirmation(sender, "Login successful.");
+                }
+                else
+                {
+                    OutputHandler.chatError(sender, "Login failed.");
+                }
 
-			}
-			// parse register
-			else if (args[0].equalsIgnoreCase("register"))
-			{
-				if (PlayerPassData.getData(sender.username) != null)
-				{
-					OutputHandler.chatError(sender, String.format("Player %s is already registered!", sender.username));
-					return;
-				}
+                return;
 
-				if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineReg)
-				{
-					OutputHandler.chatError(sender, "Registrations have been disabled.");
-					return;
-				}
+            }
+            // parse register
+            else if (args[0].equalsIgnoreCase("register"))
+            {
+                if (PlayerPassData.getData(sender.username) != null)
+                {
+                    OutputHandler.chatError(sender, String.format("Player %s is already registered!", sender.username));
+                    return;
+                }
 
-				String pass = ModuleAuth.encrypt(args[1]);
-				PlayerPassData.registerData(sender.username, pass);
-				ModuleAuth.unRegistered.remove(sender.username);
-				OutputHandler.chatConfirmation(sender, "Registration successful.");
-				return;
-			}
+                if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineReg)
+                {
+                    OutputHandler.chatError(sender, "Registrations have been disabled.");
+                    return;
+                }
 
-			// stop if unlogged.
-			if (ModuleAuth.unLogged.contains(sender.username))
-			{
-				OutputHandler.chatError(sender, "Login required. Try /auth help.");
-				return;
-			}
-			else if (ModuleAuth.unRegistered.contains(sender.username))
-			{
-				OutputHandler.chatError(sender, "Registration required. Try /auth help.");
-				return;
-			}
+                String pass = ModuleAuth.encrypt(args[1]);
+                PlayerPassData.registerData(sender.username, pass);
+                ModuleAuth.unRegistered.remove(sender.username);
+                OutputHandler.chatConfirmation(sender, "Registration successful.");
+                return;
+            }
 
-			// check for players.. all the rest of these should be greated than 1.
-			String name = args[1];
-			boolean isLogged = true;
+            // stop if unlogged.
+            if (ModuleAuth.unLogged.contains(sender.username))
+            {
+                OutputHandler.chatError(sender, "Login required. Try /auth help.");
+                return;
+            }
+            else if (ModuleAuth.unRegistered.contains(sender.username))
+            {
+                OutputHandler.chatError(sender, "Registration required. Try /auth help.");
+                return;
+            }
 
-			// check if the player is logged.
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
-			if (player == null)
-			{
-				OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
-				isLogged = false;
-			}
+            // check for players.. all the rest of these should be greated than 1.
+            String name = args[1];
+            boolean isLogged = true;
 
-			// parse ./auth kick
-			if (args[0].equalsIgnoreCase("kick"))
-			{
-				if (!hasAdmin)
-					throw new PermissionDeniedException();
-				else if (!isLogged)
-					throw new PlayerNotFoundException();
-				else
-				{
-					ModuleAuth.unLogged.add(name);
-					OutputHandler.chatConfirmation(sender, String.format("Player %s was logged out from the authentication service.", name));
-					OutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
-					return;
-				}
-			}
-			// parse ./auth setpass
-			else if (args[0].equalsIgnoreCase("setPass"))
-			{
-				if (!hasAdmin)
-					throw new PermissionDeniedException();
+            // check if the player is logged.
+            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
+            if (player == null)
+            {
+                OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
+                isLogged = false;
+            }
 
-				throw new WrongUsageException("/auth setpass <player> <password>");
-			}
+            // parse ./auth kick
+            if (args[0].equalsIgnoreCase("kick"))
+            {
+                if (!hasAdmin)
+                {
+                    throw new PermissionDeniedException();
+                }
+                else if (!isLogged)
+                {
+                    throw new PlayerNotFoundException();
+                }
+                else
+                {
+                    ModuleAuth.unLogged.add(name);
+                    OutputHandler.chatConfirmation(sender, String.format("Player %s was logged out from the authentication service.", name));
+                    OutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
+                    return;
+                }
+            }
+            // parse ./auth setpass
+            else if (args[0].equalsIgnoreCase("setPass"))
+            {
+                if (!hasAdmin)
+                {
+                    throw new PermissionDeniedException();
+                }
 
-			// parse ./auth unregister
-			else if (args[0].equalsIgnoreCase("unregister"))
-			{
-				if (!hasAdmin)
-					throw new PermissionDeniedException();
+                throw new WrongUsageException("/auth setpass <player> <password>");
+            }
 
-				if (PlayerPassData.getData(name) == null)
-					throw new WrongUsageException(String.format("Player %s is not registered!", name));
+            // parse ./auth unregister
+            else if (args[0].equalsIgnoreCase("unregister"))
+            {
+                if (!hasAdmin)
+                {
+                    throw new PermissionDeniedException();
+                }
 
-				PlayerPassData.deleteData(name);
-				OutputHandler.chatConfirmation(sender, String.format("Player %s has been removed from the authentication service.", name));
-				return;
-			}
+                if (PlayerPassData.getData(name) == null)
+                {
+                    throw new WrongUsageException(String.format("Player %s is not registered!", name));
+                }
 
-			// ERROR! :D
-			else
-				throw new WrongUsageException("/auth help");
-		}
-		// 3 args? must be a comtmand - player - pass
-		else if (args.length == 3)
-		{
-			if (ModuleAuth.unLogged.contains(sender.username))
-			{
-				OutputHandler.chatError(sender, "Login required. Try /auth help.");
-				return;
-			}
-			else if (ModuleAuth.unRegistered.contains(sender.username))
-			{
-				OutputHandler.chatError(sender, "Registration required. Try /auth help.");
-				return;
-			}
+                PlayerPassData.deleteData(name);
+                OutputHandler.chatConfirmation(sender, String.format("Player %s has been removed from the authentication service.", name));
+                return;
+            }
 
-			// parse changePass
-			if (args[0].equalsIgnoreCase("changepass"))
-			{
-				PlayerPassData data = PlayerPassData.getData(sender.username);
-				String oldpass = ModuleAuth.encrypt(args[1]);
-				String newPass = ModuleAuth.encrypt(args[2]);
+            // ERROR! :D
+            else
+            {
+                throw new WrongUsageException("/auth help");
+            }
+        }
+        // 3 args? must be a comtmand - player - pass
+        else if (args.length == 3)
+        {
+            if (ModuleAuth.unLogged.contains(sender.username))
+            {
+                OutputHandler.chatError(sender, "Login required. Try /auth help.");
+                return;
+            }
+            else if (ModuleAuth.unRegistered.contains(sender.username))
+            {
+                OutputHandler.chatError(sender, "Registration required. Try /auth help.");
+                return;
+            }
 
-				if (args[1].equals(args[2]))
-				{
-					OutputHandler.chatConfirmation(sender, "You can't use this new password - it's the same as what was previously there.");
-					return;
-				}
+            // parse changePass
+            if (args[0].equalsIgnoreCase("changepass"))
+            {
+                PlayerPassData data = PlayerPassData.getData(sender.username);
+                String oldpass = ModuleAuth.encrypt(args[1]);
+                String newPass = ModuleAuth.encrypt(args[2]);
 
-				if (!data.password.equals(oldpass))
-				{
-					OutputHandler.chatConfirmation(sender, "Could not change the password - your old password is wrong");
-					return;
-				}
+                if (args[1].equals(args[2]))
+                {
+                    OutputHandler.chatConfirmation(sender, "You can't use this new password - it's the same as what was previously there.");
+                    return;
+                }
 
-				data.password = newPass;
-				data.save();
+                if (!data.password.equals(oldpass))
+                {
+                    OutputHandler.chatConfirmation(sender, "Could not change the password - your old password is wrong");
+                    return;
+                }
 
-				OutputHandler.chatConfirmation(sender, "Password change successful.");
-				return;
+                data.password = newPass;
+                data.save();
 
-			}
+                OutputHandler.chatConfirmation(sender, "Password change successful.");
+                return;
 
-			// check for players.. all the rest of these should be greated than 1.
-			String name = args[1];
-			// check if the player is logged.
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
-			if (player == null)
-			{
-				OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
-			}
+            }
 
-			// pasre setPass
-			if (args[0].equalsIgnoreCase("setPass"))
-			{
-				if (!hasAdmin)
-					throw new PermissionDeniedException();
+            // check for players.. all the rest of these should be greated than 1.
+            String name = args[1];
+            // check if the player is logged.
+            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
+            if (player == null)
+            {
+                OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
+            }
 
-				PlayerPassData data = PlayerPassData.getData(name);
-				String encrypted = ModuleAuth.encrypt(args[2]);
+            // pasre setPass
+            if (args[0].equalsIgnoreCase("setPass"))
+            {
+                if (!hasAdmin)
+                {
+                    throw new PermissionDeniedException();
+                }
 
-				if (data == null)
-				{
-					PlayerPassData.registerData(name, encrypted);
-				}
-				else
-				{
-					data.password = encrypted;
-					data.save();
-				}
-				OutputHandler.chatConfirmation(sender, String.format("Password set for %s", name));
-			}
-		}
-	}
+                PlayerPassData data = PlayerPassData.getData(name);
+                String encrypted = ModuleAuth.encrypt(args[2]);
 
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
-		if (args.length == 0)
-			throw new WrongUsageException("/auth help");
+                if (data == null)
+                {
+                    PlayerPassData.registerData(name, encrypted);
+                }
+                else
+                {
+                    data.password = encrypted;
+                    data.save();
+                }
+                OutputHandler.chatConfirmation(sender, String.format("Password set for %s", name));
+            }
+        }
+    }
 
-		// one arg? must be help.
-		if (args.length == 1)
-		{
-			if (args[0].equalsIgnoreCase("help"))
-			{
-				ChatUtils.sendMessage(sender, " - /auth kick <player>  - forces the player to login again");
-				ChatUtils.sendMessage(sender, " - /auth setpass <player> <password>  - sets the players password to the specified");
-				ChatUtils.sendMessage(sender, " - /auth unregister <player>  - forces the player to register again");
-				return;
-			}
-			else
-				throw new WrongUsageException("/auth help");
-		}
+    @Override
+    public void processCommandConsole(ICommandSender sender, String[] args)
+    {
+        if (args.length == 0)
+        {
+            throw new WrongUsageException("/auth help");
+        }
 
-		// check for players.. all the rest of these should be greated than 1.
-		String name = args[1];
-		boolean isLogged = true;
+        // one arg? must be help.
+        if (args.length == 1)
+        {
+            if (args[0].equalsIgnoreCase("help"))
+            {
+                ChatUtils.sendMessage(sender, " - /auth kick <player>  - forces the player to login again");
+                ChatUtils.sendMessage(sender, " - /auth setpass <player> <password>  - sets the players password to the specified");
+                ChatUtils.sendMessage(sender, " - /auth unregister <player>  - forces the player to register again");
+                return;
+            }
+            else
+            {
+                throw new WrongUsageException("/auth help");
+            }
+        }
 
-		// check if the player is logged.
-		EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
-		if (player == null)
-		{
-			ChatUtils.sendMessage(sender, "A player of that name is not on the server. Doing the action anyways.");
-			isLogged = false;
-		}
+        // check for players.. all the rest of these should be greated than 1.
+        String name = args[1];
+        boolean isLogged = true;
 
-		// 2 args? seconds needs to be the player.
-		if (args.length == 2)
-		{
-			// parse ./auth kick
-			if (args[0].equalsIgnoreCase("kick"))
-			{
-				if (!isLogged)
-					throw new WrongUsageException("/auth kick <player");
-				else
-				{
-					ModuleAuth.unLogged.add(name);
-					OutputHandler.chatConfirmation(sender, String.format("Player %s was logged out from the authentication service.", name));
-					OutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
-					return;
-				}
-			}
-			// parse ./auth setpass
-			else if (args[0].equalsIgnoreCase("setPass"))
-				throw new WrongUsageException("/auth setpass <player> <password>");
-			else if (args[0].equalsIgnoreCase("unregister"))
-			{
-				if (PlayerPassData.getData(name) == null)
-					throw new WrongUsageException("message.auth.error.notregisterred", "name");
+        // check if the player is logged.
+        EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
+        if (player == null)
+        {
+            ChatUtils.sendMessage(sender, "A player of that name is not on the server. Doing the action anyways.");
+            isLogged = false;
+        }
 
-				PlayerPassData.deleteData(name);
-				return;
-			}
+        // 2 args? seconds needs to be the player.
+        if (args.length == 2)
+        {
+            // parse ./auth kick
+            if (args[0].equalsIgnoreCase("kick"))
+            {
+                if (!isLogged)
+                {
+                    throw new WrongUsageException("/auth kick <player");
+                }
+                else
+                {
+                    ModuleAuth.unLogged.add(name);
+                    OutputHandler.chatConfirmation(sender, String.format("Player %s was logged out from the authentication service.", name));
+                    OutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
+                    return;
+                }
+            }
+            // parse ./auth setpass
+            else if (args[0].equalsIgnoreCase("setPass"))
+            {
+                throw new WrongUsageException("/auth setpass <player> <password>");
+            }
+            else if (args[0].equalsIgnoreCase("unregister"))
+            {
+                if (PlayerPassData.getData(name) == null)
+                {
+                    throw new WrongUsageException("message.auth.error.notregisterred", "name");
+                }
 
-			// ERROR! :D
-			else
-				throw new WrongUsageException("command.auth.usage");
-		}
-		// 3 args? must be a command - player - pass
-		else if (args.length == 3)
-		{
-			// pasre setPass
-			if (args[0].equalsIgnoreCase("setPass"))
-			{
-				PlayerPassData data = PlayerPassData.getData(name);
-				String encrypted = ModuleAuth.encrypt(args[2]);
+                PlayerPassData.deleteData(name);
+                return;
+            }
 
-				if (data == null)
-				{
-					PlayerPassData.registerData(name, encrypted);
-				}
-				else
-				{
-					data.password = encrypted;
-					data.save();
-				}
-				ChatUtils.sendMessage(sender, String.format("Password set for %s", name));
-			}
-		}
-	}
+            // ERROR! :D
+            else
+            {
+                throw new WrongUsageException("command.auth.usage");
+            }
+        }
+        // 3 args? must be a command - player - pass
+        else if (args.length == 3)
+        {
+            // pasre setPass
+            if (args[0].equalsIgnoreCase("setPass"))
+            {
+                PlayerPassData data = PlayerPassData.getData(name);
+                String encrypted = ModuleAuth.encrypt(args[2]);
 
-	@Override
-	public boolean canConsoleUseCommand()
-	{
-		return true;
-	}
+                if (data == null)
+                {
+                    PlayerPassData.registerData(name, encrypted);
+                }
+                else
+                {
+                    data.password = encrypted;
+                    data.save();
+                }
+                ChatUtils.sendMessage(sender, String.format("Password set for %s", name));
+            }
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		ArrayList<String> list = new ArrayList<String>();
-		switch (args.length)
-			{
-				case 1:
-					if (sender instanceof EntityPlayer)
-					{
-						list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, playerCommands));
-					}
-					else
-					{
-						list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, serverCommands));
-					}
-					break;
-				case 2:
-					if (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("setpass") ||
-							args[0].equalsIgnoreCase("unregister"))
-					{
-						list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()));
-					}
-			}
-		return list;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public String getCommandPerm()
-	{
-		return "fe.auth";
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    {
+        ArrayList<String> list = new ArrayList<String>();
+        switch (args.length)
+        {
+        case 1:
+            if (sender instanceof EntityPlayer)
+            {
+                list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, playerCommands));
+            }
+            else
+            {
+                list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, serverCommands));
+            }
+            break;
+        case 2:
+            if (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("setpass") ||
+                    args[0].equalsIgnoreCase("unregister"))
+            {
+                list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()));
+            }
+        }
+        return list;
+    }
 
-	@Override
-	public int compareTo(Object arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public String getCommandPerm()
+    {
+        return "fe.auth";
+    }
 
-	@Override
-	public String getCommandUsage(ICommandSender sender){
-		String s = "/auth help";
-		if (sender instanceof EntityPlayer){
-			s = s + " Manages your authentication profile.";
-		}
-		else s = s + " Controls the authentication module.";
-		return s;
-	}
+    @Override
+    public int compareTo(Object arg0)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public RegGroup getReggroup() {
-		return RegGroup.GUESTS;
-	}
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        String s = "/auth help";
+        if (sender instanceof EntityPlayer)
+        {
+            s = s + " Manages your authentication profile.";
+        }
+        else
+        {
+            s = s + " Controls the authentication module.";
+        }
+        return s;
+    }
+
+    @Override
+    public RegGroup getReggroup()
+    {
+        return RegGroup.GUESTS;
+    }
 }

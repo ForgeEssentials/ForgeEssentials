@@ -1,116 +1,116 @@
 package com.forgeessentials.util.tasks;
 
-import java.util.TimerTask;
-
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-public class TaskRegistry
-{
-	private TimeTaskHandler		timed;
-	private TickTaskHandler		ticks;
-	private static TaskRegistry	instance;
+import java.util.TimerTask;
 
-	public TaskRegistry()
-	{
-		instance = this;
-		ticks = new TickTaskHandler();
-		timed = new TimeTaskHandler();
-		TickRegistry.registerTickHandler(ticks, Side.SERVER);
-	}
+public class TaskRegistry {
+    private TimeTaskHandler timed;
+    private TickTaskHandler ticks;
+    private static TaskRegistry instance;
 
-	public static void registerTask(ITickTask task)
-	{
-		instance.ticks.tasks.offer(task);
-	}
+    public TaskRegistry()
+    {
+        instance = this;
+        ticks = new TickTaskHandler();
+        timed = new TimeTaskHandler();
+        TickRegistry.registerTickHandler(ticks, Side.SERVER);
+    }
 
-	public static void registerSingleTask(TimerTask task, int hours, int minutes, int seconds, int milliseconds)
-	{
-		long time = getMillis(hours, minutes, seconds, milliseconds);
-		instance.timed.addTask(task, time);
-	}
+    public static void registerTask(ITickTask task)
+    {
+        instance.ticks.tasks.offer(task);
+    }
 
-	public static void registerSingleTask(Runnable task, int hours, int minutes, int seconds, int milliseconds)
-	{
-		TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
-		registerSingleTask(wrapper, hours, minutes, seconds, milliseconds);
-	}
+    public static void registerSingleTask(TimerTask task, int hours, int minutes, int seconds, int milliseconds)
+    {
+        long time = getMillis(hours, minutes, seconds, milliseconds);
+        instance.timed.addTask(task, time);
+    }
 
-	public static void registerRecurringTask(TimerTask task, int delayHrs, int delayMin, int delaySec, int delayMilli, int intervalHrs, int intervalMin, int intervalSec, int intervalMilli)
-	{
-		long delay = getMillis(delayHrs, delayMin, delaySec, delayMilli);
-		long interval = getMillis(intervalHrs, intervalMin, intervalSec, intervalMilli);
+    public static void registerSingleTask(Runnable task, int hours, int minutes, int seconds, int milliseconds)
+    {
+        TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
+        registerSingleTask(wrapper, hours, minutes, seconds, milliseconds);
+    }
 
-		instance.timed.addRepetingTask(task, delay, interval);
-	}
+    public static void registerRecurringTask(TimerTask task, int delayHrs, int delayMin, int delaySec, int delayMilli, int intervalHrs, int intervalMin,
+            int intervalSec, int intervalMilli)
+    {
+        long delay = getMillis(delayHrs, delayMin, delaySec, delayMilli);
+        long interval = getMillis(intervalHrs, intervalMin, intervalSec, intervalMilli);
 
-	public static void registerRecurringTask(Runnable task, int delayHrs, int delayMin, int delaySec, int delayMilli, int intervalHrs, int intervalMin, int intervalSec, int intervalMilli)
-	{
-		TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
-		registerRecurringTask(wrapper, delayHrs, delayMin, delaySec, delayMilli, intervalHrs, intervalMin, intervalSec, intervalMilli);
-	}
+        instance.timed.addRepetingTask(task, delay, interval);
+    }
 
-	public static void removeTask(TimerTask task)
-	{
-		try
-		{
-			instance.timed.removeTask(task);
-		}
-		catch (Throwable e)
-		{
-		}
-	}
+    public static void registerRecurringTask(Runnable task, int delayHrs, int delayMin, int delaySec, int delayMilli, int intervalHrs, int intervalMin,
+            int intervalSec, int intervalMilli)
+    {
+        TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
+        registerRecurringTask(wrapper, delayHrs, delayMin, delaySec, delayMilli, intervalHrs, intervalMin, intervalSec, intervalMilli);
+    }
 
-	public static void removeTask(Runnable task)
-	{
-		TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
-		instance.timed.removeTask(wrapper);
-	}
+    public static void removeTask(TimerTask task)
+    {
+        try
+        {
+            instance.timed.removeTask(task);
+        }
+        catch (Throwable e)
+        {
+        }
+    }
 
-	public void onServerStop()
-	{
-		instance.timed.kill();
-		instance.timed = null;
-	}
+    public static void removeTask(Runnable task)
+    {
+        TimedTaskWrapper wrapper = new TimedTaskWrapper(task);
+        instance.timed.removeTask(wrapper);
+    }
 
-	public void onServerStart()
-	{
-		instance.timed = new TimeTaskHandler();
-	}
+    public void onServerStop()
+    {
+        instance.timed.kill();
+        instance.timed = null;
+    }
 
-	private static class TimedTaskWrapper extends TimerTask
-	{
-		private final Runnable	runner;
+    public void onServerStart()
+    {
+        instance.timed = new TimeTaskHandler();
+    }
 
-		public TimedTaskWrapper(Runnable runner)
-		{
-			this.runner = runner;
-		}
+    private static class TimedTaskWrapper extends TimerTask {
+        private final Runnable runner;
 
-		@Override
-		public void run()
-		{
-			runner.run();
-		}
-	}
+        public TimedTaskWrapper(Runnable runner)
+        {
+            this.runner = runner;
+        }
 
-	private static long getMillis(int hrs, int min, int sec, int milli)
-	{
-		long time = 0;
+        @Override
+        public void run()
+        {
+            runner.run();
+        }
+    }
 
-		// all hours.
-		time = hrs;
+    private static long getMillis(int hrs, int min, int sec, int milli)
+    {
+        long time = 0;
 
-		// all minutes
-		time = time * 60 + min;
+        // all hours.
+        time = hrs;
 
-		// all seconds
-		time = time * 60 + sec;
+        // all minutes
+        time = time * 60 + min;
 
-		// all milliseconds
-		time = time * 1000 + milli;
+        // all seconds
+        time = time * 60 + sec;
 
-		return time;
-	}
+        // all milliseconds
+        time = time * 1000 + milli;
+
+        return time;
+    }
 
 }

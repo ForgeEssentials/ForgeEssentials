@@ -1,27 +1,26 @@
 package com.forgeessentials.data.api;
 
-import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.common.Configuration;
 
-public interface IDataDriver
-{
-	void onClassRegistered(ITypeInfo<?> tagger);
+public interface IDataDriver {
+    void onClassRegistered(ITypeInfo<?> tagger);
 
-	String getName();
+    String getName();
 
-	boolean saveObject(ClassContainer type, Object o);
+    boolean saveObject(ClassContainer type, Object o);
 
-	Object loadObject(ClassContainer type, String loadingKey);
+    Object loadObject(ClassContainer type, String loadingKey);
 
-	Object[] loadAllObjects(ClassContainer type);
+    Object[] loadAllObjects(ClassContainer type);
 
-	boolean deleteObject(ClassContainer type, String loadingKey);
+    boolean deleteObject(ClassContainer type, String loadingKey);
 
-	void parseConfigs(Configuration config, String category) throws Exception;
+    void parseConfigs(Configuration config, String category) throws Exception;
 
-	void serverStart(FMLServerStartingEvent e);
+    void serverStart(FMLServerStartingEvent e);
 
-	EnumDriverType getType();
+    EnumDriverType getType();
 
-	public boolean hasLoaded();
+    public boolean hasLoaded();
 }

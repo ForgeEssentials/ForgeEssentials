@@ -2,9 +2,6 @@ package com.forgeessentials.worldcontrol.commands;
 
 //Depreciated
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.BackupArea;
@@ -12,50 +9,54 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.TaskRegistry;
 import com.forgeessentials.worldcontrol.TickTasks.TickTaskSetBackup;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 
-public class CommandRedo extends WorldControlCommandBase
-{
+public class CommandRedo extends WorldControlCommandBase {
 
-	public CommandRedo()
-	{
-		super(true);
-	}
+    public CommandRedo()
+    {
+        super(true);
+    }
 
-	@Override
-	public String getName()
-	{
-		return "redo";
-	}
+    @Override
+    public String getName()
+    {
+        return "redo";
+    }
 
-	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args)
-	{
-		BackupArea back = PlayerInfo.getPlayerInfo(player.username).getNextRedo();
+    @Override
+    public void processCommandPlayer(EntityPlayer player, String[] args)
+    {
+        BackupArea back = PlayerInfo.getPlayerInfo(player.username).getNextRedo();
 
-		if (back == null)
-		{
-			OutputHandler.chatError(player, "Nothing to redo!");
-			return;
-		}
+        if (back == null)
+        {
+            OutputHandler.chatError(player, "Nothing to redo!");
+            return;
+        }
 
-		TaskRegistry.registerTask(new TickTaskSetBackup(player, back, true));
+        TaskRegistry.registerTask(new TickTaskSetBackup(player, back, true));
 
-		ChatUtils.sendMessage(player, "Working on redo");
-	}
+        ChatUtils.sendMessage(player, "Working on redo");
+    }
 
-	@Override
-	public int compareTo(Object o) {
-		return 0;
-	}
+    @Override
+    public int compareTo(Object o)
+    {
+        return 0;
+    }
 
-	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		return "/redo";
-	}
-	
-	@Override
-	public RegGroup getReggroup() {
-		// TODO Auto-generated method stub
-		return RegGroup.OWNERS;
-	}
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/redo";
+    }
+
+    @Override
+    public RegGroup getReggroup()
+    {
+        // TODO Auto-generated method stub
+        return RegGroup.OWNERS;
+    }
 }

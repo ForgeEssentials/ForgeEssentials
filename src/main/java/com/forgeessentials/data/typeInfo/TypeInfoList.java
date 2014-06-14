@@ -1,82 +1,77 @@
 package com.forgeessentials.data.typeInfo;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.data.api.TypeMultiValInfo;
 import com.forgeessentials.util.OutputHandler;
 
-public class TypeInfoList extends TypeMultiValInfo
-{
-	public static final String	POS		= "ElementPos";
-	public static final String	ELEMENT	= "Element";
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.logging.Level;
 
-	public TypeInfoList(ClassContainer container)
-	{
-		super(container);
-	}
+public class TypeInfoList extends TypeMultiValInfo {
+    public static final String POS = "ElementPos";
+    public static final String ELEMENT = "Element";
 
-	@Override
-	public void buildEntry(HashMap<String, ClassContainer> fields)
-	{
-		fields.put(POS, new ClassContainer(int.class));
-		fields.put(ELEMENT, new ClassContainer(container.getParameters()[0]));
-	}
+    public TypeInfoList(ClassContainer container)
+    {
+        super(container);
+    }
 
-	@Override
-	public Set<TypeData> getTypeDatasFromObject(Object obj)
-	{
-		HashSet<TypeData> datas = new HashSet<TypeData>();
+    @Override
+    public void buildEntry(HashMap<String, ClassContainer> fields)
+    {
+        fields.put(POS, new ClassContainer(int.class));
+        fields.put(ELEMENT, new ClassContainer(container.getParameters()[0]));
+    }
 
-		List<?> list = (List<?>) obj;
+    @Override
+    public Set<TypeData> getTypeDatasFromObject(Object obj)
+    {
+        HashSet<TypeData> datas = new HashSet<TypeData>();
 
-		TypeData data;
-		for (int i = 0; i < list.size(); i++)
-		{
-			data = getEntryData();
-			data.putField(POS, i);
-			data.putField(ELEMENT, list.get(i));
-			datas.add(data);
-		}
+        List<?> list = (List<?>) obj;
 
-		return datas;
-	}
+        TypeData data;
+        for (int i = 0; i < list.size(); i++)
+        {
+            data = getEntryData();
+            data.putField(POS, i);
+            data.putField(ELEMENT, list.get(i));
+            datas.add(data);
+        }
 
-	@Override
-	public Object reconstruct(TypeData[] data, IReconstructData rawType)
-	{
-		Object array = Array.newInstance(container.getType(), data.length);
+        return datas;
+    }
 
-		for (TypeData dat : data)
-		{
-			Array.set(array, (Integer) dat.getFieldValue(POS), dat.getFieldValue(ELEMENT));
-		}
+    @Override
+    public Object reconstruct(TypeData[] data, IReconstructData rawType)
+    {
+        Object array = Array.newInstance(container.getType(), data.length);
 
-		List<Object> list = new ArrayList<Object>(data.length);
-		try
-		{
-			list = (List<Object>) container.getType().newInstance();
-		}
-		catch (Exception e)
-		{
-			OutputHandler.exception(Level.SEVERE, "Error instantiating " + container.getType().getCanonicalName() + "!", e);
-			return null;
-		}
+        for (TypeData dat : data)
+        {
+            Array.set(array, (Integer) dat.getFieldValue(POS), dat.getFieldValue(ELEMENT));
+        }
 
-		for (int i = 0; i < data.length; i++)
-		{
-			list.add(Array.get(array, i));
-		}
+        List<Object> list = new ArrayList<Object>(data.length);
+        try
+        {
+            list = (List<Object>) container.getType().newInstance();
+        }
+        catch (Exception e)
+        {
+            OutputHandler.exception(Level.SEVERE, "Error instantiating " + container.getType().getCanonicalName() + "!", e);
+            return null;
+        }
 
-		return list;
-	}
+        for (int i = 0; i < data.length; i++)
+        {
+            list.add(Array.get(array, i));
+        }
+
+        return list;
+    }
 
 }

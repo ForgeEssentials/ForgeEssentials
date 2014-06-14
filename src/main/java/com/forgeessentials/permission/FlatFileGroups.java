@@ -1,150 +1,152 @@
 package com.forgeessentials.permission;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.Group;
+import net.minecraftforge.common.ConfigCategory;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import net.minecraftforge.common.ConfigCategory;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
+public class FlatFileGroups {
+    File file;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Group;
+    public FlatFileGroups(File file)
+    {
+        this.file = new File(file, "groups.txt");
+    }
 
-public class FlatFileGroups
-{
-	File	file;
+    public HashMap<String, Object> load()
+    {
+        ArrayList<Group> groups = new ArrayList<Group>();
+        ArrayList<PromotionLadder> ladders = new ArrayList<PromotionLadder>();
+        HashMap<String, HashMap<String, String[]>> connector = new HashMap<String, HashMap<String, String[]>>();
 
-	public FlatFileGroups(File file)
-	{
-		this.file = new File(file, "groups.txt");
-	}
+        Configuration config = new Configuration(file);
 
-	public HashMap<String, Object> load()
-	{
-		ArrayList<Group> groups = new ArrayList<Group>();
-		ArrayList<PromotionLadder> ladders = new ArrayList<PromotionLadder>();
-		HashMap<String, HashMap<String, String[]>> connector = new HashMap<String, HashMap<String, String[]>>();
+        String prefix, suffix, parent;
+        int priority;
+        String[] split, players;
+        Group g;
+        PromotionLadder ladder;
+        HashMap<String, String[]> playerMap;
+        HashMap<String, ConfigCategory> catList = new HashMap<String, ConfigCategory>();
+        for (String name : config.getCategoryNames())
+        {
+            catList.put(name, config.getCategory(name));
+        }
+        for (Entry<String, ConfigCategory> e : catList.entrySet())
 
-		Configuration config = new Configuration(file);
+        {
+            if (!e.getValue().isChild())
+            {
+                continue;
+            }
 
-		String prefix, suffix, parent;
-		int priority;
-		String[] split, players;
-		Group g;
-		PromotionLadder ladder;
-		HashMap<String, String[]> playerMap;
-		HashMap<String, ConfigCategory> catList = new HashMap<String, ConfigCategory>();
-		for (String name : config.getCategoryNames())
-		{
-			catList.put(name, config.getCategory(name));
-		}
-		for (Entry<String, ConfigCategory> e : catList.entrySet())
+            split = e.getKey().split("\\" + Configuration.CATEGORY_SPLITTER);
 
-		{
-			if (!e.getValue().isChild())
-			{
-				continue;
-			}
+            if (split[1].equalsIgnoreCase("_ladders_"))
+            {
+                for (Property prop : e.getValue().getValues().values())
+                {
+                    ladder = new PromotionLadder(prop.getName(), split[0], prop.getStringList());
+                    ladders.add(ladder);
+                }
+                continue;
+            }
 
-			split = e.getKey().split("\\" + Configuration.CATEGORY_SPLITTER);
+            prefix = config.get(e.getKey(), "prefix", " ").getString();
+            suffix = config.get(e.getKey(), "suffix", " ").getString();
+            parent = config.get(e.getKey(), "parent", "").getString();
+            priority = config.get(e.getKey(), "priority", 0).getInt();
 
-			if (split[1].equalsIgnoreCase("_ladders_"))
-			{
-				for (Property prop : e.getValue().getValues().values())
-				{
-					ladder = new PromotionLadder(prop.getName(), split[0], prop.getStringList());
-					ladders.add(ladder);
-				}
-				continue;
-			}
+            if (parent.trim().isEmpty())
+            {
+                parent = null;
+            }
 
-			prefix = config.get(e.getKey(), "prefix", " ").getString();
-			suffix = config.get(e.getKey(), "suffix", " ").getString();
-			parent = config.get(e.getKey(), "parent", "").getString();
-			priority = config.get(e.getKey(), "priority", 0).getInt();
+            g = new Group(split[1], prefix, suffix, parent, split[0], priority);
+            groups.add(g);
 
-			if (parent.trim().isEmpty())
-			{
-				parent = null;
-			}
+            // now for the player things...
+            players = config.get(e.getKey(), "playersInGroup", new String[] { }).getStringList();
+            playerMap = connector.get(split[0]);
+            if (playerMap == null)
+            {
+                playerMap = new HashMap<String, String[]>();
+                connector.put(split[0], playerMap);
+            }
+            playerMap.put(split[1], players);
+        }
 
-			g = new Group(split[1], prefix, suffix, parent, split[0], priority);
-			groups.add(g);
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("groups", groups);
+        map.put("ladders", ladders);
+        map.put("connector", connector);
+        return map;
+    }
 
-			// now for the player things...
-			players = config.get(e.getKey(), "playersInGroup", new String[] {}).getStringList();
-			playerMap = connector.get(split[0]);
-			if (playerMap == null)
-			{
-				playerMap = new HashMap<String, String[]>();
-				connector.put(split[0], playerMap);
-			}
-			playerMap.put(split[1], players);
-		}
+    public void save(ArrayList<Group> groups, ArrayList<PromotionLadder> ladders, HashMap<String, HashMap<String, ArrayList<String>>> connector)
+    {
+        // clear it.
+        if (file.exists())
+        {
+            file.delete();
+        }
 
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("groups", groups);
-		map.put("ladders", ladders);
-		map.put("connector", connector);
-		return map;
-	}
+        Configuration config = new Configuration(file);
 
-	public void save(ArrayList<Group> groups, ArrayList<PromotionLadder> ladders, HashMap<String, HashMap<String, ArrayList<String>>> connector)
-	{
-		// clear it.
-		if (file.exists())
-		{
-			file.delete();
-		}
+        String cat;
+        String[] list;
+        for (Group g : groups)
+        {
+            if (g.name.equals(APIRegistry.perms.getDEFAULT().name))
+            {
+                continue;
+            }
 
-		Configuration config = new Configuration(file);
+            cat = g.zoneName + "." + g.name;
+            config.get(cat, "prefix", g.prefix);
+            config.get(cat, "suffix", g.suffix);
+            config.get(cat, "parent", g.parent == null ? "" : g.parent);
+            config.get(cat, "priority", g.priority);
 
-		String cat;
-		String[] list;
-		for (Group g : groups)
-		{
-			if (g.name.equals(APIRegistry.perms.getDEFAULT().name))
-			{
-				continue;
-			}
+            list = getPlayerArray(g.name, g.zoneName, connector);
+            config.get(cat, "playersInGroup", list);
+        }
 
-			cat = g.zoneName + "." + g.name;
-			config.get(cat, "prefix", g.prefix);
-			config.get(cat, "suffix", g.suffix);
-			config.get(cat, "parent", g.parent == null ? "" : g.parent);
-			config.get(cat, "priority", g.priority);
+        for (PromotionLadder ladder : ladders)
+        {
+            cat = ladder.zoneID + "." + "_LADDERS_";
+            config.get(cat, ladder.name, ladder.getListGroup());
+        }
 
-			list = getPlayerArray(g.name, g.zoneName, connector);
-			config.get(cat, "playersInGroup", list);
-		}
+        config.save();
+    }
 
-		for (PromotionLadder ladder : ladders)
-		{
-			cat = ladder.zoneID + "." + "_LADDERS_";
-			config.get(cat, ladder.name, ladder.getListGroup());
-		}
+    /**
+     * @param name
+     * @param zone
+     * @return empty list if none..
+     */
+    private String[] getPlayerArray(String name, String zone, HashMap<String, HashMap<String, ArrayList<String>>> connector)
+    {
+        HashMap<String, ArrayList<String>> map = connector.get(zone);
+        if (map == null)
+        {
+            return new String[] { };
+        }
 
-		config.save();
-	}
+        ArrayList<String> list = map.get(name);
+        if (list == null)
+        {
+            return new String[] { };
+        }
 
-	/**
-	 * @param name
-	 * @param zone
-	 * @return empty list if none..
-	 */
-	private String[] getPlayerArray(String name, String zone, HashMap<String, HashMap<String, ArrayList<String>>> connector)
-	{
-		HashMap<String, ArrayList<String>> map = connector.get(zone);
-		if (map == null)
-			return new String[] {};
-
-		ArrayList<String> list = map.get(name);
-		if (list == null)
-			return new String[] {};
-
-		return list.toArray(new String[list.size()]);
-	}
+        return list.toArray(new String[list.size()]);
+    }
 
 }

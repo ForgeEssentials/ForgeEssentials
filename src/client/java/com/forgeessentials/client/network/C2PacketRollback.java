@@ -1,24 +1,21 @@
 package com.forgeessentials.client.network;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-
+import com.forgeessentials.client.ForgeEssentialsClient;
+import com.forgeessentials.client.util.ClientPoint;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.util.ClientPoint;
+import java.io.DataInputStream;
+import java.io.IOException;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+public class C2PacketRollback extends ForgeEssentialsPacketClient {
+    public static final byte packetID = 2;
 
-public class C2PacketRollback extends ForgeEssentialsPacketClient
-{
-    public static final byte        packetID    = 2;
+    private Packet250CustomPayload packet;
 
-    private Packet250CustomPayload  packet;
-    
     @SideOnly(Side.CLIENT)
     public static void readClient(DataInputStream stream, WorldClient world, EntityPlayer player) throws IOException
     {
@@ -48,7 +45,7 @@ public class C2PacketRollback extends ForgeEssentialsPacketClient
             }
         }
     }
-    
+
     @Override
     public Packet250CustomPayload getPayload()
     {

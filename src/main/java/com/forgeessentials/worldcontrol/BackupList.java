@@ -1,135 +1,135 @@
 package com.forgeessentials.worldcontrol;
 
 //Depreciated
+
+import com.forgeessentials.util.BackupArea;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Queue;
 
-import com.forgeessentials.util.BackupArea;
+public class BackupList implements Queue<BackupArea> {
 
-public class BackupList implements Queue<BackupArea>
-{
+    @Override
+    public boolean addAll(Collection<? extends BackupArea> arg0)
+    {
+        return false;
+    }
 
-	@Override
-	public boolean addAll(Collection<? extends BackupArea> arg0)
-	{
-		return false;
-	}
+    @Override
+    public void clear()
+    {
+    }
 
-	@Override
-	public void clear()
-	{
-	}
+    @Override
+    public boolean contains(Object arg0)
+    {
+        return false;
+    }
 
-	@Override
-	public boolean contains(Object arg0)
-	{
-		return false;
-	}
+    @Override
+    public boolean containsAll(Collection<?> arg0)
+    {
 
-	@Override
-	public boolean containsAll(Collection<?> arg0)
-	{
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean isEmpty()
+    {
 
-	@Override
-	public boolean isEmpty()
-	{
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public Iterator<BackupArea> iterator()
+    {
 
-	@Override
-	public Iterator<BackupArea> iterator()
-	{
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public boolean remove(Object arg0)
+    {
 
-	@Override
-	public boolean remove(Object arg0)
-	{
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean removeAll(Collection<?> arg0)
+    {
 
-	@Override
-	public boolean removeAll(Collection<?> arg0)
-	{
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean retainAll(Collection<?> arg0)
+    {
 
-	@Override
-	public boolean retainAll(Collection<?> arg0)
-	{
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public int size()
+    {
 
-	@Override
-	public int size()
-	{
+        return 0;
+    }
 
-		return 0;
-	}
+    @Override
+    public Object[] toArray()
+    {
 
-	@Override
-	public Object[] toArray()
-	{
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public <T> T[] toArray(T[] arg0)
+    {
 
-	@Override
-	public <T> T[] toArray(T[] arg0)
-	{
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public boolean add(BackupArea e)
+    {
 
-	@Override
-	public boolean add(BackupArea e)
-	{
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public BackupArea element()
+    {
 
-	@Override
-	public BackupArea element()
-	{
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public boolean offer(BackupArea e)
+    {
 
-	@Override
-	public boolean offer(BackupArea e)
-	{
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public BackupArea peek()
+    {
 
-	@Override
-	public BackupArea peek()
-	{
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public BackupArea poll()
+    {
 
-	@Override
-	public BackupArea poll()
-	{
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public BackupArea remove()
+    {
 
-	@Override
-	public BackupArea remove()
-	{
-
-		return null;
-	}
+        return null;
+    }
 
 }

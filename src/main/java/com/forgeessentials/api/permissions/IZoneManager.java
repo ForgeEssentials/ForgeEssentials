@@ -1,34 +1,32 @@
 package com.forgeessentials.api.permissions;
 
-import java.util.ArrayList;
-
-import net.minecraft.world.World;
-
 import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.AreaSelector.WorldArea;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
+import net.minecraft.world.World;
 
-public interface IZoneManager
-{
+import java.util.ArrayList;
 
-	Zone getWorldZone(World world);
+public interface IZoneManager {
 
-	void deleteZone(String zoneID);
+    Zone getWorldZone(World world);
 
-	boolean doesZoneExist(String zoneID);
+    void deleteZone(String zoneID);
 
-	Zone getZone(String zoneID);
+    boolean doesZoneExist(String zoneID);
 
-	boolean createZone(String zoneID, Selection sel, World world);
+    Zone getZone(String zoneID);
 
-	Zone getWhichZoneIn(WorldPoint point);
+    boolean createZone(String zoneID, Selection sel, World world);
 
-	Zone getWhichZoneIn(WorldArea area);
+    Zone getWhichZoneIn(WorldPoint point);
 
-	ArrayList<Zone> getZoneList();
+    Zone getWhichZoneIn(WorldArea area);
 
-	Zone getGLOBAL();
+    ArrayList<Zone> getZoneList();
 
-	Zone getSUPER();
+    Zone getGLOBAL();
+
+    Zone getSUPER();
 
 }

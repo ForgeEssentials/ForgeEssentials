@@ -5,16 +5,17 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
 public class InventoryPlayerExtend extends InventoryPlayer {
-	
-	public InventoryPlayerExtend(EntityPlayer par1EntityPlayer) {
-		super(par1EntityPlayer);
-		// TODO Auto-generated constructor stub
-	}
 
-	public int clearInventory(int var1, int var2, int var3)
+    public InventoryPlayerExtend(EntityPlayer par1EntityPlayer)
+    {
+        super(par1EntityPlayer);
+        // TODO Auto-generated constructor stub
+    }
+
+    public int clearInventory(int var1, int var2, int var3)
     {
         int var4 = 0;
-        
+
         int var5;
         ItemStack var6;
 
@@ -58,7 +59,7 @@ public class InventoryPlayerExtend extends InventoryPlayer {
 
         if (var3 - var4 != 0)
         {
-            
+
             return -1;
         }
 

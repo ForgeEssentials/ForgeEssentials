@@ -1,88 +1,92 @@
 package com.forgeessentials.economy.commands;
 
-import java.util.List;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 
-public class CommandSetWallet extends ForgeEssentialsCommandBase
-{
-	@Override
-	public String getCommandName()
-	{
-		return "setwallet";
-	}
+import java.util.List;
 
-	@Override
-	public void processCommand(ICommandSender sender, String[] args)
-	{
-		if (args.length == 1)
-		{
-			EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
-			int amountToSet = Integer.parseInt(args[1]);
+public class CommandSetWallet extends ForgeEssentialsCommandBase {
+    @Override
+    public String getCommandName()
+    {
+        return "setwallet";
+    }
 
-			if (player == null)
-			{
-				ChatUtils.sendMessage(sender, "Player does not exist, or is not online.");
-			}
-			else
-			{
-				APIRegistry.wallet.setWallet(amountToSet, player);
+    @Override
+    public void processCommand(ICommandSender sender, String[] args)
+    {
+        if (args.length == 1)
+        {
+            EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+            int amountToSet = Integer.parseInt(args[1]);
 
-				ChatUtils.sendMessage(sender, "Wallet set to: " + APIRegistry.wallet.getMoneyString(player.username));
-				ChatUtils.sendMessage(player, "Your wallet was set to " + APIRegistry.wallet.getMoneyString(player.username));
-			}
-		}
-		else
-		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amount>");
-		}
-	}
+            if (player == null)
+            {
+                ChatUtils.sendMessage(sender, "Player does not exist, or is not online.");
+            }
+            else
+            {
+                APIRegistry.wallet.setWallet(amountToSet, player);
 
-	@Override
-	public boolean canConsoleUseCommand()
-	{
-		return true;
-	}
+                ChatUtils.sendMessage(sender, "Wallet set to: " + APIRegistry.wallet.getMoneyString(player.username));
+                ChatUtils.sendMessage(player, "Your wallet was set to " + APIRegistry.wallet.getMoneyString(player.username));
+            }
+        }
+        else
+        {
+            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amount>");
+        }
+    }
 
-	@Override
-	public String getCommandPerm()
-	{
-		return "fe.economy." + getCommandName();
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
-	{
-		if (args.length == 1)
-			return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-		else
-			return null;
-	}
+    @Override
+    public String getCommandPerm()
+    {
+        return "fe.economy." + getCommandName();
+    }
 
-	@Override
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    {
+        if (args.length == 1)
+        {
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+        }
+        else
+        {
+            return null;
+        }
+    }
 
-	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		// TODO Auto-generated method stub
-		return "/setwallet <player> <amount> Set a player's wallet to a certain amount.";
-	}
-	
-	@Override
-	public RegGroup getReggroup() {
-		// TODO Auto-generated method stub
-		return RegGroup.OWNERS;
-	}
+    @Override
+    public int compareTo(Object o)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        // TODO Auto-generated method stub
+        return "/setwallet <player> <amount> Set a player's wallet to a certain amount.";
+    }
+
+    @Override
+    public RegGroup getReggroup()
+    {
+        // TODO Auto-generated method stub
+        return RegGroup.OWNERS;
+    }
 
 }
