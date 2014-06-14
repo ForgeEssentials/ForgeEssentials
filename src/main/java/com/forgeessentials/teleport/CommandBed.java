@@ -76,15 +76,12 @@ public class CommandBed extends ForgeEssentialsCommandBase {
                 //player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
                 if (sleepPoint != null)
                 {
-                    TeleportCenter.addToTpQue(sleepPoint, player);
-                    OutputHandler.chatConfirmation(player, "Teleported to bed last used.");
+                    TeleportCenter.addToTpQue(sleepPoint, player); //TeleportCenter responds with "Teleported." if successful
                 }
                 else
                 {
-                    OutputHandler.chatError(player, "No bed found.");
+                    OutputHandler.chatError(player, "You haven't slept in a bed yet.");
                 }
-
-                OutputHandler.chatConfirmation(player, "Teleported to bed last used.");
             }
             else
             {

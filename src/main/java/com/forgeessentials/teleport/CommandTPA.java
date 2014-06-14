@@ -96,7 +96,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
 
             ChatUtils.sendMessage(sender, String.format("Teleport request sent to %s", receiver.username));
             ChatUtils.sendMessage(receiver,
-                    String.format("Received teleport request from %s. Enter '/tpahere accept' to accept, '/tpahere decline' to decline.", sender.username));
+                    String.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.", sender.username));
         }
     }
 
