@@ -80,4 +80,23 @@ public enum RegGroup {
     private RegisteredPermValue equivalent;
 
     public static final String LADDER = "mainLadder";
+
+    public static RegGroup fromInt(int level)
+    {
+        switch (level)
+        {
+        case 0:
+            return GUESTS;
+        case 1:
+            return MEMBERS;
+        case 2:
+            return ZONE_ADMINS;
+        case 3:
+            return ZONE_ADMINS;
+        case 4:
+            return OWNERS;
+        }
+        return null;
+
+    }
 }

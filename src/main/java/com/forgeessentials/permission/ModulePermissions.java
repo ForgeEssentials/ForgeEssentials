@@ -6,6 +6,7 @@ import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.compat.DuplicateCommandRemoval;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.network.FEServerPacketHandler;
 import com.forgeessentials.data.AbstractDataDriver;
@@ -17,12 +18,17 @@ import com.forgeessentials.permission.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permission.network.PacketPermNodeList;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.events.modules.*;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
+import java.util.Set;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions {
@@ -123,30 +129,16 @@ public class ModulePermissions {
 
         event.registerPermissionLevel("fe.perm.list", RegGroup.GUESTS);
 
-        // somehow the perms stuff doesn't read this where they were, try here
-        event.registerPermissionLevel("mc.ban", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("mc.ban-ip", RegGroup.OWNERS);
-        event.registerPermissionLevel("mc.debug", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("mc.defaultgamemode", RegGroup.OWNERS);
-        event.registerPermissionLevel("mc.deop", RegGroup.OWNERS);
-        event.registerPermissionLevel("mc.difficulty", RegGroup.OWNERS);
-        event.registerPermissionLevel("mc.gamerule", RegGroup.OWNERS);
-        event.registerPermissionLevel("mc.kick", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("mc.me", RegGroup.GUESTS);
-        event.registerPermissionLevel("mc.op", RegGroup.OWNERS);
-        event.registerPermissionLevel("mc.pardon", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("mc.pardon-ip", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("mc.publish", RegGroup.OWNERS);
-        event.registerPermissionLevel("mc.save-all", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("mc.save-on", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("mc.save-off", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("mc.say", RegGroup.OWNERS);
-        event.registerPermissionLevel("mc.seed", RegGroup.MEMBERS);
-        event.registerPermissionLevel("mc.stop", RegGroup.OWNERS);
-        event.registerPermissionLevel("mc.whitelist", RegGroup.OWNERS);
-        event.registerPermissionLevel("mc.xp", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("mc.toggledownfall", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("mc.testfor", RegGroup.MEMBERS);
+        Set<ICommand> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) MinecraftServer.getServer().getCommandManager(),
+                DuplicateCommandRemoval.FIELDNAME);
+
+        for (ICommand cmd : cmdList)
+        {
+            if (cmd.getClass().getCanonicalName().startsWith("net.minecraft.command")){
+                event.registerPermissionLevel("mc." + cmd.getCommandName(), RegGroup.fromInt(((CommandBase)cmd).getRequiredPermissionLevel()));
+            }
+
+        }
     }
 
     @FEModule.ServerStop

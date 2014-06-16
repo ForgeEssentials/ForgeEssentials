@@ -119,7 +119,7 @@ public class DuplicateCommandRemoval {
             {
                 return 0;
             }
-            else if (pkg == null || pkg.getName().contains("ForgeEssentials"))
+            else if (pkg == null || pkg.getName().contains("forgeessentials"))
             {
                 return 1;
             }
