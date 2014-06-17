@@ -28,180 +28,115 @@ public class CommandGameMode extends FEcmdModuleCommands {
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[]
-                { "gm" };
+        return new String[] { "gm" };
     }
 
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EnumGameType gm;
-        EntityPlayer target = sender;
-
-        // no arguments? toggle gamemode.
-        if (args.length == 0)
-        {
-            gm = getToggledType(target);
-            target.setGameType(gm);
-            target.fallDistance = 0.0F;
-            String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-            OutputHandler.chatConfirmation(sender, String.format("Gamemode changed of %1$s to %2$s", target.username, modeName));
-            return;
-        }
-
-        gm = getGameTypeFromString(sender, args[0]);
-
-        // 1 argument? try gamemode.
-        if (args.length == 1)
-        {
-            // not a gamemode? try a player,
-            if (gm == null)
-            {
-                // throws exception if there is no player
-                target = getPlayer(sender, args[0]);
-
-                gm = getToggledType(target);
-            }
-
-            target.setGameType(gm);
-            target.fallDistance = 0.0F;
-            String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-            OutputHandler.chatConfirmation(sender, String.format("command.gamemode.changed", target.username, modeName));
-            return;
-        }
-
-        // default to survival if cannot be parsed
-        if (gm == null)
-        {
-            gm = EnumGameType.SURVIVAL;
-        }
-
-        // 2 arguments? do ./GameMode <mode> <player>
-        if (args.length == 2)
-        {
-            // throws exception if there is no player
-            target = FunctionHelper.getPlayerForName(sender, args[1]);
-            if (target == null)
-            {
-                throw new PlayerNotFoundException();
-            }
-
-            target.setGameType(gm);
-            target.fallDistance = 0.0F;
-            String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-            OutputHandler.chatConfirmation(sender, String.format("command.gamemode.changed", target.username, modeName));
-            return;
-        }
-
-        // > 2 arguments? do ./GameMode <mode> <players>
-        if (args.length > 2)
-        {
-            ArrayList<EntityPlayerMP> players = new ArrayList<EntityPlayerMP>();
-            EntityPlayerMP player;
-            for (int i = 1; i < args.length; i++)
-            {
-                player = FunctionHelper.getPlayerForName(sender, args[i]);
-                if (player != null)
-                {
-                    players.add(player);
-                }
-            }
-
-            if (players.isEmpty())
-            {
-                throw new PlayerNotFoundException();
-            }
-
-            String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-
-            for (EntityPlayerMP victim : players)
-            {
-                victim.setGameType(gm);
-                victim.fallDistance = 0.0F;
-            }
-
-            OutputHandler.chatConfirmation(sender, String.format("Gamemode changed of %1$s to %2$s", "all specified players", modeName));
-            return;
-        }
-
-        throw new WrongUsageException("commands.gamemode.usage");
-
+    	EnumGameType gm;
+    	switch(args.length) {
+    	case 0:
+    		setGameMode(sender);
+    		break;
+    	case 1:
+    		gm = getGameTypeFromString(args[0]);
+    		if(gm != null){
+    			setGameMode(sender, sender, gm);
+    		}
+    		else {
+    			setGameMode(sender, args[0]);
+    		}
+    		break;
+    	default:
+    		gm = getGameTypeFromString(args[0]);
+    		if(gm != null){
+    			for(int i = 1; i < args.length; i++) {
+    				setGameMode(sender, args[i], gm);
+    			}
+    		}
+    		else {
+    			throw new WrongUsageException("commands.gamemode.usage");
+    		}
+    	}
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        EnumGameType gm;
-        EntityPlayer target;
-
-        // no arguments? toggle gamemode.
-        if (args.length == 0)
-        {
-            throw new WrongUsageException("commands.gamemode.usage");
-        }
-
-        gm = getGameTypeFromString(sender, args[0]);
-
-        // 1 argument? try player
-        if (args.length == 1)
-        {
-            // throws exception if there is no player
-            target = getPlayer(sender, args[0]);
-
-            gm = getToggledType(target);
-
-            target.setGameType(gm);
-            target.fallDistance = 0.0F;
-            String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-            OutputHandler.chatConfirmation(sender, String.format("Gamemode changed of %1$s to %2$s", target.username, modeName));
-            return;
-        }
-
-        // default to survival if cannot be parsed
-        if (gm == null)
-        {
-            gm = EnumGameType.SURVIVAL;
-        }
-
-        // 2 arguments? do ./GameMode <mode> <player>
-        if (args.length == 2)
-        {
-            // throws exception if there is no player
-            target = getPlayer(sender, args[0]);
-
-            target.setGameType(gm);
-            target.fallDistance = 0.0F;
-            String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-            OutputHandler.chatConfirmation(sender, String.format("Gamemode changed of %1$s to %2$s", target.username, modeName));
-            return;
-        }
-
-        // > 2 arguments? do ./GameMode <mode> <players>
-        if (args.length > 2)
-        {
-            EntityPlayer[] players = PlayerSelector.matchPlayers(sender, args[1]);
-
-            if (players == null || players.length == 0)
-            {
-                throw new PlayerNotFoundException();
-            }
-
-            String modeName = StatCollector.translateToLocal("gameMode." + gm.getName());
-
-            for (EntityPlayer player : players)
-            {
-                player.setGameType(gm);
-                player.fallDistance = 0.0F;
-            }
-
-            OutputHandler.chatConfirmation(sender, String.format("Gamemode changed of %1$s to %2$s", "all specified players", modeName));
-            return;
-        }
-
-        throw new WrongUsageException("commands.gamemode.usage");
+    	EnumGameType gm;
+    	switch(args.length) {
+    	case 0:
+    		throw new WrongUsageException("commands.gamemode.usage");
+    	case 1:
+    		gm = getGameTypeFromString(args[0]);
+    		if(gm != null){
+    			throw new WrongUsageException("commands.gamemode.usage");
+    		}
+    		else {
+    			setGameMode(sender, args[0]);
+    		}
+    		break;
+    	default:
+    		gm = getGameTypeFromString(args[0]);
+    		if(gm != null){
+    			for(int i = 1; i < args.length; i++) {
+    				setGameMode(sender, args[i], gm);
+    			}
+    		}
+    		else {
+    			throw new WrongUsageException("commands.gamemode.usage");
+    		}
+    		break;
+    	}
+    }
+    
+    public void setGameMode(EntityPlayer sender) {
+    	setGameMode(sender, sender, sender.capabilities.isCreativeMode ? EnumGameType.SURVIVAL : EnumGameType.CREATIVE);
+    }
+    
+    public void setGameMode(ICommandSender sender, String target) {
+    	EntityPlayer player;
+    	try{
+    		player = getPlayer(sender, target);
+    	}
+    	catch(PlayerNotFoundException e) {
+    		OutputHandler.chatError(sender, String.format("Unable to find player: %1$s.", target));
+    		return;
+    	}
+    	if(player != null){
+    		setGameMode(sender, target, player.capabilities.isCreativeMode ? EnumGameType.SURVIVAL : EnumGameType.CREATIVE);
+    	}
+    	else {
+    		OutputHandler.chatError(sender, String.format("Unable to find player: %1$s.", target));
+    	}
+    }
+    
+    public void setGameMode(ICommandSender sender, String target, EnumGameType mode) {
+    	EntityPlayer player;
+    	try{
+    		player = getPlayer(sender, target);
+    	}
+    	catch(PlayerNotFoundException e) {
+    		OutputHandler.chatError(sender, String.format("Unable to find player: %1$s.", target));
+    		return;
+    	}
+    	if(player != null){
+    		setGameMode(sender, player, mode);
+    	}
+    	else {
+    		OutputHandler.chatError(sender, String.format("Unable to find player: %1$s.", target));
+    	}
+    }
+    
+    public void setGameMode(ICommandSender sender, EntityPlayer target, EnumGameType mode) {
+    	target.setGameType(mode);
+        target.fallDistance = 0.0F;
+        String modeName = StatCollector.translateToLocal("gameMode." + mode.getName());
+        OutputHandler.chatConfirmation(sender, String.format("%1$s's gamemode was changed to %2$s.", target.username, modeName));
     }
 
-    private EnumGameType getGameTypeFromString(ICommandSender sender, String string)
+    private EnumGameType getGameTypeFromString(String string)
     {
         if (string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) || string.equalsIgnoreCase("s") || string.equals("0"))
         {
@@ -221,18 +156,6 @@ public class CommandGameMode extends FEcmdModuleCommands {
         }
     }
 
-    private EnumGameType getToggledType(EntityPlayer player)
-    {
-        if (player.capabilities.isCreativeMode)
-        {
-            return EnumGameType.SURVIVAL;
-        }
-        else
-        {
-            return EnumGameType.CREATIVE;
-        }
-    }
-
     @Override
     public boolean canConsoleUseCommand()
     {
@@ -242,25 +165,15 @@ public class CommandGameMode extends FEcmdModuleCommands {
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        if (args.length == 2)
+        if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, new String[]
-                    { "survival", "creative", "adventure" });
-        }
-        else if (args.length == 1)
-        {
-            List<String> match = getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-            if (match == null)
-            {
-                match = getListOfStringsMatchingLastWord(args, new String[]
-                        { "survival", "creative", "adventure" });
-            }
-            return match;
+            return getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure" });
         }
         else
         {
-            return null;
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
+
     }
 
     @Override
@@ -286,6 +199,6 @@ public class CommandGameMode extends FEcmdModuleCommands {
     public String getCommandUsage(ICommandSender sender)
     {
         // TODO Auto-generated method stub
-        return "/gamemode <player> [gamemode] Change a player's gamemode.";
+        return "/gamemode [gamemode] <player(s)> Change a player's gamemode.";
     }
 }
