@@ -1,4 +1,4 @@
-package com.forgeessentials.permission;
+package com.forgeessentials.permission.commands;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
@@ -9,6 +9,7 @@ import com.forgeessentials.api.permissions.query.PropQueryBlanketZone;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.permission.ZoneHelper;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.ChatUtils;

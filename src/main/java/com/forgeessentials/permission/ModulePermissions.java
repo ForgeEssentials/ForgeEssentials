@@ -15,6 +15,8 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.permission.autoPromote.AutoPromote;
 import com.forgeessentials.permission.autoPromote.AutoPromoteManager;
 import com.forgeessentials.permission.autoPromote.CommandAutoPromote;
+import com.forgeessentials.permission.commands.CommandFEPerm;
+import com.forgeessentials.permission.commands.CommandZone;
 import com.forgeessentials.permission.network.PacketPermNodeList;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.events.modules.*;

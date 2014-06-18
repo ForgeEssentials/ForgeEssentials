@@ -1,4 +1,4 @@
-package com.forgeessentials.permission;
+package com.forgeessentials.permission.commands;
 
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;

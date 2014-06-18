@@ -1,5 +1,6 @@
-package com.forgeessentials.permission;
+package com.forgeessentials.permission.commands;
 
+import com.forgeessentials.permission.ExportThread;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;

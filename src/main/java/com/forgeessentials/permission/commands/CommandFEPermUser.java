@@ -1,4 +1,4 @@
-package com.forgeessentials.permission;
+package com.forgeessentials.permission.commands;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
