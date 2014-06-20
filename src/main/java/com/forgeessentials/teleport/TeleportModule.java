@@ -9,6 +9,7 @@ import com.forgeessentials.api.permissions.query.PropQueryBlanketZone;
 import com.forgeessentials.api.permissions.query.PropQueryPlayerSpot;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Init;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerPostInit;
@@ -33,10 +34,33 @@ import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @FEModule(name = "TeleportModule", parentMod = ForgeEssentials.class, configClass = ConfigTeleport.class)
 public class TeleportModule {
 
     public static int timeout;
+
+    private static List<ForgeEssentialsCommandBase> commands = new ArrayList<ForgeEssentialsCommandBase>();
+
+    static
+    {
+        commands.add(new CommandBack());
+        commands.add(new CommandBed());
+        commands.add(new CommandHome());
+        commands.add(new CommandSpawn());
+        commands.add(new CommandTp());
+        commands.add(new CommandTphere());
+        commands.add(new CommandTppos());
+        commands.add(new CommandWarp());
+        commands.add(new CommandSetSpawn());
+        commands.add(new CommandTPA());
+        commands.add(new CommandTPAhere());
+        commands.add(new CommandPersonalWarp());
+        commands.add(new CommandTop());
+
+    }
 
     @PermRegister
     public static void registerPermissions(IPermRegisterEvent event)
@@ -61,6 +85,11 @@ public class TeleportModule {
         event.registerPermissionLevel("fe.teleport.tpahere.sendrequest",
                 RegGroup.MEMBERS);
         event.registerPermissionLevel("fe.teleport.warp.admin", RegGroup.OWNERS);
+
+        for (ForgeEssentialsCommandBase cmd : commands)
+        {
+            event.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
+        }
     }
 
     @Init
@@ -72,20 +101,11 @@ public class TeleportModule {
     @FEModule.ServerInit
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        e.registerServerCommand(new CommandBack());
-        e.registerServerCommand(new CommandBed());
-        e.registerServerCommand(new CommandHome());
-        e.registerServerCommand(new CommandSpawn());
-        e.registerServerCommand(new CommandTp());
-        e.registerServerCommand(new CommandTphere());
-        e.registerServerCommand(new CommandTppos());
-        e.registerServerCommand(new CommandWarp());
-        e.registerServerCommand(new CommandSetSpawn());
-        e.registerServerCommand(new CommandTPA());
-        e.registerServerCommand(new CommandTPAhere());
-        e.registerServerCommand(new CommandPersonalWarp());
-        e.registerServerCommand(new CommandTop());
-        System.out.println("hello");
+        for (ForgeEssentialsCommandBase cmd : commands)
+        {
+            e.registerServerCommand(cmd);
+        }
+
     }
 
     @ServerPostInit

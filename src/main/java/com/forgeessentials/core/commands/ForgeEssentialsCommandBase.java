@@ -177,10 +177,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
     public abstract String getCommandPerm();
 
-	/*
-     * Helper methods
-	 */
-
     public abstract RegGroup getReggroup();
 
     @Override
