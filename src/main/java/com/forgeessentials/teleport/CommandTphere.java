@@ -62,7 +62,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandPerm()
     {
-        return "fe.teleport." + getCommandName();
+        return "fe.teleport.tphere";
     }
 
     @Override
@@ -85,16 +85,9 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/tphere <player> Teleport a player to where you are.";
     }
 }

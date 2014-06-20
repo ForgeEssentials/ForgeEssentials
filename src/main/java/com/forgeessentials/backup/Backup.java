@@ -131,12 +131,12 @@ public class Backup implements Runnable {
         }
 
 		/*
-		 * Does actual backup
+         * Does actual backup
 		 */
         doFolder(source);
 
 		/*
-		 * Turns worls save back on if it was on.
+         * Turns worls save back on if it was on.
 		 */
         if (isWorld && worldSave)
         {

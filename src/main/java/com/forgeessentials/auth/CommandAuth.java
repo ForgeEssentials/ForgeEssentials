@@ -415,13 +415,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object arg0)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
         String s = "/auth help";

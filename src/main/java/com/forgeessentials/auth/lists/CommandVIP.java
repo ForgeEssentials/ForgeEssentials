@@ -39,22 +39,16 @@ public class CommandVIP extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/vip [add|remove} <player> Adds or removes a player from the VIP list";
     }
 
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.OWNERS;
     }
 

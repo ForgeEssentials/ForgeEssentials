@@ -20,18 +20,16 @@ import java.util.List;
 
 public class CommandAFK extends FEcmdModuleCommands {
     public static CommandAFK instance;
+    public static List<String> afkList = new ArrayList<String>();
+    // Config
+    public static int warmup = 5;
+    public static String outMessage, inMessage, selfOutMessage, selfInMessage;
+    public final String NOTICEPERM = getCommandPerm() + ".notice";
 
     public CommandAFK()
     {
         instance = this;
     }
-
-    public final String NOTICEPERM = getCommandPerm() + ".notice";
-    public static List<String> afkList = new ArrayList<String>();
-
-    // Config
-    public static int warmup = 5;
-    public static String outMessage, inMessage, selfOutMessage, selfInMessage;
 
     @Override
     public void doConfig(Configuration config, String category)
@@ -114,16 +112,9 @@ public class CommandAFK extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object arg0)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/afk Mark yourself as away.";
     }
 }

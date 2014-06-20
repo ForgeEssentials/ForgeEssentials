@@ -71,7 +71,7 @@ public class CommandVirtualchest extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/vchest Open a virtual chest";
     }
 

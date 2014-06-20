@@ -125,7 +125,7 @@ public class CommandReplace extends WorldControlCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.OWNERS;
     }
 

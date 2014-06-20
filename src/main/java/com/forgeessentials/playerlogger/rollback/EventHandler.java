@@ -18,7 +18,7 @@ public class EventHandler {
     public void playerInteractEvent(PlayerInteractEvent e)
     {
         /*
-		 * Lb info!
+         * Lb info!
 		 */
 
         if (e.entityPlayer.getEntityData().getBoolean("lb"))

@@ -92,16 +92,9 @@ public class CommandGive extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/give <player> <item[:meta]> [amount] Give a player an item.";
     }
 }

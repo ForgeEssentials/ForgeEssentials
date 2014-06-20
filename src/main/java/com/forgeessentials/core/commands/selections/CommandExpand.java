@@ -224,23 +224,16 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "//expand [direction] <number of blocks to expand> Expands the currently selected area.";
     }
 
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.MEMBERS;
     }
 

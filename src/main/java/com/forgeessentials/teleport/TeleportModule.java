@@ -10,6 +10,8 @@ import com.forgeessentials.api.permissions.query.PropQueryPlayerSpot;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.FEModule.Init;
+import com.forgeessentials.core.moduleLauncher.FEModule.ServerPostInit;
 import com.forgeessentials.teleport.util.ConfigTeleport;
 import com.forgeessentials.teleport.util.PlayerTrackerTP;
 import com.forgeessentials.teleport.util.TickHandlerTP;
@@ -36,55 +38,6 @@ public class TeleportModule {
 
     public static int timeout;
 
-    @FEModule.Init
-    public void load(FEModuleInitEvent e)
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    @FEModule.ServerInit
-    public void serverStarting(FEModuleServerInitEvent e)
-    {
-        e.registerServerCommand(new CommandBack());
-        e.registerServerCommand(new CommandBed());
-        e.registerServerCommand(new CommandHome());
-        e.registerServerCommand(new CommandSpawn());
-        e.registerServerCommand(new CommandTp());
-        e.registerServerCommand(new CommandTphere());
-        e.registerServerCommand(new CommandTppos());
-        e.registerServerCommand(new CommandWarp());
-        e.registerServerCommand(new CommandSetSpawn());
-        e.registerServerCommand(new CommandTPA());
-        e.registerServerCommand(new CommandTPAhere());
-        e.registerServerCommand(new CommandPersonalWarp());
-        e.registerServerCommand(new CommandTop());
-    }
-
-    @FEModule.ServerPostInit
-    public void serverStarted(FEModuleServerPostInitEvent e)
-    {
-        PropQueryBlanketZone query = new PropQueryBlanketZone(
-                CommandSetSpawn.SPAWN_PROP, APIRegistry.zones.getGLOBAL(),
-                false);
-        APIRegistry.perms.getPermissionProp(query);
-
-        // nothing set for the global??
-        if (!query.hasValue())
-        {
-            ChunkCoordinates point = FunctionHelper.getDimension(0).provider
-                    .getSpawnPoint();
-            String val = "0;" + point.posX + ";" + point.posY + ";"
-                    + point.posZ;
-            APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms
-                            .getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val,
-                    APIRegistry.zones.getGLOBAL().getZoneName());
-        }
-
-        GameRegistry.registerPlayerTracker(new PlayerTrackerTP());
-        TickRegistry.registerScheduledTickHandler(new TickHandlerTP(),
-                Side.SERVER);
-    }
-
     @PermRegister
     public static void registerPermissions(IPermRegisterEvent event)
     {// ensures
@@ -108,6 +61,56 @@ public class TeleportModule {
         event.registerPermissionLevel("fe.teleport.tpahere.sendrequest",
                 RegGroup.MEMBERS);
         event.registerPermissionLevel("fe.teleport.warp.admin", RegGroup.OWNERS);
+    }
+
+    @Init
+    public void load(FEModuleInitEvent e)
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @FEModule.ServerInit
+    public void serverStarting(FEModuleServerInitEvent e)
+    {
+        e.registerServerCommand(new CommandBack());
+        e.registerServerCommand(new CommandBed());
+        e.registerServerCommand(new CommandHome());
+        e.registerServerCommand(new CommandSpawn());
+        e.registerServerCommand(new CommandTp());
+        e.registerServerCommand(new CommandTphere());
+        e.registerServerCommand(new CommandTppos());
+        e.registerServerCommand(new CommandWarp());
+        e.registerServerCommand(new CommandSetSpawn());
+        e.registerServerCommand(new CommandTPA());
+        e.registerServerCommand(new CommandTPAhere());
+        e.registerServerCommand(new CommandPersonalWarp());
+        e.registerServerCommand(new CommandTop());
+        System.out.println("hello");
+    }
+
+    @ServerPostInit
+    public void serverStarted(FEModuleServerPostInitEvent e)
+    {
+        PropQueryBlanketZone query = new PropQueryBlanketZone(
+                CommandSetSpawn.SPAWN_PROP, APIRegistry.zones.getGLOBAL(),
+                false);
+        APIRegistry.perms.getPermissionProp(query);
+
+        // nothing set for the global??
+        if (!query.hasValue())
+        {
+            ChunkCoordinates point = FunctionHelper.getDimension(0).provider
+                    .getSpawnPoint();
+            String val = "0;" + point.posX + ";" + point.posY + ";"
+                    + point.posZ;
+            APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms
+                            .getDEFAULT().name, CommandSetSpawn.SPAWN_PROP, val,
+                    APIRegistry.zones.getGLOBAL().getZoneName());
+        }
+
+        GameRegistry.registerPlayerTracker(new PlayerTrackerTP());
+        TickRegistry.registerScheduledTickHandler(new TickHandlerTP(),
+                Side.SERVER);
     }
 
     @ForgeSubscribe(priority = EventPriority.LOW)

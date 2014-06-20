@@ -36,7 +36,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
         /*
-		 * Get the right zone.
+         * Get the right zone.
 		 * If nothing valid is given, defaults to the senders position.
 		 */
         Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(sender));
@@ -57,7 +57,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
         }
 
 		/*
-		 * Need to make a new one?
+         * Need to make a new one?
 		 */
         AutoPromote ap = AutoPromoteManager.instance().map.get(zone.getZoneName());
         if (ap == null)
@@ -345,23 +345,16 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/autopromote <zone> [get|enable|disable|edit|add|message] [other options] Configure auto promotion.";
     }
 
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.ZONE_ADMINS;
     }
 

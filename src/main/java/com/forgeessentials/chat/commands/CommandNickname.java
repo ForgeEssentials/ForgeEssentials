@@ -121,13 +121,6 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
         return "/nick <username> [nickname|del> Edit a player's nickname.";
@@ -136,7 +129,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.MEMBERS;
     }
 }

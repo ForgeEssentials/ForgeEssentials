@@ -50,7 +50,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
     private void execute(ICommandSender sender, String[] args)
     {
         /*
-		 * No world, Status update.
+         * No world, Status update.
 		 */
         if (args.length == 0)
         {
@@ -73,7 +73,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
         }
 
 		/*
-		 * Get the world
+         * Get the world
 		 */
         WorldServer world = null;
         if (FunctionHelper.isNumeric(args[0]))
@@ -200,23 +200,16 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return null;
     }
 
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.OWNERS;
     }
 

@@ -44,18 +44,18 @@ public class PacketEconomy extends ForgeEssentialsPacket {
         }
     }
 
-    @Override
-    public Packet250CustomPayload getPayload()
-    {
-        // TODO Auto-generated method stub
-        return packet;
-    }
-
     public static void readServer(DataInputStream stream, WorldServer world,
             EntityPlayer player)
     {
         PacketEconomy packet = new PacketEconomy(APIRegistry.wallet.getWallet(player.username));
         PacketDispatcher.sendPacketToPlayer(packet.getPayload(), (Player) player);
+    }
+
+    @Override
+    public Packet250CustomPayload getPayload()
+    {
+
+        return packet;
     }
 
 }

@@ -172,16 +172,9 @@ public class CommandPotion extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/potion <player> <effect> <duration> [ampl] Give the specified player a potion effect.";
     }
 

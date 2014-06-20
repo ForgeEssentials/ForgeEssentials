@@ -21,10 +21,16 @@ import java.util.HashSet;
 import java.util.List;
 
 public class CommandSetSpawn extends ForgeEssentialsCommandBase {
-    public static HashMap<String, WarpPoint> spawns = new HashMap<String, WarpPoint>();
     public static final String SPAWN_PROP = "fe.teleport.spawnPoint";
     public static final String SPAWN_TYPE_PROP = "fe.teleport.spawnType";
+    public static HashMap<String, WarpPoint> spawns = new HashMap<String, WarpPoint>();
     public static HashSet<Integer> dimsWithProp = new HashSet<Integer>();
+
+    public static void setSpawnPoint(WorldPoint p, Zone zone)
+    {
+        String val = p.dim + ";" + p.x + ";" + p.y + ";" + p.z;
+        APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, SPAWN_PROP, val, zone.getZoneName());
+    }
 
     @Override
     public String getCommandName()
@@ -401,12 +407,6 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         }
     }
 
-    public static void setSpawnPoint(WorldPoint p, Zone zone)
-    {
-        String val = p.dim + ";" + p.x + ";" + p.y + ";" + p.z;
-        APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, SPAWN_PROP, val, zone.getZoneName());
-    }
-
     @Override
     public boolean canConsoleUseCommand()
     {
@@ -514,16 +514,9 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/setspawn help Set the spawn point.";
     }
 }

@@ -51,12 +51,6 @@ public class CommandAffirmative extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
         return "/yes Answer yes to a question";
@@ -65,7 +59,7 @@ public class CommandAffirmative extends ForgeEssentialsCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.GUESTS;
     }
 

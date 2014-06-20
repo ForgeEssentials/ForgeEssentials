@@ -12,7 +12,7 @@ The Forge Essentials project consists of a permissions and protection system to 
 
 *More information can be found at the [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki).*
 
-####This repo is for a port to Minecraft 1.6.4. There are compiled builds [here](http://dries007.net:8080/job/FE_164/). Please do not attempt to use this on a live server, as it is extremely buggy and cases of world corruption have been reported. The 1.5.2 port is safer, and recommended for use.####
+####This repo is for a port to Minecraft 1.6.4. There are compiled builds [here](http://dries007.net:8080/job/FE_164/). Please make backups before attempting to use this on a live server.####
 
 <br>
 

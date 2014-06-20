@@ -132,16 +132,9 @@ public class CommandBurn extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/burn <player> Set a player on fire.";
     }
 }

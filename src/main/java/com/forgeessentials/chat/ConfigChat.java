@@ -14,10 +14,9 @@ import java.util.Arrays;
 public class ConfigChat extends ModuleConfigBase {
     public static String chatFormat;
     public static String largeComment_chatFormat = "";
-
-    public Configuration config;
     public static boolean logchat;
     public static boolean logcmd;
+    public Configuration config;
 
     // this is designed so it will work for any class.
     public ConfigChat(File file)
@@ -52,7 +51,7 @@ public class ConfigChat extends ModuleConfigBase {
         config.addCustomCategoryComment("Automessage", "Automated spamm");
 
         String[] msg = config.get("Automessage", "messages", new String[]
-                { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" },
+                        { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" },
                 "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
         for (int i = 0; i < msg.length; i++)
         {
@@ -171,7 +170,7 @@ public class ConfigChat extends ModuleConfigBase {
         config.addCustomCategoryComment("Automessage", "Automated spamm");
 
         String[] msg = config.get("Automessage", "messages", new String[]
-                { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" },
+                        { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" },
                 "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
         for (int i = 0; i < msg.length; i++)
         {

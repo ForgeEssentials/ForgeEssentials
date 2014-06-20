@@ -90,7 +90,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandPerm()
     {
-        return "fe.teleport." + getCommandName();
+        return "fe.teleport.top";
     }
 
     @Override
@@ -113,16 +113,9 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/top <player> Teleport you or another player to the top of the world.";
     }
 

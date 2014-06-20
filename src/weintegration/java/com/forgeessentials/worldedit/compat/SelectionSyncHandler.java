@@ -31,7 +31,7 @@ public class SelectionSyncHandler implements IScheduledTickHandler {
     @Override
     public String getLabel()
     {
-        // TODO Auto-generated method stub
+
         return null;
     }
 
@@ -90,21 +90,20 @@ public class SelectionSyncHandler implements IScheduledTickHandler {
     @Override
     public void tickStart(EnumSet<TickType> arg0, Object... arg1)
     {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public EnumSet<TickType> ticks()
     {
-        // TODO Auto-generated method stub
+
         return null;
     }
 
     @Override
     public int nextTickSpacing()
     {
-        // TODO Auto-generated method stub
+
         return syncInterval;
     }
 

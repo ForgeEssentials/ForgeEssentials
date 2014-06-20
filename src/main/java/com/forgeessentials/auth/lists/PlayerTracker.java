@@ -9,13 +9,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 public class PlayerTracker implements IPlayerTracker {
 
     public static String banned;
-    public int counter;
-    public int maxcounter;
     public static String notvip;
     public static String notwhitelisted;
     public static boolean whitelist;
     public static int vipslots;
     public static int offset;
+    public int counter;
+    public int maxcounter;
 
     @Override
     public void onPlayerLogin(EntityPlayer player)
@@ -52,14 +52,12 @@ public class PlayerTracker implements IPlayerTracker {
     @Override
     public void onPlayerChangedDimension(EntityPlayer player)
     {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void onPlayerRespawn(EntityPlayer player)
     {
-        // TODO Auto-generated method stub
 
     }
 

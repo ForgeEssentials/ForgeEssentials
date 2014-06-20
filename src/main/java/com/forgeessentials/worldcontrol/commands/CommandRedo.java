@@ -42,12 +42,6 @@ public class CommandRedo extends WorldControlCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
         return "/redo";
@@ -56,7 +50,7 @@ public class CommandRedo extends WorldControlCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.OWNERS;
     }
 }

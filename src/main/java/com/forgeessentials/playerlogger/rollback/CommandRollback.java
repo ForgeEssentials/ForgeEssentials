@@ -57,7 +57,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
         ArrayList<String> userlist = new ArrayList<String>();
         userlist.addAll(Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()));
         /*
-		 * Cmd info
+         * Cmd info
 		 */
         if (args.length == 0)
         {
@@ -72,7 +72,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             ChatUtils.sendMessage(sender, "A combo of the above is possible too.");
             return;
         }
-		
+
 		/* 
 		 * Only 1 arg
 		 */
@@ -255,13 +255,6 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
         return "/rollback <username> [undo|clear] Configure rollbacks.";
@@ -270,7 +263,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.OWNERS;
     }
 }

@@ -63,7 +63,7 @@ public class EventHandler {
         }
 
 		/*
-		 * Jump with compass
+         * Jump with compass
 		 */
         if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK)
         {
@@ -87,7 +87,7 @@ public class EventHandler {
                 }
             }
         }
-		
+
 		/*
 		 * 
 		 */

@@ -73,16 +73,9 @@ public class CommandLocate extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/locate <player> Locates a player.";
     }
 }

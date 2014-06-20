@@ -33,6 +33,24 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
         aliasList.add("whisper");
     }
 
+    public static String getPlayerReply(String player)
+    {
+        return playerReply.get(player);
+    }
+
+    public static void clearReply(String player)
+    {
+        if (playerReply.containsKey(player))
+        {
+            playerReply.remove(player);
+        }
+    }
+
+    public static void addReply(String player, String target)
+    {
+        playerReply.put(player, target);
+    }
+
     @Override
     public String getCommandName()
     {
@@ -194,42 +212,17 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
         return "fe.chat." + getCommandName();
     }
 
-    public static String getPlayerReply(String player)
-    {
-        return playerReply.get(player);
-    }
-
-    public static void clearReply(String player)
-    {
-        if (playerReply.containsKey(player))
-        {
-            playerReply.remove(player);
-        }
-    }
-
-    public static void addReply(String player, String target)
-    {
-        playerReply.put(player, target);
-    }
-
-    @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/msg <irc> <player> <message> Send a message to another player, who is either logged on to the server or online in IRC.";
     }
 
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.GUESTS;
     }
 }

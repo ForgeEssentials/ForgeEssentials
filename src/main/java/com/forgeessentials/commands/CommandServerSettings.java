@@ -166,16 +166,9 @@ public class CommandServerSettings extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/serversettings [option] [value] View or change server settings (in server.properties).";
     }
 }

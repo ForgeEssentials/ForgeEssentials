@@ -39,7 +39,7 @@ public class AutoPromote {
         this.enable = enable;
         promoteList = new HashMap<String, String>();
         /*
-		 * Available options:
+         * Available options:
 		 * '%group' = new group.
 		 * '%time' = nicely formatted time.
 		 * All color codes with '&'.

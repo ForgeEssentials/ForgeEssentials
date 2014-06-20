@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class FEModuleServerInitEvent extends FEModuleEvent {
-    private FMLServerStartingEvent event;
     private static Map<String, RegGroup> permList = new HashMap<String, RegGroup>();
+    private FMLServerStartingEvent event;
 
     public FEModuleServerInitEvent(ModuleContainer container, FMLServerStartingEvent event)
     {
@@ -36,7 +36,11 @@ public class FEModuleServerInitEvent extends FEModuleEvent {
 
     public void registerServerCommand(ForgeEssentialsCommandBase command)
     {
-        permList.put(command.getCommandPerm(), command.getReggroup());
+        System.out.println(command.getClass().getCanonicalName());
+        if (!(command.getCommandPerm() == null))
+        {
+            permList.put(command.getCommandPerm(), command.getReggroup());
+        }
         event.registerServerCommand(command);
     }
 
@@ -48,6 +52,7 @@ public class FEModuleServerInitEvent extends FEModuleEvent {
         {
             Map.Entry pairs = (Map.Entry) it.next();
             e.registerPermissionLevel((String) pairs.getKey(), (RegGroup) pairs.getValue());
+            System.out.println((String) pairs.getKey());
             it.remove(); // avoids a ConcurrentModificationException
         }
     }

@@ -26,10 +26,17 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.EventPriority;
+import net.minecraftforge.event.ForgeSubscribe;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
@@ -43,10 +50,40 @@ public class ModulePermissions {
     public static File permsFolder;
 
     protected static AbstractDataDriver data;
-
+    private static Map<String, RegGroup> permList = new HashMap<String, RegGroup>();
     // permission registrations here...
     protected PermRegLoader permLoader;
     private AutoPromoteManager autoPromoteManager;
+
+    @PermRegister
+    public static void registerPermissions(IPermRegisterEvent event)
+    {
+        event.registerPermissionLevel("fe.perm", RegGroup.OWNERS);
+        event.registerPermissionLevel("fe.perm._ALL_", RegGroup.OWNERS, true);
+        event.registerPermissionLevel("fe.perm.zone.define", RegGroup.OWNERS);
+        event.registerPermissionLevel("fe.perm.zone.redefine._ALL_", RegGroup.OWNERS);
+        event.registerPermissionLevel("fe.perm.zone.remove._ALL_", RegGroup.OWNERS);
+        event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
+        event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
+
+        event.registerPermissionLevel("fe.perm.zone", RegGroup.ZONE_ADMINS);
+        event.registerPermissionLevel("fe.perm.zone.setparent", RegGroup.ZONE_ADMINS);
+        event.registerPermissionLevel("fe.perm.autoPromote", RegGroup.ZONE_ADMINS);
+
+        event.registerPermissionLevel("fe.perm.zone.info._ALL_", RegGroup.MEMBERS);
+        event.registerPermissionLevel("fe.perm.zone.list", RegGroup.MEMBERS);
+
+        event.registerPermissionLevel("fe.perm.list", RegGroup.GUESTS);
+
+        Iterator it = permList.entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry pairs = (Map.Entry) it.next();
+            event.registerPermissionLevel((String) pairs.getKey(), (RegGroup) pairs.getValue());
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+
+    }
 
     @FEModule.PreInit
     public void preLoad(FEModulePreInitEvent e)
@@ -55,7 +92,7 @@ public class ModulePermissions {
         APIRegistry.perms = new PermissionsHelper();// new one for new API
 
         MinecraftForge.EVENT_BUS.register(APIRegistry.zones);
-        MinecraftForge.EVENT_BUS.register(new MinecraftCommandPermissionChecker());
+        MinecraftForge.EVENT_BUS.register(this);
         permLoader = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));
 
         DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
@@ -94,53 +131,32 @@ public class ModulePermissions {
 
         autoPromoteManager = new AutoPromoteManager();
 
-        permLoader.loadAllPerms();
-        permLoader.clearMethods();
+        doMCOverrides();
+
     }
 
-    @FEModule.ServerPostInit
-    public void serverStarted(FEModuleServerPostInitEvent e)
+    private void doMCOverrides()
     {
-
-        sql.putRegistrationPerms(permLoader.registerredPerms);
-
-        PermissionsList list = new PermissionsList();
-        if (list.shouldMake())
-        {
-            list.output(permLoader.perms);
-        }
-    }
-
-    @PermRegister
-    public static void registerPermissions(IPermRegisterEvent event)
-    {
-        event.registerPermissionLevel("fe.perm", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.perm._ALL_", RegGroup.OWNERS, true);
-        event.registerPermissionLevel("fe.perm.zone.define", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.perm.zone.redefine._ALL_", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.perm.zone.remove._ALL_", RegGroup.OWNERS);
-        event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
-        event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
-
-        event.registerPermissionLevel("fe.perm.zone", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("fe.perm.zone.setparent", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("fe.perm.autoPromote", RegGroup.ZONE_ADMINS);
-
-        event.registerPermissionLevel("fe.perm.zone.info._ALL_", RegGroup.MEMBERS);
-        event.registerPermissionLevel("fe.perm.zone.list", RegGroup.MEMBERS);
-
-        event.registerPermissionLevel("fe.perm.list", RegGroup.GUESTS);
-
         Set<ICommand> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) MinecraftServer.getServer().getCommandManager(),
                 DuplicateCommandRemoval.FIELDNAME);
 
         for (ICommand cmd : cmdList)
         {
-            if (cmd.getClass().getCanonicalName().startsWith("net.minecraft.command")){
-                event.registerPermissionLevel("mc." + cmd.getCommandName(), RegGroup.fromInt(((CommandBase)cmd).getRequiredPermissionLevel()));
+            if (cmd.getClass().getCanonicalName().startsWith("net.minecraft.command"))
+            {
+                permList.put("mc." + cmd.getCommandName(), RegGroup.fromInt(((CommandBase) cmd).getRequiredPermissionLevel()));
             }
 
         }
+    }
+
+    @FEModule.ServerPostInit
+    public void serverStarted(FEModuleServerPostInitEvent e)
+    {
+        permLoader.loadAllPerms();
+        permLoader.clearMethods();
+
+        sql.putRegistrationPerms(permLoader.registerredPerms);
     }
 
     @FEModule.ServerStop
@@ -162,5 +178,21 @@ public class ModulePermissions {
     public void sendPermList(Player player)
     {
         PacketDispatcher.sendPacketToPlayer(new PacketPermNodeList(permLoader.perms).getPayload(), player);
+    }
+
+    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    public void checkCommandPerm(CommandEvent e)
+    {
+        if (!(e.sender instanceof EntityPlayer)) {return;}
+        ICommand command = e.command;
+        if (e.command.getClass().getCanonicalName().startsWith("net.minecraft.command"))
+        {
+            boolean allow = APIRegistry.perms.checkPermAllowed((EntityPlayer) e.sender, "mc." + e.command.getCommandName());
+            if (!allow)
+            {
+                e.setCanceled(true);
+            }
+
+        }
     }
 }

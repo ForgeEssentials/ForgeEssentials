@@ -16,6 +16,19 @@ public class CommandBackup extends ForgeEssentialsCommandBase {
     static String output;
     static List<String> fileList;
 
+    public static boolean isInteger(String s)
+    {
+        try
+        {
+            Integer.parseInt(s);
+        }
+        catch (NumberFormatException e)
+        {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public String getCommandName()
     {
@@ -71,19 +84,6 @@ public class CommandBackup extends ForgeEssentialsCommandBase {
         return "fe.backup";
     }
 
-    public static boolean isInteger(String s)
-    {
-        try
-        {
-            Integer.parseInt(s);
-        }
-        catch (NumberFormatException e)
-        {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
@@ -93,7 +93,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.ZONE_ADMINS;
     }
 }

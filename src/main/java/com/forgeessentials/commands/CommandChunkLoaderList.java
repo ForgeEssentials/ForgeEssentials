@@ -205,16 +205,9 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/chunkloaderlist Lists all active chunk loaders.";
     }
 }

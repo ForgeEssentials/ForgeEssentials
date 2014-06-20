@@ -54,7 +54,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandPerm()
     {
-        return "fe.teleport." + getCommandName();
+        return "fe.teleport.tppos";
     }
 
     @Override
@@ -73,20 +73,13 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-        return RegGroup.OWNERS;
-    }
-
-    @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
+        return RegGroup.MEMBERS;
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/tppos <x y z> Teleport to a position.";
     }
 }

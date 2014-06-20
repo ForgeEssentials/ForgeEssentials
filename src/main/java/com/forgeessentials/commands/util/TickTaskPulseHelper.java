@@ -51,14 +51,14 @@ public class TickTaskPulseHelper implements ITickTask {
     @Override
     public boolean isComplete()
     {
-        // TODO Auto-generated method stub
+
         return ticks == -1;
     }
 
     @Override
     public boolean editsBlocks()
     {
-        // TODO Auto-generated method stub
+
         return false;
     }
 

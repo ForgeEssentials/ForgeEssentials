@@ -78,7 +78,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandPerm()
     {
-        return "fe.teleport." + getCommandName();
+        return "fe.teleport.back";
     }
 
     @Override
@@ -88,16 +88,9 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object arg0)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/back Teleport you to your last death or teleport location.";
     }
 

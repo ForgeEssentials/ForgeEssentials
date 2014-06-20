@@ -9,7 +9,6 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,18 +27,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
-    {
-        doStuff(sender, args);
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-        doStuff(sender, args);
-    }
-
-    public void doStuff(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args)
     {
         if (args.length == 0)
         {
@@ -152,7 +140,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.OWNERS;
     }
 }

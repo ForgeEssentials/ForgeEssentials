@@ -45,7 +45,13 @@ public class PermRegLoader {
 
         perms = event.registerred;
         registerredPerms = event.perms;
-        OutputHandler.felog.info("Registered " + registerredPerms.size() + " permission nodes");
+        OutputHandler.felog.info("Registered " + event.registerred.size() + " permission nodes");
+
+        PermissionsList list = new PermissionsList();
+        if (list.shouldMake())
+        {
+            list.output(event.registerred);
+        }
     }
 
     protected void clearMethods()
@@ -84,6 +90,7 @@ public class PermRegLoader {
             if (!deny.isAll)
             {
                 registerred.add(permission.toLowerCase());
+                System.out.println(permission.toLowerCase());
             }
 
             if (group == null)
@@ -182,14 +189,14 @@ public class PermRegLoader {
         @Override
         public void registerGroupPermissionprop(String permission, int value, RegGroup group)
         {
-            PermissionProp prop = new PermissionProp(permission, "" + value);
+            PermissionProp prop = new PermissionProp(permission.toLowerCase(), "" + value);
             perms.put(group, prop);
         }
 
         @Override
         public void registerGroupPermissionprop(String permission, float value, RegGroup group)
         {
-            PermissionProp prop = new PermissionProp(permission, "" + value);
+            PermissionProp prop = new PermissionProp(permission.toLowerCase(), "" + value);
             perms.put(group, prop);
         }
     }

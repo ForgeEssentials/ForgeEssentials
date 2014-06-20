@@ -13,8 +13,8 @@ import net.minecraftforge.common.Configuration;
 import java.util.List;
 
 public class CommandFindblock extends FEcmdModuleCommands {
-    public static int defaultRange = 20 * 16;
     public static final int defaultCount = 1;
+    public static int defaultRange = 20 * 16;
     public static int defaultSpeed = 16 * 16;
 
     @Override
@@ -92,16 +92,9 @@ public class CommandFindblock extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/fb <block> [max distance] [amount of blocks] [speed] Finds a block.";
     }
 }

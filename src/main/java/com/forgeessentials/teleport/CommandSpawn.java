@@ -122,7 +122,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandPerm()
     {
-        return "fe.teleport." + getCommandName();
+        return "fe.teleport.spawn";
     }
 
     @Override
@@ -142,13 +142,6 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
     public RegGroup getReggroup()
     {
         return RegGroup.MEMBERS;
-    }
-
-    @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
     @Override

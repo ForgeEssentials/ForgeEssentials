@@ -170,16 +170,9 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/spawnmob <mob type> <amount> [<x> <y> <z>] [dimension] Spawns a mob at a location.";
     }
 

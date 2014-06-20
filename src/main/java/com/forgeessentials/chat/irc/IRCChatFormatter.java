@@ -108,7 +108,7 @@ public class IRCChatFormatter {
         format = ConfigChat.chatFormat == null || ConfigChat.chatFormat.trim().isEmpty() ? "<%username>%message" : ConfigChat.chatFormat;
 
 		/*
-		 * if(enable_chat%){ format = replaceAllIngnoreCase(format, "%message",
+         * if(enable_chat%){ format = replaceAllIngnoreCase(format, "%message",
 		 * message); }
 		 */
         // replace group, zone, and rank

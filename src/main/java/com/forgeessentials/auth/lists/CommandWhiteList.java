@@ -11,7 +11,7 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandName()
     {
-        // TODO Auto-generated method stub
+
         return "whitelist";
     }
 
@@ -55,7 +55,7 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
     @Override
     public boolean canConsoleUseCommand()
     {
-        // TODO Auto-generated method stub
+
         return true;
     }
 
@@ -66,23 +66,16 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/whitelist ";
     }
 
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.ZONE_ADMINS;
     }
 

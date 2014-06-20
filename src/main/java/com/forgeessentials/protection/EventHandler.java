@@ -350,7 +350,7 @@ public class EventHandler {
 	
 	
 	/* uncomment when complete
-	@ForgeSubscribe
+    @ForgeSubscribe
 	public void manageZoneBannedItems(PlayerChangedZone e)
 	{
 		AdditionalZoneData bi = ModuleProtection.itemsList.get(e.afterZone);

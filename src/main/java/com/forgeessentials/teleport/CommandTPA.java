@@ -109,7 +109,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandPerm()
     {
-        return "fe.teleport." + getCommandName();
+        return "fe.teleport.tpa";
     }
 
     @Override
@@ -136,16 +136,9 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/tpa [player] <player|<x> <y> <z|accept|decline>> Request to teleport yourself or another player.";
     }
 }

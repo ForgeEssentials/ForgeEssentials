@@ -192,16 +192,9 @@ public class CommandEnchant extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/enchant [ench name] [lvl] Enchants the item you are currently holding.";
     }
 }

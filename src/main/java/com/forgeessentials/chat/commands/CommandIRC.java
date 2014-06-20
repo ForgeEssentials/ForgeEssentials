@@ -40,12 +40,6 @@ public class CommandIRC extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
         return "/irc [reconnect|disconnect] Connect or disconnect the IRC server bot.";
@@ -54,7 +48,7 @@ public class CommandIRC extends ForgeEssentialsCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.ZONE_ADMINS;
     }
 

@@ -167,11 +167,4 @@ public class CommandPush extends FEcmdModuleCommands {
         return RegGroup.MEMBERS;
     }
 
-    @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
 }

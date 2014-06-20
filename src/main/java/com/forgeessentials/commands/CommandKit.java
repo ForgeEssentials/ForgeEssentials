@@ -34,7 +34,7 @@ public class CommandKit extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
         /*
-		 * Print kits
+         * Print kits
 		 */
         if (args.length == 0)
         {
@@ -51,7 +51,7 @@ public class CommandKit extends FEcmdModuleCommands {
             ChatUtils.sendMessage(sender, msg);
             return;
         }
-		/*
+        /*
 		 * Give kit
 		 */
         if (args.length == 1)
@@ -159,16 +159,9 @@ public class CommandKit extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/kit [name] OR [name] [set|del] <cooldown> Allows you to receive free kits which are pre-defined by the server owner.";
     }
 

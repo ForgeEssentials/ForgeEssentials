@@ -14,15 +14,37 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import java.util.List;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase {
-    @Override
-    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par1)
+
+    /**
+     * Parse int with support for relative int.
+     *
+     * @param sender
+     * @param string
+     * @param relativeStart
+     * @return
+     */
+    public static int parseInt(ICommandSender sender, String string, double relativeStart)
     {
-        return true;
+        if (string.startsWith("~"))
+        {
+            string = string.substring(1);
+            return (int) (relativeStart + parseInt(sender, string));
+        }
+        else
+        {
+            return parseInt(sender, string);
+        }
     }
 
     // ---------------------------
     // processing command
     // ---------------------------
+
+    @Override
+    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par1)
+    {
+        return true;
+    }
 
     @Override
     public void processCommand(ICommandSender var1, String[] var2)
@@ -53,22 +75,22 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         processCommandConsole(block, args);
     }
 
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-    }
-
     ;
 
     // ---------------------------
     // command usage
     // ---------------------------
 
-    @Override
-    public abstract String getCommandUsage(ICommandSender sender);
+    public void processCommandConsole(ICommandSender sender, String[] args)
+    {
+    }
 
     // ---------------------------
     // permissions
     // ---------------------------
+
+    @Override
+    public abstract String getCommandUsage(ICommandSender sender);
 
     @Override
     public boolean canCommandSenderUseCommand(ICommandSender sender)
@@ -145,42 +167,21 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         }
     }
 
+    // permissions
+
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         return null;
     }
 
-    // permissions
-
     public abstract String getCommandPerm();
-
-    public abstract RegGroup getReggroup();
 
 	/*
      * Helper methods
 	 */
 
-    /**
-     * Parse int with support for relative int.
-     *
-     * @param sender
-     * @param string
-     * @param relativeStart
-     * @return
-     */
-    public static int parseInt(ICommandSender sender, String string, double relativeStart)
-    {
-        if (string.startsWith("~"))
-        {
-            string = string.substring(1);
-            return (int) (relativeStart + parseInt(sender, string));
-        }
-        else
-        {
-            return parseInt(sender, string);
-        }
-    }
+    public abstract RegGroup getReggroup();
 
     @Override
     public int compareTo(Object o)

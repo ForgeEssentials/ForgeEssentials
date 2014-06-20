@@ -145,9 +145,9 @@ public class Kit {
                     System.out.println("Couldn't give " + stack.getDisplayName());
                 }
             }
-			
+
 			/*
-			 * Armor
+             * Armor
 			 */
             for (int i = 0; i < 4; i++)
             {

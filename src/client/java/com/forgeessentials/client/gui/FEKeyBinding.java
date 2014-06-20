@@ -20,7 +20,7 @@ public class FEKeyBinding extends KeyHandler {
     @Override
     public String getLabel()
     {
-        // TODO Auto-generated method stub
+
         return "forgeessentials.keyhandler";
     }
 

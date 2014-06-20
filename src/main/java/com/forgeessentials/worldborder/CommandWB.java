@@ -54,7 +54,7 @@ public class CommandWB extends ForgeEssentialsCommandBase {
     public void execute(ICommandSender sender, String[] args)
     {
         /*
-		 * We need the zone...
+         * We need the zone...
 		 */
         Zone zone;
         if (args.length == 0)
@@ -91,7 +91,7 @@ public class CommandWB extends ForgeEssentialsCommandBase {
         }
 
 		/*
-		 * Now we have the zone...
+         * Now we have the zone...
 		 */
         WorldBorder border = ModuleWorldBorder.borderMap.get(zone.getZoneName());
 
@@ -263,23 +263,16 @@ public class CommandWB extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/worldborder <global|world|dimID> [info|enable|disable|center|radius|shape] Configure FE WorldBorder.";
     }
 
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.OWNERS;
     }
 

@@ -10,18 +10,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BackupConfig extends ModuleConfigBase {
-    private Configuration config;
     private static final String MAIN = "Backup";
     private static final String AUTOBACKUP = MAIN + ".autoBackup";
     private static final String AUTOREMOVE = MAIN + ".autoRemove";
-
     // Main
     public static String backupName;
     public static String backupDir;
     public static boolean backupOnWorldUnload;
     public static boolean backupIfUnloaded;
     public static boolean enableMsg;
-
     // AutoBackup
     public static Integer autoInterval;
     public static Integer worldSaveInterval;
@@ -29,12 +26,12 @@ public class BackupConfig extends ModuleConfigBase {
     public static List<Integer> whitelist;
     public static List<Integer> blacklist;
     public static List<String> extraFolders;
-
     // AutoRemove
     public static boolean enableAutoRemove;
     public static Integer minimunFreeSpace;
     public static Integer maxfilesperbackupfolder;
     public static Integer maxBackupLifespan;
+    private Configuration config;
 
     public BackupConfig(File file)
     {
@@ -58,7 +55,7 @@ public class BackupConfig extends ModuleConfigBase {
         enableMsg = config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").getBoolean(true);
 
 		/*
-		 * Lang
+         * Lang
 		 */
 
         String sub = MAIN + ".lang";
@@ -71,7 +68,7 @@ public class BackupConfig extends ModuleConfigBase {
         ModuleBackup.baseFolder = new File(backupDir);
 
 		/*
-		 * Subcat autoBackup
+         * Subcat autoBackup
 		 */
         config.addCustomCategoryComment(AUTOBACKUP, "Settings for the scheduled backup system");
 

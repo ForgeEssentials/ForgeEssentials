@@ -33,6 +33,68 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
         GameRegistry.registerPlayerTracker(this);
     }
 
+    public static boolean isMessagePersistent(String username)
+    {
+        return persistentMessage.containsKey(username);
+    }
+
+    public static void processChat(ICommandSender sender, String[] args)
+    {
+        if (sender instanceof EntityPlayer)
+        {
+            String target = persistentMessage.get(sender.getCommandSenderName());
+            if (target.equalsIgnoreCase("server") || target.equalsIgnoreCase("console"))
+            {
+                CommandMsg.clearReply("server");
+                CommandMsg.addReply("server", sender.getCommandSenderName());
+                String senderMessage = EnumChatFormatting.GOLD + "[ me -> " + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + "] "
+                        + EnumChatFormatting.GRAY;
+                String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + " -> me ] ";
+                for (int i = 0; i < args.length; i++)
+                {
+                    receiverMessage += args[i];
+                    senderMessage += args[i];
+                    if (i != args.length - 1)
+                    {
+                        receiverMessage += " ";
+                        senderMessage += " ";
+                    }
+                }
+                ChatUtils.sendMessage(MinecraftServer.getServer(), receiverMessage);
+                ChatUtils.sendMessage(sender, senderMessage);
+            }
+            else
+            {
+                EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+                if (receiver == null)
+                {
+                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                    return;
+                }
+                CommandMsg.clearReply(receiver.getCommandSenderName());
+                CommandMsg.addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
+                String senderMessage =
+                        EnumChatFormatting.GOLD + "[ me -> " + EnumChatFormatting.GRAY + receiver.getCommandSenderName() + EnumChatFormatting.GOLD + "] "
+                                + EnumChatFormatting.WHITE;
+                String receiverMessage =
+                        EnumChatFormatting.GOLD + "[" + EnumChatFormatting.GRAY + sender.getCommandSenderName() + EnumChatFormatting.GOLD + " -> me ] "
+                                + EnumChatFormatting.WHITE;
+                for (int i = 1; i < args.length; i++)
+                {
+                    receiverMessage += args[i];
+                    senderMessage += args[i];
+                    if (i != args.length - 1)
+                    {
+                        receiverMessage += " ";
+                        senderMessage += " ";
+                    }
+                }
+                ChatUtils.sendMessage(sender, senderMessage);
+                ChatUtils.sendMessage(receiver, receiverMessage);
+            }
+        }
+    }
+
     @Override
     public String getCommandName()
     {
@@ -190,68 +252,6 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
         return "fe.chat." + getCommandName();
     }
 
-    public static boolean isMessagePersistent(String username)
-    {
-        return persistentMessage.containsKey(username);
-    }
-
-    public static void processChat(ICommandSender sender, String[] args)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            String target = persistentMessage.get(sender.getCommandSenderName());
-            if (target.equalsIgnoreCase("server") || target.equalsIgnoreCase("console"))
-            {
-                CommandMsg.clearReply("server");
-                CommandMsg.addReply("server", sender.getCommandSenderName());
-                String senderMessage = EnumChatFormatting.GOLD + "[ me -> " + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + "] "
-                        + EnumChatFormatting.GRAY;
-                String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + " -> me ] ";
-                for (int i = 0; i < args.length; i++)
-                {
-                    receiverMessage += args[i];
-                    senderMessage += args[i];
-                    if (i != args.length - 1)
-                    {
-                        receiverMessage += " ";
-                        senderMessage += " ";
-                    }
-                }
-                ChatUtils.sendMessage(MinecraftServer.getServer(), receiverMessage);
-                ChatUtils.sendMessage(sender, senderMessage);
-            }
-            else
-            {
-                EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
-                if (receiver == null)
-                {
-                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                    return;
-                }
-                CommandMsg.clearReply(receiver.getCommandSenderName());
-                CommandMsg.addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
-                String senderMessage =
-                        EnumChatFormatting.GOLD + "[ me -> " + EnumChatFormatting.GRAY + receiver.getCommandSenderName() + EnumChatFormatting.GOLD + "] "
-                                + EnumChatFormatting.WHITE;
-                String receiverMessage =
-                        EnumChatFormatting.GOLD + "[" + EnumChatFormatting.GRAY + sender.getCommandSenderName() + EnumChatFormatting.GOLD + " -> me ] "
-                                + EnumChatFormatting.WHITE;
-                for (int i = 1; i < args.length; i++)
-                {
-                    receiverMessage += args[i];
-                    senderMessage += args[i];
-                    if (i != args.length - 1)
-                    {
-                        receiverMessage += " ";
-                        senderMessage += " ";
-                    }
-                }
-                ChatUtils.sendMessage(sender, senderMessage);
-                ChatUtils.sendMessage(receiver, receiverMessage);
-            }
-        }
-    }
-
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
@@ -280,23 +280,16 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/pm <player> Enable persistent message for a player. Use /pm to turn off.";
     }
 
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.MEMBERS;
     }
 }

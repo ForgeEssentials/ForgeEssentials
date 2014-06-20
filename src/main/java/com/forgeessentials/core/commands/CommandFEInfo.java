@@ -83,7 +83,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return RegGroup.MEMBERS;
     }
 

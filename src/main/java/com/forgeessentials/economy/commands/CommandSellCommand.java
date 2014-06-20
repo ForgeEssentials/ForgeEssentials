@@ -119,7 +119,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandPerm()
     {
-        return "fe.economy." + getCommandName();
+        return null;
     }
 
     @Override
@@ -129,23 +129,16 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/sellcommand <player> <['amount'x]item[:'meta']> <command [args]>";
     }
 
     @Override
     public RegGroup getReggroup()
     {
-        // TODO Auto-generated method stub
+
         return null;
     }
 

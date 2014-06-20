@@ -46,13 +46,6 @@ public class C4PacketEconomy extends ForgeEssentialsPacketClient {
         }
     }
 
-    @Override
-    public Packet250CustomPayload getPayload()
-    {
-        // TODO Auto-generated method stub
-        return packet;
-    }
-
     public static void readClient(DataInputStream stream, WorldClient world,
             EntityPlayer player)
     {
@@ -64,6 +57,13 @@ public class C4PacketEconomy extends ForgeEssentialsPacketClient {
         {
             ForgeEssentialsClient.feclientlog.severe("Failed to read packet EconRequest");
         }
+    }
+
+    @Override
+    public Packet250CustomPayload getPayload()
+    {
+
+        return packet;
     }
 
 }

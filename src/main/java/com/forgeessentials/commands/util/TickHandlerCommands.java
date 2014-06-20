@@ -21,31 +21,16 @@ import java.util.List;
 
 public class TickHandlerCommands implements IScheduledTickHandler {
     /*
-	 * For AFK system
+     * For AFK system
 	 */
-
-    public static List<AFKdata> afkList = new ArrayList<AFKdata>();
-    public static List<AFKdata> afkListToAdd = new ArrayList<AFKdata>();
-    public static List<AFKdata> afkListToRemove = new ArrayList<AFKdata>();
 
     /*
      * For kit command
      */
     public static final String BYPASS_KIT_COOLDOWN = "fe.TickHandlerCommands.BypassKitCooldown";
-
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData)
-    {
-        if (type.contains(TickType.SERVER))
-        {
-            doServerTick();
-        }
-
-        if (type.contains(TickType.WORLD))
-        {
-            doWorldTick((World) tickData[0]);
-        }
-    }
+    public static List<AFKdata> afkList = new ArrayList<AFKdata>();
+    public static List<AFKdata> afkListToAdd = new ArrayList<AFKdata>();
+    public static List<AFKdata> afkListToRemove = new ArrayList<AFKdata>();
 
     public static int getWorldHour(World world)
     {
@@ -62,9 +47,23 @@ public class TickHandlerCommands implements IScheduledTickHandler {
         world.setWorldTime((getWorldDays(world) + 1) * 24000 + (target * 1000));
     }
 
+    @Override
+    public void tickStart(EnumSet<TickType> type, Object... tickData)
+    {
+        if (type.contains(TickType.SERVER))
+        {
+            doServerTick();
+        }
+
+        if (type.contains(TickType.WORLD))
+        {
+            doWorldTick((World) tickData[0]);
+        }
+    }
+
     private void doWorldTick(World world)
     {
-	    /*
+        /*
 	     * Time settings
 	     */
         if (!CommandDataManager.WTmap.containsKey(world.provider.dimensionId))

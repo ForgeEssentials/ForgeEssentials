@@ -111,16 +111,9 @@ public class CommandRemove extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/remove <radius> <x, y, z> Remove all items within a specified radius from the given coordinates.";
     }
 

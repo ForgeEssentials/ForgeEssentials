@@ -56,27 +56,31 @@ public class ForgeEssentials {
     public static ForgeEssentials instance;
 
     public static CoreConfig config;
-    public ModuleLauncher mdlaunch;
     public static boolean verCheck = true;
     public static boolean preload;
-
     public static String modlistLocation;
-
     public static File FEDIR;
-
     public static boolean mcstats;
-
-    public BannedItems bannedItems;
     public static String version;
-
-    private CompatMCStats mcstatscompat;
     public static boolean sanitycheck;
-
+    public ModuleLauncher mdlaunch;
+    public BannedItems bannedItems;
+    private CompatMCStats mcstatscompat;
     private TaskRegistry tasks;
 
     public ForgeEssentials()
     {
         tasks = new TaskRegistry();
+    }
+
+    @PermRegister
+    private static void registerPerms(IPermRegisterEvent event)
+    {
+        if (!EnvironmentChecker.worldEditInstalled)
+        {
+            event.registerPermissionLevel(
+                    "fe.core.info", RegGroup.OWNERS);
+        }
     }
 
     @EventHandler
@@ -165,23 +169,6 @@ public class ForgeEssentials {
         bannedItems.postLoad(e);
 
         new FriendlyItemList();
-    }
-
-    @PermRegister
-    private static void registerPerms(IPermRegisterEvent event)
-    {
-        if (!EnvironmentChecker.worldEditInstalled)
-        {
-            event.registerPermissionLevel(
-                    "fe.select.pos", RegGroup.GUESTS);
-            event.registerPermissionLevel(
-                    "fe.select.wand", RegGroup.GUESTS);
-            event.registerPermissionLevel(
-                    "fe.select.deselect",
-                    RegGroup.GUESTS);
-            event.registerPermissionLevel(
-                    "fe.core.info", RegGroup.OWNERS);
-        }
     }
 
     @EventHandler

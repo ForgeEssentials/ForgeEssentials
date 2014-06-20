@@ -13,7 +13,6 @@ public class ScriptPlayerTracker implements IPlayerTracker {
     @Override
     public void onPlayerLogout(EntityPlayer player)
     {
-        // TODO Auto-generated method stub
 
     }
 

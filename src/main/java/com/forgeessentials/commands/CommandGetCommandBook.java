@@ -19,6 +19,25 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class CommandGetCommandBook extends FEcmdModuleCommands {
+    public static String joinAliases(Object[] par0ArrayOfObj)
+    {
+        StringBuilder var1 = new StringBuilder();
+
+        for (int var2 = 0; var2 < par0ArrayOfObj.length; ++var2)
+        {
+            String var3 = "/" + par0ArrayOfObj[var2].toString();
+
+            if (var2 > 0)
+            {
+                var1.append(", ");
+            }
+
+            var1.append(var3);
+        }
+
+        return var1.toString();
+    }
+
     @Override
     public String getCommandName()
     {
@@ -65,7 +84,7 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
         for (Object cmdObj : MinecraftServer.getServer().getCommandManager().getCommands().values().toArray())
         {
             /*
-			 * PAGE FORMAT
+             * PAGE FORMAT
 			 * =========================
 			 * [GOLD] /commandName
 			 * [GOLD] aliases
@@ -126,25 +145,6 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
         sender.inventory.addItemStackToInventory(is);
     }
 
-    public static String joinAliases(Object[] par0ArrayOfObj)
-    {
-        StringBuilder var1 = new StringBuilder();
-
-        for (int var2 = 0; var2 < par0ArrayOfObj.length; ++var2)
-        {
-            String var3 = "/" + par0ArrayOfObj[var2].toString();
-
-            if (var2 > 0)
-            {
-                var1.append(", ");
-            }
-
-            var1.append(var3);
-        }
-
-        return var1.toString();
-    }
-
     @Override
     public boolean canConsoleUseCommand()
     {
@@ -158,16 +158,9 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/getcommandbook Get a command book listing all commands.";
     }
 }

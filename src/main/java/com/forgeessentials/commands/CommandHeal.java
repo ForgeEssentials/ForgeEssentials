@@ -108,16 +108,9 @@ public class CommandHeal extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/heal <player> Heal yourself. You can also heal other players if you have permission.";
     }
 

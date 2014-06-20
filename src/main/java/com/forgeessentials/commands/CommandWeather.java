@@ -141,16 +141,9 @@ public class CommandWeather extends FEcmdModuleCommands {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/weather  [DimID, none for all] <rain|storm> [on|off] Allows for permanent manipulation of the weather.";
     }
 }

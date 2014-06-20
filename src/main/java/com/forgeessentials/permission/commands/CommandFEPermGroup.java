@@ -154,8 +154,8 @@ public class CommandFEPermGroup {
             OutputHandler.chatConfirmation(sender, "To change any of these, type /p group <groupname> prefix|suffix|parent|priority set <value>");
             return;
         }
-		/*
-		 * Settings
+        /*
+         * Settings
 		 */
         Zone zone = APIRegistry.zones.getGLOBAL();
         if (args.length == 3 && (args[1].equalsIgnoreCase("prefix") || args[1].equalsIgnoreCase("suffix") || args[1].equalsIgnoreCase("parent") || args[1]

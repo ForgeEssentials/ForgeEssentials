@@ -120,7 +120,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandPerm()
     {
-        return "fe.teleport." + getCommandName();
+        return "fe.teleport.bed";
     }
 
     @Override
@@ -158,16 +158,9 @@ public class CommandBed extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public int compareTo(Object arg0)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+
         return "/bed [player] Teleport you or another player to the bed last used.";
     }
 }
