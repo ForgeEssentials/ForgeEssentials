@@ -18,12 +18,74 @@ import cpw.mods.fml.common.network.Player;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 @SaveableObject
 public class PlayerInfo {
     private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
+    // -------------------------------------------------------------------------------------------
+    // ---------------------------------- Actual Class Starts Now --------------------------------
+    // -------------------------------------------------------------------------------------------
+    @UniqueLoadingKey()
+    @SaveableField()
+    public final String username;
+    // wand stuff
+    public int wandID = 0;
+    public int wandDmg = 0;
+    public boolean wandEnabled = false;
+    @SaveableField()
+    public WarpPoint home;
+    @SaveableField()
+    public WarpPoint back;
+    @SaveableField()
+    public String prefix;
+    @SaveableField()
+    public String suffix;
+    // 0: Normal 1: World spawn 2: Bed 3: Home
+    @SaveableField()
+    public int spawnType;
+    public int TPcooldown = 0;
+    public HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
+    // selection stuff
+    @SaveableField()
+    private Point sel1;
+    @SaveableField()
+    private Point sel2;
+    private Selection selection;
+    @SaveableField()
+    private int timePlayed;
+    private long loginTime;
+    @SaveableField()
+    private long firstJoin;
+    // undo and redo stuff
+    private Stack<BackupArea> undos;
+    private Stack<BackupArea> redos;
+    @SaveableField
+    private List<ItemStack> hiddenItems;
+
+    private PlayerInfo(String username)
+    {
+        sel1 = null;
+        sel2 = null;
+        selection = null;
+        this.username = username;
+
+        undos = new Stack<BackupArea>();
+        redos = new Stack<BackupArea>();
+
+        prefix = "";
+        suffix = "";
+
+        firstJoin = System.currentTimeMillis();
+        loginTime = System.currentTimeMillis();
+
+        timePlayed = 0;
+
+        hiddenItems = new ArrayList<ItemStack>();
+    }
 
     // @Deprecated Why? it doesn't have to be removed?
     public static PlayerInfo getPlayerInfo(EntityPlayer player)
@@ -83,82 +145,6 @@ public class PlayerInfo {
 
         info.firstJoin = (Long) tag.getFieldValue("firstJoin");
         return info;
-    }
-
-    // -------------------------------------------------------------------------------------------
-    // ---------------------------------- Actual Class Starts Now --------------------------------
-    // -------------------------------------------------------------------------------------------
-    @UniqueLoadingKey()
-    @SaveableField()
-    public final String username;
-
-    // wand stuff
-    public int wandID = 0;
-    public int wandDmg = 0;
-    public boolean wandEnabled = false;
-
-    // selection stuff
-    @SaveableField()
-    private Point sel1;
-
-    @SaveableField()
-    private Point sel2;
-
-    private Selection selection;
-
-    @SaveableField()
-    public WarpPoint home;
-
-    @SaveableField()
-    public WarpPoint back;
-
-    @SaveableField()
-    public String prefix;
-
-    @SaveableField()
-    public String suffix;
-
-    // 0: Normal 1: World spawn 2: Bed 3: Home
-    @SaveableField()
-    public int spawnType;
-
-    @SaveableField()
-    private int timePlayed;
-
-    private long loginTime;
-
-    @SaveableField()
-    private long firstJoin;
-
-    // undo and redo stuff
-    private Stack<BackupArea> undos;
-    private Stack<BackupArea> redos;
-
-    public int TPcooldown = 0;
-    public HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
-
-    @SaveableField
-    private ItemStack[] hiddenItems;
-
-    private PlayerInfo(String username)
-    {
-        sel1 = null;
-        sel2 = null;
-        selection = null;
-        this.username = username;
-
-        undos = new Stack<BackupArea>();
-        redos = new Stack<BackupArea>();
-
-        prefix = "";
-        suffix = "";
-
-        firstJoin = System.currentTimeMillis();
-        loginTime = System.currentTimeMillis();
-
-        timePlayed = 0;
-
-        hiddenItems = new ItemStack[54];
     }
 
     /**
@@ -330,7 +316,9 @@ public class PlayerInfo {
         PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
     }
 
-    public void addHiddenItems(ItemStack stack)
-    {// noop for now
+    public List<ItemStack> getHiddenItems()
+    {
+        return hiddenItems;
+
     }
 }

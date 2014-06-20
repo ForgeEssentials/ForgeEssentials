@@ -5,10 +5,12 @@ import com.forgeessentials.api.permissions.query.PermQuery;
 import com.forgeessentials.api.permissions.query.PermQueryBlanketSpot;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
+import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerBlockPlace;
+import com.forgeessentials.util.events.PlayerChangedZone;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -27,6 +29,9 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+
+import java.util.List;
+import java.util.ListIterator;
 
 import static net.minecraftforge.event.Event.Result.ALLOW;
 import static net.minecraftforge.event.Event.Result.DENY;
@@ -347,26 +352,29 @@ public class EventHandler {
         }
     }
 
-	
-	
-	/* uncomment when complete
     @ForgeSubscribe
-	public void manageZoneBannedItems(PlayerChangedZone e)
-	{
-		AdditionalZoneData bi = ModuleProtection.itemsList.get(e.afterZone);
-		List<String> biList = bi.getBannedItems();
-		for (ListIterator<String> iter = biList.listIterator(); iter.hasNext(); ) {
-		    String element = iter.next();
-		    String[] split = element.split(":");
-		    int id = Integer.parseInt(split[0]);
-		    int meta = Integer.parseInt(split[1]);
-		    ItemStack is = new ItemStack(id, 0, meta);
-		    
-		    if (e.entityPlayer.inventory.hasItemStack(is)){
-		    	PlayerInfo.getPlayerInfo(e.entityPlayer).addHiddenItems(is);
-		    }
-		}
-	}
-	*/
+    public void manageZoneBannedItems(PlayerChangedZone e)
+    {
+        for (ItemStack returned : PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems())
+        {
+            e.entityPlayer.inventory.addItemStackToInventory(returned);
+        }
+
+        AdditionalZoneData bi = ModuleProtection.itemsList.get(e.afterZone);
+        List<String> biList = bi.getBannedItems();
+        for (ListIterator<String> iter = biList.listIterator(); iter.hasNext(); )
+        {
+            String element = iter.next();
+            String[] split = element.split(":");
+            int id = Integer.parseInt(split[0]);
+            int meta = Integer.parseInt(split[1]);
+            ItemStack is = new ItemStack(id, 0, meta);
+
+            if (e.entityPlayer.inventory.hasItemStack(is))
+            {
+                PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems().add(is);
+            }
+        }
+    }
 
 }
