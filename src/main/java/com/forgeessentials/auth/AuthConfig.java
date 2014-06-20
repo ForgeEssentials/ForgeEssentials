@@ -22,9 +22,9 @@ public class AuthConfig extends ModuleConfigBase {
         config = new Configuration(file);
 
         config.addCustomCategoryComment("main", "all the main important stuff");
-        ModuleAuth.forceEnabled = config
-                .get(CATEGORY_MAIN, "forceEnable", false, "Forces the authentication server to be loaded regardless of Minecraft auth services")
+        ModuleAuth.forceEnabled = config.get(CATEGORY_MAIN, "forceEnable", false, "Forces the authentication server to be loaded regardless of Minecraft auth services")
                 .getBoolean(false);
+        ModuleAuth.canMoveWithoutLogin = config.get(CATEGORY_MAIN, "canMoveWithoutLogin", false, "Allow players not registered/not logged in with the authentication service to move in the world.").getBoolean(false);
         ModuleAuth.checkVanillaAuthStatus = config
                 .get(CATEGORY_MAIN, "autoEnable", true, "Enables authentication server if and when the Minecraft Auth servers go down.").getBoolean(false);
         ModuleAuth.allowOfflineReg = config.get(CATEGORY_MAIN, "allowOfflineReg", false,
@@ -55,6 +55,7 @@ public class AuthConfig extends ModuleConfigBase {
         config.get(CATEGORY_MAIN, "autoEnable", true, "Enables the authentication server if and when the Minecraft Auth servers go down.")
                 .set(ModuleAuth.checkVanillaAuthStatus);
         config.get(CATEGORY_MAIN, "allowOfflineReg", false, "Allow registration while server is offline. Don't allow this.").set(ModuleAuth.allowOfflineReg);
+        config.get(CATEGORY_MAIN, "canMoveWithoutLogin", false, "Allow players not registered/not logged in with the authentication service to move in the world.").set(ModuleAuth.canMoveWithoutLogin);
         config.get(CATEGORY_MAIN, "salt", "", "The salt to be used when hashing passwords").set(ModuleAuth.salt);
         config.get(CATEGORY_MAIN, "chcekInterval", "", "Interval to check Vanill Auth service. In minutes.").set(ModuleAuth.checkInterval);
 
@@ -78,6 +79,7 @@ public class AuthConfig extends ModuleConfigBase {
         ModuleAuth.forceEnabled = config.get(CATEGORY_MAIN, "forceEnable", false).getBoolean(false);
         ModuleAuth.checkVanillaAuthStatus = config.get(CATEGORY_MAIN, "autoEnable", true).getBoolean(false);
         ModuleAuth.allowOfflineReg = config.get(CATEGORY_MAIN, "allowOfflineReg", false).getBoolean(false);
+        ModuleAuth.canMoveWithoutLogin = config.get(CATEGORY_MAIN, "canMoveWithoutLogin", false).getBoolean(false);
         ModuleAuth.salt = config.get(CATEGORY_MAIN, "salt", ModuleAuth.salt).getString();
         ModuleAuth.checkInterval = config.get(CATEGORY_MAIN, "checkInterval", 10).getInt();
 

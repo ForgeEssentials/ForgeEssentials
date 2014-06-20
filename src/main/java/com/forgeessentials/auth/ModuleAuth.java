@@ -31,6 +31,7 @@ public class ModuleAuth {
     public static boolean checkVanillaAuthStatus;
 
     public static boolean allowOfflineReg;
+    public static boolean canMoveWithoutLogin;
 
     public static VanillaServiceChecker vanillaCheck;
     private static EncryptionHelper pwdEnc;

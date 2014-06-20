@@ -32,6 +32,8 @@ public class EventHandler {
             return;
         }
 
+        if (ModuleAuth.canMoveWithoutLogin)return;
+
         if (ModuleAuth.unLogged.contains(username))
         {
             event.setCanceled(true);
