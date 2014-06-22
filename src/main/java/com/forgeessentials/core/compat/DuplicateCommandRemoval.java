@@ -13,8 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DuplicateCommandRemoval {
-    public static final String[] FIELDNAME = { "commandSet", "b", "field_71561_b", "y/b" };
-
+    public static final String[] FIELDNAME = { "commandSet", "b", "field_71561_b", "aa/b" };
+    
     public static boolean removeDuplicateCommands;
 
     public static void remove()
