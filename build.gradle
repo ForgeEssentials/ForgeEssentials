@@ -1,74 +1,74 @@
 buildscript {
-	repositories {
-		mavenCentral()
-		maven {
-			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
-		}
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
 
-	}
-	dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'}
+    }
+    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT' }
 
 }
 
 apply plugin: 'forge'
 
-version = "1.3rc3"
-group= "com.forgeessentials"
+version = "1.3rc4"
+group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 minecraft {
-	version = "1.6.4-9.11.1.964"
-	assetDir = "rundir/assets"
-	forgeVersion = "9.11.1.964"
-	
-	replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
+    version = "1.6.4-9.11.1.964"
+    assetDir = "rundir/assets"
+    forgeVersion = "9.11.1.964"
+
+    replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
     replace "%VERSION%", project.version
     replaceIn "com/forgeessentials/client/ForgeEssentialsClient.java"
     replace "%VERSION%", project.version
 }
 
-configurations{
+configurations {
     serverLibs
-modules
-devDeps
+    modules
+    devDeps
 }
 
-repositories{
-	mavenLocal()
-	maven {
-			name = "sk89q"
-			url = "http://maven.sk89q.com/repo/"
-	}
-	}
+repositories {
+    mavenLocal()
+    maven {
+        name = "sk89q"
+        url = "http://maven.sk89q.com/repo/"
+    }
+}
 
 dependencies {
-    
+
     compile 'org.pircbotx:pircbotx:1.9' //chat - irc stuff
-    
+
     //datasaving
     compile 'com.h2database:h2:1.3.175'
     compile 'mysql:mysql-connector-java:5.1.22'
-    
+
     // WE integration - 
     // compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT' don't use this for time being, we want one with forge, and deobfed
     compile files('lib/worldedit-forge-6.0.0-SNAPSHOT-deobf.jar')
-    
+
     // perms API (TEMPORARY, until it gets pulled into Forge!) use deobf one to compile
     compile files('lib/minecraftforge-9.11.1.965-permsAPIonly-deobf.jar')
-    
+
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
     serverLibs 'mysql:mysql-connector-java:5.1.22'
     serverLibs files('lib/minecraftforge-9.11.1.965-permsAPIonly.jar')
-    
+
     devDeps files('lib/minecraftforge-9.11.1.965-permsAPIonly-deobf.jar')
 }
 
-jar{
-from project.sourceSets.main.output
+jar {
+    from project.sourceSets.main.output
     include "com/forgeessentials/core/**"
     include "com/forgeessentials/permission/**"
     include "com/forgeessentials/util/**"
@@ -81,46 +81,46 @@ from project.sourceSets.main.output
     include "logo.png"
     include "mcmod.info"
     include "forgeessentials_at.cfg"
-appendix = project.minecraft.version
-manifest {
+    appendix = project.minecraft.version
+    manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
     }
 }
 
-javadoc{
-include "com/forgeessentials/api/**"
+javadoc {
+    include "com/forgeessentials/api/**"
 }
 
 sourceSets {
-    client{
+    client {
         compileClasspath = project.sourceSets.main.compileClasspath
     }
-    
-    weintegration{
+
+    weintegration {
         compileClasspath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
-    
+
     }
 }
 
 
-processClientResources{
-    from (sourceSets.main.resources.srcDirs) {
+processClientResources {
+    from(sourceSets.main.resources.srcDirs) {
         expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeversion': project.minecraft.forgeVersion
         include 'mcmod.info'
     }
 
-    from (sourceSets.main.resources.srcDirs) {
+    from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
 }
 
 processResources {
-    from (sourceSets.main.resources.srcDirs) {
+    from(sourceSets.main.resources.srcDirs) {
         expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeVersion': project.minecraft.forgeVersion
         include 'mcmod.info'
     }
 
-    from (sourceSets.main.resources.srcDirs) {
+    from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
 }
@@ -129,37 +129,38 @@ processResources {
 task completeZip(type: Zip, dependsOn: 'reobf') {
     classifier = 'server'
     destinationDir = jar.destinationDir
-from(project.tasks.jar.getArchivePath()) { into 'mods' }
+    from(project.tasks.jar.getArchivePath()) { into 'mods' }
 
-from(sourceSets.main.output) { include 'FEReadme.txt', 'HowToGetFESupport.txt' }
-from (project.configurations.serverLibs) {
-include '*'
-into('ForgeEssentials/lib')}
-appendix = project.minecraft.version
+    from(sourceSets.main.output) { include 'FEReadme.txt', 'HowToGetFESupport.txt' }
+    from(project.configurations.serverLibs) {
+        include '*'
+        into('ForgeEssentials/lib')
+    }
+    appendix = project.minecraft.version
 }
 
 
-task cleanModules(dependsOn: "completeZip", type: Delete){
+task cleanModules(dependsOn: "completeZip", type: Delete) {
 }
 
 
 def list = [
-    'auth',
-    'backup',
-    'chat',
-    'commands',
-    'economy',
-    'playerlogger',
-    'protection',
-    'questioner',
-    'snooper',
-    'servervote',
-    'scripting',
-    'tickets',
-    'worldborder',
-    'worldcontrol',
-    'afterlife',
-    'teleport',
+        'auth',
+        'backup',
+        'chat',
+        'commands',
+        'economy',
+        'playerlogger',
+        'protection',
+        'questioner',
+        'snooper',
+        'servervote',
+        'scripting',
+        'tickets',
+        'worldborder',
+        'worldcontrol',
+        'afterlife',
+        'teleport',
 ]
 
 list.each { name ->
@@ -167,11 +168,11 @@ list.each { name ->
     def newTask = project.tasks.create(name: taskName, dependsOn: "jar", type: Jar) {
         from sourceSets.main.output
         classifier = name
-appendix = project.minecraft.version
+        appendix = project.minecraft.version
         include "com/forgeessentials/$name/**"
         include "com/forgeessentials/api/$name/**"
     }
-    
+
     reobf {
         reobf(newTask) { reobfSpec ->
             reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
@@ -181,27 +182,27 @@ appendix = project.minecraft.version
     artifacts {
         modules newTask
     }
-    
+
     project.tasks.completeZip {
         from(newTask.getArchivePath()) { into 'ForgeEssentials/modules' }
         dependsOn newTask
     }
 
     project.tasks.cleanModules {
-delete(newTask.getArchivePath())
-}
+        delete(newTask.getArchivePath())
+    }
 }
 
 //client
-task clientJar(dependsOn: "jar", type: Jar){
+task clientJar(dependsOn: "jar", type: Jar) {
     from sourceSets.client.output
     classifier = "client"
     appendix = project.minecraft.version
     include "**"
 }
-    
+
 //worldedit
-task weJar(dependsOn: "jar", type: Jar){
+task weJar(dependsOn: "jar", type: Jar) {
     weJar.mustRunAfter jar
     from sourceSets.weintegration.output
     classifier = "weintegrationtools"
@@ -210,7 +211,7 @@ task weJar(dependsOn: "jar", type: Jar){
 }
 
 //core DEOBF use for development
-task devDeobfJar(dependsOn: "jar", type: Jar){
+task devDeobfJar(dependsOn: "jar", type: Jar) {
     from project.sourceSets.main.output
     include "com/forgeessentials/core/**"
     include "com/forgeessentials/permission/**"
@@ -221,15 +222,15 @@ task devDeobfJar(dependsOn: "jar", type: Jar){
     include "logo.png"
     include "mcmod.info"
     include "forgeessentials_at.cfg"
-    
+
     from project.configurations.devDeps
     include "**"
-    
-manifest {
+
+    manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
     }
-classifier = "deobf"
-appendix = project.minecraft.version
+    classifier = "deobf"
+    appendix = project.minecraft.version
 }
 
 task sourceJar(type: Jar) {
@@ -244,25 +245,25 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     appendix = project.minecraft.version
 }
-    
-reobf {
-        reobf(weJar) { reobfSpec ->
-            reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
-        }
-        reobf(clientJar) { reobfSpec ->
-            reobfSpec.classpath = project.sourceSets.main.compileClasspath
-        }
-    }
 
-    
+reobf {
+    reobf(weJar) { reobfSpec ->
+        reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
+    }
+    reobf(clientJar) { reobfSpec ->
+        reobfSpec.classpath = project.sourceSets.main.compileClasspath
+    }
+}
+
+
 
 artifacts {
-        archives clientJar
-        archives weJar
-        archives devDeobfJar
-        archives javadocJar
-        archives sourceJar
-    }
+    archives clientJar
+    archives weJar
+    archives devDeobfJar
+    archives javadocJar
+    archives sourceJar
+}
 
 build.dependsOn "cleanModules"
 
