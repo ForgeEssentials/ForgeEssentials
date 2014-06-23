@@ -90,7 +90,6 @@ public class PermRegLoader {
             if (!deny.isAll)
             {
                 registerred.add(permission.toLowerCase());
-                System.out.println(permission.toLowerCase());
             }
 
             if (group == null)

@@ -6,7 +6,6 @@ import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.DuplicateCommandRemoval;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.network.FEServerPacketHandler;
 import com.forgeessentials.data.AbstractDataDriver;
@@ -22,22 +21,14 @@ import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.events.modules.*;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions {
@@ -50,7 +41,6 @@ public class ModulePermissions {
     public static File permsFolder;
 
     protected static AbstractDataDriver data;
-    private static Map<String, RegGroup> permList = new HashMap<String, RegGroup>();
     // permission registrations here...
     protected PermRegLoader permLoader;
     private AutoPromoteManager autoPromoteManager;
@@ -74,14 +64,6 @@ public class ModulePermissions {
         event.registerPermissionLevel("fe.perm.zone.list", RegGroup.MEMBERS);
 
         event.registerPermissionLevel("fe.perm.list", RegGroup.GUESTS);
-
-        Iterator it = permList.entrySet().iterator();
-        while (it.hasNext())
-        {
-            Map.Entry pairs = (Map.Entry) it.next();
-            event.registerPermissionLevel((String) pairs.getKey(), (RegGroup) pairs.getValue());
-            it.remove(); // avoids a ConcurrentModificationException
-        }
 
     }
 
@@ -131,23 +113,6 @@ public class ModulePermissions {
 
         autoPromoteManager = new AutoPromoteManager();
 
-        doMCOverrides();
-
-    }
-
-    private void doMCOverrides()
-    {
-        Set<ICommand> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) MinecraftServer.getServer().getCommandManager(),
-                DuplicateCommandRemoval.FIELDNAME);
-
-        for (ICommand cmd : cmdList)
-        {
-            if (cmd.getClass().getCanonicalName().startsWith("net.minecraft.command"))
-            {
-                permList.put("mc." + cmd.getCommandName(), RegGroup.fromInt(((CommandBase) cmd).getRequiredPermissionLevel()));
-            }
-
-        }
     }
 
     @FEModule.ServerPostInit

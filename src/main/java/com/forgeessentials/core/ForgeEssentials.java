@@ -5,8 +5,8 @@ import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.selections.*;
+import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.compat.CompatMCStats;
-import com.forgeessentials.core.compat.DuplicateCommandRemoval;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.misc.*;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -76,11 +76,8 @@ public class ForgeEssentials {
     @PermRegister
     private static void registerPerms(IPermRegisterEvent event)
     {
-        if (!EnvironmentChecker.worldEditInstalled)
-        {
-            event.registerPermissionLevel(
-                    "fe.core.info", RegGroup.OWNERS);
-        }
+        CommandSetChecker.regMCOverrides(event);
+        event.registerPermissionLevel("fe.core.info", RegGroup.OWNERS);
     }
 
     @EventHandler
@@ -207,10 +204,10 @@ public class ForgeEssentials {
     @EventHandler
     public void serverStarted(FMLServerStartedEvent e)
     {
-        mdlaunch.serverStarted(e);
-        DuplicateCommandRemoval.remove();
+        CommandSetChecker.remove();
 
         CompatMCStats.doMCStats();
+        mdlaunch.serverStarted(e);
     }
 
     @EventHandler

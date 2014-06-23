@@ -1,21 +1,22 @@
 package com.forgeessentials.core.compat;
 
+import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-public class DuplicateCommandRemoval {
+public class CommandSetChecker {
     public static final String[] FIELDNAME = { "commandSet", "b", "field_71561_b", "aa/b" };
-    
     public static boolean removeDuplicateCommands;
+    private static Map<String, RegGroup> permList = new HashMap<String, RegGroup>();
 
     public static void remove()
     {
@@ -41,6 +42,11 @@ public class DuplicateCommandRemoval {
                         OutputHandler.felog.finer("Duplicate command found! Name:" + keep.getCommandName());
                         duplicates.put(cmd.getCommandName(), cmd);
                         duplicates.put(cmd.getCommandName(), keep);
+                        continue;
+                    }
+                    else if (cmd.getClass().getName().startsWith("net.minecraft.command") && cmd instanceof CommandBase)
+                    {
+                        permList.put("mc." + cmd.getCommandName(), RegGroup.fromInt(((CommandBase) cmd).getRequiredPermissionLevel()));
                     }
                 }
 
@@ -135,5 +141,17 @@ public class DuplicateCommandRemoval {
             e.printStackTrace();
             return -1;
         }
+    }
+
+    public static void regMCOverrides(IPermRegisterEvent event)
+    {
+        Iterator it = permList.entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry pairs = (Map.Entry) it.next();
+            event.registerPermissionLevel((String) pairs.getKey(), (RegGroup) pairs.getValue());
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+
     }
 }

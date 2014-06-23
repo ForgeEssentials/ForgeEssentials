@@ -1,6 +1,6 @@
 package com.forgeessentials.core;
 
-import com.forgeessentials.core.compat.DuplicateCommandRemoval;
+import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.TeleportCenter;
@@ -12,10 +12,8 @@ import java.util.logging.Level;
 
 public class CoreConfig {
     public static final File mainconfig = new File(ForgeEssentials.FEDIR, "main.cfg");
-
-    public final Configuration config;
-
     public static String largeComment_Cat_Groups, groupPrefixFormat, groupSuffixFormat, groupRankFormat;
+    public final Configuration config;
 
     static
     {
@@ -57,7 +55,7 @@ public class CoreConfig {
 
         prop = config.get("Core", "removeDuplicateCommands", true);
         prop.comment = "Remove commands from the list if they already exist outside of FE.";
-        DuplicateCommandRemoval.removeDuplicateCommands = prop.getBoolean(true);
+        CommandSetChecker.removeDuplicateCommands = prop.getBoolean(true);
 
         prop = config.get("Core.Misc", "tpWarmup", 5);
         prop.comment = "The amount of time you need to stand still to TP.";
@@ -129,7 +127,7 @@ public class CoreConfig {
 
         Property prop = config.get("general", "removeDuplicateCommands", true);
         prop.comment = ("Remove commands from the list if they already exist outside of FE.");
-        DuplicateCommandRemoval.removeDuplicateCommands = prop.getBoolean(true);
+        CommandSetChecker.removeDuplicateCommands = prop.getBoolean(true);
 
         config.addCustomCategoryComment("Core.groups", largeComment_Cat_Groups);
 

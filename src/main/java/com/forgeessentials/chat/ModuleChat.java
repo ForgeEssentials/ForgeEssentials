@@ -8,7 +8,7 @@ import com.forgeessentials.chat.irc.IRCChatFormatter;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.chat.irc.PlayerEventHandler;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.DuplicateCommandRemoval;
+import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.misc.packetInspector.PacketAnalyzerRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
@@ -38,13 +38,19 @@ public class ModuleChat {
     public static PrintWriter chatLog;
     public static PrintWriter cmdLog;
     public static File logdir;
-
+    public static boolean connectToIRC;
     private MailSystem mailsystem;
     private PlayerEventHandler ircPlayerHandler;
-    public static boolean connectToIRC;
 
     public ModuleChat()
     {
+    }
+
+    @PermRegister
+    public static void registerPermissions(IPermRegisterEvent event)
+    {
+        event.registerPermissionLevel("fe.chat.usecolor", RegGroup.MEMBERS);
+        event.registerPermissionLevel("fe.chat.nickname.others", RegGroup.OWNERS);
     }
 
     @FEModule.PreInit
@@ -153,13 +159,6 @@ public class ModuleChat {
         }
     }
 
-    @PermRegister
-    public static void registerPermissions(IPermRegisterEvent event)
-    {
-        event.registerPermissionLevel("fe.chat.usecolor", RegGroup.MEMBERS);
-        event.registerPermissionLevel("fe.chat.nickname.others", RegGroup.OWNERS);
-    }
-
     private void removeTell(MinecraftServer server)
     {
         if (server.getCommandManager() instanceof CommandHandler)
@@ -167,7 +166,7 @@ public class ModuleChat {
             try
             {
                 Set<?> cmdList = ReflectionHelper
-                        .getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), DuplicateCommandRemoval.FIELDNAME);
+                        .getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), CommandSetChecker.FIELDNAME);
 
                 ICommand toRemove = null;
                 Class<?> cmdClass = null;
