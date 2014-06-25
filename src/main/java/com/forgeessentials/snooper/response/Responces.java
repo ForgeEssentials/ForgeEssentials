@@ -5,7 +5,7 @@ import com.forgeessentials.api.json.JSONException;
 import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.snooper.ResponseRegistry;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 public class Responces extends Response {
     @Override

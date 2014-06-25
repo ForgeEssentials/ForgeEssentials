@@ -19,10 +19,10 @@ import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 import com.forgeessentials.util.vector.Vector2;
 import com.forgeessentials.worldborder.Effects.IEffect;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
 import java.util.HashMap;
@@ -159,7 +159,7 @@ public class ModuleWorldBorder {
      * Static Helper Methods
 	 */
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void playerMove(PlayerMoveEvent e)
     {
         Zone zone = APIRegistry.zones.getWorldZone(e.entityPlayer.worldObj);
@@ -168,7 +168,7 @@ public class ModuleWorldBorder {
         borderMap.get(APIRegistry.zones.getGLOBAL().getZoneName()).check((EntityPlayerMP) e.entityPlayer);
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -191,7 +191,7 @@ public class ModuleWorldBorder {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void worldUnLoad(WorldEvent.Unload e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())

@@ -4,7 +4,7 @@ import com.forgeessentials.api.json.JSONException;
 import com.forgeessentials.api.json.JSONObject;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 /**
  * If you want your own query response, extend this file and override

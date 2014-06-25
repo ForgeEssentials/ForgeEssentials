@@ -2,7 +2,7 @@ package com.forgeessentials.worldborder.Effects;
 
 import com.forgeessentials.worldborder.WorldBorder;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 public interface IEffect {
     void registerConfig(Configuration config, String category);

@@ -12,16 +12,16 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerBlockPlace;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.event.Event.Result;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
@@ -33,11 +33,11 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import java.util.List;
 import java.util.ListIterator;
 
-import static net.minecraftforge.event.Event.Result.ALLOW;
-import static net.minecraftforge.event.Event.Result.DENY;
+import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
+import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
 
 public class EventHandler {
-    @ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void playerAttack(AttackEntityEvent e)
     {
         if (e.target == null)
@@ -82,7 +82,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void damage(LivingHurtEvent e)
     {
         // do nothing if the source isnt a living thing.
@@ -155,7 +155,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void breakEvent(BreakEvent e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -176,7 +176,7 @@ public class EventHandler {
         e.setCanceled(!result);
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void placeEvent(PlayerBlockPlace e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -196,7 +196,7 @@ public class EventHandler {
         e.setCanceled(!result);
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void playerInteractEventItemUse(PlayerInteractEvent e)
     {
         if (e.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
@@ -253,7 +253,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void playerInteractEventBlockUse(PlayerInteractEvent e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -285,7 +285,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void entityInteractEvent(EntityInteractEvent e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -307,7 +307,7 @@ public class EventHandler {
         e.setCanceled(!result);
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void handleSpawn(CheckSpawn e)
     {
         // ignore players
@@ -332,7 +332,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void handleSpawn(SpecialSpawn e)
     {
         // ignore players
@@ -352,7 +352,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void manageZoneBannedItems(PlayerChangedZone e)
     {
         for (ItemStack returned : PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems())

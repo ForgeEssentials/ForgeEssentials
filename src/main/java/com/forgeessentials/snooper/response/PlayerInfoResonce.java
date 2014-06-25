@@ -8,7 +8,7 @@ import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 public class PlayerInfoResonce extends Response {
     private boolean sendhome;

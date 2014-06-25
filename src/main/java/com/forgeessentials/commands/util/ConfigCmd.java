@@ -4,7 +4,7 @@ import com.forgeessentials.commands.CommandRules;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 

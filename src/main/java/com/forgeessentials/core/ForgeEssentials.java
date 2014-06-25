@@ -26,15 +26,12 @@ import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.*;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.tasks.TaskRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
-import cpw.mods.fml.common.network.NetworkMod.VersionCheckHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,8 +44,6 @@ import java.io.File;
  * Main mod class
  */
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false,
-        serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = FEServerPacketHandler.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version)
 public class ForgeEssentials {
 
@@ -90,9 +85,6 @@ public class ForgeEssentials {
         OutputHandler.felog.info("Forge Essentials version "
                 + FEModContainer.version + " loading, reading config from "
                 + FEDIR.getAbsolutePath());
-
-        // FE MUST BE FIRST!!
-        GameRegistry.registerPlayerTracker(new PlayerTracker());
 
         version = e.getModMetadata().version;
 
@@ -147,8 +139,7 @@ public class ForgeEssentials {
 
         // other stuff
         ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
-        TickRegistry.registerTickHandler(factory, Side.SERVER);
-        GameRegistry.registerPlayerTracker(factory);
+        FMLCommonHandler.instance().bus().register(factory);
         MinecraftForge.EVENT_BUS.register(factory);
 
         MinecraftForge.EVENT_BUS.register(new WandController());
@@ -215,12 +206,6 @@ public class ForgeEssentials {
     {
         mdlaunch.serverStopping(e);
         tasks.onServerStop();
-    }
-
-    @VersionCheckHandler
-    public boolean versionCheck(String version)
-    {
-        return true;
     }
 
 }

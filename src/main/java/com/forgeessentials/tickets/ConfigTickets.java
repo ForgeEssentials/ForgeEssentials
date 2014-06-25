@@ -3,7 +3,7 @@ package com.forgeessentials.tickets;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 import java.util.Arrays;

@@ -8,7 +8,7 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.Pair;
 import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.sql.*;
 import java.util.ArrayList;

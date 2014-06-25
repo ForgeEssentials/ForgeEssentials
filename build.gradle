@@ -6,8 +6,13 @@ buildscript {
             url = "http://files.minecraftforge.net/maven"
         }
 
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+
     }
-    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT' }
+    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT' }
 
 }
 
@@ -20,9 +25,9 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 minecraft {
-    version = "1.6.4-9.11.1.964"
+    version = "1.7.10_pre4-10.12.2.1138-prerelease"
     assetDir = "rundir/assets"
-    forgeVersion = "9.11.1.964"
+    forgeVersion = "10.12.2.1138-prerelease"
 
     replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
     replace "%VERSION%", project.version

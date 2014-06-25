@@ -5,7 +5,7 @@ import com.forgeessentials.worldborder.WorldBorder;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 public class serverkick implements IEffect {
     private String message = "You passed the world border!";

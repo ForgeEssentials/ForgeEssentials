@@ -6,6 +6,7 @@ import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
@@ -19,7 +20,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -69,7 +69,7 @@ public class Deathchest {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void handleDeath(PlayerDropsEvent e)
     {
         if (!enable)
@@ -123,7 +123,7 @@ public class Deathchest {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void handleClick(PlayerInteractEvent e)
     {
         if (e.entity.worldObj.isRemote)
@@ -172,7 +172,7 @@ public class Deathchest {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void mineGrave(BreakEvent e)
     {
         if (e.world.isRemote)

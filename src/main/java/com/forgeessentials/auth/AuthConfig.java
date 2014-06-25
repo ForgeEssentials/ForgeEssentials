@@ -3,7 +3,7 @@ package com.forgeessentials.auth;
 import com.forgeessentials.auth.lists.PlayerTracker;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 

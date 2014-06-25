@@ -19,7 +19,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 public class EventHandler {
-    @ForgeSubscribe
+    @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())

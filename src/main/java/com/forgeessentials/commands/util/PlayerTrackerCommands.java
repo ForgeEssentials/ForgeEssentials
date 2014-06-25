@@ -1,6 +1,7 @@
 package com.forgeessentials.commands.util;
 
 import com.forgeessentials.commands.CommandVanish;
+import com.forgeessentials.core.misc.LoginMessage;
 import cpw.mods.fml.common.IPlayerTracker;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -12,6 +13,7 @@ public class PlayerTrackerCommands implements IPlayerTracker {
         {
             CommandVanish.vanishedPlayers.add(player.entityId);
         }
+        LoginMessage.sendLoginMessage(player);
     }
 
     @Override

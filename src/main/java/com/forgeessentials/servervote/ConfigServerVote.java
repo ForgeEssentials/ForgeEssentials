@@ -4,7 +4,7 @@ import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;

@@ -5,6 +5,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class ModuleScripting {
     {
         OutputHandler.felog.info("Scripts are being read from " + moduleDir.getAbsolutePath());
         startup();
-        GameRegistry.registerPlayerTracker(new ScriptPlayerTracker());
+        FMLCommonHandler.instance().
     }
 
     @FEModule.ServerInit

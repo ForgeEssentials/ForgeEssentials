@@ -2,7 +2,7 @@ package com.forgeessentials.data;
 
 import com.forgeessentials.data.api.*;
 import com.google.common.collect.HashMultimap;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;

@@ -4,8 +4,8 @@ import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.worldborder.Effects.IEffect;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 import java.io.File;
 

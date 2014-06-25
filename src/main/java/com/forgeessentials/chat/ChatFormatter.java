@@ -9,11 +9,11 @@ import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.google.common.base.Strings;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.event.ServerChatEvent;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class ChatFormatter {
     public static String gmA;
     public static int censorSlap;
 
-    @ForgeSubscribe(priority = EventPriority.NORMAL)
+    @SubscribeEvent(priority = EventPriority.NORMAL)
     public void chatEvent(ServerChatEvent event)
     {
         // muting this should probably be done elsewhere

@@ -7,7 +7,7 @@ import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.api.snooper.Response;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 public class PlayerInv extends Response {
     @Override

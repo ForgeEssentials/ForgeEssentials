@@ -33,10 +33,12 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.*;
 import java.net.Proxy;
@@ -355,56 +357,7 @@ public class Metrics {
             @Override
             public void tickEnd(EnumSet<TickType> type, Object... tickData)
             {
-                if (stopped)
-                {
-                    return;
-                }
-
-                // Disable Task, if it is running and the server owner decided
-                // to opt-out
-                if (isOptOut())
-                {
-                    // Tell all plotters to stop gathering information.
-                    for (Graph graph : graphs)
-                    {
-                        graph.onOptOut();
-                    }
-                    stopped = true;
-                    return;
-                }
-                if (thrd == null)
-                {
-                    thrd = new Thread(new Runnable() {
-                        public void run()
-                        {
-                            try
-                            {
-                                // We use the inverse of firstPost because if it
-                                // is the first time we are posting,
-                                // it is not a interval ping, so it evaluates to
-                                // FALSE
-                                // Each time thereafter it will evaluate to
-                                // TRUE, i.e PING!
-                                postPlugin(!firstPost);
-                                // After the first post we set firstPost to
-                                // false
-                                // Each post thereafter will be a ping
-                                firstPost = false;
-                            }
-                            catch (IOException e)
-                            {
-                                if (debug)
-                                {
-                                    FMLLog.info("[Metrics] Exception - %s",
-                                            e.getMessage());
-                                }
-                            }
-                            finally
-                            {
-                                thrd = null;
-                            }
-                        }
-                    });
+                );
                     thrd.start();
                 }
             }

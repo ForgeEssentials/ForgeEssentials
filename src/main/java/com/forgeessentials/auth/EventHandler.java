@@ -2,11 +2,11 @@ package com.forgeessentials.auth;
 
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerMoveEvent;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -22,7 +22,7 @@ public class EventHandler {
         // nothing
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerMove(PlayerMoveEvent event)
     {
         String username = event.entityPlayer.username;
@@ -50,7 +50,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerChat(ServerChatEvent event)
     {
         String username = event.player.username;
@@ -68,7 +68,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerCommand(CommandEvent event)
     {
         if (!(event.sender instanceof EntityPlayer))
@@ -91,7 +91,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
         String username = event.entityPlayer.username;
@@ -109,7 +109,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(EntityInteractEvent event)
     {
         String username = event.entityPlayer.username;
@@ -127,7 +127,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(MinecartInteractEvent event)
     {
         String username = event.player.username;
@@ -145,7 +145,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerTossItem(ItemTossEvent event)
     {
         String username = event.player.username;
@@ -174,7 +174,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerPickupItem(EntityItemPickupEvent event)
     {
         String username = event.entityPlayer.username;
@@ -192,7 +192,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerHurt(LivingHurtEvent event)
     {
         if (!(event.entityLiving instanceof EntityPlayer))
@@ -215,7 +215,7 @@ public class EventHandler {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerAttack(AttackEntityEvent event)
     {
         String username = event.entityPlayer.username;

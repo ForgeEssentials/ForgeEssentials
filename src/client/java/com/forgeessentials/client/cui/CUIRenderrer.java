@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL12;
 @SideOnly(value = Side.CLIENT)
 public class CUIRenderrer {
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void render(RenderWorldLastEvent event)
     {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;

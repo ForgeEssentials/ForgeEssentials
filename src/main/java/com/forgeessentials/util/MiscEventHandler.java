@@ -28,7 +28,7 @@ public class MiscEventHandler {
 
     public static boolean MajoritySleep = false;
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void playerSleepInBedEvent(PlayerSleepInBedEvent e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())

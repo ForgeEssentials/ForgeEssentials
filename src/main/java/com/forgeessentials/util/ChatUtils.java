@@ -2,7 +2,8 @@ package com.forgeessentials.util;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 
 public class ChatUtils {
 
@@ -15,20 +16,7 @@ public class ChatUtils {
      */
     public static void sendMessage(ICommandSender recipient, String message)
     {
-        recipient.sendChatToPlayer(ChatMessageComponent.createFromText(message));
-    }
-
-    /**
-     * Sends a message that will be translated on the client-side with a list of replacement arguments.
-     *
-     * @param recipient The recipient of the chat message.
-     * @param messageId The localization id of the text that should be displayed. (This is client side localization).
-     * @param args      The formatting arguments for the message.
-     */
-    public static void sendLocalizedMessage(ICommandSender recipient, String messageId, Object... args)
-    {
-        ChatMessageComponent message = ChatMessageComponent.createFromTranslationWithSubstitutions(messageId, args);
-        recipient.sendChatToPlayer(message);
+        recipient.addChatMessage(createFromText(message));
     }
 
     /**
@@ -39,7 +27,12 @@ public class ChatUtils {
      */
     public static void sendMessage(ServerConfigurationManager configurationManager, String message)
     {
-        configurationManager.sendChatMsg(ChatMessageComponent.createFromText(message));
+        configurationManager.sendChatMsg(createFromText(message));
+    }
+
+    public static IChatComponent createFromText(String string) {
+        ChatComponentText component = new ChatComponentText(string);
+        return component;
     }
 
 }

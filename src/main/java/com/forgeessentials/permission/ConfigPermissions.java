@@ -6,7 +6,7 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 

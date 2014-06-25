@@ -14,14 +14,14 @@ import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet3Chat;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,7 +30,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 @FEModule(name = "ServerVoteModule", parentMod = ForgeEssentials.class, configClass = ConfigServerVote.class)
-public class ModuleServerVote implements IPlayerTracker {
+public class ModuleServerVote  {
     @Config
     public static ConfigServerVote config;
 
@@ -50,7 +50,7 @@ public class ModuleServerVote implements IPlayerTracker {
     @Init
     public void init(FEModuleInitEvent e)
     {
-        GameRegistry.registerPlayerTracker(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     @ServerInit
@@ -150,7 +150,7 @@ public class ModuleServerVote implements IPlayerTracker {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void defVoteResponces(VoteEvent vote)
     {
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(vote.player);

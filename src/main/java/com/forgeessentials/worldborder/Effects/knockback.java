@@ -4,7 +4,7 @@ import com.forgeessentials.util.vector.Vector2;
 import com.forgeessentials.worldborder.ModuleWorldBorder;
 import com.forgeessentials.worldborder.WorldBorder;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 public class knockback implements IEffect {
     @Override

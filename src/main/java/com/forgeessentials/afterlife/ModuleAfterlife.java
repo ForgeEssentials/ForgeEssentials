@@ -8,6 +8,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.io.File;
@@ -28,20 +29,20 @@ public class ModuleAfterlife {
     @FEModule.ModuleDir
     public static File moduleDir;
     public Deathchest deathchest;
-    public RespawnDebuff respawnDebuff;
+    public RespawnDebuffHandler respawnDebuff;
 
     @FEModule.Init
     public void load(FEModuleInitEvent e)
     {
         deathchest = new Deathchest();
-        respawnDebuff = new RespawnDebuff();
+        respawnDebuff = new RespawnDebuffHandler();
     }
 
     @FEModule.ServerInit
     public void serverStarting(FEModuleServerInitEvent e)
     {
         deathchest.load();
-        GameRegistry.registerPlayerTracker(respawnDebuff);
+        FMLCommonHandler.instance().bus().register(respawnDebuff);
     }
 
     @FEModule.ServerStop
@@ -55,8 +56,8 @@ public class ModuleAfterlife {
     {
         event.registerPermissionLevel(BASEPERM, RegGroup.OWNERS);
 
-        event.registerPermissionLevel(RespawnDebuff.BYPASSPOTION, RegGroup.OWNERS);
-        event.registerPermissionLevel(RespawnDebuff.BYPASSSTATS, RegGroup.OWNERS);
+        event.registerPermissionLevel(RespawnDebuffHandler.BYPASSPOTION, RegGroup.OWNERS);
+        event.registerPermissionLevel(RespawnDebuffHandler.BYPASSSTATS, RegGroup.OWNERS);
 
         event.registerPermissionLevel(Deathchest.PERMISSION_BYPASS, null);
         event.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.MEMBERS);

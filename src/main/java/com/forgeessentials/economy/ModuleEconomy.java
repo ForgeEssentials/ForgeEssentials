@@ -7,7 +7,7 @@ import com.forgeessentials.core.network.FEServerPacketHandler;
 import com.forgeessentials.economy.commands.*;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class ModuleEconomy {
     public void load(FEModuleInitEvent e)
     {
         APIRegistry.wallet = new WalletHandler();
-        GameRegistry.registerPlayerTracker((IPlayerTracker) APIRegistry.wallet);
+        FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
         FEServerPacketHandler.registerPacket(4, PacketEconomy.class);
     }
 

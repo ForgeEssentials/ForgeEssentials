@@ -13,10 +13,12 @@ import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import com.forgeessentials.util.BackupArea;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +28,12 @@ import java.util.Stack;
 @SaveableObject
 public class PlayerInfo {
     private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
+
+    @SubscribeEvent
+    public void initForPlayer(PlayerEvent.LoadFromFile event)
+    {
+        getPlayerInfo(event.entityPlayer);
+    }
     // -------------------------------------------------------------------------------------------
     // ---------------------------------- Actual Class Starts Now --------------------------------
     // -------------------------------------------------------------------------------------------

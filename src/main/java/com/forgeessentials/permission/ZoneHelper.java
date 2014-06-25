@@ -10,7 +10,7 @@ import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.FunctionHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.world.World;
-import net.minecraftforge.event.EventPriority;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent.Load;
 
@@ -75,7 +75,7 @@ public class ZoneHelper implements IZoneManager {
     protected ConcurrentHashMap<String, Zone> worldZoneMap;
 
     // to load WorldZones
-    @ForgeSubscribe(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void worldLoader(Load e) // thats the WorldLoad event.
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())

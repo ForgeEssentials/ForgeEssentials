@@ -5,11 +5,11 @@ import com.forgeessentials.api.permissions.query.PropQueryPlayerZone;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.PlayerChangedZone;
-import net.minecraftforge.event.EventPriority;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
 public class EventHandler {
-    @ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onZoneChange(PlayerChangedZone event)
     {
         PropQueryPlayerZone query1 = new PropQueryPlayerZone(event.entityPlayer, "fe.perm.Zone.exit", event.beforeZone, false);

@@ -3,7 +3,8 @@ package com.forgeessentials.economy;
 import com.forgeessentials.api.IEconManager;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 /**
  * Call these methods to modify a target's Wallet.
  */
-public class WalletHandler implements IPlayerTracker, IEconManager {
+public class WalletHandler implements IEconManager {
     private static ClassContainer con = new ClassContainer(Wallet.class);
     private static HashMap<String, Wallet> wallets = new HashMap<String, Wallet>();
 
@@ -66,33 +67,23 @@ public class WalletHandler implements IPlayerTracker, IEconManager {
      * Player tracker stuff
 	 */
 
-    @Override
-    public void onPlayerLogin(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
         Wallet wallet = (Wallet) DataStorageManager.getReccomendedDriver().loadObject(con, player.username);
         if (wallet == null)
         {
-            wallet = new Wallet(player, ModuleEconomy.startbuget);
+            wallet = new Wallet(event.player, ModuleEconomy.startbuget);
         }
         wallets.put(player.username, wallet);
     }
 
-    @Override
-    public void onPlayerLogout(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent)
     {
         if (wallets.containsKey(player.username))
         {
             DataStorageManager.getReccomendedDriver().saveObject(con, wallets.remove(player.username));
         }
-    }
-
-    @Override
-    public void onPlayerChangedDimension(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void onPlayerRespawn(EntityPlayer player)
-    {
     }
 }

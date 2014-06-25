@@ -142,7 +142,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
         return RegGroup.MEMBERS;
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void getCoords(PlayerSleepInBedEvent e)
     {
         if (sleepPoint == null)

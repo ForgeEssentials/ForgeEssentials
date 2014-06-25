@@ -12,7 +12,7 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -20,7 +20,6 @@ import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
 import java.io.File;
@@ -40,7 +39,7 @@ public class ModuleBackup {
     public void load(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-        TickRegistry.registerTickHandler(new WorldSaver(), Side.SERVER);
+        FMLCommonHandler.instance().bus().register(new WorldSaver());
     }
 
     @FEModule.ServerInit
@@ -64,7 +63,7 @@ public class ModuleBackup {
         event.registerPermissionLevel("fe.backup.msg", RegGroup.GUESTS);
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void worldUnload(WorldEvent.Unload e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer())
@@ -76,12 +75,12 @@ public class ModuleBackup {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
-            ((WorldServer) e.world).canNotSave = !BackupConfig.worldSaving;
+            ((WorldServer) e.world).levelSaving = !BackupConfig.worldSaving;
         }
     }
 

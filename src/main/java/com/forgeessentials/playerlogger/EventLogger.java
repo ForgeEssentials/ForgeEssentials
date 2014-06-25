@@ -10,7 +10,8 @@ import com.forgeessentials.playerlogger.types.playerTrackerLog;
 import com.forgeessentials.playerlogger.types.playerTrackerLog.playerTrackerLogCategory;
 import com.forgeessentials.util.events.PlayerBlockPlace;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -19,8 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -28,13 +28,13 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventLogger implements IPlayerTracker {
+public class EventLogger {
     public Side side = FMLCommonHandler.instance().getEffectiveSide();
 
     public EventLogger()
     {
         MinecraftForge.EVENT_BUS.register(this);
-        GameRegistry.registerPlayerTracker(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     public static boolean logPlayerChangedDimension = true;
@@ -52,60 +52,60 @@ public class EventLogger implements IPlayerTracker {
     public static List<String> exempt_players = new ArrayList<String>();
     public static List<String> exempt_groups = new ArrayList<String>();
 
-    @Override
-    public void onPlayerLogin(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        PacketDispatcher.sendPacketToPlayer(new PacketPlayerLogger(player).getPayload(), (Player) player);
+        PacketDispatcher.sendPacketToPlayer(new PacketPlayerLogger(e.player).getPayload(), (Player) player);
         if (logPlayerLoginLogout && side.isServer())
         {
-            if (exempt(player))
+            if (exempt(e.player))
             {
                 return;
             }
-            new playerTrackerLog(playerTrackerLogCategory.Login, player, "");
+            new playerTrackerLog(playerTrackerLogCategory.Login, e.player, "");
         }
     }
 
-    @Override
-    public void onPlayerLogout(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
         if (logPlayerLoginLogout && side.isServer())
         {
-            if (exempt(player))
+            if (exempt(e.player))
             {
                 return;
             }
-            new playerTrackerLog(playerTrackerLogCategory.Logout, player, "");
+            new playerTrackerLog(playerTrackerLogCategory.Logout, e.player, "");
         }
     }
 
-    @Override
-    public void onPlayerChangedDimension(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent e)
     {
         if (logPlayerChangedDimension && side.isServer())
         {
-            if (exempt(player))
+            if (exempt(e.player))
             {
                 return;
             }
-            new playerTrackerLog(playerTrackerLogCategory.ChangedDim, player, "");
+            new playerTrackerLog(playerTrackerLogCategory.ChangedDim, e.player, "");
         }
     }
 
-    @Override
-    public void onPlayerRespawn(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent e)
     {
         if (logPlayerRespawn && side.isServer())
         {
-            if (exempt(player))
+            if (exempt(e.player))
             {
                 return;
             }
-            new playerTrackerLog(playerTrackerLogCategory.Respawn, player, "");
+            new playerTrackerLog(playerTrackerLogCategory.Respawn, e.player, "");
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void command(CommandEvent e)
     {
         if (logCommands_Player && !e.isCanceled() && e.sender instanceof EntityPlayer && side.isServer())
@@ -129,7 +129,7 @@ public class EventLogger implements IPlayerTracker {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerBlockBreak(BreakEvent e)
     {
         if (logBlockChanges && !e.isCanceled() && side.isServer())
@@ -144,7 +144,7 @@ public class EventLogger implements IPlayerTracker {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerBlockPlace(PlayerBlockPlace e)
     {
         if (logBlockChanges && !e.isCanceled() && side.isServer())
@@ -172,7 +172,7 @@ public class EventLogger implements IPlayerTracker {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerInteractEvent(PlayerInteractEvent e)
     {
         if (e.action == Action.RIGHT_CLICK_BLOCK)

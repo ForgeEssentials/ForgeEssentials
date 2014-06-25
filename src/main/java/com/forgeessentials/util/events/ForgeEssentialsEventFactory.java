@@ -7,13 +7,13 @@ import com.forgeessentials.util.FunctionHelper;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -109,7 +109,7 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
     }
 
     // ZONE STUFF
-    @ForgeSubscribe
+    @SubscribeEvent
     public void playerMove(PlayerMoveEvent e)
     {
         Zone before = APIRegistry.zones.getWhichZoneIn(e.before);

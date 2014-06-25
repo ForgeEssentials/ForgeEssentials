@@ -3,7 +3,7 @@ package com.forgeessentials.teleport.util;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.teleport.TeleportModule;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 

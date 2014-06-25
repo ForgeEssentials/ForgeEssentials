@@ -3,7 +3,7 @@ package com.forgeessentials.backup;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.google.common.primitives.Ints;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 import java.util.Arrays;

@@ -9,7 +9,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public class QuestionCenter implements IScheduledTickHandler {
+public class QuestionCenter {
     private static Map<String, QuestionData> queue = new HashMap<String, QuestionData>();
     private static ArrayList<String> removeQueue = new ArrayList<String>();
     private static ArrayList<String> playerQueue = new ArrayList<String>();
@@ -31,6 +31,7 @@ public class QuestionCenter implements IScheduledTickHandler {
     {
         removeQueue.add(questionData.getTarget().username);
     }
+
 
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData)

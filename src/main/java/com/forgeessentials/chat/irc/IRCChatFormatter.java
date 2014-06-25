@@ -9,7 +9,7 @@ import com.forgeessentials.util.FunctionHelper;
 import com.google.common.base.Strings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.event.EventPriority;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 
@@ -30,7 +30,7 @@ public class IRCChatFormatter {
     public static String gmA;
     public static int censorSlap;
 
-    @ForgeSubscribe(priority = EventPriority.NORMAL)
+    @SubscribeEvent(priority = EventPriority.NORMAL)
     public void chatEvent(ServerChatEvent event)
     {
         // muting this should probably be done elsewhere

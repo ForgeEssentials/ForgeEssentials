@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class CommandMuter {
     public static ArrayList<String> mutedCommands = new ArrayList<String>();
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void commandEvent(CommandEvent e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())

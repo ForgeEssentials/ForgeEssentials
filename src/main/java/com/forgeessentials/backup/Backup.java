@@ -115,8 +115,8 @@ public class Backup implements Runnable {
         boolean canNotSave = true;
         if (isWorld && worldSave)
         {
-            canNotSave = world.canNotSave;
-            world.canNotSave = false;
+            canNotSave = world.levelSaving;
+            world.levelSaving = false;
             try
             {
                 world.saveAllChunks(true, (IProgressUpdate) null);
@@ -140,7 +140,7 @@ public class Backup implements Runnable {
 		 */
         if (isWorld && worldSave)
         {
-            world.canNotSave = canNotSave;
+            world.levelSaving = canNotSave;
         }
 
         ModuleBackup.msg("Backup of " + name + " done.");

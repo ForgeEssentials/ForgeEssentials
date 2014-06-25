@@ -2,42 +2,28 @@ package com.forgeessentials.afterlife;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.PotionEffect;
 
 import java.util.ArrayList;
 
-public class RespawnDebuff implements IPlayerTracker {
+public class RespawnDebuffHandler{
     public static final String BYPASSPOTION = ModuleAfterlife.BASEPERM + ".bypassPotions";
     public static final String BYPASSSTATS = ModuleAfterlife.BASEPERM + ".bypassStats";
     public static ArrayList<PotionEffect> potionEffects;
     public static int hp;
     public static int food;
 
-    @Override
-    public void onPlayerLogin(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent e)
     {
-    }
-
-    @Override
-    public void onPlayerLogout(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void onPlayerChangedDimension(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void onPlayerRespawn(EntityPlayer player1)
-    {
-        if (player1.worldObj.isRemote)
+        if (e.player.worldObj.isRemote)
         {
             return;
         }
-        EntityPlayer player = player1;
+        EntityPlayer player = e.player;
         if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASSPOTION)))
         {
             for (PotionEffect effect : potionEffects)

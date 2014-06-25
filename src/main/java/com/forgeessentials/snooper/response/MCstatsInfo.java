@@ -4,7 +4,7 @@ import com.forgeessentials.api.json.JSONException;
 import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.core.compat.CompatMCStats;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.util.LinkedHashMap;
 

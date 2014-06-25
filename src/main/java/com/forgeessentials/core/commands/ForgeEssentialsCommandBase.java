@@ -8,6 +8,7 @@ import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 
@@ -55,7 +56,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         }
         else if (var1 instanceof TileEntityCommandBlock)
         {
-            processCommandBlock((TileEntityCommandBlock) var1, var2);
+            processCommandBlock((CommandBlockLogic) var1, var2);
         }
         else
         {
@@ -70,7 +71,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
     /**
      * Override is optional.
      */
-    public void processCommandBlock(TileEntityCommandBlock block, String[] args)
+    public void processCommandBlock(CommandBlockLogic block, String[] args)
     {
         processCommandConsole(block, args);
     }

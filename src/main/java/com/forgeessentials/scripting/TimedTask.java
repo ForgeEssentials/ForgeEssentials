@@ -34,7 +34,7 @@ public class TimedTask extends TimerTask {
     @Override
     public void run()
     {
-        MinecraftServer.getServer().executeCommand(command);
+        MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), command);
     }
 
     public TimedTask(Object interval, Object command, Object name)

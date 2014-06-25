@@ -3,7 +3,7 @@ package com.forgeessentials.commands.util;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.commands.*;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.util.ArrayList;
 

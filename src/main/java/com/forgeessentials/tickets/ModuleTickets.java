@@ -1,16 +1,23 @@
 package com.forgeessentials.tickets;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
+import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import com.forgeessentials.auth.lists.PlayerTracker;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +45,7 @@ public class ModuleTickets {
     public void load(FEModuleInitEvent e)
     {
         playerTracker = new PlayerTracker();
-        GameRegistry.registerPlayerTracker(playerTracker);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     @FEModule.ServerInit
@@ -102,5 +109,17 @@ public class ModuleTickets {
             }
         }
         return null;
+    }
+
+    @SubscribeEvent
+    public void loadData(PlayerEvent.PlayerLoggedInEvent e)
+    {
+        if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.player, ModuleTickets.PERMBASE + ".admin")))
+        {
+            if (!ModuleTickets.ticketList.isEmpty())
+            {
+                ChatUtils.sendMessage(e.player, EnumChatFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
+            }
+        }
     }
 }

@@ -29,7 +29,7 @@ public class PlayerEventHandler implements IPlayerTracker {
     {
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void onPlayerDeath(LivingDeathEvent e)
     {
         if (e.entityLiving instanceof EntityPlayer)
